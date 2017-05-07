@@ -82,7 +82,7 @@ public final class AndroidUtils
     }
     
     public static int dipToPixels(final Context context, final int n) {
-        return (int)(n * context.getResources().getDisplayMetrics().density + 0.5f);
+        return (int)(context.getResources().getDisplayMetrics().density * n + 0.5f);
     }
     
     public static void dumpHprofToDisk() {
@@ -132,81 +132,82 @@ public final class AndroidUtils
     }
     
     public static String[] getAppSignatures(final Context context) {
+        final String[] array = null;
+        final String[] array2 = null;
+        final String[] array3 = null;
+        final String[] array4 = null;
+        int n = 0;
         final PackageManager packageManager = context.getPackageManager();
-        String[] array;
+        String[] array5;
         if (packageManager == null) {
             Log.e("nf_utils", "Package manager not found, this should NOT happen");
-            array = null;
+            array5 = array4;
         }
         else {
-            final String[] array2 = null;
-            final String[] array3 = null;
-            String[] array5;
-            final String[] array4 = array5 = null;
-            String[] array6 = array2;
-            String[] array7 = array3;
+            String[] array6 = array;
+            String[] array7 = array2;
+            String[] array8 = array3;
             try {
                 final PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 64);
-                array5 = array4;
-                array6 = array2;
-                array7 = array3;
+                array6 = array;
+                array7 = array2;
+                array8 = array3;
                 if (Log.isLoggable("nf_utils", 3)) {
-                    array5 = array4;
-                    array6 = array2;
-                    array7 = array3;
+                    array6 = array;
+                    array7 = array2;
+                    array8 = array3;
                     Log.d("nf_utils", "Found # signatures: " + packageInfo.signatures.length);
                 }
-                array5 = array4;
-                array6 = array2;
-                array7 = array3;
-                final String[] array8 = new String[packageInfo.signatures.length];
-                int n = 0;
+                array6 = array;
+                array7 = array2;
+                array8 = array3;
+                final String[] array9 = new String[packageInfo.signatures.length];
                 while (true) {
-                    array = array8;
-                    array5 = array8;
-                    array6 = array8;
-                    array7 = array8;
+                    array5 = array9;
+                    array6 = array9;
+                    array7 = array9;
+                    array8 = array9;
                     if (n >= packageInfo.signatures.length) {
                         break;
                     }
-                    array5 = array8;
-                    array6 = array8;
-                    array7 = array8;
+                    array6 = array9;
+                    array7 = array9;
+                    array8 = array9;
                     final MessageDigest instance = MessageDigest.getInstance("SHA");
-                    array5 = array8;
-                    array6 = array8;
-                    array7 = array8;
+                    array6 = array9;
+                    array7 = array9;
+                    array8 = array9;
                     instance.update(packageInfo.signatures[n].toByteArray());
-                    array5 = array8;
-                    array6 = array8;
-                    array7 = array8;
-                    array8[n] = new String(Base64.encode(instance.digest(), 0));
-                    array5 = array8;
-                    array6 = array8;
-                    array7 = array8;
+                    array6 = array9;
+                    array7 = array9;
+                    array8 = array9;
+                    array9[n] = new String(Base64.encode(instance.digest(), 0));
+                    array6 = array9;
+                    array7 = array9;
+                    array8 = array9;
                     if (Log.isLoggable("nf_utils", 3)) {
-                        array5 = array8;
-                        array6 = array8;
-                        array7 = array8;
-                        Log.d("nf_utils", "hash key[" + n + "]:" + array8[n]);
+                        array6 = array9;
+                        array7 = array9;
+                        array8 = array9;
+                        Log.d("nf_utils", "hash key[" + n + "]:" + array9[n]);
                     }
                     ++n;
                 }
             }
             catch (PackageManager$NameNotFoundException ex) {
                 Log.e("nf_utils", "Name not found", (Throwable)ex);
-                return array5;
+                return array6;
             }
             catch (NoSuchAlgorithmException ex2) {
                 Log.e("nf_utils", "No such an algorithm", ex2);
-                return array6;
+                return array7;
             }
             catch (Exception ex3) {
                 Log.e("nf_utils", "Error while getting signature", ex3);
-                return array7;
+                return array8;
             }
         }
-        return array;
+        return array5;
     }
     
     public static long getAvailableInternalMemory() {
@@ -234,9 +235,9 @@ public final class AndroidUtils
             throw new IllegalArgumentException("App name cannot be null!");
         }
         try {
-            PackageInfo packageInfo;
-            if ((packageInfo = context.getPackageManager().getPackageInfo(s, 0)) == null) {
-                packageInfo = null;
+            final PackageInfo packageInfo = context.getPackageManager().getPackageInfo(s, 0);
+            if (packageInfo == null) {
+                return null;
             }
             return packageInfo;
         }
@@ -285,27 +286,29 @@ public final class AndroidUtils
     
     @SuppressLint({ "NewApi" })
     public static boolean isActivityFinishedOrDestroyed(final Activity activity) {
-        boolean b = false;
+        boolean destroyed;
         if (activity instanceof NetflixActivity) {
-            b = ((NetflixActivity)activity).destroyed();
+            destroyed = ((NetflixActivity)activity).destroyed();
         }
-        else if (getAndroidVersion() >= 17) {
-            b = activity.isDestroyed();
+        else {
+            destroyed = (getAndroidVersion() >= 17 && activity.isDestroyed());
         }
-        return b || activity.isFinishing();
+        return destroyed || activity.isFinishing();
     }
     
     public static boolean isAppInstalled(final Context context, final String s) {
+        boolean b = true;
         final PackageManager packageManager = context.getPackageManager();
         if (packageManager == null) {
             return false;
         }
         try {
             packageManager.getPackageInfo(s, 1);
-            return true;
+            return b;
         }
         catch (PackageManager$NameNotFoundException ex) {
-            return false;
+            b = false;
+            return b;
         }
     }
     
@@ -415,12 +418,5 @@ public final class AndroidUtils
             audioManager.setStreamMute(3, false);
             Log.d("nf_utils", "UN-MUTED");
         }
-    }
-    
-    enum OUTPUT
-    {
-        BOTH, 
-        STDERR, 
-        STDOUT;
     }
 }

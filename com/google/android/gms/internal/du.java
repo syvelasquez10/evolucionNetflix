@@ -5,6 +5,7 @@
 package com.google.android.gms.internal;
 
 import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -59,7 +60,7 @@ public class du implements Parcelable$Creator<dv>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new dv(g, p4, p3, p2, p);
     }

@@ -5,12 +5,14 @@
 package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$SearchTitle;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 
 public class SearchVideo extends Video implements com.netflix.mediaclient.servicemgr.model.search.SearchVideo
 {
-    public SearchTitle searchTitle;
-    public Summary summary;
+    public Video$SearchTitle searchTitle;
+    public Video$Summary summary;
     
     @Override
     public String getBoxshotURL() {

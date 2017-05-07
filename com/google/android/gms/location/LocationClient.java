@@ -15,6 +15,8 @@ import com.google.android.gms.internal.mb;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Intent;
+import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks;
 import android.content.Context;
 import com.google.android.gms.internal.ly;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -26,8 +28,8 @@ public class LocationClient implements GooglePlayServicesClient
     public static final String KEY_MOCK_LOCATION = "mockLocation";
     private final ly adP;
     
-    public LocationClient(final Context context, final ConnectionCallbacks connectionCallbacks, final OnConnectionFailedListener onConnectionFailedListener) {
-        this.adP = new ly(context, connectionCallbacks, onConnectionFailedListener, "location");
+    public LocationClient(final Context context, final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks, final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
+        this.adP = new ly(context, googlePlayServicesClient$ConnectionCallbacks, googlePlayServicesClient$OnConnectionFailedListener, "location");
     }
     
     public static int getErrorCode(final Intent intent) {
@@ -63,7 +65,7 @@ public class LocationClient implements GooglePlayServicesClient
         return intent.hasExtra("gms_error_code");
     }
     
-    public void addGeofences(final List<Geofence> list, final PendingIntent pendingIntent, final OnAddGeofencesResultListener onAddGeofencesResultListener) {
+    public void addGeofences(final List<Geofence> list, final PendingIntent pendingIntent, final LocationClient$OnAddGeofencesResultListener locationClient$OnAddGeofencesResultListener) {
         List<mb> list2 = null;
         if (list != null) {
             list2 = new ArrayList<mb>();
@@ -73,7 +75,7 @@ public class LocationClient implements GooglePlayServicesClient
             }
         }
         try {
-            this.adP.addGeofences(list2, pendingIntent, onAddGeofencesResultListener);
+            this.adP.addGeofences(list2, pendingIntent, locationClient$OnAddGeofencesResultListener);
         }
         catch (RemoteException ex) {
             throw new IllegalStateException((Throwable)ex);
@@ -105,37 +107,37 @@ public class LocationClient implements GooglePlayServicesClient
     }
     
     @Override
-    public boolean isConnectionCallbacksRegistered(final ConnectionCallbacks connectionCallbacks) {
-        return this.adP.isConnectionCallbacksRegistered(connectionCallbacks);
+    public boolean isConnectionCallbacksRegistered(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
+        return this.adP.isConnectionCallbacksRegistered(googlePlayServicesClient$ConnectionCallbacks);
     }
     
     @Override
-    public boolean isConnectionFailedListenerRegistered(final OnConnectionFailedListener onConnectionFailedListener) {
-        return this.adP.isConnectionFailedListenerRegistered(onConnectionFailedListener);
+    public boolean isConnectionFailedListenerRegistered(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
+        return this.adP.isConnectionFailedListenerRegistered(googlePlayServicesClient$OnConnectionFailedListener);
     }
     
     @Override
-    public void registerConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.adP.registerConnectionCallbacks(connectionCallbacks);
+    public void registerConnectionCallbacks(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
+        this.adP.registerConnectionCallbacks(googlePlayServicesClient$ConnectionCallbacks);
     }
     
     @Override
-    public void registerConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.adP.registerConnectionFailedListener(onConnectionFailedListener);
+    public void registerConnectionFailedListener(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
+        this.adP.registerConnectionFailedListener(googlePlayServicesClient$OnConnectionFailedListener);
     }
     
-    public void removeGeofences(final PendingIntent pendingIntent, final OnRemoveGeofencesResultListener onRemoveGeofencesResultListener) {
+    public void removeGeofences(final PendingIntent pendingIntent, final LocationClient$OnRemoveGeofencesResultListener locationClient$OnRemoveGeofencesResultListener) {
         try {
-            this.adP.removeGeofences(pendingIntent, onRemoveGeofencesResultListener);
+            this.adP.removeGeofences(pendingIntent, locationClient$OnRemoveGeofencesResultListener);
         }
         catch (RemoteException ex) {
             throw new IllegalStateException((Throwable)ex);
         }
     }
     
-    public void removeGeofences(final List<String> list, final OnRemoveGeofencesResultListener onRemoveGeofencesResultListener) {
+    public void removeGeofences(final List<String> list, final LocationClient$OnRemoveGeofencesResultListener locationClient$OnRemoveGeofencesResultListener) {
         try {
-            this.adP.removeGeofences(list, onRemoveGeofencesResultListener);
+            this.adP.removeGeofences(list, locationClient$OnRemoveGeofencesResultListener);
         }
         catch (RemoteException ex) {
             throw new IllegalStateException((Throwable)ex);
@@ -206,24 +208,12 @@ public class LocationClient implements GooglePlayServicesClient
     }
     
     @Override
-    public void unregisterConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.adP.unregisterConnectionCallbacks(connectionCallbacks);
+    public void unregisterConnectionCallbacks(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
+        this.adP.unregisterConnectionCallbacks(googlePlayServicesClient$ConnectionCallbacks);
     }
     
     @Override
-    public void unregisterConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.adP.unregisterConnectionFailedListener(onConnectionFailedListener);
-    }
-    
-    public interface OnAddGeofencesResultListener
-    {
-        void onAddGeofencesResult(final int p0, final String[] p1);
-    }
-    
-    public interface OnRemoveGeofencesResultListener
-    {
-        void onRemoveGeofencesByPendingIntentResult(final int p0, final PendingIntent p1);
-        
-        void onRemoveGeofencesByRequestIdsResult(final int p0, final String[] p1);
+    public void unregisterConnectionFailedListener(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
+        this.adP.unregisterConnectionFailedListener(googlePlayServicesClient$OnConnectionFailedListener);
     }
 }

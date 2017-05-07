@@ -19,15 +19,7 @@ public final class RealTimeMessage implements Parcelable
     private final int acc;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<RealTimeMessage>() {
-            public RealTimeMessage cn(final Parcel parcel) {
-                return new RealTimeMessage(parcel, null);
-            }
-            
-            public RealTimeMessage[] dU(final int n) {
-                return new RealTimeMessage[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new RealTimeMessage$1();
     }
     
     private RealTimeMessage(final Parcel parcel) {

@@ -4,8 +4,15 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.plus.model.people.Person$Urls;
+import com.google.android.gms.plus.model.people.Person$PlacesLived;
+import com.google.android.gms.plus.model.people.Person$Organizations;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.android.gms.plus.model.people.Person$Name;
+import com.google.android.gms.plus.model.people.Person$Image;
+import com.google.android.gms.plus.model.people.Person$Cover;
+import com.google.android.gms.plus.model.people.Person$AgeRange;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.common.data.d;
@@ -22,7 +29,7 @@ public final class oj extends d implements Person
     }
     
     @Override
-    public AgeRange getAgeRange() {
+    public Person$AgeRange getAgeRange() {
         return null;
     }
     
@@ -42,7 +49,7 @@ public final class oj extends d implements Person
     }
     
     @Override
-    public Cover getCover() {
+    public Person$Cover getCover() {
         return null;
     }
     
@@ -67,8 +74,8 @@ public final class oj extends d implements Person
     }
     
     @Override
-    public Image getImage() {
-        return new ny.c(this.getString("image"));
+    public Person$Image getImage() {
+        return new ny$c(this.getString("image"));
     }
     
     @Override
@@ -77,7 +84,7 @@ public final class oj extends d implements Person
     }
     
     @Override
-    public Name getName() {
+    public Person$Name getName() {
         return null;
     }
     
@@ -88,7 +95,7 @@ public final class oj extends d implements Person
     
     @Override
     public int getObjectType() {
-        return ny.e.cf(this.getString("objectType"));
+        return ny$e.cf(this.getString("objectType"));
     }
     
     @Override
@@ -241,19 +248,19 @@ public final class oj extends d implements Person
         return false;
     }
     
-    public ArrayList<Organizations> nD() {
+    public ArrayList<Person$Organizations> nD() {
         return null;
     }
     
-    public ArrayList<PlacesLived> nE() {
+    public ArrayList<Person$PlacesLived> nE() {
         return null;
     }
     
-    public ArrayList<Urls> nF() {
+    public ArrayList<Person$Urls> nF() {
         return null;
     }
     
     public Person nG() {
-        return new ny(this.getDisplayName(), this.getId(), (ny.c)this.getImage(), this.getObjectType(), this.getUrl());
+        return new ny(this.getDisplayName(), this.getId(), (ny$c)this.getImage(), this.getObjectType(), this.getUrl());
     }
 }

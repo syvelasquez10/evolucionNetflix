@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import java.util.List;
@@ -43,7 +42,7 @@ public class UIError extends Error
         this.uiAction = uiAction;
     }
     
-    public UIError(final JSONObject jsonObject) throws JSONException {
+    public UIError(final JSONObject jsonObject) {
         super(jsonObject);
         this.displayedMessage = JsonUtils.getString(jsonObject, "displayedMessage", null);
         final String string = JsonUtils.getString(jsonObject, "uiAction", null);
@@ -52,14 +51,14 @@ public class UIError extends Error
         }
     }
     
-    public static UIError createInstance(final String s) throws JSONException {
+    public static UIError createInstance(final String s) {
         if (s == null) {
             return null;
         }
         return new UIError(new JSONObject(s));
     }
     
-    public static UIError createInstance(final JSONObject jsonObject) throws JSONException {
+    public static UIError createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -75,7 +74,7 @@ public class UIError extends Error
     }
     
     @Override
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = super.toJSONObject();
         if (this.uiAction != null) {
             jsonObject.put("uiAction", (Object)this.uiAction.name());

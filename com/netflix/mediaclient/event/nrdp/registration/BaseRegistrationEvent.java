@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.nrdp.registration;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
@@ -14,7 +13,7 @@ public abstract class BaseRegistrationEvent extends JsonBaseNccpEvent
         super(s);
     }
     
-    public BaseRegistrationEvent(final String s, final JSONObject jsonObject) throws JSONException {
+    public BaseRegistrationEvent(final String s, final JSONObject jsonObject) {
         super(s, jsonObject);
     }
     

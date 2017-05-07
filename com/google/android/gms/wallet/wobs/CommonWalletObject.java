@@ -36,7 +36,7 @@ public class CommonWalletObject implements SafeParcelable
     int state;
     
     static {
-        CREATOR = (Parcelable$Creator)new com.google.android.gms.wallet.wobs.a();
+        CREATOR = (Parcelable$Creator)new a();
     }
     
     CommonWalletObject() {
@@ -72,10 +72,10 @@ public class CommonWalletObject implements SafeParcelable
         this.asZ = asZ;
     }
     
-    public static a pO() {
+    public static CommonWalletObject$a pO() {
         final CommonWalletObject commonWalletObject = new CommonWalletObject();
         commonWalletObject.getClass();
-        return new a();
+        return new CommonWalletObject$a(commonWalletObject, null);
     }
     
     public int describeContents() {
@@ -91,18 +91,6 @@ public class CommonWalletObject implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        com.google.android.gms.wallet.wobs.a.a(this, parcel, n);
-    }
-    
-    public final class a
-    {
-        public a dc(final String fl) {
-            CommonWalletObject.this.fl = fl;
-            return this;
-        }
-        
-        public CommonWalletObject pP() {
-            return CommonWalletObject.this;
-        }
+        a.a(this, parcel, n);
     }
 }

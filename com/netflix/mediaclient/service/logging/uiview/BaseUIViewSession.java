@@ -4,15 +4,15 @@
 
 package com.netflix.mediaclient.service.logging.uiview;
 
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.BaseLoggingSession;
 
 public abstract class BaseUIViewSession extends BaseLoggingSession
 {
     protected static final String CATEGORY = "uiView";
-    protected IClientLogging.ModalView mView;
+    protected IClientLogging$ModalView mView;
     
-    public BaseUIViewSession(final IClientLogging.ModalView mView) {
+    public BaseUIViewSession(final IClientLogging$ModalView mView) {
         this.mView = mView;
     }
     
@@ -21,7 +21,7 @@ public abstract class BaseUIViewSession extends BaseLoggingSession
         return "uiView";
     }
     
-    public IClientLogging.ModalView getView() {
+    public IClientLogging$ModalView getView() {
         return this.mView;
     }
 }

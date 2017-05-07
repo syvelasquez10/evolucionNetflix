@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.util.WebApiUtils;
+import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import java.nio.ByteBuffer;
@@ -50,7 +50,7 @@ public class DummyMdx implements IMdx
     }
     
     @Override
-    public WebApiUtils.VideoIds getVideoIds() {
+    public WebApiUtils$VideoIds getVideoIds() {
         return null;
     }
     

@@ -4,10 +4,6 @@
 
 package com.netflix.mediaclient.javabridge.transport;
 
-import android.os.Message;
-import android.os.Looper;
-import android.annotation.SuppressLint;
-import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
@@ -41,7 +37,7 @@ public class NativeTransport implements Transport
     private boolean mDeviceLowMem;
     private String mDeviceModel;
     private String mEsn;
-    private final TransportEventHandler mEventHandler;
+    private final NativeTransport$TransportEventHandler mEventHandler;
     private String mFesn;
     private int mIpConnectivityPolicy;
     private String mRootFileSystem;
@@ -65,7 +61,7 @@ public class NativeTransport implements Transport
         this.proxy = proxy;
         final HandlerThread handlerThread = new HandlerThread("NativeTransport", 10);
         handlerThread.start();
-        this.mEventHandler = new TransportEventHandler(handlerThread.getLooper());
+        this.mEventHandler = new NativeTransport$TransportEventHandler(this, handlerThread.getLooper());
         this.mWeakThis = new WeakReference(this);
         Log.d("nf-NativeTransport", "NativeTransport constructor done");
     }
@@ -270,7 +266,6 @@ public class NativeTransport implements Transport
                 break Label_0084;
             }
             string = "nrdp";
-        Block_5_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
@@ -279,17 +274,14 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    while (true) {
-                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_5_Outer;
-                        Label_0106: {
-                            string = "nrdp." + string;
-                        }
-                        continue Block_5_Outer;
-                        continue;
+                    // iftrue(Label_0106:, !string.startsWith("nrdp"))
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
+                    Label_0106: {
+                        string = "nrdp." + string;
                     }
+                    continue;
                 }
-                // iftrue(Label_0106:, !string.startsWith("nrdp"))
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
                 }
@@ -313,13 +305,10 @@ public class NativeTransport implements Transport
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
-                    Block_4: {
-                        break Block_4;
-                        Label_0093: {
-                            string = "nrdp." + string;
-                        }
-                        continue;
+                    Label_0093: {
+                        string = "nrdp." + string;
                     }
+                    continue;
                     Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }
@@ -338,33 +327,5 @@ public class NativeTransport implements Transport
     @Override
     public void uiUnloaded() {
         this.native_uiUnloaded();
-    }
-    
-    @SuppressLint({ "HandlerLeak" })
-    private class TransportEventHandler extends Handler
-    {
-        public TransportEventHandler(final Looper looper) {
-            super(looper);
-        }
-        
-        public void handleMessage(final Message message) {
-            if (message == null) {
-                Log.e("nf-NativeTransport", "Received null message!");
-                return;
-            }
-            if (!(message.obj instanceof String)) {
-                Log.e("nf-NativeTransport", "Received obj is NOT string in message!");
-                return;
-            }
-            final String s = (String)message.obj;
-            if (Log.isLoggable("nf-NativeTransport", 3)) {
-                Log.d("nf-NativeTransport", "Received message: " + s);
-            }
-            if (NativeTransport.this.proxy != null) {
-                NativeTransport.this.proxy.processUpdate(s);
-                return;
-            }
-            Log.e("nf-NativeTransport", "Unable to publish event, na not available");
-        }
     }
 }

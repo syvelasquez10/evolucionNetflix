@@ -4,12 +4,11 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
@@ -24,8 +23,8 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientReq
 
 public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>>
 {
-    private static final String FIELD_GENRE_LOLOMO = "genreLolomo";
-    private static final String FIELD_TOP_GENRE = "topGenre";
+    private static final String FIELD_GENRE_LOLOMO = "lolomos";
+    private static final String FIELD_TOP_GENRE = "topGenres";
     private static final String TAG = "nf_service_browse_fetchgenresrequest";
     private final BrowseWebClientCache browseCache;
     private final int fromGenre;
@@ -46,10 +45,10 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
         this.lolomoId = browseCache.getGenreLoLoMoId(genreId);
         this.lolomoIdInCache = (this.lolomoId != null);
         if (this.lolomoIdInCache) {
-            this.pqlQuery = String.format("['genreLolomo', '%s', {'from':%d,'to':%d}, 'summary']", this.lolomoId, fromGenre, toGenre);
+            this.pqlQuery = String.format("['lolomos', '%s', {'from':%d,'to':%d}, 'summary']", this.lolomoId, fromGenre, toGenre);
         }
         else {
-            this.pqlQuery = String.format("['topGenre', '%s', {'from':%d,'to':%d}, 'summary']", genreId, fromGenre, toGenre);
+            this.pqlQuery = String.format("['topGenres', '%s', {'from':%d,'to':%d}, 'summary']", genreId, fromGenre, toGenre);
         }
         if (Log.isLoggable("nf_service_browse_fetchgenresrequest", 2)) {
             Log.v("nf_service_browse_fetchgenresrequest", "PQL = " + this.pqlQuery);
@@ -76,36 +75,37 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
     }
     
     @Override
-    protected List<Genre> parseFalcorResponse(String o) throws FalcorParseException, FalcorServerException {
+    protected List<Genre> parseFalcorResponse(String o) {
         if (Log.isLoggable("nf_service_browse_fetchgenresrequest", 2)) {}
-        final ArrayList<ListOfMoviesSummary> list = (ArrayList<ListOfMoviesSummary>)new ArrayList<Genre>();
+        final ArrayList<ListOfMoviesSummary> list = new ArrayList<ListOfMoviesSummary>();
         final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchgenresrequest", (String)o);
-        if (!FalcorParseUtils.isEmpty(dataObj)) {
-            try {
-                if (this.lolomoIdInCache) {
-                    o = dataObj.getAsJsonObject("genreLolomo").getAsJsonObject(this.lolomoId);
-                }
-                else {
-                    o = dataObj.getAsJsonObject("topGenre").getAsJsonObject(this.genreId);
-                }
-                if (!this.lolomoIdInCache) {
-                    PrefetchGenreLoLoMoRequest.putGenreLoLoMoIdInBrowseCache(this.browseCache, this.genreId, (JsonObject)o);
-                }
-                for (int i = this.fromGenre; i <= this.toGenre; ++i) {
-                    final String string = Integer.toString(i);
-                    if (((JsonObject)o).has(string)) {
-                        final ListOfMoviesSummary listOfMoviesSummary = FalcorParseUtils.getPropertyObject(((JsonObject)o).getAsJsonObject(string), "summary", ListOfMoviesSummary.class);
-                        if (listOfMoviesSummary != null) {
-                            listOfMoviesSummary.setListPos(i);
-                        }
-                        list.add(listOfMoviesSummary);
+        if (FalcorParseUtils.isEmpty(dataObj)) {
+            return (List<Genre>)list;
+        }
+        try {
+            if (this.lolomoIdInCache) {
+                o = dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId);
+            }
+            else {
+                o = dataObj.getAsJsonObject("topGenres").getAsJsonObject(this.genreId);
+            }
+            if (!this.lolomoIdInCache) {
+                PrefetchGenreLoLoMoRequest.putGenreLoLoMoIdInBrowseCache(this.browseCache, this.genreId, (JsonObject)o);
+            }
+            for (int i = this.fromGenre; i <= this.toGenre; ++i) {
+                final String string = Integer.toString(i);
+                if (((JsonObject)o).has(string)) {
+                    final ListOfMoviesSummary listOfMoviesSummary = FalcorParseUtils.getPropertyObject(((JsonObject)o).getAsJsonObject(string), "summary", ListOfMoviesSummary.class);
+                    if (listOfMoviesSummary != null) {
+                        listOfMoviesSummary.setListPos(i);
                     }
+                    list.add(listOfMoviesSummary);
                 }
             }
-            catch (Exception ex) {
-                Log.v("nf_service_browse_fetchgenresrequest", "String response to parse = " + (String)o);
-                throw new FalcorParseException("response missing expected json objects", ex);
-            }
+        }
+        catch (Exception ex) {
+            Log.v("nf_service_browse_fetchgenresrequest", "String response to parse = " + (String)o);
+            throw new FalcorParseException("response missing expected json objects", ex);
         }
         return (List<Genre>)list;
     }

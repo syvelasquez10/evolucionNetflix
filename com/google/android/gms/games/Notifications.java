@@ -4,7 +4,6 @@
 
 package com.google.android.gms.games;
 
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public interface Notifications
@@ -20,20 +19,4 @@ public interface Notifications
     void clear(final GoogleApiClient p0, final int p1);
     
     void clearAll(final GoogleApiClient p0);
-    
-    public interface ContactSettingLoadResult extends Result
-    {
-    }
-    
-    public interface GameMuteStatusChangeResult extends Result
-    {
-    }
-    
-    public interface GameMuteStatusLoadResult extends Result
-    {
-    }
-    
-    public interface InboxCountResult extends Result
-    {
-    }
 }

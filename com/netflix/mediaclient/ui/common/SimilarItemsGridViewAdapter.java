@@ -10,12 +10,10 @@ import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import com.netflix.mediaclient.android.widget.VideoView;
 import android.view.ViewGroup;
+import android.view.View;
 import com.netflix.mediaclient.util.UiUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
-import android.view.View;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.Log;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
@@ -42,16 +40,7 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         this.gridView = gridView;
         this.clipToCompleteRows = clipToCompleteRows;
         gridView.setNumColumns(this.numGridCols = this.getNumGridCols());
-        gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                final GridView access$000 = SimilarItemsGridViewAdapter.this.gridView;
-                final int n = access$000.getWidth() - access$000.getPaddingLeft() - access$000.getPaddingRight();
-                Log.v("SimilarItemsGridViewAdapter", "View dimens: " + n + ", " + access$000.getHeight());
-                SimilarItemsGridViewAdapter.this.imgHeight = (int)(n / SimilarItemsGridViewAdapter.this.numGridCols * 1.43f + 0.5f);
-                Log.v("SimilarItemsGridViewAdapter", "imgHeight: " + SimilarItemsGridViewAdapter.this.imgHeight);
-                ViewUtils.removeGlobalLayoutListener((View)access$000, (ViewTreeObserver$OnGlobalLayoutListener)this);
-            }
-        });
+        gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new SimilarItemsGridViewAdapter$1(this));
     }
     
     private int clipCountToCompleteRows(final int n) {
@@ -77,26 +66,25 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         return n;
     }
     
-    public View getView(final int n, final View view, final ViewGroup viewGroup) {
-        Object o = view;
+    public View getView(final int n, View view, final ViewGroup viewGroup) {
         if (view == null) {
-            o = new VideoView((Context)this.activity);
+            view = (View)new VideoView((Context)this.activity);
             final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361897);
             if (n % this.numGridCols == 0) {
-                ((VideoView)o).setPadding(0, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+                ((VideoView)view).setPadding(0, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             }
             else if ((n + 1) % this.numGridCols == 0) {
-                ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, 0, dimensionPixelOffset);
+                ((VideoView)view).setPadding(dimensionPixelOffset, dimensionPixelOffset, 0, dimensionPixelOffset);
             }
             else {
-                ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+                ((VideoView)view).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             }
-            ((VideoView)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
-            ((VideoView)o).setAdjustViewBounds(true);
-            ((RoundedImageView)o).setScaleType(ImageView$ScaleType.CENTER_CROP);
+            ((VideoView)view).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
+            ((VideoView)view).setAdjustViewBounds(true);
+            ((RoundedImageView)view).setScaleType(ImageView$ScaleType.CENTER_CROP);
         }
-        ((VideoView)o).update(this.getItem(n), this.trackable, n, false);
-        return (View)o;
+        ((VideoView)view).update(this.getItem(n), this.trackable, n, false);
+        return view;
     }
     
     public void refreshImagesIfNecessary() {

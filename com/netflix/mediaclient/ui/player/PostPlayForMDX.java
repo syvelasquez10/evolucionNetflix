@@ -4,20 +4,19 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.model.details.InterestingVideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.Asset;
+import android.app.Activity;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.app.Activity;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.content.Context;
+import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import android.content.Intent;
 import android.widget.TextView;
@@ -36,7 +35,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
         if (this.mContext != null) {
             final ServiceManager serviceManager = this.mContext.getServiceManager();
             if (serviceManager != null && ServiceManagerUtils.isMdxAgentAvailable(serviceManager)) {
-                return MdxAgent.Utils.createIntent(this.mContext, s, serviceManager.getMdx().getCurrentTarget());
+                return MdxAgent$Utils.createIntent((Context)this.mContext, s, serviceManager.getMdx().getCurrentTarget());
             }
         }
         return null;
@@ -89,7 +88,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
         if (this.episodeDetails != null && this.mContext != null) {
             final Asset create = Asset.create(this.episodeDetails.getPlayable(), PlayContext.DFLT_MDX_CONTEXT, PlayerActivity.PIN_VERIFIED);
             this.stopAllNotifications();
-            MdxAgent.Utils.playVideo(this.mContext, create, true);
+            MdxAgent$Utils.playVideo(this.mContext, create, true);
         }
         if (this.mContext != null) {
             this.mContext.setResult(-1);
@@ -123,7 +122,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
         this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
         this.mOffset = this.mTimerValue * 1000;
         if (!TextUtils.isEmpty((CharSequence)s) && this.mContext != null && this.mContext.getServiceManager() != null) {
-            this.mContext.getServiceManager().getBrowse().fetchEpisodeDetails(s, new FetchPostPlayForPlaybackCallback());
+            this.mContext.getServiceManager().getBrowse().fetchEpisodeDetails(s, new PostPlayForMDX$FetchPostPlayForPlaybackCallback(this));
         }
     }
     
@@ -143,7 +142,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493321));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493268));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {
@@ -169,36 +168,10 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     protected void setClickListeners() {
         super.setClickListeners();
         if (this.mStopButton != null) {
-            this.mStopButton.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    PostPlayForMDX.this.handleStop();
-                }
-            });
+            this.mStopButton.setOnClickListener((View$OnClickListener)new PostPlayForMDX$1(this));
         }
         if (this.mMoreButton != null) {
-            this.mMoreButton.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    PostPlayForMDX.this.handleInfoButtonPress();
-                }
-            });
-        }
-    }
-    
-    private class FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
-    {
-        public FetchPostPlayForPlaybackCallback() {
-            super("nf_postplay");
-        }
-        
-        @Override
-        public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
-            super.onEpisodeDetailsFetched(episodeDetails, status);
-            if (status.isSucces() && episodeDetails != null) {
-                PostPlayForMDX.this.episodeDetails = episodeDetails;
-                PostPlayForMDX.this.updateViews(episodeDetails);
-                PostPlayForMDX.this.setMDXTargetName();
-                PostPlayForMDX.this.transitionToPostPlay();
-            }
+            this.mMoreButton.setOnClickListener((View$OnClickListener)new PostPlayForMDX$2(this));
         }
     }
 }

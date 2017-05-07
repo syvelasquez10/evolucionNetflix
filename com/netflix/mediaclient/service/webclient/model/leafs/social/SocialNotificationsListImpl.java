@@ -10,22 +10,14 @@ import java.util.List;
 import android.os.Parcelable$Creator;
 import android.os.Parcelable;
 
-public class SocialNotificationsListImpl implements SocialNotificationsList, Parcelable
+public class SocialNotificationsListImpl implements Parcelable, SocialNotificationsList
 {
     public static final Parcelable$Creator<SocialNotificationsListImpl> CREATOR;
     List<SocialNotificationSummary> notifications;
     SocialNotificationsListSummary summary;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<SocialNotificationsListImpl>() {
-            public SocialNotificationsListImpl createFromParcel(final Parcel parcel) {
-                return new SocialNotificationsListImpl(parcel);
-            }
-            
-            public SocialNotificationsListImpl[] newArray(final int n) {
-                return new SocialNotificationsListImpl[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new SocialNotificationsListImpl$1();
     }
     
     protected SocialNotificationsListImpl(final Parcel parcel) {
@@ -42,17 +34,14 @@ public class SocialNotificationsListImpl implements SocialNotificationsList, Par
         return 0;
     }
     
-    @Override
     public Parcelable getParcelable() {
         return (Parcelable)this;
     }
     
-    @Override
     public List<SocialNotificationSummary> getSocialNotifications() {
         return this.notifications;
     }
     
-    @Override
     public SocialNotificationsListSummary getSocialNotificationsListSummary() {
         return this.summary;
     }

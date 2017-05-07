@@ -29,24 +29,8 @@ public class ContentLoadingProgressBar extends ProgressBar
         this.mPostedHide = false;
         this.mPostedShow = false;
         this.mDismissed = false;
-        this.mDelayedHide = new Runnable() {
-            @Override
-            public void run() {
-                ContentLoadingProgressBar.this.mPostedHide = false;
-                ContentLoadingProgressBar.this.mStartTime = -1L;
-                ContentLoadingProgressBar.this.setVisibility(8);
-            }
-        };
-        this.mDelayedShow = new Runnable() {
-            @Override
-            public void run() {
-                ContentLoadingProgressBar.this.mPostedShow = false;
-                if (!ContentLoadingProgressBar.this.mDismissed) {
-                    ContentLoadingProgressBar.this.mStartTime = System.currentTimeMillis();
-                    ContentLoadingProgressBar.this.setVisibility(0);
-                }
-            }
-        };
+        this.mDelayedHide = new ContentLoadingProgressBar$1(this);
+        this.mDelayedShow = new ContentLoadingProgressBar$2(this);
     }
     
     private void removeCallbacks() {

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message.target;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
 
@@ -17,7 +16,7 @@ public final class PinNotRequired extends MdxMessage
         PinNotRequired.PROPERTY_isPinVerified = "isPinVerified";
     }
     
-    public PinNotRequired(final JSONObject jsonObject) throws JSONException {
+    public PinNotRequired(final JSONObject jsonObject) {
         super("PIN_VERIFICATION_NOT_REQUIRED");
         this.isPinVerified = jsonObject.optBoolean(PinNotRequired.PROPERTY_isPinVerified);
     }

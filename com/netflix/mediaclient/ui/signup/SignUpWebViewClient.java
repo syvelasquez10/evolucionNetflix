@@ -13,7 +13,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.protocol.nflx.NflxHandlerFactory;
 import android.net.Uri;
-import com.netflix.mediaclient.protocol.nflx.NflxHandler;
+import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
 import android.webkit.WebViewClient;
 
 class SignUpWebViewClient extends WebViewClient
@@ -30,32 +30,36 @@ class SignUpWebViewClient extends WebViewClient
         this.mUi = mUi;
     }
     
-    private NflxHandler.Response canHandleUri(final String s) {
+    private NflxHandler$Response canHandleUri(final String s) {
         try {
             return NflxHandlerFactory.getHandler(this.mUi, Uri.parse(s), 0L).handle();
         }
         catch (Throwable t) {
             Log.e("SignupActivity", "Failed to parse nflx url ", t);
-            return NflxHandler.Response.NOT_HANDLING;
+            return NflxHandler$Response.NOT_HANDLING;
         }
     }
     
     private boolean isImage(final String s) {
-        boolean b;
-        if (s.startsWith("data:image") || s.endsWith(".png") || s.contains(".png?")) {
-            b = true;
-        }
-        else {
-            b = false;
-        }
+        boolean b = false;
         boolean b2;
-        if (b || s.endsWith(".jpg") || s.contains(".jpg?")) {
+        if (s.startsWith("data:image") || s.endsWith(".png") || s.contains(".png?")) {
             b2 = true;
         }
         else {
             b2 = false;
         }
-        return b2 || s.endsWith(".gif") || s.contains(".gif?");
+        boolean b3;
+        if (b2 || s.endsWith(".jpg") || s.contains(".jpg?")) {
+            b3 = true;
+        }
+        else {
+            b3 = false;
+        }
+        if (b3 || s.endsWith(".gif") || s.contains(".gif?")) {
+            b = true;
+        }
+        return b;
     }
     
     private boolean isRealUrl(final String s) {
@@ -75,7 +79,7 @@ class SignUpWebViewClient extends WebViewClient
                     this.mSecurityFailure = true;
                     this.mUi.showToast("Loading insecure resource, ERROR:" + string);
                     Log.e("SignupActivity", "Trying to load from unsecure location in release build. Prevent loading, security breach! URL: " + string);
-                    string = this.mUi.getString(2131493283);
+                    string = this.mUi.getString(2131493235);
                     this.mUi.provideDialog(string, this.mUi.mHandleError);
                 }
             }
@@ -118,7 +122,7 @@ class SignUpWebViewClient extends WebViewClient
         if (this.isRealUrl(s)) {
             webView.loadUrl(s);
         }
-        else if (this.canHandleUri(s) != NflxHandler.Response.NOT_HANDLING) {
+        else if (this.canHandleUri(s) != NflxHandler$Response.NOT_HANDLING) {
             Log.d("SignupActivity", "=========> URL handled by Nflx protocol" + s);
         }
         else {

@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class BufferRange extends BaseMediaEvent
@@ -22,7 +21,7 @@ public class BufferRange extends BaseMediaEvent
     private int rebuffer;
     private int startPts;
     
-    public BufferRange(final JSONObject jsonObject) throws JSONException {
+    public BufferRange(final JSONObject jsonObject) {
         super("bufferrange", jsonObject);
     }
     
@@ -47,7 +46,7 @@ public class BufferRange extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.startPts = BaseNccpEvent.getInt(jsonObject, "startPts", 0);
         this.endPts = BaseNccpEvent.getInt(jsonObject, "endPts", 0);
         this.currentPts = BaseNccpEvent.getInt(jsonObject, "currentPts", 0);

@@ -4,9 +4,6 @@
 
 package com.google.android.gms.auth;
 
-import android.os.Message;
-import android.os.Looper;
-import android.os.Handler;
 import android.accounts.AccountManager;
 import java.net.URISyntaxException;
 import android.content.ContentResolver;
@@ -14,15 +11,15 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import java.util.List;
 import android.os.RemoteException;
+import java.io.IOException;
 import android.util.Log;
-import com.google.android.gms.internal.r;
+import com.google.android.gms.internal.r$a;
 import android.content.ServiceConnection;
 import com.google.android.gms.common.a;
 import com.google.android.gms.common.internal.n;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager$NameNotFoundException;
 import com.google.android.gms.internal.if;
-import java.io.IOException;
 import android.os.Bundle;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -61,7 +58,7 @@ public final class GoogleAuthUtil
         Dq = new Intent().setPackage("com.google.android.gms").setComponent(GoogleAuthUtil.Do);
     }
     
-    private static void D(final Context context) throws GoogleAuthException {
+    private static void D(final Context context) {
         try {
             GooglePlayServicesUtil.D(context);
         }
@@ -73,7 +70,7 @@ public final class GoogleAuthUtil
         }
     }
     
-    private static String a(final Context context, String token, final String s, final Bundle bundle) throws IOException, UserRecoverableNotifiedException, GoogleAuthException {
+    private static String a(final Context context, String token, final String s, final Bundle bundle) {
         Bundle bundle2 = bundle;
         if (bundle == null) {
             bundle2 = new Bundle();
@@ -85,8 +82,8 @@ public final class GoogleAuthUtil
         catch (GooglePlayServicesAvailabilityException ex) {
             final int connectionStatusCode = ex.getConnectionStatusCode();
             if (b(context, connectionStatusCode)) {
-                final a a = new a(context.getApplicationContext());
-                a.sendMessageDelayed(a.obtainMessage(1), 30000L);
+                final GoogleAuthUtil$a googleAuthUtil$a = new GoogleAuthUtil$a(context.getApplicationContext());
+                googleAuthUtil$a.sendMessageDelayed(googleAuthUtil$a.obtainMessage(1), 30000L);
             }
             else {
                 GooglePlayServicesUtil.showErrorNotification(connectionStatusCode, context);
@@ -119,7 +116,7 @@ public final class GoogleAuthUtil
         return false;
     }
     
-    public static void clearToken(Context context, final String s) throws GooglePlayServicesAvailabilityException, GoogleAuthException, IOException {
+    public static void clearToken(Context context, final String s) {
         final Context applicationContext = context.getApplicationContext();
         n.aU("Calling this from your main thread can lead to deadlock");
         D(applicationContext);
@@ -129,15 +126,15 @@ public final class GoogleAuthUtil
         if (!bundle.containsKey(GoogleAuthUtil.KEY_ANDROID_PACKAGE_NAME)) {
             bundle.putString(GoogleAuthUtil.KEY_ANDROID_PACKAGE_NAME, packageName);
         }
-        context = (Context)new com.google.android.gms.common.a();
+        context = (Context)new a();
         if (applicationContext.bindService(GoogleAuthUtil.Dp, (ServiceConnection)context, 1)) {
             try {
-                final Bundle a = r.a.a(((com.google.android.gms.common.a)context).fX()).a(s, bundle);
+                final Bundle a = r$a.a(((a)context).fX()).a(s, bundle);
                 final String string = a.getString(if.Ev);
                 if (!a.getBoolean("booleanResult")) {
                     throw new GoogleAuthException(string);
                 }
-                goto Label_0149;
+                goto Label_0148;
             }
             catch (RemoteException ex) {
                 try {
@@ -155,15 +152,15 @@ public final class GoogleAuthUtil
         throw new IOException("Could not bind to service with the given context.");
     }
     
-    public static List<AccountChangeEvent> getAccountChangeEvents(Context applicationContext, final int eventIndex, final String accountName) throws GoogleAuthException, IOException {
+    public static List<AccountChangeEvent> getAccountChangeEvents(Context applicationContext, final int eventIndex, final String accountName) {
         n.b(accountName, (Object)"accountName must be provided");
         n.aU("Calling this from your main thread can lead to deadlock");
         applicationContext = applicationContext.getApplicationContext();
         D(applicationContext);
-        final com.google.android.gms.common.a a = new com.google.android.gms.common.a();
+        final a a = new a();
         if (applicationContext.bindService(GoogleAuthUtil.Dp, (ServiceConnection)a, 1)) {
             try {
-                return r.a.a(a.fX()).a(new AccountChangeEventsRequest().setAccountName(accountName).setEventIndex(eventIndex)).getEvents();
+                return r$a.a(a.fX()).a(new AccountChangeEventsRequest().setAccountName(accountName).setEventIndex(eventIndex)).getEvents();
             }
             catch (RemoteException ex) {
                 Log.i("GoogleAuthUtil", "GMS remote exception ", (Throwable)ex);
@@ -179,7 +176,7 @@ public final class GoogleAuthUtil
         throw new IOException("Could not bind to service with the given context.");
     }
     
-    public static String getAccountId(final Context context, final String s) throws GoogleAuthException, IOException {
+    public static String getAccountId(final Context context, final String s) {
         n.b(s, (Object)"accountName must be provided");
         n.aU("Calling this from your main thread can lead to deadlock");
         D(context.getApplicationContext());
@@ -190,17 +187,17 @@ public final class GoogleAuthUtil
         return "spatula";
     }
     
-    public static String getToken(final Context context, final String s, final String s2) throws IOException, UserRecoverableAuthException, GoogleAuthException {
+    public static String getToken(final Context context, final String s, final String s2) {
         return getToken(context, s, s2, new Bundle());
     }
     
-    public static String getToken(Context context, final String s, String s2, Bundle bundle) throws IOException, UserRecoverableAuthException, GoogleAuthException {
+    public static String getToken(Context context, final String s, String s2, Bundle bundle) {
         final Context applicationContext = context.getApplicationContext();
         n.aU("Calling this from your main thread can lead to deadlock");
         D(applicationContext);
-        Label_0126: {
+        Label_0125: {
             if (bundle != null) {
-                break Label_0126;
+                break Label_0125;
             }
             bundle = new Bundle();
             while (true) {
@@ -209,12 +206,12 @@ public final class GoogleAuthUtil
                 if (!bundle.containsKey(GoogleAuthUtil.KEY_ANDROID_PACKAGE_NAME)) {
                     bundle.putString(GoogleAuthUtil.KEY_ANDROID_PACKAGE_NAME, packageName);
                 }
-                context = (Context)new com.google.android.gms.common.a();
+                context = (Context)new a();
                 if (!applicationContext.bindService(GoogleAuthUtil.Dp, (ServiceConnection)context, 1)) {
                     throw new IOException("Could not bind to service with the given context.");
                 }
                 try {
-                    final Bundle a = r.a.a(((com.google.android.gms.common.a)context).fX()).a(s, s2, bundle);
+                    final Bundle a = r$a.a(((a)context).fX()).a(s, s2, bundle);
                     s2 = a.getString("authtoken");
                     if (!TextUtils.isEmpty((CharSequence)s2)) {
                         return s2;
@@ -224,7 +221,7 @@ public final class GoogleAuthUtil
                     if (ax(s2)) {
                         throw new UserRecoverableAuthException(s2, intent);
                     }
-                    goto Label_0206;
+                    goto Label_0205;
                     bundle = new Bundle(bundle);
                     continue;
                 }
@@ -246,7 +243,7 @@ public final class GoogleAuthUtil
         throw new GoogleAuthException(s2);
     }
     
-    public static String getTokenWithNotification(final Context context, final String s, final String s2, final Bundle bundle) throws IOException, UserRecoverableNotifiedException, GoogleAuthException {
+    public static String getTokenWithNotification(final Context context, final String s, final String s2, final Bundle bundle) {
         Bundle bundle2 = bundle;
         if (bundle == null) {
             bundle2 = new Bundle();
@@ -255,7 +252,7 @@ public final class GoogleAuthUtil
         return a(context, s, s2, bundle2);
     }
     
-    public static String getTokenWithNotification(final Context context, final String s, final String s2, final Bundle bundle, final Intent intent) throws IOException, UserRecoverableNotifiedException, GoogleAuthException {
+    public static String getTokenWithNotification(final Context context, final String s, final String s2, final Bundle bundle, final Intent intent) {
         h(intent);
         Bundle bundle2 = bundle;
         if (bundle == null) {
@@ -266,7 +263,7 @@ public final class GoogleAuthUtil
         return a(context, s, s2, bundle2);
     }
     
-    public static String getTokenWithNotification(final Context context, final String s, final String s2, Bundle o, final String s3, final Bundle bundle) throws IOException, UserRecoverableNotifiedException, GoogleAuthException {
+    public static String getTokenWithNotification(final Context context, final String s, final String s2, Bundle o, final String s3, final Bundle bundle) {
         if (TextUtils.isEmpty((CharSequence)s3)) {
             throw new IllegalArgumentException("Authority cannot be empty or null.");
         }
@@ -300,33 +297,5 @@ public final class GoogleAuthUtil
     @Deprecated
     public static void invalidateToken(final Context context, final String s) {
         AccountManager.get(context).invalidateAuthToken("com.google", s);
-    }
-    
-    private static class a extends Handler
-    {
-        private final Context mD;
-        
-        a(final Context md) {
-            Looper looper;
-            if (Looper.myLooper() == null) {
-                looper = Looper.getMainLooper();
-            }
-            else {
-                looper = Looper.myLooper();
-            }
-            super(looper);
-            this.mD = md;
-        }
-        
-        public void handleMessage(final Message message) {
-            if (message.what == 1) {
-                final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.mD);
-                if (GooglePlayServicesUtil.isUserRecoverableError(googlePlayServicesAvailable)) {
-                    GooglePlayServicesUtil.showErrorNotification(googlePlayServicesAvailable, this.mD);
-                }
-                return;
-            }
-            Log.wtf("GoogleAuthUtil", "Don't know how to handle this message: " + message.what);
-        }
     }
 }

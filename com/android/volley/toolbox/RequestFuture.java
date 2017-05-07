@@ -9,10 +9,11 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ExecutionException;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.android.volley.Response;
 import java.util.concurrent.Future;
+import com.android.volley.Response$Listener;
+import com.android.volley.Response$ErrorListener;
 
-public class RequestFuture<T> implements Future<T>, Listener<T>, ErrorListener
+public class RequestFuture<T> implements Response$ErrorListener, Response$Listener<T>, Future<T>
 {
     private VolleyError mException;
     private Request<?> mRequest;
@@ -23,7 +24,7 @@ public class RequestFuture<T> implements Future<T>, Listener<T>, ErrorListener
         this.mResultReceived = false;
     }
     
-    private T doGet(final Long n) throws InterruptedException, ExecutionException, TimeoutException {
+    private T doGet(final Long n) {
         synchronized (this) {
             if (this.mException != null) {
                 throw new ExecutionException(this.mException);
@@ -70,7 +71,7 @@ public class RequestFuture<T> implements Future<T>, Listener<T>, ErrorListener
     }
     
     @Override
-    public T get() throws InterruptedException, ExecutionException {
+    public T get() {
         try {
             return this.doGet(null);
         }
@@ -80,7 +81,7 @@ public class RequestFuture<T> implements Future<T>, Listener<T>, ErrorListener
     }
     
     @Override
-    public T get(final long n, final TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+    public T get(final long n, final TimeUnit timeUnit) {
         return this.doGet(TimeUnit.MILLISECONDS.convert(n, timeUnit));
     }
     

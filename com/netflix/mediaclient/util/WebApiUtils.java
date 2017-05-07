@@ -8,56 +8,35 @@ import java.security.InvalidParameterException;
 
 public final class WebApiUtils
 {
-    public static VideoIds extractIsd(String substring, final String episodeIdUrl) throws InvalidParameterException {
-        final VideoIds videoIds = new VideoIds();
-        videoIds.catalogIdUrl = substring;
-        videoIds.episodeIdUrl = episodeIdUrl;
+    public static WebApiUtils$VideoIds extractIsd(String substring, final String episodeIdUrl) {
+        final WebApiUtils$VideoIds webApiUtils$VideoIds = new WebApiUtils$VideoIds();
+        webApiUtils$VideoIds.catalogIdUrl = substring;
+        webApiUtils$VideoIds.episodeIdUrl = episodeIdUrl;
         if (episodeIdUrl != null && !"".equals(episodeIdUrl.trim()) && !episodeIdUrl.equals(substring)) {
-            videoIds.episode = true;
+            webApiUtils$VideoIds.episode = true;
             final int lastIndex = episodeIdUrl.lastIndexOf("/");
             if (lastIndex < 0) {
                 throw new InvalidParameterException("Wrong episodeID URL " + episodeIdUrl);
             }
-            videoIds.episodeId = Integer.parseInt(episodeIdUrl.substring(lastIndex + 1));
+            webApiUtils$VideoIds.episodeId = Integer.parseInt(episodeIdUrl.substring(lastIndex + 1));
             substring = episodeIdUrl.substring(0, lastIndex);
             final int lastIndex2 = substring.lastIndexOf("/");
-            if (lastIndex2 < 0) {
-                return null;
+            if (lastIndex2 >= 0) {
+                webApiUtils$VideoIds.catalogId = Integer.parseInt(substring.substring(lastIndex2 + 1));
+                return webApiUtils$VideoIds;
             }
-            videoIds.catalogId = Integer.parseInt(substring.substring(lastIndex2 + 1));
-            return videoIds;
         }
         else {
-            videoIds.episode = false;
-            if (StringUtils.isEmpty(substring)) {
-                return null;
+            webApiUtils$VideoIds.episode = false;
+            if (!StringUtils.isEmpty(substring)) {
+                final int lastIndex3 = substring.lastIndexOf("/");
+                if (lastIndex3 < 0) {
+                    throw new InvalidParameterException("Wrong catalogID URL " + substring);
+                }
+                webApiUtils$VideoIds.catalogId = Integer.parseInt(substring.substring(lastIndex3 + 1));
+                return webApiUtils$VideoIds;
             }
-            final int lastIndex3 = substring.lastIndexOf("/");
-            if (lastIndex3 < 0) {
-                throw new InvalidParameterException("Wrong catalogID URL " + substring);
-            }
-            videoIds.catalogId = Integer.parseInt(substring.substring(lastIndex3 + 1));
-            return videoIds;
         }
-    }
-    
-    public static class VideoIds
-    {
-        public int catalogId;
-        public String catalogIdUrl;
-        public boolean episode;
-        public int episodeId;
-        public String episodeIdUrl;
-        
-        public VideoIds() {
-        }
-        
-        public VideoIds(final boolean episode, final String episodeIdUrl, final String catalogIdUrl, final int episodeId, final int catalogId) {
-            this.episode = episode;
-            this.episodeIdUrl = episodeIdUrl;
-            this.catalogIdUrl = catalogIdUrl;
-            this.episodeId = episodeId;
-            this.catalogId = catalogId;
-        }
+        return null;
     }
 }

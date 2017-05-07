@@ -26,9 +26,9 @@ public class v implements SafeParcelable
         this.Sk = sk;
     }
     
-    private v(final a a) {
+    private v(final v$a v$a) {
         this.BR = 1;
-        this.Sk = a.Sk;
+        this.Sk = v$a.Sk;
     }
     
     private boolean a(final v v) {
@@ -64,20 +64,5 @@ public class v implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         w.a(this, parcel, n);
-    }
-    
-    public static class a
-    {
-        private Session Sk;
-        
-        public a b(final Session sk) {
-            n.b(sk.getEndTimeMillis() == 0L, (Object)"Cannot start a session which has already ended");
-            this.Sk = sk;
-            return this;
-        }
-        
-        public v jx() {
-            return new v(this, null);
-        }
     }
 }

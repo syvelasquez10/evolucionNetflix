@@ -103,7 +103,7 @@ public final class SnapshotContents implements SafeParcelable
         return this.a(n, array, n2, array.length, false);
     }
     
-    public byte[] readFully() throws IOException {
+    public byte[] readFully() {
         boolean b = false;
         if (!this.isClosed()) {
             b = true;

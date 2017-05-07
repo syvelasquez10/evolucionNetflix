@@ -4,25 +4,26 @@
 
 package com.netflix.mediaclient.service.resfetcher.volley;
 
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import java.util.LinkedList;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.StringUtils;
+import com.android.volley.Request;
+import com.android.volley.Response$ErrorListener;
+import com.android.volley.Response$Listener;
 import android.graphics.Bitmap$Config;
-import com.android.volley.Response;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.UriUtil;
-import com.android.volley.Request;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import java.util.Iterator;
+import com.android.volley.Request$Priority;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.android.volley.VolleyError;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 import android.os.Looper;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
@@ -34,67 +35,48 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     private static final String TAG = "ImageLoader";
     private final ApplicationPerformanceMetricsLogging mApmLogger;
     private final int mBatchResponseDelayMs;
-    private final HashMap<String, BatchedImageRequest> mBatchedResponses;
-    private final ImageCache mCache;
+    private final HashMap<String, ImageLoader$BatchedImageRequest> mBatchedResponses;
+    private final ImageLoader$ImageCache mCache;
     private final Handler mHandler;
-    private final HashMap<String, BatchedImageRequest> mInFlightRequests;
+    private final HashMap<String, ImageLoader$BatchedImageRequest> mInFlightRequests;
     private long mMinimumCacheTtl;
     private final RequestQueue mRequestQueue;
     private int mRequestSocketTimeout;
     private final Object mRequestTag;
     private Runnable mRunnable;
     
-    public ImageLoader(final RequestQueue requestQueue, final ImageCache imageCache, final int n, final long mMinimumCacheTtl, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface) {
-        this(requestQueue, imageCache, n, applicationPerformanceMetricsLogging, configurationAgentInterface);
+    public ImageLoader(final RequestQueue requestQueue, final ImageLoader$ImageCache imageLoader$ImageCache, final int n, final long mMinimumCacheTtl, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
+        this(requestQueue, imageLoader$ImageCache, n, applicationPerformanceMetricsLogging, serviceAgent$ConfigurationAgentInterface);
         this.mMinimumCacheTtl = mMinimumCacheTtl;
     }
     
-    private ImageLoader(final RequestQueue requestQueue, final ImageCache imageCache, final int mRequestSocketTimeout, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface) {
-        this(requestQueue, imageCache, applicationPerformanceMetricsLogging, configurationAgentInterface);
+    private ImageLoader(final RequestQueue requestQueue, final ImageLoader$ImageCache imageLoader$ImageCache, final int mRequestSocketTimeout, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
+        this(requestQueue, imageLoader$ImageCache, applicationPerformanceMetricsLogging, serviceAgent$ConfigurationAgentInterface);
         this.mRequestSocketTimeout = mRequestSocketTimeout;
     }
     
-    private ImageLoader(final RequestQueue mRequestQueue, final ImageCache mCache, final ApplicationPerformanceMetricsLogging mApmLogger, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface) {
+    private ImageLoader(final RequestQueue mRequestQueue, final ImageLoader$ImageCache mCache, final ApplicationPerformanceMetricsLogging mApmLogger, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
         this.mRequestTag = new Object();
         this.mRequestSocketTimeout = -1;
         this.mBatchResponseDelayMs = 100;
         this.mMinimumCacheTtl = -1L;
-        this.mInFlightRequests = new HashMap<String, BatchedImageRequest>();
-        this.mBatchedResponses = new HashMap<String, BatchedImageRequest>();
+        this.mInFlightRequests = new HashMap<String, ImageLoader$BatchedImageRequest>();
+        this.mBatchedResponses = new HashMap<String, ImageLoader$BatchedImageRequest>();
         this.mHandler = new Handler(Looper.getMainLooper());
         this.mRequestQueue = mRequestQueue;
         this.mCache = mCache;
         this.mApmLogger = mApmLogger;
     }
     
-    private void batchResponse(final String s, final BatchedImageRequest batchedImageRequest) {
-        this.mBatchedResponses.put(s, batchedImageRequest);
+    private void batchResponse(final String s, final ImageLoader$BatchedImageRequest imageLoader$BatchedImageRequest) {
+        this.mBatchedResponses.put(s, imageLoader$BatchedImageRequest);
         if (this.mRunnable == null) {
-            this.mRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    for (final BatchedImageRequest batchedImageRequest : ImageLoader.this.mBatchedResponses.values()) {
-                        for (final ImageContainer imageContainer : batchedImageRequest.mContainers) {
-                            if (imageContainer.mListener != null) {
-                                if (batchedImageRequest.getError() == null) {
-                                    imageContainer.mBitmap = batchedImageRequest.mResponseBitmap;
-                                    imageContainer.mListener.onResponse(imageContainer, false);
-                                }
-                                else {
-                                    ((Response.ErrorListener)imageContainer.mListener).onErrorResponse(batchedImageRequest.getError());
-                                }
-                            }
-                        }
-                    }
-                    ImageLoader.this.mBatchedResponses.clear();
-                    ImageLoader.this.mRunnable = null;
-                }
-            };
+            this.mRunnable = new ImageLoader$4(this);
             this.mHandler.postDelayed(this.mRunnable, 100L);
         }
     }
     
-    private ImageContainer get(final String s, final IClientLogging.AssetType assetType, final ImageListener imageListener, final int n, final int n2, final Request.Priority priority) {
+    private ImageLoader$ImageContainer get(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ImageLoader$ImageListener imageLoader$ImageListener, final int n, final int n2, final Request$Priority request$Priority) {
         this.throwIfNotOnMainThread();
         if (!UriUtil.isValidUri(s) || this.mRequestQueue == null) {
             String string;
@@ -105,48 +87,37 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
                 string = "Request URL is NOT valid, unable to load " + s;
             }
             Log.v("ImageLoader", string);
-            final ImageContainer imageContainer = new ImageContainer(null, s, "ERROR", imageListener);
-            if (imageListener != null) {
-                ((Response.ErrorListener)imageListener).onErrorResponse(new VolleyError(string));
-                return imageContainer;
+            final ImageLoader$ImageContainer imageLoader$ImageContainer = new ImageLoader$ImageContainer(this, null, s, "ERROR", imageLoader$ImageListener);
+            if (imageLoader$ImageListener != null) {
+                imageLoader$ImageListener.onErrorResponse(new VolleyError(string));
+                return imageLoader$ImageContainer;
             }
             Log.e("ImageLoader", "Unable to report an error, missing listener");
-            return imageContainer;
+            return imageLoader$ImageContainer;
         }
         else {
             final String cacheKey = getCacheKey(s);
             final Bitmap bitmap = this.mCache.getBitmap(cacheKey);
             if (bitmap != null) {
-                final ImageContainer imageContainer2 = new ImageContainer(bitmap, s, null, null);
-                imageListener.onResponse(imageContainer2, true);
-                ApmLogUtils.reportAssetRequest(s, assetType, this.mApmLogger);
+                final ImageLoader$ImageContainer imageLoader$ImageContainer2 = new ImageLoader$ImageContainer(this, bitmap, s, null, null);
+                imageLoader$ImageListener.onResponse(imageLoader$ImageContainer2, true);
+                ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.mApmLogger);
                 ApmLogUtils.reportAssetRequestResult(s, StatusCode.OK, this.mApmLogger);
-                return imageContainer2;
+                return imageLoader$ImageContainer2;
             }
-            final ImageContainer imageContainer3 = new ImageContainer(null, s, cacheKey, imageListener);
-            imageListener.onResponse(imageContainer3, true);
-            final BatchedImageRequest batchedImageRequest = this.mInFlightRequests.get(cacheKey);
-            if (batchedImageRequest != null) {
-                batchedImageRequest.addContainer(imageContainer3);
-                return imageContainer3;
+            final ImageLoader$ImageContainer imageLoader$ImageContainer3 = new ImageLoader$ImageContainer(this, null, s, cacheKey, imageLoader$ImageListener);
+            imageLoader$ImageListener.onResponse(imageLoader$ImageContainer3, true);
+            final ImageLoader$BatchedImageRequest imageLoader$BatchedImageRequest = this.mInFlightRequests.get(cacheKey);
+            if (imageLoader$BatchedImageRequest != null) {
+                imageLoader$BatchedImageRequest.addContainer(imageLoader$ImageContainer3);
+                return imageLoader$ImageContainer3;
             }
-            final ImageRequest imageRequest = new ImageRequest(s, new Response.Listener<Bitmap>() {
-                public void onResponse(final Bitmap bitmap) {
-                    ApmLogUtils.reportAssetRequestResult(s, StatusCode.OK, ImageLoader.this.mApmLogger);
-                    ImageLoader.this.onGetImageSuccess(cacheKey, bitmap);
-                }
-            }, n, n2, Bitmap$Config.RGB_565, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(final VolleyError volleyError) {
-                    ApmLogUtils.reportAssetRequestFailure(s, volleyError, ImageLoader.this.mApmLogger);
-                    ImageLoader.this.onGetImageError(cacheKey, volleyError);
-                }
-            }, priority, this.mRequestSocketTimeout, this.mMinimumCacheTtl);
+            final ImageRequest imageRequest = new ImageRequest(s, new ImageLoader$2(this, s, cacheKey), n, n2, Bitmap$Config.RGB_565, new ImageLoader$3(this, s, cacheKey), request$Priority, this.mRequestSocketTimeout, this.mMinimumCacheTtl);
             imageRequest.setTag(this.mRequestTag);
             ApmLogUtils.reportAssetRequest(s, null, this.mApmLogger);
             this.mRequestQueue.add(imageRequest);
-            this.mInFlightRequests.put(cacheKey, new BatchedImageRequest(imageRequest, imageContainer3));
-            return imageContainer3;
+            this.mInFlightRequests.put(cacheKey, new ImageLoader$BatchedImageRequest(imageRequest, imageLoader$ImageContainer3));
+            return imageLoader$ImageContainer3;
         }
     }
     
@@ -156,20 +127,20 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     
     private void onGetImageError(final String s, final VolleyError error) {
         this.throwIfNotOnMainThread();
-        final BatchedImageRequest batchedImageRequest = this.mInFlightRequests.remove(s);
-        batchedImageRequest.setError(error);
-        if (batchedImageRequest != null) {
-            this.batchResponse(s, batchedImageRequest);
+        final ImageLoader$BatchedImageRequest imageLoader$BatchedImageRequest = this.mInFlightRequests.remove(s);
+        imageLoader$BatchedImageRequest.setError(error);
+        if (imageLoader$BatchedImageRequest != null) {
+            this.batchResponse(s, imageLoader$BatchedImageRequest);
         }
     }
     
     private void onGetImageSuccess(final String s, final Bitmap bitmap) {
         this.throwIfNotOnMainThread();
         this.mCache.putBitmap(s, bitmap);
-        final BatchedImageRequest batchedImageRequest = this.mInFlightRequests.remove(s);
-        if (batchedImageRequest != null) {
-            batchedImageRequest.mResponseBitmap = bitmap;
-            this.batchResponse(s, batchedImageRequest);
+        final ImageLoader$BatchedImageRequest imageLoader$BatchedImageRequest = this.mInFlightRequests.remove(s);
+        if (imageLoader$BatchedImageRequest != null) {
+            imageLoader$BatchedImageRequest.mResponseBitmap = bitmap;
+            this.batchResponse(s, imageLoader$BatchedImageRequest);
         }
     }
     
@@ -191,30 +162,8 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         }
     }
     
-    private ImageListener wrapPrivateListener(final ImageLoaderListener imageLoaderListener) {
-        return (ImageListener)new ImageListener() {
-            @Override
-            public void onErrorResponse(final VolleyError volleyError) {
-                final ImageLoaderListener val$listener = imageLoaderListener;
-                String message;
-                if (volleyError == null) {
-                    message = null;
-                }
-                else {
-                    message = volleyError.getMessage();
-                }
-                val$listener.onErrorResponse(message);
-            }
-            
-            @Override
-            public void onResponse(final ImageContainer imageContainer, final boolean b) {
-                if (imageContainer == null) {
-                    imageLoaderListener.onResponse(null, null);
-                    return;
-                }
-                imageLoaderListener.onResponse(imageContainer.getBitmap(), imageContainer.getRequestUrl());
-            }
-        };
+    private ImageLoader$ImageListener wrapPrivateListener(final ImageLoader$ImageLoaderListener imageLoader$ImageLoaderListener) {
+        return new ImageLoader$1(this, imageLoader$ImageLoaderListener);
     }
     
     @Override
@@ -226,8 +175,8 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     }
     
     @Override
-    public void getImg(final String s, final IClientLogging.AssetType assetType, final int n, final int n2, final ImageLoaderListener imageLoaderListener) {
-        this.get(s, assetType, this.wrapPrivateListener(imageLoaderListener), n, n2, Request.Priority.LOW);
+    public void getImg(final String s, final IClientLogging$AssetType clientLogging$AssetType, final int n, final int n2, final ImageLoader$ImageLoaderListener imageLoader$ImageLoaderListener) {
+        this.get(s, clientLogging$AssetType, this.wrapPrivateListener(imageLoader$ImageLoaderListener), n, n2, Request$Priority.LOW);
     }
     
     public boolean isCached(String cacheKey) {
@@ -237,7 +186,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     }
     
     @Override
-    public void refreshImgIfNecessary(final AdvancedImageView advancedImageView, final IClientLogging.AssetType assetType) {
+    public void refreshImgIfNecessary(final AdvancedImageView advancedImageView, final IClientLogging$AssetType clientLogging$AssetType) {
         Log.v("ImageLoader", "refreshImgIfNecessary: " + advancedImageView);
         if (advancedImageView == null) {
             Log.v("ImageLoader", "refreshImgIfNecessary: null imageView");
@@ -248,16 +197,16 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
             Log.v("ImageLoader", "refreshImgIfNecessary: empty url");
             return;
         }
-        this.showImgInternal(advancedImageView, urlTag, assetType, false, false, 1);
+        this.showImgInternal(advancedImageView, urlTag, clientLogging$AssetType, false, false, 1);
     }
     
     @Override
-    public void showImg(final AdvancedImageView advancedImageView, final String s, final IClientLogging.AssetType assetType, final String s2, final boolean b, final boolean b2) {
-        this.showImg(advancedImageView, s, assetType, s2, b, b2, 0);
+    public void showImg(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final String s2, final boolean b, final boolean b2) {
+        this.showImg(advancedImageView, s, clientLogging$AssetType, s2, b, b2, 0);
     }
     
     @Override
-    public void showImg(final AdvancedImageView drawableToNull, final String urlTag, final IClientLogging.AssetType assetType, String urlTag2, final boolean b, final boolean b2, final int n) {
+    public void showImg(final AdvancedImageView drawableToNull, final String urlTag, final IClientLogging$AssetType clientLogging$AssetType, String urlTag2, final boolean b, final boolean b2, final int n) {
         if (urlTag2 != null) {
             drawableToNull.setContentDescription((CharSequence)urlTag2);
         }
@@ -267,197 +216,28 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
             this.setDrawableToNull(drawableToNull);
         }
         else if (!urlTag.equals(urlTag2)) {
-            this.showImgInternal(drawableToNull, urlTag, assetType, b, b2, n);
+            this.showImgInternal(drawableToNull, urlTag, clientLogging$AssetType, b, b2, n);
         }
     }
     
-    public void showImgInternal(final AdvancedImageView advancedImageView, final String s, final IClientLogging.AssetType assetType, final boolean b, final boolean b2, final int n) {
-        ImageListener imageListener;
+    public void showImgInternal(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final boolean b, final boolean b2, final int n) {
+        ImageLoader$ValidatingListener imageLoader$ValidatingListener;
         if (b) {
-            imageListener = new ValidatingListenerWithPlaceholder(advancedImageView, s);
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithPlaceholder(this, advancedImageView, s);
         }
         else if (b2) {
-            imageListener = new ValidatingListenerWithAnimation(advancedImageView, s);
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithAnimation(this, advancedImageView, s);
         }
         else {
-            imageListener = new ValidatingListener(advancedImageView, s);
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListener(this, advancedImageView, s);
         }
-        Request.Priority priority;
+        Request$Priority request$Priority;
         if (n > 0) {
-            priority = Request.Priority.NORMAL;
+            request$Priority = Request$Priority.NORMAL;
         }
         else {
-            priority = Request.Priority.LOW;
+            request$Priority = Request$Priority.LOW;
         }
-        this.get(s, assetType, imageListener, 0, 0, priority);
-    }
-    
-    private class BatchedImageRequest
-    {
-        private final LinkedList<ImageContainer> mContainers;
-        private VolleyError mError;
-        private final Request<?> mRequest;
-        private Bitmap mResponseBitmap;
-        
-        public BatchedImageRequest(final Request<?> mRequest, final ImageContainer imageContainer) {
-            this.mContainers = new LinkedList<ImageContainer>();
-            this.mRequest = mRequest;
-            this.mContainers.add(imageContainer);
-        }
-        
-        public void addContainer(final ImageContainer imageContainer) {
-            this.mContainers.add(imageContainer);
-        }
-        
-        public VolleyError getError() {
-            return this.mError;
-        }
-        
-        public boolean removeContainerAndCancelIfNecessary(final ImageContainer imageContainer) {
-            this.mContainers.remove(imageContainer);
-            if (this.mContainers.size() == 0) {
-                this.mRequest.cancel();
-                return true;
-            }
-            return false;
-        }
-        
-        public void setError(final VolleyError mError) {
-            this.mError = mError;
-        }
-    }
-    
-    public interface ImageCache
-    {
-        Bitmap getBitmap(final String p0);
-        
-        void putBitmap(final String p0, final Bitmap p1);
-    }
-    
-    public class ImageContainer
-    {
-        private Bitmap mBitmap;
-        private final String mCacheKey;
-        private final ImageListener mListener;
-        private final String mRequestUrl;
-        
-        public ImageContainer(final Bitmap mBitmap, final String mRequestUrl, final String mCacheKey, final ImageListener mListener) {
-            this.mBitmap = mBitmap;
-            this.mRequestUrl = mRequestUrl;
-            this.mCacheKey = mCacheKey;
-            this.mListener = mListener;
-        }
-        
-        public void cancelRequest() {
-            if (this.mListener != null) {
-                final BatchedImageRequest batchedImageRequest = ImageLoader.this.mInFlightRequests.get(this.mCacheKey);
-                if (batchedImageRequest != null) {
-                    if (batchedImageRequest.removeContainerAndCancelIfNecessary(this)) {
-                        ImageLoader.this.mInFlightRequests.remove(this.mCacheKey);
-                    }
-                }
-                else {
-                    final BatchedImageRequest batchedImageRequest2 = ImageLoader.this.mBatchedResponses.get(this.mCacheKey);
-                    if (batchedImageRequest2 != null) {
-                        batchedImageRequest2.removeContainerAndCancelIfNecessary(this);
-                        if (batchedImageRequest2.mContainers.size() == 0) {
-                            ImageLoader.this.mBatchedResponses.remove(this.mCacheKey);
-                        }
-                    }
-                }
-            }
-        }
-        
-        public Bitmap getBitmap() {
-            return this.mBitmap;
-        }
-        
-        public String getRequestUrl() {
-            return this.mRequestUrl;
-        }
-    }
-    
-    public interface ImageListener extends ErrorListener
-    {
-        void onResponse(final ImageContainer p0, final boolean p1);
-    }
-    
-    private class ValidatingListener implements ImageListener
-    {
-        protected final String imgUrl;
-        protected final AdvancedImageView view;
-        
-        public ValidatingListener(final AdvancedImageView view, final String imgUrl) {
-            this.view = view;
-            this.imgUrl = imgUrl;
-        }
-        
-        private boolean responseIsOutdated() {
-            final boolean b = !StringUtils.safeEquals(this.view.getUrlTag(), this.imgUrl);
-            if (b) {}
-            return b;
-        }
-        
-        @Override
-        public void onErrorResponse(final VolleyError volleyError) {
-            if (this.responseIsOutdated()) {
-                return;
-            }
-            Log.w("ImageLoader", "Error loading bitmap for url: " + this.imgUrl);
-            ImageLoader.this.setDrawableResource(this.view, 2130837566);
-        }
-        
-        @Override
-        public void onResponse(final ImageContainer imageContainer, final boolean b) {
-            if (this.responseIsOutdated()) {
-                return;
-            }
-            final Bitmap bitmap = imageContainer.getBitmap();
-            if (bitmap != null && b) {
-                ImageLoader.this.setDrawableBitmap(this.view, bitmap);
-                return;
-            }
-            this.updateView(this.view, bitmap);
-        }
-        
-        protected void updateView(final ImageView imageView, final Bitmap bitmap) {
-            if (bitmap == null) {
-                ImageLoader.this.setDrawableToNull(imageView);
-                return;
-            }
-            ImageLoader.this.setDrawableBitmap(imageView, bitmap);
-        }
-    }
-    
-    private class ValidatingListenerWithAnimation extends ValidatingListener
-    {
-        public ValidatingListenerWithAnimation(final AdvancedImageView advancedImageView, final String s) {
-            super(advancedImageView, s);
-        }
-        
-        @Override
-        protected void updateView(final ImageView imageView, final Bitmap bitmap) {
-            if (bitmap == null) {
-                ImageLoader.this.setDrawableToNull(imageView);
-                return;
-            }
-            AnimationUtils.setImageBitmapWithPropertyFade(imageView, bitmap);
-        }
-    }
-    
-    private class ValidatingListenerWithPlaceholder extends ValidatingListener
-    {
-        public ValidatingListenerWithPlaceholder(final AdvancedImageView advancedImageView, final String s) {
-            super(advancedImageView, s);
-        }
-        
-        @Override
-        protected void updateView(final ImageView imageView, final Bitmap bitmap) {
-            if (bitmap == null) {
-                ImageLoader.this.setDrawableResource(imageView, 2130837566);
-                return;
-            }
-            AnimationUtils.setImageBitmapWithPropertyFade(imageView, bitmap);
-        }
+        this.get(s, clientLogging$AssetType, imageLoader$ValidatingListener, 0, 0, request$Priority);
     }
 }

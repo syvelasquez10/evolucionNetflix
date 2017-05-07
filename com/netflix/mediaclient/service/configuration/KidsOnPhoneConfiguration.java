@@ -4,15 +4,13 @@
 
 package com.netflix.mediaclient.service.configuration;
 
-import com.google.gson.annotations.SerializedName;
-
 public interface KidsOnPhoneConfiguration
 {
-    ActionBarNavType getActionBarNavType();
+    KidsOnPhoneConfiguration$ActionBarNavType getActionBarNavType();
     
-    LolomoImageType getLolomoImageType();
+    KidsOnPhoneConfiguration$LolomoImageType getLolomoImageType();
     
-    ScrollBehavior getScrollBehavior();
+    KidsOnPhoneConfiguration$ScrollBehavior getScrollBehavior();
     
     boolean isKidsOnPhoneEnabled();
     
@@ -21,33 +19,4 @@ public interface KidsOnPhoneConfiguration
     boolean shouldShowKidsEntryInGenreLomo();
     
     boolean shouldShowKidsEntryInMenu();
-    
-    public enum ActionBarNavType
-    {
-        BACK, 
-        UP;
-    }
-    
-    public enum LolomoImageType
-    {
-        HORIZONTAL("horizontal"), 
-        ONE_TO_ONE("one2one");
-        
-        private String value;
-        
-        private LolomoImageType(final String value) {
-            this.value = value;
-        }
-        
-        @Override
-        public String toString() {
-            return this.value;
-        }
-    }
-    
-    public enum ScrollBehavior
-    {
-        LRUD, 
-        UP_DOWN;
-    }
 }

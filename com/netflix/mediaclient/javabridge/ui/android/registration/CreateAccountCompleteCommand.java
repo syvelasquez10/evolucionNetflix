@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.javabridge.ui.android.registration;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.ui.BaseCommandCompletedEvent;
@@ -20,7 +19,7 @@ public class CreateAccountCompleteCommand extends BaseCommandCompletedEvent
     private boolean created;
     private int key;
     
-    public CreateAccountCompleteCommand(final JSONObject jsonObject) throws JSONException {
+    public CreateAccountCompleteCommand(final JSONObject jsonObject) {
         super("createdAccount", jsonObject);
         this.created = false;
         this.key = -1;
@@ -42,7 +41,7 @@ public class CreateAccountCompleteCommand extends BaseCommandCompletedEvent
         return this.created;
     }
     
-    protected void localPopulate(final JSONObject jsonObject) throws JSONException {
+    protected void localPopulate(final JSONObject jsonObject) {
         final String string = BaseNccpEvent.getString(jsonObject, "result", "ERROR");
         this.created = string.equals("COMPLETE");
         if (this.created) {

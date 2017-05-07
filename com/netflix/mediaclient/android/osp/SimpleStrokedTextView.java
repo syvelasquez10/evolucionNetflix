@@ -11,7 +11,7 @@ import android.graphics.PorterDuff$Mode;
 import android.graphics.Rect;
 import android.content.res.TypedArray;
 import android.graphics.Paint$Style;
-import com.netflix.mediaclient.R;
+import com.netflix.mediaclient.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Paint;
@@ -51,7 +51,7 @@ public class SimpleStrokedTextView extends TextView
     }
     
     private void init(final Context context, final AttributeSet set, final int n) {
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.SimpleStrokedTextView, n, 0);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.SimpleStrokedTextView, n, 0);
         this.mStrokeColor = obtainStyledAttributes.getColor(0, -16777216);
         this.mStrokeWidth = obtainStyledAttributes.getFloat(1, 0.0f);
         this.mTextColor = obtainStyledAttributes.getColor(2, -1);

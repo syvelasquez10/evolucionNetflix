@@ -4,7 +4,6 @@
 
 package android.support.v7.internal.widget;
 
-import android.content.res.Resources$NotFoundException;
 import android.graphics.drawable.Drawable;
 import android.content.res.Resources;
 
@@ -17,7 +16,7 @@ class TintResources extends Resources
         this.mTintManager = mTintManager;
     }
     
-    public Drawable getDrawable(final int n) throws Resources$NotFoundException {
+    public Drawable getDrawable(final int n) {
         final Drawable drawable = super.getDrawable(n);
         if (drawable != null) {
             this.mTintManager.tintDrawable(n, drawable);

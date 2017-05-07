@@ -4,11 +4,11 @@
 
 package com.facebook;
 
+import org.json.JSONException;
 import com.facebook.internal.Logger;
 import java.util.Iterator;
 import java.util.List;
 import android.content.SharedPreferences$Editor;
-import org.json.JSONException;
 import org.json.JSONArray;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -70,7 +70,14 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
         this.cache = context.getSharedPreferences(this.cacheKey, 0);
     }
     
-    private void deserializeKey(final String s, final Bundle bundle) throws JSONException {
+    private void deserializeKey(final String s, final Bundle bundle) {
+        final int n = 0;
+        final int n2 = 0;
+        final int n3 = 0;
+        final int n4 = 0;
+        final int n5 = 0;
+        final int n6 = 0;
+        int i = 0;
         final JSONObject jsonObject = new JSONObject(this.cache.getString(s, "{}"));
         final String string = jsonObject.getString("valueType");
         if (string.equals("bool")) {
@@ -79,8 +86,8 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
         else {
             if (string.equals("bool[]")) {
                 final JSONArray jsonArray = jsonObject.getJSONArray("value");
-                final boolean[] array = new boolean[jsonArray.length()];
-                for (int i = 0; i < array.length; ++i) {
+                boolean[] array;
+                for (array = new boolean[jsonArray.length()]; i < array.length; ++i) {
                     array[i] = jsonArray.getBoolean(i);
                 }
                 bundle.putBooleanArray(s, array);
@@ -93,7 +100,7 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
             if (string.equals("byte[]")) {
                 final JSONArray jsonArray2 = jsonObject.getJSONArray("value");
                 final byte[] array2 = new byte[jsonArray2.length()];
-                for (int j = 0; j < array2.length; ++j) {
+                for (int j = n; j < array2.length; ++j) {
                     array2[j] = (byte)jsonArray2.getInt(j);
                 }
                 bundle.putByteArray(s, array2);
@@ -106,7 +113,7 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
             if (string.equals("short[]")) {
                 final JSONArray jsonArray3 = jsonObject.getJSONArray("value");
                 final short[] array3 = new short[jsonArray3.length()];
-                for (int k = 0; k < array3.length; ++k) {
+                for (int k = n2; k < array3.length; ++k) {
                     array3[k] = (short)jsonArray3.getInt(k);
                 }
                 bundle.putShortArray(s, array3);
@@ -119,7 +126,7 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
             if (string.equals("int[]")) {
                 final JSONArray jsonArray4 = jsonObject.getJSONArray("value");
                 final int[] array4 = new int[jsonArray4.length()];
-                for (int l = 0; l < array4.length; ++l) {
+                for (int l = n3; l < array4.length; ++l) {
                     array4[l] = jsonArray4.getInt(l);
                 }
                 bundle.putIntArray(s, array4);
@@ -132,8 +139,8 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
             if (string.equals("long[]")) {
                 final JSONArray jsonArray5 = jsonObject.getJSONArray("value");
                 final long[] array5 = new long[jsonArray5.length()];
-                for (int n = 0; n < array5.length; ++n) {
-                    array5[n] = jsonArray5.getLong(n);
+                for (int n7 = n4; n7 < array5.length; ++n7) {
+                    array5[n7] = jsonArray5.getLong(n7);
                 }
                 bundle.putLongArray(s, array5);
                 return;
@@ -145,8 +152,8 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
             if (string.equals("float[]")) {
                 final JSONArray jsonArray6 = jsonObject.getJSONArray("value");
                 final float[] array6 = new float[jsonArray6.length()];
-                for (int n2 = 0; n2 < array6.length; ++n2) {
-                    array6[n2] = (float)jsonArray6.getDouble(n2);
+                for (int n8 = n5; n8 < array6.length; ++n8) {
+                    array6[n8] = (float)jsonArray6.getDouble(n8);
                 }
                 bundle.putFloatArray(s, array6);
                 return;
@@ -158,8 +165,8 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
             if (string.equals("double[]")) {
                 final JSONArray jsonArray7 = jsonObject.getJSONArray("value");
                 final double[] array7 = new double[jsonArray7.length()];
-                for (int n3 = 0; n3 < array7.length; ++n3) {
-                    array7[n3] = jsonArray7.getDouble(n3);
+                for (int n9 = n6; n9 < array7.length; ++n9) {
+                    array7[n9] = jsonArray7.getDouble(n9);
                 }
                 bundle.putDoubleArray(s, array7);
                 return;
@@ -174,10 +181,10 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
                 if (string.equals("char[]")) {
                     final JSONArray jsonArray8 = jsonObject.getJSONArray("value");
                     final char[] array8 = new char[jsonArray8.length()];
-                    for (int n4 = 0; n4 < array8.length; ++n4) {
-                        final String string3 = jsonArray8.getString(n4);
+                    for (int n10 = 0; n10 < array8.length; ++n10) {
+                        final String string3 = jsonArray8.getString(n10);
                         if (string3 != null && string3.length() == 1) {
-                            array8[n4] = string3.charAt(0);
+                            array8[n10] = string3.charAt(0);
                         }
                     }
                     bundle.putCharArray(s, array8);
@@ -191,8 +198,8 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
                     final JSONArray jsonArray9 = jsonObject.getJSONArray("value");
                     final int length = jsonArray9.length();
                     final ArrayList list = new ArrayList<String>(length);
-                    for (int n5 = 0; n5 < length; ++n5) {
-                        final Object value = jsonArray9.get(n5);
+                    for (int n11 = 0; n11 < length; ++n11) {
+                        final Object value = jsonArray9.get(n11);
                         String s2;
                         if (value == JSONObject.NULL) {
                             s2 = null;
@@ -200,7 +207,7 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
                         else {
                             s2 = (String)value;
                         }
-                        list.add(n5, s2);
+                        list.add(n11, s2);
                     }
                     bundle.putStringArrayList(s, list);
                     return;
@@ -216,199 +223,148 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
         }
     }
     
-    private void serializeKey(final String s, final Bundle bundle, final SharedPreferences$Editor sharedPreferences$Editor) throws JSONException {
+    private void serializeKey(final String s, final Bundle bundle, final SharedPreferences$Editor sharedPreferences$Editor) {
+        Object o = null;
+        final int n = 0;
+        final int n2 = 0;
+        final int n3 = 0;
+        final int n4 = 0;
+        final int n5 = 0;
+        final int n6 = 0;
+        final int n7 = 0;
+        int i = 0;
         final Object value = bundle.get(s);
         if (value != null) {
-            Object o = null;
-            Object o2 = null;
             final JSONObject jsonObject = new JSONObject();
+            JSONArray jsonArray;
             if (value instanceof Byte) {
-                o = "byte";
                 jsonObject.put("value", (int)value);
+                jsonArray = null;
+                o = "byte";
             }
             else if (value instanceof Short) {
-                o = "short";
                 jsonObject.put("value", (int)value);
+                jsonArray = null;
+                o = "short";
             }
             else if (value instanceof Integer) {
-                o = "int";
                 jsonObject.put("value", (int)value);
+                jsonArray = null;
+                o = "int";
             }
             else if (value instanceof Long) {
-                o = "long";
                 jsonObject.put("value", (long)value);
+                jsonArray = null;
+                o = "long";
             }
             else if (value instanceof Float) {
-                o = "float";
                 jsonObject.put("value", (double)value);
+                jsonArray = null;
+                o = "float";
             }
             else if (value instanceof Double) {
-                o = "double";
                 jsonObject.put("value", (double)value);
+                jsonArray = null;
+                o = "double";
             }
             else if (value instanceof Boolean) {
-                o = "bool";
                 jsonObject.put("value", (boolean)value);
+                jsonArray = null;
+                o = "bool";
             }
             else if (value instanceof Character) {
-                o = "char";
                 jsonObject.put("value", (Object)value.toString());
+                jsonArray = null;
+                o = "char";
             }
             else if (value instanceof String) {
-                o = "string";
                 jsonObject.put("value", (Object)value);
+                jsonArray = null;
+                o = "string";
             }
             else if (value instanceof Enum) {
-                o = "enum";
                 jsonObject.put("value", (Object)value.toString());
                 jsonObject.put("enumType", (Object)((List<String>)value).getClass().getName());
+                jsonArray = null;
+                o = "enum";
             }
             else {
-                final JSONArray jsonArray = new JSONArray();
+                jsonArray = new JSONArray();
                 if (value instanceof byte[]) {
-                    final String s2 = "byte[]";
-                    final byte[] array = (byte[])value;
-                    final int length = array.length;
-                    int n = 0;
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s2;
-                        if (n >= length) {
-                            break;
-                        }
-                        jsonArray.put((int)array[n]);
-                        ++n;
+                    o = "byte[]";
+                    for (byte[] array = (byte[])value; i < array.length; ++i) {
+                        jsonArray.put((int)array[i]);
                     }
                 }
                 else if (value instanceof short[]) {
-                    final String s3 = "short[]";
+                    o = "short[]";
                     final short[] array2 = (short[])value;
-                    final int length2 = array2.length;
-                    int n2 = 0;
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s3;
-                        if (n2 >= length2) {
-                            break;
-                        }
-                        jsonArray.put((int)array2[n2]);
-                        ++n2;
+                    for (int length = array2.length, j = n; j < length; ++j) {
+                        jsonArray.put((int)array2[j]);
                     }
                 }
                 else if (value instanceof int[]) {
-                    final String s4 = "int[]";
+                    o = "int[]";
                     final int[] array3 = (int[])value;
-                    final int length3 = array3.length;
-                    int n3 = 0;
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s4;
-                        if (n3 >= length3) {
-                            break;
-                        }
-                        jsonArray.put(array3[n3]);
-                        ++n3;
+                    for (int length2 = array3.length, k = n2; k < length2; ++k) {
+                        jsonArray.put(array3[k]);
                     }
                 }
                 else if (value instanceof long[]) {
-                    final String s5 = "long[]";
+                    o = "long[]";
                     final long[] array4 = (long[])value;
-                    final int length4 = array4.length;
-                    int n4 = 0;
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s5;
-                        if (n4 >= length4) {
-                            break;
-                        }
-                        jsonArray.put(array4[n4]);
-                        ++n4;
+                    for (int length3 = array4.length, l = n3; l < length3; ++l) {
+                        jsonArray.put(array4[l]);
                     }
                 }
                 else if (value instanceof float[]) {
-                    final String s6 = "float[]";
+                    o = "float[]";
                     final float[] array5 = (float[])value;
-                    final int length5 = array5.length;
-                    int n5 = 0;
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s6;
-                        if (n5 >= length5) {
-                            break;
-                        }
-                        jsonArray.put((double)array5[n5]);
-                        ++n5;
+                    for (int length4 = array5.length, n8 = n4; n8 < length4; ++n8) {
+                        jsonArray.put((double)array5[n8]);
                     }
                 }
                 else if (value instanceof double[]) {
-                    final String s7 = "double[]";
+                    o = "double[]";
                     final double[] array6 = (double[])value;
-                    final int length6 = array6.length;
-                    int n6 = 0;
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s7;
-                        if (n6 >= length6) {
-                            break;
-                        }
-                        jsonArray.put(array6[n6]);
-                        ++n6;
+                    for (int length5 = array6.length, n9 = n5; n9 < length5; ++n9) {
+                        jsonArray.put(array6[n9]);
                     }
                 }
                 else if (value instanceof boolean[]) {
-                    final String s8 = "bool[]";
+                    o = "bool[]";
                     final boolean[] array7 = (boolean[])value;
-                    final int length7 = array7.length;
-                    int n7 = 0;
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s8;
-                        if (n7 >= length7) {
-                            break;
-                        }
-                        jsonArray.put(array7[n7]);
-                        ++n7;
+                    for (int length6 = array7.length, n10 = n6; n10 < length6; ++n10) {
+                        jsonArray.put(array7[n10]);
                     }
                 }
                 else if (value instanceof char[]) {
-                    final String s9 = "char[]";
+                    o = "char[]";
                     final char[] array8 = (char[])value;
-                    final int length8 = array8.length;
-                    int n8 = 0;
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s9;
-                        if (n8 >= length8) {
-                            break;
-                        }
-                        jsonArray.put((Object)String.valueOf(array8[n8]));
-                        ++n8;
+                    for (int length7 = array8.length, n11 = n7; n11 < length7; ++n11) {
+                        jsonArray.put((Object)String.valueOf(array8[n11]));
                     }
                 }
                 else if (value instanceof List) {
-                    final String s10 = "stringList";
+                    final String s2 = "stringList";
                     final Iterator<String> iterator = ((List<String>)value).iterator();
-                    while (true) {
-                        o2 = jsonArray;
-                        o = s10;
-                        if (!iterator.hasNext()) {
-                            break;
-                        }
+                    while (iterator.hasNext()) {
                         Object null;
                         if ((null = iterator.next()) == null) {
                             null = JSONObject.NULL;
                         }
                         jsonArray.put(null);
                     }
+                    o = s2;
                 }
                 else {
-                    o2 = null;
+                    jsonArray = null;
                 }
             }
             if (o != null) {
                 jsonObject.put("valueType", o);
-                if (o2 != null) {
-                    jsonObject.putOpt("value", o2);
+                if (jsonArray != null) {
+                    jsonObject.putOpt("value", (Object)jsonArray);
                 }
                 sharedPreferences$Editor.putString(s, jsonObject.toString());
             }
@@ -423,25 +379,18 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
     @Override
     public Bundle load() {
         final Bundle bundle = new Bundle();
-        final Iterator<String> iterator = this.cache.getAll().keySet().iterator();
-        Bundle bundle2;
-        while (true) {
-            bundle2 = bundle;
-            if (iterator.hasNext()) {
-                final String s = iterator.next();
-                try {
-                    this.deserializeKey(s, bundle);
-                    continue;
-                }
-                catch (JSONException ex) {
-                    Logger.log(LoggingBehavior.CACHE, 5, SharedPreferencesTokenCachingStrategy.TAG, "Error reading cached value for key: '" + s + "' -- " + ex);
-                    bundle2 = null;
-                }
-                break;
+        for (final String s : this.cache.getAll().keySet()) {
+            try {
+                this.deserializeKey(s, bundle);
+                continue;
+            }
+            catch (JSONException ex) {
+                Logger.log(LoggingBehavior.CACHE, 5, SharedPreferencesTokenCachingStrategy.TAG, "Error reading cached value for key: '" + s + "' -- " + ex);
+                return null;
             }
             break;
         }
-        return bundle2;
+        return bundle;
     }
     
     @Override

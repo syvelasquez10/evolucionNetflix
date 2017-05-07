@@ -23,30 +23,13 @@ class AdapterWrapper extends BaseAdapter implements StickyListHeadersAdapter
     private Drawable mDivider;
     private int mDividerHeight;
     private final List<View> mHeaderCache;
-    private OnHeaderClickListener mOnHeaderClickListener;
+    private AdapterWrapper$OnHeaderClickListener mOnHeaderClickListener;
     
     AdapterWrapper(final Context mContext, final StickyListHeadersAdapter mDelegate) {
         this.mHeaderCache = new LinkedList<View>();
-        this.mDataSetObserver = new DataSetObserver() {
-            public void onChanged() {
-                AdapterWrapper.access$201(AdapterWrapper.this);
-            }
-            
-            public void onInvalidated() {
-                AdapterWrapper.this.mHeaderCache.clear();
-                AdapterWrapper.access$101(AdapterWrapper.this);
-            }
-        };
+        this.mDataSetObserver = new AdapterWrapper$1(this);
         this.mContext = mContext;
         (this.mDelegate = mDelegate).registerDataSetObserver(this.mDataSetObserver);
-    }
-    
-    static /* synthetic */ void access$101(final AdapterWrapper adapterWrapper) {
-        adapterWrapper.notifyDataSetInvalidated();
-    }
-    
-    static /* synthetic */ void access$201(final AdapterWrapper adapterWrapper) {
-        adapterWrapper.notifyDataSetChanged();
     }
     
     private View configureHeader(final WrapperView wrapperView, final int n) {
@@ -62,13 +45,7 @@ class AdapterWrapper extends BaseAdapter implements StickyListHeadersAdapter
             throw new NullPointerException("Header view must not be null.");
         }
         headerView.setClickable(true);
-        headerView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (AdapterWrapper.this.mOnHeaderClickListener != null) {
-                    AdapterWrapper.this.mOnHeaderClickListener.onHeaderClick(view, n, AdapterWrapper.this.mDelegate.getHeaderId(n));
-                }
-            }
-        });
+        headerView.setOnClickListener((View$OnClickListener)new AdapterWrapper$2(this, n));
         return headerView;
     }
     
@@ -194,16 +171,11 @@ class AdapterWrapper extends BaseAdapter implements StickyListHeadersAdapter
         this.notifyDataSetChanged();
     }
     
-    public void setOnHeaderClickListener(final OnHeaderClickListener mOnHeaderClickListener) {
+    public void setOnHeaderClickListener(final AdapterWrapper$OnHeaderClickListener mOnHeaderClickListener) {
         this.mOnHeaderClickListener = mOnHeaderClickListener;
     }
     
     public String toString() {
         return this.mDelegate.toString();
-    }
-    
-    interface OnHeaderClickListener
-    {
-        void onHeaderClick(final View p0, final int p1, final long p2);
     }
 }

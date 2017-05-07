@@ -7,12 +7,8 @@ package com.netflix.mediaclient.ui;
 import android.app.AlertDialog$Builder;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
-import android.content.Intent;
-import android.content.ActivityNotFoundException;
-import com.netflix.mediaclient.util.AppStoreHelper;
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
-import com.netflix.mediaclient.android.widget.UpdateDialog;
+import com.netflix.mediaclient.android.widget.UpdateDialog$Builder;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -33,46 +29,18 @@ public class ServiceErrorsHandler
                 return false;
             }
         }
-        final UpdateDialog.Builder builder = new UpdateDialog.Builder((Context)activity);
-        builder.setTitle("");
+        final UpdateDialog$Builder updateDialog$Builder = new UpdateDialog$Builder((Context)activity);
+        updateDialog$Builder.setTitle("");
         if (!b) {
-            builder.setMessage(2131492987);
-            builder.setCancelable(false);
-            builder.setNegativeButton(2131493127, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                public void onClick(final DialogInterface dialogInterface, int intPref) {
-                    intPref = PreferenceUtils.getIntPref((Context)activity, "config_recommended_version", -1);
-                    if (Log.isLoggable("ServiceErrorsHandler", 4)) {
-                        Log.i("ServiceErrorsHandler", "User clicked cancel on prompt to update. Saving minRecommendedVersion = " + intPref);
-                    }
-                    PreferenceUtils.putIntPref((Context)activity, "nflx_update_skipped", intPref);
-                    activity.startActivity(RelaunchActivity.createStartIntent(activity, "ServiceErrorsHandler"));
-                    activity.finish();
-                }
-            });
+            updateDialog$Builder.setMessage(2131492983);
+            updateDialog$Builder.setCancelable(false);
+            updateDialog$Builder.setNegativeButton(2131493101, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
         }
         else {
-            builder.setMessage(2131492988);
+            updateDialog$Builder.setMessage(2131492984);
         }
-        builder.setPositiveButton(2131492983, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                Log.i("ServiceErrorsHandler", "User clicked Ok on prompt to update");
-                final Intent updateSourceIntent = AppStoreHelper.getUpdateSourceIntent((Context)activity);
-                if (updateSourceIntent == null) {
-                    return;
-                }
-                updateSourceIntent.addFlags(268435456);
-                try {
-                    activity.startActivity(updateSourceIntent);
-                }
-                catch (ActivityNotFoundException ex) {
-                    Log.e("ServiceErrorsHandler", "Failed to start store Activity!", (Throwable)ex);
-                }
-                finally {
-                    activity.finish();
-                }
-            }
-        });
-        builder.show();
+        updateDialog$Builder.setPositiveButton(2131492980, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
+        updateDialog$Builder.show();
         return true;
     }
     
@@ -80,44 +48,40 @@ public class ServiceErrorsHandler
         boolean b = false;
         final StatusCode statusCode = status.getStatusCode();
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
-        switch (statusCode) {
+        switch (ServiceErrorsHandler$4.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
-                provideDialog(activity, activity.getString(2131493281) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131493234) + " (" + statusCode.getValue() + ")");
                 b = true;
                 return b;
             }
-            case OK: {
+            case 1: {
                 return b;
             }
-            case NON_RECOMMENDED_APP_VERSION: {
+            case 2: {
                 return handleAppUpdateNeeded(activity, false);
             }
-            case OBSOLETE_APP_VERSION: {
+            case 3: {
                 return handleAppUpdateNeeded(activity, true);
             }
-            case NO_CONNECTIVITY: {
-                provideDialog(activity, activity.getString(2131493140));
+            case 4: {
+                provideDialog(activity, activity.getString(2131493113));
                 return true;
             }
-            case DRM_FAILURE_CDM:
-            case DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED: {
-                provideDialog(activity, activity.getString(2131493254));
+            case 5:
+            case 6: {
+                provideDialog(activity, activity.getString(2131493214));
                 return true;
             }
-            case HTTP_SSL_DATE_TIME_ERROR:
-            case HTTP_SSL_ERROR:
-            case HTTP_SSL_NO_VALID_CERT: {
-                provideDialog(activity, activity.getString(2131493280) + " (" + statusCode.getValue() + ")");
+            case 7:
+            case 8:
+            case 9: {
+                provideDialog(activity, activity.getString(2131493233) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }
     }
     
     private static void provideDialog(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131492983, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                activity.finish();
-            }
-        }).show();
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131492980, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
     }
 }

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.realtime.internal.event;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -58,7 +59,7 @@ public class d implements Parcelable$Creator<ReferenceShiftedDetails>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ReferenceShiftedDetails(g3, o2, o, g2, g);
     }

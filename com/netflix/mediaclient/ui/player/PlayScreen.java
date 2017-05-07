@@ -4,19 +4,16 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import android.view.SurfaceHolder$Callback;
-import android.view.View$OnClickListener;
-import android.widget.SeekBar$OnSeekBarChangeListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.app.Activity;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.Build;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView;
 import android.view.SurfaceHolder;
 import android.widget.ViewFlipper;
@@ -29,7 +26,7 @@ import com.netflix.mediaclient.ui.Screen;
 public class PlayScreen implements Screen
 {
     protected static final String TAG = "screen";
-    protected Listeners listeners;
+    protected PlayScreen$Listeners listeners;
     protected RelativeLayout mBackground;
     protected ImageView mBif;
     protected BottomPanel mBottomPanel;
@@ -48,24 +45,11 @@ public class PlayScreen implements Screen
     private boolean mZoomEnabled;
     private final Runnable removeSoundBar;
     
-    PlayScreen(final PlayerActivity mController, final Listeners listeners, final PostPlayFactory.PostPlayType postPlayType) {
+    PlayScreen(final PlayerActivity mController, final PlayScreen$Listeners listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         this.mState = PlayerUiState.Loading;
         this.mNavigationBarSetVisibleInProgress = false;
         this.mZoomEnabled = true;
-        this.removeSoundBar = new Runnable() {
-            @Override
-            public void run() {
-                if (PlayScreen.this.mState == PlayerUiState.Playing) {
-                    Log.d("screen", "AUDIO:: sound bar hide");
-                    final TopPanel mTopPanel = PlayScreen.this.mTopPanel;
-                    if (mTopPanel != null) {
-                        mTopPanel.hideSoundSection();
-                    }
-                    return;
-                }
-                Log.d("screen", "AUDIO:: not in loaded state anymore! Ignore.");
-            }
-        };
+        this.removeSoundBar = new PlayScreen$1(this);
         if (mController == null || listeners == null) {
             throw new IllegalArgumentException("Argument can not be null!");
         }
@@ -86,30 +70,30 @@ public class PlayScreen implements Screen
         this.mBackground = (RelativeLayout)mController.findViewById(2131165462);
         this.mBufferingOverlay = mController.findViewById(2131165565);
         this.mBif = (ImageView)mController.findViewById(2131165535);
-        this.mPostPlayManager = PostPlayFactory.create(mController, postPlayType);
+        this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
     
-    static PlayScreen createInstance(final PlayerActivity playerActivity, final Listeners listeners, final PostPlayFactory.PostPlayType postPlayType) {
+    static PlayScreen createInstance(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         final int androidVersion = AndroidUtils.getAndroidVersion();
         if (androidVersion >= 16) {
             Log.d("screen", "PlayScreen for JB (Android 4.1+");
-            return new PlayScreenJB(playerActivity, listeners, postPlayType);
+            return new PlayScreenJB(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
         if (Build.MANUFACTURER.equals("Amazon") && (Build.MODEL.equals("KFOT") || Build.MODEL.equals("KFTT") || Build.MODEL.equals("KFJWA") || Build.MODEL.equals("KFJWI"))) {
             Log.d("screen", "PlayScreen for Amazon Kindle HD");
-            return new PlayScreenKindleHD(playerActivity, listeners, postPlayType);
+            return new PlayScreenKindleHD(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
         if (androidVersion >= 14) {
             Log.d("screen", "PlayScreen for ICS (Android 4+");
-            return new PlayScreenICS(playerActivity, listeners, postPlayType);
+            return new PlayScreenICS(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
         if (Build.MODEL.equals("Kindle Fire") && Build.MANUFACTURER.equals("Amazon")) {
             Log.d("screen", "PlayScreen for Amazon Kindle Fire");
-            return new PlayScreenKindleFire(playerActivity, listeners, postPlayType);
+            return new PlayScreenKindleFire(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
         Log.d("screen", "PlayScreen for Froyo/Gingerbread (Android 2.2-2.3) - default");
-        return new PlayScreen(playerActivity, listeners, postPlayType);
+        return new PlayScreen(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
     }
     
     private boolean isZoomEnabled() {
@@ -143,7 +127,7 @@ public class PlayScreen implements Screen
         }
         if (this.mPlaybackControlOverlayId != null) {
             if (!this.mController.getErrorManager().isErrorReported()) {
-                this.mController.reportUiModelessViewSessionEnded(IClientLogging.ModalView.playbackControls, this.mPlaybackControlOverlayId);
+                this.mController.reportUiModelessViewSessionEnded(IClientLogging$ModalView.playbackControls, this.mPlaybackControlOverlayId);
             }
             this.mPlaybackControlOverlayId = null;
         }
@@ -161,7 +145,7 @@ public class PlayScreen implements Screen
             this.mSurface.setBackgroundColor(color);
         }
         if (!this.mController.getErrorManager().isErrorReported()) {
-            this.mPlaybackControlOverlayId = this.mController.reportUiModelessViewSessionStart(IClientLogging.ModalView.playbackControls);
+            this.mPlaybackControlOverlayId = this.mController.reportUiModelessViewSessionStart(IClientLogging$ModalView.playbackControls);
         }
         this.playerOverlayVisibility(true);
     }
@@ -182,21 +166,21 @@ public class PlayScreen implements Screen
         this.showNavigationBar();
     }
     
-    static int resolveContentView(final PostPlayFactory.PostPlayType postPlayType) {
-        if (postPlayType == PostPlayFactory.PostPlayType.EpisodesForPhone) {
+    static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
+        if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903149;
+            return 2130903150;
         }
-        if (postPlayType == PostPlayFactory.PostPlayType.EpisodesForTablet) {
+        if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903154;
-        }
-        if (postPlayType == PostPlayFactory.PostPlayType.RecommendationForTablet) {
-            Log.d("screen", "playout_tablet_movie");
             return 2130903155;
         }
+        if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
+            Log.d("screen", "playout_tablet_movie");
+            return 2130903156;
+        }
         Log.d("screen", "playout_phone_movie");
-        return 2130903150;
+        return 2130903151;
     }
     
     public boolean canExitPlaybackEndOfPlay() {
@@ -466,6 +450,10 @@ public class PlayScreen implements Screen
                 this.mTopPanel.hide();
             }
         }
+        final SubtitleManager subtitleManager = this.mController.getSubtitleManager();
+        if (subtitleManager != null) {
+            subtitleManager.onPlayerOverlayVisibiltyChange(b);
+        }
     }
     
     void removeSplashScreen() {
@@ -494,28 +482,18 @@ public class PlayScreen implements Screen
         final View mBufferingOverlay = this.mBufferingOverlay;
         if (mBufferingOverlay == null) {
             Log.w("screen", "bufferingOverlay is NULL!");
+            return;
         }
-        else {
-            if (Log.isLoggable("screen", 3)) {
-                Log.d("screen", "Subtitles ARE visible");
-            }
-            if (b) {
-                Log.d("screen", "Display buffering overlay");
-                mBufferingOverlay.setVisibility(0);
-                if (false) {
-                    Log.d("screen", "Remove subtitles");
-                    this.mController.getSubtitleManager().setSubtitleVisibility(false);
-                }
-            }
-            else {
-                Log.d("screen", "Remove buffering overlay");
-                mBufferingOverlay.setVisibility(8);
-                if (false) {
-                    Log.d("screen", "Add subtitles");
-                    this.mController.getSubtitleManager().setSubtitleVisibility(true);
-                }
-            }
+        if (Log.isLoggable("screen", 3)) {
+            Log.d("screen", "Subtitles ARE visible");
         }
+        if (b) {
+            Log.d("screen", "Display buffering overlay");
+            mBufferingOverlay.setVisibility(0);
+            return;
+        }
+        Log.d("screen", "Remove buffering overlay");
+        mBufferingOverlay.setVisibility(8);
     }
     
     void setDebugData(final String s) {
@@ -669,18 +647,5 @@ public class PlayScreen implements Screen
         if (mBottomPanel != null && mBottomPanel.getCurrentTime() != null) {
             mBottomPanel.getCurrentTime().stop(b);
         }
-    }
-    
-    public static class Listeners
-    {
-        public SeekBar$OnSeekBarChangeListener audioPositionListener;
-        public View$OnClickListener episodeSelectorListener;
-        public View$OnClickListener playPauseListener;
-        public View$OnClickListener skipBackListener;
-        public SurfaceHolder$Callback surfaceListener;
-        public TappableSurfaceView.SurfaceMeasureListener surfaceMeasureListener;
-        public TappableSurfaceView.TapListener tapListener;
-        public SeekBar$OnSeekBarChangeListener videoPositionListener;
-        public View$OnClickListener zoomListener;
     }
 }

@@ -6,8 +6,8 @@ package com.netflix.mediaclient.ui.lolomo;
 
 import android.view.View$OnClickListener;
 import android.app.Activity;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
-import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.ui.kids.KidsUtils$OnSwitchToKidsClickListener;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup$LayoutParams;
@@ -36,10 +36,10 @@ public class KidsGenreEntryHeader extends RelativeLayout
         else {
             n = AndroidUtils.dipToPixels((Context)netflixActivity, 215);
         }
-        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, actionBarHeight + n));
+        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, n + actionBarHeight));
         this.setPadding(0, actionBarHeight, 0, 0);
-        netflixActivity.getLayoutInflater().inflate(2130903101, (ViewGroup)this, true);
-        final View viewById = this.findViewById(2131165414);
+        netflixActivity.getLayoutInflater().inflate(2130903102, (ViewGroup)this, true);
+        final View viewById = this.findViewById(2131165413);
         int backgroundResource;
         if (portrait) {
             backgroundResource = 2130837707;
@@ -49,7 +49,7 @@ public class KidsGenreEntryHeader extends RelativeLayout
         }
         viewById.setBackgroundResource(backgroundResource);
         this.pressHandler = new PressedStateHandler((View)this);
-        this.setOnClickListener((View$OnClickListener)new KidsUtils.OnSwitchToKidsClickListener(netflixActivity, UIViewLogging.UIViewCommandName.genreKidsEntry));
+        this.setOnClickListener((View$OnClickListener)new KidsUtils$OnSwitchToKidsClickListener(netflixActivity, UIViewLogging$UIViewCommandName.genreKidsEntry));
     }
     
     protected void dispatchSetPressed(final boolean b) {

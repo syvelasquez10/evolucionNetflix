@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 import com.google.gson.GsonBuilder;
 import com.google.gson.Gson;
 
-public class PathBoundValue<T> implements Comparable<T>, PathBound
+public class PathBoundValue<T> implements PathBound, Comparable<T>
 {
     private final Gson gson;
     private final PQL path;

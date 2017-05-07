@@ -9,18 +9,14 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
-import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.app.Fragment;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 
-public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowListenerProvider, EpisodeRowListener
+public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowView$EpisodeRowListener, EpisodeRowView$EpisodeRowListenerProvider
 {
     private boolean shouldHideDetailsView() {
         return DeviceUtils.isTabletByContext((Context)this) && DeviceUtils.isLandscape((Context)this);
@@ -37,26 +33,24 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowLi
     }
     
     @Override
-    public EpisodeRowListener getEpisodeRowListener() {
-        final EpisodeRowListener episodeRowListener = super.getEpisodeRowListener();
+    public EpisodeRowView$EpisodeRowListener getEpisodeRowListener() {
+        final EpisodeRowView$EpisodeRowListener episodeRowListener = super.getEpisodeRowListener();
+        EpisodeRowView$EpisodeRowListener episodeRowView$EpisodeRowListener = this;
         if (episodeRowListener != null) {
-            return episodeRowListener;
+            episodeRowView$EpisodeRowListener = episodeRowListener;
         }
-        return this;
+        return episodeRowView$EpisodeRowListener;
+    }
+    
+    @Override
+    public VideoType getVideoType() {
+        return VideoType.SHOW;
     }
     
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         if (menu2 != null) {
-            menu2.add((CharSequence)"Display episodes dialog").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
-                public boolean onMenuItemClick(final MenuItem menuItem) {
-                    final NetflixDialogFrag create = EpisodeListFrag.create(ShowDetailsActivity.this.getVideoId(), ShowDetailsActivity.this.getEpisodeId(), false);
-                    create.onManagerReady(ShowDetailsActivity.this.getServiceManager(), CommonStatus.OK);
-                    create.setCancelable(true);
-                    ShowDetailsActivity.this.showDialog(create);
-                    return true;
-                }
-            });
+            menu2.add((CharSequence)"Display episodes dialog").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new ShowDetailsActivity$1(this));
         }
         super.onCreateOptionsMenu(menu, menu2);
     }

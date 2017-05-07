@@ -4,10 +4,10 @@
 
 package com.google.gson.internal;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 import java.io.ObjectStreamClass;
 import java.io.ObjectInputStream;
-import java.lang.reflect.Method;
 
 public abstract class UnsafeAllocator
 {
@@ -16,26 +16,13 @@ public abstract class UnsafeAllocator
             final Class<?> forName = Class.forName("sun.misc.Unsafe");
             final Field declaredField = forName.getDeclaredField("theUnsafe");
             declaredField.setAccessible(true);
-            return new UnsafeAllocator() {
-                final /* synthetic */ Method val$allocateInstance = forName.getMethod("allocateInstance", Class.class);
-                final /* synthetic */ Object val$unsafe = declaredField.get(null);
-                
-                @Override
-                public <T> T newInstance(final Class<T> clazz) throws Exception {
-                    return (T)this.val$allocateInstance.invoke(this.val$unsafe, clazz);
-                }
-            };
+            return new UnsafeAllocator$1(forName.getMethod("allocateInstance", Class.class), declaredField.get(null));
         }
         catch (Exception ex) {
             try {
                 final Method declaredMethod = ObjectInputStream.class.getDeclaredMethod("newInstance", Class.class, Class.class);
                 declaredMethod.setAccessible(true);
-                return new UnsafeAllocator() {
-                    @Override
-                    public <T> T newInstance(final Class<T> clazz) throws Exception {
-                        return (T)declaredMethod.invoke(null, clazz, Object.class);
-                    }
-                };
+                return new UnsafeAllocator$2(declaredMethod);
             }
             catch (Exception ex2) {
                 try {
@@ -44,24 +31,14 @@ public abstract class UnsafeAllocator
                     final int intValue = (int)declaredMethod2.invoke(null, Object.class);
                     final Method declaredMethod3 = ObjectStreamClass.class.getDeclaredMethod("newInstance", Class.class, Integer.TYPE);
                     declaredMethod3.setAccessible(true);
-                    return new UnsafeAllocator() {
-                        @Override
-                        public <T> T newInstance(final Class<T> clazz) throws Exception {
-                            return (T)declaredMethod3.invoke(null, clazz, intValue);
-                        }
-                    };
+                    return new UnsafeAllocator$3(declaredMethod3, intValue);
                 }
                 catch (Exception ex3) {
-                    return new UnsafeAllocator() {
-                        @Override
-                        public <T> T newInstance(final Class<T> clazz) {
-                            throw new UnsupportedOperationException("Cannot allocate " + clazz);
-                        }
-                    };
+                    return new UnsafeAllocator$4();
                 }
             }
         }
     }
     
-    public abstract <T> T newInstance(final Class<T> p0) throws Exception;
+    public abstract <T> T newInstance(final Class<T> p0);
 }

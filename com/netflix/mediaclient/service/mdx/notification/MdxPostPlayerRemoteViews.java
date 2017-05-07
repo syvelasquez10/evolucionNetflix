@@ -11,8 +11,8 @@ public class MdxPostPlayerRemoteViews extends MdxRemoteViews
 {
     private String headerTitle;
     
-    public MdxPostPlayerRemoteViews(final String s, final boolean b, final MdxNotificationManager.MdxNotificationIntentRetriever mdxNotificationIntentRetriever, final Context headerTitle) {
-        super(s, b, mdxNotificationIntentRetriever, headerTitle);
+    public MdxPostPlayerRemoteViews(final String s, final boolean b, final MdxNotificationManager$MdxNotificationIntentRetriever mdxNotificationManager$MdxNotificationIntentRetriever, final Context headerTitle) {
+        super(s, b, mdxNotificationManager$MdxNotificationIntentRetriever, headerTitle);
         this.setHeaderTitle(headerTitle);
     }
     
@@ -20,7 +20,7 @@ public class MdxPostPlayerRemoteViews extends MdxRemoteViews
         if (context == null) {
             return;
         }
-        this.headerTitle = context.getResources().getString(2131493251);
+        this.headerTitle = context.getResources().getString(2131493212);
     }
     
     private void setPlayNextButton(final RemoteViews remoteViews) {
@@ -51,9 +51,9 @@ public class MdxPostPlayerRemoteViews extends MdxRemoteViews
     @Override
     protected RemoteViews createViewForEpisodes(final boolean b) {
         if (b) {
-            return new RemoteViews(this.mPackageName, 2130903135);
+            return new RemoteViews(this.mPackageName, 2130903136);
         }
-        return new RemoteViews(this.mPackageName, 2130903136);
+        return new RemoteViews(this.mPackageName, 2130903137);
     }
     
     @Override

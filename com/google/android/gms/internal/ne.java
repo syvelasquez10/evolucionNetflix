@@ -8,7 +8,7 @@ import android.util.Log;
 import android.app.PendingIntent;
 import android.content.Context;
 
-public class ne implements a
+public class ne implements nf$a
 {
     private final nf aks;
     private boolean akt;
@@ -22,7 +22,7 @@ public class ne implements a
     }
     
     public ne(final Context context, final int n, final String s, final String s2, final boolean b) {
-        this.aks = new nf(context, n, s, s2, (nf.a)this, b);
+        this.aks = new nf(context, n, s, s2, this, b);
         this.akt = true;
     }
     

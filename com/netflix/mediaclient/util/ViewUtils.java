@@ -17,17 +17,19 @@ import android.widget.ScrollView;
 import com.netflix.mediaclient.android.widget.StaticGridView;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import com.netflix.mediaclient.Log;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.graphics.Point;
+import android.content.res.TypedArray;
+import android.util.TypedValue;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.graphics.Bitmap$Config;
 import android.graphics.Bitmap;
 import android.view.View$OnClickListener;
-import android.widget.Toast;
-import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.app.Activity;
 import android.view.ViewParent;
@@ -45,31 +47,17 @@ import android.widget.TextView;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ListView;
-import android.graphics.Rect;
 import java.util.Comparator;
 
 public class ViewUtils
 {
     public static final int DIM_ALPHA = 64;
     public static final int NO_ALPHA = 255;
-    public static final Comparator<ViewComparator> REVERSE_SORT_BY_BOTTOM;
+    public static final Comparator<ViewUtils$ViewComparator> REVERSE_SORT_BY_BOTTOM;
     private static final String TAG = "ViewUtils";
     
     static {
-        REVERSE_SORT_BY_BOTTOM = new Comparator<ViewComparator>() {
-            @Override
-            public int compare(final ViewComparator viewComparator, final ViewComparator viewComparator2) {
-                final Rect rect = ViewUtils.getRect(viewComparator.getView(), true);
-                final Rect rect2 = ViewUtils.getRect(viewComparator2.getView(), true);
-                if (rect.bottom < rect2.bottom) {
-                    return 1;
-                }
-                if (rect.bottom > rect2.bottom) {
-                    return -1;
-                }
-                return 0;
-            }
-        };
+        REVERSE_SORT_BY_BOTTOM = new ViewUtils$4();
     }
     
     public static void addActionBarPaddingView(final ListView listView) {
@@ -110,34 +98,11 @@ public class ViewUtils
     }
     
     public static MenuItem$OnMenuItemClickListener createShowToastMenuClickListener(final Activity activity) {
-        return (MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
-            public boolean onMenuItemClick(final MenuItem menuItem) {
-                final StringBuilder sb = new StringBuilder("Clicked on: ");
-                if (StringUtils.isNotEmpty(menuItem.getTitle())) {
-                    sb.append(menuItem.getTitle());
-                }
-                else {
-                    sb.append(menuItem.getClass().getSimpleName());
-                }
-                Toast.makeText((Context)activity, (CharSequence)sb.toString(), 0).show();
-                return true;
-            }
-        };
+        return (MenuItem$OnMenuItemClickListener)new ViewUtils$2(activity);
     }
     
     public static View$OnClickListener createShowToastViewClickListener(final Activity activity) {
-        return (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                final StringBuilder sb = new StringBuilder("Clicked on: ");
-                if (StringUtils.isNotEmpty(view.getContentDescription())) {
-                    sb.append(view.getContentDescription());
-                }
-                else {
-                    sb.append(view.getClass().getSimpleName());
-                }
-                Toast.makeText((Context)activity, (CharSequence)sb.toString(), 0).show();
-            }
-        };
+        return (View$OnClickListener)new ViewUtils$1(activity);
     }
     
     public static Bitmap createSquaredBitmap(final Bitmap bitmap) {
@@ -147,6 +112,13 @@ public class ViewUtils
         canvas.drawColor(0);
         canvas.drawBitmap(bitmap, (float)((max - bitmap.getWidth()) / 2), (float)((max - bitmap.getHeight()) / 2), (Paint)null);
         return bitmap2;
+    }
+    
+    public static float getDefaultActionBarHeight(final Context context) {
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130771988 });
+        final float dimension = obtainStyledAttributes.getDimension(0, 0.0f);
+        obtainStyledAttributes.recycle();
+        return dimension;
     }
     
     public static Point getDisplaySize(final Activity activity) {
@@ -210,6 +182,23 @@ public class ViewUtils
         return new Rect(array[0], array[1], array[0] + view.getWidth(), array[1] + view.getHeight());
     }
     
+    public static int getNavigationBarHeight(final Context context, final boolean b) {
+        final Resources resources = context.getResources();
+        String s;
+        if (b) {
+            s = "navigation_bar_height";
+        }
+        else {
+            s = "navigation_bar_height_landscape";
+        }
+        final int identifier = resources.getIdentifier(s, "dimen", "android");
+        if (identifier > 0) {
+            return context.getResources().getDimensionPixelSize(identifier);
+        }
+        Log.e("ViewUtils", "Nav bar height uknown!");
+        return 0;
+    }
+    
     public static Rect getRect(final View view, final boolean b) {
         Log.d("ViewUtils", "getRect");
         if (!b) {
@@ -227,6 +216,15 @@ public class ViewUtils
         getHitRect(view, tag2);
         view.setTag((Object)tag2);
         return tag2;
+    }
+    
+    public static int getStatusBarHeight(final Context context) {
+        final int identifier = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (identifier > 0) {
+            return context.getResources().getDimensionPixelSize(identifier);
+        }
+        Log.e("ViewUtils", "Status bar height uknown!");
+        return 0;
     }
     
     public static List<View> getViewsById(final View view, final Integer... array) {
@@ -275,11 +273,11 @@ public class ViewUtils
         final Rect rect = new Rect();
         scrollView.getHitRect(rect);
         final int childCount = staticGridView.getChildCount();
+        int i = 0;
         int n = -1;
-        int i;
-        int n2;
-        for (i = 0; i < childCount; ++i, n = n2) {
+        while (i < childCount) {
             final boolean localVisibleRect = staticGridView.getChildAt(i).getLocalVisibleRect(rect);
+            int n2;
             if (localVisibleRect && n == -1) {
                 n2 = i;
             }
@@ -289,12 +287,32 @@ public class ViewUtils
                     break;
                 }
             }
+            ++i;
+            n = n2;
         }
         final int n3 = i - 1;
         if (n != -1 && n3 != -1) {
             return (Pair<Integer, Integer>)new Pair((Object)n, (Object)n3);
         }
         return null;
+    }
+    
+    public static boolean isNavigationBarBelowContent(final Activity activity) {
+        if (activity == null) {
+            throw new IllegalArgumentException("Activity can not be null");
+        }
+        final Rect rect = new Rect();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+        return activity.getResources().getDisplayMetrics().widthPixels == rect.right;
+    }
+    
+    public static boolean isNavigationBarRightOfContent(final Activity activity) {
+        if (activity == null) {
+            throw new IllegalArgumentException("Activity can not be null");
+        }
+        final Rect rect = new Rect();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+        return activity.getResources().getDisplayMetrics().heightPixels == rect.bottom;
     }
     
     public static void removeGlobalLayoutListener(final View view, final ViewTreeObserver$OnGlobalLayoutListener viewTreeObserver$OnGlobalLayoutListener) {
@@ -317,12 +335,7 @@ public class ViewUtils
     public static void setLongTapListenersRecursivelyToShowContentDescriptionToast(final View view) {
         final CharSequence contentDescription = view.getContentDescription();
         if (StringUtils.isNotEmpty(contentDescription)) {
-            view.setOnLongClickListener((View$OnLongClickListener)new View$OnLongClickListener() {
-                public boolean onLongClick(final View view) {
-                    Toast.makeText(view.getContext(), contentDescription, 0).show();
-                    return true;
-                }
-            });
+            view.setOnLongClickListener((View$OnLongClickListener)new ViewUtils$3(view, contentDescription));
         }
         if (view instanceof ViewGroup) {
             final ViewGroup viewGroup = (ViewGroup)view;
@@ -360,29 +373,29 @@ public class ViewUtils
         textView.setTypeface(Typeface.create(textView.getTypeface(), 0));
     }
     
-    public static void setVisibility(final View view, final Visibility visibility) {
-        if (view == null || visibility == null) {
+    public static void setVisibility(final View view, final ViewUtils$Visibility viewUtils$Visibility) {
+        if (view == null || viewUtils$Visibility == null) {
             return;
         }
-        int visibility2 = 8;
-        if (visibility == Visibility.VISIBLE) {
-            visibility2 = 0;
+        int visibility = 8;
+        if (viewUtils$Visibility == ViewUtils$Visibility.VISIBLE) {
+            visibility = 0;
         }
-        else if (visibility == Visibility.INVISIBLE) {
-            visibility2 = 4;
+        else if (viewUtils$Visibility == ViewUtils$Visibility.INVISIBLE) {
+            visibility = 4;
         }
-        view.setVisibility(visibility2);
+        view.setVisibility(visibility);
     }
     
     public static void setVisibility(final View view, final boolean b) {
-        Visibility visibility;
+        ViewUtils$Visibility viewUtils$Visibility;
         if (b) {
-            visibility = Visibility.VISIBLE;
+            viewUtils$Visibility = ViewUtils$Visibility.VISIBLE;
         }
         else {
-            visibility = Visibility.GONE;
+            viewUtils$Visibility = ViewUtils$Visibility.GONE;
         }
-        setVisibility(view, visibility);
+        setVisibility(view, viewUtils$Visibility);
     }
     
     public static void showViews(final Collection<View> collection) {
@@ -393,92 +406,5 @@ public class ViewUtils
                 }
             }
         }
-    }
-    
-    public static class ViewComparator implements Comparable<ViewComparator>
-    {
-        public static final Comparator<ViewComparator> REVERSE_SORT_BY_TOP;
-        public static final Comparator<ViewComparator> SORT_BY_BOTTOM;
-        public static final Comparator<ViewComparator> SORT_BY_TOP;
-        private final View mView;
-        
-        static {
-            REVERSE_SORT_BY_TOP = new Comparator<ViewComparator>() {
-                @Override
-                public int compare(final ViewComparator viewComparator, final ViewComparator viewComparator2) {
-                    final Rect rect = ViewUtils.getRect(viewComparator.getView(), true);
-                    final Rect rect2 = ViewUtils.getRect(viewComparator2.getView(), true);
-                    if (rect.top < rect2.top) {
-                        return 1;
-                    }
-                    if (rect.top > rect2.top) {
-                        return -1;
-                    }
-                    return 0;
-                }
-            };
-            SORT_BY_TOP = new Comparator<ViewComparator>() {
-                @Override
-                public int compare(final ViewComparator viewComparator, final ViewComparator viewComparator2) {
-                    int n = 1;
-                    final Rect rect = ViewUtils.getRect(viewComparator.getView(), true);
-                    final Rect rect2 = ViewUtils.getRect(viewComparator2.getView(), true);
-                    if (rect.top < rect2.top) {
-                        n = -1;
-                    }
-                    else if (rect.top <= rect2.top) {
-                        return 0;
-                    }
-                    return n;
-                }
-            };
-            SORT_BY_BOTTOM = new Comparator<ViewComparator>() {
-                @Override
-                public int compare(final ViewComparator viewComparator, final ViewComparator viewComparator2) {
-                    int n = 1;
-                    final Rect rect = ViewUtils.getRect(viewComparator.getView(), true);
-                    final Rect rect2 = ViewUtils.getRect(viewComparator2.getView(), true);
-                    if (rect.bottom < rect2.bottom) {
-                        n = -1;
-                    }
-                    else if (rect.bottom <= rect2.bottom) {
-                        return 0;
-                    }
-                    return n;
-                }
-            };
-        }
-        
-        public ViewComparator(final View mView) {
-            if (mView == null) {
-                throw new IllegalArgumentException("View can not be null");
-            }
-            this.mView = mView;
-        }
-        
-        @Override
-        public int compareTo(final ViewComparator viewComparator) {
-            int n = 1;
-            final Rect rect = ViewUtils.getRect(this.mView, true);
-            final Rect rect2 = ViewUtils.getRect(viewComparator.getView(), true);
-            if (rect.bottom < rect2.bottom) {
-                n = -1;
-            }
-            else if (rect.bottom <= rect2.bottom) {
-                return 0;
-            }
-            return n;
-        }
-        
-        public View getView() {
-            return this.mView;
-        }
-    }
-    
-    public enum Visibility
-    {
-        GONE, 
-        INVISIBLE, 
-        VISIBLE;
     }
 }

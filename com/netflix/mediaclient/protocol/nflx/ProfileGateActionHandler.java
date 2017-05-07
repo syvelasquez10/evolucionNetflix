@@ -6,7 +6,7 @@ package com.netflix.mediaclient.protocol.nflx;
 
 import android.app.Activity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.Log;
 import java.util.Map;
@@ -22,10 +22,10 @@ class ProfileGateActionHandler extends BaseNflxHandlerWithoutDelayedActionSuppor
     }
     
     @Override
-    public Response handle() {
+    public NflxHandler$Response handle() {
         Log.d("NflxHandler", "Profile gate is required.");
         NflxProtocolUtils.reportOnProfileGate(this.mActivity, this.mParamsMap, this.mStarted);
-        this.mActivity.startActivity(ProfileSelectionActivity.createSwitchFromDeepLinking(this.mActivity, IClientLogging.ModalView.homeScreen));
-        return Response.HANDLING;
+        this.mActivity.startActivity(ProfileSelectionActivity.createSwitchFromDeepLinking(this.mActivity, IClientLogging$ModalView.homeScreen));
+        return NflxHandler$Response.HANDLING;
     }
 }

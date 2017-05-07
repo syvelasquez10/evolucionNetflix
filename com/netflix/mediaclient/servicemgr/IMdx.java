@@ -4,11 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.util.WebApiUtils;
+import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.util.Pair;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
 import android.annotation.SuppressLint;
 
@@ -39,13 +38,7 @@ public interface IMdx
     public static final int MDX_ERROR_INIT_ERROR = 103;
     public static final int MDX_ERROR_LAUNCH_ERROR = 106;
     @SuppressLint({ "UseSparseArrays" })
-    public static final Map<Integer, Integer> MDX_ERROR_MAP = new HashMap<Integer, Integer>() {
-        {
-            this.put(100, 2131493241);
-            this.put(104, 2131493242);
-            this.put(105, 2131493243);
-        }
-    };
+    public static final Map<Integer, Integer> MDX_ERROR_MAP = new IMdx$1();
     public static final int MDX_ERROR_PAIR_ERROR = 104;
     public static final int MDX_ERROR_SESSION_ERROR = 105;
     public static final int MDX_ERROR_SHOW_TOAST = 300;
@@ -119,7 +112,7 @@ public interface IMdx
     
     VideoDetails getVideoDetail();
     
-    WebApiUtils.VideoIds getVideoIds();
+    WebApiUtils$VideoIds getVideoIds();
     
     boolean isBifReady();
     

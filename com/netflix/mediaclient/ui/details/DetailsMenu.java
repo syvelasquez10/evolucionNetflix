@@ -4,11 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import android.content.Context;
-import android.widget.Toast;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.view.MenuItem$OnMenuItemClickListener;
@@ -37,11 +32,11 @@ public class DetailsMenu
     }
     
     private void updateShareItemAsUnshared() {
-        this.shareItem.setTitle(2131493136).setEnabled(false).setVisible(true);
+        this.shareItem.setTitle(2131493109).setEnabled(false).setVisible(true);
     }
     
     private void updateShareItemToUnshare(final ServiceManager serviceManager, final String s) {
-        this.shareItem.setTitle(2131493135).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new UnshareClickHandler(serviceManager, s)).setEnabled(true).setVisible(true);
+        this.shareItem.setTitle(2131493108).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DetailsMenu$UnshareClickHandler(this, serviceManager, s)).setEnabled(true).setVisible(true);
     }
     
     public void updateShareItem(final ServiceManager serviceManager, final VideoDetails videoDetails) {
@@ -54,44 +49,5 @@ public class DetailsMenu
             return;
         }
         this.updateShareItemAsUnshared();
-    }
-    
-    private class OnVideoHideCallback extends LoggingManagerCallback
-    {
-        public OnVideoHideCallback() {
-            super("DetailsMenu");
-        }
-        
-        @Override
-        public void onVideoHide(final Status status) {
-            super.onVideoHide(status);
-            DetailsMenu.this.shareItem.setEnabled(true);
-            if (status.isError()) {
-                Log.w("DetailsMenu", "Invalid status code");
-                Toast.makeText((Context)DetailsMenu.this.activity, 2131493137, 1).show();
-                return;
-            }
-            Toast.makeText((Context)DetailsMenu.this.activity, 2131493134, 1).show();
-            DetailsMenu.this.updateShareItemAsUnshared();
-        }
-    }
-    
-    private class UnshareClickHandler implements MenuItem$OnMenuItemClickListener
-    {
-        private final ServiceManager serviceMan;
-        private final String videoId;
-        
-        public UnshareClickHandler(final ServiceManager serviceMan, final String videoId) {
-            this.serviceMan = serviceMan;
-            this.videoId = videoId;
-        }
-        
-        public boolean onMenuItemClick(final MenuItem menuItem) {
-            menuItem.setEnabled(false);
-            if (this.serviceMan != null) {
-                this.serviceMan.getBrowse().hideVideo(this.videoId, new OnVideoHideCallback());
-            }
-            return true;
-        }
     }
 }

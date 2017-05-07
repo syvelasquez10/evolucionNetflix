@@ -4,13 +4,9 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.api.BaseImplementation;
-import com.google.android.gms.common.api.Result;
 import android.os.Looper;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationListener;
-import android.os.RemoteException;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.PendingResult;
 import android.app.PendingIntent;
@@ -34,78 +30,36 @@ public class lt implements FusedLocationProviderApi
     
     @Override
     public PendingResult<Status> removeLocationUpdates(final GoogleApiClient googleApiClient, final PendingIntent pendingIntent) {
-        return googleApiClient.b((PendingResult<Status>)new a() {
-            protected void a(final ly ly) throws RemoteException {
-                ly.removeLocationUpdates(pendingIntent);
-                ((BaseImplementation.AbstractPendingResult<R>)this).b((R)Status.Jo);
-            }
-        });
+        return googleApiClient.b((PendingResult<Status>)new lt$6(this, pendingIntent));
     }
     
     @Override
     public PendingResult<Status> removeLocationUpdates(final GoogleApiClient googleApiClient, final LocationListener locationListener) {
-        return googleApiClient.b((PendingResult<Status>)new a() {
-            protected void a(final ly ly) throws RemoteException {
-                ly.removeLocationUpdates(locationListener);
-                ((BaseImplementation.AbstractPendingResult<R>)this).b((R)Status.Jo);
-            }
-        });
+        return googleApiClient.b((PendingResult<Status>)new lt$5(this, locationListener));
     }
     
     @Override
     public PendingResult<Status> requestLocationUpdates(final GoogleApiClient googleApiClient, final LocationRequest locationRequest, final PendingIntent pendingIntent) {
-        return googleApiClient.b((PendingResult<Status>)new a() {
-            protected void a(final ly ly) throws RemoteException {
-                ly.requestLocationUpdates(locationRequest, pendingIntent);
-                ((BaseImplementation.AbstractPendingResult<R>)this).b((R)Status.Jo);
-            }
-        });
+        return googleApiClient.b((PendingResult<Status>)new lt$4(this, locationRequest, pendingIntent));
     }
     
     @Override
     public PendingResult<Status> requestLocationUpdates(final GoogleApiClient googleApiClient, final LocationRequest locationRequest, final LocationListener locationListener) {
-        return googleApiClient.b((PendingResult<Status>)new a() {
-            protected void a(final ly ly) throws RemoteException {
-                ly.requestLocationUpdates(locationRequest, locationListener, null);
-                ((BaseImplementation.AbstractPendingResult<R>)this).b((R)Status.Jo);
-            }
-        });
+        return googleApiClient.b((PendingResult<Status>)new lt$1(this, locationRequest, locationListener));
     }
     
     @Override
     public PendingResult<Status> requestLocationUpdates(final GoogleApiClient googleApiClient, final LocationRequest locationRequest, final LocationListener locationListener, final Looper looper) {
-        return googleApiClient.b((PendingResult<Status>)new a() {
-            protected void a(final ly ly) throws RemoteException {
-                ly.requestLocationUpdates(locationRequest, locationListener, looper);
-                ((BaseImplementation.AbstractPendingResult<R>)this).b((R)Status.Jo);
-            }
-        });
+        return googleApiClient.b((PendingResult<Status>)new lt$3(this, locationRequest, locationListener, looper));
     }
     
     @Override
     public PendingResult<Status> setMockLocation(final GoogleApiClient googleApiClient, final Location location) {
-        return googleApiClient.b((PendingResult<Status>)new a() {
-            protected void a(final ly ly) throws RemoteException {
-                ly.setMockLocation(location);
-                ((BaseImplementation.AbstractPendingResult<R>)this).b((R)Status.Jo);
-            }
-        });
+        return googleApiClient.b((PendingResult<Status>)new lt$2(this, location));
     }
     
     @Override
     public PendingResult<Status> setMockMode(final GoogleApiClient googleApiClient, final boolean b) {
-        return googleApiClient.b((PendingResult<Status>)new a() {
-            protected void a(final ly ly) throws RemoteException {
-                ly.setMockMode(b);
-                ((BaseImplementation.AbstractPendingResult<R>)this).b((R)Status.Jo);
-            }
-        });
-    }
-    
-    private abstract static class a extends LocationServices.a<Status>
-    {
-        public Status d(final Status status) {
-            return status;
-        }
+        return googleApiClient.b((PendingResult<Status>)new lt$7(this, b));
     }
 }

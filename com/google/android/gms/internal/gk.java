@@ -4,7 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Future;
 
@@ -134,7 +133,7 @@ public class gk<T> implements Future<T>
     }
     
     @Override
-    public T get(final long p0, final TimeUnit p1) throws TimeoutException {
+    public T get(final long p0, final TimeUnit p1) {
         // 
         // This method could not be decompiled.
         // 
@@ -192,8 +191,6 @@ public class gk<T> implements Future<T>
         //    89: areturn        
         //    90: astore_3       
         //    91: goto            40
-        //    Exceptions:
-        //  throws java.util.concurrent.TimeoutException
         //    Signature:
         //  (JLjava/util/concurrent/TimeUnit;)TT;
         //    Exceptions:

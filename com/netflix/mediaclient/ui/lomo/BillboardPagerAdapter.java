@@ -5,16 +5,17 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.FetchVideosHandler$FetchCallback;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 public class BillboardPagerAdapter extends ProgressiveBillboardPagerAdapter
 {
-    public BillboardPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler.ViewRecycler viewRecycler) {
-        super(serviceManager, rowAdapterCallbacks, viewRecycler);
+    public BillboardPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler) {
+        super(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
     }
     
     @Override
@@ -27,6 +28,6 @@ public class BillboardPagerAdapter extends ProgressiveBillboardPagerAdapter
         if (Log.isLoggable("BaseProgressivePagerAdapter", 2)) {
             Log.v("BaseProgressivePagerAdapter", String.format("fetching billboard videos for: Title: %s, Type: %s, Total Vids: %d, Id: %s, start: %d, end: %d", loMo.getTitle(), loMo.getType(), loMo.getNumVideos(), loMo.getId(), n, n2));
         }
-        this.getManager().getBrowse().fetchVideos(loMo, n, n2, new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler.FetchCallback<Object>)this, loMo.getTitle(), n, n2));
+        this.getManager().getBrowse().fetchVideos(loMo, n, n2, new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler$FetchCallback<Object>)this, loMo.getTitle(), n, n2));
     }
 }

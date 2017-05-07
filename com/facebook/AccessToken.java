@@ -93,16 +93,14 @@ public final class AccessToken implements Serializable
         return new AccessToken(bundle.getString("com.facebook.TokenCachingStrategy.Token"), TokenCachingStrategy.getDate(bundle, "com.facebook.TokenCachingStrategy.ExpirationDate"), (List<String>)o, TokenCachingStrategy.getSource(bundle), TokenCachingStrategy.getDate(bundle, "com.facebook.TokenCachingStrategy.LastRefreshDate"));
     }
     
-    public static AccessToken createFromExistingAccessToken(final String s, Date default_LAST_REFRESH_TIME, final Date date, final AccessTokenSource accessTokenSource, final List<String> list) {
-        Date default_EXPIRATION_TIME = default_LAST_REFRESH_TIME;
-        if (default_LAST_REFRESH_TIME == null) {
+    public static AccessToken createFromExistingAccessToken(final String s, Date default_EXPIRATION_TIME, Date default_LAST_REFRESH_TIME, AccessTokenSource default_ACCESS_TOKEN_SOURCE, final List<String> list) {
+        if (default_EXPIRATION_TIME == null) {
             default_EXPIRATION_TIME = AccessToken.DEFAULT_EXPIRATION_TIME;
         }
-        if ((default_LAST_REFRESH_TIME = date) == null) {
+        if (default_LAST_REFRESH_TIME == null) {
             default_LAST_REFRESH_TIME = AccessToken.DEFAULT_LAST_REFRESH_TIME;
         }
-        AccessTokenSource default_ACCESS_TOKEN_SOURCE;
-        if ((default_ACCESS_TOKEN_SOURCE = accessTokenSource) == null) {
+        if (default_ACCESS_TOKEN_SOURCE == null) {
             default_ACCESS_TOKEN_SOURCE = AccessToken.DEFAULT_ACCESS_TOKEN_SOURCE;
         }
         return new AccessToken(s, default_EXPIRATION_TIME, list, default_ACCESS_TOKEN_SOURCE, default_LAST_REFRESH_TIME);
@@ -146,36 +144,33 @@ public final class AccessToken implements Serializable
     }
     
     private static Date getBundleLongAsDate(final Bundle bundle, final String s, final Date date) {
-        if (bundle != null) {
-            final Object value = bundle.get(s);
-            long n = 0L;
-            Label_0027: {
-                if (value instanceof Long) {
-                    n = (long)value;
-                }
-                else {
-                    if (value instanceof String) {
-                        try {
-                            n = Long.parseLong((String)value);
-                            break Label_0027;
-                        }
-                        catch (NumberFormatException ex) {
-                            return null;
-                        }
-                        return new Date(date.getTime() + 1000L * n);
-                    }
-                    return null;
-                }
-            }
-            if (n == 0L) {
-                return new Date(Long.MAX_VALUE);
-            }
-            return new Date(date.getTime() + 1000L * n);
+        if (bundle == null) {
+            return null;
         }
-        return null;
+        final Object value = bundle.get(s);
+        long n = 0L;
+        Label_0027: {
+            if (!(value instanceof Long)) {
+                if (value instanceof String) {
+                    try {
+                        n = Long.parseLong((String)value);
+                        break Label_0027;
+                    }
+                    catch (NumberFormatException ex) {
+                        return null;
+                    }
+                }
+                return null;
+            }
+            n = (long)value;
+        }
+        if (n == 0L) {
+            return new Date(Long.MAX_VALUE);
+        }
+        return new Date(n * 1000L + date.getTime());
     }
     
-    private void readObject(final ObjectInputStream objectInputStream) throws InvalidObjectException {
+    private void readObject(final ObjectInputStream objectInputStream) {
         throw new InvalidObjectException("Cannot readObject, serialization proxy required");
     }
     
@@ -190,7 +185,7 @@ public final class AccessToken implements Serializable
     }
     
     private Object writeReplace() {
-        return new SerializationProxyV1(this.token, this.expires, (List)this.permissions, this.source, this.lastRefresh);
+        return new AccessToken$SerializationProxyV1(this.token, this.expires, this.permissions, this.source, this.lastRefresh, null);
     }
     
     public Date getExpires() {
@@ -235,27 +230,5 @@ public final class AccessToken implements Serializable
         this.appendPermissions(sb);
         sb.append("}");
         return sb.toString();
-    }
-    
-    private static class SerializationProxyV1 implements Serializable
-    {
-        private static final long serialVersionUID = -2488473066578201069L;
-        private final Date expires;
-        private final Date lastRefresh;
-        private final List<String> permissions;
-        private final AccessTokenSource source;
-        private final String token;
-        
-        private SerializationProxyV1(final String token, final Date expires, final List<String> permissions, final AccessTokenSource source, final Date lastRefresh) {
-            this.expires = expires;
-            this.permissions = permissions;
-            this.token = token;
-            this.source = source;
-            this.lastRefresh = lastRefresh;
-        }
-        
-        private Object readResolve() {
-            return new AccessToken(this.token, this.expires, this.permissions, this.source, this.lastRefresh);
-        }
     }
 }

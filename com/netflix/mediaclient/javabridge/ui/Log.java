@@ -25,10 +25,5 @@ public interface Log
     
     void removeEventListener(final String p0, final EventListener p1);
     
-    void resetSessionID(final ResetSessionIdCallback p0);
-    
-    public interface ResetSessionIdCallback
-    {
-        void sessionCreated(final String p0);
-    }
+    void resetSessionID(final Log$ResetSessionIdCallback p0);
 }

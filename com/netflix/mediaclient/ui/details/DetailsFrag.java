@@ -15,32 +15,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
-import com.netflix.mediaclient.servicemgr.AddToListData;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 
-public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag implements Callback
+public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag implements ErrorWrapper$Callback
 {
     private static final String TAG = "DetailsFrag";
-    private AddToListData.StateListener addToListWrapper;
+    private AddToListData$StateListener addToListWrapper;
     private VideoDetailsViewGroup detailsViewGroup;
-    private final Callback errorCallback;
+    private final ErrorWrapper$Callback errorCallback;
     private LoadingAndErrorWrapper leWrapper;
     private T mVideoDetails;
     private ServiceManager manager;
     protected View primaryView;
     
     public DetailsFrag() {
-        this.errorCallback = new Callback() {
-            @Override
-            public void onRetryRequested() {
-                ((Callback)DetailsFrag.this.getActivity()).onRetryRequested();
-            }
-        };
+        this.errorCallback = new DetailsFrag$1(this);
     }
     
-    protected abstract VideoDetailsViewGroup.DetailsStringProvider getDetailsStringProvider(final T p0);
+    protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected ServiceManager getServiceManager() {
         return this.manager;
@@ -50,7 +45,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("DetailsFrag", "Creating new frag view...");
-        final View inflate = layoutInflater.inflate(2130903194, (ViewGroup)null, false);
+        final View inflate = layoutInflater.inflate(2130903195, (ViewGroup)null, false);
         this.detailsViewGroup = (VideoDetailsViewGroup)inflate.findViewById(2131165675);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
         (this.primaryView = inflate.findViewById(2131165674)).setVerticalScrollBarEnabled(false);

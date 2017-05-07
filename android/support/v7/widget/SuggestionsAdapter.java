@@ -23,10 +23,11 @@ import android.util.Log;
 import android.content.ComponentName;
 import android.text.style.TextAppearanceSpan;
 import android.text.SpannableString;
+import android.support.v7.appcompat.R$attr;
 import android.util.TypedValue;
 import android.graphics.drawable.Drawable;
 import android.database.Cursor;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$layout;
 import android.content.res.ColorStateList;
 import android.app.SearchableInfo;
 import android.app.SearchManager;
@@ -61,7 +62,7 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
     private ColorStateList mUrlColor;
     
     public SuggestionsAdapter(final Context mProviderContext, final SearchView mSearchView, final SearchableInfo mSearchable, final WeakHashMap<String, Drawable$ConstantState> mOutsideDrawablesCache) {
-        super(mProviderContext, R.layout.abc_search_dropdown_item_icons_2line, null, true);
+        super(mProviderContext, R$layout.abc_search_dropdown_item_icons_2line, null, true);
         this.mClosed = false;
         this.mQueryRefinement = 1;
         this.mText1Col = -1;
@@ -88,7 +89,7 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
     private CharSequence formatUrl(final CharSequence charSequence) {
         if (this.mUrlColor == null) {
             final TypedValue typedValue = new TypedValue();
-            this.mContext.getTheme().resolveAttribute(R.attr.textColorSearchUrl, typedValue, true);
+            this.mContext.getTheme().resolveAttribute(R$attr.textColorSearchUrl, typedValue, true);
             this.mUrlColor = this.mContext.getResources().getColorStateList(typedValue.resourceId);
         }
         final SpannableString spannableString = new SpannableString(charSequence);
@@ -97,38 +98,36 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
     }
     
     private Drawable getActivityIcon(final ComponentName componentName) {
+        final PackageManager packageManager = this.mContext.getPackageManager();
+        ActivityInfo activityInfo;
         int iconResource;
-        while (true) {
-            final PackageManager packageManager = this.mContext.getPackageManager();
-            ActivityInfo activityInfo;
-            try {
-                activityInfo = packageManager.getActivityInfo(componentName, 128);
-                iconResource = activityInfo.getIconResource();
-                if (iconResource == 0) {
-                    return null;
-                }
-            }
-            catch (PackageManager$NameNotFoundException ex) {
-                Log.w("SuggestionsAdapter", ex.toString());
+        try {
+            activityInfo = packageManager.getActivityInfo(componentName, 128);
+            iconResource = activityInfo.getIconResource();
+            if (iconResource == 0) {
                 return null;
             }
-            Drawable drawable;
-            if ((drawable = packageManager.getDrawable(componentName.getPackageName(), iconResource, activityInfo.applicationInfo)) == null) {
-                break;
-            }
-            return drawable;
         }
-        Log.w("SuggestionsAdapter", "Invalid icon resource " + iconResource + " for " + componentName.flattenToShortString());
-        return null;
+        catch (PackageManager$NameNotFoundException ex) {
+            Log.w("SuggestionsAdapter", ex.toString());
+            return null;
+        }
+        final Drawable drawable = packageManager.getDrawable(componentName.getPackageName(), iconResource, activityInfo.applicationInfo);
+        if (drawable == null) {
+            Log.w("SuggestionsAdapter", "Invalid icon resource " + iconResource + " for " + componentName.flattenToShortString());
+            return null;
+        }
+        return drawable;
     }
     
     private Drawable getActivityIconWithCache(final ComponentName componentName) {
+        final Drawable$ConstantState drawable$ConstantState = null;
         final String flattenToShortString = componentName.flattenToShortString();
         if (!this.mOutsideDrawablesCache.containsKey(flattenToShortString)) {
             final Drawable activityIcon = this.getActivityIcon(componentName);
             Drawable$ConstantState constantState;
             if (activityIcon == null) {
-                constantState = null;
+                constantState = drawable$ConstantState;
             }
             else {
                 constantState = activityIcon.getConstantState();
@@ -136,11 +135,11 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
             this.mOutsideDrawablesCache.put(flattenToShortString, constantState);
             return activityIcon;
         }
-        final Drawable$ConstantState drawable$ConstantState = this.mOutsideDrawablesCache.get(flattenToShortString);
-        if (drawable$ConstantState == null) {
+        final Drawable$ConstantState drawable$ConstantState2 = this.mOutsideDrawablesCache.get(flattenToShortString);
+        if (drawable$ConstantState2 == null) {
             return null;
         }
-        return drawable$ConstantState.newDrawable(this.mProviderContext.getResources());
+        return drawable$ConstantState2.newDrawable(this.mProviderContext.getResources());
     }
     
     public static String getColumnString(final Cursor cursor, final String s) {
@@ -412,15 +411,18 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
     }
     
     public void bindView(final View view, final Context context, final Cursor cursor) {
-        final ChildViewCache childViewCache = (ChildViewCache)view.getTag();
-        int int1 = 0;
+        final SuggestionsAdapter$ChildViewCache suggestionsAdapter$ChildViewCache = (SuggestionsAdapter$ChildViewCache)view.getTag();
+        int int1;
         if (this.mFlagsCol != -1) {
             int1 = cursor.getInt(this.mFlagsCol);
         }
-        if (childViewCache.mText1 != null) {
-            this.setViewText(childViewCache.mText1, getStringOrNull(cursor, this.mText1Col));
+        else {
+            int1 = 0;
         }
-        if (childViewCache.mText2 != null) {
+        if (suggestionsAdapter$ChildViewCache.mText1 != null) {
+            this.setViewText(suggestionsAdapter$ChildViewCache.mText1, getStringOrNull(cursor, this.mText1Col));
+        }
+        if (suggestionsAdapter$ChildViewCache.mText2 != null) {
             final String stringOrNull = getStringOrNull(cursor, this.mText2UrlCol);
             CharSequence charSequence;
             if (stringOrNull != null) {
@@ -430,30 +432,30 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
                 charSequence = getStringOrNull(cursor, this.mText2Col);
             }
             if (TextUtils.isEmpty(charSequence)) {
-                if (childViewCache.mText1 != null) {
-                    childViewCache.mText1.setSingleLine(false);
-                    childViewCache.mText1.setMaxLines(2);
+                if (suggestionsAdapter$ChildViewCache.mText1 != null) {
+                    suggestionsAdapter$ChildViewCache.mText1.setSingleLine(false);
+                    suggestionsAdapter$ChildViewCache.mText1.setMaxLines(2);
                 }
             }
-            else if (childViewCache.mText1 != null) {
-                childViewCache.mText1.setSingleLine(true);
-                childViewCache.mText1.setMaxLines(1);
+            else if (suggestionsAdapter$ChildViewCache.mText1 != null) {
+                suggestionsAdapter$ChildViewCache.mText1.setSingleLine(true);
+                suggestionsAdapter$ChildViewCache.mText1.setMaxLines(1);
             }
-            this.setViewText(childViewCache.mText2, charSequence);
+            this.setViewText(suggestionsAdapter$ChildViewCache.mText2, charSequence);
         }
-        if (childViewCache.mIcon1 != null) {
-            this.setViewDrawable(childViewCache.mIcon1, this.getIcon1(cursor), 4);
+        if (suggestionsAdapter$ChildViewCache.mIcon1 != null) {
+            this.setViewDrawable(suggestionsAdapter$ChildViewCache.mIcon1, this.getIcon1(cursor), 4);
         }
-        if (childViewCache.mIcon2 != null) {
-            this.setViewDrawable(childViewCache.mIcon2, this.getIcon2(cursor), 8);
+        if (suggestionsAdapter$ChildViewCache.mIcon2 != null) {
+            this.setViewDrawable(suggestionsAdapter$ChildViewCache.mIcon2, this.getIcon2(cursor), 8);
         }
         if (this.mQueryRefinement == 2 || (this.mQueryRefinement == 1 && (int1 & 0x1) != 0x0)) {
-            childViewCache.mIconRefine.setVisibility(0);
-            childViewCache.mIconRefine.setTag((Object)childViewCache.mText1.getText());
-            childViewCache.mIconRefine.setOnClickListener((View$OnClickListener)this);
+            suggestionsAdapter$ChildViewCache.mIconRefine.setVisibility(0);
+            suggestionsAdapter$ChildViewCache.mIconRefine.setTag((Object)suggestionsAdapter$ChildViewCache.mText1.getText());
+            suggestionsAdapter$ChildViewCache.mIconRefine.setOnClickListener((View$OnClickListener)this);
             return;
         }
-        childViewCache.mIconRefine.setVisibility(8);
+        suggestionsAdapter$ChildViewCache.mIconRefine.setVisibility(8);
     }
     
     public void changeCursor(final Cursor cursor) {
@@ -487,11 +489,11 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
     }
     
     public CharSequence convertToString(final Cursor cursor) {
-        CharSequence columnString;
-        if (cursor == null) {
-            columnString = null;
-        }
-        else if ((columnString = getColumnString(cursor, "suggest_intent_query")) == null) {
+        if (cursor != null) {
+            final String columnString = getColumnString(cursor, "suggest_intent_query");
+            if (columnString != null) {
+                return columnString;
+            }
             if (this.mSearchable.shouldRewriteQueryFromData()) {
                 final String columnString2 = getColumnString(cursor, "suggest_intent_data");
                 if (columnString2 != null) {
@@ -504,12 +506,11 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
                     return columnString3;
                 }
             }
-            return null;
         }
-        return columnString;
+        return null;
     }
     
-    Drawable getDrawableFromResourceUri(final Uri uri) throws FileNotFoundException {
+    Drawable getDrawableFromResourceUri(final Uri uri) {
         final String authority = uri.getAuthority();
         if (TextUtils.isEmpty((CharSequence)authority)) {
             throw new FileNotFoundException("No authority: " + uri);
@@ -567,12 +568,13 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
                 }
                 fragment.appendPath("search_suggest_query");
                 final String suggestSelection = searchableInfo.getSuggestSelection();
-                String[] array = null;
+                String[] array;
                 if (suggestSelection != null) {
                     array = new String[] { s };
                 }
                 else {
                     fragment.appendPath(s);
+                    array = null;
                 }
                 if (n > 0) {
                     fragment.appendQueryParameter("limit", String.valueOf(n));
@@ -583,19 +585,18 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
         return null;
     }
     
-    public View getView(final int n, View view, ViewGroup viewGroup) {
+    public View getView(final int n, View view, final ViewGroup viewGroup) {
         try {
             view = super.getView(n, view, viewGroup);
             return view;
         }
         catch (RuntimeException ex) {
             Log.w("SuggestionsAdapter", "Search suggestions cursor threw exception.", (Throwable)ex);
-            viewGroup = (ViewGroup)(view = this.newView(this.mContext, this.mCursor, viewGroup));
-            if (viewGroup != null) {
-                ((ChildViewCache)((View)viewGroup).getTag()).mText1.setText((CharSequence)ex.toString());
-                return (View)viewGroup;
+            final View view2 = this.newView(this.mContext, this.mCursor, viewGroup);
+            if (view2 != null) {
+                ((SuggestionsAdapter$ChildViewCache)view2.getTag()).mText1.setText((CharSequence)ex.toString());
             }
-            return view;
+            return view2;
         }
     }
     
@@ -606,7 +607,7 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
     @Override
     public View newView(final Context context, final Cursor cursor, final ViewGroup viewGroup) {
         final View view = super.newView(context, cursor, viewGroup);
-        view.setTag((Object)new ChildViewCache(view));
+        view.setTag((Object)new SuggestionsAdapter$ChildViewCache(view));
         return view;
     }
     
@@ -635,40 +636,23 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View$OnClickLi
         else {
             string = charSequence.toString();
         }
-        if (this.mSearchView.getVisibility() == 0 && this.mSearchView.getWindowVisibility() == 0) {
-            try {
-                final Cursor searchManagerSuggestions = this.getSearchManagerSuggestions(this.mSearchable, string, 50);
-                if (searchManagerSuggestions != null) {
-                    searchManagerSuggestions.getCount();
-                    return searchManagerSuggestions;
-                }
+        if (this.mSearchView.getVisibility() != 0 || this.mSearchView.getWindowVisibility() != 0) {
+            return null;
+        }
+        try {
+            final Cursor searchManagerSuggestions = this.getSearchManagerSuggestions(this.mSearchable, string, 50);
+            if (searchManagerSuggestions != null) {
+                searchManagerSuggestions.getCount();
+                return searchManagerSuggestions;
             }
-            catch (RuntimeException ex) {
-                Log.w("SuggestionsAdapter", "Search suggestions query threw an exception.", (Throwable)ex);
-                return null;
-            }
+        }
+        catch (RuntimeException ex) {
+            Log.w("SuggestionsAdapter", "Search suggestions query threw an exception.", (Throwable)ex);
         }
         return null;
     }
     
     public void setQueryRefinement(final int mQueryRefinement) {
         this.mQueryRefinement = mQueryRefinement;
-    }
-    
-    private static final class ChildViewCache
-    {
-        public final ImageView mIcon1;
-        public final ImageView mIcon2;
-        public final ImageView mIconRefine;
-        public final TextView mText1;
-        public final TextView mText2;
-        
-        public ChildViewCache(final View view) {
-            this.mText1 = (TextView)view.findViewById(16908308);
-            this.mText2 = (TextView)view.findViewById(16908309);
-            this.mIcon1 = (ImageView)view.findViewById(16908295);
-            this.mIcon2 = (ImageView)view.findViewById(16908296);
-            this.mIconRefine = (ImageView)view.findViewById(R.id.edit_query);
-        }
     }
 }

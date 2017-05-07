@@ -4,6 +4,7 @@
 
 package com.google.android.gms.maps.model;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -58,7 +59,7 @@ public class a implements Parcelable$Creator<CameraPosition>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new CameraPosition(g, latLng, j, i, l);
     }

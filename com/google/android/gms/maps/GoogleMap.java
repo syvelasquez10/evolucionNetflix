@@ -4,7 +4,6 @@
 
 package com.google.android.gms.maps;
 
-import android.view.View;
 import com.google.android.gms.maps.internal.s;
 import android.graphics.Bitmap;
 import com.google.android.gms.maps.internal.o;
@@ -12,11 +11,10 @@ import com.google.android.gms.maps.internal.m;
 import com.google.android.gms.maps.internal.l;
 import com.google.android.gms.maps.internal.k;
 import com.google.android.gms.maps.internal.j;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.internal.i;
 import com.google.android.gms.maps.internal.g;
+import com.google.android.gms.maps.internal.e;
 import com.google.android.gms.maps.internal.ILocationSourceDelegate;
-import com.google.android.gms.dynamic.e;
 import android.location.Location;
 import com.google.android.gms.maps.model.IndoorBuilding;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -131,16 +129,16 @@ public final class GoogleMap
         }
     }
     
-    public final void animateCamera(final CameraUpdate cameraUpdate, final int n, final CancelableCallback cancelableCallback) {
+    public final void animateCamera(final CameraUpdate cameraUpdate, final int n, final GoogleMap$CancelableCallback googleMap$CancelableCallback) {
         try {
             final IGoogleMapDelegate aic = this.aic;
             final d mm = cameraUpdate.mm();
             b b;
-            if (cancelableCallback == null) {
+            if (googleMap$CancelableCallback == null) {
                 b = null;
             }
             else {
-                b = new a(cancelableCallback);
+                b = new GoogleMap$a(googleMap$CancelableCallback);
             }
             aic.animateCameraWithDurationAndCallback(mm, n, b);
         }
@@ -149,16 +147,16 @@ public final class GoogleMap
         }
     }
     
-    public final void animateCamera(final CameraUpdate cameraUpdate, final CancelableCallback cancelableCallback) {
+    public final void animateCamera(final CameraUpdate cameraUpdate, final GoogleMap$CancelableCallback googleMap$CancelableCallback) {
         try {
             final IGoogleMapDelegate aic = this.aic;
             final d mm = cameraUpdate.mm();
             b b;
-            if (cancelableCallback == null) {
+            if (googleMap$CancelableCallback == null) {
                 b = null;
             }
             else {
-                b = new a(cancelableCallback);
+                b = new GoogleMap$a(googleMap$CancelableCallback);
             }
             aic.animateCameraWithCallback(mm, b);
         }
@@ -323,23 +321,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setInfoWindowAdapter(final InfoWindowAdapter infoWindowAdapter) {
+    public final void setInfoWindowAdapter(final GoogleMap$InfoWindowAdapter googleMap$InfoWindowAdapter) {
         Label_0015: {
-            if (infoWindowAdapter != null) {
+            if (googleMap$InfoWindowAdapter != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setInfoWindowAdapter(null);
                 return;
-                this.aic.setInfoWindowAdapter(new com.google.android.gms.maps.internal.d.a() {
-                    public com.google.android.gms.dynamic.d f(final f f) {
-                        return e.k(infoWindowAdapter.getInfoWindow(new Marker(f)));
-                    }
-                    
-                    public com.google.android.gms.dynamic.d g(final f f) {
-                        return e.k(infoWindowAdapter.getInfoContents(new Marker(f)));
-                    }
-                });
+                this.aic.setInfoWindowAdapter(new GoogleMap$13(this, googleMap$InfoWindowAdapter));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -355,25 +345,7 @@ public final class GoogleMap
             try {
                 this.aic.setLocationSource(null);
                 return;
-                this.aic.setLocationSource(new ILocationSourceDelegate.a() {
-                    public void activate(final com.google.android.gms.maps.internal.h h) {
-                        locationSource.activate((LocationSource.OnLocationChangedListener)new LocationSource.OnLocationChangedListener() {
-                            @Override
-                            public void onLocationChanged(final Location location) {
-                                try {
-                                    h.l(e.k(location));
-                                }
-                                catch (RemoteException ex) {
-                                    throw new RuntimeRemoteException(ex);
-                                }
-                            }
-                        });
-                    }
-                    
-                    public void deactivate() {
-                        locationSource.deactivate();
-                    }
-                });
+                this.aic.setLocationSource(new GoogleMap$6(this, locationSource));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -399,19 +371,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setOnCameraChangeListener(final OnCameraChangeListener onCameraChangeListener) {
+    public final void setOnCameraChangeListener(final GoogleMap$OnCameraChangeListener googleMap$OnCameraChangeListener) {
         Label_0015: {
-            if (onCameraChangeListener != null) {
+            if (googleMap$OnCameraChangeListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnCameraChangeListener(null);
                 return;
-                this.aic.setOnCameraChangeListener(new com.google.android.gms.maps.internal.e.a() {
-                    public void onCameraChange(final CameraPosition cameraPosition) {
-                        onCameraChangeListener.onCameraChange(cameraPosition);
-                    }
-                });
+                this.aic.setOnCameraChangeListener(new GoogleMap$7(this, googleMap$OnCameraChangeListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -419,23 +387,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setOnIndoorStateChangeListener(final OnIndoorStateChangeListener onIndoorStateChangeListener) {
+    public final void setOnIndoorStateChangeListener(final GoogleMap$OnIndoorStateChangeListener googleMap$OnIndoorStateChangeListener) {
         Label_0015: {
-            if (onIndoorStateChangeListener != null) {
+            if (googleMap$OnIndoorStateChangeListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnIndoorStateChangeListener(null);
                 return;
-                this.aic.setOnIndoorStateChangeListener(new com.google.android.gms.maps.internal.f.a() {
-                    public void a(final com.google.android.gms.maps.model.internal.d d) {
-                        onIndoorStateChangeListener.onIndoorLevelActivated(new IndoorBuilding(d));
-                    }
-                    
-                    public void onIndoorBuildingFocused() {
-                        onIndoorStateChangeListener.onIndoorBuildingFocused();
-                    }
-                });
+                this.aic.setOnIndoorStateChangeListener(new GoogleMap$1(this, googleMap$OnIndoorStateChangeListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -443,19 +403,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setOnInfoWindowClickListener(final OnInfoWindowClickListener onInfoWindowClickListener) {
+    public final void setOnInfoWindowClickListener(final GoogleMap$OnInfoWindowClickListener googleMap$OnInfoWindowClickListener) {
         Label_0015: {
-            if (onInfoWindowClickListener != null) {
+            if (googleMap$OnInfoWindowClickListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnInfoWindowClickListener(null);
                 return;
-                this.aic.setOnInfoWindowClickListener(new g.a() {
-                    public void e(final f f) {
-                        onInfoWindowClickListener.onInfoWindowClick(new Marker(f));
-                    }
-                });
+                this.aic.setOnInfoWindowClickListener(new GoogleMap$12(this, googleMap$OnInfoWindowClickListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -463,19 +419,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setOnMapClickListener(final OnMapClickListener onMapClickListener) {
+    public final void setOnMapClickListener(final GoogleMap$OnMapClickListener googleMap$OnMapClickListener) {
         Label_0015: {
-            if (onMapClickListener != null) {
+            if (googleMap$OnMapClickListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnMapClickListener(null);
                 return;
-                this.aic.setOnMapClickListener(new i.a() {
-                    public void onMapClick(final LatLng latLng) {
-                        onMapClickListener.onMapClick(latLng);
-                    }
-                });
+                this.aic.setOnMapClickListener(new GoogleMap$8(this, googleMap$OnMapClickListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -483,19 +435,15 @@ public final class GoogleMap
         }
     }
     
-    public void setOnMapLoadedCallback(final OnMapLoadedCallback onMapLoadedCallback) {
+    public void setOnMapLoadedCallback(final GoogleMap$OnMapLoadedCallback googleMap$OnMapLoadedCallback) {
         Label_0015: {
-            if (onMapLoadedCallback != null) {
+            if (googleMap$OnMapLoadedCallback != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnMapLoadedCallback(null);
                 return;
-                this.aic.setOnMapLoadedCallback(new j.a() {
-                    public void onMapLoaded() throws RemoteException {
-                        onMapLoadedCallback.onMapLoaded();
-                    }
-                });
+                this.aic.setOnMapLoadedCallback(new GoogleMap$4(this, googleMap$OnMapLoadedCallback));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -503,19 +451,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setOnMapLongClickListener(final OnMapLongClickListener onMapLongClickListener) {
+    public final void setOnMapLongClickListener(final GoogleMap$OnMapLongClickListener googleMap$OnMapLongClickListener) {
         Label_0015: {
-            if (onMapLongClickListener != null) {
+            if (googleMap$OnMapLongClickListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnMapLongClickListener(null);
                 return;
-                this.aic.setOnMapLongClickListener(new k.a() {
-                    public void onMapLongClick(final LatLng latLng) {
-                        onMapLongClickListener.onMapLongClick(latLng);
-                    }
-                });
+                this.aic.setOnMapLongClickListener(new GoogleMap$9(this, googleMap$OnMapLongClickListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -523,19 +467,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setOnMarkerClickListener(final OnMarkerClickListener onMarkerClickListener) {
+    public final void setOnMarkerClickListener(final GoogleMap$OnMarkerClickListener googleMap$OnMarkerClickListener) {
         Label_0015: {
-            if (onMarkerClickListener != null) {
+            if (googleMap$OnMarkerClickListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnMarkerClickListener(null);
                 return;
-                this.aic.setOnMarkerClickListener(new l.a() {
-                    public boolean a(final f f) {
-                        return onMarkerClickListener.onMarkerClick(new Marker(f));
-                    }
-                });
+                this.aic.setOnMarkerClickListener(new GoogleMap$10(this, googleMap$OnMarkerClickListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -543,27 +483,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setOnMarkerDragListener(final OnMarkerDragListener onMarkerDragListener) {
+    public final void setOnMarkerDragListener(final GoogleMap$OnMarkerDragListener googleMap$OnMarkerDragListener) {
         Label_0015: {
-            if (onMarkerDragListener != null) {
+            if (googleMap$OnMarkerDragListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnMarkerDragListener(null);
                 return;
-                this.aic.setOnMarkerDragListener(new m.a() {
-                    public void b(final f f) {
-                        onMarkerDragListener.onMarkerDragStart(new Marker(f));
-                    }
-                    
-                    public void c(final f f) {
-                        onMarkerDragListener.onMarkerDragEnd(new Marker(f));
-                    }
-                    
-                    public void d(final f f) {
-                        onMarkerDragListener.onMarkerDrag(new Marker(f));
-                    }
-                });
+                this.aic.setOnMarkerDragListener(new GoogleMap$11(this, googleMap$OnMarkerDragListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -571,19 +499,15 @@ public final class GoogleMap
         }
     }
     
-    public final void setOnMyLocationButtonClickListener(final OnMyLocationButtonClickListener onMyLocationButtonClickListener) {
+    public final void setOnMyLocationButtonClickListener(final GoogleMap$OnMyLocationButtonClickListener googleMap$OnMyLocationButtonClickListener) {
         Label_0015: {
-            if (onMyLocationButtonClickListener != null) {
+            if (googleMap$OnMyLocationButtonClickListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnMyLocationButtonClickListener(null);
                 return;
-                this.aic.setOnMyLocationButtonClickListener(new com.google.android.gms.maps.internal.n.a() {
-                    public boolean onMyLocationButtonClick() throws RemoteException {
-                        return onMyLocationButtonClickListener.onMyLocationButtonClick();
-                    }
-                });
+                this.aic.setOnMyLocationButtonClickListener(new GoogleMap$3(this, googleMap$OnMyLocationButtonClickListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -592,19 +516,15 @@ public final class GoogleMap
     }
     
     @Deprecated
-    public final void setOnMyLocationChangeListener(final OnMyLocationChangeListener onMyLocationChangeListener) {
+    public final void setOnMyLocationChangeListener(final GoogleMap$OnMyLocationChangeListener googleMap$OnMyLocationChangeListener) {
         Label_0015: {
-            if (onMyLocationChangeListener != null) {
+            if (googleMap$OnMyLocationChangeListener != null) {
                 break Label_0015;
             }
             try {
                 this.aic.setOnMyLocationChangeListener(null);
                 return;
-                this.aic.setOnMyLocationChangeListener(new o.a() {
-                    public void g(final d d) {
-                        onMyLocationChangeListener.onMyLocationChange(e.f(d));
-                    }
-                });
+                this.aic.setOnMyLocationChangeListener(new GoogleMap$2(this, googleMap$OnMyLocationChangeListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -630,28 +550,20 @@ public final class GoogleMap
         }
     }
     
-    public final void snapshot(final SnapshotReadyCallback snapshotReadyCallback) {
-        this.snapshot(snapshotReadyCallback, null);
+    public final void snapshot(final GoogleMap$SnapshotReadyCallback googleMap$SnapshotReadyCallback) {
+        this.snapshot(googleMap$SnapshotReadyCallback, null);
     }
     
-    public final void snapshot(final SnapshotReadyCallback snapshotReadyCallback, final Bitmap bitmap) {
+    public final void snapshot(final GoogleMap$SnapshotReadyCallback googleMap$SnapshotReadyCallback, final Bitmap bitmap) {
         Label_0037: {
             if (bitmap == null) {
                 break Label_0037;
             }
-            d k = e.k(bitmap);
+            d k = com.google.android.gms.dynamic.e.k(bitmap);
             while (true) {
-                final e e = (e)k;
+                final com.google.android.gms.dynamic.e e = (com.google.android.gms.dynamic.e)k;
                 try {
-                    this.aic.snapshot(new s.a() {
-                        public void h(final d d) throws RemoteException {
-                            snapshotReadyCallback.onSnapshotReady(com.google.android.gms.dynamic.e.f(d));
-                        }
-                        
-                        public void onSnapshotReady(final Bitmap bitmap) throws RemoteException {
-                            snapshotReadyCallback.onSnapshotReady(bitmap);
-                        }
-                    }, e);
+                    this.aic.snapshot(new GoogleMap$5(this, googleMap$SnapshotReadyCallback), e);
                     return;
                     k = null;
                 }
@@ -668,99 +580,6 @@ public final class GoogleMap
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
-        }
-    }
-    
-    public interface CancelableCallback
-    {
-        void onCancel();
-        
-        void onFinish();
-    }
-    
-    public interface InfoWindowAdapter
-    {
-        View getInfoContents(final Marker p0);
-        
-        View getInfoWindow(final Marker p0);
-    }
-    
-    public interface OnCameraChangeListener
-    {
-        void onCameraChange(final CameraPosition p0);
-    }
-    
-    public interface OnIndoorStateChangeListener
-    {
-        void onIndoorBuildingFocused();
-        
-        void onIndoorLevelActivated(final IndoorBuilding p0);
-    }
-    
-    public interface OnInfoWindowClickListener
-    {
-        void onInfoWindowClick(final Marker p0);
-    }
-    
-    public interface OnMapClickListener
-    {
-        void onMapClick(final LatLng p0);
-    }
-    
-    public interface OnMapLoadedCallback
-    {
-        void onMapLoaded();
-    }
-    
-    public interface OnMapLongClickListener
-    {
-        void onMapLongClick(final LatLng p0);
-    }
-    
-    public interface OnMarkerClickListener
-    {
-        boolean onMarkerClick(final Marker p0);
-    }
-    
-    public interface OnMarkerDragListener
-    {
-        void onMarkerDrag(final Marker p0);
-        
-        void onMarkerDragEnd(final Marker p0);
-        
-        void onMarkerDragStart(final Marker p0);
-    }
-    
-    public interface OnMyLocationButtonClickListener
-    {
-        boolean onMyLocationButtonClick();
-    }
-    
-    @Deprecated
-    public interface OnMyLocationChangeListener
-    {
-        void onMyLocationChange(final Location p0);
-    }
-    
-    public interface SnapshotReadyCallback
-    {
-        void onSnapshotReady(final Bitmap p0);
-    }
-    
-    private static final class a extends b.a
-    {
-        private final CancelableCallback aiu;
-        
-        a(final CancelableCallback aiu) {
-            this.aiu = aiu;
-        }
-        
-        public void onCancel() {
-            this.aiu.onCancel();
-        }
-        
-        public void onFinish() {
-            this.aiu.onFinish();
         }
     }
 }

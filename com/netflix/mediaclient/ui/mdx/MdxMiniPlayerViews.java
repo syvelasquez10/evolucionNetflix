@@ -4,52 +4,32 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.servicemgr.IMdx;
 import android.view.ViewGroup$MarginLayoutParams;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.animation.TimeInterpolator;
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.gfx.AnimationUtils$HideViewOnAnimatorEnd;
 import java.util.Arrays;
 import java.util.Iterator;
 import android.animation.Animator$AnimatorListener;
 import android.view.LayoutInflater;
 import android.content.res.Resources;
-import java.util.Collection;
 import java.util.ArrayList;
-import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
-import android.graphics.Rect;
+import java.util.Collection;
 import com.netflix.mediaclient.util.ViewUtils;
-import android.app.Dialog;
-import com.netflix.mediaclient.ui.common.VolumeDialogFrag;
-import com.netflix.mediaclient.ui.common.SharingDialogFrag;
-import com.netflix.mediaclient.ui.common.RatingDialogFrag;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Context;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.ui.details.EpisodeListFrag;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.ui.details.DetailsActivity;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.media.BifManager;
-import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.util.TimeUtils;
-import android.widget.SeekBar;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.android.widget.SnappableSeekBar;
+import com.netflix.mediaclient.android.widget.SnappableSeekBar$OnSnappableSeekBarChangeListener;
 import com.netflix.mediaclient.android.widget.IconFontTextView;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.util.MdxUtils;
+import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
 import android.view.ViewGroup;
 import java.util.List;
 import android.widget.TextView;
@@ -78,13 +58,13 @@ class MdxMiniPlayerViews
     private final View auxControlsGroup;
     private final ImageView bifImage;
     private final TextView bifSeekTime;
-    private final MdxMiniPlayerViewCallbacks callbacks;
+    private final MdxMiniPlayerViews$MdxMiniPlayerViewCallbacks callbacks;
     private final List<View> collapsedViews;
     private final ViewGroup content;
     private final TextView currentTime;
     private final TextView deviceName;
     private final View deviceNameGroup;
-    private final MdxUtils.MdxTargetSelectionDialogInterface dialogCallbacks;
+    private final MdxUtils$MdxTargetSelectionDialogInterface dialogCallbacks;
     private final View$OnClickListener dummyClickListener;
     private boolean episodesButtonVisible;
     private final View$OnClickListener episodesClickListener;
@@ -98,7 +78,7 @@ class MdxMiniPlayerViews
     private final int maxTitleTextYDelta;
     private final int maxTitleTextYMargin;
     private MdxMenu mdxMenu;
-    private final SnappableSeekBar.OnSnappableSeekBarChangeListener onSeekBarChangeListener;
+    private final SnappableSeekBar$OnSnappableSeekBarChangeListener onSeekBarChangeListener;
     private final String parentActivityClass;
     private final View$OnClickListener pauseOnClickListener;
     private final ImageView playOrPauseCollapsed;
@@ -133,201 +113,24 @@ class MdxMiniPlayerViews
         timeFormatter = new TimeFormatterHelper();
     }
     
-    public MdxMiniPlayerViews(final NetflixActivity activity, final MdxMiniPlayerViewCallbacks callbacks, final MdxUtils.MdxTargetSelectionDialogInterface dialogCallbacks) {
+    public MdxMiniPlayerViews(final NetflixActivity activity, final MdxMiniPlayerViews$MdxMiniPlayerViewCallbacks callbacks, final MdxUtils$MdxTargetSelectionDialogInterface dialogCallbacks) {
         this.animInterpolator = (Interpolator)new AccelerateDecelerateInterpolator();
         this.episodesButtonVisible = true;
         this.isShowingViewForExpanded = null;
-        this.onSeekBarChangeListener = new SnappableSeekBar.OnSnappableSeekBarChangeListener() {
-            private long lastProgressChangeTime;
-            
-            @Override
-            public void onProgressChanged(final SeekBar seekBar, final int n, final boolean b) {
-                ((SnappableSeekBar.OnSnappableSeekBarChangeListener)MdxMiniPlayerViews.this.callbacks).onProgressChanged(seekBar, n, b);
-                if (b && TimeUtils.convertNsToMs(System.nanoTime() - this.lastProgressChangeTime) >= -1L) {
-                    this.lastProgressChangeTime = System.nanoTime();
-                    if (ServiceManagerUtils.isMdxAgentAvailable(MdxMiniPlayerViews.this.callbacks.getManager())) {
-                        BifManager.Utils.showBifInView(MdxMiniPlayerViews.this.callbacks.getMdx().getBifFrame(n * 1000), MdxMiniPlayerViews.this.bifImage);
-                    }
-                    MdxMiniPlayerViews.this.updateTimeViews(n);
-                }
-            }
-            
-            @Override
-            public void onStartTrackingTouch(final SeekBar seekBar) {
-                Log.v("MdxMiniPlayerViews", "onStartTrackingTouch");
-                ((SnappableSeekBar.OnSnappableSeekBarChangeListener)MdxMiniPlayerViews.this.callbacks).onStartTrackingTouch(seekBar);
-                MdxMiniPlayerViews.this.currentTime.setVisibility(4);
-                MdxMiniPlayerViews.this.fadeOutAndHide(MdxMiniPlayerViews.this.artwork);
-                MdxMiniPlayerViews.this.fadeInAndShow(MdxMiniPlayerViews.this.bifImage, MdxMiniPlayerViews.this.bifSeekTime);
-                MdxMiniPlayerViews.this.updateViewsForSeekBarUsage(true);
-            }
-            
-            @Override
-            public void onStopTrackingTouch(final SeekBar seekBar, final boolean b) {
-                Log.v("MdxMiniPlayerViews", "onStopTrackingTouch, isInSnapRegion: " + b);
-                ((SnappableSeekBar.OnSnappableSeekBarChangeListener)MdxMiniPlayerViews.this.callbacks).onStopTrackingTouch(seekBar, b);
-                this.lastProgressChangeTime = 0L;
-                if (b) {
-                    MdxMiniPlayerViews.this.updateTimeViews(seekBar.getProgress());
-                }
-                else {
-                    this.onProgressChanged(seekBar, seekBar.getProgress(), true);
-                }
-                MdxMiniPlayerViews.this.showArtworkAndHideBif();
-                MdxMiniPlayerViews.this.updateViewsForSeekBarUsage(false);
-                if (!b) {
-                    MdxMiniPlayerViews.this.setControlsEnabled(false);
-                }
-            }
-        };
-        this.dummyClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                Log.v("MdxMiniPlayerViews", "Dummy click listener");
-                MdxMiniPlayerViews.this.seekBar.invalidate();
-            }
-        };
-        this.pauseOnClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                MdxMiniPlayerViews.this.log("pause pressed");
-                MdxMiniPlayerViews.this.callbacks.onPauseClicked();
-                MdxMiniPlayerViews.this.setControlsEnabled(false);
-            }
-        };
-        this.showVideoDetailsClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                final VideoDetails currentVideo = MdxMiniPlayerViews.this.callbacks.getCurrentVideo();
-                if (currentVideo == null) {
-                    return;
-                }
-                if (MdxMiniPlayerViews.this.activity instanceof DetailsActivity) {
-                    final DetailsActivity detailsActivity = (DetailsActivity)MdxMiniPlayerViews.this.activity;
-                    if (StringUtils.safeEquals(currentVideo.getId(), detailsActivity.getVideoId()) || StringUtils.safeEquals(currentVideo.getPlayable().getParentId(), detailsActivity.getVideoId())) {
-                        Log.d("MdxMiniPlayerViews", "Current details are already being shown - not showing details activity");
-                        MdxMiniPlayerViews.this.activity.notifyMdxShowDetailsRequest();
-                        return;
-                    }
-                }
-                Log.v("MdxMiniPlayerViews", "showing details actiivty");
-                DetailsActivity.show(MdxMiniPlayerViews.this.activity, currentVideo, PlayContext.EMPTY_CONTEXT);
-            }
-        };
-        this.resumeOnClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                Log.v("MdxMiniPlayerViews", "resume pressed");
-                MdxMiniPlayerViews.this.setControlsEnabled(false);
-                MdxMiniPlayerViews.this.callbacks.onResumeClicked();
-            }
-        };
-        this.skipBackOnClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                Log.v("MdxMiniPlayerViews", "skip pressed");
-                MdxMiniPlayerViews.this.setControlsEnabled(false);
-                MdxMiniPlayerViews.this.callbacks.onSkipBackClicked();
-            }
-        };
-        this.stopOnClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                MdxMiniPlayerViews.this.log("stop pressed");
-                MdxMiniPlayerViews.this.setControlsEnabled(false);
-                MdxMiniPlayerViews.this.callbacks.onStopClicked();
-            }
-        };
-        this.episodesClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (MdxMiniPlayerViews.this.activity.destroyed()) {
-                    return;
-                }
-                final VideoDetails currentVideo = MdxMiniPlayerViews.this.callbacks.getCurrentVideo();
-                if (currentVideo == null) {
-                    Log.w("MdxMiniPlayerViews", "currentVideo is null - can't show episodes");
-                    return;
-                }
-                if (!(currentVideo instanceof EpisodeDetails)) {
-                    Log.w("MdxMiniPlayerViews", "currentVideo is not an episode detail");
-                    return;
-                }
-                Log.v("MdxMiniPlayerViews", "Showing episodes dialog");
-                final NetflixDialogFrag create = EpisodeListFrag.create(currentVideo.getPlayable().getParentId(), null, false);
-                create.onManagerReady(MdxMiniPlayerViews.this.callbacks.getManager(), CommonStatus.OK);
-                create.setCancelable(true);
-                MdxMiniPlayerViews.this.activity.showDialog(create);
-            }
-        };
-        this.showLanguageSelectorClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                MdxMiniPlayerViews.this.callbacks.onShowLanguageSelectorDialog();
-            }
-        };
-        this.showRatingClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (MdxMiniPlayerViews.this.activity.destroyed()) {
-                    MdxMiniPlayerViews.this.log("Activity destroyed, can't show rating");
-                    return;
-                }
-                final VideoDetails currentVideo = MdxMiniPlayerViews.this.callbacks.getCurrentVideo();
-                if (currentVideo == null) {
-                    Log.e("MdxMiniPlayerViews", "Video is NULL. This should NOT happen!");
-                    return;
-                }
-                final float currentRating = MdxMiniPlayerViews.this.callbacks.getCurrentRating();
-                if (Log.isLoggable("MdxMiniPlayerViews", 2)) {
-                    MdxMiniPlayerViews.this.log("User set rating " + currentRating);
-                    MdxMiniPlayerViews.this.log("User rating from VideoDetails " + currentVideo.getUserRating());
-                }
-                Log.d("MdxMiniPlayerViews", "Report rate action started");
-                UserActionLogUtils.reportRateActionStarted((Context)MdxMiniPlayerViews.this.activity, null, MdxMiniPlayerViews.this.activity.getUiScreen());
-                String s;
-                if (StringUtils.isEmpty(s = currentVideo.getPlayable().getParentTitle())) {
-                    s = currentVideo.getTitle();
-                }
-                final RatingDialogFrag instance = RatingDialogFrag.newInstance(MdxUtils.getRating(currentVideo, currentRating), MdxUtils.getVideoId(currentVideo), s);
-                instance.setCancelable(true);
-                MdxMiniPlayerViews.this.activity.showDialog(instance);
-            }
-        };
-        this.sharingClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (MdxMiniPlayerViews.this.activity.destroyed()) {
-                    MdxMiniPlayerViews.this.log("Activity destroyed, can't show sharing frag");
-                    return;
-                }
-                final SharingDialogFrag instance = SharingDialogFrag.newInstance();
-                instance.setCancelable(true);
-                MdxMiniPlayerViews.this.activity.showDialog(instance);
-            }
-        };
-        this.showVolumeClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (MdxMiniPlayerViews.this.activity.destroyed()) {
-                    MdxMiniPlayerViews.this.log("Activity destroyed, can't show volume frag");
-                    return;
-                }
-                if (!MdxMiniPlayerViews.this.callbacks.isRemotePlayerReady()) {
-                    Log.w("MdxMiniPlayerViews", "Remote player is not ready - can't get/set volume");
-                    return;
-                }
-                final VolumeDialogFrag instance = VolumeDialogFrag.newInstance();
-                instance.setCancelable(true);
-                MdxMiniPlayerViews.this.activity.showDialog(instance);
-            }
-        };
-        this.showTargetSelectionDialogListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                MdxMiniPlayerViews.this.activity.displayDialog((Dialog)MdxUtils.createMdxTargetSelectionDialog(MdxMiniPlayerViews.this.activity, MdxMiniPlayerViews.this.dialogCallbacks));
-            }
-        };
-        this.seekBarLayoutListener = (ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                if (MdxMiniPlayerViews.this.seekBar.getHeight() <= 0) {
-                    return;
-                }
-                final Rect bounds = MdxMiniPlayerViews.this.seekBar.getCachedThumb().getBounds();
-                final int thumbOffset = (bounds.right - bounds.left) / 2;
-                Log.v("MdxMiniPlayerViews", "Setting thumb offset: " + thumbOffset);
-                MdxMiniPlayerViews.this.seekBar.setThumbOffset(thumbOffset);
-                ViewUtils.removeGlobalLayoutListener((View)MdxMiniPlayerViews.this.seekBar, (ViewTreeObserver$OnGlobalLayoutListener)this);
-            }
-        };
+        this.onSeekBarChangeListener = new MdxMiniPlayerViews$1(this);
+        this.dummyClickListener = (View$OnClickListener)new MdxMiniPlayerViews$2(this);
+        this.pauseOnClickListener = (View$OnClickListener)new MdxMiniPlayerViews$3(this);
+        this.showVideoDetailsClickListener = (View$OnClickListener)new MdxMiniPlayerViews$4(this);
+        this.resumeOnClickListener = (View$OnClickListener)new MdxMiniPlayerViews$5(this);
+        this.skipBackOnClickListener = (View$OnClickListener)new MdxMiniPlayerViews$6(this);
+        this.stopOnClickListener = (View$OnClickListener)new MdxMiniPlayerViews$7(this);
+        this.episodesClickListener = (View$OnClickListener)new MdxMiniPlayerViews$8(this);
+        this.showLanguageSelectorClickListener = (View$OnClickListener)new MdxMiniPlayerViews$9(this);
+        this.showRatingClickListener = (View$OnClickListener)new MdxMiniPlayerViews$10(this);
+        this.sharingClickListener = (View$OnClickListener)new MdxMiniPlayerViews$11(this);
+        this.showVolumeClickListener = (View$OnClickListener)new MdxMiniPlayerViews$12(this);
+        this.showTargetSelectionDialogListener = (View$OnClickListener)new MdxMiniPlayerViews$13(this);
+        this.seekBarLayoutListener = (ViewTreeObserver$OnGlobalLayoutListener)new MdxMiniPlayerViews$14(this);
         this.parentActivityClass = activity.getClass().getSimpleName();
         this.log("Creating");
         this.activity = activity;
@@ -339,10 +142,10 @@ class MdxMiniPlayerViews
         final LayoutInflater layoutInflater = activity.getLayoutInflater();
         int n;
         if (this.isTablet || portrait) {
-            n = 2130903124;
+            n = 2130903125;
         }
         else {
-            n = 2130903128;
+            n = 2130903129;
         }
         (this.content = (ViewGroup)layoutInflater.inflate(n, (ViewGroup)null)).setOnClickListener(this.dummyClickListener);
         this.titleGroup = this.content.findViewById(2131165488);
@@ -383,13 +186,13 @@ class MdxMiniPlayerViews
         this.remainingTime = (TextView)this.content.findViewById(2131165482);
         (this.seekBar = (SnappableSeekBar)this.content.findViewById(2131165487)).setSnappableOnSeekBarChangeListener(this.onSeekBarChangeListener);
         this.seekBar.getViewTreeObserver().addOnGlobalLayoutListener(this.seekBarLayoutListener);
-        final int dimensionPixelSize = resources.getDimensionPixelSize(2131361878);
+        final int dimensionPixelSize = resources.getDimensionPixelSize(2131361879);
         this.seekBar.setPadding(dimensionPixelSize, 0, dimensionPixelSize, 0);
         if (this.isTablet) {
             this.seekBar.setScrubberDentBitmap(2130837738);
             this.seekBar.setShouldSnapToTouchStartPosition(true);
         }
-        this.maxTitleTextYDelta = (int)((resources.getDimensionPixelOffset(2131361872) - resources.getDimensionPixelOffset(2131361870)) * 0.75f);
+        this.maxTitleTextYDelta = (int)((resources.getDimensionPixelOffset(2131361873) - resources.getDimensionPixelOffset(2131361871)) * 0.75f);
         this.maxTitleTextYMargin = AndroidUtils.dipToPixels((Context)activity, 2);
         int height;
         if (this.isTablet) {
@@ -406,7 +209,7 @@ class MdxMiniPlayerViews
             height = DeviceUtils.getScreenWidthInPixels((Context)activity) / 2;
         }
         this.bifImage.getLayoutParams().height = height;
-        Collection<View> viewsById = null;
+        List<View> viewsById;
         if (this.isTablet) {
             this.languageCollapsed = (IconFontTextView)this.content.findViewById(2131165489);
             this.episodesCollapsed = (IconFontTextView)this.content.findViewById(2131165490);
@@ -420,11 +223,12 @@ class MdxMiniPlayerViews
             this.episodesCollapsed = null;
             this.episodesDivider = null;
             this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131165489);
+            viewsById = null;
         }
         this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131165491);
-        this.initCollapsedButton(this.languageCollapsed, 2131492949, 2131493165, 18);
-        this.initCollapsedButton(this.episodesCollapsed, 2131492950, 2131493249, 20);
-        this.initCollapsedButton(this.skipBackCollapsed, 2131492948, 2131493163, 24);
+        this.initCollapsedButton(this.languageCollapsed, 2131492949, 2131493137, 18);
+        this.initCollapsedButton(this.episodesCollapsed, 2131492950, 2131493210, 20);
+        this.initCollapsedButton(this.skipBackCollapsed, 2131492948, 2131493136, 24);
         (this.collapsedViews = new ArrayList<View>()).add((View)this.playOrPauseCollapsed);
         this.collapsedViews.add((View)this.skipBackCollapsed);
         this.collapsedViews.add((View)this.languageCollapsed);
@@ -482,7 +286,7 @@ class MdxMiniPlayerViews
         for (final View view : collection) {
             if (view != null) {
                 view.clearAnimation();
-                view.animate().alpha(0.0f).setDuration(100L).setListener((Animator$AnimatorListener)new AnimationUtils.HideViewOnAnimatorEnd(view)).start();
+                view.animate().alpha(0.0f).setDuration(100L).setListener((Animator$AnimatorListener)new AnimationUtils$HideViewOnAnimatorEnd(view)).start();
             }
         }
     }
@@ -550,7 +354,7 @@ class MdxMiniPlayerViews
         if (this.titleTextGroup != null) {
             n = 1.0f - n;
             this.titleTextGroup.setY(this.titleGroupYPos + this.maxTitleTextYDelta * n);
-            final int n2 = (int)(this.maxTitleTextYMargin * n);
+            final int n2 = (int)(n * this.maxTitleTextYMargin);
             this.title.setPadding(this.title.getPaddingLeft(), n2, this.title.getPaddingRight(), n2);
         }
     }
@@ -800,7 +604,7 @@ class MdxMiniPlayerViews
     }
     
     public void updateImage(final VideoDetails videoDetails) {
-        NetflixActivity.getImageLoader((Context)this.activity).showImg(this.artwork, videoDetails.getHorzDispUrl(), IClientLogging.AssetType.boxArt, videoDetails.getTitle(), false, true);
+        NetflixActivity.getImageLoader((Context)this.activity).showImg(this.artwork, videoDetails.getHorzDispUrl(), IClientLogging$AssetType.boxArt, videoDetails.getTitle(), false, true);
     }
     
     public void updateMdxMenu() {
@@ -869,44 +673,9 @@ class MdxMiniPlayerViews
     
     public void updateToEmptyState(final boolean controlsEnabled) {
         this.updateSubtitleText(null);
-        final String string = this.activity.getString(2131493184);
+        final String string = this.activity.getString(2131493151);
         this.title.setText((CharSequence)string);
         this.deviceName.setText((CharSequence)string);
         this.setControlsEnabled(controlsEnabled);
-    }
-    
-    interface MdxMiniPlayerViewCallbacks extends OnSnappableSeekBarChangeListener
-    {
-        float getCurrentRating();
-        
-        VideoDetails getCurrentVideo();
-        
-        ServiceManager getManager();
-        
-        IMdx getMdx();
-        
-        boolean isEpisodeReady();
-        
-        boolean isLanguageReady();
-        
-        boolean isPanelExpanded();
-        
-        boolean isPlayingRemotely();
-        
-        boolean isRemotePlayerReady();
-        
-        boolean isVideoUnshared();
-        
-        void notifyControlsEnabled(final boolean p0);
-        
-        void onPauseClicked();
-        
-        void onResumeClicked();
-        
-        void onShowLanguageSelectorDialog();
-        
-        void onSkipBackClicked();
-        
-        void onStopClicked();
     }
 }

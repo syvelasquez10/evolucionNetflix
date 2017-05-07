@@ -4,14 +4,14 @@
 
 package com.google.ads.mediation;
 
-import com.google.ads.AdRequest;
+import com.google.ads.AdRequest$ErrorCode;
 
 @Deprecated
 public interface MediationInterstitialListener
 {
     void onDismissScreen(final MediationInterstitialAdapter<?, ?> p0);
     
-    void onFailedToReceiveAd(final MediationInterstitialAdapter<?, ?> p0, final AdRequest.ErrorCode p1);
+    void onFailedToReceiveAd(final MediationInterstitialAdapter<?, ?> p0, final AdRequest$ErrorCode p1);
     
     void onLeaveApplication(final MediationInterstitialAdapter<?, ?> p0);
     

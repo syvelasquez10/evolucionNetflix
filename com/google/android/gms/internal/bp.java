@@ -9,7 +9,7 @@ import com.google.android.gms.dynamic.d;
 import android.graphics.drawable.Drawable;
 
 @ez
-public class bp extends bs.a implements bq.a
+public class bp extends bs$a implements bq$a
 {
     private final Object mw;
     private final String pl;

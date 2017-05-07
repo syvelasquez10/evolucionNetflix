@@ -4,9 +4,6 @@
 
 package com.viewpagerindicator;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.view.View$BaseSavedState;
 import android.annotation.SuppressLint;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
@@ -21,8 +18,9 @@ import android.support.v4.view.ViewConfigurationCompat;
 import android.view.ViewConfiguration;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.graphics.Paint;
 import com.viewpagerindicator.android.osp.ViewPager;
+import android.graphics.Paint;
+import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
 import android.view.View;
 
 public class LinePageIndicator extends View implements PageIndicator
@@ -35,7 +33,7 @@ public class LinePageIndicator extends View implements PageIndicator
     private boolean mIsDragging;
     private float mLastMotionX;
     private float mLineWidth;
-    private OnPageChangeListener mListener;
+    private ViewPager$OnPageChangeListener mListener;
     private final Paint mPaintSelected;
     private final Paint mPaintUnselected;
     private int mTouchSlop;
@@ -46,7 +44,7 @@ public class LinePageIndicator extends View implements PageIndicator
     }
     
     public LinePageIndicator(final Context context, final AttributeSet set) {
-        this(context, set, R.attr.vpiLinePageIndicatorStyle);
+        this(context, set, R$attr.vpiLinePageIndicatorStyle);
     }
     
     public LinePageIndicator(final Context context, final AttributeSet set, final int n) {
@@ -59,13 +57,13 @@ public class LinePageIndicator extends View implements PageIndicator
             return;
         }
         final Resources resources = this.getResources();
-        final int color = resources.getColor(R.color.default_line_indicator_selected_color);
-        final int color2 = resources.getColor(R.color.default_line_indicator_unselected_color);
-        final float dimension = resources.getDimension(R.dimen.default_line_indicator_line_width);
-        final float dimension2 = resources.getDimension(R.dimen.default_line_indicator_gap_width);
-        final float dimension3 = resources.getDimension(R.dimen.default_line_indicator_stroke_width);
-        final boolean boolean1 = resources.getBoolean(R.bool.default_line_indicator_centered);
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.LinePageIndicator, n, 0);
+        final int color = resources.getColor(R$color.default_line_indicator_selected_color);
+        final int color2 = resources.getColor(R$color.default_line_indicator_unselected_color);
+        final float dimension = resources.getDimension(R$dimen.default_line_indicator_line_width);
+        final float dimension2 = resources.getDimension(R$dimen.default_line_indicator_gap_width);
+        final float dimension3 = resources.getDimension(R$dimen.default_line_indicator_stroke_width);
+        final boolean boolean1 = resources.getBoolean(R$bool.default_line_indicator_centered);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.LinePageIndicator, n, 0);
         this.mCentered = obtainStyledAttributes.getBoolean(1, boolean1);
         this.mLineWidth = obtainStyledAttributes.getDimension(5, dimension);
         this.mGapWidth = obtainStyledAttributes.getDimension(6, dimension2);
@@ -105,7 +103,7 @@ public class LinePageIndicator extends View implements PageIndicator
         }
         else {
             final int count = this.mViewPager.getAdapter().getCount();
-            min = this.getPaddingLeft() + this.getPaddingRight() + count * this.mLineWidth + (count - 1) * this.mGapWidth;
+            min = (count - 1) * this.mGapWidth + (this.getPaddingLeft() + this.getPaddingRight() + count * this.mLineWidth);
             if (mode == Integer.MIN_VALUE) {
                 min = Math.min(min, size);
             }
@@ -154,15 +152,14 @@ public class LinePageIndicator extends View implements PageIndicator
                 final float n2 = count;
                 final float mGapWidth = this.mGapWidth;
                 final float n3 = this.getPaddingTop();
-                final float n4 = this.getPaddingLeft();
+                float n4 = this.getPaddingLeft();
                 final float n5 = this.getPaddingRight();
                 final float n6 = n3 + (this.getHeight() - n3 - this.getPaddingBottom()) / 2.0f;
-                float n7 = n4;
                 if (this.mCentered) {
-                    n7 += (this.getWidth() - n4 - n5) / 2.0f - (n2 * n - mGapWidth) / 2.0f;
+                    n4 += (this.getWidth() - n4 - n5) / 2.0f - (n2 * n - mGapWidth) / 2.0f;
                 }
                 for (int i = 0; i < count; ++i) {
-                    final float n8 = n7 + i * n;
+                    final float n7 = n4 + i * n;
                     final float mLineWidth = this.mLineWidth;
                     Paint paint;
                     if (i == this.mCurrentPage) {
@@ -171,7 +168,7 @@ public class LinePageIndicator extends View implements PageIndicator
                     else {
                         paint = this.mPaintUnselected;
                     }
-                    canvas.drawLine(n8, n6, n8 + mLineWidth, n6, paint);
+                    canvas.drawLine(n7, n6, n7 + mLineWidth, n6, paint);
                 }
             }
         }
@@ -202,97 +199,98 @@ public class LinePageIndicator extends View implements PageIndicator
     }
     
     public void onRestoreInstanceState(final Parcelable parcelable) {
-        final SavedState savedState = (SavedState)parcelable;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        this.mCurrentPage = savedState.currentPage;
+        final LinePageIndicator$SavedState linePageIndicator$SavedState = (LinePageIndicator$SavedState)parcelable;
+        super.onRestoreInstanceState(linePageIndicator$SavedState.getSuperState());
+        this.mCurrentPage = linePageIndicator$SavedState.currentPage;
         this.requestLayout();
     }
     
     public Parcelable onSaveInstanceState() {
-        final SavedState savedState = new SavedState(super.onSaveInstanceState());
-        savedState.currentPage = this.mCurrentPage;
-        return (Parcelable)savedState;
+        final LinePageIndicator$SavedState linePageIndicator$SavedState = new LinePageIndicator$SavedState(super.onSaveInstanceState());
+        linePageIndicator$SavedState.currentPage = this.mCurrentPage;
+        return (Parcelable)linePageIndicator$SavedState;
     }
     
     @SuppressLint({ "ClickableViewAccessibility" })
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        if (super.onTouchEvent(motionEvent)) {
-            return true;
-        }
-        if (this.mViewPager == null || this.mViewPager.getAdapter().getCount() == 0) {
-            return false;
-        }
-        final int n = motionEvent.getAction() & 0xFF;
-        switch (n) {
-            case 0: {
-                this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, 0);
-                this.mLastMotionX = motionEvent.getX();
-                break;
+        int n = 0;
+        if (!super.onTouchEvent(motionEvent)) {
+            if (this.mViewPager == null || this.mViewPager.getAdapter().getCount() == 0) {
+                return false;
             }
-            case 2: {
-                final float x = MotionEventCompat.getX(motionEvent, MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId));
-                final float n2 = x - this.mLastMotionX;
-                if (!this.mIsDragging && Math.abs(n2) > this.mTouchSlop) {
-                    this.mIsDragging = true;
+            final int n2 = motionEvent.getAction() & 0xFF;
+            switch (n2) {
+                default: {
+                    return true;
                 }
-                if (!this.mIsDragging) {
-                    break;
+                case 0: {
+                    this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, 0);
+                    this.mLastMotionX = motionEvent.getX();
+                    return true;
                 }
-                this.mLastMotionX = x;
-                if (this.mViewPager.isFakeDragging() || this.mViewPager.beginFakeDrag()) {
-                    this.mViewPager.fakeDragBy(n2);
-                    break;
-                }
-                break;
-            }
-            case 1:
-            case 3: {
-                if (!this.mIsDragging) {
-                    final int count = this.mViewPager.getAdapter().getCount();
-                    final int width = this.getWidth();
-                    final float n3 = width / 2.0f;
-                    final float n4 = width / 6.0f;
-                    if (this.mCurrentPage > 0 && motionEvent.getX() < n3 - n4) {
-                        if (n != 3) {
-                            this.mViewPager.setCurrentItem(this.mCurrentPage - 1);
-                        }
+                case 2: {
+                    final float x = MotionEventCompat.getX(motionEvent, MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId));
+                    final float n3 = x - this.mLastMotionX;
+                    if (!this.mIsDragging && Math.abs(n3) > this.mTouchSlop) {
+                        this.mIsDragging = true;
+                    }
+                    if (!this.mIsDragging) {
+                        break;
+                    }
+                    this.mLastMotionX = x;
+                    if (this.mViewPager.isFakeDragging() || this.mViewPager.beginFakeDrag()) {
+                        this.mViewPager.fakeDragBy(n3);
                         return true;
                     }
-                    if (this.mCurrentPage < count - 1 && motionEvent.getX() > n3 + n4) {
-                        if (n != 3) {
-                            this.mViewPager.setCurrentItem(this.mCurrentPage + 1);
-                        }
-                        return true;
-                    }
-                }
-                this.mIsDragging = false;
-                this.mActivePointerId = -1;
-                if (this.mViewPager.isFakeDragging()) {
-                    this.mViewPager.endFakeDrag();
                     break;
                 }
-                break;
-            }
-            case 5: {
-                final int actionIndex = MotionEventCompat.getActionIndex(motionEvent);
-                this.mLastMotionX = MotionEventCompat.getX(motionEvent, actionIndex);
-                this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, actionIndex);
-                break;
-            }
-            case 6: {
-                final int actionIndex2 = MotionEventCompat.getActionIndex(motionEvent);
-                if (MotionEventCompat.getPointerId(motionEvent, actionIndex2) == this.mActivePointerId) {
-                    int n5;
-                    if (actionIndex2 == 0) {
-                        n5 = 1;
+                case 1:
+                case 3: {
+                    if (!this.mIsDragging) {
+                        final int count = this.mViewPager.getAdapter().getCount();
+                        final int width = this.getWidth();
+                        final float n4 = width / 2.0f;
+                        final float n5 = width / 6.0f;
+                        if (this.mCurrentPage > 0 && motionEvent.getX() < n4 - n5) {
+                            if (n2 != 3) {
+                                this.mViewPager.setCurrentItem(this.mCurrentPage - 1);
+                                return true;
+                            }
+                            break;
+                        }
+                        else if (this.mCurrentPage < count - 1 && motionEvent.getX() > n5 + n4) {
+                            if (n2 != 3) {
+                                this.mViewPager.setCurrentItem(this.mCurrentPage + 1);
+                                return true;
+                            }
+                            break;
+                        }
                     }
-                    else {
-                        n5 = 0;
+                    this.mIsDragging = false;
+                    this.mActivePointerId = -1;
+                    if (this.mViewPager.isFakeDragging()) {
+                        this.mViewPager.endFakeDrag();
+                        return true;
                     }
-                    this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, n5);
+                    break;
                 }
-                this.mLastMotionX = MotionEventCompat.getX(motionEvent, MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId));
-                break;
+                case 5: {
+                    final int actionIndex = MotionEventCompat.getActionIndex(motionEvent);
+                    this.mLastMotionX = MotionEventCompat.getX(motionEvent, actionIndex);
+                    this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, actionIndex);
+                    return true;
+                }
+                case 6: {
+                    final int actionIndex2 = MotionEventCompat.getActionIndex(motionEvent);
+                    if (MotionEventCompat.getPointerId(motionEvent, actionIndex2) == this.mActivePointerId) {
+                        if (actionIndex2 == 0) {
+                            n = 1;
+                        }
+                        this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, n);
+                    }
+                    this.mLastMotionX = MotionEventCompat.getX(motionEvent, MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId));
+                    return true;
+                }
             }
         }
         return true;
@@ -322,7 +320,7 @@ public class LinePageIndicator extends View implements PageIndicator
         this.invalidate();
     }
     
-    public void setOnPageChangeListener(final OnPageChangeListener mListener) {
+    public void setOnPageChangeListener(final ViewPager$OnPageChangeListener mListener) {
         this.mListener = mListener;
     }
     
@@ -352,44 +350,12 @@ public class LinePageIndicator extends View implements PageIndicator
         if (mViewPager.getAdapter() == null) {
             throw new IllegalStateException("ViewPager does not have adapter instance.");
         }
-        (this.mViewPager = mViewPager).setOnPageChangeListener((ViewPager.OnPageChangeListener)this);
+        (this.mViewPager = mViewPager).setOnPageChangeListener(this);
         this.invalidate();
     }
     
     public void setViewPager(final ViewPager viewPager, final int currentItem) {
         this.setViewPager(viewPager);
         this.setCurrentItem(currentItem);
-    }
-    
-    static class SavedState extends View$BaseSavedState
-    {
-        public static final Parcelable$Creator<SavedState> CREATOR;
-        int currentPage;
-        
-        static {
-            CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                public SavedState createFromParcel(final Parcel parcel) {
-                    return new SavedState(parcel);
-                }
-                
-                public SavedState[] newArray(final int n) {
-                    return new SavedState[n];
-                }
-            };
-        }
-        
-        private SavedState(final Parcel parcel) {
-            super(parcel);
-            this.currentPage = parcel.readInt();
-        }
-        
-        public SavedState(final Parcelable parcelable) {
-            super(parcelable);
-        }
-        
-        public void writeToParcel(final Parcel parcel, final int n) {
-            super.writeToParcel(parcel, n);
-            parcel.writeInt(this.currentPage);
-        }
     }
 }

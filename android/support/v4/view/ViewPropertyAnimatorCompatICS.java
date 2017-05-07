@@ -5,8 +5,6 @@
 package android.support.v4.view;
 
 import android.animation.Animator$AnimatorListener;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.view.animation.Interpolator;
 import android.view.View;
@@ -83,19 +81,7 @@ class ViewPropertyAnimatorCompatICS
     
     public static void setListener(final View view, final ViewPropertyAnimatorListener viewPropertyAnimatorListener) {
         if (viewPropertyAnimatorListener != null) {
-            view.animate().setListener((Animator$AnimatorListener)new AnimatorListenerAdapter() {
-                public void onAnimationCancel(final Animator animator) {
-                    viewPropertyAnimatorListener.onAnimationCancel(view);
-                }
-                
-                public void onAnimationEnd(final Animator animator) {
-                    viewPropertyAnimatorListener.onAnimationEnd(view);
-                }
-                
-                public void onAnimationStart(final Animator animator) {
-                    viewPropertyAnimatorListener.onAnimationStart(view);
-                }
-            });
+            view.animate().setListener((Animator$AnimatorListener)new ViewPropertyAnimatorCompatICS$1(viewPropertyAnimatorListener, view));
             return;
         }
         view.animate().setListener((Animator$AnimatorListener)null);

@@ -4,15 +4,8 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import android.widget.Toast;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.MotionEvent;
@@ -107,7 +100,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         else {
             trackId = -1;
         }
-        serviceManager.getBrowse().setVideoRating(videoId, n, trackId, new SetVideoRatingCallback(n));
+        serviceManager.getBrowse().setVideoRating(videoId, this.provider.getVideoType(), n, trackId, new NetflixRatingBar$SetVideoRatingCallback(this, n));
     }
     
     private void init() {
@@ -149,7 +142,9 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         Log.w("NetflixRatingBar", "Could not read mIsDragging field");
     }
     
-    private Drawable tileify(Drawable drawable, final boolean b) {
+    private Drawable tileify(final Drawable drawable, final boolean b) {
+        int level = 1;
+        final int n = 0;
         Object o;
         if (drawable instanceof LayerDrawable) {
             final LayerDrawable layerDrawable = (LayerDrawable)drawable;
@@ -160,39 +155,43 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
                 array[i] = this.tileify(layerDrawable.getDrawable(i), id == 16908301 || id == 16908303);
             }
             final LayerDrawable layerDrawable2 = new LayerDrawable(array);
-            int n = 0;
+            int n2 = n;
             while (true) {
                 o = layerDrawable2;
-                if (n >= numberOfLayers) {
+                if (n2 >= numberOfLayers) {
                     break;
                 }
-                layerDrawable2.setId(n, layerDrawable.getId(n));
-                ++n;
+                layerDrawable2.setId(n2, layerDrawable.getId(n2));
+                ++n2;
             }
         }
         else if (drawable instanceof StateListDrawable) {
             final StateListDrawable stateListDrawable = (StateListDrawable)drawable;
             final StateListDrawable stateListDrawable2 = new StateListDrawable();
-            int level = 0 + 1;
             stateListDrawable.setLevel(0);
-            for (drawable = stateListDrawable.getCurrent(); drawable != null; drawable = stateListDrawable.getCurrent(), ++level) {
-                stateListDrawable2.addState(stateListDrawable.getState(), this.tileify(drawable, b));
+            Drawable drawable2 = stateListDrawable.getCurrent();
+            while (true) {
+                o = stateListDrawable2;
+                if (drawable2 == null) {
+                    break;
+                }
+                stateListDrawable2.addState(stateListDrawable.getState(), this.tileify(drawable2, b));
                 stateListDrawable.setLevel(level);
+                drawable2 = stateListDrawable.getCurrent();
+                ++level;
             }
-            o = stateListDrawable2;
         }
         else {
-            if (drawable instanceof BitmapDrawable) {
-                final Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-                final ShapeDrawable shapeDrawable = new ShapeDrawable(this.getDrawableShape());
-                shapeDrawable.getPaint().setShader((Shader)new BitmapShader(bitmap, Shader$TileMode.REPEAT, Shader$TileMode.CLAMP));
-                Object o2 = shapeDrawable;
-                if (b) {
-                    o2 = new ClipDrawable((Drawable)shapeDrawable, 3, 1);
-                }
-                return (Drawable)o2;
+            if (!(drawable instanceof BitmapDrawable)) {
+                return drawable;
             }
-            return drawable;
+            final Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+            final ShapeDrawable shapeDrawable = new ShapeDrawable(this.getDrawableShape());
+            shapeDrawable.getPaint().setShader((Shader)new BitmapShader(bitmap, Shader$TileMode.REPEAT, Shader$TileMode.CLAMP));
+            if (!b) {
+                return (Drawable)shapeDrawable;
+            }
+            o = new ClipDrawable((Drawable)shapeDrawable, 3, 1);
         }
         return (Drawable)o;
     }
@@ -214,7 +213,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     private void updateSecondaryProgress() {
         final float progressPerStar = this.getProgressPerStar();
         if (progressPerStar > 0.0f) {
-            final int secondaryProgress = (int)(this.getProgress() / progressPerStar * progressPerStar + 0.5f);
+            final int secondaryProgress = (int)(progressPerStar * (this.getProgress() / progressPerStar) + 0.5f);
             if (Log.isLoggable("NetflixRatingBar", 2)) {
                 Log.v("NetflixRatingBar", "Setting secondary progress: " + secondaryProgress);
             }
@@ -228,7 +227,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         if (Log.isLoggable("NetflixRatingBar", 2)) {
             Log.v("NetflixRatingBar", "Rating changed: " + currRating + ", from user: " + b);
         }
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493198), currRating));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493162), currRating));
         if (b && this.getUserRating() != currRating) {
             final int progress = (int)(currRating * this.getProgressPerStar());
             Log.v("NetflixRatingBar", "Setting progress: " + progress);
@@ -301,45 +300,5 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
             rating = details.getPredictedRating();
         }
         this.setRating(rating);
-    }
-    
-    private class SetVideoRatingCallback extends LoggingManagerCallback
-    {
-        private final int rating;
-        
-        public SetVideoRatingCallback(final int rating) {
-            super("NetflixRatingBar");
-            this.rating = rating;
-        }
-        
-        @Override
-        public void onVideoRatingSet(final Status status) {
-            super.onVideoRatingSet(status);
-            if (NetflixRatingBar.this.provider == null || NetflixRatingBar.this.provider.destroyed()) {
-                Log.v("NetflixRatingBar", "Activity destroyed - ignoring ratings update callback");
-                return;
-            }
-            NetflixRatingBar.this.setEnabled(true);
-            if (status.isError()) {
-                Log.w("NetflixRatingBar", "Invalid status code");
-                Toast.makeText(NetflixRatingBar.this.getContext(), 2131493206, 1).show();
-                NetflixRatingBar.this.setRating((float)NetflixRatingBar.this.currRating);
-                UserActionLogUtils.reportRateActionEnded(NetflixRatingBar.this.getContext(), IClientLogging.CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, NetflixRatingBar.this.getContext().getString(2131493206), ActionOnUIError.displayedError), null, NetflixRatingBar.this.currRating);
-                return;
-            }
-            Log.v("NetflixRatingBar", "Rating has been updated");
-            Toast.makeText(NetflixRatingBar.this.getContext(), 2131493207, 1).show();
-            NetflixRatingBar.this.currRating = this.rating;
-            if (NetflixRatingBar.this.details != null) {
-                NetflixRatingBar.this.details.setUserRating(this.rating);
-            }
-            else {
-                Log.e("NetflixRatingBar", "Failed to update rating, details missing!");
-            }
-            NetflixRatingBar.this.updateRatingDrawable();
-            NetflixRatingBar.this.setRating((float)NetflixRatingBar.this.currRating);
-            Log.d("NetflixRatingBar", "Report rate action ended");
-            UserActionLogUtils.reportRateActionEnded(NetflixRatingBar.this.getContext(), IClientLogging.CompletionReason.success, null, null, NetflixRatingBar.this.currRating);
-        }
     }
 }

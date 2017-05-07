@@ -31,6 +31,6 @@ final class BakedBezierInterpolator implements Interpolator
         }
         final int min = Math.min((int)((BakedBezierInterpolator.VALUES.length - 1) * n), BakedBezierInterpolator.VALUES.length - 2);
         n = (n - min * BakedBezierInterpolator.STEP_SIZE) / BakedBezierInterpolator.STEP_SIZE;
-        return BakedBezierInterpolator.VALUES[min] + (BakedBezierInterpolator.VALUES[min + 1] - BakedBezierInterpolator.VALUES[min]) * n;
+        return (BakedBezierInterpolator.VALUES[min + 1] - BakedBezierInterpolator.VALUES[min]) * n + BakedBezierInterpolator.VALUES[min];
     }
 }

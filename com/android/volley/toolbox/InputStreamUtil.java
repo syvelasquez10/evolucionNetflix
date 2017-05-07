@@ -39,15 +39,16 @@ public class InputStreamUtil
                     final IOException ex3 = ex;
                     ((InputStream)ex3).close();
                     return sb.toString();
+                    // iftrue(Label_0082:, ex == null)
                     try {
                         ((InputStream)ex).close();
+                        return sb.toString();
                     }
                     catch (IOException ex) {
                         VolleyLog.e(ex, "failed to close inputStream", new Object[0]);
+                        return sb.toString();
                     }
-                    return sb.toString();
                 }
-                // iftrue(Label_0082:, ex == null)
                 catch (IOException ex) {
                     VolleyLog.e(ex, "failed to close inputStream", new Object[0]);
                 }

@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.kids.details;
 
-import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
+import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.content.Context;
@@ -56,10 +56,10 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
         View inflate = view;
         if (view == null) {
             Log.v("KidsCharacterDetailsAdapter", "Creating header view for position: " + text);
-            inflate = this.activity.getLayoutInflater().inflate(2130903111, (ViewGroup)null);
+            inflate = this.activity.getLayoutInflater().inflate(2130903112, (ViewGroup)null);
         }
-        int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361979);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361980);
+        int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361981);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361982);
         final int contentPadding = this.contentPadding;
         if (text != 0) {
             dimensionPixelSize = 0;
@@ -67,7 +67,7 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
         final int contentPadding2 = this.contentPadding;
         if (text == 0) {}
         inflate.setPadding(contentPadding, dimensionPixelSize, contentPadding2, dimensionPixelSize2);
-        final TextView textView = (TextView)inflate.findViewById(2131165435);
+        final TextView textView = (TextView)inflate.findViewById(2131165434);
         if (this.getHeaderType(text) == VideoType.MOVIE) {
             text = 2131492961;
         }
@@ -86,24 +86,21 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
         return n;
     }
     
-    public View getView(final int n, final View view, final ViewGroup viewGroup) {
+    public View getView(final int n, View o, final ViewGroup viewGroup) {
         Log.v("KidsCharacterDetailsAdapter", "Getting view for position: " + n);
-        Object o = view;
-        if (view == null) {
-            VideoViewGroup.IVideoView<Video> videoView;
+        if (o == null) {
             if (KidsUtils.shouldShowHorizontalImages(this.activity)) {
-                videoView = new KidsHorizontalVideoView(this.activity, false);
+                o = new KidsHorizontalVideoView(this.activity, false);
             }
             else {
-                videoView = new KidsOneToOneVideoView((Context)this.activity, false);
+                o = new KidsOneToOneVideoView((Context)this.activity, false);
             }
-            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361971);
-            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361972);
-            ((View)videoView).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
-            ((View)videoView).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeSkidmarkRowHeight(this.activity, dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2, false)));
-            o = videoView;
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361973);
+            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361974);
+            ((View)o).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
+            ((View)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeSkidmarkRowHeight(this.activity, dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2, false)));
         }
-        ((VideoViewGroup.IVideoView<Video>)o).update(this.getItem(n), this.trackable, n, false);
+        ((VideoViewGroup$IVideoView)o).update(this.getItem(n), this.trackable, n, false);
         return (View)o;
     }
     

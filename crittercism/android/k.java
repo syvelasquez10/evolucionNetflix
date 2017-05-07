@@ -85,7 +85,7 @@ public class k
                     }
                     catch (ConnectTimeoutException ex3) {
                         k.class.getClass().getCanonicalName();
-                        throw new ad("Error: connection timed out, please try again later.", ad.a.b);
+                        throw new ad("Error: connection timed out, please try again later.", ad$a.b);
                     }
                     catch (IOException ex) {
                         httpRequestBase.abort();
@@ -96,11 +96,11 @@ public class k
                         k.class.getClass().getCanonicalName();
                         new StringBuilder("Error: Aborting HTTP Request: ").append(ex.getLocalizedMessage());
                         if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("no route to host")) {
-                            throw new ad("Error: no internet connection", ad.a.a);
+                            throw new ad("Error: no internet connection", ad$a.a);
                         }
                         if (ex.getStackTrace()[0].toString().contains("java.net.InetAddress.lookupHostByName")) {
                             k.class.getClass().getCanonicalName();
-                            throw new ad("Error: no internet connection", ad.a.a);
+                            throw new ad("Error: no internet connection", ad$a.a);
                         }
                         throw ex;
                     }

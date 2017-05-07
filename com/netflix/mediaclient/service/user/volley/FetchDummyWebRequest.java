@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -51,7 +49,7 @@ public class FetchDummyWebRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(final String s) {
         return Integer.toString(StatusCode.OK.getValue());
     }
     

@@ -4,11 +4,14 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$UserRating;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Detail;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -76,7 +79,7 @@ public class FetchShowDetailsRequest extends FalcorVolleyWebClientRequest<ShowDe
     }
     
     @Override
-    protected ShowDetails parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected ShowDetails parseFalcorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_fetchshowdetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchshowdetailsrequest", "String response to parse = " + s);
         }
@@ -89,18 +92,18 @@ public class FetchShowDetailsRequest extends FalcorVolleyWebClientRequest<ShowDe
             while (true) {
                 try {
                     final JsonObject asJsonObject = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mShowId);
-                    showDetails.summary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", Video.Summary.class);
-                    showDetails.detail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Video.Detail.class);
-                    showDetails.rating = FalcorParseUtils.getPropertyObject(asJsonObject, "rating", Video.Rating.class);
-                    showDetails.inQueue = FalcorParseUtils.getPropertyObject(asJsonObject, "inQueue", Video.InQueue.class);
+                    showDetails.summary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", Video$Summary.class);
+                    showDetails.detail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Video$Detail.class);
+                    showDetails.rating = FalcorParseUtils.getPropertyObject(asJsonObject, "rating", Video$UserRating.class);
+                    showDetails.inQueue = FalcorParseUtils.getPropertyObject(asJsonObject, "inQueue", Video$InQueue.class);
                     showDetails.socialEvidence = FalcorParseUtils.getPropertyObject(asJsonObject, "socialEvidence", SocialEvidence.class);
                     if (!this.isCurrentEpisodeLocal) {
                         if (asJsonObject.has("episodes")) {
                             s = (String)asJsonObject.getAsJsonObject("episodes");
                             if (((JsonObject)s).has("current")) {
                                 s = (String)((JsonObject)s).getAsJsonObject("current");
-                                showDetails.currentEpisode = FalcorParseUtils.getPropertyObject((JsonObject)s, "detail", Episode.Detail.class);
-                                showDetails.currentEpisodeBookmark = FalcorParseUtils.getPropertyObject((JsonObject)s, "bookmark", Video.Bookmark.class);
+                                showDetails.currentEpisode = FalcorParseUtils.getPropertyObject((JsonObject)s, "detail", Episode$Detail.class);
+                                showDetails.currentEpisodeBookmark = FalcorParseUtils.getPropertyObject((JsonObject)s, "bookmark", Video$Bookmark.class);
                             }
                         }
                         showDetails.userConnectedToFacebook = this.userConnectedToFacebook;
@@ -118,8 +121,8 @@ public class FetchShowDetailsRequest extends FalcorVolleyWebClientRequest<ShowDe
                 final JsonObject asJsonObject2 = dataObj.getAsJsonObject("episodes");
                 try {
                     final JsonObject asJsonObject3 = asJsonObject2.getAsJsonObject(this.mReqEpisodeId);
-                    showDetails.currentEpisode = FalcorParseUtils.getPropertyObject(asJsonObject3, "detail", Episode.Detail.class);
-                    showDetails.currentEpisodeBookmark = FalcorParseUtils.getPropertyObject(asJsonObject3, "bookmark", Video.Bookmark.class);
+                    showDetails.currentEpisode = FalcorParseUtils.getPropertyObject(asJsonObject3, "detail", Episode$Detail.class);
+                    showDetails.currentEpisodeBookmark = FalcorParseUtils.getPropertyObject(asJsonObject3, "bookmark", Video$Bookmark.class);
                     continue;
                 }
                 catch (Exception ex2) {

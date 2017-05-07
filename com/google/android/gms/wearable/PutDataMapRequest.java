@@ -5,6 +5,7 @@
 package com.google.android.gms.wearable;
 
 import android.net.Uri;
+import com.google.android.gms.internal.pb$a;
 import android.util.Log;
 import com.google.android.gms.internal.pm;
 import com.google.android.gms.internal.pb;
@@ -35,7 +36,7 @@ public class PutDataMapRequest
     }
     
     public PutDataRequest asPutDataRequest() {
-        final pb.a a = pb.a(this.auM);
+        final pb$a a = pb.a(this.auM);
         this.auN.setData(pm.f(a.avQ));
         for (int size = a.avR.size(), i = 0; i < size; ++i) {
             final String string = Integer.toString(i);

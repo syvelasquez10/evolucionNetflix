@@ -8,11 +8,11 @@ import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEviden
 
 public class Show extends Video
 {
-    public Bookmark bookmark;
-    public BookmarkStill bookmarkStill;
-    public Detail detail;
-    public InQueue inQueue;
-    public Rating rating;
+    public Video$Bookmark bookmark;
+    public Video$BookmarkStill bookmarkStill;
+    public Video$Detail detail;
+    public Video$InQueue inQueue;
+    public Video$UserRating rating;
     public SocialEvidence socialEvidence;
-    public Summary summary;
+    public Video$Summary summary;
 }

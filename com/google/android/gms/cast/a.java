@@ -5,6 +5,7 @@
 package com.google.android.gms.cast;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.net.Uri;
 import com.google.android.gms.common.images.WebImage;
 import android.os.Parcelable;
@@ -77,7 +78,7 @@ public class a implements Parcelable$Creator<ApplicationMetadata>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ApplicationMetadata(g, o3, o2, c3, c2, o, uri);
     }

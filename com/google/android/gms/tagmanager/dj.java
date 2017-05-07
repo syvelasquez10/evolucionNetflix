@@ -4,15 +4,17 @@
 
 package com.google.android.gms.tagmanager;
 
+import com.google.android.gms.analytics.t$a;
 import com.google.android.gms.analytics.t;
+import com.google.android.gms.analytics.HitBuilders$HitBuilder;
 import java.util.LinkedHashMap;
 import com.google.android.gms.analytics.ecommerce.ProductAction;
-import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.HitBuilders$ScreenViewBuilder;
 import java.util.Iterator;
 import java.util.LinkedList;
 import com.google.android.gms.analytics.Tracker;
 import java.util.HashMap;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import com.google.android.gms.analytics.ecommerce.Product;
 import com.google.android.gms.analytics.ecommerce.Promotion;
 import java.util.HashSet;
@@ -132,10 +134,10 @@ class dj extends dg
         return product;
     }
     
-    private Map<String, String> O(final Map<String, d.a> map) {
-        final d.a a = map.get(dj.arZ);
-        if (a != null) {
-            return this.c(a);
+    private Map<String, String> O(final Map<String, d$a> map) {
+        final d$a d$a = map.get(dj.arZ);
+        if (d$a != null) {
+            return this.c(d$a);
         }
         if (dj.asc == null) {
             final HashMap<String, String> asc = new HashMap<String, String>();
@@ -150,10 +152,10 @@ class dj extends dg
         return dj.asc;
     }
     
-    private Map<String, String> P(final Map<String, d.a> map) {
-        final d.a a = map.get(dj.asa);
-        if (a != null) {
-            return this.c(a);
+    private Map<String, String> P(final Map<String, d$a> map) {
+        final d$a d$a = map.get(dj.asa);
+        if (d$a != null) {
+            return this.c(d$a);
         }
         if (dj.asd == null) {
             final HashMap<String, String> asd = new HashMap<String, String>();
@@ -168,7 +170,7 @@ class dj extends dg
         return dj.asd;
     }
     
-    private void a(final Tracker tracker, final Map<String, d.a> map) {
+    private void a(final Tracker tracker, final Map<String, d$a> map) {
         final String cz = this.cZ("transactionId");
         if (cz == null) {
             bh.T("Cannot find transactionId in data layer.");
@@ -211,14 +213,14 @@ class dj extends dg
         }
     }
     
-    private void b(final Tracker tracker, Map<String, d.a> map) {
-        final HitBuilders.ScreenViewBuilder screenViewBuilder = new HitBuilders.ScreenViewBuilder();
+    private void b(final Tracker tracker, Map<String, d$a> map) {
+        final HitBuilders$ScreenViewBuilder hitBuilders$ScreenViewBuilder = new HitBuilders$ScreenViewBuilder();
         final Map<String, String> p = this.p(map.get(dj.arX));
-        screenViewBuilder.setAll(p);
+        hitBuilders$ScreenViewBuilder.setAll(p);
         if (this.f(map, dj.arV)) {
             final Object value = this.anS.get("ecommerce");
             if (value instanceof Map) {
-                map = (Map<String, d.a>)value;
+                map = (Map<String, d$a>)value;
             }
             else {
                 map = null;
@@ -227,7 +229,7 @@ class dj extends dg
         else {
             final Object o = di.o(map.get(dj.arW));
             if (o instanceof Map) {
-                map = (Map<String, d.a>)o;
+                map = (Map<String, d$a>)o;
             }
             else {
                 map = null;
@@ -235,7 +237,7 @@ class dj extends dg
         }
         while (true) {
             String s;
-            d.a value2;
+            d$a value2;
             Object o2;
             int n;
             final String s2;
@@ -249,13 +251,13 @@ class dj extends dg
                     s = (String)map.get("currencyCode");
                 }
                 if (s != null) {
-                    screenViewBuilder.set("&cu", s);
+                    hitBuilders$ScreenViewBuilder.set("&cu", s);
                 }
                 value2 = map.get("impressions");
                 if (value2 instanceof List) {
                     for (final Map<K, String> map2 : (List<Map>)value2) {
                         try {
-                            screenViewBuilder.addImpression(this.N((Map<String, Object>)map2), map2.get("list"));
+                            hitBuilders$ScreenViewBuilder.addImpression(this.N((Map<String, Object>)map2), map2.get("list"));
                         }
                         catch (RuntimeException ex) {
                             bh.T("Failed to extract a product from DataLayer. " + ex.getMessage());
@@ -279,25 +281,25 @@ class dj extends dg
                             }
                             for (final Map<String, String> map3 : o2) {
                                 try {
-                                    screenViewBuilder.addPromotion(this.M(map3));
+                                    hitBuilders$ScreenViewBuilder.addPromotion(this.M(map3));
                                 }
                                 catch (RuntimeException ex2) {
                                     bh.T("Failed to extract a promotion from DataLayer. " + ex2.getMessage());
                                 }
                             }
                             if (!map.containsKey("promoClick")) {
-                                screenViewBuilder.set("&promoa", "view");
+                                hitBuilders$ScreenViewBuilder.set("&promoa", "view");
                                 break Label_0615;
                             }
-                            screenViewBuilder.set("&promoa", "click");
+                            hitBuilders$ScreenViewBuilder.set("&promoa", "click");
                             n = 0;
                             if (n != 0) {
                                 for (final String s2 : dj.asb) {
                                     if (map.containsKey(s2)) {
-                                        map = (Map<String, d.a>)map.get(s2);
+                                        map = (Map<String, d$a>)map.get(s2);
                                         for (final Map<String, Object> map4 : (List)map.get("products")) {
                                             try {
-                                                screenViewBuilder.addProduct(this.N(map4));
+                                                hitBuilders$ScreenViewBuilder.addProduct(this.N(map4));
                                             }
                                             catch (RuntimeException ex3) {
                                                 bh.T("Failed to extract a product from DataLayer. " + ex3.getMessage());
@@ -320,8 +322,8 @@ class dj extends dg
                         else {
                             c = new ProductAction(s2);
                         }
-                        screenViewBuilder.setProductAction(c);
-                        tracker.send(screenViewBuilder.build());
+                        hitBuilders$ScreenViewBuilder.setProductAction(c);
+                        tracker.send(hitBuilders$ScreenViewBuilder.build());
                         return;
                     }
                     catch (RuntimeException ex4) {
@@ -383,8 +385,8 @@ class dj extends dg
         return productAction;
     }
     
-    private Map<String, String> c(final d.a a) {
-        final Object o = di.o(a);
+    private Map<String, String> c(final d$a d$a) {
+        final Object o = di.o(d$a);
         if (!(o instanceof Map)) {
             return null;
         }
@@ -421,16 +423,16 @@ class dj extends dg
         return (List<Map<String, String>>)value;
     }
     
-    private boolean f(final Map<String, d.a> map, final String s) {
-        final d.a a = map.get(s);
-        return a != null && di.n(a);
+    private boolean f(final Map<String, d$a> map, final String s) {
+        final d$a d$a = map.get(s);
+        return d$a != null && di.n(d$a);
     }
     
-    private Map<String, String> p(final d.a a) {
-        if (a == null) {
+    private Map<String, String> p(final d$a d$a) {
+        if (d$a == null) {
             return new HashMap<String, String>();
         }
-        final Map<String, String> c = this.c(a);
+        final Map<String, String> c = this.c(d$a);
         if (c == null) {
             return new HashMap<String, String>();
         }
@@ -478,7 +480,7 @@ class dj extends dg
     }
     
     @Override
-    public void E(final Map<String, d.a> map) {
+    public void E(final Map<String, d$a> map) {
         final Tracker cr = this.asf.cR("_GTM_DEFAULT_TRACKER_");
         if (this.f(map, dj.arU)) {
             this.b(cr, map);

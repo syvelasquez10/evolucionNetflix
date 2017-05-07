@@ -22,7 +22,7 @@ public class GoogleAnalytics extends TrackerHandler
 {
     private static GoogleAnalytics AC;
     private static boolean Av;
-    private Set<a> AA;
+    private Set<GoogleAnalytics$a> AA;
     private boolean AB;
     private boolean Aw;
     private ae Ax;
@@ -50,7 +50,7 @@ public class GoogleAnalytics extends TrackerHandler
         ad.y(this.mContext);
         h.y(this.mContext);
         this.Az = new k();
-        this.AA = new HashSet<a>();
+        this.AA = new HashSet<GoogleAnalytics$a>();
         this.eF();
     }
     
@@ -127,8 +127,8 @@ public class GoogleAnalytics extends TrackerHandler
         }
     }
     
-    void a(final a a) {
-        this.AA.add(a);
+    void a(final GoogleAnalytics$a googleAnalytics$a) {
+        this.AA.add(googleAnalytics$a);
         if (this.mContext instanceof Application) {
             this.enableAutoActivityReports((Application)this.mContext);
         }
@@ -159,8 +159,8 @@ public class GoogleAnalytics extends TrackerHandler
         }
     }
     
-    void b(final a a) {
-        this.AA.remove(a);
+    void b(final GoogleAnalytics$a googleAnalytics$a) {
+        this.AA.remove(googleAnalytics$a);
     }
     
     @Deprecated
@@ -170,20 +170,20 @@ public class GoogleAnalytics extends TrackerHandler
     
     public void enableAutoActivityReports(final Application application) {
         if (Build$VERSION.SDK_INT >= 14 && !this.AB) {
-            application.registerActivityLifecycleCallbacks((Application$ActivityLifecycleCallbacks)new b());
+            application.registerActivityLifecycleCallbacks((Application$ActivityLifecycleCallbacks)new GoogleAnalytics$b(this));
             this.AB = true;
         }
     }
     
     void g(final Activity activity) {
-        final Iterator<a> iterator = this.AA.iterator();
+        final Iterator<GoogleAnalytics$a> iterator = this.AA.iterator();
         while (iterator.hasNext()) {
             iterator.next().i(activity);
         }
     }
     
     public boolean getAppOptOut() {
-        t.eq().a(t.a.zW);
+        t.eq().a(t$a.zW);
         return this.Ay;
     }
     
@@ -192,20 +192,20 @@ public class GoogleAnalytics extends TrackerHandler
     }
     
     void h(final Activity activity) {
-        final Iterator<a> iterator = this.AA.iterator();
+        final Iterator<GoogleAnalytics$a> iterator = this.AA.iterator();
         while (iterator.hasNext()) {
             iterator.next().j(activity);
         }
     }
     
     public boolean isDryRunEnabled() {
-        t.eq().a(t.a.Ai);
+        t.eq().a(t$a.Ai);
         return this.Aw;
     }
     
     public Tracker newTracker(final int n) {
         synchronized (this) {
-            t.eq().a(t.a.zS);
+            t.eq().a(t$a.zS);
             final Tracker tracker = new Tracker(null, this, this.mContext);
             if (n > 0) {
                 final ai ai = new ah(this.mContext).w(n);
@@ -219,7 +219,7 @@ public class GoogleAnalytics extends TrackerHandler
     
     public Tracker newTracker(final String s) {
         synchronized (this) {
-            t.eq().a(t.a.zS);
+            t.eq().a(t$a.zS);
             return this.a(new Tracker(s, this, this.mContext));
         }
     }
@@ -237,7 +237,7 @@ public class GoogleAnalytics extends TrackerHandler
     }
     
     public void setAppOptOut(final boolean b) {
-        t.eq().a(t.a.zV);
+        t.eq().a(t$a.zV);
         this.Ay = b;
         if (this.Ay) {
             this.ye.dI();
@@ -245,7 +245,7 @@ public class GoogleAnalytics extends TrackerHandler
     }
     
     public void setDryRun(final boolean aw) {
-        t.eq().a(t.a.Ah);
+        t.eq().a(t$a.Ah);
         this.Aw = aw;
     }
     
@@ -255,7 +255,7 @@ public class GoogleAnalytics extends TrackerHandler
     }
     
     public void setLogger(final Logger az) {
-        t.eq().a(t.a.Aj);
+        t.eq().a(t$a.Aj);
         this.Az = az;
     }
     
@@ -277,37 +277,4 @@ public class GoogleAnalytics extends TrackerHandler
         this.ye.u(map);
     }
     // monitorexit(this)
-    
-    interface a
-    {
-        void i(final Activity p0);
-        
-        void j(final Activity p0);
-    }
-    
-    class b implements Application$ActivityLifecycleCallbacks
-    {
-        public void onActivityCreated(final Activity activity, final Bundle bundle) {
-        }
-        
-        public void onActivityDestroyed(final Activity activity) {
-        }
-        
-        public void onActivityPaused(final Activity activity) {
-        }
-        
-        public void onActivityResumed(final Activity activity) {
-        }
-        
-        public void onActivitySaveInstanceState(final Activity activity, final Bundle bundle) {
-        }
-        
-        public void onActivityStarted(final Activity activity) {
-            GoogleAnalytics.this.g(activity);
-        }
-        
-        public void onActivityStopped(final Activity activity) {
-            GoogleAnalytics.this.h(activity);
-        }
-    }
 }

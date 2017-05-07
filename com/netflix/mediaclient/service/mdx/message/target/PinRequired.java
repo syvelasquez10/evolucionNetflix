@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message.target;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
 
@@ -26,7 +25,7 @@ public final class PinRequired extends MdxMessage
         PinRequired.PROPERTY_ancestorVideoType = "ancestorVideoType";
     }
     
-    public PinRequired(final JSONObject jsonObject) throws JSONException {
+    public PinRequired(final JSONObject jsonObject) {
         super("PIN_VERIFICATION_SHOW");
         this.mTitle = jsonObject.optString(PinRequired.PROPERTY_title);
         this.mVideoId = jsonObject.optInt(PinRequired.PROPERTY_videoId, -1);

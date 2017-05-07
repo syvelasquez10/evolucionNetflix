@@ -83,27 +83,4 @@ public class LaunchOptions implements SafeParcelable
     public void writeToParcel(final Parcel parcel, final int n) {
         c.a(this, parcel, n);
     }
-    
-    public static final class Builder
-    {
-        private LaunchOptions Fd;
-        
-        public Builder() {
-            this.Fd = new LaunchOptions();
-        }
-        
-        public LaunchOptions build() {
-            return this.Fd;
-        }
-        
-        public Builder setLocale(final Locale locale) {
-            this.Fd.setLanguage(ik.b(locale));
-            return this;
-        }
-        
-        public Builder setRelaunchIfRunning(final boolean relaunchIfRunning) {
-            this.Fd.setRelaunchIfRunning(relaunchIfRunning);
-            return this;
-        }
-    }
 }

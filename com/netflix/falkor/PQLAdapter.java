@@ -7,7 +7,6 @@ package com.netflix.falkor;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import com.google.gson.stream.JsonReader;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
@@ -24,7 +23,7 @@ public class PQLAdapter extends TypeAdapter<PQL>
         gson = NetflixApplication.getGson();
     }
     
-    private void writeObject(final JsonWriter jsonWriter, final Object o) throws IOException {
+    private void writeObject(final JsonWriter jsonWriter, final Object o) {
         if (o instanceof List) {
             jsonWriter.beginArray();
             final Iterator<Object> iterator = ((List)o).iterator();
@@ -51,12 +50,12 @@ public class PQLAdapter extends TypeAdapter<PQL>
     }
     
     @Override
-    public PQL read(final JsonReader jsonReader) throws IOException {
+    public PQL read(final JsonReader jsonReader) {
         return PQL.fromList(PQLAdapter.gson.fromJson(jsonReader, ArrayList.class));
     }
     
     @Override
-    public void write(final JsonWriter jsonWriter, final PQL pql) throws IOException {
+    public void write(final JsonWriter jsonWriter, final PQL pql) {
         this.writeObject(jsonWriter, pql.getKeySegments());
     }
 }

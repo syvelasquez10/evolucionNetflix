@@ -4,14 +4,14 @@
 
 package com.netflix.mediaclient.ui.social.notifications.types;
 
-import android.app.NotificationManager;
-import android.content.Intent;
+import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.util.PreferenceUtils;
-import android.graphics.Bitmap;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.text.format.DateUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary$NotificationTypes;
+import android.support.v4.app.NotificationCompat$BigPictureStyle;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
 import com.netflix.mediaclient.Log;
@@ -19,7 +19,7 @@ import android.content.Context;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat$Builder;
 import android.widget.Button;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
@@ -37,7 +37,7 @@ public abstract class SocialNotification
     }
     
     public static final int getLayoutResourceId() {
-        return 2130903186;
+        return 2130903187;
     }
     
     public static final SocialNotificationViewHolder getViewHolder(final View view) {
@@ -58,20 +58,20 @@ public abstract class SocialNotification
         socialNotificationViewHolder.getMiddleTextView().setGravity(17);
     }
     
-    protected void addNotificationActions(final NotificationCompat.Builder builder, final SocialNotificationSummary socialNotificationSummary, final SocialNotificationsListSummary socialNotificationsListSummary, final MessageData messageData, final Context context) {
+    protected void addNotificationActions(final NotificationCompat$Builder notificationCompat$Builder, final SocialNotificationSummary socialNotificationSummary, final SocialNotificationsListSummary socialNotificationsListSummary, final MessageData messageData, final Context context) {
         if (Log.isLoggable(SocialNotification.TAG, 3)) {
             Log.d(SocialNotification.TAG, "SocialNotification::addNotificationActions " + messageData);
         }
-        builder.setContentIntent(PendingIntent.getBroadcast(context.getApplicationContext(), 3, SocialNotificationsActivity.getIntent(messageData), 134217728));
+        notificationCompat$Builder.setContentIntent(PendingIntent.getBroadcast(context.getApplicationContext(), 3, SocialNotificationsActivity.getIntent(messageData), 134217728));
     }
     
-    protected abstract void addNotificationText(final NotificationCompat.Builder p0, final NotificationCompat.BigPictureStyle p1, final SocialNotificationSummary p2, final Context p3);
+    protected abstract void addNotificationText(final NotificationCompat$Builder p0, final NotificationCompat$BigPictureStyle p1, final SocialNotificationSummary p2, final Context p3);
     
     public TextView getAddToMyListButton(final SocialNotificationViewHolder socialNotificationViewHolder) {
         return null;
     }
     
-    public abstract SocialNotificationSummary.NotificationTypes getNotificationType();
+    public abstract SocialNotificationSummary$NotificationTypes getNotificationType();
     
     public View getPlayMovieButton(final SocialNotificationViewHolder socialNotificationViewHolder) {
         return (View)socialNotificationViewHolder.getMovieArtImage();
@@ -87,13 +87,13 @@ public abstract class SocialNotification
             backgroundResource = 2130837845;
         }
         else {
-            backgroundResource = 2131296439;
+            backgroundResource = 2131296442;
         }
         view.setBackgroundResource(backgroundResource);
         socialNotificationViewHolder.getFriendImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getImageUrl(), IClientLogging.AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), true, true);
+        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), true, true);
         socialNotificationViewHolder.getMovieArtImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideoSummary().getBoxshotURL(), IClientLogging.AssetType.boxArt, socialNotificationSummary.getVideoSummary().getTitle(), true, true);
+        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideoSummary().getBoxshotURL(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideoSummary().getTitle(), true, true);
         socialNotificationViewHolder.getTopTextView().setVisibility(0);
         socialNotificationViewHolder.getTopTextView().setText((CharSequence)socialNotificationSummary.getFriendProfile().getFullName());
         socialNotificationViewHolder.getMiddleTextView().setGravity(3);
@@ -112,21 +112,7 @@ public abstract class SocialNotification
     }
     
     public final void sendNotificationToStatusbar(final SocialNotificationSummary socialNotificationSummary, final SocialNotificationsListSummary socialNotificationsListSummary, final ImageLoader imageLoader, final MessageData messageData, final Context context) {
-        final ImageLoader.ImageLoaderListener imageLoaderListener = new ImageLoader.ImageLoaderListener() {
-            @Override
-            public void onErrorResponse(final String s) {
-                if (Log.isLoggable(SocialNotification.TAG, 6)) {
-                    Log.e(SocialNotification.TAG, "Failed to download: " + s);
-                }
-            }
-            
-            @Override
-            public void onResponse(final Bitmap bitmap, final String s) {
-                if (bitmap != null) {
-                    imageLoader.getImg(socialNotificationSummary.getHorizontalBoxart(), IClientLogging.AssetType.boxArt, 0, 0, (ImageLoader.ImageLoaderListener)new onBoxArtFetched(bitmap, context, socialNotificationSummary, socialNotificationsListSummary, messageData));
-                }
-            }
-        };
+        final SocialNotification$1 socialNotification$1 = new SocialNotification$1(this, imageLoader, socialNotificationSummary, messageData, socialNotificationsListSummary, context);
         final String id = socialNotificationSummary.getId();
         if (SocialNotification.mLastSocialNotificationIdSentToStatusBar != null && SocialNotification.mLastSocialNotificationIdSentToStatusBar.equals(id)) {
             Log.i(SocialNotification.TAG, "Notification with such id was already shown - skipping...");
@@ -136,52 +122,6 @@ public abstract class SocialNotification
             Log.i(SocialNotification.TAG, "Notification with such id was swiped out by user - skipping...");
             return;
         }
-        imageLoader.getImg(socialNotificationSummary.getFriendProfile().getImageUrl(), IClientLogging.AssetType.profileAvatar, 0, 0, (ImageLoader.ImageLoaderListener)imageLoaderListener);
-    }
-    
-    class onBoxArtFetched implements ImageLoaderListener
-    {
-        private Bitmap mSocialProfile;
-        final /* synthetic */ Context val$context;
-        final /* synthetic */ SocialNotificationsListSummary val$listSummary;
-        final /* synthetic */ MessageData val$msg;
-        final /* synthetic */ SocialNotificationSummary val$notificationSummary;
-        
-        public onBoxArtFetched(final Bitmap mSocialProfile, final Context val$context, final SocialNotificationSummary val$notificationSummary, final SocialNotificationsListSummary val$listSummary, final Bitmap val$msg) {
-            this.val$context = val$context;
-            this.val$notificationSummary = val$notificationSummary;
-            this.val$listSummary = val$listSummary;
-            this.val$msg = (MessageData)val$msg;
-            this.mSocialProfile = mSocialProfile;
-        }
-        
-        @Override
-        public void onErrorResponse(final String s) {
-            if (Log.isLoggable(SocialNotification.TAG, 6)) {
-                Log.e(SocialNotification.TAG, "Failed to download: " + s);
-            }
-        }
-        
-        @Override
-        public void onResponse(final Bitmap bitmap, final String s) {
-            if (bitmap != null) {
-                final int color = this.val$context.getResources().getColor(2131296356);
-                final NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle().bigPicture(bitmap);
-                final NotificationCompat.Builder setColor = new NotificationCompat.Builder(this.val$context).setSmallIcon(2130837768).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
-                setColor.setGroup("social_notifications");
-                setColor.setGroupSummary(true);
-                setColor.setAutoCancel(true);
-                SocialNotification.this.addNotificationText(setColor, bigPicture, this.val$notificationSummary, this.val$context);
-                SocialNotification.this.addNotificationActions(setColor, this.val$notificationSummary, this.val$listSummary, this.val$msg, this.val$context);
-                final Intent intent = new Intent("com.netflix.mediaclient.intent.action.NOTIFICATION_CANCELED");
-                MessageData.addMessageDataToIntent(intent, this.val$msg);
-                intent.putExtra("swiped_social_notification_id", this.val$notificationSummary.getId());
-                setColor.setDeleteIntent(PendingIntent.getBroadcast(this.val$context.getApplicationContext(), 0, intent, 268435456));
-                final NotificationManager notificationManager = (NotificationManager)this.val$context.getSystemService("notification");
-                notificationManager.cancel(1000);
-                notificationManager.notify(1000, setColor.build());
-                SocialNotification.mLastSocialNotificationIdSentToStatusBar = this.val$notificationSummary.getId();
-            }
-        }
+        imageLoader.getImg(socialNotificationSummary.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, 0, 0, socialNotification$1);
     }
 }

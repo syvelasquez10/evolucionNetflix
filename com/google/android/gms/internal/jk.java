@@ -4,29 +4,30 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class jk implements Parcelable$Creator<ji.a>
+public class jk implements Parcelable$Creator<ji$a>
 {
-    static void a(final ji.a a, final Parcel parcel, final int n) {
+    static void a(final ji$a ji$a, final Parcel parcel, final int n) {
         final int d = b.D(parcel);
-        b.c(parcel, 1, a.getVersionCode());
-        b.c(parcel, 2, a.hd());
-        b.a(parcel, 3, a.hj());
-        b.c(parcel, 4, a.he());
-        b.a(parcel, 5, a.hk());
-        b.a(parcel, 6, a.hl(), false);
-        b.c(parcel, 7, a.hm());
-        b.a(parcel, 8, a.ho(), false);
-        b.a(parcel, 9, (Parcelable)a.hq(), n, false);
+        b.c(parcel, 1, ji$a.getVersionCode());
+        b.c(parcel, 2, ji$a.hd());
+        b.a(parcel, 3, ji$a.hj());
+        b.c(parcel, 4, ji$a.he());
+        b.a(parcel, 5, ji$a.hk());
+        b.a(parcel, 6, ji$a.hl(), false);
+        b.c(parcel, 7, ji$a.hm());
+        b.a(parcel, 8, ji$a.ho(), false);
+        b.a(parcel, 9, (Parcelable)ji$a.hq(), n, false);
         b.H(parcel, d);
     }
     
-    public ji.a I(final Parcel parcel) {
+    public ji$a I(final Parcel parcel) {
         jd jd = null;
         int g = 0;
         final int c = a.C(parcel);
@@ -83,12 +84,12 @@ public class jk implements Parcelable$Creator<ji.a>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
-        return new ji.a(g4, g3, c3, g2, c2, o2, g, o, jd);
+        return new ji$a(g4, g3, c3, g2, c2, o2, g, o, jd);
     }
     
-    public ji.a[] aI(final int n) {
-        return new ji.a[n];
+    public ji$a[] aI(final int n) {
+        return new ji$a[n];
     }
 }

@@ -6,6 +6,7 @@ package com.google.android.gms.analytics;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.security.MessageDigest;
 import java.math.BigInteger;
 import java.util.Locale;
 import android.text.TextUtils;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient$Info;
 import android.content.Context;
 
 class a implements l
@@ -22,7 +23,7 @@ class a implements l
     private static a xA;
     private static Object xz;
     private Context mContext;
-    private AdvertisingIdClient.Info xB;
+    private AdvertisingIdClient$Info xB;
     private long xC;
     private String xD;
     private boolean xE;
@@ -38,13 +39,13 @@ class a implements l
         this.mContext = context.getApplicationContext();
     }
     
-    private boolean a(final AdvertisingIdClient.Info info, AdvertisingIdClient.Info id) {
+    private boolean a(final AdvertisingIdClient$Info advertisingIdClient$Info, AdvertisingIdClient$Info id) {
         final String s = null;
         if (id == null) {
             id = null;
         }
         else {
-            id = ((AdvertisingIdClient.Info)id).getId();
+            id = ((AdvertisingIdClient$Info)id).getId();
         }
         if (TextUtils.isEmpty((CharSequence)id)) {
             return true;
@@ -53,7 +54,7 @@ class a implements l
             h.y(this.mContext);
             final h dr = h.dR();
             final String value = dr.getValue("&cid");
-            final AdvertisingIdClient.Info info2;
+            final AdvertisingIdClient$Info advertisingIdClient$Info2;
         Label_0207:
             while (true) {
                 synchronized (this.xF) {
@@ -70,11 +71,11 @@ class a implements l
                     continue;
                 }
                 String id2;
-                if (info2 == null) {
+                if (advertisingIdClient$Info2 == null) {
                     id2 = s;
                 }
                 else {
-                    id2 = info2.getId();
+                    id2 = advertisingIdClient$Info2.getId();
                 }
                 if (id2 == null) {
                     // monitorexit(o)
@@ -83,7 +84,7 @@ class a implements l
                 this.xD = aa(id2 + value);
                 continue;
             }
-            if (((String)info2).equals(this.xD)) {
+            if (((String)advertisingIdClient$Info2).equals(this.xD)) {
                 // monitorexit(o)
                 return true;
             }
@@ -181,7 +182,7 @@ class a implements l
         catch (FileNotFoundException ex4) {}
     }
     
-    AdvertisingIdClient.Info dH() {
+    AdvertisingIdClient$Info dH() {
         try {
             return AdvertisingIdClient.getAdvertisingIdInfo(this.mContext);
         }
@@ -211,12 +212,12 @@ class a implements l
     public String getValue(final String s) {
         final long currentTimeMillis = System.currentTimeMillis();
         if (currentTimeMillis - this.xC > 1000L) {
-            final AdvertisingIdClient.Info dh = this.dH();
+            final AdvertisingIdClient$Info dh = this.dH();
             if (this.a(this.xB, dh)) {
                 this.xB = dh;
             }
             else {
-                this.xB = new AdvertisingIdClient.Info("", false);
+                this.xB = new AdvertisingIdClient$Info("", false);
             }
             this.xC = currentTimeMillis;
         }

@@ -8,14 +8,22 @@ import com.netflix.mediaclient.media.Language;
 import android.widget.TextView$BufferType;
 import android.text.Html;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.LinearLayout$LayoutParams;
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import android.widget.TextView;
 import android.view.View;
 
 public final class SimpleSubtitleManager implements SubtitleManager
 {
+    private static final int PLAYER_PADDING_PHONE = 46;
+    private static final int PLAYER_PADDING_TABLET = 54;
     private static final String TAG = "nf_subtitles";
     private final PlayerActivity mActivity;
+    private int mBottomPanelHeight;
+    private int mPlayerPadding;
     private final PlayScreen mScreen;
     private final View mSubtitleArea;
     private final TextView mSubtitleLabel;
@@ -29,6 +37,22 @@ public final class SimpleSubtitleManager implements SubtitleManager
         }
         this.mSubtitleArea = mActivity.findViewById(2131165542);
         this.mSubtitleLabel = (TextView)mActivity.findViewById(2131165443);
+        int n;
+        if (mActivity.isTablet()) {
+            n = 54;
+        }
+        else {
+            n = 46;
+        }
+        this.mPlayerPadding = AndroidUtils.dipToPixels((Context)mActivity, n);
+        int n2;
+        if (mActivity.isTablet()) {
+            n2 = 2131362025;
+        }
+        else {
+            n2 = 2131362024;
+        }
+        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(n2);
     }
     
     @Override
@@ -39,6 +63,25 @@ public final class SimpleSubtitleManager implements SubtitleManager
     @Override
     public void clearPendingUpdates() {
         Log.v("nf_subtitles", "NOOP");
+    }
+    
+    @Override
+    public void onPlayerOverlayVisibiltyChange(final boolean b) {
+        final int n = this.mPlayerPadding + this.mBottomPanelHeight;
+        if (Log.isLoggable("nf_subtitles", 3)) {
+            Log.d("nf_subtitles", "Player UI is now visible: " + b + ", push subtitles (if applicable) higher for " + this.mBottomPanelHeight + ", with padding " + this.mPlayerPadding + ", delta " + n);
+        }
+        if (this.mSubtitleArea != null) {
+            final LinearLayout$LayoutParams layoutParams = (LinearLayout$LayoutParams)this.mSubtitleArea.getLayoutParams();
+            if (b) {
+                layoutParams.setMargins(0, 0, 0, n);
+            }
+            else {
+                layoutParams.setMargins(0, 0, 0, 0);
+            }
+            this.mSubtitleArea.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+            this.mSubtitleArea.requestLayout();
+        }
     }
     
     @Override

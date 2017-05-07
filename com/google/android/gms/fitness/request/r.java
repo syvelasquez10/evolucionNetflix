@@ -6,6 +6,7 @@ package com.google.android.gms.fitness.request;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.Session;
@@ -76,7 +77,7 @@ public class r implements Parcelable$Creator<SessionInsertRequest>
             session = session6;
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new SessionInsertRequest(g, session, list, c);
     }

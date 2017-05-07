@@ -4,33 +4,35 @@
 
 package android.support.v7.internal.view;
 
-import android.support.v7.internal.view.menu.MenuPopupHelper;
+import android.support.v7.internal.view.menu.w;
 import android.view.MenuItem;
-import android.support.v7.internal.view.menu.SubMenuBuilder;
+import android.support.v7.internal.view.menu.ae;
 import android.view.MenuInflater;
 import android.view.Menu;
+import android.support.v7.internal.view.menu.i;
 import android.view.View;
 import java.lang.ref.WeakReference;
 import android.support.v7.internal.widget.ActionBarContextView;
 import android.content.Context;
-import android.support.v7.internal.view.menu.MenuBuilder;
+import android.support.v7.view.ActionMode$Callback;
+import android.support.v7.internal.view.menu.j;
 import android.support.v7.view.ActionMode;
 
-public class StandaloneActionMode extends ActionMode implements MenuBuilder.Callback
+public class StandaloneActionMode extends ActionMode implements j
 {
-    private ActionMode.Callback mCallback;
+    private ActionMode$Callback mCallback;
     private Context mContext;
     private ActionBarContextView mContextView;
     private WeakReference<View> mCustomView;
     private boolean mFinished;
     private boolean mFocusable;
-    private MenuBuilder mMenu;
+    private i mMenu;
     
-    public StandaloneActionMode(final Context mContext, final ActionBarContextView mContextView, final ActionMode.Callback mCallback, final boolean mFocusable) {
+    public StandaloneActionMode(final Context mContext, final ActionBarContextView mContextView, final ActionMode$Callback mCallback, final boolean mFocusable) {
         this.mContext = mContext;
         this.mContextView = mContextView;
         this.mCallback = mCallback;
-        (this.mMenu = new MenuBuilder(mContext).setDefaultShowAsAction(1)).setCallback((MenuBuilder.Callback)this);
+        (this.mMenu = new i(mContext).a(1)).a(this);
         this.mFocusable = mFocusable;
     }
     
@@ -87,28 +89,28 @@ public class StandaloneActionMode extends ActionMode implements MenuBuilder.Call
         return this.mFocusable;
     }
     
-    public void onCloseMenu(final MenuBuilder menuBuilder, final boolean b) {
+    public void onCloseMenu(final i i, final boolean b) {
     }
     
-    public void onCloseSubMenu(final SubMenuBuilder subMenuBuilder) {
+    public void onCloseSubMenu(final ae ae) {
     }
     
     @Override
-    public boolean onMenuItemSelected(final MenuBuilder menuBuilder, final MenuItem menuItem) {
+    public boolean onMenuItemSelected(final i i, final MenuItem menuItem) {
         return this.mCallback.onActionItemClicked(this, menuItem);
     }
     
     @Override
-    public void onMenuModeChange(final MenuBuilder menuBuilder) {
+    public void onMenuModeChange(final i i) {
         this.invalidate();
         this.mContextView.showOverflowMenu();
     }
     
-    public boolean onSubMenuSelected(final SubMenuBuilder subMenuBuilder) {
-        if (!subMenuBuilder.hasVisibleItems()) {
+    public boolean onSubMenuSelected(final ae ae) {
+        if (!ae.hasVisibleItems()) {
             return true;
         }
-        new MenuPopupHelper(this.mContext, subMenuBuilder).show();
+        new w(this.mContext, ae).show();
         return true;
     }
     

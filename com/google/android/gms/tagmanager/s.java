@@ -6,7 +6,7 @@ package com.google.android.gms.tagmanager;
 
 import java.util.Iterator;
 import java.util.HashMap;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
@@ -16,26 +16,26 @@ class s extends aj
     private static final String ID;
     private static final String anK;
     private static final String aot;
-    private final a aou;
+    private final s$a aou;
     
     static {
-        ID = com.google.android.gms.internal.a.L.toString();
+        ID = a.L.toString();
         aot = b.cV.toString();
         anK = b.bl.toString();
     }
     
-    public s(final a aou) {
+    public s(final s$a aou) {
         super(s.ID, new String[] { s.aot });
         this.aou = aou;
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         final String j = di.j(map.get(s.aot));
         final HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        final d.a a = map.get(s.anK);
-        if (a != null) {
-            final Object o = di.o(a);
+        final d$a d$a = map.get(s.anK);
+        if (d$a != null) {
+            final Object o = di.o(d$a);
             if (!(o instanceof Map)) {
                 bh.W("FunctionCallMacro: expected ADDITIONAL_PARAMS to be a map.");
                 return di.pI();
@@ -56,10 +56,5 @@ class s extends aj
     @Override
     public boolean nL() {
         return false;
-    }
-    
-    public interface a
-    {
-        Object b(final String p0, final Map<String, Object> p1);
     }
 }

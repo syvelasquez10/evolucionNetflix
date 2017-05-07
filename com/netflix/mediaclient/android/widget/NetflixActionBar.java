@@ -4,125 +4,60 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.view.MenuItem;
-import android.view.ViewGroup$LayoutParams;
-import android.content.Context;
-import com.netflix.mediaclient.util.log.UIViewLogUtils;
-import com.netflix.mediaclient.servicemgr.UIViewLogging;
-import android.view.View$OnClickListener;
 import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
-import android.graphics.drawable.Drawable;
-import android.graphics.Shader$TileMode;
-import android.graphics.drawable.BitmapDrawable;
 import java.security.InvalidParameterException;
-import com.netflix.mediaclient.util.ViewUtils;
-import android.view.ViewGroup;
-import android.view.TouchDelegate;
-import android.graphics.Rect;
 import com.netflix.mediaclient.Log;
-import android.widget.TextView;
-import android.app.ActionBar;
-import android.widget.ImageView;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.view.ViewGroup$LayoutParams;
+import android.view.ViewGroup;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class NetflixActionBar
 {
-    private static final float CARET_TOUCH_SLOP_SCALE_FACTOR = 2.5f;
+    private static final int HIDE_ANIMATION_DURATION = 300;
     private static final String TAG = "NetflixActionBar";
     protected final NetflixActivity activity;
-    protected final View content;
-    private final ViewTreeObserver$OnGlobalLayoutListener globalLayoutListener;
     protected boolean hasUpAction;
     private View homeView;
-    protected final ImageView logo;
-    protected final ActionBar systemActionBar;
-    protected final TextView title;
+    protected ActionBar systemActionBar;
+    protected Toolbar toolBar;
     
-    public NetflixActionBar(final NetflixActivity activity, final boolean b) {
-        this.globalLayoutListener = (ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            private void applyUpButtonTouchDelegate() {
-                final View homeView = this.getHomeView((View)NetflixActionBar.this.content.getParent());
-                if (homeView == null) {
-                    Log.d("NetflixActionBar", "Could not find home view");
-                    return;
-                }
-                View view = homeView;
-                if (!homeView.isClickable()) {
-                    view = (View)homeView.getParent();
-                }
-                view.setFocusable(false);
-                Log.v("NetflixActionBar", "caret width: " + view.getWidth());
-                final Rect rect = new Rect();
-                view.getHitRect(rect);
-                rect.right *= (int)2.5f;
-                Log.v("NetflixActionBar", "touch delegate rect: " + rect.toString());
-                NetflixActionBar.this.content.setTouchDelegate(new TouchDelegate(rect, view));
-            }
-            
-            private View findHomeView(final View view) {
-                Log.v("NetflixActionBar", "Examining view: " + view.getClass().getSimpleName());
-                if ("HomeView".equals(view.getClass().getSimpleName())) {
-                    return view;
-                }
-                if (view instanceof ViewGroup) {
-                    final ViewGroup viewGroup = (ViewGroup)view;
-                    for (int i = 0; i < viewGroup.getChildCount(); ++i) {
-                        final View homeView = this.findHomeView(viewGroup.getChildAt(i));
-                        if (homeView != null) {
-                            return homeView;
-                        }
-                    }
-                    return null;
-                }
-                return null;
-            }
-            
-            private View getHomeView(final View view) {
-                if (NetflixActionBar.this.homeView == null) {
-                    NetflixActionBar.this.homeView = this.findHomeView(view);
-                }
-                return NetflixActionBar.this.homeView;
-            }
-            
-            public void onGlobalLayout() {
-                ViewUtils.removeGlobalLayoutListener(NetflixActionBar.this.content, (ViewTreeObserver$OnGlobalLayoutListener)this);
-                this.applyUpButtonTouchDelegate();
-            }
-        };
-        this.activity = activity;
-        this.systemActionBar = activity.getActionBar();
-        this.hasUpAction = b;
-        if (this.systemActionBar == null) {
-            throw new InvalidParameterException("ActionBar is null");
-        }
-        this.systemActionBar.setCustomView(this.getLayoutId());
-        this.systemActionBar.setDisplayShowCustomEnabled(true);
-        this.systemActionBar.setDisplayShowHomeEnabled(true);
-        this.systemActionBar.setDisplayShowTitleEnabled(true);
-        this.systemActionBar.setDisplayUseLogoEnabled(true);
-        this.systemActionBar.setHomeButtonEnabled(true);
-        this.systemActionBar.setBackgroundDrawable(activity.getResources().getDrawable(2130837560));
-        this.systemActionBar.setLogo(2131296350);
-        this.systemActionBar.setTitle((CharSequence)"");
-        this.content = this.systemActionBar.getCustomView();
-        this.logo = (ImageView)this.content.findViewById(2131165286);
-        this.title = (TextView)this.content.findViewById(2131165287);
-        this.fixBackgroundRepeat(this.content);
-        this.setupFocusability();
-        this.setLogoType(LogoType.FULL_SIZE);
-        this.setDisplayHomeAsUpEnabled(b);
+    public NetflixActionBar(final NetflixActivity netflixActivity, final boolean hasUpAction) {
+        this.hasUpAction = hasUpAction;
+        this.activity = netflixActivity;
+        this.attachToolBarToViewHierarchy();
+        this.setToolBarAsActionBar(netflixActivity);
+        this.init(netflixActivity, hasUpAction);
+        this.setHomeView();
     }
     
-    private void fixBackgroundRepeat(final View view) {
-        final Drawable background = view.getBackground();
-        if (background != null && background instanceof BitmapDrawable) {
-            ((BitmapDrawable)background).setTileModeXY(Shader$TileMode.REPEAT, Shader$TileMode.REPEAT);
+    private void attachToolBarToViewHierarchy() {
+        this.toolBar = (Toolbar)LayoutInflater.from((Context)this.activity).inflate(this.getLayoutId(), (ViewGroup)null);
+        final ViewGroup viewGroup = (ViewGroup)this.activity.findViewById(16908290);
+        if (viewGroup != null && this.toolBar != null) {
+            viewGroup.addView((View)this.toolBar, new ViewGroup$LayoutParams(-1, this.activity.getActionBarHeight()));
         }
+    }
+    
+    private void init(final NetflixActivity netflixActivity, final boolean displayHomeAsUpEnabled) {
+        this.systemActionBar.setDisplayShowTitleEnabled(true);
+        this.systemActionBar.setDisplayShowHomeEnabled(true);
+        this.systemActionBar.setDisplayUseLogoEnabled(true);
+        this.systemActionBar.setHomeButtonEnabled(true);
+        this.systemActionBar.setLogo(2130837504);
+        this.setupFocusability();
+        this.setLogoType(NetflixActionBar$LogoType.FULL_SIZE);
+        this.setDisplayHomeAsUpEnabled(displayHomeAsUpEnabled);
     }
     
     private boolean performUpAction() {
@@ -132,6 +67,29 @@ public class NetflixActionBar
             return true;
         }
         return false;
+    }
+    
+    private void setHomeView() {
+        if (this.toolBar != null && this.toolBar.getChildCount() > 1) {
+            for (int i = 0; i < this.toolBar.getChildCount(); ++i) {
+                final View child = this.toolBar.getChildAt(i);
+                final String s = (String)child.getContentDescription();
+                if (s != null && (s.toLowerCase().contains("nav") || s.toLowerCase().contains("toggle"))) {
+                    this.homeView = child;
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void setToolBarAsActionBar(final NetflixActivity netflixActivity) {
+        if (this.toolBar != null) {
+            netflixActivity.setSupportActionBar(this.toolBar);
+        }
+        this.systemActionBar = netflixActivity.getSupportActionBar();
+        if (this.systemActionBar == null) {
+            throw new InvalidParameterException("ActionBar is null");
+        }
     }
     
     private void setupFocusability() {
@@ -148,37 +106,17 @@ public class NetflixActionBar
     
     protected void configureBackButtonIfNecessary(final boolean b) {
         if (KidsUtils.shouldShowBackNavigationAffordance(this.activity) && !(this.activity instanceof HomeActivity)) {
-            final ActionBar actionBar = this.activity.getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(false);
-            if (!b || DeviceUtils.getScreenResolutionDpi(this.activity) >= 320) {
-                Log.v("NetflixActionBar", "Configuring action bar 'up' affordance for back behavior");
-                final View viewById = this.content.findViewById(2131165285);
-                final ViewGroup$LayoutParams layoutParams = viewById.getLayoutParams();
-                final int actionBarHeight = this.activity.getActionBarHeight();
-                layoutParams.width = actionBarHeight;
-                if (b) {
-                    layoutParams.width *= (int)0.75f;
-                    viewById.setPadding(viewById.getPaddingLeft() / 2, viewById.getPaddingTop(), viewById.getPaddingRight() / 2, viewById.getPaddingBottom());
-                }
-                layoutParams.height = actionBarHeight;
-                viewById.setVisibility(0);
-                viewById.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                    public void onClick(final View view) {
-                        UIViewLogUtils.reportUIViewCommand((Context)NetflixActionBar.this.activity, UIViewLogging.UIViewCommandName.actionBarBackButton, NetflixActionBar.this.activity.getUiScreen(), NetflixActionBar.this.activity.getDataContext());
-                        NetflixActionBar.this.activity.finish();
-                    }
-                });
+            final ActionBar supportActionBar = this.activity.getSupportActionBar();
+            supportActionBar.setDisplayHomeAsUpEnabled(false);
+            supportActionBar.setDisplayShowHomeEnabled(false);
+            if (b && DeviceUtils.getScreenResolutionDpi(this.activity) < 320) {
+                return;
             }
         }
     }
     
     protected Activity getActivity() {
         return this.activity;
-    }
-    
-    protected View getContentView() {
-        return this.content;
     }
     
     protected int getFullSizeLogoId() {
@@ -198,8 +136,17 @@ public class NetflixActionBar
         return menuItem.getItemId() == 16908332 && this.performUpAction();
     }
     
-    public void hide() {
-        this.content.setVisibility(8);
+    public void hide(final boolean b) {
+        if (b) {
+            final TranslateAnimation translateAnimation = new TranslateAnimation(0.0f, 0.0f, 0.0f, (float)(-this.activity.getActionBarHeight()));
+            translateAnimation.setDuration(300L);
+            this.toolBar.startAnimation((Animation)translateAnimation);
+        }
+        this.systemActionBar.hide();
+    }
+    
+    public boolean isShowing() {
+        return this.systemActionBar != null && this.systemActionBar.isShowing();
     }
     
     public void onManagerReady() {
@@ -212,57 +159,43 @@ public class NetflixActionBar
     public void setDisplayHomeAsUpEnabled(final boolean b) {
         this.hasUpAction = b;
         this.systemActionBar.setDisplayHomeAsUpEnabled(b);
-        if (this.hasUpAction) {
-            this.content.getViewTreeObserver().addOnGlobalLayoutListener(this.globalLayoutListener);
-            return;
-        }
-        ViewUtils.removeGlobalLayoutListener(this.content, this.globalLayoutListener);
+        this.setHomeView();
     }
     
-    public void setLogoType(final LogoType logoType) {
-        if (this.logo == null) {
+    public void setLogoType(final NetflixActionBar$LogoType netflixActionBar$LogoType) {
+        if (this.systemActionBar == null) {
             return;
         }
-        if (logoType == LogoType.GONE) {
-            this.logo.setVisibility(8);
-            this.title.setVisibility(0);
+        if (netflixActionBar$LogoType == NetflixActionBar$LogoType.GONE) {
+            this.systemActionBar.setDisplayUseLogoEnabled(false);
+            this.systemActionBar.setDisplayShowTitleEnabled(true);
             return;
         }
-        this.title.setVisibility(8);
+        this.systemActionBar.setDisplayShowTitleEnabled(false);
         int fullSizeLogoId = -1;
-        if (logoType == LogoType.FULL_SIZE) {
+        if (netflixActionBar$LogoType == NetflixActionBar$LogoType.FULL_SIZE) {
             fullSizeLogoId = this.getFullSizeLogoId();
         }
         Log.v("NetflixActionBar", "set logo: " + fullSizeLogoId);
-        this.logo.setImageResource(fullSizeLogoId);
-        this.logo.setVisibility(0);
+        this.systemActionBar.setDisplayUseLogoEnabled(true);
+        this.systemActionBar.setLogo(fullSizeLogoId);
     }
     
-    public void setTitle(final String text) {
-        Log.v("NetflixActionBar", "set title: " + text);
-        this.title.setText((CharSequence)text);
-    }
-    
-    public void show() {
-        this.content.setVisibility(0);
-    }
-    
-    public enum LogoType
-    {
-        FULL_SIZE, 
-        GONE;
-    }
-    
-    protected static class PerformUpActionOnClickListener implements View$OnClickListener
-    {
-        private final NetflixActivity activity;
-        
-        public PerformUpActionOnClickListener(final NetflixActivity activity) {
-            this.activity = activity;
+    public void setTitle(final String title) {
+        Log.v("NetflixActionBar", "set title: " + title);
+        if (this.systemActionBar == null) {
+            Log.e("NetflixActionBar", "system actionBar is null");
+            return;
         }
-        
-        public void onClick(final View view) {
-            this.activity.performUpAction();
+        this.systemActionBar.setTitle(title);
+    }
+    
+    public void show(final boolean b) {
+        if (b) {
+            final TranslateAnimation translateAnimation = new TranslateAnimation(0.0f, 0.0f, (float)(-this.activity.getActionBarHeight()), 0.0f);
+            translateAnimation.setDuration(300L);
+            this.toolBar.startAnimation((Animation)translateAnimation);
         }
+        this.systemActionBar.show();
     }
 }

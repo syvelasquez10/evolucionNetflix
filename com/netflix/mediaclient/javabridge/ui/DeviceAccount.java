@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.javabridge.ui;
 
 import java.util.Arrays;
-import org.json.JSONException;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
@@ -19,7 +18,8 @@ public final class DeviceAccount
     private boolean registered;
     private String secureId;
     
-    public DeviceAccount(final JSONObject jsonObject) throws JSONException {
+    public DeviceAccount(final JSONObject jsonObject) {
+        int i = 0;
         this.accountKey = JsonUtils.getString(jsonObject, "accountKey", null);
         this.registered = JsonUtils.getBoolean(jsonObject, "registered", false);
         this.lastAccessTime = JsonUtils.getLong(jsonObject, "lastAccessTime", 0L);
@@ -34,8 +34,9 @@ public final class DeviceAccount
             final JSONArray jsonArray = jsonObject.getJSONArray("UILanguages");
             if (jsonArray != null) {
                 this.languages = new String[jsonArray.length()];
-                for (int i = 0; i < jsonArray.length(); ++i) {
+                while (i < jsonArray.length()) {
                     this.languages[i] = jsonArray.getString(i);
+                    ++i;
                 }
             }
         }

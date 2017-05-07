@@ -4,10 +4,8 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import com.netflix.mediaclient.ui.diagnosis.DiagnosisActivity;
-import com.netflix.mediaclient.util.log.ApmLogUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.preference.Preference;
+import com.netflix.mediaclient.ui.diagnosis.DiagnosisActivity;
 import android.preference.Preference$OnPreferenceClickListener;
 import android.content.Context;
 import android.os.Bundle;
@@ -41,27 +39,26 @@ public class AboutFragment extends PreferenceFragment
     }
     
     private void updateAboutDevice() {
-        final String string = this.getString(2131493180);
-        int n = 0;
-        Serializable s = string;
+        Serializable s2;
+        final String s = (String)(s2 = this.getString(2131493146));
         while (true) {
             try {
                 final PackageInfo packageInfo = this.activity.getPackageManager().getPackageInfo(this.activity.getPackageName(), 0);
-                s = string;
-                final String s2 = (String)(s = packageInfo.versionName);
+                s2 = s;
+                final Serializable s3 = s2 = packageInfo.versionName;
                 final int versionCode = packageInfo.versionCode;
-                s = s2;
-                n = versionCode;
-                s = new StringBuilder().append((String)s);
-                if (n > 0) {
-                    ((StringBuilder)s).append(" (code ").append(n).append(")").append(", ");
+                s2 = new StringBuilder().append((String)s3);
+                if (versionCode > 0) {
+                    ((StringBuilder)s2).append(" (code ").append(versionCode).append(")").append(", ");
                 }
-                ((StringBuilder)s).append("OS API: ").append(AndroidUtils.getAndroidVersion()).append("\n").append("model: ").append(Build.MODEL).append(", ").append("build: ").append(Build.DISPLAY);
-                this.findPreference((CharSequence)"ui.about").setSummary((CharSequence)((StringBuilder)s).toString());
+                ((StringBuilder)s2).append("OS API: ").append(AndroidUtils.getAndroidVersion()).append("\n").append("model: ").append(Build.MODEL).append(", ").append("build: ").append(Build.DISPLAY);
+                this.findPreference((CharSequence)"ui.about").setSummary((CharSequence)((StringBuilder)s2).toString());
                 this.findPreference((CharSequence)"ui.about").setSelectable(false);
             }
             catch (PackageManager$NameNotFoundException ex) {
                 Log.handleException("PreferenceFragment", (Exception)ex);
+                final int versionCode = 0;
+                final Serializable s3 = s2;
                 continue;
             }
             break;
@@ -75,28 +72,13 @@ public class AboutFragment extends PreferenceFragment
         this.findPreference((CharSequence)this.getString(2131492951)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
-        preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
-            public boolean onPreferenceClick(final Preference preference) {
-                ApmLogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.privacyPolicy);
-                return false;
-            }
-        });
+        preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));
         final Preference preference2 = this.findPreference((CharSequence)"pref.terms");
         preference2.setIntent(this.createViewLegalTermsOfUseIntent());
-        preference2.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
-            public boolean onPreferenceClick(final Preference preference) {
-                ApmLogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.legalTerms);
-                return false;
-            }
-        });
+        preference2.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$2(this));
         final Preference preference3 = this.findPreference((CharSequence)"ui.diagnosis");
         preference3.setIntent(DiagnosisActivity.createStartIntent((Context)this.activity));
-        preference3.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
-            public boolean onPreferenceClick(final Preference preference) {
-                ApmLogUtils.reportUiModalViewChanged((Context)AboutFragment.this.activity, IClientLogging.ModalView.customerService);
-                return false;
-            }
-        });
+        preference3.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$3(this));
         this.updateAboutDevice();
     }
 }

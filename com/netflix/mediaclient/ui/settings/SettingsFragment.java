@@ -5,22 +5,21 @@
 package com.netflix.mediaclient.ui.settings;
 
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.content.Intent;
 import android.preference.PreferenceScreen;
 import android.preference.PreferenceGroup;
 import com.netflix.mediaclient.util.AndroidUtils;
 import java.util.ArrayList;
+import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.google.android.gcm.GCMRegistrar;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.Intent;
 import android.preference.Preference$OnPreferenceClickListener;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference$OnPreferenceChangeListener;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import android.app.Fragment;
-import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.content.DialogInterface$OnClickListener;
 import android.content.Context;
@@ -54,17 +53,10 @@ public class SettingsFragment extends PreferenceFragment
     private void changePlayer(final PlayerType playerType) {
         if (playerType == null) {
             Log.w("SettingsFragment", "Invalid player type choosen! This should not happen, report it.");
-            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131493121).setPositiveButton(2131492983, (DialogInterface$OnClickListener)null).show();
+            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131493098).setPositiveButton(2131492980, (DialogInterface$OnClickListener)null).show();
             return;
         }
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.w("SettingsFragment", "Updating player type!");
-                PlayerTypeFactory.setPlayerTypeForQAOverride((Context)SettingsFragment.this.activity, playerType);
-                Log.w("SettingsFragment", "Updating player type done.");
-            }
-        });
+        new BackgroundTask().execute(new SettingsFragment$3(this, playerType));
     }
     
     public static Fragment create() {
@@ -74,24 +66,8 @@ public class SettingsFragment extends PreferenceFragment
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131493318) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
-            preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new Preference$OnPreferenceChangeListener() {
-                public boolean onPreferenceChange(final Preference preference, final Object o) {
-                    Log.d("SettingsFragment", "onPreferenceChange " + o);
-                    if (preference instanceof EditTextPreference) {
-                        final String string = ((EditTextPreference)preference).getEditText().getText().toString();
-                        Log.d("SettingsFragment", "EditText.getText(): " + string);
-                        new BackgroundTask().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                SettingsConfiguration.setNewCastApplicationId((Context)SettingsFragment.this.activity, string);
-                            }
-                        });
-                        return true;
-                    }
-                    return false;
-                }
-            });
+            preference.setSummary((CharSequence)((Object)this.getText(2131493265) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$5(this));
         }
     }
     
@@ -102,44 +78,7 @@ public class SettingsFragment extends PreferenceFragment
             return;
         }
         Log.d("SettingsFragment", "Debug: player type");
-        preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new Preference$OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(final Preference preference, final Object o) {
-                if (o instanceof String) {
-                    final String s = (String)o;
-                    if ("DEFAULT".equals(s)) {
-                        Log.d("SettingsFragment", "Reset player to default");
-                        PlayerTypeFactory.resetPlayerTypeByQA((Context)SettingsFragment.this.activity);
-                    }
-                    else if ("XAL".equals(s)) {
-                        Log.d("SettingsFragment", "Set Player type to XAL");
-                        SettingsFragment.this.changePlayer(PlayerTypeFactory.getXalPlayer());
-                    }
-                    else if ("XALAMP".equals(s)) {
-                        Log.d("SettingsFragment", "Set Player type to XALMP");
-                        SettingsFragment.this.changePlayer(PlayerTypeFactory.getXalmpPlayer());
-                    }
-                    else if ("JPLAYER".equals(s)) {
-                        Log.d("SettingsFragment", "Set Player type to JPLAYER");
-                        SettingsFragment.this.changePlayer(PlayerTypeFactory.getJPlayer());
-                    }
-                    else if ("JPLAYERBASE".equals(s)) {
-                        Log.d("SettingsFragment", "Set Player type to JPLAYERBASE");
-                        SettingsFragment.this.changePlayer(PlayerTypeFactory.getJPlayerBase());
-                    }
-                    else if ("JPLAYER2".equals(s)) {
-                        Log.d("SettingsFragment", "Set Player type to JPLAYER2");
-                        SettingsFragment.this.changePlayer(PlayerTypeFactory.getJPlayer2());
-                    }
-                    else {
-                        Log.e("SettingsFragment", "Received unexpected value for player type " + s);
-                    }
-                }
-                else {
-                    Log.e("SettingsFragment", "Received unexpected NON string value for player type " + o);
-                }
-                return true;
-            }
-        });
+        preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$1(this));
         if (preference instanceof ListPreference) {
             this.populatePlayerTypes((ListPreference)preference);
             return;
@@ -161,29 +100,7 @@ public class SettingsFragment extends PreferenceFragment
         final CheckBoxPreference checkBoxPreference = (CheckBoxPreference)this.findPreference((CharSequence)"nf_notification_enable");
         if (checkBoxPreference != null) {
             checkBoxPreference.setChecked(registeredForPushNotifications);
-            checkBoxPreference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
-                public boolean onPreferenceClick(final Preference preference) {
-                    Log.d("SettingsFragment", "Notification enabled clicked");
-                    if (preference instanceof CheckBoxPreference) {
-                        if (((CheckBoxPreference)preference).isChecked()) {
-                            Log.d("SettingsFragment", "Register for notifications");
-                            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTIN");
-                            intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
-                            LocalBroadcastManager.getInstance((Context)SettingsFragment.this.activity).sendBroadcast(intent);
-                        }
-                        else {
-                            Log.d("SettingsFragment", "Unregister from notifications");
-                            final Intent intent2 = new Intent("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTOUT");
-                            intent2.addCategory("com.netflix.mediaclient.intent.category.PUSH");
-                            LocalBroadcastManager.getInstance((Context)SettingsFragment.this.activity).sendBroadcast(intent2);
-                        }
-                    }
-                    else {
-                        Log.e("SettingsFragment", "We did not received notification checkbox preference!");
-                    }
-                    return true;
-                }
-            });
+            checkBoxPreference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new SettingsFragment$4(this));
             return;
         }
         this.removeNotificationGroup();
@@ -196,40 +113,7 @@ public class SettingsFragment extends PreferenceFragment
             return;
         }
         Log.d("SettingsFragment", "Debug: subtitle config");
-        preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new Preference$OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(final Preference preference, final Object o) {
-                if (o instanceof String) {
-                    final String s = (String)o;
-                    if ("DEFAULT".equals(s)) {
-                        Log.d("SettingsFragment", "Sets ENHANCED XML subtitle configuration (default)");
-                        SubtitleConfiguration.clearQaLocalOverride((Context)SettingsFragment.this.activity);
-                        SettingsFragment.this.updateSubtitleConfig(SubtitleConfiguration.DEFAULT);
-                    }
-                    else if ("ENHANCED_XML".equals(s)) {
-                        Log.d("SettingsFragment", "Sets ENHANCED XML subtitle configuration (default)");
-                        SubtitleConfiguration.updateQaLocalOverride((Context)SettingsFragment.this.activity, SubtitleConfiguration.ENHANCED_XML.getLookupType());
-                        SettingsFragment.this.updateSubtitleConfig(SubtitleConfiguration.ENHANCED_XML);
-                    }
-                    else if ("SIMPLE_XML".equals(s)) {
-                        Log.d("SettingsFragment", "Sets SIMPLE XML subtitle configuration");
-                        SubtitleConfiguration.updateQaLocalOverride((Context)SettingsFragment.this.activity, SubtitleConfiguration.SIMPLE_XML.getLookupType());
-                        SettingsFragment.this.updateSubtitleConfig(SubtitleConfiguration.SIMPLE_XML);
-                    }
-                    else if ("SIMPLE_EVENTS".equals(s)) {
-                        Log.d("SettingsFragment", "Sets SIMPLE EVENTS subtitle configuration (legacy)");
-                        SubtitleConfiguration.updateQaLocalOverride((Context)SettingsFragment.this.activity, SubtitleConfiguration.SIMPLE_EVENTS.getLookupType());
-                        SettingsFragment.this.updateSubtitleConfig(SubtitleConfiguration.SIMPLE_EVENTS);
-                    }
-                    else {
-                        Log.e("SettingsFragment", "Received unexpected value for player type " + s);
-                    }
-                }
-                else {
-                    Log.e("SettingsFragment", "Received unexpected NON string value for player type " + o);
-                }
-                return true;
-            }
-        });
+        preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$2(this));
         if (preference instanceof ListPreference) {
             this.populateSubtitleConfig((ListPreference)preference);
             return;
@@ -257,14 +141,14 @@ public class SettingsFragment extends PreferenceFragment
         final PlayerType currentType = PlayerTypeFactory.getCurrentType((Context)this.activity);
         final boolean default1 = PlayerTypeFactory.isDefault((Context)this.activity);
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getString(2131493120)).append(" ");
+        sb.append(this.getString(2131493097)).append(" ");
         sb.append(PlayerTypeFactory.findDefaultPlayerType().getDescription());
         final ArrayList<String> list = new ArrayList<String>();
         final ArrayList<String> list2 = new ArrayList<String>();
         list.add(sb.toString());
         list2.add("DEFAULT");
         if (AndroidUtils.isOpenMaxALSupported()) {
-            list.add((String)this.getText(2131493152));
+            list.add((String)this.getText(2131493125));
             list2.add("XAL");
             if (PlayerTypeFactory.isXalPlayer(currentType)) {
                 if (!default1) {
@@ -272,7 +156,7 @@ public class SettingsFragment extends PreferenceFragment
                 }
                 listPreference.setValue("XAL");
             }
-            list.add((String)this.getText(2131493153));
+            list.add((String)this.getText(2131493126));
             list2.add("XALAMP");
             if (PlayerTypeFactory.isXalmpPlayer(currentType)) {
                 if (!default1) {
@@ -282,7 +166,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device10)) {
-            list.add((String)this.getText(2131493158));
+            list.add((String)this.getText(2131493131));
             list2.add("JPLAYER");
             if (PlayerTypeFactory.isJPlayer(currentType)) {
                 if (!default1) {
@@ -292,7 +176,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device11)) {
-            list.add((String)this.getText(2131493159));
+            list.add((String)this.getText(2131493132));
             list2.add("JPLAYERBASE");
             if (PlayerTypeFactory.isJPlayerBase(currentType)) {
                 if (!default1) {
@@ -302,7 +186,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device12)) {
-            list.add((String)this.getText(2131493160));
+            list.add((String)this.getText(2131493133));
             list2.add("JPLAYER2");
             if (PlayerTypeFactory.isJPlayer2(currentType)) {
                 if (!default1) {
@@ -319,13 +203,13 @@ public class SettingsFragment extends PreferenceFragment
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131493300));
+        list.add(this.getText(2131493250));
         list2.add("DEFAULT");
-        list.add(this.getText(2131493301));
+        list.add(this.getText(2131493251));
         list2.add("ENHANCED_XML");
-        list.add(this.getText(2131493302));
+        list.add(this.getText(2131493252));
         list2.add("SIMPLE_XML");
-        list.add(this.getText(2131493303));
+        list.add(this.getText(2131493253));
         list2.add("SIMPLE_EVENTS");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_EVENTS) {

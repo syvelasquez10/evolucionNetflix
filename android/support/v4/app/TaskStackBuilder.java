@@ -19,17 +19,17 @@ import android.content.Intent;
 
 public class TaskStackBuilder implements Iterable<Intent>
 {
-    private static final TaskStackBuilderImpl IMPL;
+    private static final TaskStackBuilder$TaskStackBuilderImpl IMPL;
     private static final String TAG = "TaskStackBuilder";
     private final ArrayList<Intent> mIntents;
     private final Context mSourceContext;
     
     static {
         if (Build$VERSION.SDK_INT >= 11) {
-            IMPL = (TaskStackBuilderImpl)new TaskStackBuilderImplHoneycomb();
+            IMPL = new TaskStackBuilder$TaskStackBuilderImplHoneycomb();
             return;
         }
-        IMPL = (TaskStackBuilderImpl)new TaskStackBuilderImplBase();
+        IMPL = new TaskStackBuilder$TaskStackBuilderImplBase();
     }
     
     private TaskStackBuilder(final Context mSourceContext) {
@@ -64,12 +64,15 @@ public class TaskStackBuilder implements Iterable<Intent>
     
     public TaskStackBuilder addParentStack(final Activity activity) {
         Intent supportParentActivityIntent = null;
-        if (activity instanceof SupportParentable) {
-            supportParentActivityIntent = ((SupportParentable)activity).getSupportParentActivityIntent();
+        if (activity instanceof TaskStackBuilder$SupportParentable) {
+            supportParentActivityIntent = ((TaskStackBuilder$SupportParentable)activity).getSupportParentActivityIntent();
         }
         Intent parentActivityIntent;
-        if ((parentActivityIntent = supportParentActivityIntent) == null) {
+        if (supportParentActivityIntent == null) {
             parentActivityIntent = NavUtils.getParentActivityIntent(activity);
+        }
+        else {
+            parentActivityIntent = supportParentActivityIntent;
         }
         if (parentActivityIntent != null) {
             ComponentName componentName;
@@ -114,11 +117,12 @@ public class TaskStackBuilder implements Iterable<Intent>
     
     public Intent[] getIntents() {
         final Intent[] array = new Intent[this.mIntents.size()];
-        if (array.length != 0) {
-            array[0] = new Intent((Intent)this.mIntents.get(0)).addFlags(268484608);
-            for (int i = 1; i < array.length; ++i) {
-                array[i] = new Intent((Intent)this.mIntents.get(i));
-            }
+        if (array.length == 0) {
+            return array;
+        }
+        array[0] = new Intent((Intent)this.mIntents.get(0)).addFlags(268484608);
+        for (int i = 1; i < array.length; ++i) {
+            array[i] = new Intent((Intent)this.mIntents.get(i));
         }
         return array;
     }
@@ -155,44 +159,6 @@ public class TaskStackBuilder implements Iterable<Intent>
             final Intent intent = new Intent(array[array.length - 1]);
             intent.addFlags(268435456);
             this.mSourceContext.startActivity(intent);
-        }
-    }
-    
-    public interface SupportParentable
-    {
-        Intent getSupportParentActivityIntent();
-    }
-    
-    interface TaskStackBuilderImpl
-    {
-        PendingIntent getPendingIntent(final Context p0, final Intent[] p1, final int p2, final int p3, final Bundle p4);
-    }
-    
-    static class TaskStackBuilderImplBase implements TaskStackBuilderImpl
-    {
-        @Override
-        public PendingIntent getPendingIntent(final Context context, final Intent[] array, final int n, final int n2, final Bundle bundle) {
-            final Intent intent = new Intent(array[array.length - 1]);
-            intent.addFlags(268435456);
-            return PendingIntent.getActivity(context, n, intent, n2);
-        }
-    }
-    
-    static class TaskStackBuilderImplHoneycomb implements TaskStackBuilderImpl
-    {
-        @Override
-        public PendingIntent getPendingIntent(final Context context, final Intent[] array, final int n, final int n2, final Bundle bundle) {
-            array[0] = new Intent(array[0]).addFlags(268484608);
-            return TaskStackBuilderHoneycomb.getActivitiesPendingIntent(context, n, array, n2);
-        }
-    }
-    
-    static class TaskStackBuilderImplJellybean implements TaskStackBuilderImpl
-    {
-        @Override
-        public PendingIntent getPendingIntent(final Context context, final Intent[] array, final int n, final int n2, final Bundle bundle) {
-            array[0] = new Intent(array[0]).addFlags(268484608);
-            return TaskStackBuilderJellybean.getActivitiesPendingIntent(context, n, array, n2, bundle);
         }
     }
 }

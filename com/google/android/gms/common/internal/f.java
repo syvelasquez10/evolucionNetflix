@@ -4,10 +4,6 @@
 
 package com.google.android.gms.common.internal;
 
-import java.util.Iterator;
-import android.content.ComponentName;
-import android.os.IBinder;
-import java.util.HashSet;
 import android.os.Message;
 import android.content.ServiceConnection;
 import android.content.Intent;
@@ -20,7 +16,7 @@ public final class f implements Handler$Callback
 {
     private static final Object LK;
     private static f LL;
-    private final HashMap<String, a> LM;
+    private final HashMap<String, f$a> LM;
     private final Context mD;
     private final Handler mHandler;
     
@@ -30,7 +26,7 @@ public final class f implements Handler$Callback
     
     private f(final Context context) {
         this.mHandler = new Handler(context.getMainLooper(), (Handler$Callback)this);
-        this.LM = new HashMap<String, a>();
+        this.LM = new HashMap<String, f$a>();
         this.mD = context.getApplicationContext();
     }
     
@@ -43,41 +39,41 @@ public final class f implements Handler$Callback
         }
     }
     
-    public boolean a(final String s, d.f setPackage) {
+    public boolean a(final String s, d$f setPackage) {
         while (true) {
             while (true) {
-                a a;
+                f$a f$a;
                 synchronized (this.LM) {
-                    a = this.LM.get(s);
-                    if (a == null) {
-                        a = new a(s);
-                        a.a(setPackage);
-                        setPackage = (d.f)new Intent(s).setPackage("com.google.android.gms");
-                        a.J(this.mD.bindService((Intent)setPackage, (ServiceConnection)a.gW(), 129));
-                        this.LM.put(s, a);
-                        final a a2 = a;
-                        return a2.isBound();
+                    f$a = this.LM.get(s);
+                    if (f$a == null) {
+                        f$a = new f$a(this, s);
+                        f$a.a(setPackage);
+                        setPackage = (d$f)new Intent(s).setPackage("com.google.android.gms");
+                        f$a.J(this.mD.bindService((Intent)setPackage, (ServiceConnection)f$a.gW(), 129));
+                        this.LM.put(s, f$a);
+                        final f$a f$a2 = f$a;
+                        return f$a2.isBound();
                     }
-                    this.mHandler.removeMessages(0, (Object)a);
-                    if (a.c(setPackage)) {
+                    this.mHandler.removeMessages(0, (Object)f$a);
+                    if (f$a.c(setPackage)) {
                         throw new IllegalStateException("Trying to bind a GmsServiceConnection that was already connected before.  startServiceAction=" + s);
                     }
                 }
-                a.a(setPackage);
-                switch (a.getState()) {
+                f$a.a(setPackage);
+                switch (f$a.getState()) {
                     case 1: {
-                        setPackage.onServiceConnected(a.getComponentName(), a.getBinder());
-                        final a a2 = a;
+                        setPackage.onServiceConnected(f$a.getComponentName(), f$a.getBinder());
+                        final f$a f$a2 = f$a;
                         continue;
                     }
                     case 2: {
                         final String s2;
-                        a.J(this.mD.bindService(new Intent(s2).setPackage("com.google.android.gms"), (ServiceConnection)a.gW(), 129));
-                        final a a2 = a;
+                        f$a.J(this.mD.bindService(new Intent(s2).setPackage("com.google.android.gms"), (ServiceConnection)f$a.gW(), 129));
+                        final f$a f$a2 = f$a;
                         continue;
                     }
                     default: {
-                        final a a2 = a;
+                        final f$a f$a2 = f$a;
                         continue;
                     }
                 }
@@ -86,21 +82,21 @@ public final class f implements Handler$Callback
         }
     }
     
-    public void b(final String s, final d.f f) {
-        final a a;
+    public void b(final String s, final d$f d$f) {
+        final f$a f$a;
         synchronized (this.LM) {
-            a = this.LM.get(s);
-            if (a == null) {
+            f$a = this.LM.get(s);
+            if (f$a == null) {
                 throw new IllegalStateException("Nonexistent connection status for service action: " + s);
             }
         }
-        if (!a.c(f)) {
+        if (!f$a.c(d$f)) {
             final String s2;
             throw new IllegalStateException("Trying to unbind a GmsServiceConnection  that was not bound before.  startServiceAction=" + s2);
         }
-        a.b(f);
-        if (a.gY()) {
-            this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(0, (Object)a), 5000L);
+        f$a.b(d$f);
+        if (f$a.gY()) {
+            this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(0, (Object)f$a), 5000L);
         }
     }
     // monitorexit(hashMap)
@@ -111,107 +107,16 @@ public final class f implements Handler$Callback
                 return false;
             }
             case 0: {
-                final a a = (a)message.obj;
+                final f$a f$a = (f$a)message.obj;
                 synchronized (this.LM) {
-                    if (a.gY()) {
-                        this.mD.unbindService((ServiceConnection)a.gW());
-                        this.LM.remove(a.gX());
+                    if (f$a.gY()) {
+                        this.mD.unbindService((ServiceConnection)f$a.gW());
+                        this.LM.remove(f$a.gX());
                     }
                     return true;
                 }
                 break;
             }
-        }
-    }
-    
-    final class a
-    {
-        private final String LN;
-        private final f.a.a LO;
-        private final HashSet<d.f> LP;
-        private boolean LQ;
-        private IBinder LR;
-        private ComponentName LS;
-        private int mState;
-        
-        public a(final String ln) {
-            this.LN = ln;
-            this.LO = new f.a.a();
-            this.LP = new HashSet<d.f>();
-            this.mState = 0;
-        }
-        
-        public void J(final boolean lq) {
-            this.LQ = lq;
-        }
-        
-        public void a(final d.f f) {
-            this.LP.add(f);
-        }
-        
-        public void b(final d.f f) {
-            this.LP.remove(f);
-        }
-        
-        public boolean c(final d.f f) {
-            return this.LP.contains(f);
-        }
-        
-        public f.a.a gW() {
-            return this.LO;
-        }
-        
-        public String gX() {
-            return this.LN;
-        }
-        
-        public boolean gY() {
-            return this.LP.isEmpty();
-        }
-        
-        public IBinder getBinder() {
-            return this.LR;
-        }
-        
-        public ComponentName getComponentName() {
-            return this.LS;
-        }
-        
-        public int getState() {
-            return this.mState;
-        }
-        
-        public boolean isBound() {
-            return this.LQ;
-        }
-        
-        public class a implements ServiceConnection
-        {
-            public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
-                synchronized (f.this.LM) {
-                    f.a.this.LR = binder;
-                    f.a.this.LS = componentName;
-                    final Iterator<d.f> iterator = f.a.this.LP.iterator();
-                    while (iterator.hasNext()) {
-                        iterator.next().onServiceConnected(componentName, binder);
-                    }
-                }
-                f.a.this.mState = 1;
-            }
-            // monitorexit(hashMap)
-            
-            public void onServiceDisconnected(final ComponentName componentName) {
-                synchronized (f.this.LM) {
-                    f.a.this.LR = null;
-                    f.a.this.LS = componentName;
-                    final Iterator<d.f> iterator = f.a.this.LP.iterator();
-                    while (iterator.hasNext()) {
-                        iterator.next().onServiceDisconnected(componentName);
-                    }
-                }
-                f.a.this.mState = 2;
-            }
-            // monitorexit(hashMap)
         }
     }
 }

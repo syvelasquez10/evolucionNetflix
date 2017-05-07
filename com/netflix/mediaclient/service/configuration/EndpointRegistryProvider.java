@@ -10,14 +10,16 @@ import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import android.content.Context;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.9/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/3.9.2/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
@@ -54,7 +56,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String WEBCLIENT_ENDPOINT = "api-global.netflix.com";
     private String mCachedEndpointUrl;
     private String mClientLogEndpointUrl;
-    private ServiceAgent.ConfigurationAgentInterface mConfigAgent;
+    private ServiceAgent$ConfigurationAgentInterface mConfigAgent;
     private String mConfigEndpointUrl;
     private final Context mContext;
     private final Boolean mDeviceHd;
@@ -63,7 +65,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private final ImagePrefRepository mImagePrefRepository;
     private String mPresentationTrackingUrl;
     private final String mUiResolutionType;
-    private ServiceAgent.UserAgentInterface mUserAgent;
+    private ServiceAgent$UserAgentInterface mUserAgent;
     
     public EndpointRegistryProvider(final Context mContext, final DeviceModel mDeviceModel, final Boolean mDeviceHd, final ImagePrefRepository mImagePrefRepository, final String mUiResolutionType) {
         this.mContext = mContext;
@@ -74,7 +76,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         this.mEndpointHost = "api-global.netflix.com";
     }
     
-    private String addDynamicParams(final StringBuilder sb, final ResponsePathFormat responsePathFormat) {
+    private String addDynamicParams(final StringBuilder sb, final ApiEndpointRegistry$ResponsePathFormat apiEndpointRegistry$ResponsePathFormat) {
         if (this.mUserAgent != null && StringUtils.isNotEmpty(this.mUserAgent.getLanguagesInCsv())) {
             sb.append(this.buildUrlParam("languages", UriUtil.urlEncodeParam(this.mUserAgent.getLanguagesInCsv())));
         }
@@ -87,7 +89,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
                 }
             }
         }
-        sb.append(responsePathFormat.urlParams);
+        sb.append(apiEndpointRegistry$ResponsePathFormat.urlParams);
         return sb.toString();
     }
     
@@ -103,7 +105,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         sb.append("/android/samurai/config");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
-        sb.append(ResponsePathFormat.HIERARCHICAL.urlParams);
+        sb.append(ApiEndpointRegistry$ResponsePathFormat.HIERARCHICAL.urlParams);
         String s;
         if (b) {
             s = "&routing=redirect";
@@ -143,20 +145,16 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         if (StringUtils.isNotEmpty(imgPreference)) {
             return imgPreference;
         }
-        String s;
         if (AndroidUtils.getAndroidVersion() >= 14) {
-            s = "webp";
+            return "webp";
         }
-        else {
-            s = "jpg";
-        }
-        return s;
+        return "jpg";
     }
     
     @Override
-    public String getApiUrlFull(final ResponsePathFormat responsePathFormat) {
+    public String getApiUrlFull(final ApiEndpointRegistry$ResponsePathFormat apiEndpointRegistry$ResponsePathFormat) {
         if (StringUtils.isNotEmpty(this.mCachedEndpointUrl)) {
-            return this.addDynamicParams(new StringBuilder(this.mCachedEndpointUrl), responsePathFormat);
+            return this.addDynamicParams(new StringBuilder(this.mCachedEndpointUrl), apiEndpointRegistry$ResponsePathFormat);
         }
         final StringBuilder sb = new StringBuilder();
         if (this.isSecure()) {
@@ -166,14 +164,14 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.9/api");
+        sb.append("/android/3.9.2/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");
         sb.append(this.buildUrlParam("res", this.mUiResolutionType));
         sb.append(this.buildUrlParam("imgpref", this.getImagePreference()));
         this.mCachedEndpointUrl = sb.toString();
-        return this.addDynamicParams(sb, responsePathFormat);
+        return this.addDynamicParams(sb, apiEndpointRegistry$ResponsePathFormat);
     }
     
     public String getAppStartConfigUrl() {
@@ -240,11 +238,11 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         return true;
     }
     
-    public void setConfigurationAgentInterface(final ServiceAgent.ConfigurationAgentInterface mConfigAgent) {
+    public void setConfigurationAgentInterface(final ServiceAgent$ConfigurationAgentInterface mConfigAgent) {
         this.mConfigAgent = mConfigAgent;
     }
     
-    public void setUserAgentInterface(final ServiceAgent.UserAgentInterface mUserAgent) {
+    public void setUserAgentInterface(final ServiceAgent$UserAgentInterface mUserAgent) {
         this.mUserAgent = mUserAgent;
     }
     

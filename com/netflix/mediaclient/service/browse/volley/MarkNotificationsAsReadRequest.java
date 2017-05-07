@@ -6,13 +6,12 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -37,8 +36,10 @@ public class MarkNotificationsAsReadRequest extends FalcorVolleyWebClientRequest
         this.mNotifications = mNotifications;
         this.responseCallback = responseCallback;
         final StringBuffer sb = new StringBuffer();
+        final Iterator<SocialNotificationSummary> iterator = mNotifications.iterator();
         int n = 0;
-        for (final SocialNotificationSummary socialNotificationSummary : mNotifications) {
+        while (iterator.hasNext()) {
+            final SocialNotificationSummary socialNotificationSummary = iterator.next();
             if (n > 0) {
                 sb.append(", ");
             }
@@ -53,7 +54,7 @@ public class MarkNotificationsAsReadRequest extends FalcorVolleyWebClientRequest
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
@@ -76,7 +77,7 @@ public class MarkNotificationsAsReadRequest extends FalcorVolleyWebClientRequest
     }
     
     @Override
-    protected List<SocialNotificationSummary> parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected List<SocialNotificationSummary> parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_marknotificationsasreadrequest", 4)) {
             Log.i("nf_service_browse_marknotificationsasreadrequest", "Got result: " + s);
         }
@@ -84,21 +85,31 @@ public class MarkNotificationsAsReadRequest extends FalcorVolleyWebClientRequest
         if (FalcorParseUtils.isEmpty(dataObj)) {
             throw new FalcorParseException("Notifications list doesn't contain 'value' field!");
         }
-        JsonObject asJsonObject = null;
-        try {
-            if (dataObj.has("notifications")) {
-                asJsonObject = dataObj.getAsJsonObject("notifications");
+        JsonObject asJsonObject;
+        while (true) {
+            while (true) {
+                Label_0329: {
+                    try {
+                        if (!dataObj.has("notifications")) {
+                            break Label_0329;
+                        }
+                        asJsonObject = dataObj.getAsJsonObject("notifications");
+                        if (asJsonObject == null) {
+                            Log.v("nf_service_browse_marknotificationsasreadrequest", "While parsing the response got null notificationsList");
+                            return this.mNotifications;
+                        }
+                    }
+                    catch (Exception ex) {
+                        if (Log.isLoggable("nf_service_browse_marknotificationsasreadrequest", 2)) {
+                            Log.v("nf_service_browse_marknotificationsasreadrequest", "While getting recommendations field from the response got an exception: " + ex);
+                        }
+                        throw new FalcorParseException("response missing notifications object", ex);
+                    }
+                    break;
+                }
+                asJsonObject = null;
+                continue;
             }
-            if (asJsonObject == null) {
-                Log.v("nf_service_browse_marknotificationsasreadrequest", "While parsing the response got null notificationsList");
-                return this.mNotifications;
-            }
-        }
-        catch (Exception ex) {
-            if (Log.isLoggable("nf_service_browse_marknotificationsasreadrequest", 2)) {
-                Log.v("nf_service_browse_marknotificationsasreadrequest", "While getting recommendations field from the response got an exception: " + ex);
-            }
-            throw new FalcorParseException("response missing notifications object", ex);
         }
         for (final SocialNotificationSummary socialNotificationSummary : this.mNotifications) {
             final String id = socialNotificationSummary.getId();

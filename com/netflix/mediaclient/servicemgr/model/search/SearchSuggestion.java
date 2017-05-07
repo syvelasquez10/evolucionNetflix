@@ -4,7 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr.model.search;
 
-public interface SearchSuggestion
+import com.netflix.model.branches.FalkorValidator;
+import com.netflix.model.branches.FalkorObject;
+
+public interface SearchSuggestion extends FalkorObject, FalkorValidator
 {
     String getTitle();
 }

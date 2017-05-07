@@ -17,7 +17,7 @@ public class MdxPostplayState
     private static final String POSTPLAYSTATE_COUNTDOWN = "POST_PLAY_COUNTDOWN";
     private static final String POSTPLAYSTATE_PROMPT = "POST_PLAY_PROMPT";
     private static final String TITLE_TYPE_EPISODE = "episode";
-    private PostplayTitle[] mPostplatTitleArray;
+    private MdxPostplayState$PostplayTitle[] mPostplatTitleArray;
     private String mState;
     
     public MdxPostplayState(final String s) {
@@ -26,14 +26,14 @@ public class MdxPostplayState
             final JSONObject jsonObject = new JSONObject(s);
             this.mState = jsonObject.optString("state");
             final JSONObject jsonObject2 = jsonObject.getJSONObject("title");
-            (this.mPostplatTitleArray = new PostplayTitle[1])[0] = new PostplayTitle(jsonObject2.optInt("id", -1), jsonObject2.optString("type"));
+            (this.mPostplatTitleArray = new MdxPostplayState$PostplayTitle[1])[0] = new MdxPostplayState$PostplayTitle(this, jsonObject2.optInt("id", -1), jsonObject2.optString("type"));
         }
         catch (JSONException ex) {
             Log.e(MdxPostplayState.class.getSimpleName(), "JSON error " + s);
         }
     }
     
-    public PostplayTitle[] getPostplayTitle() {
+    public MdxPostplayState$PostplayTitle[] getPostplayTitle() {
         return this.mPostplatTitleArray;
     }
     
@@ -43,25 +43,5 @@ public class MdxPostplayState
     
     public boolean isInPrompt() {
         return "POST_PLAY_PROMPT".equals(this.mState);
-    }
-    
-    public class PostplayTitle
-    {
-        private int mTitleId;
-        private String mTitleType;
-        
-        PostplayTitle(final int mTitleId, final String mTitleType) {
-            this.mTitleId = -1;
-            this.mTitleId = mTitleId;
-            this.mTitleType = mTitleType;
-        }
-        
-        public int getId() {
-            return this.mTitleId;
-        }
-        
-        public boolean isEpisode() {
-            return this.mTitleType != null && this.mTitleType.contains("episode");
-        }
     }
 }

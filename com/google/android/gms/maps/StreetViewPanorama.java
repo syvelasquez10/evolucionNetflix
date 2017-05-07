@@ -116,19 +116,15 @@ public class StreetViewPanorama
         }
     }
     
-    public final void setOnStreetViewPanoramaCameraChangeListener(final OnStreetViewPanoramaCameraChangeListener onStreetViewPanoramaCameraChangeListener) {
+    public final void setOnStreetViewPanoramaCameraChangeListener(final StreetViewPanorama$OnStreetViewPanoramaCameraChangeListener streetViewPanorama$OnStreetViewPanoramaCameraChangeListener) {
         Label_0015: {
-            if (onStreetViewPanoramaCameraChangeListener != null) {
+            if (streetViewPanorama$OnStreetViewPanoramaCameraChangeListener != null) {
                 break Label_0015;
             }
             try {
                 this.aiQ.setOnStreetViewPanoramaCameraChangeListener(null);
                 return;
-                this.aiQ.setOnStreetViewPanoramaCameraChangeListener(new p.a() {
-                    public void onStreetViewPanoramaCameraChange(final StreetViewPanoramaCamera streetViewPanoramaCamera) {
-                        onStreetViewPanoramaCameraChangeListener.onStreetViewPanoramaCameraChange(streetViewPanoramaCamera);
-                    }
-                });
+                this.aiQ.setOnStreetViewPanoramaCameraChangeListener(new StreetViewPanorama$2(this, streetViewPanorama$OnStreetViewPanoramaCameraChangeListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -136,19 +132,15 @@ public class StreetViewPanorama
         }
     }
     
-    public final void setOnStreetViewPanoramaChangeListener(final OnStreetViewPanoramaChangeListener onStreetViewPanoramaChangeListener) {
+    public final void setOnStreetViewPanoramaChangeListener(final StreetViewPanorama$OnStreetViewPanoramaChangeListener streetViewPanorama$OnStreetViewPanoramaChangeListener) {
         Label_0015: {
-            if (onStreetViewPanoramaChangeListener != null) {
+            if (streetViewPanorama$OnStreetViewPanoramaChangeListener != null) {
                 break Label_0015;
             }
             try {
                 this.aiQ.setOnStreetViewPanoramaChangeListener(null);
                 return;
-                this.aiQ.setOnStreetViewPanoramaChangeListener(new q.a() {
-                    public void onStreetViewPanoramaChange(final StreetViewPanoramaLocation streetViewPanoramaLocation) {
-                        onStreetViewPanoramaChangeListener.onStreetViewPanoramaChange(streetViewPanoramaLocation);
-                    }
-                });
+                this.aiQ.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama$1(this, streetViewPanorama$OnStreetViewPanoramaChangeListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -156,19 +148,15 @@ public class StreetViewPanorama
         }
     }
     
-    public final void setOnStreetViewPanoramaClickListener(final OnStreetViewPanoramaClickListener onStreetViewPanoramaClickListener) {
+    public final void setOnStreetViewPanoramaClickListener(final StreetViewPanorama$OnStreetViewPanoramaClickListener streetViewPanorama$OnStreetViewPanoramaClickListener) {
         Label_0015: {
-            if (onStreetViewPanoramaClickListener != null) {
+            if (streetViewPanorama$OnStreetViewPanoramaClickListener != null) {
                 break Label_0015;
             }
             try {
                 this.aiQ.setOnStreetViewPanoramaClickListener(null);
                 return;
-                this.aiQ.setOnStreetViewPanoramaClickListener(new r.a() {
-                    public void onStreetViewPanoramaClick(final StreetViewPanoramaOrientation streetViewPanoramaOrientation) {
-                        onStreetViewPanoramaClickListener.onStreetViewPanoramaClick(streetViewPanoramaOrientation);
-                    }
-                });
+                this.aiQ.setOnStreetViewPanoramaClickListener(new StreetViewPanorama$3(this, streetViewPanorama$OnStreetViewPanoramaClickListener));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -237,20 +225,5 @@ public class StreetViewPanorama
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
         }
-    }
-    
-    public interface OnStreetViewPanoramaCameraChangeListener
-    {
-        void onStreetViewPanoramaCameraChange(final StreetViewPanoramaCamera p0);
-    }
-    
-    public interface OnStreetViewPanoramaChangeListener
-    {
-        void onStreetViewPanoramaChange(final StreetViewPanoramaLocation p0);
-    }
-    
-    public interface OnStreetViewPanoramaClickListener
-    {
-        void onStreetViewPanoramaClick(final StreetViewPanoramaOrientation p0);
     }
 }

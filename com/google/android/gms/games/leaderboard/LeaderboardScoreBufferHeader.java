@@ -21,8 +21,4 @@ public final class LeaderboardScoreBufferHeader
     public Bundle lz() {
         return this.MZ;
     }
-    
-    public static final class Builder
-    {
-    }
 }

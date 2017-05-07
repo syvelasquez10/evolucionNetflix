@@ -5,16 +5,15 @@
 package com.netflix.mediaclient.service.logging.apm.model;
 
 import com.netflix.mediaclient.util.AndroidUtils;
-import org.json.JSONException;
 import java.util.Iterator;
 import java.util.HashMap;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
 
@@ -34,17 +33,17 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
     public static final String VERSION_OS = "os";
     public static final String VOICE_ENABLED = "voiceEnabled";
     private Map<String, Integer> activeABTests;
-    private IClientLogging.ModalView destinationView;
+    private IClientLogging$ModalView destinationView;
     private Display display;
     private UIError error;
     private PlayerType playerType;
     private String searchTerm;
     private boolean success;
     private String trackId;
-    private ApplicationPerformanceMetricsLogging.UiStartupTrigger trigger;
+    private ApplicationPerformanceMetricsLogging$UiStartupTrigger trigger;
     private boolean voiceEnabled;
     
-    public UIStartupSessionEndedEvent(final long n, final ApplicationPerformanceMetricsLogging.UiStartupTrigger trigger, final IClientLogging.ModalView destinationView, final boolean success, final PlayerType playerType) {
+    public UIStartupSessionEndedEvent(final long n, final ApplicationPerformanceMetricsLogging$UiStartupTrigger trigger, final IClientLogging$ModalView destinationView, final boolean success, final PlayerType playerType) {
         super("uiStartup", new DeviceUniqueId(), n);
         this.success = true;
         if (trigger == null) {
@@ -59,18 +58,18 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
         this.playerType = playerType;
     }
     
-    public UIStartupSessionEndedEvent(JSONObject jsonObject) throws JSONException {
+    public UIStartupSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
         this.success = true;
         jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null) {
             final String string = JsonUtils.getString(jsonObject, "trigger", null);
             if (string != null) {
-                this.trigger = ApplicationPerformanceMetricsLogging.UiStartupTrigger.valueOf(string);
+                this.trigger = ApplicationPerformanceMetricsLogging$UiStartupTrigger.valueOf(string);
             }
             final String string2 = JsonUtils.getString(jsonObject, "destinationView", null);
             if (string2 != null) {
-                this.destinationView = IClientLogging.ModalView.valueOf(string2);
+                this.destinationView = IClientLogging$ModalView.valueOf(string2);
             }
             this.display = Display.createInstance(jsonObject.getJSONObject("display"));
             this.success = JsonUtils.getBoolean(jsonObject, "success", true);
@@ -99,9 +98,9 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
-        JSONObject data;
-        if ((data = super.getData()) == null) {
+    protected JSONObject getData() {
+        JSONObject data = super.getData();
+        if (data == null) {
             data = new JSONObject();
         }
         data.put("trigger", (Object)this.trigger.name());
@@ -136,7 +135,7 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
         return data;
     }
     
-    public IClientLogging.ModalView getDestinationView() {
+    public IClientLogging$ModalView getDestinationView() {
         return this.destinationView;
     }
     
@@ -156,7 +155,7 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
         return this.trackId;
     }
     
-    public ApplicationPerformanceMetricsLogging.UiStartupTrigger getTrigger() {
+    public ApplicationPerformanceMetricsLogging$UiStartupTrigger getTrigger() {
         return this.trigger;
     }
     
@@ -172,7 +171,7 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
         this.activeABTests = activeABTests;
     }
     
-    public void setDestinationView(final IClientLogging.ModalView destinationView) {
+    public void setDestinationView(final IClientLogging$ModalView destinationView) {
         this.destinationView = destinationView;
     }
     
@@ -196,7 +195,7 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
         this.trackId = trackId;
     }
     
-    public void setTrigger(final ApplicationPerformanceMetricsLogging.UiStartupTrigger trigger) {
+    public void setTrigger(final ApplicationPerformanceMetricsLogging$UiStartupTrigger trigger) {
         this.trigger = trigger;
     }
     

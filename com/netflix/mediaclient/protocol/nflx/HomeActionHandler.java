@@ -16,10 +16,10 @@ class HomeActionHandler extends BaseNflxHandlerWithoutDelayedActionSupport
     }
     
     @Override
-    public Response handle() {
+    public NflxHandler$Response handle() {
         Log.v("NflxHandler", "Starting home activity");
         this.mActivity.startActivity(HomeActivity.createStartIntent(this.mActivity));
         this.mActivity.overridePendingTransition(0, 0);
-        return Response.HANDLING;
+        return NflxHandler$Response.HANDLING;
     }
 }

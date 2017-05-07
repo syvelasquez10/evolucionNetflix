@@ -6,6 +6,7 @@ package com.netflix.mediaclient.util;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import com.netflix.mediaclient.service.configuration.esn.BaseEsnProvider;
 import android.view.KeyCharacterMap;
 import android.annotation.SuppressLint;
 import android.util.DisplayMetrics;
@@ -14,16 +15,23 @@ import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.app.Activity;
+import android.os.Build;
+import android.os.Build$VERSION;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DeviceUtils
 {
+    public static final boolean DEVICE_WITH_MENU_BUTTON_BUG;
     public static final int SCREEN_SIZE_LARGE = 3;
     public static final int SCREEN_SIZE_NORMAL = 2;
     public static final int SCREEN_SIZE_SMALL = 1;
     public static final int SCREEN_SIZE_XLARGE = 4;
     private static final String TAG = "nf_device_utils";
     private static AtomicBoolean sFirstStartAfterInstall;
+    
+    static {
+        DEVICE_WITH_MENU_BUTTON_BUG = (Build$VERSION.SDK_INT <= 16 && Build.MANUFACTURER.compareTo("LGE") == 0);
+    }
     
     public static void forceHideKeyboard(final Activity activity, final EditText editText) {
         if (activity != null) {
@@ -169,8 +177,80 @@ public final class DeviceUtils
         return deviceHasKey && deviceHasKey2;
     }
     
+    private static long hashCode(final String s) {
+        long n = 0L;
+        final char[] charArray = s.toCharArray();
+        for (int i = 0; i < charArray.length; ++i) {
+            n = n * 31L + charArray[i];
+        }
+        return n;
+    }
+    
     public static void hideSoftKeyboard(final Activity activity) {
         activity.getWindow().setSoftInputMode(2);
+    }
+    
+    public static boolean isDeviceEnabled(final Context context, final int n) {
+        boolean b = true;
+        boolean b2 = true;
+        // monitorenter(DeviceUtils.class)
+        Label_0028: {
+            if (n > 0) {
+                break Label_0028;
+            }
+            int n3;
+            int n2 = 0;
+            long hashCode = 0L;
+            final String s;
+            Block_5_Outer:Label_0082_Outer:Label_0166_Outer:
+            while (true) {
+                while (true) {
+                    while (true) {
+                        Label_0172: {
+                            try {
+                                Log.d("nf_device_utils", "Everybody is enabled");
+                                Label_0022: {
+                                    return b2;
+                                }
+                                // iftrue(Label_0022:, !Log.isLoggable("nf_device_utils", 3))
+                                // iftrue(Label_0049:, n < 100)
+                                // iftrue(Label_0172:, n2 = n3 >= 0)
+                            Block_6:
+                                while (true) {
+                                    while (true) {
+                                        Log.d("nf_device_utils", "Everybody is disabled");
+                                        b2 = false;
+                                        return b2;
+                                        n2 = n3 + 100;
+                                        break Label_0172;
+                                        b2 = b;
+                                        break Block_6;
+                                        continue Block_5_Outer;
+                                    }
+                                    Label_0049:
+                                    hashCode = hashCode(BaseEsnProvider.getHashedDeviceId(context));
+                                    n3 = (int)(hashCode % 100L);
+                                    continue Label_0082_Outer;
+                                }
+                                Log.d("nf_device_utils", "isDeviceEnabled:: deviceID " + s + ", hash " + hashCode + ", bucket " + n2 + ", enabled " + b);
+                                b2 = b;
+                                return b2;
+                            }
+                            finally {
+                            }
+                            // monitorexit(DeviceUtils.class)
+                            b = false;
+                            continue Label_0166_Outer;
+                        }
+                        if (n2 <= 100 - n) {
+                            continue Label_0166_Outer;
+                        }
+                        break;
+                    }
+                    continue;
+                }
+            }
+        }
     }
     
     public static boolean isFirstApplicationStartAfterInstallation(final Context context) {

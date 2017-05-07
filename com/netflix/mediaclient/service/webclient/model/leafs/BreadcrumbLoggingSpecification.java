@@ -36,21 +36,30 @@ public class BreadcrumbLoggingSpecification
     
     public static BreadcrumbLoggingSpecification loadFromPreferences(Context context) {
         final Context context2 = null;
-        final Context context3 = null;
         final String stringPref = PreferenceUtils.getStringPref(context, "breadcrumb_log_configuration", null);
-        if (StringUtils.isEmpty(stringPref)) {
-            Log.d(BreadcrumbLoggingSpecification.TAG, "Breadcrumb specification not found in file system");
-            context = context3;
-        }
-        else {
-            context = context2;
-            try {
-                final Object o = context = (Context)FalcorParseUtils.getGson().fromJson(stringPref, BreadcrumbLoggingSpecification.class);
-                Log.d(BreadcrumbLoggingSpecification.TAG, "Breadcrumb logging specification loaded from file system");
-                context = (Context)o;
+        Label_0028: {
+            if (StringUtils.isEmpty(stringPref)) {
+                Log.d(BreadcrumbLoggingSpecification.TAG, "Breadcrumb specification not found in file system");
+                context = null;
             }
-            catch (Throwable t) {
-                Log.e(BreadcrumbLoggingSpecification.TAG, "Failed to load Breadcrumb logging specification from file system", t);
+            else {
+                while (true) {
+                    try {
+                        context = (Context)FalcorParseUtils.getGson().fromJson(stringPref, BreadcrumbLoggingSpecification.class);
+                        try {
+                            Log.d(BreadcrumbLoggingSpecification.TAG, "Breadcrumb logging specification loaded from file system");
+                            break Label_0028;
+                        }
+                        catch (Throwable t2) {}
+                        final Throwable t;
+                        Log.e(BreadcrumbLoggingSpecification.TAG, "Failed to load Breadcrumb logging specification from file system", t);
+                    }
+                    catch (Throwable t) {
+                        context = context2;
+                        continue;
+                    }
+                    break;
+                }
             }
         }
         Object default1 = context;
@@ -70,6 +79,34 @@ public class BreadcrumbLoggingSpecification
         return breadcrumbLoggingSpecification;
     }
     
+    @Override
+    public boolean equals(final Object o) {
+        if (this != o) {
+            if (o == null) {
+                return false;
+            }
+            if (this.getClass() != o.getClass()) {
+                return false;
+            }
+            final BreadcrumbLoggingSpecification breadcrumbLoggingSpecification = (BreadcrumbLoggingSpecification)o;
+            if (this.disable != breadcrumbLoggingSpecification.disable) {
+                return false;
+            }
+            if (this.disableChancePercentage != breadcrumbLoggingSpecification.disableChancePercentage) {
+                return false;
+            }
+            if (this.implementation == null) {
+                if (breadcrumbLoggingSpecification.implementation != null) {
+                    return false;
+                }
+            }
+            else if (!this.implementation.equals(breadcrumbLoggingSpecification.implementation)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public int getDisableChancePercentage() {
         return this.disableChancePercentage;
     }
@@ -78,7 +115,32 @@ public class BreadcrumbLoggingSpecification
         return this.implementation;
     }
     
+    @Override
+    public int hashCode() {
+        int n;
+        if (this.disable) {
+            n = 1231;
+        }
+        else {
+            n = 1237;
+        }
+        final int disableChancePercentage = this.disableChancePercentage;
+        int hashCode;
+        if (this.implementation == null) {
+            hashCode = 0;
+        }
+        else {
+            hashCode = this.implementation.hashCode();
+        }
+        return hashCode + ((n + 31) * 31 + disableChancePercentage) * 31;
+    }
+    
     public boolean isDisabled() {
         return this.disable;
+    }
+    
+    @Override
+    public String toString() {
+        return "BreadcrumbLoggingSpecification [implementation=" + this.implementation + ", disable=" + this.disable + ", disableChancePercentage=" + this.disableChancePercentage + "]";
     }
 }

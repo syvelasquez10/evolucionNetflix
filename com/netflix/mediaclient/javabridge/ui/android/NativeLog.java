@@ -4,11 +4,12 @@
 
 package com.netflix.mediaclient.javabridge.ui.android;
 
+import org.json.JSONException;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.Bridge;
+import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import com.netflix.mediaclient.javabridge.ui.Log;
 
 public final class NativeLog extends NativeNrdObject implements Log
@@ -17,7 +18,7 @@ public final class NativeLog extends NativeNrdObject implements Log
     public static final String METHOD_log = "log";
     public static final String METHOD_resetSessionID = "resetSessionID";
     private String mAppId;
-    private ResetSessionIdCallback mSessionCallback;
+    private Log$ResetSessionIdCallback mSessionCallback;
     private String mSessionId;
     private String mXid;
     
@@ -25,11 +26,12 @@ public final class NativeLog extends NativeNrdObject implements Log
         super(bridge);
     }
     
-    private int handleEvent(final JSONObject jsonObject) throws Exception {
+    private int handleEvent(final JSONObject jsonObject) {
         return 0;
     }
     
-    private int handlePropertyUpdate(final JSONObject jsonObject) throws JSONException {
+    private int handlePropertyUpdate(final JSONObject jsonObject) {
+        final boolean b = false;
         final JSONObject jsonObject2 = this.getJSONObject(jsonObject, "properties", null);
         if (jsonObject2 == null) {
             com.netflix.mediaclient.Log.w("nf_object", "Log.handlePropertyUpdate:: properties does not exist");
@@ -48,7 +50,6 @@ public final class NativeLog extends NativeNrdObject implements Log
                 com.netflix.mediaclient.Log.d("nf_object", "Log.handlePropertyUpdate:: Old session id: " + mSessionId + ", new session id " + string);
             }
             this.mSessionId = string;
-            final boolean b = false;
             boolean b2;
             if (mSessionId == null && string != null) {
                 b2 = true;
@@ -148,7 +149,7 @@ public final class NativeLog extends NativeNrdObject implements Log
     }
     
     @Override
-    public void resetSessionID(final ResetSessionIdCallback mSessionCallback) {
+    public void resetSessionID(final Log$ResetSessionIdCallback mSessionCallback) {
         this.mSessionCallback = mSessionCallback;
         this.bridge.getNrdProxy().invokeMethod("log", "resetSessionID", null);
     }

@@ -4,7 +4,7 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.a;
 
@@ -21,7 +21,7 @@ class ad extends dd
     }
     
     @Override
-    protected boolean a(final String s, final String s2, final Map<String, d.a> map) {
+    protected boolean a(final String s, final String s2, final Map<String, d$a> map) {
         return s.endsWith(s2);
     }
 }

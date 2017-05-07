@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 import android.content.Context;
 import android.app.AlertDialog$Builder;
@@ -20,10 +19,7 @@ public class PreviewActivity extends Activity
         final AlertDialog create = new AlertDialog$Builder((Context)this).create();
         create.setTitle((CharSequence)title);
         create.setMessage((CharSequence)message);
-        create.setButton(-1, (CharSequence)s, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-            }
-        });
+        create.setButton(-1, (CharSequence)s, (DialogInterface$OnClickListener)new PreviewActivity$1(this));
         create.show();
     }
     

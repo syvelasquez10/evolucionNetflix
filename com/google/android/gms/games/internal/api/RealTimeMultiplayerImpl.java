@@ -5,6 +5,7 @@
 package com.google.android.gms.games.internal.api;
 
 import java.util.List;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMultiplayer$ReliableMessageSentCallback;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeSocket;
@@ -62,8 +63,8 @@ public final class RealTimeMultiplayerImpl implements RealTimeMultiplayer
     }
     
     @Override
-    public int sendReliableMessage(final GoogleApiClient googleApiClient, final ReliableMessageSentCallback reliableMessageSentCallback, final byte[] array, final String s, final String s2) {
-        return Games.c(googleApiClient).a(reliableMessageSentCallback, array, s, s2);
+    public int sendReliableMessage(final GoogleApiClient googleApiClient, final RealTimeMultiplayer$ReliableMessageSentCallback realTimeMultiplayer$ReliableMessageSentCallback, final byte[] array, final String s, final String s2) {
+        return Games.c(googleApiClient).a(realTimeMultiplayer$ReliableMessageSentCallback, array, s, s2);
     }
     
     @Override

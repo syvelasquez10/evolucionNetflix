@@ -6,7 +6,7 @@ package com.android.volley;
 
 public class Response<T>
 {
-    public final Cache.Entry cacheEntry;
+    public final Cache$Entry cacheEntry;
     public final VolleyError error;
     public boolean intermediate;
     public final T result;
@@ -18,7 +18,7 @@ public class Response<T>
         this.error = error;
     }
     
-    private Response(final T result, final Cache.Entry cacheEntry) {
+    private Response(final T result, final Cache$Entry cacheEntry) {
         this.intermediate = false;
         this.result = result;
         this.cacheEntry = cacheEntry;
@@ -29,21 +29,11 @@ public class Response<T>
         return new Response<T>(volleyError);
     }
     
-    public static <T> Response<T> success(final T t, final Cache.Entry entry) {
-        return new Response<T>(t, entry);
+    public static <T> Response<T> success(final T t, final Cache$Entry cache$Entry) {
+        return new Response<T>(t, cache$Entry);
     }
     
     public boolean isSuccess() {
         return this.error == null;
-    }
-    
-    public interface ErrorListener
-    {
-        void onErrorResponse(final VolleyError p0);
-    }
-    
-    public interface Listener<T>
-    {
-        void onResponse(final T p0);
     }
 }

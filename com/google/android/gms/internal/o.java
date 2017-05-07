@@ -29,16 +29,16 @@ public class o
         }
     }
     
-    public byte[] b(final String s) throws a {
+    public byte[] b(final String s) {
         byte[] a;
         try {
             a = this.ky.a(s, false);
             if (a.length != 32) {
-                throw new a();
+                throw new o$a(this);
             }
         }
         catch (IllegalArgumentException ex) {
-            throw new a(ex);
+            throw new o$a(this, ex);
         }
         final ByteBuffer wrap = ByteBuffer.wrap(a, 4, 16);
         final byte[] array = new byte[16];
@@ -47,46 +47,36 @@ public class o
         return array;
     }
     
-    public byte[] c(final byte[] array, final String s) throws a {
+    public byte[] c(final byte[] array, final String s) {
         if (array.length != 16) {
-            throw new a();
+            throw new o$a(this);
         }
         try {
             if (this.ky.a(s, false).length <= 16) {
-                throw new a();
+                throw new o$a(this);
             }
             goto Label_0055;
         }
         catch (NoSuchAlgorithmException ex) {
-            throw new a(ex);
+            throw new o$a(this, ex);
         }
         catch (InvalidKeyException ex2) {
-            throw new a(ex2);
+            throw new o$a(this, ex2);
         }
         catch (IllegalBlockSizeException ex3) {
-            throw new a(ex3);
+            throw new o$a(this, ex3);
         }
         catch (NoSuchPaddingException ex4) {
-            throw new a(ex4);
+            throw new o$a(this, ex4);
         }
         catch (BadPaddingException ex5) {
-            throw new a(ex5);
+            throw new o$a(this, ex5);
         }
         catch (InvalidAlgorithmParameterException ex6) {
-            throw new a(ex6);
+            throw new o$a(this, ex6);
         }
         catch (IllegalArgumentException ex7) {
-            throw new a(ex7);
-        }
-    }
-    
-    public class a extends Exception
-    {
-        public a() {
-        }
-        
-        public a(final Throwable t) {
-            super(t);
+            throw new o$a(this, ex7);
         }
     }
 }

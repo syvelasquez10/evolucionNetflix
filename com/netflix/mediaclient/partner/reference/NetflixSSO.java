@@ -6,15 +6,14 @@ package com.netflix.mediaclient.partner.reference;
 
 import com.netflix.mediaclient.partner.PartnerCommunicationHandler;
 import android.content.Intent;
+import com.netflix.mediaclient.partner.ResponseListener;
 import com.netflix.mediaclient.partner.PartnerRequest;
 import com.netflix.mediaclient.partner.PartnerRequestType;
-import android.content.ComponentName;
-import com.netflix.mediaclient.partner.Response;
-import com.netflix.mediaclient.partner.ResponseListener;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.partner.Partner;
+import com.netflix.mediaclient.partner.Partner$SSO;
 
-public class NetflixSSO implements SSO
+public class NetflixSSO implements Partner$SSO
 {
     private static final String TAG = "nf_partner";
     private final Partner owner;
@@ -29,22 +28,9 @@ public class NetflixSSO implements SSO
     
     private void getExternalSsoService() {
         Log.d("nf_partner", "getExternalSsoService:: start");
-        final ResponseListener responseListener = new ResponseListener() {
-            @Override
-            public void onResponseReceived(final Response response) {
-                final ComponentName responder = response.getResponder();
-                if (responder == null) {
-                    Log.e("nf_partner", "getExternalSsoService did not set component name!");
-                    return;
-                }
-                if (Log.isLoggable("nf_partner", 3)) {
-                    Log.d("nf_partner", "getExternalSsoService sets component name " + responder);
-                }
-                NetflixSSO.this.owner.setComponentName(responder);
-            }
-        };
+        final NetflixSSO$1 netflixSSO$1 = new NetflixSSO$1(this);
         final PartnerRequestType getExternalSsoService = PartnerRequestType.getExternalSsoService;
-        final PartnerRequest partnerRequest = new PartnerRequest(getExternalSsoService, this.service, null, 1, responseListener);
+        final PartnerRequest partnerRequest = new PartnerRequest(getExternalSsoService, this.service, null, 1, netflixSSO$1);
         final PartnerCommunicationHandler partnerCommunicationHandler = this.owner.getPartnerCommunicationHandler();
         if (partnerCommunicationHandler == null) {
             Log.e("nf_partner", "Partner communication handler is missing. This should NOT happen!");

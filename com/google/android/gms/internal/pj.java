@@ -4,9 +4,9 @@
 
 package com.google.android.gms.internal;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +20,13 @@ class pj
         this.awH = new ArrayList<po>();
     }
     
-    private byte[] toByteArray() throws IOException {
+    private byte[] toByteArray() {
         final byte[] array = new byte[this.c()];
         this.a(pf.q(array));
         return array;
     }
     
-    void a(final pf pf) throws IOException {
+    void a(final pf pf) {
         if (this.awG != null) {
             this.awF.a(this.awG, pf);
         }

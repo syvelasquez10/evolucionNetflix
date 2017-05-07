@@ -14,8 +14,8 @@ public abstract class ActionProvider
 {
     private static final String TAG = "ActionProvider(support)";
     private final Context mContext;
-    private SubUiVisibilityListener mSubUiVisibilityListener;
-    private VisibilityListener mVisibilityListener;
+    private ActionProvider$SubUiVisibilityListener mSubUiVisibilityListener;
+    private ActionProvider$VisibilityListener mVisibilityListener;
     
     public ActionProvider(final Context mContext) {
         this.mContext = mContext;
@@ -56,11 +56,11 @@ public abstract class ActionProvider
         }
     }
     
-    public void setSubUiVisibilityListener(final SubUiVisibilityListener mSubUiVisibilityListener) {
+    public void setSubUiVisibilityListener(final ActionProvider$SubUiVisibilityListener mSubUiVisibilityListener) {
         this.mSubUiVisibilityListener = mSubUiVisibilityListener;
     }
     
-    public void setVisibilityListener(final VisibilityListener mVisibilityListener) {
+    public void setVisibilityListener(final ActionProvider$VisibilityListener mVisibilityListener) {
         if (this.mVisibilityListener != null && mVisibilityListener != null) {
             Log.w("ActionProvider(support)", "setVisibilityListener: Setting a new ActionProvider.VisibilityListener when one is already set. Are you reusing this " + this.getClass().getSimpleName() + " instance while it is still in use somewhere else?");
         }
@@ -71,15 +71,5 @@ public abstract class ActionProvider
         if (this.mSubUiVisibilityListener != null) {
             this.mSubUiVisibilityListener.onSubUiVisibilityChanged(b);
         }
-    }
-    
-    public interface SubUiVisibilityListener
-    {
-        void onSubUiVisibilityChanged(final boolean p0);
-    }
-    
-    public interface VisibilityListener
-    {
-        void onActionProviderVisibilityChanged(final boolean p0);
     }
 }

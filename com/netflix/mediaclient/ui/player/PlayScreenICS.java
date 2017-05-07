@@ -13,8 +13,8 @@ public class PlayScreenICS extends PlayScreen
     private static final int HIDE_FLAGS = 1;
     private static final int SHOW_FLAGS = 0;
     
-    PlayScreenICS(final PlayerActivity playerActivity, final Listeners listeners, final PostPlayFactory.PostPlayType postPlayType) {
-        super(playerActivity, listeners, postPlayType);
+    PlayScreenICS(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
+        super(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
     }
     
     @Override

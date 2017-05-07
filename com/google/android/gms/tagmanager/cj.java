@@ -6,7 +6,7 @@ package com.google.android.gms.tagmanager;
 
 import android.view.WindowManager;
 import android.util.DisplayMetrics;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.a;
 import android.content.Context;
@@ -26,7 +26,7 @@ class cj extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         final DisplayMetrics displayMetrics = new DisplayMetrics();
         ((WindowManager)this.mContext.getSystemService("window")).getDefaultDisplay().getMetrics(displayMetrics);
         return di.u(displayMetrics.widthPixels + "x" + displayMetrics.heightPixels);

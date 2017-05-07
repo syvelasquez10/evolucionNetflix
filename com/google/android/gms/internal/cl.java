@@ -4,7 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import org.json.JSONException;
 import org.json.JSONArray;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public final class cl
     public final List<String> qb;
     public final String qc;
     
-    public cl(final JSONObject jsonObject) throws JSONException {
+    public cl(final JSONObject jsonObject) {
         final String s = null;
         this.pX = jsonObject.getString("id");
         final JSONArray jsonArray = jsonObject.getJSONArray("adapters");

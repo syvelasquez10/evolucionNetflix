@@ -4,32 +4,26 @@
 
 package com.netflix.mediaclient.service.logging;
 
-import com.netflix.mediaclient.service.logging.uiaction.model.UpgradeStreamsEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.SubmitPaymentEndedEvent;
 import org.json.JSONObject;
-import com.netflix.mediaclient.service.logging.uiaction.model.StartPlayEndedEvent;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$PaymentType;
 import com.netflix.mediaclient.service.logging.uiaction.model.SelectProfileEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.SearchEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.SayThanksEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.RemoveFromPlaylistEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.RegisterEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.RateTitleEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.NavigationEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.LoginEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.EditProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.DeleteProfileEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.AddToPlaylistEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.AddProfileEndedEvent;
-import com.netflix.mediaclient.service.logging.uiaction.model.AcknowledgeSignupEndedEvent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$Streams;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import java.io.Serializable;
 import org.json.JSONException;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import java.util.concurrent.ConcurrentHashMap;
 import com.netflix.mediaclient.service.logging.uiaction.UpgradeStreamsSession;
@@ -79,99 +73,121 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler = mEventHandler;
     }
     
-    private void handleAcknowledgeSignupEnded(Intent instance) {
-        final String stringExtra = instance.getStringExtra("reason");
-        final String stringExtra2 = instance.getStringExtra("error");
-        final String stringExtra3 = instance.getStringExtra("view");
-        instance = null;
+    private void handleAcknowledgeSignupEnded(final Intent intent) {
+    Label_0043_Outer:
         while (true) {
-            try {
-                instance = (Intent)UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value = null;
-                Enum<IClientLogging.ModalView> value2 = null;
-                if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+            IClientLogging$ModalView value = null;
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            final String stringExtra2 = intent.getStringExtra("view");
+            while (true) {
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra);
+                        if (StringUtils.isNotEmpty((String)s)) {
+                            s = IClientLogging$CompletionReason.valueOf((String)s);
+                            if (StringUtils.isNotEmpty(stringExtra2)) {
+                                value = IClientLogging$ModalView.valueOf(stringExtra2);
+                            }
+                            this.endAcknowledgeSignupSession((IClientLogging$CompletionReason)s, instance, value);
+                            return;
+                        }
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue Label_0043_Outer;
+                    }
+                    break;
                 }
-                if (StringUtils.isNotEmpty(stringExtra3)) {
-                    value2 = IClientLogging.ModalView.valueOf(stringExtra3);
-                }
-                this.endAcknowledgeSignupSession((IClientLogging.CompletionReason)value, (UIError)instance, (IClientLogging.ModalView)value2);
-            }
-            catch (JSONException ex) {
+                s = null;
                 continue;
             }
-            break;
         }
     }
     
     private void handleAcknowledgeSignupStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startAcknowledgeSignupSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startAcknowledgeSignupSession(value, value2);
     }
     
     private void handleAddProfileEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
         final String stringExtra = intent.getStringExtra("reason");
         final String stringExtra2 = intent.getStringExtra("error");
         final String stringExtra3 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value = null;
-        if (StringUtils.isNotEmpty(stringExtra3)) {
-            value = IClientLogging.ModalView.valueOf(stringExtra3);
-        }
-        UIError instance = null;
         while (true) {
-            try {
-                instance = UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value2 = null;
-                if (!StringUtils.isEmpty(stringExtra)) {
-                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+            Label_0108: {
+                if (!StringUtils.isNotEmpty(stringExtra3)) {
+                    break Label_0108;
                 }
-                this.endAddProfileSession((IClientLogging.CompletionReason)value2, (IClientLogging.ModalView)value, instance, new Profile(intent.getStringExtra("profile_id"), intent.getStringExtra("profile_name"), intent.getIntExtra("profile_age", -1), intent.getBooleanExtra("profile_is_kids", false)));
+                final IClientLogging$ModalView value2 = IClientLogging$ModalView.valueOf(stringExtra3);
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra2);
+                        if (!StringUtils.isEmpty(stringExtra)) {
+                            value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                        }
+                        this.endAddProfileSession(value, value2, instance, new UserActionLogging$Profile(intent.getStringExtra("profile_id"), intent.getStringExtra("profile_name"), intent.getIntExtra("profile_age", -1), intent.getBooleanExtra("profile_is_kids", false)));
+                        return;
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue;
+                    }
+                    break;
+                }
             }
-            catch (JSONException ex) {
-                continue;
-            }
-            break;
+            final IClientLogging$ModalView value2 = null;
+            continue;
         }
     }
     
     private void handleAddProfileStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (StringUtils.isNotEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startAddProfileSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startAddProfileSession(value, value2);
     }
     
-    private void handleAddToPlaylistEnded(Intent instance) {
-        final String stringExtra = instance.getStringExtra("reason");
-        final String stringExtra2 = instance.getStringExtra("error");
-        final int intExtra = instance.getIntExtra("title_rank", 0);
-        instance = null;
+    private void handleAddToPlaylistEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        final int intExtra = intent.getIntExtra("title_rank", 0);
         while (true) {
             try {
-                instance = (Intent)UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value = null;
+                final UIError instance = UIError.createInstance(stringExtra2);
                 if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
                 }
-                this.endAddToPlaylistSession((IClientLogging.CompletionReason)value, (UIError)instance, intExtra);
+                this.endAddToPlaylistSession(value, instance, intExtra);
             }
             catch (JSONException ex) {
+                final UIError instance = null;
                 continue;
             }
             break;
@@ -179,111 +195,136 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleAddToPlaylistStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startAddToPlaylistSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startAddToPlaylistSession(value, value2);
     }
     
     private void handleDeleteProfileEnded(Intent value) {
+        IClientLogging$CompletionReason value2 = null;
         final String stringExtra = value.getStringExtra("reason");
         final String stringExtra2 = value.getStringExtra("error");
         final String stringExtra3 = value.getStringExtra("view");
-        value = null;
-        if (StringUtils.isNotEmpty(stringExtra3)) {
-            value = (Intent)IClientLogging.ModalView.valueOf(stringExtra3);
-        }
-        UIError instance = null;
         while (true) {
-            try {
-                instance = UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value2 = null;
-                if (!StringUtils.isEmpty(stringExtra)) {
-                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+            Label_0069: {
+                if (!StringUtils.isNotEmpty(stringExtra3)) {
+                    break Label_0069;
                 }
-                this.endDeleteProfileSession((IClientLogging.CompletionReason)value2, (IClientLogging.ModalView)value, instance);
+                value = (Intent)IClientLogging$ModalView.valueOf(stringExtra3);
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra2);
+                        if (!StringUtils.isEmpty(stringExtra)) {
+                            value2 = IClientLogging$CompletionReason.valueOf(stringExtra);
+                        }
+                        this.endDeleteProfileSession(value2, (IClientLogging$ModalView)value, instance);
+                        return;
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue;
+                    }
+                    break;
+                }
             }
-            catch (JSONException ex) {
-                continue;
-            }
-            break;
+            value = null;
+            continue;
         }
     }
     
     private void handleDeleteProfileStart(final Intent intent) {
+        IClientLogging$ModalView value = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value2;
         if (StringUtils.isNotEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value2 = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value2 = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startDeleteProfileSession(intent.getStringExtra("profile_id"), (CommandName)value, (IClientLogging.ModalView)value2);
+        this.startDeleteProfileSession(intent.getStringExtra("profile_id"), value2, value);
     }
     
     private void handleEditProfileEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
         final String stringExtra = intent.getStringExtra("reason");
         final String stringExtra2 = intent.getStringExtra("error");
         final String stringExtra3 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value = null;
-        if (StringUtils.isNotEmpty(stringExtra3)) {
-            value = IClientLogging.ModalView.valueOf(stringExtra3);
-        }
-        UIError instance = null;
         while (true) {
-            try {
-                instance = UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value2 = null;
-                if (!StringUtils.isEmpty(stringExtra)) {
-                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+            Label_0108: {
+                if (!StringUtils.isNotEmpty(stringExtra3)) {
+                    break Label_0108;
                 }
-                this.endEditProfileSession((IClientLogging.CompletionReason)value2, (IClientLogging.ModalView)value, instance, new Profile(intent.getStringExtra("profile_id"), intent.getStringExtra("profile_name"), intent.getIntExtra("profile_age", -1), intent.getBooleanExtra("profile_is_kids", false)));
+                final IClientLogging$ModalView value2 = IClientLogging$ModalView.valueOf(stringExtra3);
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra2);
+                        if (!StringUtils.isEmpty(stringExtra)) {
+                            value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                        }
+                        this.endEditProfileSession(value, value2, instance, new UserActionLogging$Profile(intent.getStringExtra("profile_id"), intent.getStringExtra("profile_name"), intent.getIntExtra("profile_age", -1), intent.getBooleanExtra("profile_is_kids", false)));
+                        return;
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue;
+                    }
+                    break;
+                }
             }
-            catch (JSONException ex) {
-                continue;
-            }
-            break;
+            final IClientLogging$ModalView value2 = null;
+            continue;
         }
     }
     
     private void handleEditProfileStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (StringUtils.isNotEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startEditProfileSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startEditProfileSession(value, value2);
     }
     
-    private void handleLoginEnded(Intent instance) {
-        final String stringExtra = instance.getStringExtra("reason");
-        final String stringExtra2 = instance.getStringExtra("error");
-        instance = null;
+    private void handleLoginEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
         while (true) {
             try {
-                instance = (Intent)UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value = null;
+                final UIError instance = UIError.createInstance(stringExtra2);
                 if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
                 }
-                this.endLoginSession((IClientLogging.CompletionReason)value, (UIError)instance);
+                this.endLoginSession(value, instance);
             }
             catch (JSONException ex) {
+                final UIError instance = null;
                 continue;
             }
             break;
@@ -291,114 +332,144 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleLoginStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startLoginSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startLoginSession(value, value2);
     }
     
     private void handleNavigationEnded(Intent value) {
+        IClientLogging$CompletionReason value2 = null;
         final String stringExtra = value.getStringExtra("reason");
         final String stringExtra2 = value.getStringExtra("error");
-        UIError instance = null;
         final String stringExtra3 = value.getStringExtra("view");
-        value = null;
-        if (StringUtils.isNotEmpty(stringExtra3)) {
-            value = (Intent)IClientLogging.ModalView.valueOf(stringExtra3);
-        }
         while (true) {
-            try {
-                instance = UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value2 = null;
-                if (StringUtils.isNotEmpty(stringExtra)) {
-                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+            Label_0069: {
+                if (!StringUtils.isNotEmpty(stringExtra3)) {
+                    break Label_0069;
                 }
-                this.endNavigationSession((IClientLogging.ModalView)value, (IClientLogging.CompletionReason)value2, instance);
+                value = (Intent)IClientLogging$ModalView.valueOf(stringExtra3);
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra2);
+                        if (StringUtils.isNotEmpty(stringExtra)) {
+                            value2 = IClientLogging$CompletionReason.valueOf(stringExtra);
+                        }
+                        this.endNavigationSession((IClientLogging$ModalView)value, value2, instance);
+                        return;
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue;
+                    }
+                    break;
+                }
             }
-            catch (JSONException ex) {
-                continue;
-            }
-            break;
+            value = null;
+            continue;
         }
     }
     
     private void handleNavigationStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startNavigationSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startNavigationSession(value, value2);
     }
     
-    private void handleRateTitleEnded(Intent instance) {
-        Serializable s = instance.getStringExtra("reason");
-        final String stringExtra = instance.getStringExtra("error");
-        final int intExtra = instance.getIntExtra("rating", 0);
-        final int intExtra2 = instance.getIntExtra("rank", Integer.MIN_VALUE);
-        instance = null;
+    private void handleRateTitleEnded(final Intent intent) {
+    Label_0060_Outer:
         while (true) {
-            try {
-                instance = (Intent)UIError.createInstance(stringExtra);
-                Enum<IClientLogging.CompletionReason> value = null;
-                if (StringUtils.isNotEmpty((String)s)) {
-                    value = IClientLogging.CompletionReason.valueOf((String)s);
+            Integer value = null;
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            final int intExtra = intent.getIntExtra("rating", 0);
+            final int intExtra2 = intent.getIntExtra("rank", Integer.MIN_VALUE);
+            while (true) {
+                Label_0093: {
+                    while (true) {
+                        while (true) {
+                            try {
+                                final UIError instance = UIError.createInstance(stringExtra);
+                                if (!StringUtils.isNotEmpty((String)s)) {
+                                    break Label_0093;
+                                }
+                                s = IClientLogging$CompletionReason.valueOf((String)s);
+                                if (intExtra2 == Integer.MIN_VALUE) {
+                                    this.endRateTitleSession((IClientLogging$CompletionReason)s, instance, value, intExtra);
+                                    return;
+                                }
+                            }
+                            catch (JSONException ex) {
+                                final UIError instance = null;
+                                continue Label_0060_Outer;
+                            }
+                            break;
+                        }
+                        value = intExtra2;
+                        continue;
+                    }
                 }
-                if (intExtra2 == Integer.MIN_VALUE) {
-                    s = null;
-                }
-                else {
-                    s = intExtra2;
-                }
-                this.endRateTitleSession((IClientLogging.CompletionReason)value, (UIError)instance, (Integer)s, intExtra);
-            }
-            catch (JSONException ex) {
+                s = null;
                 continue;
             }
-            break;
         }
     }
     
     private void handleRateTitleStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startRateTitleSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startRateTitleSession(value, value2);
     }
     
-    private void handleRegisterEnded(Intent instance) {
-        final String stringExtra = instance.getStringExtra("reason");
-        final String stringExtra2 = instance.getStringExtra("error");
-        instance = null;
+    private void handleRegisterEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
         while (true) {
             try {
-                instance = (Intent)UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value = null;
+                final UIError instance = UIError.createInstance(stringExtra2);
                 if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
                 }
-                this.endRegisterSession((IClientLogging.CompletionReason)value, (UIError)instance);
+                this.endRegisterSession(value, instance);
             }
             catch (JSONException ex) {
+                final UIError instance = null;
                 continue;
             }
             break;
@@ -406,33 +477,37 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleRegisterStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startRegisterSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startRegisterSession(value, value2);
     }
     
-    private void handleRemoveFromPlaylistEnded(Intent instance) {
-        final String stringExtra = instance.getStringExtra("reason");
-        final String stringExtra2 = instance.getStringExtra("error");
-        instance = null;
+    private void handleRemoveFromPlaylistEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
         while (true) {
             try {
-                instance = (Intent)UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value = null;
+                final UIError instance = UIError.createInstance(stringExtra2);
                 if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
                 }
-                this.endRemoveFromPlaylistSession((IClientLogging.CompletionReason)value, (UIError)instance);
+                this.endRemoveFromPlaylistSession(value, instance);
             }
             catch (JSONException ex) {
+                final UIError instance = null;
                 continue;
             }
             break;
@@ -440,73 +515,88 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleRemoveFromPlaylistStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startRemoveFromPlaylistSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startRemoveFromPlaylistSession(value, value2);
     }
     
-    private void handleSayThanksEnded(Intent instance) {
-        final String stringExtra = instance.getStringExtra("reason");
-        final String stringExtra2 = instance.getStringExtra("error");
-        final String stringExtra3 = instance.getStringExtra("view");
-        instance = null;
+    private void handleSayThanksEnded(final Intent intent) {
+    Label_0043_Outer:
         while (true) {
-            try {
-                instance = (Intent)UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value = null;
-                Enum<IClientLogging.ModalView> value2 = null;
-                if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+            IClientLogging$ModalView value = null;
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            final String stringExtra2 = intent.getStringExtra("view");
+            while (true) {
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra);
+                        if (StringUtils.isNotEmpty((String)s)) {
+                            s = IClientLogging$CompletionReason.valueOf((String)s);
+                            if (StringUtils.isNotEmpty(stringExtra2)) {
+                                value = IClientLogging$ModalView.valueOf(stringExtra2);
+                            }
+                            this.endSayThanksSession((IClientLogging$CompletionReason)s, value, instance);
+                            return;
+                        }
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue Label_0043_Outer;
+                    }
+                    break;
                 }
-                if (StringUtils.isNotEmpty(stringExtra3)) {
-                    value2 = IClientLogging.ModalView.valueOf(stringExtra3);
-                }
-                this.endSayThanksSession((IClientLogging.CompletionReason)value, (IClientLogging.ModalView)value2, (UIError)instance);
-            }
-            catch (JSONException ex) {
+                s = null;
                 continue;
             }
-            break;
         }
     }
     
     private void handleSayThanksStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startSayThanksSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startSayThanksSession(value, value2);
     }
     
-    private void handleSearchEnded(Intent instance) {
-        final String stringExtra = instance.getStringExtra("reason");
-        final String stringExtra2 = instance.getStringExtra("error");
-        final long longExtra = instance.getLongExtra("id", -1L);
-        instance = null;
+    private void handleSearchEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        final long longExtra = intent.getLongExtra("id", -1L);
         while (true) {
             try {
-                instance = (Intent)UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value = null;
+                final UIError instance = UIError.createInstance(stringExtra2);
                 if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
                 }
-                this.endSearchSession(longExtra, (IClientLogging.CompletionReason)value, (UIError)instance);
+                this.endSearchSession(longExtra, value, instance);
             }
             catch (JSONException ex) {
+                final UIError instance = null;
                 continue;
             }
             break;
@@ -515,104 +605,138 @@ final class UserActionLoggingImpl implements UserActionLogging
     
     private void handleSearchStart(final Intent intent) {
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("term");
         final String stringExtra3 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2;
         if (StringUtils.isNotEmpty(stringExtra3)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra3);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra3);
         }
-        this.startSearchSession(intent.getLongExtra("id", -1L), (CommandName)value, (IClientLogging.ModalView)value2, stringExtra2);
+        else {
+            value2 = null;
+        }
+        this.startSearchSession(intent.getLongExtra("id", -1L), value, value2, stringExtra2);
     }
     
     private void handleSelectProfileEnded(Intent value) {
+        IClientLogging$CompletionReason value2 = null;
         final String stringExtra = value.getStringExtra("reason");
         final String stringExtra2 = value.getStringExtra("error");
         final String stringExtra3 = value.getStringExtra("view");
-        value = null;
-        if (StringUtils.isNotEmpty(stringExtra3)) {
-            value = (Intent)IClientLogging.ModalView.valueOf(stringExtra3);
-        }
-        UIError instance = null;
         while (true) {
-            try {
-                instance = UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value2 = null;
-                if (!StringUtils.isEmpty(stringExtra)) {
-                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+            Label_0069: {
+                if (!StringUtils.isNotEmpty(stringExtra3)) {
+                    break Label_0069;
                 }
-                this.endSelectProfileSession((IClientLogging.CompletionReason)value2, (IClientLogging.ModalView)value, instance);
+                value = (Intent)IClientLogging$ModalView.valueOf(stringExtra3);
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra2);
+                        if (!StringUtils.isEmpty(stringExtra)) {
+                            value2 = IClientLogging$CompletionReason.valueOf(stringExtra);
+                        }
+                        this.endSelectProfileSession(value2, (IClientLogging$ModalView)value, instance);
+                        return;
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue;
+                    }
+                    break;
+                }
             }
-            catch (JSONException ex) {
-                continue;
-            }
-            break;
+            value = null;
+            continue;
         }
     }
     
     private void handleSelectProfileStart(final Intent intent) {
+        final UserActionLogging$RememberProfile userActionLogging$RememberProfile = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (StringUtils.isNotEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        else {
+            value2 = null;
         }
         final String stringExtra3 = intent.getStringExtra("profile_id");
-        final RememberProfile rememberProfile = null;
         final String stringExtra4 = intent.getStringExtra("remember_profile");
-        Enum<RememberProfile> value3 = rememberProfile;
+        UserActionLogging$RememberProfile value3 = userActionLogging$RememberProfile;
         if (StringUtils.isNotEmpty(stringExtra4)) {
-            value3 = RememberProfile.valueOf(stringExtra4);
+            value3 = UserActionLogging$RememberProfile.valueOf(stringExtra4);
         }
-        this.startSelectProfileSession(stringExtra3, (RememberProfile)value3, (CommandName)value, (IClientLogging.ModalView)value2);
+        this.startSelectProfileSession(stringExtra3, value3, value, value2);
     }
     
     private void handleStartPlayEnded(final Intent intent) {
-        Serializable s = intent.getStringExtra("reason");
-        final String stringExtra = intent.getStringExtra("error");
-        final int intExtra = intent.getIntExtra("rank", Integer.MIN_VALUE);
-        UIError instance = null;
+    Label_0049_Outer:
         while (true) {
-            try {
-                instance = UIError.createInstance(stringExtra);
-                Enum<IClientLogging.CompletionReason> value = null;
-                if (StringUtils.isNotEmpty((String)s)) {
-                    value = IClientLogging.CompletionReason.valueOf((String)s);
+            Integer value = null;
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            final int intExtra = intent.getIntExtra("rank", Integer.MIN_VALUE);
+            while (true) {
+                Label_0092: {
+                    while (true) {
+                        while (true) {
+                            try {
+                                final UIError instance = UIError.createInstance(stringExtra);
+                                if (!StringUtils.isNotEmpty((String)s)) {
+                                    break Label_0092;
+                                }
+                                s = IClientLogging$CompletionReason.valueOf((String)s);
+                                if (intExtra == Integer.MIN_VALUE) {
+                                    this.endStartPlaySession((IClientLogging$CompletionReason)s, instance, value, PlayerType.toPlayerType(intent.getIntExtra("playerType", -1)));
+                                    return;
+                                }
+                            }
+                            catch (JSONException ex) {
+                                final UIError instance = null;
+                                continue Label_0049_Outer;
+                            }
+                            break;
+                        }
+                        value = intExtra;
+                        continue;
+                    }
                 }
-                if (intExtra == Integer.MIN_VALUE) {
-                    s = null;
-                }
-                else {
-                    s = intExtra;
-                }
-                this.endStartPlaySession((IClientLogging.CompletionReason)value, instance, (Integer)s, PlayerType.toPlayerType(intent.getIntExtra("playerType", -1)));
-            }
-            catch (JSONException ex) {
+                s = null;
                 continue;
             }
-            break;
         }
     }
     
     private void handleStartPlayStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startStartPlaySession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startStartPlaySession(value, value2);
     }
     
     private void handleSubmitPaymentEnded(final Intent p0) {
@@ -624,7 +748,7 @@ final class UserActionLoggingImpl implements UserActionLogging
         //     0: aload_1        
         //     1: ldc             "reason"
         //     3: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //     6: astore          6
+        //     6: astore          4
         //     8: aload_1        
         //     9: ldc_w           "sucess"
         //    12: iconst_0       
@@ -633,7 +757,7 @@ final class UserActionLoggingImpl implements UserActionLogging
         //    17: aload_1        
         //    18: ldc_w           "error_code"
         //    21: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    24: astore          7
+        //    24: astore          6
         //    26: aload_1        
         //    27: ldc_w           "payment_type"
         //    30: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
@@ -641,66 +765,65 @@ final class UserActionLoggingImpl implements UserActionLogging
         //    35: aload_1        
         //    36: ldc             "error"
         //    38: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    41: astore_3       
-        //    42: aconst_null    
-        //    43: astore_1       
-        //    44: aload_3        
-        //    45: invokestatic    com/netflix/mediaclient/service/logging/client/model/UIError.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/UIError;
-        //    48: astore_3       
-        //    49: aload_3        
-        //    50: astore_1       
-        //    51: aconst_null    
-        //    52: astore_3       
-        //    53: aconst_null    
-        //    54: astore          4
-        //    56: aload           6
-        //    58: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
-        //    61: ifne            70
-        //    64: aload           6
-        //    66: invokestatic    com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
-        //    69: astore_3       
+        //    41: astore_1       
+        //    42: aload_1        
+        //    43: invokestatic    com/netflix/mediaclient/service/logging/client/model/UIError.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/UIError;
+        //    46: astore_3       
+        //    47: aload           4
+        //    49: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    52: ifne            130
+        //    55: aload           4
+        //    57: invokestatic    com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
+        //    60: astore          4
+        //    62: aload           5
+        //    64: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    67: ifne            124
         //    70: aload           5
-        //    72: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
-        //    75: ifne            85
-        //    78: aload           5
-        //    80: invokestatic    com/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType;
-        //    83: astore          4
-        //    85: aconst_null    
-        //    86: astore          6
-        //    88: aload           6
-        //    90: astore          5
-        //    92: aload           7
-        //    94: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //    97: ifeq            111
-        //   100: new             Lorg/json/JSONObject;
-        //   103: dup            
-        //   104: aload           7
-        //   106: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
-        //   109: astore          5
-        //   111: aload_0        
-        //   112: aload_3        
-        //   113: aload_1        
-        //   114: iload_2        
-        //   115: aload           4
-        //   117: aload           5
-        //   119: invokevirtual   com/netflix/mediaclient/service/logging/UserActionLoggingImpl.endSubmitPaymentSession:(Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/UIError;ZLcom/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType;Lorg/json/JSONObject;)V
-        //   122: return         
-        //   123: astore_3       
-        //   124: goto            51
-        //   127: astore          5
-        //   129: aload           6
-        //   131: astore          5
-        //   133: goto            111
+        //    72: invokestatic    com/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType;
+        //    75: astore          5
+        //    77: aload           6
+        //    79: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //    82: ifeq            119
+        //    85: new             Lorg/json/JSONObject;
+        //    88: dup            
+        //    89: aload           6
+        //    91: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
+        //    94: astore_1       
+        //    95: aload_0        
+        //    96: aload           4
+        //    98: aload_3        
+        //    99: iload_2        
+        //   100: aload           5
+        //   102: aload_1        
+        //   103: invokevirtual   com/netflix/mediaclient/service/logging/UserActionLoggingImpl.endSubmitPaymentSession:(Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/UIError;ZLcom/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType;Lorg/json/JSONObject;)V
+        //   106: return         
+        //   107: astore_1       
+        //   108: aconst_null    
+        //   109: astore_3       
+        //   110: goto            47
+        //   113: astore_1       
+        //   114: aconst_null    
+        //   115: astore_1       
+        //   116: goto            95
+        //   119: aconst_null    
+        //   120: astore_1       
+        //   121: goto            95
+        //   124: aconst_null    
+        //   125: astore          5
+        //   127: goto            77
+        //   130: aconst_null    
+        //   131: astore          4
+        //   133: goto            62
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                    
         //  -----  -----  -----  -----  ------------------------
-        //  44     49     123    127    Lorg/json/JSONException;
-        //  100    111    127    136    Lorg/json/JSONException;
+        //  42     47     107    113    Lorg/json/JSONException;
+        //  85     95     113    119    Lorg/json/JSONException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0111:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0095:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -724,35 +847,38 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleSubmitPaymentStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        this.startSubmitPaymentSession((CommandName)value, (IClientLogging.ModalView)value2);
+        this.startSubmitPaymentSession(value, value2);
     }
     
-    private void handleUpgradeStreamsEnded(Intent instance) {
-        final String stringExtra = instance.getStringExtra("reason");
-        final String stringExtra2 = instance.getStringExtra("error");
-        final String stringExtra3 = instance.getStringExtra("streams");
-        instance = null;
-        final Streams find = Streams.find(stringExtra3);
+    private void handleUpgradeStreamsEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        final UserActionLogging$Streams find = UserActionLogging$Streams.find(intent.getStringExtra("streams"));
         while (true) {
             try {
-                instance = (Intent)UIError.createInstance(stringExtra2);
-                Enum<IClientLogging.CompletionReason> value = null;
+                final UIError instance = UIError.createInstance(stringExtra2);
                 if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging.CompletionReason.valueOf(stringExtra);
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
                 }
-                this.endUpgradeStreamsSession((IClientLogging.CompletionReason)value, (UIError)instance, find);
+                this.endUpgradeStreamsSession(value, instance, find);
             }
             catch (JSONException ex) {
+                final UIError instance = null;
                 continue;
             }
             break;
@@ -760,26 +886,32 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleUpgradeStreamsStart(final Intent intent) {
+        final UserActionLogging$Streams userActionLogging$Streams = null;
         final String stringExtra = intent.getStringExtra("cmd");
-        Enum<CommandName> value = null;
+        UserActionLogging$CommandName value;
         if (!StringUtils.isEmpty(stringExtra)) {
-            value = CommandName.valueOf(stringExtra);
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
         }
         final String stringExtra2 = intent.getStringExtra("view");
-        Enum<IClientLogging.ModalView> value2 = null;
+        IClientLogging$ModalView value2;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        final Streams streams = null;
+        else {
+            value2 = null;
+        }
         final String stringExtra3 = intent.getStringExtra("streams");
-        Enum<Streams> find = streams;
+        UserActionLogging$Streams find = userActionLogging$Streams;
         if (StringUtils.isNotEmpty(stringExtra3)) {
-            find = Streams.find(stringExtra3);
+            find = UserActionLogging$Streams.find(stringExtra3);
         }
-        this.startUpgradeStreamsSession((CommandName)value, (IClientLogging.ModalView)value2, (Streams)find);
+        this.startUpgradeStreamsSession(value, value2, find);
     }
     
-    private void populateEvent(final Event event, final DataContext dataContext, final IClientLogging.ModalView modalView) {
+    private void populateEvent(final Event event, final DataContext dataContext, final IClientLogging$ModalView modalView) {
         if (event == null) {
             return;
         }
@@ -788,36 +920,14 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endAcknowledgeSignupSession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final IClientLogging.ModalView modalView) {
+    public void endAcknowledgeSignupSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final IClientLogging$ModalView clientLogging$ModalView) {
         Log.d("nf_log", "AcknowledgeSignup session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "User session ended");
-                if (UserActionLoggingImpl.this.mAcknowledgeSignup == null) {
-                    Log.w("nf_log", "AcknowledgeSignup session does NOT exist!");
-                    return;
-                }
-                final AcknowledgeSignupEndedEvent endedEvent = UserActionLoggingImpl.this.mAcknowledgeSignup.createEndedEvent(completionReason, uiError, modalView);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "AcknowledgeSignup session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, modalView);
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mAcknowledgeSignup);
-                Log.d("nf_log", "AcknowledgeSignup session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mAcknowledgeSignup = null;
-                Log.d("nf_log", "AcknowledgeSignup session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$1(this, clientLogging$CompletionReason, uiError, clientLogging$ModalView, this.mDataContext));
         Log.d("nf_log", "AcknowledgeSignup session end done.");
     }
     
     @Override
-    public void endAddProfileSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError, final Profile profile) {
+    public void endAddProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError, final UserActionLogging$Profile userActionLogging$Profile) {
         Log.d("nf_log", "Add profile session ended and posted to executor");
         final DataContext mDataContext = this.mDataContext;
         Log.d("nf_log", "Add profile session ended");
@@ -825,7 +935,7 @@ final class UserActionLoggingImpl implements UserActionLogging
             Log.w("nf_log", "Add profile session does NOT exist!");
             return;
         }
-        final AddProfileEndedEvent endedEvent = this.mAddProfileSession.createEndedEvent(completionReason, uiError, modalView, profile);
+        final AddProfileEndedEvent endedEvent = this.mAddProfileSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView, userActionLogging$Profile);
         if (endedEvent == null) {
             Log.d("nf_log", "Add profile session still waits on session id, do not post at this time.");
             return;
@@ -840,36 +950,14 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endAddToPlaylistSession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final int n) {
+    public void endAddToPlaylistSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final int n) {
         Log.d("nf_log", "AddToPlaylist session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "AddToPlaylist session ended");
-                if (UserActionLoggingImpl.this.mAddToPlaylistSession == null) {
-                    Log.w("nf_log", "AddToPlaylist session does NOT exist!");
-                    return;
-                }
-                final AddToPlaylistEndedEvent endedEvent = UserActionLoggingImpl.this.mAddToPlaylistSession.createEndedEvent(completionReason, uiError, n);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "AddToPlaylist session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mAddToPlaylistSession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mAddToPlaylistSession);
-                Log.d("nf_log", "AddToPlaylist session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mAddToPlaylistSession = null;
-                Log.d("nf_log", "AddToPlaylist session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$2(this, clientLogging$CompletionReason, uiError, n, this.mDataContext));
         Log.d("nf_log", "AddToPlaylist session end done.");
     }
     
     @Override
-    public void endDeleteProfileSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError) {
+    public void endDeleteProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
         Log.d("nf_log", "Delete profile session ended and posted to executor");
         final DataContext mDataContext = this.mDataContext;
         Log.d("nf_log", "Delete profile session ended");
@@ -877,7 +965,7 @@ final class UserActionLoggingImpl implements UserActionLogging
             Log.w("nf_log", "Delete profile session does NOT exist!");
             return;
         }
-        final DeleteProfileEndedEvent endedEvent = this.mDeleteProfileSession.createEndedEvent(completionReason, uiError, modalView);
+        final DeleteProfileEndedEvent endedEvent = this.mDeleteProfileSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
         if (endedEvent == null) {
             Log.d("nf_log", "Delete profile session still waits on session id, do not post at this time.");
             return;
@@ -892,7 +980,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endEditProfileSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError, final Profile profile) {
+    public void endEditProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError, final UserActionLogging$Profile userActionLogging$Profile) {
         Log.d("nf_log", "Edit profile session ended and posted to executor");
         final DataContext mDataContext = this.mDataContext;
         Log.d("nf_log", "Edit profile session ended");
@@ -900,7 +988,7 @@ final class UserActionLoggingImpl implements UserActionLogging
             Log.w("nf_log", "Edit profile session does NOT exist!");
             return;
         }
-        final EditProfileEndedEvent endedEvent = this.mEditProfileSession.createEndedEvent(completionReason, uiError, modalView, profile);
+        final EditProfileEndedEvent endedEvent = this.mEditProfileSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView, userActionLogging$Profile);
         if (endedEvent == null) {
             Log.d("nf_log", "Edit profile session still waits on session id, do not post at this time.");
             return;
@@ -915,211 +1003,56 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endLoginSession(final IClientLogging.CompletionReason completionReason, final UIError uiError) {
+    public void endLoginSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         Log.d("nf_log", "Login session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "Login session ended");
-                if (UserActionLoggingImpl.this.mLoginSession == null) {
-                    Log.w("nf_log", "Login session does NOT exist!");
-                    return;
-                }
-                final LoginEndedEvent endedEvent = UserActionLoggingImpl.this.mLoginSession.createEndedEvent(completionReason, uiError);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "Login session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mLoginSession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mLoginSession);
-                Log.d("nf_log", "Login session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mLoginSession = null;
-                Log.d("nf_log", "Login session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$3(this, clientLogging$CompletionReason, uiError, this.mDataContext));
         Log.d("nf_log", "Login session end done.");
     }
     
     @Override
-    public void endNavigationSession(final IClientLogging.ModalView modalView, final IClientLogging.CompletionReason completionReason, final UIError uiError) {
+    public void endNavigationSession(final IClientLogging$ModalView clientLogging$ModalView, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         Log.d("nf_log", "Navigation session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "Navigation session ended");
-                final NavigationSession access$500 = UserActionLoggingImpl.this.mNavigationSession;
-                if (access$500 == null) {
-                    Log.w("nf_log", "Navigation session does NOT exist!");
-                    return;
-                }
-                final NavigationEndedEvent endedEvent = access$500.createEndedEvent(modalView, completionReason, uiError);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "We stayed in same view, cancel session.");
-                }
-                else {
-                    Log.d("nf_log", "Navigation session end event posting...");
-                    UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mNavigationSession.getView());
-                    UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                    Log.d("nf_log", "Navigation session end event posted.");
-                }
-                UserActionLoggingImpl.this.mEventHandler.removeSession(access$500);
-                UserActionLoggingImpl.this.mNavigationSession = null;
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$4(this, clientLogging$ModalView, clientLogging$CompletionReason, uiError, this.mDataContext));
         Log.d("nf_log", "Navigation session end done.");
     }
     
     @Override
-    public void endRateTitleSession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final Integer n, final int n2) {
+    public void endRateTitleSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final int n2) {
         Log.d("nf_log", "RateTitle session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "RateTitle  session ended");
-                if (UserActionLoggingImpl.this.mRateTitleSession == null) {
-                    Log.w("nf_log", "RateTitle session does NOT exist!");
-                    return;
-                }
-                final RateTitleEndedEvent endedEvent = UserActionLoggingImpl.this.mRateTitleSession.createEndedEvent(completionReason, uiError, n, n2);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "RateTitle  session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mRateTitleSession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mRateTitleSession);
-                Log.d("nf_log", "RateTitle session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mRateTitleSession = null;
-                Log.d("nf_log", "RateTitle session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$5(this, clientLogging$CompletionReason, uiError, n, n2, this.mDataContext));
         Log.d("nf_log", "RateTitle session end done.");
     }
     
     @Override
-    public void endRegisterSession(final IClientLogging.CompletionReason completionReason, final UIError uiError) {
+    public void endRegisterSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         Log.d("nf_log", "Register session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "Register session ended");
-                if (UserActionLoggingImpl.this.mRegisterSession == null) {
-                    Log.w("nf_log", "Register session does NOT exist!");
-                    return;
-                }
-                final RegisterEndedEvent endedEvent = UserActionLoggingImpl.this.mRegisterSession.createEndedEvent(completionReason, uiError);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "Register session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mRegisterSession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mRegisterSession);
-                Log.d("nf_log", "Register session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mRegisterSession = null;
-                Log.d("nf_log", "Register session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$6(this, clientLogging$CompletionReason, uiError, this.mDataContext));
         Log.d("nf_log", "Register session end done.");
     }
     
     @Override
-    public void endRemoveFromPlaylistSession(final IClientLogging.CompletionReason completionReason, final UIError uiError) {
+    public void endRemoveFromPlaylistSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         Log.d("nf_log", "RemoveFromPlaylist session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "RemoveFromPlaylist session ended");
-                if (UserActionLoggingImpl.this.mRemoveFromPlaylistSession == null) {
-                    Log.w("nf_log", "RemoveFromPlaylist session does NOT exist!");
-                    return;
-                }
-                final RemoveFromPlaylistEndedEvent endedEvent = UserActionLoggingImpl.this.mRemoveFromPlaylistSession.createEndedEvent(completionReason, uiError);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "RemoveFromPlaylist session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mRemoveFromPlaylistSession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mRemoveFromPlaylistSession);
-                Log.d("nf_log", "RemoveFromPlaylist session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mRemoveFromPlaylistSession = null;
-                Log.d("nf_log", "RemoveFromPlaylist session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$7(this, clientLogging$CompletionReason, uiError, this.mDataContext));
         Log.d("nf_log", "RemoveFromPlaylist session end done.");
     }
     
     @Override
-    public void endSayThanksSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError) {
+    public void endSayThanksSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
         Log.d("nf_log", "SayThanks ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                if (UserActionLoggingImpl.this.mSayThanksSession == null) {
-                    Log.w("nf_log", "SayThanks does NOT exist!");
-                    return;
-                }
-                final SayThanksEndedEvent endedEvent = UserActionLoggingImpl.this.mSayThanksSession.createEndedEvent(completionReason, uiError, modalView);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "SayThanks still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, modalView);
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mSayThanksSession);
-                Log.d("nf_log", "SayThanks end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mSayThanksSession = null;
-                Log.d("nf_log", "SayThanks end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$12(this, clientLogging$CompletionReason, uiError, clientLogging$ModalView, this.mDataContext));
         Log.d("nf_log", "SayThanks end done.");
     }
     
     @Override
-    public void endSearchSession(final long n, final IClientLogging.CompletionReason completionReason, final UIError uiError) {
+    public void endSearchSession(final long n, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         Log.d("nf_log", "Search session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "Search session ended");
-                final SearchSession searchSession = UserActionLoggingImpl.this.mSearchSessions.get(n);
-                if (searchSession == null) {
-                    Log.w("nf_log", "Search session does NOT exist for " + n);
-                    return;
-                }
-                final SearchEndedEvent endedEvent = searchSession.createEndedEvent(completionReason, uiError);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "Search session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, searchSession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(searchSession);
-                Log.d("nf_log", "Search session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                Log.d("nf_log", "Search session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$8(this, n, clientLogging$CompletionReason, uiError, this.mDataContext));
         Log.d("nf_log", "Search session end done.");
     }
     
     @Override
-    public void endSelectProfileSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError) {
+    public void endSelectProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
         Log.d("nf_log", "Select profile session ended and posted to executor");
         final DataContext mDataContext = this.mDataContext;
         Log.d("nf_log", "Select profile session ended");
@@ -1127,7 +1060,7 @@ final class UserActionLoggingImpl implements UserActionLogging
             Log.w("nf_log", "Select profile session does NOT exist!");
             return;
         }
-        final SelectProfileEndedEvent endedEvent = this.mSelectProfileSession.createEndedEvent(completionReason, uiError, modalView);
+        final SelectProfileEndedEvent endedEvent = this.mSelectProfileSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
         if (endedEvent == null) {
             Log.d("nf_log", "Select profile session still waits on session id, do not post at this time.");
             return;
@@ -1142,89 +1075,23 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endStartPlaySession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final Integer n, final PlayerType playerType) {
+    public void endStartPlaySession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType) {
         Log.d("nf_log", "StartPlay session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "StartPlay session ended");
-                if (UserActionLoggingImpl.this.mStartPlaySession == null) {
-                    Log.w("nf_log", "StartPlay session does NOT exist!");
-                    return;
-                }
-                final StartPlayEndedEvent endedEvent = UserActionLoggingImpl.this.mStartPlaySession.createEndedEvent(completionReason, uiError, n, playerType);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "StartPlay session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mStartPlaySession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mStartPlaySession);
-                Log.d("nf_log", "StartPlay session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mStartPlaySession = null;
-                Log.d("nf_log", "StartPlay session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$9(this, clientLogging$CompletionReason, uiError, n, playerType, this.mDataContext));
         Log.d("nf_log", "StartPlay session end done.");
     }
     
     @Override
-    public void endSubmitPaymentSession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final boolean b, final PaymentType paymentType, final JSONObject jsonObject) {
+    public void endSubmitPaymentSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final boolean b, final UserActionLogging$PaymentType userActionLogging$PaymentType, final JSONObject jsonObject) {
         Log.d("nf_log", "SubmitPayment session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "SubmitPayment session ended");
-                if (UserActionLoggingImpl.this.mSubmitPaymentSession == null) {
-                    Log.w("nf_log", "SubmitPayment session does NOT exist!");
-                    return;
-                }
-                final SubmitPaymentEndedEvent endedEvent = UserActionLoggingImpl.this.mSubmitPaymentSession.createEndedEvent(completionReason, uiError, b, paymentType, jsonObject);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "SubmitPayment session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mSubmitPaymentSession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mSubmitPaymentSession);
-                Log.d("nf_log", "SubmitPayment session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mSubmitPaymentSession = null;
-                Log.d("nf_log", "SubmitPayment session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$10(this, clientLogging$CompletionReason, uiError, b, userActionLogging$PaymentType, jsonObject, this.mDataContext));
         Log.d("nf_log", "SubmitPayment session end done.");
     }
     
     @Override
-    public void endUpgradeStreamsSession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final Streams streams) {
+    public void endUpgradeStreamsSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final UserActionLogging$Streams userActionLogging$Streams) {
         Log.d("nf_log", "UpgradeStreams session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new Runnable() {
-            final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
-            
-            @Override
-            public void run() {
-                Log.d("nf_log", "UpgradeStreams session ended");
-                if (UserActionLoggingImpl.this.mUpgradeStreamsSession == null) {
-                    Log.w("nf_log", "UpgradeStreams session does NOT exist!");
-                    return;
-                }
-                final UpgradeStreamsEndedEvent endedEvent = UserActionLoggingImpl.this.mUpgradeStreamsSession.createEndedEvent(completionReason, uiError, streams);
-                if (endedEvent == null) {
-                    Log.d("nf_log", "User session still waits on session id, do not post at this time.");
-                    return;
-                }
-                UserActionLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, UserActionLoggingImpl.this.mUpgradeStreamsSession.getView());
-                UserActionLoggingImpl.this.mEventHandler.removeSession(UserActionLoggingImpl.this.mUpgradeStreamsSession);
-                Log.d("nf_log", "UpgradeStreams session end event posting...");
-                UserActionLoggingImpl.this.mEventHandler.post(endedEvent);
-                UserActionLoggingImpl.this.mUpgradeStreamsSession = null;
-                Log.d("nf_log", "UpgradeStreams session end event posted.");
-            }
-        });
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$11(this, clientLogging$CompletionReason, uiError, userActionLogging$Streams, this.mDataContext));
         Log.d("nf_log", "UpgradeStreams session end done.");
     }
     
@@ -1403,85 +1270,85 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void startAcknowledgeSignupSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startAcknowledgeSignupSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mAcknowledgeSignup != null) {
             Log.e("nf_log", "AcknowledgeSignup session already started!");
             return;
         }
         Log.d("nf_log", "AcknowledgeSignup session starting...");
-        final AcknowledgeSignupSession mAcknowledgeSignup = new AcknowledgeSignupSession(commandName, modalView);
+        final AcknowledgeSignupSession mAcknowledgeSignup = new AcknowledgeSignupSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mAcknowledgeSignup);
         this.mAcknowledgeSignup = mAcknowledgeSignup;
         Log.d("nf_log", "AcknowledgeSignup session start done.");
     }
     
     @Override
-    public void startAddProfileSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startAddProfileSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mAddProfileSession != null) {
             Log.e("nf_log", "Add profile session already started!");
             return;
         }
         Log.d("nf_log", "Add profile session starting...");
-        final AddProfileSession mAddProfileSession = new AddProfileSession(commandName, modalView);
+        final AddProfileSession mAddProfileSession = new AddProfileSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mAddProfileSession);
         this.mAddProfileSession = mAddProfileSession;
         Log.d("nf_log", "Add profile session start done.");
     }
     
     @Override
-    public void startAddToPlaylistSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startAddToPlaylistSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mAddToPlaylistSession != null) {
             Log.e("nf_log", "AddToPlaylist session already started!");
             return;
         }
         Log.d("nf_log", "AddToPlaylist session starting...");
-        final AddToPlaylistSession mAddToPlaylistSession = new AddToPlaylistSession(commandName, modalView);
+        final AddToPlaylistSession mAddToPlaylistSession = new AddToPlaylistSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mAddToPlaylistSession);
         this.mAddToPlaylistSession = mAddToPlaylistSession;
         Log.d("nf_log", "AddToPlaylist session start done.");
     }
     
     @Override
-    public void startDeleteProfileSession(final String s, final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startDeleteProfileSession(final String s, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mDeleteProfileSession != null) {
             Log.e("nf_log", "Delete profile session already started!");
             return;
         }
         Log.d("nf_log", "Delete profile session starting...");
-        final DeleteProfileSession mDeleteProfileSession = new DeleteProfileSession(s, commandName, modalView);
+        final DeleteProfileSession mDeleteProfileSession = new DeleteProfileSession(s, userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mDeleteProfileSession);
         this.mDeleteProfileSession = mDeleteProfileSession;
         Log.d("nf_log", "Delete profile session start done.");
     }
     
     @Override
-    public void startEditProfileSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startEditProfileSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mEditProfileSession != null) {
             Log.e("nf_log", "Edit profile session already started!");
             return;
         }
         Log.d("nf_log", "Edit profile session starting...");
-        final EditProfileSession mEditProfileSession = new EditProfileSession(commandName, modalView);
+        final EditProfileSession mEditProfileSession = new EditProfileSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mEditProfileSession);
         this.mEditProfileSession = mEditProfileSession;
         Log.d("nf_log", "Edit profile session start done.");
     }
     
     @Override
-    public void startLoginSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startLoginSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mLoginSession != null) {
             Log.e("nf_log", "Login session already started!");
             return;
         }
         Log.d("nf_log", "Login session starting...");
-        final LoginSession mLoginSession = new LoginSession(commandName, modalView);
+        final LoginSession mLoginSession = new LoginSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mLoginSession);
         this.mLoginSession = mLoginSession;
         Log.d("nf_log", "Login session start done.");
     }
     
     @Override
-    public void startNavigationSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startNavigationSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mNavigationSession != null) {
             Log.d("nf_log", "Navigation session existed before, overwrite");
             this.mEventHandler.removeSession(this.mNavigationSession);
@@ -1489,119 +1356,119 @@ final class UserActionLoggingImpl implements UserActionLogging
         else {
             Log.d("nf_log", "Navigation session starting...");
         }
-        final NavigationSession mNavigationSession = new NavigationSession(commandName, modalView);
+        final NavigationSession mNavigationSession = new NavigationSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mNavigationSession);
         this.mNavigationSession = mNavigationSession;
         Log.d("nf_log", "Navigation session start done.");
     }
     
     @Override
-    public void startRateTitleSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startRateTitleSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mRateTitleSession != null) {
             Log.e("nf_log", "RateTitle session already started!");
             return;
         }
         Log.d("nf_log", "RateTitle session starting...");
-        final RateTitleSession mRateTitleSession = new RateTitleSession(commandName, modalView);
+        final RateTitleSession mRateTitleSession = new RateTitleSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mRateTitleSession);
         this.mRateTitleSession = mRateTitleSession;
         Log.d("nf_log", "RateTitle session start done.");
     }
     
     @Override
-    public void startRegisterSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startRegisterSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mRegisterSession != null) {
             Log.e("nf_log", "Register session already started!");
             return;
         }
         Log.d("nf_log", "Register session starting...");
-        final RegisterSession mRegisterSession = new RegisterSession(commandName, modalView);
+        final RegisterSession mRegisterSession = new RegisterSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mRegisterSession);
         this.mRegisterSession = mRegisterSession;
         Log.d("nf_log", "Register session start done.");
     }
     
     @Override
-    public void startRemoveFromPlaylistSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startRemoveFromPlaylistSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mRemoveFromPlaylistSession != null) {
             Log.e("nf_log", "RemoveFromPlaylist session already started!");
             return;
         }
         Log.d("nf_log", "RemoveFromPlaylist session starting...");
-        final RemoveFromPlaylistSession mRemoveFromPlaylistSession = new RemoveFromPlaylistSession(commandName, modalView);
+        final RemoveFromPlaylistSession mRemoveFromPlaylistSession = new RemoveFromPlaylistSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mRemoveFromPlaylistSession);
         this.mRemoveFromPlaylistSession = mRemoveFromPlaylistSession;
         Log.d("nf_log", "RemoveFromPlaylist session start done.");
     }
     
     @Override
-    public void startSayThanksSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startSayThanksSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mSayThanksSession != null) {
             Log.e("nf_log", "SayThanks session already started!");
             return;
         }
         Log.d("nf_log", "SayThanks session starting...");
-        this.mSayThanksSession = new SayThanksSession(commandName, modalView);
+        this.mSayThanksSession = new SayThanksSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(this.mSayThanksSession);
         Log.d("nf_log", "SayThanks  session start done.");
     }
     
     @Override
-    public void startSearchSession(final long n, final CommandName commandName, final IClientLogging.ModalView modalView, final String s) {
+    public void startSearchSession(final long n, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView, final String s) {
         Log.d("nf_log", "Search session starting...");
-        final SearchSession searchSession = new SearchSession(n, commandName, modalView, s);
+        final SearchSession searchSession = new SearchSession(n, userActionLogging$CommandName, clientLogging$ModalView, s);
         this.mEventHandler.addSession(searchSession);
         this.mSearchSessions.put(n, searchSession);
         Log.d("nf_log", "Search session start done.");
     }
     
     @Override
-    public void startSelectProfileSession(final String s, final RememberProfile rememberProfile, final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startSelectProfileSession(final String s, final UserActionLogging$RememberProfile userActionLogging$RememberProfile, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mSelectProfileSession != null) {
             Log.e("nf_log", "Select profile session already started!");
             return;
         }
         Log.d("nf_log", "Select profile session starting...");
-        final SelectProfileSession mSelectProfileSession = new SelectProfileSession(s, rememberProfile, commandName, modalView);
+        final SelectProfileSession mSelectProfileSession = new SelectProfileSession(s, userActionLogging$RememberProfile, userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mSelectProfileSession);
         this.mSelectProfileSession = mSelectProfileSession;
         Log.d("nf_log", "Select profile session start done.");
     }
     
     @Override
-    public void startStartPlaySession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startStartPlaySession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mStartPlaySession != null) {
             Log.e("nf_log", "StartPlay session already started!");
             return;
         }
         Log.d("nf_log", "StartPlay session starting...");
-        final StartPlaySession mStartPlaySession = new StartPlaySession(commandName, modalView);
+        final StartPlaySession mStartPlaySession = new StartPlaySession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mStartPlaySession);
         this.mStartPlaySession = mStartPlaySession;
         Log.d("nf_log", "StartPlay session start done.");
     }
     
     @Override
-    public void startSubmitPaymentSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+    public void startSubmitPaymentSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mSubmitPaymentSession != null) {
             Log.e("nf_log", "SubmitPayment session already started!");
             return;
         }
         Log.d("nf_log", "SubmitPayment session starting...");
-        final SubmitPaymentSession mSubmitPaymentSession = new SubmitPaymentSession(commandName, modalView);
+        final SubmitPaymentSession mSubmitPaymentSession = new SubmitPaymentSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(mSubmitPaymentSession);
         this.mSubmitPaymentSession = mSubmitPaymentSession;
         Log.d("nf_log", "SubmitPayment session start done.");
     }
     
     @Override
-    public void startUpgradeStreamsSession(final CommandName commandName, final IClientLogging.ModalView modalView, final Streams streams) {
+    public void startUpgradeStreamsSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView, final UserActionLogging$Streams userActionLogging$Streams) {
         if (this.mUpgradeStreamsSession != null) {
             Log.e("nf_log", "UpgradeStreams session already started!");
             return;
         }
         Log.d("nf_log", "UpgradeStreams session starting...");
-        final UpgradeStreamsSession mUpgradeStreamsSession = new UpgradeStreamsSession(commandName, modalView, streams);
+        final UpgradeStreamsSession mUpgradeStreamsSession = new UpgradeStreamsSession(userActionLogging$CommandName, clientLogging$ModalView, userActionLogging$Streams);
         this.mEventHandler.addSession(mUpgradeStreamsSession);
         this.mUpgradeStreamsSession = mUpgradeStreamsSession;
         Log.d("nf_log", "UpgradeStreams session start done.");

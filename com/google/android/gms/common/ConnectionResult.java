@@ -5,7 +5,6 @@
 package com.google.android.gms.common;
 
 import com.google.android.gms.common.internal.m;
-import android.content.IntentSender$SendIntentException;
 import android.content.Intent;
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -112,7 +111,7 @@ public final class ConnectionResult
         return this.HF == 0;
     }
     
-    public void startResolutionForResult(final Activity activity, final int n) throws IntentSender$SendIntentException {
+    public void startResolutionForResult(final Activity activity, final int n) {
         if (!this.hasResolution()) {
             return;
         }

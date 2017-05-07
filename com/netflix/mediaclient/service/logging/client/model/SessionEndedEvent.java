@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 
@@ -38,7 +37,7 @@ public abstract class SessionEndedEvent extends SessionEvent
         this.duration = duration;
     }
     
-    public SessionEndedEvent(final JSONObject jsonObject) throws JSONException {
+    public SessionEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
         this.duration = JsonUtils.getLong(jsonObject, "duration", 0L);
     }
@@ -48,7 +47,7 @@ public abstract class SessionEndedEvent extends SessionEvent
     }
     
     @Override
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = super.toJSONObject();
         jsonObject.put("duration", this.duration);
         return jsonObject;

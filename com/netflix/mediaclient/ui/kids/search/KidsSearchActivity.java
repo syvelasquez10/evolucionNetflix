@@ -8,13 +8,12 @@ import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import android.app.ActionBar;
 import com.netflix.mediaclient.ui.search.SearchActivity;
 
 public class KidsSearchActivity extends SearchActivity
 {
     @Override
-    protected NetflixActionBar createActionBar(final ActionBar actionBar) {
+    protected NetflixActionBar createActionBar() {
         return new KidsSearchActionBar(this);
     }
     

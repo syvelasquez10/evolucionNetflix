@@ -4,14 +4,13 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.content.Context;
-import com.netflix.mediaclient.service.webclient.model.branches.Season;
+import com.netflix.mediaclient.service.webclient.model.branches.Season$Detail;
 
 public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.details.SeasonDetails
 {
-    public Season.Detail detail;
+    public Season$Detail detail;
     
     @Override
     public int getCurrentEpisodeNumber() {
@@ -26,7 +25,7 @@ public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.d
         if (this.detail == null) {
             return null;
         }
-        return ((Video.Summary)this.detail).getId();
+        return this.detail.getId();
     }
     
     @Override
@@ -47,7 +46,7 @@ public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.d
     
     @Override
     public String getSeasonNumberTitle(final Context context) {
-        return String.format(context.getString(2131493183), this.getSeasonNumber());
+        return String.format(context.getString(2131493150), this.getSeasonNumber());
     }
     
     @Override
@@ -55,12 +54,12 @@ public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.d
         if (this.detail == null) {
             return null;
         }
-        return ((Video.Summary)this.detail).getTitle();
+        return this.detail.getTitle();
     }
     
     @Override
     public VideoType getType() {
-        return ((Video.Summary)this.detail).getType();
+        return this.detail.getType();
     }
     
     @Override

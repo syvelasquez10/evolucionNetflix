@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.partner;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import android.content.ComponentName;
 
@@ -15,7 +14,7 @@ public class SsoUserCancel extends BaseResponse
     }
     
     @Override
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() {
         final JSONObject json = this.getJson();
         json.put("status", 3);
         return json;

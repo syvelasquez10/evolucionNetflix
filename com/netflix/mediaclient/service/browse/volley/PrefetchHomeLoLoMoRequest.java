@@ -10,7 +10,6 @@ import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.concurrent.TimeUnit;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Collection;
@@ -44,6 +43,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Void
     private final String pqlBB2;
     private final String pqlBB3;
     private final String pqlBB4;
+    private final String pqlBB5;
     private String pqlCharactersQuery;
     private final String pqlQuery;
     private final String pqlQuery2;
@@ -86,10 +86,11 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Void
         this.pqlQuery4 = String.format("['lolomo','continueWatching', {'from':%d,'to':%d}, 'episodes', 'current', ['detail', 'bookmark']]", this.fromCWVideo, toCWVideo);
         this.pqlQuery5 = String.format("['lolomo','continueWatching', {'from':%d,'to':%d}, 'similars', {'from':%d,'to':%d}, 'summary']", this.fromCWVideo, toCWVideo, this.fromSimilars, toSimilars);
         this.pqlQuery6 = String.format("['lolomo','continueWatching', {'from':%d,'to':%d}, 'similars', 'summary']", this.fromCWVideo, toCWVideo);
-        this.pqlBB1 = String.format("%s, {'from':%d,'to':%d}, ['summary','detail', 'rating', 'inQueue', 'bookmark', 'bookmarkStill', 'socialEvidence']]", "['lolomo','billboard'", this.fromBBVideo, toBBVideo);
-        this.pqlBB2 = String.format("%s, {'from':%d,'to':%d}, 'episodes', 'current', ['detail', 'bookmark']]", "['lolomo','billboard'", this.fromBBVideo, toBBVideo);
-        this.pqlBB3 = String.format("%s, {'from':%d,'to':%d}, 'similars', {'from':%d,'to':%d}, 'summary']", "['lolomo','billboard'", this.fromBBVideo, toBBVideo, this.fromSimilars, toSimilars);
-        this.pqlBB4 = String.format("%s, {'from':%d,'to':%d}, 'similars', 'summary']", "['lolomo','billboard'", this.fromBBVideo, toBBVideo);
+        this.pqlBB1 = String.format("%s, {'from':%d,'to':%d}, ['summary','detail', 'rating', 'inQueue', 'bookmark', 'bookmarkStill', 'socialEvidence']]", "['lolomo',['billboard', 'postcard'], 'videoEvidence'", this.fromBBVideo, toBBVideo);
+        this.pqlBB2 = String.format("%s, {'from':%d,'to':%d}, 'episodes', 'current', ['detail', 'bookmark']]", "['lolomo',['billboard', 'postcard'], 'videoEvidence'", this.fromBBVideo, toBBVideo);
+        this.pqlBB3 = String.format("%s, {'from':%d,'to':%d}, 'similars', {'from':%d,'to':%d}, 'summary']", "['lolomo',['billboard', 'postcard'], 'videoEvidence'", this.fromBBVideo, toBBVideo, this.fromSimilars, toSimilars);
+        this.pqlBB4 = String.format("%s, {'from':%d,'to':%d}, 'similars', 'summary']", "['lolomo',['billboard', 'postcard'], 'videoEvidence'", this.fromBBVideo, toBBVideo);
+        this.pqlBB5 = String.format("['lolomo',['billboard', 'postcard'], 'socialEvidence', {'from':%d,'to':%d}, 'socialBadge']", this.fromBBVideo, toBBVideo);
         if (b) {
             this.fromCharactersVideo = toVideo + 1;
             this.toCharactersVideo = toVideo - this.fromVideo + this.fromCharactersVideo;
@@ -106,6 +107,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Void
             Log.v("nf_service_browse_prefetchhomelolomorequest", "PQLBB2 = " + this.pqlBB2);
             Log.v("nf_service_browse_prefetchhomelolomorequest", "PQLBB3 = " + this.pqlBB3);
             Log.v("nf_service_browse_prefetchhomelolomorequest", "PQLBB4 = " + this.pqlBB4);
+            Log.v("nf_service_browse_prefetchhomelolomorequest", "PQLBB5 = " + this.pqlBB5);
             Log.v("nf_service_browse_prefetchhomelolomorequest", "pqlCharactersQuery = " + this.pqlCharactersQuery);
         }
         this.rStart = System.nanoTime();
@@ -135,7 +137,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Void
         }
     }
     
-    public static void putLoLoMoIdInBrowseCache(final BrowseWebClientCache browseWebClientCache, final JsonObject jsonObject) throws FalcorParseException {
+    public static void putLoLoMoIdInBrowseCache(final BrowseWebClientCache browseWebClientCache, final JsonObject jsonObject) {
         try {
             browseWebClientCache.putLoLoMoIdInBrowseCache(jsonObject.getAsJsonArray("path").get(1).getAsString());
         }
@@ -149,7 +151,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Void
     
     @Override
     protected List<String> getPQLQueries() {
-        final ArrayList<String> list = new ArrayList<String>(Arrays.asList(this.pqlQuery, this.pqlQuery2, this.pqlQuery3, this.pqlQuery4, this.pqlQuery5, this.pqlQuery6, this.pqlBB1, this.pqlBB2, this.pqlBB3, this.pqlBB4));
+        final ArrayList<String> list = new ArrayList<String>(Arrays.asList(this.pqlQuery, this.pqlQuery2, this.pqlQuery3, this.pqlQuery4, this.pqlQuery5, this.pqlQuery6, this.pqlBB1, this.pqlBB2, this.pqlBB3, this.pqlBB4, this.pqlBB5));
         if (this.pqlCharactersQuery != null) {
             list.add(this.pqlCharactersQuery);
         }
@@ -173,7 +175,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Void
     }
     
     @Override
-    protected Void parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected Void parseFalcorResponse(String s) {
         this.rEnd = System.nanoTime();
         this.rDurationInMs = TimeUnit.MILLISECONDS.convert(this.rEnd - this.rStart, TimeUnit.NANOSECONDS);
         Log.d("nf_service_browse_prefetchhomelolomorequest", String.format(" prefetch request took %d ms ", this.rDurationInMs));
@@ -188,15 +190,23 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Void
         JsonObject asJsonObject;
         while (true) {
             while (true) {
-                Label_0544: {
+                Label_0592: {
                     try {
                         asJsonObject = dataObj.getAsJsonObject("lolomo");
                         if (asJsonObject.has("continueWatching")) {
                             s = (String)FetchCWVideosRequest.buildCWVideoList(asJsonObject.getAsJsonObject("continueWatching"), this.fromCWVideo, this.toCWVideo, this.toSimilars, this.userConnectedToFacebook, this.browseCache);
                             this.browseCache.putCWVideosInBrowseCache(s, this.fromCWVideo, this.toCWVideo);
                         }
-                        if (asJsonObject.has("billboard")) {
-                            s = (String)FetchBBVideosRequest.buildBBVideoList(asJsonObject.getAsJsonObject("billboard"), this.fromBBVideo, this.toBBVideo, this.toSimilars, this.userConnectedToFacebook, this.browseCache);
+                        final String s2 = s = "billboard";
+                        if (!asJsonObject.has("billboard")) {
+                            s = s2;
+                            if (asJsonObject.has("postcard")) {
+                                s = "postcard";
+                            }
+                        }
+                        if (asJsonObject.has(s)) {
+                            s = (String)asJsonObject.getAsJsonObject(s);
+                            s = (String)FetchBBVideosRequest.buildBBVideoList(((JsonObject)s).getAsJsonObject("videoEvidence"), ((JsonObject)s).getAsJsonObject("socialEvidence"), this.fromBBVideo, this.toBBVideo, this.toSimilars, this.userConnectedToFacebook, this.browseCache);
                             this.browseCache.putBBVideosInBrowseCache(s, this.fromBBVideo, this.toBBVideo);
                         }
                         this.handleExtraChacterDataIfAvailable(asJsonObject);
@@ -214,7 +224,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Void
                                 final int fromVideo = this.fromVideo;
                                 final int toVideo = this.toVideo;
                                 if (listOfMoviesSummary.isBillboard()) {
-                                    break Label_0544;
+                                    break Label_0592;
                                 }
                                 final boolean b = true;
                                 final List<Video> buildVideoList = FetchVideosRequest.buildVideoList(type, asJsonObject2, fromVideo, toVideo, b);

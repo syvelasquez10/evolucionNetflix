@@ -8,14 +8,14 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$UserRating;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 
-public class EpisodeDetails extends Episode implements com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails, Playable
+public class EpisodeDetails extends Episode implements Playable, com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails
 {
     private static final String TAG = "EpisodeDetails";
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Rating rating;
+    public Video$UserRating rating;
     public SocialEvidence showSocialEvidence;
     public boolean userConnectedToFacebook;
     

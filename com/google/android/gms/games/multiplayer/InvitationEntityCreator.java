@@ -5,6 +5,7 @@
 package com.google.android.gms.games.multiplayer;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.games.GameEntity;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.List;
@@ -86,7 +87,7 @@ public class InvitationEntityCreator implements Parcelable$Creator<InvitationEnt
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new InvitationEntity(g4, gameEntity, o, i, g3, participantEntity, c, g2, g);
     }

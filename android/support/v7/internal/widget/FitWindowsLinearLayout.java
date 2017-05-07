@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 
 public class FitWindowsLinearLayout extends LinearLayout implements FitWindowsViewGroup
 {
-    private OnFitSystemWindowsListener mListener;
+    private FitWindowsViewGroup$OnFitSystemWindowsListener mListener;
     
     public FitWindowsLinearLayout(final Context context) {
         super(context);
@@ -28,7 +28,7 @@ public class FitWindowsLinearLayout extends LinearLayout implements FitWindowsVi
         return super.fitSystemWindows(rect);
     }
     
-    public void setOnFitSystemWindowsListener(final OnFitSystemWindowsListener mListener) {
+    public void setOnFitSystemWindowsListener(final FitWindowsViewGroup$OnFitSystemWindowsListener mListener) {
         this.mListener = mListener;
     }
 }

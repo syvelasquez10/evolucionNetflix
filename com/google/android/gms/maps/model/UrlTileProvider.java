@@ -5,8 +5,8 @@
 package com.google.android.gms.maps.model;
 
 import java.net.URL;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.InputStream;
 
@@ -20,7 +20,7 @@ public abstract class UrlTileProvider implements TileProvider
         this.lg = lg;
     }
     
-    private static long a(final InputStream inputStream, final OutputStream outputStream) throws IOException {
+    private static long a(final InputStream inputStream, final OutputStream outputStream) {
         final byte[] array = new byte[4096];
         long n = 0L;
         while (true) {
@@ -34,7 +34,7 @@ public abstract class UrlTileProvider implements TileProvider
         return n;
     }
     
-    private static byte[] e(final InputStream inputStream) throws IOException {
+    private static byte[] e(final InputStream inputStream) {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         a(inputStream, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();

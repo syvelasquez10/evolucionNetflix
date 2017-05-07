@@ -25,7 +25,7 @@ import android.os.Bundle;
 import com.google.android.gms.ads.mediation.MediationAdapter;
 
 @ez
-public final class cx extends cu.a
+public final class cx extends cu$a
 {
     private final MediationAdapter qE;
     
@@ -33,7 +33,7 @@ public final class cx extends cu.a
         this.qE = qe;
     }
     
-    private Bundle a(final String s, final int n, final String s2) throws RemoteException {
+    private Bundle a(final String s, final int n, final String s2) {
         gs.W("Server parameters: " + s);
         Bundle bundle;
         try {
@@ -59,11 +59,11 @@ public final class cx extends cu.a
         return bundle;
     }
     
-    public void a(final d d, final av av, final String s, final cv cv) throws RemoteException {
+    public void a(final d d, final av av, final String s, final cv cv) {
         this.a(d, av, s, null, cv);
     }
     
-    public void a(final d d, final av av, final String s, final String s2, final cv cv) throws RemoteException {
+    public void a(final d d, final av av, final String s, final String s2, final cv cv) {
         if (!(this.qE instanceof MediationInterstitialAdapter)) {
             gs.W("MediationAdapter is not a MediationInterstitialAdapter: " + this.qE.getClass().getCanonicalName());
             throw new RemoteException();
@@ -94,11 +94,11 @@ public final class cx extends cu.a
         }
     }
     
-    public void a(final d d, final ay ay, final av av, final String s, final cv cv) throws RemoteException {
+    public void a(final d d, final ay ay, final av av, final String s, final cv cv) {
         this.a(d, ay, av, s, null, cv);
     }
     
-    public void a(final d d, final ay ay, final av av, final String s, final String s2, final cv cv) throws RemoteException {
+    public void a(final d d, final ay ay, final av av, final String s, final String s2, final cv cv) {
         final Bundle bundle = null;
         if (!(this.qE instanceof MediationBannerAdapter)) {
             gs.W("MediationAdapter is not a MediationBannerAdapter: " + this.qE.getClass().getCanonicalName());
@@ -127,7 +127,7 @@ public final class cx extends cu.a
         }
     }
     
-    public void destroy() throws RemoteException {
+    public void destroy() {
         try {
             this.qE.onDestroy();
         }
@@ -137,7 +137,7 @@ public final class cx extends cu.a
         }
     }
     
-    public d getView() throws RemoteException {
+    public d getView() {
         if (!(this.qE instanceof MediationBannerAdapter)) {
             gs.W("MediationAdapter is not a MediationBannerAdapter: " + this.qE.getClass().getCanonicalName());
             throw new RemoteException();
@@ -151,7 +151,7 @@ public final class cx extends cu.a
         }
     }
     
-    public void pause() throws RemoteException {
+    public void pause() {
         try {
             this.qE.onPause();
         }
@@ -161,7 +161,7 @@ public final class cx extends cu.a
         }
     }
     
-    public void resume() throws RemoteException {
+    public void resume() {
         try {
             this.qE.onResume();
         }
@@ -171,7 +171,7 @@ public final class cx extends cu.a
         }
     }
     
-    public void showInterstitial() throws RemoteException {
+    public void showInterstitial() {
         if (!(this.qE instanceof MediationInterstitialAdapter)) {
             gs.W("MediationAdapter is not a MediationInterstitialAdapter: " + this.qE.getClass().getCanonicalName());
             throw new RemoteException();

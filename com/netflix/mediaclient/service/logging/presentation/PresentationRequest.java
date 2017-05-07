@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.service.logging.presentation;
 
+import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONException;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
@@ -19,7 +19,8 @@ import java.util.LinkedList;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
@@ -57,13 +58,13 @@ public class PresentationRequest
         this.app_name = "andorid";
     }
     
-    public PresentationRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final ServiceAgent.UserAgentInterface userAgentInterface) {
+    public PresentationRequest(final Context context, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface) {
         this.events = new ArrayList<PresentationEvent>();
         this.app_name = "andorid";
         this.context = context;
-        this.esn = configurationAgentInterface.getEsnProvider().getEsn();
-        this.country = userAgentInterface.getGeoCountry();
-        this.device_type = configurationAgentInterface.getEsnProvider().getDeviceModel();
+        this.esn = serviceAgent$ConfigurationAgentInterface.getEsnProvider().getEsn();
+        this.country = serviceAgent$UserAgentInterface.getGeoCountry();
+        this.device_type = serviceAgent$ConfigurationAgentInterface.getEsnProvider().getDeviceModel();
         this.app_ver = AndroidManifestUtils.getVersion(context);
         this.nrdp_ver = SecurityRepository.getNrdLibVersion();
         this.api = Integer.toString(AndroidUtils.getAndroidVersion());
@@ -95,32 +96,27 @@ public class PresentationRequest
     private static int getNumPagesVisibileToUser(final Context context) {
         int n = 2;
         if (DeviceUtils.isPortrait(context)) {
-            n = 2 + 1;
+            n = 3;
             if (DeviceUtils.isTabletByContext(context)) {
-                ++n;
+                n = 4;
             }
         }
         return n;
     }
     
     private static boolean shouldFlushSlidingWindow(final LinkedList<PresentationEvent> list, final PresentationEvent presentationEvent, final int n) {
-        if (list.size() != 0) {
-            final PresentationEvent presentationEvent2 = list.getLast();
-            if (presentationEvent2.getRow() == presentationEvent.getRow() || !StringUtils.safeEquals(presentationEvent2.getLocation(), presentationEvent.getLocation())) {
-                return true;
-            }
-            if (presentationEvent.getTime() - presentationEvent2.getTime() > 300L) {
-                return true;
-            }
+        if (list.size() == 0) {
+            return false;
         }
-        return false;
+        final PresentationEvent presentationEvent2 = list.getLast();
+        return presentationEvent2.getRow() == presentationEvent.getRow() || !StringUtils.safeEquals(presentationEvent2.getLocation(), presentationEvent.getLocation()) || presentationEvent.getTime() - presentationEvent2.getTime() > 300L;
     }
     
     public void addAllEvent(final List<PresentationEvent> list) {
         this.events.addAll(filterFastScrollEvents(this.context, list));
     }
     
-    public void initFromString(final String s) throws JSONException {
+    public void initFromString(final String s) {
         if (StringUtils.isEmpty(s)) {
             throw new IllegalArgumentException("Cant create PT request from empty string");
         }
@@ -141,7 +137,7 @@ public class PresentationRequest
         }
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("esn", (Object)this.esn);
         if (StringUtils.isNotEmpty(this.country)) {

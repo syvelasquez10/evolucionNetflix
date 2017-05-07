@@ -6,12 +6,11 @@ package com.netflix.mediaclient.service.logging.client.model;
 
 import java.util.Iterator;
 import java.util.Collection;
-import org.json.JSONException;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.google.gson.annotations.Since;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
@@ -46,7 +45,7 @@ public abstract class Event implements JsonSerializer
     protected boolean kids;
     @SerializedName("modalView")
     @Since(1.0)
-    protected IClientLogging.ModalView modalView;
+    protected IClientLogging$ModalView modalView;
     @SerializedName("name")
     @Since(1.0)
     protected String name;
@@ -68,7 +67,8 @@ public abstract class Event implements JsonSerializer
         this.time = System.currentTimeMillis();
     }
     
-    public Event(final JSONObject jsonObject) throws JSONException {
+    public Event(final JSONObject jsonObject) {
+        int i = 0;
         this.activeSessions = new ArrayList<SessionKey>();
         this.time = System.currentTimeMillis();
         final String string = JsonUtils.getString(jsonObject, "type", null);
@@ -78,7 +78,7 @@ public abstract class Event implements JsonSerializer
         this.kids = JsonUtils.getBoolean(jsonObject, "kids", false);
         final String string2 = JsonUtils.getString(jsonObject, "modalView", null);
         if (string2 != null) {
-            this.modalView = IClientLogging.ModalView.valueOf(string2);
+            this.modalView = IClientLogging$ModalView.valueOf(string2);
         }
         this.category = JsonUtils.getString(jsonObject, "category", null);
         this.name = JsonUtils.getString(jsonObject, "name", null);
@@ -88,8 +88,9 @@ public abstract class Event implements JsonSerializer
         this.dataContext = DataContext.createInstance(JsonUtils.getJSONObject(jsonObject, "dataContext", null));
         final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "activeSessions");
         if (jsonArray != null) {
-            for (int i = 0; i < jsonArray.length(); ++i) {
+            while (i < jsonArray.length()) {
                 this.activeSessions.add(SessionKey.createInstance(jsonArray.getJSONObject(i)));
+                ++i;
             }
         }
     }
@@ -114,11 +115,11 @@ public abstract class Event implements JsonSerializer
         return this.category;
     }
     
-    protected JSONObject getCustomData() throws JSONException {
+    protected JSONObject getCustomData() {
         return null;
     }
     
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject jsonObject = null;
         final JSONObject customData = this.getCustomData();
         if (customData != null) {
@@ -132,7 +133,7 @@ public abstract class Event implements JsonSerializer
         return this.dataContext;
     }
     
-    public IClientLogging.ModalView getModalView() {
+    public IClientLogging$ModalView getModalView() {
         return this.modalView;
     }
     
@@ -176,7 +177,7 @@ public abstract class Event implements JsonSerializer
         this.kids = kids;
     }
     
-    public void setModalView(final IClientLogging.ModalView modalView) {
+    public void setModalView(final IClientLogging$ModalView modalView) {
         this.modalView = modalView;
     }
     
@@ -197,7 +198,7 @@ public abstract class Event implements JsonSerializer
     }
     
     @Override
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.category != null) {
             jsonObject.put("category", (Object)this.category);

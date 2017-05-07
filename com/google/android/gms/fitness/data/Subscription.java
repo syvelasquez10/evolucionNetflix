@@ -31,12 +31,12 @@ public class Subscription implements SafeParcelable
         this.Tj = tj;
     }
     
-    private Subscription(final a a) {
+    private Subscription(final Subscription$a subscription$a) {
         this.BR = 1;
-        this.SF = a.SF;
-        this.Sh = a.Sh;
-        this.Ti = a.Ti;
-        this.Tj = a.Tj;
+        this.SF = subscription$a.SF;
+        this.Sh = subscription$a.Sh;
+        this.Ti = subscription$a.Ti;
+        this.Tj = subscription$a.Tj;
     }
     
     private boolean a(final Subscription subscription) {
@@ -84,45 +84,5 @@ public class Subscription implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         s.a(this, parcel, n);
-    }
-    
-    public static class a
-    {
-        private DataType SF;
-        private DataSource Sh;
-        private long Ti;
-        private int Tj;
-        
-        public a() {
-            this.Ti = -1L;
-            this.Tj = 2;
-        }
-        
-        public a b(final DataSource sh) {
-            this.Sh = sh;
-            return this;
-        }
-        
-        public a b(final DataType sf) {
-            this.SF = sf;
-            return this;
-        }
-        
-        public Subscription iR() {
-            final boolean b = false;
-            n.a(this.Sh != null || this.SF != null, (Object)"Must call setDataSource() or setDataType()");
-            boolean b2 = false;
-            Label_0059: {
-                if (this.SF != null && this.Sh != null) {
-                    b2 = b;
-                    if (!this.SF.equals(this.Sh.getDataType())) {
-                        break Label_0059;
-                    }
-                }
-                b2 = true;
-            }
-            n.a(b2, (Object)"Specified data type is incompatible with specified data source");
-            return new Subscription(this, null);
-        }
     }
 }

@@ -7,7 +7,7 @@ package com.netflix.mediaclient.servicemgr.model;
 import java.util.List;
 import android.os.Parcelable;
 
-public interface LoMo extends BasicLoMo, Parcelable, FriendProfilesProvider
+public interface LoMo extends Parcelable, BasicLoMo, FriendProfilesProvider
 {
     List<String> getMoreImages();
     

@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class VideoWindowChanged extends BaseMediaEvent
@@ -20,7 +19,7 @@ public class VideoWindowChanged extends BaseMediaEvent
     private int x;
     private int y;
     
-    public VideoWindowChanged(final JSONObject jsonObject) throws JSONException {
+    public VideoWindowChanged(final JSONObject jsonObject) {
         super("videoWindowChanged", jsonObject);
     }
     
@@ -41,7 +40,7 @@ public class VideoWindowChanged extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.x = BaseNccpEvent.getInt(jsonObject, "x", 0);
         this.y = BaseNccpEvent.getInt(jsonObject, "y", 0);
         this.width = BaseNccpEvent.getInt(jsonObject, "width", 0);

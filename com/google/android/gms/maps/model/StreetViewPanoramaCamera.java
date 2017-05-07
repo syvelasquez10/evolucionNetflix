@@ -38,15 +38,15 @@ public class StreetViewPanoramaCamera implements SafeParcelable
             zoom = n2;
         }
         this.bearing = zoom % 360.0f;
-        this.ake = new StreetViewPanoramaOrientation.Builder().tilt(n).bearing(n2).build();
+        this.ake = new StreetViewPanoramaOrientation$Builder().tilt(n).bearing(n2).build();
     }
     
-    public static Builder builder() {
-        return new Builder();
+    public static StreetViewPanoramaCamera$Builder builder() {
+        return new StreetViewPanoramaCamera$Builder();
     }
     
-    public static Builder builder(final StreetViewPanoramaCamera streetViewPanoramaCamera) {
-        return new Builder(streetViewPanoramaCamera);
+    public static StreetViewPanoramaCamera$Builder builder(final StreetViewPanoramaCamera streetViewPanoramaCamera) {
+        return new StreetViewPanoramaCamera$Builder(streetViewPanoramaCamera);
     }
     
     public int describeContents() {
@@ -87,46 +87,5 @@ public class StreetViewPanoramaCamera implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         q.a(this, parcel, n);
-    }
-    
-    public static final class Builder
-    {
-        public float bearing;
-        public float tilt;
-        public float zoom;
-        
-        public Builder() {
-        }
-        
-        public Builder(final StreetViewPanoramaCamera streetViewPanoramaCamera) {
-            this.zoom = streetViewPanoramaCamera.zoom;
-            this.bearing = streetViewPanoramaCamera.bearing;
-            this.tilt = streetViewPanoramaCamera.tilt;
-        }
-        
-        public Builder bearing(final float bearing) {
-            this.bearing = bearing;
-            return this;
-        }
-        
-        public StreetViewPanoramaCamera build() {
-            return new StreetViewPanoramaCamera(this.zoom, this.tilt, this.bearing);
-        }
-        
-        public Builder orientation(final StreetViewPanoramaOrientation streetViewPanoramaOrientation) {
-            this.tilt = streetViewPanoramaOrientation.tilt;
-            this.bearing = streetViewPanoramaOrientation.bearing;
-            return this;
-        }
-        
-        public Builder tilt(final float tilt) {
-            this.tilt = tilt;
-            return this;
-        }
-        
-        public Builder zoom(final float zoom) {
-            this.zoom = zoom;
-            return this;
-        }
     }
 }

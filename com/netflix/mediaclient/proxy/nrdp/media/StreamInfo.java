@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.proxy.nrdp.media;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class StreamInfo
@@ -22,14 +21,14 @@ public class StreamInfo
     private boolean isSuperHighDefinition;
     private int streamType;
     
-    public StreamInfo(final JSONObject jsonObject) throws JSONException {
+    public StreamInfo(final JSONObject jsonObject) {
         if (jsonObject == null) {
             throw new IllegalArgumentException("JSON is null!");
         }
         this.populate(jsonObject);
     }
     
-    private void populate(final JSONObject jsonObject) throws JSONException {
+    private void populate(final JSONObject jsonObject) {
         if (jsonObject.has("streamType")) {
             this.streamType = jsonObject.getInt("streamType");
         }

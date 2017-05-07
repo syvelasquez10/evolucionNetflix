@@ -21,15 +21,7 @@ public class PinDialogVault implements Parcelable
     
     static {
         NAME = PinDialogVault.class.getSimpleName();
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<PinDialogVault>() {
-            public PinDialogVault createFromParcel(final Parcel parcel) {
-                return new PinDialogVault(parcel);
-            }
-            
-            public PinDialogVault[] newArray(final int n) {
-                return new PinDialogVault[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new PinDialogVault$1();
     }
     
     PinDialogVault() {
@@ -91,34 +83,5 @@ public class PinDialogVault implements Parcelable
         ParcelUtils.writeString(parcel, this.mUuid);
         ParcelUtils.writeBoolean(parcel, this.mRemotePlayback);
         parcel.writeParcelable((Parcelable)this.mAsset, n);
-    }
-    
-    public enum PinInvokedFrom
-    {
-        MDX("mdx"), 
-        PLAYER("player"), 
-        PLAY_LAUNCHER("launcher"), 
-        UNKNOWN("");
-        
-        private String value;
-        
-        private PinInvokedFrom(final String value) {
-            this.value = value;
-        }
-        
-        public static PinInvokedFrom create(final String s) {
-            final PinInvokedFrom[] values = values();
-            for (int length = values.length, i = 0; i < length; ++i) {
-                final PinInvokedFrom pinInvokedFrom = values[i];
-                if (pinInvokedFrom.value.equalsIgnoreCase(s)) {
-                    return pinInvokedFrom;
-                }
-            }
-            return PinInvokedFrom.UNKNOWN;
-        }
-        
-        public String getValue() {
-            return this.value;
-        }
     }
 }

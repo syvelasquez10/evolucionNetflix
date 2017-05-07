@@ -64,7 +64,7 @@ public class ExceptionReporter implements UncaughtExceptionHandler
             description = this.xZ.getDescription(name, t);
         }
         z.V("Tracking Exception: " + description);
-        this.xY.send(new HitBuilders.ExceptionBuilder().setDescription(description).setFatal(true).build());
+        this.xY.send(new HitBuilders$ExceptionBuilder().setDescription(description).setFatal(true).build());
         GoogleAnalytics.getInstance(this.mContext).dispatchLocalHits();
         if (this.xX != null) {
             z.V("Passing exception to original handler.");

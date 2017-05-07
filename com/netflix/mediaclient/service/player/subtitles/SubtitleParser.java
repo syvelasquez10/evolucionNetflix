@@ -4,9 +4,6 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
 import com.netflix.mediaclient.util.StringUtils;
 import org.w3c.dom.Node;
@@ -14,10 +11,11 @@ import org.w3c.dom.NodeList;
 import com.netflix.mediaclient.util.XmlDomUtils;
 import org.w3c.dom.Element;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.SubtitleUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.netflix.mediaclient.javabridge.ui.IMedia;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import java.util.Map;
 
 public class SubtitleParser
@@ -27,74 +25,61 @@ public class SubtitleParser
     private static final String TAG = "nf_subtitles";
     private String mAspectExtent;
     private CellResolution mCellResolution;
-    private final TextStyle mDefaults;
+    private final TextStyle mDefault;
+    private final TextStyle mDeviceDefault;
     private int mIndexOfLastSearch;
     private String mPixelAspectRatio;
     private boolean mReady;
+    private final TextStyle mRegionDefault;
     private final Map<String, Region> mRegions;
     private final Map<String, TextStyle> mStyles;
-    private IMedia.SubtitleProfile mSubtitleProfile;
+    private IMedia$SubtitleProfile mSubtitleProfile;
     private final List<SubtitleBlock> mTextBlocks;
     private double mTickRate;
     private String mTimeBase;
     private final TextStyle mUserDefaults;
     private final float mVideoAspectRatio;
     
-    public SubtitleParser(final float mVideoAspectRatio, final TextStyle mUserDefaults, final TextStyle textStyle) {
+    public SubtitleParser(final float mVideoAspectRatio, final TextStyle mUserDefaults, final TextStyle mRegionDefault) {
         this.mStyles = new HashMap<String, TextStyle>();
         this.mRegions = new HashMap<String, Region>();
         this.mTextBlocks = new ArrayList<SubtitleBlock>();
+        this.mDefault = new TextStyle();
         this.mIndexOfLastSearch = -1;
         this.mVideoAspectRatio = mVideoAspectRatio;
         this.mUserDefaults = mUserDefaults;
-        this.mDefaults = createDefaultStyle(mUserDefaults, textStyle);
+        this.mRegionDefault = mRegionDefault;
+        this.mDeviceDefault = SubtitleUtils.getDeviceDefaultTextStyle(mUserDefaults, mRegionDefault);
+        this.createDefauls();
     }
     
     private int compareBlockTime(final long n, final int n2) {
         if (this.mTextBlocks.size() <= n2) {
             Log.e("nf_subtitles", "Index (" + n2 + ") is higher than numbet of blocks  " + this.mTextBlocks.size());
+            return -1;
         }
-        else {
-            final SubtitleBlock subtitleBlock = this.mTextBlocks.get(n2);
-            if (subtitleBlock.isVisible(n)) {
-                if (Log.isLoggable("nf_subtitles", 3)) {
-                    Log.d("nf_subtitles", "Block " + n2 + " is visible for pts " + n);
-                }
-                return 0;
+        final SubtitleBlock subtitleBlock = this.mTextBlocks.get(n2);
+        if (subtitleBlock.isVisible(n)) {
+            if (Log.isLoggable("nf_subtitles", 3)) {
+                Log.d("nf_subtitles", "Block " + n2 + " is visible for pts " + n);
             }
-            if (subtitleBlock.getStart() >= n) {
-                if (Log.isLoggable("nf_subtitles", 3)) {
-                    Log.d("nf_subtitles", "Block " + n2 + " is after pts " + n);
-                }
-                return 1;
-            }
+            return 0;
+        }
+        if (subtitleBlock.getStart() < n) {
             if (Log.isLoggable("nf_subtitles", 3)) {
                 Log.d("nf_subtitles", "Block " + n2 + " is before pts " + n);
-                return -1;
             }
+            return -1;
         }
-        return -1;
+        if (Log.isLoggable("nf_subtitles", 3)) {
+            Log.d("nf_subtitles", "Block " + n2 + " is after pts " + n);
+        }
+        return 1;
     }
     
-    private static TextStyle createDefaultStyle(final TextStyle textStyle, final TextStyle textStyle2) {
-        final TextStyle textStyle3 = new TextStyle();
-        final TextStyle default_DEVICE_TEXT_STYLE = TextStyle.DEFAULT_DEVICE_TEXT_STYLE;
-        if (textStyle != null) {
-            Log.d("nf_subtitles", "User overrides exist for style, apply it first!");
-            textStyle3.merge(textStyle);
-        }
-        if (textStyle2 != null) {
-            Log.d("nf_subtitles", "Region overrides exist, use region defaults");
-            textStyle3.merge(textStyle2);
-        }
-        else {
-            Log.d("nf_subtitles", "Region overrides does NOT exist for style, use just devices defaults");
-        }
-        textStyle3.merge(default_DEVICE_TEXT_STYLE);
-        if (Log.isLoggable("nf_subtitles", 3)) {
-            Log.d("nf_subtitles", "Style default: " + textStyle3);
-        }
-        return textStyle3;
+    private void createDefauls() {
+        this.mDefault.merge(this.mRegionDefault);
+        this.mDefault.merge(this.mDeviceDefault);
     }
     
     private int findIndex(final long n) {
@@ -150,7 +135,7 @@ public class SubtitleParser
             throw new IllegalArgumentException("Body element can not be null!");
         }
         Log.d("nf_subtitles", "Parsing body started");
-        final TextStyle instanceFromContainer = TextStyle.createInstanceFromContainer(element, this, this.mDefaults);
+        final TextStyle instanceFromContainer = TextStyle.createInstanceFromContainer(element, this, this.mDefault);
         final Element firstFoundElementByTagName = XmlDomUtils.getFirstFoundElementByTagName(element, "div");
         if (firstFoundElementByTagName == null) {
             Log.e("nf_subtitles", "DIV element not found!");
@@ -182,7 +167,7 @@ public class SubtitleParser
         if (Log.isLoggable("nf_subtitles", 3)) {
             Log.d("nf_subtitles", "Subtitle profile: " + attribute);
         }
-        this.mSubtitleProfile = IMedia.SubtitleProfile.fromNccpCode(attribute);
+        this.mSubtitleProfile = IMedia$SubtitleProfile.fromNccpCode(attribute);
         this.parseStyling(element);
         this.parseRegions(element);
     }
@@ -202,7 +187,7 @@ public class SubtitleParser
         for (int i = 0; i < elementsByTagName.getLength(); ++i) {
             final Node item = elementsByTagName.item(i);
             if (item instanceof Element) {
-                final Region region = Region.createRegion(this, (Element)item, this.mCellResolution, this.mDefaults);
+                final Region region = Region.createRegion(this, (Element)item, this.mCellResolution, this.mDefault);
                 if (region == null) {
                     Log.w("nf_subtitles", "Region not found!");
                 }
@@ -295,10 +280,10 @@ public class SubtitleParser
     }
     
     private int search(final long n) {
-        int n2 = 0;
         int i = this.mTextBlocks.size() - 1;
+        int n2 = 0;
         while (i >= n2) {
-            final int n3 = n2 + (i - n2) / 2;
+            final int n3 = (i - n2) / 2 + n2;
             final int compareBlockTime = this.compareBlockTime(n, n3);
             if (compareBlockTime == 0) {
                 return n3;
@@ -317,6 +302,10 @@ public class SubtitleParser
         return this.mCellResolution;
     }
     
+    public TextStyle getDeviceDefault() {
+        return this.mDeviceDefault;
+    }
+    
     public Region getNamedRegion(final String s) {
         if (s == null) {
             return null;
@@ -331,6 +320,10 @@ public class SubtitleParser
         return this.mStyles.get(s);
     }
     
+    public TextStyle getRegionDefault() {
+        return this.mRegionDefault;
+    }
+    
     public Region[] getRegions() {
         if (this.mRegions == null || this.mRegions.size() < 1) {
             return new Region[0];
@@ -338,7 +331,7 @@ public class SubtitleParser
         return this.mRegions.values().toArray(new Region[this.mRegions.size()]);
     }
     
-    public IMedia.SubtitleProfile getSubtitleProfile() {
+    public IMedia$SubtitleProfile getSubtitleProfile() {
         return this.mSubtitleProfile;
     }
     
@@ -385,7 +378,7 @@ public class SubtitleParser
     }
     
     public TextStyle getTextStyleDefault() {
-        return this.mDefaults;
+        return this.mDefault;
     }
     
     public double getTickRate() {
@@ -404,7 +397,7 @@ public class SubtitleParser
         return this.mReady;
     }
     
-    public void parse(final SubtitleData subtitleData) throws IOException, ParserConfigurationException, SAXException {
+    public void parse(final SubtitleData subtitleData) {
         Log.d("nf_subtitles", "==> Subtitle parsing started...");
         if (subtitleData == null) {
             throw new IllegalArgumentException("Subtitle data event can not be null!");

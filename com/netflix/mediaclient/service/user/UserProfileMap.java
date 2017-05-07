@@ -154,12 +154,13 @@ class UserProfileMap
     }
     
     Pair<String, String> getCurrentProfileIdAndKey() {
-        String optString = this.mProfileMap.optString("currentAcc");
+        final String optString = this.mProfileMap.optString("currentAcc");
         final String optString2 = this.mProfileMap.optString(optString);
+        String s = optString;
         if ("primaryAcc".equals(optString)) {
-            optString = "";
+            s = "";
         }
-        return (Pair<String, String>)Pair.create((Object)optString, (Object)optString2);
+        return (Pair<String, String>)Pair.create((Object)s, (Object)optString2);
     }
     
     String getPrimaryAccountKey() {
@@ -175,40 +176,33 @@ class UserProfileMap
             Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration");
         }
         if (this.mProfileMap != null) {
-            boolean b = false;
             final Iterator keys = this.mProfileMap.keys();
-            String s;
-            Label_0131_Outer:Block_6_Outer:
-            while (true) {
-                Label_0090: {
-                    if (!keys.hasNext()) {
-                        break Label_0090;
-                    }
-                    s = keys.next();
-                    if ("currentAcc".equals(s) || "primaryAcc".equals(s)) {
-                        continue;
-                    }
-                    try {
-                        this.mEsnMigrationFlags.putOpt(s, (Object)true);
-                        b = true;
-                        continue Label_0131_Outer;
-                        // iftrue(Label_0131:, !Log.isLoggable("nf_service_useragentproilemap", 3))
-                        while (true) {
-                            while (true) {
-                                PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
-                                return;
-                                Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
-                                continue Block_6_Outer;
-                            }
+            boolean b = false;
+        Label_0087_Outer:
+            while (keys.hasNext()) {
+                final String s = keys.next();
+                if (!"currentAcc".equals(s) && !"primaryAcc".equals(s)) {
+                    while (true) {
+                        try {
+                            this.mEsnMigrationFlags.putOpt(s, (Object)true);
+                            b = true;
+                            continue Label_0087_Outer;
+                        }
+                        catch (JSONException ex) {
                             continue;
                         }
+                        break;
                     }
-                    // iftrue(Label_0024:, !b)
-                    catch (JSONException ex) {}
+                    break;
                 }
             }
+            if (b) {
+                if (Log.isLoggable("nf_service_useragentproilemap", 3)) {
+                    Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
+                }
+                PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
+            }
         }
-        Label_0024:;
     }
     
     void setCurrentAccount(final String s, final String s2) {

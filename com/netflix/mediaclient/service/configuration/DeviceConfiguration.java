@@ -6,13 +6,11 @@ package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
 import com.netflix.mediaclient.util.DeviceCategory;
-import java.util.Iterator;
-import java.lang.reflect.Type;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
-import java.util.List;
-import com.google.gson.reflect.TypeToken;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import java.util.Iterator;
+import java.util.List;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
@@ -82,25 +80,90 @@ public class DeviceConfiguration
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
-        final List<ConsolidatedLoggingSessionSpecification> list = null;
-        final String stringPref = PreferenceUtils.getStringPref(this.mContext, "cl_configuration", null);
-        if (StringUtils.isEmpty(stringPref)) {
-            Log.d(DeviceConfiguration.TAG, "CL specification not found in file system");
-            return new HashMap<String, ConsolidatedLoggingSessionSpecification>();
-        }
-        List<ConsolidatedLoggingSessionSpecification> list2 = list;
-        try {
-            final Type type = new TypeToken<List<ConsolidatedLoggingSessionSpecification>>() {}.getType();
-            list2 = list;
-            final List<ConsolidatedLoggingSessionSpecification> list3 = list2 = (List<ConsolidatedLoggingSessionSpecification>)FalcorParseUtils.getGson().fromJson(stringPref, type);
-            Log.d(DeviceConfiguration.TAG, "CL specification loaded from file system");
-            list2 = list3;
-            return toMap(list2);
-        }
-        catch (Throwable t) {
-            Log.e(DeviceConfiguration.TAG, "Failed to load CL specification from file system", t);
-            return toMap(list2);
-        }
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: getfield        com/netflix/mediaclient/service/configuration/DeviceConfiguration.mContext:Landroid/content/Context;
+        //     4: ldc             "cl_configuration"
+        //     6: aconst_null    
+        //     7: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getStringPref:(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+        //    10: astore_1       
+        //    11: aload_1        
+        //    12: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    15: ifeq            35
+        //    18: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
+        //    21: ldc             "CL specification not found in file system"
+        //    23: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    26: pop            
+        //    27: new             Ljava/util/HashMap;
+        //    30: dup            
+        //    31: invokespecial   java/util/HashMap.<init>:()V
+        //    34: areturn        
+        //    35: new             Lcom/netflix/mediaclient/service/configuration/DeviceConfiguration$1;
+        //    38: dup            
+        //    39: aload_0        
+        //    40: invokespecial   com/netflix/mediaclient/service/configuration/DeviceConfiguration$1.<init>:(Lcom/netflix/mediaclient/service/configuration/DeviceConfiguration;)V
+        //    43: invokevirtual   com/netflix/mediaclient/service/configuration/DeviceConfiguration$1.getType:()Ljava/lang/reflect/Type;
+        //    46: astore_2       
+        //    47: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalcorParseUtils.getGson:()Lcom/google/gson/Gson;
+        //    50: aload_1        
+        //    51: aload_2        
+        //    52: invokevirtual   com/google/gson/Gson.fromJson:(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;
+        //    55: checkcast       Ljava/util/List;
+        //    58: astore_1       
+        //    59: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
+        //    62: ldc             "CL specification loaded from file system"
+        //    64: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    67: pop            
+        //    68: aload_1        
+        //    69: invokestatic    com/netflix/mediaclient/service/configuration/DeviceConfiguration.toMap:(Ljava/util/List;)Ljava/util/Map;
+        //    72: areturn        
+        //    73: astore_2       
+        //    74: aconst_null    
+        //    75: astore_1       
+        //    76: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
+        //    79: ldc             "Failed to load CL specification from file system"
+        //    81: aload_2        
+        //    82: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    85: pop            
+        //    86: goto            68
+        //    89: astore_2       
+        //    90: goto            76
+        //    Signature:
+        //  ()Ljava/util/Map<Ljava/lang/String;Lcom/netflix/mediaclient/service/webclient/model/leafs/ConsolidatedLoggingSessionSpecification;>;
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  35     59     73     76     Ljava/lang/Throwable;
+        //  59     68     89     93     Ljava/lang/Throwable;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0068:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     private IpConnectivityPolicy loadIpConnectivityPolicy() {

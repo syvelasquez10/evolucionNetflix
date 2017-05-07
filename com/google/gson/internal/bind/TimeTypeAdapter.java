@@ -9,11 +9,8 @@ import com.google.gson.stream.JsonWriter;
 import java.text.ParseException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonToken;
-import java.io.IOException;
 import com.google.gson.stream.JsonReader;
 import java.text.SimpleDateFormat;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.Gson;
 import java.text.DateFormat;
 import com.google.gson.TypeAdapterFactory;
 import java.sql.Time;
@@ -25,15 +22,7 @@ public final class TimeTypeAdapter extends TypeAdapter<Time>
     private final DateFormat format;
     
     static {
-        FACTORY = new TypeAdapterFactory() {
-            @Override
-            public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> typeToken) {
-                if (typeToken.getRawType() == Time.class) {
-                    return (TypeAdapter<T>)new TimeTypeAdapter();
-                }
-                return null;
-            }
-        };
+        FACTORY = new TimeTypeAdapter$1();
     }
     
     public TimeTypeAdapter() {
@@ -41,7 +30,7 @@ public final class TimeTypeAdapter extends TypeAdapter<Time>
     }
     
     @Override
-    public Time read(final JsonReader jsonReader) throws IOException {
+    public Time read(final JsonReader jsonReader) {
         synchronized (this) {
             Time time;
             if (jsonReader.peek() == JsonToken.NULL) {
@@ -61,7 +50,7 @@ public final class TimeTypeAdapter extends TypeAdapter<Time>
     }
     
     @Override
-    public void write(final JsonWriter jsonWriter, final Time time) throws IOException {
+    public void write(final JsonWriter jsonWriter, final Time time) {
         // monitorenter(this)
         Label_0017: {
             if (time != null) {

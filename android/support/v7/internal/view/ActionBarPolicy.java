@@ -7,10 +7,14 @@ package android.support.v7.internal.view;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.view.ViewConfiguration;
 import android.os.Build$VERSION;
+import android.support.v7.appcompat.R$bool;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$attr;
+import android.support.v7.appcompat.R$styleable;
+import android.support.v7.appcompat.R$dimen;
+import android.support.v7.appcompat.R$integer;
 import android.content.Context;
 
 public class ActionBarPolicy
@@ -34,20 +38,20 @@ public class ActionBarPolicy
     }
     
     public int getMaxActionButtons() {
-        return this.mContext.getResources().getInteger(R.integer.abc_max_action_buttons);
+        return this.mContext.getResources().getInteger(R$integer.abc_max_action_buttons);
     }
     
     public int getStackedTabMaxWidth() {
-        return this.mContext.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_stacked_tab_max_width);
+        return this.mContext.getResources().getDimensionPixelSize(R$dimen.abc_action_bar_stacked_tab_max_width);
     }
     
     public int getTabContainerHeight() {
-        final TypedArray obtainStyledAttributes = this.mContext.obtainStyledAttributes((AttributeSet)null, R.styleable.ActionBar, R.attr.actionBarStyle, 0);
-        final int layoutDimension = obtainStyledAttributes.getLayoutDimension(R.styleable.ActionBar_height, 0);
+        final TypedArray obtainStyledAttributes = this.mContext.obtainStyledAttributes((AttributeSet)null, R$styleable.ActionBar, R$attr.actionBarStyle, 0);
+        final int layoutDimension = obtainStyledAttributes.getLayoutDimension(R$styleable.ActionBar_height, 0);
         final Resources resources = this.mContext.getResources();
         int min = layoutDimension;
         if (!this.hasEmbeddedTabs()) {
-            min = Math.min(layoutDimension, resources.getDimensionPixelSize(R.dimen.abc_action_bar_stacked_max_height));
+            min = Math.min(layoutDimension, resources.getDimensionPixelSize(R$dimen.abc_action_bar_stacked_max_height));
         }
         obtainStyledAttributes.recycle();
         return min;
@@ -55,9 +59,9 @@ public class ActionBarPolicy
     
     public boolean hasEmbeddedTabs() {
         if (this.mContext.getApplicationInfo().targetSdkVersion >= 16) {
-            return this.mContext.getResources().getBoolean(R.bool.abc_action_bar_embed_tabs);
+            return this.mContext.getResources().getBoolean(R$bool.abc_action_bar_embed_tabs);
         }
-        return this.mContext.getResources().getBoolean(R.bool.abc_action_bar_embed_tabs_pre_jb);
+        return this.mContext.getResources().getBoolean(R$bool.abc_action_bar_embed_tabs_pre_jb);
     }
     
     public boolean showsOverflowMenuButton() {

@@ -30,34 +30,33 @@ public class LastTime extends PlayerSection
     }
     
     private float calculateAlpha(final Rect rect, final Rect rect2) {
+        float n = 0.0f;
+        final float n2 = 1.0f;
         final Rect intersect = intersect(rect, rect2);
-        float n;
         if (intersect == null) {
             n = 1.0f;
         }
         else {
-            final float n2 = intersect.width();
-            final float n3 = rect.width();
+            final float n3 = intersect.width();
+            final float n4 = rect.width();
             final boolean seekForward = this.context.getState().isSeekForward();
             final boolean intersectWithMiddle = this.intersectWithMiddle(rect, rect2, seekForward);
             final boolean intersectWithEdge = this.intersectWithEdge(rect, rect2, seekForward);
-            float n5;
-            final float n4 = n5 = 1.0f - 2.0f * n2 / n3;
+            float n6;
+            final float n5 = n6 = 1.0f - n3 * 2.0f / n4;
             if (intersectWithMiddle) {
                 if (intersectWithEdge) {
-                    n5 = n4;
+                    n6 = n5;
                 }
                 else {
-                    n5 = 0.0f;
+                    n6 = 0.0f;
                 }
             }
-            float n6 = n5;
-            if (n5 > 1.0f) {
-                n6 = 1.0f;
+            if (n6 > 1.0f) {
+                n6 = n2;
             }
-            n = n6;
-            if (n6 < 0.0f) {
-                return 0.0f;
+            if (n6 >= 0.0f) {
+                return n6;
             }
         }
         return n;
@@ -100,17 +99,27 @@ public class LastTime extends PlayerSection
     
     private boolean intersectWithEdge(final Rect rect, final Rect rect2, final boolean b) {
         if (b) {
-            return rect2.right >= rect.right;
+            if (rect2.right < rect.right) {
+                return false;
+            }
         }
-        return rect2.left <= rect.left;
+        else if (rect2.left > rect.left) {
+            return false;
+        }
+        return true;
     }
     
     private boolean intersectWithMiddle(final Rect rect, final Rect rect2, final boolean b) {
         final int centerX = rect.centerX();
         if (b) {
-            return rect2.right >= centerX;
+            if (rect2.right < centerX) {
+                return false;
+            }
         }
-        return rect2.left <= centerX;
+        else if (rect2.left > centerX) {
+            return false;
+        }
+        return true;
     }
     
     @Override

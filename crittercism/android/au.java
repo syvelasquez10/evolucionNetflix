@@ -20,7 +20,7 @@ public final class au
     }
     
     private au() {
-        this.b = new a((byte)0);
+        this.b = new au$a(this, (byte)0);
         this.c = null;
         try {
             this.c = b();
@@ -48,13 +48,5 @@ public final class au
         }
         b();
         return "";
-    }
-    
-    final class a implements av
-    {
-        @Override
-        public final Date a() {
-            return new Date();
-        }
     }
 }

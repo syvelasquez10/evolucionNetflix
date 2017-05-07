@@ -59,7 +59,7 @@ public abstract class AudioSource implements Comparable<AudioSource>
         }
     }
     
-    public static AudioSource restore(final JSONObject jsonObject) throws JSONException {
+    public static AudioSource restore(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -144,6 +144,7 @@ public abstract class AudioSource implements Comparable<AudioSource>
     }
     
     public boolean isAllowedSubtitle(final Subtitle subtitle) {
+        final boolean b = false;
         if (this.disallowedSubtitles.length >= 1) {
             final String s = "none";
             String id;
@@ -156,10 +157,14 @@ public abstract class AudioSource implements Comparable<AudioSource>
                 id = subtitle.getId();
             }
             for (int i = 0; i < this.disallowedSubtitles.length; ++i) {
-                if (this.disallowedSubtitles[i] != null && this.disallowedSubtitles[i].equalsIgnoreCase(id)) {
-                    return false;
+                if (this.disallowedSubtitles[i] != null) {
+                    final boolean b2 = b;
+                    if (this.disallowedSubtitles[i].equalsIgnoreCase(id)) {
+                        return b2;
+                    }
                 }
             }
+            return true;
         }
         return true;
     }
@@ -168,7 +173,7 @@ public abstract class AudioSource implements Comparable<AudioSource>
         return this.isNative;
     }
     
-    public abstract JSONObject toJson() throws JSONException;
+    public abstract JSONObject toJson();
     
     @Override
     public String toString() {

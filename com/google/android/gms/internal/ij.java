@@ -4,28 +4,30 @@
 
 package com.google.android.gms.internal;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import com.google.android.gms.common.ConnectionResult;
 import android.os.IInterface;
+import android.os.RemoteException;
 import android.text.TextUtils;
 import com.google.android.gms.cast.LaunchOptions;
 import com.google.android.gms.common.internal.j;
+import com.google.android.gms.common.internal.d$e;
 import com.google.android.gms.common.internal.k;
 import android.os.IBinder;
-import android.os.RemoteException;
 import java.util.HashMap;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import android.os.Looper;
 import android.content.Context;
 import android.os.Handler;
+import com.google.android.gms.cast.Cast$MessageReceivedCallback;
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.cast.ApplicationMetadata;
+import com.google.android.gms.cast.Cast$ApplicationConnectionResult;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.BaseImplementation;
+import com.google.android.gms.common.api.BaseImplementation$b;
 import java.util.Map;
 import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicLong;
-import com.google.android.gms.cast.Cast;
+import com.google.android.gms.cast.Cast$Listener;
 import com.google.android.gms.common.internal.d;
 
 public final class ij extends d<in>
@@ -33,7 +35,7 @@ public final class ij extends d<in>
     private static final Object GL;
     private static final Object GM;
     private static final ip Gr;
-    private final Cast.Listener EO;
+    private final Cast$Listener EO;
     private double FA;
     private boolean FB;
     private boolean GA;
@@ -43,15 +45,15 @@ public final class ij extends d<in>
     private String GE;
     private String GF;
     private Bundle GG;
-    private Map<Long, BaseImplementation.b<Status>> GH;
-    private b GI;
-    private BaseImplementation.b<Cast.ApplicationConnectionResult> GJ;
-    private BaseImplementation.b<Status> GK;
+    private Map<Long, BaseImplementation$b<Status>> GH;
+    private ij$b GI;
+    private BaseImplementation$b<Cast$ApplicationConnectionResult> GJ;
+    private BaseImplementation$b<Status> GK;
     private ApplicationMetadata Gs;
     private final CastDevice Gt;
-    private final Map<String, Cast.MessageReceivedCallback> Gu;
+    private final Map<String, Cast$MessageReceivedCallback> Gu;
     private final long Gv;
-    private c Gw;
+    private ij$c Gw;
     private String Gx;
     private boolean Gy;
     private boolean Gz;
@@ -63,17 +65,17 @@ public final class ij extends d<in>
         GM = new Object();
     }
     
-    public ij(final Context context, final Looper looper, final CastDevice gt, final long gv, final Cast.Listener eo, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
-        super(context, looper, connectionCallbacks, onConnectionFailedListener, (String[])null);
+    public ij(final Context context, final Looper looper, final CastDevice gt, final long gv, final Cast$Listener eo, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        super(context, looper, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, (String[])null);
         this.Gt = gt;
         this.EO = eo;
         this.Gv = gv;
         this.mHandler = new Handler(looper);
-        this.Gu = new HashMap<String, Cast.MessageReceivedCallback>();
+        this.Gu = new HashMap<String, Cast$MessageReceivedCallback>();
         this.GD = new AtomicLong(0L);
-        this.GH = new HashMap<Long, BaseImplementation.b<Status>>();
+        this.GH = new HashMap<Long, BaseImplementation$b<Status>>();
         this.fC();
-        this.registerConnectionFailedListener(this.GI = new b());
+        this.registerConnectionFailedListener(this.GI = new ij$b(this, null));
     }
     
     private void a(final ig ig) {
@@ -142,16 +144,16 @@ public final class ij extends d<in>
         this.Gz = false;
     }
     
-    private void c(final BaseImplementation.b<Cast.ApplicationConnectionResult> gj) {
+    private void c(final BaseImplementation$b<Cast$ApplicationConnectionResult> gj) {
         synchronized (ij.GL) {
             if (this.GJ != null) {
-                this.GJ.b(new a(new Status(2002)));
+                this.GJ.b(new ij$a(new Status(2002)));
             }
             this.GJ = gj;
         }
     }
     
-    private void e(final BaseImplementation.b<Status> gk) {
+    private void e(final BaseImplementation$b<Status> gk) {
         synchronized (ij.GM) {
             if (this.GK != null) {
                 gk.b(new Status(2001));
@@ -178,21 +180,21 @@ public final class ij extends d<in>
         }
     }
     
-    private void fH() throws IllegalStateException {
+    private void fH() {
         if (!this.GA || this.Gw == null || this.Gw.fM()) {
             throw new IllegalStateException("Not connected to a device");
         }
     }
     
-    public void G(final boolean b) throws IllegalStateException, RemoteException {
+    public void G(final boolean b) {
         this.gS().a(b, this.FA, this.FB);
     }
     
     protected in L(final IBinder binder) {
-        return in.a.M(binder);
+        return in$a.M(binder);
     }
     
-    public void a(final double n) throws IllegalArgumentException, IllegalStateException, RemoteException {
+    public void a(final double n) {
         if (Double.isInfinite(n) || Double.isNaN(n)) {
             throw new IllegalArgumentException("Volume cannot be " + n);
         }
@@ -219,7 +221,7 @@ public final class ij extends d<in>
     }
     
     @Override
-    protected void a(final k k, final e e) throws RemoteException {
+    protected void a(final k k, final d$e d$e) {
         final Bundle bundle = new Bundle();
         ij.Gr.b("getServiceFromBroker(): mLastApplicationId=%s, mLastSessionId=%s", this.GE, this.GF);
         this.Gt.putInBundle(bundle);
@@ -230,34 +232,34 @@ public final class ij extends d<in>
                 bundle.putString("last_session_id", this.GF);
             }
         }
-        this.Gw = new c();
-        k.a(e, 6111000, this.getContext().getPackageName(), ((io.a)this.Gw).asBinder(), bundle);
+        this.Gw = new ij$c(this, null);
+        k.a(d$e, 6111000, this.getContext().getPackageName(), this.Gw.asBinder(), bundle);
     }
     
-    public void a(final String s, final Cast.MessageReceivedCallback messageReceivedCallback) throws IllegalArgumentException, IllegalStateException, RemoteException {
+    public void a(final String s, final Cast$MessageReceivedCallback cast$MessageReceivedCallback) {
         ik.aF(s);
         this.aE(s);
-        if (messageReceivedCallback == null) {
+        if (cast$MessageReceivedCallback == null) {
             return;
         }
         synchronized (this.Gu) {
-            this.Gu.put(s, messageReceivedCallback);
+            this.Gu.put(s, cast$MessageReceivedCallback);
             // monitorexit(this.Gu)
             this.gS().aI(s);
         }
     }
     
-    public void a(final String s, final LaunchOptions launchOptions, final BaseImplementation.b<Cast.ApplicationConnectionResult> b) throws IllegalStateException, RemoteException {
-        this.c(b);
+    public void a(final String s, final LaunchOptions launchOptions, final BaseImplementation$b<Cast$ApplicationConnectionResult> baseImplementation$b) {
+        this.c(baseImplementation$b);
         this.gS().a(s, launchOptions);
     }
     
-    public void a(final String s, final BaseImplementation.b<Status> b) throws IllegalStateException, RemoteException {
-        this.e(b);
+    public void a(final String s, final BaseImplementation$b<Status> baseImplementation$b) {
+        this.e(baseImplementation$b);
         this.gS().aH(s);
     }
     
-    public void a(final String s, final String s2, final BaseImplementation.b<Status> b) throws IllegalArgumentException, IllegalStateException, RemoteException {
+    public void a(final String s, final String s2, final BaseImplementation$b<Status> baseImplementation$b) {
         if (TextUtils.isEmpty((CharSequence)s2)) {
             throw new IllegalArgumentException("The message payload cannot be null or empty");
         }
@@ -268,7 +270,7 @@ public final class ij extends d<in>
         this.fH();
         final long incrementAndGet = this.GD.incrementAndGet();
         try {
-            this.GH.put(incrementAndGet, b);
+            this.GH.put(incrementAndGet, baseImplementation$b);
             this.gS().a(s, s2, incrementAndGet);
         }
         catch (Throwable t) {
@@ -277,12 +279,12 @@ public final class ij extends d<in>
         }
     }
     
-    public void a(final String s, final boolean b, final BaseImplementation.b<Cast.ApplicationConnectionResult> b2) throws IllegalStateException, RemoteException {
-        this.c(b2);
+    public void a(final String s, final boolean b, final BaseImplementation$b<Cast$ApplicationConnectionResult> baseImplementation$b) {
+        this.c(baseImplementation$b);
         this.gS().f(s, b);
     }
     
-    public void aE(final String p0) throws IllegalArgumentException, RemoteException {
+    public void aE(final String p0) {
         // 
         // This method could not be decompiled.
         // 
@@ -340,9 +342,6 @@ public final class ij extends d<in>
         //    87: invokevirtual   com/google/android/gms/internal/ip.a:(Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
         //    90: return         
         //    Exceptions:
-        //  throws java.lang.IllegalArgumentException
-        //  throws android.os.RemoteException
-        //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                             
         //  -----  -----  -----  -----  ---------------------------------
@@ -375,20 +374,20 @@ public final class ij extends d<in>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void b(final String s, final String s2, final BaseImplementation.b<Cast.ApplicationConnectionResult> b) throws IllegalStateException, RemoteException {
-        this.c(b);
+    public void b(final String s, final String s2, final BaseImplementation$b<Cast$ApplicationConnectionResult> baseImplementation$b) {
+        this.c(baseImplementation$b);
         this.gS().l(s, s2);
     }
     
-    public void d(final BaseImplementation.b<Status> b) throws IllegalStateException, RemoteException {
-        this.e(b);
+    public void d(final BaseImplementation$b<Status> baseImplementation$b) {
+        this.e(baseImplementation$b);
         this.gS().fQ();
     }
     
     @Override
     public void disconnect() {
         ij.Gr.b("disconnect(); ServiceListener=%s, isConnected=%b", this.Gw, this.isConnected());
-        final c gw = this.Gw;
+        final ij$c gw = this.Gw;
         this.Gw = null;
         if (gw == null || !gw.fL()) {
             ij.Gr.b("already disposed, so short-circuiting", new Object[0]);
@@ -418,21 +417,21 @@ public final class ij extends d<in>
         return super.fD();
     }
     
-    public void fE() throws IllegalStateException, RemoteException {
+    public void fE() {
         this.gS().fE();
     }
     
-    public double fF() throws IllegalStateException {
+    public double fF() {
         this.fH();
         return this.FA;
     }
     
-    public ApplicationMetadata getApplicationMetadata() throws IllegalStateException {
+    public ApplicationMetadata getApplicationMetadata() {
         this.fH();
         return this.Gs;
     }
     
-    public String getApplicationStatus() throws IllegalStateException {
+    public String getApplicationStatus() {
         this.fH();
         return this.Gx;
     }
@@ -447,244 +446,8 @@ public final class ij extends d<in>
         return "com.google.android.gms.cast.service.BIND_CAST_DEVICE_CONTROLLER_SERVICE";
     }
     
-    public boolean isMute() throws IllegalStateException {
+    public boolean isMute() {
         this.fH();
         return this.FB;
-    }
-    
-    private static final class a implements ApplicationConnectionResult
-    {
-        private final Status CM;
-        private final ApplicationMetadata GN;
-        private final String GO;
-        private final boolean GP;
-        private final String vL;
-        
-        public a(final Status status) {
-            this(status, null, null, null, false);
-        }
-        
-        public a(final Status cm, final ApplicationMetadata gn, final String go, final String vl, final boolean gp) {
-            this.CM = cm;
-            this.GN = gn;
-            this.GO = go;
-            this.vL = vl;
-            this.GP = gp;
-        }
-        
-        @Override
-        public ApplicationMetadata getApplicationMetadata() {
-            return this.GN;
-        }
-        
-        @Override
-        public String getApplicationStatus() {
-            return this.GO;
-        }
-        
-        @Override
-        public String getSessionId() {
-            return this.vL;
-        }
-        
-        @Override
-        public Status getStatus() {
-            return this.CM;
-        }
-        
-        @Override
-        public boolean getWasLaunched() {
-            return this.GP;
-        }
-    }
-    
-    private class b implements OnConnectionFailedListener
-    {
-        @Override
-        public void onConnectionFailed(final ConnectionResult connectionResult) {
-            ij.this.fG();
-        }
-    }
-    
-    private class c extends io.a
-    {
-        private AtomicBoolean GR;
-        
-        private c() {
-            this.GR = new AtomicBoolean(false);
-        }
-        
-        private boolean ag(final int n) {
-            synchronized (ij.GM) {
-                if (ij.this.GK != null) {
-                    ij.this.GK.b(new Status(n));
-                    ij.this.GK = null;
-                    return true;
-                }
-                return false;
-            }
-        }
-        
-        private void c(final long n, final int n2) {
-            synchronized (ij.this.GH) {
-                final BaseImplementation.b<Status> b = ij.this.GH.remove(n);
-                // monitorexit(ij.i(this.GQ))
-                if (b != null) {
-                    b.b(new Status(n2));
-                }
-            }
-        }
-        
-        public void a(final ApplicationMetadata applicationMetadata, final String s, final String s2, final boolean b) {
-            if (this.GR.get()) {
-                return;
-            }
-            ij.this.Gs = applicationMetadata;
-            ij.this.GE = applicationMetadata.getApplicationId();
-            ij.this.GF = s2;
-            synchronized (ij.GL) {
-                if (ij.this.GJ != null) {
-                    ij.this.GJ.b(new ij.a(new Status(0), applicationMetadata, s, s2, b));
-                    ij.this.GJ = null;
-                }
-            }
-        }
-        
-        public void a(final String s, final double n, final boolean b) {
-            ij.Gr.b("Deprecated callback: \"onStatusreceived\"", new Object[0]);
-        }
-        
-        public void a(final String s, final long n) {
-            if (this.GR.get()) {
-                return;
-            }
-            this.c(n, 0);
-        }
-        
-        public void a(final String s, final long n, final int n2) {
-            if (this.GR.get()) {
-                return;
-            }
-            this.c(n, n2);
-        }
-        
-        public void ac(final int n) {
-            if (this.fL()) {
-                ij.Gr.b("ICastDeviceControllerListener.onDisconnected: %d", n);
-                if (n != 0) {
-                    ij.this.aA(2);
-                }
-            }
-        }
-        
-        public void ad(final int n) {
-            if (this.GR.get()) {
-                return;
-            }
-            synchronized (ij.GL) {
-                if (ij.this.GJ != null) {
-                    ij.this.GJ.b(new ij.a(new Status(n)));
-                    ij.this.GJ = null;
-                }
-            }
-        }
-        
-        public void ae(final int n) {
-            if (this.GR.get()) {
-                return;
-            }
-            this.ag(n);
-        }
-        
-        public void af(final int n) {
-            if (this.GR.get()) {
-                return;
-            }
-            this.ag(n);
-        }
-        
-        public void b(final ig ig) {
-            if (this.GR.get()) {
-                return;
-            }
-            ij.Gr.b("onApplicationStatusChanged", new Object[0]);
-            ij.this.mHandler.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    ij.this.a(ig);
-                }
-            });
-        }
-        
-        public void b(final il il) {
-            if (this.GR.get()) {
-                return;
-            }
-            ij.Gr.b("onDeviceStatusChanged", new Object[0]);
-            ij.this.mHandler.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    ij.this.a(il);
-                }
-            });
-        }
-        
-        public void b(final String s, final byte[] array) {
-            if (this.GR.get()) {
-                return;
-            }
-            ij.Gr.b("IGNORING: Receive (type=binary, ns=%s) <%d bytes>", s, array.length);
-        }
-        
-        public boolean fL() {
-            if (this.GR.getAndSet(true)) {
-                return false;
-            }
-            ij.this.fC();
-            return true;
-        }
-        
-        public boolean fM() {
-            return this.GR.get();
-        }
-        
-        public void k(final String s, final String s2) {
-            if (this.GR.get()) {
-                return;
-            }
-            ij.Gr.b("Receive (type=text, ns=%s) %s", s, s2);
-            ij.this.mHandler.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (ij.this.Gu) {
-                        final Cast.MessageReceivedCallback messageReceivedCallback = ij.this.Gu.get(s);
-                        // monitorexit(ij.g(this.GT.GQ))
-                        if (messageReceivedCallback != null) {
-                            messageReceivedCallback.onMessageReceived(ij.this.Gt, s, s2);
-                            return;
-                        }
-                    }
-                    ij.Gr.b("Discarded message for unknown namespace '%s'", s);
-                }
-            });
-        }
-        
-        public void onApplicationDisconnected(final int n) {
-            if (!this.GR.get()) {
-                ij.this.GE = null;
-                ij.this.GF = null;
-                this.ag(n);
-                if (ij.this.EO != null) {
-                    ij.this.mHandler.post((Runnable)new Runnable() {
-                        @Override
-                        public void run() {
-                            if (ij.this.EO != null) {
-                                ij.this.EO.onApplicationDisconnected(n);
-                            }
-                        }
-                    });
-                }
-            }
-        }
     }
 }

@@ -26,9 +26,9 @@ public class DataInsertRequest implements SafeParcelable
         this.Th = th;
     }
     
-    private DataInsertRequest(final Builder builder) {
+    private DataInsertRequest(final DataInsertRequest$Builder dataInsertRequest$Builder) {
         this.BR = 1;
-        this.Th = builder.Th;
+        this.Th = dataInsertRequest$Builder.Th;
     }
     
     private boolean a(final DataInsertRequest dataInsertRequest) {
@@ -64,23 +64,5 @@ public class DataInsertRequest implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         e.a(this, parcel, n);
-    }
-    
-    public static class Builder
-    {
-        private DataSet Th;
-        
-        public DataInsertRequest build() {
-            final boolean b = true;
-            n.a(this.Th != null, (Object)"Must set the data set");
-            n.a(!this.Th.getDataPoints().isEmpty(), (Object)"Cannot use an empty data set");
-            n.a(this.Th.getDataSource().iH() != null && b, (Object)"Must set the app package name for the data source");
-            return new DataInsertRequest(this, null);
-        }
-        
-        public Builder setDataSet(final DataSet th) {
-            this.Th = th;
-            return this;
-        }
     }
 }

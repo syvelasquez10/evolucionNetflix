@@ -83,8 +83,8 @@ public final class UserVolleyWebClient implements UserWebClient
     }
     
     @Override
-    public void sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2, final UserAgentWebCallback userAgentWebCallback) {
-        this.webclient.sendRequest(new SendRecommendationRequest(this.service.getApplicationContext(), s, set, s2, userAgentWebCallback));
+    public void sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2, final String s3, final UserAgentWebCallback userAgentWebCallback) {
+        this.webclient.sendRequest(new SendRecommendationRequest(this.service.getApplicationContext(), s, set, s2, s3, userAgentWebCallback));
     }
     
     @Override

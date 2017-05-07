@@ -6,9 +6,9 @@ package android.support.v4.widget;
 
 import android.app.SearchManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.widget.SearchView$OnQueryTextListener;
 import android.widget.SearchView$OnCloseListener;
+import android.content.Context;
 import android.widget.SearchView;
 import android.view.View;
 
@@ -30,24 +30,12 @@ class SearchViewCompatHoneycomb
         return ((SearchView)view).isSubmitButtonEnabled();
     }
     
-    public static Object newOnCloseListener(final OnCloseListenerCompatBridge onCloseListenerCompatBridge) {
-        return new SearchView$OnCloseListener() {
-            public boolean onClose() {
-                return onCloseListenerCompatBridge.onClose();
-            }
-        };
+    public static Object newOnCloseListener(final SearchViewCompatHoneycomb$OnCloseListenerCompatBridge searchViewCompatHoneycomb$OnCloseListenerCompatBridge) {
+        return new SearchViewCompatHoneycomb$2(searchViewCompatHoneycomb$OnCloseListenerCompatBridge);
     }
     
-    public static Object newOnQueryTextListener(final OnQueryTextListenerCompatBridge onQueryTextListenerCompatBridge) {
-        return new SearchView$OnQueryTextListener() {
-            public boolean onQueryTextChange(final String s) {
-                return onQueryTextListenerCompatBridge.onQueryTextChange(s);
-            }
-            
-            public boolean onQueryTextSubmit(final String s) {
-                return onQueryTextListenerCompatBridge.onQueryTextSubmit(s);
-            }
-        };
+    public static Object newOnQueryTextListener(final SearchViewCompatHoneycomb$OnQueryTextListenerCompatBridge searchViewCompatHoneycomb$OnQueryTextListenerCompatBridge) {
+        return new SearchViewCompatHoneycomb$1(searchViewCompatHoneycomb$OnQueryTextListenerCompatBridge);
     }
     
     public static View newSearchView(final Context context) {
@@ -89,17 +77,5 @@ class SearchViewCompatHoneycomb
     
     public static void setSubmitButtonEnabled(final View view, final boolean submitButtonEnabled) {
         ((SearchView)view).setSubmitButtonEnabled(submitButtonEnabled);
-    }
-    
-    interface OnCloseListenerCompatBridge
-    {
-        boolean onClose();
-    }
-    
-    interface OnQueryTextListenerCompatBridge
-    {
-        boolean onQueryTextChange(final String p0);
-        
-        boolean onQueryTextSubmit(final String p0);
     }
 }

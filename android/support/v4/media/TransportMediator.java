@@ -4,9 +4,9 @@
 
 package android.support.v4.media;
 
+import android.view.KeyEvent;
 import android.os.Build$VERSION;
 import android.support.v4.view.KeyEventCompat;
-import android.view.KeyEvent;
 import android.app.Activity;
 import android.view.View;
 import java.util.ArrayList;
@@ -43,44 +43,8 @@ public class TransportMediator extends TransportController
     
     private TransportMediator(final Activity activity, View decorView, final TransportPerformer mCallbacks) {
         this.mListeners = new ArrayList<TransportStateListener>();
-        this.mTransportKeyCallback = new TransportMediatorCallback() {
-            @Override
-            public long getPlaybackPosition() {
-                return TransportMediator.this.mCallbacks.onGetCurrentPosition();
-            }
-            
-            @Override
-            public void handleAudioFocusChange(final int n) {
-                TransportMediator.this.mCallbacks.onAudioFocusChange(n);
-            }
-            
-            @Override
-            public void handleKey(final KeyEvent keyEvent) {
-                keyEvent.dispatch(TransportMediator.this.mKeyEventCallback);
-            }
-            
-            @Override
-            public void playbackPositionUpdate(final long n) {
-                TransportMediator.this.mCallbacks.onSeekTo(n);
-            }
-        };
-        this.mKeyEventCallback = (KeyEvent$Callback)new KeyEvent$Callback() {
-            public boolean onKeyDown(final int n, final KeyEvent keyEvent) {
-                return TransportMediator.isMediaKey(n) && TransportMediator.this.mCallbacks.onMediaButtonDown(n, keyEvent);
-            }
-            
-            public boolean onKeyLongPress(final int n, final KeyEvent keyEvent) {
-                return false;
-            }
-            
-            public boolean onKeyMultiple(final int n, final int n2, final KeyEvent keyEvent) {
-                return false;
-            }
-            
-            public boolean onKeyUp(final int n, final KeyEvent keyEvent) {
-                return TransportMediator.isMediaKey(n) && TransportMediator.this.mCallbacks.onMediaButtonUp(n, keyEvent);
-            }
-        };
+        this.mTransportKeyCallback = new TransportMediator$1(this);
+        this.mKeyEventCallback = (KeyEvent$Callback)new TransportMediator$2(this);
         Object context;
         if (activity != null) {
             context = activity;

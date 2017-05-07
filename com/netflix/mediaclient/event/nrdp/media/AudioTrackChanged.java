@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AudioTrackChanged extends BaseMediaEvent
@@ -14,7 +13,7 @@ public class AudioTrackChanged extends BaseMediaEvent
     public static final String TYPE = "audioTrackChanged";
     private int trackIndex;
     
-    public AudioTrackChanged(final JSONObject jsonObject) throws JSONException {
+    public AudioTrackChanged(final JSONObject jsonObject) {
         super("audioTrackChanged", jsonObject);
     }
     
@@ -23,7 +22,7 @@ public class AudioTrackChanged extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.trackIndex = BaseNccpEvent.getInt(jsonObject, "trackIndex", -1);
     }
 }

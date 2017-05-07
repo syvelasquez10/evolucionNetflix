@@ -17,17 +17,7 @@ public class hb implements Parcelable
     private String mValue;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<hb>() {
-            @Deprecated
-            public hb[] H(final int n) {
-                return new hb[n];
-            }
-            
-            @Deprecated
-            public hb k(final Parcel parcel) {
-                return new hb(parcel);
-            }
-        };
+        CREATOR = (Parcelable$Creator)new hb$1();
     }
     
     public hb() {

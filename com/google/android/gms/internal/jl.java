@@ -4,25 +4,25 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class jl implements Parcelable$Creator<jm.b>
+public class jl implements Parcelable$Creator<jm$b>
 {
-    static void a(final jm.b b, final Parcel parcel, final int n) {
+    static void a(final jm$b jm$b, final Parcel parcel, final int n) {
         final int d = b.D(parcel);
-        b.c(parcel, 1, b.versionCode);
-        b.a(parcel, 2, b.fv, false);
-        b.a(parcel, 3, (Parcelable)b.ME, n, false);
+        b.c(parcel, 1, jm$b.versionCode);
+        b.a(parcel, 2, jm$b.fv, false);
+        b.a(parcel, 3, (Parcelable)jm$b.ME, n, false);
         b.H(parcel, d);
     }
     
-    public jm.b J(final Parcel parcel) {
-        SafeParcelable safeParcelable = null;
+    public jm$b J(final Parcel parcel) {
+        ji$a<?, ?> ji$a = null;
         final int c = a.C(parcel);
         int g = 0;
         String o = null;
@@ -42,18 +42,18 @@ public class jl implements Parcelable$Creator<jm.b>
                     continue;
                 }
                 case 3: {
-                    safeParcelable = a.a(parcel, b, (android.os.Parcelable$Creator<ji.a<?, ?>>)ji.a.CREATOR);
+                    ji$a = a.a(parcel, b, (android.os.Parcelable$Creator<ji$a<?, ?>>)com.google.android.gms.internal.ji$a.CREATOR);
                     continue;
                 }
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
-        return new jm.b(g, o, (ji.a<?, ?>)safeParcelable);
+        return new jm$b(g, o, ji$a);
     }
     
-    public jm.b[] aJ(final int n) {
-        return new jm.b[n];
+    public jm$b[] aJ(final int n) {
+        return new jm$b[n];
     }
 }

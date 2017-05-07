@@ -4,13 +4,10 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
@@ -34,7 +31,7 @@ public class RemoveUserProfileRequest extends FalcorVolleyWebClientRequest<Accou
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
@@ -67,7 +64,7 @@ public class RemoveUserProfileRequest extends FalcorVolleyWebClientRequest<Accou
     }
     
     @Override
-    protected AccountData parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected AccountData parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_removeuserprofilerequest", 2)) {
             Log.v("nf_service_user_removeuserprofilerequest", "String response to parse = " + s);
         }

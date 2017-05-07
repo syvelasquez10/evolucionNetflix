@@ -4,11 +4,10 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 
@@ -28,13 +27,13 @@ public class SearchFocusSessionStartedEvent extends SessionStartedEvent
     private void setupAttributes() {
         this.sessionName = "focus";
         this.type = EventType.sessionStarted;
-        this.modalView = IClientLogging.ModalView.search;
+        this.modalView = IClientLogging$ModalView.search;
         this.category = "uiView";
         this.name = "focus.started";
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

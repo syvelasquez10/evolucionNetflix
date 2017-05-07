@@ -21,31 +21,7 @@ class MenuItemCompatIcs
         return menuItem.isActionViewExpanded();
     }
     
-    public static MenuItem setOnActionExpandListener(final MenuItem menuItem, final SupportActionExpandProxy supportActionExpandProxy) {
-        return menuItem.setOnActionExpandListener((MenuItem$OnActionExpandListener)new OnActionExpandListenerWrapper(supportActionExpandProxy));
-    }
-    
-    static class OnActionExpandListenerWrapper implements MenuItem$OnActionExpandListener
-    {
-        private SupportActionExpandProxy mWrapped;
-        
-        public OnActionExpandListenerWrapper(final SupportActionExpandProxy mWrapped) {
-            this.mWrapped = mWrapped;
-        }
-        
-        public boolean onMenuItemActionCollapse(final MenuItem menuItem) {
-            return this.mWrapped.onMenuItemActionCollapse(menuItem);
-        }
-        
-        public boolean onMenuItemActionExpand(final MenuItem menuItem) {
-            return this.mWrapped.onMenuItemActionExpand(menuItem);
-        }
-    }
-    
-    interface SupportActionExpandProxy
-    {
-        boolean onMenuItemActionCollapse(final MenuItem p0);
-        
-        boolean onMenuItemActionExpand(final MenuItem p0);
+    public static MenuItem setOnActionExpandListener(final MenuItem menuItem, final MenuItemCompatIcs$SupportActionExpandProxy menuItemCompatIcs$SupportActionExpandProxy) {
+        return menuItem.setOnActionExpandListener((MenuItem$OnActionExpandListener)new MenuItemCompatIcs$OnActionExpandListenerWrapper(menuItemCompatIcs$SupportActionExpandProxy));
     }
 }

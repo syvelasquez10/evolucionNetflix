@@ -16,11 +16,11 @@ import android.os.Parcel;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import android.os.Parcelable$Creator;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 
-public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, Genre, JsonPopulator
+public class ListOfMoviesSummary extends TrackableListSummary implements JsonPopulator, LoMo, Genre
 {
     public static final Parcelable$Creator<ListOfMoviesSummary> CREATOR;
     private static final String TAG = "ListOfMoviesSummary";
@@ -32,15 +32,7 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
     private String type;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<ListOfMoviesSummary>() {
-            public ListOfMoviesSummary createFromParcel(final Parcel parcel) {
-                return new ListOfMoviesSummary(parcel);
-            }
-            
-            public ListOfMoviesSummary[] newArray(final int n) {
-                return new ListOfMoviesSummary[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new ListOfMoviesSummary$1();
     }
     
     public ListOfMoviesSummary() {

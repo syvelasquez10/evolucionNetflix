@@ -4,7 +4,6 @@
 
 package com.facebook.widget;
 
-import java.net.MalformedURLException;
 import android.net.Uri$Builder;
 import com.facebook.internal.Validate;
 import java.net.URL;
@@ -19,27 +18,27 @@ class ImageRequest
     static final int UNSPECIFIED_DIMENSION = 0;
     private static final String WIDTH_PARAM = "width";
     private boolean allowCachedRedirects;
-    private Callback callback;
+    private ImageRequest$Callback callback;
     private Object callerTag;
     private Context context;
     private URL imageUrl;
     
-    private ImageRequest(final Builder builder) {
-        this.context = builder.context;
-        this.imageUrl = builder.imageUrl;
-        this.callback = builder.callback;
-        this.allowCachedRedirects = builder.allowCachedRedirects;
+    private ImageRequest(final ImageRequest$Builder imageRequest$Builder) {
+        this.context = imageRequest$Builder.context;
+        this.imageUrl = imageRequest$Builder.imageUrl;
+        this.callback = imageRequest$Builder.callback;
+        this.allowCachedRedirects = imageRequest$Builder.allowCachedRedirects;
         Object access$400;
-        if (builder.callerTag == null) {
+        if (imageRequest$Builder.callerTag == null) {
             access$400 = new Object();
         }
         else {
-            access$400 = builder.callerTag;
+            access$400 = imageRequest$Builder.callerTag;
         }
         this.callerTag = access$400;
     }
     
-    static URL getProfilePictureUrl(final String s, int max, int max2) throws MalformedURLException {
+    static URL getProfilePictureUrl(final String s, int max, int max2) {
         Validate.notNullOrEmpty(s, "userId");
         max = Math.max(max, 0);
         max2 = Math.max(max2, 0);
@@ -57,7 +56,7 @@ class ImageRequest
         return new URL(encodedPath.toString());
     }
     
-    Callback getCallback() {
+    ImageRequest$Callback getCallback() {
         return this.callback;
     }
     
@@ -75,44 +74,5 @@ class ImageRequest
     
     boolean isCachedRedirectAllowed() {
         return this.allowCachedRedirects;
-    }
-    
-    static class Builder
-    {
-        private boolean allowCachedRedirects;
-        private Callback callback;
-        private Object callerTag;
-        private Context context;
-        private URL imageUrl;
-        
-        Builder(final Context context, final URL imageUrl) {
-            Validate.notNull(imageUrl, "imageUrl");
-            this.context = context;
-            this.imageUrl = imageUrl;
-        }
-        
-        ImageRequest build() {
-            return new ImageRequest(this, null);
-        }
-        
-        Builder setAllowCachedRedirects(final boolean allowCachedRedirects) {
-            this.allowCachedRedirects = allowCachedRedirects;
-            return this;
-        }
-        
-        Builder setCallback(final Callback callback) {
-            this.callback = callback;
-            return this;
-        }
-        
-        Builder setCallerTag(final Object callerTag) {
-            this.callerTag = callerTag;
-            return this;
-        }
-    }
-    
-    interface Callback
-    {
-        void onCompleted(final ImageResponse p0);
     }
 }

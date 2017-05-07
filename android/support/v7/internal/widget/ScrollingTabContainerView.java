@@ -4,17 +4,6 @@
 
 package android.support.v7.internal.widget;
 
-import android.view.ViewParent;
-import android.text.TextUtils$TruncateAt;
-import android.text.TextUtils;
-import android.widget.Toast;
-import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.AccessibilityEvent;
-import android.widget.TextView;
-import android.widget.ImageView;
-import android.view.View$OnLongClickListener;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.view.View$MeasureSpec;
 import android.os.Build$VERSION;
 import android.content.res.Configuration;
@@ -24,9 +13,10 @@ import android.widget.SpinnerAdapter;
 import android.view.View$OnClickListener;
 import android.widget.AbsListView$LayoutParams;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.LinearLayoutCompat$LayoutParams;
 import android.util.AttributeSet;
-import android.support.v7.appcompat.R;
-import android.support.v7.app.ActionBar;
+import android.support.v7.appcompat.R$attr;
+import android.support.v7.app.ActionBar$Tab;
 import android.view.View;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.internal.view.ActionBarPolicy;
@@ -37,7 +27,7 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.view.animation.Interpolator;
 import android.widget.HorizontalScrollView;
 
-public class ScrollingTabContainerView extends HorizontalScrollView implements OnItemClickListener
+public class ScrollingTabContainerView extends HorizontalScrollView implements AdapterViewCompat$OnItemClickListener
 {
     private static final int FADE_DURATION = 200;
     private static final String TAG = "ScrollingTabContainerView";
@@ -47,11 +37,11 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
     int mMaxTabWidth;
     private int mSelectedTabIndex;
     int mStackedTabMaxWidth;
-    private TabClickListener mTabClickListener;
+    private ScrollingTabContainerView$TabClickListener mTabClickListener;
     private LinearLayoutCompat mTabLayout;
     Runnable mTabSelector;
     private SpinnerCompat mTabSpinner;
-    protected final VisibilityAnimListener mVisAnimListener;
+    protected final ScrollingTabContainerView$VisibilityAnimListener mVisAnimListener;
     protected ViewPropertyAnimatorCompat mVisibilityAnim;
     
     static {
@@ -60,7 +50,7 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
     
     public ScrollingTabContainerView(final Context context) {
         super(context);
-        this.mVisAnimListener = new VisibilityAnimListener();
+        this.mVisAnimListener = new ScrollingTabContainerView$VisibilityAnimListener(this);
         this.setHorizontalScrollBarEnabled(false);
         final ActionBarPolicy value = ActionBarPolicy.get(context);
         this.setContentHeight(value.getTabContainerHeight());
@@ -69,33 +59,33 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
     }
     
     private SpinnerCompat createSpinner() {
-        final SpinnerCompat spinnerCompat = new SpinnerCompat(this.getContext(), null, R.attr.actionDropDownStyle);
-        spinnerCompat.setLayoutParams((ViewGroup$LayoutParams)new LinearLayoutCompat.LayoutParams(-2, -1));
+        final SpinnerCompat spinnerCompat = new SpinnerCompat(this.getContext(), null, R$attr.actionDropDownStyle);
+        spinnerCompat.setLayoutParams((ViewGroup$LayoutParams)new LinearLayoutCompat$LayoutParams(-2, -1));
         spinnerCompat.setOnItemClickListenerInt(this);
         return spinnerCompat;
     }
     
     private LinearLayoutCompat createTabLayout() {
-        final LinearLayoutCompat linearLayoutCompat = new LinearLayoutCompat(this.getContext(), null, R.attr.actionBarTabBarStyle);
+        final LinearLayoutCompat linearLayoutCompat = new LinearLayoutCompat(this.getContext(), null, R$attr.actionBarTabBarStyle);
         linearLayoutCompat.setMeasureWithLargestChildEnabled(true);
         linearLayoutCompat.setGravity(17);
-        linearLayoutCompat.setLayoutParams((ViewGroup$LayoutParams)new LinearLayoutCompat.LayoutParams(-2, -1));
+        linearLayoutCompat.setLayoutParams((ViewGroup$LayoutParams)new LinearLayoutCompat$LayoutParams(-2, -1));
         return linearLayoutCompat;
     }
     
-    private TabView createTabView(final ActionBar.Tab tab, final boolean b) {
-        final TabView tabView = new TabView(this.getContext(), tab, b);
+    private ScrollingTabContainerView$TabView createTabView(final ActionBar$Tab actionBar$Tab, final boolean b) {
+        final ScrollingTabContainerView$TabView scrollingTabContainerView$TabView = new ScrollingTabContainerView$TabView(this, this.getContext(), actionBar$Tab, b);
         if (b) {
-            tabView.setBackgroundDrawable((Drawable)null);
-            tabView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.mContentHeight));
-            return tabView;
+            scrollingTabContainerView$TabView.setBackgroundDrawable((Drawable)null);
+            scrollingTabContainerView$TabView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.mContentHeight));
+            return scrollingTabContainerView$TabView;
         }
-        tabView.setFocusable(true);
+        scrollingTabContainerView$TabView.setFocusable(true);
         if (this.mTabClickListener == null) {
-            this.mTabClickListener = new TabClickListener();
+            this.mTabClickListener = new ScrollingTabContainerView$TabClickListener(this, null);
         }
-        tabView.setOnClickListener((View$OnClickListener)this.mTabClickListener);
-        return tabView;
+        scrollingTabContainerView$TabView.setOnClickListener((View$OnClickListener)this.mTabClickListener);
+        return scrollingTabContainerView$TabView;
     }
     
     private boolean isCollapsed() {
@@ -112,7 +102,7 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
         this.removeView((View)this.mTabLayout);
         this.addView((View)this.mTabSpinner, new ViewGroup$LayoutParams(-2, -1));
         if (this.mTabSpinner.getAdapter() == null) {
-            this.mTabSpinner.setAdapter((SpinnerAdapter)new TabAdapter());
+            this.mTabSpinner.setAdapter((SpinnerAdapter)new ScrollingTabContainerView$TabAdapter(this, null));
         }
         if (this.mTabSelector != null) {
             this.removeCallbacks(this.mTabSelector);
@@ -131,11 +121,11 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
         return false;
     }
     
-    public void addTab(final ActionBar.Tab tab, final int n, final boolean b) {
-        final TabView tabView = this.createTabView(tab, false);
-        this.mTabLayout.addView((View)tabView, n, (ViewGroup$LayoutParams)new LinearLayoutCompat.LayoutParams(0, -1, 1.0f));
+    public void addTab(final ActionBar$Tab actionBar$Tab, final int n, final boolean b) {
+        final ScrollingTabContainerView$TabView tabView = this.createTabView(actionBar$Tab, false);
+        this.mTabLayout.addView((View)tabView, n, (ViewGroup$LayoutParams)new LinearLayoutCompat$LayoutParams(0, -1, 1.0f));
         if (this.mTabSpinner != null) {
-            ((TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
+            ((ScrollingTabContainerView$TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
         }
         if (b) {
             tabView.setSelected(true);
@@ -145,11 +135,11 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
         }
     }
     
-    public void addTab(final ActionBar.Tab tab, final boolean b) {
-        final TabView tabView = this.createTabView(tab, false);
-        this.mTabLayout.addView((View)tabView, (ViewGroup$LayoutParams)new LinearLayoutCompat.LayoutParams(0, -1, 1.0f));
+    public void addTab(final ActionBar$Tab actionBar$Tab, final boolean b) {
+        final ScrollingTabContainerView$TabView tabView = this.createTabView(actionBar$Tab, false);
+        this.mTabLayout.addView((View)tabView, (ViewGroup$LayoutParams)new LinearLayoutCompat$LayoutParams(0, -1, 1.0f));
         if (this.mTabSpinner != null) {
-            ((TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
+            ((ScrollingTabContainerView$TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
         }
         if (b) {
             tabView.setSelected(true);
@@ -164,13 +154,7 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
         if (this.mTabSelector != null) {
             this.removeCallbacks(this.mTabSelector);
         }
-        this.post(this.mTabSelector = new Runnable() {
-            @Override
-            public void run() {
-                ScrollingTabContainerView.this.smoothScrollTo(child.getLeft() - (ScrollingTabContainerView.this.getWidth() - child.getWidth()) / 2, 0);
-                ScrollingTabContainerView.this.mTabSelector = null;
-            }
-        });
+        this.post(this.mTabSelector = new ScrollingTabContainerView$1(this, child));
     }
     
     public void animateToVisibility(final int n) {
@@ -219,15 +203,16 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
     }
     
     public void onItemClick(final AdapterViewCompat<?> adapterViewCompat, final View view, final int n, final long n2) {
-        ((TabView)view).getTab().select();
+        ((ScrollingTabContainerView$TabView)view).getTab().select();
     }
     
-    public void onMeasure(int measuredWidth, int n) {
-        n = View$MeasureSpec.getMode(measuredWidth);
-        final boolean fillViewport = n == 1073741824;
+    public void onMeasure(int measuredWidth, int measuredWidth2) {
+        measuredWidth2 = 1;
+        final int mode = View$MeasureSpec.getMode(measuredWidth);
+        final boolean fillViewport = mode == 1073741824;
         this.setFillViewport(fillViewport);
         final int childCount = this.mTabLayout.getChildCount();
-        if (childCount > 1 && (n == 1073741824 || n == Integer.MIN_VALUE)) {
+        if (childCount > 1 && (mode == 1073741824 || mode == Integer.MIN_VALUE)) {
             if (childCount > 2) {
                 this.mMaxTabWidth = (int)(View$MeasureSpec.getSize(measuredWidth) * 0.4f);
             }
@@ -240,13 +225,10 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
             this.mMaxTabWidth = -1;
         }
         final int measureSpec = View$MeasureSpec.makeMeasureSpec(this.mContentHeight, 1073741824);
-        if (!fillViewport && this.mAllowCollapse) {
-            n = 1;
+        if (fillViewport || !this.mAllowCollapse) {
+            measuredWidth2 = 0;
         }
-        else {
-            n = 0;
-        }
-        if (n != 0) {
+        if (measuredWidth2 != 0) {
             this.mTabLayout.measure(0, measureSpec);
             if (this.mTabLayout.getMeasuredWidth() > View$MeasureSpec.getSize(measuredWidth)) {
                 this.performCollapse();
@@ -258,10 +240,10 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
         else {
             this.performExpand();
         }
-        n = this.getMeasuredWidth();
+        measuredWidth2 = this.getMeasuredWidth();
         super.onMeasure(measuredWidth, measureSpec);
         measuredWidth = this.getMeasuredWidth();
-        if (fillViewport && n != measuredWidth) {
+        if (fillViewport && measuredWidth2 != measuredWidth) {
             this.setTabSelected(this.mSelectedTabIndex);
         }
     }
@@ -269,7 +251,7 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
     public void removeAllTabs() {
         this.mTabLayout.removeAllViews();
         if (this.mTabSpinner != null) {
-            ((TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
+            ((ScrollingTabContainerView$TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
         }
         if (this.mAllowCollapse) {
             this.requestLayout();
@@ -279,7 +261,7 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
     public void removeTabAt(final int n) {
         this.mTabLayout.removeViewAt(n);
         if (this.mTabSpinner != null) {
-            ((TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
+            ((ScrollingTabContainerView$TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
         }
         if (this.mAllowCollapse) {
             this.requestLayout();
@@ -311,241 +293,12 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements O
     }
     
     public void updateTab(final int n) {
-        ((TabView)this.mTabLayout.getChildAt(n)).update();
+        ((ScrollingTabContainerView$TabView)this.mTabLayout.getChildAt(n)).update();
         if (this.mTabSpinner != null) {
-            ((TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
+            ((ScrollingTabContainerView$TabAdapter)this.mTabSpinner.getAdapter()).notifyDataSetChanged();
         }
         if (this.mAllowCollapse) {
             this.requestLayout();
-        }
-    }
-    
-    private class TabAdapter extends BaseAdapter
-    {
-        public int getCount() {
-            return ScrollingTabContainerView.this.mTabLayout.getChildCount();
-        }
-        
-        public Object getItem(final int n) {
-            return ((TabView)ScrollingTabContainerView.this.mTabLayout.getChildAt(n)).getTab();
-        }
-        
-        public long getItemId(final int n) {
-            return n;
-        }
-        
-        public View getView(final int n, final View view, final ViewGroup viewGroup) {
-            if (view == null) {
-                return (View)ScrollingTabContainerView.this.createTabView((ActionBar.Tab)this.getItem(n), true);
-            }
-            ((TabView)view).bindTab((ActionBar.Tab)this.getItem(n));
-            return view;
-        }
-    }
-    
-    private class TabClickListener implements View$OnClickListener
-    {
-        public void onClick(final View view) {
-            ((TabView)view).getTab().select();
-            for (int childCount = ScrollingTabContainerView.this.mTabLayout.getChildCount(), i = 0; i < childCount; ++i) {
-                final View child = ScrollingTabContainerView.this.mTabLayout.getChildAt(i);
-                child.setSelected(child == view);
-            }
-        }
-    }
-    
-    private class TabView extends LinearLayoutCompat implements View$OnLongClickListener
-    {
-        private final int[] BG_ATTRS;
-        private View mCustomView;
-        private ImageView mIconView;
-        private ActionBar.Tab mTab;
-        private TextView mTextView;
-        
-        public TabView(final Context context, final ActionBar.Tab mTab, final boolean b) {
-            super(context, null, R.attr.actionBarTabStyle);
-            this.BG_ATTRS = new int[] { 16842964 };
-            this.mTab = mTab;
-            final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, null, this.BG_ATTRS, R.attr.actionBarTabStyle, 0);
-            if (obtainStyledAttributes.hasValue(0)) {
-                this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(0));
-            }
-            obtainStyledAttributes.recycle();
-            if (b) {
-                this.setGravity(8388627);
-            }
-            this.update();
-        }
-        
-        public void bindTab(final ActionBar.Tab mTab) {
-            this.mTab = mTab;
-            this.update();
-        }
-        
-        public ActionBar.Tab getTab() {
-            return this.mTab;
-        }
-        
-        @Override
-        public void onInitializeAccessibilityEvent(final AccessibilityEvent accessibilityEvent) {
-            super.onInitializeAccessibilityEvent(accessibilityEvent);
-            accessibilityEvent.setClassName((CharSequence)ActionBar.Tab.class.getName());
-        }
-        
-        @Override
-        public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo accessibilityNodeInfo) {
-            super.onInitializeAccessibilityNodeInfo(accessibilityNodeInfo);
-            if (Build$VERSION.SDK_INT >= 14) {
-                accessibilityNodeInfo.setClassName((CharSequence)ActionBar.Tab.class.getName());
-            }
-        }
-        
-        public boolean onLongClick(final View view) {
-            final int[] array = new int[2];
-            this.getLocationOnScreen(array);
-            final Context context = this.getContext();
-            final int width = this.getWidth();
-            final int height = this.getHeight();
-            final int widthPixels = context.getResources().getDisplayMetrics().widthPixels;
-            final Toast text = Toast.makeText(context, this.mTab.getContentDescription(), 0);
-            text.setGravity(49, array[0] + width / 2 - widthPixels / 2, height);
-            text.show();
-            return true;
-        }
-        
-        public void onMeasure(final int n, final int n2) {
-            super.onMeasure(n, n2);
-            if (ScrollingTabContainerView.this.mMaxTabWidth > 0 && this.getMeasuredWidth() > ScrollingTabContainerView.this.mMaxTabWidth) {
-                super.onMeasure(View$MeasureSpec.makeMeasureSpec(ScrollingTabContainerView.this.mMaxTabWidth, 1073741824), n2);
-            }
-        }
-        
-        public void setSelected(final boolean selected) {
-            boolean b;
-            if (this.isSelected() != selected) {
-                b = true;
-            }
-            else {
-                b = false;
-            }
-            super.setSelected(selected);
-            if (b && selected) {
-                this.sendAccessibilityEvent(4);
-            }
-        }
-        
-        public void update() {
-            final ActionBar.Tab mTab = this.mTab;
-            final View customView = mTab.getCustomView();
-            if (customView != null) {
-                final ViewParent parent = customView.getParent();
-                if (parent != this) {
-                    if (parent != null) {
-                        ((TabView)parent).removeView(customView);
-                    }
-                    this.addView(customView);
-                }
-                this.mCustomView = customView;
-                if (this.mTextView != null) {
-                    this.mTextView.setVisibility(8);
-                }
-                if (this.mIconView != null) {
-                    this.mIconView.setVisibility(8);
-                    this.mIconView.setImageDrawable((Drawable)null);
-                }
-                return;
-            }
-            if (this.mCustomView != null) {
-                this.removeView(this.mCustomView);
-                this.mCustomView = null;
-            }
-            final Drawable icon = mTab.getIcon();
-            final CharSequence text = mTab.getText();
-            if (icon != null) {
-                if (this.mIconView == null) {
-                    final ImageView mIconView = new ImageView(this.getContext());
-                    final LayoutParams layoutParams = new LayoutParams(-2, -2);
-                    layoutParams.gravity = 16;
-                    mIconView.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
-                    this.addView((View)mIconView, 0);
-                    this.mIconView = mIconView;
-                }
-                this.mIconView.setImageDrawable(icon);
-                this.mIconView.setVisibility(0);
-            }
-            else if (this.mIconView != null) {
-                this.mIconView.setVisibility(8);
-                this.mIconView.setImageDrawable((Drawable)null);
-            }
-            boolean b;
-            if (!TextUtils.isEmpty(text)) {
-                b = true;
-            }
-            else {
-                b = false;
-            }
-            if (b) {
-                if (this.mTextView == null) {
-                    final CompatTextView mTextView = new CompatTextView(this.getContext(), null, R.attr.actionBarTabTextStyle);
-                    mTextView.setEllipsize(TextUtils$TruncateAt.END);
-                    final LayoutParams layoutParams2 = new LayoutParams(-2, -2);
-                    layoutParams2.gravity = 16;
-                    mTextView.setLayoutParams((ViewGroup$LayoutParams)layoutParams2);
-                    this.addView((View)mTextView);
-                    this.mTextView = mTextView;
-                }
-                this.mTextView.setText(text);
-                this.mTextView.setVisibility(0);
-            }
-            else if (this.mTextView != null) {
-                this.mTextView.setVisibility(8);
-                this.mTextView.setText((CharSequence)null);
-            }
-            if (this.mIconView != null) {
-                this.mIconView.setContentDescription(mTab.getContentDescription());
-            }
-            if (!b && !TextUtils.isEmpty(mTab.getContentDescription())) {
-                this.setOnLongClickListener((View$OnLongClickListener)this);
-                return;
-            }
-            this.setOnLongClickListener((View$OnLongClickListener)null);
-            this.setLongClickable(false);
-        }
-    }
-    
-    protected class VisibilityAnimListener implements ViewPropertyAnimatorListener
-    {
-        private boolean mCanceled;
-        private int mFinalVisibility;
-        
-        protected VisibilityAnimListener() {
-            this.mCanceled = false;
-        }
-        
-        @Override
-        public void onAnimationCancel(final View view) {
-            this.mCanceled = true;
-        }
-        
-        @Override
-        public void onAnimationEnd(final View view) {
-            if (this.mCanceled) {
-                return;
-            }
-            ScrollingTabContainerView.this.mVisibilityAnim = null;
-            ScrollingTabContainerView.this.setVisibility(this.mFinalVisibility);
-        }
-        
-        @Override
-        public void onAnimationStart(final View view) {
-            ScrollingTabContainerView.this.setVisibility(0);
-            this.mCanceled = false;
-        }
-        
-        public VisibilityAnimListener withFinalVisibility(final ViewPropertyAnimatorCompat mVisibilityAnim, final int mFinalVisibility) {
-            this.mFinalVisibility = mFinalVisibility;
-            ScrollingTabContainerView.this.mVisibilityAnim = mVisibilityAnim;
-            return this;
         }
     }
 }

@@ -20,7 +20,7 @@ final class GetTokenClient implements ServiceConnection
     final String applicationId;
     final Context context;
     final Handler handler;
-    CompletedListener listener;
+    GetTokenClient$CompletedListener listener;
     boolean running;
     Messenger sender;
     
@@ -31,17 +31,13 @@ final class GetTokenClient implements ServiceConnection
         }
         this.context = context;
         this.applicationId = applicationId;
-        this.handler = new Handler() {
-            public void handleMessage(final Message message) {
-                GetTokenClient.this.handleMessage(message);
-            }
-        };
+        this.handler = new GetTokenClient$1(this);
     }
     
     private void callback(final Bundle bundle) {
         if (this.running) {
             this.running = false;
-            final CompletedListener listener = this.listener;
+            final GetTokenClient$CompletedListener listener = this.listener;
             if (listener != null) {
                 listener.completed(bundle);
             }
@@ -91,7 +87,7 @@ final class GetTokenClient implements ServiceConnection
         this.callback(null);
     }
     
-    void setCompletedListener(final CompletedListener listener) {
+    void setCompletedListener(final GetTokenClient$CompletedListener listener) {
         this.listener = listener;
     }
     
@@ -106,10 +102,5 @@ final class GetTokenClient implements ServiceConnection
         this.running = true;
         this.context.bindService(validateKatanaServiceIntent, (ServiceConnection)this, 1);
         return true;
-    }
-    
-    interface CompletedListener
-    {
-        void completed(final Bundle p0);
     }
 }

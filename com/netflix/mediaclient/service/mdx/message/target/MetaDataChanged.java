@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message.target;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
 
@@ -17,7 +16,7 @@ public final class MetaDataChanged extends MdxMessage
     private String mEpisodeId;
     private String mType;
     
-    public MetaDataChanged(final JSONObject mJson) throws JSONException {
+    public MetaDataChanged(final JSONObject mJson) {
         super("META_DATA_CHANGED");
         this.mJson = mJson;
         this.mCatalogId = mJson.getString("catalogId");

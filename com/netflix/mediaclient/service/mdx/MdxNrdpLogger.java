@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
+import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
 
 public class MdxNrdpLogger
@@ -18,13 +19,13 @@ public class MdxNrdpLogger
     
     public void logDebug(final String s) {
         if (this.mNrdp != null) {
-            this.mNrdp.getLog().log(new LogArguments(LogArguments.LogLevel.DEBUG.getLevelInString(), s, "mdx", null));
+            this.mNrdp.getLog().log(new LogArguments(LogArguments$LogLevel.DEBUG.getLevelInString(), s, "mdx", null));
         }
     }
     
     public void logError(final String s) {
         if (this.mNrdp != null) {
-            this.mNrdp.getLog().log(new LogArguments(LogArguments.LogLevel.ERROR.getLevelInString(), s, "mdx", null));
+            this.mNrdp.getLog().log(new LogArguments(LogArguments$LogLevel.ERROR.getLevelInString(), s, "mdx", null));
         }
     }
 }

@@ -8,8 +8,6 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
@@ -51,7 +49,7 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
         }
     }
     
-    public static ConfigData parseConfigString(final String s) throws FalcorParseException, FalcorServerException {
+    public static ConfigData parseConfigString(final String s) {
         final ConfigData configData = new ConfigData();
         if (Log.isLoggable("nf_config_data", 2)) {
             Log.v("nf_config_data", "String response to parse = " + s);
@@ -60,29 +58,27 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
         if (FalcorParseUtils.isEmpty(dataObj)) {
             Log.d("nf_config_data", "No config overrides for device");
             configData.deviceConfig = new DeviceConfigData();
+            return configData;
         }
-        else {
-            if (dataObj.has("deviceConfig")) {
-                configData.deviceConfig = FalcorParseUtils.getPropertyObject(dataObj, "deviceConfig", DeviceConfigData.class);
+        if (dataObj.has("deviceConfig")) {
+            configData.deviceConfig = FalcorParseUtils.getPropertyObject(dataObj, "deviceConfig", DeviceConfigData.class);
+        }
+        if (dataObj.has("accountConfig")) {
+            if (Log.isLoggable("nf_config_data", 2)) {
+                Log.v("nf_config_data", "Accnt config: " + dataObj.get("accountConfig"));
             }
-            if (dataObj.has("accountConfig")) {
-                if (Log.isLoggable("nf_config_data", 2)) {
-                    Log.v("nf_config_data", "Accnt config: " + dataObj.get("accountConfig"));
-                }
-                configData.accountConfig = FalcorParseUtils.getPropertyObject(dataObj, "accountConfig", AccountConfigData.class);
+            configData.accountConfig = FalcorParseUtils.getPropertyObject(dataObj, "accountConfig", AccountConfigData.class);
+        }
+        if (dataObj.has("streamingqoe")) {
+            final JsonElement value = dataObj.get("streamingqoe");
+            if (value != null) {
+                configData.streamingqoeJson = value.toString();
             }
-            if (dataObj.has("streamingqoe")) {
-                final JsonElement value = dataObj.get("streamingqoe");
-                if (value != null) {
-                    configData.streamingqoeJson = value.toString();
-                }
-            }
-            if (dataObj.has("streamingqoeDefault")) {
-                final JsonElement value2 = dataObj.get("streamingqoeDefault");
-                if (value2 != null) {
-                    configData.streamingqoeJson = value2.toString();
-                    return configData;
-                }
+        }
+        if (dataObj.has("streamingqoeDefault")) {
+            final JsonElement value2 = dataObj.get("streamingqoeDefault");
+            if (value2 != null) {
+                configData.streamingqoeJson = value2.toString();
             }
         }
         return configData;
@@ -108,7 +104,7 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
     }
     
     @Override
-    protected ConfigData parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected ConfigData parseFalcorResponse(final String s) {
         return parseConfigString(s);
     }
     

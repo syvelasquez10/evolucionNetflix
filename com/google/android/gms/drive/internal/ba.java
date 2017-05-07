@@ -5,6 +5,7 @@
 package com.google.android.gms.drive.internal;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -49,7 +50,7 @@ public class ba implements Parcelable$Creator<SetResourceParentsRequest>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new SetResourceParentsRequest(g, driveId, c);
     }

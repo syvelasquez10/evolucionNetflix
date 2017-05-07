@@ -19,7 +19,7 @@ import java.math.BigInteger;
 import android.content.Context;
 
 @ez
-public class gb implements b
+public class gb implements cf$b
 {
     private static final gb vJ;
     public static final String vK;
@@ -187,7 +187,7 @@ public class gb implements b
                 this.qs = qs;
                 this.uH = gh.o(context);
                 iv.H(context);
-                cf.a(context, (cf.b)this);
+                cf.a(context, this);
                 this.a(Thread.currentThread());
                 this.vW = gj.c(context, qs.wD);
                 this.vR = true;

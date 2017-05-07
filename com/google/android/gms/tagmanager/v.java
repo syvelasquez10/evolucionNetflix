@@ -4,11 +4,6 @@
 
 package com.google.android.gms.tagmanager;
 
-import android.os.Build$VERSION;
-import java.util.Set;
-import java.util.HashSet;
-import android.database.sqlite.SQLiteDatabase$CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import java.util.Arrays;
 import android.text.TextUtils;
@@ -25,11 +20,11 @@ import com.google.android.gms.internal.ju;
 import android.content.Context;
 import java.util.concurrent.Executor;
 
-class v implements c
+class v implements DataLayer$c
 {
     private static final String aoF;
     private final Executor aoG;
-    private a aoH;
+    private v$a aoH;
     private int aoI;
     private final Context mContext;
     private ju yD;
@@ -47,7 +42,7 @@ class v implements c
         this.yD = yd;
         this.aoI = aoI;
         this.aoG = aoG;
-        this.aoH = new a(this.mContext, s);
+        this.aoH = new v$a(this, this.mContext, s);
     }
     
     private SQLiteDatabase al(final String s) {
@@ -60,7 +55,7 @@ class v implements c
         }
     }
     
-    private void b(final List<b> list, final long n) {
+    private void b(final List<v$b> list, final long n) {
         // monitorenter(this)
         try {
             final long currentTimeMillis = this.yD.currentTimeMillis();
@@ -78,14 +73,14 @@ class v implements c
         // monitorexit(this)
     }
     
-    private void c(final List<b> list, final long n) {
+    private void c(final List<v$b> list, final long n) {
         final SQLiteDatabase al = this.al("Error opening database for writeEntryToDatabase.");
         if (al != null) {
-            for (final b b : list) {
+            for (final v$b v$b : list) {
                 final ContentValues contentValues = new ContentValues();
                 contentValues.put("expires", n);
-                contentValues.put("key", b.JH);
-                contentValues.put("value", b.aoO);
+                contentValues.put("key", v$b.JH);
+                contentValues.put("value", v$b.aoO);
                 al.insert("datalayer", (String)null, contentValues);
             }
         }
@@ -269,18 +264,18 @@ class v implements c
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private List<DataLayer.a> h(final List<b> list) {
-        final ArrayList<DataLayer.a> list2 = new ArrayList<DataLayer.a>();
-        for (final b b : list) {
-            list2.add(new DataLayer.a(b.JH, this.j(b.aoO)));
+    private List<DataLayer$a> h(final List<v$b> list) {
+        final ArrayList<DataLayer$a> list2 = new ArrayList<DataLayer$a>();
+        for (final v$b v$b : list) {
+            list2.add(new DataLayer$a(v$b.JH, this.j(v$b.aoO)));
         }
         return list2;
     }
     
-    private List<b> i(final List<DataLayer.a> list) {
-        final ArrayList<b> list2 = new ArrayList<b>();
-        for (final DataLayer.a a : list) {
-            list2.add(new b(a.JH, this.m(a.wq)));
+    private List<v$b> i(final List<DataLayer$a> list) {
+        final ArrayList<v$b> list2 = new ArrayList<v$b>();
+        for (final DataLayer$a dataLayer$a : list) {
+            list2.add(new v$b(dataLayer$a.JH, this.m(dataLayer$a.wq)));
         }
         return list2;
     }
@@ -524,7 +519,7 @@ class v implements c
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private List<DataLayer.a> og() {
+    private List<DataLayer$a> og() {
         try {
             this.x(this.yD.currentTimeMillis());
             return this.h(this.oh());
@@ -534,16 +529,16 @@ class v implements c
         }
     }
     
-    private List<b> oh() {
+    private List<v$b> oh() {
         final SQLiteDatabase al = this.al("Error opening database for loadSerialized.");
-        final ArrayList<b> list = new ArrayList<b>();
+        final ArrayList<v$b> list = new ArrayList<v$b>();
         if (al == null) {
             return list;
         }
         final Cursor query = al.query("datalayer", new String[] { "key", "value" }, (String)null, (String[])null, (String)null, (String)null, "ID", (String)null);
         try {
             while (query.moveToNext()) {
-                list.add(new b(query.getString(0), query.getBlob(1)));
+                list.add(new v$b(query.getString(0), query.getBlob(1)));
             }
         }
         finally {
@@ -605,236 +600,17 @@ class v implements c
     }
     
     @Override
-    public void a(final c.a a) {
-        this.aoG.execute(new Runnable() {
-            @Override
-            public void run() {
-                a.g(v.this.og());
-            }
-        });
+    public void a(final DataLayer$c$a dataLayer$c$a) {
+        this.aoG.execute(new v$2(this, dataLayer$c$a));
     }
     
     @Override
-    public void a(final List<DataLayer.a> list, final long n) {
-        this.aoG.execute(new Runnable() {
-            final /* synthetic */ List aoJ = v.this.i(list);
-            
-            @Override
-            public void run() {
-                v.this.b(this.aoJ, n);
-            }
-        });
+    public void a(final List<DataLayer$a> list, final long n) {
+        this.aoG.execute(new v$1(this, this.i(list), n));
     }
     
     @Override
     public void cu(final String s) {
-        this.aoG.execute(new Runnable() {
-            @Override
-            public void run() {
-                v.this.cv(s);
-            }
-        });
-    }
-    
-    class a extends SQLiteOpenHelper
-    {
-        a(final Context context, final String s) {
-            super(context, s, (SQLiteDatabase$CursorFactory)null, 1);
-        }
-        
-        private void a(SQLiteDatabase rawQuery) {
-            rawQuery = (SQLiteDatabase)rawQuery.rawQuery("SELECT * FROM datalayer WHERE 0", (String[])null);
-            final HashSet<String> set = new HashSet<String>();
-            try {
-                final String[] columnNames = ((Cursor)rawQuery).getColumnNames();
-                for (int i = 0; i < columnNames.length; ++i) {
-                    set.add(columnNames[i]);
-                }
-                ((Cursor)rawQuery).close();
-                if (!set.remove("key") || !set.remove("value") || !set.remove("ID") || !set.remove("expires")) {
-                    throw new SQLiteException("Database column missing");
-                }
-            }
-            finally {
-                ((Cursor)rawQuery).close();
-            }
-            final Set set2;
-            if (!set2.isEmpty()) {
-                throw new SQLiteException("Database has extra columns");
-            }
-        }
-        
-        private boolean a(final String p0, final SQLiteDatabase p1) {
-            // 
-            // This method could not be decompiled.
-            // 
-            // Original Bytecode:
-            // 
-            //     0: aconst_null    
-            //     1: astore          4
-            //     3: aload_2        
-            //     4: ldc             "SQLITE_MASTER"
-            //     6: iconst_1       
-            //     7: anewarray       Ljava/lang/String;
-            //    10: dup            
-            //    11: iconst_0       
-            //    12: ldc             "name"
-            //    14: aastore        
-            //    15: ldc             "name=?"
-            //    17: iconst_1       
-            //    18: anewarray       Ljava/lang/String;
-            //    21: dup            
-            //    22: iconst_0       
-            //    23: aload_1        
-            //    24: aastore        
-            //    25: aconst_null    
-            //    26: aconst_null    
-            //    27: aconst_null    
-            //    28: invokevirtual   android/database/sqlite/SQLiteDatabase.query:(Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/database/Cursor;
-            //    31: astore_2       
-            //    32: aload_2        
-            //    33: invokeinterface android/database/Cursor.moveToFirst:()Z
-            //    38: istore_3       
-            //    39: aload_2        
-            //    40: ifnull          49
-            //    43: aload_2        
-            //    44: invokeinterface android/database/Cursor.close:()V
-            //    49: iload_3        
-            //    50: ireturn        
-            //    51: astore_2       
-            //    52: aconst_null    
-            //    53: astore_2       
-            //    54: new             Ljava/lang/StringBuilder;
-            //    57: dup            
-            //    58: invokespecial   java/lang/StringBuilder.<init>:()V
-            //    61: ldc             "Error querying for table "
-            //    63: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-            //    66: aload_1        
-            //    67: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-            //    70: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-            //    73: invokestatic    com/google/android/gms/tagmanager/bh.W:(Ljava/lang/String;)V
-            //    76: aload_2        
-            //    77: ifnull          86
-            //    80: aload_2        
-            //    81: invokeinterface android/database/Cursor.close:()V
-            //    86: iconst_0       
-            //    87: ireturn        
-            //    88: astore_1       
-            //    89: aload           4
-            //    91: astore_2       
-            //    92: aload_2        
-            //    93: ifnull          102
-            //    96: aload_2        
-            //    97: invokeinterface android/database/Cursor.close:()V
-            //   102: aload_1        
-            //   103: athrow         
-            //   104: astore_1       
-            //   105: goto            92
-            //   108: astore_1       
-            //   109: goto            92
-            //   112: astore          4
-            //   114: goto            54
-            //    Exceptions:
-            //  Try           Handler
-            //  Start  End    Start  End    Type                                     
-            //  -----  -----  -----  -----  -----------------------------------------
-            //  3      32     51     54     Landroid/database/sqlite/SQLiteException;
-            //  3      32     88     92     Any
-            //  32     39     112    117    Landroid/database/sqlite/SQLiteException;
-            //  32     39     104    108    Any
-            //  54     76     108    112    Any
-            // 
-            // The error that occurred was:
-            // 
-            // java.lang.IndexOutOfBoundsException: Index: 64, Size: 64
-            //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
-            //     at java.util.ArrayList.get(ArrayList.java:429)
-            //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
-            //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:113)
-            //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
-            //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:556)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-            //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-            //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-            //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-            //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-            //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-            // 
-            throw new IllegalStateException("An error occurred while decompiling this method.");
-        }
-        
-        public SQLiteDatabase getWritableDatabase() {
-            SQLiteDatabase writableDatabase = null;
-            while (true) {
-                try {
-                    writableDatabase = super.getWritableDatabase();
-                    SQLiteDatabase writableDatabase2 = writableDatabase;
-                    if (writableDatabase == null) {
-                        writableDatabase2 = super.getWritableDatabase();
-                    }
-                    return writableDatabase2;
-                }
-                catch (SQLiteException ex) {
-                    v.this.mContext.getDatabasePath("google_tagmanager.db").delete();
-                    continue;
-                }
-                break;
-            }
-        }
-        
-        public void onCreate(final SQLiteDatabase sqLiteDatabase) {
-            ak.ag(sqLiteDatabase.getPath());
-        }
-        
-        public void onOpen(final SQLiteDatabase sqLiteDatabase) {
-            while (true) {
-                if (Build$VERSION.SDK_INT < 15) {
-                    final Cursor rawQuery = sqLiteDatabase.rawQuery("PRAGMA journal_mode=memory", (String[])null);
-                    try {
-                        rawQuery.moveToFirst();
-                        rawQuery.close();
-                        if (!this.a("datalayer", sqLiteDatabase)) {
-                            sqLiteDatabase.execSQL(v.aoF);
-                            return;
-                        }
-                    }
-                    finally {
-                        rawQuery.close();
-                    }
-                    final SQLiteDatabase sqLiteDatabase2;
-                    this.a(sqLiteDatabase2);
-                    return;
-                }
-                continue;
-            }
-        }
-        
-        public void onUpgrade(final SQLiteDatabase sqLiteDatabase, final int n, final int n2) {
-        }
-    }
-    
-    private static class b
-    {
-        final String JH;
-        final byte[] aoO;
-        
-        b(final String jh, final byte[] aoO) {
-            this.JH = jh;
-            this.aoO = aoO;
-        }
-        
-        @Override
-        public String toString() {
-            return "KeyAndSerialized: key = " + this.JH + " serialized hash = " + Arrays.hashCode(this.aoO);
-        }
+        this.aoG.execute(new v$3(this, s));
     }
 }

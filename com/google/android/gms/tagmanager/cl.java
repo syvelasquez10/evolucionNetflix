@@ -8,5 +8,5 @@ import java.util.List;
 
 interface cl
 {
-    void c(final List<cr.a> p0, final List<String> p1);
+    void c(final List<cr$a> p0, final List<String> p1);
 }

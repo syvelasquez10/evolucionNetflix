@@ -31,10 +31,10 @@ public final class FullWalletRequest implements SafeParcelable
         this.asA = asA;
     }
     
-    public static Builder newBuilder() {
+    public static FullWalletRequest$Builder newBuilder() {
         final FullWalletRequest fullWalletRequest = new FullWalletRequest();
         fullWalletRequest.getClass();
-        return new Builder();
+        return new FullWalletRequest$Builder(fullWalletRequest, null);
     }
     
     public int describeContents() {
@@ -59,27 +59,5 @@ public final class FullWalletRequest implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         g.a(this, parcel, n);
-    }
-    
-    public final class Builder
-    {
-        public FullWalletRequest build() {
-            return FullWalletRequest.this;
-        }
-        
-        public Builder setCart(final Cart asA) {
-            FullWalletRequest.this.asA = asA;
-            return this;
-        }
-        
-        public Builder setGoogleTransactionId(final String asq) {
-            FullWalletRequest.this.asq = asq;
-            return this;
-        }
-        
-        public Builder setMerchantTransactionId(final String asr) {
-            FullWalletRequest.this.asr = asr;
-            return this;
-        }
     }
 }

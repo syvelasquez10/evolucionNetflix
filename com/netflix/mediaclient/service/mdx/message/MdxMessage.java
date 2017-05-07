@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message;
 
-import java.util.HashSet;
 import org.json.JSONObject;
 import java.util.Set;
 
@@ -45,19 +44,7 @@ public abstract class MdxMessage
     private String mName;
     
     static {
-        MESSAGE_IS_USER_COMMAND = new HashSet<String>() {
-            {
-                this.add("DIALOG_RESPONSE");
-                this.add("PLAYER_PAUSE");
-                this.add("PLAYER_PLAY");
-                this.add("PLAYER_RESUME");
-                this.add("PLAYER_SET_AUTO_ADVANCE");
-                this.add("PLAYER_SET_CURRENT_TIME");
-                this.add("PLAYER_SKIP");
-                this.add("PLAYER_STOP");
-                this.add("SET_AUDIO_SUBTITLES");
-            }
-        };
+        MESSAGE_IS_USER_COMMAND = new MdxMessage$1();
     }
     
     protected MdxMessage(final String mName) {

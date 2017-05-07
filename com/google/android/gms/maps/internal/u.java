@@ -7,8 +7,8 @@ package com.google.android.gms.maps.internal;
 import android.os.Build$VERSION;
 import android.os.IBinder;
 import android.util.Log;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import android.os.RemoteException;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
 import com.google.android.gms.dynamic.e;
@@ -20,7 +20,7 @@ public class u
     private static Context ajm;
     private static c ajn;
     
-    public static c R(final Context context) throws GooglePlayServicesNotAvailableException {
+    public static c R(final Context context) {
         n.i(context);
         if (u.ajn != null) {
             return u.ajn;
@@ -36,7 +36,7 @@ public class u
         }
     }
     
-    private static void S(final Context context) throws GooglePlayServicesNotAvailableException {
+    private static void S(final Context context) {
         final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         switch (googlePlayServicesAvailable) {
             default: {
@@ -52,7 +52,7 @@ public class u
             return c(mJ());
         }
         Log.i(u.class.getSimpleName(), "Making Creator dynamically");
-        return c.a.aP(a(getRemoteContext(context).getClassLoader(), "com.google.android.gms.maps.internal.CreatorImpl"));
+        return c$a.aP(a(getRemoteContext(context).getClassLoader(), "com.google.android.gms.maps.internal.CreatorImpl"));
     }
     
     private static <T> T a(final ClassLoader classLoader, final String s) {

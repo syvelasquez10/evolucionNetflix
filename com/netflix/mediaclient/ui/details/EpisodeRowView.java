@@ -4,11 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
-import com.netflix.mediaclient.ui.common.PlayContextProvider;
-import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.Log;
-import android.view.View;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
@@ -54,16 +50,16 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     }
     
     private CharSequence createTitleText(final int n, final String s) {
-        return this.getResources().getString(2131493258, new Object[] { n, s });
+        return this.getResources().getString(2131493217, new Object[] { n, s });
     }
     
     private void init() {
-        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903089, (ViewGroup)this);
+        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903090, (ViewGroup)this);
         this.setBackgroundResource(2130837850);
-        this.title = (TextView)this.findViewById(2131165354);
-        this.synopsis = (TextView)this.findViewById(2131165356);
-        this.playButton = (ImageView)this.findViewById(2131165353);
-        this.progressBar = (ProgressBar)this.findViewById(2131165355);
+        this.title = (TextView)this.findViewById(2131165353);
+        this.synopsis = (TextView)this.findViewById(2131165355);
+        this.playButton = (ImageView)this.findViewById(2131165352);
+        this.progressBar = (ProgressBar)this.findViewById(2131165354);
     }
     
     public void handleItemClick() {
@@ -107,7 +103,7 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     
     public void updateToEpisode(final EpisodeDetails episodeDetails, final boolean isCurrentEpisode) {
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493201), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493165), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         this.title.setText(this.createTitleText(episodeDetails.getEpisodeNumber(), episodeDetails.getTitle()));
         this.title.setClickable(false);
         this.synopsis.setText((CharSequence)episodeDetails.getSynopsis());
@@ -122,37 +118,16 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
         }
         this.progressVal = progressVal;
         this.playButton.setVisibility(0);
-        this.playButton.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (!(EpisodeRowView.this.getContext() instanceof EpisodeRowListenerProvider)) {
-                    Log.w("EpisodeRowView", "Context is not an EpisodeRowListenerProvider, context: " + EpisodeRowView.this.getContext());
-                    return;
-                }
-                final EpisodeRowListener episodeRowListener = ((EpisodeRowListenerProvider)EpisodeRowView.this.getContext()).getEpisodeRowListener();
-                if (episodeRowListener != null) {
-                    PlayContext playContext = PlayContext.EMPTY_CONTEXT;
-                    if (EpisodeRowView.this.getContext() instanceof PlayContextProvider) {
-                        playContext = ((PlayContextProvider)EpisodeRowView.this.getContext()).getPlayContext();
-                    }
-                    episodeRowListener.onEpisodeSelectedForPlayback(episodeDetails, playContext);
-                    return;
-                }
-                Log.w("EpisodeRowView", "No EpisodeRowListener provided: " + EpisodeRowView.this.getContext());
-            }
-        });
+        this.playButton.setOnClickListener((View$OnClickListener)new EpisodeRowView$2(this, episodeDetails));
         this.setChecked(true);
     }
     
-    public void updateToErrorState(int n, final ErrorWrapper.Callback callback) {
+    public void updateToErrorState(int n, final ErrorWrapper$Callback errorWrapper$Callback) {
         ++n;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493200), n));
-        this.title.setText(this.createTitleText(n, 2131492985));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493164), n));
+        this.title.setText(this.createTitleText(n, 2131492982));
         this.title.setClickable(true);
-        this.title.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                callback.onRetryRequested();
-            }
-        });
+        this.title.setOnClickListener((View$OnClickListener)new EpisodeRowView$1(this, errorWrapper$Callback));
         this.synopsis.setText((CharSequence)"");
         this.synopsis.setVisibility(8);
         this.setChecked(false);
@@ -160,21 +135,11 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     
     public void updateToLoadingState(int n) {
         ++n;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493199), n));
-        this.title.setText(this.createTitleText(n, 2131493184));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493163), n));
+        this.title.setText(this.createTitleText(n, 2131493151));
         this.title.setClickable(false);
         this.synopsis.setText((CharSequence)"");
         this.synopsis.setVisibility(8);
         this.setChecked(false);
-    }
-    
-    public interface EpisodeRowListener
-    {
-        void onEpisodeSelectedForPlayback(final EpisodeDetails p0, final PlayContext p1);
-    }
-    
-    public interface EpisodeRowListenerProvider
-    {
-        EpisodeRowListener getEpisodeRowListener();
     }
 }

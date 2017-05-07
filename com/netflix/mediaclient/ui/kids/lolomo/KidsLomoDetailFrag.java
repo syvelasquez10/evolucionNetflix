@@ -8,6 +8,7 @@ import android.util.Log;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag$ILoLoMoAdapter;
 import android.os.Parcelable;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
@@ -29,7 +30,7 @@ public class KidsLomoDetailFrag extends LoLoMoFrag
     }
     
     @Override
-    protected ILoLoMoAdapter createAdapter() {
+    protected LoLoMoFrag$ILoLoMoAdapter createAdapter() {
         KidsUtils.addListViewSpacerIfNoHeaders(this.listView);
         if (this.lomo.getType() == LoMoType.CHARACTERS) {
             return new KidsCharacterLomoDetailAdapter(this, this.lomo);

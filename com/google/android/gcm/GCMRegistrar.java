@@ -4,24 +4,23 @@
 
 package com.google.android.gcm;
 
-import android.os.Handler;
 import android.content.IntentFilter;
+import android.os.Parcelable;
 import android.content.SharedPreferences$Editor;
 import android.content.BroadcastReceiver;
+import android.util.Log;
 import java.sql.Timestamp;
-import android.os.Parcelable;
-import android.app.PendingIntent;
 import android.content.SharedPreferences;
 import java.util.Iterator;
 import java.util.List;
 import android.content.pm.ResolveInfo;
-import android.util.Log;
 import android.content.Intent;
 import java.util.Set;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager$NameNotFoundException;
 import android.os.Build$VERSION;
 import android.content.Context;
+import android.app.PendingIntent;
 
 public final class GCMRegistrar
 {
@@ -36,11 +35,22 @@ public final class GCMRegistrar
     private static final String PROPERTY_ON_SERVER_LIFESPAN = "onServerLifeSpan";
     private static final String PROPERTY_REG_ID = "regId";
     private static final String TAG = "GCMRegistrar";
+    private static PendingIntent sAppPendingIntent;
     private static GCMBroadcastReceiver sRetryReceiver;
     private static String sRetryReceiverClassName;
+    private static Context sRetryReceiverContext;
     
     private GCMRegistrar() {
         throw new UnsupportedOperationException();
+    }
+    
+    static void cancelAppPendingIntent() {
+        synchronized (GCMRegistrar.class) {
+            if (GCMRegistrar.sAppPendingIntent != null) {
+                GCMRegistrar.sAppPendingIntent.cancel();
+                GCMRegistrar.sAppPendingIntent = null;
+            }
+        }
     }
     
     public static void checkDevice(final Context context) {
@@ -63,155 +73,151 @@ public final class GCMRegistrar
         // 
         // Original Bytecode:
         // 
-        //     0: aload_0        
-        //     1: invokevirtual   android/content/Context.getPackageManager:()Landroid/content/pm/PackageManager;
-        //     4: astore          5
-        //     6: aload_0        
-        //     7: invokevirtual   android/content/Context.getPackageName:()Ljava/lang/String;
-        //    10: astore_3       
-        //    11: new             Ljava/lang/StringBuilder;
-        //    14: dup            
-        //    15: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    18: aload_3        
-        //    19: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    22: ldc             ".permission.C2D_MESSAGE"
-        //    24: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    27: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    30: astore          4
-        //    32: aload           5
-        //    34: aload           4
-        //    36: sipush          4096
-        //    39: invokevirtual   android/content/pm/PackageManager.getPermissionInfo:(Ljava/lang/String;I)Landroid/content/pm/PermissionInfo;
-        //    42: pop            
-        //    43: aload           5
-        //    45: aload_3        
-        //    46: iconst_2       
-        //    47: invokevirtual   android/content/pm/PackageManager.getPackageInfo:(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;
-        //    50: astore          4
-        //    52: aload           4
-        //    54: getfield        android/content/pm/PackageInfo.receivers:[Landroid/content/pm/ActivityInfo;
-        //    57: astore          4
-        //    59: aload           4
-        //    61: ifnull          70
-        //    64: aload           4
-        //    66: arraylength    
-        //    67: ifne            154
-        //    70: new             Ljava/lang/IllegalStateException;
-        //    73: dup            
-        //    74: new             Ljava/lang/StringBuilder;
-        //    77: dup            
-        //    78: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    81: ldc             "No receiver for package "
-        //    83: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    86: aload_3        
-        //    87: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    90: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    93: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
-        //    96: athrow         
-        //    97: astore_0       
-        //    98: new             Ljava/lang/IllegalStateException;
-        //   101: dup            
-        //   102: new             Ljava/lang/StringBuilder;
-        //   105: dup            
-        //   106: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   109: ldc             "Application does not define permission "
-        //   111: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   114: aload           4
-        //   116: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   119: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   122: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
-        //   125: athrow         
-        //   126: astore_0       
-        //   127: new             Ljava/lang/IllegalStateException;
-        //   130: dup            
-        //   131: new             Ljava/lang/StringBuilder;
-        //   134: dup            
-        //   135: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   138: ldc             "Could not get receivers for package "
-        //   140: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   143: aload_3        
-        //   144: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   147: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   150: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
-        //   153: athrow         
-        //   154: ldc             "GCMRegistrar"
-        //   156: iconst_2       
-        //   157: invokestatic    android/util/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   160: ifeq            199
-        //   163: ldc             "GCMRegistrar"
-        //   165: new             Ljava/lang/StringBuilder;
+        //     0: iconst_0       
+        //     1: istore_1       
+        //     2: aload_0        
+        //     3: invokevirtual   android/content/Context.getPackageManager:()Landroid/content/pm/PackageManager;
+        //     6: astore          5
+        //     8: aload_0        
+        //     9: invokevirtual   android/content/Context.getPackageName:()Ljava/lang/String;
+        //    12: astore_3       
+        //    13: new             Ljava/lang/StringBuilder;
+        //    16: dup            
+        //    17: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    20: aload_3        
+        //    21: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    24: ldc             ".permission.C2D_MESSAGE"
+        //    26: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    29: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    32: astore          4
+        //    34: aload           5
+        //    36: aload           4
+        //    38: sipush          4096
+        //    41: invokevirtual   android/content/pm/PackageManager.getPermissionInfo:(Ljava/lang/String;I)Landroid/content/pm/PermissionInfo;
+        //    44: pop            
+        //    45: aload           5
+        //    47: aload_3        
+        //    48: iconst_2       
+        //    49: invokevirtual   android/content/pm/PackageManager.getPackageInfo:(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;
+        //    52: astore          4
+        //    54: aload           4
+        //    56: getfield        android/content/pm/PackageInfo.receivers:[Landroid/content/pm/ActivityInfo;
+        //    59: astore          4
+        //    61: aload           4
+        //    63: ifnull          72
+        //    66: aload           4
+        //    68: arraylength    
+        //    69: ifne            156
+        //    72: new             Ljava/lang/IllegalStateException;
+        //    75: dup            
+        //    76: new             Ljava/lang/StringBuilder;
+        //    79: dup            
+        //    80: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    83: ldc             "No receiver for package "
+        //    85: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    88: aload_3        
+        //    89: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    92: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    95: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
+        //    98: athrow         
+        //    99: astore_0       
+        //   100: new             Ljava/lang/IllegalStateException;
+        //   103: dup            
+        //   104: new             Ljava/lang/StringBuilder;
+        //   107: dup            
+        //   108: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   111: ldc             "Application does not define permission "
+        //   113: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   116: aload           4
+        //   118: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   121: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   124: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
+        //   127: athrow         
+        //   128: astore_0       
+        //   129: new             Ljava/lang/IllegalStateException;
+        //   132: dup            
+        //   133: new             Ljava/lang/StringBuilder;
+        //   136: dup            
+        //   137: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   140: ldc             "Could not get receivers for package "
+        //   142: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   145: aload_3        
+        //   146: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   149: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   152: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
+        //   155: athrow         
+        //   156: aload_0        
+        //   157: iconst_2       
+        //   158: ldc             "number of receivers for %s: %d"
+        //   160: iconst_2       
+        //   161: anewarray       Ljava/lang/Object;
+        //   164: dup            
+        //   165: iconst_0       
+        //   166: aload_3        
+        //   167: aastore        
         //   168: dup            
-        //   169: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   172: ldc             "number of receivers for "
-        //   174: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   177: aload_3        
-        //   178: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   181: ldc             ": "
-        //   183: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   186: aload           4
-        //   188: arraylength    
-        //   189: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   192: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   195: invokestatic    android/util/Log.v:(Ljava/lang/String;Ljava/lang/String;)I
-        //   198: pop            
-        //   199: new             Ljava/util/HashSet;
-        //   202: dup            
-        //   203: invokespecial   java/util/HashSet.<init>:()V
-        //   206: astore_3       
-        //   207: aload           4
-        //   209: arraylength    
-        //   210: istore_2       
-        //   211: iconst_0       
-        //   212: istore_1       
-        //   213: iload_1        
-        //   214: iload_2        
-        //   215: if_icmpge       256
-        //   218: aload           4
-        //   220: iload_1        
-        //   221: aaload         
-        //   222: astore          5
-        //   224: ldc             "com.google.android.c2dm.permission.SEND"
-        //   226: aload           5
-        //   228: getfield        android/content/pm/ActivityInfo.permission:Ljava/lang/String;
-        //   231: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
-        //   234: ifeq            249
-        //   237: aload_3        
-        //   238: aload           5
-        //   240: getfield        android/content/pm/ActivityInfo.name:Ljava/lang/String;
-        //   243: invokeinterface java/util/Set.add:(Ljava/lang/Object;)Z
-        //   248: pop            
-        //   249: iload_1        
-        //   250: iconst_1       
-        //   251: iadd           
-        //   252: istore_1       
-        //   253: goto            213
-        //   256: aload_3        
-        //   257: invokeinterface java/util/Set.isEmpty:()Z
-        //   262: ifeq            275
-        //   265: new             Ljava/lang/IllegalStateException;
-        //   268: dup            
-        //   269: ldc             "No receiver allowed to receive com.google.android.c2dm.permission.SEND"
-        //   271: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
-        //   274: athrow         
-        //   275: aload_0        
-        //   276: aload_3        
-        //   277: ldc             "com.google.android.c2dm.intent.REGISTRATION"
-        //   279: invokestatic    com/google/android/gcm/GCMRegistrar.checkReceiver:(Landroid/content/Context;Ljava/util/Set;Ljava/lang/String;)V
-        //   282: aload_0        
-        //   283: aload_3        
-        //   284: ldc             "com.google.android.c2dm.intent.RECEIVE"
-        //   286: invokestatic    com/google/android/gcm/GCMRegistrar.checkReceiver:(Landroid/content/Context;Ljava/util/Set;Ljava/lang/String;)V
-        //   289: return         
+        //   169: iconst_1       
+        //   170: aload           4
+        //   172: arraylength    
+        //   173: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        //   176: aastore        
+        //   177: invokestatic    com/google/android/gcm/GCMRegistrar.log:(Landroid/content/Context;ILjava/lang/String;[Ljava/lang/Object;)V
+        //   180: new             Ljava/util/HashSet;
+        //   183: dup            
+        //   184: invokespecial   java/util/HashSet.<init>:()V
+        //   187: astore_3       
+        //   188: aload           4
+        //   190: arraylength    
+        //   191: istore_2       
+        //   192: iload_1        
+        //   193: iload_2        
+        //   194: if_icmpge       235
+        //   197: aload           4
+        //   199: iload_1        
+        //   200: aaload         
+        //   201: astore          5
+        //   203: ldc             "com.google.android.c2dm.permission.SEND"
+        //   205: aload           5
+        //   207: getfield        android/content/pm/ActivityInfo.permission:Ljava/lang/String;
+        //   210: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
+        //   213: ifeq            228
+        //   216: aload_3        
+        //   217: aload           5
+        //   219: getfield        android/content/pm/ActivityInfo.name:Ljava/lang/String;
+        //   222: invokeinterface java/util/Set.add:(Ljava/lang/Object;)Z
+        //   227: pop            
+        //   228: iload_1        
+        //   229: iconst_1       
+        //   230: iadd           
+        //   231: istore_1       
+        //   232: goto            192
+        //   235: aload_3        
+        //   236: invokeinterface java/util/Set.isEmpty:()Z
+        //   241: ifeq            254
+        //   244: new             Ljava/lang/IllegalStateException;
+        //   247: dup            
+        //   248: ldc             "No receiver allowed to receive com.google.android.c2dm.permission.SEND"
+        //   250: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
+        //   253: athrow         
+        //   254: aload_0        
+        //   255: aload_3        
+        //   256: ldc             "com.google.android.c2dm.intent.REGISTRATION"
+        //   258: invokestatic    com/google/android/gcm/GCMRegistrar.checkReceiver:(Landroid/content/Context;Ljava/util/Set;Ljava/lang/String;)V
+        //   261: aload_0        
+        //   262: aload_3        
+        //   263: ldc             "com.google.android.c2dm.intent.RECEIVE"
+        //   265: invokestatic    com/google/android/gcm/GCMRegistrar.checkReceiver:(Landroid/content/Context;Ljava/util/Set;Ljava/lang/String;)V
+        //   268: return         
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                                                     
         //  -----  -----  -----  -----  ---------------------------------------------------------
-        //  32     43     97     126    Landroid/content/pm/PackageManager$NameNotFoundException;
-        //  43     52     126    154    Landroid/content/pm/PackageManager$NameNotFoundException;
+        //  34     45     99     128    Landroid/content/pm/PackageManager$NameNotFoundException;
+        //  45     54     128    156    Landroid/content/pm/PackageManager$NameNotFoundException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0070:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0072:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -243,9 +249,7 @@ public final class GCMRegistrar
         if (queryBroadcastReceivers.isEmpty()) {
             throw new IllegalStateException("No receivers for action " + name);
         }
-        if (Log.isLoggable("GCMRegistrar", 2)) {
-            Log.v("GCMRegistrar", "Found " + queryBroadcastReceivers.size() + " receivers for action " + name);
-        }
+        log(context, 2, "Found %d receivers for action %s", queryBroadcastReceivers.size(), name);
         final Iterator<ResolveInfo> iterator = queryBroadcastReceivers.iterator();
         while (iterator.hasNext()) {
             name = iterator.next().activityInfo.name;
@@ -256,6 +260,7 @@ public final class GCMRegistrar
     }
     
     static String clearRegistrationId(final Context context) {
+        setRegisteredOnServer(context, null, 0L);
         return setRegistrationId(context, "");
     }
     
@@ -300,7 +305,7 @@ public final class GCMRegistrar
         if (int1 != Integer.MIN_VALUE) {
             s = string;
             if (int1 != appVersion) {
-                Log.v("GCMRegistrar", "App version changed from " + int1 + " to " + appVersion + "; resetting registration id");
+                log(context, 2, "App version changed from %d to %d;resetting registration id", int1, appVersion);
                 clearRegistrationId(context);
                 s = "";
             }
@@ -310,19 +315,19 @@ public final class GCMRegistrar
     
     static void internalRegister(final Context context, final String... array) {
         final String flatSenderIds = getFlatSenderIds(array);
-        Log.v("GCMRegistrar", "Registering app " + context.getPackageName() + " of senders " + flatSenderIds);
+        log(context, 2, "Registering app for senders %s", flatSenderIds);
         final Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
         intent.setPackage("com.google.android.gsf");
-        intent.putExtra("app", (Parcelable)PendingIntent.getBroadcast(context, 0, new Intent(), 0));
+        setPackageNameExtra(context, intent);
         intent.putExtra("sender", flatSenderIds);
         context.startService(intent);
     }
     
     static void internalUnregister(final Context context) {
-        Log.v("GCMRegistrar", "Unregistering app " + context.getPackageName());
+        log(context, 2, "Unregistering app", new Object[0]);
         final Intent intent = new Intent("com.google.android.c2dm.intent.UNREGISTER");
         intent.setPackage("com.google.android.gsf");
-        intent.putExtra("app", (Parcelable)PendingIntent.getBroadcast(context, 0, new Intent(), 0));
+        setPackageNameExtra(context, intent);
         context.startService(intent);
     }
     
@@ -333,25 +338,31 @@ public final class GCMRegistrar
     public static boolean isRegisteredOnServer(final Context context) {
         final SharedPreferences gcmPreferences = getGCMPreferences(context);
         final boolean boolean1 = gcmPreferences.getBoolean("onServer", false);
-        Log.v("GCMRegistrar", "Is registered on server: " + boolean1);
-        boolean b = boolean1;
+        log(context, 2, "Is registered on server: %b", boolean1);
         if (boolean1) {
             final long long1 = gcmPreferences.getLong("onServerExpirationTime", -1L);
-            b = boolean1;
             if (System.currentTimeMillis() > long1) {
-                Log.v("GCMRegistrar", "flag expired on: " + new Timestamp(long1));
-                b = false;
+                log(context, 2, "flag expired on: %s", new Timestamp(long1));
+                return false;
             }
         }
-        return b;
+        return boolean1;
+    }
+    
+    private static void log(final Context context, final int n, String format, final Object... array) {
+        if (Log.isLoggable("GCMRegistrar", n)) {
+            format = String.format(format, array);
+            Log.println(n, "GCMRegistrar", "[" + context.getPackageName() + "]: " + format);
+        }
     }
     
     public static void onDestroy(final Context context) {
         synchronized (GCMRegistrar.class) {
             if (GCMRegistrar.sRetryReceiver != null) {
-                Log.v("GCMRegistrar", "Unregistering receiver");
-                context.unregisterReceiver((BroadcastReceiver)GCMRegistrar.sRetryReceiver);
+                log(context, 2, "Unregistering retry receiver", new Object[0]);
+                GCMRegistrar.sRetryReceiverContext.unregisterReceiver((BroadcastReceiver)GCMRegistrar.sRetryReceiver);
                 GCMRegistrar.sRetryReceiver = null;
+                GCMRegistrar.sRetryReceiverContext = null;
             }
         }
     }
@@ -362,7 +373,7 @@ public final class GCMRegistrar
     }
     
     static void resetBackoff(final Context context) {
-        Log.d("GCMRegistrar", "resetting backoff for " + context.getPackageName());
+        log(context, 2, "Resetting backoff", new Object[0]);
         setBackoff(context, 3000);
     }
     
@@ -372,26 +383,44 @@ public final class GCMRegistrar
         edit.commit();
     }
     
+    private static void setPackageNameExtra(final Context context, final Intent intent) {
+        synchronized (GCMRegistrar.class) {
+            if (GCMRegistrar.sAppPendingIntent == null) {
+                log(context, 2, "Creating pending intent to get package name", new Object[0]);
+                GCMRegistrar.sAppPendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(), 0);
+            }
+            intent.putExtra("app", (Parcelable)GCMRegistrar.sAppPendingIntent);
+        }
+    }
+    
     public static void setRegisterOnServerLifespan(final Context context, final long n) {
         final SharedPreferences$Editor edit = getGCMPreferences(context).edit();
         edit.putLong("onServerLifeSpan", n);
         edit.commit();
     }
     
-    public static void setRegisteredOnServer(final Context context, final boolean b) {
+    private static void setRegisteredOnServer(final Context context, final Boolean b, final long n) {
         final SharedPreferences$Editor edit = getGCMPreferences(context).edit();
-        edit.putBoolean("onServer", b);
-        final long n = System.currentTimeMillis() + getRegisterOnServerLifespan(context);
-        Log.v("GCMRegistrar", "Setting registeredOnServer status as " + b + " until " + new Timestamp(n));
+        if (b != null) {
+            edit.putBoolean("onServer", (boolean)b);
+            log(context, 2, "Setting registeredOnServer flag as %b until %s", b, new Timestamp(n));
+        }
+        else {
+            log(context, 2, "Setting registeredOnServer expiration to %s", new Timestamp(n));
+        }
         edit.putLong("onServerExpirationTime", n);
         edit.commit();
+    }
+    
+    public static void setRegisteredOnServer(final Context context, final boolean b) {
+        setRegisteredOnServer(context, b, getRegisterOnServerLifespan(context) + System.currentTimeMillis());
     }
     
     static String setRegistrationId(final Context context, final String s) {
         final SharedPreferences gcmPreferences = getGCMPreferences(context);
         final String string = gcmPreferences.getString("regId", "");
         final int appVersion = getAppVersion(context);
-        Log.v("GCMRegistrar", "Saving regId on app version " + appVersion);
+        log(context, 2, "Saving regId on app version %d", appVersion);
         final SharedPreferences$Editor edit = gcmPreferences.edit();
         edit.putString("regId", s);
         edit.putInt("appVersion", appVersion);
@@ -399,11 +428,11 @@ public final class GCMRegistrar
         return string;
     }
     
-    static void setRetryBroadcastReceiver(final Context context) {
+    static void setRetryBroadcastReceiver(final Context sRetryReceiverContext) {
         synchronized (GCMRegistrar.class) {
             if (GCMRegistrar.sRetryReceiver == null) {
                 if (GCMRegistrar.sRetryReceiverClassName == null) {
-                    Log.e("GCMRegistrar", "internal error: retry receiver class not set yet");
+                    log(sRetryReceiverContext, 6, "internal error: retry receiver class not set yet", new Object[0]);
                     GCMRegistrar.sRetryReceiver = new GCMBroadcastReceiver();
                 }
                 else {
@@ -411,23 +440,24 @@ public final class GCMRegistrar
                         GCMRegistrar.sRetryReceiver = (GCMBroadcastReceiver)Class.forName(GCMRegistrar.sRetryReceiverClassName).newInstance();
                     }
                     catch (Exception ex) {
-                        Log.e("GCMRegistrar", "Could not create instance of " + GCMRegistrar.sRetryReceiverClassName + ". Using " + GCMBroadcastReceiver.class.getName() + " directly.");
+                        log(sRetryReceiverContext, 6, "Could not create instance of %s. Using %s directly.", GCMRegistrar.sRetryReceiverClassName, GCMBroadcastReceiver.class.getName());
                         GCMRegistrar.sRetryReceiver = new GCMBroadcastReceiver();
                     }
                 }
-                final String packageName = context.getPackageName();
+                final String packageName = sRetryReceiverContext.getPackageName();
                 final IntentFilter intentFilter = new IntentFilter("com.google.android.gcm.intent.RETRY");
                 intentFilter.addCategory(packageName);
-                final String string = packageName + ".permission.C2D_MESSAGE";
-                Log.v("GCMRegistrar", "Registering receiver");
-                context.registerReceiver((BroadcastReceiver)GCMRegistrar.sRetryReceiver, intentFilter, string, (Handler)null);
+                log(sRetryReceiverContext, 2, "Registering retry receiver", new Object[0]);
+                (GCMRegistrar.sRetryReceiverContext = sRetryReceiverContext).registerReceiver((BroadcastReceiver)GCMRegistrar.sRetryReceiver, intentFilter);
             }
         }
     }
     
-    static void setRetryReceiverClassName(final String sRetryReceiverClassName) {
-        Log.v("GCMRegistrar", "Setting the name of retry receiver class to " + sRetryReceiverClassName);
-        GCMRegistrar.sRetryReceiverClassName = sRetryReceiverClassName;
+    static void setRetryReceiverClassName(final Context context, final String sRetryReceiverClassName) {
+        synchronized (GCMRegistrar.class) {
+            log(context, 2, "Setting the name of retry receiver class to %s", sRetryReceiverClassName);
+            GCMRegistrar.sRetryReceiverClassName = sRetryReceiverClassName;
+        }
     }
     
     public static void unregister(final Context context) {

@@ -4,7 +4,6 @@
 
 package com.android.volley.toolbox;
 
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 
 public class PoolingByteArrayOutputStream extends ByteArrayOutputStream
@@ -32,7 +31,7 @@ public class PoolingByteArrayOutputStream extends ByteArrayOutputStream
     }
     
     @Override
-    public void close() throws IOException {
+    public void close() {
         this.mPool.returnBuf(this.buf);
         this.buf = null;
         super.close();

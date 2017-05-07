@@ -4,8 +4,6 @@
 
 package com.google.android.gms.wallet;
 
-import java.util.Collection;
-import java.util.List;
 import android.os.Parcel;
 import java.util.ArrayList;
 import android.os.Parcelable$Creator;
@@ -35,10 +33,10 @@ public final class Cart implements SafeParcelable
         this.asm = asm;
     }
     
-    public static Builder newBuilder() {
+    public static Cart$Builder newBuilder() {
         final Cart cart = new Cart();
         cart.getClass();
-        return new Builder();
+        return new Cart$Builder(cart, null);
     }
     
     public int describeContents() {
@@ -63,33 +61,5 @@ public final class Cart implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         b.a(this, parcel, n);
-    }
-    
-    public final class Builder
-    {
-        public Builder addLineItem(final LineItem lineItem) {
-            Cart.this.asm.add(lineItem);
-            return this;
-        }
-        
-        public Cart build() {
-            return Cart.this;
-        }
-        
-        public Builder setCurrencyCode(final String asl) {
-            Cart.this.asl = asl;
-            return this;
-        }
-        
-        public Builder setLineItems(final List<LineItem> list) {
-            Cart.this.asm.clear();
-            Cart.this.asm.addAll(list);
-            return this;
-        }
-        
-        public Builder setTotalPrice(final String ask) {
-            Cart.this.ask = ask;
-            return this;
-        }
     }
 }

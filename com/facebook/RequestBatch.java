@@ -17,7 +17,7 @@ public class RequestBatch extends AbstractList<Request>
     private static AtomicInteger idGenerator;
     private String batchApplicationId;
     private Handler callbackHandler;
-    private List<Callback> callbacks;
+    private List<RequestBatch$Callback> callbacks;
     private final String id;
     private List<Request> requests;
     private int timeoutInMilliseconds;
@@ -30,7 +30,7 @@ public class RequestBatch extends AbstractList<Request>
         this.requests = new ArrayList<Request>();
         this.timeoutInMilliseconds = 0;
         this.id = Integer.valueOf(RequestBatch.idGenerator.incrementAndGet()).toString();
-        this.callbacks = new ArrayList<Callback>();
+        this.callbacks = new ArrayList<RequestBatch$Callback>();
         this.requests = new ArrayList<Request>();
     }
     
@@ -38,18 +38,18 @@ public class RequestBatch extends AbstractList<Request>
         this.requests = new ArrayList<Request>();
         this.timeoutInMilliseconds = 0;
         this.id = Integer.valueOf(RequestBatch.idGenerator.incrementAndGet()).toString();
-        this.callbacks = new ArrayList<Callback>();
+        this.callbacks = new ArrayList<RequestBatch$Callback>();
         this.requests = new ArrayList<Request>(requestBatch);
         this.callbackHandler = requestBatch.callbackHandler;
         this.timeoutInMilliseconds = requestBatch.timeoutInMilliseconds;
-        this.callbacks = new ArrayList<Callback>(requestBatch.callbacks);
+        this.callbacks = new ArrayList<RequestBatch$Callback>(requestBatch.callbacks);
     }
     
     public RequestBatch(final Collection<Request> collection) {
         this.requests = new ArrayList<Request>();
         this.timeoutInMilliseconds = 0;
         this.id = Integer.valueOf(RequestBatch.idGenerator.incrementAndGet()).toString();
-        this.callbacks = new ArrayList<Callback>();
+        this.callbacks = new ArrayList<RequestBatch$Callback>();
         this.requests = new ArrayList<Request>(collection);
     }
     
@@ -57,7 +57,7 @@ public class RequestBatch extends AbstractList<Request>
         this.requests = new ArrayList<Request>();
         this.timeoutInMilliseconds = 0;
         this.id = Integer.valueOf(RequestBatch.idGenerator.incrementAndGet()).toString();
-        this.callbacks = new ArrayList<Callback>();
+        this.callbacks = new ArrayList<RequestBatch$Callback>();
         this.requests = Arrays.asList(array);
     }
     
@@ -71,9 +71,9 @@ public class RequestBatch extends AbstractList<Request>
         return this.requests.add(request);
     }
     
-    public void addCallback(final Callback callback) {
-        if (!this.callbacks.contains(callback)) {
-            this.callbacks.add(callback);
+    public void addCallback(final RequestBatch$Callback requestBatch$Callback) {
+        if (!this.callbacks.contains(requestBatch$Callback)) {
+            this.callbacks.add(requestBatch$Callback);
         }
     }
     
@@ -111,7 +111,7 @@ public class RequestBatch extends AbstractList<Request>
         return this.callbackHandler;
     }
     
-    final List<Callback> getCallbacks() {
+    final List<RequestBatch$Callback> getCallbacks() {
         return this.callbacks;
     }
     
@@ -132,8 +132,8 @@ public class RequestBatch extends AbstractList<Request>
         return this.requests.remove(n);
     }
     
-    public void removeCallback(final Callback callback) {
-        this.callbacks.remove(callback);
+    public void removeCallback(final RequestBatch$Callback requestBatch$Callback) {
+        this.callbacks.remove(requestBatch$Callback);
     }
     
     @Override
@@ -159,10 +159,5 @@ public class RequestBatch extends AbstractList<Request>
     @Override
     public final int size() {
         return this.requests.size();
-    }
-    
-    public interface Callback
-    {
-        void onBatchCompleted(final RequestBatch p0);
     }
 }

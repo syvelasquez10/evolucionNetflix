@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ShowSubtitle extends BaseMediaEvent
@@ -18,7 +17,7 @@ public class ShowSubtitle extends BaseMediaEvent
     private int subtitleID;
     private String text;
     
-    public ShowSubtitle(final JSONObject jsonObject) throws JSONException {
+    public ShowSubtitle(final JSONObject jsonObject) {
         super("showSubtitle", jsonObject);
     }
     
@@ -35,7 +34,7 @@ public class ShowSubtitle extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.subtitleID = BaseNccpEvent.getInt(jsonObject, "subtitleID", -1);
         this.reserved = BaseNccpEvent.getInt(jsonObject, "reserved", -1);
         this.text = BaseNccpEvent.getString(jsonObject, "text", null);

@@ -18,7 +18,7 @@ public abstract class g<T>
         this.Sd = sd;
     }
     
-    protected final T L(Context remoteContext) throws a {
+    protected final T L(Context remoteContext) {
         Label_0058: {
             if (this.Se != null) {
                 break Label_0058;
@@ -26,7 +26,7 @@ public abstract class g<T>
             n.i(remoteContext);
             remoteContext = GooglePlayServicesUtil.getRemoteContext(remoteContext);
             if (remoteContext == null) {
-                throw new a("Could not get remote context.");
+                throw new g$a("Could not get remote context.");
             }
             final ClassLoader classLoader = remoteContext.getClassLoader();
             try {
@@ -34,27 +34,16 @@ public abstract class g<T>
                 return this.Se;
             }
             catch (ClassNotFoundException ex) {
-                throw new a("Could not load creator class.", ex);
+                throw new g$a("Could not load creator class.", ex);
             }
             catch (InstantiationException ex2) {
-                throw new a("Could not instantiate creator.", ex2);
+                throw new g$a("Could not instantiate creator.", ex2);
             }
             catch (IllegalAccessException ex3) {
-                throw new a("Could not access creator.", ex3);
+                throw new g$a("Could not access creator.", ex3);
             }
         }
     }
     
     protected abstract T d(final IBinder p0);
-    
-    public static class a extends Exception
-    {
-        public a(final String s) {
-            super(s);
-        }
-        
-        public a(final String s, final Throwable t) {
-            super(s, t);
-        }
-    }
 }

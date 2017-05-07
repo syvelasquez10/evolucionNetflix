@@ -4,9 +4,9 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
-import java.util.Map;
 import java.security.NoSuchAlgorithmException;
+import com.google.android.gms.internal.d$a;
+import java.util.Map;
 import java.security.MessageDigest;
 import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
@@ -29,19 +29,19 @@ class ao extends aj
         super(ao.ID, new String[] { ao.aoU });
     }
     
-    private byte[] d(final String s, final byte[] array) throws NoSuchAlgorithmException {
+    private byte[] d(final String s, final byte[] array) {
         final MessageDigest instance = MessageDigest.getInstance(s);
         instance.update(array);
         return instance.digest();
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
-        final d.a a = map.get(ao.aoU);
-        if (a == null || a == di.pI()) {
+    public d$a C(final Map<String, d$a> map) {
+        final d$a d$a = map.get(ao.aoU);
+        if (d$a == null || d$a == di.pI()) {
             return di.pI();
         }
-        final String j = di.j(a);
+        final String j = di.j(d$a);
         Object i = map.get(ao.apa);
         Label_0102: {
             if (i != null) {
@@ -50,9 +50,9 @@ class ao extends aj
             i = "MD5";
         Label_0073_Outer:
             while (true) {
-                final d.a a2 = map.get(ao.aoW);
+                final d$a d$a2 = map.get(ao.aoW);
                 Label_0110: {
-                    if (a2 != null) {
+                    if (d$a2 != null) {
                         break Label_0110;
                     }
                     String k = "text";
@@ -64,20 +64,17 @@ class ao extends aj
                             byte[] array = j.getBytes();
                             try {
                                 return di.u(com.google.android.gms.tagmanager.j.d(this.d((String)i, array)));
-                                i = di.j((d.a)i);
+                                k = di.j(d$a2);
+                                continue;
+                                i = di.j((d$a)i);
                                 continue Label_0073_Outer;
                                 // iftrue(Label_0135:, !"base16".equals((Object)k))
-                                Block_6: {
-                                    break Block_6;
-                                    Label_0135: {
-                                        bh.T("Hash: unknown input format: " + k);
-                                    }
-                                    return di.pI();
-                                    k = di.j(a2);
-                                    continue;
-                                }
                                 array = com.google.android.gms.tagmanager.j.cj(j);
                                 return di.u(com.google.android.gms.tagmanager.j.d(this.d((String)i, array)));
+                                Label_0135: {
+                                    bh.T("Hash: unknown input format: " + k);
+                                }
+                                return di.pI();
                             }
                             catch (NoSuchAlgorithmException ex) {
                                 bh.T("Hash: unknown algorithm: " + (String)i);

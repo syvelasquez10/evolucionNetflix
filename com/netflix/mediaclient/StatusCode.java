@@ -29,6 +29,7 @@ public enum StatusCode
     HTTP_SSL_NO_VALID_CERT(-122), 
     INIT_SERVICE_TIMEOUT(-9), 
     INTERNAL_ERROR(-2), 
+    INVALID_COUNRTY(-70), 
     MAP_ERROR(-65), 
     MISSING_ID_IN_CACHE(-63), 
     NETWORK_ERROR(-3), 

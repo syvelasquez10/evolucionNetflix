@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
+import com.netflix.mediaclient.util.SubtitleUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import org.w3c.dom.Element;
@@ -13,8 +14,6 @@ public class TextStyle
 {
     public static final String BACKGROUND_COLOR = "tts:backgroundColor";
     public static final String COLOR = "tts:color";
-    public static final String DEFAULT = "<%NF_DEFAULT_TEXT_STYLE%>";
-    public static final TextStyle DEFAULT_DEVICE_TEXT_STYLE;
     public static final String DISPLAY_ALIGN = "tts:displayAlign";
     public static final String EXTENT = "tts:extent";
     public static final String FONT_DECORATION = "tts:textDecoration";
@@ -34,12 +33,12 @@ public class TextStyle
     public static final String WINDOW_COLOR = "tts:windowColor";
     private String mBackgroundColor;
     private Float mBackgroundOpacity;
-    private Boolean mBold;
     private CellResolution mCellResolution;
     private String mColor;
     private DoubleLength mExtent;
     private FontFamilyMapping mFontFamily;
     private Integer mFontSize;
+    private FontWeight mFontWeight;
     private HorizontalAlignment mHorizontalAlignment;
     private String mId;
     private Boolean mItalic;
@@ -52,11 +51,7 @@ public class TextStyle
     private String mWindowColor;
     private Float mWindowOpacity;
     
-    static {
-        DEFAULT_DEVICE_TEXT_STYLE = new TextStyle("<%NF_DEFAULT_TEXT_STYLE%>", "EBEB64", null, null, null, Outline.getDefaultOutline(), FontFamilyMapping.defaultType, false, false, false, null, null, null);
-    }
-    
-    TextStyle() {
+    public TextStyle() {
     }
     
     public TextStyle(final TextStyle textStyle) {
@@ -76,10 +71,10 @@ public class TextStyle
         this.mOpacity = textStyle.mOpacity;
         this.mWindowOpacity = textStyle.mWindowOpacity;
         this.mBackgroundOpacity = textStyle.mBackgroundOpacity;
-        this.mBold = textStyle.mBold;
+        this.mFontWeight = textStyle.mFontWeight;
     }
     
-    public TextStyle(final String mId, final String mColor, final String mWindowColor, final String mBackgroundColor, final Integer mFontSize, final Outline mOutline, final FontFamilyMapping mFontFamily, final Boolean mItalic, final Boolean mUnderline, final Boolean mBold, final Float mOpacity, final Float mWindowOpacity, final Float mBackgroundOpacity) {
+    public TextStyle(final String mId, final String mColor, final String mWindowColor, final String mBackgroundColor, final Integer mFontSize, final Outline mOutline, final FontFamilyMapping mFontFamily, final Boolean mItalic, final Boolean mUnderline, final FontWeight mFontWeight, final Float mOpacity, final Float mWindowOpacity, final Float mBackgroundOpacity) {
         this.mId = mId;
         this.mColor = mColor;
         this.mWindowColor = mWindowColor;
@@ -88,7 +83,7 @@ public class TextStyle
         this.mOutline = mOutline;
         this.mFontFamily = mFontFamily;
         this.mItalic = mItalic;
-        this.mBold = mBold;
+        this.mFontWeight = mFontWeight;
         this.mUnderline = mUnderline;
         this.mOpacity = mOpacity;
         this.mWindowOpacity = mWindowOpacity;
@@ -190,14 +185,11 @@ public class TextStyle
         return textStyle2;
     }
     
-    static Boolean isStyleBold(final String s) {
-        if (StringUtils.isEmpty(s)) {
-            return null;
-        }
-        return "bold".equalsIgnoreCase(s);
+    static FontWeight getFontWeight(final String s) {
+        return FontWeight.createFontWeight(s);
     }
     
-    static Boolean isStyleItalic(final String s) {
+    static Boolean getStyleItalic(final String s) {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
@@ -212,52 +204,65 @@ public class TextStyle
     }
     
     private boolean populate(final Element element) {
-        boolean b = false;
+        final boolean b = true;
+        boolean b2 = false;
         final String attribute = element.getAttribute("xml:id");
         if (!StringUtils.isEmpty(attribute)) {
             this.mId = attribute;
-            b = true;
+            b2 = true;
         }
         final String attribute2 = element.getAttribute("style");
         if (!StringUtils.isEmpty(attribute2)) {
             this.mParentStyleId = attribute2;
-            b = true;
+            b2 = true;
         }
         this.mColor = ColorMapping.findColor(element.getAttribute("tts:color"));
         if (this.mColor != null) {
-            b = true;
+            b2 = true;
         }
         this.mBackgroundColor = ColorMapping.findColor(element.getAttribute("tts:backgroundColor"));
         if (this.mBackgroundColor != null) {
-            b = true;
+            b2 = true;
         }
         this.mWindowColor = ColorMapping.findColor(element.getAttribute("tts:windowColor"));
         if (this.mWindowColor != null) {
-            b = true;
+            b2 = true;
         }
         this.mFontSize = StringUtils.safeParsePercentage(element.getAttribute("tts:fontSize"), 25, 200, true);
         if (this.mFontSize != null) {
-            b = true;
+            b2 = true;
         }
         this.mOutline = Outline.createInstance(element.getAttribute("tts:textOutline"));
         if (this.mOutline != null) {
-            b = true;
+            b2 = true;
         }
         this.mFontFamily = FontFamilyMapping.lookup(element.getAttribute("tts:fontFamily"));
         if (this.mFontFamily != null) {
-            b = true;
+            b2 = true;
         }
-        this.mItalic = isStyleItalic(element.getAttribute("tts:fontStyle"));
+        this.mItalic = getStyleItalic(element.getAttribute("tts:fontStyle"));
         if (this.mItalic != null) {
-            b = true;
+            b2 = true;
         }
-        this.mBold = isStyleItalic(element.getAttribute("tts:fontWeight"));
-        if (this.mBold != null) {
-            b = true;
+        this.mFontWeight = getFontWeight(element.getAttribute("tts:fontWeight"));
+        boolean b3;
+        if (this.mFontWeight != null) {
+            b3 = true;
+        }
+        else {
+            b3 = b2;
+            if (this.mFontFamily != null) {
+                this.mFontWeight = SubtitleUtils.getDefaultFontWeight(this.mFontFamily);
+                b3 = b2;
+            }
         }
         this.mOpacity = OpacityMapping.lookup(element.getAttribute("tts:opacity"));
+        boolean b4;
         if (this.mOpacity != null) {
-            b = true;
+            b4 = b;
+        }
+        else {
+            b4 = b3;
         }
         this.mWindowOpacity = this.mOpacity;
         this.mBackgroundOpacity = this.mOpacity;
@@ -277,7 +282,7 @@ public class TextStyle
         if (!StringUtils.isEmpty(attribute6)) {
             this.mOrigin = DoubleLength.createInstance(attribute6, this.mCellResolution);
         }
-        return b;
+        return b4;
     }
     
     boolean addStyle(final Element element) {
@@ -290,10 +295,6 @@ public class TextStyle
     
     public Float getBackgroundOpacity() {
         return this.mBackgroundOpacity;
-    }
-    
-    public Boolean getBold() {
-        return this.mBold;
     }
     
     public String getColor() {
@@ -310,6 +311,10 @@ public class TextStyle
     
     public Integer getFontSize() {
         return this.mFontSize;
+    }
+    
+    public FontWeight getFontWeight() {
+        return this.mFontWeight;
     }
     
     public HorizontalAlignment getHorizontalAlignment() {
@@ -356,48 +361,50 @@ public class TextStyle
         return this.mWindowOpacity;
     }
     
-    void merge(final TextStyle textStyle) {
-        if (this.mColor == null && textStyle.mColor != null) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
-                Log.d("nf_subtitles", "Use parent color " + textStyle.mColor);
+    public void merge(final TextStyle textStyle) {
+        if (textStyle != null) {
+            if (this.mColor == null && textStyle.mColor != null) {
+                if (Log.isLoggable("nf_subtitles", 3)) {
+                    Log.d("nf_subtitles", "Use parent color " + textStyle.mColor);
+                }
+                this.mColor = textStyle.mColor;
             }
-            this.mColor = textStyle.mColor;
-        }
-        if (this.mWindowColor == null && textStyle.mWindowColor != null) {
-            this.mWindowColor = textStyle.mWindowColor;
-        }
-        if (this.mBackgroundColor == null && textStyle.mBackgroundColor != null) {
-            this.mBackgroundColor = textStyle.mBackgroundColor;
-        }
-        if (this.mFontSize == null && textStyle.mFontSize != null) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
-                Log.d("nf_subtitles", "Use parent mFontSize " + textStyle.mFontSize);
+            if (this.mWindowColor == null && textStyle.mWindowColor != null) {
+                this.mWindowColor = textStyle.mWindowColor;
             }
-            this.mFontSize = textStyle.mFontSize;
-        }
-        if (this.mOutline == null && textStyle.mOutline != null) {
-            this.mOutline = textStyle.mOutline;
-        }
-        if (this.mFontFamily == null && textStyle.mFontFamily != null) {
-            this.mFontFamily = textStyle.mFontFamily;
-        }
-        if (this.mItalic == null && textStyle.mItalic != null) {
-            this.mItalic = textStyle.mItalic;
-        }
-        if (this.mUnderline == null && textStyle.mUnderline != null) {
-            this.mUnderline = textStyle.mUnderline;
-        }
-        if (this.mBold == null && textStyle.mBold != null) {
-            this.mItalic = textStyle.mItalic;
-        }
-        if (this.mOpacity == null && textStyle.mOpacity != null) {
-            this.mOpacity = textStyle.mOpacity;
-        }
-        if (this.mWindowOpacity == null && textStyle.mWindowOpacity != null) {
-            this.mWindowOpacity = textStyle.mWindowOpacity;
-        }
-        if (this.mBackgroundOpacity == null && textStyle.mBackgroundOpacity != null) {
-            this.mBackgroundOpacity = textStyle.mBackgroundOpacity;
+            if (this.mBackgroundColor == null && textStyle.mBackgroundColor != null) {
+                this.mBackgroundColor = textStyle.mBackgroundColor;
+            }
+            if (this.mFontSize == null && textStyle.mFontSize != null) {
+                if (Log.isLoggable("nf_subtitles", 3)) {
+                    Log.d("nf_subtitles", "Use parent mFontSize " + textStyle.mFontSize);
+                }
+                this.mFontSize = textStyle.mFontSize;
+            }
+            if (this.mOutline == null && textStyle.mOutline != null) {
+                this.mOutline = textStyle.mOutline;
+            }
+            if (this.mFontFamily == null && textStyle.mFontFamily != null) {
+                this.mFontFamily = textStyle.mFontFamily;
+            }
+            if (this.mItalic == null && textStyle.mItalic != null) {
+                this.mItalic = textStyle.mItalic;
+            }
+            if (this.mUnderline == null && textStyle.mUnderline != null) {
+                this.mUnderline = textStyle.mUnderline;
+            }
+            if (this.mFontWeight == null && textStyle.mFontWeight != null) {
+                this.mFontWeight = textStyle.mFontWeight;
+            }
+            if (this.mOpacity == null && textStyle.mOpacity != null) {
+                this.mOpacity = textStyle.mOpacity;
+            }
+            if (this.mWindowOpacity == null && textStyle.mWindowOpacity != null) {
+                this.mWindowOpacity = textStyle.mWindowOpacity;
+            }
+            if (this.mBackgroundOpacity == null && textStyle.mBackgroundOpacity != null) {
+                this.mBackgroundOpacity = textStyle.mBackgroundOpacity;
+            }
         }
     }
     
@@ -434,8 +441,8 @@ public class TextStyle
         if (this.mUnderline != null) {
             sb.append(", Underline=").append(this.mUnderline);
         }
-        if (this.mBold != null) {
-            sb.append(", Bold=").append(this.mBold);
+        if (this.mFontWeight != null) {
+            sb.append(", Font weight=").append(this.mFontWeight);
         }
         if (this.mOpacity != null) {
             sb.append(", Opacity=").append(this.mOpacity);

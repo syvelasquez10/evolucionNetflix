@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.registration;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DeactivatedEvent extends BaseRegistrationEvent
@@ -17,7 +16,7 @@ public class DeactivatedEvent extends BaseRegistrationEvent
     private String accountKey;
     private boolean current;
     
-    public DeactivatedEvent(final JSONObject jsonObject) throws JSONException {
+    public DeactivatedEvent(final JSONObject jsonObject) {
         super("deactivated", jsonObject);
     }
     
@@ -35,7 +34,7 @@ public class DeactivatedEvent extends BaseRegistrationEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.accountKey = BaseNccpEvent.getString(jsonObject, "accountKey", null);
         this.current = BaseNccpEvent.getBoolean(jsonObject, "current", false);
     }

@@ -4,10 +4,6 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import android.content.res.ColorStateList;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.servicemgr.model.genre.Genre;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
@@ -30,15 +26,15 @@ import android.widget.LinearLayout;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import java.util.ArrayList;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.android.app.LoadingStatus;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.BaseAdapter;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 
-public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter implements ILoLoMoAdapter
+public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter implements LoLoMoFrag$ILoLoMoAdapter
 {
     private static final String TAG = "BaseLoLoMoAdapter";
     protected final NetflixActivity activity;
@@ -50,9 +46,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     private long lomoRequestId;
     private boolean lomoRequestPending;
     private final List<T> lomos;
-    protected LoadingStatusCallback mLoadingStatusCallback;
+    protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
     protected ServiceManager manager;
-    protected final ObjectRecycler.ViewRecycler viewRecycler;
+    protected final ObjectRecycler$ViewRecycler viewRecycler;
     
     public BaseLoLoMoAdapter(final LoLoMoFrag frag, final String lolomoId) {
         this.isLoading = true;
@@ -64,7 +60,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.lolomoId = lolomoId;
     }
     
-    private RowHolder createViewsAndHolder(final View view) {
+    private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
         final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165457);
         linearLayout.setFocusable(false);
@@ -75,10 +71,10 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             n = 2131296352;
         }
         else {
-            n = 2131296361;
+            n = 2131296364;
         }
         textView.setTextColor(resources.getColor(n));
-        final LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
+        final BaseLoLoMoAdapter$LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
         TextView textView2;
         if (this.activity.isForKids()) {
             view.findViewById(2131165460).setVisibility(8);
@@ -88,8 +84,8 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         else {
             textView2 = (TextView)view.findViewById(2131165460);
         }
-        ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragOffsetLeftPx(this.activity) + this.activity.getResources().getDimensionPixelOffset(2131361897);
-        return new RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165456));
+        ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = this.activity.getResources().getDimensionPixelOffset(2131361897) + LoMoUtils.getLomoFragOffsetLeftPx(this.activity);
+        return new BaseLoLoMoAdapter$RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165456));
     }
     
     private void fetchMoreData() {
@@ -104,7 +100,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             Log.w("BaseLoLoMoAdapter", "Manager is null - can't refresh data");
             return;
         }
-        this.makeFetchRequest(this.lolomoId, this.loMoStartIndex, n, new LoMoCallbacks(this.lomoRequestId, n - this.loMoStartIndex));
+        this.makeFetchRequest(this.lolomoId, this.loMoStartIndex, n, new BaseLoLoMoAdapter$LoMoCallbacks(this, this.lomoRequestId, n - this.loMoStartIndex));
     }
     
     private void hideLoadingAndErrorViews() {
@@ -136,17 +132,17 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
                 Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + item.getTitle() + ", type: " + item.getType() + ", pos: " + dipToPixels);
             }
-            final RowHolder rowHolder = (RowHolder)contentGroup.getTag();
-            final TextView title = rowHolder.title;
+            final BaseLoLoMoAdapter$RowHolder baseLoLoMoAdapter$RowHolder = (BaseLoLoMoAdapter$RowHolder)contentGroup.getTag();
+            final TextView title = baseLoLoMoAdapter$RowHolder.title;
             String text;
             if (item.getType() == LoMoType.BILLBOARD) {
-                text = this.activity.getString(2131493312);
+                text = this.activity.getString(2131493259);
             }
             else {
                 text = item.getTitle();
             }
             title.setText((CharSequence)text);
-            final TextView title2 = rowHolder.title;
+            final TextView title2 = baseLoLoMoAdapter$RowHolder.title;
             int visibility;
             if (item.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(this.activity)) {
                 visibility = 0;
@@ -155,7 +151,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
                 visibility = 8;
             }
             title2.setVisibility(visibility);
-            final View shelf = rowHolder.shelf;
+            final View shelf = baseLoLoMoAdapter$RowHolder.shelf;
             int visibility2 = n;
             if (this.isRowAfterBillboardOrCwRow(dipToPixels, item.getType())) {
                 visibility2 = n;
@@ -164,22 +160,22 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
                 }
             }
             shelf.setVisibility(visibility2);
-            rowHolder.rowContent.refresh(item, dipToPixels);
+            baseLoLoMoAdapter$RowHolder.rowContent.refresh(item, dipToPixels);
             if (this.activity.isForKids()) {
                 if (item.getType() == LoMoType.CONTINUE_WATCHING) {
-                    rowHolder.contentGroup.setBackgroundResource(2130837709);
-                    rowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
-                    rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296355));
+                    baseLoLoMoAdapter$RowHolder.contentGroup.setBackgroundResource(2130837709);
+                    baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
+                    baseLoLoMoAdapter$RowHolder.title.setTextColor(this.activity.getResources().getColor(2131296355));
                     return;
                 }
-                ViewUtils.setBackgroundDrawableCompat(rowHolder.contentGroup, null);
+                ViewUtils.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, null);
                 if (dipToPixels == this.getCount() - 1) {
                     dipToPixels = 1;
                 }
                 else {
                     dipToPixels = 0;
                 }
-                contentGroup = rowHolder.contentGroup;
+                contentGroup = baseLoLoMoAdapter$RowHolder.contentGroup;
                 if (dipToPixels != 0) {
                     dipToPixels = AndroidUtils.dipToPixels((Context)this.activity, 24);
                 }
@@ -187,7 +183,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
                     dipToPixels = 0;
                 }
                 contentGroup.setPadding(0, 0, 0, dipToPixels);
-                rowHolder.title.setTextColor(rowHolder.defaultTitleColors);
+                baseLoLoMoAdapter$RowHolder.title.setTextColor(baseLoLoMoAdapter$RowHolder.defaultTitleColors);
             }
             else {
                 final StickyListHeadersListView listView = this.frag.getListView();
@@ -223,7 +219,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         return view;
     }
     
-    protected abstract LoMoRowContent createRowContent(final LinearLayout p0, final View p1);
+    protected abstract BaseLoLoMoAdapter$LoMoRowContent createRowContent(final LinearLayout p0, final View p1);
     
     public void destroy() {
     }
@@ -264,21 +260,28 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         return this.manager;
     }
     
-    public View getView(final int n, final View view, final ViewGroup viewGroup) {
+    public View getView(final int n, View dummyView, final ViewGroup viewGroup) {
         if (this.activity.destroyed()) {
             Log.d("BaseLoLoMoAdapter", "activity is destroyed - can't getView");
-            return this.createDummyView();
+            dummyView = this.createDummyView();
         }
-        View inflate;
-        if ((inflate = view) == null) {
-            inflate = this.activity.getLayoutInflater().inflate(2130903121, (ViewGroup)null);
-            inflate.setTag((Object)this.createViewsAndHolder(inflate));
+        else {
+            View inflate;
+            if ((inflate = dummyView) == null) {
+                inflate = this.activity.getLayoutInflater().inflate(2130903122, (ViewGroup)null);
+                inflate.setTag((Object)this.createViewsAndHolder(inflate));
+            }
+            this.updateRowViews(inflate, n);
+            dummyView = inflate;
+            if (this.hasMoreData) {
+                dummyView = inflate;
+                if (n == this.getCount() - 1) {
+                    this.fetchMoreData();
+                    return inflate;
+                }
+            }
         }
-        this.updateRowViews(inflate, n);
-        if (this.hasMoreData && n == this.getCount() - 1) {
-            this.fetchMoreData();
-        }
-        return inflate;
+        return dummyView;
     }
     
     protected void initLoadingState() {
@@ -342,7 +345,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.fetchMoreData();
     }
     
-    public void setLoadingStatusCallback(final LoadingStatusCallback mLoadingStatusCallback) {
+    public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback mLoadingStatusCallback) {
         if (!this.isLoadingData() && mLoadingStatusCallback != null) {
             mLoadingStatusCallback.onDataLoaded(CommonStatus.OK);
             return;
@@ -354,90 +357,5 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.lomos.addAll((Collection<? extends T>)list);
         this.loMoStartIndex += list.size();
         this.notifyDataSetChanged();
-    }
-    
-    private class LoMoCallbacks extends LoggingManagerCallback
-    {
-        private final int numItems;
-        private final long requestId;
-        
-        public LoMoCallbacks(final long requestId, final int numItems) {
-            super("BaseLoLoMoAdapter");
-            this.requestId = requestId;
-            this.numItems = numItems;
-        }
-        
-        private void handleResult(final List<T> list, final Status status) {
-            BaseLoLoMoAdapter.this.hasMoreData = true;
-            BaseLoLoMoAdapter.this.lomoRequestPending = false;
-            if (this.requestId != BaseLoLoMoAdapter.this.lomoRequestId) {
-                Log.v("BaseLoLoMoAdapter", "Ignoring stale onLoMosFetched callback");
-                return;
-            }
-            BaseLoLoMoAdapter.this.isLoading = false;
-            BaseLoLoMoAdapter.this.onDataLoaded(status);
-            if (status.isError()) {
-                Log.w("BaseLoLoMoAdapter", "Invalid status code");
-                BaseLoLoMoAdapter.this.hasMoreData = false;
-                BaseLoLoMoAdapter.this.notifyDataSetChanged();
-                return;
-            }
-            if (list == null || list.size() <= 0) {
-                Log.v("BaseLoLoMoAdapter", "No loMos in response");
-                BaseLoLoMoAdapter.this.hasMoreData = false;
-                BaseLoLoMoAdapter.this.notifyDataSetChanged();
-                return;
-            }
-            if (list.size() < this.numItems) {
-                BaseLoLoMoAdapter.this.hasMoreData = false;
-            }
-            if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
-                Log.v("BaseLoLoMoAdapter", "Got " + list.size() + " items, expected " + this.numItems + ", hasMoreData: " + BaseLoLoMoAdapter.this.hasMoreData);
-            }
-            BaseLoLoMoAdapter.this.updateLoMoData(list);
-        }
-        
-        @Override
-        public void onGenresFetched(final List<Genre> list, final Status status) {
-            super.onGenresFetched(list, status);
-            this.handleResult((List<T>)list, status);
-        }
-        
-        @Override
-        public void onLoMosFetched(final List<LoMo> list, final Status status) {
-            super.onLoMosFetched(list, status);
-            this.handleResult((List<T>)list, status);
-        }
-    }
-    
-    public interface LoMoRowContent
-    {
-        void invalidateRequestId();
-        
-        void refresh(final BasicLoMo p0, final int p1);
-    }
-    
-    static class RowHolder
-    {
-        public final View contentGroup;
-        public final ColorStateList defaultTitleColors;
-        public final LoMoRowContent rowContent;
-        public final View shelf;
-        public final TextView title;
-        
-        RowHolder(final View contentGroup, final TextView title, final LoMoRowContent rowContent, final View shelf) {
-            this.contentGroup = contentGroup;
-            this.title = title;
-            this.rowContent = rowContent;
-            this.shelf = shelf;
-            this.defaultTitleColors = title.getTextColors();
-        }
-        
-        public void invalidateRequestId() {
-            if (this.rowContent == null) {
-                return;
-            }
-            this.rowContent.invalidateRequestId();
-        }
     }
 }

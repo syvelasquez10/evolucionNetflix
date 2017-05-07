@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.javabridge.invoke.media;
 
-import com.netflix.mediaclient.Log;
 import org.json.JSONException;
+import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
 
@@ -40,69 +40,17 @@ public class Swim extends BaseInvoke
     }
     
     private void setArguments(final int n, final boolean b, final int n2, final boolean b2, final boolean b3) {
-        JSONObject jsonObject = null;
         try {
-            final JSONObject jsonObject2;
-            jsonObject = (jsonObject2 = new JSONObject());
-            final String s = "pts";
-            final int n3 = n;
-            jsonObject2.put(s, n3);
-            final JSONObject jsonObject3 = jsonObject;
-            final String s2 = "absolute";
-            final boolean b4 = b;
-            jsonObject3.put(s2, b4);
-            final JSONObject jsonObject4 = jsonObject;
-            final String s3 = "fuzz";
-            final int n4 = n2;
-            jsonObject4.put(s3, n4);
-            final JSONObject jsonObject5 = jsonObject;
-            final String s4 = "allowRebuffer";
-            final boolean b5 = b2;
-            jsonObject5.put(s4, b5);
-            final JSONObject jsonObject6 = jsonObject;
-            final String s5 = "forceRebuffer";
-            final boolean b6 = b3;
-            jsonObject6.put(s5, b6);
-            final Swim swim = this;
-            final JSONObject jsonObject7 = jsonObject;
-            final String s6 = jsonObject7.toString();
-            swim.arguments = s6;
-            return;
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("pts", n);
+            jsonObject.put("absolute", b);
+            jsonObject.put("fuzz", n2);
+            jsonObject.put("allowRebuffer", b2);
+            jsonObject.put("forceRebuffer", b3);
+            this.arguments = jsonObject.toString();
         }
-        catch (JSONException ex) {}
-        while (true) {
-            try {
-                final JSONObject jsonObject2 = jsonObject;
-                final String s = "pts";
-                final int n3 = n;
-                jsonObject2.put(s, n3);
-                final JSONObject jsonObject3 = jsonObject;
-                final String s2 = "absolute";
-                final boolean b4 = b;
-                jsonObject3.put(s2, b4);
-                final JSONObject jsonObject4 = jsonObject;
-                final String s3 = "fuzz";
-                final int n4 = n2;
-                jsonObject4.put(s3, n4);
-                final JSONObject jsonObject5 = jsonObject;
-                final String s4 = "allowRebuffer";
-                final boolean b5 = b2;
-                jsonObject5.put(s4, b5);
-                final JSONObject jsonObject6 = jsonObject;
-                final String s5 = "forceRebuffer";
-                final boolean b6 = b3;
-                jsonObject6.put(s5, b6);
-                final Swim swim = this;
-                final JSONObject jsonObject7 = jsonObject;
-                final String s6 = jsonObject7.toString();
-                swim.arguments = s6;
-                return;
-                Log.e("nf_invoke", "Failed to create JSON object", (Throwable)jsonObject);
-            }
-            catch (JSONException jsonObject) {
-                continue;
-            }
-            break;
+        catch (JSONException ex) {
+            Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
         }
     }
 }

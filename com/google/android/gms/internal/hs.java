@@ -9,7 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.zip.CRC32;
 import android.os.Bundle;
 import android.content.ComponentName;
-import com.google.android.gms.appindexing.AppIndexApi;
+import com.google.android.gms.appindexing.AppIndexApi$AppIndexingLink;
 import java.util.List;
 import android.net.Uri;
 import android.content.Intent;
@@ -42,39 +42,39 @@ public class hs implements SafeParcelable
         this(1, hg, n, n2, null, null);
     }
     
-    public hs(final String s, final Intent intent, final String s2, final Uri uri, final String s3, final List<AppIndexApi.AppIndexingLink> list) {
+    public hs(final String s, final Intent intent, final String s2, final Uri uri, final String s3, final List<AppIndexApi$AppIndexingLink> list) {
         this(1, a(s, intent), System.currentTimeMillis(), 0, null, a(intent, s2, uri, s3, list).fk());
     }
     
-    public static he.a a(final Intent intent, String s, final Uri uri, final String s2, final List<AppIndexApi.AppIndexingLink> list) {
-        final he.a a = new he.a();
-        a.a(av(s));
+    public static he$a a(final Intent intent, String s, final Uri uri, final String s2, final List<AppIndexApi$AppIndexingLink> list) {
+        final he$a he$a = new he$a();
+        he$a.a(av(s));
         if (uri != null) {
-            a.a(f(uri));
+            he$a.a(f(uri));
         }
         if (list != null) {
-            a.a(b(list));
+            he$a.a(b(list));
         }
         s = intent.getAction();
         if (s != null) {
-            a.a(j("intent_action", s));
+            he$a.a(j("intent_action", s));
         }
         s = intent.getDataString();
         if (s != null) {
-            a.a(j("intent_data", s));
+            he$a.a(j("intent_data", s));
         }
         final ComponentName component = intent.getComponent();
         if (component != null) {
-            a.a(j("intent_activity", component.getClassName()));
+            he$a.a(j("intent_activity", component.getClassName()));
         }
         final Bundle extras = intent.getExtras();
         if (extras != null) {
             final String string = extras.getString("intent_extra_data_key");
             if (string != null) {
-                a.a(j("intent_extra_data", string));
+                he$a.a(j("intent_extra_data", string));
             }
         }
-        return a.ar(s2).D(true);
+        return he$a.ar(s2).D(true);
     }
     
     public static hg a(final String s, final Intent intent) {
@@ -82,25 +82,25 @@ public class hs implements SafeParcelable
     }
     
     private static hi av(final String s) {
-        return new hi(s, new hq.a("title").P(1).F(true).au("name").fn(), "text1");
+        return new hi(s, new hq$a("title").P(1).F(true).au("name").fn(), "text1");
     }
     
-    private static hi b(final List<AppIndexApi.AppIndexingLink> list) {
-        final lk.a a = new lk.a();
-        final lk.a.a[] adt = new lk.a.a[list.size()];
+    private static hi b(final List<AppIndexApi$AppIndexingLink> list) {
+        final lk$a lk$a = new lk$a();
+        final lk$a$a[] adt = new lk$a$a[list.size()];
         for (int i = 0; i < adt.length; ++i) {
-            adt[i] = new lk.a.a();
-            final AppIndexApi.AppIndexingLink appIndexingLink = list.get(i);
-            adt[i].adv = appIndexingLink.appIndexingUrl.toString();
-            adt[i].adw = appIndexingLink.webUrl.toString();
-            adt[i].viewId = appIndexingLink.viewId;
+            adt[i] = new lk$a$a();
+            final AppIndexApi$AppIndexingLink appIndexApi$AppIndexingLink = list.get(i);
+            adt[i].adv = appIndexApi$AppIndexingLink.appIndexingUrl.toString();
+            adt[i].adw = appIndexApi$AppIndexingLink.webUrl.toString();
+            adt[i].viewId = appIndexApi$AppIndexingLink.viewId;
         }
-        a.adt = adt;
-        return new hi(pm.f(a), new hq.a("outlinks").E(true).au(".private:outLinks").at("blob").fn());
+        lk$a.adt = adt;
+        return new hi(pm.f(lk$a), new hq$a("outlinks").E(true).au(".private:outLinks").at("blob").fn());
     }
     
     private static hi f(final Uri uri) {
-        return new hi(uri.toString(), new hq.a("web_url").P(4).E(true).au("url").fn());
+        return new hi(uri.toString(), new hq$a("web_url").P(4).E(true).au("url").fn());
     }
     
     private static String g(final Intent intent) {
@@ -120,7 +120,7 @@ public class hs implements SafeParcelable
     }
     
     private static hi j(final String s, final String s2) {
-        return new hi(s2, new hq.a(s).E(true).fn(), s);
+        return new hi(s2, new hq$a(s).E(true).fn(), s);
     }
     
     public int describeContents() {

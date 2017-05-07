@@ -21,13 +21,13 @@ public final class NotificationFactory
     public static final String DATA = "data";
     private static final String TAG = "nf_push_notificationFactory";
     
-    public static Intent createDummyGcmInfoIntent(final Payload.ActionInfoType actionInfoType) {
+    public static Intent createDummyGcmInfoIntent(final Payload$ActionInfoType payload$ActionInfoType) {
         final Intent intent = new Intent();
         intent.putExtra("profileId", "W6HQ56YURRBVHKDXMUT6FBHWRY");
-        intent.putExtra("type", actionInfoType.getValue());
+        intent.putExtra("type", payload$ActionInfoType.getValue());
         intent.putExtra("when", "1408065095164");
         intent.putExtra("defaultActionKey", "INFO");
-        Log.d("nf_push_notificationFactory", String.format("Built gcmInfoEvent for type:%s, intent: %s", actionInfoType, intent));
+        Log.d("nf_push_notificationFactory", String.format("Built gcmInfoEvent for type:%s, intent: %s", payload$ActionInfoType, intent));
         return intent;
     }
     

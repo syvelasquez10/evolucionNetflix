@@ -8,7 +8,7 @@ import com.google.android.gms.ads.purchase.InAppPurchaseResult;
 import com.google.android.gms.ads.purchase.PlayStorePurchaseListener;
 
 @ez
-public final class eq extends el.a
+public final class eq extends el$a
 {
     private final PlayStorePurchaseListener oD;
     

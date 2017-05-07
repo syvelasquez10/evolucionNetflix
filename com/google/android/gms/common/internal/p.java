@@ -4,8 +4,10 @@
 
 package com.google.android.gms.common.internal;
 
+import com.google.android.gms.R$string;
+import com.google.android.gms.R$color;
 import android.graphics.Typeface;
-import com.google.android.gms.R;
+import com.google.android.gms.R$drawable;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -42,11 +44,11 @@ public final class p extends Button
             }
             case 0:
             case 1: {
-                n = this.b(n2, R.drawable.common_signin_btn_text_dark, R.drawable.common_signin_btn_text_light);
+                n = this.b(n2, R$drawable.common_signin_btn_text_dark, R$drawable.common_signin_btn_text_light);
                 break;
             }
             case 2: {
-                n = this.b(n2, R.drawable.common_signin_btn_icon_dark, R.drawable.common_signin_btn_icon_light);
+                n = this.b(n2, R$drawable.common_signin_btn_icon_dark, R$drawable.common_signin_btn_icon_light);
                 break;
             }
         }
@@ -65,16 +67,16 @@ public final class p extends Button
     }
     
     private void c(final Resources resources, final int n, final int n2) {
-        this.setTextColor(resources.getColorStateList(this.b(n2, R.color.common_signin_btn_text_dark, R.color.common_signin_btn_text_light)));
+        this.setTextColor(resources.getColorStateList(this.b(n2, R$color.common_signin_btn_text_dark, R$color.common_signin_btn_text_light)));
         switch (n) {
             default: {
                 throw new IllegalStateException("Unknown button size: " + n);
             }
             case 0: {
-                this.setText((CharSequence)resources.getString(R.string.common_signin_button_text));
+                this.setText((CharSequence)resources.getString(R$string.common_signin_button_text));
             }
             case 1: {
-                this.setText((CharSequence)resources.getString(R.string.common_signin_button_text_long));
+                this.setText((CharSequence)resources.getString(R$string.common_signin_button_text_long));
             }
             case 2: {
                 this.setText((CharSequence)null);

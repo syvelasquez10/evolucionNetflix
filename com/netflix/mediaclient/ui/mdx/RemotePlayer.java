@@ -7,15 +7,13 @@ package com.netflix.mediaclient.ui.mdx;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.ui.mdx.events.MdxEventHandler;
 import com.netflix.mediaclient.util.ThreadUtils;
-import android.content.Context;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.app.Activity;
-import com.netflix.mediaclient.service.mdx.MdxAgent;
+import android.content.Context;
+import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
-import java.util.HashSet;
 import com.netflix.mediaclient.ui.mdx.events.MdxEventHandlerFactory;
 import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -40,7 +38,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     private static final String TAG = "mdx_remote_player";
     private final NetflixActivity mActivity;
     private Language mCachedLanguage;
-    private final RemoteTargetUiListener mCallback;
+    private final RemotePlayer$RemoteTargetUiListener mCallback;
     private MdxTargetCapabilities mCapabilities;
     private int mDuration;
     private final MdxEventHandlerFactory mMdxEventFactory;
@@ -55,22 +53,10 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     private boolean userDidSeek;
     
     static {
-        SHOW_MINI_PLAYER_STATES = new HashSet<String>() {
-            {
-                this.add("PLAY");
-                this.add("PROGRESS");
-                this.add("PLAYING");
-                this.add("PAUSE");
-                this.add("STALLED");
-                this.add("AUTO_ADVANCE");
-                this.add("prepause");
-                this.add("preseek");
-                this.add("preplay");
-            }
-        };
+        SHOW_MINI_PLAYER_STATES = new RemotePlayer$1();
     }
     
-    public RemotePlayer(final NetflixActivity mActivity, final RemoteTargetUiListener mCallback) {
+    public RemotePlayer(final NetflixActivity mActivity, final RemotePlayer$RemoteTargetUiListener mCallback) {
         this.mMdxEventFactory = new MdxEventHandlerFactory();
         this.mState = "PLAY";
         Log.v("mdx_remote_player", "Remote player created");
@@ -88,7 +74,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     private Intent createIntent(final String s) {
         final ServiceManager serviceManager = this.mActivity.getServiceManager();
         if (ServiceManagerUtils.isMdxAgentAvailable(serviceManager)) {
-            return MdxAgent.Utils.createIntent(this.mActivity, s, serviceManager.getMdx().getCurrentTarget());
+            return MdxAgent$Utils.createIntent((Context)this.mActivity, s, serviceManager.getMdx().getCurrentTarget());
         }
         return null;
     }
@@ -259,7 +245,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     
     public void play(final Asset asset) {
         this.resetLanguageData();
-        if (!MdxAgent.Utils.playVideo(this.mActivity, asset, false)) {
+        if (!MdxAgent$Utils.playVideo(this.mActivity, asset, false)) {
             return;
         }
         this.userDidPlayPause = true;
@@ -301,20 +287,21 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
         }
     }
     
-    public void setVolume(int mVolume) {
-        if (this.mVolume <= 0 && mVolume <= 0) {
+    public void setVolume(int n) {
+        final int n2 = 100;
+        if (this.mVolume <= 0 && n <= 0) {
             Log.d("mdx_remote_player", "Volume is already less than 0 and it can not be turned down more. Do nothing.");
         }
         else {
-            if (this.mVolume >= 100 && mVolume >= 100) {
+            if (this.mVolume >= 100 && n >= 100) {
                 Log.d("mdx_remote_player", "Volume is already more than 100 and it can not be turned up more. Do nothing.");
                 return;
             }
-            int n;
-            if ((n = mVolume) > 100) {
-                n = 100;
+            if (n > 100) {
+                n = n2;
             }
-            if ((mVolume = n) < 0) {
+            int mVolume = n;
+            if (n < 0) {
                 mVolume = 0;
             }
             this.mVolume = mVolume;
@@ -437,7 +424,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
         this.mState = mState;
         this.mPositionInSeconds = mPositionInSeconds;
         this.mVolume = mVolume;
-        this.mCallback.updateUi(new RemoteTargetState(this.isPaused(), this.isStalled(), mPositionInSeconds, this.mDuration, mVolume, RemotePlayer.SHOW_MINI_PLAYER_STATES.contains(mState)));
+        this.mCallback.updateUi(new RemotePlayer$RemoteTargetState(this, this.isPaused(), this.isStalled(), mPositionInSeconds, this.mDuration, mVolume, RemotePlayer.SHOW_MINI_PLAYER_STATES.contains(mState), null));
     }
     
     public void updateTargetCapabilities(final MdxTargetCapabilities mCapabilities) {
@@ -447,54 +434,5 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     
     public void updateVideoMetadata() {
         this.mCallback.updateVideoMetadata();
-    }
-    
-    public class RemoteTargetState
-    {
-        public final boolean buffering;
-        public final int duration;
-        public final boolean paused;
-        public final int positionInSeconds;
-        public final boolean showMiniPlayer;
-        public final int volume;
-        
-        private RemoteTargetState(final boolean paused, final boolean buffering, final int positionInSeconds, final int duration, final int volume, final boolean showMiniPlayer) {
-            this.paused = paused;
-            this.buffering = buffering;
-            this.positionInSeconds = positionInSeconds;
-            this.duration = duration;
-            this.volume = volume;
-            this.showMiniPlayer = showMiniPlayer;
-        }
-        
-        @Override
-        public String toString() {
-            return "RemoteTargetState [paused=" + this.paused + ", buffering=" + this.buffering + ", position(seconds)=" + this.positionInSeconds + ", duration=" + this.duration + ", volume=" + this.volume + ", showMiniPlayer=" + this.showMiniPlayer + "]";
-        }
-    }
-    
-    public interface RemoteTargetUiListener
-    {
-        void cancelDialog();
-        
-        void endOfPlayback();
-        
-        void error(final int p0, final String p1);
-        
-        void mdxStateChanged(final boolean p0);
-        
-        void showDialog(final RemoteDialog p0);
-        
-        void targetListChanged();
-        
-        void updateDuration(final int p0);
-        
-        void updateLanguage(final Language p0);
-        
-        void updateTargetCapabilities(final MdxTargetCapabilities p0);
-        
-        void updateUi(final RemoteTargetState p0);
-        
-        void updateVideoMetadata();
     }
 }

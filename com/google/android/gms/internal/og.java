@@ -4,6 +4,7 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.HashSet;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.Set;
@@ -11,45 +12,45 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class og implements Parcelable$Creator<ny.f>
+public class og implements Parcelable$Creator<ny$f>
 {
-    static void a(final ny.f f, final Parcel parcel, int d) {
+    static void a(final ny$f ny$f, final Parcel parcel, int d) {
         d = b.D(parcel);
-        final Set<Integer> alR = f.alR;
+        final Set<Integer> alR = ny$f.alR;
         if (alR.contains(1)) {
-            b.c(parcel, 1, f.BR);
+            b.c(parcel, 1, ny$f.BR);
         }
         if (alR.contains(2)) {
-            b.a(parcel, 2, f.ant, true);
+            b.a(parcel, 2, ny$f.ant, true);
         }
         if (alR.contains(3)) {
-            b.a(parcel, 3, f.Tg, true);
+            b.a(parcel, 3, ny$f.Tg, true);
         }
         if (alR.contains(4)) {
-            b.a(parcel, 4, f.amo, true);
+            b.a(parcel, 4, ny$f.amo, true);
         }
         if (alR.contains(5)) {
-            b.a(parcel, 5, f.anu, true);
+            b.a(parcel, 5, ny$f.anu, true);
         }
         if (alR.contains(6)) {
-            b.a(parcel, 6, f.mName, true);
+            b.a(parcel, 6, ny$f.mName, true);
         }
         if (alR.contains(7)) {
-            b.a(parcel, 7, f.anv);
+            b.a(parcel, 7, ny$f.anv);
         }
         if (alR.contains(8)) {
-            b.a(parcel, 8, f.amE, true);
+            b.a(parcel, 8, ny$f.amE, true);
         }
         if (alR.contains(9)) {
-            b.a(parcel, 9, f.No, true);
+            b.a(parcel, 9, ny$f.No, true);
         }
         if (alR.contains(10)) {
-            b.c(parcel, 10, f.FD);
+            b.c(parcel, 10, ny$f.FD);
         }
         b.H(parcel, d);
     }
     
-    public ny.f dk(final Parcel parcel) {
+    public ny$f dk(final Parcel parcel) {
         int g = 0;
         String o = null;
         final int c = a.C(parcel);
@@ -122,12 +123,12 @@ public class og implements Parcelable$Creator<ny.f>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
-        return new ny.f(set, g2, o7, o6, o5, o4, o3, c2, o2, o, g);
+        return new ny$f(set, g2, o7, o6, o5, o4, o3, c2, o2, o, g);
     }
     
-    public ny.f[] fb(final int n) {
-        return new ny.f[n];
+    public ny$f[] fb(final int n) {
+        return new ny$f[n];
     }
 }

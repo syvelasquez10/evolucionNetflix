@@ -4,6 +4,7 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.HashSet;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.Set;
@@ -11,30 +12,30 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class oi implements Parcelable$Creator<ny.h>
+public class oi implements Parcelable$Creator<ny$h>
 {
-    static void a(final ny.h h, final Parcel parcel, int d) {
+    static void a(final ny$h ny$h, final Parcel parcel, int d) {
         d = b.D(parcel);
-        final Set<Integer> alR = h.alR;
+        final Set<Integer> alR = ny$h.alR;
         if (alR.contains(1)) {
-            b.c(parcel, 1, h.BR);
+            b.c(parcel, 1, ny$h.BR);
         }
         if (alR.contains(3)) {
-            b.c(parcel, 3, h.nB());
+            b.c(parcel, 3, ny$h.nB());
         }
         if (alR.contains(4)) {
-            b.a(parcel, 4, h.mValue, true);
+            b.a(parcel, 4, ny$h.mValue, true);
         }
         if (alR.contains(5)) {
-            b.a(parcel, 5, h.anw, true);
+            b.a(parcel, 5, ny$h.anw, true);
         }
         if (alR.contains(6)) {
-            b.c(parcel, 6, h.FD);
+            b.c(parcel, 6, ny$h.FD);
         }
         b.H(parcel, d);
     }
     
-    public ny.h dm(final Parcel parcel) {
+    public ny$h dm(final Parcel parcel) {
         String o = null;
         int g = 0;
         final int c = a.C(parcel);
@@ -77,12 +78,12 @@ public class oi implements Parcelable$Creator<ny.h>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
-        return new ny.h(set, g3, o2, g2, o, g);
+        return new ny$h(set, g3, o2, g2, o, g);
     }
     
-    public ny.h[] fd(final int n) {
-        return new ny.h[n];
+    public ny$h[] fd(final int n) {
+        return new ny$h[n];
     }
 }

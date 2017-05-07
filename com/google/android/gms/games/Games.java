@@ -4,15 +4,12 @@
 
 package com.google.android.gms.games;
 
-import java.util.ArrayList;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.BaseImplementation;
-import android.os.RemoteException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.PendingResult;
 import android.view.View;
 import android.content.Intent;
 import com.google.android.gms.common.internal.n;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.internal.api.AclsImpl;
 import com.google.android.gms.games.internal.api.SnapshotsImpl;
 import com.google.android.gms.games.internal.api.RequestsImpl;
@@ -27,10 +24,6 @@ import com.google.android.gms.games.internal.api.LeaderboardsImpl;
 import com.google.android.gms.games.internal.api.EventsImpl;
 import com.google.android.gms.games.internal.api.AchievementsImpl;
 import com.google.android.gms.games.internal.api.GamesMetadataImpl;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.internal.ClientSettings;
-import android.os.Looper;
-import android.content.Context;
 import com.google.android.gms.games.internal.game.Acls;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
@@ -42,16 +35,18 @@ import com.google.android.gms.games.quest.Quests;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.games.multiplayer.Invitations;
 import com.google.android.gms.games.event.Events;
+import com.google.android.gms.common.api.Api$b;
 import com.google.android.gms.games.internal.GamesClientImpl;
+import com.google.android.gms.common.api.Api$c;
 import com.google.android.gms.games.achievement.Achievements;
 import com.google.android.gms.common.api.Api;
 
 public final class Games
 {
-    public static final Api<GamesOptions> API;
+    public static final Api<Games$GamesOptions> API;
     public static final Achievements Achievements;
-    static final Api.c<GamesClientImpl> CU;
-    private static final Api.b<GamesClientImpl, GamesOptions> CV;
+    static final Api$c<GamesClientImpl> CU;
+    private static final Api$b<GamesClientImpl, Games$GamesOptions> CV;
     public static final String EXTRA_PLAYER_IDS = "players";
     public static final Events Events;
     public static final GamesMetadata GamesMetadata;
@@ -66,29 +61,17 @@ public final class Games
     public static final Snapshots Snapshots;
     public static final TurnBasedMultiplayer TurnBasedMultiplayer;
     public static final Scope Vo;
-    public static final Api<GamesOptions> Vp;
+    public static final Api<Games$GamesOptions> Vp;
     public static final Multiplayer Vq;
     public static final Acls Vr;
     
     static {
-        CU = new Api.c();
-        CV = new Api.b<GamesClientImpl, GamesOptions>() {
-            public GamesClientImpl a(final Context context, final Looper looper, final ClientSettings clientSettings, GamesOptions gamesOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
-                if (gamesOptions == null) {
-                    gamesOptions = new GamesOptions();
-                }
-                return new GamesClientImpl(context, looper, clientSettings.getRealClientPackageName(), clientSettings.getAccountNameOrDefault(), connectionCallbacks, onConnectionFailedListener, clientSettings.getScopesArray(), clientSettings.getGravityForPopups(), clientSettings.getViewForPopups(), gamesOptions);
-            }
-            
-            @Override
-            public int getPriority() {
-                return 1;
-            }
-        };
+        CU = new Api$c<GamesClientImpl>();
+        CV = new Games$1();
         SCOPE_GAMES = new Scope("https://www.googleapis.com/auth/games");
-        API = new Api<GamesOptions>((Api.b<C, GamesOptions>)Games.CV, (Api.c<C>)Games.CU, new Scope[] { Games.SCOPE_GAMES });
+        API = new Api<Games$GamesOptions>((Api$b<C, Games$GamesOptions>)Games.CV, (Api$c<C>)Games.CU, new Scope[] { Games.SCOPE_GAMES });
         Vo = new Scope("https://www.googleapis.com/auth/games.firstparty");
-        Vp = new Api<GamesOptions>((Api.b<C, GamesOptions>)Games.CV, (Api.c<C>)Games.CU, new Scope[] { Games.Vo });
+        Vp = new Api<Games$GamesOptions>((Api$b<C, Games$GamesOptions>)Games.CV, (Api$c<C>)Games.CU, new Scope[] { Games.Vo });
         GamesMetadata = new GamesMetadataImpl();
         Achievements = new AchievementsImpl();
         Events = new EventsImpl();
@@ -143,101 +126,6 @@ public final class Games
     }
     
     public static PendingResult<Status> signOut(final GoogleApiClient googleApiClient) {
-        return googleApiClient.b((PendingResult<Status>)new SignOutImpl() {
-            protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.b((BaseImplementation.b<Status>)this);
-            }
-        });
-    }
-    
-    public abstract static class BaseGamesApiMethodImpl<R extends Result> extends a<R, GamesClientImpl>
-    {
-        public BaseGamesApiMethodImpl() {
-            super(Games.CU);
-        }
-    }
-    
-    public static final class GamesOptions implements Optional
-    {
-        public final boolean Vs;
-        public final boolean Vt;
-        public final int Vu;
-        public final boolean Vv;
-        public final int Vw;
-        public final String Vx;
-        public final ArrayList<String> Vy;
-        
-        private GamesOptions() {
-            this.Vs = false;
-            this.Vt = true;
-            this.Vu = 17;
-            this.Vv = false;
-            this.Vw = 4368;
-            this.Vx = null;
-            this.Vy = new ArrayList<String>();
-        }
-        
-        private GamesOptions(final Builder builder) {
-            this.Vs = builder.Vs;
-            this.Vt = builder.Vt;
-            this.Vu = builder.Vu;
-            this.Vv = builder.Vv;
-            this.Vw = builder.Vw;
-            this.Vx = builder.Vx;
-            this.Vy = builder.Vy;
-        }
-        
-        public static Builder builder() {
-            return new Builder();
-        }
-        
-        public static final class Builder
-        {
-            boolean Vs;
-            boolean Vt;
-            int Vu;
-            boolean Vv;
-            int Vw;
-            String Vx;
-            ArrayList<String> Vy;
-            
-            private Builder() {
-                this.Vs = false;
-                this.Vt = true;
-                this.Vu = 17;
-                this.Vv = false;
-                this.Vw = 4368;
-                this.Vx = null;
-                this.Vy = new ArrayList<String>();
-            }
-            
-            public GamesOptions build() {
-                return new GamesOptions(this);
-            }
-            
-            public Builder setSdkVariant(final int vw) {
-                this.Vw = vw;
-                return this;
-            }
-            
-            public Builder setShowConnectingPopup(final boolean vt) {
-                this.Vt = vt;
-                this.Vu = 17;
-                return this;
-            }
-            
-            public Builder setShowConnectingPopup(final boolean vt, final int vu) {
-                this.Vt = vt;
-                this.Vu = vu;
-                return this;
-            }
-        }
-    }
-    
-    private abstract static class SignOutImpl extends BaseGamesApiMethodImpl<Status>
-    {
-        public Status d(final Status status) {
-            return status;
-        }
+        return googleApiClient.b((PendingResult<Status>)new Games$2());
     }
 }

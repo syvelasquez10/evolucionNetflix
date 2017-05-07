@@ -81,17 +81,14 @@ public final class PlayerTypeFactory
     }
     
     private static PlayerType getPlayerTypeFromPreferences(final Context context) {
-        int intPref = -1;
-        if (-1 < 1) {
-            Log.d("nf-playertypefactory", "Check for configuration override override");
-            intPref = PreferenceUtils.getIntPref(context, "nflx_player_type", -1);
-        }
-        PlayerType playerType;
+        Log.d("nf-playertypefactory", "Check for configuration override override");
+        final int intPref = PreferenceUtils.getIntPref(context, "nflx_player_type", -1);
         if (intPref < 1) {
             Log.d("nf-playertypefactory", "Player type was not saved in preferences before, no override.");
-            playerType = null;
+            return null;
         }
-        else if ((playerType = PlayerType.toPlayerType(intPref)) == null) {
+        final PlayerType playerType = PlayerType.toPlayerType(intPref);
+        if (playerType == null) {
             Log.e("nf-playertypefactory", "Player not found for type " + intPref);
             return null;
         }
@@ -250,26 +247,19 @@ public final class PlayerTypeFactory
             if (currentType != null) {
                 break Label_0019;
             }
-        Label_0053_Outer:
             while (true) {
                 try {
                     Log.w("nf-playertypefactory", "setPlayerTypeForQAOverride: Type is null, do nothing!");
                     return;
-                    // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
-                    // iftrue(Label_0077:, isValidPlayerType(currentType))
                     while (true) {
-                        Block_6: {
-                            break Block_6;
-                            while (true) {
-                                Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
-                                return;
-                                continue Label_0053_Outer;
-                            }
-                        }
+                        Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
+                        return;
                         Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
                         continue;
                     }
                 }
+                // iftrue(Label_0077:, isValidPlayerType(currentType))
+                // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)

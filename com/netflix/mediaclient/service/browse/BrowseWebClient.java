@@ -58,7 +58,7 @@ public interface BrowseWebClient
     
     boolean isSynchronous();
     
-    void logBillboardActivity(final Video p0, final BrowseAgent.BillboardActivityType p1);
+    void logBillboardActivity(final Video p0, final BrowseAgent$BillboardActivityType p1);
     
     void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0, final BrowseAgentCallback p1);
     

@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.details;
 import java.util.Collections;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
@@ -87,7 +88,7 @@ public class DummyMovieDetails implements MovieDetails
     
     @Override
     public int getNumDirectors() {
-        return com.netflix.mediaclient.service.webclient.model.MovieDetails.getNumDirectors(this.getDirectors());
+        return StringUtils.getCsvCount(this.getDirectors());
     }
     
     @Override

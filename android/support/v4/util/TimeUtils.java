@@ -75,65 +75,90 @@ public class TimeUtils
             c = '+';
         }
         else {
-            c = '-';
             n = -n;
+            c = '-';
         }
         final int n2 = (int)(n % 1000L);
         final int n3 = (int)Math.floor(n / 1000L);
         int n4 = 0;
-        int n5 = 0;
-        int n6 = 0;
-        int n7 = n3;
+        int n5 = n3;
         if (n3 > 86400) {
             n4 = n3 / 86400;
-            n7 = n3 - 86400 * n4;
+            n5 = n3 - 86400 * n4;
+        }
+        int n6;
+        if (n5 > 3600) {
+            n5 -= (n6 = n5 / 3600) * 3600;
+        }
+        else {
+            n6 = 0;
         }
         int n8;
-        if ((n8 = n7) > 3600) {
-            n5 = n7 / 3600;
-            n8 = n7 - n5 * 3600;
+        int n7;
+        if (n5 > 60) {
+            n7 = n5 - (n8 = n5 / 60) * 60;
         }
-        int n9;
-        if ((n9 = n8) > 60) {
-            n6 = n8 / 60;
-            n9 = n8 - n6 * 60;
+        else {
+            n8 = 0;
+            n7 = n5;
         }
-        int n10 = 0;
-        final int n11 = 0;
+        int n15;
         if (printField != 0) {
             final int accumField = accumField(n4, 1, false, 0);
-            final int n12 = accumField + accumField(n5, 1, accumField > 0, 2);
-            final int n13 = n12 + accumField(n6, 1, n12 > 0, 2);
-            final int n14 = n13 + accumField(n9, 1, n13 > 0, 2);
-            int n15;
-            if (n14 > 0) {
-                n15 = 3;
+            final int n9 = accumField + accumField(n6, 1, accumField > 0, 2);
+            final int n10 = n9 + accumField(n8, 1, n9 > 0, 2);
+            final int n11 = n10 + accumField(n7, 1, n10 > 0, 2);
+            int n12;
+            if (n11 > 0) {
+                n12 = 3;
             }
             else {
-                n15 = 0;
+                n12 = 0;
             }
-            int n16 = n14 + (accumField(n2, 2, true, n15) + 1);
-            int n17 = n11;
+            final int accumField2 = accumField(n2, 2, true, n12);
+            int n13 = 0;
+            int n14 = accumField2 + 1 + n11;
             while (true) {
-                n10 = n17;
-                if (n16 >= printField) {
+                n15 = n13;
+                if (n14 >= printField) {
                     break;
                 }
-                sFormatStr[n17] = ' ';
-                ++n17;
-                ++n16;
+                sFormatStr[n13] = ' ';
+                ++n14;
+                ++n13;
             }
         }
-        sFormatStr[n10] = c;
-        final int n18 = n10 + 1;
+        else {
+            n15 = 0;
+        }
+        sFormatStr[n15] = c;
+        final int n16 = n15 + 1;
         if (printField != 0) {
             printField = 1;
         }
         else {
             printField = 0;
         }
-        final int printField2 = printField(sFormatStr, n4, 'd', n18, false, 0);
-        final boolean b = printField2 != n18;
+        final int printField2 = printField(sFormatStr, n4, 'd', n16, false, 0);
+        final boolean b = printField2 != n16;
+        int n17;
+        if (printField != 0) {
+            n17 = 2;
+        }
+        else {
+            n17 = 0;
+        }
+        final int printField3 = printField(sFormatStr, n6, 'h', printField2, b, n17);
+        final boolean b2 = printField3 != n16;
+        int n18;
+        if (printField != 0) {
+            n18 = 2;
+        }
+        else {
+            n18 = 0;
+        }
+        final int printField4 = printField(sFormatStr, n8, 'm', printField3, b2, n18);
+        final boolean b3 = printField4 != n16;
         int n19;
         if (printField != 0) {
             n19 = 2;
@@ -141,26 +166,8 @@ public class TimeUtils
         else {
             n19 = 0;
         }
-        final int printField3 = printField(sFormatStr, n5, 'h', printField2, b, n19);
-        final boolean b2 = printField3 != n18;
-        int n20;
-        if (printField != 0) {
-            n20 = 2;
-        }
-        else {
-            n20 = 0;
-        }
-        final int printField4 = printField(sFormatStr, n6, 'm', printField3, b2, n20);
-        final boolean b3 = printField4 != n18;
-        int n21;
-        if (printField != 0) {
-            n21 = 2;
-        }
-        else {
-            n21 = 0;
-        }
-        final int printField5 = printField(sFormatStr, n9, 's', printField4, b3, n21);
-        if (printField != 0 && printField5 != n18) {
+        final int printField5 = printField(sFormatStr, n7, 's', printField4, b3, n19);
+        if (printField != 0 && printField5 != n16) {
             printField = 3;
         }
         else {
@@ -178,35 +185,32 @@ public class TimeUtils
                 return n4;
             }
         }
-        int n5 = 0;
-        int n6 = 0;
-        Label_0064: {
-            if (!b || n3 < 3) {
-                n5 = n;
-                n6 = n2;
-                if (n <= 99) {
-                    break Label_0064;
-                }
-            }
-            final int n7 = n / 100;
-            array[n2] = (char)(n7 + 48);
+        int n6;
+        if ((b && n3 >= 3) || n > 99) {
+            final int n5 = n / 100;
+            array[n2] = (char)(n5 + 48);
             n6 = n2 + 1;
-            n5 = n - n7 * 100;
+            n -= n5 * 100;
         }
-        Label_0124: {
-            if ((!b || n3 < 2) && n5 <= 9) {
-                n3 = n5;
-                if (n2 == (n = n6)) {
-                    break Label_0124;
+        else {
+            n6 = n2;
+        }
+        int n7 = 0;
+        Label_0115: {
+            if ((!b || n3 < 2) && n <= 9) {
+                n7 = n6;
+                n3 = n;
+                if (n2 == n6) {
+                    break Label_0115;
                 }
             }
-            n2 = n5 / 10;
+            n2 = n / 10;
             array[n6] = (char)(n2 + 48);
-            n = n6 + 1;
-            n3 = n5 - n2 * 10;
+            n7 = n6 + 1;
+            n3 = n - n2 * 10;
         }
-        array[n] = (char)(n3 + 48);
-        ++n;
+        array[n7] = (char)(n3 + 48);
+        n = n7 + 1;
         array[n] = c;
         return n + 1;
     }

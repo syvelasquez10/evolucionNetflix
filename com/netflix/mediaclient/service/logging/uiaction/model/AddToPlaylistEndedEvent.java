@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.service.logging.uiaction.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 
 public class AddToPlaylistEndedEvent extends BaseUIActionSessionEndedEvent
@@ -18,18 +18,18 @@ public class AddToPlaylistEndedEvent extends BaseUIActionSessionEndedEvent
     public static final String UIA_SESSION_NAME = "addToPlaylist";
     private int mTitleRank;
     
-    public AddToPlaylistEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging.ModalView modalView, final UserActionLogging.CommandName commandName, final IClientLogging.CompletionReason completionReason, final UIError uiError, final int mTitleRank) {
-        super("addToPlaylist", deviceUniqueId, n, modalView, commandName, completionReason, uiError);
+    public AddToPlaylistEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging$ModalView clientLogging$ModalView, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final int mTitleRank) {
+        super("addToPlaylist", deviceUniqueId, n, clientLogging$ModalView, userActionLogging$CommandName, clientLogging$CompletionReason, uiError);
         this.mTitleRank = mTitleRank;
     }
     
-    public AddToPlaylistEndedEvent(final JSONObject jsonObject) throws JSONException {
+    public AddToPlaylistEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
         this.mTitleRank = JsonUtils.getInt(jsonObject, "titleRank", 0);
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         final JSONObject data = super.getData();
         data.put("titleRank", this.mTitleRank);
         return data;

@@ -9,38 +9,17 @@ import android.os.Build$VERSION;
 
 public class PopupMenuCompat
 {
-    static final PopupMenuImpl IMPL;
+    static final PopupMenuCompat$PopupMenuImpl IMPL;
     
     static {
         if (Build$VERSION.SDK_INT >= 19) {
-            IMPL = (PopupMenuImpl)new KitKatPopupMenuImpl();
+            IMPL = new PopupMenuCompat$KitKatPopupMenuImpl();
             return;
         }
-        IMPL = (PopupMenuImpl)new BasePopupMenuImpl();
+        IMPL = new PopupMenuCompat$BasePopupMenuImpl();
     }
     
     public static View$OnTouchListener getDragToOpenListener(final Object o) {
         return PopupMenuCompat.IMPL.getDragToOpenListener(o);
-    }
-    
-    static class BasePopupMenuImpl implements PopupMenuImpl
-    {
-        @Override
-        public View$OnTouchListener getDragToOpenListener(final Object o) {
-            return null;
-        }
-    }
-    
-    static class KitKatPopupMenuImpl extends BasePopupMenuImpl
-    {
-        @Override
-        public View$OnTouchListener getDragToOpenListener(final Object o) {
-            return PopupMenuCompatKitKat.getDragToOpenListener(o);
-        }
-    }
-    
-    interface PopupMenuImpl
-    {
-        View$OnTouchListener getDragToOpenListener(final Object p0);
     }
 }

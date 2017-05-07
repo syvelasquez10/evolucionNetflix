@@ -5,14 +5,14 @@
 package com.netflix.mediaclient.service.logging.social;
 
 import com.netflix.mediaclient.service.logging.social.model.SocialConnectSessionEnded;
-import com.netflix.mediaclient.servicemgr.SocialLogging;
+import com.netflix.mediaclient.servicemgr.SocialLogging$Channel;
 
 public class SocialConnectSession extends BaseSocialSession
 {
     public static final String NAME = "socialConnect";
-    private SocialLogging.Channel mChannel;
+    private SocialLogging$Channel mChannel;
     
-    public SocialConnectSession(final SocialLogging.Channel mChannel) {
+    public SocialConnectSession(final SocialLogging$Channel mChannel) {
         this.mChannel = mChannel;
     }
     

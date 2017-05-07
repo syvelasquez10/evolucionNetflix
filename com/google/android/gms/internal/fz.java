@@ -33,9 +33,9 @@ public final class fz
     public final ay vr;
     public final long vs;
     public final long vt;
-    public final bq.a vu;
+    public final bq$a vu;
     
-    public fz(final av tx, final gv rn, final List<String> list, final int errorCode, final List<String> list2, final List<String> list3, final int orientation, final long qj, final String ta, final boolean ti, final cl qy, final cu qz, final String qa, final cm vq, final co qb, final long tj, final ay vr, final long th, final long vs, final long vt, final String tn, final JSONObject vp, final bq.a vu) {
+    public fz(final av tx, final gv rn, final List<String> list, final int errorCode, final List<String> list2, final List<String> list3, final int orientation, final long qj, final String ta, final boolean ti, final cl qy, final cu qz, final String qa, final cm vq, final co qb, final long tj, final ay vr, final long th, final long vs, final long vt, final String tn, final JSONObject vp, final bq$a vu) {
         this.tx = tx;
         this.rN = rn;
         List<String> unmodifiableList;
@@ -82,31 +82,7 @@ public final class fz
         this.vu = vu;
     }
     
-    public fz(final a a, final gv gv, final cl cl, final cu cu, final String s, final co co, final bq.a a2) {
-        this(a.vv.tx, gv, a.vw.qf, a.errorCode, a.vw.qg, a.vw.tK, a.vw.orientation, a.vw.qj, a.vv.tA, a.vw.tI, cl, cu, s, a.vq, co, a.vw.tJ, a.lH, a.vw.tH, a.vs, a.vt, a.vw.tN, a.vp, a2);
-    }
-    
-    @ez
-    public static final class a
-    {
-        public final int errorCode;
-        public final ay lH;
-        public final JSONObject vp;
-        public final cm vq;
-        public final long vs;
-        public final long vt;
-        public final fi vv;
-        public final fk vw;
-        
-        public a(final fi vv, final fk vw, final cm vq, final ay lh, final int errorCode, final long vs, final long vt, final JSONObject vp) {
-            this.vv = vv;
-            this.vw = vw;
-            this.vq = vq;
-            this.lH = lh;
-            this.errorCode = errorCode;
-            this.vs = vs;
-            this.vt = vt;
-            this.vp = vp;
-        }
+    public fz(final fz$a fz$a, final gv gv, final cl cl, final cu cu, final String s, final co co, final bq$a bq$a) {
+        this(fz$a.vv.tx, gv, fz$a.vw.qf, fz$a.errorCode, fz$a.vw.qg, fz$a.vw.tK, fz$a.vw.orientation, fz$a.vw.qj, fz$a.vv.tA, fz$a.vw.tI, cl, cu, s, fz$a.vq, co, fz$a.vw.tJ, fz$a.lH, fz$a.vw.tH, fz$a.vs, fz$a.vt, fz$a.vw.tN, fz$a.vp, bq$a);
     }
 }

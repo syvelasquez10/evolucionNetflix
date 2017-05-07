@@ -7,14 +7,14 @@ package com.netflix.mediaclient.ui.lomo;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.Log;
 import android.content.Context;
 import android.view.View;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import java.util.concurrent.TimeUnit;
@@ -22,11 +22,11 @@ import java.util.Map;
 import com.viewpagerindicator.CirclePageIndicator;
 import android.os.Handler;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter;
+import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$LoMoRowContent;
 import com.netflix.mediaclient.android.fragment.CustomViewPager;
 
 @SuppressLint({ "ViewConstructor" })
-public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
+public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$LoMoRowContent
 {
     private static final float KIDS_TOUCH_SLOP_SCALE_FACTOR = 0.75f;
     private static final long ROTATE_TO_NEXT_VIEW_DELAY_MS;
@@ -36,7 +36,7 @@ public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
     private final CirclePageIndicator pageIndicator;
     private final Runnable rotateToNextViewRunnable;
     private boolean shouldAutoPaginate;
-    private State state;
+    private LoMoViewPager$State state;
     private String stateKey;
     private final Map<String, Object> stateMap;
     
@@ -44,30 +44,14 @@ public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
         ROTATE_TO_NEXT_VIEW_DELAY_MS = TimeUnit.MILLISECONDS.convert(15L, TimeUnit.SECONDS);
     }
     
-    public LoMoViewPager(final LoLoMoFrag loLoMoFrag, final ServiceManager serviceManager, final CirclePageIndicator pageIndicator, final ObjectRecycler.ViewRecycler viewRecycler, final View view, final boolean b) {
+    public LoMoViewPager(final LoLoMoFrag loLoMoFrag, final ServiceManager serviceManager, final CirclePageIndicator pageIndicator, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final View view, final boolean b) {
         super((Context)loLoMoFrag.getActivity());
-        this.rotateToNextViewRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (LoMoViewPager.this.getActivity().destroyed()) {
-                    return;
-                }
-                int n;
-                if ((n = LoMoViewPager.this.getCurrentItem() + 1) >= LoMoViewPager.this.adapter.getCount()) {
-                    n = 0;
-                }
-                if (Log.isLoggable("LoMoViewPager", 2)) {
-                    Log.v("LoMoViewPager", "Auto-rotating to next view, id: " + n);
-                }
-                LoMoViewPager.this.setCurrentItem(n, true, true);
-                LoMoViewPager.this.handler.postDelayed((Runnable)this, LoMoViewPager.ROTATE_TO_NEXT_VIEW_DELAY_MS);
-            }
-        };
+        this.rotateToNextViewRunnable = new LoMoViewPager$1(this);
         this.stateMap = loLoMoFrag.getStateMap();
         ThreadUtils.assertOnMain();
         this.handler = new Handler();
         this.pageIndicator = pageIndicator;
-        this.setAdapter(this.adapter = new LoMoViewPagerAdapter(this, serviceManager, viewRecycler, view, b));
+        this.setAdapter(this.adapter = new LoMoViewPagerAdapter(this, serviceManager, objectRecycler$ViewRecycler, view, b));
         if (loLoMoFrag.getNetflixActivity().isForKids()) {
             this.setTouchSlop((int)(this.getTouchSlop() * 0.75f));
         }
@@ -115,7 +99,7 @@ public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
     }
     
     private void saveState(final int currPage) {
-        this.state = new State();
+        this.state = new LoMoViewPager$State();
         this.state.currPage = currPage;
         this.state.adapterMemento = this.adapter.saveToMemento();
         if (Log.isLoggable("LoMoViewPager", 2)) {
@@ -255,16 +239,5 @@ public class LoMoViewPager extends CustomViewPager implements LoMoRowContent
     public void setCurrentItem(final int n, final boolean b, final boolean b2) {
         super.setCurrentItem(n, b, b2);
         this.onCurrentItemSet(n);
-    }
-    
-    public static class State
-    {
-        LoMoViewPagerAdapter.Memento adapterMemento;
-        int currPage;
-        
-        @Override
-        public String toString() {
-            return "Page: " + this.currPage + ", adapter: " + this.adapterMemento.toString();
-        }
     }
 }

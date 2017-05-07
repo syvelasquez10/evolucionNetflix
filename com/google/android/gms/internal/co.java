@@ -5,10 +5,10 @@
 package com.google.android.gms.internal;
 
 @ez
-public final class co extends cv.a
+public final class co extends cv$a
 {
     private final Object mw;
-    private cq.a qm;
+    private cq$a qm;
     private cn qn;
     
     public co() {
@@ -21,7 +21,7 @@ public final class co extends cv.a
         }
     }
     
-    public void a(final cq.a qm) {
+    public void a(final cq$a qm) {
         synchronized (this.mw) {
             this.qm = qm;
         }

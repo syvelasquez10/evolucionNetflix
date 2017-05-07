@@ -31,5 +31,5 @@ public interface DriveContents
     
     ParcelFileDescriptor getParcelFileDescriptor();
     
-    PendingResult<DriveApi.DriveContentsResult> reopenForWrite(final GoogleApiClient p0);
+    PendingResult<DriveApi$DriveContentsResult> reopenForWrite(final GoogleApiClient p0);
 }

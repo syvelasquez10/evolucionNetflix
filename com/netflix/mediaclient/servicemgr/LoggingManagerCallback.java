@@ -5,9 +5,10 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.UserRating;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
@@ -341,15 +342,15 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onSimilarVideosFetched(final SearchVideoList list, final Status status) {
+    public void onSimilarVideosFetched(final SearchVideoListProvider searchVideoListProvider, final Status status) {
         if (Log.isLoggable(this.tag, 2)) {
             final String tag = this.tag;
             int size;
-            if (list == null) {
+            if (searchVideoListProvider == null) {
                 size = -1;
             }
             else {
-                size = list.size();
+                size = searchVideoListProvider.getVideosList().size();
             }
             Log.v(tag, String.format("onSimilarVideosFetched, num videos: %d, status: %d", size, status.getStatusCode().getValue()));
         }
@@ -377,9 +378,17 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onVideoRatingSet(final Status status) {
+    public void onVideoRatingSet(final UserRating userRating, final Status status) {
         if (Log.isLoggable(this.tag, 2)) {
-            Log.v(this.tag, String.format("onVideoRatingSet, status: %d", status.getStatusCode().getValue()));
+            final String tag = this.tag;
+            float userRating2;
+            if (userRating == null) {
+                userRating2 = -1.0f;
+            }
+            else {
+                userRating2 = userRating.getUserRating();
+            }
+            Log.v(tag, String.format("onVideoRatingSet, rating: %f, status: %d", userRating2, status.getStatusCode().getValue()));
         }
     }
     

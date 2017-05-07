@@ -5,6 +5,7 @@
 package com.google.android.gms.internal;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -12,21 +13,21 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class ho implements Parcelable$Creator<hm.b>
+public class ho implements Parcelable$Creator<hm$b>
 {
-    static void a(final hm.b b, final Parcel parcel, final int n) {
+    static void a(final hm$b hm$b, final Parcel parcel, final int n) {
         final int d = b.D(parcel);
-        b.c(parcel, 1000, b.BR);
-        b.a(parcel, 1, (Parcelable)b.Ck, n, false);
-        b.c(parcel, 2, b.Cl, false);
+        b.c(parcel, 1000, hm$b.BR);
+        b.a(parcel, 1, (Parcelable)hm$b.Ck, n, false);
+        b.c(parcel, 2, hm$b.Cl, false);
         b.H(parcel, d);
     }
     
-    public hm.b[] N(final int n) {
-        return new hm.b[n];
+    public hm$b[] N(final int n) {
+        return new hm$b[n];
     }
     
-    public hm.b q(final Parcel parcel) {
+    public hm$b q(final Parcel parcel) {
         Object c = null;
         final int c2 = a.C(parcel);
         int g = 0;
@@ -53,8 +54,8 @@ public class ho implements Parcelable$Creator<hm.b>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
-        return new hm.b(g, status, (List<hs>)c);
+        return new hm$b(g, status, (List<hs>)c);
     }
 }

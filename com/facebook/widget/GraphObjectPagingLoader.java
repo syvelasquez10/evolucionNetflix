@@ -6,11 +6,13 @@ package com.facebook.widget;
 
 import android.os.Handler;
 import com.facebook.RequestBatch;
+import com.facebook.Request$Callback;
 import com.facebook.FacebookRequestError;
 import com.facebook.FacebookException;
 import com.facebook.internal.CacheableRequestBatch;
 import com.facebook.model.GraphObjectList;
 import java.util.Collection;
+import com.facebook.Response$PagingDirection;
 import com.facebook.Response;
 import android.content.Context;
 import com.facebook.Request;
@@ -25,7 +27,7 @@ class GraphObjectPagingLoader<T extends GraphObject> extends Loader<SimpleGraphO
     private final Class<T> graphObjectClass;
     private boolean loading;
     private Request nextRequest;
-    private OnErrorListener onErrorListener;
+    private GraphObjectPagingLoader$OnErrorListener onErrorListener;
     private Request originalRequest;
     private boolean skipRoundtripIfCached;
     
@@ -44,9 +46,9 @@ class GraphObjectPagingLoader<T extends GraphObject> extends Loader<SimpleGraphO
         else {
             simpleGraphObjectCursor = new SimpleGraphObjectCursor<T>(this.cursor);
         }
-        final PagedResults pagedResults = response.getGraphObjectAs(PagedResults.class);
+        final GraphObjectPagingLoader$PagedResults graphObjectPagingLoader$PagedResults = response.getGraphObjectAs(GraphObjectPagingLoader$PagedResults.class);
         final boolean isFromCache = response.getIsFromCache();
-        final GraphObjectList<T> castToList = pagedResults.getData().castToListOf(this.graphObjectClass);
+        final GraphObjectList<T> castToList = graphObjectPagingLoader$PagedResults.getData().castToListOf(this.graphObjectClass);
         boolean b;
         if (castToList.size() > 0) {
             b = true;
@@ -55,7 +57,7 @@ class GraphObjectPagingLoader<T extends GraphObject> extends Loader<SimpleGraphO
             b = false;
         }
         if (b) {
-            this.nextRequest = response.getRequestForPagedResults(Response.PagingDirection.NEXT);
+            this.nextRequest = response.getRequestForPagedResults(Response$PagingDirection.NEXT);
             simpleGraphObjectCursor.addGraphObjects(castToList, isFromCache);
             simpleGraphObjectCursor.setMoreObjectsAvailable(true);
         }
@@ -108,26 +110,14 @@ class GraphObjectPagingLoader<T extends GraphObject> extends Loader<SimpleGraphO
         this.skipRoundtripIfCached = skipRoundtripIfCached;
         this.appendResults = false;
         this.nextRequest = null;
-        (this.currentRequest = currentRequest).setCallback((Request.Callback)new Request.Callback() {
-            @Override
-            public void onCompleted(final Response response) {
-                GraphObjectPagingLoader.this.requestCompleted(response);
-            }
-        });
+        (this.currentRequest = currentRequest).setCallback(new GraphObjectPagingLoader$2(this));
         this.loading = true;
-        final Runnable runnable = new Runnable() {
-            final /* synthetic */ RequestBatch val$batch = GraphObjectPagingLoader.this.putRequestIntoBatch(currentRequest, skipRoundtripIfCached);
-            
-            @Override
-            public void run() {
-                Request.executeBatchAsync(this.val$batch);
-            }
-        };
+        final GraphObjectPagingLoader$3 graphObjectPagingLoader$3 = new GraphObjectPagingLoader$3(this, this.putRequestIntoBatch(currentRequest, skipRoundtripIfCached));
         if (n == 0L) {
-            runnable.run();
+            graphObjectPagingLoader$3.run();
             return;
         }
-        new Handler().postDelayed((Runnable)runnable, n);
+        new Handler().postDelayed((Runnable)graphObjectPagingLoader$3, n);
     }
     
     public void clearResults() {
@@ -152,12 +142,7 @@ class GraphObjectPagingLoader<T extends GraphObject> extends Loader<SimpleGraphO
     public void followNextLink() {
         if (this.nextRequest != null) {
             this.appendResults = true;
-            (this.currentRequest = this.nextRequest).setCallback((Request.Callback)new Request.Callback() {
-                @Override
-                public void onCompleted(final Response response) {
-                    GraphObjectPagingLoader.this.requestCompleted(response);
-                }
-            });
+            (this.currentRequest = this.nextRequest).setCallback(new GraphObjectPagingLoader$1(this));
             this.loading = true;
             Request.executeBatchAsync(this.putRequestIntoBatch(this.currentRequest, this.skipRoundtripIfCached));
         }
@@ -167,7 +152,7 @@ class GraphObjectPagingLoader<T extends GraphObject> extends Loader<SimpleGraphO
         return this.cursor;
     }
     
-    public OnErrorListener getOnErrorListener() {
+    public GraphObjectPagingLoader$OnErrorListener getOnErrorListener() {
         return this.onErrorListener;
     }
     
@@ -190,21 +175,11 @@ class GraphObjectPagingLoader<T extends GraphObject> extends Loader<SimpleGraphO
         this.startLoading(this.originalRequest, false, n);
     }
     
-    public void setOnErrorListener(final OnErrorListener onErrorListener) {
+    public void setOnErrorListener(final GraphObjectPagingLoader$OnErrorListener onErrorListener) {
         this.onErrorListener = onErrorListener;
     }
     
     public void startLoading(final Request originalRequest, final boolean b) {
         this.startLoading(this.originalRequest = originalRequest, b, 0L);
-    }
-    
-    public interface OnErrorListener
-    {
-        void onError(final FacebookException p0, final GraphObjectPagingLoader<?> p1);
-    }
-    
-    interface PagedResults extends GraphObject
-    {
-        GraphObjectList<GraphObject> getData();
     }
 }

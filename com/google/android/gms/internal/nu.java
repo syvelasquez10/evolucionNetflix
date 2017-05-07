@@ -5,6 +5,7 @@
 package com.google.android.gms.internal;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.HashSet;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.Set;
@@ -529,7 +530,7 @@ public class nu implements Parcelable$Creator<nt>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new nt(set, g, nt, c2, nt2, o, o2, o3, c3, g2, c4, nt3, c5, o4, o5, nt4, o6, o7, o8, c6, o9, o10, o11, o12, o13, o14, o15, o16, o17, nt5, o18, o19, o20, o21, nt6, m, nt7, i, o22, nt8, c7, o23, o24, o25, o26, nt9, o27, o28, o29, nt10, o30, o31, o32, o33, o34, o35);
     }

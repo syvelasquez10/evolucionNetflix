@@ -1,0 +1,25 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.service.user;
+
+enum UserAgentStateManager$STATES
+{
+    FATAL_ERROR, 
+    INIT, 
+    NEED_ACTIVATE_PROFILE, 
+    NEED_CHANGE_PROFILE, 
+    NEED_CHANGE_PROFILE_FROM_PRIMARY, 
+    NEED_CREATE_DEVACC, 
+    NEED_DEACTIVATE_ACC, 
+    NEED_EMAIL_ACTIVATE, 
+    NEED_ESN_MIGRATION, 
+    NEED_FETCH_PROFILE_DATA, 
+    NEED_SELECT_DEVACC, 
+    NEED_TOKEN_ACTIVATE, 
+    NEED_VALIDATE_PROFILE_DATA, 
+    PROFILE_ACTIVATED, 
+    WAIT_ACTIVATE_ACC, 
+    WAIT_SELECT_PROFILE;
+}

@@ -4,17 +4,14 @@
 
 package com.facebook.internal;
 
-import org.json.JSONException;
-import org.json.JSONTokener;
-import java.security.InvalidParameterException;
-import java.io.FilenameFilter;
 import java.io.OutputStream;
 import org.json.JSONObject;
+import java.io.IOException;
 import java.util.Date;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.IOException;
+import java.util.AbstractQueue;
 import java.util.PriorityQueue;
 import com.facebook.LoggingBehavior;
 import com.facebook.Settings;
@@ -30,7 +27,7 @@ public final class FileLruCache
     private static final AtomicLong bufferIndex;
     private final File directory;
     private boolean isTrimPending;
-    private final Limits limits;
+    private final FileLruCache$Limits limits;
     private final Object lock;
     private final String tag;
     
@@ -39,25 +36,20 @@ public final class FileLruCache
         bufferIndex = new AtomicLong();
     }
     
-    public FileLruCache(final Context context, final String tag, final Limits limits) {
+    public FileLruCache(final Context context, final String tag, final FileLruCache$Limits limits) {
         this.tag = tag;
         this.limits = limits;
         this.directory = new File(context.getCacheDir(), tag);
         this.lock = new Object();
         this.directory.mkdirs();
-        BufferFile.deleteAll(this.directory);
+        FileLruCache$BufferFile.deleteAll(this.directory);
     }
     
     private void postTrim() {
         synchronized (this.lock) {
             if (!this.isTrimPending) {
                 this.isTrimPending = true;
-                Settings.getExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        FileLruCache.this.trim();
-                    }
-                });
+                Settings.getExecutor().execute(new FileLruCache$2(this));
             }
         }
     }
@@ -70,130 +62,110 @@ public final class FileLruCache
     }
     
     private void trim() {
-        Label_0279: {
-            try {
-                Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "trim started");
-                final PriorityQueue<ModifiedFile> priorityQueue = new PriorityQueue<ModifiedFile>();
-                long n = 0L;
-                long n2 = 0L;
-                final File[] listFiles = this.directory.listFiles(BufferFile.excludeBufferFiles());
-                final int length = listFiles.length;
-                int n3 = 0;
-                long n4;
-                long n5;
-                while (true) {
-                    n4 = n2;
-                    n5 = n;
-                    if (n3 >= length) {
-                        break;
+    Label_0149_Outer:
+        while (true) {
+        Label_0149:
+            while (true) {
+                Label_0314: {
+                    try {
+                        Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "trim started");
+                        final PriorityQueue<FileLruCache$ModifiedFile> priorityQueue = new PriorityQueue<FileLruCache$ModifiedFile>();
+                        final File[] listFiles = this.directory.listFiles(FileLruCache$BufferFile.excludeBufferFiles());
+                        final int length = listFiles.length;
+                        long n = 0L;
+                        long n2 = 0L;
+                        long length2;
+                        for (int i = 0; i < length; ++i, ++n, n2 += length2) {
+                            final File file = listFiles[i];
+                            final FileLruCache$ModifiedFile fileLruCache$ModifiedFile = new FileLruCache$ModifiedFile(file);
+                            priorityQueue.add(fileLruCache$ModifiedFile);
+                            Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "  trim considering time=" + (Object)fileLruCache$ModifiedFile.getModified() + " name=" + fileLruCache$ModifiedFile.getFile().getName());
+                            length2 = file.length();
+                        }
+                        break Label_0314;
+                        while (true) {
+                            final AbstractQueue<FileLruCache$ModifiedFile> abstractQueue;
+                            final File file2 = abstractQueue.remove().getFile();
+                            Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "  trim removing " + file2.getName());
+                            n2 -= file2.length();
+                            file2.delete();
+                            --n;
+                            break Label_0149;
+                            Label_0244: {
+                                synchronized (this.lock) {
+                                    this.isTrimPending = false;
+                                    this.lock.notifyAll();
+                                    return;
+                                }
+                            }
+                            continue Label_0149_Outer;
+                        }
                     }
-                    final File file = listFiles[n3];
-                    final ModifiedFile modifiedFile = new ModifiedFile(file);
-                    priorityQueue.add(modifiedFile);
-                    Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "  trim considering time=" + (Object)modifiedFile.getModified() + " name=" + modifiedFile.getFile().getName());
-                    n += file.length();
-                    ++n2;
-                    ++n3;
-                }
-                while (n5 > this.limits.getByteCount() || n4 > this.limits.getFileCount()) {
-                    final File file2 = priorityQueue.remove().getFile();
-                    Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "  trim removing " + file2.getName());
-                    n5 -= file2.length();
-                    --n4;
-                    file2.delete();
-                }
-                break Label_0279;
-            }
-            finally {
-                EndFinally_2: {
-                    synchronized (this.lock) {
-                        this.isTrimPending = false;
-                        this.lock.notifyAll();
-                        // monitorexit(this.lock)
-                        break EndFinally_2;
-                        final Object lock = this.lock;
+                    // iftrue(Label_0244:, n2 <= (long)this.limits.getByteCount() && n <= (long)this.limits.getFileCount())
+                    finally {
                         synchronized (this.lock) {
                             this.isTrimPending = false;
                             this.lock.notifyAll();
-                            return;
                         }
+                        // monitorexit(this.lock)
                     }
                 }
+                continue Label_0149;
             }
         }
     }
     
-    public void clearForTest() throws IOException {
+    public void clearForTest() {
         final File[] listFiles = this.directory.listFiles();
         for (int length = listFiles.length, i = 0; i < length; ++i) {
             listFiles[i].delete();
         }
     }
     
-    public InputStream get(final String s) throws IOException {
+    public InputStream get(final String s) {
         return this.get(s, null);
     }
     
-    public InputStream get(String optString, final String s) throws IOException {
+    public InputStream get(String optString, final String s) {
         final File file = new File(this.directory, Utility.md5hash(optString));
-        Label_0068: {
-            InputStream inputStream;
+        try {
+            final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file), 8192);
             try {
-                inputStream = new FileInputStream(file);
-                final InputStream inputStream2;
-                inputStream = (inputStream2 = new BufferedInputStream(inputStream, 8192));
-                final JSONObject jsonObject = StreamHeader.readHeader(inputStream2);
-                final JSONObject jsonObject3;
-                final JSONObject jsonObject2 = jsonObject3 = jsonObject;
-                if (jsonObject3 == null) {
+                final JSONObject header = FileLruCache$StreamHeader.readHeader(bufferedInputStream);
+                if (header == null) {
                     return null;
                 }
-                break Label_0068;
-            }
-            catch (IOException ex) {
-                return null;
-            }
-            try {
-                final InputStream inputStream2 = inputStream;
-                final JSONObject jsonObject = StreamHeader.readHeader(inputStream2);
-                final JSONObject jsonObject3;
-                final JSONObject jsonObject2 = jsonObject3 = jsonObject;
-                if (jsonObject3 == null) {
-                    return null;
-                }
-                final String optString2 = jsonObject2.optString("key");
+                final String optString2 = header.optString("key");
                 if (optString2 == null || !optString2.equals(optString)) {
                     return null;
                 }
-                optString = jsonObject2.optString("tag", (String)null);
+                optString = header.optString("tag", (String)null);
                 if ((s == null && optString != null) || (s != null && !s.equals(optString))) {
                     return null;
                 }
                 final long time = new Date().getTime();
                 Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "Setting lastModified to " + (Object)time + " for " + file.getName());
                 file.setLastModified(time);
-                if (!true) {
-                    ((BufferedInputStream)inputStream).close();
-                }
-                return inputStream;
+                return bufferedInputStream;
             }
             finally {
-                if (!false) {
-                    ((BufferedInputStream)inputStream).close();
-                }
+                bufferedInputStream.close();
             }
+        }
+        catch (IOException ex) {
+            return null;
         }
     }
     
-    public InputStream interceptAndPut(final String s, final InputStream inputStream) throws IOException {
-        return new CopyingInputStream(inputStream, this.openPutStream(s));
+    public InputStream interceptAndPut(final String s, final InputStream inputStream) {
+        return new FileLruCache$CopyingInputStream(inputStream, this.openPutStream(s));
     }
     
-    OutputStream openPutStream(final String s) throws IOException {
+    OutputStream openPutStream(final String s) {
         return this.openPutStream(s, null);
     }
     
-    public OutputStream openPutStream(final String p0, final String p1) throws IOException {
+    public OutputStream openPutStream(final String p0, final String p1) {
         // 
         // This method could not be decompiled.
         // 
@@ -262,69 +234,61 @@ public final class FileLruCache
         //   125: aload_3        
         //   126: aload           4
         //   128: invokestatic    com/facebook/internal/FileLruCache$StreamHeader.writeHeader:(Ljava/io/OutputStream;Lorg/json/JSONObject;)V
-        //   131: iconst_1       
-        //   132: ifne            139
-        //   135: aload_3        
-        //   136: invokevirtual   java/io/BufferedOutputStream.close:()V
-        //   139: aload_3        
-        //   140: areturn        
-        //   141: astore_1       
-        //   142: getstatic       com/facebook/LoggingBehavior.CACHE:Lcom/facebook/LoggingBehavior;
-        //   145: iconst_5       
-        //   146: getstatic       com/facebook/internal/FileLruCache.TAG:Ljava/lang/String;
-        //   149: new             Ljava/lang/StringBuilder;
-        //   152: dup            
-        //   153: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   156: ldc_w           "Error creating buffer output stream: "
-        //   159: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   162: aload_1        
-        //   163: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   166: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   169: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;ILjava/lang/String;Ljava/lang/String;)V
-        //   172: new             Ljava/io/IOException;
-        //   175: dup            
-        //   176: aload_1        
-        //   177: invokevirtual   java/io/FileNotFoundException.getMessage:()Ljava/lang/String;
-        //   180: invokespecial   java/io/IOException.<init>:(Ljava/lang/String;)V
-        //   183: athrow         
-        //   184: astore_1       
-        //   185: getstatic       com/facebook/LoggingBehavior.CACHE:Lcom/facebook/LoggingBehavior;
-        //   188: iconst_5       
-        //   189: getstatic       com/facebook/internal/FileLruCache.TAG:Ljava/lang/String;
-        //   192: new             Ljava/lang/StringBuilder;
-        //   195: dup            
-        //   196: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   199: ldc_w           "Error creating JSON header for cache file: "
-        //   202: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   205: aload_1        
-        //   206: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   209: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   212: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;ILjava/lang/String;Ljava/lang/String;)V
-        //   215: new             Ljava/io/IOException;
-        //   218: dup            
-        //   219: aload_1        
-        //   220: invokevirtual   org/json/JSONException.getMessage:()Ljava/lang/String;
-        //   223: invokespecial   java/io/IOException.<init>:(Ljava/lang/String;)V
-        //   226: athrow         
-        //   227: astore_1       
-        //   228: iconst_0       
-        //   229: ifne            236
-        //   232: aload_3        
-        //   233: invokevirtual   java/io/BufferedOutputStream.close:()V
-        //   236: aload_1        
-        //   237: athrow         
-        //    Exceptions:
-        //  throws java.io.IOException
+        //   131: aload_3        
+        //   132: areturn        
+        //   133: astore_1       
+        //   134: getstatic       com/facebook/LoggingBehavior.CACHE:Lcom/facebook/LoggingBehavior;
+        //   137: iconst_5       
+        //   138: getstatic       com/facebook/internal/FileLruCache.TAG:Ljava/lang/String;
+        //   141: new             Ljava/lang/StringBuilder;
+        //   144: dup            
+        //   145: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   148: ldc_w           "Error creating buffer output stream: "
+        //   151: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   154: aload_1        
+        //   155: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   158: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   161: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;ILjava/lang/String;Ljava/lang/String;)V
+        //   164: new             Ljava/io/IOException;
+        //   167: dup            
+        //   168: aload_1        
+        //   169: invokevirtual   java/io/FileNotFoundException.getMessage:()Ljava/lang/String;
+        //   172: invokespecial   java/io/IOException.<init>:(Ljava/lang/String;)V
+        //   175: athrow         
+        //   176: astore_1       
+        //   177: getstatic       com/facebook/LoggingBehavior.CACHE:Lcom/facebook/LoggingBehavior;
+        //   180: iconst_5       
+        //   181: getstatic       com/facebook/internal/FileLruCache.TAG:Ljava/lang/String;
+        //   184: new             Ljava/lang/StringBuilder;
+        //   187: dup            
+        //   188: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   191: ldc_w           "Error creating JSON header for cache file: "
+        //   194: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   197: aload_1        
+        //   198: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   201: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   204: invokestatic    com/facebook/internal/Logger.log:(Lcom/facebook/LoggingBehavior;ILjava/lang/String;Ljava/lang/String;)V
+        //   207: new             Ljava/io/IOException;
+        //   210: dup            
+        //   211: aload_1        
+        //   212: invokevirtual   org/json/JSONException.getMessage:()Ljava/lang/String;
+        //   215: invokespecial   java/io/IOException.<init>:(Ljava/lang/String;)V
+        //   218: athrow         
+        //   219: astore_1       
+        //   220: aload_3        
+        //   221: invokevirtual   java/io/BufferedOutputStream.close:()V
+        //   224: aload_1        
+        //   225: athrow         
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                           
         //  -----  -----  -----  -----  -------------------------------
-        //  51     61     141    184    Ljava/io/FileNotFoundException;
-        //  91     125    184    227    Lorg/json/JSONException;
-        //  91     125    227    238    Any
-        //  125    131    184    227    Lorg/json/JSONException;
-        //  125    131    227    238    Any
-        //  185    227    227    238    Any
+        //  51     61     133    176    Ljava/io/FileNotFoundException;
+        //  91     125    176    219    Lorg/json/JSONException;
+        //  91     125    219    226    Any
+        //  125    131    176    219    Lorg/json/JSONException;
+        //  125    131    219    226    Any
+        //  177    219    219    226    Any
         // 
         // The error that occurred was:
         // 
@@ -374,294 +338,5 @@ public final class FileLruCache
     @Override
     public String toString() {
         return "{FileLruCache: tag:" + this.tag + " file:" + this.directory.getName() + "}";
-    }
-    
-    private static class BufferFile
-    {
-        private static final String FILE_NAME_PREFIX = "buffer";
-        private static final FilenameFilter filterExcludeBufferFiles;
-        private static final FilenameFilter filterExcludeNonBufferFiles;
-        
-        static {
-            filterExcludeBufferFiles = new FilenameFilter() {
-                @Override
-                public boolean accept(final File file, final String s) {
-                    return !s.startsWith("buffer");
-                }
-            };
-            filterExcludeNonBufferFiles = new FilenameFilter() {
-                @Override
-                public boolean accept(final File file, final String s) {
-                    return s.startsWith("buffer");
-                }
-            };
-        }
-        
-        static void deleteAll(final File file) {
-            final File[] listFiles = file.listFiles(excludeNonBufferFiles());
-            for (int length = listFiles.length, i = 0; i < length; ++i) {
-                listFiles[i].delete();
-            }
-        }
-        
-        static FilenameFilter excludeBufferFiles() {
-            return BufferFile.filterExcludeBufferFiles;
-        }
-        
-        static FilenameFilter excludeNonBufferFiles() {
-            return BufferFile.filterExcludeNonBufferFiles;
-        }
-        
-        static File newFile(final File file) {
-            return new File(file, "buffer" + Long.valueOf(FileLruCache.bufferIndex.incrementAndGet()).toString());
-        }
-    }
-    
-    private static class CloseCallbackOutputStream extends OutputStream
-    {
-        final StreamCloseCallback callback;
-        final OutputStream innerStream;
-        
-        CloseCallbackOutputStream(final OutputStream innerStream, final StreamCloseCallback callback) {
-            this.innerStream = innerStream;
-            this.callback = callback;
-        }
-        
-        @Override
-        public void close() throws IOException {
-            try {
-                this.innerStream.close();
-            }
-            finally {
-                this.callback.onClose();
-            }
-        }
-        
-        @Override
-        public void flush() throws IOException {
-            this.innerStream.flush();
-        }
-        
-        @Override
-        public void write(final int n) throws IOException {
-            this.innerStream.write(n);
-        }
-        
-        @Override
-        public void write(final byte[] array) throws IOException {
-            this.innerStream.write(array);
-        }
-        
-        @Override
-        public void write(final byte[] array, final int n, final int n2) throws IOException {
-            this.innerStream.write(array, n, n2);
-        }
-    }
-    
-    private static final class CopyingInputStream extends InputStream
-    {
-        final InputStream input;
-        final OutputStream output;
-        
-        CopyingInputStream(final InputStream input, final OutputStream output) {
-            this.input = input;
-            this.output = output;
-        }
-        
-        @Override
-        public int available() throws IOException {
-            return this.input.available();
-        }
-        
-        @Override
-        public void close() throws IOException {
-            try {
-                this.input.close();
-            }
-            finally {
-                this.output.close();
-            }
-        }
-        
-        @Override
-        public void mark(final int n) {
-            throw new UnsupportedOperationException();
-        }
-        
-        @Override
-        public boolean markSupported() {
-            return false;
-        }
-        
-        @Override
-        public int read() throws IOException {
-            final int read = this.input.read();
-            if (read >= 0) {
-                this.output.write(read);
-            }
-            return read;
-        }
-        
-        @Override
-        public int read(final byte[] array) throws IOException {
-            final int read = this.input.read(array);
-            if (read > 0) {
-                this.output.write(array, 0, read);
-            }
-            return read;
-        }
-        
-        @Override
-        public int read(final byte[] array, final int n, int read) throws IOException {
-            read = this.input.read(array, n, read);
-            if (read > 0) {
-                this.output.write(array, n, read);
-            }
-            return read;
-        }
-        
-        @Override
-        public void reset() {
-            synchronized (this) {
-                throw new UnsupportedOperationException();
-            }
-        }
-        
-        @Override
-        public long skip(final long n) throws IOException {
-            final byte[] array = new byte[1024];
-            long n2;
-            int read;
-            for (n2 = 0L; n2 < n; n2 += read) {
-                read = this.read(array, 0, (int)Math.min(n - n2, array.length));
-                if (read < 0) {
-                    break;
-                }
-            }
-            return n2;
-        }
-    }
-    
-    public static final class Limits
-    {
-        private int byteCount;
-        private int fileCount;
-        
-        public Limits() {
-            this.fileCount = 1024;
-            this.byteCount = 1048576;
-        }
-        
-        int getByteCount() {
-            return this.byteCount;
-        }
-        
-        int getFileCount() {
-            return this.fileCount;
-        }
-        
-        void setByteCount(final int byteCount) {
-            if (byteCount < 0) {
-                throw new InvalidParameterException("Cache byte-count limit must be >= 0");
-            }
-            this.byteCount = byteCount;
-        }
-        
-        void setFileCount(final int fileCount) {
-            if (fileCount < 0) {
-                throw new InvalidParameterException("Cache file count limit must be >= 0");
-            }
-            this.fileCount = fileCount;
-        }
-    }
-    
-    private static final class ModifiedFile implements Comparable<ModifiedFile>
-    {
-        private final File file;
-        private final long modified;
-        
-        ModifiedFile(final File file) {
-            this.file = file;
-            this.modified = file.lastModified();
-        }
-        
-        @Override
-        public int compareTo(final ModifiedFile modifiedFile) {
-            if (this.getModified() < modifiedFile.getModified()) {
-                return -1;
-            }
-            if (this.getModified() > modifiedFile.getModified()) {
-                return 1;
-            }
-            return this.getFile().compareTo(modifiedFile.getFile());
-        }
-        
-        @Override
-        public boolean equals(final Object o) {
-            return o instanceof ModifiedFile && this.compareTo((ModifiedFile)o) == 0;
-        }
-        
-        File getFile() {
-            return this.file;
-        }
-        
-        long getModified() {
-            return this.modified;
-        }
-    }
-    
-    private interface StreamCloseCallback
-    {
-        void onClose();
-    }
-    
-    private static final class StreamHeader
-    {
-        private static final int HEADER_VERSION = 0;
-        
-        static JSONObject readHeader(final InputStream inputStream) throws IOException {
-            if (inputStream.read() != 0) {
-                return null;
-            }
-            int n = 0;
-            for (int i = 0; i < 3; ++i) {
-                final int read = inputStream.read();
-                if (read == -1) {
-                    Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "readHeader: stream.read returned -1 while reading header size");
-                    return null;
-                }
-                n = (n << 8) + (read & 0xFF);
-            }
-            final byte[] array = new byte[n];
-            int read2;
-            for (int j = 0; j < array.length; j += read2) {
-                read2 = inputStream.read(array, j, array.length - j);
-                if (read2 < 1) {
-                    Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "readHeader: stream.read stopped at " + (Object)j + " when expected " + array.length);
-                    return null;
-                }
-            }
-            final JSONTokener jsonTokener = new JSONTokener(new String(array));
-            try {
-                final Object nextValue = jsonTokener.nextValue();
-                if (!(nextValue instanceof JSONObject)) {
-                    Logger.log(LoggingBehavior.CACHE, FileLruCache.TAG, "readHeader: expected JSONObject, got " + ((JSONObject)nextValue).getClass().getCanonicalName());
-                    return null;
-                }
-                return (JSONObject)nextValue;
-            }
-            catch (JSONException ex) {
-                throw new IOException(ex.getMessage());
-            }
-        }
-        
-        static void writeHeader(final OutputStream outputStream, final JSONObject jsonObject) throws IOException {
-            final byte[] bytes = jsonObject.toString().getBytes();
-            outputStream.write(0);
-            outputStream.write(bytes.length >> 16 & 0xFF);
-            outputStream.write(bytes.length >> 8 & 0xFF);
-            outputStream.write(bytes.length >> 0 & 0xFF);
-            outputStream.write(bytes);
-        }
     }
 }

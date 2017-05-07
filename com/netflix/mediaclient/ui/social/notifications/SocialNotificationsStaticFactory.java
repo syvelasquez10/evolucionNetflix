@@ -11,23 +11,23 @@ import com.netflix.mediaclient.ui.social.notifications.types.SocialVideoImplicit
 import com.netflix.mediaclient.ui.social.notifications.types.SocialVideoRecommendation;
 import java.util.HashMap;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialNotification;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import java.util.Map;
 
 public class SocialNotificationsStaticFactory
 {
-    private static final Map<SocialNotificationSummary.NotificationTypes, SocialNotification> types;
+    private static final Map<SocialNotificationSummary$NotificationTypes, SocialNotification> types;
     
     static {
-        final HashMap<SocialNotificationSummary.NotificationTypes, SocialNotification> hashMap = new HashMap<SocialNotificationSummary.NotificationTypes, SocialNotification>();
-        hashMap.put(SocialNotificationSummary.NotificationTypes.VIDEO_RECOMMENDATION, new SocialVideoRecommendation());
-        hashMap.put(SocialNotificationSummary.NotificationTypes.IMPLICIT_FEEDBACK, new SocialVideoImplicitFeedback());
-        hashMap.put(SocialNotificationSummary.NotificationTypes.ADDED_TO_VIDEO_PLAYLIST, new SocialVideoAddedToPlaylist());
-        hashMap.put(SocialNotificationSummary.NotificationTypes.THANKS_SENT, new SocialVideoThankedFeedback());
+        final HashMap<SocialNotificationSummary$NotificationTypes, SocialNotification> hashMap = new HashMap<SocialNotificationSummary$NotificationTypes, SocialNotification>();
+        hashMap.put(SocialNotificationSummary$NotificationTypes.VIDEO_RECOMMENDATION, new SocialVideoRecommendation());
+        hashMap.put(SocialNotificationSummary$NotificationTypes.IMPLICIT_FEEDBACK, new SocialVideoImplicitFeedback());
+        hashMap.put(SocialNotificationSummary$NotificationTypes.ADDED_TO_VIDEO_PLAYLIST, new SocialVideoAddedToPlaylist());
+        hashMap.put(SocialNotificationSummary$NotificationTypes.THANKS_SENT, new SocialVideoThankedFeedback());
         types = Collections.unmodifiableMap((Map<?, ?>)hashMap);
     }
     
-    public static SocialNotification getNotificationByType(final SocialNotificationSummary.NotificationTypes notificationTypes) {
-        return SocialNotificationsStaticFactory.types.get(notificationTypes);
+    public static SocialNotification getNotificationByType(final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
+        return SocialNotificationsStaticFactory.types.get(socialNotificationSummary$NotificationTypes);
     }
 }

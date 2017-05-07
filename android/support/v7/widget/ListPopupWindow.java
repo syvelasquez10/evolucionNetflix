@@ -4,9 +4,6 @@
 
 package android.support.v7.widget;
 
-import android.widget.AbsListView;
-import android.os.SystemClock;
-import android.view.ViewConfiguration;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.support.v4.widget.ListViewAutoScrollHelper;
@@ -15,6 +12,7 @@ import android.support.v7.internal.widget.ListViewCompat;
 import android.support.v4.widget.PopupWindowCompat;
 import android.os.Build$VERSION;
 import android.widget.PopupWindow$OnDismissListener;
+import android.widget.AdapterView;
 import android.view.KeyEvent$DispatcherState;
 import android.view.KeyEvent;
 import android.widget.ListView;
@@ -26,12 +24,12 @@ import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.AbsListView$OnScrollListener;
-import android.widget.AdapterView;
 import android.content.res.TypedArray;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.internal.widget.AppCompatPopupWindow;
+import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$attr;
 import android.util.Log;
 import android.graphics.Rect;
 import android.widget.PopupWindow;
@@ -65,14 +63,14 @@ public class ListPopupWindow
     private int mDropDownGravity;
     private int mDropDownHeight;
     private int mDropDownHorizontalOffset;
-    private DropDownListView mDropDownList;
+    private ListPopupWindow$DropDownListView mDropDownList;
     private Drawable mDropDownListHighlight;
     private int mDropDownVerticalOffset;
     private boolean mDropDownVerticalOffsetSet;
     private int mDropDownWidth;
     private boolean mForceIgnoreOutsideTouch;
     private Handler mHandler;
-    private final ListSelectorHider mHideSelector;
+    private final ListPopupWindow$ListSelectorHider mHideSelector;
     private AdapterView$OnItemClickListener mItemClickListener;
     private AdapterView$OnItemSelectedListener mItemSelectedListener;
     private int mLayoutDirection;
@@ -82,11 +80,11 @@ public class ListPopupWindow
     private PopupWindow mPopup;
     private int mPromptPosition;
     private View mPromptView;
-    private final ResizePopupRunnable mResizePopupRunnable;
-    private final PopupScrollListener mScrollListener;
+    private final ListPopupWindow$ResizePopupRunnable mResizePopupRunnable;
+    private final ListPopupWindow$PopupScrollListener mScrollListener;
     private Runnable mShowDropDownRunnable;
     private Rect mTempRect;
-    private final PopupTouchInterceptor mTouchInterceptor;
+    private final ListPopupWindow$PopupTouchInterceptor mTouchInterceptor;
     
     static {
         try {
@@ -98,11 +96,11 @@ public class ListPopupWindow
     }
     
     public ListPopupWindow(final Context context) {
-        this(context, null, R.attr.listPopupWindowStyle);
+        this(context, null, R$attr.listPopupWindowStyle);
     }
     
     public ListPopupWindow(final Context context, final AttributeSet set) {
-        this(context, set, R.attr.listPopupWindowStyle);
+        this(context, set, R$attr.listPopupWindowStyle);
     }
     
     public ListPopupWindow(final Context mContext, final AttributeSet set, final int n) {
@@ -113,16 +111,16 @@ public class ListPopupWindow
         this.mForceIgnoreOutsideTouch = false;
         this.mListItemExpandMaximum = Integer.MAX_VALUE;
         this.mPromptPosition = 0;
-        this.mResizePopupRunnable = new ResizePopupRunnable();
-        this.mTouchInterceptor = new PopupTouchInterceptor();
-        this.mScrollListener = new PopupScrollListener();
-        this.mHideSelector = new ListSelectorHider();
+        this.mResizePopupRunnable = new ListPopupWindow$ResizePopupRunnable(this, null);
+        this.mTouchInterceptor = new ListPopupWindow$PopupTouchInterceptor(this, null);
+        this.mScrollListener = new ListPopupWindow$PopupScrollListener(this, null);
+        this.mHideSelector = new ListPopupWindow$ListSelectorHider(this, null);
         this.mHandler = new Handler();
         this.mTempRect = new Rect();
         this.mContext = mContext;
-        final TypedArray obtainStyledAttributes = mContext.obtainStyledAttributes(set, R.styleable.ListPopupWindow, n, 0);
-        this.mDropDownHorizontalOffset = obtainStyledAttributes.getDimensionPixelOffset(R.styleable.ListPopupWindow_android_dropDownHorizontalOffset, 0);
-        this.mDropDownVerticalOffset = obtainStyledAttributes.getDimensionPixelOffset(R.styleable.ListPopupWindow_android_dropDownVerticalOffset, 0);
+        final TypedArray obtainStyledAttributes = mContext.obtainStyledAttributes(set, R$styleable.ListPopupWindow, n, 0);
+        this.mDropDownHorizontalOffset = obtainStyledAttributes.getDimensionPixelOffset(R$styleable.ListPopupWindow_android_dropDownHorizontalOffset, 0);
+        this.mDropDownVerticalOffset = obtainStyledAttributes.getDimensionPixelOffset(R$styleable.ListPopupWindow_android_dropDownVerticalOffset, 0);
         if (this.mDropDownVerticalOffset != 0) {
             this.mDropDownVerticalOffsetSet = true;
         }
@@ -132,20 +130,11 @@ public class ListPopupWindow
     }
     
     private int buildDropDown() {
-        final int n = 0;
-        int n2 = 0;
+        int n;
         if (this.mDropDownList == null) {
             final Context mContext = this.mContext;
-            this.mShowDropDownRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    final View anchorView = ListPopupWindow.this.getAnchorView();
-                    if (anchorView != null && anchorView.getWindowToken() != null) {
-                        ListPopupWindow.this.show();
-                    }
-                }
-            };
-            this.mDropDownList = new DropDownListView(mContext, !this.mModal);
+            this.mShowDropDownRunnable = new ListPopupWindow$2(this);
+            this.mDropDownList = new ListPopupWindow$DropDownListView(mContext, !this.mModal);
             if (this.mDropDownListHighlight != null) {
                 this.mDropDownList.setSelector(this.mDropDownListHighlight);
             }
@@ -153,29 +142,16 @@ public class ListPopupWindow
             this.mDropDownList.setOnItemClickListener(this.mItemClickListener);
             this.mDropDownList.setFocusable(true);
             this.mDropDownList.setFocusableInTouchMode(true);
-            this.mDropDownList.setOnItemSelectedListener((AdapterView$OnItemSelectedListener)new AdapterView$OnItemSelectedListener() {
-                public void onItemSelected(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                    if (n != -1) {
-                        final DropDownListView access$600 = ListPopupWindow.this.mDropDownList;
-                        if (access$600 != null) {
-                            access$600.mListSelectionHidden = false;
-                        }
-                    }
-                }
-                
-                public void onNothingSelected(final AdapterView<?> adapterView) {
-                }
-            });
+            this.mDropDownList.setOnItemSelectedListener((AdapterView$OnItemSelectedListener)new ListPopupWindow$3(this));
             this.mDropDownList.setOnScrollListener((AbsListView$OnScrollListener)this.mScrollListener);
             if (this.mItemSelectedListener != null) {
                 this.mDropDownList.setOnItemSelectedListener(this.mItemSelectedListener);
             }
-            final DropDownListView mDropDownList = this.mDropDownList;
+            Object mDropDownList = this.mDropDownList;
             final View mPromptView = this.mPromptView;
-            Object contentView = mDropDownList;
             if (mPromptView != null) {
-                contentView = new LinearLayout(mContext);
-                ((LinearLayout)contentView).setOrientation(1);
+                final LinearLayout linearLayout = new LinearLayout(mContext);
+                linearLayout.setOrientation(1);
                 final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(-1, 0, 1.0f);
                 switch (this.mPromptPosition) {
                     default: {
@@ -183,70 +159,76 @@ public class ListPopupWindow
                         break;
                     }
                     case 1: {
-                        ((LinearLayout)contentView).addView((View)mDropDownList, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
-                        ((LinearLayout)contentView).addView(mPromptView);
+                        linearLayout.addView((View)mDropDownList, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
+                        linearLayout.addView(mPromptView);
                         break;
                     }
                     case 0: {
-                        ((LinearLayout)contentView).addView(mPromptView);
-                        ((LinearLayout)contentView).addView((View)mDropDownList, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
+                        linearLayout.addView(mPromptView);
+                        linearLayout.addView((View)mDropDownList, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
                         break;
                     }
                 }
                 mPromptView.measure(View$MeasureSpec.makeMeasureSpec(this.mDropDownWidth, Integer.MIN_VALUE), 0);
                 final LinearLayout$LayoutParams linearLayout$LayoutParams2 = (LinearLayout$LayoutParams)mPromptView.getLayoutParams();
-                n2 = mPromptView.getMeasuredHeight() + linearLayout$LayoutParams2.topMargin + linearLayout$LayoutParams2.bottomMargin;
+                n = linearLayout$LayoutParams2.bottomMargin + (mPromptView.getMeasuredHeight() + linearLayout$LayoutParams2.topMargin);
+                mDropDownList = linearLayout;
             }
-            this.mPopup.setContentView((View)contentView);
+            else {
+                n = 0;
+            }
+            this.mPopup.setContentView((View)mDropDownList);
         }
         else {
             final ViewGroup viewGroup = (ViewGroup)this.mPopup.getContentView();
             final View mPromptView2 = this.mPromptView;
-            n2 = n;
             if (mPromptView2 != null) {
                 final LinearLayout$LayoutParams linearLayout$LayoutParams3 = (LinearLayout$LayoutParams)mPromptView2.getLayoutParams();
-                n2 = mPromptView2.getMeasuredHeight() + linearLayout$LayoutParams3.topMargin + linearLayout$LayoutParams3.bottomMargin;
+                n = linearLayout$LayoutParams3.bottomMargin + (mPromptView2.getMeasuredHeight() + linearLayout$LayoutParams3.topMargin);
+            }
+            else {
+                n = 0;
             }
         }
-        int n3 = 0;
         final Drawable background = this.mPopup.getBackground();
+        int n2;
         if (background != null) {
             background.getPadding(this.mTempRect);
-            final int n4 = n3 = this.mTempRect.top + this.mTempRect.bottom;
+            n2 = this.mTempRect.top + this.mTempRect.bottom;
             if (!this.mDropDownVerticalOffsetSet) {
                 this.mDropDownVerticalOffset = -this.mTempRect.top;
-                n3 = n4;
             }
         }
         else {
             this.mTempRect.setEmpty();
+            n2 = 0;
         }
         if (this.mPopup.getInputMethodMode() == 2) {}
         final int maxAvailableHeight = this.mPopup.getMaxAvailableHeight(this.getAnchorView(), this.mDropDownVerticalOffset);
         if (this.mDropDownAlwaysVisible || this.mDropDownHeight == -1) {
-            return maxAvailableHeight + n3;
+            return maxAvailableHeight + n2;
         }
-        int n5 = 0;
+        int n3 = 0;
         switch (this.mDropDownWidth) {
             default: {
-                n5 = View$MeasureSpec.makeMeasureSpec(this.mDropDownWidth, 1073741824);
+                n3 = View$MeasureSpec.makeMeasureSpec(this.mDropDownWidth, 1073741824);
                 break;
             }
             case -2: {
-                n5 = View$MeasureSpec.makeMeasureSpec(this.mContext.getResources().getDisplayMetrics().widthPixels - (this.mTempRect.left + this.mTempRect.right), Integer.MIN_VALUE);
+                n3 = View$MeasureSpec.makeMeasureSpec(this.mContext.getResources().getDisplayMetrics().widthPixels - (this.mTempRect.left + this.mTempRect.right), Integer.MIN_VALUE);
                 break;
             }
             case -1: {
-                n5 = View$MeasureSpec.makeMeasureSpec(this.mContext.getResources().getDisplayMetrics().widthPixels - (this.mTempRect.left + this.mTempRect.right), 1073741824);
+                n3 = View$MeasureSpec.makeMeasureSpec(this.mContext.getResources().getDisplayMetrics().widthPixels - (this.mTempRect.left + this.mTempRect.right), 1073741824);
                 break;
             }
         }
-        final int measureHeightOfChildrenCompat = this.mDropDownList.measureHeightOfChildrenCompat(n5, 0, -1, maxAvailableHeight - n2, -1);
-        int n6 = n2;
+        final int measureHeightOfChildrenCompat = this.mDropDownList.measureHeightOfChildrenCompat(n3, 0, -1, maxAvailableHeight - n, -1);
+        int n4 = n;
         if (measureHeightOfChildrenCompat > 0) {
-            n6 = n2 + n3;
+            n4 = n + n2;
         }
-        return measureHeightOfChildrenCompat + n6;
+        return measureHeightOfChildrenCompat + n4;
     }
     
     private static boolean isConfirmKey(final int n) {
@@ -275,7 +257,7 @@ public class ListPopupWindow
     }
     
     public void clearListSelection() {
-        final DropDownListView mDropDownList = this.mDropDownList;
+        final ListPopupWindow$DropDownListView mDropDownList = this.mDropDownList;
         if (mDropDownList != null) {
             mDropDownList.mListSelectionHidden = true;
             mDropDownList.requestLayout();
@@ -283,12 +265,7 @@ public class ListPopupWindow
     }
     
     public View$OnTouchListener createDragToOpenListener(final View view) {
-        return (View$OnTouchListener)new ForwardingListener(view) {
-            @Override
-            public ListPopupWindow getPopup() {
-                return ListPopupWindow.this;
-            }
-        };
+        return (View$OnTouchListener)new ListPopupWindow$1(this, view);
     }
     
     public void dismiss() {
@@ -497,7 +474,7 @@ public class ListPopupWindow
     public boolean performItemClick(final int n) {
         if (this.isShowing()) {
             if (this.mItemClickListener != null) {
-                final DropDownListView mDropDownList = this.mDropDownList;
+                final ListPopupWindow$DropDownListView mDropDownList = this.mDropDownList;
                 this.mItemClickListener.onItemClick((AdapterView)mDropDownList, mDropDownList.getChildAt(n - mDropDownList.getFirstVisiblePosition()), n, mDropDownList.getAdapter().getItemId(n));
             }
             return true;
@@ -511,7 +488,7 @@ public class ListPopupWindow
     
     public void setAdapter(final ListAdapter mAdapter) {
         if (this.mObserver == null) {
-            this.mObserver = new PopupDataSetObserver();
+            this.mObserver = new ListPopupWindow$PopupDataSetObserver(this, null);
         }
         else if (this.mAdapter != null) {
             this.mAdapter.unregisterDataSetObserver(this.mObserver);
@@ -612,7 +589,7 @@ public class ListPopupWindow
     }
     
     public void setSelection(final int selection) {
-        final DropDownListView mDropDownList = this.mDropDownList;
+        final ListPopupWindow$DropDownListView mDropDownList = this.mDropDownList;
         if (this.isShowing() && mDropDownList != null) {
             mDropDownList.mListSelectionHidden = false;
             mDropDownList.setSelection(selection);
@@ -640,19 +617,17 @@ public class ListPopupWindow
         final boolean b = false;
         int n = -1;
         int height = this.buildDropDown();
-        int n2 = 0;
-        final int n3 = 0;
         final boolean inputMethodNotNeeded = this.isInputMethodNotNeeded();
         if (this.mPopup.isShowing()) {
-            int n4;
+            int n2;
             if (this.mDropDownWidth == -1) {
-                n4 = -1;
+                n2 = -1;
             }
             else if (this.mDropDownWidth == -2) {
-                n4 = this.getAnchorView().getWidth();
+                n2 = this.getAnchorView().getWidth();
             }
             else {
-                n4 = this.mDropDownWidth;
+                n2 = this.mDropDownWidth;
             }
             if (this.mDropDownHeight == -1) {
                 if (!inputMethodNotNeeded) {
@@ -667,14 +642,14 @@ public class ListPopupWindow
                 }
                 else {
                     final PopupWindow mPopup2 = this.mPopup;
-                    int n5;
+                    int n3;
                     if (this.mDropDownWidth == -1) {
-                        n5 = -1;
+                        n3 = -1;
                     }
                     else {
-                        n5 = 0;
+                        n3 = 0;
                     }
-                    mPopup2.setWindowLayoutMode(n5, -1);
+                    mPopup2.setWindowLayoutMode(n3, -1);
                 }
             }
             else if (this.mDropDownHeight != -2) {
@@ -689,31 +664,34 @@ public class ListPopupWindow
                 }
             }
             mPopup3.setOutsideTouchable(outsideTouchable2);
-            this.mPopup.update(this.getAnchorView(), this.mDropDownHorizontalOffset, this.mDropDownVerticalOffset, n4, height);
+            this.mPopup.update(this.getAnchorView(), this.mDropDownHorizontalOffset, this.mDropDownVerticalOffset, n2, height);
         }
         else {
+            int n4;
             if (this.mDropDownWidth == -1) {
-                n2 = -1;
+                n4 = -1;
             }
             else if (this.mDropDownWidth == -2) {
                 this.mPopup.setWidth(this.getAnchorView().getWidth());
+                n4 = 0;
             }
             else {
                 this.mPopup.setWidth(this.mDropDownWidth);
+                n4 = 0;
             }
-            int n6;
+            int n5;
             if (this.mDropDownHeight == -1) {
-                n6 = -1;
+                n5 = -1;
             }
             else if (this.mDropDownHeight == -2) {
                 this.mPopup.setHeight(height);
-                n6 = n3;
+                n5 = 0;
             }
             else {
                 this.mPopup.setHeight(this.mDropDownHeight);
-                n6 = n3;
+                n5 = 0;
             }
-            this.mPopup.setWindowLayoutMode(n2, n6);
+            this.mPopup.setWindowLayoutMode(n4, n5);
             this.setPopupClipToScreenEnabled(true);
             final PopupWindow mPopup4 = this.mPopup;
             if (this.mForceIgnoreOutsideTouch || this.mDropDownAlwaysVisible) {
@@ -728,384 +706,6 @@ public class ListPopupWindow
             }
             if (!this.mModal) {
                 this.mHandler.post((Runnable)this.mHideSelector);
-            }
-        }
-    }
-    
-    private static class DropDownListView extends ListViewCompat
-    {
-        private ViewPropertyAnimatorCompat mClickAnimation;
-        private boolean mDrawsInPressedState;
-        private boolean mHijackFocus;
-        private boolean mListSelectionHidden;
-        private ListViewAutoScrollHelper mScrollHelper;
-        
-        public DropDownListView(final Context context, final boolean mHijackFocus) {
-            super(context, null, R.attr.dropDownListViewStyle);
-            this.mHijackFocus = mHijackFocus;
-            this.setCacheColorHint(0);
-        }
-        
-        private void clearPressedItem() {
-            this.setPressed(this.mDrawsInPressedState = false);
-            this.drawableStateChanged();
-            if (this.mClickAnimation != null) {
-                this.mClickAnimation.cancel();
-                this.mClickAnimation = null;
-            }
-        }
-        
-        private void clickPressedItem(final View view, final int n) {
-            this.performItemClick(view, n, this.getItemIdAtPosition(n));
-        }
-        
-        private void setPressedItem(final View view, final int selection, final float n, final float n2) {
-            this.setPressed(this.mDrawsInPressedState = true);
-            this.layoutChildren();
-            this.setSelection(selection);
-            this.positionSelectorLikeTouchCompat(selection, view, n, n2);
-            this.setSelectorEnabled(false);
-            this.refreshDrawableState();
-        }
-        
-        public boolean hasFocus() {
-            return this.mHijackFocus || super.hasFocus();
-        }
-        
-        public boolean hasWindowFocus() {
-            return this.mHijackFocus || super.hasWindowFocus();
-        }
-        
-        public boolean isFocused() {
-            return this.mHijackFocus || super.isFocused();
-        }
-        
-        public boolean isInTouchMode() {
-            return (this.mHijackFocus && this.mListSelectionHidden) || super.isInTouchMode();
-        }
-        
-        public boolean onForwardedEvent(final MotionEvent motionEvent, int n) {
-            boolean b = true;
-            final boolean b2 = true;
-            final int n2 = 0;
-            final int actionMasked = MotionEventCompat.getActionMasked(motionEvent);
-            switch (actionMasked) {
-                default: {
-                    b = b2;
-                    n = n2;
-                    break;
-                }
-                case 3: {
-                    b = false;
-                    n = n2;
-                    break;
-                }
-                case 1: {
-                    b = false;
-                }
-                case 2: {
-                    final int pointerIndex = motionEvent.findPointerIndex(n);
-                    if (pointerIndex < 0) {
-                        b = false;
-                        n = n2;
-                        break;
-                    }
-                    n = (int)motionEvent.getX(pointerIndex);
-                    final int n3 = (int)motionEvent.getY(pointerIndex);
-                    final int pointToPosition = this.pointToPosition(n, n3);
-                    if (pointToPosition == -1) {
-                        n = 1;
-                        break;
-                    }
-                    final View child = this.getChildAt(pointToPosition - this.getFirstVisiblePosition());
-                    this.setPressedItem(child, pointToPosition, n, n3);
-                    final boolean b3 = true;
-                    n = n2;
-                    b = b3;
-                    if (actionMasked == 1) {
-                        this.clickPressedItem(child, pointToPosition);
-                        n = n2;
-                        b = b3;
-                        break;
-                    }
-                    break;
-                }
-            }
-            if (!b || n != 0) {
-                this.clearPressedItem();
-            }
-            if (b) {
-                if (this.mScrollHelper == null) {
-                    this.mScrollHelper = new ListViewAutoScrollHelper(this);
-                }
-                this.mScrollHelper.setEnabled(true);
-                this.mScrollHelper.onTouch((View)this, motionEvent);
-            }
-            else if (this.mScrollHelper != null) {
-                this.mScrollHelper.setEnabled(false);
-                return b;
-            }
-            return b;
-        }
-        
-        @Override
-        protected boolean touchModeDrawsInPressedStateCompat() {
-            return this.mDrawsInPressedState || super.touchModeDrawsInPressedStateCompat();
-        }
-    }
-    
-    public abstract static class ForwardingListener implements View$OnTouchListener
-    {
-        private int mActivePointerId;
-        private Runnable mDisallowIntercept;
-        private boolean mForwarding;
-        private final int mLongPressTimeout;
-        private final float mScaledTouchSlop;
-        private final View mSrc;
-        private final int mTapTimeout;
-        private final int[] mTmpLocation;
-        private Runnable mTriggerLongPress;
-        private boolean mWasLongPress;
-        
-        public ForwardingListener(final View mSrc) {
-            this.mTmpLocation = new int[2];
-            this.mSrc = mSrc;
-            this.mScaledTouchSlop = ViewConfiguration.get(mSrc.getContext()).getScaledTouchSlop();
-            this.mTapTimeout = ViewConfiguration.getTapTimeout();
-            this.mLongPressTimeout = (this.mTapTimeout + ViewConfiguration.getLongPressTimeout()) / 2;
-        }
-        
-        private void clearCallbacks() {
-            if (this.mTriggerLongPress != null) {
-                this.mSrc.removeCallbacks(this.mTriggerLongPress);
-            }
-            if (this.mDisallowIntercept != null) {
-                this.mSrc.removeCallbacks(this.mDisallowIntercept);
-            }
-        }
-        
-        private void onLongPress() {
-            this.clearCallbacks();
-            if (this.mSrc.isEnabled() && this.onForwardingStarted()) {
-                this.mSrc.getParent().requestDisallowInterceptTouchEvent(true);
-                final long uptimeMillis = SystemClock.uptimeMillis();
-                final MotionEvent obtain = MotionEvent.obtain(uptimeMillis, uptimeMillis, 3, 0.0f, 0.0f, 0);
-                this.mSrc.onTouchEvent(obtain);
-                obtain.recycle();
-                this.mForwarding = true;
-                this.mWasLongPress = true;
-            }
-        }
-        
-        private boolean onTouchForwarded(final MotionEvent motionEvent) {
-            boolean b = true;
-            final View mSrc = this.mSrc;
-            final ListPopupWindow popup = this.getPopup();
-            if (popup != null && popup.isShowing()) {
-                final DropDownListView access$600 = popup.mDropDownList;
-                if (access$600 != null && access$600.isShown()) {
-                    final MotionEvent obtainNoHistory = MotionEvent.obtainNoHistory(motionEvent);
-                    this.toGlobalMotionEvent(mSrc, obtainNoHistory);
-                    this.toLocalMotionEvent((View)access$600, obtainNoHistory);
-                    final boolean onForwardedEvent = access$600.onForwardedEvent(obtainNoHistory, this.mActivePointerId);
-                    obtainNoHistory.recycle();
-                    final int actionMasked = MotionEventCompat.getActionMasked(motionEvent);
-                    boolean b2;
-                    if (actionMasked != 1 && actionMasked != 3) {
-                        b2 = true;
-                    }
-                    else {
-                        b2 = false;
-                    }
-                    if (!onForwardedEvent || !b2) {
-                        b = false;
-                    }
-                    return b;
-                }
-            }
-            return false;
-        }
-        
-        private boolean onTouchObserved(final MotionEvent motionEvent) {
-            final View mSrc = this.mSrc;
-            if (mSrc.isEnabled()) {
-                switch (MotionEventCompat.getActionMasked(motionEvent)) {
-                    default: {
-                        return false;
-                    }
-                    case 0: {
-                        this.mActivePointerId = motionEvent.getPointerId(0);
-                        this.mWasLongPress = false;
-                        if (this.mDisallowIntercept == null) {
-                            this.mDisallowIntercept = new DisallowIntercept();
-                        }
-                        mSrc.postDelayed(this.mDisallowIntercept, (long)this.mTapTimeout);
-                        if (this.mTriggerLongPress == null) {
-                            this.mTriggerLongPress = new TriggerLongPress();
-                        }
-                        mSrc.postDelayed(this.mTriggerLongPress, (long)this.mLongPressTimeout);
-                        return false;
-                    }
-                    case 2: {
-                        final int pointerIndex = motionEvent.findPointerIndex(this.mActivePointerId);
-                        if (pointerIndex >= 0 && !pointInView(mSrc, motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex), this.mScaledTouchSlop)) {
-                            this.clearCallbacks();
-                            mSrc.getParent().requestDisallowInterceptTouchEvent(true);
-                            return true;
-                        }
-                        break;
-                    }
-                    case 1:
-                    case 3: {
-                        this.clearCallbacks();
-                        return false;
-                    }
-                }
-            }
-            return false;
-        }
-        
-        private static boolean pointInView(final View view, final float n, final float n2, final float n3) {
-            return n >= -n3 && n2 >= -n3 && n < view.getRight() - view.getLeft() + n3 && n2 < view.getBottom() - view.getTop() + n3;
-        }
-        
-        private boolean toGlobalMotionEvent(final View view, final MotionEvent motionEvent) {
-            final int[] mTmpLocation = this.mTmpLocation;
-            view.getLocationOnScreen(mTmpLocation);
-            motionEvent.offsetLocation((float)mTmpLocation[0], (float)mTmpLocation[1]);
-            return true;
-        }
-        
-        private boolean toLocalMotionEvent(final View view, final MotionEvent motionEvent) {
-            final int[] mTmpLocation = this.mTmpLocation;
-            view.getLocationOnScreen(mTmpLocation);
-            motionEvent.offsetLocation((float)(-mTmpLocation[0]), (float)(-mTmpLocation[1]));
-            return true;
-        }
-        
-        public abstract ListPopupWindow getPopup();
-        
-        protected boolean onForwardingStarted() {
-            final ListPopupWindow popup = this.getPopup();
-            if (popup != null && !popup.isShowing()) {
-                popup.show();
-            }
-            return true;
-        }
-        
-        protected boolean onForwardingStopped() {
-            final ListPopupWindow popup = this.getPopup();
-            if (popup != null && popup.isShowing()) {
-                popup.dismiss();
-            }
-            return true;
-        }
-        
-        public boolean onTouch(final View view, final MotionEvent motionEvent) {
-            final boolean b = false;
-            final boolean mForwarding = this.mForwarding;
-            boolean onTouchForwarded;
-            if (mForwarding) {
-                if (this.mWasLongPress) {
-                    onTouchForwarded = this.onTouchForwarded(motionEvent);
-                }
-                else {
-                    onTouchForwarded = (this.onTouchForwarded(motionEvent) || !this.onForwardingStopped());
-                }
-            }
-            else {
-                final boolean b2 = onTouchForwarded = (this.onTouchObserved(motionEvent) && this.onForwardingStarted());
-                if (b2) {
-                    final long uptimeMillis = SystemClock.uptimeMillis();
-                    final MotionEvent obtain = MotionEvent.obtain(uptimeMillis, uptimeMillis, 3, 0.0f, 0.0f, 0);
-                    this.mSrc.onTouchEvent(obtain);
-                    obtain.recycle();
-                    onTouchForwarded = b2;
-                }
-            }
-            if (!(this.mForwarding = onTouchForwarded)) {
-                final boolean b3 = b;
-                if (!mForwarding) {
-                    return b3;
-                }
-            }
-            return true;
-        }
-        
-        private class DisallowIntercept implements Runnable
-        {
-            @Override
-            public void run() {
-                ForwardingListener.this.mSrc.getParent().requestDisallowInterceptTouchEvent(true);
-            }
-        }
-        
-        private class TriggerLongPress implements Runnable
-        {
-            @Override
-            public void run() {
-                ForwardingListener.this.onLongPress();
-            }
-        }
-    }
-    
-    private class ListSelectorHider implements Runnable
-    {
-        @Override
-        public void run() {
-            ListPopupWindow.this.clearListSelection();
-        }
-    }
-    
-    private class PopupDataSetObserver extends DataSetObserver
-    {
-        public void onChanged() {
-            if (ListPopupWindow.this.isShowing()) {
-                ListPopupWindow.this.show();
-            }
-        }
-        
-        public void onInvalidated() {
-            ListPopupWindow.this.dismiss();
-        }
-    }
-    
-    private class PopupScrollListener implements AbsListView$OnScrollListener
-    {
-        public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
-        }
-        
-        public void onScrollStateChanged(final AbsListView absListView, final int n) {
-            if (n == 1 && !ListPopupWindow.this.isInputMethodNotNeeded() && ListPopupWindow.this.mPopup.getContentView() != null) {
-                ListPopupWindow.this.mHandler.removeCallbacks((Runnable)ListPopupWindow.this.mResizePopupRunnable);
-                ListPopupWindow.this.mResizePopupRunnable.run();
-            }
-        }
-    }
-    
-    private class PopupTouchInterceptor implements View$OnTouchListener
-    {
-        public boolean onTouch(final View view, final MotionEvent motionEvent) {
-            final int action = motionEvent.getAction();
-            final int n = (int)motionEvent.getX();
-            final int n2 = (int)motionEvent.getY();
-            if (action == 0 && ListPopupWindow.this.mPopup != null && ListPopupWindow.this.mPopup.isShowing() && n >= 0 && n < ListPopupWindow.this.mPopup.getWidth() && n2 >= 0 && n2 < ListPopupWindow.this.mPopup.getHeight()) {
-                ListPopupWindow.this.mHandler.postDelayed((Runnable)ListPopupWindow.this.mResizePopupRunnable, 250L);
-            }
-            else if (action == 1) {
-                ListPopupWindow.this.mHandler.removeCallbacks((Runnable)ListPopupWindow.this.mResizePopupRunnable);
-            }
-            return false;
-        }
-    }
-    
-    private class ResizePopupRunnable implements Runnable
-    {
-        @Override
-        public void run() {
-            if (ListPopupWindow.this.mDropDownList != null && ListPopupWindow.this.mDropDownList.getCount() > ListPopupWindow.this.mDropDownList.getChildCount() && ListPopupWindow.this.mDropDownList.getChildCount() <= ListPopupWindow.this.mListItemExpandMaximum) {
-                ListPopupWindow.this.mPopup.setInputMethodMode(2);
-                ListPopupWindow.this.show();
             }
         }
     }

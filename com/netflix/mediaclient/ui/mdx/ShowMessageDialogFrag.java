@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -15,7 +13,7 @@ import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class ShowMessageDialogFrag extends NetflixDialogFrag implements MdxMiniPlayerDialog
+public class ShowMessageDialogFrag extends NetflixDialogFrag implements MdxMiniPlayerFrag$MdxMiniPlayerDialog
 {
     private static final String BUTTON_CODE = "buttonCode";
     private static final String BUTTON_COUNT = "buttonCount";
@@ -79,76 +77,17 @@ public class ShowMessageDialogFrag extends NetflixDialogFrag implements MdxMiniP
             Log.e("mdxui", "We are expecting at least one button!");
         }
         if (int1 > 0) {
-            alertDialog$Builder.setPositiveButton((CharSequence)array[0], (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                public void onClick(DialogInterface dialogInterface, final int n) {
-                    dialogInterface = (DialogInterface)ShowMessageDialogFrag.this.mClicked;
-                    synchronized (dialogInterface) {
-                        if (ShowMessageDialogFrag.this.mClicked.get()) {
-                            Log.w("mdxui", "Already clicked!");
-                            return;
-                        }
-                        ShowMessageDialogFrag.this.mClicked.set(true);
-                        // monitorexit(dialogInterface)
-                        ShowMessageDialogFrag.this.dismissAllowingStateLoss();
-                        ShowMessageDialogFrag.this.getFragmentManager().beginTransaction().remove((Fragment)ShowMessageDialogFrag.this).commit();
-                        dialogInterface = (DialogInterface)ShowMessageDialogFrag.this.getActivity();
-                        if (dialogInterface instanceof MessageResponseProvider) {
-                            ((MessageResponseProvider)dialogInterface).onResponse(array2[0]);
-                        }
-                    }
-                }
-            });
+            alertDialog$Builder.setPositiveButton((CharSequence)array[0], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$1(this, array2));
         }
         if (int1 > 1) {
-            alertDialog$Builder.setNegativeButton((CharSequence)array[1], (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                public void onClick(DialogInterface dialogInterface, final int n) {
-                    dialogInterface = (DialogInterface)ShowMessageDialogFrag.this.mClicked;
-                    synchronized (dialogInterface) {
-                        if (ShowMessageDialogFrag.this.mClicked.get()) {
-                            Log.w("mdxui", "Already clicked!");
-                            return;
-                        }
-                        ShowMessageDialogFrag.this.mClicked.set(true);
-                        // monitorexit(dialogInterface)
-                        ShowMessageDialogFrag.this.dismissAllowingStateLoss();
-                        ShowMessageDialogFrag.this.getFragmentManager().beginTransaction().remove((Fragment)ShowMessageDialogFrag.this).commit();
-                        dialogInterface = (DialogInterface)ShowMessageDialogFrag.this.getActivity();
-                        if (dialogInterface instanceof MessageResponseProvider) {
-                            ((MessageResponseProvider)dialogInterface).onResponse(array2[1]);
-                        }
-                    }
-                }
-            });
+            alertDialog$Builder.setNegativeButton((CharSequence)array[1], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$2(this, array2));
         }
         if (int1 > 2) {
-            alertDialog$Builder.setNegativeButton((CharSequence)array[2], (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                public void onClick(DialogInterface dialogInterface, final int n) {
-                    dialogInterface = (DialogInterface)ShowMessageDialogFrag.this.mClicked;
-                    synchronized (dialogInterface) {
-                        if (ShowMessageDialogFrag.this.mClicked.get()) {
-                            Log.w("mdxui", "Already clicked!");
-                            return;
-                        }
-                        ShowMessageDialogFrag.this.mClicked.set(true);
-                        // monitorexit(dialogInterface)
-                        ShowMessageDialogFrag.this.dismissAllowingStateLoss();
-                        ShowMessageDialogFrag.this.getFragmentManager().beginTransaction().remove((Fragment)ShowMessageDialogFrag.this).commit();
-                        dialogInterface = (DialogInterface)ShowMessageDialogFrag.this.getActivity();
-                        if (dialogInterface instanceof MessageResponseProvider) {
-                            ((MessageResponseProvider)dialogInterface).onResponse(array2[2]);
-                        }
-                    }
-                }
-            });
+            alertDialog$Builder.setNegativeButton((CharSequence)array[2], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$3(this, array2));
         }
         if (int1 > 3) {
             Log.e("mdxui", "We can support up to 3 buttons!");
         }
         return (Dialog)alertDialog$Builder.create();
-    }
-    
-    public interface MessageResponseProvider
-    {
-        void onResponse(final String p0);
     }
 }

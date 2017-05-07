@@ -6,7 +6,7 @@ package com.google.android.gms.internal;
 
 import com.google.android.gms.common.data.DataHolder;
 
-public abstract class ia extends ic.a
+public abstract class ia extends ic$a
 {
     public void S(final int n) {
     }

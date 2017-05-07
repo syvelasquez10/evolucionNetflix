@@ -14,9 +14,9 @@ import android.content.Context;
 abstract class j<T extends i>
 {
     Context mContext;
-    a<T> xV;
+    j$a<T> xV;
     
-    public j(final Context mContext, final a<T> xv) {
+    public j(final Context mContext, final j$a<T> xv) {
         this.mContext = mContext;
         this.xV = xv;
     }
@@ -94,18 +94,5 @@ abstract class j<T extends i>
             z.W("inflate() called with unknown resourceId: " + ex);
             return null;
         }
-    }
-    
-    public interface a<U extends i>
-    {
-        void c(final String p0, final int p1);
-        
-        void d(final String p0, final boolean p1);
-        
-        U dX();
-        
-        void f(final String p0, final String p1);
-        
-        void g(final String p0, final String p1);
     }
 }

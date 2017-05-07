@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.error;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.ui.Asset;
 import java.util.TimeZone;
@@ -130,7 +129,7 @@ public final class CrashReport
         this.trkId = trkId;
     }
     
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("signal", (Object)this.signal.getDescription());
         jsonObject.put("signumber", this.sigNumber);

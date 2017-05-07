@@ -7,17 +7,16 @@ package com.google.android.gms.games.multiplayer.realtime;
 import android.os.ParcelFileDescriptor;
 import java.io.OutputStream;
 import java.io.InputStream;
-import java.io.IOException;
 
 public interface RealTimeSocket
 {
-    void close() throws IOException;
+    void close();
     
-    InputStream getInputStream() throws IOException;
+    InputStream getInputStream();
     
-    OutputStream getOutputStream() throws IOException;
+    OutputStream getOutputStream();
     
-    ParcelFileDescriptor getParcelFileDescriptor() throws IOException;
+    ParcelFileDescriptor getParcelFileDescriptor();
     
     boolean isClosed();
 }

@@ -70,9 +70,9 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
     }
     
     public View getView(int itemBgDrawableId, final View view, final ViewGroup viewGroup) {
-        TextView textView;
-        if ((textView = (TextView)view) == null) {
-            textView = (TextView)this.inflater.inflate(2130903178, (ViewGroup)null, false);
+        TextView textView = (TextView)view;
+        if (textView == null) {
+            textView = (TextView)this.inflater.inflate(2130903179, (ViewGroup)null, false);
         }
         final SeasonDetails item = this.getItem(itemBgDrawableId);
         textView.setTag((Object)item.getSeasonNumber());

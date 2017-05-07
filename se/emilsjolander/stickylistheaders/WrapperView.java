@@ -71,7 +71,6 @@ public class WrapperView extends ViewGroup
     protected void onMeasure(int n, int size) {
         size = View$MeasureSpec.getSize(n);
         final int measureSpec = View$MeasureSpec.makeMeasureSpec(size, 1073741824);
-        n = 0;
         if (this.mHeader != null) {
             final ViewGroup$LayoutParams layoutParams = this.mHeader.getLayoutParams();
             if (layoutParams != null && layoutParams.height > 0) {
@@ -80,10 +79,13 @@ public class WrapperView extends ViewGroup
             else {
                 this.mHeader.measure(measureSpec, View$MeasureSpec.makeMeasureSpec(0, 0));
             }
-            n = 0 + this.mHeader.getMeasuredHeight();
+            n = this.mHeader.getMeasuredHeight() + 0;
         }
         else if (this.mDivider != null) {
-            n = 0 + this.mDividerHeight;
+            n = this.mDividerHeight + 0;
+        }
+        else {
+            n = 0;
         }
         final ViewGroup$LayoutParams layoutParams2 = this.mItem.getLayoutParams();
         if (layoutParams2 != null && layoutParams2.height > 0) {

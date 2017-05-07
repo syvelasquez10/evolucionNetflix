@@ -23,7 +23,7 @@ public class ga
     private long vF;
     private long vG;
     private final gb vx;
-    private final LinkedList<a> vy;
+    private final LinkedList<ga$a> vy;
     private final String vz;
     
     public ga(final gb vx, final String vz, final String va) {
@@ -38,7 +38,7 @@ public class ga
         this.vx = vx;
         this.vz = vz;
         this.vA = va;
-        this.vy = new LinkedList<a>();
+        this.vy = new LinkedList<ga$a>();
     }
     
     public ga(final String s, final String s2) {
@@ -59,9 +59,9 @@ public class ga
     public void cQ() {
         synchronized (this.mw) {
             if (this.vG != -1L) {
-                final a a = new a();
-                a.cU();
-                this.vy.add(a);
+                final ga$a ga$a = new ga$a();
+                ga$a.cU();
+                this.vy.add(ga$a);
                 ++this.vE;
                 final gb vx = this.vx;
                 gb.cZ().cQ();
@@ -73,9 +73,9 @@ public class ga
     public void cR() {
         synchronized (this.mw) {
             if (this.vG != -1L && !this.vy.isEmpty()) {
-                final a a = this.vy.getLast();
-                if (a.cS() == -1L) {
-                    a.cT();
+                final ga$a ga$a = this.vy.getLast();
+                if (ga$a.cS() == -1L) {
+                    ga$a.cT();
                     this.vx.a(this);
                 }
             }
@@ -134,7 +134,7 @@ public class ga
             bundle.putLong("pcc", this.vE);
             bundle.putLong("tfetch", this.vB);
             list = new ArrayList<Bundle>();
-            final Iterator<a> iterator = this.vy.iterator();
+            final Iterator<ga$a> iterator = this.vy.iterator();
             while (iterator.hasNext()) {
                 list.add(iterator.next().toBundle());
             }
@@ -151,37 +151,6 @@ public class ga
                 this.uC = uc;
                 this.vx.a(this);
             }
-        }
-    }
-    
-    @ez
-    private static final class a
-    {
-        private long vH;
-        private long vI;
-        
-        public a() {
-            this.vH = -1L;
-            this.vI = -1L;
-        }
-        
-        public long cS() {
-            return this.vI;
-        }
-        
-        public void cT() {
-            this.vI = SystemClock.elapsedRealtime();
-        }
-        
-        public void cU() {
-            this.vH = SystemClock.elapsedRealtime();
-        }
-        
-        public Bundle toBundle() {
-            final Bundle bundle = new Bundle();
-            bundle.putLong("topen", this.vH);
-            bundle.putLong("tclose", this.vI);
-            return bundle;
         }
     }
 }

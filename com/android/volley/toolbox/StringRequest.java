@@ -5,21 +5,23 @@
 package com.android.volley.toolbox;
 
 import java.io.UnsupportedEncodingException;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Response$ErrorListener;
+import com.android.volley.Response$Listener;
 import com.android.volley.Request;
 
 public class StringRequest extends Request<String>
 {
-    private final Response.Listener<String> mListener;
+    private final Response$Listener<String> mListener;
     
-    public StringRequest(final int n, final String s, final Response.Listener<String> mListener, final Response.ErrorListener errorListener) {
-        super(n, s, errorListener);
+    public StringRequest(final int n, final String s, final Response$Listener<String> mListener, final Response$ErrorListener response$ErrorListener) {
+        super(n, s, response$ErrorListener);
         this.mListener = mListener;
     }
     
-    public StringRequest(final String s, final Response.Listener<String> listener, final Response.ErrorListener errorListener) {
-        this(0, s, listener, errorListener);
+    public StringRequest(final String s, final Response$Listener<String> response$Listener, final Response$ErrorListener response$ErrorListener) {
+        this(0, s, response$Listener, response$ErrorListener);
     }
     
     @Override

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.common.images;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.net.Uri;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -53,7 +54,7 @@ public class b implements Parcelable$Creator<WebImage>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new WebImage(g3, uri, g2, g);
     }

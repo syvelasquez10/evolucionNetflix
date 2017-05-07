@@ -10,10 +10,8 @@ import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import com.netflix.mediaclient.android.widget.VideoView;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.servicemgr.model.Video;
 import android.view.View;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.content.Context;
 import com.netflix.mediaclient.ui.search.SearchUtils;
@@ -42,16 +40,7 @@ public class SearchSimilarItemsGridViewAdapter extends BaseAdapter
         this.gridView = gridView;
         this.clipToCompleteRows = clipToCompleteRows;
         gridView.setNumColumns(this.numGridCols = SearchUtils.getNumVideoGridCols((Context)activity));
-        gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                final GridView access$000 = SearchSimilarItemsGridViewAdapter.this.gridView;
-                final int n = access$000.getWidth() - access$000.getPaddingLeft() - access$000.getPaddingRight();
-                Log.v("SearchSimilarItemsGridViewAdapter", "View dimens: " + n + ", " + access$000.getHeight());
-                SearchSimilarItemsGridViewAdapter.this.imgHeight = (int)(n / SearchSimilarItemsGridViewAdapter.this.numGridCols * SearchUtils.getVideoImageAspectRatio() + 0.5);
-                Log.v("SearchSimilarItemsGridViewAdapter", "imgHeight: " + SearchSimilarItemsGridViewAdapter.this.imgHeight);
-                ViewUtils.removeGlobalLayoutListener((View)access$000, (ViewTreeObserver$OnGlobalLayoutListener)this);
-            }
-        });
+        gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new SearchSimilarItemsGridViewAdapter$1(this));
     }
     
     private int clipCountToCompleteRows(final int n) {
@@ -73,24 +62,23 @@ public class SearchSimilarItemsGridViewAdapter extends BaseAdapter
         return n;
     }
     
-    public View getView(final int n, final View view, final ViewGroup viewGroup) {
+    public View getView(final int n, View view, final ViewGroup viewGroup) {
         boolean isHorizontal = true;
-        Object o = view;
         if (view == null) {
-            o = new VideoView((Context)this.activity);
+            view = (View)new VideoView((Context)this.activity);
             final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361897);
-            ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
-            ((VideoView)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
-            ((VideoView)o).setAdjustViewBounds(true);
-            ((RoundedImageView)o).setScaleType(ImageView$ScaleType.CENTER_CROP);
+            ((VideoView)view).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+            ((VideoView)view).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
+            ((VideoView)view).setAdjustViewBounds(true);
+            ((RoundedImageView)view).setScaleType(ImageView$ScaleType.CENTER_CROP);
         }
-        final VideoView videoView = (VideoView)o;
+        final VideoView videoView = (VideoView)view;
         if (SearchUtils.shouldShowVerticalBoxArt()) {
             isHorizontal = false;
         }
         videoView.setIsHorizontal(isHorizontal);
         videoView.update(this.getItem(n), this.trackable, n, false);
-        return (View)o;
+        return view;
     }
     
     public void refreshImagesIfNecessary() {

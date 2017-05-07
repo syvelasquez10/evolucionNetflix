@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.service.browse;
 
-import com.netflix.mediaclient.service.webclient.model.branches.Season;
+import com.netflix.mediaclient.service.webclient.model.branches.Season$Detail;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import com.netflix.mediaclient.service.webclient.model.SeasonDetails;
 import com.netflix.mediaclient.service.webclient.model.PostPlayVideo;
 import com.netflix.mediaclient.service.webclient.model.EpisodeDetails;
@@ -20,10 +20,10 @@ public class BrowseVideoSentinels
     private static final EpisodeDetails episodeDetailsSentinel;
     private static final PostPlayVideo postPlayVideoSentinel;
     private static final SeasonDetails seasonDetailsSentinel;
-    private static final Video.Summary videoSummarySentinel;
+    private static final Video$Summary videoSummarySentinel;
     
     static {
-        videoSummarySentinel = new Video.Summary();
+        videoSummarySentinel = new Video$Summary();
         episodeDetailsSentinel = new EpisodeDetails();
         seasonDetailsSentinel = new SeasonDetails();
         cwVideoSentinel = new CWVideo();
@@ -33,8 +33,8 @@ public class BrowseVideoSentinels
     
     private BrowseVideoSentinels() {
         BrowseVideoSentinels.videoSummarySentinel.setErrorType(VideoType.UNAVAILABLE);
-        ((Video.Summary)(BrowseVideoSentinels.seasonDetailsSentinel.detail = new Season.Detail())).setErrorType(VideoType.UNAVAILABLE);
-        (BrowseVideoSentinels.cwVideoSentinel.summary = new Video.Summary()).setErrorType(VideoType.UNAVAILABLE);
+        (BrowseVideoSentinels.seasonDetailsSentinel.detail = new Season$Detail()).setErrorType(VideoType.UNAVAILABLE);
+        (BrowseVideoSentinels.cwVideoSentinel.summary = new Video$Summary()).setErrorType(VideoType.UNAVAILABLE);
     }
     
     public static BillboardDetails getUnavailableBBVideo() {
@@ -57,7 +57,7 @@ public class BrowseVideoSentinels
         return BrowseVideoSentinels.seasonDetailsSentinel;
     }
     
-    public static Video.Summary getUnavailableVideoSummary() {
+    public static Video$Summary getUnavailableVideoSummary() {
         return BrowseVideoSentinels.videoSummarySentinel;
     }
 }

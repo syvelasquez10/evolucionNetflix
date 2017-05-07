@@ -24,9 +24,9 @@ public class l implements SafeParcelable
         this.SF = sf;
     }
     
-    private l(final a a) {
+    private l(final l$a l$a) {
         this.BR = 1;
-        this.SF = a.SF;
+        this.SF = l$a.SF;
     }
     
     public int describeContents() {
@@ -43,19 +43,5 @@ public class l implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         m.a(this, parcel, n);
-    }
-    
-    public static class a
-    {
-        private DataType SF;
-        
-        public a c(final DataType sf) {
-            this.SF = sf;
-            return this;
-        }
-        
-        public l jk() {
-            return new l(this, null);
-        }
     }
 }

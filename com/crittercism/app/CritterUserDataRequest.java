@@ -8,7 +8,6 @@ import crittercism.android.aa;
 import crittercism.android.ac;
 import crittercism.android.ab;
 import crittercism.android.y;
-import java.util.Iterator;
 import crittercism.android.z;
 import java.util.HashMap;
 import crittercism.android.l;
@@ -51,16 +50,7 @@ public class CritterUserDataRequest
     
     public void makeRequest() {
         synchronized (this) {
-            new Thread(new Runnable() {
-                @Override
-                public final void run() {
-                    for (final z z : CritterUserDataRequest.this.a) {
-                        z.a();
-                        CritterUserDataRequest.this.a(z.c());
-                    }
-                    CritterUserDataRequest.this.b.onCritterDataReceived(new CritterUserData(CritterUserDataRequest.this.f, CritterUserDataRequest.this.c.d()));
-                }
-            }).start();
+            new Thread(new CritterUserDataRequest$1(this)).start();
         }
     }
     

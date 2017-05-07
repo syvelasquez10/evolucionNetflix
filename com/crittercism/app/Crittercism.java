@@ -5,11 +5,9 @@
 package com.crittercism.app;
 
 import crittercism.android.as;
-import crittercism.android.at;
-import crittercism.android.z;
-import crittercism.android.h;
-import crittercism.android.ab;
-import android.os.ConditionVariable;
+import crittercism.android.l$3;
+import crittercism.android.l$1;
+import crittercism.android.l$9;
 import android.os.Build$VERSION;
 import crittercism.android.s;
 import crittercism.android.af;
@@ -26,9 +24,8 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.FutureTask;
-import crittercism.android.ae;
 import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import android.util.Log;
 import crittercism.android.aq;
 import android.app.AlertDialog;
@@ -80,25 +77,7 @@ public class Crittercism
     
     @Deprecated
     public static String getUserUUID() {
-        final FutureTask<String> futureTask = new FutureTask<String>(new Callable() {
-            private static String a() {
-                try {
-                    final l i = l.i();
-                    if (i.f == null) {
-                        return null;
-                    }
-                    final String a = i.a(ae.g.a(), ae.g.b(), null);
-                    if (a == null) {
-                        return i.a("com.crittercism.prefs", "com.crittercism.prefs.did", null);
-                    }
-                    return a;
-                }
-                catch (Exception ex) {
-                    new StringBuilder("Exception in getUserUUID.call(): ").append(ex.getClass().getName());
-                    return null;
-                }
-            }
-        });
+        final FutureTask<String> futureTask = new FutureTask<String>(new Crittercism$2());
         final ExecutorService l = crittercism.android.l.i().l;
         try {
             l.execute(futureTask);
@@ -239,7 +218,7 @@ public class Crittercism
                 Log.e("Crittercism", "Cannot create proper URI to open app market.  Returning null.");
                 return;
             }
-            switch (l.l$9.a[critterRateMyAppButtons.ordinal()]) {
+            switch (l$9.a[critterRateMyAppButtons.ordinal()]) {
                 case 3: {
                     break;
                 }
@@ -276,38 +255,7 @@ public class Crittercism
             if (l.i().e.d()) {
                 return;
             }
-            new Thread(new Runnable() {
-                final /* synthetic */ l a = crittercism.android.l.i();
-                
-                @Override
-                public final void run() {
-                    final l i = crittercism.android.l.i();
-                    final Thread r = i.r;
-                    while (!i.q && r != null && r.isAlive()) {
-                        try {
-                            r.join();
-                            continue;
-                        }
-                        catch (InterruptedException ex2) {
-                            if (!i.q) {
-                                continue;
-                            }
-                        }
-                        catch (Exception ex3) {
-                            Log.w("CrittercismInstance", "Exception in Thread in sendAppLoadData");
-                            continue;
-                        }
-                        break;
-                    }
-                    try {
-                        i.a(false);
-                        i.k();
-                    }
-                    catch (Exception ex) {
-                        new StringBuilder("Exception in AppLoadRunnable: ").append(ex.getClass().getName());
-                    }
-                }
-            }).start();
+            new Thread(new l$1(l.i())).start();
         }
         catch (Exception ex) {}
     }
@@ -320,17 +268,7 @@ public class Crittercism
             l.i().c.c(j);
             if (l.i().b) {
                 j = l.i().c.j();
-                new Thread(new Runnable() {
-                    final /* synthetic */ l b = crittercism.android.l.i();
-                    
-                    @Override
-                    public final void run() {
-                        try {
-                            this.b.c.b(j);
-                        }
-                        catch (Exception ex) {}
-                    }
-                }).start();
+                new Thread(new l$3(l.i(), j)).start();
                 return;
             }
             Log.e("Crittercism", "Initialize the Crittercism library before using its methods.");
@@ -339,27 +277,7 @@ public class Crittercism
     }
     
     public static void setOptOutStatus(final boolean b) {
-        new Thread(new Runnable() {
-            @Override
-            public final void run() {
-                final l i = l.i();
-                final ai k = i.k;
-                z z = null;
-                final at e = i.e;
-                synchronized (k) {
-                    if (!k.a()) {
-                        z = new ab(new ConditionVariable(k.a()), e);
-                        k.a(z);
-                    }
-                    // monitorexit(k)
-                    if (z != null) {
-                        ((ab)z).a();
-                    }
-                    e.c().a(b);
-                    e.c().a(i, ae.f.a(), ae.f.b());
-                }
-            }
-        }).start();
+        new Thread(new Crittercism$1(b)).start();
     }
     
     public static void setUsername(final String a) {

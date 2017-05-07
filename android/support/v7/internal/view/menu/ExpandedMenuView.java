@@ -13,14 +13,14 @@ import android.content.Context;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListView;
 
-public final class ExpandedMenuView extends ListView implements ItemInvoker, MenuView, AdapterView$OnItemClickListener
+public final class ExpandedMenuView extends ListView implements aa, k, AdapterView$OnItemClickListener
 {
-    private static final int[] TINT_ATTRS;
-    private int mAnimations;
-    private MenuBuilder mMenu;
+    private static final int[] a;
+    private i b;
+    private int c;
     
     static {
-        TINT_ATTRS = new int[] { 16842964, 16843049 };
+        a = new int[] { 16842964, 16843049 };
     }
     
     public ExpandedMenuView(final Context context, final AttributeSet set) {
@@ -30,7 +30,7 @@ public final class ExpandedMenuView extends ListView implements ItemInvoker, Men
     public ExpandedMenuView(final Context context, final AttributeSet set, final int n) {
         super(context, set);
         this.setOnItemClickListener((AdapterView$OnItemClickListener)this);
-        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, ExpandedMenuView.TINT_ATTRS, n, 0);
+        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, ExpandedMenuView.a, n, 0);
         if (obtainStyledAttributes.hasValue(0)) {
             this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(0));
         }
@@ -41,15 +41,15 @@ public final class ExpandedMenuView extends ListView implements ItemInvoker, Men
     }
     
     public int getWindowAnimations() {
-        return this.mAnimations;
+        return this.c;
     }
     
-    public void initialize(final MenuBuilder mMenu) {
-        this.mMenu = mMenu;
+    public void initialize(final i b) {
+        this.b = b;
     }
     
-    public boolean invokeItem(final MenuItemImpl menuItemImpl) {
-        return this.mMenu.performItemAction((MenuItem)menuItemImpl, 0);
+    public boolean invokeItem(final m m) {
+        return this.b.a((MenuItem)m, 0);
     }
     
     protected void onDetachedFromWindow() {
@@ -58,6 +58,6 @@ public final class ExpandedMenuView extends ListView implements ItemInvoker, Men
     }
     
     public void onItemClick(final AdapterView adapterView, final View view, final int n, final long n2) {
-        this.invokeItem((MenuItemImpl)this.getAdapter().getItem(n));
+        this.invokeItem((m)this.getAdapter().getItem(n));
     }
 }

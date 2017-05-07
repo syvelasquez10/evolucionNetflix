@@ -6,7 +6,7 @@ package com.google.android.gms.maps.model;
 
 import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
-import android.os.RemoteException;
+import com.google.android.gms.maps.model.internal.i$a;
 import android.os.IBinder;
 import com.google.android.gms.maps.model.internal.i;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -35,25 +35,13 @@ public final class TileOverlayOptions implements SafeParcelable
         this.ajB = true;
         this.aki = true;
         this.BR = br;
-        this.akg = i.a.by(binder);
+        this.akg = i$a.by(binder);
         TileProvider akh;
         if (this.akg == null) {
             akh = null;
         }
         else {
-            akh = new TileProvider() {
-                private final i akj = TileOverlayOptions.this.akg;
-                
-                @Override
-                public Tile getTile(final int n, final int n2, final int n3) {
-                    try {
-                        return this.akj.getTile(n, n2, n3);
-                    }
-                    catch (RemoteException ex) {
-                        return null;
-                    }
-                }
-            };
+            akh = new TileOverlayOptions$1(this);
         }
         this.akh = akh;
         this.ajB = ajB;
@@ -101,11 +89,7 @@ public final class TileOverlayOptions implements SafeParcelable
             akg = null;
         }
         else {
-            akg = new i.a() {
-                public Tile getTile(final int n, final int n2, final int n3) {
-                    return akh.getTile(n, n2, n3);
-                }
-            };
+            akg = new TileOverlayOptions$2(this, akh);
         }
         this.akg = akg;
         return this;

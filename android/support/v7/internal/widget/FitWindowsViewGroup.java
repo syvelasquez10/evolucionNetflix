@@ -4,14 +4,7 @@
 
 package android.support.v7.internal.widget;
 
-import android.graphics.Rect;
-
 public interface FitWindowsViewGroup
 {
-    void setOnFitSystemWindowsListener(final OnFitSystemWindowsListener p0);
-    
-    public interface OnFitSystemWindowsListener
-    {
-        void onFitSystemWindows(final Rect p0);
-    }
+    void setOnFitSystemWindowsListener(final FitWindowsViewGroup$OnFitSystemWindowsListener p0);
 }

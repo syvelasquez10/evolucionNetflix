@@ -15,8 +15,8 @@ import com.netflix.mediaclient.android.app.Status;
 public abstract class PServiceAgent
 {
     private static final String TAG = "nf_preapp_serviceagent";
-    private AgentContext agentContext;
-    private InitCallback initCallback;
+    private PServiceAgent$AgentContext agentContext;
+    private PServiceAgent$InitCallback initCallback;
     private boolean initCalled;
     private Status initErrorResult;
     private Handler mainHandler;
@@ -33,7 +33,7 @@ public abstract class PServiceAgent
     protected abstract void doInit();
     
     protected Context getContext() {
-        final AgentContext agentContext = this.agentContext;
+        final PServiceAgent$AgentContext agentContext = this.agentContext;
         if (agentContext != null) {
             return (Context)agentContext.getService();
         }
@@ -45,14 +45,14 @@ public abstract class PServiceAgent
     }
     
     protected PService getService() {
-        final AgentContext agentContext = this.agentContext;
+        final PServiceAgent$AgentContext agentContext = this.agentContext;
         if (agentContext != null) {
             return agentContext.getService();
         }
         return null;
     }
     
-    public final void init(final AgentContext agentContext, final InitCallback initCallback) {
+    public final void init(final PServiceAgent$AgentContext pServiceAgent$AgentContext, final PServiceAgent$InitCallback initCallback) {
         synchronized (this) {
             ThreadUtils.assertOnMain();
             Log.d("nf_preapp_serviceagent", "Request to init " + this.getClass().getSimpleName());
@@ -60,21 +60,15 @@ public abstract class PServiceAgent
                 throw new IllegalStateException("PServiceAgent init already called");
             }
         }
-        final AgentContext agentContext2;
-        if (agentContext2 == null) {
+        final PServiceAgent$AgentContext agentContext;
+        if (agentContext == null) {
             throw new NullPointerException("PreAppAgentContext can not be null");
         }
-        this.agentContext = agentContext2;
+        this.agentContext = agentContext;
         this.initCalled = true;
         this.initCallback = initCallback;
         this.mainHandler = new Handler();
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("nf_preapp_serviceagent", "Initing " + PServiceAgent.this.getClass().getSimpleName());
-                PServiceAgent.this.doInit();
-            }
-        });
+        new BackgroundTask().execute(new PServiceAgent$1(this));
     }
     // monitorexit(this)
     
@@ -85,12 +79,7 @@ public abstract class PServiceAgent
                 Log.d("nf_preapp_serviceagent", "InitComplete with errorCode " + this.initErrorResult + " for " + this.getClass().getSimpleName());
             }
             if (this.initCallback != null) {
-                this.mainHandler.post((Runnable)new Runnable() {
-                    @Override
-                    public void run() {
-                        PServiceAgent.this.initCallback.onInitComplete(PServiceAgent.this, PServiceAgent.this.initErrorResult);
-                    }
-                });
+                this.mainHandler.post((Runnable)new PServiceAgent$2(this));
             }
         }
     }
@@ -99,15 +88,5 @@ public abstract class PServiceAgent
         synchronized (this) {
             return this.initErrorResult.isSucces();
         }
-    }
-    
-    public interface AgentContext
-    {
-        PService getService();
-    }
-    
-    public interface InitCallback
-    {
-        void onInitComplete(final PServiceAgent p0, final Status p1);
     }
 }

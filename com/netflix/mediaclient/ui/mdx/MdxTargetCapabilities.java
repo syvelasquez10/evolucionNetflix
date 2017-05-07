@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.util.JsonUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MdxTargetCapabilities
@@ -32,11 +31,11 @@ public class MdxTargetCapabilities
         MdxTargetCapabilities.PROPERTY_volumeStep = "volumeStep";
     }
     
-    public MdxTargetCapabilities(final String s) throws JSONException {
+    public MdxTargetCapabilities(final String s) {
         this(new JSONObject(s));
     }
     
-    public MdxTargetCapabilities(final JSONObject jsonObject) throws JSONException {
+    public MdxTargetCapabilities(final JSONObject jsonObject) {
         final boolean b = true;
         final String string = JsonUtils.getString(jsonObject, MdxTargetCapabilities.PROPERTY_is3dSupported, null);
         this.is3dSupported = (string != null && "true".equalsIgnoreCase(string));

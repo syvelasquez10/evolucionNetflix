@@ -5,6 +5,7 @@
 package com.google.android.gms.maps.model;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -71,7 +72,7 @@ public class o implements Parcelable$Creator<PolylineOptions>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new PolylineOptions(g2, c3, i, g, l, c4, c);
     }

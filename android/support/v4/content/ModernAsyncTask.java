@@ -4,18 +4,9 @@
 
 package android.support.v4.content;
 
-import android.os.Message;
-import android.os.Handler;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import android.util.Log;
-import java.util.concurrent.Callable;
-import android.os.Process;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadFactory;
@@ -32,60 +23,99 @@ abstract class ModernAsyncTask<Params, Progress, Result>
     private static final int MESSAGE_POST_RESULT = 1;
     public static final Executor THREAD_POOL_EXECUTOR;
     private static volatile Executor sDefaultExecutor;
-    private static final InternalHandler sHandler;
+    private static final ModernAsyncTask$InternalHandler sHandler;
     private static final BlockingQueue<Runnable> sPoolWorkQueue;
     private static final ThreadFactory sThreadFactory;
     private final FutureTask<Result> mFuture;
-    private volatile Status mStatus;
+    private volatile ModernAsyncTask$Status mStatus;
     private final AtomicBoolean mTaskInvoked;
-    private final WorkerRunnable<Params, Result> mWorker;
+    private final ModernAsyncTask$WorkerRunnable<Params, Result> mWorker;
     
     static {
-        sThreadFactory = new ThreadFactory() {
-            private final AtomicInteger mCount = new AtomicInteger(1);
-            
-            @Override
-            public Thread newThread(final Runnable runnable) {
-                return new Thread(runnable, "ModernAsyncTask #" + this.mCount.getAndIncrement());
-            }
-        };
+        sThreadFactory = new ModernAsyncTask$1();
         sPoolWorkQueue = new LinkedBlockingQueue<Runnable>(10);
         THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(5, 128, 1L, TimeUnit.SECONDS, ModernAsyncTask.sPoolWorkQueue, ModernAsyncTask.sThreadFactory);
-        sHandler = new InternalHandler();
+        sHandler = new ModernAsyncTask$InternalHandler(null);
         ModernAsyncTask.sDefaultExecutor = ModernAsyncTask.THREAD_POOL_EXECUTOR;
     }
     
     public ModernAsyncTask() {
-        this.mStatus = Status.PENDING;
-        this.mTaskInvoked = new AtomicBoolean();
-        this.mWorker = (WorkerRunnable<Params, Result>)new WorkerRunnable<Params, Result>() {
-            @Override
-            public Result call() throws Exception {
-                ModernAsyncTask.this.mTaskInvoked.set(true);
-                Process.setThreadPriority(10);
-                return (Result)ModernAsyncTask.this.postResult(ModernAsyncTask.this.doInBackground(this.mParams));
-            }
-        };
-        this.mFuture = new FutureTask<Result>(this.mWorker) {
-            @Override
-            protected void done() {
-                try {
-                    ModernAsyncTask.this.postResultIfNotInvoked(((FutureTask<Object>)this).get());
-                }
-                catch (InterruptedException ex) {
-                    Log.w("AsyncTask", (Throwable)ex);
-                }
-                catch (ExecutionException ex2) {
-                    throw new RuntimeException("An error occured while executing doInBackground()", ex2.getCause());
-                }
-                catch (CancellationException ex3) {
-                    ModernAsyncTask.this.postResultIfNotInvoked(null);
-                }
-                catch (Throwable t) {
-                    throw new RuntimeException("An error occured while executing doInBackground()", t);
-                }
-            }
-        };
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: invokespecial   java/lang/Object.<init>:()V
+        //     4: aload_0        
+        //     5: getstatic       android/support/v4/content/ModernAsyncTask$Status.PENDING:Landroid/support/v4/content/ModernAsyncTask$Status;
+        //     8: putfield        android/support/v4/content/ModernAsyncTask.mStatus:Landroid/support/v4/content/ModernAsyncTask$Status;
+        //    11: aload_0        
+        //    12: new             Ljava/util/concurrent/atomic/AtomicBoolean;
+        //    15: dup            
+        //    16: invokespecial   java/util/concurrent/atomic/AtomicBoolean.<init>:()V
+        //    19: putfield        android/support/v4/content/ModernAsyncTask.mTaskInvoked:Ljava/util/concurrent/atomic/AtomicBoolean;
+        //    22: aload_0        
+        //    23: new             new            !!! ERROR
+        //    26: dup            
+        //    27: aload_0        
+        //    28: invokespecial   invokespecial  !!! ERROR
+        //    31: putfield        android/support/v4/content/ModernAsyncTask.mWorker:Landroid/support/v4/content/ModernAsyncTask$WorkerRunnable;
+        //    34: aload_0        
+        //    35: new             new            !!! ERROR
+        //    38: dup            
+        //    39: aload_0        
+        //    40: aload_0        
+        //    41: getfield        android/support/v4/content/ModernAsyncTask.mWorker:Landroid/support/v4/content/ModernAsyncTask$WorkerRunnable;
+        //    44: invokespecial   invokespecial  !!! ERROR
+        //    47: putfield        android/support/v4/content/ModernAsyncTask.mFuture:Ljava/util/concurrent/FutureTask;
+        //    50: return         
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
+        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
+        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
+        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
+        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createConstructor(AstBuilder.java:692)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:529)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     public static void execute(final Runnable runnable) {
@@ -99,7 +129,7 @@ abstract class ModernAsyncTask<Params, Progress, Result>
         else {
             this.onPostExecute(result);
         }
-        this.mStatus = Status.FINISHED;
+        this.mStatus = ModernAsyncTask$Status.FINISHED;
     }
     
     public static void init() {
@@ -107,7 +137,7 @@ abstract class ModernAsyncTask<Params, Progress, Result>
     }
     
     private Result postResult(final Result result) {
-        ModernAsyncTask.sHandler.obtainMessage(1, (Object)new AsyncTaskResult(this, new Object[] { result })).sendToTarget();
+        ModernAsyncTask.sHandler.obtainMessage(1, (Object)new ModernAsyncTask$AsyncTaskResult(this, new Object[] { result })).sendToTarget();
         return result;
     }
     
@@ -132,32 +162,32 @@ abstract class ModernAsyncTask<Params, Progress, Result>
     }
     
     public final ModernAsyncTask<Params, Progress, Result> executeOnExecutor(final Executor executor, final Params... mParams) {
-        if (this.mStatus != Status.PENDING) {
-            switch (this.mStatus) {
-                case RUNNING: {
+        if (this.mStatus != ModernAsyncTask$Status.PENDING) {
+            switch (ModernAsyncTask$4.$SwitchMap$android$support$v4$content$ModernAsyncTask$Status[this.mStatus.ordinal()]) {
+                case 1: {
                     throw new IllegalStateException("Cannot execute task: the task is already running.");
                 }
-                case FINISHED: {
+                case 2: {
                     throw new IllegalStateException("Cannot execute task: the task has already been executed (a task can be executed only once)");
                 }
             }
         }
-        this.mStatus = Status.RUNNING;
+        this.mStatus = ModernAsyncTask$Status.RUNNING;
         this.onPreExecute();
         this.mWorker.mParams = mParams;
         executor.execute(this.mFuture);
         return this;
     }
     
-    public final Result get() throws InterruptedException, ExecutionException {
+    public final Result get() {
         return this.mFuture.get();
     }
     
-    public final Result get(final long n, final TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+    public final Result get(final long n, final TimeUnit timeUnit) {
         return this.mFuture.get(n, timeUnit);
     }
     
-    public final Status getStatus() {
+    public final ModernAsyncTask$Status getStatus() {
         return this.mStatus;
     }
     
@@ -183,46 +213,7 @@ abstract class ModernAsyncTask<Params, Progress, Result>
     
     protected final void publishProgress(final Progress... array) {
         if (!this.isCancelled()) {
-            ModernAsyncTask.sHandler.obtainMessage(2, (Object)new AsyncTaskResult(this, (Object[])array)).sendToTarget();
+            ModernAsyncTask.sHandler.obtainMessage(2, (Object)new ModernAsyncTask$AsyncTaskResult(this, (Object[])array)).sendToTarget();
         }
-    }
-    
-    private static class AsyncTaskResult<Data>
-    {
-        final Data[] mData;
-        final ModernAsyncTask mTask;
-        
-        AsyncTaskResult(final ModernAsyncTask mTask, final Data... mData) {
-            this.mTask = mTask;
-            this.mData = mData;
-        }
-    }
-    
-    private static class InternalHandler extends Handler
-    {
-        public void handleMessage(final Message message) {
-            final AsyncTaskResult asyncTaskResult = (AsyncTaskResult)message.obj;
-            switch (message.what) {
-                default: {}
-                case 1: {
-                    asyncTaskResult.mTask.finish(asyncTaskResult.mData[0]);
-                }
-                case 2: {
-                    asyncTaskResult.mTask.onProgressUpdate(asyncTaskResult.mData);
-                }
-            }
-        }
-    }
-    
-    public enum Status
-    {
-        FINISHED, 
-        PENDING, 
-        RUNNING;
-    }
-    
-    private abstract static class WorkerRunnable<Params, Result> implements Callable<Result>
-    {
-        Params[] mParams;
     }
 }

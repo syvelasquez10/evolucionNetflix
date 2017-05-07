@@ -127,7 +127,7 @@ public class DataBufferAdapter<T> extends BaseAdapter
         return this.a(n, view, viewGroup, this.RK);
     }
     
-    public T getItem(final int n) throws CursorIndexOutOfBoundsException {
+    public T getItem(final int n) {
         final Iterator<DataBuffer<T>> iterator = this.RM.iterator();
         int n2 = n;
         while (iterator.hasNext()) {

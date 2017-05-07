@@ -7,7 +7,6 @@ package android.support.v4.view;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.graphics.Canvas;
-import android.view.View;
 import android.view.View$OnClickListener;
 import android.view.ViewConfiguration;
 import android.util.AttributeSet;
@@ -61,23 +60,15 @@ public class PagerTabStrip extends PagerTitleStrip
         this.mMinTextSpacing = (int)(64.0f * density);
         this.mTabPadding = (int)(16.0f * density + 0.5f);
         this.mFullUnderlineHeight = (int)(1.0f * density + 0.5f);
-        this.mMinStripHeight = (int)(32.0f * density + 0.5f);
+        this.mMinStripHeight = (int)(density * 32.0f + 0.5f);
         this.mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         this.setPadding(this.getPaddingLeft(), this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
         this.setTextSpacing(this.getTextSpacing());
         this.setWillNotDraw(false);
         this.mPrevText.setFocusable(true);
-        this.mPrevText.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                PagerTabStrip.this.mPager.setCurrentItem(PagerTabStrip.this.mPager.getCurrentItem() - 1);
-            }
-        });
+        this.mPrevText.setOnClickListener((View$OnClickListener)new PagerTabStrip$1(this));
         this.mNextText.setFocusable(true);
-        this.mNextText.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                PagerTabStrip.this.mPager.setCurrentItem(PagerTabStrip.this.mPager.getCurrentItem() + 1);
-            }
-        });
+        this.mNextText.setOnClickListener((View$OnClickListener)new PagerTabStrip$2(this));
         if (this.getBackground() == null) {
             this.mDrawFullUnderline = true;
         }

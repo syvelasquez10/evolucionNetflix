@@ -4,15 +4,15 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import java.util.concurrent.TimeUnit;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import java.util.ArrayList;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
@@ -48,14 +48,14 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
     }
     
     public static List<Video> buildVideoList(final LoMoType loMoType, final JsonObject jsonObject, final int n, int i, final boolean b) {
-        final ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary> list = new ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary>();
+        final ArrayList<Video$Summary> list = new ArrayList<Video$Summary>();
         int n2 = 0;
         while (i >= n) {
             final String string = Integer.toString(i);
             int n3;
             if (jsonObject.has(string)) {
+                list.add(0, (Video$Summary)getSummaryByLomoType(loMoType, jsonObject.getAsJsonObject(string)));
                 n3 = 1;
-                list.add(0, (com.netflix.mediaclient.service.webclient.model.branches.Video.Summary)getSummaryByLomoType(loMoType, jsonObject.getAsJsonObject(string)));
             }
             else if ((n3 = n2) != 0) {
                 n3 = n2;
@@ -72,7 +72,7 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
     }
     
     private static Video getSummaryByLomoType(final LoMoType loMoType, final JsonObject jsonObject) {
-        return FalcorParseUtils.getPropertyObject(jsonObject, "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
+        return FalcorParseUtils.getPropertyObject(jsonObject, "summary", Video$Summary.class);
     }
     
     @Override
@@ -95,7 +95,7 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
     }
     
     @Override
-    protected List<Video> parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected List<Video> parseFalcorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 2)) {}
         final long nanoTime = System.nanoTime();
         final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchvideosrequest", s);

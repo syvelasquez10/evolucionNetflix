@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -95,7 +94,7 @@ public class DataContext
         }
     }
     
-    public static DataContext createInstance(final JSONObject jsonObject) throws JSONException {
+    public static DataContext createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -189,7 +188,7 @@ public class DataContext
         this.xid = xid;
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.requestId != null) {
             jsonObject.put("requestId", (Object)this.requestId);

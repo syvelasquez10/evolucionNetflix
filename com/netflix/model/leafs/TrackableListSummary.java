@@ -6,14 +6,15 @@ package com.netflix.model.leafs;
 
 import java.util.Iterator;
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.util.JsonUtils;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 
-public class TrackableListSummary extends ListSummary implements Trackable, JsonPopulator
+public class TrackableListSummary extends ListSummary implements JsonPopulator, Trackable
 {
     private static final String TAG = "TrackableListSummary";
     private int listPos;
@@ -21,14 +22,6 @@ public class TrackableListSummary extends ListSummary implements Trackable, Json
     private int trackId;
     
     public TrackableListSummary() {
-        super(0);
-    }
-    
-    protected TrackableListSummary(final int n, final int trackId, final int listPos, final String requestId) {
-        super(n);
-        this.trackId = trackId;
-        this.listPos = listPos;
-        this.requestId = requestId;
     }
     
     protected TrackableListSummary(final Parcel parcel) {
@@ -94,15 +87,15 @@ public class TrackableListSummary extends ListSummary implements Trackable, Json
                     continue;
                 }
                 case 0: {
-                    this.trackId = entry.getValue().getAsInt();
+                    this.trackId = JsonUtils.getAsIntSafe(entry.getValue());
                     continue;
                 }
                 case 1: {
-                    this.listPos = entry.getValue().getAsInt();
+                    this.listPos = JsonUtils.getAsIntSafe(entry.getValue());
                     continue;
                 }
                 case 2: {
-                    this.requestId = entry.getValue().getAsString();
+                    this.requestId = JsonUtils.getAsStringSafe(entry.getValue());
                     continue;
                 }
             }

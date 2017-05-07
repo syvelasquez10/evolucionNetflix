@@ -4,9 +4,9 @@
 
 package android.support.v4.media;
 
+import android.os.Parcel;
 import android.util.Log;
 import android.os.Build$VERSION;
-import android.os.Parcel;
 import android.os.Parcelable$Creator;
 import android.os.Parcelable;
 
@@ -27,15 +27,7 @@ public final class RatingCompat implements Parcelable
     private final float mRatingValue;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<RatingCompat>() {
-            public RatingCompat createFromParcel(final Parcel parcel) {
-                return new RatingCompat(parcel.readInt(), parcel.readFloat(), null);
-            }
-            
-            public RatingCompat[] newArray(final int n) {
-                return new RatingCompat[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new RatingCompat$1();
     }
     
     private RatingCompat(final int mRatingStyle, final float mRatingValue) {

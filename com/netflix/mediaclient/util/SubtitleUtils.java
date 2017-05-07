@@ -4,15 +4,20 @@
 
 package com.netflix.mediaclient.util;
 
-import android.graphics.Typeface;
+import android.annotation.SuppressLint;
+import com.netflix.mediaclient.service.player.subtitles.Region;
 import com.netflix.mediaclient.service.player.subtitles.VerticalAlignment;
 import com.netflix.mediaclient.service.player.subtitles.HorizontalAlignment;
 import java.util.regex.Matcher;
 import java.util.Locale;
-import com.netflix.mediaclient.service.player.subtitles.Outline;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleTextNode;
+import java.util.List;
 import com.netflix.mediaclient.service.player.subtitles.ColorMapping;
-import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.service.player.subtitles.DoubleLength;
+import com.netflix.mediaclient.android.widget.StrokeTextView;
+import com.netflix.mediaclient.service.player.subtitles.Outline$Shadow;
+import android.widget.TextView;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.ViewGroup$LayoutParams;
@@ -20,11 +25,24 @@ import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import java.util.HashMap;
+import com.netflix.mediaclient.service.player.subtitles.FontWeight;
+import com.netflix.mediaclient.service.player.subtitles.FontFamilyMapping;
+import com.netflix.mediaclient.service.player.subtitles.Outline;
+import android.graphics.Typeface;
+import java.util.Map;
+import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import java.util.regex.Pattern;
 
 public final class SubtitleUtils
 {
     private static final Pattern CELL_PATTERN;
+    public static final TextStyle DEFAULT_DEVICE_TEXT_STYLE_FOR_MONOSPACE;
+    public static final TextStyle DEFAULT_DEVICE_TEXT_STYLE_FOR_PROPORTIONAL;
+    private static final float DEFAULT_SPACING_IN_EM_FOR_MONOSPACE_FONT = 0.0f;
+    private static final float DEFAULT_SPACING_IN_EM_FOR_PROPORSIONAL_FONT = 0.016f;
+    private static final String DEFAULT_TEXT_COLOR = "FFFFFF";
+    private static final String DEFAULT_TEXT_STLE_ID = "<%NF_DEFAULT_TEXT_STYLE%>";
     private static final int MILLISECONDS_PER_SECOND = 1000;
     private static final Pattern PERCENT_PATTERN;
     private static final String TAG = "nf_subtitles_render";
@@ -32,6 +50,7 @@ public final class SubtitleUtils
     private static final Pattern TICK_SEC_PATTERN;
     private static final Pattern TICK_TIME_PATTERN;
     private static final Pattern TICK_T_PATTERN;
+    private static final Map<String, Typeface> sTypeFaceWeightMapForProportional;
     
     static {
         PERCENT_PATTERN = Pattern.compile("^[0-9]*[.]?[0-9]*%$");
@@ -40,9 +59,14 @@ public final class SubtitleUtils
         TICK_MS_PATTERN = Pattern.compile("^([0-9.]+)ms$");
         TICK_SEC_PATTERN = Pattern.compile("^([0-9.]+)s$");
         TICK_TIME_PATTERN = Pattern.compile("^([0-9]+):([0-9]+):([0-9.]+)$");
+        DEFAULT_DEVICE_TEXT_STYLE_FOR_MONOSPACE = new TextStyle("<%NF_DEFAULT_TEXT_STYLE%>", "FFFFFF", null, null, null, Outline.getDefaultOutline(), FontFamilyMapping.defaultType, false, false, FontWeight.Regular, null, null, null);
+        DEFAULT_DEVICE_TEXT_STYLE_FOR_PROPORTIONAL = new TextStyle("<%NF_DEFAULT_TEXT_STYLE%>", "FFFFFF", null, null, null, Outline.getDefaultOutline(), FontFamilyMapping.monospace, false, false, FontWeight.Medium, null, null, null);
+        sTypeFaceWeightMapForProportional = new HashMap<String, Typeface>();
+        initTypeFaceMap();
     }
     
     public static int adjustIfIntersectByMovingFirstUp(final LinearLayout linearLayout, final LinearLayout linearLayout2) {
+        int n = 1;
         final Rect rect = ViewUtils.getRect((View)linearLayout, true);
         final Rect rect2 = ViewUtils.getRect((View)linearLayout2, true);
         if (Log.isLoggable("nf_subtitles_render", 3)) {
@@ -57,7 +81,6 @@ public final class SubtitleUtils
         if (Log.isLoggable("nf_subtitles_render", 3)) {
             Log.d("nf_subtitles_render", "===> intersection found, move by: " + overlap);
         }
-        int n = 1;
         final int y = overlap.y;
         final int n2 = rect.top - y;
         int n3 = y;
@@ -110,31 +133,124 @@ public final class SubtitleUtils
         return true;
     }
     
+    private static void applyEdge(final TextView textView, final Outline outline) {
+        Log.d("nf_subtitles_render", "Apply edge");
+        if (outline == null || !outline.isOutlineRequired()) {
+            Log.d("nf_subtitles_render", "No outline to be applied");
+            return;
+        }
+        final Integer edgeColor = getEdgeColor(outline);
+        if (edgeColor == null) {
+            Log.w("nf_subtitles_render", "Edge color unresolved, not setting anything!");
+            return;
+        }
+        final Outline$Shadow shadow = outline.getShadow();
+        if (shadow == null) {
+            Log.w("nf_subtitles_render", "Shadow is null, not setting anything!");
+            return;
+        }
+        if (Log.isLoggable("nf_subtitles_render", 3)) {
+            Log.d("nf_subtitles_render", "Sets text shadow with color " + edgeColor + ", radius " + shadow.radius + ", dx " + shadow.dx + ", dy " + shadow.dy);
+        }
+        textView.setShadowLayer(shadow.radius, (float)shadow.dx, (float)shadow.dy, (int)edgeColor);
+    }
+    
+    public static void applyOutline(final TextView textView, final TextStyle textStyle) {
+        if (textView == null || textStyle == null) {
+            Log.e("nf_subtitles_render", "apply outline parameters are null, do nothing!");
+            return;
+        }
+        if (textStyle.getOutline() == null) {
+            Log.d("nf_subtitles_render", "No outline!");
+            return;
+        }
+        if (textView instanceof StrokeTextView) {
+            applyStroke((StrokeTextView)textView, textStyle.getOutline());
+            return;
+        }
+        applyEdge(textView, textStyle.getOutline());
+    }
+    
+    private static void applyStroke(final StrokeTextView strokeTextView, final Outline outline) {
+        final Integer edgeColor = getEdgeColor(outline);
+        int intValue;
+        if (outline.getOutlineWidth() != null) {
+            intValue = outline.getOutlineWidth();
+        }
+        else {
+            intValue = 1;
+        }
+        if (edgeColor != null) {
+            strokeTextView.setStrokeWidth(intValue);
+            strokeTextView.setStrokeColor(edgeColor);
+        }
+    }
+    
+    public static void applyStyle(final TextView textView, final TextStyle textStyle, float n) {
+        if (textView == null || textStyle == null) {
+            Log.e("nf_subtitles_render", "apply style parameters are null, do nothing!");
+            return;
+        }
+        if (Log.isLoggable("nf_subtitles_render", 3)) {
+            Log.d("nf_subtitles_render", "Apply style " + textStyle);
+        }
+        final float fontSizeMultiplier = getFontSizeMultiplier(textStyle);
+        n *= fontSizeMultiplier;
+        textView.setTextSize(0, n);
+        if (Log.isLoggable("nf_subtitles_render", 3)) {
+            Log.d("nf_subtitles_render", "Text size " + n + ", scale " + fontSizeMultiplier);
+        }
+        textView.setTypeface(toTypeFace(textStyle, false), toTypeFaceStyle(textStyle));
+        setLetterSpacing(textView, textStyle);
+        final Integer textColor = getTextColor(textStyle);
+        if (textColor != null) {
+            if (Log.isLoggable("nf_subtitles_render", 3)) {
+                Log.d("nf_subtitles_render", "Sets text color to " + textColor);
+            }
+            textView.setTextColor((int)textColor);
+        }
+        else {
+            Log.w("nf_subtitles_render", "Text color unresolved, not setting anything!");
+        }
+        final Integer backgroundColor = getBackgroundColor(textStyle);
+        if (backgroundColor != null) {
+            if (Log.isLoggable("nf_subtitles_render", 3)) {
+                Log.d("nf_subtitles_render", "Sets text view background color to " + backgroundColor);
+            }
+            textView.setBackgroundColor((int)backgroundColor);
+        }
+        else {
+            Log.w("nf_subtitles_render", "Background color unresolved, not setting anything!");
+        }
+        applyOutline(textView, textStyle);
+    }
+    
     public static Rect createRegionForRectangle(final View view, final DoubleLength doubleLength, final DoubleLength doubleLength2) {
+        int n = 0;
         if (view == null) {
             throw new IllegalArgumentException("Display area can not be null");
         }
-        int n = 0;
-        int n2 = 0;
         final Rect rect = new Rect();
+        int n2;
         if (doubleLength != null) {
-            n = (int)(view.getWidth() * doubleLength.getFirstLength());
-            n2 = (int)(view.getHeight() * doubleLength.getSecondLength());
+            n2 = (int)(view.getWidth() * doubleLength.getFirstLength());
+            n = (int)(view.getHeight() * doubleLength.getSecondLength());
         }
         else {
             Log.w("nf_subtitles_render", "Extent is null!");
+            n2 = 0;
         }
         if (Log.isLoggable("nf_subtitles_render", 3)) {
             Log.d("nf_subtitles_render", "Display area: w " + view.getWidth() + ", h " + view.getHeight());
-            Log.d("nf_subtitles_render", "Region w/h " + n + "/" + n2);
+            Log.d("nf_subtitles_render", "Region w/h " + n2 + "/" + n);
             Log.d("nf_subtitles_render", "Extent " + doubleLength);
             Log.d("nf_subtitles_render", "Origin " + doubleLength2);
         }
         if (doubleLength2 != null) {
             rect.left = (int)(view.getWidth() * doubleLength2.getFirstLength());
             rect.top = (int)(view.getHeight() * doubleLength2.getSecondLength());
-            rect.right = rect.left + n;
-            rect.bottom = rect.top + n2;
+            rect.right = n2 + rect.left;
+            rect.bottom = n + rect.top;
             if (rect.bottom > view.getHeight()) {
                 Log.w("nf_subtitles_render", "Extent h is too big!");
             }
@@ -151,81 +267,116 @@ public final class SubtitleUtils
         return rect;
     }
     
-    public static Integer getBackgroundColor(final TextStyle textStyle, final TextStyle textStyle2) {
-        if (textStyle2 == null) {
-            return ColorMapping.resolveColor(textStyle.getBackgroundOpacity(), textStyle.getBackgroundColor());
-        }
-        return ColorMapping.resolveColor(textStyle2.getBackgroundOpacity(), textStyle2.getBackgroundColor());
-    }
-    
-    public static Integer getEdgeColor(final Outline outline, final TextStyle textStyle) {
-        final Integer n = null;
-        if (textStyle == null || textStyle.getOutline() == null) {
-            Integer resolveColor = n;
-            if (outline != null) {
-                resolveColor = ColorMapping.resolveColor(null, outline.getEdgeColor());
+    public static String createText(final String s, final int n) {
+        int i = 1;
+        final StringBuilder sb = new StringBuilder();
+        if (n > 1) {
+            while (i < n) {
+                sb.append('\n');
+                ++i;
             }
-            return resolveColor;
         }
-        return ColorMapping.resolveColor(null, textStyle.getOutline().getEdgeColor());
+        if (!StringUtils.isEmpty(s)) {
+            sb.append(s);
+        }
+        sb.append(" ");
+        return sb.toString();
     }
     
-    public static float getFontSizeMultiplier(final TextStyle textStyle, final TextStyle textStyle2) {
+    public static Integer getBackgroundColor(final TextStyle textStyle) {
+        return ColorMapping.resolveColor(textStyle.getBackgroundOpacity(), textStyle.getBackgroundColor());
+    }
+    
+    public static FontWeight getDefaultFontWeight(final FontFamilyMapping fontFamilyMapping) {
+        if (FontFamilyMapping.isMonospace(fontFamilyMapping)) {
+            return FontWeight.Regular;
+        }
+        return FontWeight.Medium;
+    }
+    
+    private static float getDefaultSpacing(final FontFamilyMapping fontFamilyMapping) {
+        if (fontFamilyMapping == null || FontFamilyMapping.isProportional(fontFamilyMapping)) {
+            return 0.016f;
+        }
+        return 0.0f;
+    }
+    
+    private static TextStyle getDefaultTextStyle(final FontFamilyMapping fontFamilyMapping) {
+        if (FontFamilyMapping.isMonospace(fontFamilyMapping)) {
+            return SubtitleUtils.DEFAULT_DEVICE_TEXT_STYLE_FOR_MONOSPACE;
+        }
+        return SubtitleUtils.DEFAULT_DEVICE_TEXT_STYLE_FOR_PROPORTIONAL;
+    }
+    
+    public static TextStyle getDeviceDefaultTextStyle(final TextStyle textStyle, final TextStyle textStyle2) {
+        if (textStyle == null && textStyle2 == null) {
+            Log.d("nf_subtitles_render", "getDeviceDefaultTextStyle:: user and region defaults are null: proportional");
+            return getDefaultTextStyle(null);
+        }
+        if (textStyle == null || textStyle.getFontFamily() == null) {
+            Log.d("nf_subtitles_render", "getDeviceDefaultTextStyle:: user font family is null, depending on region");
+            return getDefaultTextStyle(textStyle2.getFontFamily());
+        }
+        Log.d("nf_subtitles_render", "getDeviceDefaultTextStyle:: user font family is NOT null, deciding based on it");
+        return getDefaultTextStyle(textStyle.getFontFamily());
+    }
+    
+    public static Integer getEdgeColor(final Outline outline) {
+        Integer resolveColor = null;
+        if (outline != null) {
+            resolveColor = ColorMapping.resolveColor(null, outline.getEdgeColor());
+        }
+        return resolveColor;
+    }
+    
+    public static float getFontSizeMultiplier(final TextStyle textStyle) {
         float n;
-        if (textStyle2 == null) {
-            if (textStyle.getFontSize() != null) {
-                n = textStyle.getFontSize() / 100.0f;
-            }
-            else {
-                n = 1.0f;
-            }
-        }
-        else if (textStyle2.getFontSize() != null) {
-            n = textStyle2.getFontSize() / 100.0f;
+        if (textStyle.getFontSize() != null) {
+            n = textStyle.getFontSize() / 100.0f;
         }
         else {
             n = 1.0f;
         }
-        float n2 = n;
         if (n <= 0.0f) {
-            n2 = 1.0f;
+            return 1.0f;
         }
-        return n2;
+        return n;
     }
     
-    public static Margins getMarginsForRectangle(final View view, final DoubleLength doubleLength, final DoubleLength doubleLength2) {
+    public static SubtitleUtils$Margins getMarginsForRectangle(final View view, final DoubleLength doubleLength, final DoubleLength doubleLength2) {
+        int n = 0;
         if (view == null) {
             throw new IllegalArgumentException("Display area can not be null");
         }
-        int n = 0;
-        int n2 = 0;
-        final Margins margins = new Margins();
+        final SubtitleUtils$Margins subtitleUtils$Margins = new SubtitleUtils$Margins();
+        int n2;
         if (doubleLength != null) {
-            n = (int)(view.getWidth() * doubleLength.getFirstLength());
-            n2 = (int)(view.getHeight() * doubleLength.getSecondLength());
+            n2 = (int)(view.getWidth() * doubleLength.getFirstLength());
+            n = (int)(view.getHeight() * doubleLength.getSecondLength());
         }
         else {
             Log.w("nf_subtitles_render", "Extent is null!");
+            n2 = 0;
         }
         if (Log.isLoggable("nf_subtitles_render", 3)) {
             Log.d("nf_subtitles_render", "Display area: w " + view.getWidth() + ", h " + view.getHeight());
-            Log.d("nf_subtitles_render", "Region w/h " + n + "/" + n2);
+            Log.d("nf_subtitles_render", "Region w/h " + n2 + "/" + n);
             Log.d("nf_subtitles_render", "Extent " + doubleLength);
             Log.d("nf_subtitles_render", "Origin " + doubleLength2);
         }
         if (doubleLength2 != null) {
-            margins.left = (int)(view.getWidth() * doubleLength2.getFirstLength());
-            margins.top = (int)(view.getHeight() * doubleLength2.getSecondLength());
-            margins.right = view.getWidth() - margins.left - n;
-            margins.bottom = view.getHeight() - margins.top - n2;
+            subtitleUtils$Margins.left = (int)(view.getWidth() * doubleLength2.getFirstLength());
+            subtitleUtils$Margins.top = (int)(view.getHeight() * doubleLength2.getSecondLength());
+            subtitleUtils$Margins.right = view.getWidth() - subtitleUtils$Margins.left - n2;
+            subtitleUtils$Margins.bottom = view.getHeight() - subtitleUtils$Margins.top - n;
         }
         else {
             Log.w("nf_subtitles_render", "Origin is null!");
         }
         if (Log.isLoggable("nf_subtitles_render", 2)) {
-            Log.d("nf_subtitles_render", "Margins, left: " + margins.left + ", top: " + margins.top + ", right: " + margins.right + ", bottom: " + margins.bottom);
+            Log.d("nf_subtitles_render", "Margins, left: " + subtitleUtils$Margins.left + ", top: " + subtitleUtils$Margins.top + ", right: " + subtitleUtils$Margins.right + ", bottom: " + subtitleUtils$Margins.bottom);
         }
-        return margins;
+        return subtitleUtils$Margins;
     }
     
     public static Point getOverlap(Rect intersection, final Rect rect) {
@@ -239,38 +390,132 @@ public final class SubtitleUtils
         return point;
     }
     
-    public static Integer getTextColor(final TextStyle textStyle, final TextStyle textStyle2) {
-        if (textStyle2 != null) {
-            final Integer resolveColor = ColorMapping.resolveColor(textStyle2.getOpacity(), textStyle2.getColor());
-            if (resolveColor != null) {
-                return resolveColor;
-            }
-            Log.e("nf_subtitles_render", "User override exist, but color is null! Use node text color.");
-        }
+    public static Integer getTextColor(final TextStyle textStyle) {
         return ColorMapping.resolveColor(textStyle.getOpacity(), textStyle.getColor());
     }
     
-    public static Integer getWindowColor(final TextStyle textStyle, final TextStyle textStyle2) {
-        if (textStyle2 == null) {
-            return ColorMapping.resolveColor(textStyle.getWindowOpacity(), textStyle.getWindowColor());
+    private static Typeface getTypefaceByWeightForSansSerif(final FontWeight fontWeight) {
+        if (fontWeight == null) {
+            Log.d("nf_subtitles_render", "No font weight, use sans serif");
+            return Typeface.SANS_SERIF;
         }
-        return ColorMapping.resolveColor(textStyle2.getWindowOpacity(), textStyle2.getWindowColor());
+        final Typeface typeface = SubtitleUtils.sTypeFaceWeightMapForProportional.get(fontWeight.name());
+        if (typeface == null) {
+            if (Log.isLoggable("nf_subtitles_render", 6)) {
+                Log.e("nf_subtitles_render", "Typeface for proportional font not found for font weight " + fontWeight.name());
+            }
+            return Typeface.SANS_SERIF;
+        }
+        Log.d("nf_subtitles_render", "Found mapping " + typeface);
+        return typeface;
+    }
+    
+    public static Integer getWindowColor(final TextStyle textStyle) {
+        return ColorMapping.resolveColor(textStyle.getWindowOpacity(), textStyle.getWindowColor());
+    }
+    
+    private static void initTypeFaceMap() {
+        Log.d("nf_subtitles_render", "Init typefaces ");
+        final FontWeight[] values = FontWeight.values();
+        for (int length = values.length, i = 0; i < length; ++i) {
+            final FontWeight fontWeight = values[i];
+            Typeface typeface = null;
+            if (FontWeight.Thin == fontWeight) {
+                if (AndroidUtils.getAndroidVersion() >= 16) {
+                    typeface = Typeface.create("sans-serif-thin", 0);
+                }
+                else {
+                    typeface = Typeface.create(Typeface.SANS_SERIF, 0);
+                }
+            }
+            else if (FontWeight.Light == fontWeight) {
+                typeface = Typeface.create("sans-serif-light", 0);
+            }
+            else if (FontWeight.Book == fontWeight) {
+                typeface = Typeface.create("sans-serif-light", 0);
+            }
+            else if (FontWeight.Regular == fontWeight) {
+                typeface = Typeface.create(Typeface.SANS_SERIF, 0);
+            }
+            else if (FontWeight.Medium == fontWeight) {
+                if (AndroidUtils.getAndroidVersion() >= 21) {
+                    typeface = Typeface.create("sans-serif-medium", 0);
+                }
+                else {
+                    typeface = Typeface.create(Typeface.SANS_SERIF, 0);
+                }
+            }
+            else if (FontWeight.SemiBold == fontWeight) {
+                typeface = Typeface.create(Typeface.SANS_SERIF, 1);
+            }
+            else if (FontWeight.Bold == fontWeight) {
+                typeface = Typeface.create(Typeface.SANS_SERIF, 1);
+            }
+            else if (FontWeight.Bold == fontWeight) {
+                typeface = Typeface.create(Typeface.SANS_SERIF, 1);
+            }
+            else if (FontWeight.ExtraBlack == fontWeight) {
+                typeface = Typeface.create(Typeface.SANS_SERIF, 1);
+            }
+            if (typeface == null) {
+                Log.w("nf_subtitles_render", "No typeface for " + fontWeight);
+                typeface = Typeface.SANS_SERIF;
+            }
+            else {
+                Log.d("nf_subtitles_render", "Typeface for " + fontWeight + " is " + typeface);
+            }
+            SubtitleUtils.sTypeFaceWeightMapForProportional.put(fontWeight.name(), typeface);
+        }
     }
     
     public static Rect intersection(final Rect rect, final Rect rect2) {
         return new Rect(Math.max(rect.left, rect2.left), Math.max(rect.top, rect2.top), Math.min(rect.right, rect2.right), Math.min(rect.bottom, rect2.bottom));
     }
     
-    public static boolean isStrokeTextViewRequired(final TextStyle textStyle, final TextStyle textStyle2) {
-        if (textStyle2 == null) {
-            if (textStyle == null || textStyle.getOutline() == null || !textStyle.getOutline().isStrokeTextRequired()) {
-                return false;
+    public static boolean isNextNodeInSameLine(final List<SubtitleTextNode> list, int n) {
+        if (list != null) {
+            ++n;
+            if (list.size() > n) {
+                return list.get(n).getLineBreaks() < 1;
             }
         }
-        else if (textStyle2.getOutline() == null || !textStyle2.getOutline().isStrokeTextRequired()) {
+        return false;
+    }
+    
+    public static boolean isPositionDefinedInBlock(final LinearLayout linearLayout, final SubtitleBlock subtitleBlock) {
+        if (linearLayout == null || subtitleBlock == null) {
+            throw new IllegalArgumentException("region or block is null!");
+        }
+        Log.d("nf_subtitles_render", "isPositionDefinedInBlock start");
+        if (subtitleBlock.getRegion() == null) {
+            Log.d("nf_subtitles_render", "isPositionDefinedInBlock no region, no need for wrapper");
             return false;
         }
-        return true;
+        if (subtitleBlock.getTextNodes().size() < 1) {
+            Log.w("nf_subtitles_render", "isPositionDefinedInBlock no text blocks!");
+            return false;
+        }
+        final SubtitleTextNode subtitleTextNode = subtitleBlock.getTextNodes().get(0);
+        if (subtitleTextNode == null || subtitleTextNode.getStyle() == null) {
+            Log.w("nf_subtitles_render", "isPositionDefinedInBlock p missing");
+            return false;
+        }
+        final DoubleLength extent = subtitleBlock.getStyle().getExtent();
+        final DoubleLength origin = subtitleBlock.getStyle().getOrigin();
+        if (Log.isLoggable("nf_subtitles_render", 3)) {
+            Log.d("nf_subtitles_render", "isPositionDefinedInBlock extent " + extent);
+            Log.d("nf_subtitles_render", "isPositionDefinedInBlock origin " + origin);
+        }
+        if (DoubleLength.canUse(extent) && DoubleLength.canUse(origin)) {
+            Log.d("nf_subtitles_render", "isPositionDefinedInBlock using block extent and origin overrides, return true");
+            return true;
+        }
+        Log.d("nf_subtitles_render", "isPositionDefinedInBlock using region defaults for extent and origin, return false");
+        return false;
+    }
+    
+    public static boolean isStrokeTextViewRequired(final TextStyle textStyle) {
+        return textStyle != null && textStyle.getOutline() != null && textStyle.getOutline().isStrokeTextRequired();
     }
     
     public static Float parseMargin(final String s, final int n) {
@@ -288,18 +533,17 @@ public final class SubtitleUtils
     }
     
     public static long parseTime(final String s, final double n) {
-        long n2;
         if (StringUtils.isEmpty(s)) {
             Log.e("nf_subtitles_render", "dfxp-badtime: Time string us empty! Invalid time");
-            n2 = -1L;
         }
         else {
             final Matcher matcher = SubtitleUtils.TICK_T_PATTERN.matcher(s);
             if (matcher.find()) {
-                final long n3 = n2 = safeParseLong(matcher.group().replaceAll("t", ""));
-                if (n3 != -1L) {
-                    return (long)(n3 * n);
+                final long safeParseLong = safeParseLong(matcher.group().replaceAll("t", ""));
+                if (safeParseLong == -1L) {
+                    return safeParseLong;
                 }
+                return (long)(safeParseLong * n);
             }
             else {
                 final Matcher matcher2 = SubtitleUtils.TICK_MS_PATTERN.matcher(s);
@@ -308,31 +552,32 @@ public final class SubtitleUtils
                 }
                 final Matcher matcher3 = SubtitleUtils.TICK_SEC_PATTERN.matcher(s);
                 if (matcher3.find()) {
-                    final long n4 = n2 = safeParseLong(matcher3.group().replaceAll("s", ""));
-                    if (n4 != -1L) {
-                        return (long)(n4 * n);
+                    final long safeParseLong2 = safeParseLong(matcher3.group().replaceAll("s", ""));
+                    if (safeParseLong2 == -1L) {
+                        return safeParseLong2;
                     }
+                    return (long)(safeParseLong2 * n);
                 }
                 else {
                     final Matcher matcher4 = SubtitleUtils.TICK_TIME_PATTERN.matcher(s);
-                    if (!matcher4.find()) {
-                        if (Log.isLoggable("nf_subtitles_render", 6)) {
-                            Log.e("nf_subtitles_render", "dfxp-badtime: Unknown format " + s);
+                    if (matcher4.find()) {
+                        final String[] safeSplit = StringUtils.safeSplit(matcher4.group(), ":");
+                        if (safeSplit.length >= 3) {
+                            return (safeParseLong(safeSplit[0]) * 3600L + safeParseLong(safeSplit[1]) * 60L + safeParseLong(safeSplit[2])) * 1000L;
                         }
-                        return -1L;
-                    }
-                    final String[] safeSplit = StringUtils.safeSplit(matcher4.group(), ":");
-                    if (safeSplit.length < 3) {
                         if (Log.isLoggable("nf_subtitles_render", 6)) {
                             Log.e("nf_subtitles_render", "dfxp-badtime: Tick time pattern matched, but we do not have 3 groups! This should NOT happen! " + s);
+                            return -1L;
                         }
+                    }
+                    else if (Log.isLoggable("nf_subtitles_render", 6)) {
+                        Log.e("nf_subtitles_render", "dfxp-badtime: Unknown format " + s);
                         return -1L;
                     }
-                    return (3600L * safeParseLong(safeSplit[0]) + 60L * safeParseLong(safeSplit[1]) + safeParseLong(safeSplit[2])) * 1000L;
                 }
             }
         }
-        return n2;
+        return -1L;
     }
     
     private static long safeParseLong(final String s) {
@@ -343,6 +588,60 @@ public final class SubtitleUtils
             Log.e("nf_subtitles_render", "Parsing failed", t);
             return -1L;
         }
+    }
+    
+    public static void setAlignmentToRegion(final LinearLayout linearLayout, final SubtitleBlock subtitleBlock) {
+        if (linearLayout == null || subtitleBlock == null) {
+            throw new IllegalArgumentException("region or block is null!");
+        }
+        final Region region = subtitleBlock.getRegion();
+        HorizontalAlignment horizontalAlignment = HorizontalAlignment.center;
+        if (region != null && region.getHorizontalAlignment() != null) {
+            Log.d("nf_subtitles_render", "Horizontal alignment from region");
+            horizontalAlignment = region.getHorizontalAlignment();
+        }
+        VerticalAlignment verticalAlignment = VerticalAlignment.bottom;
+        if (region != null && region.getVerticalAlignment() != null) {
+            Log.d("nf_subtitles_render", "Vertical alignment from region");
+            verticalAlignment = region.getVerticalAlignment();
+        }
+        HorizontalAlignment horizontalAlignment2 = horizontalAlignment;
+        VerticalAlignment verticalAlignment2 = verticalAlignment;
+        if (subtitleBlock.getTextNodes().size() > 1) {
+            final SubtitleTextNode subtitleTextNode = subtitleBlock.getTextNodes().get(0);
+            horizontalAlignment2 = horizontalAlignment;
+            verticalAlignment2 = verticalAlignment;
+            if (subtitleTextNode != null) {
+                horizontalAlignment2 = horizontalAlignment;
+                verticalAlignment2 = verticalAlignment;
+                if (subtitleTextNode.getStyle() != null) {
+                    if (subtitleTextNode.getStyle().getHorizontalAlignment() != null) {
+                        Log.d("nf_subtitles_render", "Horizontal alignment overide from p!");
+                        horizontalAlignment = subtitleTextNode.getStyle().getHorizontalAlignment();
+                    }
+                    horizontalAlignment2 = horizontalAlignment;
+                    verticalAlignment2 = verticalAlignment;
+                    if (subtitleTextNode.getStyle().getVerticalAlignment() != null) {
+                        Log.d("nf_subtitles_render", "Vertical alignment overide from p!");
+                        verticalAlignment2 = subtitleTextNode.getStyle().getVerticalAlignment();
+                        horizontalAlignment2 = horizontalAlignment;
+                    }
+                }
+            }
+        }
+        linearLayout.setGravity(toGravity(horizontalAlignment2, verticalAlignment2));
+    }
+    
+    @SuppressLint({ "NewApi" })
+    public static void setLetterSpacing(final TextView textView, final TextStyle textStyle) {
+        if (AndroidUtils.getAndroidVersion() < 21 || textView == null) {
+            return;
+        }
+        FontFamilyMapping fontFamily = null;
+        if (textStyle != null) {
+            fontFamily = textStyle.getFontFamily();
+        }
+        textView.setLetterSpacing(getDefaultSpacing(fontFamily));
     }
     
     public static int toGravity(final HorizontalAlignment horizontalAlignment, final VerticalAlignment verticalAlignment) {
@@ -368,49 +667,54 @@ public final class SubtitleUtils
             final int gravity2 = verticalAlignment.getGravity();
             final int n2 = n = (horizontalAlignment.getGravity() | verticalAlignment.getGravity());
             if (Log.isLoggable("nf_subtitles_render", 3)) {
-                Log.d("nf_subtitles_render", "toGravity " + n2 + ", hor " + horizontalAlignment.getValue() + ", vert " + verticalAlignment.getValue() + ", plus " + (gravity + gravity2));
+                Log.d("nf_subtitles_render", "toGravity " + n2 + ", hor " + horizontalAlignment.getValue() + ", vert " + verticalAlignment.getValue() + ", plus " + (gravity2 + gravity));
                 return n2;
             }
         }
         return n;
     }
     
-    public static Typeface toTypeFace(final TextStyle textStyle, final TextStyle textStyle2) {
-        if (textStyle == null && textStyle2 == null) {
-            return Typeface.SANS_SERIF;
+    public static Typeface toTypeFace(final TextStyle textStyle, final boolean b) {
+        Typeface sans_SERIF;
+        if (textStyle == null) {
+            Log.d("nf_subtitles_render", "No styles, use san serif typeface");
+            sans_SERIF = Typeface.SANS_SERIF;
         }
-        Typeface typeface = Typeface.SANS_SERIF;
-        if (textStyle2 == null) {
+        else {
+            Typeface typeface = Typeface.SANS_SERIF;
             if (textStyle.getFontFamily() != null) {
-                typeface = textStyle.getFontFamily().getTypeface();
+                if (FontFamilyMapping.isSansSerif(textStyle.getFontFamily())) {
+                    Log.d("nf_subtitles_render", "Apply sans serif");
+                    typeface = getTypefaceByWeightForSansSerif(textStyle.getFontWeight());
+                }
+                else {
+                    Log.d("nf_subtitles_render", "Apply non sans serif");
+                    typeface = textStyle.getFontFamily().getTypeface();
+                }
+            }
+            sans_SERIF = typeface;
+            if (b) {
+                return Typeface.create(typeface, toTypeFaceStyle(textStyle));
             }
         }
-        else if (textStyle2.getFontFamily() != null) {
-            typeface = textStyle2.getFontFamily().getTypeface();
-        }
-        return Typeface.create(typeface, toTypeFaceStyle(textStyle));
+        return sans_SERIF;
     }
     
     public static int toTypeFaceStyle(final TextStyle textStyle) {
         if (textStyle != null) {
-            if (Boolean.TRUE.equals(textStyle.getItalic())) {
-                if (Boolean.TRUE.equals(textStyle.getBold())) {
+            if (textStyle.getFontWeight() != null && FontWeight.Bold.getValue() <= textStyle.getFontWeight().getValue()) {
+                if (Boolean.TRUE.equals(textStyle.getItalic())) {
+                    Log.d("nf_subtitles_render", "toTypeFaceStyle:: BOLD ITALIC");
                     return 3;
                 }
-                return 2;
-            }
-            else if (Boolean.TRUE.equals(textStyle.getBold())) {
+                Log.d("nf_subtitles_render", "toTypeFaceStyle:: BOLD");
                 return 1;
+            }
+            else if (Boolean.TRUE.equals(textStyle.getItalic())) {
+                Log.d("nf_subtitles_render", "toTypeFaceStyle:: ITALIC");
+                return 2;
             }
         }
         return 0;
-    }
-    
-    public static class Margins
-    {
-        public int bottom;
-        public int left;
-        public int right;
-        public int top;
     }
 }

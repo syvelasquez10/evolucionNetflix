@@ -5,6 +5,7 @@
 package com.google.android.gms.drive.metadata.internal;
 
 import android.os.Bundle;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -41,7 +42,7 @@ public class h implements Parcelable$Creator<MetadataBundle>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new MetadataBundle(g, q);
     }

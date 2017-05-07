@@ -14,13 +14,13 @@ import android.annotation.TargetApi;
 @TargetApi(11)
 public class NativeActionModeAwareLayout extends ContentFrameLayout
 {
-    private OnActionModeForChildListener mActionModeForChildListener;
+    private NativeActionModeAwareLayout$OnActionModeForChildListener mActionModeForChildListener;
     
     public NativeActionModeAwareLayout(final Context context, final AttributeSet set) {
         super(context, set);
     }
     
-    public void setActionModeForChildListener(final OnActionModeForChildListener mActionModeForChildListener) {
+    public void setActionModeForChildListener(final NativeActionModeAwareLayout$OnActionModeForChildListener mActionModeForChildListener) {
         this.mActionModeForChildListener = mActionModeForChildListener;
     }
     
@@ -29,10 +29,5 @@ public class NativeActionModeAwareLayout extends ContentFrameLayout
             return this.mActionModeForChildListener.startActionModeForChild(view, actionMode$Callback);
         }
         return super.startActionModeForChild(view, actionMode$Callback);
-    }
-    
-    public interface OnActionModeForChildListener
-    {
-        ActionMode startActionModeForChild(final View p0, final ActionMode$Callback p1);
     }
 }

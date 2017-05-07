@@ -27,22 +27,4 @@ class AccessibilityNodeInfoCompatApi21
     public static Object obtainCollectionItemInfo(final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2) {
         return AccessibilityNodeInfo$CollectionItemInfo.obtain(n, n2, n3, n4, b, b2);
     }
-    
-    static class AccessibilityAction
-    {
-        static int getId(final Object o) {
-            return ((AccessibilityNodeInfo$AccessibilityAction)o).getId();
-        }
-        
-        static CharSequence getLabel(final Object o) {
-            return ((AccessibilityNodeInfo$AccessibilityAction)o).getLabel();
-        }
-    }
-    
-    static class CollectionItemInfo
-    {
-        public static boolean isSelected(final Object o) {
-            return ((AccessibilityNodeInfo$CollectionItemInfo)o).isSelected();
-        }
-    }
 }

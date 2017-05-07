@@ -5,14 +5,17 @@
 package com.android.volley.toolbox;
 
 import com.android.volley.VolleyLog;
+import com.android.volley.Request$Priority;
 import com.android.volley.VolleyError;
 import com.android.volley.ParseError;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory$Options;
+import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RetryPolicy;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Response;
+import com.android.volley.Response$ErrorListener;
+import com.android.volley.Response$Listener;
 import android.graphics.Bitmap$Config;
 import android.graphics.Bitmap;
 import com.android.volley.Request;
@@ -24,7 +27,7 @@ public class ImageRequest extends Request<Bitmap>
     private static final int IMAGE_TIMEOUT_MS = 1000;
     private static final Object sDecodeLock;
     private final Bitmap$Config mDecodeConfig;
-    private final Response.Listener<Bitmap> mListener;
+    private final Response$Listener<Bitmap> mListener;
     private final int mMaxHeight;
     private final int mMaxWidth;
     
@@ -32,8 +35,8 @@ public class ImageRequest extends Request<Bitmap>
         sDecodeLock = new Object();
     }
     
-    public ImageRequest(final String s, final Response.Listener<Bitmap> mListener, final int mMaxWidth, final int mMaxHeight, final Bitmap$Config mDecodeConfig, final Response.ErrorListener errorListener) {
-        super(0, s, errorListener);
+    public ImageRequest(final String s, final Response$Listener<Bitmap> mListener, final int mMaxWidth, final int mMaxHeight, final Bitmap$Config mDecodeConfig, final Response$ErrorListener response$ErrorListener) {
+        super(0, s, response$ErrorListener);
         this.setRetryPolicy(new DefaultRetryPolicy(1000, 2, 2.0f));
         this.mListener = mListener;
         this.mDecodeConfig = mDecodeConfig;
@@ -78,22 +81,25 @@ public class ImageRequest extends Request<Bitmap>
         return (int)n5;
     }
     
-    private static int getResizedDimension(final int n, final int n2, int n3, final int n4) {
+    private static int getResizedDimension(final int n, final int n2, final int n3, final int n4) {
+        int n5;
         if (n == 0 && n2 == 0) {
-            return n3;
+            n5 = n3;
         }
-        if (n == 0) {
-            return n3 * (n2 / n4);
+        else {
+            if (n == 0) {
+                return n2 / n4 * n3;
+            }
+            n5 = n;
+            if (n2 != 0) {
+                final double n6 = n4 / n3;
+                n5 = n;
+                if (n * n6 > n2) {
+                    return (int)(n2 / n6);
+                }
+            }
         }
-        if (n2 == 0) {
-            return n;
-        }
-        final double n5 = n4 / n3;
-        n3 = n;
-        if (n * n5 > n2) {
-            n3 = (int)(n2 / n5);
-        }
-        return n3;
+        return n5;
     }
     
     @Override
@@ -102,8 +108,8 @@ public class ImageRequest extends Request<Bitmap>
     }
     
     @Override
-    public Priority getPriority() {
-        return Priority.LOW;
+    public Request$Priority getPriority() {
+        return Request$Priority.LOW;
     }
     
     @Override

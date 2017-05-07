@@ -68,10 +68,11 @@ public class SubtitleBlock
             Log.d("nf_subtitles", "Use subtitle from " + this.mStart + " to " + this.mEnd);
         }
         final NodeList childNodes = element.getChildNodes();
+        int i = 0;
         int n = 0;
-        int n2;
-        for (int i = 0; i < childNodes.getLength(); ++i, n = n2) {
+        while (i < childNodes.getLength()) {
             final Node item = childNodes.item(i);
+            int n2;
             if (item.getNodeType() == 1) {
                 final Element element2 = (Element)item;
                 if ("br".equalsIgnoreCase(element2.getTagName())) {
@@ -84,8 +85,8 @@ public class SubtitleBlock
                         Log.d("nf_subtitles", "SPAN node, create subtitle block");
                         final SubtitleTextNode subtitleTextNode = new SubtitleTextNode(TextStyle.createInstanceFromContainer(element2, subtitleParser, this.mStyle), XmlDomUtils.getElementText(element2), n);
                         this.mTextNodes.add(subtitleTextNode);
-                        n2 = 0;
                         this.updateBlockContainerDimensions(subtitleTextNode);
+                        n2 = 0;
                     }
                 }
             }
@@ -93,8 +94,8 @@ public class SubtitleBlock
                 Log.d("nf_subtitles", "Text node, create subtitle block");
                 final SubtitleTextNode subtitleTextNode2 = new SubtitleTextNode(this.mStyle, item.getTextContent(), n);
                 this.mTextNodes.add(subtitleTextNode2);
-                n2 = 0;
                 this.updateBlockContainerDimensions(subtitleTextNode2);
+                n2 = 0;
             }
             else {
                 n2 = n;
@@ -103,6 +104,8 @@ public class SubtitleBlock
                     n2 = n;
                 }
             }
+            ++i;
+            n = n2;
         }
         if (Log.isLoggable("nf_subtitles", 3)) {
             Log.d("nf_subtitles", "Total number of lines needed: " + this.mTotalNumberOfLines);
@@ -207,19 +210,13 @@ public class SubtitleBlock
     }
     
     public boolean isVisibleInGivenTimeRange(final long n, final long n2) {
-        final boolean b = false;
         if (n > n2) {
             Log.e("nf_subtitles", "From can not be later than to!");
-            return false;
         }
-        boolean b2 = b;
-        if (n2 > this.mStart) {
-            b2 = b;
-            if (n <= this.mEnd) {
-                b2 = true;
-            }
+        else if (n2 > this.mStart && n <= this.mEnd) {
+            return true;
         }
-        return b2;
+        return false;
     }
     
     @Override

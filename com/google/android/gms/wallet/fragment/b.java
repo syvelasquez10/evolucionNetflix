@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wallet.fragment;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import android.os.Parcel;
@@ -58,7 +59,7 @@ public class b implements Parcelable$Creator<WalletFragmentOptions>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new WalletFragmentOptions(g4, g3, g2, walletFragmentStyle, g);
     }

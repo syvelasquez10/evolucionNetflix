@@ -8,7 +8,7 @@ import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
 
-public interface MovieDetails extends VideoDetails, FriendProfilesProvider
+public interface MovieDetails extends FriendProfilesProvider, VideoDetails
 {
     String getDirectors();
     

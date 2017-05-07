@@ -4,6 +4,7 @@
 
 package com.google.android.gms.common.api;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.app.PendingIntent;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -56,7 +57,7 @@ public class StatusCreator implements Parcelable$Creator<Status>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new Status(g2, g, o, pendingIntent);
     }

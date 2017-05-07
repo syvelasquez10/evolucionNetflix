@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.StringUtils;
 public final class Outline
 {
     private static Integer DEFAULT_OUTLINE_BLUR;
+    private static String DEFAULT_OUTLINE_COLOR;
     private static Integer DEFAULT_OUTLINE_WIDTH;
     private String mEdgeColor;
     private CharacterEdgeTypeMapping mEdgeType;
@@ -16,8 +17,9 @@ public final class Outline
     private Integer mOutlineWidth;
     
     static {
-        Outline.DEFAULT_OUTLINE_WIDTH = 2;
+        Outline.DEFAULT_OUTLINE_WIDTH = 1;
         Outline.DEFAULT_OUTLINE_BLUR = 0;
+        Outline.DEFAULT_OUTLINE_COLOR = "000000";
     }
     
     private Outline() {
@@ -33,6 +35,7 @@ public final class Outline
     }
     
     static Outline createInstance(final String s) {
+        int n = 0;
         if (StringUtils.isEmpty(s)) {
             return null;
         }
@@ -42,7 +45,6 @@ public final class Outline
         }
         else {
             final String[] safeSplit = StringUtils.safeSplit(s, " ");
-            int n = 0;
             if (StringUtils.startsWithDigit(s)) {
                 if (safeSplit.length < 1) {
                     return null;
@@ -52,8 +54,8 @@ public final class Outline
                 if (safeSplit.length < 2) {
                     return null;
                 }
-                n = 1;
                 outline.mEdgeColor = ColorMapping.findColor(safeSplit[0]);
+                n = 1;
             }
             outline.mOutlineWidth = StringUtils.safeParsePixelSize(safeSplit[n]);
             final int n2 = n + 1;
@@ -63,14 +65,15 @@ public final class Outline
         }
         if (outline.mOutlineBlur != null) {
             outline.mEdgeType = CharacterEdgeTypeMapping.DROP_SHADOW;
-            return outline;
         }
-        outline.mEdgeType = CharacterEdgeTypeMapping.UNIFORM;
+        else {
+            outline.mEdgeType = CharacterEdgeTypeMapping.UNIFORM;
+        }
         return outline;
     }
     
     public static Outline getDefaultOutline() {
-        return new Outline(CharacterEdgeTypeMapping.UNIFORM, "000000", Outline.DEFAULT_OUTLINE_WIDTH, Outline.DEFAULT_OUTLINE_BLUR);
+        return new Outline(CharacterEdgeTypeMapping.UNIFORM, Outline.DEFAULT_OUTLINE_COLOR, Outline.DEFAULT_OUTLINE_WIDTH, Outline.DEFAULT_OUTLINE_BLUR);
     }
     
     public String getEdgeColor() {
@@ -89,7 +92,7 @@ public final class Outline
         return this.mOutlineWidth;
     }
     
-    public Shadow getShadow() {
+    public Outline$Shadow getShadow() {
         if (this.mEdgeType == null) {
             return null;
         }
@@ -115,29 +118,5 @@ public final class Outline
     @Override
     public String toString() {
         return "Outline [mEdgeType=" + this.mEdgeType + ", mEdgeColor=" + this.mEdgeColor + ", mOutlineWidth=" + this.mOutlineWidth + ", mOutlineBlur=" + this.mOutlineBlur + "]";
-    }
-    
-    public static class Shadow
-    {
-        public static final Shadow DEPRESSED;
-        public static final Shadow DROP_SHADOW;
-        public static final Shadow RAISED;
-        public static final Shadow UNIFORM;
-        public final int dx;
-        public final int dy;
-        public final float radius;
-        
-        static {
-            RAISED = new Shadow(1.0f, 0, -2);
-            DEPRESSED = new Shadow(1.0f, 0, 2);
-            DROP_SHADOW = new Shadow(1.0f, 2, 2);
-            UNIFORM = new Shadow(0.0f, 0, 0);
-        }
-        
-        private Shadow(final float radius, final int dx, final int dy) {
-            this.radius = radius;
-            this.dx = dx;
-            this.dy = dy;
-        }
     }
 }

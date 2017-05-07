@@ -101,7 +101,7 @@ public class ph<M extends pg<M>, T>
         list.add(this.u(pe.p(po.awK)));
     }
     
-    void a(final Object o, final pf pf) throws IOException {
+    void a(final Object o, final pf pf) {
         if (this.awA) {
             this.c(o, pf);
             return;

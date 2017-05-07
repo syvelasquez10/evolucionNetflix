@@ -7,27 +7,29 @@ package com.netflix.mediaclient.ui.social.notifications.types;
 import android.text.Html;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationViewHolder;
 import android.view.View;
+import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat$BigPictureStyle;
+import android.support.v4.app.NotificationCompat$Builder;
 
 public class SocialVideoAddedToPlaylist extends SocialNotification
 {
     @Override
-    protected void addNotificationText(final NotificationCompat.Builder builder, final NotificationCompat.BigPictureStyle bigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        final String string = context.getResources().getString(2131493399);
-        bigPictureStyle.setSummaryText(string);
-        builder.setContentText(string);
+    protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
+        final String string = context.getResources().getString(2131493342);
+        notificationCompat$BigPictureStyle.setSummaryText(string);
+        notificationCompat$Builder.setContentText(string);
     }
     
     @Override
-    public SocialNotificationSummary.NotificationTypes getNotificationType() {
-        return SocialNotificationSummary.NotificationTypes.ADDED_TO_VIDEO_PLAYLIST;
+    public SocialNotificationSummary$NotificationTypes getNotificationType() {
+        return SocialNotificationSummary$NotificationTypes.ADDED_TO_VIDEO_PLAYLIST;
     }
     
     @Override
     public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         super.initView(view, socialNotificationViewHolder, socialNotificationSummary, context);
-        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493403, new Object[] { socialNotificationSummary.getVideoSummary().getTitle() })));
+        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493346, new Object[] { socialNotificationSummary.getVideoSummary().getTitle() })));
     }
 }

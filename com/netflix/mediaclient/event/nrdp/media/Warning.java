@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.util.JsonUtils;
+import org.json.JSONException;
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
 import com.netflix.mediaclient.util.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -21,7 +21,7 @@ public class Warning extends BaseMediaEvent
     private int error;
     private JSONArray stack;
     
-    public Warning(final JSONObject jsonObject) throws JSONException {
+    public Warning(final JSONObject jsonObject) {
         super("warning", jsonObject);
     }
     
@@ -57,7 +57,7 @@ public class Warning extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.error = BaseNccpEvent.getInt(jsonObject, "error", 0);
         this.stack = JsonUtils.getJSONArray(jsonObject, "stack");
     }

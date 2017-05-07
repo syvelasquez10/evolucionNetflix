@@ -5,7 +5,7 @@
 package com.google.android.gms.tagmanager;
 
 import android.content.pm.PackageManager$NameNotFoundException;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.a;
 import android.content.Context;
@@ -25,7 +25,7 @@ class h extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         try {
             return di.u(this.mContext.getPackageManager().getPackageInfo(this.mContext.getPackageName(), 0).versionCode);
         }

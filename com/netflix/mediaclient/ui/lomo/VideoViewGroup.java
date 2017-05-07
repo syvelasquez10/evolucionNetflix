@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
@@ -71,21 +70,14 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
             else {
                 this.updateViewIds((V)child, n3, n4, i);
                 if (list != null && i < list.size()) {
-                    ((IVideoView<Object>)child).update(list.get(i), trackable, n4 + i, n2 == 0);
+                    ((VideoViewGroup$IVideoView<Object>)child).update(list.get(i), trackable, n4 + i, n2 == 0);
                 }
                 else {
-                    ((IVideoView<Object>)child).hide();
+                    ((VideoViewGroup$IVideoView<Object>)child).hide();
                 }
             }
         }
     }
     
     protected abstract void updateViewIds(final V p0, final int p1, final int p2, final int p3);
-    
-    public interface IVideoView<T> extends PlayContextProvider
-    {
-        void hide();
-        
-        void update(final T p0, final Trackable p1, final int p2, final boolean p3);
-    }
 }

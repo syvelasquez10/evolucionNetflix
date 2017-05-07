@@ -5,17 +5,17 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
-import com.google.gson.JsonParser;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.google.gson.JsonParser;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -48,7 +48,7 @@ public class AddToQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<Stri
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
@@ -99,7 +99,7 @@ public class AddToQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<Stri
     }
     
     @Override
-    protected String parseFalcorResponse(String errorMessage) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(String errorMessage) {
         if (Log.isLoggable("nf_service_browse_addtoqueuerequest", 2)) {
             Log.v("nf_service_browse_addtoqueuerequest", "String response to parse = " + errorMessage);
         }
@@ -134,7 +134,7 @@ public class AddToQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<Stri
             return Integer.toString(StatusCode.OK.getValue());
         }
         try {
-            this.browseCache.updateInQueueCacheRecord(this.mVideoId, FalcorParseUtils.getPropertyObject(asJsonObject2.getAsJsonObject("videos").getAsJsonObject(this.mVideoId), "inQueue", Video.InQueue.class).inQueue);
+            this.browseCache.updateInQueueCacheRecord(this.mVideoId, FalcorParseUtils.getPropertyObject(asJsonObject2.getAsJsonObject("videos").getAsJsonObject(this.mVideoId), "inQueue", Video$InQueue.class).inQueue);
             return Integer.toString(StatusCode.OK.getValue());
         }
         catch (Exception ex2) {

@@ -4,10 +4,8 @@
 
 package com.google.android.gms.internal;
 
-import org.json.JSONObject;
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
-import com.google.android.gms.R;
+import com.google.android.gms.R$string;
 import android.app.AlertDialog$Builder;
 import android.provider.CalendarContract$Events;
 import android.content.Intent;
@@ -66,18 +64,10 @@ public class dc
             return;
         }
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(this.mContext);
-        alertDialog$Builder.setTitle((CharSequence)gb.c(R.string.create_calendar_title, "Create calendar event"));
-        alertDialog$Builder.setMessage((CharSequence)gb.c(R.string.create_calendar_message, "Allow Ad to create a calendar event?"));
-        alertDialog$Builder.setPositiveButton((CharSequence)gb.c(R.string.accept, "Accept"), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                dc.this.mContext.startActivity(dc.this.bH());
-            }
-        });
-        alertDialog$Builder.setNegativeButton((CharSequence)gb.c(R.string.decline, "Decline"), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                dc.this.md.b("onCalendarEventCanceled", new JSONObject());
-            }
-        });
+        alertDialog$Builder.setTitle((CharSequence)gb.c(R$string.create_calendar_title, "Create calendar event"));
+        alertDialog$Builder.setMessage((CharSequence)gb.c(R$string.create_calendar_message, "Allow Ad to create a calendar event?"));
+        alertDialog$Builder.setPositiveButton((CharSequence)gb.c(R$string.accept, "Accept"), (DialogInterface$OnClickListener)new dc$1(this));
+        alertDialog$Builder.setNegativeButton((CharSequence)gb.c(R$string.decline, "Decline"), (DialogInterface$OnClickListener)new dc$2(this));
         alertDialog$Builder.create().show();
     }
 }

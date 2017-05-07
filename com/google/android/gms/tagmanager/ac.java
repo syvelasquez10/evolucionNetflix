@@ -5,7 +5,7 @@
 package com.google.android.gms.tagmanager;
 
 import android.util.Base64;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
@@ -31,20 +31,20 @@ class ac extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
-        final d.a a = map.get(ac.aoU);
-        if (a == null || a == di.pI()) {
+    public d$a C(final Map<String, d$a> map) {
+        final d$a d$a = map.get(ac.aoU);
+        if (d$a == null || d$a == di.pI()) {
             return di.pI();
         }
-        final String j = di.j(a);
-        final d.a a2 = map.get(ac.aoW);
+        final String j = di.j(d$a);
+        final d$a d$a2 = map.get(ac.aoW);
         while (true) {
         Label_0148_Outer:
             while (true) {
                 Label_0075: {
                     while (true) {
                         Label_0055: {
-                            if (a2 == null) {
+                            if (d$a2 == null) {
                                 final String i = "text";
                                 break Label_0055;
                             }
@@ -79,11 +79,11 @@ class ac extends aj
                                                     return di.u(s);
                                                 }
                                                 break Label_0257;
-                                                final d.a a3;
-                                                k = di.j(a3);
-                                                break Label_0075;
-                                                i = di.j(a2);
+                                                i = di.j(d$a2);
                                                 break Label_0055;
+                                                final d$a d$a3;
+                                                k = di.j(d$a3);
+                                                break Label_0075;
                                             }
                                             catch (IllegalArgumentException ex) {
                                                 bh.T("Encode: invalid input:");
@@ -106,16 +106,16 @@ class ac extends aj
                             bh.T("Encode: unknown output format: " + k);
                             return di.pI();
                         }
-                        final d.a a3 = map.get(ac.aoX);
-                        if (a3 != null) {
+                        final d$a d$a3 = map.get(ac.aoX);
+                        if (d$a3 != null) {
                             continue;
                         }
                         break;
                     }
                     String k = "base16";
                 }
-                final d.a a4 = map.get(ac.aoV);
-                if (a4 != null && di.n(a4)) {
+                final d$a d$a4 = map.get(ac.aoV);
+                if (d$a4 != null && di.n(d$a4)) {
                     final int n = 3;
                     continue Label_0148_Outer;
                 }

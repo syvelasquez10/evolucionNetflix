@@ -6,7 +6,6 @@ package com.netflix.mediaclient.event.nrdp.registration;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ActivateEvent extends BaseRegistrationEvent
@@ -26,7 +25,7 @@ public class ActivateEvent extends BaseRegistrationEvent
     private String origin;
     private int reasonCode;
     
-    public ActivateEvent(final JSONObject jsonObject) throws JSONException {
+    public ActivateEvent(final JSONObject jsonObject) {
         super("activate", jsonObject);
     }
     
@@ -67,7 +66,7 @@ public class ActivateEvent extends BaseRegistrationEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         final String string = BaseNccpEvent.getString(jsonObject, "result", null);
         if (Log.isLoggable("nf_event", 3)) {
             Log.d("nf_event", "Device activated as " + this.cookies + ", status: " + string);

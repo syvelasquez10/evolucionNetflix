@@ -5,6 +5,7 @@
 package com.google.android.gms.fitness.result;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.data.q;
 import com.google.android.gms.fitness.data.Session;
@@ -57,7 +58,7 @@ public class f implements Parcelable$Creator<SessionReadResult>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new SessionReadResult(g, c3, c2, status);
     }

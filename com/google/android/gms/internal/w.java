@@ -15,12 +15,12 @@ import java.util.List;
 @ez
 class w implements g, Runnable
 {
-    private u.b lr;
+    private u$b lr;
     private final List<Object[]> me;
     private final AtomicReference<g> mf;
     CountDownLatch mg;
     
-    public w(final u.b lr) {
+    public w(final u$b lr) {
         this.me = new Vector<Object[]>();
         this.mf = new AtomicReference<g>();
         this.mg = new CountDownLatch(1);

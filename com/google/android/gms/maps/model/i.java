@@ -4,6 +4,7 @@
 
 package com.google.android.gms.maps.model;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -46,7 +47,7 @@ public class i implements Parcelable$Creator<LatLng>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new LatLng(g, i, m);
     }

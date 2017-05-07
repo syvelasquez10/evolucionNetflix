@@ -10,13 +10,12 @@ import java.util.Iterator;
 import java.util.Collection;
 import java.util.ArrayList;
 import org.json.JSONException;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.Map;
 import android.util.DisplayMetrics;
-import org.json.JSONObject;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -84,31 +83,12 @@ public final class af implements ViewTreeObserver$OnGlobalLayoutListener, ViewTr
         this.mI = (KeyguardManager)view.getContext().getSystemService("keyguard");
         this.mD = view.getContext().getApplicationContext();
         this.a(me);
-        this.mE.a((ah.a)new ah.a() {
-            @Override
-            public void aM() {
-                af.this.mF = true;
-                af.this.d(view);
-                af.this.aD();
-            }
-        });
+        this.mE.a(new af$1(this, view));
         this.b(this.mE);
         while (true) {
             try {
-                this.mM.add(new Runnable() {
-                    final /* synthetic */ JSONObject mU = af.this.e(view);
-                    
-                    @Override
-                    public void run() {
-                        af.this.a(this.mU);
-                    }
-                });
-                this.mM.add(new Runnable() {
-                    @Override
-                    public void run() {
-                        af.this.e(false);
-                    }
-                });
+                this.mM.add(new af$2(this, this.e(view)));
+                this.mM.add(new af$3(this));
                 gs.S("Tracking ad unit: " + this.mC.aC());
             }
             catch (Throwable t) {
@@ -169,11 +149,7 @@ public final class af implements ViewTreeObserver$OnGlobalLayoutListener, ViewTr
             final IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction("android.intent.action.SCREEN_ON");
             intentFilter.addAction("android.intent.action.SCREEN_OFF");
-            this.mQ = new BroadcastReceiver() {
-                public void onReceive(final Context context, final Intent intent) {
-                    af.this.e(false);
-                }
-            };
+            this.mQ = new af$4(this);
             this.mD.registerReceiver(this.mQ, intentFilter);
         }
     }
@@ -237,46 +213,22 @@ public final class af implements ViewTreeObserver$OnGlobalLayoutListener, ViewTr
         viewTreeObserver.removeGlobalOnLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)this);
     }
     
-    protected JSONObject aK() throws JSONException {
+    protected JSONObject aK() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("afmaVersion", (Object)this.mC.aA()).put("activeViewJSON", (Object)this.mC.aB()).put("timestamp", TimeUnit.NANOSECONDS.toMillis(System.nanoTime())).put("adFormat", (Object)this.mC.az()).put("hashCode", (Object)this.mC.aC());
         return jsonObject;
     }
     
-    protected JSONObject aL() throws JSONException {
+    protected JSONObject aL() {
         final JSONObject ak = this.aK();
         ak.put("doneReasonCode", (Object)"u");
         return ak;
     }
     
     protected void b(final ah ah) {
-        ah.a("/updateActiveView", new by() {
-            @Override
-            public void a(final gv gv, final Map<String, String> map) {
-                if (!af.this.a(map)) {
-                    return;
-                }
-                af.this.a((View)gv, map);
-            }
-        });
-        ah.a("/untrackActiveViewUnit", new by() {
-            @Override
-            public void a(final gv gv, final Map<String, String> map) {
-                if (!af.this.a(map)) {
-                    return;
-                }
-                gs.S("Received request to untrack: " + af.this.mC.aC());
-                af.this.destroy();
-            }
-        });
-        ah.a("/visibilityChanged", new by() {
-            @Override
-            public void a(final gv gv, final Map<String, String> map) {
-                if (af.this.a(map) && map.containsKey("isVisible")) {
-                    af.this.d(Boolean.valueOf("1".equals(map.get("isVisible")) || "true".equals(map.get("isVisible"))));
-                }
-            }
-        });
+        ah.a("/updateActiveView", new af$5(this));
+        ah.a("/untrackActiveViewUnit", new af$6(this));
+        ah.a("/visibilityChanged", new af$7(this));
         ah.a("/viewabilityChanged", bx.pA);
     }
     
@@ -364,7 +316,7 @@ public final class af implements ViewTreeObserver$OnGlobalLayoutListener, ViewTr
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    protected JSONObject e(final View view) throws JSONException {
+    protected JSONObject e(final View view) {
         final int[] array = new int[2];
         final int[] array2 = new int[2];
         view.getLocationOnScreen(array);

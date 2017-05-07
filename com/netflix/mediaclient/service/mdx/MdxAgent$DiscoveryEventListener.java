@@ -1,0 +1,129 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.service.mdx;
+
+import com.netflix.mediaclient.ui.player.MDXControllerActivity;
+import android.app.Service;
+import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import java.util.Collection;
+import com.netflix.mediaclient.servicemgr.IMdxSharedState;
+import android.text.TextUtils;
+import android.app.Notification;
+import android.util.Pair;
+import java.nio.ByteBuffer;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.mediaclient.javabridge.ui.mdxcontroller.TransactionId;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import android.support.v4.content.LocalBroadcastManager;
+import android.content.IntentFilter;
+import android.annotation.SuppressLint;
+import android.os.PowerManager;
+import android.net.wifi.WifiManager;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import java.util.Iterator;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
+import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
+import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.app.PendingIntent;
+import android.content.Intent;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
+import com.netflix.mediaclient.service.NetflixService;
+import android.content.Context;
+import android.net.wifi.WifiManager$WifiLock;
+import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import java.util.ArrayList;
+import android.content.BroadcastReceiver;
+import android.os.PowerManager$WakeLock;
+import com.netflix.mediaclient.service.mdx.notification.IMdxNotificationManager;
+import java.util.concurrent.atomic.AtomicBoolean;
+import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
+import android.os.HandlerThread;
+import android.os.Handler;
+import com.netflix.mediaclient.service.mdx.cast.CastManager;
+import android.graphics.Bitmap;
+import com.netflix.mediaclient.media.BifManager;
+import com.netflix.mediaclient.servicemgr.IMdx;
+import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManager$MdxNotificationIntentRetriever;
+import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController$PropertyUpdateListener;
+import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.javabridge.ui.mdxcontroller.RemoteDevice;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.event.nrdp.mdx.discovery.RemoteDeviceReadyEvent;
+import com.netflix.mediaclient.event.nrdp.mdx.discovery.DeviceLostEvent;
+import com.netflix.mediaclient.event.nrdp.mdx.discovery.DeviceFoundEvent;
+import com.netflix.mediaclient.event.UIEvent;
+import com.netflix.mediaclient.javabridge.ui.EventListener;
+
+class MdxAgent$DiscoveryEventListener implements EventListener
+{
+    final /* synthetic */ MdxAgent this$0;
+    
+    MdxAgent$DiscoveryEventListener(final MdxAgent this$0) {
+        this.this$0 = this$0;
+    }
+    
+    @Override
+    public void received(final UIEvent uiEvent) {
+        int i = 0;
+        if (uiEvent instanceof DeviceFoundEvent) {
+            final DeviceFoundEvent deviceFoundEvent = (DeviceFoundEvent)uiEvent;
+            final String uuid = deviceFoundEvent.getRemoteDevice().uuid;
+            final String dialUuid = deviceFoundEvent.getRemoteDevice().dialUuid;
+            if (this.this$0.isSameDevice(uuid, this.this$0.mCurrentTargetUuid) || this.this$0.isSameDevice(dialUuid, this.this$0.mCurrentTargetUuid)) {
+                final RemoteDevice access$2000 = this.this$0.getDeviceFromUuid(this.this$0.mCurrentTargetUuid);
+                if (access$2000 != null) {
+                    this.this$0.mTargetManager.targetFound(access$2000);
+                }
+            }
+            if (this.this$0.mNotifier != null) {
+                this.this$0.mNotifier.targetList();
+            }
+            this.this$0.getService().getClientLogging().getCustomerEventLogging().logMdxTarget("found", uuid, dialUuid, deviceFoundEvent.getRemoteDevice().serviceType);
+        }
+        else if (uiEvent instanceof DeviceLostEvent) {
+            for (String[] devices = ((DeviceLostEvent)uiEvent).getDevices(); i < devices.length; ++i) {
+                final String s = devices[i];
+                if (this.this$0.isSameDevice(s, this.this$0.mCurrentTargetUuid) || this.this$0.mTargetManager.isTargetHaveContext(s)) {
+                    if (this.this$0.mNotifier != null) {
+                        this.this$0.mNotifier.error(this.this$0.mCurrentTargetUuid, 200, "device lost");
+                    }
+                    this.this$0.sessionGone();
+                    this.this$0.mMdxNrdpLogger.logDebug("current target device lost");
+                }
+                this.this$0.getService().getClientLogging().getCustomerEventLogging().logMdxTarget("lost", s, null, null);
+            }
+            if (this.this$0.mNotifier != null) {
+                this.this$0.mNotifier.targetList();
+            }
+        }
+        else if (uiEvent instanceof RemoteDeviceReadyEvent) {
+            final RemoteDeviceReadyEvent remoteDeviceReadyEvent = (RemoteDeviceReadyEvent)uiEvent;
+            if (this.this$0.isSameDevice(remoteDeviceReadyEvent.getUuid(), this.this$0.mCurrentTargetUuid)) {
+                if (remoteDeviceReadyEvent.getLaunchStatus() == 1) {
+                    Log.d("nf_mdx_agent", "MdxAgent: RemoteDeviceReadyEvent, app's launched");
+                    this.this$0.mTargetManager.targetLaunched(this.this$0.mCurrentTargetUuid, true);
+                    this.this$0.mMdxNrdpLogger.logDebug("current target device launched");
+                    return;
+                }
+                Log.d("nf_mdx_agent", "MdxAgent: RemoteDeviceReadyEvent, app's launch failed");
+                this.this$0.mTargetManager.targetLaunched(this.this$0.mCurrentTargetUuid, false);
+                if (this.this$0.mNotifier != null) {
+                    final RemoteDevice access$2001 = this.this$0.getDeviceFromUuid(this.this$0.mCurrentTargetUuid);
+                    String friendlyName = new String();
+                    if (access$2001 != null) {
+                        friendlyName = access$2001.friendlyName;
+                    }
+                    this.this$0.mNotifier.error(this.this$0.mCurrentTargetUuid, 106, friendlyName);
+                    this.this$0.mMdxNrdpLogger.logDebug("current target device fails to launched");
+                }
+            }
+        }
+    }
+}

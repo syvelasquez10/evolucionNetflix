@@ -15,7 +15,7 @@ public class ListExtensions
     
     public static <T> List<T> sub(final List<T> list, final int n, final int n2) {
         final ArrayList<T> list2 = new ArrayList<T>();
-        for (int i = n; i < n2 + n; ++i) {
+        for (int i = n; i < n + n2; ++i) {
             list2.add(list.get(i));
         }
         return list2;

@@ -31,11 +31,11 @@ public final class WebImage implements SafeParcelable
         this.lg = lg;
     }
     
-    public WebImage(final Uri uri) throws IllegalArgumentException {
+    public WebImage(final Uri uri) {
         this(uri, 0, 0);
     }
     
-    public WebImage(final Uri uri, final int n, final int n2) throws IllegalArgumentException {
+    public WebImage(final Uri uri, final int n, final int n2) {
         this(1, uri, n, n2);
         if (uri == null) {
             throw new IllegalArgumentException("url cannot be null");
@@ -45,7 +45,7 @@ public final class WebImage implements SafeParcelable
         }
     }
     
-    public WebImage(final JSONObject jsonObject) throws IllegalArgumentException {
+    public WebImage(final JSONObject jsonObject) {
         this(d(jsonObject), jsonObject.optInt("width", 0), jsonObject.optInt("height", 0));
     }
     

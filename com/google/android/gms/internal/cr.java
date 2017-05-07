@@ -6,7 +6,6 @@ package com.google.android.gms.internal;
 
 import java.util.Iterator;
 import android.content.Context;
-import org.json.JSONException;
 import org.json.JSONArray;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import org.json.JSONObject;
 @ez
 public final class cr
 {
-    public static List<String> a(final JSONObject jsonObject, final String s) throws JSONException {
+    public static List<String> a(final JSONObject jsonObject, final String s) {
         final JSONArray optJSONArray = jsonObject.optJSONArray(s);
         if (optJSONArray != null) {
             final ArrayList<String> list = new ArrayList<String>(optJSONArray.length());

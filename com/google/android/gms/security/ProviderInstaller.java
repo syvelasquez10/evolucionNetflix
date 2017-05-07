@@ -4,9 +4,6 @@
 
 package com.google.android.gms.security;
 
-import android.content.Intent;
-import android.os.AsyncTask;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import android.util.Log;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -25,11 +22,11 @@ public class ProviderInstaller
         ProviderInstaller.anz = null;
     }
     
-    private static void U(final Context context) throws ClassNotFoundException, NoSuchMethodException {
+    private static void U(final Context context) {
         ProviderInstaller.anz = context.getClassLoader().loadClass("com.google.android.gms.common.security.ProviderInstallerImpl").getMethod("insertProvider", Context.class);
     }
     
-    public static void installIfNeeded(Context uf) throws GooglePlayServicesRepairableException, GooglePlayServicesNotAvailableException {
+    public static void installIfNeeded(Context uf) {
         n.b(uf, "Context must not be null");
         GooglePlayServicesUtil.D(uf);
         final Context remoteContext = GooglePlayServicesUtil.getRemoteContext(uf);
@@ -55,38 +52,10 @@ public class ProviderInstaller
         }
     }
     
-    public static void installIfNeededAsync(final Context context, final ProviderInstallListener providerInstallListener) {
+    public static void installIfNeededAsync(final Context context, final ProviderInstaller$ProviderInstallListener providerInstaller$ProviderInstallListener) {
         n.b(context, "Context must not be null");
-        n.b(providerInstallListener, "Listener must not be null");
+        n.b(providerInstaller$ProviderInstallListener, "Listener must not be null");
         n.aT("Must be called on the UI thread");
-        new AsyncTask<Void, Void, Integer>() {
-            protected Integer b(final Void... array) {
-                try {
-                    ProviderInstaller.installIfNeeded(context);
-                    return 0;
-                }
-                catch (GooglePlayServicesRepairableException ex) {
-                    return ex.getConnectionStatusCode();
-                }
-                catch (GooglePlayServicesNotAvailableException ex2) {
-                    return ex2.errorCode;
-                }
-            }
-            
-            protected void d(final Integer n) {
-                if (n == 0) {
-                    providerInstallListener.onProviderInstalled();
-                    return;
-                }
-                providerInstallListener.onProviderInstallFailed(n, GooglePlayServicesUtil.ai(n));
-            }
-        }.execute((Object[])new Void[0]);
-    }
-    
-    public interface ProviderInstallListener
-    {
-        void onProviderInstallFailed(final int p0, final Intent p1);
-        
-        void onProviderInstalled();
+        new ProviderInstaller$1(context, providerInstaller$ProviderInstallListener).execute((Object[])new Void[0]);
     }
 }

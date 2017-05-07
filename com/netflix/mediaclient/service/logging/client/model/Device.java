@@ -4,10 +4,9 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.google.gson.annotations.Since;
 import com.google.gson.annotations.SerializedName;
@@ -31,16 +30,16 @@ public class Device
         this.type = EsnProvider.ESN_PREFIX;
     }
     
-    Device(final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface) {
+    Device(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
         this.type = EsnProvider.ESN_PREFIX;
-        if (configurationAgentInterface == null) {
+        if (serviceAgent$ConfigurationAgentInterface == null) {
             throw new IllegalArgumentException("Configuration is null!");
         }
-        this.model = configurationAgentInterface.getEsnProvider().getDeviceModel();
-        this.esn = configurationAgentInterface.getEsnProvider().getEsn();
+        this.model = serviceAgent$ConfigurationAgentInterface.getEsnProvider().getDeviceModel();
+        this.esn = serviceAgent$ConfigurationAgentInterface.getEsnProvider().getEsn();
     }
     
-    public static Device createInstance(final JSONObject jsonObject) throws JSONException {
+    public static Device createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -63,7 +62,7 @@ public class Device
         return this.type;
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.esn != null) {
             jsonObject.put("esn", (Object)this.esn);

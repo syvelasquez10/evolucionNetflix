@@ -4,6 +4,7 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.HashSet;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.Set;
@@ -11,36 +12,36 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class of implements Parcelable$Creator<ny.d>
+public class of implements Parcelable$Creator<ny$d>
 {
-    static void a(final ny.d d, final Parcel parcel, int d2) {
-        d2 = b.D(parcel);
-        final Set<Integer> alR = d.alR;
+    static void a(final ny$d ny$d, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        final Set<Integer> alR = ny$d.alR;
         if (alR.contains(1)) {
-            b.c(parcel, 1, d.BR);
+            b.c(parcel, 1, ny$d.BR);
         }
         if (alR.contains(2)) {
-            b.a(parcel, 2, d.amp, true);
+            b.a(parcel, 2, ny$d.amp, true);
         }
         if (alR.contains(3)) {
-            b.a(parcel, 3, d.anp, true);
+            b.a(parcel, 3, ny$d.anp, true);
         }
         if (alR.contains(4)) {
-            b.a(parcel, 4, d.ams, true);
+            b.a(parcel, 4, ny$d.ams, true);
         }
         if (alR.contains(5)) {
-            b.a(parcel, 5, d.anq, true);
+            b.a(parcel, 5, ny$d.anq, true);
         }
         if (alR.contains(6)) {
-            b.a(parcel, 6, d.anr, true);
+            b.a(parcel, 6, ny$d.anr, true);
         }
         if (alR.contains(7)) {
-            b.a(parcel, 7, d.ans, true);
+            b.a(parcel, 7, ny$d.ans, true);
         }
-        b.H(parcel, d2);
+        b.H(parcel, d);
     }
     
-    public ny.d dj(final Parcel parcel) {
+    public ny$d dj(final Parcel parcel) {
         String o = null;
         final int c = a.C(parcel);
         final HashSet<Integer> set = new HashSet<Integer>();
@@ -95,12 +96,12 @@ public class of implements Parcelable$Creator<ny.d>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
-        return new ny.d(set, g, o6, o5, o4, o3, o2, o);
+        return new ny$d(set, g, o6, o5, o4, o3, o2, o);
     }
     
-    public ny.d[] fa(final int n) {
-        return new ny.d[n];
+    public ny$d[] fa(final int n) {
+        return new ny$d[n];
     }
 }

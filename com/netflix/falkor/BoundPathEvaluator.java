@@ -15,22 +15,12 @@ public class BoundPathEvaluator extends BasePathEvaluator
     
     @Override
     public Iterable<PathBoundValue> deleteAbsolute(final Iterable<PQL> iterable) {
-        return this.deleteAbsolute((Iterable<PQL>)new IterableBuilder<PQL>(iterable).map((Func1<PQL, Object>)new Func1<PQL, PQL>() {
-            @Override
-            public PQL call(final PQL pql) {
-                return BoundPathEvaluator.this.getPath().prepend(pql);
-            }
-        }));
+        return this.deleteAbsolute((Iterable<PQL>)new IterableBuilder<PQL>(iterable).map((Func1<PQL, Object>)new BoundPathEvaluator$3(this)));
     }
     
     @Override
     public Iterable<PathBoundValue> getAbsolute(final Iterable<PQL> iterable) {
-        return this.getAbsolute((Iterable<PQL>)new IterableBuilder<PQL>(iterable).map((Func1<PQL, Object>)new Func1<PQL, PQL>() {
-            @Override
-            public PQL call(final PQL pql) {
-                return pql.prepend(BoundPathEvaluator.this.getPath());
-            }
-        }));
+        return this.getAbsolute((Iterable<PQL>)new IterableBuilder<PQL>(iterable).map((Func1<PQL, Object>)new BoundPathEvaluator$1(this)));
     }
     
     @Override
@@ -40,11 +30,6 @@ public class BoundPathEvaluator extends BasePathEvaluator
     
     @Override
     public Iterable<PathBoundValue> setAbsolute(final Iterable<PathBoundValue> iterable) {
-        return this.setAbsolute((Iterable<PathBoundValue>)new IterableBuilder<PathBoundValue>(iterable).map((Func1<PathBoundValue, Object>)new Func1<PathBoundValue, PathBoundValue>() {
-            @Override
-            public PathBoundValue call(final PathBoundValue pathBoundValue) {
-                return new PathBoundValue(BoundPathEvaluator.this.getPath().prepend(pathBoundValue.getPath()), pathBoundValue.getValue());
-            }
-        }));
+        return this.setAbsolute((Iterable<PathBoundValue>)new IterableBuilder<PathBoundValue>(iterable).map((Func1<PathBoundValue, Object>)new BoundPathEvaluator$2(this)));
     }
 }

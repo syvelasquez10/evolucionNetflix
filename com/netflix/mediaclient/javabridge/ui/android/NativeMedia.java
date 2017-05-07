@@ -24,6 +24,7 @@ import com.netflix.mediaclient.javabridge.invoke.media.Swim;
 import com.netflix.mediaclient.javabridge.invoke.media.Play;
 import com.netflix.mediaclient.javabridge.invoke.media.Pause;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
+import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.javabridge.invoke.media.Close;
@@ -52,14 +53,16 @@ import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import org.json.JSONObject;
 import com.netflix.mediaclient.ui.player.NccpSubtitle;
 import java.util.Arrays;
-import java.util.ArrayList;
 import org.json.JSONException;
+import java.util.ArrayList;
 import com.netflix.mediaclient.ui.player.NccpAudioSource;
 import org.json.JSONArray;
 import android.view.Display;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.javabridge.Bridge;
 import com.netflix.mediaclient.media.TrickplayUrl;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.proxy.nrdp.media.StreamInfo;
 import com.netflix.mediaclient.media.Subtitle;
@@ -86,8 +89,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     private int mFrameY;
     private int mPosition;
     private int mState;
-    private SubtitleOutputMode mSubtitleOutputMode;
-    private SubtitleProfile mSubtitleProfile;
+    private IMedia$SubtitleOutputMode mSubtitleOutputMode;
+    private IMedia$SubtitleProfile mSubtitleProfile;
     private Subtitle[] mSubtitleTrackList;
     private StreamInfo mTargetVideoStream;
     private TrickplayUrl[] mTrickplayUrlList;
@@ -130,28 +133,21 @@ public class NativeMedia extends NativeNrdObject implements IMedia
         }
     }
     
-    private AudioSource[] getAudioSources(final JSONArray jsonArray) throws JSONException {
-        AudioSource[] array;
+    private AudioSource[] getAudioSources(final JSONArray jsonArray) {
+        int i = 0;
         if (jsonArray == null || jsonArray.length() < 1) {
             Log.w("nf-bridge", "Empty audio source list");
-            array = new AudioSource[0];
+            return new AudioSource[0];
         }
-        else {
-            final AudioSource[] array2 = new AudioSource[jsonArray.length()];
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = NccpAudioSource.newInstance(jsonArray.getJSONObject(n), n);
-                ++n;
-            }
+        AudioSource[] array;
+        for (array = new AudioSource[jsonArray.length()]; i < array.length; ++i) {
+            array[i] = NccpAudioSource.newInstance(jsonArray.getJSONObject(i), i);
         }
         return array;
     }
     
     private AudioSubtitleDefaultOrderInfo[] getDefaultOrderInfo(final JSONArray jsonArray) {
+        int i = 0;
         if (this.mAudioTrackList == null || this.mAudioTrackList.length < 1) {
             Log.d("nf-bridge", "Restrictions not found! Audio track list is empty!");
             return new AudioSubtitleDefaultOrderInfo[0];
@@ -161,7 +157,6 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             return new AudioSubtitleDefaultOrderInfo[0];
         }
         final ArrayList<AudioSubtitleDefaultOrderInfo> list = new ArrayList<AudioSubtitleDefaultOrderInfo>(jsonArray.length());
-        int i = 0;
     Label_0143_Outer:
         while (i < jsonArray.length()) {
             while (true) {
@@ -194,50 +189,36 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     private Subtitle getSubtitle(final String s) {
-        if (this.mSubtitleTrackList != null) {
-            int i = 0;
-            while (i < this.mSubtitleTrackList.length) {
-                final Subtitle subtitle = this.mSubtitleTrackList[i];
-                if (subtitle.getId() != null && subtitle.getId().equals(s)) {
-                    final Subtitle subtitle2 = subtitle;
-                    if (Log.isLoggable("nf-bridge", 3)) {
-                        Log.d("nf-bridge", "Subtitle found " + subtitle + " for id " + s);
-                        return subtitle;
-                    }
-                    return subtitle2;
-                }
-                else {
-                    ++i;
-                }
-            }
-            Log.e("nf-bridge", "Subtitle not found for id " + s);
+        if (this.mSubtitleTrackList == null) {
             return null;
         }
+        for (int i = 0; i < this.mSubtitleTrackList.length; ++i) {
+            final Subtitle subtitle = this.mSubtitleTrackList[i];
+            if (subtitle.getId() != null && subtitle.getId().equals(s)) {
+                if (Log.isLoggable("nf-bridge", 3)) {
+                    Log.d("nf-bridge", "Subtitle found " + subtitle + " for id " + s);
+                }
+                return subtitle;
+            }
+        }
+        Log.e("nf-bridge", "Subtitle not found for id " + s);
         return null;
     }
     
-    private Subtitle[] getSubtitle(final JSONArray jsonArray) throws JSONException {
-        Subtitle[] array;
+    private Subtitle[] getSubtitle(final JSONArray jsonArray) {
+        int i = 0;
         if (jsonArray == null || jsonArray.length() < 1) {
             Log.w("nf-bridge", "Empty subtitle list");
-            array = new Subtitle[0];
+            return new Subtitle[0];
         }
-        else {
-            final Subtitle[] array2 = new Subtitle[jsonArray.length()];
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = NccpSubtitle.newInstance(jsonArray.getJSONObject(n), n);
-                ++n;
-            }
+        Subtitle[] array;
+        for (array = new Subtitle[jsonArray.length()]; i < array.length; ++i) {
+            array[i] = NccpSubtitle.newInstance(jsonArray.getJSONObject(i), i);
         }
         return array;
     }
     
-    private int handleEvent(JSONObject jsonObject) throws java.lang.Exception {
+    private int handleEvent(JSONObject jsonObject) {
         jsonObject = this.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null) {
             final String string = this.getString(jsonObject, "type", null);
@@ -411,7 +392,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
         return 0;
     }
     
-    private int handlePropertyUpdate(JSONObject jsonObject) throws JSONException {
+    private int handlePropertyUpdate(JSONObject jsonObject) {
         jsonObject = this.getJSONObject(jsonObject, "properties", null);
         if (jsonObject == null) {
             Log.w("nf-bridge", "handlePropertyUpdate:: properties does not exist");
@@ -527,24 +508,16 @@ public class NativeMedia extends NativeNrdObject implements IMedia
         return false;
     }
     
-    private TrickplayUrl[] toTrickplayUrlList(final JSONArray jsonArray) throws JSONException {
-        TrickplayUrl[] array;
+    private TrickplayUrl[] toTrickplayUrlList(final JSONArray jsonArray) {
+        int i = 0;
         if (jsonArray == null || jsonArray.length() < 1) {
             Log.w("nf-bridge", "Empty trickplayUrlList");
-            array = new TrickplayUrl[0];
+            return new TrickplayUrl[0];
         }
-        else {
-            final TrickplayUrl[] array2 = new TrickplayUrl[jsonArray.length()];
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = new TrickplayUrl(jsonArray.getJSONObject(n));
-                Log.d("nf-bridge", array2[n].toString());
-                ++n;
-            }
+        TrickplayUrl[] array;
+        for (array = new TrickplayUrl[jsonArray.length()]; i < array.length; ++i) {
+            array[i] = new TrickplayUrl(jsonArray.getJSONObject(i));
+            Log.d("nf-bridge", array[i].toString());
         }
         return array;
     }
@@ -623,27 +596,31 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     @Override
     public PlayoutMetadata getPlayoutMetadata() {
         Log.d("nf-bridge", "Media:: METADATA");
-        boolean highDefinition = false;
-        boolean superHighDefinition = false;
-        int n = 0;
-        int n2 = 0;
+        int n;
+        boolean superHighDefinition;
+        boolean highDefinition;
         if (this.mCurrentVideoStream == null) {
             Log.w("nf-bridge", "Media:: Current video stream info uknown");
+            n = 0;
+            superHighDefinition = false;
+            highDefinition = false;
         }
         else {
-            n2 = this.mCurrentVideoStream.getBitsPerSecond() / 1024;
+            n = this.mCurrentVideoStream.getBitsPerSecond() / 1024;
             highDefinition = this.mCurrentVideoStream.isHighDefinition();
             superHighDefinition = this.mCurrentVideoStream.isSuperHighDefinition();
         }
+        int n2;
         if (this.mTargetVideoStream != null) {
-            n = this.mTargetVideoStream.getBitsPerSecond() / 1024;
+            n2 = this.mTargetVideoStream.getBitsPerSecond() / 1024;
         }
         else {
             Log.w("nf-bridge", "Media:: Target video stream info uknown");
+            n2 = 0;
         }
-        int numChannels = 0;
-        int trackType = 0;
-        String languageDescription = "";
+        int numChannels;
+        int trackType;
+        String languageDescription;
         if (this.mAudioTrackList != null && this.mAudioTrackList.length > this.mCurrentAudioTrackIndex && this.mCurrentAudioTrackIndex > -1) {
             final AudioSource audioSource = this.mAudioTrackList[this.mCurrentAudioTrackIndex];
             if (audioSource != null) {
@@ -653,15 +630,24 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             }
             else {
                 Log.e("nf-bridge", "Audio source is null for  " + this.mCurrentAudioTrackIndex);
+                numChannels = 0;
+                languageDescription = "";
+                trackType = 0;
             }
         }
         else if (this.mAudioTrackList == null) {
             Log.e("nf-bridge", "audio list is null ");
+            languageDescription = "";
+            trackType = 0;
+            numChannels = 0;
         }
         else {
             Log.e("nf-bridge", "audio list has less elements " + this.mAudioTrackList.length + " than current index " + this.mCurrentAudioTrackIndex);
+            languageDescription = "";
+            trackType = 0;
+            numChannels = 0;
         }
-        final PlayoutMetadata playoutMetadata = new PlayoutMetadata(this.mPosition, this.mDuration, n2, n, highDefinition, superHighDefinition, languageDescription, numChannels, trackType);
+        final PlayoutMetadata playoutMetadata = new PlayoutMetadata(this.mPosition, this.mDuration, n, n2, highDefinition, superHighDefinition, languageDescription, numChannels, trackType);
         if (Log.isLoggable("nf-bridge", 3)) {
             Log.d("nf-bridge", "Media:: getPlayoutMetadata:: " + playoutMetadata);
         }
@@ -674,12 +660,12 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public SubtitleOutputMode getSubtitleOutputMode() {
+    public IMedia$SubtitleOutputMode getSubtitleOutputMode() {
         return this.mSubtitleOutputMode;
     }
     
     @Override
-    public SubtitleProfile getSubtitleProfile() {
+    public IMedia$SubtitleProfile getSubtitleProfile() {
         return this.mSubtitleProfile;
     }
     
@@ -722,8 +708,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void open(final long n, final PlayContext playContext, final Open.NetType netType) {
-        this.bridge.getNrdProxy().invokeMethod(new Open(n, playContext, netType));
+    public void open(final long n, final PlayContext playContext, final Open$NetType open$NetType) {
+        this.bridge.getNrdProxy().invokeMethod(new Open(n, playContext, open$NetType));
         Log.d("nf-bridge", "invokeMethod just called...");
     }
     
@@ -818,12 +804,14 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void setStreamingQoe(final String s) {
+    public void setStreamingQoe(final String s, final boolean b) {
         if (s == null) {
             return;
         }
         try {
-            this.bridge.getNrdProxy().invokeMethod(new SetConfigData(new JSONObject(s), "streaming"));
+            final JSONObject jsonObject = new JSONObject(s);
+            jsonObject.put("enableHTTPSAuth", b);
+            this.bridge.getNrdProxy().invokeMethod(new SetConfigData(jsonObject, "streaming"));
         }
         catch (JSONException ex) {
             Log.e("nf-bridge", "Failed to create JSON object, unable to setConfigData", (Throwable)ex);
@@ -831,7 +819,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void setSubtitleOutputMode(final SubtitleOutputMode mSubtitleOutputMode) {
+    public void setSubtitleOutputMode(final IMedia$SubtitleOutputMode mSubtitleOutputMode) {
         if (mSubtitleOutputMode == null) {
             throw new IllegalArgumentException("Output mode can not be null!");
         }
@@ -840,7 +828,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void setSubtitleProfile(final SubtitleProfile mSubtitleProfile) {
+    public void setSubtitleProfile(final IMedia$SubtitleProfile mSubtitleProfile) {
         if (mSubtitleProfile == null) {
             throw new IllegalArgumentException("Subtitle profile can not be null!");
         }

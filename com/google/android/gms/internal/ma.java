@@ -5,6 +5,7 @@
 package com.google.android.gms.internal;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -73,7 +74,7 @@ public class ma implements Parcelable$Creator<lz>
             }
         }
         if (parcel.dataPosition() != c3) {
-            throw new a.a("Overread allowed size end=" + c3, parcel);
+            throw new a$a("Overread allowed size end=" + c3, parcel);
         }
         return new lz(g, locationRequest, c2, c4, c, (List<lr>)o2, o);
     }

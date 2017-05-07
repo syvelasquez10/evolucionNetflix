@@ -12,7 +12,7 @@ import com.netflix.mediaclient.service.logging.search.model.SearchFocusSessionSt
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.service.logging.search.SearchFocusSession;
 import com.netflix.mediaclient.service.logging.search.model.SearchImpressionEvent;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
@@ -61,20 +61,32 @@ public class SearchLogging implements ISearchLogging
         final String stringExtra2 = intent.getStringExtra("view");
         final String stringExtra3 = intent.getStringExtra("modal_view");
         final String[] stringArrayExtra = intent.getStringArrayExtra("childIds");
-        Enum<IClientLogging.ModalView> value = null;
+        IClientLogging$ModalView value;
         if (StringUtils.isNotEmpty(stringExtra2)) {
-            value = IClientLogging.ModalView.valueOf(stringExtra2);
+            value = IClientLogging$ModalView.valueOf(stringExtra2);
         }
-        Enum<IClientLogging.ModalView> value2 = null;
-        if (StringUtils.isNotEmpty(stringExtra3)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra3);
+        else {
+            value = null;
         }
-        final SearchImpressionEvent searchImpressionEvent = new SearchImpressionEvent(stringExtra, intExtra, intExtra2, stringArrayExtra, (IClientLogging.ModalView)value2, (IClientLogging.ModalView)value);
-        this.mEventHandler.post(searchImpressionEvent);
-        try {
-            Log.d("nf_log_search", "Search Impression Event fired" + searchImpressionEvent.toJSONObject().toString(5));
+        while (true) {
+            Label_0147: {
+                if (!StringUtils.isNotEmpty(stringExtra3)) {
+                    break Label_0147;
+                }
+                final IClientLogging$ModalView value2 = IClientLogging$ModalView.valueOf(stringExtra3);
+                final SearchImpressionEvent searchImpressionEvent = new SearchImpressionEvent(stringExtra, intExtra, intExtra2, stringArrayExtra, value2, value);
+                this.mEventHandler.post(searchImpressionEvent);
+                try {
+                    Log.d("nf_log_search", "Search Impression Event fired" + searchImpressionEvent.toJSONObject().toString(5));
+                    return;
+                }
+                catch (JSONException ex) {
+                    return;
+                }
+            }
+            final IClientLogging$ModalView value2 = null;
+            continue;
         }
-        catch (JSONException ex) {}
     }
     
     public boolean handleIntent(final Intent intent) {

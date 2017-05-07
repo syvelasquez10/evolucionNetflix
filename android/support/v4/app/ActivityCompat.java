@@ -4,12 +4,6 @@
 
 package android.support.v4.app;
 
-import java.util.Map;
-import java.util.List;
-import android.os.Parcelable;
-import android.graphics.RectF;
-import android.graphics.Matrix;
-import android.view.View;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
@@ -20,12 +14,12 @@ import android.support.v4.content.ContextCompat;
 
 public class ActivityCompat extends ContextCompat
 {
-    private static ActivityCompat21.SharedElementCallback21 createCallback(final SharedElementCallback sharedElementCallback) {
-        ActivityCompat21.SharedElementCallback21 sharedElementCallback2 = null;
+    private static ActivityCompat21$SharedElementCallback21 createCallback(final SharedElementCallback sharedElementCallback) {
+        ActivityCompat21$SharedElementCallback21 activityCompat21$SharedElementCallback21 = null;
         if (sharedElementCallback != null) {
-            sharedElementCallback2 = new SharedElementCallback21Impl(sharedElementCallback);
+            activityCompat21$SharedElementCallback21 = new ActivityCompat$SharedElementCallback21Impl(sharedElementCallback);
         }
-        return sharedElementCallback2;
+        return activityCompat21$SharedElementCallback21;
     }
     
     public static void finishAffinity(final Activity activity) {
@@ -89,45 +83,6 @@ public class ActivityCompat extends ContextCompat
     public static void startPostponedEnterTransition(final Activity activity) {
         if (Build$VERSION.SDK_INT >= 21) {
             ActivityCompat21.startPostponedEnterTransition(activity);
-        }
-    }
-    
-    private static class SharedElementCallback21Impl extends SharedElementCallback21
-    {
-        private SharedElementCallback mCallback;
-        
-        public SharedElementCallback21Impl(final SharedElementCallback mCallback) {
-            this.mCallback = mCallback;
-        }
-        
-        @Override
-        public Parcelable onCaptureSharedElementSnapshot(final View view, final Matrix matrix, final RectF rectF) {
-            return this.mCallback.onCaptureSharedElementSnapshot(view, matrix, rectF);
-        }
-        
-        @Override
-        public View onCreateSnapshotView(final Context context, final Parcelable parcelable) {
-            return this.mCallback.onCreateSnapshotView(context, parcelable);
-        }
-        
-        @Override
-        public void onMapSharedElements(final List<String> list, final Map<String, View> map) {
-            this.mCallback.onMapSharedElements(list, map);
-        }
-        
-        @Override
-        public void onRejectSharedElements(final List<View> list) {
-            this.mCallback.onRejectSharedElements(list);
-        }
-        
-        @Override
-        public void onSharedElementEnd(final List<String> list, final List<View> list2, final List<View> list3) {
-            this.mCallback.onSharedElementEnd(list, list2, list3);
-        }
-        
-        @Override
-        public void onSharedElementStart(final List<String> list, final List<View> list2, final List<View> list3) {
-            this.mCallback.onSharedElementStart(list, list2, list3);
         }
     }
 }

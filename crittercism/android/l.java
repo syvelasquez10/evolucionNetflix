@@ -9,7 +9,6 @@ import android.os.Build;
 import android.net.Uri;
 import android.content.Intent;
 import android.content.SharedPreferences$Editor;
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 import android.app.AlertDialog$Builder;
 import android.os.Build$VERSION;
@@ -58,9 +57,9 @@ public final class l implements g, h
         this.k = null;
         this.l = Executors.newCachedThreadPool();
         this.v = Executors.newSingleThreadExecutor();
-        this.m = new q(100, true, ae.a.b(), new w.a());
-        this.n = new q(100, false, ae.b.b(), new w.a());
-        this.o = new q(10, false, ae.c.b(), new b.a());
+        this.m = new q(100, true, ae.a.b(), new w$a());
+        this.n = new q(100, false, ae.b.b(), new w$a());
+        this.o = new q(10, false, ae.c.b(), new b$a());
         this.w = false;
         this.p = false;
         this.q = false;
@@ -116,36 +115,9 @@ public final class l implements g, h
         alertDialog$Builder.setTitle((CharSequence)title).setMessage((CharSequence)message);
         try {
             final AlertDialog create = alertDialog$Builder.create();
-            create.setButton(-1, (CharSequence)"Yes", (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                public final void onClick(final DialogInterface dialogInterface, final int n) {
-                    try {
-                        crittercism.android.l.i().b(p3);
-                    }
-                    catch (Exception ex) {
-                        Log.w("CrittercismInstance", "YES button failed.  Email support@crittercism.com.");
-                    }
-                }
-            });
-            create.setButton(-2, (CharSequence)"No", (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                public final void onClick(final DialogInterface dialogInterface, final int n) {
-                    try {
-                        crittercism.android.l.i().o();
-                    }
-                    catch (Exception ex) {
-                        Log.w("CrittercismInstance", "NO button failed.  Email support@crittercism.com.");
-                    }
-                }
-            });
-            create.setButton(-3, (CharSequence)"Maybe Later", (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                public final void onClick(final DialogInterface dialogInterface, final int n) {
-                    try {
-                        crittercism.android.l.i();
-                    }
-                    catch (Exception ex) {
-                        Log.w("CrittercismInstance", "MAYBE LATER button failed.  Email support@crittercism.com.");
-                    }
-                }
-            });
+            create.setButton(-1, (CharSequence)"Yes", (DialogInterface$OnClickListener)new l$6(this, p3));
+            create.setButton(-2, (CharSequence)"No", (DialogInterface$OnClickListener)new l$7(this));
+            create.setButton(-3, (CharSequence)"Maybe Later", (DialogInterface$OnClickListener)new l$8(this));
             return create;
         }
         catch (Exception ex) {
@@ -219,12 +191,7 @@ public final class l implements g, h
     
     public final void b(final String s) {
         this.e.e().b = true;
-        new Thread(new Runnable() {
-            @Override
-            public final void run() {
-                crittercism.android.l.this.e.e().a(crittercism.android.l.a, ae.d.a(), ae.d.b());
-            }
-        }).start();
+        new Thread(new l$4(this)).start();
         final Intent intent = new Intent("android.intent.action.VIEW");
         intent.setFlags(268435456);
         intent.setData(Uri.parse(s));
@@ -557,12 +524,7 @@ public final class l implements g, h
     
     public final void o() {
         this.e.e().b = true;
-        new Thread(new Runnable() {
-            @Override
-            public final void run() {
-                crittercism.android.l.this.e.e().a(crittercism.android.l.a, ae.d.a(), ae.d.b());
-            }
-        }).start();
+        new Thread(new l$5(this)).start();
     }
     
     public final String p() {

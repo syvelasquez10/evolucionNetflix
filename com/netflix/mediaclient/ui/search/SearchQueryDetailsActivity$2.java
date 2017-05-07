@@ -1,0 +1,54 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.ui.search;
+
+import android.os.Bundle;
+import android.util.Pair;
+import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
+import android.widget.ScrollView;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import java.io.Serializable;
+import com.netflix.mediaclient.android.widget.LoggingScrollView$OnScrollStopListener;
+import android.content.Intent;
+import com.netflix.mediaclient.util.StringUtils;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.widget.ListAdapter;
+import android.widget.GridView;
+import android.app.Activity;
+import android.content.Context;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.Log;
+import android.widget.TextView;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.view.View;
+import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
+import com.netflix.mediaclient.android.widget.StaticGridView;
+import com.netflix.mediaclient.android.widget.LoggingScrollView;
+import com.netflix.mediaclient.ui.common.SearchSimilarItemsGridViewAdapter;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.widget.AbsListView;
+import android.widget.AbsListView$OnScrollListener;
+
+class SearchQueryDetailsActivity$2 implements AbsListView$OnScrollListener
+{
+    final /* synthetic */ SearchQueryDetailsActivity this$0;
+    
+    SearchQueryDetailsActivity$2(final SearchQueryDetailsActivity this$0) {
+        this.this$0 = this$0;
+    }
+    
+    public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
+    }
+    
+    public void onScrollStateChanged(final AbsListView absListView, final int n) {
+        if (n == 0 && this.this$0.gridView.getCount() > 0) {
+            this.this$0.fireImpressionEvents();
+        }
+    }
+}

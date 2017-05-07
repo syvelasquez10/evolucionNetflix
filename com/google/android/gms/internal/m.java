@@ -8,5 +8,5 @@ public interface m
 {
     String a(final byte[] p0, final boolean p1);
     
-    byte[] a(final String p0, final boolean p1) throws IllegalArgumentException;
+    byte[] a(final String p0, final boolean p1);
 }

@@ -7,22 +7,22 @@ package com.netflix.mediaclient.service.logging.apm;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import java.util.Map;
 
 public final class UIStartupSession extends BaseApmSession
 {
     public static final String NAME = "uiStartup";
     private Map<String, Integer> mActiveABTests;
-    private IClientLogging.ModalView mDestination;
+    private IClientLogging$ModalView mDestination;
     private Display mDisplay;
     private String mSearchTerm;
     private int mTrackId;
-    private ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger;
+    private ApplicationPerformanceMetricsLogging$UiStartupTrigger mTrigger;
     
-    public UIStartupSession(final ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger, final IClientLogging.ModalView mDestination, final int mTrackId, final String mSearchTerm, final Map<String, Integer> mActiveABTests, final Display mDisplay) {
+    public UIStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger mTrigger, final IClientLogging$ModalView mDestination, final int mTrackId, final String mSearchTerm, final Map<String, Integer> mActiveABTests, final Display mDisplay) {
         this.mTrigger = mTrigger;
         this.mDestination = mDestination;
         this.mTrackId = mTrackId;
@@ -31,7 +31,7 @@ public final class UIStartupSession extends BaseApmSession
         this.mDisplay = mDisplay;
     }
     
-    public UIStartupSession(final ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger, final IClientLogging.ModalView mDestination, final Display mDisplay) {
+    public UIStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger mTrigger, final IClientLogging$ModalView mDestination, final Display mDisplay) {
         this.mTrigger = mTrigger;
         this.mDestination = mDestination;
         this.mDisplay = mDisplay;
@@ -52,7 +52,7 @@ public final class UIStartupSession extends BaseApmSession
         return this.mActiveABTests;
     }
     
-    public IClientLogging.ModalView getDestination() {
+    public IClientLogging$ModalView getDestination() {
         return this.mDestination;
     }
     
@@ -69,7 +69,7 @@ public final class UIStartupSession extends BaseApmSession
         return this.mTrackId;
     }
     
-    public ApplicationPerformanceMetricsLogging.UiStartupTrigger getTrigger() {
+    public ApplicationPerformanceMetricsLogging$UiStartupTrigger getTrigger() {
         return this.mTrigger;
     }
     
@@ -77,7 +77,7 @@ public final class UIStartupSession extends BaseApmSession
         this.mActiveABTests = mActiveABTests;
     }
     
-    public void setDestination(final IClientLogging.ModalView mDestination) {
+    public void setDestination(final IClientLogging$ModalView mDestination) {
         this.mDestination = mDestination;
     }
     
@@ -89,7 +89,7 @@ public final class UIStartupSession extends BaseApmSession
         this.mTrackId = mTrackId;
     }
     
-    public void setTrigger(final ApplicationPerformanceMetricsLogging.UiStartupTrigger mTrigger) {
+    public void setTrigger(final ApplicationPerformanceMetricsLogging$UiStartupTrigger mTrigger) {
         this.mTrigger = mTrigger;
     }
 }

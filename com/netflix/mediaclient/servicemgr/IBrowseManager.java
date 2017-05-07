@@ -6,25 +6,24 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
+import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 
 public interface IBrowseManager
 {
     boolean addToQueue(final String p0, final int p1, final String p2, final ManagerCallback p3);
     
+    boolean dumpCacheToDisk();
+    
     boolean dumpHomeLoLoMosAndVideos(final String p0, final String p1);
-    
-    boolean dumpHomeLoLoMosAndVideosToLog();
-    
-    boolean dumpHomeLoMos();
     
     boolean fetchCWVideos(final int p0, final int p1, final ManagerCallback p2);
     
     boolean fetchEpisodeDetails(final String p0, final ManagerCallback p1);
     
-    boolean fetchEpisodes(final String p0, final int p1, final int p2, final ManagerCallback p3);
+    boolean fetchEpisodes(final String p0, final VideoType p1, final int p2, final int p3, final ManagerCallback p4);
     
     boolean fetchGenreLists(final ManagerCallback p0);
     
@@ -62,7 +61,7 @@ public interface IBrowseManager
     
     boolean hideVideo(final String p0, final ManagerCallback p1);
     
-    void logBillboardActivity(final Video p0, final BrowseAgent.BillboardActivityType p1);
+    void logBillboardActivity(final Video p0, final BrowseAgent$BillboardActivityType p1);
     
     void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0);
     
@@ -78,5 +77,5 @@ public interface IBrowseManager
     
     void sendThanksToSocialNotification(final SocialNotificationSummary p0, final ManagerCallback p1);
     
-    boolean setVideoRating(final String p0, final int p1, final int p2, final ManagerCallback p3);
+    boolean setVideoRating(final String p0, final VideoType p1, final int p2, final int p3, final ManagerCallback p4);
 }

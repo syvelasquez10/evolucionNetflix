@@ -72,7 +72,7 @@ public class AtomicFile
         return this.mBaseName;
     }
     
-    public FileInputStream openRead() throws FileNotFoundException {
+    public FileInputStream openRead() {
         if (this.mBackupName.exists()) {
             this.mBaseName.delete();
             this.mBackupName.renameTo(this.mBaseName);
@@ -80,35 +80,40 @@ public class AtomicFile
         return new FileInputStream(this.mBaseName);
     }
     
-    public byte[] readFully() throws IOException {
-        final FileInputStream openRead = this.openRead();
-        int n = 0;
-        try {
-            byte[] array = new byte[openRead.available()];
+    public byte[] readFully() {
+        while (true) {
+            int n = 0;
+            final FileInputStream openRead = this.openRead();
             while (true) {
-                final int read = openRead.read(array, n, array.length - n);
-                if (read <= 0) {
-                    break;
+                Label_0087: {
+                    try {
+                        byte[] array = new byte[openRead.available()];
+                        while (true) {
+                            final int read = openRead.read(array, n, array.length - n);
+                            if (read <= 0) {
+                                break;
+                            }
+                            n += read;
+                            final int available = openRead.available();
+                            if (available <= array.length - n) {
+                                break Label_0087;
+                            }
+                            final byte[] array2 = new byte[available + n];
+                            System.arraycopy(array, 0, array2, 0, n);
+                            array = array2;
+                        }
+                        return array;
+                    }
+                    finally {
+                        openRead.close();
+                    }
                 }
-                final int n2 = n + read;
-                final int available = openRead.available();
-                n = n2;
-                if (available <= array.length - n2) {
-                    continue;
-                }
-                final byte[] array2 = new byte[n2 + available];
-                System.arraycopy(array, 0, array2, 0, n2);
-                array = array2;
-                n = n2;
+                continue;
             }
-            return array;
-        }
-        finally {
-            openRead.close();
         }
     }
     
-    public FileOutputStream startWrite() throws IOException {
+    public FileOutputStream startWrite() {
         Label_0088: {
             if (this.mBaseName.exists()) {
                 if (this.mBackupName.exists()) {

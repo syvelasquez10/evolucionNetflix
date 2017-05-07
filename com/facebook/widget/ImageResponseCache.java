@@ -4,15 +4,13 @@
 
 package com.facebook.widget;
 
-import java.net.URLConnection;
-import com.facebook.internal.Utility;
-import java.io.BufferedInputStream;
 import java.net.HttpURLConnection;
+import java.io.IOException;
 import com.facebook.internal.Logger;
 import com.facebook.LoggingBehavior;
 import java.io.InputStream;
 import java.net.URL;
-import java.io.IOException;
+import com.facebook.internal.FileLruCache$Limits;
 import android.content.Context;
 import com.facebook.internal.FileLruCache;
 
@@ -25,10 +23,10 @@ class ImageResponseCache
         TAG = ImageResponseCache.class.getSimpleName();
     }
     
-    static FileLruCache getCache(final Context context) throws IOException {
+    static FileLruCache getCache(final Context context) {
         synchronized (ImageResponseCache.class) {
             if (ImageResponseCache.imageCache == null) {
-                ImageResponseCache.imageCache = new FileLruCache(context.getApplicationContext(), ImageResponseCache.TAG, new FileLruCache.Limits());
+                ImageResponseCache.imageCache = new FileLruCache(context.getApplicationContext(), ImageResponseCache.TAG, new FileLruCache$Limits());
             }
             return ImageResponseCache.imageCache;
         }
@@ -53,7 +51,7 @@ class ImageResponseCache
         }
     }
     
-    static InputStream interceptAndCacheImageStream(final Context context, final HttpURLConnection httpURLConnection) throws IOException {
+    static InputStream interceptAndCacheImageStream(final Context context, final HttpURLConnection httpURLConnection) {
         InputStream inputStream = null;
         if (httpURLConnection.getResponseCode() != 200) {
             return inputStream;
@@ -64,7 +62,7 @@ class ImageResponseCache
             return inputStream;
         }
         try {
-            inputStream = getCache(context).interceptAndPut(url.toString(), new BufferedHttpInputStream(inputStream2, httpURLConnection));
+            inputStream = getCache(context).interceptAndPut(url.toString(), new ImageResponseCache$BufferedHttpInputStream(inputStream2, httpURLConnection));
             return inputStream;
         }
         catch (IOException ex) {
@@ -80,21 +78,5 @@ class ImageResponseCache
             }
         }
         return false;
-    }
-    
-    private static class BufferedHttpInputStream extends BufferedInputStream
-    {
-        HttpURLConnection connection;
-        
-        BufferedHttpInputStream(final InputStream inputStream, final HttpURLConnection connection) {
-            super(inputStream, 8192);
-            this.connection = connection;
-        }
-        
-        @Override
-        public void close() throws IOException {
-            super.close();
-            Utility.disconnectQuietly(this.connection);
-        }
     }
 }

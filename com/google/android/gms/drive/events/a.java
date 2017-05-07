@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.events;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.DriveId;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -47,7 +48,7 @@ public class a implements Parcelable$Creator<ChangeEvent>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ChangeEvent(g2, driveId, g);
     }

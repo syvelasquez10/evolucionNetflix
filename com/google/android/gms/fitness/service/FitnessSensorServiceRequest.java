@@ -6,6 +6,7 @@ package com.google.android.gms.fitness.service;
 
 import android.os.Parcel;
 import com.google.android.gms.common.internal.m;
+import com.google.android.gms.fitness.data.k$a;
 import android.os.IBinder;
 import com.google.android.gms.fitness.data.k;
 import com.google.android.gms.fitness.data.DataSource;
@@ -29,7 +30,7 @@ public class FitnessSensorServiceRequest implements SafeParcelable
     FitnessSensorServiceRequest(final int br, final DataSource sh, final IBinder binder, final long ur, final long us) {
         this.BR = br;
         this.Sh = sh;
-        this.Up = k.a.an(binder);
+        this.Up = k$a.an(binder);
         this.UR = ur;
         this.US = us;
     }

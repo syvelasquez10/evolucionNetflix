@@ -28,14 +28,14 @@ public class SendThanksToSocialNotificationActionHandler extends BaseNflxHandler
     }
     
     @Override
-    public Response handle() {
+    public NflxHandler$Response handle() {
         final String s = this.mParamsMap.get("g");
         final String s2 = this.mParamsMap.get("story_id");
         if (StringUtils.isEmpty(s) || StringUtils.isEmpty(s2)) {
             Log.e("NflxHandler", "Could not find ID or Story ID of social notification");
-            return Response.NOT_HANDLING;
+            return NflxHandler$Response.NOT_HANDLING;
         }
         this.mActivity.startService(getSayThanksIntent((Context)this.mActivity, s, s2, false, null));
-        return Response.HANDLING;
+        return NflxHandler$Response.HANDLING;
     }
 }

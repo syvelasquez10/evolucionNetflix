@@ -4,7 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
 import android.text.TextUtils;
 
 public abstract class ii
@@ -29,7 +28,7 @@ public abstract class ii
         }
     }
     
-    protected final void a(final String s, final long n, final String s2) throws IOException {
+    protected final void a(final String s, final long n, final String s2) {
         this.Go.a("Sending text message: %s to: %s", s, s2);
         this.Gq.a(this.Gp, s, n, s2);
     }

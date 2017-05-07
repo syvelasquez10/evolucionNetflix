@@ -7,9 +7,9 @@ package com.google.android.gms.internal;
 import com.google.android.gms.common.internal.n;
 import android.content.Intent;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.panorama.PanoramaApi;
+import com.google.android.gms.panorama.PanoramaApi$PanoramaResult;
 
-class nd implements PanoramaResult
+class nd implements PanoramaApi$PanoramaResult
 {
     private final Status CM;
     private final Intent akr;

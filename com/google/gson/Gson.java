@@ -13,8 +13,8 @@ import java.io.Reader;
 import java.io.EOFException;
 import com.google.gson.internal.bind.JsonTreeReader;
 import com.google.gson.internal.Primitives;
-import java.io.Writer;
 import com.google.gson.stream.JsonWriter;
+import java.io.Writer;
 import java.io.IOException;
 import com.google.gson.stream.MalformedJsonException;
 import com.google.gson.stream.JsonToken;
@@ -45,7 +45,7 @@ public final class Gson
 {
     static final boolean DEFAULT_JSON_NON_EXECUTABLE = false;
     private static final String JSON_NON_EXECUTABLE_PREFIX = ")]}'\n";
-    private final ThreadLocal<Map<TypeToken<?>, FutureTypeAdapter<?>>> calls;
+    private final ThreadLocal<Map<TypeToken<?>, Gson$FutureTypeAdapter<?>>> calls;
     private final ConstructorConstructor constructorConstructor;
     final JsonDeserializationContext deserializationContext;
     private final List<TypeAdapterFactory> factories;
@@ -61,30 +61,10 @@ public final class Gson
     }
     
     Gson(final Excluder excluder, final FieldNamingStrategy fieldNamingStrategy, final Map<Type, InstanceCreator<?>> map, final boolean serializeNulls, final boolean b, final boolean generateNonExecutableJson, final boolean htmlSafe, final boolean prettyPrinting, final boolean b2, final LongSerializationPolicy longSerializationPolicy, final List<TypeAdapterFactory> list) {
-        this.calls = new ThreadLocal<Map<TypeToken<?>, FutureTypeAdapter<?>>>() {
-            @Override
-            protected Map<TypeToken<?>, FutureTypeAdapter<?>> initialValue() {
-                return new HashMap<TypeToken<?>, FutureTypeAdapter<?>>();
-            }
-        };
+        this.calls = new Gson$1(this);
         this.typeTokenCache = Collections.synchronizedMap(new HashMap<TypeToken<?>, TypeAdapter<?>>());
-        this.deserializationContext = new JsonDeserializationContext() {
-            @Override
-            public <T> T deserialize(final JsonElement jsonElement, final Type type) throws JsonParseException {
-                return Gson.this.fromJson(jsonElement, type);
-            }
-        };
-        this.serializationContext = new JsonSerializationContext() {
-            @Override
-            public JsonElement serialize(final Object o) {
-                return Gson.this.toJsonTree(o);
-            }
-            
-            @Override
-            public JsonElement serialize(final Object o, final Type type) {
-                return Gson.this.toJsonTree(o, type);
-            }
-        };
+        this.deserializationContext = new Gson$2(this);
+        this.serializationContext = new Gson$3(this);
         this.constructorConstructor = new ConstructorConstructor(map);
         this.serializeNulls = serializeNulls;
         this.generateNonExecutableJson = generateNonExecutableJson;
@@ -155,80 +135,24 @@ public final class Gson
         if (b) {
             return TypeAdapters.DOUBLE;
         }
-        return new TypeAdapter<Number>() {
-            @Override
-            public Double read(final JsonReader jsonReader) throws IOException {
-                if (jsonReader.peek() == JsonToken.NULL) {
-                    jsonReader.nextNull();
-                    return null;
-                }
-                return jsonReader.nextDouble();
-            }
-            
-            @Override
-            public void write(final JsonWriter jsonWriter, final Number n) throws IOException {
-                if (n == null) {
-                    jsonWriter.nullValue();
-                    return;
-                }
-                Gson.this.checkValidFloatingPoint(n.doubleValue());
-                jsonWriter.value(n);
-            }
-        };
+        return new Gson$4(this);
     }
     
     private TypeAdapter<Number> floatAdapter(final boolean b) {
         if (b) {
             return TypeAdapters.FLOAT;
         }
-        return new TypeAdapter<Number>() {
-            @Override
-            public Float read(final JsonReader jsonReader) throws IOException {
-                if (jsonReader.peek() == JsonToken.NULL) {
-                    jsonReader.nextNull();
-                    return null;
-                }
-                return (float)jsonReader.nextDouble();
-            }
-            
-            @Override
-            public void write(final JsonWriter jsonWriter, final Number n) throws IOException {
-                if (n == null) {
-                    jsonWriter.nullValue();
-                    return;
-                }
-                Gson.this.checkValidFloatingPoint(n.floatValue());
-                jsonWriter.value(n);
-            }
-        };
+        return new Gson$5(this);
     }
     
     private TypeAdapter<Number> longAdapter(final LongSerializationPolicy longSerializationPolicy) {
         if (longSerializationPolicy == LongSerializationPolicy.DEFAULT) {
             return TypeAdapters.LONG;
         }
-        return new TypeAdapter<Number>() {
-            @Override
-            public Number read(final JsonReader jsonReader) throws IOException {
-                if (jsonReader.peek() == JsonToken.NULL) {
-                    jsonReader.nextNull();
-                    return null;
-                }
-                return jsonReader.nextLong();
-            }
-            
-            @Override
-            public void write(final JsonWriter jsonWriter, final Number n) throws IOException {
-                if (n == null) {
-                    jsonWriter.nullValue();
-                    return;
-                }
-                jsonWriter.value(n.toString());
-            }
-        };
+        return new Gson$6(this);
     }
     
-    private JsonWriter newJsonWriter(final Writer writer) throws IOException {
+    private JsonWriter newJsonWriter(final Writer writer) {
         if (this.generateNonExecutableJson) {
             writer.write(")]}'\n");
         }
@@ -240,18 +164,18 @@ public final class Gson
         return jsonWriter;
     }
     
-    public <T> T fromJson(final JsonElement jsonElement, final Class<T> clazz) throws JsonSyntaxException {
+    public <T> T fromJson(final JsonElement jsonElement, final Class<T> clazz) {
         return Primitives.wrap(clazz).cast(this.fromJson(jsonElement, (Type)clazz));
     }
     
-    public <T> T fromJson(final JsonElement jsonElement, final Type type) throws JsonSyntaxException {
+    public <T> T fromJson(final JsonElement jsonElement, final Type type) {
         if (jsonElement == null) {
             return null;
         }
         return this.fromJson(new JsonTreeReader(jsonElement), type);
     }
     
-    public <T> T fromJson(final JsonReader jsonReader, final Type type) throws JsonIOException, JsonSyntaxException {
+    public <T> T fromJson(final JsonReader jsonReader, final Type type) {
         boolean b = true;
         jsonReader.isLenient();
         jsonReader.setLenient(true);
@@ -273,25 +197,25 @@ public final class Gson
         }
     }
     
-    public <T> T fromJson(final Reader reader, final Class<T> clazz) throws JsonSyntaxException, JsonIOException {
+    public <T> T fromJson(final Reader reader, final Class<T> clazz) {
         final JsonReader jsonReader = new JsonReader(reader);
         final Object fromJson = this.fromJson(jsonReader, clazz);
         assertFullConsumption(fromJson, jsonReader);
         return Primitives.wrap(clazz).cast(fromJson);
     }
     
-    public <T> T fromJson(final Reader reader, final Type type) throws JsonIOException, JsonSyntaxException {
+    public <T> T fromJson(final Reader reader, final Type type) {
         final JsonReader jsonReader = new JsonReader(reader);
         final Object fromJson = this.fromJson(jsonReader, type);
         assertFullConsumption(fromJson, jsonReader);
         return (T)fromJson;
     }
     
-    public <T> T fromJson(final String s, final Class<T> clazz) throws JsonSyntaxException {
+    public <T> T fromJson(final String s, final Class<T> clazz) {
         return Primitives.wrap(clazz).cast(this.fromJson(s, (Type)clazz));
     }
     
-    public <T> T fromJson(final String s, final Type type) throws JsonSyntaxException {
+    public <T> T fromJson(final String s, final Type type) {
         if (s == null) {
             return null;
         }
@@ -303,19 +227,19 @@ public final class Gson
         if (typeAdapter != null) {
             return (TypeAdapter<T>)typeAdapter;
         }
-        final Map<TypeToken<?>, FutureTypeAdapter<?>> map = this.calls.get();
-        final FutureTypeAdapter<T> futureTypeAdapter = map.get(typeToken);
-        if (futureTypeAdapter != null) {
-            return futureTypeAdapter;
+        final Map<TypeToken<?>, Gson$FutureTypeAdapter<?>> map = this.calls.get();
+        final Gson$FutureTypeAdapter<T> gson$FutureTypeAdapter = map.get(typeToken);
+        if (gson$FutureTypeAdapter != null) {
+            return gson$FutureTypeAdapter;
         }
-        final FutureTypeAdapter<T> futureTypeAdapter2 = new FutureTypeAdapter<T>();
-        map.put(typeToken, futureTypeAdapter2);
+        final Gson$FutureTypeAdapter<T> gson$FutureTypeAdapter2 = new Gson$FutureTypeAdapter<T>();
+        map.put(typeToken, gson$FutureTypeAdapter2);
         try {
             final Iterator<TypeAdapterFactory> iterator = this.factories.iterator();
             while (iterator.hasNext()) {
                 final TypeAdapter<T> create = iterator.next().create(this, typeToken);
                 if (create != null) {
-                    futureTypeAdapter2.setDelegate(create);
+                    gson$FutureTypeAdapter2.setDelegate(create);
                     this.typeTokenCache.put(typeToken, create);
                     return create;
                 }
@@ -372,7 +296,7 @@ public final class Gson
         return stringWriter.toString();
     }
     
-    public void toJson(final JsonElement jsonElement, final JsonWriter jsonWriter) throws JsonIOException {
+    public void toJson(final JsonElement jsonElement, final JsonWriter jsonWriter) {
         final boolean lenient = jsonWriter.isLenient();
         jsonWriter.setLenient(true);
         final boolean htmlSafe = jsonWriter.isHtmlSafe();
@@ -392,7 +316,7 @@ public final class Gson
         }
     }
     
-    public void toJson(final JsonElement jsonElement, final Appendable appendable) throws JsonIOException {
+    public void toJson(final JsonElement jsonElement, final Appendable appendable) {
         try {
             this.toJson(jsonElement, this.newJsonWriter(Streams.writerForAppendable(appendable)));
         }
@@ -401,7 +325,7 @@ public final class Gson
         }
     }
     
-    public void toJson(final Object o, final Appendable appendable) throws JsonIOException {
+    public void toJson(final Object o, final Appendable appendable) {
         if (o != null) {
             this.toJson(o, o.getClass(), appendable);
             return;
@@ -409,7 +333,7 @@ public final class Gson
         this.toJson(JsonNull.INSTANCE, appendable);
     }
     
-    public void toJson(final Object o, final Type type, final JsonWriter jsonWriter) throws JsonIOException {
+    public void toJson(final Object o, final Type type, final JsonWriter jsonWriter) {
         final TypeAdapter<?> adapter = this.getAdapter(TypeToken.get(type));
         final boolean lenient = jsonWriter.isLenient();
         jsonWriter.setLenient(true);
@@ -430,7 +354,7 @@ public final class Gson
         }
     }
     
-    public void toJson(final Object o, final Type type, final Appendable appendable) throws JsonIOException {
+    public void toJson(final Object o, final Type type, final Appendable appendable) {
         try {
             this.toJson(o, type, this.newJsonWriter(Streams.writerForAppendable(appendable)));
         }
@@ -455,33 +379,5 @@ public final class Gson
     @Override
     public String toString() {
         return "{" + "serializeNulls:" + this.serializeNulls + "factories:" + this.factories + ",instanceCreators:" + this.constructorConstructor + "}";
-    }
-    
-    static class FutureTypeAdapter<T> extends TypeAdapter<T>
-    {
-        private TypeAdapter<T> delegate;
-        
-        @Override
-        public T read(final JsonReader jsonReader) throws IOException {
-            if (this.delegate == null) {
-                throw new IllegalStateException();
-            }
-            return this.delegate.read(jsonReader);
-        }
-        
-        public void setDelegate(final TypeAdapter<T> delegate) {
-            if (this.delegate != null) {
-                throw new AssertionError();
-            }
-            this.delegate = delegate;
-        }
-        
-        @Override
-        public void write(final JsonWriter jsonWriter, final T t) throws IOException {
-            if (this.delegate == null) {
-                throw new IllegalStateException();
-            }
-            this.delegate.write(jsonWriter, t);
-        }
     }
 }

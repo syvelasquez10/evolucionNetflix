@@ -60,7 +60,7 @@ public class CacheDispatcher extends Thread
                     }
                     continue Label_0029_Outer;
                 }
-                final Cache.Entry value = this.mCache.get(request.getCacheKey());
+                final Cache$Entry value = this.mCache.get(request.getCacheKey());
                 if (value == null) {
                     request.addMarker("cache-miss");
                     this.mNetworkQueue.put(request);
@@ -82,15 +82,7 @@ public class CacheDispatcher extends Thread
                 request.addMarker("cache-hit-refresh-needed");
                 request.setCacheEntry(value);
                 networkResponse.intermediate = true;
-                this.mDelivery.postResponse(request, networkResponse, new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            CacheDispatcher.this.mNetworkQueue.put(request);
-                        }
-                        catch (InterruptedException ex) {}
-                    }
-                });
+                this.mDelivery.postResponse(request, networkResponse, new CacheDispatcher$1(this, request));
                 continue;
             }
         }

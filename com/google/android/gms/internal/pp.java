@@ -4,8 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
-
 public final class pp
 {
     public static final int[] awL;
@@ -28,7 +26,7 @@ public final class pp
         awS = new byte[0];
     }
     
-    public static final int b(final pe pe, final int n) throws IOException {
+    public static final int b(final pe pe, final int n) {
         int n2 = 1;
         final int position = pe.getPosition();
         pe.gm(n);

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.identity.intents.model;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
@@ -123,7 +124,7 @@ public class b implements Parcelable$Creator<UserAddress>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new UserAddress(g, o, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, c2, o13, o14);
     }

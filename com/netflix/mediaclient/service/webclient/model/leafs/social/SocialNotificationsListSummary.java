@@ -24,15 +24,7 @@ public class SocialNotificationsListSummary implements Parcelable
     private String requestId;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<SocialNotificationsListSummary>() {
-            public SocialNotificationsListSummary createFromParcel(final Parcel parcel) {
-                return new SocialNotificationsListSummary(parcel);
-            }
-            
-            public SocialNotificationsListSummary[] newArray(final int n) {
-                return new SocialNotificationsListSummary[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new SocialNotificationsListSummary$1();
     }
     
     protected SocialNotificationsListSummary(final Parcel parcel) {

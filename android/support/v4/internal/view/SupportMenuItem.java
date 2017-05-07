@@ -4,7 +4,7 @@
 
 package android.support.v4.internal.view;
 
-import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.MenuItemCompat$OnActionExpandListener;
 import android.support.v4.view.ActionProvider;
 import android.view.View;
 import android.view.MenuItem;
@@ -37,5 +37,5 @@ public interface SupportMenuItem extends MenuItem
     
     SupportMenuItem setSupportActionProvider(final ActionProvider p0);
     
-    SupportMenuItem setSupportOnActionExpandListener(final MenuItemCompat.OnActionExpandListener p0);
+    SupportMenuItem setSupportOnActionExpandListener(final MenuItemCompat$OnActionExpandListener p0);
 }

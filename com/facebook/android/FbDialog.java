@@ -7,6 +7,7 @@ package com.facebook.android;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.FacebookDialogException;
 import com.facebook.FacebookException;
+import com.facebook.widget.WebDialog$OnCompleteListener;
 import android.os.Bundle;
 import android.content.Context;
 import com.facebook.widget.WebDialog;
@@ -14,23 +15,23 @@ import com.facebook.widget.WebDialog;
 @Deprecated
 public class FbDialog extends WebDialog
 {
-    private Facebook.DialogListener mListener;
+    private Facebook$DialogListener mListener;
     
-    public FbDialog(final Context context, final String s, final Bundle bundle, final Facebook.DialogListener dialogListener) {
+    public FbDialog(final Context context, final String s, final Bundle bundle, final Facebook$DialogListener dialogListener) {
         super(context, s, bundle, 16973840, null);
         this.setDialogListener(dialogListener);
     }
     
-    public FbDialog(final Context context, final String s, final Bundle bundle, final Facebook.DialogListener dialogListener, final int n) {
+    public FbDialog(final Context context, final String s, final Bundle bundle, final Facebook$DialogListener dialogListener, final int n) {
         super(context, s, bundle, n, null);
         this.setDialogListener(dialogListener);
     }
     
-    public FbDialog(final Context context, final String s, final Facebook.DialogListener dialogListener) {
-        this(context, s, dialogListener, 16973840);
+    public FbDialog(final Context context, final String s, final Facebook$DialogListener facebook$DialogListener) {
+        this(context, s, facebook$DialogListener, 16973840);
     }
     
-    public FbDialog(final Context context, final String s, final Facebook.DialogListener dialogListener, final int n) {
+    public FbDialog(final Context context, final String s, final Facebook$DialogListener dialogListener, final int n) {
         super(context, s, n);
         this.setDialogListener(dialogListener);
     }
@@ -55,13 +56,8 @@ public class FbDialog extends WebDialog
         this.mListener.onFacebookError(new FacebookError(ex.getMessage()));
     }
     
-    private void setDialogListener(final Facebook.DialogListener mListener) {
+    private void setDialogListener(final Facebook$DialogListener mListener) {
         this.mListener = mListener;
-        this.setOnCompleteListener((OnCompleteListener)new OnCompleteListener() {
-            @Override
-            public void onComplete(final Bundle bundle, final FacebookException ex) {
-                FbDialog.this.callDialogListener(bundle, ex);
-            }
-        });
+        this.setOnCompleteListener(new FbDialog$1(this));
     }
 }

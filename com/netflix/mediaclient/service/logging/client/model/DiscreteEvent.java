@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class DiscreteEvent extends Event
@@ -13,7 +12,7 @@ public abstract class DiscreteEvent extends Event
         this.type = EventType.event;
     }
     
-    public DiscreteEvent(final JSONObject jsonObject) throws JSONException {
+    public DiscreteEvent(final JSONObject jsonObject) {
         super(jsonObject);
     }
 }

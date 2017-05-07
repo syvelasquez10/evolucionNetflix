@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -53,12 +51,12 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("ShowDetailsFrag", "Fetching data for show ID: " + this.videoId);
-        serviceManager.getBrowse().fetchShowDetails(this.videoId, this.episodeId, new FetchShowDetailsCallback(this.requestId));
+        serviceManager.getBrowse().fetchShowDetails(this.videoId, this.episodeId, new ShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
     }
     
     @Override
-    protected VideoDetailsViewGroup.DetailsStringProvider getDetailsStringProvider(final ShowDetails showDetails) {
-        return new ShowDetailsStringProvider((Context)this.getActivity(), showDetails);
+    protected VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final ShowDetails showDetails) {
+        return new ShowDetailsFrag$ShowDetailsStringProvider((Context)this.getActivity(), showDetails);
     }
     
     @Override
@@ -102,65 +100,5 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     protected void reloadData() {
         this.fetchShowData();
-    }
-    
-    private class FetchShowDetailsCallback extends LoggingManagerCallback
-    {
-        private final long requestId;
-        
-        public FetchShowDetailsCallback(final long requestId) {
-            super("ShowDetailsFrag");
-            this.requestId = requestId;
-        }
-        
-        @Override
-        public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
-            super.onShowDetailsFetched(showDetails, status);
-            if (this.requestId != ShowDetailsFrag.this.requestId || ShowDetailsFrag.this.isDestroyed()) {
-                Log.v("ShowDetailsFrag", "Ignoring stale callback");
-                return;
-            }
-            ShowDetailsFrag.this.isLoading = false;
-            if (status.isError()) {
-                Log.w("ShowDetailsFrag", "Invalid status code");
-                ShowDetailsFrag.this.showErrorView();
-                return;
-            }
-            if (showDetails == null) {
-                Log.v("ShowDetailsFrag", "No details in response");
-                ShowDetailsFrag.this.showErrorView();
-                return;
-            }
-            ShowDetailsFrag.this.showDetailsView(showDetails);
-        }
-    }
-    
-    public static class ShowDetailsStringProvider implements DetailsStringProvider
-    {
-        private final Context context;
-        private final ShowDetails details;
-        
-        public ShowDetailsStringProvider(final Context context, final ShowDetails details) {
-            this.context = context;
-            this.details = details;
-        }
-        
-        @Override
-        public CharSequence getBasicInfoString() {
-            return StringUtils.getBasicShowInfoString(this.context, this.details);
-        }
-        
-        @Override
-        public CharSequence getCreatorsText() {
-            if (StringUtils.isEmpty(this.details.getCreators())) {
-                return null;
-            }
-            return StringUtils.createBoldLabeledText(this.context, 2131493182, this.details.getCreators());
-        }
-        
-        @Override
-        public CharSequence getStarringText() {
-            return StringUtils.createBoldLabeledText(this.context, 2131493181, this.details.getActors());
-        }
     }
 }

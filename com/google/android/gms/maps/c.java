@@ -4,6 +4,7 @@
 
 package com.google.android.gms.maps;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -91,7 +92,7 @@ public class c implements Parcelable$Creator<StreetViewPanoramaOptions>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new StreetViewPanoramaOptions(g, streetViewPanoramaCamera, o, latLng, h, e5, e4, e3, e2, e);
     }

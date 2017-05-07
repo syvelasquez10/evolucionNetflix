@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import android.content.Context;
 
 @ez
-public final class fr extends fm.a
+public final class fr extends fm$a
 {
     private static final Object uf;
     private static fr ug;
@@ -32,15 +32,8 @@ public final class fr extends fm.a
         this.uj = uj;
     }
     
-    private static gw.a I(final String s) {
-        return new gw.a() {
-            @Override
-            public void a(final gv gv) {
-                final String format = String.format("javascript:%s(%s);", "AFMA_buildAdURL", s);
-                gs.V("About to execute: " + format);
-                gv.loadUrl(format);
-            }
-        };
+    private static gw$a I(final String s) {
+        return new fr$2(s);
     }
     
     private static fk a(final Context context, final bm bm, final ci ci, final fx fx, final fi fi) {
@@ -64,23 +57,7 @@ public final class fr extends fm.a
         if (a2 == null) {
             return new fk(0);
         }
-        gr.wC.post((Runnable)new Runnable() {
-            final /* synthetic */ gw.a um = I(a2);
-            
-            @Override
-            public void run() {
-                final gv a = gv.a(context, new ay(), false, false, null, fi.lD);
-                a.setWillNotDraw(true);
-                ft.b(a);
-                final gw dv = a.dv();
-                dv.a("/invalidRequest", ft.us);
-                dv.a("/loadAdURL", ft.ut);
-                dv.a("/log", bx.pG);
-                dv.a(this.um);
-                gs.S("Loading the JS library.");
-                a.loadUrl(bp);
-            }
-        });
+        gr.wC.post((Runnable)new fr$1(context, fi, ft, I(a2), bp));
         fv fv;
         try {
             fv = ft.cL().get(10L, TimeUnit.SECONDS);

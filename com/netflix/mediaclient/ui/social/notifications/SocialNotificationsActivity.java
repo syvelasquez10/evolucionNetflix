@@ -4,15 +4,13 @@
 
 package com.netflix.mediaclient.ui.social.notifications;
 
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.app.Fragment;
-import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.Intent;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
@@ -36,21 +34,7 @@ public class SocialNotificationsActivity extends FragmentHostActivity
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                Log.d(SocialNotificationsActivity.TAG, "Manager is here!");
-                ((ManagerStatusListener)SocialNotificationsActivity.this.getPrimaryFrag()).onManagerReady(serviceManager, status);
-                SocialNotificationsActivity.this.mManagerIsReady = true;
-                NflxProtocolUtils.reportUserOpenedNotification(serviceManager, SocialNotificationsActivity.this.getIntent());
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-                Log.d(SocialNotificationsActivity.TAG, "Manager isn't available!");
-                ((ManagerStatusListener)SocialNotificationsActivity.this.getPrimaryFrag()).onManagerUnavailable(serviceManager, status);
-            }
-        };
+        return new SocialNotificationsActivity$1(this);
     }
     
     @Override
@@ -60,12 +44,12 @@ public class SocialNotificationsActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903094;
+        return 2130903095;
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.socialNotifications;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.socialNotifications;
     }
     
     @Override
@@ -78,11 +62,12 @@ public class SocialNotificationsActivity extends FragmentHostActivity
         super.onCreate(bundle);
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getResources().getString(2131493405));
-            netflixActionBar.setLogoType(NetflixActionBar.LogoType.GONE);
+            netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
+            netflixActionBar.setTitle(this.getResources().getString(2131493348));
         }
     }
     
+    @Override
     protected void onNewIntent(final Intent intent) {
         Log.d(SocialNotificationsActivity.TAG, "onNewIntent: ", intent);
         super.onNewIntent(intent);

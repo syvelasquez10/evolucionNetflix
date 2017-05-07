@@ -4,9 +4,6 @@
 
 package com.google.android.gms.analytics;
 
-import android.app.Activity;
-import com.google.android.gms.internal.jw;
-import com.google.android.gms.internal.ju;
 import com.google.android.gms.common.internal.n;
 import java.util.Locale;
 import android.text.TextUtils;
@@ -23,7 +20,7 @@ public class Tracker
     private final ad Bp;
     private final g Bq;
     private boolean Br;
-    private a Bs;
+    private Tracker$a Bs;
     private ai Bt;
     private ExceptionReporter Bu;
     private Context mContext;
@@ -48,7 +45,7 @@ public class Tracker
         this.Bq = bq;
         this.qM.put("&a", Integer.toString(new Random().nextInt(Integer.MAX_VALUE) + 1));
         this.Bn = bn;
-        this.Bs = new a();
+        this.Bs = new Tracker$a(this);
         this.enableAdvertisingIdCollection(false);
     }
     
@@ -130,7 +127,7 @@ public class Tracker
     }
     
     public String get(final String s) {
-        t.eq().a(t.a.zo);
+        t.eq().a(t$a.zo);
         if (!TextUtils.isEmpty((CharSequence)s)) {
             if (this.qM.containsKey(s)) {
                 return this.qM.get(s);
@@ -152,7 +149,7 @@ public class Tracker
     }
     
     public void send(final Map<String, String> map) {
-        t.eq().a(t.a.zq);
+        t.eq().a(t$a.zq);
         final HashMap<Object, Object> hashMap = new HashMap<Object, Object>();
         hashMap.putAll(this.qM);
         if (map != null) {
@@ -186,7 +183,7 @@ public class Tracker
     
     public void set(final String s, final String s2) {
         n.b(s, (Object)"Key should be non-null");
-        t.eq().a(t.a.zp);
+        t.eq().a(t$a.zp);
         this.qM.put(s, s2);
     }
     
@@ -272,99 +269,5 @@ public class Tracker
     
     public void setViewportSize(final String s) {
         this.set("&vp", s);
-    }
-    
-    private class a implements GoogleAnalytics.a
-    {
-        private boolean Bv;
-        private int Bw;
-        private long Bx;
-        private boolean By;
-        private long Bz;
-        private ju yD;
-        
-        public a() {
-            this.Bv = false;
-            this.Bw = 0;
-            this.Bx = -1L;
-            this.By = false;
-            this.yD = jw.hA();
-        }
-        
-        private void eX() {
-            final GoogleAnalytics ee = GoogleAnalytics.eE();
-            if (ee == null) {
-                z.T("GoogleAnalytics isn't initialized for the Tracker!");
-                return;
-            }
-            if (this.Bx >= 0L || this.Bv) {
-                ee.a((GoogleAnalytics.a)Tracker.this.Bs);
-                return;
-            }
-            ee.b((GoogleAnalytics.a)Tracker.this.Bs);
-        }
-        
-        public long eU() {
-            return this.Bx;
-        }
-        
-        public boolean eV() {
-            return this.Bv;
-        }
-        
-        public boolean eW() {
-            final boolean by = this.By;
-            this.By = false;
-            return by;
-        }
-        
-        boolean eY() {
-            return this.yD.elapsedRealtime() >= this.Bz + Math.max(1000L, this.Bx);
-        }
-        
-        public void enableAutoActivityTracking(final boolean bv) {
-            this.Bv = bv;
-            this.eX();
-        }
-        
-        @Override
-        public void i(final Activity activity) {
-            t.eq().a(t.a.An);
-            if (this.Bw == 0 && this.eY()) {
-                this.By = true;
-            }
-            ++this.Bw;
-            if (this.Bv) {
-                final HashMap<String, String> hashMap = new HashMap<String, String>();
-                hashMap.put("&t", "screenview");
-                t.eq().B(true);
-                final Tracker ba = Tracker.this;
-                String s;
-                if (Tracker.this.Bt != null) {
-                    s = Tracker.this.Bt.k(activity);
-                }
-                else {
-                    s = activity.getClass().getCanonicalName();
-                }
-                ba.set("&cd", s);
-                Tracker.this.send(hashMap);
-                t.eq().B(false);
-            }
-        }
-        
-        @Override
-        public void j(final Activity activity) {
-            t.eq().a(t.a.Ao);
-            --this.Bw;
-            this.Bw = Math.max(0, this.Bw);
-            if (this.Bw == 0) {
-                this.Bz = this.yD.elapsedRealtime();
-            }
-        }
-        
-        public void setSessionTimeout(final long bx) {
-            this.Bx = bx;
-            this.eX();
-        }
     }
 }

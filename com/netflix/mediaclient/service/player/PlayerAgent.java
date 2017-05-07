@@ -4,10 +4,9 @@
 
 package com.netflix.mediaclient.service.player;
 
-import com.netflix.mediaclient.event.nrdp.media.UpdatePts;
-import com.netflix.mediaclient.event.UIEvent;
 import android.view.SurfaceHolder;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.media.AudioSource;
@@ -16,17 +15,25 @@ import java.util.concurrent.Executors;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.support.v4.content.LocalBroadcastManager;
+import android.content.Intent;
 import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.service.player.subtitles.TextStyle;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
+import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import android.net.NetworkInfo;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.BufferRange;
@@ -37,15 +44,8 @@ import com.netflix.mediaclient.event.nrdp.media.ShowSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.RemoveSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.Buffering;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
-import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.user.SimpleUserAgentWebCallback;
-import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.javabridge.invoke.media.Open;
-import com.netflix.mediaclient.Log;
-import java.util.TimerTask;
+import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.content.BroadcastReceiver;
 import android.os.PowerManager$WakeLock;
@@ -58,16 +58,16 @@ import java.util.concurrent.ExecutorService;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
-import com.netflix.mediaclient.media.JPlayer.JPlayer;
+import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
 import com.netflix.mediaclient.media.MediaPlayerHelper;
 import com.netflix.mediaclient.media.BifManager;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
-import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.servicemgr.IPlayer;
+import com.netflix.mediaclient.service.configuration.ConfigurationAgent$ConfigAgentListener;
 import com.netflix.mediaclient.service.ServiceAgent;
 
-public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentListener
+public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$ConfigAgentListener, IPlayer
 {
     private static final int BANDWITH_CHECK_INTERVAL = 30000;
     private static final int DELAY_SEEKCOMPLETE_MS = 300;
@@ -97,15 +97,15 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private BifManager mBifManager;
     private long mBookmark;
     private boolean mBufferingCompleted;
-    private CloseTimeoutTask mCloseTimeoutTask;
+    private PlayerAgent$CloseTimeoutTask mCloseTimeoutTask;
     private boolean mForcedRebuffer;
     private int mFuzz;
     private MediaPlayerHelper mHelper;
     private boolean mInPlayback;
-    private volatile JPlayer.JplayerListener mJPlayerListener;
+    private volatile JPlayer$JplayerListener mJPlayerListener;
     private long mLastBandwidthCheck;
     private IMedia mMedia;
-    private GenericMediaEventListener mMediaEventListener;
+    private PlayerAgent$GenericMediaEventListener mMediaEventListener;
     private long mMovieId;
     private final int mNetworkProfile;
     private Nrdp mNrdp;
@@ -116,7 +116,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private PlayerType mPlayerType;
     private int mRelativeSeekPosition;
     private boolean mScreenOnWhilePlaying;
-    private StartPlayTimeoutTask mStartPlayTimeoutTask;
+    private PlayerAgent$StartPlayTimeoutTask mStartPlayTimeoutTask;
     private volatile int mState;
     private boolean mStayAwake;
     private SubtitleConfiguration mSubtitleConfiguration;
@@ -165,194 +165,13 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         this.toOpenAfterClose = false;
         this.toCancelOpen = false;
         this.mAudioBitrateRange = new AudioBitrateRange(0, 64);
-        this.onOpenRunnable = new Runnable() {
-            @Override
-            public void run() {
-            Label_0494_Outer:
-                while (true) {
-                    Label_0584: {
-                        while (true) {
-                        Label_0559:
-                            while (true) {
-                                synchronized (PlayerAgent.this) {
-                                    PlayerAgent.this.mMedia.reset();
-                                    PlayerAgent.this.prevEndPosition = -1;
-                                    PlayerAgent.this.validPtsRecieved = false;
-                                    PlayerAgent.this.mInPlayback = false;
-                                    PlayerAgent.this.inPlaybackSession = false;
-                                    PlayerAgent.this.splashScreenRemoved = false;
-                                    PlayerAgent.this.preparedCompleted = false;
-                                    PlayerAgent.this.seekedToPosition = (int)(Object)Long.valueOf(PlayerAgent.this.mBookmark);
-                                    PlayerAgent.this.mBufferingCompleted = false;
-                                    PlayerAgent.this.pendingError = null;
-                                    if (PlayerAgent.this.mTimer != null) {
-                                        PlayerAgent.this.mStartPlayTimeoutTask = new StartPlayTimeoutTask();
-                                        PlayerAgent.this.mTimer.schedule(PlayerAgent.this.mStartPlayTimeoutTask, 30000L);
-                                    }
-                                    if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                                        Log.d(PlayerAgent.TAG, "Player state is " + PlayerAgent.this.mState);
-                                    }
-                                    if (PlayerAgent.this.mState != 4 && PlayerAgent.this.mState != -1) {
-                                        break Label_0584;
-                                    }
-                                    Log.d(PlayerAgent.TAG, "Player state was CLOSED or CREATED, cancel timeout task!");
-                                    PlayerAgent.this.mState = 5;
-                                    if (PlayerAgent.this.mStartPlayTimeoutTask != null) {
-                                        final boolean cancel = PlayerAgent.this.mStartPlayTimeoutTask.cancel();
-                                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                                            Log.d(PlayerAgent.TAG, "Task was canceled " + cancel);
-                                        }
-                                    }
-                                    else {
-                                        Log.w(PlayerAgent.TAG, "Timer task was null!!!");
-                                    }
-                                    if (PlayerAgent.this.mTimer != null) {
-                                        final int purge = PlayerAgent.this.mTimer.purge();
-                                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                                            Log.d(PlayerAgent.TAG, "Canceled tasks: " + purge);
-                                        }
-                                        PlayerAgent.this.reloadPlayer();
-                                        PlayerAgent.this.mMedia.setStreamingQoe(PlayerAgent.this.getConfigurationAgent().getStreamingQoe());
-                                        PlayerAgent.this.mMedia.open(PlayerAgent.this.mMovieId, PlayerAgent.this.mPlayContext, PlayerAgent.this.getCurrentNetType());
-                                        PlayerAgent.this.toOpenAfterClose = false;
-                                        final String value = PlayerAgent.this.getConfigurationAgent().getDeviceCategory().getValue();
-                                        if (Open.NetType.wifi.equals(PlayerAgent.this.getCurrentNetType())) {
-                                            Log.i(PlayerAgent.TAG, "Setting WifiApInfo");
-                                            PlayerAgent.this.mMedia.setWifiApsInfo(PlayerAgent.this.getContext(), value, true);
-                                            PlayerAgent.this.sessionInitRxBytes = ConnectivityUtils.getApplicationRx();
-                                            PlayerAgent.this.sessionInitTxBytes = ConnectivityUtils.getApplicationTx();
-                                            PlayerAgent.this.ptsTicker = -1;
-                                            return;
-                                        }
-                                        break Label_0559;
-                                    }
-                                }
-                                Log.w(PlayerAgent.TAG, "Timer was null!!!");
-                                continue Label_0494_Outer;
-                            }
-                            final String s;
-                            PlayerAgent.this.mMedia.setWifiApsInfo(PlayerAgent.this.getContext(), s, false);
-                            continue;
-                        }
-                    }
-                    PlayerAgent.this.toOpenAfterClose = true;
-                    Log.d(PlayerAgent.TAG, "invokeMethod(open) has to wait...");
-                }
-            }
-        };
-        this.onPlayRunnable = new Runnable() {
-            @Override
-            public void run() {
-                synchronized (PlayerAgent.this) {
-                    if (PlayerAgent.this.mState != 3) {
-                        PlayerAgent.this.toPlayAfterStop = true;
-                    }
-                    else {
-                        PlayerAgent.this.playWithBookmarkCheck();
-                    }
-                }
-            }
-        };
-        this.onSeekRunnable = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    while (true) {
-                        int n;
-                        synchronized (PlayerAgent.this) {
-                            PlayerAgent.this.prevEndPosition = PlayerAgent.this.getCurrentPositionMs();
-                            PlayerAgent.this.validPtsRecieved = false;
-                            PlayerAgent.this.seeking = true;
-                            PlayerAgent.this.mInPlayback = false;
-                            final int duration = PlayerAgent.this.getDuration();
-                            final int access$800 = PlayerAgent.this.seekedToPosition;
-                            if (PlayerAgent.this.seekedToPosition + 10000 >= duration && duration > 0) {
-                                Log.d(PlayerAgent.TAG, "seek to close to EOS, defaulting to 10 seconss before EOS.");
-                                n = duration - 10000;
-                            }
-                            else {
-                                n = access$800;
-                                if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                                    Log.d(PlayerAgent.TAG, "seek to position " + PlayerAgent.this.seekedToPosition + ", duration " + duration);
-                                    n = access$800;
-                                }
-                            }
-                            if (PlayerAgent.this.mFuzz != 0) {
-                                PlayerAgent.this.mMedia.swim(PlayerAgent.this.mRelativeSeekPosition, false, PlayerAgent.this.mFuzz, true);
-                                PlayerAgent.this.seekedToPosition = n;
-                                PlayerAgent.this.mBufferingCompleted = false;
-                                return;
-                            }
-                        }
-                        PlayerAgent.this.mMedia.seekTo(n, PlayerAgent.this.mForcedRebuffer);
-                        continue;
-                    }
-                }
-            }
-        };
-        this.onCloseRunnable = new Runnable() {
-            @Override
-            public void run() {
-                synchronized (PlayerAgent.this) {
-                    if (PlayerAgent.this.mStartPlayTimeoutTask != null) {
-                        PlayerAgent.this.mStartPlayTimeoutTask.cancel();
-                    }
-                    if (PlayerAgent.this.mTimer != null) {
-                        PlayerAgent.this.mTimer.purge();
-                    }
-                    PlayerAgent.this.toOpenAfterClose = false;
-                    if (PlayerAgent.this.mState == 5 || PlayerAgent.this.mState == 0 || PlayerAgent.this.mState == 3) {
-                        PlayerAgent.this.toCancelOpen = true;
-                    }
-                    if (PlayerAgent.this.mState == 4 || PlayerAgent.this.mState == 8) {
-                        Log.d(PlayerAgent.TAG, "close() pending or already closed");
-                        return;
-                    }
-                    PlayerAgent.this.close2();
-                    // monitorexit(this.this$0)
-                    if (PlayerAgent.this.mTimer != null) {
-                        PlayerAgent.this.mCloseTimeoutTask = new CloseTimeoutTask();
-                        PlayerAgent.this.mTimer.schedule(PlayerAgent.this.mCloseTimeoutTask, 10000L);
-                    }
-                }
-            }
-        };
-        this.webClientCallback = new SimpleUserAgentWebCallback() {
-            @Override
-            public void onDummyWebCallDone(final Status status) {
-                PlayerAgent.this.ignoreErrorsWhileActionId12IsProcessed = false;
-                final StatusCode statusCode = status.getStatusCode();
-                if (status.isSucces()) {
-                    if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                        Log.d(PlayerAgent.TAG, "Dummy webcall completed with statusCode=" + statusCode);
-                    }
-                    final NccpError access$5100 = PlayerAgent.this.mActionId12Error;
-                    PlayerAgent.this.mActionId12Error = null;
-                    PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerRestartPlaybackHandler(), access$5100);
-                    return;
-                }
-                if (Log.isLoggable(PlayerAgent.TAG, 6)) {
-                    Log.e(PlayerAgent.TAG, "Dummy webcall completed  failed (skipping user info update) with statusCode=" + statusCode);
-                }
-                PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerOnNccpErrorHandler(), PlayerAgent.this.mActionId12Error);
-            }
-        };
+        this.onOpenRunnable = new PlayerAgent$1(this);
+        this.onPlayRunnable = new PlayerAgent$2(this);
+        this.onSeekRunnable = new PlayerAgent$3(this);
+        this.onCloseRunnable = new PlayerAgent$4(this);
+        this.webClientCallback = new PlayerAgent$6(this);
         this.muted = false;
-        this.playerChangesReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                if (Log.isLoggable(PlayerAgent.TAG, 2)) {
-                    Log.v(PlayerAgent.TAG, "Received intent " + intent);
-                }
-                final String action = intent.getAction();
-                if ("com.netflix.mediaclient.intent.action.PLAYER_SUBTITLE_CONFIG_CHANGED".equals(action)) {
-                    Log.d(PlayerAgent.TAG, "subtitle configuration is changed");
-                    PlayerAgent.this.updateSubtitleSettingsFromQaLocalOverride(intent.getIntExtra("lookupType", -1));
-                }
-                else if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                    Log.d(PlayerAgent.TAG, "We do not support action " + action);
-                }
-            }
-        };
+        this.playerChangesReceiver = new PlayerAgent$7(this);
     }
     
     private void clearBifs() {
@@ -380,7 +199,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private SubtitleConfiguration findSubtitleConfiguration() {
         SubtitleConfiguration subtitleConfiguration = null;
-        final ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
+        final ServiceAgent$ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
         if (configurationAgent != null) {
             subtitleConfiguration = configurationAgent.getSubtitleConfiguration();
         }
@@ -391,20 +210,20 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         return default1;
     }
     
-    private Open.NetType getCurrentNetType() {
+    private Open$NetType getCurrentNetType() {
         final NetworkInfo activeNetworkInfo = ConnectivityUtils.getActiveNetworkInfo(this.getContext());
         if (activeNetworkInfo == null) {
             return null;
         }
         switch (activeNetworkInfo.getType()) {
             default: {
-                return Open.NetType.mobile;
+                return Open$NetType.mobile;
             }
             case 9: {
-                return Open.NetType.wired;
+                return Open$NetType.wired;
             }
             case 1: {
-                return Open.NetType.wifi;
+                return Open$NetType.wifi;
             }
         }
     }
@@ -490,19 +309,19 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void handleGenericMediaEvent(final GenericMediaEvent genericMediaEvent) {
         final String type = genericMediaEvent.getType();
-        if (IMedia.MediaEventEnum.media_openComplete.getName().equalsIgnoreCase(type)) {
+        if (IMedia$MediaEventEnum.media_openComplete.getName().equalsIgnoreCase(type)) {
             this.handlePrepare();
         }
         else {
-            if (IMedia.MediaEventEnum.media_endOfStream.getName().equalsIgnoreCase(type)) {
+            if (IMedia$MediaEventEnum.media_endOfStream.getName().equalsIgnoreCase(type)) {
                 this.handleEndOfPlayback();
                 return;
             }
-            if (IMedia.MediaEventEnum.media_bufferingComplete.getName().equalsIgnoreCase(type)) {
+            if (IMedia$MediaEventEnum.media_bufferingComplete.getName().equalsIgnoreCase(type)) {
                 this.handleBufferingComplete();
                 return;
             }
-            if (IMedia.MediaEventEnum.media_underflow.getName().equalsIgnoreCase(type)) {
+            if (IMedia$MediaEventEnum.media_underflow.getName().equalsIgnoreCase(type)) {
                 this.handleUnderflow();
                 return;
             }
@@ -543,32 +362,22 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         }
     }
     
-    private void handlePlayerListener(final PlayerListenerManager.PlayerListenerHandler playerListenerHandler, final Object... array) {
+    private void handlePlayerListener(final PlayerListenerManager$PlayerListenerHandler playerListenerManager$PlayerListenerHandler, final Object... array) {
         synchronized (this.mPlayerListenerManager) {
-            for (final PlayerListener playerListener : this.mPlayerListenerManager.getListeners()) {
-                if (playerListener != null && playerListener.isListening()) {
-                    this.getMainHandler().post((Runnable)new Runnable() {
-                        @Override
-                        public void run() {
-                            playerListenerHandler.handle(playerListener, array);
-                        }
-                    });
+            for (final IPlayer$PlayerListener player$PlayerListener : this.mPlayerListenerManager.getListeners()) {
+                if (player$PlayerListener != null && player$PlayerListener.isListening()) {
+                    this.getMainHandler().post((Runnable)new PlayerAgent$8(this, playerListenerManager$PlayerListenerHandler, player$PlayerListener, array));
                 }
             }
         }
     }
     // monitorexit(playerListenerManager)
     
-    private void handlePlayerListenerWithDelay(final PlayerListenerManager.PlayerListenerHandler playerListenerHandler, final long n, final Object... array) {
+    private void handlePlayerListenerWithDelay(final PlayerListenerManager$PlayerListenerHandler playerListenerManager$PlayerListenerHandler, final long n, final Object... array) {
         synchronized (this.mPlayerListenerManager) {
-            for (final PlayerListener playerListener : this.mPlayerListenerManager.getListeners()) {
-                if (playerListener != null && playerListener.isListening()) {
-                    this.getMainHandler().postDelayed((Runnable)new Runnable() {
-                        @Override
-                        public void run() {
-                            playerListenerHandler.handle(playerListener, array);
-                        }
-                    }, n);
+            for (final IPlayer$PlayerListener player$PlayerListener : this.mPlayerListenerManager.getListeners()) {
+                if (player$PlayerListener != null && player$PlayerListener.isListening()) {
+                    this.getMainHandler().postDelayed((Runnable)new PlayerAgent$9(this, playerListenerManager$PlayerListenerHandler, player$PlayerListener, array), n);
                 }
             }
         }
@@ -673,47 +482,14 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void handleSubtitleData(final SubtitleData subtitleData) {
         Log.d(PlayerAgent.TAG, "MEDIA_SUBTITLE_DATA 100");
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(PlayerAgent.TAG, "Subtitles metadata update started.");
-                final TextStyle userSubtitlePreferences = PlayerAgent.this.getUserAgent().getUserSubtitlePreferences();
-                final TextStyle subtitleDefaults = PlayerAgent.this.getUserAgent().getSubtitleDefaults();
-                while (true) {
-                    try {
-                        while (true) {
-                            final SubtitleParser subtitleParser = new SubtitleParser(PlayerAgent.this.mMedia.getDisplayAspectRatio(), userSubtitlePreferences, subtitleDefaults);
-                            while (true) {
-                                try {
-                                    synchronized (PlayerAgent.this) {
-                                        PlayerAgent.this.mSubtitles = subtitleParser;
-                                        // monitorexit(this.this$0)
-                                        subtitleParser.parse(subtitleData);
-                                        Log.d(PlayerAgent.TAG, "Subtitles metadata updated.");
-                                        return;
-                                    }
-                                }
-                                catch (Throwable t) {}
-                                Log.e(PlayerAgent.TAG, "We failed to parse subtitle metadata", (Throwable)userSubtitlePreferences);
-                                PlayerAgent.this.getService().getClientLogging().getErrorLogging().logHandledException(new RuntimeException("We failed to parse subtitle metadata", (Throwable)userSubtitlePreferences));
-                                continue;
-                            }
-                        }
-                    }
-                    catch (Throwable userSubtitlePreferences) {
-                        continue;
-                    }
-                    break;
-                }
-            }
-        });
+        new BackgroundTask().execute(new PlayerAgent$5(this, subtitleData));
     }
     
     private void handleSubtitleUpdate(final int n) {
         while (true) {
             Label_0108: {
                 synchronized (this) {
-                    if (IMedia.SubtitleOutputMode.EVENTS.equals(this.mSubtitleConfiguration.getMode())) {
+                    if (IMedia$SubtitleOutputMode.EVENTS.equals(this.mSubtitleConfiguration.getMode())) {
                         Log.d(PlayerAgent.TAG, "Subtitle output mode Events, do nothing");
                     }
                     else {
@@ -774,7 +550,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         if (this.isPlaying()) {
             final int ptsTicker = this.ptsTicker + 1;
             this.ptsTicker = ptsTicker;
-            if (ptsTicker % 60 == 0 && Open.NetType.wifi.equals(this.getCurrentNetType())) {
+            if (ptsTicker % 60 == 0 && Open$NetType.wifi.equals(this.getCurrentNetType())) {
                 this.mMedia.setWifiLinkSpeed(this.getContext());
                 this.ptsTicker = 0;
             }
@@ -899,7 +675,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             }
             this.reloadPlayer();
             this.clearBifs();
-            this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe());
+            this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe(), this.getConfigurationAgent().enableHTTPSAuth());
             this.mMedia.open(this.mMovieId, this.mPlayContext, this.getCurrentNetType());
             return;
         }
@@ -970,8 +746,8 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     @Override
-    public void addPlayerListener(final PlayerListener playerListener) {
-        this.mPlayerListenerManager.addPlayerListener(playerListener);
+    public void addPlayerListener(final IPlayer$PlayerListener player$PlayerListener) {
+        this.mPlayerListenerManager.addPlayerListener(player$PlayerListener);
     }
     
     @Override
@@ -1037,14 +813,14 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             return;
         }
         this.mMedia = this.mNrdp.getMedia();
-        this.mMediaEventListener = new GenericMediaEventListener();
-        final IMedia.MediaEventEnum[] values = IMedia.MediaEventEnum.values();
+        this.mMediaEventListener = new PlayerAgent$GenericMediaEventListener(this, null);
+        final IMedia$MediaEventEnum[] values = IMedia$MediaEventEnum.values();
         for (int length = values.length, i = 0; i < length; ++i) {
-            final IMedia.MediaEventEnum mediaEventEnum = values[i];
+            final IMedia$MediaEventEnum media$MediaEventEnum = values[i];
             if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                Log.d(PlayerAgent.TAG, "Registering as listener for " + mediaEventEnum.getName());
+                Log.d(PlayerAgent.TAG, "Registering as listener for " + media$MediaEventEnum.getName());
             }
-            this.mMedia.addEventListener(mediaEventEnum.getName(), this.mMediaEventListener);
+            this.mMedia.addEventListener(media$MediaEventEnum.getName(), this.mMediaEventListener);
         }
         this.mPlayerType = PlayerTypeFactory.getCurrentType(this.getContext());
         this.mState = -1;
@@ -1060,7 +836,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         Log.d(PlayerAgent.TAG, "MP: Set audio bitrange to 64 Kbps");
         this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
         this.mMedia.setVideoResolutionRange(this.getConfigurationAgent().getVideoResolutionRange());
-        this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe());
+        this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe(), this.getConfigurationAgent().enableHTTPSAuth());
         this.mMedia.setThrotteled(false);
         this.mMedia.setNetworkProfile(2);
         Log.d(PlayerAgent.TAG, "MP: Set to Mobile network Profile");
@@ -1147,7 +923,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     @Override
-    public IMedia.SubtitleProfile getSubtitleProfileFromMetadata() {
+    public IMedia$SubtitleProfile getSubtitleProfileFromMetadata() {
         final SubtitleParser mSubtitles = this.mSubtitles;
         if (mSubtitles != null) {
             return mSubtitles.getSubtitleProfile();
@@ -1391,8 +1167,8 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     @Override
-    public void removePlayerListener(final PlayerListener playerListener) {
-        this.mPlayerListenerManager.removePlayerListener(playerListener);
+    public void removePlayerListener(final IPlayer$PlayerListener player$PlayerListener) {
+        this.mPlayerListenerManager.removePlayerListener(player$PlayerListener);
     }
     
     @Override
@@ -1436,7 +1212,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     @Override
-    public void setJPlayerListener(final JPlayer.JplayerListener mjPlayerListener) {
+    public void setJPlayerListener(final JPlayer$JplayerListener mjPlayerListener) {
         this.mJPlayerListener = mjPlayerListener;
     }
     
@@ -1486,92 +1262,5 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     public void unpause() {
         this.mMedia.unpause();
         this.reportPlaybackUnpaused();
-    }
-    
-    private class CloseTimeoutTask extends TimerTask
-    {
-        CloseTimeoutTask() {
-            Log.d(PlayerAgent.TAG, "CloseTimeoutTask created!");
-        }
-        
-        @Override
-        public void run() {
-            Log.d(PlayerAgent.TAG, "CloseTimeoutTask to unmute audio!");
-            PlayerAgent.this.muteAudio(false);
-        }
-    }
-    
-    private class GenericMediaEventListener implements EventListener
-    {
-        @Override
-        public void received(final UIEvent uiEvent) {
-            Log.d(PlayerAgent.TAG, "Received a media event ");
-            if (uiEvent instanceof GenericMediaEvent) {
-                PlayerAgent.this.handleGenericMediaEvent((GenericMediaEvent)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof NccpError) {
-                PlayerAgent.this.handleError((NccpError)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof GenericMediaEvent) {
-                PlayerAgent.this.handleGenericMediaEvent((GenericMediaEvent)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof Buffering) {
-                PlayerAgent.this.handleBufferring((Buffering)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof RemoveSubtitle) {
-                PlayerAgent.this.handleRemoveSubtitle((RemoveSubtitle)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof ShowSubtitle) {
-                PlayerAgent.this.handleShowSubtitle((ShowSubtitle)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof SubtitleData) {
-                PlayerAgent.this.handleSubtitleData((SubtitleData)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof AudioTrackChanged) {
-                PlayerAgent.this.handleAudioTrackChanged((AudioTrackChanged)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof Statechanged) {
-                PlayerAgent.this.handleStatechanged((Statechanged)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof BufferRange) {
-                PlayerAgent.this.handleBufferRange((BufferRange)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof UpdatePts) {
-                PlayerAgent.this.handleUpdatePts(((UpdatePts)uiEvent).getPts());
-                return;
-            }
-            if (uiEvent instanceof Error) {
-                PlayerAgent.this.handleMediaError((Error)uiEvent);
-                return;
-            }
-            if (uiEvent instanceof Warning) {
-                PlayerAgent.this.handleMediaWarning((Warning)uiEvent);
-                return;
-            }
-            Log.e(PlayerAgent.TAG, "Uknown event: " + uiEvent.getType());
-        }
-    }
-    
-    private class StartPlayTimeoutTask extends TimerTask
-    {
-        StartPlayTimeoutTask() {
-            Log.d(PlayerAgent.TAG, "StartPlayTimeoutTask created!");
-        }
-        
-        @Override
-        public void run() {
-            Log.d(PlayerAgent.TAG, "StartPlayTimeoutTask to handleFatalError()!");
-            PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerOnNrdFatalErrorHandler(), new Object[0]);
-        }
     }
 }

@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.logging.client.volley;
 
 import com.netflix.mediaclient.Log;
-import com.android.volley.VolleyError;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 
@@ -38,7 +37,7 @@ public class LoggingEventsRequest extends ClientLoggingVolleyWebClientRequest<St
     }
     
     @Override
-    protected String parseResponse(final String s) throws VolleyError {
+    protected String parseResponse(final String s) {
         if (Log.isLoggable("nf_log", 2)) {
             Log.v("nf_log", "String response to parse = " + s);
         }

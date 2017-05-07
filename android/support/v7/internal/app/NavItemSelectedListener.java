@@ -5,14 +5,15 @@
 package android.support.v7.internal.app;
 
 import android.view.View;
-import android.support.v7.app.ActionBar;
 import android.support.v7.internal.widget.AdapterViewCompat;
+import android.support.v7.app.ActionBar$OnNavigationListener;
+import android.support.v7.internal.widget.AdapterViewCompat$OnItemSelectedListener;
 
-class NavItemSelectedListener implements OnItemSelectedListener
+class NavItemSelectedListener implements AdapterViewCompat$OnItemSelectedListener
 {
-    private final ActionBar.OnNavigationListener mListener;
+    private final ActionBar$OnNavigationListener mListener;
     
-    public NavItemSelectedListener(final ActionBar.OnNavigationListener mListener) {
+    public NavItemSelectedListener(final ActionBar$OnNavigationListener mListener) {
         this.mListener = mListener;
     }
     

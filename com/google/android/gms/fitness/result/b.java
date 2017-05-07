@@ -4,6 +4,7 @@
 
 package com.google.android.gms.fitness.result;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.common.api.Status;
@@ -77,7 +78,7 @@ public class b implements Parcelable$Creator<DataReadResult>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new DataReadResult(g2, list, status, list2, g, c3, c);
     }

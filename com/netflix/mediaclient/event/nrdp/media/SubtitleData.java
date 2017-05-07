@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SubtitleData extends BaseMediaEvent
@@ -14,7 +13,7 @@ public class SubtitleData extends BaseMediaEvent
     public static final String TYPE = "subtitledata";
     private String mXml;
     
-    public SubtitleData(final JSONObject jsonObject) throws JSONException {
+    public SubtitleData(final JSONObject jsonObject) {
         super("subtitledata", jsonObject);
     }
     
@@ -23,7 +22,7 @@ public class SubtitleData extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.mXml = BaseNccpEvent.getString(jsonObject, "data", null);
     }
 }

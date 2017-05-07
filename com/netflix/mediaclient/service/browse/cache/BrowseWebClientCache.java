@@ -12,7 +12,7 @@ import com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
@@ -37,6 +37,7 @@ public class BrowseWebClientCache
     private static final int MAX_NUM_EPISODES_ITEMS;
     private static final int MAX_NUM_SEASONS_ITEMS;
     private static final int MAX_NUM_SOFTCACHE_ITEMS;
+    public static final String POSTCARD_KEY = "postcard";
     public static final String SEPERATOR = "_";
     public static final String SOCIAL_NOTIFICATIONS_LIST_KEY = "socialNotificationsList";
     private static final String TAG = "nf_browse_cache";
@@ -117,12 +118,12 @@ public class BrowseWebClientCache
         return browseWebClientCache.getFromCaches(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_IQ_VIDEOS, "queue", String.valueOf(n), String.valueOf(n2)));
     }
     
-    private Video.InQueue getInQueueData(final String s) {
+    private Video$InQueue getInQueueData(final String s) {
         final String buildBrowseCacheKey = buildBrowseCacheKey("inQueue", s);
         if (Log.isLoggable("nf_browse_cache", 4)) {
             Log.i("nf_browse_cache", "getInQueueData " + s + "; inQueue: " + this.getHardCache().get(buildBrowseCacheKey));
         }
-        return (Video.InQueue)this.getHardCache().get(buildBrowseCacheKey);
+        return (Video$InQueue)this.getHardCache().get(buildBrowseCacheKey);
     }
     
     public static Object getLoMoListFromBrowseCache(final int n, final int n2, final BrowseWebClientCache browseWebClientCache) {
@@ -145,18 +146,18 @@ public class BrowseWebClientCache
         this.getHardCache().put("iq_lomo_index", s);
     }
     
-    private void putInQueueData(String buildBrowseCacheKey, final Video.InQueue inQueue) {
+    private void putInQueueData(String buildBrowseCacheKey, final Video$InQueue video$InQueue) {
         buildBrowseCacheKey = buildBrowseCacheKey("inQueue", buildBrowseCacheKey);
         if (Log.isLoggable("nf_browse_cache", 4)) {
-            Log.i("nf_browse_cache", "putInQueueData " + buildBrowseCacheKey + "; inQueue: " + inQueue);
+            Log.i("nf_browse_cache", "putInQueueData " + buildBrowseCacheKey + "; inQueue: " + video$InQueue);
         }
-        this.getHardCache().put(buildBrowseCacheKey, inQueue);
+        this.getHardCache().put(buildBrowseCacheKey, video$InQueue);
     }
     
     private void putInQueueValue(final String s, final boolean inQueue) {
-        final Video.InQueue inQueue2 = new Video.InQueue();
-        inQueue2.inQueue = inQueue;
-        this.putInQueueData(s, inQueue2);
+        final Video$InQueue video$InQueue = new Video$InQueue();
+        video$InQueue.inQueue = inQueue;
+        this.putInQueueData(s, video$InQueue);
     }
     
     public boolean areIqIdsInCache() {
@@ -390,38 +391,38 @@ public class BrowseWebClientCache
         this.putInHardCache(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_VIDEOS, s, String.valueOf(n), String.valueOf(n2)), o);
     }
     
-    public Video.InQueue updateInQueueCacheRecord(final String s, Video.InQueue inQueue) {
+    public Video$InQueue updateInQueueCacheRecord(final String s, Video$InQueue video$InQueue) {
         // monitorenter(this)
         Label_0021: {
-            if (inQueue != null) {
+            if (video$InQueue != null) {
                 break Label_0021;
             }
             while (true) {
-                Video.InQueue inQueueData;
+                Video$InQueue inQueueData;
                 try {
                     Log.w("nf_browse_cache", "In queue is null!");
-                    inQueue = null;
-                    return inQueue;
+                    video$InQueue = null;
+                    return video$InQueue;
                     inQueueData = this.getInQueueData(s);
                     // iftrue(Label_0045:, inQueueData != null)
-                    this.putInQueueData(s, inQueue);
-                    return inQueue;
+                    this.putInQueueData(s, video$InQueue);
+                    return video$InQueue;
                 }
                 finally {
                 }
                 // monitorexit(this)
                 Label_0045: {
-                    inQueueData.inQueue = inQueue.inQueue;
+                    inQueueData.inQueue = video$InQueue.inQueue;
                 }
-                inQueue = inQueueData;
-                return inQueue;
+                video$InQueue = inQueueData;
+                return video$InQueue;
             }
         }
     }
     
     public void updateInQueueCacheRecord(final String s, final boolean inQueue) {
         synchronized (this) {
-            final Video.InQueue inQueueData = this.getInQueueData(s);
+            final Video$InQueue inQueueData = this.getInQueueData(s);
             if (inQueueData == null) {
                 this.putInQueueValue(s, inQueue);
             }

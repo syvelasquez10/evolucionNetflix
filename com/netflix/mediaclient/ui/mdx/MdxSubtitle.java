@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.media.Subtitle;
@@ -15,7 +14,7 @@ public final class MdxSubtitle extends Subtitle
     public static final int IMPL_VALUE = 2;
     private final boolean mSelected;
     
-    protected MdxSubtitle(final JSONObject jsonObject, final int nccpOrderNumber) throws JSONException {
+    protected MdxSubtitle(final JSONObject jsonObject, final int nccpOrderNumber) {
         this.canDeviceRender = true;
         this.id = JsonUtils.getString(jsonObject, "id", null);
         this.languageDescription = JsonUtils.getString(jsonObject, "label", "English");
@@ -24,7 +23,7 @@ public final class MdxSubtitle extends Subtitle
         this.trackType = 0;
     }
     
-    public static final MdxSubtitle newInstance(final JSONObject jsonObject, final int n) throws JSONException {
+    public static final MdxSubtitle newInstance(final JSONObject jsonObject, final int n) {
         return new MdxSubtitle(jsonObject, n);
     }
     
@@ -33,7 +32,7 @@ public final class MdxSubtitle extends Subtitle
     }
     
     @Override
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("impl", 2);
         jsonObject.put("id", (Object)this.id);

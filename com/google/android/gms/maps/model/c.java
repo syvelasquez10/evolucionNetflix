@@ -4,6 +4,7 @@
 
 package com.google.android.gms.maps.model;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -77,7 +78,7 @@ public class c implements Parcelable$Creator<CircleOptions>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new CircleOptions(g3, latLng, m, i, g2, g, l, c);
     }

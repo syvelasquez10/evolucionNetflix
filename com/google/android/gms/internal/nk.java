@@ -6,15 +6,16 @@ package com.google.android.gms.internal;
 
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
-import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks;
 
-public class nk implements ConnectionCallbacks, OnConnectionFailedListener
+public class nk implements GooglePlayServicesClient$ConnectionCallbacks, GooglePlayServicesClient$OnConnectionFailedListener
 {
-    private final nf.a akE;
+    private final nf$a akE;
     private boolean akF;
     private nn aku;
     
-    public nk(final nf.a akE) {
+    public nk(final nf$a akE) {
         this.akE = akE;
         this.aku = null;
         this.akF = true;

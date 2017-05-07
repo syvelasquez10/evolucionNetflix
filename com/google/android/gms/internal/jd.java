@@ -27,9 +27,9 @@ public class jd implements SafeParcelable
         this.Mk = mk;
     }
     
-    public static jd a(final ji.b<?, ?> b) {
-        if (b instanceof jf) {
-            return new jd((jf)b);
+    public static jd a(final ji$b<?, ?> ji$b) {
+        if (ji$b instanceof jf) {
+            return new jd((jf)ji$b);
         }
         throw new IllegalArgumentException("Unsupported safe parcelable field converter class.");
     }
@@ -47,7 +47,7 @@ public class jd implements SafeParcelable
         return this.Mk;
     }
     
-    public ji.b<?, ?> hb() {
+    public ji$b<?, ?> hb() {
         if (this.Mk != null) {
             return this.Mk;
         }

@@ -35,7 +35,7 @@ public final class PlayerEntity extends GamesDowngradeableSafeParcel implements 
     private final String Vz;
     
     static {
-        CREATOR = (Parcelable$Creator)new PlayerEntityCreatorCompat();
+        CREATOR = (Parcelable$Creator)new PlayerEntity$PlayerEntityCreatorCompat();
     }
     
     PlayerEntity(final int br, final String vz, final String nz, final Uri uw, final Uri ux, final long va, final int vb, final long vc, final String vh, final String vi, final String no, final MostRecentGameInfoEntity vd, final PlayerLevelInfo ve, final boolean vf) {
@@ -254,34 +254,5 @@ public final class PlayerEntity extends GamesDowngradeableSafeParcel implements 
         }
         parcel.writeString(string2);
         parcel.writeLong(this.VA);
-    }
-    
-    static final class PlayerEntityCreatorCompat extends PlayerEntityCreator
-    {
-        @Override
-        public PlayerEntity ce(final Parcel parcel) {
-            if (GamesDowngradeableSafeParcel.c(c.gP()) || c.aV(PlayerEntity.class.getCanonicalName())) {
-                return super.ce(parcel);
-            }
-            final String string = parcel.readString();
-            final String string2 = parcel.readString();
-            final String string3 = parcel.readString();
-            final String string4 = parcel.readString();
-            Uri parse;
-            if (string3 == null) {
-                parse = null;
-            }
-            else {
-                parse = Uri.parse(string3);
-            }
-            Uri parse2;
-            if (string4 == null) {
-                parse2 = null;
-            }
-            else {
-                parse2 = Uri.parse(string4);
-            }
-            return new PlayerEntity(11, string, string2, parse, parse2, parcel.readLong(), -1, -1L, null, null, null, null, null, true);
-        }
     }
 }

@@ -4,15 +4,11 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.media.Language;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
-import com.netflix.mediaclient.event.nrdp.media.NccpError;
-import com.netflix.mediaclient.event.nrdp.media.Error;
 import android.view.SurfaceHolder;
 import android.view.Surface;
-import com.netflix.mediaclient.media.JPlayer.JPlayer;
+import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.javabridge.ui.IMedia;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.media.Subtitle;
@@ -30,7 +26,7 @@ public interface IPlayer
     public static final String PLAYER_LOCAL_PLAYBACK_UNPAUSED = "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED";
     public static final String PLAYER_SUBTITLE_CONFIG_CHANGED = "com.netflix.mediaclient.intent.action.PLAYER_SUBTITLE_CONFIG_CHANGED";
     
-    void addPlayerListener(final PlayerListener p0);
+    void addPlayerListener(final IPlayer$PlayerListener p0);
     
     boolean canUpdatePosition(final int p0);
     
@@ -56,7 +52,7 @@ public interface IPlayer
     
     SubtitleConfiguration getSubtitleConfiguration();
     
-    IMedia.SubtitleProfile getSubtitleProfileFromMetadata();
+    IMedia$SubtitleProfile getSubtitleProfileFromMetadata();
     
     Subtitle[] getSubtitleTrackList();
     
@@ -74,7 +70,7 @@ public interface IPlayer
     
     void play();
     
-    void removePlayerListener(final PlayerListener p0);
+    void removePlayerListener(final IPlayer$PlayerListener p0);
     
     void seekTo(final int p0, final boolean p1);
     
@@ -82,58 +78,11 @@ public interface IPlayer
     
     boolean selectTracks(final AudioSource p0, final Subtitle p1);
     
-    void setJPlayerListener(final JPlayer.JplayerListener p0);
+    void setJPlayerListener(final JPlayer$JplayerListener p0);
     
     void setSurface(final Surface p0);
     
     void setSurfaceHolder(final SurfaceHolder p0);
     
     void unpause();
-    
-    public interface PlayerListener
-    {
-        boolean isListening();
-        
-        void onAudioChange(final int p0);
-        
-        void onBandwidthChange(final int p0);
-        
-        void onBufferingUpdate(final int p0);
-        
-        void onCompletion();
-        
-        void onMediaError(final Error p0);
-        
-        void onNccpError(final NccpError p0);
-        
-        void onNrdFatalError();
-        
-        void onPlaying();
-        
-        void onPrepared();
-        
-        void onSeekComplete();
-        
-        void onStalled();
-        
-        void onStarted();
-        
-        void onSubtitleChange(final SubtitleScreen p0);
-        
-        void onSubtitleFailed();
-        
-        void onSubtitleRemove();
-        
-        void onSubtitleShow(final String p0);
-        
-        void onUpdatePts(final int p0);
-        
-        void onVideoSizeChanged(final int p0, final int p1);
-        
-        void playbackClosed();
-        
-        void restartPlayback(final NccpError p0);
-        
-        void setLanguage(final Language p0);
-    }
 }

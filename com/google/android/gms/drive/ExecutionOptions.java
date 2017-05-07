@@ -67,43 +67,4 @@ public final class ExecutionOptions
     public int hQ() {
         return this.Nh;
     }
-    
-    public static final class Builder
-    {
-        private String Nf;
-        private boolean Ng;
-        private int Nh;
-        
-        public Builder() {
-            this.Nh = 0;
-        }
-        
-        public ExecutionOptions build() {
-            if (this.Nh == 1 && !this.Ng) {
-                throw new IllegalStateException("Cannot use CONFLICT_STRATEGY_KEEP_REMOTE without requesting completion notifications");
-            }
-            return new ExecutionOptions(this.Nf, this.Ng, this.Nh, null);
-        }
-        
-        public Builder setConflictStrategy(final int nh) {
-            if (!ExecutionOptions.aW(nh)) {
-                throw new IllegalArgumentException("Unrecognized value for conflict strategy: " + nh);
-            }
-            this.Nh = nh;
-            return this;
-        }
-        
-        public Builder setNotifyOnCompletion(final boolean ng) {
-            this.Ng = ng;
-            return this;
-        }
-        
-        public Builder setTrackingTag(final String nf) {
-            if (!ExecutionOptions.bh(nf)) {
-                throw new IllegalArgumentException(String.format("trackingTag must not be null nor empty, and the length must be <= the maximum length (%s)", 65536));
-            }
-            this.Nf = nf;
-            return this;
-        }
-    }
 }

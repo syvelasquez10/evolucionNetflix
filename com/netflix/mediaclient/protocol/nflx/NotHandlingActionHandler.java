@@ -7,7 +7,7 @@ package com.netflix.mediaclient.protocol.nflx;
 public class NotHandlingActionHandler implements NflxHandler
 {
     @Override
-    public Response handle() {
-        return Response.NOT_HANDLING;
+    public NflxHandler$Response handle() {
+        return NflxHandler$Response.NOT_HANDLING;
     }
 }

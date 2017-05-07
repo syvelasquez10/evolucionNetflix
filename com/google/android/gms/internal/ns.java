@@ -4,13 +4,7 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.plus.model.people.PersonBuffer;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.BaseImplementation;
-import android.os.RemoteException;
-import com.google.android.gms.plus.internal.e;
-import com.google.android.gms.common.api.Api;
+import com.google.android.gms.plus.People$LoadPeopleResult;
 import com.google.android.gms.common.api.PendingResult;
 import java.util.Collection;
 import com.google.android.gms.plus.Plus;
@@ -26,73 +20,27 @@ public final class ns implements People
     }
     
     @Override
-    public PendingResult<LoadPeopleResult> load(final GoogleApiClient googleApiClient, final Collection<String> collection) {
-        return googleApiClient.a((PendingResult<LoadPeopleResult>)new a() {
-            protected void a(final e e) {
-                e.a((BaseImplementation.b<LoadPeopleResult>)this, collection);
-            }
-        });
+    public PendingResult<People$LoadPeopleResult> load(final GoogleApiClient googleApiClient, final Collection<String> collection) {
+        return googleApiClient.a((PendingResult<People$LoadPeopleResult>)new ns$4(this, collection));
     }
     
     @Override
-    public PendingResult<LoadPeopleResult> load(final GoogleApiClient googleApiClient, final String... array) {
-        return googleApiClient.a((PendingResult<LoadPeopleResult>)new a() {
-            protected void a(final e e) {
-                e.d((BaseImplementation.b<LoadPeopleResult>)this, array);
-            }
-        });
+    public PendingResult<People$LoadPeopleResult> load(final GoogleApiClient googleApiClient, final String... array) {
+        return googleApiClient.a((PendingResult<People$LoadPeopleResult>)new ns$5(this, array));
     }
     
     @Override
-    public PendingResult<LoadPeopleResult> loadConnected(final GoogleApiClient googleApiClient) {
-        return googleApiClient.a((PendingResult<LoadPeopleResult>)new a() {
-            protected void a(final e e) {
-                e.l((BaseImplementation.b<LoadPeopleResult>)this);
-            }
-        });
+    public PendingResult<People$LoadPeopleResult> loadConnected(final GoogleApiClient googleApiClient) {
+        return googleApiClient.a((PendingResult<People$LoadPeopleResult>)new ns$3(this));
     }
     
     @Override
-    public PendingResult<LoadPeopleResult> loadVisible(final GoogleApiClient googleApiClient, final int n, final String s) {
-        return googleApiClient.a((PendingResult<LoadPeopleResult>)new a() {
-            protected void a(final e e) {
-                ((BaseImplementation.AbstractPendingResult)this).a(e.a((BaseImplementation.b<LoadPeopleResult>)this, n, s));
-            }
-        });
+    public PendingResult<People$LoadPeopleResult> loadVisible(final GoogleApiClient googleApiClient, final int n, final String s) {
+        return googleApiClient.a((PendingResult<People$LoadPeopleResult>)new ns$1(this, n, s));
     }
     
     @Override
-    public PendingResult<LoadPeopleResult> loadVisible(final GoogleApiClient googleApiClient, final String s) {
-        return googleApiClient.a((PendingResult<LoadPeopleResult>)new a() {
-            protected void a(final e e) {
-                ((BaseImplementation.AbstractPendingResult)this).a(e.r((BaseImplementation.b<LoadPeopleResult>)this, s));
-            }
-        });
-    }
-    
-    private abstract static class a extends Plus.a<LoadPeopleResult>
-    {
-        public LoadPeopleResult aD(final Status status) {
-            return new LoadPeopleResult() {
-                @Override
-                public String getNextPageToken() {
-                    return null;
-                }
-                
-                @Override
-                public PersonBuffer getPersonBuffer() {
-                    return null;
-                }
-                
-                @Override
-                public Status getStatus() {
-                    return status;
-                }
-                
-                @Override
-                public void release() {
-                }
-            };
-        }
+    public PendingResult<People$LoadPeopleResult> loadVisible(final GoogleApiClient googleApiClient, final String s) {
+        return googleApiClient.a((PendingResult<People$LoadPeopleResult>)new ns$2(this, s));
     }
 }

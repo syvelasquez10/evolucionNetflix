@@ -4,12 +4,11 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
 
@@ -22,7 +21,7 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
     private static final String UI_DATA_NAME = "uiDataRequest";
     public static final String URL = "url";
     private Error error;
-    private IClientLogging.CompletionReason reason;
+    private IClientLogging$CompletionReason reason;
     private String requestId;
     private HttpResponse response;
     private String url;
@@ -31,13 +30,13 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
         super("uiDataRequest", new DeviceUniqueId(), n);
     }
     
-    public UIDataRequestSessionEndedEvent(JSONObject jsonObject) throws JSONException {
+    public UIDataRequestSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
         jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null) {
             final String string = JsonUtils.getString(jsonObject, "reason", null);
             if (string != null) {
-                this.reason = Enum.valueOf(IClientLogging.CompletionReason.class, string);
+                this.reason = Enum.valueOf(IClientLogging$CompletionReason.class, string);
             }
             this.url = JsonUtils.getString(jsonObject, "url", null);
             this.error = Error.createInstance(JsonUtils.getJSONObject(jsonObject, "error", null));
@@ -47,7 +46,7 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();
@@ -74,7 +73,7 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
         return this.error;
     }
     
-    public IClientLogging.CompletionReason getReason() {
+    public IClientLogging$CompletionReason getReason() {
         return this.reason;
     }
     
@@ -94,7 +93,7 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
         this.error = error;
     }
     
-    public void setReason(final IClientLogging.CompletionReason reason) {
+    public void setReason(final IClientLogging$CompletionReason reason) {
         this.reason = reason;
     }
     

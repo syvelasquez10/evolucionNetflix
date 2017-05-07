@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import android.content.Intent;
 import com.netflix.mediaclient.ui.mdx.RemotePlaybackListener;
 import com.netflix.mediaclient.ui.mdx.MdxSubtitle;
-import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.mdx.MdxAudioSource;
 import org.json.JSONArray;
@@ -23,25 +22,17 @@ public class UpdateLanguageHandler extends EventHandler
         super("com.netflix.mediaclient.intent.action.MDXUPDATE_AUDIOSUB");
     }
     
-    private MdxAudioSource[] getAudioSources(final JSONArray jsonArray) throws JSONException {
-        MdxAudioSource[] array;
+    private MdxAudioSource[] getAudioSources(final JSONArray jsonArray) {
+        int i = 0;
         if (jsonArray == null || jsonArray.length() < 1) {
             Log.w("mdxui", "Empty audio list");
-            array = new MdxAudioSource[0];
+            return new MdxAudioSource[0];
         }
-        else {
-            final MdxAudioSource[] array2 = new MdxAudioSource[jsonArray.length()];
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = MdxAudioSource.newInstance(jsonArray.getJSONObject(n), n);
-                if (Log.isLoggable("mdxui", 3)) {
-                    Log.d("mdxui", "" + n + ": " + array2[n]);
-                }
-                ++n;
+        MdxAudioSource[] array;
+        for (array = new MdxAudioSource[jsonArray.length()]; i < array.length; ++i) {
+            array[i] = MdxAudioSource.newInstance(jsonArray.getJSONObject(i), i);
+            if (Log.isLoggable("mdxui", 3)) {
+                Log.d("mdxui", "" + i + ": " + array[i]);
             }
         }
         return array;
@@ -67,25 +58,17 @@ public class UpdateLanguageHandler extends EventHandler
         return 0;
     }
     
-    private MdxSubtitle[] getSubtitles(final JSONArray jsonArray) throws JSONException {
-        MdxSubtitle[] array;
+    private MdxSubtitle[] getSubtitles(final JSONArray jsonArray) {
+        int i = 0;
         if (jsonArray == null || jsonArray.length() < 1) {
             Log.w("mdxui", "Empty subtitle list");
-            array = new MdxSubtitle[0];
+            return new MdxSubtitle[0];
         }
-        else {
-            final MdxSubtitle[] array2 = new MdxSubtitle[jsonArray.length()];
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = MdxSubtitle.newInstance(jsonArray.getJSONObject(n), n);
-                if (Log.isLoggable("mdxui", 3)) {
-                    Log.d("mdxui", "" + n + ": " + array2[n]);
-                }
-                ++n;
+        MdxSubtitle[] array;
+        for (array = new MdxSubtitle[jsonArray.length()]; i < array.length; ++i) {
+            array[i] = MdxSubtitle.newInstance(jsonArray.getJSONObject(i), i);
+            if (Log.isLoggable("mdxui", 3)) {
+                Log.d("mdxui", "" + i + ": " + array[i]);
             }
         }
         return array;
@@ -99,42 +82,48 @@ public class UpdateLanguageHandler extends EventHandler
             Log.d("mdxui", "Blob: " + stringExtra);
         }
         while (true) {
+        Label_0137_Outer:
             while (true) {
-                JSONArray jsonArray2 = null;
-                Label_0220: {
-                    try {
-                        final JSONObject jsonObject = new JSONObject(stringExtra);
-                        JSONArray jsonArray;
-                        if ((jsonArray = JsonUtils.getJSONArray(jsonObject, "timed_text_tracks")) == null) {
-                            jsonArray = JsonUtils.getJSONArray(jsonObject, "timed_text_track");
-                        }
-                        if ((jsonArray2 = JsonUtils.getJSONArray(jsonObject, "audio_tracks")) == null) {
-                            jsonArray2 = JsonUtils.getJSONArray(jsonObject, "audio_track");
-                        }
-                        if (Log.isLoggable("mdxui", 3)) {
+            Label_0249:
+                while (true) {
+                    JSONArray jsonArray2 = null;
+                    Label_0218: {
+                        try {
+                            final JSONObject jsonObject = new JSONObject(stringExtra);
+                            JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "timed_text_tracks");
                             if (jsonArray == null) {
-                                Log.d("mdxui", "subtitleTrackListJsonArray is null");
+                                jsonArray = JsonUtils.getJSONArray(jsonObject, "timed_text_track");
+                                if ((jsonArray2 = JsonUtils.getJSONArray(jsonObject, "audio_tracks")) == null) {
+                                    jsonArray2 = JsonUtils.getJSONArray(jsonObject, "audio_track");
+                                }
+                                if (Log.isLoggable("mdxui", 3)) {
+                                    if (jsonArray == null) {
+                                        Log.d("mdxui", "subtitleTrackListJsonArray is null");
+                                    }
+                                    else {
+                                        Log.d("mdxui", "subtitleTrackListJsonArray.lenght: " + jsonArray.length());
+                                    }
+                                    if (jsonArray2 != null) {
+                                        break Label_0218;
+                                    }
+                                    Log.d("mdxui", "audioTrackListJsonArray is null");
+                                }
+                                final MdxSubtitle[] subtitles = this.getSubtitles(jsonArray);
+                                final MdxAudioSource[] audioSources = this.getAudioSources(jsonArray2);
+                                remotePlaybackListener.updateLanguage(new Language(audioSources, this.getCurrentAudioIndex(audioSources), subtitles, this.getCurrentSubtitleIndex(subtitles), true));
+                                return;
                             }
-                            else {
-                                Log.d("mdxui", "subtitleTrackListJsonArray.lenght: " + jsonArray.length());
-                            }
-                            if (jsonArray2 != null) {
-                                break Label_0220;
-                            }
-                            Log.d("mdxui", "audioTrackListJsonArray is null");
+                            break Label_0249;
                         }
-                        final MdxSubtitle[] subtitles = this.getSubtitles(jsonArray);
-                        final MdxAudioSource[] audioSources = this.getAudioSources(jsonArray2);
-                        remotePlaybackListener.updateLanguage(new Language(audioSources, this.getCurrentAudioIndex(audioSources), subtitles, this.getCurrentSubtitleIndex(subtitles), true));
-                        return;
+                        catch (Exception ex) {
+                            Log.e("mdxui", "Failed to extract capability data ", ex);
+                            return;
+                        }
                     }
-                    catch (Exception ex) {
-                        Log.e("mdxui", "Failed to extract capability data ", ex);
-                        return;
-                    }
+                    Log.d("mdxui", "audioTrackListJsonArray.lenght: " + jsonArray2.length());
+                    continue;
                 }
-                Log.d("mdxui", "audioTrackListJsonArray.lenght: " + jsonArray2.length());
-                continue;
+                continue Label_0137_Outer;
             }
         }
     }

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.presentation.volley;
 
-import com.android.volley.VolleyError;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.Log;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class PresentationEventRequest extends PresentationVolleyWebClientRequest
     }
     
     @Override
-    protected String parseResponse(final String s) throws VolleyError {
+    protected String parseResponse(final String s) {
         return "OK";
     }
 }

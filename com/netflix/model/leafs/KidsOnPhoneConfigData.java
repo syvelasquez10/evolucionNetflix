@@ -4,16 +4,19 @@
 
 package com.netflix.model.leafs;
 
+import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration$ScrollBehavior;
+import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration$LolomoImageType;
 import com.google.gson.annotations.SerializedName;
+import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration$ActionBarNavType;
 import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 
 public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
 {
     public static final KidsOnPhoneConfigData DEFAULT_KIDS_CONFIG;
     @SerializedName("abNav")
-    private ActionBarNavType actionBarNavType;
+    private KidsOnPhoneConfiguration$ActionBarNavType actionBarNavType;
     @SerializedName("imageType")
-    private LolomoImageType imageType;
+    private KidsOnPhoneConfiguration$LolomoImageType imageType;
     @SerializedName("isEntryInActionBar")
     private boolean isEntryInActionBar;
     @SerializedName("isEntryInGenreLolomo")
@@ -23,30 +26,30 @@ public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
     @SerializedName("isKidsOnPhoneEnabled")
     private boolean isKidsOnPhoneEnabled;
     @SerializedName("scrollBehavior")
-    private ScrollBehavior scrollBehavior;
+    private KidsOnPhoneConfiguration$ScrollBehavior scrollBehavior;
     
     static {
         DEFAULT_KIDS_CONFIG = new KidsOnPhoneConfigData();
     }
     
     public KidsOnPhoneConfigData() {
-        this.scrollBehavior = ScrollBehavior.LRUD;
-        this.imageType = LolomoImageType.HORIZONTAL;
-        this.actionBarNavType = ActionBarNavType.UP;
+        this.scrollBehavior = KidsOnPhoneConfiguration$ScrollBehavior.LRUD;
+        this.imageType = KidsOnPhoneConfiguration$LolomoImageType.HORIZONTAL;
+        this.actionBarNavType = KidsOnPhoneConfiguration$ActionBarNavType.UP;
     }
     
     @Override
-    public ActionBarNavType getActionBarNavType() {
+    public KidsOnPhoneConfiguration$ActionBarNavType getActionBarNavType() {
         return this.actionBarNavType;
     }
     
     @Override
-    public LolomoImageType getLolomoImageType() {
+    public KidsOnPhoneConfiguration$LolomoImageType getLolomoImageType() {
         return this.imageType;
     }
     
     @Override
-    public ScrollBehavior getScrollBehavior() {
+    public KidsOnPhoneConfiguration$ScrollBehavior getScrollBehavior() {
         return this.scrollBehavior;
     }
     

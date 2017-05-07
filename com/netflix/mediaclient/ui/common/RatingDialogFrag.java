@@ -17,11 +17,11 @@ import android.view.LayoutInflater;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.RatingBar;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
+import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import android.widget.RatingBar$OnRatingBarChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnRatingBarChangeListener, MdxMiniPlayerDialog
+public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnRatingBarChangeListener, MdxMiniPlayerFrag$MdxMiniPlayerDialog
 {
     public static final String INTENT_NAME = "ui_rating";
     public static final String PARAM_RATING = "rating";
@@ -36,16 +36,16 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
     private String mVideoTitle;
     
     @SuppressLint({ "InlinedApi" })
-    public static RatingDialogFrag newInstance(final Rating rating, final String s, final String s2) {
+    public static RatingDialogFrag newInstance(final RatingDialogFrag$Rating ratingDialogFrag$Rating, final String s, final String s2) {
         if (s == null) {
             throw new IllegalArgumentException("Playable ID can not be null!");
         }
         final RatingDialogFrag ratingDialogFrag = new RatingDialogFrag();
-        ratingDialogFrag.setStyle(1, 2131558710);
+        ratingDialogFrag.setStyle(1, 2131558713);
         final Bundle arguments = new Bundle();
         ratingDialogFrag.setArguments(arguments);
-        arguments.putFloat("rating", rating.value);
-        arguments.putBoolean("rating_user", rating.user);
+        arguments.putFloat("rating", ratingDialogFrag$Rating.value);
+        arguments.putBoolean("rating_user", ratingDialogFrag$Rating.user);
         arguments.putString("videoId", s);
         arguments.putString("videoTitle", s2);
         return ratingDialogFrag;
@@ -66,7 +66,7 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903147, viewGroup, false);
+        final View inflate = layoutInflater.inflate(2130903148, viewGroup, false);
         int n = 2131165528;
         if (this.mIsUserRating) {
             n = 2131165529;
@@ -74,7 +74,7 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
         (this.mRatingBar = (RatingBar)inflate.findViewById(n)).setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
         this.mRatingBar.setRating(this.mRating);
         this.mRatingBar.setVisibility(0);
-        ((TextView)inflate.findViewById(2131165527)).setText((CharSequence)this.getString(2131493263, new Object[] { this.mVideoTitle }));
+        ((TextView)inflate.findViewById(2131165527)).setText((CharSequence)this.getString(2131493221, new Object[] { this.mVideoTitle }));
         return inflate;
     }
     
@@ -97,11 +97,5 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
         LocalBroadcastManager.getInstance((Context)activity).sendBroadcast(intent);
         this.dismissAllowingStateLoss();
         this.getFragmentManager().beginTransaction().remove((Fragment)this).commit();
-    }
-    
-    public static class Rating
-    {
-        public boolean user;
-        public float value;
     }
 }

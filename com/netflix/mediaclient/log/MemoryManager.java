@@ -54,16 +54,18 @@ public final class MemoryManager implements Runnable
     }
     
     private static void parseMemoryDump(String substring) {
+        int n = 82;
+        int i = 0;
         if (substring != null) {
-            final int n = substring.lastIndexOf("**") + 2;
+            final int n2 = substring.lastIndexOf("**") + 2;
             final int index = substring.indexOf("Objects");
-            if (n < index) {
-                substring = substring.substring(n, index);
+            if (n2 < index) {
+                substring = substring.substring(n2, index);
                 logLine(substring, 0, 82);
-                int n2 = 0 + 82;
-                for (int i = 0; i < 6; ++i) {
-                    logLine(substring, n2, n2 + 81);
-                    n2 += 80;
+                while (i < 6) {
+                    logLine(substring, n, n + 81);
+                    n += 80;
+                    ++i;
                 }
                 Log.i("nf-memory", " \n");
                 Log.i("nf-memory", " =================================");
@@ -75,16 +77,7 @@ public final class MemoryManager implements Runnable
         synchronized (this) {
             if (this.executor != null) {
                 if (this.cancelHelper != null) {
-                    this.executor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            MemoryManager.this.cancelHelper.cancel(true);
-                            MemoryManager.this.cancelHelper = null;
-                            MemoryManager.this.executor.shutdown();
-                            MemoryManager.this.executor = null;
-                            Log.d("nf-memory", "Memory manager stoped");
-                        }
-                    });
+                    this.executor.execute(new MemoryManager$1(this));
                 }
                 this.context = null;
             }

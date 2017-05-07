@@ -38,8 +38,8 @@ public final class LatLngBounds implements SafeParcelable
         return (n - n2 + 360.0) % 360.0;
     }
     
-    public static Builder builder() {
-        return new Builder();
+    public static LatLngBounds$Builder builder() {
+        return new LatLngBounds$Builder();
     }
     
     private static double c(final double n, final double n2) {
@@ -135,55 +135,5 @@ public final class LatLngBounds implements SafeParcelable
             return;
         }
         g.a(this, parcel, n);
-    }
-    
-    public static final class Builder
-    {
-        private double ajN;
-        private double ajO;
-        private double ajP;
-        private double ajQ;
-        
-        public Builder() {
-            this.ajN = Double.POSITIVE_INFINITY;
-            this.ajO = Double.NEGATIVE_INFINITY;
-            this.ajP = Double.NaN;
-            this.ajQ = Double.NaN;
-        }
-        
-        private boolean d(final double n) {
-            boolean b = false;
-            if (this.ajP <= this.ajQ) {
-                return this.ajP <= n && n <= this.ajQ;
-            }
-            if (this.ajP <= n || n <= this.ajQ) {
-                b = true;
-            }
-            return b;
-        }
-        
-        public LatLngBounds build() {
-            n.a(!Double.isNaN(this.ajP), (Object)"no included points");
-            return new LatLngBounds(new LatLng(this.ajN, this.ajP), new LatLng(this.ajO, this.ajQ));
-        }
-        
-        public Builder include(final LatLng latLng) {
-            this.ajN = Math.min(this.ajN, latLng.latitude);
-            this.ajO = Math.max(this.ajO, latLng.latitude);
-            final double longitude = latLng.longitude;
-            if (Double.isNaN(this.ajP)) {
-                this.ajP = longitude;
-                this.ajQ = longitude;
-            }
-            else if (!this.d(longitude)) {
-                if (b(this.ajP, longitude) < c(this.ajQ, longitude)) {
-                    this.ajP = longitude;
-                    return this;
-                }
-                this.ajQ = longitude;
-                return this;
-            }
-            return this;
-        }
     }
 }

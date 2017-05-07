@@ -4,13 +4,15 @@
 
 package com.netflix.mediaclient.service.resfetcher.volley;
 
+import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RetryPolicy;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Response$ErrorListener;
 import android.graphics.Bitmap$Config;
 import android.graphics.Bitmap;
-import com.android.volley.Response;
-import com.android.volley.Request;
+import com.android.volley.Response$Listener;
+import com.android.volley.Request$Priority;
 
 public class ImageRequest extends com.android.volley.toolbox.ImageRequest
 {
@@ -19,15 +21,15 @@ public class ImageRequest extends com.android.volley.toolbox.ImageRequest
     private static final boolean LOG_VERBOSE = false;
     private static final String TAG = "nf_ImageRequest";
     private final long mMinimumCacheTtl;
-    private final Priority mPriority;
+    private final Request$Priority mPriority;
     
-    public ImageRequest(final String s, final Response.Listener<Bitmap> listener, final int n, final int n2, final Bitmap$Config bitmap$Config, final Response.ErrorListener errorListener, final Priority mPriority, final int n3, final long mMinimumCacheTtl) {
-        super(s, listener, n, n2, bitmap$Config, errorListener);
+    public ImageRequest(final String s, final Response$Listener<Bitmap> response$Listener, final int n, final int n2, final Bitmap$Config bitmap$Config, final Response$ErrorListener response$ErrorListener, final Request$Priority mPriority, final int n3, final long mMinimumCacheTtl) {
+        super(s, response$Listener, n, n2, bitmap$Config, response$ErrorListener);
         if (mPriority != null) {
             this.mPriority = mPriority;
         }
         else {
-            this.mPriority = Priority.LOW;
+            this.mPriority = Request$Priority.LOW;
         }
         if (n3 > 0) {
             this.setRetryPolicy(new DefaultRetryPolicy(n3, 2, 2.0f));
@@ -41,7 +43,7 @@ public class ImageRequest extends com.android.volley.toolbox.ImageRequest
     }
     
     @Override
-    public Priority getPriority() {
+    public Request$Priority getPriority() {
         return this.mPriority;
     }
     

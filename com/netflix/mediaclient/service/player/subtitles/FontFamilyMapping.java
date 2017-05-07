@@ -34,16 +34,31 @@ public enum FontFamilyMapping
         this.mLookup = mLookup;
     }
     
+    public static boolean isMonospace(final FontFamilyMapping fontFamilyMapping) {
+        return fontFamilyMapping != null && fontFamilyMapping.getTypeface() == Typeface.MONOSPACE;
+    }
+    
+    public static boolean isProportional(final FontFamilyMapping fontFamilyMapping) {
+        return !isMonospace(fontFamilyMapping);
+    }
+    
+    public static boolean isSansSerif(final FontFamilyMapping fontFamilyMapping) {
+        return fontFamilyMapping == null || fontFamilyMapping.getTypeface() == Typeface.SANS_SERIF;
+    }
+    
+    public static boolean isSerif(final FontFamilyMapping fontFamilyMapping) {
+        return fontFamilyMapping != null && fontFamilyMapping.getTypeface() == Typeface.SERIF;
+    }
+    
     public static FontFamilyMapping lookup(final String s) {
         if (!StringUtils.isEmpty(s)) {
             final FontFamilyMapping[] values = values();
             for (int length = values.length, i = 0; i < length; ++i) {
-                final FontFamilyMapping fontFamilyMapping;
-                if ((fontFamilyMapping = values[i]).getLookupValue().equalsIgnoreCase(s)) {
+                final FontFamilyMapping fontFamilyMapping = values[i];
+                if (fontFamilyMapping.getLookupValue().equalsIgnoreCase(s)) {
                     return fontFamilyMapping;
                 }
             }
-            return null;
         }
         return null;
     }

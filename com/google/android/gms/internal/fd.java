@@ -9,20 +9,15 @@ import android.content.Context;
 @ez
 public final class fd
 {
-    public static gg a(final Context context, final u u, final fz.a a, final gv gv, final ct ct, final a a2) {
+    public static gg a(final Context context, final u u, final fz$a fz$a, final gv gv, final ct ct, final fd$a fd$a) {
         gg gg;
-        if (a.vw.tS) {
-            gg = new fn(context, u, new ai(), a, a2);
+        if (fz$a.vw.tS) {
+            gg = new fn(context, u, new ai(), fz$a, fd$a);
         }
         else {
-            gg = new fe(context, a, gv, ct, a2);
+            gg = new fe(context, fz$a, gv, ct, fd$a);
         }
         gg.start();
         return gg;
-    }
-    
-    public interface a
-    {
-        void a(final fz p0);
     }
 }

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.customerevents.legacy;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.UserData;
 import com.netflix.mediaclient.webapi.AuthorizationCredentials;
@@ -16,7 +15,7 @@ public final class PushNotificationOptInStatus extends BaseCustomerEvent
     private static final String NAME = "UI Push Notification Opt-In Status";
     protected JSONArray event;
     
-    public PushNotificationOptInStatus(final String s, final CommonRequestParameters commonRequestParameters, final String s2, final boolean b, final boolean b2, final boolean b3, final AuthorizationCredentials authorizationCredentials, final String s3) throws JSONException {
+    public PushNotificationOptInStatus(final String s, final CommonRequestParameters commonRequestParameters, final String s2, final boolean b, final boolean b2, final boolean b3, final AuthorizationCredentials authorizationCredentials, final String s3) {
         super(null);
         final long currentTimeMillis = System.currentTimeMillis();
         this.event = new JSONArray();

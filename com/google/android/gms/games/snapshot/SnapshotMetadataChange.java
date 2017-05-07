@@ -87,45 +87,4 @@ public final class SnapshotMetadataChange implements SafeParcelable
     public void writeToParcel(final Parcel parcel, final int n) {
         SnapshotMetadataChangeCreator.a(this, parcel, n);
     }
-    
-    public static final class Builder
-    {
-        private String Tg;
-        private Uri acZ;
-        private Long adb;
-        private a adc;
-        
-        public SnapshotMetadataChange build() {
-            return new SnapshotMetadataChange(this.Tg, this.adb, this.adc, this.acZ);
-        }
-        
-        public Builder fromMetadata(final SnapshotMetadata snapshotMetadata) {
-            this.Tg = snapshotMetadata.getDescription();
-            this.adb = snapshotMetadata.getPlayedTime();
-            if (this.adb == -1L) {
-                this.adb = null;
-            }
-            this.acZ = snapshotMetadata.getCoverImageUri();
-            if (this.acZ != null) {
-                this.adc = null;
-            }
-            return this;
-        }
-        
-        public Builder setCoverImage(final Bitmap bitmap) {
-            this.adc = new a(bitmap);
-            this.acZ = null;
-            return this;
-        }
-        
-        public Builder setDescription(final String tg) {
-            this.Tg = tg;
-            return this;
-        }
-        
-        public Builder setPlayedTimeMillis(final long n) {
-            this.adb = n;
-            return this;
-        }
-    }
 }

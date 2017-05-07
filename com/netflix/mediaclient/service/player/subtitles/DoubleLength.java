@@ -32,21 +32,26 @@ public class DoubleLength
     }
     
     public static DoubleLength createInstance(final String s, final CellResolution cellResolution) {
-        if (!StringUtils.isEmpty(s)) {
-            final String[] safeSplit = StringUtils.safeSplit(s, " ");
-            if (safeSplit != null && safeSplit.length >= 2) {
-                int widthCount = 0;
-                if (cellResolution != null) {
-                    widthCount = cellResolution.getWidthCount();
-                }
-                final Float margin = SubtitleUtils.parseMargin(safeSplit[0], widthCount);
-                final Float margin2 = SubtitleUtils.parseMargin(safeSplit[1], widthCount);
-                if (margin != null && margin2 != null) {
-                    return new DoubleLength(margin, margin2);
-                }
-            }
+        if (StringUtils.isEmpty(s)) {
+            return null;
         }
-        return null;
+        final String[] safeSplit = StringUtils.safeSplit(s, " ");
+        if (safeSplit == null || safeSplit.length < 2) {
+            return null;
+        }
+        int widthCount;
+        if (cellResolution != null) {
+            widthCount = cellResolution.getWidthCount();
+        }
+        else {
+            widthCount = 0;
+        }
+        final Float margin = SubtitleUtils.parseMargin(safeSplit[0], widthCount);
+        final Float margin2 = SubtitleUtils.parseMargin(safeSplit[1], widthCount);
+        if (margin == null || margin2 == null) {
+            return null;
+        }
+        return new DoubleLength(margin, margin2);
     }
     
     private boolean valid(final float n) {

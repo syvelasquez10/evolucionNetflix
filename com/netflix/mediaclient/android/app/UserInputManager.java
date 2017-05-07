@@ -6,7 +6,6 @@ package com.netflix.mediaclient.android.app;
 
 import android.os.Bundle;
 import android.app.Activity;
-import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
 import android.app.ActivityManager$RunningTaskInfo;
@@ -36,14 +35,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     private AtomicInteger mStopped;
     
     static {
-        sThreadFactory = new ThreadFactory() {
-            private final AtomicInteger mCount = new AtomicInteger(1);
-            
-            @Override
-            public Thread newThread(final Runnable runnable) {
-                return new Thread(runnable, "UserInputManager #" + this.mCount.getAndIncrement());
-            }
-        };
+        sThreadFactory = new UserInputManager$1();
     }
     
     public UserInputManager() {
@@ -74,15 +66,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
         }
         Log.d("nf_input", "Our app is in background");
         this.mForeground = false;
-        this.mScheduler.execute(new Runnable() {
-            @Override
-            public void run() {
-                final Iterator<ApplicationStateListener> iterator = UserInputManager.this.mListeners.iterator();
-                while (iterator.hasNext()) {
-                    iterator.next().onBackground(UserInputManager.this);
-                }
-            }
-        });
+        this.mScheduler.execute(new UserInputManager$5(this));
     }
     
     private void postOnForeground(final Context context) {
@@ -95,29 +79,13 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
         }
         Log.d("nf_input", "Our app is in foreground");
         this.mForeground = true;
-        this.mScheduler.execute(new Runnable() {
-            @Override
-            public void run() {
-                final Iterator<ApplicationStateListener> iterator = UserInputManager.this.mListeners.iterator();
-                while (iterator.hasNext()) {
-                    iterator.next().onForeground(UserInputManager.this);
-                }
-            }
-        });
+        this.mScheduler.execute(new UserInputManager$4(this));
     }
     
     private void postUiExit(final int n) {
         if (n == 0) {
             Log.d("nf_input", "UI is  gone");
-            this.mScheduler.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final Iterator<ApplicationStateListener> iterator = UserInputManager.this.mListeners.iterator();
-                    while (iterator.hasNext()) {
-                        iterator.next().onUiGone(UserInputManager.this);
-                    }
-                }
-            });
+            this.mScheduler.execute(new UserInputManager$3(this));
         }
         else if (Log.isLoggable("nf_input", 3)) {
             Log.d("nf_input", "Activity destroyed, count " + n);
@@ -127,15 +95,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     private void postUiStart(final int n) {
         if (n == 1) {
             Log.d("nf_input", "UI may just started, only one activity");
-            this.mScheduler.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final Iterator<ApplicationStateListener> iterator = UserInputManager.this.mListeners.iterator();
-                    while (iterator.hasNext()) {
-                        iterator.next().onUiStarted(UserInputManager.this);
-                    }
-                }
-            });
+            this.mScheduler.execute(new UserInputManager$2(this));
         }
         else if (Log.isLoggable("nf_input", 3)) {
             Log.d("nf_input", "New activity, count " + n);

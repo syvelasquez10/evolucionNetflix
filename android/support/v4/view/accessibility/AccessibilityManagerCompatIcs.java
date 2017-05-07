@@ -27,20 +27,11 @@ class AccessibilityManagerCompatIcs
         return accessibilityManager.isTouchExplorationEnabled();
     }
     
-    public static Object newAccessibilityStateChangeListener(final AccessibilityStateChangeListenerBridge accessibilityStateChangeListenerBridge) {
-        return new AccessibilityManager$AccessibilityStateChangeListener() {
-            public void onAccessibilityStateChanged(final boolean b) {
-                accessibilityStateChangeListenerBridge.onAccessibilityStateChanged(b);
-            }
-        };
+    public static Object newAccessibilityStateChangeListener(final AccessibilityManagerCompatIcs$AccessibilityStateChangeListenerBridge accessibilityManagerCompatIcs$AccessibilityStateChangeListenerBridge) {
+        return new AccessibilityManagerCompatIcs$1(accessibilityManagerCompatIcs$AccessibilityStateChangeListenerBridge);
     }
     
     public static boolean removeAccessibilityStateChangeListener(final AccessibilityManager accessibilityManager, final Object o) {
         return accessibilityManager.removeAccessibilityStateChangeListener((AccessibilityManager$AccessibilityStateChangeListener)o);
-    }
-    
-    interface AccessibilityStateChangeListenerBridge
-    {
-        void onAccessibilityStateChanged(final boolean p0);
     }
 }

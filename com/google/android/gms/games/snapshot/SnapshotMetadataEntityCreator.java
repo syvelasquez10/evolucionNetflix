@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.snapshot;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.net.Uri;
 import com.google.android.gms.games.PlayerEntity;
 import com.google.android.gms.games.GameEntity;
@@ -106,7 +107,7 @@ public class SnapshotMetadataEntityCreator implements Parcelable$Creator<Snapsho
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new SnapshotMetadataEntity(g, gameEntity, playerEntity, o, uri, o2, o3, o4, i, j, l, o5);
     }

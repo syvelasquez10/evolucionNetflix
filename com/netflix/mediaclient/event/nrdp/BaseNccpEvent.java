@@ -6,7 +6,6 @@ package com.netflix.mediaclient.event.nrdp;
 
 import java.net.URLDecoder;
 import org.json.JSONArray;
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.event.UIEvent;
@@ -22,27 +21,27 @@ public abstract class BaseNccpEvent implements UIEvent
         this.eventType = eventType;
     }
     
-    protected static boolean getBoolean(final JSONObject jsonObject, final String s, final boolean b) throws JSONException {
+    protected static boolean getBoolean(final JSONObject jsonObject, final String s, final boolean b) {
         return JsonUtils.getBoolean(jsonObject, s, b);
     }
     
-    protected static int getInt(final JSONObject jsonObject, final String s, final int n) throws JSONException {
+    protected static int getInt(final JSONObject jsonObject, final String s, final int n) {
         return JsonUtils.getInt(jsonObject, s, n);
     }
     
-    protected static JSONObject getJSONObject(final JSONObject jsonObject, final String s, final JSONObject jsonObject2) throws JSONException {
+    protected static JSONObject getJSONObject(final JSONObject jsonObject, final String s, final JSONObject jsonObject2) {
         return JsonUtils.getJSONObject(jsonObject, s, jsonObject2);
     }
     
-    protected static JSONArray getJsonArray(final JSONObject jsonObject, final String s) throws JSONException {
+    protected static JSONArray getJsonArray(final JSONObject jsonObject, final String s) {
         return JsonUtils.getJSONArray(jsonObject, s);
     }
     
-    protected static String getString(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
+    protected static String getString(final JSONObject jsonObject, final String s, final String s2) {
         return JsonUtils.getString(jsonObject, s, s2);
     }
     
-    protected static String getUrlDecodedString(JSONObject string, String decode, final String s) throws JSONException {
+    protected static String getUrlDecodedString(JSONObject string, String decode, final String s) {
         string = (JSONObject)JsonUtils.getString(string, decode, s);
         if (string == null || "".equals(((String)string).trim())) {
             return (String)string;

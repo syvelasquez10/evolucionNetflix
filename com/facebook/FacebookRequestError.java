@@ -6,7 +6,7 @@ package com.facebook;
 
 import org.json.JSONException;
 import com.facebook.internal.Utility;
-import com.facebook.android.R;
+import com.facebook.android.R$string;
 import org.json.JSONObject;
 import java.net.HttpURLConnection;
 
@@ -21,7 +21,7 @@ public final class FacebookRequestError
     private static final int EC_INVALID_TOKEN = 190;
     private static final int EC_PASSWORD_CHANGED = 460;
     private static final int EC_PERMISSION_DENIED = 10;
-    private static final Range EC_RANGE_PERMISSION;
+    private static final FacebookRequestError$Range EC_RANGE_PERMISSION;
     private static final int EC_SERVICE_UNAVAILABLE = 2;
     private static final int EC_UNCONFIRMED_USER = 464;
     private static final int EC_UNKNOWN_ERROR = 1;
@@ -35,14 +35,14 @@ public final class FacebookRequestError
     private static final String ERROR_REASON_KEY = "error_reason";
     private static final String ERROR_SUB_CODE_KEY = "error_subcode";
     private static final String ERROR_TYPE_FIELD_KEY = "type";
-    private static final Range HTTP_RANGE_CLIENT_ERROR;
-    private static final Range HTTP_RANGE_SERVER_ERROR;
-    private static final Range HTTP_RANGE_SUCCESS;
+    private static final FacebookRequestError$Range HTTP_RANGE_CLIENT_ERROR;
+    private static final FacebookRequestError$Range HTTP_RANGE_SERVER_ERROR;
+    private static final FacebookRequestError$Range HTTP_RANGE_SUCCESS;
     public static final int INVALID_ERROR_CODE = -1;
     public static final int INVALID_HTTP_STATUS_CODE = -1;
     private static final int INVALID_MESSAGE_ID = 0;
     private final Object batchRequestResult;
-    private final Category category;
+    private final FacebookRequestError$Category category;
     private final HttpURLConnection connection;
     private final int errorCode;
     private final String errorMessage;
@@ -56,116 +56,101 @@ public final class FacebookRequestError
     private final int userActionMessageId;
     
     static {
-        EC_RANGE_PERMISSION = new Range(200, 299);
-        HTTP_RANGE_SUCCESS = new Range(200, 299);
-        HTTP_RANGE_CLIENT_ERROR = new Range(400, 499);
-        HTTP_RANGE_SERVER_ERROR = new Range(500, 599);
+        EC_RANGE_PERMISSION = new FacebookRequestError$Range(200, 299, null);
+        HTTP_RANGE_SUCCESS = new FacebookRequestError$Range(200, 299, null);
+        HTTP_RANGE_CLIENT_ERROR = new FacebookRequestError$Range(400, 499, null);
+        HTTP_RANGE_SERVER_ERROR = new FacebookRequestError$Range(500, 599, null);
     }
     
     private FacebookRequestError(final int n, final int n2, final int n3, final String s, final String s2, final JSONObject jsonObject, final JSONObject jsonObject2, final Object o, final HttpURLConnection httpURLConnection) {
         this(n, n2, n3, s, s2, jsonObject, jsonObject2, o, httpURLConnection, null);
     }
     
-    private FacebookRequestError(final int requestStatusCode, int n, final int subErrorCode, final String errorType, final String errorMessage, final JSONObject requestResultBody, final JSONObject requestResult, final Object batchRequestResult, final HttpURLConnection connection, final FacebookException exception) {
+    private FacebookRequestError(final int requestStatusCode, int errorCode, int n, final String errorType, final String errorMessage, final JSONObject requestResultBody, final JSONObject requestResult, final Object batchRequestResult, final HttpURLConnection connection, final FacebookException exception) {
+        boolean b = false;
+        boolean shouldNotifyUser = false;
         this.requestStatusCode = requestStatusCode;
-        this.errorCode = n;
-        this.subErrorCode = subErrorCode;
+        this.errorCode = errorCode;
+        this.subErrorCode = n;
         this.errorType = errorType;
         this.errorMessage = errorMessage;
         this.requestResultBody = requestResultBody;
         this.requestResult = requestResult;
         this.batchRequestResult = batchRequestResult;
         this.connection = connection;
-        boolean b = false;
+        int n2;
         if (exception != null) {
             this.exception = exception;
-            b = true;
+            n2 = 1;
         }
         else {
             this.exception = new FacebookServiceException(this, errorMessage);
+            n2 = 0;
         }
-        Category category = null;
-        final boolean b2 = false;
-        final boolean b3 = false;
-        final boolean b4 = false;
-        Category category2;
-        boolean shouldNotifyUser;
-        if (b) {
-            category2 = Category.CLIENT;
+        FacebookRequestError$Category facebookRequestError$Category = null;
+        FacebookRequestError$Category category;
+        if (n2 != 0) {
+            category = FacebookRequestError$Category.CLIENT;
             n = 0;
-            shouldNotifyUser = b4;
         }
         else {
-            boolean b5 = false;
-            int n2 = 0;
-            Label_0158: {
-                if (n == 1 || n == 2) {
-                    category = Category.SERVER;
-                    b5 = b3;
-                    n2 = (b2 ? 1 : 0);
-                }
-                else if (n == 4 || n == 17) {
-                    category = Category.THROTTLING;
-                    n2 = (b2 ? 1 : 0);
-                    b5 = b3;
-                }
-                else if (n == 10 || FacebookRequestError.EC_RANGE_PERMISSION.contains(n)) {
-                    category = Category.PERMISSION;
-                    n2 = R.string.com_facebook_requesterror_permissions;
-                    b5 = b3;
+            if (errorCode == 1 || errorCode == 2) {
+                facebookRequestError$Category = FacebookRequestError$Category.SERVER;
+                errorCode = 0;
+            }
+            else if (errorCode == 4 || errorCode == 17) {
+                facebookRequestError$Category = FacebookRequestError$Category.THROTTLING;
+                errorCode = 0;
+            }
+            else if (errorCode == 10 || FacebookRequestError.EC_RANGE_PERMISSION.contains(errorCode)) {
+                facebookRequestError$Category = FacebookRequestError$Category.PERMISSION;
+                errorCode = R$string.com_facebook_requesterror_permissions;
+            }
+            else if (errorCode == 102 || errorCode == 190) {
+                if (n == 459 || n == 464) {
+                    facebookRequestError$Category = FacebookRequestError$Category.AUTHENTICATION_RETRY;
+                    errorCode = R$string.com_facebook_requesterror_web_login;
+                    b = true;
                 }
                 else {
-                    if (n != 102) {
-                        n2 = (b2 ? 1 : 0);
-                        b5 = b3;
-                        if (n != 190) {
-                            break Label_0158;
-                        }
+                    facebookRequestError$Category = FacebookRequestError$Category.AUTHENTICATION_REOPEN_SESSION;
+                    if (n == 458 || n == 463) {
+                        errorCode = R$string.com_facebook_requesterror_relogin;
                     }
-                    if (subErrorCode == 459 || subErrorCode == 464) {
-                        category = Category.AUTHENTICATION_RETRY;
-                        n2 = R.string.com_facebook_requesterror_web_login;
-                        b5 = true;
+                    else if (n == 460) {
+                        errorCode = R$string.com_facebook_requesterror_password_changed;
                     }
                     else {
-                        category = Category.AUTHENTICATION_REOPEN_SESSION;
-                        if (subErrorCode == 458 || subErrorCode == 463) {
-                            n2 = R.string.com_facebook_requesterror_relogin;
-                            b5 = b3;
-                        }
-                        else if (subErrorCode == 460) {
-                            n2 = R.string.com_facebook_requesterror_password_changed;
-                            b5 = b3;
-                        }
-                        else {
-                            n2 = R.string.com_facebook_requesterror_reconnect;
-                            b5 = true;
-                        }
+                        errorCode = R$string.com_facebook_requesterror_reconnect;
+                        b = true;
                     }
                 }
             }
-            category2 = category;
-            n = n2;
-            shouldNotifyUser = b5;
-            if (category == null) {
+            else {
+                errorCode = 0;
+            }
+            shouldNotifyUser = b;
+            n = errorCode;
+            category = facebookRequestError$Category;
+            if (facebookRequestError$Category == null) {
                 if (FacebookRequestError.HTTP_RANGE_CLIENT_ERROR.contains(requestStatusCode)) {
-                    category2 = Category.BAD_REQUEST;
-                    n = n2;
-                    shouldNotifyUser = b5;
+                    category = FacebookRequestError$Category.BAD_REQUEST;
+                    shouldNotifyUser = b;
+                    n = errorCode;
                 }
                 else if (FacebookRequestError.HTTP_RANGE_SERVER_ERROR.contains(requestStatusCode)) {
-                    category2 = Category.SERVER;
-                    n = n2;
-                    shouldNotifyUser = b5;
+                    category = FacebookRequestError$Category.SERVER;
+                    shouldNotifyUser = b;
+                    n = errorCode;
                 }
                 else {
-                    category2 = Category.OTHER;
-                    n = n2;
-                    shouldNotifyUser = b5;
+                    category = FacebookRequestError$Category.OTHER;
+                    shouldNotifyUser = b;
+                    n = errorCode;
                 }
             }
         }
-        this.category = category2;
+        this.category = category;
         this.userActionMessageId = n;
         this.shouldNotifyUser = shouldNotifyUser;
     }
@@ -186,49 +171,66 @@ public final class FacebookRequestError
     }
     
     static FacebookRequestError checkResponseAndCreateError(final JSONObject jsonObject, final Object o, final HttpURLConnection httpURLConnection) {
-        try {
-            if (jsonObject.has("code")) {
-                final int int1 = jsonObject.getInt("code");
-                final Object stringPropertyAsJSON = Utility.getStringPropertyAsJSON(jsonObject, "body", "FACEBOOK_NON_JSON_RESULT");
-                if (stringPropertyAsJSON != null && stringPropertyAsJSON instanceof JSONObject) {
-                    final JSONObject jsonObject2 = (JSONObject)stringPropertyAsJSON;
-                    String s = null;
-                    String s2 = null;
-                    int n = -1;
-                    int n2 = -1;
-                    int n3 = 0;
-                    if (jsonObject2.has("error")) {
-                        final JSONObject jsonObject3 = (JSONObject)Utility.getStringPropertyAsJSON(jsonObject2, "error", null);
-                        s = jsonObject3.optString("type", (String)null);
-                        s2 = jsonObject3.optString("message", (String)null);
-                        n = jsonObject3.optInt("code", -1);
-                        n2 = jsonObject3.optInt("error_subcode", -1);
-                        n3 = 1;
-                    }
-                    else if (jsonObject2.has("error_code") || jsonObject2.has("error_msg") || jsonObject2.has("error_reason")) {
-                        s = jsonObject2.optString("error_reason", (String)null);
-                        s2 = jsonObject2.optString("error_msg", (String)null);
-                        n = jsonObject2.optInt("error_code", -1);
-                        n2 = jsonObject2.optInt("error_subcode", -1);
-                        n3 = 1;
-                    }
-                    if (n3 != 0) {
-                        return new FacebookRequestError(int1, n, n2, s, s2, jsonObject2, jsonObject, o, httpURLConnection);
+        while (true) {
+            int n = -1;
+            while (true) {
+                Label_0282: {
+                    while (true) {
+                        Label_0276: {
+                            try {
+                                if (jsonObject.has("code")) {
+                                    final int int1 = jsonObject.getInt("code");
+                                    final Object stringPropertyAsJSON = Utility.getStringPropertyAsJSON(jsonObject, "body", "FACEBOOK_NON_JSON_RESULT");
+                                    if (stringPropertyAsJSON != null && stringPropertyAsJSON instanceof JSONObject) {
+                                        final JSONObject jsonObject2 = (JSONObject)stringPropertyAsJSON;
+                                        int n2 = 0;
+                                        String s;
+                                        String s2;
+                                        int n3;
+                                        if (jsonObject2.has("error")) {
+                                            final JSONObject jsonObject3 = (JSONObject)Utility.getStringPropertyAsJSON(jsonObject2, "error", null);
+                                            s = jsonObject3.optString("type", (String)null);
+                                            s2 = jsonObject3.optString("message", (String)null);
+                                            n3 = jsonObject3.optInt("code", -1);
+                                            n = jsonObject3.optInt("error_subcode", -1);
+                                            n2 = 1;
+                                        }
+                                        else {
+                                            if (!jsonObject2.has("error_code") && !jsonObject2.has("error_msg") && !jsonObject2.has("error_reason")) {
+                                                break Label_0282;
+                                            }
+                                            s = jsonObject2.optString("error_reason", (String)null);
+                                            s2 = jsonObject2.optString("error_msg", (String)null);
+                                            n3 = jsonObject2.optInt("error_code", -1);
+                                            n = jsonObject2.optInt("error_subcode", -1);
+                                            n2 = 1;
+                                        }
+                                        if (n2 != 0) {
+                                            return new FacebookRequestError(int1, n3, n, s, s2, jsonObject2, jsonObject, o, httpURLConnection);
+                                        }
+                                    }
+                                    if (!FacebookRequestError.HTTP_RANGE_SUCCESS.contains(int1)) {
+                                        if (jsonObject.has("body")) {
+                                            final JSONObject jsonObject4 = (JSONObject)Utility.getStringPropertyAsJSON(jsonObject, "body", "FACEBOOK_NON_JSON_RESULT");
+                                            return new FacebookRequestError(int1, -1, -1, null, null, jsonObject4, jsonObject, o, httpURLConnection);
+                                        }
+                                        break Label_0276;
+                                    }
+                                }
+                            }
+                            catch (JSONException ex) {}
+                            break;
+                        }
+                        final JSONObject jsonObject4 = null;
+                        continue;
                     }
                 }
-                if (!FacebookRequestError.HTTP_RANGE_SUCCESS.contains(int1)) {
-                    JSONObject jsonObject4;
-                    if (jsonObject.has("body")) {
-                        jsonObject4 = (JSONObject)Utility.getStringPropertyAsJSON(jsonObject, "body", "FACEBOOK_NON_JSON_RESULT");
-                    }
-                    else {
-                        jsonObject4 = null;
-                    }
-                    return new FacebookRequestError(int1, -1, -1, null, null, jsonObject4, jsonObject, o, httpURLConnection);
-                }
+                int n3 = -1;
+                String s2 = null;
+                String s = null;
+                continue;
             }
         }
-        catch (JSONException ex) {}
         return null;
     }
     
@@ -236,7 +238,7 @@ public final class FacebookRequestError
         return this.batchRequestResult;
     }
     
-    public Category getCategory() {
+    public FacebookRequestError$Category getCategory() {
         return this.category;
     }
     
@@ -290,32 +292,5 @@ public final class FacebookRequestError
     @Override
     public String toString() {
         return "{HttpStatus: " + this.requestStatusCode + ", errorCode: " + this.errorCode + ", errorType: " + this.errorType + ", errorMessage: " + this.errorMessage + "}";
-    }
-    
-    public enum Category
-    {
-        AUTHENTICATION_REOPEN_SESSION, 
-        AUTHENTICATION_RETRY, 
-        BAD_REQUEST, 
-        CLIENT, 
-        OTHER, 
-        PERMISSION, 
-        SERVER, 
-        THROTTLING;
-    }
-    
-    private static class Range
-    {
-        private final int end;
-        private final int start;
-        
-        private Range(final int start, final int end) {
-            this.start = start;
-            this.end = end;
-        }
-        
-        boolean contains(final int n) {
-            return this.start <= n && n <= this.end;
-        }
     }
 }

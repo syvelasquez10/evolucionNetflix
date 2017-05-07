@@ -6,7 +6,7 @@ package com.netflix.mediaclient.util.data;
 
 import java.io.File;
 
-public class FileSystemEntryImpl implements Entry
+public class FileSystemEntryImpl implements DataRepository$Entry
 {
     private String mFileName;
     private long mSizeInBytes;

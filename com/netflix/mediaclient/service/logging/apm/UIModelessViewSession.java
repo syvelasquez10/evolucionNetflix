@@ -6,12 +6,12 @@ package com.netflix.mediaclient.service.logging.apm;
 
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionEndedEvent;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 
 public final class UIModelessViewSession extends BaseApmSession
 {
     public static final String NAME = "uiModelessView";
-    private IClientLogging.ModalView mTarget;
+    private IClientLogging$ModalView mTarget;
     
     public UIModelessViewSessionEndedEvent createEndedEvent() {
         final UIModelessViewSessionEndedEvent uiModelessViewSessionEndedEvent = new UIModelessViewSessionEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mTarget);
@@ -21,12 +21,12 @@ public final class UIModelessViewSession extends BaseApmSession
         return uiModelessViewSessionEndedEvent;
     }
     
-    public UIModelessViewSessionStartedEvent createStartEvent(final boolean b, final IClientLogging.ModalView modalView) {
-        this.mTarget = modalView;
-        final UIModelessViewSessionStartedEvent uiModelessViewSessionStartedEvent = new UIModelessViewSessionStartedEvent(b, modalView);
+    public UIModelessViewSessionStartedEvent createStartEvent(final boolean b, final IClientLogging$ModalView clientLogging$ModalView) {
+        this.mTarget = clientLogging$ModalView;
+        final UIModelessViewSessionStartedEvent uiModelessViewSessionStartedEvent = new UIModelessViewSessionStartedEvent(b, clientLogging$ModalView);
         uiModelessViewSessionStartedEvent.setCategory(this.getCategory());
         uiModelessViewSessionStartedEvent.setSessionId(this.mId);
-        uiModelessViewSessionStartedEvent.setModalView(modalView);
+        uiModelessViewSessionStartedEvent.setModalView(clientLogging$ModalView);
         return uiModelessViewSessionStartedEvent;
     }
     
@@ -35,7 +35,7 @@ public final class UIModelessViewSession extends BaseApmSession
         return "uiModelessView";
     }
     
-    public IClientLogging.ModalView getTarget() {
+    public IClientLogging$ModalView getTarget() {
         return this.mTarget;
     }
 }

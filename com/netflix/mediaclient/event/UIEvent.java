@@ -4,12 +4,11 @@
 
 package com.netflix.mediaclient.event;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface UIEvent
 {
-    JSONObject getData() throws JSONException;
+    JSONObject getData();
     
     String getName();
     

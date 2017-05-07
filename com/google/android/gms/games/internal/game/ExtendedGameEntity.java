@@ -32,7 +32,7 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
     private final SnapshotMetadataEntity aax;
     
     static {
-        CREATOR = new ExtendedGameEntityCreatorCompat();
+        CREATOR = new ExtendedGameEntity$ExtendedGameEntityCreatorCompat();
     }
     
     ExtendedGameEntity(final int br, final GameEntity aan, final int aao, final boolean aap, final int aaq, final long aar, final long aas, final String aat, final long aau, final String aav, final ArrayList<GameBadgeEntity> aaw, final SnapshotMetadataEntity aax) {
@@ -229,31 +229,6 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
             for (int i = n2; i < size; ++i) {
                 this.aaw.get(i).writeToParcel(parcel, n);
             }
-        }
-    }
-    
-    static final class ExtendedGameEntityCreatorCompat extends ExtendedGameEntityCreator
-    {
-        @Override
-        public ExtendedGameEntity cg(final Parcel parcel) {
-            if (GamesDowngradeableSafeParcel.c(c.gP()) || c.aV(ExtendedGameEntity.class.getCanonicalName())) {
-                return super.cg(parcel);
-            }
-            final GameEntity gameEntity = (GameEntity)GameEntity.CREATOR.createFromParcel(parcel);
-            final int int1 = parcel.readInt();
-            final boolean b = parcel.readInt() == 1;
-            final int int2 = parcel.readInt();
-            final long long1 = parcel.readLong();
-            final long long2 = parcel.readLong();
-            final String string = parcel.readString();
-            final long long3 = parcel.readLong();
-            final String string2 = parcel.readString();
-            final int int3 = parcel.readInt();
-            final ArrayList list = new ArrayList<GameBadgeEntity>(int3);
-            for (int i = 0; i < int3; ++i) {
-                list.add(GameBadgeEntity.CREATOR.ch(parcel));
-            }
-            return new ExtendedGameEntity(2, gameEntity, int1, b, int2, long1, long2, string, long3, string2, (ArrayList<GameBadgeEntity>)list, null);
         }
     }
 }

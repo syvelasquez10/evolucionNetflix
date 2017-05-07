@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.snapshot;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.net.Uri;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -62,7 +63,7 @@ public class SnapshotMetadataChangeCreator implements Parcelable$Creator<Snapsho
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new SnapshotMetadataChange(g, o, j, a, uri);
     }

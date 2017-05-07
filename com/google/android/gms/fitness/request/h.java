@@ -5,6 +5,7 @@
 package com.google.android.gms.fitness.request;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -48,7 +49,7 @@ public class h implements Parcelable$Creator<DataTypeCreateRequest>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new DataTypeCreateRequest(g, o, c);
     }

@@ -12,7 +12,7 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-class DialogManager implements OptInResponseHandler
+class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
 {
     private static final String TAG = "DialogManager";
     private final HomeActivity mOwner;

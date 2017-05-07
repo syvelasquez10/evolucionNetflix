@@ -4,9 +4,6 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import android.content.Intent;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 
@@ -18,6 +15,7 @@ public interface SocialLogging
     public static final String EXTRA_DATA_CONTEXT = "dataContext";
     public static final String EXTRA_ERROR = "error";
     public static final String EXTRA_FRIEND_POSITIONS = "friendPositions";
+    public static final String EXTRA_GUID = "guid";
     public static final String EXTRA_MSG_ID = "msgId";
     public static final String EXTRA_SOURCE = "source";
     public static final String EXTRA_STORY_ID = "storyId";
@@ -37,19 +35,19 @@ public interface SocialLogging
     public static final String SOCIAL_RECOMMEND_SCROLLED = "com.netflix.mediaclient.intent.action.LOG_SOCIAL_RECOMMEND_SCROLLED";
     public static final String SOCIAL_RECOMMEND_SEARCHED = "com.netflix.mediaclient.intent.action.LOG_SOCIAL_RECOMMEND_SEARCHED";
     
-    void createRecommendFriendSelectedEvent(final IClientLogging.ModalView p0, final FriendPosition[] p1, final int p2);
+    void createRecommendFriendSelectedEvent(final IClientLogging$ModalView p0, final String p1, final SocialLogging$FriendPosition[] p2, final int p3);
     
     void createRecommendImplicitFeedbackReadEvent(final String p0, final String p1, final int p2);
     
-    void createRecommendMessageAddedEvent(final IClientLogging.ModalView p0, final int p1);
+    void createRecommendMessageAddedEvent(final IClientLogging$ModalView p0, final String p1, final int p2);
     
-    void createRecommendPanelScrolledEvent(final IClientLogging.ModalView p0, final int p1);
+    void createRecommendPanelScrolledEvent(final IClientLogging$ModalView p0, final String p1, final int p2);
     
-    void createRecommendPanelSearchedEvent(final IClientLogging.ModalView p0, final int p1);
+    void createRecommendPanelSearchedEvent(final IClientLogging$ModalView p0, final String p1, final int p2);
     
-    void createSocialConnectActionResponseEvent(final Channel p0, final Source p1, final boolean p2, final Error p3);
+    void createSocialConnectActionResponseEvent(final SocialLogging$Channel p0, final SocialLogging$Source p1, final boolean p2, final Error p3);
     
-    void createSocialConnectImpressionEvent(final IClientLogging.ModalView p0);
+    void createSocialConnectImpressionEvent(final IClientLogging$ModalView p0);
     
     void endSocialConnectSession();
     
@@ -57,86 +55,7 @@ public interface SocialLogging
     
     boolean handleIntent(final Intent p0);
     
-    void startSocialConnectSession(final Channel p0);
+    void startSocialConnectSession(final SocialLogging$Channel p0);
     
-    void startSocialImpressionSession(final IClientLogging.ModalView p0, final String p1, final int p2);
-    
-    public enum Channel
-    {
-        Facebook;
-    }
-    
-    public static class FriendPosition
-    {
-        private String id;
-        private int position;
-        private boolean searched;
-        
-        public FriendPosition(final String id, final int position, final boolean searched) {
-            this.id = id;
-            this.position = position;
-            this.searched = searched;
-        }
-        
-        public static FriendPosition fromJson(final JSONObject jsonObject) throws JSONException {
-            if (jsonObject == null) {
-                return null;
-            }
-            return new FriendPosition(jsonObject.optString("id"), jsonObject.optInt("position", 0), jsonObject.optBoolean("searched", false));
-        }
-        
-        public static FriendPosition[] fromJsonArray(final JSONArray jsonArray) throws JSONException {
-            FriendPosition[] array;
-            if (jsonArray == null) {
-                array = new FriendPosition[0];
-            }
-            else {
-                final FriendPosition[] array2 = new FriendPosition[jsonArray.length()];
-                int n = 0;
-                while (true) {
-                    array = array2;
-                    if (n >= array2.length) {
-                        break;
-                    }
-                    array2[n] = fromJson(jsonArray.getJSONObject(n));
-                    ++n;
-                }
-            }
-            return array;
-        }
-        
-        public JSONObject toJson() throws JSONException {
-            final JSONObject jsonObject = new JSONObject();
-            if (this.id != null) {
-                jsonObject.put("id", (Object)this.id);
-            }
-            jsonObject.put("searched", this.searched);
-            jsonObject.put("position", this.position);
-            return jsonObject;
-        }
-    }
-    
-    public enum Source
-    {
-        BOB("BOB"), 
-        MDP("MDP"), 
-        NotificationCenter("NotificationCenter"), 
-        OnBoarding("On-boarding"), 
-        Play("Play"), 
-        PostPlay("PostPlay"), 
-        Postcard("Postcard"), 
-        Signup("Signup"), 
-        SocialFriendGallery("SocialFriendGallery"), 
-        SocialRow("SocialRow");
-        
-        private String mValue;
-        
-        private Source(final String mValue) {
-            this.mValue = mValue;
-        }
-        
-        public String getValue() {
-            return this.mValue;
-        }
-    }
+    void startSocialImpressionSession(final IClientLogging$ModalView p0, final String p1, final String p2, final int p3);
 }

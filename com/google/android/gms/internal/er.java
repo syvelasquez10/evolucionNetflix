@@ -9,7 +9,7 @@ import android.view.View;
 import com.google.android.gms.dynamic.d;
 
 @ez
-public final class er extends es.a
+public final class er extends es$a
 {
     private final aa sM;
     private final String sN;

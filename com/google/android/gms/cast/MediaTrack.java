@@ -4,7 +4,6 @@
 
 package com.google.android.gms.cast;
 
-import java.util.Locale;
 import com.google.android.gms.common.internal.m;
 import com.google.android.gms.internal.ik;
 import com.google.android.gms.internal.jz;
@@ -34,7 +33,7 @@ public final class MediaTrack
     private JSONObject Fl;
     private String mName;
     
-    MediaTrack(final long dj, final int fd) throws IllegalArgumentException {
+    MediaTrack(final long dj, final int fd) {
         this.clear();
         this.Dj = dj;
         if (fd <= 0 || fd > 3) {
@@ -43,11 +42,11 @@ public final class MediaTrack
         this.FD = fd;
     }
     
-    MediaTrack(final JSONObject jsonObject) throws JSONException {
+    MediaTrack(final JSONObject jsonObject) {
         this.c(jsonObject);
     }
     
-    private void c(final JSONObject jsonObject) throws JSONException {
+    private void c(final JSONObject jsonObject) {
         this.clear();
         this.Dj = jsonObject.getLong("trackId");
         final String string = jsonObject.getString("type");
@@ -104,7 +103,7 @@ public final class MediaTrack
         this.Fl = null;
     }
     
-    void aa(final int fe) throws IllegalArgumentException {
+    void aa(final int fe) {
         if (fe <= -1 || fe > 5) {
             throw new IllegalArgumentException("invalid subtype " + fe);
         }
@@ -273,53 +272,5 @@ public final class MediaTrack
     
     void setName(final String mName) {
         this.mName = mName;
-    }
-    
-    public static class Builder
-    {
-        private final MediaTrack FF;
-        
-        public Builder(final long n, final int n2) throws IllegalArgumentException {
-            this.FF = new MediaTrack(n, n2);
-        }
-        
-        public MediaTrack build() {
-            return this.FF;
-        }
-        
-        public Builder setContentId(final String contentId) {
-            this.FF.setContentId(contentId);
-            return this;
-        }
-        
-        public Builder setContentType(final String contentType) {
-            this.FF.setContentType(contentType);
-            return this;
-        }
-        
-        public Builder setCustomData(final JSONObject customData) {
-            this.FF.setCustomData(customData);
-            return this;
-        }
-        
-        public Builder setLanguage(final String language) {
-            this.FF.setLanguage(language);
-            return this;
-        }
-        
-        public Builder setLanguage(final Locale locale) {
-            this.FF.setLanguage(ik.b(locale));
-            return this;
-        }
-        
-        public Builder setName(final String name) {
-            this.FF.setName(name);
-            return this;
-        }
-        
-        public Builder setSubtype(final int n) throws IllegalArgumentException {
-            this.FF.aa(n);
-            return this;
-        }
     }
 }

@@ -94,52 +94,48 @@ public class AccountConfigData
     }
     
     public JSONArray getCastWhitelistAsJsonArray() {
-        Label_0038: {
-            if (this.mCastWhitelistJSONArray != null) {
-                break Label_0038;
-            }
-            JSONArray mCastWhitelistJSONArray = null;
-            while (true) {
+        while (true) {
+            Label_0034: {
+                if (this.mCastWhitelistJSONArray != null) {
+                    break Label_0034;
+                }
                 if (!StringUtils.isNotEmpty(this.castWhitelist)) {
-                    break Label_0033;
+                    break Label_0034;
                 }
                 try {
-                    mCastWhitelistJSONArray = new JSONArray(this.castWhitelist);
+                    final JSONArray mCastWhitelistJSONArray = new JSONArray(this.castWhitelist);
                     this.mCastWhitelistJSONArray = mCastWhitelistJSONArray;
                     return this.mCastWhitelistJSONArray;
                 }
                 catch (JSONException ex) {
                     Log.d("nf_config", String.format("castWhitelist bad json: %s", this.castWhitelist));
-                    mCastWhitelistJSONArray = mCastWhitelistJSONArray;
-                    continue;
                 }
-                break;
             }
+            final JSONArray mCastWhitelistJSONArray = null;
+            continue;
         }
     }
     
     public JSONObject getJPlayerThreadConfigAsJson() {
-        Label_0038: {
-            if (this.mJPlayerConfigJSON != null) {
-                break Label_0038;
-            }
-            JSONObject mjPlayerConfigJSON = null;
-            while (true) {
+        while (true) {
+            Label_0034: {
+                if (this.mJPlayerConfigJSON != null) {
+                    break Label_0034;
+                }
                 if (!StringUtils.isNotEmpty(this.jPlayerConfig)) {
-                    break Label_0033;
+                    break Label_0034;
                 }
                 try {
-                    mjPlayerConfigJSON = new JSONObject(this.jPlayerConfig);
+                    final JSONObject mjPlayerConfigJSON = new JSONObject(this.jPlayerConfig);
                     this.mJPlayerConfigJSON = mjPlayerConfigJSON;
                     return this.mJPlayerConfigJSON;
                 }
                 catch (JSONException ex) {
                     Log.d("nf_config", String.format("jPlayerThreadConfig bad json: %s", this.jPlayerConfig));
-                    mjPlayerConfigJSON = mjPlayerConfigJSON;
-                    continue;
                 }
-                break;
             }
+            final JSONObject mjPlayerConfigJSON = null;
+            continue;
         }
     }
     
@@ -152,27 +148,25 @@ public class AccountConfigData
     }
     
     public JSONArray getMdxBlacklistAsJsonArray() {
-        Label_0038: {
-            if (this.mMdxBlacklistTargetsJSONArray != null) {
-                break Label_0038;
-            }
-            JSONArray mMdxBlacklistTargetsJSONArray = null;
-            while (true) {
+        while (true) {
+            Label_0034: {
+                if (this.mMdxBlacklistTargetsJSONArray != null) {
+                    break Label_0034;
+                }
                 if (!StringUtils.isNotEmpty(this.mdxBlacklistTargets)) {
-                    break Label_0033;
+                    break Label_0034;
                 }
                 try {
-                    mMdxBlacklistTargetsJSONArray = new JSONArray(this.mdxBlacklistTargets);
+                    final JSONArray mMdxBlacklistTargetsJSONArray = new JSONArray(this.mdxBlacklistTargets);
                     this.mMdxBlacklistTargetsJSONArray = mMdxBlacklistTargetsJSONArray;
                     return this.mMdxBlacklistTargetsJSONArray;
                 }
                 catch (JSONException ex) {
                     Log.d("nf_config", String.format("mdxBlacklistTargets bad json: %s", this.mdxBlacklistTargets));
-                    mMdxBlacklistTargetsJSONArray = mMdxBlacklistTargetsJSONArray;
-                    continue;
                 }
-                break;
             }
+            final JSONArray mMdxBlacklistTargetsJSONArray = null;
+            continue;
         }
     }
     

@@ -6,7 +6,7 @@ package com.google.android.gms.maps.model;
 
 import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
-import com.google.android.gms.dynamic.d;
+import com.google.android.gms.dynamic.d$a;
 import android.os.IBinder;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
@@ -62,7 +62,7 @@ public final class MarkerOptions implements SafeParcelable
             ajT = null;
         }
         else {
-            ajT = new BitmapDescriptor(d.a.am(binder));
+            ajT = new BitmapDescriptor(d$a.am(binder));
         }
         this.ajT = ajT;
         this.ajJ = ajJ;

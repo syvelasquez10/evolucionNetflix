@@ -24,7 +24,7 @@ public class b implements SafeParcelable
     b(final int br, final IBinder binder, final IntentFilter[] ava) {
         this.BR = br;
         if (binder != null) {
-            this.auZ = ae.a.bS(binder);
+            this.auZ = ae$a.bS(binder);
         }
         else {
             this.auZ = null;

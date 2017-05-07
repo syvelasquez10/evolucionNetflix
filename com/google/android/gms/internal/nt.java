@@ -16,7 +16,7 @@ import com.google.android.gms.plus.model.moments.ItemScope;
 public final class nt extends jj implements ItemScope
 {
     public static final nu CREATOR;
-    private static final HashMap<String, a<?, ?>> alQ;
+    private static final HashMap<String, ji$a<?, ?>> alQ;
     String BL;
     final int BR;
     String Tg;
@@ -76,60 +76,60 @@ public final class nt extends jj implements ItemScope
     
     static {
         CREATOR = new nu();
-        (alQ = new HashMap<String, a<?, ?>>()).put("about", a.a("about", 2, (Class<?>)nt.class));
-        nt.alQ.put("additionalName", (a<?, ?>)a.m("additionalName", 3));
-        nt.alQ.put("address", a.a("address", 4, (Class<?>)nt.class));
-        nt.alQ.put("addressCountry", (a<?, ?>)a.l("addressCountry", 5));
-        nt.alQ.put("addressLocality", (a<?, ?>)a.l("addressLocality", 6));
-        nt.alQ.put("addressRegion", (a<?, ?>)a.l("addressRegion", 7));
-        nt.alQ.put("associated_media", (a<?, ?>)a.b("associated_media", 8, nt.class));
-        nt.alQ.put("attendeeCount", (a<?, ?>)a.i("attendeeCount", 9));
-        nt.alQ.put("attendees", (a<?, ?>)a.b("attendees", 10, nt.class));
-        nt.alQ.put("audio", a.a("audio", 11, (Class<?>)nt.class));
-        nt.alQ.put("author", (a<?, ?>)a.b("author", 12, nt.class));
-        nt.alQ.put("bestRating", (a<?, ?>)a.l("bestRating", 13));
-        nt.alQ.put("birthDate", (a<?, ?>)a.l("birthDate", 14));
-        nt.alQ.put("byArtist", a.a("byArtist", 15, (Class<?>)nt.class));
-        nt.alQ.put("caption", (a<?, ?>)a.l("caption", 16));
-        nt.alQ.put("contentSize", (a<?, ?>)a.l("contentSize", 17));
-        nt.alQ.put("contentUrl", (a<?, ?>)a.l("contentUrl", 18));
-        nt.alQ.put("contributor", (a<?, ?>)a.b("contributor", 19, nt.class));
-        nt.alQ.put("dateCreated", (a<?, ?>)a.l("dateCreated", 20));
-        nt.alQ.put("dateModified", (a<?, ?>)a.l("dateModified", 21));
-        nt.alQ.put("datePublished", (a<?, ?>)a.l("datePublished", 22));
-        nt.alQ.put("description", (a<?, ?>)a.l("description", 23));
-        nt.alQ.put("duration", (a<?, ?>)a.l("duration", 24));
-        nt.alQ.put("embedUrl", (a<?, ?>)a.l("embedUrl", 25));
-        nt.alQ.put("endDate", (a<?, ?>)a.l("endDate", 26));
-        nt.alQ.put("familyName", (a<?, ?>)a.l("familyName", 27));
-        nt.alQ.put("gender", (a<?, ?>)a.l("gender", 28));
-        nt.alQ.put("geo", a.a("geo", 29, (Class<?>)nt.class));
-        nt.alQ.put("givenName", (a<?, ?>)a.l("givenName", 30));
-        nt.alQ.put("height", (a<?, ?>)a.l("height", 31));
-        nt.alQ.put("id", (a<?, ?>)a.l("id", 32));
-        nt.alQ.put("image", (a<?, ?>)a.l("image", 33));
-        nt.alQ.put("inAlbum", a.a("inAlbum", 34, (Class<?>)nt.class));
-        nt.alQ.put("latitude", (a<?, ?>)a.j("latitude", 36));
-        nt.alQ.put("location", a.a("location", 37, (Class<?>)nt.class));
-        nt.alQ.put("longitude", (a<?, ?>)a.j("longitude", 38));
-        nt.alQ.put("name", (a<?, ?>)a.l("name", 39));
-        nt.alQ.put("partOfTVSeries", a.a("partOfTVSeries", 40, (Class<?>)nt.class));
-        nt.alQ.put("performers", (a<?, ?>)a.b("performers", 41, nt.class));
-        nt.alQ.put("playerType", (a<?, ?>)a.l("playerType", 42));
-        nt.alQ.put("postOfficeBoxNumber", (a<?, ?>)a.l("postOfficeBoxNumber", 43));
-        nt.alQ.put("postalCode", (a<?, ?>)a.l("postalCode", 44));
-        nt.alQ.put("ratingValue", (a<?, ?>)a.l("ratingValue", 45));
-        nt.alQ.put("reviewRating", a.a("reviewRating", 46, (Class<?>)nt.class));
-        nt.alQ.put("startDate", (a<?, ?>)a.l("startDate", 47));
-        nt.alQ.put("streetAddress", (a<?, ?>)a.l("streetAddress", 48));
-        nt.alQ.put("text", (a<?, ?>)a.l("text", 49));
-        nt.alQ.put("thumbnail", a.a("thumbnail", 50, (Class<?>)nt.class));
-        nt.alQ.put("thumbnailUrl", (a<?, ?>)a.l("thumbnailUrl", 51));
-        nt.alQ.put("tickerSymbol", (a<?, ?>)a.l("tickerSymbol", 52));
-        nt.alQ.put("type", (a<?, ?>)a.l("type", 53));
-        nt.alQ.put("url", (a<?, ?>)a.l("url", 54));
-        nt.alQ.put("width", (a<?, ?>)a.l("width", 55));
-        nt.alQ.put("worstRating", (a<?, ?>)a.l("worstRating", 56));
+        (alQ = new HashMap<String, ji$a<?, ?>>()).put("about", ji$a.a("about", 2, (Class<?>)nt.class));
+        nt.alQ.put("additionalName", ji$a.m("additionalName", 3));
+        nt.alQ.put("address", ji$a.a("address", 4, (Class<?>)nt.class));
+        nt.alQ.put("addressCountry", ji$a.l("addressCountry", 5));
+        nt.alQ.put("addressLocality", ji$a.l("addressLocality", 6));
+        nt.alQ.put("addressRegion", ji$a.l("addressRegion", 7));
+        nt.alQ.put("associated_media", ji$a.b("associated_media", 8, nt.class));
+        nt.alQ.put("attendeeCount", ji$a.i("attendeeCount", 9));
+        nt.alQ.put("attendees", ji$a.b("attendees", 10, nt.class));
+        nt.alQ.put("audio", ji$a.a("audio", 11, (Class<?>)nt.class));
+        nt.alQ.put("author", ji$a.b("author", 12, nt.class));
+        nt.alQ.put("bestRating", ji$a.l("bestRating", 13));
+        nt.alQ.put("birthDate", ji$a.l("birthDate", 14));
+        nt.alQ.put("byArtist", ji$a.a("byArtist", 15, (Class<?>)nt.class));
+        nt.alQ.put("caption", ji$a.l("caption", 16));
+        nt.alQ.put("contentSize", ji$a.l("contentSize", 17));
+        nt.alQ.put("contentUrl", ji$a.l("contentUrl", 18));
+        nt.alQ.put("contributor", ji$a.b("contributor", 19, nt.class));
+        nt.alQ.put("dateCreated", ji$a.l("dateCreated", 20));
+        nt.alQ.put("dateModified", ji$a.l("dateModified", 21));
+        nt.alQ.put("datePublished", ji$a.l("datePublished", 22));
+        nt.alQ.put("description", ji$a.l("description", 23));
+        nt.alQ.put("duration", ji$a.l("duration", 24));
+        nt.alQ.put("embedUrl", ji$a.l("embedUrl", 25));
+        nt.alQ.put("endDate", ji$a.l("endDate", 26));
+        nt.alQ.put("familyName", ji$a.l("familyName", 27));
+        nt.alQ.put("gender", ji$a.l("gender", 28));
+        nt.alQ.put("geo", ji$a.a("geo", 29, (Class<?>)nt.class));
+        nt.alQ.put("givenName", ji$a.l("givenName", 30));
+        nt.alQ.put("height", ji$a.l("height", 31));
+        nt.alQ.put("id", ji$a.l("id", 32));
+        nt.alQ.put("image", ji$a.l("image", 33));
+        nt.alQ.put("inAlbum", ji$a.a("inAlbum", 34, (Class<?>)nt.class));
+        nt.alQ.put("latitude", ji$a.j("latitude", 36));
+        nt.alQ.put("location", ji$a.a("location", 37, (Class<?>)nt.class));
+        nt.alQ.put("longitude", ji$a.j("longitude", 38));
+        nt.alQ.put("name", ji$a.l("name", 39));
+        nt.alQ.put("partOfTVSeries", ji$a.a("partOfTVSeries", 40, (Class<?>)nt.class));
+        nt.alQ.put("performers", ji$a.b("performers", 41, nt.class));
+        nt.alQ.put("playerType", ji$a.l("playerType", 42));
+        nt.alQ.put("postOfficeBoxNumber", ji$a.l("postOfficeBoxNumber", 43));
+        nt.alQ.put("postalCode", ji$a.l("postalCode", 44));
+        nt.alQ.put("ratingValue", ji$a.l("ratingValue", 45));
+        nt.alQ.put("reviewRating", ji$a.a("reviewRating", 46, (Class<?>)nt.class));
+        nt.alQ.put("startDate", ji$a.l("startDate", 47));
+        nt.alQ.put("streetAddress", ji$a.l("streetAddress", 48));
+        nt.alQ.put("text", ji$a.l("text", 49));
+        nt.alQ.put("thumbnail", ji$a.a("thumbnail", 50, (Class<?>)nt.class));
+        nt.alQ.put("thumbnailUrl", ji$a.l("thumbnailUrl", 51));
+        nt.alQ.put("tickerSymbol", ji$a.l("tickerSymbol", 52));
+        nt.alQ.put("type", ji$a.l("type", 53));
+        nt.alQ.put("url", ji$a.l("url", 54));
+        nt.alQ.put("width", ji$a.l("width", 55));
+        nt.alQ.put("worstRating", ji$a.l("worstRating", 56));
     }
     
     public nt() {
@@ -256,15 +256,15 @@ public final class nt extends jj implements ItemScope
     }
     
     @Override
-    protected boolean a(final a a) {
-        return this.alR.contains(a.hm());
+    protected boolean a(final ji$a ji$a) {
+        return this.alR.contains(ji$a.hm());
     }
     
     @Override
-    protected Object b(final a a) {
-        switch (a.hm()) {
+    protected Object b(final ji$a ji$a) {
+        switch (ji$a.hm()) {
             default: {
-                throw new IllegalStateException("Unknown safe parcelable id=" + a.hm());
+                throw new IllegalStateException("Unknown safe parcelable id=" + ji$a.hm());
             }
             case 2: {
                 return this.alS;
@@ -445,18 +445,18 @@ public final class nt extends jj implements ItemScope
             return true;
         }
         final nt nt = (nt)o;
-        for (final a a : com.google.android.gms.internal.nt.alQ.values()) {
-            if (this.a((a)a)) {
-                if (!nt.a((a)a)) {
+        for (final ji$a<?, ?> ji$a : com.google.android.gms.internal.nt.alQ.values()) {
+            if (this.a(ji$a)) {
+                if (!nt.a(ji$a)) {
                     return false;
                 }
-                if (!this.b((a)a).equals(nt.b((a)a))) {
+                if (!this.b(ji$a).equals(nt.b(ji$a))) {
                     return false;
                 }
                 continue;
             }
             else {
-                if (nt.a((a)a)) {
+                if (nt.a(ji$a)) {
                     return false;
                 }
                 continue;
@@ -1007,19 +1007,19 @@ public final class nt extends jj implements ItemScope
     
     @Override
     public int hashCode() {
-        final Iterator<a<?, ?>> iterator = nt.alQ.values().iterator();
+        final Iterator<ji$a<?, ?>> iterator = nt.alQ.values().iterator();
         int n = 0;
         while (iterator.hasNext()) {
-            final a a = (a)iterator.next();
-            if (this.a((a)a)) {
-                n = this.b((a)a).hashCode() + (n + a.hm());
+            final ji$a<?, ?> ji$a = iterator.next();
+            if (this.a(ji$a)) {
+                n = this.b(ji$a).hashCode() + (n + ji$a.hm());
             }
         }
         return n;
     }
     
     @Override
-    public HashMap<String, a<?, ?>> hf() {
+    public HashMap<String, ji$a<?, ?>> hf() {
         return nt.alQ;
     }
     

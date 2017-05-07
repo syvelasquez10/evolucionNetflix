@@ -21,7 +21,7 @@ class e implements m
     }
     
     @Override
-    public byte[] a(final String s, final boolean b) throws IllegalArgumentException {
+    public byte[] a(final String s, final boolean b) {
         int n;
         if (b) {
             n = 11;

@@ -4,11 +4,17 @@
 
 package com.netflix.falkor;
 
+import java.util.List;
+import com.netflix.model.branches.FalkorObject;
 import java.util.Collection;
 
 public interface ModelProxy<T>
 {
-    CachedModelProxy.GetResult get(final Collection<PQL> p0);
+    CachedModelProxy$GetResult get(final Collection<PQL> p0);
+    
+     <I extends FalkorObject> List<I> getItemsAsList(final PQL p0);
+    
+     <I extends FalkorObject> List<I> getItemsAsList(final Collection<PQL> p0);
     
     ServiceProvider getServiceProvider();
     

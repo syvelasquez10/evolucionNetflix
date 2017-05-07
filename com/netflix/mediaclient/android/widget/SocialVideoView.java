@@ -13,7 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.Paint$Align;
 import android.content.res.Resources;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -154,7 +155,7 @@ public class SocialVideoView extends VideoView
         if (this.cachedName == null) {
             this.cachedName = this.getTruncatedName((Paint)microSecondaryCenterPaint);
         }
-        canvas.drawText(this.cachedName, (float)(this.getWidth() / 2), (float)(centerYOffset + n), (Paint)microSecondaryCenterPaint);
+        canvas.drawText(this.cachedName, (float)(this.getWidth() / 2), (float)(n + centerYOffset), (Paint)microSecondaryCenterPaint);
     }
     
     private void drawSocialBitmaps(final Canvas canvas, final int n, final int n2, final int n3, int i) {
@@ -208,7 +209,7 @@ public class SocialVideoView extends VideoView
                 Log.w("SocialVideoView", "Empty image url for friend: " + friendProfile.getFullName());
             }
             else {
-                imageLoader.getImg(friendProfile.getImageUrl(), IClientLogging.AssetType.profileAvatar, this.singleImgSize, this.singleImgSize, (ImageLoader.ImageLoaderListener)new ImageLoadedListener(i));
+                imageLoader.getImg(friendProfile.getImageUrl(), IClientLogging$AssetType.profileAvatar, this.singleImgSize, this.singleImgSize, new SocialVideoView$ImageLoadedListener(this, i));
             }
         }
     }
@@ -224,7 +225,7 @@ public class SocialVideoView extends VideoView
     private void init() {
         final Resources resources = this.getResources();
         this.singleImgSize = resources.getDimensionPixelOffset(2131361895);
-        this.textSizeMicro = resources.getDimensionPixelOffset(2131361863);
+        this.textSizeMicro = resources.getDimensionPixelOffset(2131361864);
         this.padding = resources.getDimensionPixelOffset(2131361861);
         this.initTextPaint(resources);
     }
@@ -232,17 +233,17 @@ public class SocialVideoView extends VideoView
     private void initTextPaint(final Resources resources) {
         if (SocialVideoView.microSecondaryLeftPaint == null) {
             (SocialVideoView.microSecondaryLeftPaint = new TextPaint()).setTextSize((float)this.textSizeMicro);
-            SocialVideoView.microSecondaryLeftPaint.setColor(resources.getColor(2131296362));
+            SocialVideoView.microSecondaryLeftPaint.setColor(resources.getColor(2131296365));
             SocialVideoView.microSecondaryLeftPaint.setTextAlign(Paint$Align.LEFT);
         }
         if (SocialVideoView.microSecondaryCenterPaint == null) {
             (SocialVideoView.microSecondaryCenterPaint = new TextPaint()).setTextSize((float)this.textSizeMicro);
-            SocialVideoView.microSecondaryCenterPaint.setColor(resources.getColor(2131296362));
+            SocialVideoView.microSecondaryCenterPaint.setColor(resources.getColor(2131296365));
             SocialVideoView.microSecondaryCenterPaint.setTextAlign(Paint$Align.CENTER);
         }
         if (SocialVideoView.smallPrimaryLeftPaint == null) {
-            (SocialVideoView.smallPrimaryLeftPaint = new TextPaint()).setTextSize((float)resources.getDimensionPixelOffset(2131361864));
-            SocialVideoView.smallPrimaryLeftPaint.setColor(resources.getColor(2131296361));
+            (SocialVideoView.smallPrimaryLeftPaint = new TextPaint()).setTextSize((float)resources.getDimensionPixelOffset(2131361865));
+            SocialVideoView.smallPrimaryLeftPaint.setColor(resources.getColor(2131296364));
             SocialVideoView.smallPrimaryLeftPaint.setTextAlign(Paint$Align.LEFT);
         }
     }
@@ -301,8 +302,8 @@ public class SocialVideoView extends VideoView
         if (n == 0 || n == n3) {
             return;
         }
-        this.connectText = new StaticLayout((CharSequence)this.getResources().getString(2131493232), SocialVideoView.smallPrimaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
-        this.socialGroupText = new StaticLayout((CharSequence)this.getResources().getString(2131493231), SocialVideoView.microSecondaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+        this.connectText = new StaticLayout((CharSequence)this.getResources().getString(2131493192), SocialVideoView.smallPrimaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+        this.socialGroupText = new StaticLayout((CharSequence)this.getResources().getString(2131493191), SocialVideoView.microSecondaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
     }
     
     @Override
@@ -313,12 +314,12 @@ public class SocialVideoView extends VideoView
     @Override
     public void update(final Video video, final Trackable trackable, int size, final boolean b) {
         final int n = 0;
-        if (!(this.isSocialView = com.netflix.mediaclient.service.webclient.model.branches.Video.isSocialVideoType(video.getType()))) {
+        if (!(this.isSocialView = video.getType().isSocialVideoType())) {
             super.update(video, trackable, size, b);
             return;
         }
         Log.v("SocialVideoView", "Updating for social view: " + video.getTitle());
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this, null, IClientLogging.AssetType.boxArt, video.getTitle(), false, false);
+        NetflixActivity.getImageLoader(this.getContext()).showImg(this, null, IClientLogging$AssetType.boxArt, video.getTitle(), false, false);
         this.setImageBitmap(null);
         this.setVisibility(0);
         this.video = video;
@@ -343,29 +344,5 @@ public class SocialVideoView extends VideoView
         }
         this.clearBitmaps();
         this.fetchImages();
-    }
-    
-    private class ImageLoadedListener implements ImageLoaderListener
-    {
-        private final int index;
-        
-        public ImageLoadedListener(final int index) {
-            this.index = index;
-        }
-        
-        @Override
-        public void onErrorResponse(final String s) {
-            Log.w("SocialVideoView", "Could not load img: " + s + ", index: " + this.index);
-        }
-        
-        @Override
-        public void onResponse(final Bitmap bitmap, final String s) {
-            if (bitmap == null) {
-                return;
-            }
-            Log.v("SocialVideoView", "Loaded bitmap: " + s + ", index: " + this.index + ", size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
-            SocialVideoView.this.bitmaps[this.index] = bitmap;
-            SocialVideoView.this.invalidate();
-        }
     }
 }

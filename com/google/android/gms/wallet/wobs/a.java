@@ -5,6 +5,7 @@
 package com.google.android.gms.wallet.wobs;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.internal.jr;
 import com.google.android.gms.maps.model.LatLng;
 import android.os.Parcelable;
@@ -152,7 +153,7 @@ public class a implements Parcelable$Creator<CommonWalletObject>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new CommonWalletObject(g, o, o2, o3, o4, o5, o6, o7, o8, g2, list, l, list2, o9, o10, list3, c2, list4, list5, list6);
     }

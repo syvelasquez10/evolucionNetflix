@@ -29,7 +29,7 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
     private int mFocusedVirtualViewId;
     private int mHoveredVirtualViewId;
     private final AccessibilityManager mManager;
-    private ExploreByTouchNodeProvider mNodeProvider;
+    private ExploreByTouchHelper$ExploreByTouchNodeProvider mNodeProvider;
     private final int[] mTempGlobalRect;
     private final Rect mTempParentRect;
     private final Rect mTempScreenRect;
@@ -161,20 +161,21 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
     }
     
     private boolean intersectVisibleToUser(final Rect rect) {
-        if (rect != null && !rect.isEmpty() && this.mView.getWindowVisibility() == 0) {
-            ViewParent viewParent;
-            View view;
-            for (viewParent = this.mView.getParent(); viewParent instanceof View; viewParent = view.getParent()) {
-                view = (View)viewParent;
-                if (ViewCompat.getAlpha(view) <= 0.0f || view.getVisibility() != 0) {
-                    return false;
-                }
-            }
-            if (viewParent != null && this.mView.getLocalVisibleRect(this.mTempVisibleRect)) {
-                return rect.intersect(this.mTempVisibleRect);
+        if (rect == null || rect.isEmpty()) {
+            return false;
+        }
+        if (this.mView.getWindowVisibility() != 0) {
+            return false;
+        }
+        ViewParent viewParent;
+        View view;
+        for (viewParent = this.mView.getParent(); viewParent instanceof View; viewParent = view.getParent()) {
+            view = (View)viewParent;
+            if (ViewCompat.getAlpha(view) <= 0.0f || view.getVisibility() != 0) {
+                return false;
             }
         }
-        return false;
+        return viewParent != null && this.mView.getLocalVisibleRect(this.mTempVisibleRect) && rect.intersect(this.mTempVisibleRect);
     }
     
     private boolean isAccessibilityFocused(final int n) {
@@ -272,7 +273,7 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
     @Override
     public AccessibilityNodeProviderCompat getAccessibilityNodeProvider(final View view) {
         if (this.mNodeProvider == null) {
-            this.mNodeProvider = new ExploreByTouchNodeProvider();
+            this.mNodeProvider = new ExploreByTouchHelper$ExploreByTouchNodeProvider(this, null);
         }
         return this.mNodeProvider;
     }
@@ -307,18 +308,5 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
             }
         }
         return false;
-    }
-    
-    private class ExploreByTouchNodeProvider extends AccessibilityNodeProviderCompat
-    {
-        @Override
-        public AccessibilityNodeInfoCompat createAccessibilityNodeInfo(final int n) {
-            return ExploreByTouchHelper.this.createNode(n);
-        }
-        
-        @Override
-        public boolean performAction(final int n, final int n2, final Bundle bundle) {
-            return ExploreByTouchHelper.this.performAction(n, n2, bundle);
-        }
     }
 }

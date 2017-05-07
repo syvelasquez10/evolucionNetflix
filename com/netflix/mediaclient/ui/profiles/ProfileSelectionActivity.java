@@ -4,9 +4,7 @@
 
 package com.netflix.mediaclient.ui.profiles;
 
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
@@ -20,9 +18,13 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.view.ViewGroup$MarginLayoutParams;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.util.StringUtils;
@@ -30,18 +32,14 @@ import java.util.Iterator;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewPropertyAnimator;
-import com.netflix.mediaclient.servicemgr.UIViewLogging;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.content.Intent;
+import com.netflix.mediaclient.Log;
+import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.app.Status;
 import android.app.Activity;
-import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import android.content.Context;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import com.netflix.mediaclient.Log;
-import android.widget.AdapterView;
 import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import java.util.List;
@@ -49,7 +47,7 @@ import android.widget.AdapterView$OnItemClickListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.StaticGridView;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.view.View;
 import android.util.SparseIntArray;
 import android.util.SparseArray;
@@ -70,10 +68,10 @@ public class ProfileSelectionActivity extends NetflixActivity
     private static final String KEY_IS_SHOWING_KIDS_LOADING_SCREEN = "is_showing_kids_loading_screen";
     private static final String TAG = "ProfileSelectionActivity";
     private static final SparseArray<SparseIntArray> maxNumGridColumns;
-    private ProfileAvatarAdapter adapter;
+    private ProfileSelectionActivity$ProfileAvatarAdapter adapter;
     private int columnWidth;
     private View content;
-    private final ErrorWrapper.Callback errorCallback;
+    private final ErrorWrapper$Callback errorCallback;
     private StaticGridView gridView;
     private boolean isLoading;
     private boolean isProfileEditMode;
@@ -107,37 +105,8 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     public ProfileSelectionActivity() {
-        this.errorCallback = new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-            }
-        };
-        this.onAvatarClickListener = (AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                if (ProfileSelectionActivity.this.profiles == null || n > ProfileSelectionActivity.this.profiles.size()) {
-                    Log.d("ProfileSelectionActivity", "Invalid profiles set");
-                    return;
-                }
-                if (n == ProfileSelectionActivity.this.profiles.size()) {
-                    UserActionLogUtils.reportAddProfileActionStarted((Context)ProfileSelectionActivity.this, null, ProfileSelectionActivity.this.getUiScreen());
-                    ProfileSelectionActivity.this.startActivity(ProfileDetailsActivity.getStartIntent((Context)ProfileSelectionActivity.this, null));
-                    return;
-                }
-                if (!ProfileSelectionActivity.this.isProfileEditMode) {
-                    final UserProfile userProfile = ProfileSelectionActivity.this.profiles.get(n);
-                    UserActionLogUtils.reportSelectProfileActionStarted((Context)ProfileSelectionActivity.this, null, ProfileSelectionActivity.this.getUiScreen(), userProfile.getProfileGuid(), UserActionLogging.RememberProfile.userChoseToRemember);
-                    ProfileSelectionActivity.this.startChangeProfile(userProfile);
-                    ProfileSelectionActivity.this.invalidateOptionsMenu();
-                    return;
-                }
-                if (ProfileSelectionActivity.this.profiles.get(n).getProfileGuid() == null) {
-                    ProfileSelectionActivity.this.handleUserAgentErrors(ProfileSelectionActivity.this, CommonStatus.INTERNAL_ERROR);
-                    return;
-                }
-                UserActionLogUtils.reportEditProfileActionStarted((Context)ProfileSelectionActivity.this, null, ProfileSelectionActivity.this.getUiScreen());
-                ProfileSelectionActivity.this.startActivity(ProfileDetailsActivity.getStartIntent((Context)ProfileSelectionActivity.this, ProfileSelectionActivity.this.profiles.get(n).getProfileGuid()));
-            }
-        };
+        this.errorCallback = new ProfileSelectionActivity$4(this);
+        this.onAvatarClickListener = (AdapterView$OnItemClickListener)new ProfileSelectionActivity$5(this);
     }
     
     private void adjustGridViewMargins() {
@@ -167,19 +136,19 @@ public class ProfileSelectionActivity extends NetflixActivity
         return startIntentForAppRestart;
     }
     
-    public static Intent createSwitchFromDeepLinking(final Activity activity, final IClientLogging.ModalView modalView) {
-        if (modalView == null) {
+    public static Intent createSwitchFromDeepLinking(final Activity activity, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (clientLogging$ModalView == null) {
             return createStartIntent((Context)activity);
         }
-        return createStartIntent((Context)activity).putExtra("extra_destination", modalView.name());
+        return createStartIntent((Context)activity).putExtra("extra_destination", clientLogging$ModalView.name());
     }
     
-    public static Intent createSwitchFromKidsIntent(final Activity activity, final UIViewLogging.UIViewCommandName uiViewCommandName) {
-        return createStartIntent((Context)activity).putExtra("extra_stop_kids_bool", true).putExtra("extra_kids_door_name", uiViewCommandName.toString());
+    public static Intent createSwitchFromKidsIntent(final Activity activity, final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName) {
+        return createStartIntent((Context)activity).putExtra("extra_stop_kids_bool", true).putExtra("extra_kids_door_name", uiViewLogging$UIViewCommandName.toString());
     }
     
-    public static Intent createSwitchToKidsIntent(final Activity activity, final UIViewLogging.UIViewCommandName uiViewCommandName) {
-        return createStartIntent((Context)activity).putExtra("extra_start_kids_bool", true).putExtra("extra_kids_door_name", uiViewCommandName.toString());
+    public static Intent createSwitchToKidsIntent(final Activity activity, final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName) {
+        return createStartIntent((Context)activity).putExtra("extra_start_kids_bool", true).putExtra("extra_kids_door_name", uiViewLogging$UIViewCommandName.toString());
     }
     
     private void findViewAndAnimate(final View view, final int n) {
@@ -208,7 +177,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                 Log.d("ProfileSelectionActivity", "profile: " + iterator.next());
             }
             this.profiles = allProfiles;
-            this.adapter = new ProfileAvatarAdapter();
+            this.adapter = new ProfileSelectionActivity$ProfileAvatarAdapter(this, null);
             this.gridView.setAdapter((ListAdapter)this.adapter);
             this.setupGridViewColumns();
             this.showContentView();
@@ -220,12 +189,14 @@ public class ProfileSelectionActivity extends NetflixActivity
             }
             Log.v("ProfileSelectionActivity", String.format("shouldAutoSelectProfile: %s, shouldStartKids: %s", b, this.shouldStartKids));
             if (b && this.shouldStartKids) {
+                final Iterator<? extends UserProfile> iterator2 = this.manager.getAllProfiles().iterator();
                 int n = 0;
                 UserProfile userProfile = null;
-                for (final UserProfile userProfile2 : this.manager.getAllProfiles()) {
+                while (iterator2.hasNext()) {
+                    final UserProfile userProfile2 = (UserProfile)iterator2.next();
                     if (userProfile2.isKidsProfile()) {
-                        userProfile = userProfile2;
                         ++n;
+                        userProfile = userProfile2;
                     }
                 }
                 if (n == 1) {
@@ -243,23 +214,23 @@ public class ProfileSelectionActivity extends NetflixActivity
         final boolean booleanExtra2 = this.getIntent().getBooleanExtra("extra_stop_kids_bool", false);
         final String stringExtra = this.getIntent().getStringExtra("extra_kids_door_name");
         if ((Boolean.valueOf(booleanExtra) || Boolean.valueOf(booleanExtra2)) && StringUtils.isNotEmpty(stringExtra)) {
-            UIViewLogUtils.reportUIViewCommand((Context)this, UIViewLogging.UIViewCommandName.valueOf(stringExtra), IClientLogging.ModalView.homeScreen, null);
+            UIViewLogUtils.reportUIViewCommand((Context)this, UIViewLogging$UIViewCommandName.valueOf(stringExtra), IClientLogging$ModalView.homeScreen, null);
         }
     }
     
     private void refreshEditProfileModeViews() {
-        if (this.isProfileEditMode) {
-            this.getNetflixActionBar().setTitle(this.getResources().getString(2131493349));
-        }
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
-        NetflixActionBar.LogoType logoType;
+        NetflixActionBar$LogoType logoType;
         if (this.isProfileEditMode) {
-            logoType = NetflixActionBar.LogoType.GONE;
+            logoType = NetflixActionBar$LogoType.GONE;
         }
         else {
-            logoType = NetflixActionBar.LogoType.FULL_SIZE;
+            logoType = NetflixActionBar$LogoType.FULL_SIZE;
         }
         netflixActionBar.setLogoType(logoType);
+        if (this.isProfileEditMode) {
+            this.getNetflixActionBar().setTitle(this.getResources().getString(2131493292));
+        }
         this.getNetflixActionBar().setDisplayHomeAsUpEnabled(this.isProfileEditMode);
         final ViewPropertyAnimator animate = this.topTextHeader.animate();
         float n;
@@ -285,7 +256,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     visibility = 8;
                 }
                 viewById.setVisibility(visibility);
-                this.findViewAndAnimate(child, 2131165299);
+                this.findViewAndAnimate(child, 2131165296);
                 this.findViewAndAnimate(child, 2131165615);
             }
         }
@@ -293,15 +264,16 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     private void reportError(final Status status, final String s) {
-        UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging.CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, s, ActionOnUIError.displayedError));
+        UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, s, ActionOnUIError.displayedError));
         UserActionLogUtils.reportNavigationActionStarted((Context)this, null, this.getUiScreen());
     }
     
     private void setupGridViewColumns() {
         final int value = ((SparseIntArray)ProfileSelectionActivity.maxNumGridColumns.get(DeviceUtils.getBasicScreenOrientation((Context)this))).get(DeviceUtils.getScreenSizeCategory((Context)this));
-        int count = this.adapter.getCount();
-        if (count > 3) {
-            count -= 2;
+        int count;
+        final int n = count = this.adapter.getCount();
+        if (n > 3) {
+            count = n - 2;
         }
         this.numCols = Math.min(count, value);
         if (Log.isLoggable("ProfileSelectionActivity", 2)) {
@@ -326,7 +298,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         if (this.kidsLoadingScreen.getVisibility() == 0) {
             this.setRequestedOrientation(-1);
             AnimationUtils.hideView(this.kidsLoadingScreen, true);
-            this.getNetflixActionBar().setLogoType(NetflixActionBar.LogoType.FULL_SIZE);
+            this.getNetflixActionBar().setLogoType(NetflixActionBar$LogoType.FULL_SIZE);
         }
     }
     
@@ -343,7 +315,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         if (b2) {
             this.setRequestedOrientation(1);
             AnimationUtils.showView(this.kidsLoadingScreen, false);
-            this.getNetflixActionBar().setLogoType(NetflixActionBar.LogoType.GONE);
+            this.getNetflixActionBar().setLogoType(NetflixActionBar$LogoType.GONE);
         }
     }
     
@@ -354,8 +326,8 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         viewById.setVisibility(0);
-        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131361956)) / 2.0f);
-        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n + n2, (int)this.getResources().getDimension(2131361862));
+        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131361957)) / 2.0f);
+        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131361862));
     }
     
     private void updateAppWasRestartedFlag(final Intent intent) {
@@ -369,23 +341,12 @@ public class ProfileSelectionActivity extends NetflixActivity
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                ProfileSelectionActivity.this.manager = serviceManager;
-                ProfileSelectionActivity.this.handleManagerReady(true);
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-                ProfileSelectionActivity.this.manager = null;
-            }
-        };
+        return new ProfileSelectionActivity$2(this);
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.profilesGate;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.profilesGate;
     }
     
     public boolean handleBackPressed() {
@@ -432,7 +393,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         final StatusCode statusCodeByValue = StatusCode.getStatusCodeByValue(n);
         if (statusCodeByValue == StatusCode.OK) {
             Log.v("ProfileSelectionActivity", "Profile selection was successful.  Parent class should finish this activity in a moment...");
-            UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging.CompletionReason.success, IClientLogging.ModalView.homeScreen, null);
+            UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging$CompletionReason.success, IClientLogging$ModalView.homeScreen, null);
             PreferenceUtils.putBooleanPref((Context)this, "user_profile_was_selected", true);
             return;
         }
@@ -440,7 +401,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         final UIError uiError = ConsolidatedLoggingUtils.createUIError(netflixStatus, message, ActionOnUIError.displayedError);
         netflixStatus.setMessage(message);
         netflixStatus.setDisplayMessage(true);
-        UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging.CompletionReason.failed, this.getUiScreen(), uiError);
+        UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging$CompletionReason.failed, this.getUiScreen(), uiError);
         this.reportError(netflixStatus, message);
         this.handleUserAgentErrors(this, netflixStatus);
     }
@@ -460,6 +421,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         return false;
     }
     
+    @Override
     public boolean isLoadingData() {
         return this.isLoading || this.profiles == null || this.profiles.size() <= 0;
     }
@@ -467,18 +429,14 @@ public class ProfileSelectionActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131361944);
-        this.setContentView(2130903165);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131361945);
+        this.setContentView(2130903166);
         this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165610), this.errorCallback);
         this.content = this.findViewById(2131165611);
         this.topTextHeader = (TextView)this.findViewById(2131165612);
         (this.gridView = (StaticGridView)this.findViewById(2131165613)).setOnItemClickListener(this.onAvatarClickListener);
-        this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                ProfileSelectionActivity.this.adjustGridViewMargins();
-            }
-        });
-        this.kidsLoadingScreen = this.findViewById(2131165419);
+        this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ProfileSelectionActivity$1(this));
+        this.kidsLoadingScreen = this.findViewById(2131165418);
         this.mDestination = this.getIntent().getStringExtra("extra_destination");
         if (bundle == null) {
             this.logKidsEntryExit(this.getIntent());
@@ -500,16 +458,10 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         super.onCreateOptionsMenu(menu, menu2);
-        final MenuItem add = menu.add(0, 2131165246, 0, (CharSequence)this.getString(2131493348));
+        final MenuItem add = menu.add(0, 2131165246, 0, (CharSequence)this.getString(2131493291));
         add.setShowAsAction(1);
         add.setIcon(2130837671);
-        add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
-            public boolean onMenuItemClick(final MenuItem menuItem) {
-                ProfileSelectionActivity.this.isProfileEditMode = !ProfileSelectionActivity.this.isProfileEditMode;
-                ProfileSelectionActivity.this.refreshEditProfileModeViews();
-                return true;
-            }
-        });
+        add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new ProfileSelectionActivity$3(this));
     }
     
     @Override
@@ -542,119 +494,24 @@ public class ProfileSelectionActivity extends NetflixActivity
     protected void startChangeProfile(final UserProfile userProfile) {
         if (this.manager == null || !this.manager.isReady()) {
             Log.e("ProfileSelectionActivity", "Manager is not ready");
-            UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging.CompletionReason.failed, this.getUiScreen(), ConsolidatedLoggingUtils.createUIError(CommonStatus.INTERNAL_ERROR, "", ActionOnUIError.handledSilently));
+            UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging$CompletionReason.failed, this.getUiScreen(), ConsolidatedLoggingUtils.createUIError(CommonStatus.INTERNAL_ERROR, "", ActionOnUIError.handledSilently));
             return;
         }
         if (Log.isLoggable("ProfileSelectionActivity", 3)) {
             Log.d("ProfileSelectionActivity", "Selecting profile: " + userProfile.getFirstName() + ", id: " + userProfile.getProfileGuid());
         }
         final UserProfile currentProfile = this.manager.getCurrentProfile();
+        if (!KidsUtils.isKidsProfile(currentProfile)) {
+            this.getSupportActionBar().hide();
+        }
         if (!this.mAppWasRestarted && this.mDestination == null && currentProfile != null && StringUtils.safeEquals(currentProfile.getProfileGuid(), userProfile.getProfileGuid())) {
             Log.d("ProfileSelectionActivity", "Selected profile is the same as the current one - skipping profile change...");
-            UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging.CompletionReason.failed, IClientLogging.ModalView.homeScreen, ConsolidatedLoggingUtils.createUIError(CommonStatus.INTERNAL_ERROR, "", ActionOnUIError.handledSilently));
+            UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.homeScreen, ConsolidatedLoggingUtils.createUIError(CommonStatus.INTERNAL_ERROR, "", ActionOnUIError.handledSilently));
             this.finish();
             return;
         }
         this.showLoadingViews(this.isLoading = true, this.shouldShowKidsLoadingScreen && userProfile.isKidsProfile());
         this.manager.selectProfile(userProfile.getProfileGuid());
         this.mAppWasRestarted = false;
-    }
-    
-    private static class Holder
-    {
-        private final AdvancedImageView img;
-        private final View kidsBadge;
-        private final TextView title;
-        private final View topEditImg;
-        
-        public Holder(final AdvancedImageView img, final View kidsBadge, final TextView title, final View topEditImg) {
-            this.img = img;
-            this.kidsBadge = kidsBadge;
-            this.title = title;
-            this.topEditImg = topEditImg;
-            img.setPressedStateHandlerEnabled(false);
-        }
-    }
-    
-    private class ProfileAvatarAdapter extends BaseAdapter
-    {
-        public int getCount() {
-            int size;
-            final int n = size = ProfileSelectionActivity.this.profiles.size();
-            if (n < 5) {
-                size = n + 1;
-            }
-            return size;
-        }
-        
-        public UserProfile getItem(final int n) {
-            if (n < ProfileSelectionActivity.this.profiles.size()) {
-                return ProfileSelectionActivity.this.profiles.get(n);
-            }
-            return null;
-        }
-        
-        public long getItemId(final int n) {
-            return n;
-        }
-        
-        public View getView(int n, final View view, final ViewGroup viewGroup) {
-            View inflate = view;
-            if (view == null) {
-                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903166, viewGroup, false);
-                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131165299), inflate.findViewById(2131165615), (TextView)inflate.findViewById(2131165617), inflate.findViewById(2131165616)));
-            }
-            final Holder holder = (Holder)inflate.getTag();
-            final UserProfile item = this.getItem(n);
-            if (n == ProfileSelectionActivity.this.profiles.size()) {
-                holder.img.setImageResource(2130837828);
-                holder.kidsBadge.setVisibility(8);
-                holder.title.setText(2131493340);
-                holder.topEditImg.setVisibility(8);
-                return inflate;
-            }
-            holder.title.setText((CharSequence)item.getProfileName());
-            NetflixActivity.getImageLoader((Context)ProfileSelectionActivity.this).showImg(holder.img, item.getAvatarUrl(), IClientLogging.AssetType.profileAvatar, item.getFirstName(), true, true);
-            final View access$1100 = holder.topEditImg;
-            if (ProfileSelectionActivity.this.isProfileEditMode) {
-                n = 0;
-            }
-            else {
-                n = 8;
-            }
-            access$1100.setVisibility(n);
-            final AdvancedImageView access$1101 = holder.img;
-            float alpha;
-            if (ProfileSelectionActivity.this.isProfileEditMode) {
-                alpha = 0.2f;
-            }
-            else {
-                alpha = 1.0f;
-            }
-            access$1101.setAlpha(alpha);
-            final View access$1102 = holder.kidsBadge;
-            float alpha2;
-            if (ProfileSelectionActivity.this.isProfileEditMode) {
-                alpha2 = 0.2f;
-            }
-            else {
-                alpha2 = 1.0f;
-            }
-            access$1102.setAlpha(alpha2);
-            final View access$1103 = holder.kidsBadge;
-            if (item.isKidsProfile()) {
-                n = 0;
-            }
-            else {
-                n = 8;
-            }
-            access$1103.setVisibility(n);
-            return inflate;
-        }
-        
-        public void notifyDataSetChanged() {
-            super.notifyDataSetChanged();
-            ProfileSelectionActivity.this.setupGridViewColumns();
-        }
     }
 }

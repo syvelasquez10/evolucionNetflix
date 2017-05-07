@@ -5,6 +5,7 @@
 package com.google.android.gms.drive;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -47,7 +48,7 @@ public class f implements Parcelable$Creator<RealtimeDocumentSyncRequest>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new RealtimeDocumentSyncRequest(g, c3, c);
     }

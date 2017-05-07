@@ -11,7 +11,7 @@ import java.lang.reflect.Array;
 
 public final class pn
 {
-    private static void a(String s, final Object o, final StringBuffer sb, final StringBuffer sb2) throws IllegalAccessException, InvocationTargetException {
+    private static void a(String s, final Object o, final StringBuffer sb, final StringBuffer sb2) {
         if (o != null) {
             Label_0431: {
                 if (!(o instanceof pm)) {
@@ -73,37 +73,34 @@ public final class pn
                                     try {
                                         a(substring, class1.getMethod("get" + substring, (Class<?>[])new Class[0]).invoke(o, new Object[0]), sb, sb2);
                                         break Label_0349;
-                                        // iftrue(Label_0004:, s == null)
-                                        // iftrue(Label_0490:, !o instanceof String)
+                                        sb.setLength(length);
+                                        sb2.append(sb).append(">\n");
+                                        return;
                                         // iftrue(Label_0511:, !o instanceof byte[])
-                                        Label_0482:Block_18_Outer:
+                                        // iftrue(Label_0490:, !o instanceof String)
                                         while (true) {
-                                            a((byte[])o, sb2);
-                                            break Label_0482;
-                                            while (true) {
-                                                Block_17: {
-                                                    break Block_17;
-                                                    s = dh((String)o);
-                                                    sb2.append("\"").append(s).append("\"");
-                                                    break Label_0482;
+                                            sb2.append("\n");
+                                            return;
+                                            Block_18: {
+                                                Block_19: {
+                                                    break Block_19;
+                                                    s = dg(s);
+                                                    sb2.append(sb).append(s).append(": ");
+                                                    break Block_18;
                                                 }
-                                                sb.setLength(length);
-                                                sb2.append(sb).append(">\n");
-                                                return;
-                                                s = dg(s);
-                                                sb2.append(sb).append(s).append(": ");
+                                                a((byte[])o, sb2);
+                                                continue;
+                                                Label_0511: {
+                                                    sb2.append(o);
+                                                }
                                                 continue;
                                             }
-                                            Label_0490: {
-                                                continue Block_18_Outer;
-                                            }
-                                        }
-                                        sb2.append("\n");
-                                        return;
-                                        Label_0511: {
-                                            sb2.append(o);
+                                            s = dh((String)o);
+                                            sb2.append("\"").append(s).append("\"");
+                                            continue;
                                         }
                                     }
+                                    // iftrue(Label_0004:, s == null)
                                     catch (NoSuchMethodException ex) {}
                                 }
                                 ++n;

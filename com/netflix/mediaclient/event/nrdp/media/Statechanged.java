@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Statechanged extends BaseMediaEvent
@@ -14,7 +13,7 @@ public class Statechanged extends BaseMediaEvent
     public static final String TYPE = "statechanged";
     private int state;
     
-    public Statechanged(final JSONObject jsonObject) throws JSONException {
+    public Statechanged(final JSONObject jsonObject) {
         super("statechanged", jsonObject);
     }
     
@@ -23,7 +22,7 @@ public class Statechanged extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.state = BaseNccpEvent.getInt(jsonObject, "state", -1);
     }
 }

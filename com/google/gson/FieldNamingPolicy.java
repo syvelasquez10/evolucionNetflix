@@ -12,31 +12,46 @@ import java.lang.reflect.Field;
 
 public enum FieldNamingPolicy implements FieldNamingStrategy
 {
-    IDENTITY {
+    IDENTITY("IDENTITY", 0) {
+        FieldNamingPolicy$1(final String s, final int n) {
+        }
+        
         @Override
         public String translateName(final Field field) {
             return field.getName();
         }
     }, 
-    LOWER_CASE_WITH_DASHES {
+    LOWER_CASE_WITH_DASHES("LOWER_CASE_WITH_DASHES", 4) {
+        FieldNamingPolicy$5(final String s, final int n) {
+        }
+        
         @Override
         public String translateName(final Field field) {
             return separateCamelCase(field.getName(), "-").toLowerCase();
         }
     }, 
-    LOWER_CASE_WITH_UNDERSCORES {
+    LOWER_CASE_WITH_UNDERSCORES("LOWER_CASE_WITH_UNDERSCORES", 3) {
+        FieldNamingPolicy$4(final String s, final int n) {
+        }
+        
         @Override
         public String translateName(final Field field) {
             return separateCamelCase(field.getName(), "_").toLowerCase();
         }
     }, 
-    UPPER_CAMEL_CASE {
+    UPPER_CAMEL_CASE("UPPER_CAMEL_CASE", 1) {
+        FieldNamingPolicy$2(final String s, final int n) {
+        }
+        
         @Override
         public String translateName(final Field field) {
             return upperCaseFirstLetter(field.getName());
         }
     }, 
-    UPPER_CAMEL_CASE_WITH_SPACES {
+    UPPER_CAMEL_CASE_WITH_SPACES("UPPER_CAMEL_CASE_WITH_SPACES", 2) {
+        FieldNamingPolicy$3(final String s, final int n) {
+        }
+        
         @Override
         public String translateName(final Field field) {
             return upperCaseFirstLetter(separateCamelCase(field.getName(), " "));

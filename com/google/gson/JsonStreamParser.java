@@ -54,7 +54,7 @@ public final class JsonStreamParser implements Iterator<JsonElement>
     }
     
     @Override
-    public JsonElement next() throws JsonParseException {
+    public JsonElement next() {
         if (!this.hasNext()) {
             throw new NoSuchElementException();
         }

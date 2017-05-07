@@ -5,7 +5,6 @@
 package android.support.v7.internal.view;
 
 import java.util.Iterator;
-import android.view.View;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.view.animation.Interpolator;
@@ -23,38 +22,7 @@ public class ViewPropertyAnimatorCompatSet
     
     public ViewPropertyAnimatorCompatSet() {
         this.mDuration = -1L;
-        this.mProxyListener = new ViewPropertyAnimatorListenerAdapter() {
-            private int mProxyEndCount = 0;
-            private boolean mProxyStarted = false;
-            
-            @Override
-            public void onAnimationEnd(final View view) {
-                final int mProxyEndCount = this.mProxyEndCount + 1;
-                this.mProxyEndCount = mProxyEndCount;
-                if (mProxyEndCount == ViewPropertyAnimatorCompatSet.this.mAnimators.size()) {
-                    if (ViewPropertyAnimatorCompatSet.this.mListener != null) {
-                        ViewPropertyAnimatorCompatSet.this.mListener.onAnimationEnd(null);
-                    }
-                    this.onEnd();
-                }
-            }
-            
-            @Override
-            public void onAnimationStart(final View view) {
-                if (!this.mProxyStarted) {
-                    this.mProxyStarted = true;
-                    if (ViewPropertyAnimatorCompatSet.this.mListener != null) {
-                        ViewPropertyAnimatorCompatSet.this.mListener.onAnimationStart(null);
-                    }
-                }
-            }
-            
-            void onEnd() {
-                this.mProxyEndCount = 0;
-                this.mProxyStarted = false;
-                ViewPropertyAnimatorCompatSet.this.onAnimationsEnded();
-            }
-        };
+        this.mProxyListener = new ViewPropertyAnimatorCompatSet$1(this);
         this.mAnimators = new ArrayList<ViewPropertyAnimatorCompat>();
     }
     

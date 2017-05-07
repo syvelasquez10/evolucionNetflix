@@ -12,8 +12,9 @@ import com.netflix.mediaclient.partner.PartnerRequestType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.partner.ResponseListener;
 import com.netflix.mediaclient.partner.Partner;
+import com.netflix.mediaclient.partner.Partner$Signup;
 
-public class NetflixSignup implements Signup
+public class NetflixSignup implements Partner$Signup
 {
     private static final String TAG = "nf_partner";
     private final Partner owner;

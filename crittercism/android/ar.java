@@ -18,8 +18,4 @@ public final class ar implements t
             return true;
         }
     }
-    
-    public static final class a
-    {
-    }
 }

@@ -8,6 +8,7 @@ import android.os.IInterface;
 import android.os.IBinder;
 import com.google.android.gms.common.internal.j;
 import android.os.Bundle;
+import com.google.android.gms.common.internal.d$e;
 import com.google.android.gms.common.internal.k;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +17,8 @@ import com.google.android.gms.common.internal.a;
 import android.os.RemoteException;
 import android.util.Log;
 import com.google.android.gms.common.internal.n;
-import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks;
 import android.content.Context;
 import com.google.android.gms.common.internal.d;
 
@@ -57,7 +59,7 @@ public class nn extends d<ng>
     }
     
     private void mW() {
-        com.google.android.gms.common.internal.a.I(!this.akN);
+        a.I(!this.akN);
         if (!this.akM.isEmpty()) {
             nl akB;
             ArrayList<nh> list = null;
@@ -67,11 +69,11 @@ public class nn extends d<ng>
                     Label_0122: {
                         try {
                             list = new ArrayList<nh>();
-                            for (final ni.a a : this.akM.mU()) {
-                                if (a.akD == null) {
+                            for (final ni$a ni$a : this.akM.mU()) {
+                                if (ni$a.akD == null) {
                                     break Label_0122;
                                 }
-                                this.gS().a(this.BZ, a.akB, pm.f(a.akD));
+                                this.gS().a(this.BZ, ni$a.akB, pm.f(ni$a.akD));
                             }
                             break;
                         }
@@ -81,17 +83,17 @@ public class nn extends d<ng>
                         return;
                     }
                     Label_0228: {
-                        final ni.a a;
-                        if (a.akB.equals(akB)) {
-                            list.add(a.akC);
+                        final ni$a ni$a;
+                        if (ni$a.akB.equals(akB)) {
+                            list.add(ni$a.akC);
                             break Label_0228;
                         }
                         if (!list.isEmpty()) {
                             this.gS().a(this.BZ, akB, list);
                             list.clear();
                         }
-                        akB = a.akB;
-                        list.add(a.akC);
+                        akB = ni$a.akB;
+                        list.add(ni$a.akC);
                         break Label_0228;
                     }
                     continue;
@@ -115,8 +117,8 @@ public class nn extends d<ng>
     }
     
     @Override
-    protected void a(final k k, final e e) throws RemoteException {
-        k.f(e, 6111000, this.getContext().getPackageName(), new Bundle());
+    protected void a(final k k, final d$e d$e) {
+        k.f(d$e, 6111000, this.getContext().getPackageName(), new Bundle());
     }
     
     public void b(final nl nl, final nh nh) {
@@ -131,7 +133,7 @@ public class nn extends d<ng>
     }
     
     protected ng bD(final IBinder binder) {
-        return ng.a.bC(binder);
+        return ng$a.bC(binder);
     }
     
     @Override

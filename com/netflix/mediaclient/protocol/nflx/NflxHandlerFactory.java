@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.protocol.nflx;
 
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import java.util.Locale;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.content.Intent;
@@ -86,6 +87,7 @@ public final class NflxHandlerFactory
     }
     
     private static NflxHandler handleNflxParams(final NetflixActivity netflixActivity, final Map<String, String> map, final long n) {
+        boolean b = true;
         if (Log.isLoggable("NflxHandler", 2)) {
             Log.v("NflxHandler", "Params map: " + map.toString());
         }
@@ -102,85 +104,80 @@ public final class NflxHandlerFactory
             return new NotHandlingActionHandler();
         }
         final String lowerCase = action.toLowerCase(Locale.US);
-        final IClientLogging.ModalView modalView = null;
-        boolean b = false;
-        NflxHandler.Response response = NflxHandler.Response.HANDLING;
+        NflxHandler$Response nflxHandler$Response = NflxHandler$Response.HANDLING;
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
         NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, map, lowerCase);
-        HomeActionHandler homeActionHandler;
-        IClientLogging.ModalView modalView2;
+        NflxHandler nflxHandler;
+        IClientLogging$ModalView clientLogging$ModalView;
         if ("home".equalsIgnoreCase(lowerCase)) {
             Log.v("NflxHandler", "handleHomeAction starts...");
-            b = true;
-            final IClientLogging.ModalView homeScreen = IClientLogging.ModalView.homeScreen;
-            homeActionHandler = new HomeActionHandler(netflixActivity, map);
-            modalView2 = homeScreen;
+            final IClientLogging$ModalView homeScreen = IClientLogging$ModalView.homeScreen;
+            nflxHandler = new HomeActionHandler(netflixActivity, map);
+            clientLogging$ModalView = homeScreen;
         }
         else if (NflxProtocolUtils.isPlayAction(lowerCase)) {
             Log.v("NflxHandler", "handle play starts...");
-            final IClientLogging.ModalView playback = IClientLogging.ModalView.playback;
-            final PlayActionHandler playActionHandler = new PlayActionHandler(netflixActivity, map);
-            modalView2 = playback;
-            homeActionHandler = (HomeActionHandler)playActionHandler;
+            final IClientLogging$ModalView playback = IClientLogging$ModalView.playback;
+            nflxHandler = new PlayActionHandler(netflixActivity, map);
+            clientLogging$ModalView = playback;
+            b = false;
         }
         else if (NflxProtocolUtils.isViewDetailsAction(lowerCase)) {
             Log.v("NflxHandler", "view details starts...");
             if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
                 clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(map.toString());
             }
-            final IClientLogging.ModalView movieDetails = IClientLogging.ModalView.movieDetails;
-            final ViewDetailsActionHandler viewDetailsActionHandler = new ViewDetailsActionHandler(netflixActivity, map);
-            modalView2 = movieDetails;
-            homeActionHandler = (HomeActionHandler)viewDetailsActionHandler;
+            final IClientLogging$ModalView movieDetails = IClientLogging$ModalView.movieDetails;
+            nflxHandler = new ViewDetailsActionHandler(netflixActivity, map);
+            clientLogging$ModalView = movieDetails;
+            b = false;
         }
         else if (NflxProtocolUtils.isGenreAction(lowerCase)) {
             Log.v("NflxHandler", "genre starts...");
-            b = true;
-            final IClientLogging.ModalView browseTitles = IClientLogging.ModalView.browseTitles;
+            final IClientLogging$ModalView browseTitles = IClientLogging$ModalView.browseTitles;
             final GenreActionHandler genreActionHandler = new GenreActionHandler(netflixActivity, map);
-            modalView2 = browseTitles;
-            homeActionHandler = (HomeActionHandler)genreActionHandler;
+            clientLogging$ModalView = browseTitles;
+            nflxHandler = genreActionHandler;
         }
         else if ("search".equalsIgnoreCase(lowerCase)) {
             Log.v("NflxHandler", "search starts...");
-            final IClientLogging.ModalView search = IClientLogging.ModalView.search;
-            final SearchActionHandler searchActionHandler = new SearchActionHandler(netflixActivity, map);
-            modalView2 = search;
-            homeActionHandler = (HomeActionHandler)searchActionHandler;
+            final IClientLogging$ModalView search = IClientLogging$ModalView.search;
+            nflxHandler = new SearchActionHandler(netflixActivity, map);
+            clientLogging$ModalView = search;
+            b = false;
         }
         else if ("sync".equalsIgnoreCase(lowerCase)) {
             Log.v("NflxHandler", "sync starts...");
-            b = true;
-            final IClientLogging.ModalView homeScreen2 = IClientLogging.ModalView.homeScreen;
+            final IClientLogging$ModalView homeScreen2 = IClientLogging$ModalView.homeScreen;
             final SyncActionHandler syncActionHandler = new SyncActionHandler(netflixActivity, map);
-            modalView2 = homeScreen2;
-            homeActionHandler = (HomeActionHandler)syncActionHandler;
+            clientLogging$ModalView = homeScreen2;
+            nflxHandler = syncActionHandler;
         }
         else if ("iq".equalsIgnoreCase(lowerCase)) {
             Log.v("NflxHandler", "Add to instant queue starts...");
             if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
                 clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(map.toString());
             }
-            final IClientLogging.ModalView movieDetails2 = IClientLogging.ModalView.movieDetails;
-            final AddToMyListActionHandler addToMyListActionHandler = new AddToMyListActionHandler(netflixActivity, map);
-            modalView2 = movieDetails2;
-            homeActionHandler = (HomeActionHandler)addToMyListActionHandler;
+            final IClientLogging$ModalView movieDetails2 = IClientLogging$ModalView.movieDetails;
+            nflxHandler = new AddToMyListActionHandler(netflixActivity, map);
+            clientLogging$ModalView = movieDetails2;
+            b = false;
         }
         else if ("send_thanks".equalsIgnoreCase(lowerCase)) {
             Log.v("NflxHandler", "Send thanks to social notification starts...");
-            final IClientLogging.ModalView homeScreen3 = IClientLogging.ModalView.homeScreen;
-            final SendThanksToSocialNotificationActionHandler sendThanksToSocialNotificationActionHandler = new SendThanksToSocialNotificationActionHandler(netflixActivity, map);
-            modalView2 = homeScreen3;
-            homeActionHandler = (HomeActionHandler)sendThanksToSocialNotificationActionHandler;
+            final IClientLogging$ModalView homeScreen3 = IClientLogging$ModalView.homeScreen;
+            nflxHandler = new SendThanksToSocialNotificationActionHandler(netflixActivity, map);
+            clientLogging$ModalView = homeScreen3;
+            b = false;
         }
         else {
             Log.w("NflxHandler", "Unknown Nflx action: " + lowerCase);
-            final NotHandlingActionHandler notHandlingActionHandler = new NotHandlingActionHandler();
-            response = NflxHandler.Response.NOT_HANDLING;
-            modalView2 = modalView;
-            homeActionHandler = (HomeActionHandler)notHandlingActionHandler;
+            nflxHandler = new NotHandlingActionHandler();
+            nflxHandler$Response = NflxHandler$Response.NOT_HANDLING;
+            b = false;
+            clientLogging$ModalView = null;
         }
-        NflxProtocolUtils.reportUiSessions(netflixActivity, response, b, modalView2, n);
-        return homeActionHandler;
+        NflxProtocolUtils.reportUiSessions(netflixActivity, nflxHandler$Response, b, clientLogging$ModalView, n);
+        return nflxHandler;
     }
 }

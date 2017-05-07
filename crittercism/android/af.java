@@ -9,8 +9,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import org.json.JSONObject;
 
 public final class af
@@ -33,7 +33,7 @@ public final class af
     
     final JSONObject a(final int n) {
         JSONObject jsonObject = new JSONObject();
-        final FutureTask<JSONObject> futureTask = new FutureTask<JSONObject>(new Callable() {});
+        final FutureTask<JSONObject> futureTask = new FutureTask<JSONObject>(new af$1(this));
         final ExecutorService l = crittercism.android.l.i().l;
         try {
             l.execute(futureTask);
@@ -56,7 +56,7 @@ public final class af
     }
     
     public final void a() {
-        final Thread thread = new Thread(new a(this));
+        final Thread thread = new Thread(new af$a(this));
         thread.start();
         if (!this.b) {
             return;
@@ -68,22 +68,5 @@ public final class af
             new StringBuilder("Exception in NetworkIO$send(): ").append(ex.getClass().getName());
         }
         catch (InterruptedException ex2) {}
-    }
-    
-    static final class a implements Runnable
-    {
-        private af a;
-        private int b;
-        
-        public a(final af a) {
-            this.a = null;
-            this.a = a;
-            this.b = 2500;
-        }
-        
-        @Override
-        public final void run() {
-            this.a.a.a(this.a.a(this.b));
-        }
     }
 }

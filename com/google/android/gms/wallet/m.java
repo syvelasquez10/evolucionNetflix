@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wallet;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -52,7 +53,7 @@ public class m implements Parcelable$Creator<NotifyTransactionStatusRequest>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new NotifyTransactionStatusRequest(g2, o2, g, o);
     }

@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.android.fragment;
 
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.view.View;
 import android.os.Bundle;
 import android.view.ViewGroup;
@@ -17,11 +17,6 @@ public class ErrorFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        return ErrorView.create(layoutInflater, new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-                ((Callback)ErrorFrag.this.getActivity()).onRetryRequested();
-            }
-        });
+        return ErrorView.create(layoutInflater, new ErrorFrag$1(this));
     }
 }

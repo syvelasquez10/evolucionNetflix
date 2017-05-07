@@ -4,12 +4,14 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.MathUtils;
+import com.netflix.mediaclient.util.MathUtils$Range;
 import android.widget.SeekBar$OnSeekBarChangeListener;
 import com.netflix.mediaclient.Log;
 import android.graphics.BitmapFactory;
 import android.view.MotionEvent;
+import com.netflix.mediaclient.util.api.Api21Util;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -29,22 +31,25 @@ public class SnappableSeekBar extends SeekBar
     private boolean disableTrackTouching;
     private Rect rectDent;
     private boolean shouldSnapToTouchStartPosition;
-    private SnappableSeekBarChangeListener snapListener;
+    private SnappableSeekBar$SnappableSeekBarChangeListener snapListener;
     private int snapPosition;
     
     public SnappableSeekBar(final Context context) {
         super(context);
         this.snapPosition = -1;
+        this.init();
     }
     
     public SnappableSeekBar(final Context context, final AttributeSet set) {
         super(context, set);
         this.snapPosition = -1;
+        this.init();
     }
     
     public SnappableSeekBar(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
         this.snapPosition = -1;
+        this.init();
     }
     
     private float computeXOffsetFromProgress(final int n) {
@@ -57,7 +62,7 @@ public class SnappableSeekBar extends SeekBar
                 final int n = (int)(this.computeXOffsetFromProgress(this.snapPosition) + 0.5f) + this.getPaddingLeft() + this.getThumbOffset() / 2 - this.dent.getWidth() / 2;
                 final int width = this.dent.getWidth();
                 final int centerY = this.getProgressDrawable().getBounds().centerY();
-                this.rectDent = new Rect(n, centerY - this.dent.getHeight() / 2, n + width, centerY + this.dent.getHeight() / 2);
+                this.rectDent = new Rect(n, centerY - this.dent.getHeight() / 2, width + n, this.dent.getHeight() / 2 + centerY);
             }
             canvas.save();
             canvas.translate((float)(this.getPaddingLeft() - this.getThumbOffset()), (float)this.getPaddingTop());
@@ -82,6 +87,12 @@ public class SnappableSeekBar extends SeekBar
         this.invalidate();
     }
     
+    private void init() {
+        if (AndroidUtils.getAndroidVersion() >= 21) {
+            Api21Util.setSplitTrack(this, false);
+        }
+    }
+    
     private void startSnapping() {
         this.dentVisible = true;
         this.snapPosition = this.getProgress();
@@ -103,7 +114,7 @@ public class SnappableSeekBar extends SeekBar
         else {
             n2 = (n - this.getPaddingLeft()) / (width - paddingLeft - paddingRight);
         }
-        return (int)(0.0f + this.getMax() * n2);
+        return (int)(n2 * this.getMax() + 0.0f);
     }
     
     public Drawable getCachedThumb() {
@@ -119,40 +130,47 @@ public class SnappableSeekBar extends SeekBar
     }
     
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        boolean contains = false;
-        if (this.disableTrackTouching) {
-            final Drawable cachedThumb = this.getCachedThumb();
-            contains = contains;
-            if (cachedThumb != null) {
+        final boolean b = false;
+        while (true) {
+            Label_0171: {
+                if (!this.disableTrackTouching) {
+                    break Label_0171;
+                }
+                final Drawable cachedThumb = this.getCachedThumb();
+                if (cachedThumb == null) {
+                    break Label_0171;
+                }
                 final Rect rect = new Rect(cachedThumb.getBounds());
                 rect.left -= this.getThumbOffset();
                 rect.right -= this.getThumbOffset();
-                contains = rect.contains((int)motionEvent.getX(), (int)motionEvent.getY());
-            }
-        }
-        boolean b;
-        if (this.disableTrackTouching && !contains && motionEvent.getAction() == 0) {
-            b = false;
-        }
-        else {
-            final boolean onTouchEvent = super.onTouchEvent(motionEvent);
-            final int touchEventToProgress = this.touchEventToProgress(motionEvent);
-            if (motionEvent.getAction() != 2) {
-                b = onTouchEvent;
-                if (motionEvent.getAction() != 1) {
-                    return b;
+                final int contains = rect.contains((int)motionEvent.getX(), (int)motionEvent.getY()) ? 1 : 0;
+                boolean b2;
+                if (this.disableTrackTouching && contains == 0 && motionEvent.getAction() == 0) {
+                    b2 = b;
                 }
-            }
-            b = onTouchEvent;
-            if (this.snapListener != null) {
-                b = onTouchEvent;
-                if (this.snapListener.isWithinInternalSnapRegion(touchEventToProgress)) {
-                    this.setProgress(this.snapPosition);
-                    return onTouchEvent;
+                else {
+                    final boolean onTouchEvent = super.onTouchEvent(motionEvent);
+                    final int touchEventToProgress = this.touchEventToProgress(motionEvent);
+                    if (motionEvent.getAction() != 2) {
+                        b2 = onTouchEvent;
+                        if (motionEvent.getAction() != 1) {
+                            return b2;
+                        }
+                    }
+                    b2 = onTouchEvent;
+                    if (this.snapListener != null) {
+                        b2 = onTouchEvent;
+                        if (this.snapListener.isWithinInternalSnapRegion(touchEventToProgress)) {
+                            this.setProgress(this.snapPosition);
+                            return onTouchEvent;
+                        }
+                    }
                 }
+                return b2;
             }
+            final int contains = 0;
+            continue;
         }
-        return b;
     }
     
     public void setDisableTrackTouching(final boolean disableTrackTouching) {
@@ -168,83 +186,11 @@ public class SnappableSeekBar extends SeekBar
         this.shouldSnapToTouchStartPosition = shouldSnapToTouchStartPosition;
     }
     
-    public void setSnappableOnSeekBarChangeListener(final OnSnappableSeekBarChangeListener onSnappableSeekBarChangeListener) {
-        super.setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)(this.snapListener = new SnappableSeekBarChangeListener(onSnappableSeekBarChangeListener)));
+    public void setSnappableOnSeekBarChangeListener(final SnappableSeekBar$OnSnappableSeekBarChangeListener snappableSeekBar$OnSnappableSeekBarChangeListener) {
+        super.setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)(this.snapListener = new SnappableSeekBar$SnappableSeekBarChangeListener(this, snappableSeekBar$OnSnappableSeekBarChangeListener)));
     }
     
     public void setThumb(final Drawable cachedThumb) {
         super.setThumb(this.cachedThumb = cachedThumb);
-    }
-    
-    public interface OnSnappableSeekBarChangeListener
-    {
-        void onProgressChanged(final SeekBar p0, final int p1, final boolean p2);
-        
-        void onStartTrackingTouch(final SeekBar p0);
-        
-        void onStopTrackingTouch(final SeekBar p0, final boolean p1);
-    }
-    
-    private class SnappableSeekBarChangeListener implements SeekBar$OnSeekBarChangeListener
-    {
-        private MathUtils.Range progressSnapRegion;
-        private final OnSnappableSeekBarChangeListener wrappedListener;
-        
-        public SnappableSeekBarChangeListener(final OnSnappableSeekBarChangeListener wrappedListener) {
-            this.wrappedListener = wrappedListener;
-        }
-        
-        private MathUtils.Range computeProgressSnapRegion() {
-            final int n = AndroidUtils.dipToPixels(SnappableSeekBar.this.getContext(), 24) * SnappableSeekBar.this.getMax() / SnappableSeekBar.this.getWidth();
-            final int progress = SnappableSeekBar.this.getProgress();
-            final MathUtils.Range range = new MathUtils.Range(progress - n, progress + n);
-            if (Log.isLoggable("SnappableSeekBar", 2)) {
-                Log.v("SnappableSeekBar", "snap region: " + range + ", position: " + progress + ", max position: " + SnappableSeekBar.this.getMax());
-            }
-            return range;
-        }
-        
-        private boolean isWithinInternalSnapRegion(final int n) {
-            return this.progressSnapRegion != null && this.progressSnapRegion.contains(n);
-        }
-        
-        public void onProgressChanged(final SeekBar seekBar, int constrain, final boolean b) {
-            Log.v("SnappableSeekBar", "onProgressChanged, progress: " + constrain + ", fromUser: " + b);
-            int n = constrain;
-            if (b) {
-                n = constrain;
-                if (this.isWithinInternalSnapRegion(constrain)) {
-                    constrain = MathUtils.constrain(this.progressSnapRegion.getMidpoint(), 0, seekBar.getMax());
-                    seekBar.setProgress(constrain);
-                    n = constrain;
-                    if (Log.isLoggable("SnappableSeekBar", 2)) {
-                        Log.v("SnappableSeekBar", "Progress is within snap region - snapping to: " + constrain);
-                        n = constrain;
-                    }
-                }
-            }
-            this.wrappedListener.onProgressChanged(seekBar, n, b);
-        }
-        
-        public void onStartTrackingTouch(final SeekBar seekBar) {
-            Log.v("SnappableSeekBar", "onStartTrackingTouch");
-            this.wrappedListener.onStartTrackingTouch(seekBar);
-            MathUtils.Range computeProgressSnapRegion;
-            if (SnappableSeekBar.this.shouldSnapToTouchStartPosition) {
-                computeProgressSnapRegion = this.computeProgressSnapRegion();
-            }
-            else {
-                computeProgressSnapRegion = null;
-            }
-            this.progressSnapRegion = computeProgressSnapRegion;
-            SnappableSeekBar.this.startSnapping();
-        }
-        
-        public void onStopTrackingTouch(final SeekBar seekBar) {
-            Log.v("SnappableSeekBar", "onStopTrackingTouch");
-            this.wrappedListener.onStopTrackingTouch(seekBar, this.progressSnapRegion != null && this.progressSnapRegion.contains(SnappableSeekBar.this.getProgress()));
-            this.progressSnapRegion = null;
-            SnappableSeekBar.this.finishSnapping();
-        }
     }
 }

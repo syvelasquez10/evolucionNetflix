@@ -4,14 +4,15 @@
 
 package com.netflix.mediaclient.servicemgr.model.search;
 
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
+import com.netflix.model.branches.FalkorObject;
+import java.util.List;
 
 public interface ISearchResults
 {
-    int getNumResults();
+    List<FalkorObject> getAllResults();
     
-    int getNumResultsForSection(final int p0);
+    int getNumResults();
     
     int getNumResultsPeople();
     
@@ -23,15 +24,11 @@ public interface ISearchResults
     
     SearchTrackable getPeopleListTrackable();
     
-    Object getResult(final int p0);
+    SearchPerson getResultsPeople(final int p0);
     
-    Object getResultsPeople(final int p0);
+    SearchSuggestion getResultsSuggestions(final int p0);
     
-    Object getResultsSuggestions(final int p0);
-    
-    Object getResultsVideos(final int p0);
-    
-    CharSequence getSectionTitle(final Context p0, final int p1);
+    SearchVideo getResultsVideos(final int p0);
     
     SearchTrackable getSuggestionsListTrackable();
     

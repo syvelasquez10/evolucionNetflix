@@ -10,7 +10,7 @@ import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public interface INetflixService
     
     void editProfile(final String p0, final String p1, final boolean p2, final String p3, final int p4, final int p5);
     
-    void fetchResource(final String p0, final IClientLogging.AssetType p1, final int p2, final int p3);
+    void fetchResource(final String p0, final IClientLogging$AssetType p1, final int p2, final int p3);
     
     String getAccountOwnerToken();
     
@@ -39,7 +39,7 @@ public interface INetflixService
     
     IClientLogging getClientLogging();
     
-    ServiceAgent.ConfigurationAgentInterface getConfiguration();
+    ServiceAgent$ConfigurationAgentInterface getConfiguration();
     
     String getCurrentAppLocale();
     
@@ -101,7 +101,7 @@ public interface INetflixService
     
     void selectProfile(final String p0);
     
-    void sendRecommendationsToFriends(final String p0, final Set<FriendForRecommendation> p1, final String p2);
+    void sendRecommendationsToFriends(final String p0, final Set<FriendForRecommendation> p1, final String p2, final String p3);
     
     void setCurrentAppLocale(final String p0);
     

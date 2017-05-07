@@ -6,26 +6,19 @@ package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Movie;
 
-public class MovieDetails extends Movie implements com.netflix.mediaclient.servicemgr.model.details.MovieDetails, Playable
+public class MovieDetails extends Movie implements Playable, com.netflix.mediaclient.servicemgr.model.details.MovieDetails
 {
     private static final String TAG = "nf_service_browse_moviedetails";
     public boolean userConnectedToFacebook;
-    
-    public static int getNumDirectors(final String s) {
-        if (StringUtils.isEmpty(s)) {
-            return 0;
-        }
-        return s.split(",").length;
-    }
     
     @Override
     public boolean canBeSharedOnFacebook() {
@@ -115,7 +108,7 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     
     @Override
     public int getEpisodeNumber() {
-        return 0;
+        return -1;
     }
     
     @Override
@@ -176,12 +169,12 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     
     @Override
     public int getNumDirectors() {
-        return getNumDirectors(this.getDirectors());
+        return StringUtils.getCsvCount(this.getDirectors());
     }
     
     @Override
     public String getParentId() {
-        return null;
+        return this.getId();
     }
     
     @Override
@@ -247,7 +240,7 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     
     @Override
     public int getSeasonNumber() {
-        return 0;
+        return -1;
     }
     
     @Override

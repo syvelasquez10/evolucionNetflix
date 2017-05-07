@@ -21,28 +21,28 @@ public class FlowLayout extends ViewGroup
     }
     
     protected boolean checkLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        return viewGroup$LayoutParams instanceof LayoutParams;
+        return viewGroup$LayoutParams instanceof FlowLayout$LayoutParams;
     }
     
-    public LayoutParams generateDefaultLayoutParams() {
-        return new LayoutParams(-2, -2);
+    public FlowLayout$LayoutParams generateDefaultLayoutParams() {
+        return new FlowLayout$LayoutParams(-2, -2);
     }
     
-    public LayoutParams generateLayoutParams(final AttributeSet set) {
-        return new LayoutParams(this.getContext(), set);
+    public FlowLayout$LayoutParams generateLayoutParams(final AttributeSet set) {
+        return new FlowLayout$LayoutParams(this.getContext(), set);
     }
     
-    protected LayoutParams generateLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        return new LayoutParams(viewGroup$LayoutParams.width, viewGroup$LayoutParams.height);
+    protected FlowLayout$LayoutParams generateLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
+        return new FlowLayout$LayoutParams(viewGroup$LayoutParams.width, viewGroup$LayoutParams.height);
     }
     
     protected void onLayout(final boolean b, int i, int childCount, final int n, final int n2) {
         View child;
-        LayoutParams layoutParams;
+        FlowLayout$LayoutParams flowLayout$LayoutParams;
         for (childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
             child = this.getChildAt(i);
-            layoutParams = (LayoutParams)child.getLayoutParams();
-            child.layout(layoutParams.x, layoutParams.y, layoutParams.x + child.getMeasuredWidth(), layoutParams.y + child.getMeasuredHeight());
+            flowLayout$LayoutParams = (FlowLayout$LayoutParams)child.getLayoutParams();
+            child.layout(flowLayout$LayoutParams.x, flowLayout$LayoutParams.y, flowLayout$LayoutParams.x + child.getMeasuredWidth(), flowLayout$LayoutParams.y + child.getMeasuredHeight());
         }
     }
     
@@ -56,59 +56,45 @@ public class FlowLayout extends ViewGroup
         else {
             b = false;
         }
-        int max = 0;
         int paddingTop = this.getPaddingTop();
         int x = this.getPaddingLeft();
-        int max2 = 0;
-        boolean breakLine = false;
         boolean b2 = false;
         int n3 = 0;
-        for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
+        final int childCount = this.getChildCount();
+        boolean breakLine = false;
+        int max = 0;
+        int max2 = 0;
+        int measuredWidth;
+        for (int i = 0; i < childCount; ++i, x += measuredWidth + n3) {
             final View child = this.getChildAt(i);
             this.measureChild(child, n, n2);
-            final LayoutParams layoutParams = (LayoutParams)child.getLayoutParams();
+            final FlowLayout$LayoutParams flowLayout$LayoutParams = (FlowLayout$LayoutParams)child.getLayoutParams();
             n3 = this.mHorizontalSpacing;
-            if (layoutParams.horizontalSpacing >= 0) {
-                n3 = layoutParams.horizontalSpacing;
+            if (flowLayout$LayoutParams.horizontalSpacing >= 0) {
+                n3 = flowLayout$LayoutParams.horizontalSpacing;
             }
             if (b && (breakLine || child.getMeasuredWidth() + x > size - paddingRight)) {
-                paddingTop += this.mVerticalSpacing + max2;
-                max2 = 0;
-                max = Math.max(max, x - n3);
+                paddingTop += this.mVerticalSpacing + max;
+                max = 0;
+                max2 = Math.max(max2, x - n3);
                 x = this.getPaddingLeft();
                 b2 = true;
             }
             else {
                 b2 = false;
             }
-            layoutParams.x = x;
-            layoutParams.y = paddingTop;
-            x += child.getMeasuredWidth() + n3;
-            max2 = Math.max(max2, child.getMeasuredHeight());
-            breakLine = layoutParams.breakLine;
+            flowLayout$LayoutParams.x = x;
+            flowLayout$LayoutParams.y = paddingTop;
+            measuredWidth = child.getMeasuredWidth();
+            max = Math.max(max, child.getMeasuredHeight());
+            breakLine = flowLayout$LayoutParams.breakLine;
         }
         int n4 = paddingTop;
-        int max3 = max;
+        int max3 = max2;
         if (!b2) {
-            n4 = paddingTop + max2;
-            max3 = Math.max(max, x - n3);
+            n4 = paddingTop + max;
+            max3 = Math.max(max2, x - n3);
         }
-        this.setMeasuredDimension(resolveSize(max3 + this.getPaddingRight(), n), resolveSize(n4 + this.getPaddingBottom(), n2));
-    }
-    
-    public static class LayoutParams extends ViewGroup$LayoutParams
-    {
-        public boolean breakLine;
-        public int horizontalSpacing;
-        int x;
-        int y;
-        
-        public LayoutParams(final int n, final int n2) {
-            super(n, n2);
-        }
-        
-        public LayoutParams(final Context context, final AttributeSet set) {
-            super(context, set);
-        }
+        this.setMeasuredDimension(resolveSize(this.getPaddingRight() + max3, n), resolveSize(this.getPaddingBottom() + n4, n2));
     }
 }

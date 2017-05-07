@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListAdapter;
@@ -13,27 +12,28 @@ import android.widget.LinearLayout;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
+import android.app.Activity;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.content.DialogInterface;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import android.content.IntentFilter;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.widget.FrameLayout$LayoutParams;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.widget.FrameLayout;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.AdapterView$OnItemSelectedListener;
+import android.os.Build$VERSION;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import android.content.Context;
+import android.view.View;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import android.content.IntentFilter;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.os.Bundle;
-import java.util.List;
-import android.app.Activity;
-import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.Log;
-import android.content.Intent;
-import android.content.Context;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
+import java.util.List;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -41,13 +41,13 @@ import android.widget.ListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.os.Handler;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.AddToListData;
+import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
+import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.Callback, MdxMiniPlayerDialog, ManagerStatusListener
+public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper$Callback, ManagerStatusListener, MdxMiniPlayerFrag$MdxMiniPlayerDialog
 {
     private static final String EXTRA_EPISODE_ID = "extra_episode_id";
     private static final String EXTRA_EPISODE_INDEX = "extra_episode_index";
@@ -56,13 +56,13 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     private static final String EXTRA_SHOW_ID = "extra_show_id";
     private static final String TAG = "EpisodeListFrag";
     private EpisodeListAdapter adapter;
-    private AddToListData.StateListener addToListWrapper;
+    private AddToListData$StateListener addToListWrapper;
     private int currEpisodeIndex;
     private int currSeasonIndex;
     private VideoDetailsViewGroup detailsViewGroup;
     private String episodeId;
     private final BroadcastReceiver episodeRefreshReceiver;
-    private final ErrorWrapper.Callback errorCallback;
+    private final ErrorWrapper$Callback errorCallback;
     private Handler handler;
     private boolean isLoading;
     private LoadingAndErrorWrapper leWrapper;
@@ -79,37 +79,8 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
         this.isLoading = true;
         this.currSeasonIndex = -1;
         this.currEpisodeIndex = -1;
-        this.episodeRefreshReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                if (!EpisodeListFrag.this.isDestroyed() && "com.netflix.mediaclient.intent.action.BA_EPISODE_REFRESH".equals(intent.getAction())) {
-                    final int n = intent.getIntExtra("curSeasonNumber", 1) - 1;
-                    final int selectedItemPosition = EpisodeListFrag.this.spinner.getSelectedItemPosition();
-                    if (n == selectedItemPosition) {
-                        final int n2 = intent.getIntExtra("curEpisodeNumber", 1) - 1;
-                        final int n3 = n2 + EpisodeListFrag.this.listView.getHeaderViewsCount();
-                        if (Log.isLoggable("EpisodeListFrag", 2)) {
-                            Log.v("EpisodeListFrag", "Episode index: " + n2 + ", setting current episode to: " + n3);
-                        }
-                        EpisodeListFrag.this.listView.setItemChecked(n3, true);
-                        EpisodeListFrag.this.adapter.updateSeasonDetails((SeasonDetails)EpisodeListFrag.this.spinner.getItemAtPosition(selectedItemPosition));
-                        EpisodeListFrag.this.listView.smoothScrollToPosition(n3);
-                        return;
-                    }
-                    if (Log.isLoggable("EpisodeListFrag", 2)) {
-                        Log.v("EpisodeListFrag", "Notification is for season " + n + " but spinner set to season " + selectedItemPosition);
-                    }
-                }
-            }
-        };
-        this.errorCallback = new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-                final Activity activity = EpisodeListFrag.this.getActivity();
-                if (activity instanceof ErrorWrapper.Callback) {
-                    ((ErrorWrapper.Callback)activity).onRetryRequested();
-                }
-            }
-        };
+        this.episodeRefreshReceiver = new EpisodeListFrag$3(this);
+        this.errorCallback = new EpisodeListFrag$4(this);
     }
     
     private static NetflixDialogFrag applyCreateArgs(final NetflixDialogFrag netflixDialogFrag, final String s, final String s2, final boolean b) {
@@ -153,33 +124,8 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public static NetflixDialogFrag create(final String s, final String s2, final boolean b) {
         final EpisodeListFrag episodeListFrag = new EpisodeListFrag();
-        episodeListFrag.setStyle(1, 2131558710);
+        episodeListFrag.setStyle(1, 2131558713);
         return applyCreateArgs(episodeListFrag, s, s2, b);
-    }
-    
-    private ViewGroup createSeasonsSpinnerGroup() {
-        (this.spinner = new SeasonsSpinner((Context)this.getActivity())).setOnItemSelectedListener((AdapterView$OnItemSelectedListener)new AdapterView$OnItemSelectedListener() {
-            public void onItemSelected(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                if (Log.isLoggable("EpisodeListFrag", 2)) {
-                    Log.v("EpisodeListFrag", "Season spinner selected position: " + n);
-                }
-                final SeasonDetails seasonDetails = (SeasonDetails)EpisodeListFrag.this.spinner.getItemAtPosition(n);
-                if (seasonDetails == null && Log.isLoggable("EpisodeListFrag", 5)) {
-                    Log.w("EpisodeListFrag", "null season details retrieved for position: " + n);
-                }
-                EpisodeListFrag.this.adapter.updateSeasonDetails(seasonDetails);
-                EpisodeListFrag.this.currEpisodeIndex = -1;
-                EpisodeListFrag.this.updateEpisodeSelection();
-            }
-            
-            public void onNothingSelected(final AdapterView<?> adapterView) {
-                Log.v("EpisodeListFrag", "Season spinner - Nothing selected");
-            }
-        });
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131296392);
-        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
-        this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
-        return this.spinnerViewGroup;
     }
     
     private void fetchSeasonDetails() {
@@ -192,7 +138,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
         if (Log.isLoggable("EpisodeListFrag", 2)) {
             Log.v("EpisodeListFrag", "Fetching seasons data from: " + 0 + " to " + n + ", id: " + this.requestId);
         }
-        this.manager.getBrowse().fetchSeasons(this.showDetails.getId(), 0, n, new FetchSeasonsCallback(this.requestId));
+        this.manager.getBrowse().fetchSeasons(this.showDetails.getId(), 0, n, new EpisodeListFrag$FetchSeasonsCallback(this, this.requestId));
     }
     
     private void fetchShowDetails() {
@@ -206,27 +152,11 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
         if (Log.isLoggable("EpisodeListFrag", 2)) {
             Log.v("EpisodeListFrag", "Fetching data for show ID: " + this.showId);
         }
-        this.manager.getBrowse().fetchShowDetails(this.showId, this.episodeId, new FetchShowDetailsCallback(this.requestId));
+        this.manager.getBrowse().fetchShowDetails(this.showId, this.episodeId, new EpisodeListFrag$FetchShowDetailsCallback(this, this.requestId));
     }
     
     private void postSetSpinnerSelectionRunnable() {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                int selection;
-                if ((selection = EpisodeListFrag.this.currSeasonIndex) == -1) {
-                    selection = EpisodeListFrag.this.spinner.getSeasonIndexBySeasonNumber(EpisodeListFrag.this.showDetails.getCurrentSeasonNumber());
-                }
-                if (selection < 0) {
-                    Log.v("EpisodeListFrag", "No valid season index found");
-                    return;
-                }
-                if (Log.isLoggable("EpisodeListFrag", 2)) {
-                    Log.v("EpisodeListFrag", "Setting current season to: " + selection);
-                }
-                EpisodeListFrag.this.spinner.setSelection(selection);
-            }
-        });
+        this.handler.post((Runnable)new EpisodeListFrag$2(this));
     }
     
     private void registerEpisodeRefreshReceiver() {
@@ -276,8 +206,23 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
             Log.v("EpisodeListFrag", "Updating show details: " + showDetails.getTitle());
         }
         this.showDetails = showDetails;
-        this.detailsViewGroup.updateDetails(showDetails, (VideoDetailsViewGroup.DetailsStringProvider)new ShowDetailsFrag.ShowDetailsStringProvider((Context)this.getActivity(), showDetails));
+        this.detailsViewGroup.updateDetails(showDetails, new ShowDetailsFrag$ShowDetailsStringProvider((Context)this.getActivity(), showDetails));
         this.fetchSeasonDetails();
+    }
+    
+    protected ViewGroup createSeasonsSpinnerGroup() {
+        SeasonsSpinner spinner;
+        if (Build$VERSION.SDK_INT >= 21) {
+            spinner = new SeasonsSpinnerLollipop((Context)this.getActivity());
+        }
+        else {
+            spinner = new SeasonsSpinner((Context)this.getActivity());
+        }
+        (this.spinner = spinner).setOnItemSelectedListener((AdapterView$OnItemSelectedListener)new EpisodeListFrag$1(this));
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131296395);
+        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
+        this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
+        return this.spinnerViewGroup;
     }
     
     ServiceManager getServiceManager() {
@@ -286,6 +231,10 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public void hideDetailViewHeader() {
         this.detailsViewGroup.setVisibility(8);
+    }
+    
+    protected void initDetailsViewGroup() {
+        (this.detailsViewGroup = new VideoDetailsViewGroup((Context)this.getActivity())).removeActionBarDummyView();
     }
     
     protected boolean isListVisible() {
@@ -307,8 +256,8 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     public void onCancel(final DialogInterface dialogInterface) {
         super.onCancel(dialogInterface);
         final Activity activity = this.getActivity();
-        if (activity instanceof DialogCanceledListenerProvider) {
-            final DialogCanceledListener dialogCanceledListener = ((DialogCanceledListenerProvider)activity).getDialogCanceledListener();
+        if (activity instanceof NetflixDialogFrag$DialogCanceledListenerProvider) {
+            final NetflixDialogFrag$DialogCanceledListener dialogCanceledListener = ((NetflixDialogFrag$DialogCanceledListenerProvider)activity).getDialogCanceledListener();
             if (dialogCanceledListener != null) {
                 dialogCanceledListener.onDialogCanceled(this);
             }
@@ -334,7 +283,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("EpisodeListFrag", "onCreateView called");
-        final View inflate = layoutInflater.inflate(2130903117, (ViewGroup)null, false);
+        final View inflate = layoutInflater.inflate(2130903118, (ViewGroup)null, false);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
         (this.listView = (ListView)inflate.findViewById(16908298)).setChoiceMode(1);
         this.listView.setDivider((Drawable)null);
@@ -412,66 +361,5 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public void showDetailViewHeader() {
         this.detailsViewGroup.setVisibility(0);
-    }
-    
-    private class FetchSeasonsCallback extends LoggingManagerCallback
-    {
-        private final long requestId;
-        
-        public FetchSeasonsCallback(final long requestId) {
-            super("EpisodeListFrag");
-            this.requestId = requestId;
-        }
-        
-        @Override
-        public void onSeasonsFetched(final List<SeasonDetails> list, final Status status) {
-            super.onSeasonsFetched(list, status);
-            if (this.requestId != EpisodeListFrag.this.requestId) {
-                Log.v("EpisodeListFrag", "Stale request - ignoring");
-                return;
-            }
-            EpisodeListFrag.this.isLoading = false;
-            if (status.isError()) {
-                Log.w("EpisodeListFrag", "Invalid status code");
-                EpisodeListFrag.this.showErrorView();
-                return;
-            }
-            if (list == null) {
-                Log.v("EpisodeListFrag", "No details in response");
-                EpisodeListFrag.this.showErrorView();
-                return;
-            }
-            EpisodeListFrag.this.updateSeasonData(list);
-        }
-    }
-    
-    private class FetchShowDetailsCallback extends LoggingManagerCallback
-    {
-        private final long requestId;
-        
-        public FetchShowDetailsCallback(final long requestId) {
-            super("EpisodeListFrag");
-            this.requestId = requestId;
-        }
-        
-        @Override
-        public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
-            super.onShowDetailsFetched(showDetails, status);
-            if (this.requestId != EpisodeListFrag.this.requestId) {
-                Log.v("EpisodeListFrag", "Ignoring stale callback");
-                return;
-            }
-            if (status.isError()) {
-                Log.w("EpisodeListFrag", "Invalid status code");
-                EpisodeListFrag.this.showErrorView();
-                return;
-            }
-            if (showDetails == null) {
-                Log.v("EpisodeListFrag", "No details in response");
-                EpisodeListFrag.this.showErrorView();
-                return;
-            }
-            EpisodeListFrag.this.updateShowDetails(showDetails);
-        }
     }
 }

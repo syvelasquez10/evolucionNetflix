@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.javabridge.ui.android;
 
-import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import org.json.JSONException;
+import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
 import java.util.HashMap;
@@ -58,7 +58,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
         return s2;
     }
     
-    private int handleName(final JSONObject jsonObject) throws JSONException {
+    private int handleName(final JSONObject jsonObject) {
         Log.d("native_nrd_proxy", "MUNRDP::handleName: start");
         final String string = this.getString(jsonObject, "name", null);
         if (string == null) {
@@ -85,24 +85,22 @@ public final class NativeNrdProxy extends BaseNrdProxy
         return 0;
     }
     
-    private int handleObject(final JSONObject jsonObject) throws JSONException {
+    private int handleObject(final JSONObject jsonObject) {
         Log.d("native_nrd_proxy", "MUNRDP::handleObject: start");
         final String string = this.getString(jsonObject, "object", null);
         if (string == null) {
             Log.d("native_nrd_proxy", "handleObject:: object not found");
+            return 0;
         }
-        else {
-            final NrdpObject nrdpObject = this.objMap.get(this.getKey(string));
-            if (nrdpObject != null) {
-                if (Log.isLoggable("native_nrd_proxy", 3)) {
-                    Log.d("native_nrd_proxy", "Handler found for object " + string);
-                }
-                return nrdpObject.processUpdate(jsonObject);
-            }
+        final NrdpObject nrdpObject = this.objMap.get(this.getKey(string));
+        if (nrdpObject != null) {
             if (Log.isLoggable("native_nrd_proxy", 3)) {
-                Log.d("native_nrd_proxy", "Pass to UI. Handler not found for object " + string);
-                return 0;
+                Log.d("native_nrd_proxy", "Handler found for object " + string);
             }
+            return nrdpObject.processUpdate(jsonObject);
+        }
+        if (Log.isLoggable("native_nrd_proxy", 3)) {
+            Log.d("native_nrd_proxy", "Pass to UI. Handler not found for object " + string);
         }
         return 0;
     }

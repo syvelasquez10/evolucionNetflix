@@ -4,23 +4,25 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-import java.util.Locale;
-import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
 import java.util.Iterator;
+import java.util.Collection;
+import com.netflix.model.branches.FalkorObject;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.model.leafs.SearchTrackableListSummary;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion;
+import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
+import com.netflix.mediaclient.servicemgr.model.search.SearchPerson;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
 
 public class SearchResults implements ISearchResults
 {
     private List<SearchPerson> people;
-    private SearchTrackableListSummary peopleListSummary;
+    private SearchTrackable peopleListSummary;
     private final List<Object> sectionsList;
     private List<SearchSuggestion> suggestions;
-    private SearchTrackableListSummary suggestionsListSummary;
-    private SearchTrackableListSummary videoListSummary;
+    private SearchTrackable suggestionsListSummary;
+    private SearchTrackable videoListSummary;
     private List<SearchVideo> videos;
     
     private SearchResults() {
@@ -40,21 +42,28 @@ public class SearchResults implements ISearchResults
     }
     
     @Override
+    public List<FalkorObject> getAllResults() {
+        final ArrayList<Object> list = (ArrayList<Object>)new ArrayList<FalkorObject>();
+        if (this.videos != null) {
+            list.addAll(this.videos);
+        }
+        if (this.people != null) {
+            list.addAll(this.people);
+        }
+        if (this.suggestions != null) {
+            list.addAll(this.suggestions);
+        }
+        return (List<FalkorObject>)list;
+    }
+    
+    @Override
     public int getNumResults() {
-        int n = 0;
         final Iterator<List> iterator = this.sectionsList.iterator();
+        int n = 0;
         while (iterator.hasNext()) {
             n += iterator.next().size();
         }
         return n;
-    }
-    
-    @Override
-    public int getNumResultsForSection(final int n) {
-        if (n < this.sectionsList.size()) {
-            return this.sectionsList.get(n).size();
-        }
-        return 0;
     }
     
     @Override
@@ -92,18 +101,7 @@ public class SearchResults implements ISearchResults
     }
     
     @Override
-    public Object getResult(int n) {
-        for (final List<Object> list : this.sectionsList) {
-            if (n < list.size()) {
-                return list.get(n);
-            }
-            n -= list.size();
-        }
-        return null;
-    }
-    
-    @Override
-    public Object getResultsPeople(final int n) {
+    public SearchPerson getResultsPeople(final int n) {
         if (this.people != null && n < this.people.size()) {
             return this.people.get(n);
         }
@@ -111,7 +109,7 @@ public class SearchResults implements ISearchResults
     }
     
     @Override
-    public Object getResultsSuggestions(final int n) {
+    public SearchSuggestion getResultsSuggestions(final int n) {
         if (this.suggestions != null && n < this.suggestions.size()) {
             return this.suggestions.get(n);
         }
@@ -119,26 +117,11 @@ public class SearchResults implements ISearchResults
     }
     
     @Override
-    public Object getResultsVideos(final int n) {
+    public SearchVideo getResultsVideos(final int n) {
         if (this.videos != null && n < this.videos.size()) {
             return this.videos.get(n);
         }
         return null;
-    }
-    
-    @Override
-    public CharSequence getSectionTitle(final Context context, final int n) {
-        final List<SearchSuggestion> value = this.sectionsList.get(n);
-        if (value == this.videos) {
-            return context.getString(2131493291).toUpperCase(Locale.US);
-        }
-        if (value == this.people) {
-            return context.getString(2131493292).toUpperCase(Locale.US);
-        }
-        if (value == this.suggestions) {
-            return context.getString(2131493293).toUpperCase(Locale.US);
-        }
-        throw new IllegalStateException("Unknown section type");
     }
     
     @Override
@@ -154,55 +137,5 @@ public class SearchResults implements ISearchResults
     @Override
     public boolean hasResults() {
         return this.hasVideos() || this.hasPeople() || this.hasSuggestions();
-    }
-    
-    public static class Builder
-    {
-        private static final int MAX_RESULTS = 75;
-        private final SearchResults results;
-        
-        public Builder() {
-            this.results = new SearchResults(null);
-        }
-        
-        public void addPerson(final SearchPerson searchPerson) {
-            if (this.results.people == null) {
-                this.results.people = (List<SearchPerson>)new ArrayList(75);
-                this.results.sectionsList.add(this.results.people);
-            }
-            this.results.people.add(searchPerson);
-        }
-        
-        public void addSuggestion(final SearchSuggestion searchSuggestion) {
-            if (this.results.suggestions == null) {
-                this.results.suggestions = (List<SearchSuggestion>)new ArrayList(75);
-                this.results.sectionsList.add(this.results.suggestions);
-            }
-            this.results.suggestions.add(searchSuggestion);
-        }
-        
-        public void addVideo(final SearchVideo searchVideo) {
-            if (this.results.videos == null) {
-                this.results.videos = (List<SearchVideo>)new ArrayList(75);
-                this.results.sectionsList.add(this.results.videos);
-            }
-            this.results.videos.add(searchVideo);
-        }
-        
-        public SearchResults getResults() {
-            return this.results;
-        }
-        
-        public void setPeopleListSummary(final SearchTrackableListSummary searchTrackableListSummary) {
-            this.results.peopleListSummary = searchTrackableListSummary;
-        }
-        
-        public void setSuggestionsListSummary(final SearchTrackableListSummary searchTrackableListSummary) {
-            this.results.suggestionsListSummary = searchTrackableListSummary;
-        }
-        
-        public void setVideoListSummary(final SearchTrackableListSummary searchTrackableListSummary) {
-            this.results.videoListSummary = searchTrackableListSummary;
-        }
     }
 }

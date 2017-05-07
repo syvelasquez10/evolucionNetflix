@@ -45,7 +45,7 @@ public class DefaultRetryPolicy implements RetryPolicy
     }
     
     @Override
-    public void retry(final VolleyError volleyError) throws VolleyError {
+    public void retry(final VolleyError volleyError) {
         if (Log.isLoggable("DefaultRetryPolicy", 3)) {
             Log.d("DefaultRetryPolicy", "retrying - " + this.toString());
         }

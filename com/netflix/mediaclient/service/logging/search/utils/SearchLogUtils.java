@@ -7,12 +7,12 @@ package com.netflix.mediaclient.service.logging.search.utils;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.content.Context;
 
 public class SearchLogUtils
 {
-    public static void reportSearchEditChange(final long n, final Context context, final IClientLogging.ModalView modalView, final String s) {
+    public static void reportSearchEditChange(final long n, final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s) {
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_EDIT");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intent.putExtra("id", n);
@@ -28,11 +28,11 @@ public class SearchLogUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static long reportSearchFocusSessionStarted(final long n, final Context context, final IClientLogging.ModalView modalView, final String s) {
+    public static long reportSearchFocusSessionStarted(final long n, final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s) {
         final DeviceUniqueId deviceUniqueId = new DeviceUniqueId();
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_SESSION_START");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
         intent.putExtra("id", n);
         intent.putExtra("session_id", deviceUniqueId.getValue());
         if (s != null) {
@@ -42,7 +42,7 @@ public class SearchLogUtils
         return deviceUniqueId.getValue();
     }
     
-    public static void reportSearchImpression(final long n, final Context context, final IClientLogging.ModalView modalView, final String s, final String[] array, final int n2, final int n3, final IClientLogging.ModalView modalView2) {
+    public static void reportSearchImpression(final long n, final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s, final String[] array, final int n2, final int n3, final IClientLogging$ModalView clientLogging$ModalView2) {
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_IMPRESSION");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intent.putExtra("id", n);
@@ -50,8 +50,8 @@ public class SearchLogUtils
         intent.putExtra("from", n2);
         intent.putExtra("to", n3);
         intent.putExtra("childIds", array);
-        intent.putExtra("view", modalView.name());
-        intent.putExtra("view", modalView2.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
+        intent.putExtra("view", clientLogging$ModalView2.name());
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
@@ -63,11 +63,11 @@ public class SearchLogUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static long reportSearchSessionStarted(final long n, final Context context, final IClientLogging.ModalView modalView, final String s) {
+    public static long reportSearchSessionStarted(final long n, final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s) {
         final DeviceUniqueId deviceUniqueId = new DeviceUniqueId();
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SUS_SEARCH_SESSION_START");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
         intent.putExtra("id", n);
         intent.putExtra("session_id", deviceUniqueId.getValue());
         if (s != null) {

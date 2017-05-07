@@ -30,16 +30,11 @@ public interface RealTimeMultiplayer
     
     void leave(final GoogleApiClient p0, final RoomUpdateListener p1, final String p2);
     
-    int sendReliableMessage(final GoogleApiClient p0, final ReliableMessageSentCallback p1, final byte[] p2, final String p3, final String p4);
+    int sendReliableMessage(final GoogleApiClient p0, final RealTimeMultiplayer$ReliableMessageSentCallback p1, final byte[] p2, final String p3, final String p4);
     
     int sendUnreliableMessage(final GoogleApiClient p0, final byte[] p1, final String p2, final String p3);
     
     int sendUnreliableMessage(final GoogleApiClient p0, final byte[] p1, final String p2, final List<String> p3);
     
     int sendUnreliableMessageToOthers(final GoogleApiClient p0, final byte[] p1, final String p2);
-    
-    public interface ReliableMessageSentCallback
-    {
-        void onRealTimeMessageSent(final int p0, final int p1, final String p2);
-    }
 }

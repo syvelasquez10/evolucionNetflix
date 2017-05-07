@@ -24,24 +24,23 @@ public abstract class BaseUIEvent extends BaseNccpEvent
     }
     
     public String getJSON() {
-        final JSONObject jsonObject = null;
         while (true) {
             try {
                 while (true) {
-                    final JSONObject jsonObject2 = new JSONObject();
+                    final JSONObject jsonObject = new JSONObject();
                     while (true) {
                         try {
-                            jsonObject2.put("name", (Object)this.getName());
-                            jsonObject2.put("type", (Object)"Event");
-                            jsonObject2.put("object", (Object)this.getObject());
-                            jsonObject2.put("nrdp", 0);
+                            jsonObject.put("name", (Object)this.getName());
+                            jsonObject.put("type", (Object)"Event");
+                            jsonObject.put("object", (Object)this.getObject());
+                            jsonObject.put("nrdp", 0);
                             if (this.getData() != null) {
-                                jsonObject2.put("data", (Object)this.getData());
+                                jsonObject.put("data", (Object)this.getData());
                             }
                             else {
-                                jsonObject2.put("data", (Object)new JSONObject());
+                                jsonObject.put("data", (Object)new JSONObject());
                             }
-                            return jsonObject2.toString();
+                            return jsonObject.toString();
                         }
                         catch (JSONException ex2) {}
                         final JSONException ex;
@@ -51,7 +50,7 @@ public abstract class BaseUIEvent extends BaseNccpEvent
                 }
             }
             catch (JSONException ex) {
-                final JSONObject jsonObject2 = jsonObject;
+                final JSONObject jsonObject = null;
                 continue;
             }
             break;

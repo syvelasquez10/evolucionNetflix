@@ -13,7 +13,7 @@ public class DeviceUniqueId
     private long value;
     
     public DeviceUniqueId() {
-        this.value = 10L * System.currentTimeMillis() + Math.abs(getRandom16Bits());
+        this.value = System.currentTimeMillis() * 10L + Math.abs(getRandom16Bits());
     }
     
     public DeviceUniqueId(final long value) {

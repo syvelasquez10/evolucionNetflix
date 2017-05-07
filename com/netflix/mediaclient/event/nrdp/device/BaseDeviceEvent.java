@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.nrdp.device;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
@@ -14,7 +13,7 @@ public abstract class BaseDeviceEvent extends JsonBaseNccpEvent
         super(s);
     }
     
-    public BaseDeviceEvent(final String s, final JSONObject jsonObject) throws JSONException {
+    public BaseDeviceEvent(final String s, final JSONObject jsonObject) {
         super(s, jsonObject);
     }
     
@@ -24,6 +23,6 @@ public abstract class BaseDeviceEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
     }
 }

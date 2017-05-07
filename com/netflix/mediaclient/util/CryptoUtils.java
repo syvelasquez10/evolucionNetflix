@@ -5,21 +5,21 @@
 package com.netflix.mediaclient.util;
 
 import javax.crypto.SecretKey;
-import javax.crypto.NoSuchPaddingException;
 import java.security.spec.InvalidKeySpecException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.spec.PBEParameterSpec;
 import java.security.spec.KeySpec;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.SecretKeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.Key;
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.Mac;
 import java.security.MessageDigest;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
 import java.io.UnsupportedEncodingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -48,10 +48,10 @@ public final class CryptoUtils
     }
     
     public static int calcChecksum(long n, int n2) {
-        final int n3 = 1;
-        int n4 = 0;
+        int n3 = 0;
+        final int n4 = 1;
         int i = n2;
-        n2 = n3;
+        n2 = n4;
         while (i > 0) {
             final int n5 = (int)(n % 10L);
             n /= 10L;
@@ -59,7 +59,7 @@ public final class CryptoUtils
             if (n2 != 0) {
                 n6 = CryptoUtils.doubleDigits[n5];
             }
-            n4 += n6;
+            n3 += n6;
             if (n2 == 0) {
                 n2 = 1;
             }
@@ -68,14 +68,14 @@ public final class CryptoUtils
             }
             --i;
         }
-        final int n7 = n4 % 10;
+        final int n7 = n3 % 10;
         if ((n2 = n7) > 0) {
             n2 = 10 - n7;
         }
         return n2;
     }
     
-    public static String decrypt(final String s, final String s2) throws Exception {
+    public static String decrypt(final String s, final String s2) {
         Log.d("nf_crypto", "Encrypted text " + s2);
         if (s2 == null) {
             Log.e("nf_crypto", "Encrypted is null");
@@ -106,7 +106,7 @@ public final class CryptoUtils
         }
     }
     
-    public static String encrypt(String hex, final String s) throws Exception {
+    public static String encrypt(String hex, final String s) {
         final Cipher init = init(hex, true);
         if (init == null) {
             Log.e("nf_crypto", "encrypt: ciper is null!");
@@ -150,7 +150,7 @@ public final class CryptoUtils
         return new String(toByte(s));
     }
     
-    public static String generateOTP(String s, final long n, long n2, final int n3, final boolean b, int n4) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static String generateOTP(String s, final long n, long n2, final int n3, final boolean b, int n4) {
         final byte[] secretBytes = getSecretBytes(s, n);
         int n5;
         if (b) {
@@ -165,39 +165,37 @@ public final class CryptoUtils
             n2 >>= 8;
         }
         final byte[] hmac_sha1 = hmac_sha1(secretBytes, array);
-        int n6;
-        final byte b2 = (byte)(n6 = (hmac_sha1[hmac_sha1.length - 1] & 0xF));
-        if (n4 >= 0) {
-            n6 = b2;
-            if (n4 < hmac_sha1.length - 4) {
-                n6 = n4;
-            }
+        final byte b2 = hmac_sha1[hmac_sha1.length - 1];
+        if (n4 < 0 || n4 >= hmac_sha1.length - 4) {
+            n4 = (b2 & 0xF);
         }
-        final int n7 = n4 = ((hmac_sha1[n6] & 0x7F) << 24 | (hmac_sha1[n6 + 1] & 0xFF) << 16 | (hmac_sha1[n6 + 2] & 0xFF) << 8 | (hmac_sha1[n6 + 3] & 0xFF)) % CryptoUtils.DIGITS_POWER[n3];
+        final int n6 = n4 = ((hmac_sha1[n4] & 0x7F) << 24 | (hmac_sha1[n4 + 1] & 0xFF) << 16 | (hmac_sha1[n4 + 2] & 0xFF) << 8 | (hmac_sha1[n4 + 3] & 0xFF)) % CryptoUtils.DIGITS_POWER[n3];
         if (b) {
-            n4 = n7 * 10 + calcChecksum(n7, n3);
+            n4 = calcChecksum(n6, n3) + n6 * 10;
         }
         for (s = Integer.toString(n4); s.length() < n5; s = "0" + s) {}
         return s;
     }
     
     private static byte[] getSecretBytes(final String s, final long n) {
+        int i = 0;
         final byte[] array = new byte[s.length() / 2 + 4];
         final byte[] byteArray = new BigInteger(s, 16).toByteArray();
         System.arraycopy(byteArray, 0, array, 0, byteArray.length);
-        for (int i = 0; i < 4; ++i) {
+        while (i < 4) {
             array[byteArray.length + i] = (byte)(n >> (3 - i) * 8 & 0xFFL);
+            ++i;
         }
         return array;
     }
     
-    public static String hashSHA256(final String s, final String s2) throws NoSuchAlgorithmException {
+    public static String hashSHA256(final String s, final String s2) {
         final MessageDigest instance = MessageDigest.getInstance("SHA-256");
         instance.update(or(s, s2));
         return toHex(instance.digest());
     }
     
-    public static byte[] hmac_sha1(final byte[] array, final byte[] array2) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static byte[] hmac_sha1(final byte[] array, final byte[] array2) {
         String s = "HmacSHA1";
         while (true) {
             try {
@@ -214,88 +212,44 @@ public final class CryptoUtils
         }
     }
     
-    private static Cipher init(final String s, final boolean b) {
-        final byte[] array2;
-        final byte[] array = array2 = new byte[8];
-        array2[0] = -87;
-        array2[1] = -101;
-        array2[2] = -56;
-        array2[3] = 50;
-        array2[4] = 86;
-        array2[5] = 52;
-        array2[6] = -29;
-        array2[7] = 3;
-        final Cipher cipher = null;
-        final Cipher cipher2 = null;
-        final Cipher cipher3 = null;
-        final Cipher cipher4 = null;
-        final Cipher cipher5 = null;
-        Cipher instance;
-        final Cipher cipher6 = instance = null;
-        Cipher cipher7 = cipher;
-        Cipher cipher8 = cipher2;
-        Cipher cipher9 = cipher3;
-        Cipher cipher10 = cipher4;
-        Cipher cipher11 = cipher5;
+    private static Cipher init(String instance, final boolean b) {
+        final byte[] array;
+        Object o = array = new byte[8];
+        array[0] = -87;
+        array[1] = -101;
+        array[2] = -56;
+        array[3] = 50;
+        array[4] = 86;
+        array[5] = 52;
+        array[6] = -29;
+        array[7] = 3;
         try {
-            final PBEKeySpec pbeKeySpec = new PBEKeySpec(s.toCharArray(), array, 19);
-            instance = cipher6;
-            cipher7 = cipher;
-            cipher8 = cipher2;
-            cipher9 = cipher3;
-            cipher10 = cipher4;
-            cipher11 = cipher5;
-            final SecretKey generateSecret = SecretKeyFactory.getInstance("PBEWithMD5AndDES").generateSecret(pbeKeySpec);
-            instance = cipher6;
-            cipher7 = cipher;
-            cipher8 = cipher2;
-            cipher9 = cipher3;
-            cipher10 = cipher4;
-            cipher11 = cipher5;
-            final Cipher cipher12 = cipher11 = (cipher10 = (cipher9 = (cipher8 = (cipher7 = (instance = Cipher.getInstance(generateSecret.getAlgorithm()))))));
-            final PBEParameterSpec pbeParameterSpec = new PBEParameterSpec(array, 19);
-            if (b) {
-                instance = cipher12;
-                cipher7 = cipher12;
-                cipher8 = cipher12;
-                cipher9 = cipher12;
-                cipher10 = cipher12;
-                cipher11 = cipher12;
-                cipher12.init(1, generateSecret, pbeParameterSpec);
-                return cipher12;
+            final SecretKey generateSecret = SecretKeyFactory.getInstance("PBEWithMD5AndDES").generateSecret(new PBEKeySpec(instance.toCharArray(), (byte[])o, 19));
+            instance = (String)Cipher.getInstance(generateSecret.getAlgorithm());
+            try {
+                o = new PBEParameterSpec((byte[])o, 19);
+                if (b) {
+                    ((Cipher)instance).init(1, generateSecret, (AlgorithmParameterSpec)o);
+                    return (Cipher)instance;
+                }
+                ((Cipher)instance).init(2, generateSecret, (AlgorithmParameterSpec)o);
+                return (Cipher)instance;
             }
-            instance = cipher12;
-            cipher7 = cipher12;
-            cipher8 = cipher12;
-            cipher9 = cipher12;
-            cipher10 = cipher12;
-            cipher11 = cipher12;
-            cipher12.init(2, generateSecret, pbeParameterSpec);
-            return cipher12;
+            catch (InvalidAlgorithmParameterException ex) {}
+            catch (Exception ex2) {}
+            catch (InvalidKeyException ex3) {}
+            catch (NoSuchAlgorithmException ex4) {}
+            catch (NoSuchPaddingException ex5) {}
+            catch (InvalidKeySpecException ex6) {}
         }
-        catch (InvalidAlgorithmParameterException ex) {
-            Log.e("nf_crypto", "EXCEPTION: InvalidAlgorithmParameterException" + ex);
-            return instance;
-        }
-        catch (InvalidKeySpecException ex2) {
-            Log.e("nf_crypto", "EXCEPTION: InvalidKeySpecException" + ex2);
-            return cipher7;
-        }
-        catch (NoSuchPaddingException ex3) {
-            Log.e("nf_crypto", "EXCEPTION: NoSuchPaddingException" + ex3);
-            return cipher8;
-        }
-        catch (NoSuchAlgorithmException ex4) {
-            Log.e("nf_crypto", "EXCEPTION: NoSuchAlgorithmException" + ex4);
-            return cipher9;
-        }
-        catch (InvalidKeyException ex5) {
-            Log.e("nf_crypto", "EXCEPTION: InvalidKeyException" + ex5);
-            return cipher10;
-        }
-        catch (Exception ex6) {
-            Log.e("nf_crypto", "EXCEPTION: " + ex6);
-            return cipher11;
+        catch (InvalidKeySpecException ex7) {}
+        catch (NoSuchPaddingException ex8) {}
+        catch (NoSuchAlgorithmException ex9) {}
+        catch (InvalidKeyException ex10) {}
+        catch (Exception ex11) {}
+        catch (InvalidAlgorithmParameterException o) {
+            instance = null;
+            goto Label_0118;
         }
     }
     
@@ -318,20 +272,29 @@ public final class CryptoUtils
         return bytes3;
     }
     
-    public static byte[] padPerPKCS5Padding(final byte[] array, int i) {
+    public static byte[] padPerPKCS5Padding(final byte[] array, int n) {
+        final byte b = 0;
         if (array == null) {
             throw new IllegalArgumentException("Input array is null!");
         }
         Log.d("nf_crypto", "Array size: " + array.length);
-        Log.d("nf_crypto", "Block size: " + i);
-        final byte b = (byte)(i - array.length % i);
-        Log.d("nf_crypto", "Padding: " + b);
-        final byte[] array2 = new byte[array.length + b];
-        for (i = 0; i < array.length; ++i) {
-            array2[i] = array[i];
+        Log.d("nf_crypto", "Block size: " + n);
+        final byte b2 = (byte)(n - array.length % n);
+        Log.d("nf_crypto", "Padding: " + b2);
+        final byte[] array2 = new byte[array.length + b2];
+        n = 0;
+        byte b3;
+        while (true) {
+            b3 = b;
+            if (n >= array.length) {
+                break;
+            }
+            array2[n] = array[n];
+            ++n;
         }
-        for (i = 0; i < b; ++i) {
-            array2[array.length + i] = b;
+        while (b3 < b2) {
+            array2[array.length + b3] = b2;
+            ++b3;
         }
         return array2;
     }

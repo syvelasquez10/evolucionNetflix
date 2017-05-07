@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.internal.game;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.net.Uri;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -60,7 +61,7 @@ public class GameBadgeEntityCreator implements Parcelable$Creator<GameBadgeEntit
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new GameBadgeEntity(g2, g, o2, o, uri);
     }

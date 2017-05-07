@@ -16,12 +16,12 @@ public class df
     private final boolean re;
     private final boolean rf;
     
-    private df(final a a) {
-        this.rb = a.rb;
-        this.rc = a.rc;
-        this.rd = a.rd;
-        this.re = a.re;
-        this.rf = a.rf;
+    private df(final df$a df$a) {
+        this.rb = df$a.rb;
+        this.rc = df$a.rc;
+        this.rd = df$a.rd;
+        this.re = df$a.re;
+        this.rf = df$a.rf;
     }
     
     public JSONObject bL() {
@@ -31,44 +31,6 @@ public class df
         catch (JSONException ex) {
             gs.b("Error occured while obtaining the MRAID capabilities.", (Throwable)ex);
             return null;
-        }
-    }
-    
-    public static final class a
-    {
-        private boolean rb;
-        private boolean rc;
-        private boolean rd;
-        private boolean re;
-        private boolean rf;
-        
-        public df bM() {
-            return new df(this, null);
-        }
-        
-        public a i(final boolean rb) {
-            this.rb = rb;
-            return this;
-        }
-        
-        public a j(final boolean rc) {
-            this.rc = rc;
-            return this;
-        }
-        
-        public a k(final boolean rd) {
-            this.rd = rd;
-            return this;
-        }
-        
-        public a l(final boolean re) {
-            this.re = re;
-            return this;
-        }
-        
-        public a m(final boolean rf) {
-            this.rf = rf;
-            return this;
         }
     }
 }

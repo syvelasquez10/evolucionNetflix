@@ -17,16 +17,16 @@ public class UiLifecycleHelper
     private static final String ACTIVITY_NULL_MESSAGE = "activity cannot be null";
     private final Activity activity;
     private final LocalBroadcastManager broadcastManager;
-    private final Session.StatusCallback callback;
+    private final Session$StatusCallback callback;
     private final BroadcastReceiver receiver;
     
-    public UiLifecycleHelper(final Activity activity, final Session.StatusCallback callback) {
+    public UiLifecycleHelper(final Activity activity, final Session$StatusCallback callback) {
         if (activity == null) {
             throw new IllegalArgumentException("activity cannot be null");
         }
         this.activity = activity;
         this.callback = callback;
-        this.receiver = new ActiveSessionBroadcastReceiver();
+        this.receiver = new UiLifecycleHelper$ActiveSessionBroadcastReceiver(this, null);
         this.broadcastManager = LocalBroadcastManager.getInstance((Context)activity);
     }
     
@@ -82,23 +82,5 @@ public class UiLifecycleHelper
     
     public void onSaveInstanceState(final Bundle bundle) {
         Session.saveSession(Session.getActiveSession(), bundle);
-    }
-    
-    private class ActiveSessionBroadcastReceiver extends BroadcastReceiver
-    {
-        public void onReceive(final Context context, final Intent intent) {
-            if ("com.facebook.sdk.ACTIVE_SESSION_SET".equals(intent.getAction())) {
-                final Session activeSession = Session.getActiveSession();
-                if (activeSession != null && UiLifecycleHelper.this.callback != null) {
-                    activeSession.addCallback(UiLifecycleHelper.this.callback);
-                }
-            }
-            else if ("com.facebook.sdk.ACTIVE_SESSION_UNSET".equals(intent.getAction())) {
-                final Session activeSession2 = Session.getActiveSession();
-                if (activeSession2 != null && UiLifecycleHelper.this.callback != null) {
-                    activeSession2.removeCallback(UiLifecycleHelper.this.callback);
-                }
-            }
-        }
     }
 }

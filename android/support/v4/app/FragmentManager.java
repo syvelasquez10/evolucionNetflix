@@ -17,7 +17,7 @@ public abstract class FragmentManager
         FragmentManagerImpl.DEBUG = debug;
     }
     
-    public abstract void addOnBackStackChangedListener(final OnBackStackChangedListener p0);
+    public abstract void addOnBackStackChangedListener(final FragmentManager$OnBackStackChangedListener p0);
     
     public abstract FragmentTransaction beginTransaction();
     
@@ -29,7 +29,7 @@ public abstract class FragmentManager
     
     public abstract Fragment findFragmentByTag(final String p0);
     
-    public abstract BackStackEntry getBackStackEntryAt(final int p0);
+    public abstract FragmentManager$BackStackEntry getBackStackEntryAt(final int p0);
     
     public abstract int getBackStackEntryCount();
     
@@ -58,27 +58,7 @@ public abstract class FragmentManager
     
     public abstract void putFragment(final Bundle p0, final String p1, final Fragment p2);
     
-    public abstract void removeOnBackStackChangedListener(final OnBackStackChangedListener p0);
+    public abstract void removeOnBackStackChangedListener(final FragmentManager$OnBackStackChangedListener p0);
     
-    public abstract Fragment.SavedState saveFragmentInstanceState(final Fragment p0);
-    
-    public interface BackStackEntry
-    {
-        CharSequence getBreadCrumbShortTitle();
-        
-        int getBreadCrumbShortTitleRes();
-        
-        CharSequence getBreadCrumbTitle();
-        
-        int getBreadCrumbTitleRes();
-        
-        int getId();
-        
-        String getName();
-    }
-    
-    public interface OnBackStackChangedListener
-    {
-        void onBackStackChanged();
-    }
+    public abstract Fragment$SavedState saveFragmentInstanceState(final Fragment p0);
 }

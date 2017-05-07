@@ -5,9 +5,8 @@
 package com.netflix.mediaclient.event.nrdp.mdx.session;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.javabridge.ui.Mdx;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
 public class MessageEvent extends JsonBaseNccpEvent
@@ -17,7 +16,7 @@ public class MessageEvent extends JsonBaseNccpEvent
     private static final String ATTR_sid = "sid";
     private static final String ATTR_transactionId = "transactionId";
     private static final String ATTR_type = "type";
-    public static final Mdx.Events TYPE;
+    public static final Mdx$Events TYPE;
     private JSONObject msgObject;
     private String pairingContext;
     private int sid;
@@ -25,10 +24,10 @@ public class MessageEvent extends JsonBaseNccpEvent
     private String type;
     
     static {
-        TYPE = Mdx.Events.mdx_session_message;
+        TYPE = Mdx$Events.mdx_session_message;
     }
     
-    public MessageEvent(final JSONObject jsonObject) throws JSONException {
+    public MessageEvent(final JSONObject jsonObject) {
         super(MessageEvent.TYPE.getName(), jsonObject);
     }
     
@@ -59,7 +58,7 @@ public class MessageEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.pairingContext = BaseNccpEvent.getUrlDecodedString(jsonObject, "pairingContext", null);
         this.transactionId = BaseNccpEvent.getInt(jsonObject, "transactionId", -1);
         this.type = BaseNccpEvent.getString(jsonObject, "type", null);

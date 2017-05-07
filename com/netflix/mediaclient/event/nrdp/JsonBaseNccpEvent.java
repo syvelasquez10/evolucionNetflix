@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.nrdp;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class JsonBaseNccpEvent extends BaseNccpEvent
@@ -16,7 +15,7 @@ public abstract class JsonBaseNccpEvent extends BaseNccpEvent
         super(s);
     }
     
-    public JsonBaseNccpEvent(final String s, final JSONObject json) throws JSONException {
+    public JsonBaseNccpEvent(final String s, final JSONObject json) {
         super(s);
         if (json == null) {
             throw new IllegalArgumentException("JSON is null");
@@ -25,7 +24,7 @@ public abstract class JsonBaseNccpEvent extends BaseNccpEvent
     }
     
     @Override
-    public JSONObject getData() throws JSONException {
+    public JSONObject getData() {
         return this.json;
     }
     
@@ -44,5 +43,5 @@ public abstract class JsonBaseNccpEvent extends BaseNccpEvent
         return 0;
     }
     
-    protected abstract void populate(final JSONObject p0) throws JSONException;
+    protected abstract void populate(final JSONObject p0);
 }

@@ -5,9 +5,8 @@
 package com.netflix.mediaclient.event.nrdp.mdx.discovery;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.javabridge.ui.Mdx;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
 public class RemoteDeviceReadyEvent extends JsonBaseNccpEvent
@@ -16,16 +15,16 @@ public class RemoteDeviceReadyEvent extends JsonBaseNccpEvent
     private static final String ATTR_launchStatus = "launchStatus";
     private static final String ATTR_uuid = "uuid";
     private static final String DIALUSN_PREFIX = "uuid:";
-    public static final Mdx.Events TYPE;
+    public static final Mdx$Events TYPE;
     private String mDialUsn;
     private int mLaunchStatus;
     private String mUuid;
     
     static {
-        TYPE = Mdx.Events.mdx_discovery_remoteDeviceReady;
+        TYPE = Mdx$Events.mdx_discovery_remoteDeviceReady;
     }
     
-    public RemoteDeviceReadyEvent(final JSONObject jsonObject) throws JSONException {
+    public RemoteDeviceReadyEvent(final JSONObject jsonObject) {
         super(RemoteDeviceReadyEvent.TYPE.getName(), jsonObject);
     }
     
@@ -47,7 +46,7 @@ public class RemoteDeviceReadyEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.mDialUsn = BaseNccpEvent.getUrlDecodedString(jsonObject, "dialUsn", null);
         this.mUuid = BaseNccpEvent.getUrlDecodedString(jsonObject, "uuid", null);
         this.mLaunchStatus = BaseNccpEvent.getInt(jsonObject, "launchStatus", 0);

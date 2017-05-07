@@ -6,6 +6,7 @@ package com.google.android.gms.fitness.request;
 
 import java.util.List;
 import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -55,7 +56,7 @@ public class ab implements Parcelable$Creator<StartBleScanRequest>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new StartBleScanRequest(g2, c2, p, g);
     }

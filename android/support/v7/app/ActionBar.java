@@ -4,19 +4,8 @@
 
 package android.support.v7.app;
 
-import android.support.v4.app.FragmentTransaction;
-import android.view.ViewGroup$LayoutParams;
-import android.content.res.TypedArray;
-import android.support.v7.appcompat.R;
-import android.util.AttributeSet;
-import android.support.annotation.NonNull;
-import android.view.ViewGroup$MarginLayoutParams;
-import android.support.annotation.IntDef;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Annotation;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.view.ActionMode;
+import android.support.v7.view.ActionMode$Callback;
 import android.widget.SpinnerAdapter;
 import android.graphics.drawable.Drawable;
 import android.view.KeyEvent;
@@ -36,15 +25,15 @@ public abstract class ActionBar
     public static final int NAVIGATION_MODE_STANDARD = 0;
     public static final int NAVIGATION_MODE_TABS = 2;
     
-    public abstract void addOnMenuVisibilityListener(final OnMenuVisibilityListener p0);
+    public abstract void addOnMenuVisibilityListener(final ActionBar$OnMenuVisibilityListener p0);
     
-    public abstract void addTab(final Tab p0);
+    public abstract void addTab(final ActionBar$Tab p0);
     
-    public abstract void addTab(final Tab p0, final int p1);
+    public abstract void addTab(final ActionBar$Tab p0, final int p1);
     
-    public abstract void addTab(final Tab p0, final int p1, final boolean p2);
+    public abstract void addTab(final ActionBar$Tab p0, final int p1, final boolean p2);
     
-    public abstract void addTab(final Tab p0, final boolean p1);
+    public abstract void addTab(final ActionBar$Tab p0, final boolean p1);
     
     public boolean collapseActionView() {
         return false;
@@ -74,12 +63,12 @@ public abstract class ActionBar
     public abstract int getSelectedNavigationIndex();
     
     @Nullable
-    public abstract Tab getSelectedTab();
+    public abstract ActionBar$Tab getSelectedTab();
     
     @Nullable
     public abstract CharSequence getSubtitle();
     
-    public abstract Tab getTabAt(final int p0);
+    public abstract ActionBar$Tab getTabAt(final int p0);
     
     public abstract int getTabCount();
     
@@ -106,7 +95,7 @@ public abstract class ActionBar
         return false;
     }
     
-    public abstract Tab newTab();
+    public abstract ActionBar$Tab newTab();
     
     public void onConfigurationChanged(final Configuration configuration) {
     }
@@ -121,13 +110,13 @@ public abstract class ActionBar
     
     public abstract void removeAllTabs();
     
-    public abstract void removeOnMenuVisibilityListener(final OnMenuVisibilityListener p0);
+    public abstract void removeOnMenuVisibilityListener(final ActionBar$OnMenuVisibilityListener p0);
     
-    public abstract void removeTab(final Tab p0);
+    public abstract void removeTab(final ActionBar$Tab p0);
     
     public abstract void removeTabAt(final int p0);
     
-    public abstract void selectTab(final Tab p0);
+    public abstract void selectTab(final ActionBar$Tab p0);
     
     public abstract void setBackgroundDrawable(@Nullable final Drawable p0);
     
@@ -135,7 +124,7 @@ public abstract class ActionBar
     
     public abstract void setCustomView(final View p0);
     
-    public abstract void setCustomView(final View p0, final LayoutParams p1);
+    public abstract void setCustomView(final View p0, final ActionBar$LayoutParams p1);
     
     public void setDefaultDisplayHomeAsUpEnabled(final boolean b) {
     }
@@ -191,7 +180,7 @@ public abstract class ActionBar
     
     public abstract void setIcon(final Drawable p0);
     
-    public abstract void setListNavigationCallbacks(final SpinnerAdapter p0, final OnNavigationListener p1);
+    public abstract void setListNavigationCallbacks(final SpinnerAdapter p0, final ActionBar$OnNavigationListener p1);
     
     public abstract void setLogo(final int p0);
     
@@ -223,120 +212,7 @@ public abstract class ActionBar
     
     public abstract void show();
     
-    public ActionMode startActionMode(final ActionMode.Callback callback) {
+    public ActionMode startActionMode(final ActionMode$Callback actionMode$Callback) {
         return null;
-    }
-    
-    interface Callback
-    {
-        FragmentManager getSupportFragmentManager();
-    }
-    
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef(flag = true, value = { 1L, 2L, 4L, 8L, 16L })
-    public @interface DisplayOptions {
-    }
-    
-    public static class LayoutParams extends ViewGroup$MarginLayoutParams
-    {
-        public int gravity;
-        
-        public LayoutParams(final int n) {
-            this(-2, -1, n);
-        }
-        
-        public LayoutParams(final int n, final int n2) {
-            super(n, n2);
-            this.gravity = 0;
-            this.gravity = 8388627;
-        }
-        
-        public LayoutParams(final int n, final int n2, final int gravity) {
-            super(n, n2);
-            this.gravity = 0;
-            this.gravity = gravity;
-        }
-        
-        public LayoutParams(@NonNull final Context context, final AttributeSet set) {
-            super(context, set);
-            this.gravity = 0;
-            final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.ActionBarLayout);
-            this.gravity = obtainStyledAttributes.getInt(R.styleable.ActionBarLayout_android_layout_gravity, 0);
-            obtainStyledAttributes.recycle();
-        }
-        
-        public LayoutParams(final LayoutParams layoutParams) {
-            super((ViewGroup$MarginLayoutParams)layoutParams);
-            this.gravity = 0;
-            this.gravity = layoutParams.gravity;
-        }
-        
-        public LayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-            super(viewGroup$LayoutParams);
-            this.gravity = 0;
-        }
-    }
-    
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({ 0L, 1L, 2L })
-    public @interface NavigationMode {
-    }
-    
-    public interface OnMenuVisibilityListener
-    {
-        void onMenuVisibilityChanged(final boolean p0);
-    }
-    
-    public interface OnNavigationListener
-    {
-        boolean onNavigationItemSelected(final int p0, final long p1);
-    }
-    
-    public abstract static class Tab
-    {
-        public static final int INVALID_POSITION = -1;
-        
-        public abstract CharSequence getContentDescription();
-        
-        public abstract View getCustomView();
-        
-        public abstract Drawable getIcon();
-        
-        public abstract int getPosition();
-        
-        public abstract Object getTag();
-        
-        public abstract CharSequence getText();
-        
-        public abstract void select();
-        
-        public abstract Tab setContentDescription(final int p0);
-        
-        public abstract Tab setContentDescription(final CharSequence p0);
-        
-        public abstract Tab setCustomView(final int p0);
-        
-        public abstract Tab setCustomView(final View p0);
-        
-        public abstract Tab setIcon(final int p0);
-        
-        public abstract Tab setIcon(final Drawable p0);
-        
-        public abstract Tab setTabListener(final TabListener p0);
-        
-        public abstract Tab setTag(final Object p0);
-        
-        public abstract Tab setText(final int p0);
-        
-        public abstract Tab setText(final CharSequence p0);
-    }
-    
-    public interface TabListener
-    {
-        void onTabReselected(final Tab p0, final FragmentTransaction p1);
-        
-        void onTabSelected(final Tab p0, final FragmentTransaction p1);
-        
-        void onTabUnselected(final Tab p0, final FragmentTransaction p1);
     }
 }

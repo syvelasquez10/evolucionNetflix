@@ -4,16 +4,15 @@
 
 package com.netflix.mediaclient.util.data;
 
-import java.io.FilterInputStream;
 import java.io.OutputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Collection;
 import java.util.ArrayList;
 import android.os.SystemClock;
@@ -26,7 +25,7 @@ public class FileSystemDataRepositoryImpl implements DataRepository
 {
     private static final int DEFAULT_DISK_USAGE_BYTES = 5242880;
     private static final String TAG = "nf_log";
-    private final Map<String, Entry> mEntries;
+    private final Map<String, DataRepository$Entry> mEntries;
     private final int mMaxSizeInBytes;
     private final File mRootDirectory;
     private long mTotalSize;
@@ -36,7 +35,7 @@ public class FileSystemDataRepositoryImpl implements DataRepository
     }
     
     public FileSystemDataRepositoryImpl(final File mRootDirectory, final int mMaxSizeInBytes) {
-        this.mEntries = new HashMap<String, Entry>();
+        this.mEntries = new HashMap<String, DataRepository$Entry>();
         this.mTotalSize = 0L;
         this.mRootDirectory = mRootDirectory;
         this.mMaxSizeInBytes = mMaxSizeInBytes;
@@ -50,47 +49,37 @@ public class FileSystemDataRepositoryImpl implements DataRepository
         if (this.mTotalSize + n >= this.mMaxSizeInBytes) {
             Log.d("nf_log", "Pruning oldest entries.");
             final long mTotalSize = this.mTotalSize;
-            int n2 = 0;
             final long elapsedRealtime = SystemClock.elapsedRealtime();
             final ArrayList<Object> list = new ArrayList<Object>(this.mEntries.values());
-            Collections.sort(list, (Comparator<? super Object>)new Comparator<Entry>() {
-                @Override
-                public int compare(final Entry entry, final Entry entry2) {
-                    if (entry.getTs() == entry2.getTs()) {
-                        return 0;
-                    }
-                    if (entry.getTs() < entry2.getTs()) {
-                        return -1;
-                    }
-                    return 1;
-                }
-            });
+            Collections.sort(list, (Comparator<? super Object>)new FileSystemDataRepositoryImpl$1(this));
             final Iterator<T> iterator = list.iterator();
-            int n3;
-            do {
-                n3 = n2;
-                if (!iterator.hasNext()) {
-                    break;
+            int n2 = 0;
+            while (true) {
+                while (iterator.hasNext()) {
+                    final DataRepository$Entry dataRepository$Entry = (DataRepository$Entry)iterator.next();
+                    final File fileForName = this.getFileForName(dataRepository$Entry.getKey());
+                    final long length = fileForName.length();
+                    if (fileForName.delete()) {
+                        this.mTotalSize -= length;
+                    }
+                    else {
+                        Log.e("nf_log", "Could not delete entry " + fileForName.getName());
+                    }
+                    this.mEntries.remove(dataRepository$Entry.getKey());
+                    ++n2;
+                    if (this.mTotalSize + n < this.mMaxSizeInBytes) {
+                        if (Log.isLoggable("nf_log", 3)) {
+                            Log.d("nf_log", "Pruned " + n2 + " in " + (SystemClock.elapsedRealtime() - elapsedRealtime) + " [ms]. Still available [B]: " + (this.mTotalSize - mTotalSize));
+                        }
+                        return;
+                    }
                 }
-                final Entry entry = (Entry)iterator.next();
-                final File fileForName = this.getFileForName(entry.getKey());
-                final long length = fileForName.length();
-                if (fileForName.delete()) {
-                    this.mTotalSize -= length;
-                }
-                else {
-                    Log.e("nf_log", "Could not delete entry " + fileForName.getName());
-                }
-                this.mEntries.remove(entry.getKey());
-                n3 = ++n2;
-            } while (this.mTotalSize + n >= this.mMaxSizeInBytes);
-            if (Log.isLoggable("nf_log", 3)) {
-                Log.d("nf_log", "Pruned " + n3 + " in " + (SystemClock.elapsedRealtime() - elapsedRealtime) + " [ms]. Still available [B]: " + (this.mTotalSize - mTotalSize));
+                continue;
             }
         }
     }
     
-    private static byte[] streamToBytes(final InputStream inputStream, final int n) throws IOException {
+    private static byte[] streamToBytes(final InputStream inputStream, final int n) {
         final byte[] array = new byte[n];
         int i;
         int read;
@@ -216,14 +205,14 @@ public class FileSystemDataRepositoryImpl implements DataRepository
     }
     
     @Override
-    public Entry[] getEntries() {
+    public DataRepository$Entry[] getEntries() {
         synchronized (this) {
-            return this.mEntries.values().toArray(new Entry[this.mEntries.size()]);
+            return this.mEntries.values().toArray(new DataRepository$Entry[this.mEntries.size()]);
         }
     }
     
     @Override
-    public void load(final String p0, final DataLoadedCallback p1) {
+    public void load(final String p0, final DataRepository$DataLoadedCallback p1) {
         // 
         // This method could not be decompiled.
         // 
@@ -279,135 +268,135 @@ public class FileSystemDataRepositoryImpl implements DataRepository
         //    95: aload_0        
         //    96: aload_1        
         //    97: invokespecial   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.getFileForName:(Ljava/lang/String;)Ljava/io/File;
-        //   100: astore          7
-        //   102: aconst_null    
-        //   103: astore_3       
-        //   104: aconst_null    
-        //   105: astore          6
-        //   107: new             Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream;
-        //   110: dup            
-        //   111: new             Ljava/io/FileInputStream;
-        //   114: dup            
-        //   115: aload           7
-        //   117: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
-        //   120: aconst_null    
-        //   121: invokespecial   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.<init>:(Ljava/io/InputStream;Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$1;)V
-        //   124: astore          4
-        //   126: aload           4
-        //   128: aload           7
-        //   130: invokevirtual   java/io/File.length:()J
-        //   133: aload           4
-        //   135: invokestatic    com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.access$100:(Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream;)I
-        //   138: i2l            
-        //   139: lsub           
-        //   140: l2i            
-        //   141: invokestatic    com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.streamToBytes:(Ljava/io/InputStream;I)[B
-        //   144: astore_3       
-        //   145: aload_2        
-        //   146: ifnull          162
-        //   149: aload_2        
-        //   150: aload_1        
-        //   151: aload_3        
-        //   152: aload           7
-        //   154: invokevirtual   java/io/File.lastModified:()J
-        //   157: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
-        //   162: aload           4
-        //   164: ifnull          84
-        //   167: aload           4
-        //   169: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
-        //   172: goto            84
-        //   175: astore_1       
-        //   176: goto            84
-        //   179: astore          5
-        //   181: aload           6
-        //   183: astore          4
-        //   185: aload           4
-        //   187: astore_3       
-        //   188: ldc             "nf_log"
-        //   190: new             Ljava/lang/StringBuilder;
-        //   193: dup            
-        //   194: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   197: ldc             " Failed to load file "
-        //   199: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   202: aload           7
-        //   204: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
-        //   207: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   210: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   213: aload           5
-        //   215: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   218: pop            
-        //   219: aload           4
-        //   221: astore_3       
-        //   222: aload_0        
-        //   223: aload_1        
-        //   224: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.remove:(Ljava/lang/String;)V
-        //   227: aload           4
-        //   229: ifnull          237
-        //   232: aload           4
-        //   234: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
-        //   237: aload_2        
-        //   238: ifnull          84
-        //   241: aload_2        
-        //   242: aload_1        
-        //   243: aconst_null    
-        //   244: lconst_0       
-        //   245: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
-        //   250: goto            84
-        //   253: astore_1       
-        //   254: aload_0        
-        //   255: monitorexit    
-        //   256: aload_1        
-        //   257: athrow         
-        //   258: astore_1       
-        //   259: aload_3        
-        //   260: ifnull          267
+        //   100: astore          6
+        //   102: new             Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream;
+        //   105: dup            
+        //   106: new             Ljava/io/FileInputStream;
+        //   109: dup            
+        //   110: aload           6
+        //   112: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
+        //   115: aconst_null    
+        //   116: invokespecial   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.<init>:(Ljava/io/InputStream;Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$1;)V
+        //   119: astore          4
+        //   121: aload           4
+        //   123: astore_3       
+        //   124: aload           4
+        //   126: aload           6
+        //   128: invokevirtual   java/io/File.length:()J
+        //   131: aload           4
+        //   133: invokestatic    com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.access$100:(Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream;)I
+        //   136: i2l            
+        //   137: lsub           
+        //   138: l2i            
+        //   139: invokestatic    com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.streamToBytes:(Ljava/io/InputStream;I)[B
+        //   142: astore          5
+        //   144: aload_2        
+        //   145: ifnull          165
+        //   148: aload           4
+        //   150: astore_3       
+        //   151: aload_2        
+        //   152: aload_1        
+        //   153: aload           5
+        //   155: aload           6
+        //   157: invokevirtual   java/io/File.lastModified:()J
+        //   160: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
+        //   165: aload           4
+        //   167: ifnull          84
+        //   170: aload           4
+        //   172: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
+        //   175: goto            84
+        //   178: astore_1       
+        //   179: goto            84
+        //   182: astore          5
+        //   184: aconst_null    
+        //   185: astore          4
+        //   187: aload           4
+        //   189: astore_3       
+        //   190: ldc             "nf_log"
+        //   192: new             Ljava/lang/StringBuilder;
+        //   195: dup            
+        //   196: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   199: ldc             " Failed to load file "
+        //   201: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   204: aload           6
+        //   206: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
+        //   209: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   212: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   215: aload           5
+        //   217: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   220: pop            
+        //   221: aload           4
+        //   223: astore_3       
+        //   224: aload_0        
+        //   225: aload_1        
+        //   226: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.remove:(Ljava/lang/String;)V
+        //   229: aload           4
+        //   231: ifnull          239
+        //   234: aload           4
+        //   236: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
+        //   239: aload_2        
+        //   240: ifnull          84
+        //   243: aload_2        
+        //   244: aload_1        
+        //   245: aconst_null    
+        //   246: lconst_0       
+        //   247: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
+        //   252: goto            84
+        //   255: astore_1       
+        //   256: aload_0        
+        //   257: monitorexit    
+        //   258: aload_1        
+        //   259: athrow         
+        //   260: astore_1       
+        //   261: aconst_null    
+        //   262: astore_3       
         //   263: aload_3        
-        //   264: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
-        //   267: aload_1        
-        //   268: athrow         
-        //   269: astore_3       
-        //   270: goto            237
-        //   273: astore_2       
-        //   274: goto            267
-        //   277: astore_1       
-        //   278: aload           4
-        //   280: astore_3       
-        //   281: goto            259
-        //   284: astore          5
-        //   286: goto            185
+        //   264: ifnull          271
+        //   267: aload_3        
+        //   268: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
+        //   271: aload_1        
+        //   272: athrow         
+        //   273: astore_3       
+        //   274: goto            239
+        //   277: astore_2       
+        //   278: goto            271
+        //   281: astore_1       
+        //   282: goto            263
+        //   285: astore          5
+        //   287: goto            187
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  2      59     253    258    Any
-        //  63     71     253    258    Any
-        //  75     84     253    258    Any
-        //  87     102    253    258    Any
-        //  107    126    179    185    Ljava/io/IOException;
-        //  107    126    258    259    Any
-        //  126    145    284    289    Ljava/io/IOException;
-        //  126    145    277    284    Any
-        //  149    162    284    289    Ljava/io/IOException;
-        //  149    162    277    284    Any
-        //  167    172    175    179    Ljava/io/IOException;
-        //  167    172    253    258    Any
-        //  188    219    258    259    Any
-        //  222    227    258    259    Any
-        //  232    237    269    273    Ljava/io/IOException;
-        //  232    237    253    258    Any
-        //  241    250    253    258    Any
-        //  263    267    273    277    Ljava/io/IOException;
-        //  263    267    253    258    Any
-        //  267    269    253    258    Any
+        //  2      59     255    260    Any
+        //  63     71     255    260    Any
+        //  75     84     255    260    Any
+        //  87     102    255    260    Any
+        //  102    121    182    187    Ljava/io/IOException;
+        //  102    121    260    263    Any
+        //  124    144    285    290    Ljava/io/IOException;
+        //  124    144    281    285    Any
+        //  151    165    285    290    Ljava/io/IOException;
+        //  151    165    281    285    Any
+        //  170    175    178    182    Ljava/io/IOException;
+        //  170    175    255    260    Any
+        //  190    221    281    285    Any
+        //  224    229    281    285    Any
+        //  234    239    273    277    Ljava/io/IOException;
+        //  234    239    255    260    Any
+        //  243    252    255    260    Any
+        //  267    271    277    281    Ljava/io/IOException;
+        //  267    271    255    260    Any
+        //  271    273    255    260    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 146, Size: 146
-        //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
-        //     at java.util.ArrayList.get(ArrayList.java:429)
-        //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
-        //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:113)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0165:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
         //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
         //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
         //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
@@ -426,7 +415,7 @@ public class FileSystemDataRepositoryImpl implements DataRepository
     }
     
     @Override
-    public void loadAll(final LoadedCallback p0) {
+    public void loadAll(final DataRepository$LoadedCallback p0) {
         // 
         // This method could not be decompiled.
         // 
@@ -661,7 +650,7 @@ public class FileSystemDataRepositoryImpl implements DataRepository
     }
     
     @Override
-    public String save(String key, final byte[] array, final DataSavedCallback dataSavedCallback) {
+    public String save(String key, final byte[] array, final DataRepository$DataSavedCallback dataRepository$DataSavedCallback) {
         final String s = null;
         synchronized (this) {
             this.pruneIfNeeded(array.length);
@@ -673,10 +662,10 @@ public class FileSystemDataRepositoryImpl implements DataRepository
                 bufferedOutputStream.close();
                 final FileSystemEntryImpl fileSystemEntryImpl = new FileSystemEntryImpl(fileForName);
                 this.mEntries.put(fileForName.getName(), fileSystemEntryImpl);
-                if (dataSavedCallback != null) {
-                    dataSavedCallback.onDataSaved(((Entry)fileSystemEntryImpl).getKey());
+                if (dataRepository$DataSavedCallback != null) {
+                    dataRepository$DataSavedCallback.onDataSaved(fileSystemEntryImpl.getKey());
                 }
-                key = ((Entry)fileSystemEntryImpl).getKey();
+                key = fileSystemEntryImpl.getKey();
                 return key;
             }
             catch (IOException ex) {
@@ -685,41 +674,13 @@ public class FileSystemDataRepositoryImpl implements DataRepository
                     Log.e("nf_log", "Failed to save data. Could not clean up file " + fileForName.getAbsolutePath());
                 }
                 key = s;
-                if (dataSavedCallback != null) {
-                    dataSavedCallback.onDataSaved(null);
+                if (dataRepository$DataSavedCallback != null) {
+                    dataRepository$DataSavedCallback.onDataSaved(null);
                     key = s;
                     return key;
                 }
                 return key;
             }
-        }
-    }
-    
-    private static class CountingInputStream extends FilterInputStream
-    {
-        private int bytesRead;
-        
-        private CountingInputStream(final InputStream inputStream) {
-            super(inputStream);
-            this.bytesRead = 0;
-        }
-        
-        @Override
-        public int read() throws IOException {
-            final int read = super.read();
-            if (read != -1) {
-                ++this.bytesRead;
-            }
-            return read;
-        }
-        
-        @Override
-        public int read(final byte[] array, int read, final int n) throws IOException {
-            read = super.read(array, read, n);
-            if (read != -1) {
-                this.bytesRead += read;
-            }
-            return read;
         }
     }
 }

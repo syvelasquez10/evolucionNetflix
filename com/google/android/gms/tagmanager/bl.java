@@ -5,7 +5,7 @@
 package com.google.android.gms.tagmanager;
 
 import android.provider.Settings$Secure;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.a;
 import android.content.Context;
@@ -25,7 +25,7 @@ class bl extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         final String x = this.X(this.mContext);
         if (x == null) {
             return di.pI();

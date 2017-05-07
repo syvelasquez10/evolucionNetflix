@@ -21,7 +21,7 @@ import com.google.ads.mediation.MediationServerParameters;
 import com.google.ads.mediation.NetworkExtras;
 
 @ez
-public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> extends cu.a
+public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> extends cu$a
 {
     private final MediationAdapter<NETWORK_EXTRAS, SERVER_PARAMETERS> qG;
     private final NETWORK_EXTRAS qH;
@@ -31,7 +31,7 @@ public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS ex
         this.qH = qh;
     }
     
-    private SERVER_PARAMETERS b(String s, final int n, final String s2) throws RemoteException {
+    private SERVER_PARAMETERS b(String s, final int n, final String s2) {
         HashMap<String, String> hashMap2 = null;
         Label_0098: {
             if (s != null) {
@@ -64,11 +64,11 @@ public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS ex
         return (SERVER_PARAMETERS)mediationServerParameters;
     }
     
-    public void a(final d d, final av av, final String s, final cv cv) throws RemoteException {
+    public void a(final d d, final av av, final String s, final cv cv) {
         this.a(d, av, s, null, cv);
     }
     
-    public void a(final d d, final av av, final String s, final String s2, final cv cv) throws RemoteException {
+    public void a(final d d, final av av, final String s, final String s2, final cv cv) {
         if (!(this.qG instanceof MediationInterstitialAdapter)) {
             gs.W("MediationAdapter is not a MediationInterstitialAdapter: " + this.qG.getClass().getCanonicalName());
             throw new RemoteException();
@@ -83,11 +83,11 @@ public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS ex
         }
     }
     
-    public void a(final d d, final ay ay, final av av, final String s, final cv cv) throws RemoteException {
+    public void a(final d d, final ay ay, final av av, final String s, final cv cv) {
         this.a(d, ay, av, s, null, cv);
     }
     
-    public void a(final d d, final ay ay, final av av, final String s, final String s2, final cv cv) throws RemoteException {
+    public void a(final d d, final ay ay, final av av, final String s, final String s2, final cv cv) {
         if (!(this.qG instanceof MediationBannerAdapter)) {
             gs.W("MediationAdapter is not a MediationBannerAdapter: " + this.qG.getClass().getCanonicalName());
             throw new RemoteException();
@@ -102,7 +102,7 @@ public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS ex
         }
     }
     
-    public void destroy() throws RemoteException {
+    public void destroy() {
         try {
             this.qG.destroy();
         }
@@ -112,7 +112,7 @@ public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS ex
         }
     }
     
-    public d getView() throws RemoteException {
+    public d getView() {
         if (!(this.qG instanceof MediationBannerAdapter)) {
             gs.W("MediationAdapter is not a MediationBannerAdapter: " + this.qG.getClass().getCanonicalName());
             throw new RemoteException();
@@ -126,15 +126,15 @@ public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS ex
         }
     }
     
-    public void pause() throws RemoteException {
+    public void pause() {
         throw new RemoteException();
     }
     
-    public void resume() throws RemoteException {
+    public void resume() {
         throw new RemoteException();
     }
     
-    public void showInterstitial() throws RemoteException {
+    public void showInterstitial() {
         if (!(this.qG instanceof MediationInterstitialAdapter)) {
             gs.W("MediationAdapter is not a MediationInterstitialAdapter: " + this.qG.getClass().getCanonicalName());
             throw new RemoteException();

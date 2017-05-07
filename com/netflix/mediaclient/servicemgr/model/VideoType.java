@@ -42,4 +42,8 @@ public enum VideoType
     public String getValue() {
         return this.value;
     }
+    
+    public boolean isSocialVideoType() {
+        return VideoType.SOCIAL_FRIEND == this || VideoType.SOCIAL_GROUP == this || VideoType.SOCIAL_POPULAR == this;
+    }
 }

@@ -4,10 +4,6 @@
 
 package com.netflix.mediaclient.android.osp;
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import java.lang.reflect.Method;
 import android.app.ActionBar;
 import android.util.Log;
 import android.content.res.TypedArray;
@@ -30,80 +26,49 @@ class ActionBarDrawerToggleHoneycomb
         return drawable;
     }
     
-    public static Object setActionBarDescription(final Object o, final Activity activity, final int n) {
-        Object o2 = o;
+    public static Object setActionBarDescription(Object o, final Activity activity, final int n) {
         if (o == null) {
-            o2 = new SetIndicatorInfo(activity);
+            o = new ActionBarDrawerToggleHoneycomb$SetIndicatorInfo(activity);
         }
-        final SetIndicatorInfo setIndicatorInfo = (SetIndicatorInfo)o2;
-        if (setIndicatorInfo.setHomeAsUpIndicator == null) {
-            return o2;
-        }
-        try {
-            setIndicatorInfo.setHomeActionContentDescription.invoke(activity.getActionBar(), n);
-            return o2;
-        }
-        catch (Exception ex) {
-            Log.w("ActionBarDrawerToggleHoneycomb", "Couldn't set content description via JB-MR2 API", (Throwable)ex);
-            return o2;
+        while (true) {
+            final ActionBarDrawerToggleHoneycomb$SetIndicatorInfo actionBarDrawerToggleHoneycomb$SetIndicatorInfo = (ActionBarDrawerToggleHoneycomb$SetIndicatorInfo)o;
+            if (actionBarDrawerToggleHoneycomb$SetIndicatorInfo.setHomeAsUpIndicator == null) {
+                return o;
+            }
+            try {
+                actionBarDrawerToggleHoneycomb$SetIndicatorInfo.setHomeActionContentDescription.invoke(activity.getActionBar(), n);
+                return o;
+            }
+            catch (Exception ex) {
+                Log.w("ActionBarDrawerToggleHoneycomb", "Couldn't set content description via JB-MR2 API", (Throwable)ex);
+                return o;
+            }
+            continue;
         }
     }
     
-    public static Object setActionBarUpIndicator(final Object o, final Activity activity, final Drawable imageDrawable, final int n) {
-        Object o2 = o;
+    public static Object setActionBarUpIndicator(Object o, final Activity activity, final Drawable imageDrawable, final int n) {
         if (o == null) {
-            o2 = new SetIndicatorInfo(activity);
+            o = new ActionBarDrawerToggleHoneycomb$SetIndicatorInfo(activity);
         }
-        final SetIndicatorInfo setIndicatorInfo = (SetIndicatorInfo)o2;
-        if (setIndicatorInfo.setHomeAsUpIndicator != null) {
+        final ActionBarDrawerToggleHoneycomb$SetIndicatorInfo actionBarDrawerToggleHoneycomb$SetIndicatorInfo = (ActionBarDrawerToggleHoneycomb$SetIndicatorInfo)o;
+        if (actionBarDrawerToggleHoneycomb$SetIndicatorInfo.setHomeAsUpIndicator != null) {
             try {
                 final ActionBar actionBar = activity.getActionBar();
-                setIndicatorInfo.setHomeAsUpIndicator.invoke(actionBar, imageDrawable);
-                setIndicatorInfo.setHomeActionContentDescription.invoke(actionBar, n);
-                return o2;
+                actionBarDrawerToggleHoneycomb$SetIndicatorInfo.setHomeAsUpIndicator.invoke(actionBar, imageDrawable);
+                actionBarDrawerToggleHoneycomb$SetIndicatorInfo.setHomeActionContentDescription.invoke(actionBar, n);
+                return o;
             }
             catch (Exception ex) {
                 Log.w("ActionBarDrawerToggleHoneycomb", "Couldn't set home-as-up indicator via JB-MR2 API", (Throwable)ex);
-                return o2;
+                return o;
             }
         }
-        if (setIndicatorInfo.upIndicatorView != null) {
-            setIndicatorInfo.upIndicatorView.setImageDrawable(imageDrawable);
-            return o2;
+        if (actionBarDrawerToggleHoneycomb$SetIndicatorInfo.upIndicatorView != null) {
+            actionBarDrawerToggleHoneycomb$SetIndicatorInfo.upIndicatorView.setImageDrawable(imageDrawable);
+            return o;
         }
         Log.w("ActionBarDrawerToggleHoneycomb", "Couldn't set home-as-up indicator");
-        return o2;
-    }
-    
-    private static class SetIndicatorInfo
-    {
-        public Method setHomeActionContentDescription;
-        public Method setHomeAsUpIndicator;
-        public ImageView upIndicatorView;
-        
-        SetIndicatorInfo(Activity activity) {
-            try {
-                this.setHomeAsUpIndicator = ActionBar.class.getDeclaredMethod("setHomeAsUpIndicator", Drawable.class);
-                this.setHomeActionContentDescription = ActionBar.class.getDeclaredMethod("setHomeActionContentDescription", Integer.TYPE);
-            }
-            catch (NoSuchMethodException ex) {
-                activity = (Activity)activity.findViewById(16908332);
-                if (activity == null) {
-                    return;
-                }
-                final ViewGroup viewGroup = (ViewGroup)((View)activity).getParent();
-                if (viewGroup.getChildCount() != 2) {
-                    return;
-                }
-                activity = (Activity)viewGroup.getChildAt(0);
-                final Object child = viewGroup.getChildAt(1);
-                if (((View)activity).getId() == 16908332) {
-                    activity = (Activity)child;
-                }
-                if (activity instanceof ImageView) {
-                    this.upIndicatorView = (ImageView)activity;
-                }
-            }
-        }
+        return o;
     }
 }

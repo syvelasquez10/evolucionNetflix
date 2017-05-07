@@ -4,13 +4,7 @@
 
 package com.google.android.gms.drive.events;
 
-import android.os.RemoteException;
-import com.google.android.gms.common.internal.n;
-import com.google.android.gms.drive.internal.ad;
-import android.os.Message;
-import android.os.Handler;
 import java.util.concurrent.TimeUnit;
-import android.os.Looper;
 import android.os.IBinder;
 import android.content.Intent;
 import android.os.Binder;
@@ -24,7 +18,7 @@ public abstract class DriveEventService extends Service implements ChangeListene
 {
     public static final String ACTION_HANDLE_EVENT = "com.google.android.gms.drive.events.HANDLE_EVENT";
     private CountDownLatch NN;
-    a NO;
+    DriveEventService$a NO;
     int NP;
     private final String mName;
     
@@ -94,7 +88,7 @@ public abstract class DriveEventService extends Service implements ChangeListene
         return b2;
     }
     
-    private void hV() throws SecurityException {
+    private void hV() {
         final int callingUid = this.getCallingUid();
         if (callingUid == this.NP) {
             return;
@@ -120,25 +114,10 @@ public abstract class DriveEventService extends Service implements ChangeListene
                         }
                         final CountDownLatch countDownLatch = new CountDownLatch(1);
                         this.NN = new CountDownLatch(1);
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Looper.prepare();
-                                    DriveEventService.this.NO = new a();
-                                    countDownLatch.countDown();
-                                    v.n("DriveEventService", "Bound and starting loop");
-                                    Looper.loop();
-                                    v.n("DriveEventService", "Finished loop");
-                                }
-                                finally {
-                                    DriveEventService.this.NN.countDown();
-                                }
-                            }
-                        }.start();
+                        new DriveEventService$1(this, countDownLatch).start();
                         try {
                             countDownLatch.await(5000L, TimeUnit.MILLISECONDS);
-                            return ((ad.a)new b()).asBinder();
+                            return new DriveEventService$b(this).asBinder();
                         }
                         catch (InterruptedException ex) {
                             throw new RuntimeException("Unable to start event handler", ex);
@@ -242,43 +221,5 @@ public abstract class DriveEventService extends Service implements ChangeListene
     
     public boolean onUnbind(final Intent intent) {
         return true;
-    }
-    
-    final class a extends Handler
-    {
-        private Message b(final OnEventResponse onEventResponse) {
-            return this.obtainMessage(1, (Object)onEventResponse);
-        }
-        
-        private Message hW() {
-            return this.obtainMessage(2);
-        }
-        
-        public void handleMessage(final Message message) {
-            v.n("DriveEventService", "handleMessage message type:" + message.what);
-            switch (message.what) {
-                default: {
-                    v.p("DriveEventService", "Unexpected message type:" + message.what);
-                }
-                case 1: {
-                    DriveEventService.this.a((OnEventResponse)message.obj);
-                }
-                case 2: {
-                    this.getLooper().quit();
-                }
-            }
-        }
-    }
-    
-    final class b extends ad.a
-    {
-        public void c(final OnEventResponse onEventResponse) throws RemoteException {
-            synchronized (DriveEventService.this) {
-                v.n("DriveEventService", "onEvent: " + onEventResponse);
-                n.i(DriveEventService.this.NO);
-                DriveEventService.this.hV();
-                DriveEventService.this.NO.sendMessage(DriveEventService.this.NO.b(onEventResponse));
-            }
-        }
     }
 }

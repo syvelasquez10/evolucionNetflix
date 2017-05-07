@@ -6,9 +6,9 @@ package com.netflix.mediaclient.service.configuration.drm;
 
 public final class LegacyDrmManager implements DrmManager
 {
-    private DrmReadyCallback mCallback;
+    private DrmManager$DrmReadyCallback mCallback;
     
-    LegacyDrmManager(final DrmReadyCallback mCallback) {
+    LegacyDrmManager(final DrmManager$DrmReadyCallback mCallback) {
         this.mCallback = mCallback;
     }
     

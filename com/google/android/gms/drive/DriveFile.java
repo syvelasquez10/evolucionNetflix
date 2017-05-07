@@ -23,13 +23,8 @@ public interface DriveFile extends DriveResource
     @Deprecated
     PendingResult<Status> discardContents(final GoogleApiClient p0, final Contents p1);
     
-    PendingResult<DriveApi.DriveContentsResult> open(final GoogleApiClient p0, final int p1, final DownloadProgressListener p2);
+    PendingResult<DriveApi$DriveContentsResult> open(final GoogleApiClient p0, final int p1, final DriveFile$DownloadProgressListener p2);
     
     @Deprecated
-    PendingResult<DriveApi.ContentsResult> openContents(final GoogleApiClient p0, final int p1, final DownloadProgressListener p2);
-    
-    public interface DownloadProgressListener
-    {
-        void onProgress(final long p0, final long p1);
-    }
+    PendingResult<DriveApi$ContentsResult> openContents(final GoogleApiClient p0, final int p1, final DriveFile$DownloadProgressListener p2);
 }

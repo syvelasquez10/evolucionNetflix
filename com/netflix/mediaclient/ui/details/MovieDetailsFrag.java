@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.model.trackable.TrackableObject;
 import com.netflix.mediaclient.android.app.Status;
@@ -15,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
-import android.content.Context;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
@@ -59,42 +56,19 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("MovieDetailsFrag", "Fetching data for movie ID: " + this.videoId);
-        serviceManager.getBrowse().fetchMovieDetails(this.videoId, new FetchMovieDetailsCallback(this.requestId));
+        serviceManager.getBrowse().fetchMovieDetails(this.videoId, new MovieDetailsFrag$FetchMovieDetailsCallback(this, this.requestId));
     }
     
     private void scrollTo(final int n) {
         if (this.primaryView != null) {
             Log.v("MovieDetailsFrag", "Posting scroll to mdp frag, offset: " + n);
-            this.primaryView.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    MovieDetailsFrag.this.primaryView.scrollTo(0, n);
-                }
-            });
+            this.primaryView.post((Runnable)new MovieDetailsFrag$2(this, n));
         }
     }
     
     @Override
-    protected VideoDetailsViewGroup.DetailsStringProvider getDetailsStringProvider(final MovieDetails movieDetails) {
-        return new VideoDetailsViewGroup.DetailsStringProvider() {
-            @Override
-            public CharSequence getBasicInfoString() {
-                return StringUtils.getBasicMovieInfoString((Context)MovieDetailsFrag.this.getActivity(), movieDetails);
-            }
-            
-            @Override
-            public CharSequence getCreatorsText() {
-                if (StringUtils.isEmpty(movieDetails.getDirectors())) {
-                    return null;
-                }
-                return StringUtils.createBoldLabeledText((Context)MovieDetailsFrag.this.getActivity(), MovieDetailsFrag.this.getActivity().getResources().getQuantityString(2131623936, movieDetails.getNumDirectors()), movieDetails.getDirectors());
-            }
-            
-            @Override
-            public CharSequence getStarringText() {
-                return StringUtils.createBoldLabeledText((Context)MovieDetailsFrag.this.getActivity(), 2131493181, movieDetails.getActors());
-            }
-        };
+    protected VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final MovieDetails movieDetails) {
+        return new MovieDetailsFrag$1(this, movieDetails);
     }
     
     public int getScrollYOffset() {
@@ -160,41 +134,10 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     @Override
     protected void showDetailsView(final MovieDetails movieDetails) {
         super.showDetailsView(movieDetails);
-        this.similarShowsTitle.setText((CharSequence)this.getString(2131493179, new Object[] { movieDetails.getTitle() }));
+        this.similarShowsTitle.setText((CharSequence)this.getString(2131493145, new Object[] { movieDetails.getTitle() }));
         this.similarShowsTitle.setVisibility(0);
         this.adapter.setData(movieDetails.getSimilars(), new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
         this.scrollTo(this.targetScrollYOffset);
         this.targetScrollYOffset = 0;
-    }
-    
-    private class FetchMovieDetailsCallback extends LoggingManagerCallback
-    {
-        private final long requestId;
-        
-        public FetchMovieDetailsCallback(final long requestId) {
-            super("MovieDetailsFrag");
-            this.requestId = requestId;
-        }
-        
-        @Override
-        public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
-            super.onMovieDetailsFetched(movieDetails, status);
-            if (this.requestId != MovieDetailsFrag.this.requestId || MovieDetailsFrag.this.isDestroyed()) {
-                Log.v("MovieDetailsFrag", "Ignoring stale callback");
-                return;
-            }
-            MovieDetailsFrag.this.isLoading = false;
-            if (status.isError()) {
-                Log.w("MovieDetailsFrag", "Invalid status code");
-                MovieDetailsFrag.this.showErrorView();
-                return;
-            }
-            if (movieDetails == null) {
-                Log.v("MovieDetailsFrag", "No details in response");
-                MovieDetailsFrag.this.showErrorView();
-                return;
-            }
-            MovieDetailsFrag.this.showDetailsView(movieDetails);
-        }
     }
 }

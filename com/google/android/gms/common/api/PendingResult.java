@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 public interface PendingResult<R extends Result>
 {
-    void a(final a p0);
+    void a(final PendingResult$a p0);
     
     R await();
     
@@ -21,9 +21,4 @@ public interface PendingResult<R extends Result>
     void setResultCallback(final ResultCallback<R> p0);
     
     void setResultCallback(final ResultCallback<R> p0, final long p1, final TimeUnit p2);
-    
-    public interface a
-    {
-        void n(final Status p0);
-    }
 }

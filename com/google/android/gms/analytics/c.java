@@ -4,7 +4,6 @@
 
 package com.google.android.gms.analytics;
 
-import android.os.IBinder;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.RemoteException;
@@ -15,15 +14,15 @@ import com.google.android.gms.internal.hc;
 import android.content.ServiceConnection;
 import android.content.Context;
 
-class c implements com.google.android.gms.analytics.b
+class c implements b
 {
     private Context mContext;
     private ServiceConnection xG;
-    private b xH;
-    private c xI;
+    private c$b xH;
+    private c$c xI;
     private hc xJ;
     
-    public c(final Context mContext, final b xh, final c xi) {
+    public c(final Context mContext, final c$b xh, final c$c xi) {
         this.mContext = mContext;
         if (xh == null) {
             throw new IllegalArgumentException("onConnectedListener cannot be null");
@@ -67,7 +66,7 @@ class c implements com.google.android.gms.analytics.b
             z.T("Calling connect() while still connected, missing disconnect().");
         }
         else {
-            this.xG = (ServiceConnection)new a();
+            this.xG = (ServiceConnection)new c$a(this);
             final boolean bindService = this.mContext.bindService(intent, this.xG, 129);
             z.V("connect: bindService returned " + bindService + " for " + intent);
             if (!bindService) {
@@ -117,50 +116,5 @@ class c implements com.google.android.gms.analytics.b
     
     public boolean isConnected() {
         return this.xJ != null;
-    }
-    
-    final class a implements ServiceConnection
-    {
-        public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
-            z.V("service connected, binder: " + binder);
-            try {
-                if ("com.google.android.gms.analytics.internal.IAnalyticsService".equals(binder.getInterfaceDescriptor())) {
-                    z.V("bound to service");
-                    c.this.xJ = hc.a.E(binder);
-                    c.this.dL();
-                    return;
-                }
-            }
-            catch (RemoteException ex) {}
-            while (true) {
-                try {
-                    c.this.mContext.unbindService((ServiceConnection)this);
-                    c.this.xG = null;
-                    c.this.xI.a(2, null);
-                }
-                catch (IllegalArgumentException ex2) {
-                    continue;
-                }
-                break;
-            }
-        }
-        
-        public void onServiceDisconnected(final ComponentName componentName) {
-            z.V("service disconnected: " + componentName);
-            c.this.xG = null;
-            c.this.xH.onDisconnected();
-        }
-    }
-    
-    public interface b
-    {
-        void onConnected();
-        
-        void onDisconnected();
-    }
-    
-    public interface c
-    {
-        void a(final int p0, final Intent p1);
     }
 }

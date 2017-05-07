@@ -36,21 +36,30 @@ public class ErrorLoggingSpecification
     
     public static ErrorLoggingSpecification loadFromPreferences(Context context) {
         final Context context2 = null;
-        final Context context3 = null;
         final String stringPref = PreferenceUtils.getStringPref(context, "error_log_configuration", null);
-        if (StringUtils.isEmpty(stringPref)) {
-            Log.d(ErrorLoggingSpecification.TAG, "Error specification not found in file system");
-            context = context3;
-        }
-        else {
-            context = context2;
-            try {
-                final Object o = context = (Context)FalcorParseUtils.getGson().fromJson(stringPref, ErrorLoggingSpecification.class);
-                Log.d(ErrorLoggingSpecification.TAG, "Error logging specification loaded from file system");
-                context = (Context)o;
+        Label_0028: {
+            if (StringUtils.isEmpty(stringPref)) {
+                Log.d(ErrorLoggingSpecification.TAG, "Error specification not found in file system");
+                context = null;
             }
-            catch (Throwable t) {
-                Log.e(ErrorLoggingSpecification.TAG, "Failed to load error logging specification from file system", t);
+            else {
+                while (true) {
+                    try {
+                        context = (Context)FalcorParseUtils.getGson().fromJson(stringPref, ErrorLoggingSpecification.class);
+                        try {
+                            Log.d(ErrorLoggingSpecification.TAG, "Error logging specification loaded from file system");
+                            break Label_0028;
+                        }
+                        catch (Throwable t2) {}
+                        final Throwable t;
+                        Log.e(ErrorLoggingSpecification.TAG, "Failed to load error logging specification from file system", t);
+                    }
+                    catch (Throwable t) {
+                        context = context2;
+                        continue;
+                    }
+                    break;
+                }
             }
         }
         Object default1 = context;

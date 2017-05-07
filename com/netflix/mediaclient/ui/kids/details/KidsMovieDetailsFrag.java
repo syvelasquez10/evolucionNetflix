@@ -4,9 +4,8 @@
 
 package com.netflix.mediaclient.ui.kids.details;
 
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.content.Context;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.LayoutInflater;
@@ -69,8 +68,8 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     private View createSimilarMoviesHeader() {
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903111, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131165435)).setText(2131492959);
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903112, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131165434)).setText(2131492959);
         return inflate;
     }
     
@@ -83,7 +82,7 @@ public class KidsMovieDetailsFrag extends NetflixFrag
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("KidsMovieDetailsFrag", "Fetching data for show ID: " + this.movieId);
-        this.manager.getBrowse().fetchMovieDetails(this.movieId, new FetchMovieDetailsCallback(this.requestId));
+        this.manager.getBrowse().fetchMovieDetails(this.movieId, new KidsMovieDetailsFrag$FetchMovieDetailsCallback(this, this.requestId));
     }
     
     private void showErrorView() {
@@ -126,19 +125,13 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903117, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903118, (ViewGroup)null);
         this.listView = (ListView)this.content.findViewById(16908298);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
         this.listView.addHeaderView((View)this.detailsViewGroup, (Object)null, false);
         this.listView.addHeaderView(this.createSimilarMoviesHeader(), (Object)null, false);
-        this.leWrapper = new LoadingAndErrorWrapper(this.content, new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-                KidsMovieDetailsFrag.this.showLoadingView();
-                KidsMovieDetailsFrag.this.fetchMovieDetails();
-            }
-        });
+        this.leWrapper = new LoadingAndErrorWrapper(this.content, new KidsMovieDetailsFrag$1(this));
         return this.content;
     }
     
@@ -154,35 +147,5 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
         super.onManagerUnavailable(serviceManager, status);
         this.manager = null;
-    }
-    
-    private class FetchMovieDetailsCallback extends LoggingManagerCallback
-    {
-        private final long requestId;
-        
-        public FetchMovieDetailsCallback(final long requestId) {
-            super("KidsMovieDetailsFrag");
-            this.requestId = requestId;
-        }
-        
-        @Override
-        public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
-            super.onMovieDetailsFetched(movieDetails, status);
-            if (this.requestId != KidsMovieDetailsFrag.this.requestId) {
-                Log.v("KidsMovieDetailsFrag", "Ignoring stale callback");
-                return;
-            }
-            if (status.isError()) {
-                Log.w("KidsMovieDetailsFrag", "Invalid status code");
-                KidsMovieDetailsFrag.this.showErrorView();
-                return;
-            }
-            if (movieDetails == null) {
-                Log.v("KidsMovieDetailsFrag", "No details in response");
-                KidsMovieDetailsFrag.this.showErrorView();
-                return;
-            }
-            KidsMovieDetailsFrag.this.updateMovieDetails(movieDetails);
-        }
     }
 }

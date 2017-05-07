@@ -18,33 +18,29 @@ public class SetConfigData extends BaseInvoke
     private static final String TARGET = "nrdp";
     
     public SetConfigData(final JSONObject jsonObject, final String s) {
+        int n = 1;
         super("nrdp", "setConfigData");
-        if (jsonObject != null && s != null) {
-            StringBuilder sb = null;
-            Label_0122: {
-                try {
-                    sb = new StringBuilder();
-                    final Iterator keys = jsonObject.keys();
-                    int n = 1;
-                    while (keys.hasNext()) {
-                        if (n == 0) {
-                            sb.append("&");
-                        }
-                        n = 0;
-                        final String s2 = keys.next();
-                        sb.append(String.format("%s=%s", URLEncoder.encode(s2, "UTF-8"), URLEncoder.encode(jsonObject.getString(s2), "UTF-8")));
-                    }
-                    break Label_0122;
+        if (jsonObject == null || s == null) {
+            return;
+        }
+        try {
+            final StringBuilder sb = new StringBuilder();
+            final Iterator keys = jsonObject.keys();
+            while (keys.hasNext()) {
+                if (n == 0) {
+                    sb.append("&");
                 }
-                catch (Exception ex) {
-                    Log.e("SetConfigData", "Unable to setConfigData", ex);
-                }
-                return;
+                final String s2 = keys.next();
+                sb.append(String.format("%s=%s", URLEncoder.encode(s2, "UTF-8"), URLEncoder.encode(jsonObject.getString(s2), "UTF-8")));
+                n = 0;
             }
             final JSONObject jsonObject2 = new JSONObject();
             jsonObject2.put("name", (Object)s);
             jsonObject2.put("data", (Object)sb.toString());
             this.arguments = jsonObject2.toString();
+        }
+        catch (Exception ex) {
+            Log.e("SetConfigData", "Unable to setConfigData", ex);
         }
     }
 }

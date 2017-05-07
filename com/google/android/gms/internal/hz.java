@@ -4,13 +4,9 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.api.Api;
-import android.os.ParcelFileDescriptor;
-import com.google.android.gms.common.api.Result;
+import com.google.android.gms.appindexing.AppIndexApi$AppIndexingLink;
 import android.content.Intent;
 import android.app.Activity;
-import android.os.RemoteException;
-import com.google.android.gms.common.api.BaseImplementation;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,23 +43,16 @@ public final class hz implements AppIndexApi, hu
     }
     
     public PendingResult<Status> a(final GoogleApiClient googleApiClient, final hs... array) {
-        return googleApiClient.a((PendingResult<Status>)new d<Status>() {
-            final /* synthetic */ String CJ = googleApiClient.a(hd.BN).getContext().getPackageName();
-            
-            @Override
-            protected void a(final hv hv) throws RemoteException {
-                hv.a(new e((BaseImplementation.b<Status>)this), this.CJ, array);
-            }
-        });
+        return googleApiClient.a((PendingResult<Status>)new hz$2(this, googleApiClient.a(hd.BN).getContext().getPackageName(), array));
     }
     
     @Override
-    public PendingResult<Status> view(final GoogleApiClient googleApiClient, final Activity activity, final Intent intent, final String s, final Uri uri, final List<AppIndexingLink> list) {
+    public PendingResult<Status> view(final GoogleApiClient googleApiClient, final Activity activity, final Intent intent, final String s, final Uri uri, final List<AppIndexApi$AppIndexingLink> list) {
         return this.a(googleApiClient, new hs(googleApiClient.a(hd.BN).getContext().getPackageName(), intent, s, uri, null, list));
     }
     
     @Override
-    public PendingResult<Status> view(final GoogleApiClient googleApiClient, final Activity activity, final Uri uri, final String s, final Uri uri2, final List<AppIndexingLink> list) {
+    public PendingResult<Status> view(final GoogleApiClient googleApiClient, final Activity activity, final Uri uri, final String s, final Uri uri2, final List<AppIndexApi$AppIndexingLink> list) {
         return this.view(googleApiClient, activity, new Intent("android.intent.action.VIEW", a(googleApiClient.a(hd.BN).getContext().getPackageName(), uri)), s, uri2, list);
     }
     
@@ -75,60 +64,5 @@ public final class hz implements AppIndexApi, hu
     @Override
     public PendingResult<Status> viewEnd(final GoogleApiClient googleApiClient, final Activity activity, final Uri uri) {
         return this.viewEnd(googleApiClient, activity, new Intent("android.intent.action.VIEW", a(googleApiClient.a(hd.BN).getContext().getPackageName(), uri)));
-    }
-    
-    private abstract static class a<T> implements Result
-    {
-        private final Status CM;
-        protected final T CN;
-        
-        public a(final Status cm, final T cn) {
-            this.CM = cm;
-            this.CN = cn;
-        }
-        
-        @Override
-        public Status getStatus() {
-            return this.CM;
-        }
-    }
-    
-    static class b extends hz.a<ParcelFileDescriptor> implements hu.a
-    {
-        public b(final Status status, final ParcelFileDescriptor parcelFileDescriptor) {
-            super(status, parcelFileDescriptor);
-        }
-    }
-    
-    private abstract static class c<T extends Result> extends BaseImplementation.a<T, hy>
-    {
-        public c() {
-            super(hd.BN);
-        }
-        
-        protected abstract void a(final hv p0) throws RemoteException;
-        
-        protected final void a(final hy hy) throws RemoteException {
-            this.a(hy.fo());
-        }
-    }
-    
-    private abstract static class d<T extends Result> extends c<Status>
-    {
-        protected Status d(final Status status) {
-            return status;
-        }
-    }
-    
-    private static final class e extends hx<Status>
-    {
-        public e(final BaseImplementation.b<Status> b) {
-            super(b);
-        }
-        
-        @Override
-        public void a(final Status status) {
-            this.CH.b((T)status);
-        }
     }
 }

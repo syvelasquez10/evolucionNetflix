@@ -4,10 +4,9 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 
 public final class UIModelessViewSessionStartedEvent extends SessionStartedEvent
@@ -15,10 +14,10 @@ public final class UIModelessViewSessionStartedEvent extends SessionStartedEvent
     public static final String MODELESS_VIEW = "modelessView";
     public static final String ORIENTATION = "orientation";
     private static final String UI_SESSION_NAME = "uiModelessView";
-    private IClientLogging.ModalView modelessView;
+    private IClientLogging$ModalView modelessView;
     private Orientation orientation;
     
-    public UIModelessViewSessionStartedEvent(JSONObject jsonObject) throws JSONException {
+    public UIModelessViewSessionStartedEvent(JSONObject jsonObject) {
         super(jsonObject);
         jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null) {
@@ -31,12 +30,12 @@ public final class UIModelessViewSessionStartedEvent extends SessionStartedEvent
             }
             final String string2 = JsonUtils.getString(jsonObject, "modelessView", null);
             if (string2 != null) {
-                this.modelessView = IClientLogging.ModalView.valueOf(string2);
+                this.modelessView = IClientLogging$ModalView.valueOf(string2);
             }
         }
     }
     
-    public UIModelessViewSessionStartedEvent(final boolean b, final IClientLogging.ModalView modalView) {
+    public UIModelessViewSessionStartedEvent(final boolean b, final IClientLogging$ModalView clientLogging$ModalView) {
         super("uiModelessView");
         Orientation orientation;
         if (b) {
@@ -46,12 +45,12 @@ public final class UIModelessViewSessionStartedEvent extends SessionStartedEvent
             orientation = Orientation.landscape;
         }
         this.orientation = orientation;
-        this.modalView = modalView;
-        this.modelessView = modalView;
+        this.modalView = clientLogging$ModalView;
+        this.modelessView = clientLogging$ModalView;
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();
@@ -63,7 +62,7 @@ public final class UIModelessViewSessionStartedEvent extends SessionStartedEvent
         return data;
     }
     
-    public IClientLogging.ModalView getModelessView() {
+    public IClientLogging$ModalView getModelessView() {
         return this.modelessView;
     }
     

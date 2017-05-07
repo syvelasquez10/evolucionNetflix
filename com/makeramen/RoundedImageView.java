@@ -10,7 +10,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.content.res.Resources;
 import com.netflix.mediaclient.Log;
 import android.content.res.TypedArray;
-import com.netflix.mediaclient.R;
+import com.netflix.mediaclient.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -52,7 +52,7 @@ public class RoundedImageView extends ImageView
         this.mBorderColor = ColorStateList.valueOf(-16777216);
         this.mOval = false;
         this.mRoundBackground = false;
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.RoundedImageView, int1, 0);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.RoundedImageView, int1, 0);
         int1 = obtainStyledAttributes.getInt(0, -1);
         if (int1 >= 0) {
             this.setScaleType(RoundedImageView.SCALE_TYPES[int1]);
@@ -80,29 +80,31 @@ public class RoundedImageView extends ImageView
     }
     
     private Drawable resolveResource() {
+        final Drawable drawable = null;
         final Resources resources = this.getResources();
         if (resources == null) {
             return null;
         }
-        Drawable drawable = null;
+        Drawable drawable2 = drawable;
         Label_0031: {
             if (this.mResource == 0) {
                 break Label_0031;
             }
             try {
-                drawable = resources.getDrawable(this.mResource);
-                return RoundedDrawable.fromDrawable(drawable);
+                drawable2 = resources.getDrawable(this.mResource);
+                return RoundedDrawable.fromDrawable(drawable2);
             }
             catch (Exception ex) {
                 Log.w("RoundedImageView", "Unable to find resource: " + this.mResource, ex);
                 this.mResource = 0;
-                drawable = drawable;
-                return RoundedDrawable.fromDrawable(drawable);
+                drawable2 = drawable;
+                return RoundedDrawable.fromDrawable(drawable2);
             }
         }
     }
     
     private void updateAttrs(final Drawable drawable, final boolean b) {
+        int i = 0;
         if (drawable != null) {
             if (drawable instanceof RoundedDrawable) {
                 final RoundedDrawable setScaleType = ((RoundedDrawable)drawable).setScaleType(this.mScaleType);
@@ -125,8 +127,7 @@ public class RoundedImageView extends ImageView
                 return;
             }
             if (drawable instanceof LayerDrawable) {
-                final LayerDrawable layerDrawable = (LayerDrawable)drawable;
-                for (int numberOfLayers = layerDrawable.getNumberOfLayers(), i = 0; i < numberOfLayers; ++i) {
+                for (LayerDrawable layerDrawable = (LayerDrawable)drawable; i < layerDrawable.getNumberOfLayers(); ++i) {
                     this.updateAttrs(layerDrawable.getDrawable(i), b);
                 }
             }
@@ -260,18 +261,18 @@ public class RoundedImageView extends ImageView
         }
         if (this.mScaleType != imageView$ScaleType) {
             this.mScaleType = imageView$ScaleType;
-            switch (imageView$ScaleType) {
+            switch (RoundedImageView$1.$SwitchMap$android$widget$ImageView$ScaleType[imageView$ScaleType.ordinal()]) {
                 default: {
                     super.setScaleType(imageView$ScaleType);
                     break;
                 }
-                case CENTER:
-                case CENTER_CROP:
-                case CENTER_INSIDE:
-                case FIT_CENTER:
-                case FIT_START:
-                case FIT_END:
-                case FIT_XY: {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7: {
                     super.setScaleType(ImageView$ScaleType.FIT_XY);
                     break;
                 }

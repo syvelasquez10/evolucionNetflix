@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.ArrayList;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import java.util.List;
 
@@ -22,7 +22,7 @@ class di
     private static Boolean arO;
     private static List<Object> arP;
     private static Map<Object, Object> arQ;
-    private static d.a arR;
+    private static d$a arR;
     
     static {
         arJ = null;
@@ -36,11 +36,11 @@ class di
         di.arR = u(di.arN);
     }
     
-    public static d.a cU(final String ga) {
-        final d.a a = new d.a();
-        a.type = 5;
-        a.gA = ga;
-        return a;
+    public static d$a cU(final String ga) {
+        final d$a d$a = new d$a();
+        d$a.type = 5;
+        d$a.gA = ga;
+        return d$a;
     }
     
     private static dh cV(final String s) {
@@ -87,44 +87,44 @@ class di
         return 0.0;
     }
     
-    public static String j(final d.a a) {
-        return p(o(a));
+    public static String j(final d$a d$a) {
+        return p(o(d$a));
     }
     
-    public static dh k(final d.a a) {
-        return q(o(a));
+    public static dh k(final d$a d$a) {
+        return q(o(d$a));
     }
     
-    public static Long l(final d.a a) {
-        return r(o(a));
+    public static Long l(final d$a d$a) {
+        return r(o(d$a));
     }
     
-    public static Double m(final d.a a) {
-        return s(o(a));
+    public static Double m(final d$a d$a) {
+        return s(o(d$a));
     }
     
-    public static Boolean n(final d.a a) {
-        return t(o(a));
+    public static Boolean n(final d$a d$a) {
+        return t(o(d$a));
     }
     
-    public static Object o(final d.a a) {
+    public static Object o(final d$a d$a) {
         final int n = 0;
         final int n2 = 0;
         int i = 0;
-        if (a == null) {
+        if (d$a == null) {
             return di.arJ;
         }
-        switch (a.type) {
+        switch (d$a.type) {
             default: {
-                bh.T("Failed to convert a value of type: " + a.type);
+                bh.T("Failed to convert a value of type: " + d$a.type);
                 return di.arJ;
             }
             case 1: {
-                return a.gv;
+                return d$a.gv;
             }
             case 2: {
-                final ArrayList<Object> list = new ArrayList<Object>(a.gw.length);
-                for (d.a[] gw = a.gw; i < gw.length; ++i) {
+                final ArrayList<Object> list = new ArrayList<Object>(d$a.gw.length);
+                for (d$a[] gw = d$a.gw; i < gw.length; ++i) {
                     final Object o = o(gw[i]);
                     if (o == di.arJ) {
                         return di.arJ;
@@ -134,14 +134,14 @@ class di
                 return list;
             }
             case 3: {
-                if (a.gx.length != a.gy.length) {
-                    bh.T("Converting an invalid value to object: " + a.toString());
+                if (d$a.gx.length != d$a.gy.length) {
+                    bh.T("Converting an invalid value to object: " + d$a.toString());
                     return di.arJ;
                 }
-                final HashMap<Object, Object> hashMap = new HashMap<Object, Object>(a.gy.length);
-                for (int j = n; j < a.gx.length; ++j) {
-                    final Object o2 = o(a.gx[j]);
-                    final Object o3 = o(a.gy[j]);
+                final HashMap<Object, Object> hashMap = new HashMap<Object, Object>(d$a.gy.length);
+                for (int j = n; j < d$a.gx.length; ++j) {
+                    final Object o2 = o(d$a.gx[j]);
+                    final Object o3 = o(d$a.gy[j]);
                     if (o2 == di.arJ || o3 == di.arJ) {
                         return di.arJ;
                     }
@@ -158,11 +158,11 @@ class di
                 return di.arJ;
             }
             case 6: {
-                return a.gB;
+                return d$a.gB;
             }
             case 7: {
                 final StringBuffer sb = new StringBuffer();
-                final d.a[] gd = a.gD;
+                final d$a[] gd = d$a.gD;
                 for (int length = gd.length, k = n2; k < length; ++k) {
                     final String l = j(gd[k]);
                     if (l == di.arN) {
@@ -173,7 +173,7 @@ class di
                 return sb.toString();
             }
             case 8: {
-                return a.gC;
+                return d$a.gC;
             }
         }
     }
@@ -209,7 +209,7 @@ class di
         return di.arN;
     }
     
-    public static d.a pI() {
+    public static d$a pI() {
         return di.arR;
     }
     
@@ -247,43 +247,43 @@ class di
         return cY(p(o));
     }
     
-    public static d.a u(final Object o) {
+    public static d$a u(final Object o) {
         boolean gf = false;
-        final d.a a = new d.a();
-        if (o instanceof d.a) {
-            return (d.a)o;
+        final d$a d$a = new d$a();
+        if (o instanceof d$a) {
+            return (d$a)o;
         }
         if (o instanceof String) {
-            a.type = 1;
-            a.gv = (String)o;
+            d$a.type = 1;
+            d$a.gv = (String)o;
         }
         else if (o instanceof List) {
-            a.type = 2;
+            d$a.type = 2;
             final List list = (List)o;
-            final ArrayList list2 = new ArrayList<d.a>(list.size());
+            final ArrayList list2 = new ArrayList<d$a>(list.size());
             final Iterator<Object> iterator = list.iterator();
             gf = false;
             while (iterator.hasNext()) {
-                final d.a u = u(iterator.next());
+                final d$a u = u(iterator.next());
                 if (u == di.arR) {
                     return di.arR;
                 }
                 gf = (gf || u.gF);
                 list2.add(u);
             }
-            a.gw = list2.toArray(new d.a[0]);
+            d$a.gw = list2.toArray(new d$a[0]);
         }
         else if (o instanceof Map) {
-            a.type = 3;
+            d$a.type = 3;
             final Set<Map.Entry<Object, V>> entrySet = (Set<Map.Entry<Object, V>>)((Map)o).entrySet();
-            final ArrayList list3 = new ArrayList<d.a>(entrySet.size());
-            final ArrayList list4 = new ArrayList<d.a>(entrySet.size());
+            final ArrayList list3 = new ArrayList<d$a>(entrySet.size());
+            final ArrayList list4 = new ArrayList<d$a>(entrySet.size());
             final Iterator<Map.Entry<Object, V>> iterator2 = entrySet.iterator();
             gf = false;
             while (iterator2.hasNext()) {
                 final Map.Entry<Object, V> entry = iterator2.next();
-                final d.a u2 = u(entry.getKey());
-                final d.a u3 = u(entry.getValue());
+                final d$a u2 = u(entry.getKey());
+                final d$a u3 = u(entry.getValue());
                 if (u2 == di.arR || u3 == di.arR) {
                     return di.arR;
                 }
@@ -291,16 +291,16 @@ class di
                 list3.add(u2);
                 list4.add(u3);
             }
-            a.gx = list3.toArray(new d.a[0]);
-            a.gy = list4.toArray(new d.a[0]);
+            d$a.gx = list3.toArray(new d$a[0]);
+            d$a.gy = list4.toArray(new d$a[0]);
         }
         else if (v(o)) {
-            a.type = 1;
-            a.gv = o.toString();
+            d$a.type = 1;
+            d$a.gv = o.toString();
         }
         else if (w(o)) {
-            a.type = 6;
-            a.gB = x(o);
+            d$a.type = 6;
+            d$a.gB = x(o);
         }
         else {
             if (!(o instanceof Boolean)) {
@@ -315,11 +315,11 @@ class di
                 bh.T(append.append(string).toString());
                 return di.arR;
             }
-            a.type = 8;
-            a.gC = (boolean)o;
+            d$a.type = 8;
+            d$a.gC = (boolean)o;
         }
-        a.gF = gf;
-        return a;
+        d$a.gF = gf;
+        return d$a;
     }
     
     private static boolean v(final Object o) {

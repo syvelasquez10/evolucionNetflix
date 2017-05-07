@@ -7,23 +7,29 @@ package com.netflix.mediaclient.service.webclient.model;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$UserRating;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Detail;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$BookmarkStill;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 
-public class PlayableVideo extends Video implements com.netflix.mediaclient.servicemgr.model.Video, Playable
+public class PlayableVideo extends Video implements Playable, com.netflix.mediaclient.servicemgr.model.Video
 {
     private static final String TAG = "nf_model_playablevideo";
-    public Bookmark bookmark;
-    public BookmarkStill bookmarkStill;
-    public Episode.Detail currentEpisode;
-    public Bookmark currentEpisodeBookmark;
-    public Detail detail;
-    public InQueue inQueue;
-    public Rating rating;
+    public Video$Bookmark bookmark;
+    public Video$BookmarkStill bookmarkStill;
+    public Episode$Detail currentEpisode;
+    public Video$Bookmark currentEpisodeBookmark;
+    public Video$Detail detail;
+    public Video$InQueue inQueue;
+    public Video$UserRating rating;
     public SocialEvidence socialEvidence;
-    public Summary summary;
+    public Video$Summary summary;
     public boolean userConnectedToFacebook;
     
     private String getCurrentEpisodeTitle() {

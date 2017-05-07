@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wallet;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
@@ -99,7 +100,7 @@ public class a implements Parcelable$Creator<Address>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new Address(g, o, o2, o3, o4, o5, o6, o7, o8, o9, c2, o10);
     }

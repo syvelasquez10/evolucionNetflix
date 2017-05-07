@@ -5,6 +5,7 @@
 package android.support.v7.widget;
 
 import android.support.v7.view.ActionMode;
+import android.support.v7.view.ActionMode$Callback;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -52,7 +53,7 @@ public class WindowCallbackWrapper implements WindowCallback
     }
     
     @Override
-    public ActionMode startActionMode(final ActionMode.Callback callback) {
-        return this.mWrapped.startActionMode(callback);
+    public ActionMode startActionMode(final ActionMode$Callback actionMode$Callback) {
+        return this.mWrapped.startActionMode(actionMode$Callback);
     }
 }

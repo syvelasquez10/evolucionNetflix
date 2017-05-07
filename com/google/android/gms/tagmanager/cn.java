@@ -4,11 +4,11 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 
 interface cn
 {
-    void f(final d.a p0);
+    void f(final d$a p0);
     
     cl oA();
     

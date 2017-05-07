@@ -4,7 +4,7 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
@@ -26,15 +26,15 @@ class cf extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
-        final d.a a = map.get(cf.aqa);
-        final d.a a2 = map.get(cf.aqb);
+    public d$a C(final Map<String, d$a> map) {
+        final d$a d$a = map.get(cf.aqa);
+        final d$a d$a2 = map.get(cf.aqb);
         Label_0118: {
-            if (a == null || a == di.pI() || a2 == null || a2 == di.pI()) {
+            if (d$a == null || d$a == di.pI() || d$a2 == null || d$a2 == di.pI()) {
                 break Label_0118;
             }
-            final dh k = di.k(a);
-            final dh i = di.k(a2);
+            final dh k = di.k(d$a);
+            final dh i = di.k(d$a2);
             if (k == di.pG() || i == di.pG()) {
                 break Label_0118;
             }

@@ -5,14 +5,12 @@
 package com.google.android.gms.internal;
 
 import android.graphics.drawable.Drawable;
-import java.util.concurrent.ExecutionException;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 @ez
-public class fq implements a<bp>
+public class fq implements fo$a<bp>
 {
-    public bp c(final fo fo, final JSONObject jsonObject) throws JSONException, InterruptedException, ExecutionException {
+    public bp c(final fo fo, final JSONObject jsonObject) {
         return new bp(jsonObject.getString("headline"), fo.a(jsonObject, "image", true).get(), jsonObject.getString("body"), fo.a(jsonObject, "secondary_image", false).get(), jsonObject.getString("call_to_action"), jsonObject.getString("attribution"));
     }
 }

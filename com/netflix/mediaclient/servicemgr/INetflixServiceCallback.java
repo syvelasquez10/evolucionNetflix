@@ -5,9 +5,10 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.UserRating;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
@@ -84,7 +85,7 @@ public interface INetflixServiceCallback
     
     void onShowDetailsFetched(final int p0, final ShowDetails p1, final Status p2);
     
-    void onSimilarVideosFetched(final int p0, final SearchVideoList p1, final Status p2);
+    void onSimilarVideosFetched(final int p0, final SearchVideoListProvider p1, final Status p2);
     
     void onSocialNotificationWasThanked(final int p0, final SocialNotificationSummary p1, final Status p2);
     
@@ -92,7 +93,7 @@ public interface INetflixServiceCallback
     
     void onVideoHide(final int p0, final Status p1);
     
-    void onVideoRatingSet(final int p0, final Status p1);
+    void onVideoRatingSet(final int p0, final UserRating p1, final Status p2);
     
     void onVideosFetched(final int p0, final List<Video> p1, final Status p2);
 }

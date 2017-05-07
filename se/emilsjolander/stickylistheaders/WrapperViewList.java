@@ -19,7 +19,7 @@ class WrapperViewList extends ListView
 {
     private boolean mClippingToPadding;
     private List<View> mFooterViews;
-    private LifeCycleListener mLifeCycleListener;
+    private WrapperViewList$LifeCycleListener mLifeCycleListener;
     private Field mSelectorPositionField;
     private Rect mSelectorRect;
     private int mTopClippingLength;
@@ -51,7 +51,7 @@ class WrapperViewList extends ListView
         if (this.mSelectorPositionField == null) {
             for (int i = 0; i < this.getChildCount(); ++i) {
                 if (this.getChildAt(i).getBottom() == this.mSelectorRect.bottom) {
-                    return this.getFixedFirstVisibleItem() + i;
+                    return i + this.getFixedFirstVisibleItem();
                 }
             }
             goto Label_0065;
@@ -75,7 +75,7 @@ class WrapperViewList extends ListView
                 final View child = this.getChildAt(selectorPosition - this.getFixedFirstVisibleItem());
                 if (child instanceof WrapperView) {
                     final WrapperView wrapperView = (WrapperView)child;
-                    this.mSelectorRect.top = wrapperView.getTop() + wrapperView.mItemTop;
+                    this.mSelectorRect.top = wrapperView.mItemTop + wrapperView.getTop();
                 }
             }
         }
@@ -114,30 +114,26 @@ class WrapperViewList extends ListView
         if (Build$VERSION.SDK_INT >= 11) {
             return firstVisiblePosition;
         }
-        int n = 0;
-        int n2;
         while (true) {
-            n2 = firstVisiblePosition;
-            if (n >= this.getChildCount()) {
-                break;
-            }
-            if (this.getChildAt(n).getBottom() >= 0) {
-                n2 = firstVisiblePosition + n;
-                break;
-            }
-            ++n;
-        }
-        int n3 = n2;
-        if (!this.mClippingToPadding) {
-            n3 = n2;
-            if (this.getPaddingTop() > 0 && (n3 = n2) > 0) {
-                n3 = n2;
-                if (this.getChildAt(0).getTop() > 0) {
-                    n3 = n2 - 1;
+            for (int i = 0; i < this.getChildCount(); ++i) {
+                if (this.getChildAt(i).getBottom() >= 0) {
+                    final int n = i + firstVisiblePosition;
+                    int n2 = n;
+                    if (!this.mClippingToPadding) {
+                        n2 = n;
+                        if (this.getPaddingTop() > 0 && (n2 = n) > 0) {
+                            n2 = n;
+                            if (this.getChildAt(0).getTop() > 0) {
+                                n2 = n - 1;
+                            }
+                        }
+                    }
+                    return n2;
                 }
             }
+            final int n = firstVisiblePosition;
+            continue;
         }
-        return n3;
     }
     
     public boolean performItemClick(final View view, final int n, final long n2) {
@@ -160,16 +156,11 @@ class WrapperViewList extends ListView
         super.setClipToPadding(this.mClippingToPadding = mClippingToPadding);
     }
     
-    void setLifeCycleListener(final LifeCycleListener mLifeCycleListener) {
+    void setLifeCycleListener(final WrapperViewList$LifeCycleListener mLifeCycleListener) {
         this.mLifeCycleListener = mLifeCycleListener;
     }
     
     void setTopClippingLength(final int mTopClippingLength) {
         this.mTopClippingLength = mTopClippingLength;
-    }
-    
-    interface LifeCycleListener
-    {
-        void onDispatchDrawOccurred(final Canvas p0);
     }
 }

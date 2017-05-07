@@ -4,9 +4,6 @@
 
 package com.tonicartos.widget.stickygridheaders;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.view.View$BaseSavedState;
 import android.widget.ListAdapter;
 import android.widget.Adapter;
 import android.os.Handler;
@@ -30,13 +27,13 @@ import android.os.Build$VERSION;
 import android.view.View;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
-import android.widget.AdapterView$OnItemLongClickListener;
 import android.widget.AdapterView$OnItemSelectedListener;
+import android.widget.AdapterView$OnItemLongClickListener;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.AbsListView$OnScrollListener;
 import android.widget.GridView;
 
-public class StickyGridHeadersGridView extends GridView implements AbsListView$OnScrollListener, AdapterView$OnItemClickListener, AdapterView$OnItemSelectedListener, AdapterView$OnItemLongClickListener
+public class StickyGridHeadersGridView extends GridView implements AbsListView$OnScrollListener, AdapterView$OnItemClickListener, AdapterView$OnItemLongClickListener, AdapterView$OnItemSelectedListener
 {
     private static final String ERROR_PLATFORM;
     private static final int MATCHED_STICKIED_HEADER = -2;
@@ -66,14 +63,14 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
     private int mNumColumns;
     private boolean mNumColumnsSet;
     private int mNumMeasuredColumns;
-    private OnHeaderClickListener mOnHeaderClickListener;
-    private OnHeaderLongClickListener mOnHeaderLongClickListener;
+    private StickyGridHeadersGridView$OnHeaderClickListener mOnHeaderClickListener;
+    private StickyGridHeadersGridView$OnHeaderLongClickListener mOnHeaderLongClickListener;
     private AdapterView$OnItemClickListener mOnItemClickListener;
     private AdapterView$OnItemLongClickListener mOnItemLongClickListener;
     private AdapterView$OnItemSelectedListener mOnItemSelectedListener;
-    public CheckForHeaderLongPress mPendingCheckForLongPress;
-    public CheckForHeaderTap mPendingCheckForTap;
-    private PerformHeaderClick mPerformHeaderClick;
+    public StickyGridHeadersGridView$CheckForHeaderLongPress mPendingCheckForLongPress;
+    public StickyGridHeadersGridView$CheckForHeaderTap mPendingCheckForTap;
+    private StickyGridHeadersGridView$PerformHeaderClick mPerformHeaderClick;
     private AbsListView$OnScrollListener mScrollListener;
     private int mScrollState;
     private View mStickiedHeader;
@@ -100,15 +97,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
         this.mAreHeadersSticky = true;
         this.mClippingRect = new Rect();
         this.mCurrentHeaderId = -1L;
-        this.mDataSetObserver = new DataSetObserver() {
-            public void onChanged() {
-                StickyGridHeadersGridView.this.reset();
-            }
-            
-            public void onInvalidated() {
-                StickyGridHeadersGridView.this.reset();
-            }
-        };
+        this.mDataSetObserver = new StickyGridHeadersGridView$1(this);
         this.mMaskStickyHeaderRegion = true;
         this.mNumMeasuredColumns = 1;
         this.mScrollState = 0;
@@ -119,14 +108,6 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
             this.mNumColumns = -1;
         }
         this.mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-    }
-    
-    static /* synthetic */ int access$500(final StickyGridHeadersGridView stickyGridHeadersGridView) {
-        return stickyGridHeadersGridView.getWindowAttachCount();
-    }
-    
-    static /* synthetic */ int access$600(final StickyGridHeadersGridView stickyGridHeadersGridView) {
-        return stickyGridHeadersGridView.getWindowAttachCount();
     }
     
     private int findMotionHeader(final float n) {
@@ -199,53 +180,50 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
     
     private void scrollChanged(int n) {
         if (this.mAdapter != null && this.mAdapter.getCount() != 0 && this.mAreHeadersSticky && this.getChildAt(0) != null) {
-            final int n2 = n;
-            int n3;
-            if ((n3 = n - this.mNumMeasuredColumns) < 0) {
-                n3 = n;
+            int n2;
+            if ((n2 = n - this.mNumMeasuredColumns) < 0) {
+                n2 = n;
             }
-            int n4;
-            if ((n4 = n + this.mNumMeasuredColumns) >= this.mAdapter.getCount()) {
-                n4 = n;
+            int n3;
+            if ((n3 = this.mNumMeasuredColumns + n) >= this.mAdapter.getCount()) {
+                n3 = n;
             }
             long mCurrentHeaderId;
             if (this.mVerticalSpacing == 0) {
                 mCurrentHeaderId = this.mAdapter.getHeaderId(n);
-                n3 = n2;
+                n2 = n;
             }
             else if (this.mVerticalSpacing < 0) {
                 this.mAdapter.getHeaderId(n);
                 if (this.getChildAt(this.mNumMeasuredColumns).getTop() <= 0) {
-                    mCurrentHeaderId = this.mAdapter.getHeaderId(n4);
-                    n3 = n4;
+                    mCurrentHeaderId = this.mAdapter.getHeaderId(n3);
+                    n2 = n3;
                 }
                 else {
                     mCurrentHeaderId = this.mAdapter.getHeaderId(n);
-                    n3 = n2;
+                    n2 = n;
                 }
             }
             else {
                 final int top = this.getChildAt(0).getTop();
                 if (top > 0 && top < this.mVerticalSpacing) {
-                    mCurrentHeaderId = this.mAdapter.getHeaderId(n3);
+                    mCurrentHeaderId = this.mAdapter.getHeaderId(n2);
                 }
                 else {
                     mCurrentHeaderId = this.mAdapter.getHeaderId(n);
-                    n3 = n2;
+                    n2 = n;
                 }
             }
             if (this.mCurrentHeaderId != mCurrentHeaderId) {
-                this.swapStickiedHeader(this.mAdapter.getHeaderView(n3, this.mStickiedHeader, (ViewGroup)this));
+                this.swapStickiedHeader(this.mAdapter.getHeaderView(n2, this.mStickiedHeader, (ViewGroup)this));
                 this.measureHeader();
                 this.mCurrentHeaderId = mCurrentHeaderId;
             }
             final int childCount = this.getChildCount();
             if (childCount != 0) {
                 View view = null;
-                int n5 = 99999;
-                int n6;
-                View view2;
-                for (int i = 0; i < childCount; i += this.mNumMeasuredColumns, view = view2, n5 = n6) {
+                int n4 = 99999;
+                for (int i = 0; i < childCount; i += this.mNumMeasuredColumns) {
                     final View child = super.getChildAt(i);
                     int top2;
                     if (this.mClippingToPadding) {
@@ -254,19 +232,10 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
                     else {
                         top2 = child.getTop();
                     }
-                    if (top2 < 0) {
-                        n6 = n5;
-                        view2 = view;
-                    }
-                    else {
-                        view2 = view;
-                        n6 = n5;
-                        if (this.mAdapter.getItemId(this.getPositionForView(child)) == -1L) {
-                            view2 = view;
-                            if (top2 < (n6 = n5)) {
-                                view2 = child;
-                                n6 = top2;
-                            }
+                    if (top2 >= 0) {
+                        if (this.mAdapter.getItemId(this.getPositionForView(child)) == -1L && top2 < n4) {
+                            view = child;
+                            n4 = top2;
                         }
                     }
                 }
@@ -279,7 +248,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
                     if (this.mClippingToPadding) {
                         this.mHeaderBottomPosition = Math.min(view.getTop(), this.getPaddingTop() + headerHeight);
                         if (this.mHeaderBottomPosition < this.getPaddingTop()) {
-                            n = this.getPaddingTop() + headerHeight;
+                            n = headerHeight + this.getPaddingTop();
                         }
                         else {
                             n = this.mHeaderBottomPosition;
@@ -336,22 +305,22 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
             declaredMethod.invoke(view, declaredField.get(this), 8);
         }
         catch (NoSuchMethodException ex) {
-            throw new RuntimePlatformSupportException(ex);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex);
         }
         catch (ClassNotFoundException ex2) {
-            throw new RuntimePlatformSupportException(ex2);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex2);
         }
         catch (IllegalArgumentException ex3) {
-            throw new RuntimePlatformSupportException(ex3);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex3);
         }
         catch (IllegalAccessException ex4) {
-            throw new RuntimePlatformSupportException(ex4);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex4);
         }
         catch (InvocationTargetException ex5) {
-            throw new RuntimePlatformSupportException(ex5);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex5);
         }
         catch (NoSuchFieldException ex6) {
-            throw new RuntimePlatformSupportException(ex6);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex6);
         }
     }
     
@@ -365,16 +334,16 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
             declaredMethod.invoke(view, new Object[0]);
         }
         catch (NoSuchMethodException ex) {
-            throw new RuntimePlatformSupportException(ex);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex);
         }
         catch (IllegalArgumentException ex2) {
-            throw new RuntimePlatformSupportException(ex2);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex2);
         }
         catch (IllegalAccessException ex3) {
-            throw new RuntimePlatformSupportException(ex3);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex3);
         }
         catch (InvocationTargetException ex4) {
-            throw new RuntimePlatformSupportException(ex4);
+            throw new StickyGridHeadersGridView$RuntimePlatformSupportException(this, ex4);
         }
     }
     
@@ -412,132 +381,184 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
                 list.add(n2);
             }
         }
-        for (int j = 0; j < list.size(); ++j) {
-        Label_0331_Outer:
-            while (true) {
-                final View child = this.getChildAt((int)list.get(j));
-                while (true) {
-                    View view = null;
-                Label_0346:
-                    while (true) {
-                        try {
-                            view = (View)child.getTag();
-                            if (((StickyGridHeadersBaseAdapterWrapper.HeaderFillerView)child).getHeaderId() == this.mCurrentHeaderId && child.getTop() < 0 && this.mAreHeadersSticky) {
-                                final int n3 = 1;
-                                if (view.getVisibility() != 0 || n3 != 0) {
-                                    break;
-                                }
-                                break Label_0346;
-                            }
-                        }
-                        catch (Exception ex) {
-                            return;
-                        }
-                        final int n3 = 0;
-                        continue Label_0331_Outer;
-                    }
-                    int n4;
-                    if (this.mHeadersIgnorePadding) {
-                        n4 = View$MeasureSpec.makeMeasureSpec(this.getWidth(), 1073741824);
-                    }
-                    else {
-                        n4 = View$MeasureSpec.makeMeasureSpec(this.getWidth() - this.getPaddingLeft() - this.getPaddingRight(), 1073741824);
-                    }
-                    final int measureSpec = View$MeasureSpec.makeMeasureSpec(0, 0);
-                    view.measure(View$MeasureSpec.makeMeasureSpec(0, 0), View$MeasureSpec.makeMeasureSpec(0, 0));
-                    view.measure(n4, measureSpec);
-                    if (this.mHeadersIgnorePadding) {
-                        view.layout(this.getLeft(), 0, this.getRight(), child.getHeight());
-                    }
-                    else {
-                        view.layout(this.getLeft() + this.getPaddingLeft(), 0, this.getRight() - this.getPaddingRight(), child.getHeight());
-                    }
-                    if (this.mHeadersIgnorePadding) {
-                        this.mClippingRect.left = 0;
-                        this.mClippingRect.right = this.getWidth();
-                    }
-                    else {
-                        this.mClippingRect.left = this.getPaddingLeft();
-                        this.mClippingRect.right = this.getWidth() - this.getPaddingRight();
-                    }
-                    this.mClippingRect.bottom = child.getBottom();
-                    this.mClippingRect.top = child.getTop();
-                    canvas.save();
-                    canvas.clipRect(this.mClippingRect);
-                    if (this.mHeadersIgnorePadding) {
-                        canvas.translate(0.0f, (float)child.getTop());
-                    }
-                    else {
-                        canvas.translate((float)this.getPaddingLeft(), (float)child.getTop());
-                    }
-                    view.draw(canvas);
-                    canvas.restore();
-                    continue;
-                }
-            }
-        }
-        if (b && this.mMaskStickyHeaderRegion) {
-            canvas.restore();
-        }
-        else if (!b) {
-            return;
-        }
+        int n3 = 0;
+        View child;
+        View view;
+        boolean b2;
+        int n4;
+        int measureSpec;
         int width;
-        if (this.mHeadersIgnorePadding) {
-            width = this.getWidth();
-        }
-        else {
-            width = this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
-        }
-        if (this.mStickiedHeader.getWidth() != width) {
-            int n5;
-            if (this.mHeadersIgnorePadding) {
-                n5 = View$MeasureSpec.makeMeasureSpec(this.getWidth(), 1073741824);
+        int n5;
+        int measureSpec2;
+        Block_31_Outer:Block_23_Outer:Label_0645_Outer:Label_0633_Outer:
+        while (true) {
+            Label_0618: {
+                if (n3 >= list.size()) {
+                    break Label_0618;
+                }
+                child = this.getChildAt((int)list.get(n3));
+                try {
+                    view = (View)child.getTag();
+                    if (((StickyGridHeadersBaseAdapterWrapper$HeaderFillerView)child).getHeaderId() == this.mCurrentHeaderId && child.getTop() < 0 && this.mAreHeadersSticky) {
+                        b2 = true;
+                    }
+                    else {
+                        b2 = false;
+                    }
+                    if (view.getVisibility() == 0 && !b2) {
+                        if (this.mHeadersIgnorePadding) {
+                            n4 = View$MeasureSpec.makeMeasureSpec(this.getWidth(), 1073741824);
+                        }
+                        else {
+                            n4 = View$MeasureSpec.makeMeasureSpec(this.getWidth() - this.getPaddingLeft() - this.getPaddingRight(), 1073741824);
+                        }
+                        measureSpec = View$MeasureSpec.makeMeasureSpec(0, 0);
+                        view.measure(View$MeasureSpec.makeMeasureSpec(0, 0), View$MeasureSpec.makeMeasureSpec(0, 0));
+                        view.measure(n4, measureSpec);
+                        if (this.mHeadersIgnorePadding) {
+                            view.layout(this.getLeft(), 0, this.getRight(), child.getHeight());
+                        }
+                        else {
+                            view.layout(this.getLeft() + this.getPaddingLeft(), 0, this.getRight() - this.getPaddingRight(), child.getHeight());
+                        }
+                        if (this.mHeadersIgnorePadding) {
+                            this.mClippingRect.left = 0;
+                            this.mClippingRect.right = this.getWidth();
+                        }
+                        else {
+                            this.mClippingRect.left = this.getPaddingLeft();
+                            this.mClippingRect.right = this.getWidth() - this.getPaddingRight();
+                        }
+                        this.mClippingRect.bottom = child.getBottom();
+                        this.mClippingRect.top = child.getTop();
+                        canvas.save();
+                        canvas.clipRect(this.mClippingRect);
+                        if (this.mHeadersIgnorePadding) {
+                            canvas.translate(0.0f, (float)child.getTop());
+                        }
+                        else {
+                            canvas.translate((float)this.getPaddingLeft(), (float)child.getTop());
+                        }
+                        view.draw(canvas);
+                        canvas.restore();
+                    }
+                    ++n3;
+                    continue Block_31_Outer;
+                    // iftrue(Label_0859:, this.mHeaderBottomPosition == headerHeight)
+                    // iftrue(Label_0880:, this.mHeaderBottomPosition == headerHeight)
+                    // iftrue(Label_0885:, b == false || !this.mMaskStickyHeaderRegion)
+                    // iftrue(Label_0890:, !this.mHeadersIgnorePadding)
+                    // iftrue(Label_0997:, !this.mClippingToPadding)
+                    // iftrue(Label_0908:, !this.mHeadersIgnorePadding)
+                    // iftrue(Label_1008:, !this.mHeadersIgnorePadding)
+                    // iftrue(Label_0735:, this.mStickiedHeader.getWidth() == width)
+                    // iftrue(Label_0633:, b != false)
+                    // iftrue(Label_0967:, !this.mHeadersIgnorePadding)
+                    // iftrue(Label_0931:, !this.mHeadersIgnorePadding)
+                    while (true) {
+                        Label_0820:Block_26_Outer:
+                        while (true) {
+                            while (true) {
+                            Label_0673:
+                                while (true) {
+                                    Label_0735: {
+                                        Label_0645:Block_24_Outer:
+                                        while (true) {
+                                        Block_29_Outer:
+                                            while (true) {
+                                                while (true) {
+                                                    Label_0791: {
+                                                        Label_0880: {
+                                                            while (true) {
+                                                                Label_0761: {
+                                                                    while (true) {
+                                                                        Block_30: {
+                                                                            while (true) {
+                                                                                while (true) {
+                                                                                    canvas.restore();
+                                                                                    break Label_0880;
+                                                                                    width = this.getWidth();
+                                                                                    break Label_0645;
+                                                                                    break Block_30;
+                                                                                    Label_0967: {
+                                                                                        this.mClippingRect.left = this.getPaddingLeft();
+                                                                                    }
+                                                                                    this.mClippingRect.right = this.getWidth() - this.getPaddingRight();
+                                                                                    break Label_0761;
+                                                                                    this.mStickiedHeader.draw(canvas);
+                                                                                    continue Block_23_Outer;
+                                                                                }
+                                                                                break Label_0820;
+                                                                                continue Label_0645_Outer;
+                                                                            }
+                                                                            Label_0997: {
+                                                                                this.mClippingRect.top = 0;
+                                                                            }
+                                                                            break Label_0791;
+                                                                            this.mClippingRect.left = 0;
+                                                                            this.mClippingRect.right = this.getWidth();
+                                                                            break Label_0761;
+                                                                        }
+                                                                        canvas.saveLayerAlpha(0.0f, 0.0f, (float)canvas.getWidth(), (float)canvas.getHeight(), this.mHeaderBottomPosition * 255 / headerHeight, 31);
+                                                                        continue Label_0633_Outer;
+                                                                    }
+                                                                    this.mStickiedHeader.layout(this.getLeft(), 0, this.getRight(), this.mStickiedHeader.getHeight());
+                                                                    break Label_0735;
+                                                                    this.mClippingRect.top = this.getPaddingTop();
+                                                                    break Label_0791;
+                                                                    Label_0931: {
+                                                                        this.mStickiedHeader.layout(this.getLeft() + this.getPaddingLeft(), 0, this.getRight() - this.getPaddingRight(), this.mStickiedHeader.getHeight());
+                                                                    }
+                                                                    break Label_0735;
+                                                                    Label_0908:
+                                                                    n5 = View$MeasureSpec.makeMeasureSpec(this.getWidth() - this.getPaddingLeft() - this.getPaddingRight(), 1073741824);
+                                                                    break Label_0673;
+                                                                }
+                                                                this.mClippingRect.bottom = n + headerHeight;
+                                                                continue Block_24_Outer;
+                                                            }
+                                                            n5 = View$MeasureSpec.makeMeasureSpec(this.getWidth(), 1073741824);
+                                                            break Label_0673;
+                                                            canvas.translate(0.0f, (float)n);
+                                                            continue Label_0820;
+                                                        }
+                                                        canvas.restore();
+                                                        return;
+                                                    }
+                                                    canvas.save();
+                                                    canvas.clipRect(this.mClippingRect);
+                                                    continue;
+                                                }
+                                                continue Block_29_Outer;
+                                            }
+                                            Label_0890: {
+                                                width = this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
+                                            }
+                                            continue Label_0645;
+                                        }
+                                        Label_0885: {
+                                            return;
+                                        }
+                                    }
+                                    continue Block_26_Outer;
+                                }
+                                measureSpec2 = View$MeasureSpec.makeMeasureSpec(0, 0);
+                                this.mStickiedHeader.measure(View$MeasureSpec.makeMeasureSpec(0, 0), View$MeasureSpec.makeMeasureSpec(0, 0));
+                                this.mStickiedHeader.measure(n5, measureSpec2);
+                                continue;
+                            }
+                            Label_1008: {
+                                canvas.translate((float)this.getPaddingLeft(), (float)n);
+                            }
+                            continue Label_0820;
+                        }
+                        canvas.restore();
+                        continue;
+                    }
+                }
+                catch (Exception ex) {}
             }
-            else {
-                n5 = View$MeasureSpec.makeMeasureSpec(this.getWidth() - this.getPaddingLeft() - this.getPaddingRight(), 1073741824);
-            }
-            final int measureSpec2 = View$MeasureSpec.makeMeasureSpec(0, 0);
-            this.mStickiedHeader.measure(View$MeasureSpec.makeMeasureSpec(0, 0), View$MeasureSpec.makeMeasureSpec(0, 0));
-            this.mStickiedHeader.measure(n5, measureSpec2);
-            if (this.mHeadersIgnorePadding) {
-                this.mStickiedHeader.layout(this.getLeft(), 0, this.getRight(), this.mStickiedHeader.getHeight());
-            }
-            else {
-                this.mStickiedHeader.layout(this.getLeft() + this.getPaddingLeft(), 0, this.getRight() - this.getPaddingRight(), this.mStickiedHeader.getHeight());
-            }
         }
-        if (this.mHeadersIgnorePadding) {
-            this.mClippingRect.left = 0;
-            this.mClippingRect.right = this.getWidth();
-        }
-        else {
-            this.mClippingRect.left = this.getPaddingLeft();
-            this.mClippingRect.right = this.getWidth() - this.getPaddingRight();
-        }
-        this.mClippingRect.bottom = n + headerHeight;
-        if (this.mClippingToPadding) {
-            this.mClippingRect.top = this.getPaddingTop();
-        }
-        else {
-            this.mClippingRect.top = 0;
-        }
-        canvas.save();
-        canvas.clipRect(this.mClippingRect);
-        if (this.mHeadersIgnorePadding) {
-            canvas.translate(0.0f, (float)n);
-        }
-        else {
-            canvas.translate((float)this.getPaddingLeft(), (float)n);
-        }
-        if (this.mHeaderBottomPosition != headerHeight) {
-            canvas.saveLayerAlpha(0.0f, 0.0f, (float)canvas.getWidth(), (float)canvas.getHeight(), this.mHeaderBottomPosition * 255 / headerHeight, 31);
-        }
-        this.mStickiedHeader.draw(canvas);
-        if (this.mHeaderBottomPosition != headerHeight) {
-            canvas.restore();
-        }
-        canvas.restore();
     }
     
     public View getHeaderAt(final int n) {
@@ -573,22 +594,13 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
     }
     
     protected void onMeasure(final int n, final int n2) {
+        int mNumMeasuredColumns = 1;
         if (this.mNumColumns == -1) {
-            int mNumMeasuredColumns;
             if (this.mColumnWidth > 0) {
                 final int max = Math.max(View$MeasureSpec.getSize(n) - this.getPaddingLeft() - this.getPaddingRight(), 0);
-                int n3 = max / this.mColumnWidth;
+                final int n3 = max / this.mColumnWidth;
                 if (n3 > 0) {
-                    while ((mNumMeasuredColumns = n3) != 1) {
-                        mNumMeasuredColumns = n3;
-                        if (this.mColumnWidth * n3 + (n3 - 1) * this.mHorizontalSpacing <= max) {
-                            break;
-                        }
-                        --n3;
-                    }
-                }
-                else {
-                    mNumMeasuredColumns = 1;
+                    for (mNumMeasuredColumns = n3; mNumMeasuredColumns != 1 && this.mColumnWidth * mNumMeasuredColumns + (mNumMeasuredColumns - 1) * this.mHorizontalSpacing > max; --mNumMeasuredColumns) {}
                 }
             }
             else {
@@ -611,16 +623,16 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
     }
     
     public void onRestoreInstanceState(final Parcelable parcelable) {
-        final SavedState savedState = (SavedState)parcelable;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        this.mAreHeadersSticky = savedState.areHeadersSticky;
+        final StickyGridHeadersGridView$SavedState stickyGridHeadersGridView$SavedState = (StickyGridHeadersGridView$SavedState)parcelable;
+        super.onRestoreInstanceState(stickyGridHeadersGridView$SavedState.getSuperState());
+        this.mAreHeadersSticky = stickyGridHeadersGridView$SavedState.areHeadersSticky;
         this.requestLayout();
     }
     
     public Parcelable onSaveInstanceState() {
-        final SavedState savedState = new SavedState(super.onSaveInstanceState());
-        savedState.areHeadersSticky = this.mAreHeadersSticky;
-        return (Parcelable)savedState;
+        final StickyGridHeadersGridView$SavedState stickyGridHeadersGridView$SavedState = new StickyGridHeadersGridView$SavedState(super.onSaveInstanceState());
+        stickyGridHeadersGridView$SavedState.areHeadersSticky = this.mAreHeadersSticky;
+        return (Parcelable)stickyGridHeadersGridView$SavedState;
     }
     
     public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
@@ -657,19 +669,14 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
             if (header != null) {
                 header.dispatchTouchEvent(this.transformEvent(motionEvent, this.mMotionHeaderPosition));
                 header.invalidate();
-                header.postDelayed((Runnable)new Runnable() {
-                    @Override
-                    public void run() {
-                        StickyGridHeadersGridView.this.invalidate(0, child.getTop(), StickyGridHeadersGridView.this.getWidth(), child.getTop() + child.getHeight());
-                    }
-                }, (long)ViewConfiguration.getPressedStateDuration());
-                this.invalidate(0, child.getTop(), this.getWidth(), child.getTop() + child.getHeight());
+                header.postDelayed((Runnable)new StickyGridHeadersGridView$2(this, child), (long)ViewConfiguration.getPressedStateDuration());
+                this.invalidate(0, child.getTop(), this.getWidth(), child.getHeight() + child.getTop());
             }
         }
         switch (action & 0xFF) {
             case 0: {
                 if (this.mPendingCheckForTap == null) {
-                    this.mPendingCheckForTap = new CheckForHeaderTap();
+                    this.mPendingCheckForTap = new StickyGridHeadersGridView$CheckForHeaderTap(this);
                 }
                 this.postDelayed((Runnable)this.mPendingCheckForTap, (long)ViewConfiguration.getTapTimeout());
                 final int n = (int)motionEvent.getY();
@@ -686,7 +693,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
                         if (this.mMotionHeaderPosition != -2) {
                             child2 = this.getChildAt(this.mMotionHeaderPosition);
                         }
-                        this.invalidate(0, child2.getTop(), this.getWidth(), child2.getTop() + child2.getHeight());
+                        this.invalidate(0, child2.getTop(), this.getWidth(), child2.getHeight() + child2.getTop());
                     }
                     this.mTouchMode = 0;
                     return true;
@@ -722,11 +729,11 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
                             header4.setPressed(false);
                         }
                         if (this.mPerformHeaderClick == null) {
-                            this.mPerformHeaderClick = new PerformHeaderClick();
+                            this.mPerformHeaderClick = new StickyGridHeadersGridView$PerformHeaderClick(this, null);
                         }
-                        final PerformHeaderClick mPerformHeaderClick = this.mPerformHeaderClick;
+                        final StickyGridHeadersGridView$PerformHeaderClick mPerformHeaderClick = this.mPerformHeaderClick;
                         mPerformHeaderClick.mClickMotionPosition = this.mMotionHeaderPosition;
-                        ((WindowRunnable)mPerformHeaderClick).rememberWindowAttachCount();
+                        mPerformHeaderClick.rememberWindowAttachCount();
                         if (this.mTouchMode == 0 || this.mTouchMode == 1) {
                             final Handler handler2 = this.getHandler();
                             if (handler2 != null) {
@@ -746,21 +753,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
                                 if (this.mTouchModeReset != null) {
                                     this.removeCallbacks(this.mTouchModeReset);
                                 }
-                                this.postDelayed(this.mTouchModeReset = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        StickyGridHeadersGridView.this.mMotionHeaderPosition = -1;
-                                        StickyGridHeadersGridView.this.mTouchModeReset = null;
-                                        StickyGridHeadersGridView.this.mTouchMode = -1;
-                                        header4.setPressed(false);
-                                        StickyGridHeadersGridView.this.setPressed(false);
-                                        header4.invalidate();
-                                        StickyGridHeadersGridView.this.invalidate(0, header4.getTop(), StickyGridHeadersGridView.this.getWidth(), header4.getHeight());
-                                        if (!StickyGridHeadersGridView.this.mDataChanged) {
-                                            mPerformHeaderClick.run();
-                                        }
-                                    }
-                                }, (long)ViewConfiguration.getPressedStateDuration());
+                                this.postDelayed(this.mTouchModeReset = new StickyGridHeadersGridView$3(this, header4, mPerformHeaderClick), (long)ViewConfiguration.getPressedStateDuration());
                             }
                             else {
                                 this.mTouchMode = -1;
@@ -792,17 +785,14 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
     }
     
     public boolean performHeaderLongPress(final View view, final long n) {
-        boolean onHeaderLongClick = false;
-        if (this.mOnHeaderLongClickListener != null) {
-            onHeaderLongClick = this.mOnHeaderLongClickListener.onHeaderLongClick((AdapterView<?>)this, view, n);
-        }
-        if (onHeaderLongClick) {
+        final boolean b = this.mOnHeaderLongClickListener != null && this.mOnHeaderLongClickListener.onHeaderLongClick((AdapterView<?>)this, view, n);
+        if (b) {
             if (view != null) {
                 view.sendAccessibilityEvent(2);
             }
             this.performHapticFeedback(0);
         }
-        return onHeaderLongClick;
+        return b;
     }
     
     public void setAdapter(final ListAdapter listAdapter) {
@@ -863,11 +853,11 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
         }
     }
     
-    public void setOnHeaderClickListener(final OnHeaderClickListener mOnHeaderClickListener) {
+    public void setOnHeaderClickListener(final StickyGridHeadersGridView$OnHeaderClickListener mOnHeaderClickListener) {
         this.mOnHeaderClickListener = mOnHeaderClickListener;
     }
     
-    public void setOnHeaderLongClickListener(final OnHeaderLongClickListener mOnHeaderLongClickListener) {
+    public void setOnHeaderLongClickListener(final StickyGridHeadersGridView$OnHeaderLongClickListener mOnHeaderLongClickListener) {
         if (!this.isLongClickable()) {
             this.setLongClickable(true);
         }
@@ -900,149 +890,5 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
     public void setVerticalSpacing(final int n) {
         super.setVerticalSpacing(n);
         this.mVerticalSpacing = n;
-    }
-    
-    private class CheckForHeaderLongPress extends WindowRunnable implements Runnable
-    {
-        @Override
-        public void run() {
-            final View header = StickyGridHeadersGridView.this.getHeaderAt(StickyGridHeadersGridView.this.mMotionHeaderPosition);
-            if (header != null) {
-                final long access$400 = StickyGridHeadersGridView.this.headerViewPositionToId(StickyGridHeadersGridView.this.mMotionHeaderPosition);
-                boolean performHeaderLongPress = false;
-                if (((WindowRunnable)this).sameWindow()) {
-                    performHeaderLongPress = performHeaderLongPress;
-                    if (!StickyGridHeadersGridView.this.mDataChanged) {
-                        performHeaderLongPress = StickyGridHeadersGridView.this.performHeaderLongPress(header, access$400);
-                    }
-                }
-                if (!performHeaderLongPress) {
-                    StickyGridHeadersGridView.this.mTouchMode = 2;
-                    return;
-                }
-                StickyGridHeadersGridView.this.mTouchMode = -2;
-                StickyGridHeadersGridView.this.setPressed(false);
-                header.setPressed(false);
-            }
-        }
-    }
-    
-    final class CheckForHeaderTap implements Runnable
-    {
-        @Override
-        public void run() {
-            if (StickyGridHeadersGridView.this.mTouchMode == 0) {
-                StickyGridHeadersGridView.this.mTouchMode = 1;
-                final View header = StickyGridHeadersGridView.this.getHeaderAt(StickyGridHeadersGridView.this.mMotionHeaderPosition);
-                if (header != null && !StickyGridHeadersGridView.this.mHeaderChildBeingPressed) {
-                    if (StickyGridHeadersGridView.this.mDataChanged) {
-                        StickyGridHeadersGridView.this.mTouchMode = 2;
-                        return;
-                    }
-                    header.setPressed(true);
-                    StickyGridHeadersGridView.this.setPressed(true);
-                    StickyGridHeadersGridView.this.refreshDrawableState();
-                    final int longPressTimeout = ViewConfiguration.getLongPressTimeout();
-                    if (!StickyGridHeadersGridView.this.isLongClickable()) {
-                        StickyGridHeadersGridView.this.mTouchMode = 2;
-                        return;
-                    }
-                    if (StickyGridHeadersGridView.this.mPendingCheckForLongPress == null) {
-                        StickyGridHeadersGridView.this.mPendingCheckForLongPress = new CheckForHeaderLongPress();
-                    }
-                    ((WindowRunnable)StickyGridHeadersGridView.this.mPendingCheckForLongPress).rememberWindowAttachCount();
-                    StickyGridHeadersGridView.this.postDelayed((Runnable)StickyGridHeadersGridView.this.mPendingCheckForLongPress, (long)longPressTimeout);
-                }
-            }
-        }
-    }
-    
-    public interface OnHeaderClickListener
-    {
-        void onHeaderClick(final AdapterView<?> p0, final View p1, final long p2);
-    }
-    
-    public interface OnHeaderLongClickListener
-    {
-        boolean onHeaderLongClick(final AdapterView<?> p0, final View p1, final long p2);
-    }
-    
-    private class PerformHeaderClick extends WindowRunnable implements Runnable
-    {
-        int mClickMotionPosition;
-        
-        @Override
-        public void run() {
-            if (!StickyGridHeadersGridView.this.mDataChanged && StickyGridHeadersGridView.this.mAdapter != null && StickyGridHeadersGridView.this.mAdapter.getCount() > 0 && this.mClickMotionPosition != -1 && this.mClickMotionPosition < StickyGridHeadersGridView.this.mAdapter.getCount() && ((WindowRunnable)this).sameWindow()) {
-                final View header = StickyGridHeadersGridView.this.getHeaderAt(this.mClickMotionPosition);
-                if (header != null) {
-                    StickyGridHeadersGridView.this.performHeaderClick(header, StickyGridHeadersGridView.this.headerViewPositionToId(this.mClickMotionPosition));
-                }
-            }
-        }
-    }
-    
-    class RuntimePlatformSupportException extends RuntimeException
-    {
-        private static final long serialVersionUID = -6512098808936536538L;
-        
-        public RuntimePlatformSupportException(final Exception ex) {
-            super(StickyGridHeadersGridView.ERROR_PLATFORM, ex);
-        }
-    }
-    
-    static class SavedState extends View$BaseSavedState
-    {
-        public static final Parcelable$Creator<SavedState> CREATOR;
-        boolean areHeadersSticky;
-        
-        static {
-            CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                public SavedState createFromParcel(final Parcel parcel) {
-                    return new SavedState(parcel);
-                }
-                
-                public SavedState[] newArray(final int n) {
-                    return new SavedState[n];
-                }
-            };
-        }
-        
-        private SavedState(final Parcel parcel) {
-            super(parcel);
-            this.areHeadersSticky = (parcel.readByte() != 0);
-        }
-        
-        public SavedState(final Parcelable parcelable) {
-            super(parcelable);
-        }
-        
-        public String toString() {
-            return "StickyGridHeadersGridView.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " areHeadersSticky=" + this.areHeadersSticky + "}";
-        }
-        
-        public void writeToParcel(final Parcel parcel, int n) {
-            super.writeToParcel(parcel, n);
-            if (this.areHeadersSticky) {
-                n = 1;
-            }
-            else {
-                n = 0;
-            }
-            parcel.writeByte((byte)n);
-        }
-    }
-    
-    private class WindowRunnable
-    {
-        private int mOriginalAttachCount;
-        
-        public void rememberWindowAttachCount() {
-            this.mOriginalAttachCount = StickyGridHeadersGridView.access$500(StickyGridHeadersGridView.this);
-        }
-        
-        public boolean sameWindow() {
-            return StickyGridHeadersGridView.this.hasWindowFocus() && StickyGridHeadersGridView.access$600(StickyGridHeadersGridView.this) == this.mOriginalAttachCount;
-        }
     }
 }

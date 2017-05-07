@@ -8,12 +8,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.media.MediaRouteSelector;
 import android.support.v7.media.MediaRouter;
+import android.support.v7.media.MediaRouter$Callback;
 import android.support.v4.app.Fragment;
 
 public class MediaRouteDiscoveryFragment extends Fragment
 {
     private final String ARGUMENT_SELECTOR;
-    private MediaRouter.Callback mCallback;
+    private MediaRouter$Callback mCallback;
     private MediaRouter mRouter;
     private MediaRouteSelector mSelector;
     
@@ -49,8 +50,8 @@ public class MediaRouteDiscoveryFragment extends Fragment
         return this.mSelector;
     }
     
-    public MediaRouter.Callback onCreateCallback() {
-        return new MediaRouter.Callback() {};
+    public MediaRouter$Callback onCreateCallback() {
+        return new MediaRouteDiscoveryFragment$1(this);
     }
     
     public int onPrepareCallbackFlags() {

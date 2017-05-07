@@ -4,11 +4,10 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.EventType;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
 
 public class SearchEditEvent extends DiscreteEvent
@@ -23,14 +22,14 @@ public class SearchEditEvent extends DiscreteEvent
     }
     
     private void setupAttributes() {
-        this.modalView = IClientLogging.ModalView.search;
+        this.modalView = IClientLogging$ModalView.search;
         this.type = EventType.edit;
         this.category = "uiView";
         this.name = "edit";
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

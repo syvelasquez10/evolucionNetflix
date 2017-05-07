@@ -7,7 +7,7 @@ package com.google.android.gms.common;
 import com.google.android.gms.common.internal.n;
 import com.google.android.gms.common.internal.p;
 import android.widget.Button;
-import com.google.android.gms.dynamic.g;
+import com.google.android.gms.dynamic.g$a;
 import android.util.Log;
 import com.google.android.gms.common.internal.o;
 import android.util.AttributeSet;
@@ -53,7 +53,7 @@ public final class SignInButton extends FrameLayout implements View$OnClickListe
                 this.Ih.setEnabled(this.isEnabled());
                 this.Ih.setOnClickListener((View$OnClickListener)this);
             }
-            catch (g.a a) {
+            catch (g$a g$a) {
                 Log.w("SignInButton", "Sign in button not found, using placeholder instead");
                 this.Ih = (View)a(context, this.mSize, this.mColor);
                 continue;

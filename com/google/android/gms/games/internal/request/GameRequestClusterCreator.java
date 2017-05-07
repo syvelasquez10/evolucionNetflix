@@ -5,6 +5,7 @@
 package com.google.android.gms.games.internal.request;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.games.request.GameRequestEntity;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.games.request.GameRequest;
@@ -44,7 +45,7 @@ public class GameRequestClusterCreator implements Parcelable$Creator<GameRequest
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new GameRequestCluster(g, c2);
     }

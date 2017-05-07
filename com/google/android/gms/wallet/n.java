@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wallet;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.wallet.wobs.CommonWalletObject;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -54,7 +55,7 @@ public class n implements Parcelable$Creator<OfferWalletObject>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new OfferWalletObject(g, o2, o, commonWalletObject);
     }

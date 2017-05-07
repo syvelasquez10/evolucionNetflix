@@ -5,8 +5,8 @@
 package com.google.android.gms.internal;
 
 import java.io.IOException;
-import java.util.PriorityQueue;
 import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -177,11 +177,7 @@ public class ap
         }
         this.nN = new ByteArrayOutputStream();
         this.nM = new Base64OutputStream((OutputStream)this.nN, 10);
-        final PriorityQueue<as.a> priorityQueue = new PriorityQueue<as.a>(this.nK, (Comparator<? super as.a>)new Comparator<as.a>() {
-            public int a(final as.a a, final as.a a2) {
-                return (int)(a.value - a2.value);
-            }
-        });
+        final PriorityQueue<as$a> priorityQueue = new PriorityQueue<as$a>(this.nK, new ap$2(this));
         for (int i = 0; i < split.length; ++i) {
             final String[] p = aq.p(split[i]);
             if (p.length >= this.nJ) {
@@ -190,9 +186,9 @@ public class ap
         }
         s = (String)priorityQueue.iterator();
         while (((Iterator)s).hasNext()) {
-            final as.a a = ((Iterator<as.a>)s).next();
+            final as$a as$a = ((Iterator<as$a>)s).next();
             try {
-                this.nM.write(this.nL.l(a.nQ));
+                this.nM.write(this.nL.l(as$a.nQ));
             }
             catch (IOException ex) {
                 gs.b("Error while writing hash to byteStream", ex);

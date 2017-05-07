@@ -4,6 +4,7 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient$Info;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class j extends i
         super.b(context);
         try {
             try {
-                final a h = this.h(context);
+                final j$a h = this.h(context);
                 long n;
                 if (h.isLimitAdTrackingEnabled()) {
                     n = 1L;
@@ -47,18 +48,18 @@ public class j extends i
             }
         }
         catch (IOException ex2) {}
-        catch (i.a a) {}
+        catch (i$a i$a) {}
     }
     
-    a h(final Context context) throws IOException, GooglePlayServicesNotAvailableException {
+    j$a h(final Context context) {
         int i = 0;
-        AdvertisingIdClient.Info advertisingIdInfo;
+        AdvertisingIdClient$Info advertisingIdInfo;
         byte[] array;
         try {
             advertisingIdInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
             final String s = advertisingIdInfo.getId();
             if (s == null || !s.matches("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$")) {
-                return new a(s, advertisingIdInfo.isLimitAdTrackingEnabled());
+                return new j$a(this, s, advertisingIdInfo.isLimitAdTrackingEnabled());
             }
             array = new byte[16];
             int n = 0;
@@ -79,25 +80,6 @@ public class j extends i
             throw new IOException(ex2);
         }
         final String s = this.ky.a(array, true);
-        return new a(s, advertisingIdInfo.isLimitAdTrackingEnabled());
-    }
-    
-    class a
-    {
-        private String kO;
-        private boolean kP;
-        
-        public a(final String ko, final boolean kp) {
-            this.kO = ko;
-            this.kP = kp;
-        }
-        
-        public String getId() {
-            return this.kO;
-        }
-        
-        public boolean isLimitAdTrackingEnabled() {
-            return this.kP;
-        }
+        return new j$a(this, s, advertisingIdInfo.isLimitAdTrackingEnabled());
     }
 }

@@ -7,7 +7,7 @@ package com.netflix.mediaclient.android.widget;
 import android.graphics.drawable.Drawable;
 import android.view.View$MeasureSpec;
 import android.content.res.TypedArray;
-import com.netflix.mediaclient.R;
+import com.netflix.mediaclient.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.ImageView;
@@ -26,7 +26,7 @@ public class AspectRatioImageView extends ImageView
     public AspectRatioImageView(final Context context, final AttributeSet set) {
         super(context, set);
         this.mMeasureBy = 1;
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.AspectRatioImageView);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.AspectRatioImageView);
         this.mMeasureBy = obtainStyledAttributes.getInt(0, 1);
         obtainStyledAttributes.recycle();
     }

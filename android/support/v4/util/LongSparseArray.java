@@ -36,13 +36,13 @@ public class LongSparseArray<E> implements Cloneable
     
     private void gc() {
         final int mSize = this.mSize;
-        int mSize2 = 0;
         final long[] mKeys = this.mKeys;
         final Object[] mValues = this.mValues;
-        int n;
-        for (int i = 0; i < mSize; ++i, mSize2 = n) {
+        int i = 0;
+        int mSize2 = 0;
+        while (i < mSize) {
             final Object o = mValues[i];
-            n = mSize2;
+            int n = mSize2;
             if (o != LongSparseArray.DELETED) {
                 if (i != mSize2) {
                     mKeys[mSize2] = mKeys[i];
@@ -51,6 +51,8 @@ public class LongSparseArray<E> implements Cloneable
                 }
                 n = mSize2 + 1;
             }
+            ++i;
+            mSize2 = n;
         }
         this.mGarbage = false;
         this.mSize = mSize2;
@@ -90,13 +92,40 @@ public class LongSparseArray<E> implements Cloneable
     }
     
     public LongSparseArray<E> clone() {
-        LongSparseArray<E> longSparseArray = null;
+        LongSparseArray longSparseArray;
         try {
-            final LongSparseArray longSparseArray2 = longSparseArray = (LongSparseArray)super.clone();
-            longSparseArray2.mKeys = this.mKeys.clone();
-            longSparseArray = longSparseArray2;
-            longSparseArray2.mValues = this.mValues.clone();
-            return longSparseArray2;
+            final LongSparseArray<E> longSparseArray2;
+            longSparseArray = (longSparseArray2 = (LongSparseArray)super.clone());
+            final LongSparseArray longSparseArray3 = this;
+            final long[] array = longSparseArray3.mKeys;
+            final long[] array2 = array.clone();
+            final long[] array3 = array2;
+            longSparseArray2.mKeys = array3;
+            final LongSparseArray longSparseArray4 = longSparseArray;
+            final LongSparseArray longSparseArray5 = this;
+            final Object[] array4 = longSparseArray5.mValues;
+            final Object[] array5 = array4.clone();
+            final Object[] array6 = array5;
+            longSparseArray4.mValues = array6;
+            return longSparseArray;
+        }
+        catch (CloneNotSupportedException longSparseArray) {
+            return null;
+        }
+        try {
+            final LongSparseArray<E> longSparseArray2 = longSparseArray;
+            final LongSparseArray longSparseArray3 = this;
+            final long[] array = longSparseArray3.mKeys;
+            final long[] array2 = array.clone();
+            final long[] array3 = array2;
+            longSparseArray2.mKeys = array3;
+            final LongSparseArray longSparseArray4 = longSparseArray;
+            final LongSparseArray longSparseArray5 = this;
+            final Object[] array4 = longSparseArray5.mValues;
+            final Object[] array5 = array4.clone();
+            final Object[] array6 = array5;
+            longSparseArray4.mValues = array6;
+            return longSparseArray;
         }
         catch (CloneNotSupportedException ex) {
             return longSparseArray;

@@ -23,30 +23,13 @@ public interface UIViewLogging
     public static final String IMPRESSION_SESSION_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_ENDED";
     public static final String IMPRESSION_SESSION_STARTED = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_STARTED";
     
-    void createImpressionEvent(final UIViewCommandName p0, final int p1);
+    void createImpressionEvent(final UIViewLogging$UIViewCommandName p0, final int p1);
     
     void endCommandSession();
     
     void endImpressionSession(final boolean p0, final Error p1);
     
-    void startCommandSession(final UIViewCommandName p0, final IClientLogging.ModalView p1, final DataContext p2);
+    void startCommandSession(final UIViewLogging$UIViewCommandName p0, final IClientLogging$ModalView p1, final DataContext p2);
     
-    void startImpressionSession(final IClientLogging.ModalView p0);
-    
-    public enum UIViewCommandName
-    {
-        actionBarBackButton, 
-        actionBarKidsEntry, 
-        actionBarKidsExit, 
-        backButton, 
-        facebookConnectButton, 
-        genreKidsEntry, 
-        moreButton, 
-        slidingMenuClosed, 
-        slidingMenuKidsEntry, 
-        slidingMenuKidsExit, 
-        slidingMenuOpened, 
-        socialRecommendButton, 
-        upButton;
-    }
+    void startImpressionSession(final IClientLogging$ModalView p0, final String p1);
 }

@@ -9,12 +9,13 @@ import com.netflix.falkor.Ref;
 import com.netflix.falkor.LinkedList;
 import com.netflix.falkor.ModelProxy;
 import java.util.Date;
+import com.netflix.model.branches.FalkorObject;
+import com.netflix.falkor.ReferenceTarget;
 import com.netflix.falkor.ModelProxyProvider;
 import com.netflix.falkor.Expires;
-import com.netflix.falkor.ReferenceTarget;
 import com.netflix.falkor.BranchNode;
 
-public abstract class BaseFalkorObject implements BranchNode, ReferenceTarget, Expires, ModelProxyProvider
+public abstract class BaseFalkorObject implements BranchNode, Expires, ModelProxyProvider, ReferenceTarget, FalkorObject
 {
     private Date expires;
     private final ModelProxy<? extends BranchNode> proxy;

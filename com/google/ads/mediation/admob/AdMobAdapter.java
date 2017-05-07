@@ -16,6 +16,7 @@ import java.util.Date;
 import com.google.android.gms.ads.mediation.MediationAdapter;
 import android.text.TextUtils;
 import com.google.android.gms.internal.gr;
+import com.google.android.gms.ads.AdRequest$Builder;
 import com.google.android.gms.ads.AdRequest;
 import android.os.Bundle;
 import com.google.android.gms.ads.mediation.MediationAdRequest;
@@ -31,31 +32,31 @@ public final class AdMobAdapter implements MediationBannerAdapter, MediationInte
     private InterstitialAd j;
     
     static AdRequest a(final Context context, final MediationAdRequest mediationAdRequest, Bundle bundle, final Bundle bundle2) {
-        final AdRequest.Builder builder = new AdRequest.Builder();
+        final AdRequest$Builder adRequest$Builder = new AdRequest$Builder();
         final Date birthday = mediationAdRequest.getBirthday();
         if (birthday != null) {
-            builder.setBirthday(birthday);
+            adRequest$Builder.setBirthday(birthday);
         }
         final int gender = mediationAdRequest.getGender();
         if (gender != 0) {
-            builder.setGender(gender);
+            adRequest$Builder.setGender(gender);
         }
         final Set<String> keywords = mediationAdRequest.getKeywords();
         if (keywords != null) {
             final Iterator<String> iterator = keywords.iterator();
             while (iterator.hasNext()) {
-                builder.addKeyword(iterator.next());
+                adRequest$Builder.addKeyword(iterator.next());
             }
         }
         final Location location = mediationAdRequest.getLocation();
         if (location != null) {
-            builder.setLocation(location);
+            adRequest$Builder.setLocation(location);
         }
         if (mediationAdRequest.isTesting()) {
-            builder.addTestDevice(gr.v(context));
+            adRequest$Builder.addTestDevice(gr.v(context));
         }
         if (bundle2.getInt("tagForChildDirectedTreatment") != -1) {
-            builder.tagForChildDirectedTreatment(bundle2.getInt("tagForChildDirectedTreatment") == 1);
+            adRequest$Builder.tagForChildDirectedTreatment(bundle2.getInt("tagForChildDirectedTreatment") == 1);
         }
         if (bundle == null) {
             bundle = new Bundle();
@@ -66,8 +67,8 @@ public final class AdMobAdapter implements MediationBannerAdapter, MediationInte
             bundle.putString("_ad", bundle2.getString("adJson"));
         }
         bundle.putBoolean("_noRefresh", true);
-        builder.addNetworkExtrasBundle(AdMobAdapter.class, bundle);
-        return builder.build();
+        adRequest$Builder.addNetworkExtrasBundle(AdMobAdapter.class, bundle);
+        return adRequest$Builder.build();
     }
     
     @Override
@@ -104,92 +105,19 @@ public final class AdMobAdapter implements MediationBannerAdapter, MediationInte
     public void requestBannerAd(final Context context, final MediationBannerListener mediationBannerListener, final Bundle bundle, final AdSize adSize, final MediationAdRequest mediationAdRequest, final Bundle bundle2) {
         (this.i = new AdView(context)).setAdSize(new AdSize(adSize.getWidth(), adSize.getHeight()));
         this.i.setAdUnitId(bundle.getString("pubid"));
-        this.i.setAdListener(new a(this, mediationBannerListener));
+        this.i.setAdListener(new AdMobAdapter$a(this, mediationBannerListener));
         this.i.loadAd(a(context, mediationAdRequest, bundle2, bundle));
     }
     
     @Override
     public void requestInterstitialAd(final Context context, final MediationInterstitialListener mediationInterstitialListener, final Bundle bundle, final MediationAdRequest mediationAdRequest, final Bundle bundle2) {
         (this.j = new InterstitialAd(context)).setAdUnitId(bundle.getString("pubid"));
-        this.j.setAdListener(new b(this, mediationInterstitialListener));
+        this.j.setAdListener(new AdMobAdapter$b(this, mediationInterstitialListener));
         this.j.loadAd(a(context, mediationAdRequest, bundle2, bundle));
     }
     
     @Override
     public void showInterstitial() {
         this.j.show();
-    }
-    
-    private static final class a extends AdListener
-    {
-        private final AdMobAdapter k;
-        private final MediationBannerListener l;
-        
-        public a(final AdMobAdapter k, final MediationBannerListener l) {
-            this.k = k;
-            this.l = l;
-        }
-        
-        @Override
-        public void onAdClosed() {
-            this.l.onAdClosed(this.k);
-        }
-        
-        @Override
-        public void onAdFailedToLoad(final int n) {
-            this.l.onAdFailedToLoad(this.k, n);
-        }
-        
-        @Override
-        public void onAdLeftApplication() {
-            this.l.onAdLeftApplication(this.k);
-        }
-        
-        @Override
-        public void onAdLoaded() {
-            this.l.onAdLoaded(this.k);
-        }
-        
-        @Override
-        public void onAdOpened() {
-            this.l.onAdClicked(this.k);
-            this.l.onAdOpened(this.k);
-        }
-    }
-    
-    private static final class b extends AdListener
-    {
-        private final AdMobAdapter k;
-        private final MediationInterstitialListener m;
-        
-        public b(final AdMobAdapter k, final MediationInterstitialListener m) {
-            this.k = k;
-            this.m = m;
-        }
-        
-        @Override
-        public void onAdClosed() {
-            this.m.onAdClosed(this.k);
-        }
-        
-        @Override
-        public void onAdFailedToLoad(final int n) {
-            this.m.onAdFailedToLoad(this.k, n);
-        }
-        
-        @Override
-        public void onAdLeftApplication() {
-            this.m.onAdLeftApplication(this.k);
-        }
-        
-        @Override
-        public void onAdLoaded() {
-            this.m.onAdLoaded(this.k);
-        }
-        
-        @Override
-        public void onAdOpened() {
-            this.m.onAdOpened(this.k);
-        }
     }
 }

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.realtime.internal.event;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -64,7 +65,7 @@ public class i implements Parcelable$Creator<ValuesRemovedDetails>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ValuesRemovedDetails(g5, g4, g3, g2, o, g);
     }

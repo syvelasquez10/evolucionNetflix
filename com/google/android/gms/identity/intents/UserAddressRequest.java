@@ -4,9 +4,6 @@
 
 package com.google.android.gms.identity.intents;
 
-import java.util.Collections;
-import java.util.Collection;
-import java.util.ArrayList;
 import android.os.Parcel;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import java.util.List;
@@ -32,10 +29,10 @@ public final class UserAddressRequest implements SafeParcelable
         this.adz = adz;
     }
     
-    public static Builder newBuilder() {
+    public static UserAddressRequest$Builder newBuilder() {
         final UserAddressRequest userAddressRequest = new UserAddressRequest();
         userAddressRequest.getClass();
-        return new Builder();
+        return new UserAddressRequest$Builder(userAddressRequest, null);
     }
     
     public int describeContents() {
@@ -48,31 +45,5 @@ public final class UserAddressRequest implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         a.a(this, parcel, n);
-    }
-    
-    public final class Builder
-    {
-        public Builder addAllowedCountrySpecification(final CountrySpecification countrySpecification) {
-            if (UserAddressRequest.this.adz == null) {
-                UserAddressRequest.this.adz = new ArrayList<CountrySpecification>();
-            }
-            UserAddressRequest.this.adz.add(countrySpecification);
-            return this;
-        }
-        
-        public Builder addAllowedCountrySpecifications(final Collection<CountrySpecification> collection) {
-            if (UserAddressRequest.this.adz == null) {
-                UserAddressRequest.this.adz = new ArrayList<CountrySpecification>();
-            }
-            UserAddressRequest.this.adz.addAll(collection);
-            return this;
-        }
-        
-        public UserAddressRequest build() {
-            if (UserAddressRequest.this.adz != null) {
-                UserAddressRequest.this.adz = Collections.unmodifiableList((List<? extends CountrySpecification>)UserAddressRequest.this.adz);
-            }
-            return UserAddressRequest.this;
-        }
     }
 }

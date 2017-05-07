@@ -5,6 +5,7 @@
 package com.google.android.gms.fitness.result;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.data.Subscription;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -50,7 +51,7 @@ public class e implements Parcelable$Creator<ListSubscriptionsResult>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ListSubscriptionsResult(g, c2, status);
     }

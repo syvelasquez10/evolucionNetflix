@@ -4,9 +4,11 @@
 
 package com.netflix.mediaclient.util.log;
 
+import com.netflix.mediaclient.servicemgr.SocialLogging$Source;
+import com.netflix.mediaclient.servicemgr.SocialLogging$Channel;
 import org.json.JSONArray;
-import com.netflix.mediaclient.servicemgr.SocialLogging;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.SocialLogging$FriendPosition;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -44,15 +46,16 @@ public final class SocialLoggingUtils extends ConsolidatedLoggingUtils
         }
     }
     
-    public static void reportRecommendFriendSelectedEvent(final Context context, final IClientLogging.ModalView modalView, final SocialLogging.FriendPosition[] array, int i) {
+    public static void reportRecommendFriendSelectedEvent(final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s, final SocialLogging$FriendPosition[] array, int i) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SOCIAL_RECOMMEND");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
+        intent.putExtra("guid", s);
         intent.putExtra("trackId", i);
         while (true) {
             if (array == null || array.length <= 0) {
-                break Label_0101;
+                break Label_0116;
             }
             try {
                 final JSONArray jsonArray = new JSONArray();
@@ -84,42 +87,45 @@ public final class SocialLoggingUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportRecommendMessageAddedEvent(final Context context, final IClientLogging.ModalView modalView, final int n) {
+    public static void reportRecommendMessageAddedEvent(final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s, final int n) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SOCIAL_RECOMMEND_MESSAGE_ADDED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
+        intent.putExtra("guid", s);
         intent.putExtra("trackId", n);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportRecommendPanelScrolledEvent(final Context context, final IClientLogging.ModalView modalView, final int n) {
+    public static void reportRecommendPanelScrolledEvent(final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s, final int n) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SOCIAL_RECOMMEND_SCROLLED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
+        intent.putExtra("guid", s);
         intent.putExtra("trackId", n);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportRecommendPanelSearchedEvent(final Context context, final IClientLogging.ModalView modalView, final int n) {
+    public static void reportRecommendPanelSearchedEvent(final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s, final int n) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SOCIAL_RECOMMEND_SEARCHED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
+        intent.putExtra("guid", s);
         intent.putExtra("trackId", n);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportSocialConnectActionResponseEvent(final Context context, final SocialLogging.Channel channel, final SocialLogging.Source source, final boolean b, final Error error) {
+    public static void reportSocialConnectActionResponseEvent(final Context context, final SocialLogging$Channel socialLogging$Channel, final SocialLogging$Source socialLogging$Source, final boolean b, final Error error) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SOCIAL_CONNECT_ACTION_RESPONSE");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        if (channel != null) {
-            intent.putExtra("channel", channel.name());
+        if (socialLogging$Channel != null) {
+            intent.putExtra("channel", socialLogging$Channel.name());
         }
-        if (source != null) {
-            intent.putExtra("source", source.name());
+        if (socialLogging$Source != null) {
+            intent.putExtra("source", socialLogging$Source.name());
         }
         intent.putExtra("success", b);
         while (true) {
@@ -138,30 +144,31 @@ public final class SocialLoggingUtils extends ConsolidatedLoggingUtils
         }
     }
     
-    public static void reportSocialConnectImpressionEvent(final Context context, final IClientLogging.ModalView modalView) {
+    public static void reportSocialConnectImpressionEvent(final Context context, final IClientLogging$ModalView clientLogging$ModalView) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SOCIAL_CONNECT_IMPRESSION");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportStartSocialConnectSession(final Context context, final SocialLogging.Channel channel) {
+    public static void reportStartSocialConnectSession(final Context context, final SocialLogging$Channel socialLogging$Channel) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SOCIAL_CONNECT_SESSION_STARTED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        if (channel != null) {
-            intent.putExtra("channel", channel.name());
+        if (socialLogging$Channel != null) {
+            intent.putExtra("channel", socialLogging$Channel.name());
         }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportStartSocialImpressionSession(final Context context, final IClientLogging.ModalView modalView, final String s, final int n) {
+    public static void reportStartSocialImpressionSession(final Context context, final IClientLogging$ModalView clientLogging$ModalView, final String s, final String s2, final int n) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_SOCIAL_IMPRESSION_SESSION_STARTED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("storyId", s);
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("storyId", s2);
+        intent.putExtra("view", clientLogging$ModalView.name());
+        intent.putExtra("guid", s);
         intent.putExtra("trackId", n);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }

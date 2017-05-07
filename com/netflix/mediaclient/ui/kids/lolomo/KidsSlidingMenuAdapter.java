@@ -5,14 +5,13 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
-import android.app.Activity;
-import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import android.view.View$OnClickListener;
 import android.view.ViewStub;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.home.SlidingMenuAdapter$Holder;
 import android.view.View;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -28,45 +27,41 @@ public class KidsSlidingMenuAdapter extends SlidingMenuAdapter
     
     public KidsSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
         super(netflixActivity, drawerLayout);
-        this.itemTextColor = netflixActivity.getResources().getColor(2131296413);
-        this.selectedTextColor = netflixActivity.getResources().getColor(2131296414);
+        this.itemTextColor = netflixActivity.getResources().getColor(2131296416);
+        this.selectedTextColor = netflixActivity.getResources().getColor(2131296417);
         this.home.setTextColor(this.itemTextColor);
         ViewUtils.clearShadow(this.home);
-        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131361978)));
-        this.content.setBackgroundResource(2131296412);
+        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131361980)));
+        this.content.setBackgroundResource(2131296415);
     }
     
     @Override
     protected void applySelectionStyle(final View view) {
-        final Holder holder = (Holder)view.getTag();
-        ViewUtils.setTextViewToBold(holder.tv);
-        holder.tv.setTextColor(this.selectedTextColor);
+        final SlidingMenuAdapter$Holder slidingMenuAdapter$Holder = (SlidingMenuAdapter$Holder)view.getTag();
+        ViewUtils.setTextViewToBold(slidingMenuAdapter$Holder.tv);
+        slidingMenuAdapter$Holder.tv.setTextColor(this.selectedTextColor);
     }
     
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         super.onManagerReady(serviceManager, status);
         if (KidsUtils.shouldShowKidsEntryInMenu(this.activity)) {
-            final TextView textViewToBold = (TextView)((ViewStub)this.content.findViewById(2131165398)).inflate().findViewById(2131165400);
+            final TextView textViewToBold = (TextView)((ViewStub)this.content.findViewById(2131165397)).inflate().findViewById(2131165399);
             textViewToBold.setText(2131492952);
             textViewToBold.setTextColor(this.activity.getResources().getColor(2131296352));
             textViewToBold.setBackgroundResource(2130837722);
             ViewUtils.setTextViewToBold(textViewToBold);
             ViewUtils.clearShadow(textViewToBold);
-            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361978)));
-            textViewToBold.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    KidsSlidingMenuAdapter.this.activity.startActivity(KidsUtils.createExitKidsIntent(KidsSlidingMenuAdapter.this.activity, UIViewLogging.UIViewCommandName.slidingMenuKidsExit));
-                }
-            });
+            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361980)));
+            textViewToBold.setOnClickListener((View$OnClickListener)new KidsSlidingMenuAdapter$1(this));
         }
     }
     
     @Override
     protected void removeSelectionStyle(final View view) {
-        final Holder holder = (Holder)view.getTag();
-        ViewUtils.setTextViewToNormal(holder.tv);
-        holder.tv.setTextColor(this.itemTextColor);
+        final SlidingMenuAdapter$Holder slidingMenuAdapter$Holder = (SlidingMenuAdapter$Holder)view.getTag();
+        ViewUtils.setTextViewToNormal(slidingMenuAdapter$Holder.tv);
+        slidingMenuAdapter$Holder.tv.setTextColor(this.itemTextColor);
     }
     
     @Override
@@ -75,10 +70,10 @@ public class KidsSlidingMenuAdapter extends SlidingMenuAdapter
     }
     
     @Override
-    protected void updateAdapterViews(final Holder holder, final GenreList list) {
-        super.updateAdapterViews(holder, list);
-        holder.tv.setTextColor(this.itemTextColor);
-        ViewUtils.clearShadow(holder.tv);
-        holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361978)));
+    protected void updateAdapterViews(final SlidingMenuAdapter$Holder slidingMenuAdapter$Holder, final GenreList list) {
+        super.updateAdapterViews(slidingMenuAdapter$Holder, list);
+        slidingMenuAdapter$Holder.tv.setTextColor(this.itemTextColor);
+        ViewUtils.clearShadow(slidingMenuAdapter$Holder.tv);
+        slidingMenuAdapter$Holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361980)));
     }
 }

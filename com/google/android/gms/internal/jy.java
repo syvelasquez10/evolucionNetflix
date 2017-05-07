@@ -5,19 +5,19 @@
 package com.google.android.gms.internal;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import android.os.ParcelFileDescriptor;
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.InputStream;
 
 public final class jy
 {
-    public static long a(final InputStream inputStream, final OutputStream outputStream, final boolean b) throws IOException {
+    public static long a(final InputStream inputStream, final OutputStream outputStream, final boolean b) {
         return a(inputStream, outputStream, b, 1024);
     }
     
-    public static long a(final InputStream inputStream, final OutputStream outputStream, final boolean b, int read) throws IOException {
+    public static long a(final InputStream inputStream, final OutputStream outputStream, final boolean b, int read) {
         final byte[] array = new byte[read];
         long n = 0L;
         try {
@@ -53,7 +53,7 @@ public final class jy
         catch (IOException ex) {}
     }
     
-    public static byte[] a(final InputStream inputStream, final boolean b) throws IOException {
+    public static byte[] a(final InputStream inputStream, final boolean b) {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         a(inputStream, byteArrayOutputStream, b);
         return byteArrayOutputStream.toByteArray();
@@ -69,7 +69,7 @@ public final class jy
         catch (IOException ex) {}
     }
     
-    public static byte[] d(final InputStream inputStream) throws IOException {
+    public static byte[] d(final InputStream inputStream) {
         return a(inputStream, true);
     }
 }

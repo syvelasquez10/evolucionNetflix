@@ -37,14 +37,15 @@ public class AndroidAuthenticator implements Authenticator
     }
     
     @Override
-    public String getAuthToken() throws AuthFailureError {
+    public String getAuthToken() {
+        final String s = null;
         final AccountManagerFuture authToken = AccountManager.get(this.mContext).getAuthToken(this.mAccount, this.mAuthTokenType, (Bundle)null, this.mNotifyAuthFailure, (AccountManagerCallback)null, (Handler)null);
         String string = null;
         Label_0109: {
             Bundle bundle;
             try {
                 bundle = (Bundle)authToken.getResult();
-                final String s = string = null;
+                string = s;
                 if (!authToken.isDone()) {
                     break Label_0109;
                 }

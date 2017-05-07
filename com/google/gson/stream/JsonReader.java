@@ -4,9 +4,8 @@
 
 package com.google.gson.stream;
 
-import java.io.EOFException;
 import java.io.IOException;
-import com.google.gson.internal.bind.JsonTreeReader;
+import java.io.EOFException;
 import com.google.gson.internal.JsonReaderInternalAccess;
 import java.io.Reader;
 import java.io.Closeable;
@@ -35,22 +34,7 @@ public class JsonReader implements Closeable
     
     static {
         NON_EXECUTE_PREFIX = ")]}'\n".toCharArray();
-        JsonReaderInternalAccess.INSTANCE = new JsonReaderInternalAccess() {
-            @Override
-            public void promoteNameToValue(final JsonReader jsonReader) throws IOException {
-                if (jsonReader instanceof JsonTreeReader) {
-                    ((JsonTreeReader)jsonReader).promoteNameToValue();
-                    return;
-                }
-                jsonReader.peek();
-                if (jsonReader.token != JsonToken.NAME) {
-                    throw new IllegalStateException("Expected a name but was " + jsonReader.peek() + " " + " at line " + jsonReader.getLineNumber() + " column " + jsonReader.getColumnNumber());
-                }
-                jsonReader.value = jsonReader.name;
-                jsonReader.name = null;
-                jsonReader.token = JsonToken.STRING;
-            }
-        };
+        JsonReaderInternalAccess.INSTANCE = new JsonReader$1();
     }
     
     public JsonReader(final Reader in) {
@@ -71,7 +55,7 @@ public class JsonReader implements Closeable
         this.in = in;
     }
     
-    private JsonToken advance() throws IOException {
+    private JsonToken advance() {
         this.peek();
         final JsonToken token = this.token;
         this.token = null;
@@ -80,13 +64,13 @@ public class JsonReader implements Closeable
         return token;
     }
     
-    private void checkLenient() throws IOException {
+    private void checkLenient() {
         if (!this.lenient) {
             throw this.syntaxError("Use JsonReader.setLenient(true) to accept malformed JSON");
         }
     }
     
-    private void consumeNonExecutePrefix() throws IOException {
+    private void consumeNonExecutePrefix() {
         this.nextNonWhitespace(true);
         --this.pos;
         if (this.pos + JsonReader.NON_EXECUTE_PREFIX.length <= this.limit || this.fillBuffer(JsonReader.NON_EXECUTE_PREFIX.length)) {
@@ -99,7 +83,7 @@ public class JsonReader implements Closeable
         }
     }
     
-    private JsonToken decodeLiteral() throws IOException {
+    private JsonToken decodeLiteral() {
         if (this.valuePos == -1) {
             return JsonToken.STRING;
         }
@@ -223,7 +207,7 @@ public class JsonReader implements Closeable
         return JsonToken.STRING;
     }
     
-    private void expect(final JsonToken jsonToken) throws IOException {
+    private void expect(final JsonToken jsonToken) {
         this.peek();
         if (this.token != jsonToken) {
             throw new IllegalStateException("Expected " + jsonToken + " but was " + this.peek() + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
@@ -231,7 +215,7 @@ public class JsonReader implements Closeable
         this.advance();
     }
     
-    private boolean fillBuffer(final int n) throws IOException {
+    private boolean fillBuffer(final int n) {
         final char[] buffer = this.buffer;
         int bufferStartLine = this.bufferStartLine;
         int bufferStartColumn = this.bufferStartColumn;
@@ -294,7 +278,7 @@ public class JsonReader implements Closeable
         return bufferStartLine;
     }
     
-    private JsonToken nextInArray(final boolean b) throws IOException {
+    private JsonToken nextInArray(final boolean b) {
         if (b) {
             this.stack[this.stackSize - 1] = JsonScope.NONEMPTY_ARRAY;
         }
@@ -336,7 +320,7 @@ public class JsonReader implements Closeable
         }
     }
     
-    private JsonToken nextInObject(final boolean b) throws IOException {
+    private JsonToken nextInObject(final boolean b) {
         if (b) {
             switch (this.nextNonWhitespace(true)) {
                 default: {
@@ -387,7 +371,7 @@ public class JsonReader implements Closeable
         return this.token = JsonToken.NAME;
     }
     
-    private String nextLiteral(final boolean b) throws IOException {
+    private String nextLiteral(final boolean b) {
         final String s = null;
         this.valuePos = -1;
         this.valueLength = 0;
@@ -481,7 +465,7 @@ public class JsonReader implements Closeable
         }
     }
     
-    private int nextNonWhitespace(final boolean b) throws IOException {
+    private int nextNonWhitespace(final boolean b) {
         final char[] buffer = this.buffer;
         int n = this.pos;
         int n2 = this.limit;
@@ -561,7 +545,7 @@ public class JsonReader implements Closeable
         }
     }
     
-    private String nextString(final char c) throws IOException {
+    private String nextString(final char c) {
         final char[] buffer = this.buffer;
         StringBuilder sb = null;
         while (true) {
@@ -612,7 +596,7 @@ public class JsonReader implements Closeable
         }
     }
     
-    private JsonToken nextValue() throws IOException {
+    private JsonToken nextValue() {
         final int nextNonWhitespace = this.nextNonWhitespace(true);
         switch (nextNonWhitespace) {
             default: {
@@ -637,7 +621,7 @@ public class JsonReader implements Closeable
         }
     }
     
-    private JsonToken objectValue() throws IOException {
+    private JsonToken objectValue() {
         switch (this.nextNonWhitespace(true)) {
             default: {
                 throw this.syntaxError("Expected ':'");
@@ -664,7 +648,7 @@ public class JsonReader implements Closeable
         this.stack[this.stackSize++] = jsonScope;
     }
     
-    private char readEscapeCharacter() throws IOException {
+    private char readEscapeCharacter() {
         if (this.pos == this.limit && !this.fillBuffer(1)) {
             throw this.syntaxError("Unterminated escape sequence");
         }
@@ -716,7 +700,7 @@ public class JsonReader implements Closeable
         }
     }
     
-    private JsonToken readLiteral() throws IOException {
+    private JsonToken readLiteral() {
         this.value = this.nextLiteral(true);
         if (this.valueLength == 0) {
             throw this.syntaxError("Expected literal value");
@@ -728,7 +712,7 @@ public class JsonReader implements Closeable
         return this.token;
     }
     
-    private boolean skipTo(final String s) throws IOException {
+    private boolean skipTo(final String s) {
         final boolean b = false;
         boolean b2 = false;
     Label_0003:
@@ -751,7 +735,7 @@ public class JsonReader implements Closeable
         return b2;
     }
     
-    private void skipToEndOfLine() throws IOException {
+    private void skipToEndOfLine() {
         while (this.pos < this.limit || this.fillBuffer(1)) {
             final char c = this.buffer[this.pos++];
             if (c == '\r' || c == '\n') {
@@ -760,20 +744,20 @@ public class JsonReader implements Closeable
         }
     }
     
-    private IOException syntaxError(final String s) throws IOException {
+    private IOException syntaxError(final String s) {
         throw new MalformedJsonException(s + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
     }
     
-    public void beginArray() throws IOException {
+    public void beginArray() {
         this.expect(JsonToken.BEGIN_ARRAY);
     }
     
-    public void beginObject() throws IOException {
+    public void beginObject() {
         this.expect(JsonToken.BEGIN_OBJECT);
     }
     
     @Override
-    public void close() throws IOException {
+    public void close() {
         this.value = null;
         this.token = null;
         this.stack[0] = JsonScope.CLOSED;
@@ -781,15 +765,15 @@ public class JsonReader implements Closeable
         this.in.close();
     }
     
-    public void endArray() throws IOException {
+    public void endArray() {
         this.expect(JsonToken.END_ARRAY);
     }
     
-    public void endObject() throws IOException {
+    public void endObject() {
         this.expect(JsonToken.END_OBJECT);
     }
     
-    public boolean hasNext() throws IOException {
+    public boolean hasNext() {
         this.peek();
         return this.token != JsonToken.END_OBJECT && this.token != JsonToken.END_ARRAY;
     }
@@ -798,7 +782,7 @@ public class JsonReader implements Closeable
         return this.lenient;
     }
     
-    public boolean nextBoolean() throws IOException {
+    public boolean nextBoolean() {
         this.peek();
         if (this.token != JsonToken.BOOLEAN) {
             throw new IllegalStateException("Expected a boolean but was " + this.token + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
@@ -808,7 +792,7 @@ public class JsonReader implements Closeable
         return b;
     }
     
-    public double nextDouble() throws IOException {
+    public double nextDouble() {
         this.peek();
         if (this.token != JsonToken.STRING && this.token != JsonToken.NUMBER) {
             throw new IllegalStateException("Expected a double but was " + this.token + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
@@ -824,7 +808,7 @@ public class JsonReader implements Closeable
         return double1;
     }
     
-    public int nextInt() throws IOException {
+    public int nextInt() {
         this.peek();
         if (this.token != JsonToken.STRING && this.token != JsonToken.NUMBER) {
             throw new IllegalStateException("Expected an int but was " + this.token + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
@@ -850,7 +834,7 @@ public class JsonReader implements Closeable
         return int1;
     }
     
-    public long nextLong() throws IOException {
+    public long nextLong() {
         this.peek();
         if (this.token != JsonToken.STRING && this.token != JsonToken.NUMBER) {
             throw new IllegalStateException("Expected a long but was " + this.token + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
@@ -876,7 +860,7 @@ public class JsonReader implements Closeable
         return long1;
     }
     
-    public String nextName() throws IOException {
+    public String nextName() {
         this.peek();
         if (this.token != JsonToken.NAME) {
             throw new IllegalStateException("Expected a name but was " + this.peek() + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
@@ -886,7 +870,7 @@ public class JsonReader implements Closeable
         return name;
     }
     
-    public void nextNull() throws IOException {
+    public void nextNull() {
         this.peek();
         if (this.token != JsonToken.NULL) {
             throw new IllegalStateException("Expected null but was " + this.token + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
@@ -894,7 +878,7 @@ public class JsonReader implements Closeable
         this.advance();
     }
     
-    public String nextString() throws IOException {
+    public String nextString() {
         this.peek();
         if (this.token != JsonToken.STRING && this.token != JsonToken.NUMBER) {
             throw new IllegalStateException("Expected a string but was " + this.peek() + " at line " + this.getLineNumber() + " column " + this.getColumnNumber());
@@ -904,17 +888,17 @@ public class JsonReader implements Closeable
         return value;
     }
     
-    public JsonToken peek() throws IOException {
+    public JsonToken peek() {
         JsonToken jsonToken = null;
         if (this.token != null) {
             jsonToken = this.token;
         }
         else {
-            switch (this.stack[this.stackSize - 1]) {
+            switch (JsonReader$2.$SwitchMap$com$google$gson$stream$JsonScope[this.stack[this.stackSize - 1].ordinal()]) {
                 default: {
                     throw new AssertionError();
                 }
-                case EMPTY_DOCUMENT: {
+                case 1: {
                     if (this.lenient) {
                         this.consumeNonExecutePrefix();
                     }
@@ -933,22 +917,22 @@ public class JsonReader implements Closeable
                     }
                     break;
                 }
-                case EMPTY_ARRAY: {
+                case 2: {
                     return this.nextInArray(true);
                 }
-                case NONEMPTY_ARRAY: {
+                case 3: {
                     return this.nextInArray(false);
                 }
-                case EMPTY_OBJECT: {
+                case 4: {
                     return this.nextInObject(true);
                 }
-                case DANGLING_NAME: {
+                case 5: {
                     return this.objectValue();
                 }
-                case NONEMPTY_OBJECT: {
+                case 6: {
                     return this.nextInObject(false);
                 }
-                case NONEMPTY_DOCUMENT: {
+                case 7: {
                     if (this.nextNonWhitespace(false) == -1) {
                         return JsonToken.END_DOCUMENT;
                     }
@@ -958,7 +942,7 @@ public class JsonReader implements Closeable
                     }
                     return this.nextValue();
                 }
-                case CLOSED: {
+                case 8: {
                     throw new IllegalStateException("JsonReader is closed");
                 }
             }
@@ -970,7 +954,7 @@ public class JsonReader implements Closeable
         this.lenient = lenient;
     }
     
-    public void skipValue() throws IOException {
+    public void skipValue() {
         this.skipping = true;
         int n = 0;
         try {

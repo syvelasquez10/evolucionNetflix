@@ -20,20 +20,20 @@ public class RemotePlaybackClient
     private static final String TAG = "RemotePlaybackClient";
     private final Context mContext;
     private final PendingIntent mItemStatusPendingIntent;
-    private final MediaRouter.RouteInfo mRoute;
+    private final MediaRouter$RouteInfo mRoute;
     private boolean mRouteSupportsQueuing;
     private boolean mRouteSupportsRemotePlayback;
     private boolean mRouteSupportsSessionManagement;
     private String mSessionId;
     private final PendingIntent mSessionStatusPendingIntent;
-    private StatusCallback mStatusCallback;
-    private final StatusReceiver mStatusReceiver;
+    private RemotePlaybackClient$StatusCallback mStatusCallback;
+    private final RemotePlaybackClient$StatusReceiver mStatusReceiver;
     
     static {
         DEBUG = Log.isLoggable("RemotePlaybackClient", 3);
     }
     
-    public RemotePlaybackClient(final Context mContext, final MediaRouter.RouteInfo mRoute) {
+    public RemotePlaybackClient(final Context mContext, final MediaRouter$RouteInfo mRoute) {
         if (mContext == null) {
             throw new IllegalArgumentException("context must not be null");
         }
@@ -45,7 +45,7 @@ public class RemotePlaybackClient
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.support.v7.media.actions.ACTION_ITEM_STATUS_CHANGED");
         intentFilter.addAction("android.support.v7.media.actions.ACTION_SESSION_STATUS_CHANGED");
-        mContext.registerReceiver((BroadcastReceiver)(this.mStatusReceiver = new StatusReceiver()), intentFilter);
+        mContext.registerReceiver((BroadcastReceiver)(this.mStatusReceiver = new RemotePlaybackClient$StatusReceiver(this, null)), intentFilter);
         final Intent intent = new Intent("android.support.v7.media.actions.ACTION_ITEM_STATUS_CHANGED");
         intent.setPackage(mContext.getPackageName());
         this.mItemStatusPendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
@@ -76,23 +76,20 @@ public class RemotePlaybackClient
         this.mRouteSupportsSessionManagement = (this.mRouteSupportsRemotePlayback && this.routeSupportsAction("android.media.intent.action.START_SESSION") && this.routeSupportsAction("android.media.intent.action.GET_SESSION_STATUS") && this.routeSupportsAction("android.media.intent.action.END_SESSION") && b);
     }
     
-    private void handleError(final Intent intent, final ActionCallback actionCallback, final String s, final Bundle bundle) {
-        int int1;
+    private void handleError(final Intent intent, final RemotePlaybackClient$ActionCallback remotePlaybackClient$ActionCallback, final String s, final Bundle bundle) {
+        int int1 = 0;
         if (bundle != null) {
             int1 = bundle.getInt("android.media.intent.extra.ERROR_CODE", 0);
-        }
-        else {
-            int1 = 0;
         }
         if (RemotePlaybackClient.DEBUG) {
             Log.w("RemotePlaybackClient", "Received error from " + intent.getAction() + ": error=" + s + ", code=" + int1 + ", data=" + bundleToString(bundle));
         }
-        actionCallback.onError(s, int1, bundle);
+        remotePlaybackClient$ActionCallback.onError(s, int1, bundle);
     }
     
-    private void handleInvalidResult(final Intent intent, final ActionCallback actionCallback, final Bundle bundle) {
+    private void handleInvalidResult(final Intent intent, final RemotePlaybackClient$ActionCallback remotePlaybackClient$ActionCallback, final Bundle bundle) {
         Log.w("RemotePlaybackClient", "Received invalid result data from " + intent.getAction() + ": data=" + bundleToString(bundle));
-        actionCallback.onError(null, 0, bundle);
+        remotePlaybackClient$ActionCallback.onError(null, 0, bundle);
     }
     
     private static String inferMissingResult(final String s, final String s2) {
@@ -111,7 +108,7 @@ public class RemotePlaybackClient
         }
     }
     
-    private void performItemAction(final Intent intent, final String s, final String s2, final Bundle bundle, final ItemActionCallback itemActionCallback) {
+    private void performItemAction(final Intent intent, final String s, final String s2, final Bundle bundle, final RemotePlaybackClient$ItemActionCallback remotePlaybackClient$ItemActionCallback) {
         intent.addCategory("android.media.intent.category.REMOTE_PLAYBACK");
         if (s != null) {
             intent.putExtra("android.media.intent.extra.SESSION_ID", s);
@@ -123,34 +120,10 @@ public class RemotePlaybackClient
             intent.putExtras(bundle);
         }
         logRequest(intent);
-        this.mRoute.sendControlRequest(intent, new MediaRouter.ControlRequestCallback() {
-            @Override
-            public void onError(final String s, final Bundle bundle) {
-                RemotePlaybackClient.this.handleError(intent, (ActionCallback)itemActionCallback, s, bundle);
-            }
-            
-            @Override
-            public void onResult(final Bundle bundle) {
-                if (bundle != null) {
-                    final String access$100 = inferMissingResult(s, bundle.getString("android.media.intent.extra.SESSION_ID"));
-                    final MediaSessionStatus fromBundle = MediaSessionStatus.fromBundle(bundle.getBundle("android.media.intent.extra.SESSION_STATUS"));
-                    final String access$101 = inferMissingResult(s2, bundle.getString("android.media.intent.extra.ITEM_ID"));
-                    final MediaItemStatus fromBundle2 = MediaItemStatus.fromBundle(bundle.getBundle("android.media.intent.extra.ITEM_STATUS"));
-                    RemotePlaybackClient.this.adoptSession(access$100);
-                    if (access$100 != null && access$101 != null && fromBundle2 != null) {
-                        if (RemotePlaybackClient.DEBUG) {
-                            Log.d("RemotePlaybackClient", "Received result from " + intent.getAction() + ": data=" + bundleToString(bundle) + ", sessionId=" + access$100 + ", sessionStatus=" + fromBundle + ", itemId=" + access$101 + ", itemStatus=" + fromBundle2);
-                        }
-                        itemActionCallback.onResult(bundle, access$100, fromBundle, access$101, fromBundle2);
-                        return;
-                    }
-                }
-                RemotePlaybackClient.this.handleInvalidResult(intent, (ActionCallback)itemActionCallback, bundle);
-            }
-        });
+        this.mRoute.sendControlRequest(intent, new RemotePlaybackClient$1(this, s, s2, intent, remotePlaybackClient$ItemActionCallback));
     }
     
-    private void performSessionAction(final Intent intent, final String s, final Bundle bundle, final SessionActionCallback sessionActionCallback) {
+    private void performSessionAction(final Intent intent, final String s, final Bundle bundle, final RemotePlaybackClient$SessionActionCallback remotePlaybackClient$SessionActionCallback) {
         intent.addCategory("android.media.intent.category.REMOTE_PLAYBACK");
         if (s != null) {
             intent.putExtra("android.media.intent.extra.SESSION_ID", s);
@@ -159,39 +132,10 @@ public class RemotePlaybackClient
             intent.putExtras(bundle);
         }
         logRequest(intent);
-        this.mRoute.sendControlRequest(intent, new MediaRouter.ControlRequestCallback() {
-            @Override
-            public void onError(final String s, final Bundle bundle) {
-                RemotePlaybackClient.this.handleError(intent, (ActionCallback)sessionActionCallback, s, bundle);
-            }
-            
-            @Override
-            public void onResult(final Bundle bundle) {
-                if (bundle != null) {
-                    final String access$100 = inferMissingResult(s, bundle.getString("android.media.intent.extra.SESSION_ID"));
-                    final MediaSessionStatus fromBundle = MediaSessionStatus.fromBundle(bundle.getBundle("android.media.intent.extra.SESSION_STATUS"));
-                    RemotePlaybackClient.this.adoptSession(access$100);
-                    if (access$100 != null) {
-                        if (RemotePlaybackClient.DEBUG) {
-                            Log.d("RemotePlaybackClient", "Received result from " + intent.getAction() + ": data=" + bundleToString(bundle) + ", sessionId=" + access$100 + ", sessionStatus=" + fromBundle);
-                        }
-                        try {
-                            sessionActionCallback.onResult(bundle, access$100, fromBundle);
-                            return;
-                        }
-                        finally {
-                            if (intent.getAction().equals("android.media.intent.action.END_SESSION") && access$100.equals(RemotePlaybackClient.this.mSessionId)) {
-                                RemotePlaybackClient.this.setSessionId(null);
-                            }
-                        }
-                    }
-                }
-                RemotePlaybackClient.this.handleInvalidResult(intent, (ActionCallback)sessionActionCallback, bundle);
-            }
-        });
+        this.mRoute.sendControlRequest(intent, new RemotePlaybackClient$2(this, s, intent, remotePlaybackClient$SessionActionCallback));
     }
     
-    private void playOrEnqueue(final Uri uri, final String s, final Bundle bundle, final long n, final Bundle bundle2, final ItemActionCallback itemActionCallback, final String s2) {
+    private void playOrEnqueue(final Uri uri, final String s, final Bundle bundle, final long n, final Bundle bundle2, final RemotePlaybackClient$ItemActionCallback remotePlaybackClient$ItemActionCallback, final String s2) {
         if (uri == null) {
             throw new IllegalArgumentException("contentUri must not be null");
         }
@@ -208,7 +152,7 @@ public class RemotePlaybackClient
         if (n != 0L) {
             intent.putExtra("android.media.intent.extra.ITEM_POSITION", n);
         }
-        this.performItemAction(intent, this.mSessionId, null, bundle2, itemActionCallback);
+        this.performItemAction(intent, this.mSessionId, null, bundle2, remotePlaybackClient$ItemActionCallback);
     }
     
     private boolean routeSupportsAction(final String s) {
@@ -239,32 +183,32 @@ public class RemotePlaybackClient
         }
     }
     
-    public void endSession(final Bundle bundle, final SessionActionCallback sessionActionCallback) {
+    public void endSession(final Bundle bundle, final RemotePlaybackClient$SessionActionCallback remotePlaybackClient$SessionActionCallback) {
         this.throwIfSessionManagementNotSupported();
         this.throwIfNoCurrentSession();
-        this.performSessionAction(new Intent("android.media.intent.action.END_SESSION"), this.mSessionId, bundle, sessionActionCallback);
+        this.performSessionAction(new Intent("android.media.intent.action.END_SESSION"), this.mSessionId, bundle, remotePlaybackClient$SessionActionCallback);
     }
     
-    public void enqueue(final Uri uri, final String s, final Bundle bundle, final long n, final Bundle bundle2, final ItemActionCallback itemActionCallback) {
-        this.playOrEnqueue(uri, s, bundle, n, bundle2, itemActionCallback, "android.media.intent.action.ENQUEUE");
+    public void enqueue(final Uri uri, final String s, final Bundle bundle, final long n, final Bundle bundle2, final RemotePlaybackClient$ItemActionCallback remotePlaybackClient$ItemActionCallback) {
+        this.playOrEnqueue(uri, s, bundle, n, bundle2, remotePlaybackClient$ItemActionCallback, "android.media.intent.action.ENQUEUE");
     }
     
     public String getSessionId() {
         return this.mSessionId;
     }
     
-    public void getSessionStatus(final Bundle bundle, final SessionActionCallback sessionActionCallback) {
+    public void getSessionStatus(final Bundle bundle, final RemotePlaybackClient$SessionActionCallback remotePlaybackClient$SessionActionCallback) {
         this.throwIfSessionManagementNotSupported();
         this.throwIfNoCurrentSession();
-        this.performSessionAction(new Intent("android.media.intent.action.GET_SESSION_STATUS"), this.mSessionId, bundle, sessionActionCallback);
+        this.performSessionAction(new Intent("android.media.intent.action.GET_SESSION_STATUS"), this.mSessionId, bundle, remotePlaybackClient$SessionActionCallback);
     }
     
-    public void getStatus(final String s, final Bundle bundle, final ItemActionCallback itemActionCallback) {
+    public void getStatus(final String s, final Bundle bundle, final RemotePlaybackClient$ItemActionCallback remotePlaybackClient$ItemActionCallback) {
         if (s == null) {
             throw new IllegalArgumentException("itemId must not be null");
         }
         this.throwIfNoCurrentSession();
-        this.performItemAction(new Intent("android.media.intent.action.GET_STATUS"), this.mSessionId, s, bundle, itemActionCallback);
+        this.performItemAction(new Intent("android.media.intent.action.GET_STATUS"), this.mSessionId, s, bundle, remotePlaybackClient$ItemActionCallback);
     }
     
     public boolean hasSession() {
@@ -283,41 +227,41 @@ public class RemotePlaybackClient
         return this.mRouteSupportsSessionManagement;
     }
     
-    public void pause(final Bundle bundle, final SessionActionCallback sessionActionCallback) {
+    public void pause(final Bundle bundle, final RemotePlaybackClient$SessionActionCallback remotePlaybackClient$SessionActionCallback) {
         this.throwIfNoCurrentSession();
-        this.performSessionAction(new Intent("android.media.intent.action.PAUSE"), this.mSessionId, bundle, sessionActionCallback);
+        this.performSessionAction(new Intent("android.media.intent.action.PAUSE"), this.mSessionId, bundle, remotePlaybackClient$SessionActionCallback);
     }
     
-    public void play(final Uri uri, final String s, final Bundle bundle, final long n, final Bundle bundle2, final ItemActionCallback itemActionCallback) {
-        this.playOrEnqueue(uri, s, bundle, n, bundle2, itemActionCallback, "android.media.intent.action.PLAY");
+    public void play(final Uri uri, final String s, final Bundle bundle, final long n, final Bundle bundle2, final RemotePlaybackClient$ItemActionCallback remotePlaybackClient$ItemActionCallback) {
+        this.playOrEnqueue(uri, s, bundle, n, bundle2, remotePlaybackClient$ItemActionCallback, "android.media.intent.action.PLAY");
     }
     
     public void release() {
         this.mContext.unregisterReceiver((BroadcastReceiver)this.mStatusReceiver);
     }
     
-    public void remove(final String s, final Bundle bundle, final ItemActionCallback itemActionCallback) {
+    public void remove(final String s, final Bundle bundle, final RemotePlaybackClient$ItemActionCallback remotePlaybackClient$ItemActionCallback) {
         if (s == null) {
             throw new IllegalArgumentException("itemId must not be null");
         }
         this.throwIfQueuingNotSupported();
         this.throwIfNoCurrentSession();
-        this.performItemAction(new Intent("android.media.intent.action.REMOVE"), this.mSessionId, s, bundle, itemActionCallback);
+        this.performItemAction(new Intent("android.media.intent.action.REMOVE"), this.mSessionId, s, bundle, remotePlaybackClient$ItemActionCallback);
     }
     
-    public void resume(final Bundle bundle, final SessionActionCallback sessionActionCallback) {
+    public void resume(final Bundle bundle, final RemotePlaybackClient$SessionActionCallback remotePlaybackClient$SessionActionCallback) {
         this.throwIfNoCurrentSession();
-        this.performSessionAction(new Intent("android.media.intent.action.RESUME"), this.mSessionId, bundle, sessionActionCallback);
+        this.performSessionAction(new Intent("android.media.intent.action.RESUME"), this.mSessionId, bundle, remotePlaybackClient$SessionActionCallback);
     }
     
-    public void seek(final String s, final long n, final Bundle bundle, final ItemActionCallback itemActionCallback) {
+    public void seek(final String s, final long n, final Bundle bundle, final RemotePlaybackClient$ItemActionCallback remotePlaybackClient$ItemActionCallback) {
         if (s == null) {
             throw new IllegalArgumentException("itemId must not be null");
         }
         this.throwIfNoCurrentSession();
         final Intent intent = new Intent("android.media.intent.action.SEEK");
         intent.putExtra("android.media.intent.extra.ITEM_POSITION", n);
-        this.performItemAction(intent, this.mSessionId, s, bundle, itemActionCallback);
+        this.performItemAction(intent, this.mSessionId, s, bundle, remotePlaybackClient$ItemActionCallback);
     }
     
     public void setSessionId(final String mSessionId) {
@@ -332,96 +276,19 @@ public class RemotePlaybackClient
         }
     }
     
-    public void setStatusCallback(final StatusCallback mStatusCallback) {
+    public void setStatusCallback(final RemotePlaybackClient$StatusCallback mStatusCallback) {
         this.mStatusCallback = mStatusCallback;
     }
     
-    public void startSession(final Bundle bundle, final SessionActionCallback sessionActionCallback) {
+    public void startSession(final Bundle bundle, final RemotePlaybackClient$SessionActionCallback remotePlaybackClient$SessionActionCallback) {
         this.throwIfSessionManagementNotSupported();
         final Intent intent = new Intent("android.media.intent.action.START_SESSION");
         intent.putExtra("android.media.intent.extra.SESSION_STATUS_UPDATE_RECEIVER", (Parcelable)this.mSessionStatusPendingIntent);
-        this.performSessionAction(intent, null, bundle, sessionActionCallback);
+        this.performSessionAction(intent, null, bundle, remotePlaybackClient$SessionActionCallback);
     }
     
-    public void stop(final Bundle bundle, final SessionActionCallback sessionActionCallback) {
+    public void stop(final Bundle bundle, final RemotePlaybackClient$SessionActionCallback remotePlaybackClient$SessionActionCallback) {
         this.throwIfNoCurrentSession();
-        this.performSessionAction(new Intent("android.media.intent.action.STOP"), this.mSessionId, bundle, sessionActionCallback);
-    }
-    
-    public abstract static class ActionCallback
-    {
-        public void onError(final String s, final int n, final Bundle bundle) {
-        }
-    }
-    
-    public abstract static class ItemActionCallback extends ActionCallback
-    {
-        public void onResult(final Bundle bundle, final String s, final MediaSessionStatus mediaSessionStatus, final String s2, final MediaItemStatus mediaItemStatus) {
-        }
-    }
-    
-    public abstract static class SessionActionCallback extends ActionCallback
-    {
-        public void onResult(final Bundle bundle, final String s, final MediaSessionStatus mediaSessionStatus) {
-        }
-    }
-    
-    public abstract static class StatusCallback
-    {
-        public void onItemStatusChanged(final Bundle bundle, final String s, final MediaSessionStatus mediaSessionStatus, final String s2, final MediaItemStatus mediaItemStatus) {
-        }
-        
-        public void onSessionChanged(final String s) {
-        }
-        
-        public void onSessionStatusChanged(final Bundle bundle, final String s, final MediaSessionStatus mediaSessionStatus) {
-        }
-    }
-    
-    private final class StatusReceiver extends BroadcastReceiver
-    {
-        public static final String ACTION_ITEM_STATUS_CHANGED = "android.support.v7.media.actions.ACTION_ITEM_STATUS_CHANGED";
-        public static final String ACTION_SESSION_STATUS_CHANGED = "android.support.v7.media.actions.ACTION_SESSION_STATUS_CHANGED";
-        
-        public void onReceive(final Context context, final Intent intent) {
-            final String stringExtra = intent.getStringExtra("android.media.intent.extra.SESSION_ID");
-            if (stringExtra == null || !stringExtra.equals(RemotePlaybackClient.this.mSessionId)) {
-                Log.w("RemotePlaybackClient", "Discarding spurious status callback with missing or invalid session id: sessionId=" + stringExtra);
-            }
-            else {
-                final MediaSessionStatus fromBundle = MediaSessionStatus.fromBundle(intent.getBundleExtra("android.media.intent.extra.SESSION_STATUS"));
-                final String action = intent.getAction();
-                if (action.equals("android.support.v7.media.actions.ACTION_ITEM_STATUS_CHANGED")) {
-                    final String stringExtra2 = intent.getStringExtra("android.media.intent.extra.ITEM_ID");
-                    if (stringExtra2 == null) {
-                        Log.w("RemotePlaybackClient", "Discarding spurious status callback with missing item id.");
-                        return;
-                    }
-                    final MediaItemStatus fromBundle2 = MediaItemStatus.fromBundle(intent.getBundleExtra("android.media.intent.extra.ITEM_STATUS"));
-                    if (fromBundle2 == null) {
-                        Log.w("RemotePlaybackClient", "Discarding spurious status callback with missing item status.");
-                        return;
-                    }
-                    if (RemotePlaybackClient.DEBUG) {
-                        Log.d("RemotePlaybackClient", "Received item status callback: sessionId=" + stringExtra + ", sessionStatus=" + fromBundle + ", itemId=" + stringExtra2 + ", itemStatus=" + fromBundle2);
-                    }
-                    if (RemotePlaybackClient.this.mStatusCallback != null) {
-                        RemotePlaybackClient.this.mStatusCallback.onItemStatusChanged(intent.getExtras(), stringExtra, fromBundle, stringExtra2, fromBundle2);
-                    }
-                }
-                else if (action.equals("android.support.v7.media.actions.ACTION_SESSION_STATUS_CHANGED")) {
-                    if (fromBundle == null) {
-                        Log.w("RemotePlaybackClient", "Discarding spurious media status callback with missing session status.");
-                        return;
-                    }
-                    if (RemotePlaybackClient.DEBUG) {
-                        Log.d("RemotePlaybackClient", "Received session status callback: sessionId=" + stringExtra + ", sessionStatus=" + fromBundle);
-                    }
-                    if (RemotePlaybackClient.this.mStatusCallback != null) {
-                        RemotePlaybackClient.this.mStatusCallback.onSessionStatusChanged(intent.getExtras(), stringExtra, fromBundle);
-                    }
-                }
-            }
-        }
+        this.performSessionAction(new Intent("android.media.intent.action.STOP"), this.mSessionId, bundle, remotePlaybackClient$SessionActionCallback);
     }
 }

@@ -14,7 +14,7 @@ import java.util.SortedSet;
 class t
 {
     private static final t ze;
-    private SortedSet<a> zb;
+    private SortedSet<t$a> zb;
     private StringBuilder zc;
     private boolean zd;
     
@@ -23,7 +23,7 @@ class t
     }
     
     private t() {
-        this.zb = new TreeSet<a>();
+        this.zb = new TreeSet<t$a>();
         this.zc = new StringBuilder();
         this.zd = false;
     }
@@ -38,11 +38,11 @@ class t
         }
     }
     
-    public void a(final a a) {
+    public void a(final t$a t$a) {
         synchronized (this) {
             if (!this.zd) {
-                this.zb.add(a);
-                this.zc.append("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".charAt(a.ordinal()));
+                this.zb.add(t$a);
+                this.zc.append("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".charAt(t$a.ordinal()));
             }
         }
     }
@@ -53,14 +53,14 @@ class t
             int n = 6;
             int n2 = 0;
             while (this.zb.size() > 0) {
-                final a a = this.zb.first();
-                this.zb.remove(a);
-                while (a.ordinal() >= n) {
+                final t$a t$a = this.zb.first();
+                this.zb.remove(t$a);
+                while (t$a.ordinal() >= n) {
                     sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".charAt(n2));
                     n += 6;
                     n2 = 0;
                 }
-                n2 += 1 << a.ordinal() % 6;
+                n2 += 1 << t$a.ordinal() % 6;
             }
             if (n2 > 0 || sb.length() == 0) {
                 sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".charAt(n2));
@@ -79,72 +79,5 @@ class t
             this.zc = new StringBuilder();
             return string;
         }
-    }
-    
-    public enum a
-    {
-        Aa, 
-        Ab, 
-        Ac, 
-        Ad, 
-        Ae, 
-        Af, 
-        Ag, 
-        Ah, 
-        Ai, 
-        Aj, 
-        Ak, 
-        Al, 
-        Am, 
-        An, 
-        Ao, 
-        Ap, 
-        zA, 
-        zB, 
-        zC, 
-        zD, 
-        zE, 
-        zF, 
-        zG, 
-        zH, 
-        zI, 
-        zJ, 
-        zK, 
-        zL, 
-        zM, 
-        zN, 
-        zO, 
-        zP, 
-        zQ, 
-        zR, 
-        zS, 
-        zT, 
-        zU, 
-        zV, 
-        zW, 
-        zX, 
-        zY, 
-        zZ, 
-        zf, 
-        zg, 
-        zh, 
-        zi, 
-        zj, 
-        zk, 
-        zl, 
-        zm, 
-        zn, 
-        zo, 
-        zp, 
-        zq, 
-        zr, 
-        zs, 
-        zt, 
-        zu, 
-        zv, 
-        zw, 
-        zx, 
-        zy, 
-        zz;
     }
 }

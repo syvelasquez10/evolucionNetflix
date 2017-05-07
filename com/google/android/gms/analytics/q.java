@@ -4,7 +4,6 @@
 
 package com.google.android.gms.analytics;
 
-import android.os.Message;
 import android.os.Handler$Callback;
 import android.os.Handler;
 import android.content.Context;
@@ -36,12 +35,7 @@ class q extends ae
         this.yg = true;
         this.yj = true;
         this.yk = true;
-        this.yl = new e() {
-            @Override
-            public void z(final boolean b) {
-                q.this.a(b, q.this.yj);
-            }
-        };
+        this.yl = new q$1(this);
         this.yn = false;
     }
     
@@ -57,19 +51,7 @@ class q extends ae
     }
     
     private void ec() {
-        this.mHandler = new Handler(this.mContext.getMainLooper(), (Handler$Callback)new Handler$Callback() {
-            public boolean handleMessage(final Message message) {
-                if (1 == message.what && q.yc.equals(message.obj)) {
-                    t.eq().B(true);
-                    q.this.dispatchLocalHits();
-                    t.eq().B(false);
-                    if (q.this.yf > 0 && !q.this.yn) {
-                        q.this.mHandler.sendMessageDelayed(q.this.mHandler.obtainMessage(1, q.yc), (long)(q.this.yf * 1000));
-                    }
-                }
-                return true;
-            }
-        });
+        this.mHandler = new Handler(this.mContext.getMainLooper(), (Handler$Callback)new q$2(this));
         if (this.yf > 0) {
             this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(1, q.yc), (long)(this.yf * 1000));
         }
@@ -144,7 +126,7 @@ class q extends ae
             this.yh = true;
             return;
         }
-        t.eq().a(t.a.Ak);
+        t.eq().a(t$a.Ak);
         this.ye.dO();
     }
     
@@ -156,7 +138,7 @@ class q extends ae
                 this.yg = true;
             }
             else {
-                t.eq().a(t.a.zX);
+                t.eq().a(t$a.zX);
                 this.ye.dispatch();
             }
         }
@@ -206,7 +188,7 @@ class q extends ae
                 this.yf = n;
             }
             else {
-                t.eq().a(t.a.zY);
+                t.eq().a(t$a.zY);
                 if (!this.yn && this.yj && this.yf > 0) {
                     this.mHandler.removeMessages(1, q.yc);
                 }

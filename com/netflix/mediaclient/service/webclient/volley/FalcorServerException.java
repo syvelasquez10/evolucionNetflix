@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.webclient.volley;
 
-import java.util.Locale;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.StatusCode;
@@ -34,47 +33,44 @@ public class FalcorServerException extends VolleyError
     
     public static StatusCode getErrorCode(final String s, final ErrorLogging errorLogging) {
         final StatusCode server_ERROR = StatusCode.SERVER_ERROR;
-        if (StringUtils.isEmpty(s)) {
-            return server_ERROR;
-        }
-        if (Log.isLoggable(FalcorServerException.TAG, 3)) {
-            Log.d(FalcorServerException.TAG, "errorMsg:" + s);
-        }
-        final String lowerCase = s.toLowerCase(Locale.US);
-        StatusCode statusCode;
-        if (FalcorParseUtils.isNotAuthorized(lowerCase)) {
-            statusCode = StatusCode.USER_NOT_AUTHORIZED;
-        }
-        else if (FalcorParseUtils.isDeletedProfile(lowerCase)) {
-            statusCode = StatusCode.DELETED_PROFILE;
-        }
-        else if (FalcorParseUtils.isNullPointerException(lowerCase)) {
-            if (errorLogging != null) {
-                errorLogging.logHandledException("Endpoint NPE " + lowerCase);
+        if (!StringUtils.isEmpty(s)) {
+            if (Log.isLoggable(FalcorServerException.TAG, 3)) {
+                Log.d(FalcorServerException.TAG, "errorMsg:" + s);
             }
-            statusCode = StatusCode.WRONG_PATH;
-        }
-        else if (FalcorParseUtils.isAlreadyInQueue(lowerCase)) {
-            statusCode = StatusCode.ALREADY_IN_QUEUE;
-        }
-        else if (FalcorParseUtils.isNotInQueue(lowerCase)) {
-            statusCode = StatusCode.NOT_IN_QUEUE;
-        }
-        else if (FalcorParseUtils.isMapCacheError(lowerCase)) {
-            if (errorLogging != null) {
-                errorLogging.logHandledException("map cache miss");
+            if (FalcorParseUtils.isInvalidCounty(s)) {
+                return StatusCode.INVALID_COUNRTY;
             }
-            statusCode = StatusCode.SERVER_ERROR_MAP_CACHE_MISS;
-        }
-        else {
-            statusCode = server_ERROR;
-            if (FalcorParseUtils.isMapError(lowerCase)) {
+            if (FalcorParseUtils.isNotAuthorized(s)) {
+                return StatusCode.USER_NOT_AUTHORIZED;
+            }
+            if (FalcorParseUtils.isDeletedProfile(s)) {
+                return StatusCode.DELETED_PROFILE;
+            }
+            if (FalcorParseUtils.isNullPointerException(s)) {
                 if (errorLogging != null) {
-                    errorLogging.logHandledException("map error " + lowerCase);
+                    errorLogging.logHandledException("Endpoint NPE " + s);
                 }
-                statusCode = StatusCode.MAP_ERROR;
+                return StatusCode.WRONG_PATH;
+            }
+            if (FalcorParseUtils.isAlreadyInQueue(s)) {
+                return StatusCode.ALREADY_IN_QUEUE;
+            }
+            if (FalcorParseUtils.isNotInQueue(s)) {
+                return StatusCode.NOT_IN_QUEUE;
+            }
+            if (FalcorParseUtils.isMapCacheError(s)) {
+                if (errorLogging != null) {
+                    errorLogging.logHandledException("map cache miss");
+                }
+                return StatusCode.SERVER_ERROR_MAP_CACHE_MISS;
+            }
+            if (FalcorParseUtils.isMapError(s)) {
+                if (errorLogging != null) {
+                    errorLogging.logHandledException("map error " + s);
+                }
+                return StatusCode.MAP_ERROR;
             }
         }
-        return statusCode;
+        return server_ERROR;
     }
 }

@@ -36,13 +36,13 @@ public class SparseArrayCompat<E> implements Cloneable
     
     private void gc() {
         final int mSize = this.mSize;
-        int mSize2 = 0;
         final int[] mKeys = this.mKeys;
         final Object[] mValues = this.mValues;
-        int n;
-        for (int i = 0; i < mSize; ++i, mSize2 = n) {
+        int i = 0;
+        int mSize2 = 0;
+        while (i < mSize) {
             final Object o = mValues[i];
-            n = mSize2;
+            int n = mSize2;
             if (o != SparseArrayCompat.DELETED) {
                 if (i != mSize2) {
                     mKeys[mSize2] = mKeys[i];
@@ -51,6 +51,8 @@ public class SparseArrayCompat<E> implements Cloneable
                 }
                 n = mSize2 + 1;
             }
+            ++i;
+            mSize2 = n;
         }
         this.mGarbage = false;
         this.mSize = mSize2;
@@ -90,13 +92,40 @@ public class SparseArrayCompat<E> implements Cloneable
     }
     
     public SparseArrayCompat<E> clone() {
-        SparseArrayCompat<E> sparseArrayCompat = null;
+        SparseArrayCompat sparseArrayCompat;
         try {
-            final SparseArrayCompat sparseArrayCompat2 = sparseArrayCompat = (SparseArrayCompat)super.clone();
-            sparseArrayCompat2.mKeys = this.mKeys.clone();
-            sparseArrayCompat = sparseArrayCompat2;
-            sparseArrayCompat2.mValues = this.mValues.clone();
-            return sparseArrayCompat2;
+            final SparseArrayCompat<E> sparseArrayCompat2;
+            sparseArrayCompat = (sparseArrayCompat2 = (SparseArrayCompat)super.clone());
+            final SparseArrayCompat sparseArrayCompat3 = this;
+            final int[] array = sparseArrayCompat3.mKeys;
+            final int[] array2 = array.clone();
+            final int[] array3 = array2;
+            sparseArrayCompat2.mKeys = array3;
+            final SparseArrayCompat sparseArrayCompat4 = sparseArrayCompat;
+            final SparseArrayCompat sparseArrayCompat5 = this;
+            final Object[] array4 = sparseArrayCompat5.mValues;
+            final Object[] array5 = array4.clone();
+            final Object[] array6 = array5;
+            sparseArrayCompat4.mValues = array6;
+            return sparseArrayCompat;
+        }
+        catch (CloneNotSupportedException sparseArrayCompat) {
+            return null;
+        }
+        try {
+            final SparseArrayCompat<E> sparseArrayCompat2 = sparseArrayCompat;
+            final SparseArrayCompat sparseArrayCompat3 = this;
+            final int[] array = sparseArrayCompat3.mKeys;
+            final int[] array2 = array.clone();
+            final int[] array3 = array2;
+            sparseArrayCompat2.mKeys = array3;
+            final SparseArrayCompat sparseArrayCompat4 = sparseArrayCompat;
+            final SparseArrayCompat sparseArrayCompat5 = this;
+            final Object[] array4 = sparseArrayCompat5.mValues;
+            final Object[] array5 = array4.clone();
+            final Object[] array6 = array5;
+            sparseArrayCompat4.mValues = array6;
+            return sparseArrayCompat;
         }
         catch (CloneNotSupportedException ex) {
             return sparseArrayCompat;

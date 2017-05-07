@@ -5,24 +5,23 @@
 package com.netflix.mediaclient.event.nrdp.mdx.session;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.javabridge.ui.Mdx;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
 public class StartSessionResponseEvent extends JsonBaseNccpEvent
 {
     private static final String ATTR_pairingContext = "pairingContext";
     private static final String ATTR_sid = "sid";
-    public static final Mdx.Events TYPE;
+    public static final Mdx$Events TYPE;
     private String pairingContext;
     private int sid;
     
     static {
-        TYPE = Mdx.Events.mdx_session_startSessionResponse;
+        TYPE = Mdx$Events.mdx_session_startSessionResponse;
     }
     
-    public StartSessionResponseEvent(final JSONObject jsonObject) throws JSONException {
+    public StartSessionResponseEvent(final JSONObject jsonObject) {
         super(StartSessionResponseEvent.TYPE.getName(), jsonObject);
     }
     
@@ -40,7 +39,7 @@ public class StartSessionResponseEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.pairingContext = BaseNccpEvent.getUrlDecodedString(jsonObject, "pairingContext", null);
         this.sid = BaseNccpEvent.getInt(jsonObject, "sid", Integer.MIN_VALUE);
     }

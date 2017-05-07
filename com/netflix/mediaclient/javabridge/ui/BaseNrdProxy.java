@@ -8,7 +8,6 @@ import com.netflix.mediaclient.error.CrashReport;
 import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import com.netflix.mediaclient.javabridge.transport.TransportFactory;
 import org.json.JSONArray;
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
@@ -61,25 +60,25 @@ public abstract class BaseNrdProxy implements NrdProxy
         Log.d(this.getLogTag(), "NrdProxy::disconnect: transport is NULL!");
     }
     
-    protected boolean getBoolean(final JSONObject jsonObject, final String s, final boolean b) throws JSONException {
+    protected boolean getBoolean(final JSONObject jsonObject, final String s, final boolean b) {
         return JsonUtils.getBoolean(jsonObject, s, b);
     }
     
-    protected int getInt(final JSONObject jsonObject, final String s, final int n) throws JSONException {
+    protected int getInt(final JSONObject jsonObject, final String s, final int n) {
         return JsonUtils.getInt(jsonObject, s, n);
     }
     
-    protected JSONArray getJSONArray(final JSONObject jsonObject, final String s) throws JSONException {
+    protected JSONArray getJSONArray(final JSONObject jsonObject, final String s) {
         return JsonUtils.getJSONArray(jsonObject, s);
     }
     
-    protected JSONObject getJSONObject(final JSONObject jsonObject, final String s, final JSONObject jsonObject2) throws JSONException {
+    protected JSONObject getJSONObject(final JSONObject jsonObject, final String s, final JSONObject jsonObject2) {
         return this.getJSONObject(jsonObject, s, jsonObject2);
     }
     
     protected abstract String getLogTag();
     
-    protected String getString(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
+    protected String getString(final JSONObject jsonObject, final String s, final String s2) {
         return JsonUtils.getString(jsonObject, s, s2);
     }
     

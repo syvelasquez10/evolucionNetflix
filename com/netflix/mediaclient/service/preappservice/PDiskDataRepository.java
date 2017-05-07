@@ -4,10 +4,14 @@
 
 package com.netflix.mediaclient.service.preappservice;
 
+import com.netflix.mediaclient.util.data.DataRepository$LoadedCallback;
+import com.netflix.mediaclient.util.data.DataRepository$DataSavedCallback;
+import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
 import android.content.Context;
+import com.netflix.mediaclient.util.data.DataRepository$Entry;
 import com.netflix.mediaclient.util.data.DataRepository;
 
 public final class PDiskDataRepository
@@ -36,10 +40,10 @@ public final class PDiskDataRepository
         return new FileSystemDataRepositoryImpl(file);
     }
     
-    private static void initFromDiskData(final DataRepository dataRepository, final DataRepository.Entry[] array, final LoadCallback loadCallback) {
+    private static void initFromDiskData(final DataRepository dataRepository, final DataRepository$Entry[] array, final PDiskDataRepository$LoadCallback pDiskDataRepository$LoadCallback) {
         if (array == null || array.length < 1) {
             Log.d("nf_preapp_dataRepo", "No saved data found");
-            loadCallback.onDataLoaded(null);
+            pDiskDataRepository$LoadCallback.onDataLoaded(null);
             return;
         }
         if (Log.isLoggable("nf_preapp_dataRepo", 3)) {
@@ -49,39 +53,10 @@ public final class PDiskDataRepository
         if (Log.isLoggable("nf_preapp_dataRepo", 3)) {
             Log.d("nf_preapp_dataRepo", "Load data for " + key);
         }
-        dataRepository.load(key, (DataRepository.DataLoadedCallback)new FileDataLoadedCallback(loadCallback) {
-            @Override
-            public void onDataLoaded(String s, final byte[] array, final long n) {
-                final String s2 = null;
-                final PDiskData pDiskData = null;
-                Object fromJsonString;
-                if (array == null || array.length < 1) {
-                    Log.e("nf_preapp_dataRepo", "We failed to retrieve payload.");
-                    fromJsonString = pDiskData;
-                }
-                else {
-                    s = s2;
-                    try {
-                        final String s3 = s = (String)(fromJsonString = PDiskData.fromJsonString(new String(array, "utf-8")));
-                        if (PDiskDataRepository.ENABLE_VERBOSE_LOGGING) {
-                            s = s3;
-                            Log.d("nf_preapp_dataRepo", String.format("read from file payload: %s", ((PDiskData)s3).toJsonString()));
-                            s = s3;
-                            Log.d("nf_preapp_dataRepo", String.format("urlMap:%s", ((PDiskData)s3).urlMap));
-                            fromJsonString = s3;
-                        }
-                    }
-                    catch (Throwable t) {
-                        Log.e("nf_preapp_dataRepo", "Failed to build object from stored data.", t);
-                        fromJsonString = s;
-                    }
-                }
-                ((FileDataLoadedCallback)this).getCallback().onDataLoaded((PDiskData)fromJsonString);
-            }
-        });
+        dataRepository.load(key, new PDiskDataRepository$2(pDiskDataRepository$LoadCallback));
     }
     
-    public static void saveData(final Context context, final String s, final DataRepository.DataSavedCallback dataSavedCallback) {
+    public static void saveData(final Context context, final String s, final DataRepository$DataSavedCallback dataRepository$DataSavedCallback) {
         final DataRepository dataRepository = getDataRepository(context);
         try {
             Log.d("nf_preapp_dataRepo", "saving payload to file: REPOSITORY_FILE_NAME");
@@ -89,7 +64,7 @@ public final class PDiskDataRepository
                 Log.d("nf_preapp_dataRepo", String.format("payload: %s", s));
             }
             synchronized (PDiskDataRepository.repoLock) {
-                dataRepository.save("preAppDiskDataFile", s.getBytes("utf-8"), dataSavedCallback);
+                dataRepository.save("preAppDiskDataFile", s.getBytes("utf-8"), dataRepository$DataSavedCallback);
             }
         }
         catch (Throwable t) {
@@ -97,63 +72,12 @@ public final class PDiskDataRepository
         }
     }
     
-    public static void startLoadFromDisk(final Context context, final LoadCallback loadCallback) {
+    public static void startLoadFromDisk(final Context context, final PDiskDataRepository$LoadCallback pDiskDataRepository$LoadCallback) {
         Log.d("nf_preapp_dataRepo", "starting load from Disk");
         final DataRepository dataRepository = getDataRepository(context);
-        final FileLoadedCallback fileLoadedCallback = new FileLoadedCallback(dataRepository, loadCallback) {
-            @Override
-            public void onLoaded(final Entry[] array) {
-                if (array != null && array.length > 0) {
-                    initFromDiskData(((FileLoadedCallback)this).getRepository(), array, loadCallback);
-                    return;
-                }
-                Log.d("nf_preapp_dataRepo", "No saved preAppData found.");
-                ((FileLoadedCallback)this).getCallback().onDataLoaded(null);
-            }
-        };
+        final PDiskDataRepository$1 pDiskDataRepository$1 = new PDiskDataRepository$1(dataRepository, pDiskDataRepository$LoadCallback, pDiskDataRepository$LoadCallback);
         synchronized (PDiskDataRepository.repoLock) {
-            dataRepository.loadAll((DataRepository.LoadedCallback)fileLoadedCallback);
-        }
-    }
-    
-    private abstract static class FileDataLoadedCallback implements DataLoadedCallback
-    {
-        private final LoadCallback callback;
-        
-        public FileDataLoadedCallback(final LoadCallback callback) {
-            this.callback = callback;
-        }
-        
-        public LoadCallback getCallback() {
-            return this.callback;
-        }
-    }
-    
-    private abstract static class FileLoadedCallback implements LoadedCallback
-    {
-        private final LoadCallback callback;
-        private final DataRepository repository;
-        
-        public FileLoadedCallback(final DataRepository repository, final LoadCallback callback) {
-            this.callback = callback;
-            this.repository = repository;
-        }
-        
-        public LoadCallback getCallback() {
-            return this.callback;
-        }
-        
-        public DataRepository getRepository() {
-            return this.repository;
-        }
-    }
-    
-    public static class LoadCallback
-    {
-        public void onDataLoaded(final PDiskData pDiskData) {
-            if (PDiskDataRepository.ENABLE_VERBOSE_LOGGING) {
-                Log.d("nf_preapp_dataRepo", String.format("mDiskData: %s", pDiskData.toJsonString()));
-            }
+            dataRepository.loadAll(pDiskDataRepository$1);
         }
     }
 }

@@ -4,15 +4,14 @@
 
 package com.netflix.mediaclient.service.logging.ads;
 
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging$AdverisingATrackingPreference;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.util.PreferenceUtils;
-import com.netflix.mediaclient.service.logging.ads.model.AdvertiserIdRequest;
 import com.netflix.mediaclient.Log;
-import android.content.Intent;
+import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.service.logging.ads.model.AdvertiserIdRequest;
 import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging$EventType;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
@@ -28,43 +27,17 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
     private Context mContext;
     private AdvertiserIdLoggingWebClient mLoggingWebClient;
     private LoggingAgent mOwner;
-    private EventType mPostponedEvent;
+    private AdvertiserIdLogging$EventType mPostponedEvent;
     private final BroadcastReceiver mReceiver;
     
     public AdvertiserIdLoggingManager(final Context mContext, final LoggingAgent mOwner) {
-        this.mReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                if (Log.isLoggable("nf_adv_id", 2)) {
-                    Log.v("nf_adv_id", "Received intent " + intent);
-                }
-                final String action = intent.getAction();
-                if ("com.netflix.mediaclient.intent.action.PUSH_ONLOGIN".equals(action)) {
-                    Log.d("nf_adv_id", "onLogin");
-                    AdvertiserIdLoggingManager.this.onLogin();
-                }
-                else {
-                    if ("com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT".equals(action)) {
-                        Log.d("nf_adv_id", "onLogout");
-                        AdvertiserIdLoggingManager.this.onLogout();
-                        return;
-                    }
-                    if ("com.netflix.mediaclient.intent.action.ONSIGNUP".equals(action)) {
-                        Log.d("nf_adv_id", "onSignUp");
-                        AdvertiserIdLoggingManager.this.sendAdvertiserId(EventType.sign_up);
-                        return;
-                    }
-                    if (Log.isLoggable("nf_adv_id", 3)) {
-                        Log.d("nf_adv_id", "We do not support action " + action);
-                    }
-                }
-            }
-        };
+        this.mReceiver = new AdvertiserIdLoggingManager$3(this);
         this.mContext = mContext;
         this.mOwner = mOwner;
         this.initProvider();
     }
     
-    private void doSendAdvertiserId(final String s, final Boolean b, final EventType eventType) {
+    private void doSendAdvertiserId(final String s, final Boolean b, final AdvertiserIdLogging$EventType advertiserIdLogging$EventType) {
         String deviceModel;
         final String s2 = deviceModel = null;
         if (this.mOwner != null) {
@@ -76,48 +49,11 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
                 }
             }
         }
-        this.mLoggingWebClient.sendLoggingEvent(new AdvertiserIdRequest(s, b, eventType, deviceModel).toJson(), new AdvertiserIdLoggingCallback() {
-            @Override
-            public void onFailure() {
-                Log.d("nf_adv_id", "Advertiser ID failed to be delivered");
-            }
-            
-            @Override
-            public void onSuccess() {
-                Log.d("nf_adv_id", "Advertiser ID delivered");
-                final long currentTimeMillis = System.currentTimeMillis();
-                PreferenceUtils.putStringPref(AdvertiserIdLoggingManager.this.mContext, "advertisement_id", s);
-                PreferenceUtils.putLongPref(AdvertiserIdLoggingManager.this.mContext, "advertisement_id_ts", currentTimeMillis);
-                PreferenceUtils.putBooleanPref(AdvertiserIdLoggingManager.this.mContext, "advertisement_id_opted_in", b);
-                AdvertiserIdLoggingManager.this.mAdIdReported = s;
-                AdvertiserIdLoggingManager.this.mAdIdReportedTimestamp = currentTimeMillis;
-                AdvertiserIdLoggingManager.this.mAdIdReportedOptedIn = b;
-            }
-        });
+        this.mLoggingWebClient.sendLoggingEvent(new AdvertiserIdRequest(s, b, advertiserIdLogging$EventType, deviceModel).toJson(), new AdvertiserIdLoggingManager$2(this, s, b));
     }
     
     private void initProvider() {
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                AdvertiserIdLoggingManager.this.mAdIdReported = PreferenceUtils.getStringPref(AdvertiserIdLoggingManager.this.mContext, "advertisement_id", null);
-                AdvertiserIdLoggingManager.this.mAdIdReportedTimestamp = PreferenceUtils.getLongPref(AdvertiserIdLoggingManager.this.mContext, "advertisement_id_ts", 0L);
-                AdvertiserIdLoggingManager.this.mAdIdReportedOptedIn = PreferenceUtils.getBooleanPref(AdvertiserIdLoggingManager.this.mContext, "advertisement_id_opted_in", false);
-                AdvertiserIdLoggingManager.this.mAdvertisingIdProvider = AdvertisingIdProviderFactory.getInstance(AdvertiserIdLoggingManager.this.mContext);
-                final EventType access$500 = AdvertiserIdLoggingManager.this.mPostponedEvent;
-                AdvertiserIdLoggingManager.this.mPostponedEvent = null;
-                if (!DeviceUtils.isFirstApplicationStartAfterInstallation(AdvertiserIdLoggingManager.this.mContext)) {
-                    Log.d("nf_adv_id", "Not first start after installation");
-                }
-                else {
-                    Log.d("nf_adv_id", "First start after installation");
-                    AdvertiserIdLoggingManager.this.sendAdvertiserId(EventType.install);
-                }
-                if (access$500 != null) {
-                    AdvertiserIdLoggingManager.this.sendAdvertiserId(access$500);
-                }
-            }
-        });
+        new BackgroundTask().execute(new AdvertiserIdLoggingManager$1(this));
     }
     
     private boolean isAlreadySentInLastPeriod() {
@@ -126,7 +62,7 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
     }
     
     private void onLogin() {
-        this.sendAdvertiserId(EventType.sign_in);
+        this.sendAdvertiserId(AdvertiserIdLogging$EventType.sign_in);
     }
     
     private void onLogout() {
@@ -163,14 +99,14 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
     }
     
     @Override
-    public AdverisingATrackingPreference getAdverisingTrackingPreference() {
+    public AdvertiserIdLogging$AdverisingATrackingPreference getAdverisingTrackingPreference() {
         if (!this.isSupported()) {
             return null;
         }
         if (this.mAdvertisingIdProvider.isLimitAdTrackingEnabled()) {
-            return AdverisingATrackingPreference.OPT_OUT;
+            return AdvertiserIdLogging$AdverisingATrackingPreference.OPT_OUT;
         }
-        return AdverisingATrackingPreference.OPT_IN;
+        return AdvertiserIdLogging$AdverisingATrackingPreference.OPT_IN;
     }
     
     @Override
@@ -194,7 +130,7 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
     }
     
     @Override
-    public void sendAdvertiserId(final EventType mPostponedEvent) {
+    public void sendAdvertiserId(final AdvertiserIdLogging$EventType mPostponedEvent) {
         while (true) {
             String id = null;
             boolean b = false;
@@ -228,21 +164,21 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
                 b = false;
                 continue;
             }
-            final EventType eventType;
-            if (eventType != EventType.check_in) {
+            final AdvertiserIdLogging$EventType advertiserIdLogging$EventType;
+            if (advertiserIdLogging$EventType != AdvertiserIdLogging$EventType.check_in) {
                 Log.d("nf_adv_id", "Not check in, execute");
-                this.doSendAdvertiserId(id, b, eventType);
+                this.doSendAdvertiserId(id, b, advertiserIdLogging$EventType);
                 return;
             }
             Log.d("nf_adv_id", "Check in, validate");
             if (this.mAdIdReported == null || !this.mAdIdReported.equals(this.mAdvertisingIdProvider.getId())) {
                 Log.d("nf_adv_id", "Ad ID changed, execute");
-                this.doSendAdvertiserId(id, b, eventType);
+                this.doSendAdvertiserId(id, b, advertiserIdLogging$EventType);
                 return;
             }
             if (this.mAdIdReportedOptedIn == null || b != this.mAdIdReportedOptedIn) {
                 Log.d("nf_adv_id", "opt in status changed, execute");
-                this.doSendAdvertiserId(id, b, eventType);
+                this.doSendAdvertiserId(id, b, advertiserIdLogging$EventType);
                 return;
             }
             Log.d("nf_adv_id", "Adverising ID is not changed, check when it was last time sent.");
@@ -251,7 +187,7 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
                 return;
             }
             Log.d("nf_adv_id", "Ad id and opt in status were NOT sent in last 24 hours, execute");
-            this.doSendAdvertiserId(id, b, eventType);
+            this.doSendAdvertiserId(id, b, advertiserIdLogging$EventType);
         }
     }
 }

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.location;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -48,7 +49,7 @@ public class DetectedActivityCreator implements Parcelable$Creator<DetectedActiv
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new DetectedActivity(g3, g2, g);
     }

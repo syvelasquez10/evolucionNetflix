@@ -7,7 +7,7 @@ package com.google.android.gms.tagmanager;
 import java.util.regex.Matcher;
 import java.util.regex.PatternSyntaxException;
 import java.util.regex.Pattern;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
@@ -33,20 +33,20 @@ class ch extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
-        final d.a a = map.get(ch.aqc);
-        final d.a a2 = map.get(ch.aqd);
-        if (a == null || a == di.pI() || a2 == null || a2 == di.pI()) {
+    public d$a C(final Map<String, d$a> map) {
+        final d$a d$a = map.get(ch.aqc);
+        final d$a d$a2 = map.get(ch.aqd);
+        if (d$a == null || d$a == di.pI() || d$a2 == null || d$a2 == di.pI()) {
             return di.pI();
         }
         int n = 64;
         if (di.n(map.get(ch.aqe))) {
             n = 66;
         }
-        final d.a a3 = map.get(ch.aqf);
+        final d$a d$a3 = map.get(ch.aqf);
         int intValue;
-        if (a3 != null) {
-            final Long l = di.l(a3);
+        if (d$a3 != null) {
+            final Long l = di.l(d$a3);
             if (l == di.pD()) {
                 return di.pI();
             }
@@ -58,8 +58,8 @@ class ch extends aj
             intValue = 1;
         }
         try {
-            final String j = di.j(a);
-            final String i = di.j(a2);
+            final String j = di.j(d$a);
+            final String i = di.j(d$a2);
             final Object o = null;
             final Matcher matcher = Pattern.compile(i, n).matcher(j);
             Object group = o;

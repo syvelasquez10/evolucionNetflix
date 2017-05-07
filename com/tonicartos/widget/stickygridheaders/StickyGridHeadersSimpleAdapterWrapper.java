@@ -14,27 +14,27 @@ import android.widget.BaseAdapter;
 public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implements StickyGridHeadersBaseAdapter
 {
     private StickyGridHeadersSimpleAdapter mDelegate;
-    private HeaderData[] mHeaders;
+    private StickyGridHeadersSimpleAdapterWrapper$HeaderData[] mHeaders;
     
     public StickyGridHeadersSimpleAdapterWrapper(final StickyGridHeadersSimpleAdapter mDelegate) {
-        (this.mDelegate = mDelegate).registerDataSetObserver((DataSetObserver)new DataSetObserverExtension());
+        (this.mDelegate = mDelegate).registerDataSetObserver((DataSetObserver)new StickyGridHeadersSimpleAdapterWrapper$DataSetObserverExtension(this, null));
         this.mHeaders = this.generateHeaderList(mDelegate);
     }
     
-    protected HeaderData[] generateHeaderList(final StickyGridHeadersSimpleAdapter stickyGridHeadersSimpleAdapter) {
-        final HashMap<Long, HeaderData> hashMap = (HashMap<Long, HeaderData>)new HashMap<Object, HeaderData>();
-        final ArrayList<HeaderData> list = new ArrayList<HeaderData>();
+    protected StickyGridHeadersSimpleAdapterWrapper$HeaderData[] generateHeaderList(final StickyGridHeadersSimpleAdapter stickyGridHeadersSimpleAdapter) {
+        final HashMap<Long, StickyGridHeadersSimpleAdapterWrapper$HeaderData> hashMap = (HashMap<Long, StickyGridHeadersSimpleAdapterWrapper$HeaderData>)new HashMap<Object, StickyGridHeadersSimpleAdapterWrapper$HeaderData>();
+        final ArrayList<StickyGridHeadersSimpleAdapterWrapper$HeaderData> list = new ArrayList<StickyGridHeadersSimpleAdapterWrapper$HeaderData>();
         for (int i = 0; i < stickyGridHeadersSimpleAdapter.getCount(); ++i) {
             final long headerId = stickyGridHeadersSimpleAdapter.getHeaderId(i);
-            HeaderData headerData;
-            if ((headerData = hashMap.get(headerId)) == null) {
-                headerData = new HeaderData(i);
-                list.add(headerData);
+            StickyGridHeadersSimpleAdapterWrapper$HeaderData stickyGridHeadersSimpleAdapterWrapper$HeaderData;
+            if ((stickyGridHeadersSimpleAdapterWrapper$HeaderData = hashMap.get(headerId)) == null) {
+                stickyGridHeadersSimpleAdapterWrapper$HeaderData = new StickyGridHeadersSimpleAdapterWrapper$HeaderData(this, i);
+                list.add(stickyGridHeadersSimpleAdapterWrapper$HeaderData);
             }
-            headerData.incrementCount();
-            hashMap.put(headerId, headerData);
+            stickyGridHeadersSimpleAdapterWrapper$HeaderData.incrementCount();
+            hashMap.put(headerId, stickyGridHeadersSimpleAdapterWrapper$HeaderData);
         }
-        return list.toArray(new HeaderData[list.size()]);
+        return list.toArray(new StickyGridHeadersSimpleAdapterWrapper$HeaderData[list.size()]);
     }
     
     public int getCount() {
@@ -75,41 +75,5 @@ public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implement
     
     public boolean hasStableIds() {
         return this.mDelegate.hasStableIds();
-    }
-    
-    private final class DataSetObserverExtension extends DataSetObserver
-    {
-        public void onChanged() {
-            StickyGridHeadersSimpleAdapterWrapper.this.mHeaders = StickyGridHeadersSimpleAdapterWrapper.this.generateHeaderList(StickyGridHeadersSimpleAdapterWrapper.this.mDelegate);
-            StickyGridHeadersSimpleAdapterWrapper.this.notifyDataSetChanged();
-        }
-        
-        public void onInvalidated() {
-            StickyGridHeadersSimpleAdapterWrapper.this.mHeaders = StickyGridHeadersSimpleAdapterWrapper.this.generateHeaderList(StickyGridHeadersSimpleAdapterWrapper.this.mDelegate);
-            StickyGridHeadersSimpleAdapterWrapper.this.notifyDataSetInvalidated();
-        }
-    }
-    
-    private class HeaderData
-    {
-        private int mCount;
-        private int mRefPosition;
-        
-        public HeaderData(final int mRefPosition) {
-            this.mRefPosition = mRefPosition;
-            this.mCount = 0;
-        }
-        
-        public int getCount() {
-            return this.mCount;
-        }
-        
-        public int getRefPosition() {
-            return this.mRefPosition;
-        }
-        
-        public void incrementCount() {
-            ++this.mCount;
-        }
     }
 }

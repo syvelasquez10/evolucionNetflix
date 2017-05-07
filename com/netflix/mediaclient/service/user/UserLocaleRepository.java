@@ -67,6 +67,7 @@ public final class UserLocaleRepository
     }
     
     private void initSupportedLocales() {
+        int i = 0;
         this.supportedLocales = new UserLocale[12];
         this.defaultAppLocale = new UserLocale(Locale.ENGLISH.getLanguage(), null, "English");
         this.supportedLocales[0] = this.defaultAppLocale;
@@ -81,19 +82,18 @@ public final class UserLocaleRepository
         this.supportedLocales[9] = new UserLocale("nl", null, "Nederlands");
         this.supportedLocales[10] = new UserLocale(Locale.FRENCH.getLanguage(), Locale.CANADA.getCountry(), "Fran\u00e7ais-CA");
         this.supportedLocales[11] = new UserLocale(Locale.GERMAN.getLanguage(), null, "Deutsch");
-        final UserLocale[] supportedLocales = this.supportedLocales;
-        for (int length = supportedLocales.length, i = 0; i < length; ++i) {
+        for (UserLocale[] supportedLocales = this.supportedLocales; i < supportedLocales.length; ++i) {
             Log.d("nf_loc", "" + supportedLocales[i]);
         }
     }
     
     private String[] toArray(final String s) {
+        int n = 0;
         final StringTokenizer stringTokenizer = new StringTokenizer(s, ",");
         if (stringTokenizer.countTokens() < 1) {
             return new String[0];
         }
         final String[] array = new String[stringTokenizer.countTokens()];
-        int n = 0;
         while (stringTokenizer.hasMoreTokens()) {
             array[n] = stringTokenizer.nextToken();
             ++n;
@@ -102,12 +102,12 @@ public final class UserLocaleRepository
     }
     
     private UserLocale[] toUserLocales(final String s) {
+        int n = 0;
         final StringTokenizer stringTokenizer = new StringTokenizer(s, ",");
         if (stringTokenizer.countTokens() < 1) {
             return new UserLocale[0];
         }
         final UserLocale[] array = new UserLocale[stringTokenizer.countTokens()];
-        int n = 0;
         while (stringTokenizer.hasMoreTokens()) {
             final UserLocale userLocale = new UserLocale(stringTokenizer.nextToken());
             final int n2 = n + 1;

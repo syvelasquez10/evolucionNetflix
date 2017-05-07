@@ -4,10 +4,8 @@
 
 package com.netflix.mediaclient.service.logging.ads.volley;
 
-import com.android.volley.VolleyError;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.android.volley.AuthFailureError;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingCallback;
 import com.netflix.mediaclient.service.logging.client.volley.ClientLoggingVolleyWebClientRequest;
@@ -24,7 +22,7 @@ public final class AdvertiserIdLoggingVolleyWebClientRequest extends ClientLoggi
     }
     
     @Override
-    public Map<String, String> getHeaders() throws AuthFailureError {
+    public Map<String, String> getHeaders() {
         final Map<String, String> headers = super.getHeaders();
         headers.put("X-Netflix.ichnaea.request.type", "IchnaeaRequest");
         return headers;
@@ -56,7 +54,7 @@ public final class AdvertiserIdLoggingVolleyWebClientRequest extends ClientLoggi
     }
     
     @Override
-    protected String parseResponse(final String s) throws VolleyError {
+    protected String parseResponse(final String s) {
         if (Log.isLoggable("nf_volleyrequest", 2)) {
             Log.v("nf_volleyrequest", "String response to parse = " + s);
         }

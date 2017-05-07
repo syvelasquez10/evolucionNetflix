@@ -9,8 +9,8 @@ public class PlayScreenKindleFire extends PlayScreen
     public static final int AMAZON_FLAG_NOSOFTKEYS = Integer.MIN_VALUE;
     private static final int FLAG_SUPER_FULLSCREEN = -2147482624;
     
-    PlayScreenKindleFire(final PlayerActivity playerActivity, final Listeners listeners, final PostPlayFactory.PostPlayType postPlayType) {
-        super(playerActivity, listeners, postPlayType);
+    PlayScreenKindleFire(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
+        super(playerActivity, playScreen$Listeners, postPlayFactory$PostPlayType);
     }
     
     @Override

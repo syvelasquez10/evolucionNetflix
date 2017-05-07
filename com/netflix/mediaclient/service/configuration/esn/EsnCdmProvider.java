@@ -35,12 +35,15 @@ public class EsnCdmProvider extends BaseEsnProvider
     }
     
     private String findCdmModelId(final DeviceCategory deviceCategory) {
-        boolean b = false;
+        int n;
         if (deviceCategory == DeviceCategory.PHONE) {
-            b = true;
+            n = 1;
+        }
+        else {
+            n = 0;
         }
         final StringBuilder sb = new StringBuilder("PRV-");
-        if (b) {
+        if (n != 0) {
             sb.append("P-");
         }
         else {

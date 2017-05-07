@@ -15,7 +15,7 @@ import com.google.android.gms.plus.model.moments.Moment;
 public final class nv extends jj implements Moment
 {
     public static final nw CREATOR;
-    private static final HashMap<String, a<?, ?>> alQ;
+    private static final HashMap<String, ji$a<?, ?>> alQ;
     String BL;
     final int BR;
     final Set<Integer> alR;
@@ -26,11 +26,11 @@ public final class nv extends jj implements Moment
     
     static {
         CREATOR = new nw();
-        (alQ = new HashMap<String, a<?, ?>>()).put("id", a.l("id", 2));
-        nv.alQ.put("result", a.a("result", 4, (Class<?>)nt.class));
-        nv.alQ.put("startDate", (a<?, ?>)a.l("startDate", 5));
-        nv.alQ.put("target", a.a("target", 6, (Class<?>)nt.class));
-        nv.alQ.put("type", (a<?, ?>)a.l("type", 7));
+        (alQ = new HashMap<String, ji$a<?, ?>>()).put("id", ji$a.l("id", 2));
+        nv.alQ.put("result", ji$a.a("result", 4, (Class<?>)nt.class));
+        nv.alQ.put("startDate", ji$a.l("startDate", 5));
+        nv.alQ.put("target", ji$a.a("target", 6, (Class<?>)nt.class));
+        nv.alQ.put("type", ji$a.l("type", 7));
     }
     
     public nv() {
@@ -59,15 +59,15 @@ public final class nv extends jj implements Moment
     }
     
     @Override
-    protected boolean a(final a a) {
-        return this.alR.contains(a.hm());
+    protected boolean a(final ji$a ji$a) {
+        return this.alR.contains(ji$a.hm());
     }
     
     @Override
-    protected Object b(final a a) {
-        switch (a.hm()) {
+    protected Object b(final ji$a ji$a) {
+        switch (ji$a.hm()) {
             default: {
-                throw new IllegalStateException("Unknown safe parcelable id=" + a.hm());
+                throw new IllegalStateException("Unknown safe parcelable id=" + ji$a.hm());
             }
             case 2: {
                 return this.BL;
@@ -101,18 +101,18 @@ public final class nv extends jj implements Moment
             return true;
         }
         final nv nv = (nv)o;
-        for (final a a : com.google.android.gms.internal.nv.alQ.values()) {
-            if (this.a((a)a)) {
-                if (!nv.a((a)a)) {
+        for (final ji$a<?, ?> ji$a : com.google.android.gms.internal.nv.alQ.values()) {
+            if (this.a(ji$a)) {
+                if (!nv.a(ji$a)) {
                     return false;
                 }
-                if (!this.b((a)a).equals(nv.b((a)a))) {
+                if (!this.b(ji$a).equals(nv.b(ji$a))) {
                     return false;
                 }
                 continue;
             }
             else {
-                if (nv.a((a)a)) {
+                if (nv.a(ji$a)) {
                     return false;
                 }
                 continue;
@@ -173,19 +173,19 @@ public final class nv extends jj implements Moment
     
     @Override
     public int hashCode() {
-        final Iterator<a<?, ?>> iterator = nv.alQ.values().iterator();
+        final Iterator<ji$a<?, ?>> iterator = nv.alQ.values().iterator();
         int n = 0;
         while (iterator.hasNext()) {
-            final a a = (a)iterator.next();
-            if (this.a((a)a)) {
-                n = this.b((a)a).hashCode() + (n + a.hm());
+            final ji$a<?, ?> ji$a = iterator.next();
+            if (this.a(ji$a)) {
+                n = this.b(ji$a).hashCode() + (n + ji$a.hm());
             }
         }
         return n;
     }
     
     @Override
-    public HashMap<String, a<?, ?>> hf() {
+    public HashMap<String, ji$a<?, ?>> hf() {
         return nv.alQ;
     }
     

@@ -5,12 +5,14 @@
 package com.netflix.mediaclient.service.resfetcher.volley;
 
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
+import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.android.volley.RetryPolicy;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Response;
+import com.android.volley.Response$ErrorListener;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.android.volley.Request;
 
@@ -20,8 +22,8 @@ public class PrefetchResourceRequest extends Request<Integer>
     private static final int IMAGE_MAX_RETRIES = 2;
     private final ResourceFetcherCallback mCallback;
     
-    public PrefetchResourceRequest(final String s, final ResourceFetcherCallback mCallback, final Response.ErrorListener errorListener, final int n) {
-        super(0, s, errorListener);
+    public PrefetchResourceRequest(final String s, final ResourceFetcherCallback mCallback, final Response$ErrorListener response$ErrorListener, final int n) {
+        super(0, s, response$ErrorListener);
         this.mCallback = mCallback;
         this.setShouldCache(true);
         this.setRetryPolicy(new DefaultRetryPolicy(n, 2, 2.0f));
@@ -40,8 +42,8 @@ public class PrefetchResourceRequest extends Request<Integer>
     }
     
     @Override
-    public Priority getPriority() {
-        return Priority.LOW;
+    public Request$Priority getPriority() {
+        return Request$Priority.LOW;
     }
     
     @Override

@@ -59,12 +59,11 @@ public enum ColorMapping
         if (!StringUtils.isEmpty(s)) {
             final ColorMapping[] values = values();
             for (int length = values.length, i = 0; i < length; ++i) {
-                final ColorMapping colorMapping;
-                if ((colorMapping = values[i]).mLookupValue.equalsIgnoreCase(s)) {
+                final ColorMapping colorMapping = values[i];
+                if (colorMapping.mLookupValue.equalsIgnoreCase(s)) {
                     return colorMapping;
                 }
             }
-            return null;
         }
         return null;
     }

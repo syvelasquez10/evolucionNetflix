@@ -10,53 +10,41 @@ import java.util.Set;
 
 public class AddToListData
 {
-    private final Set<StateListener> listeners;
-    private AddToListState previousState;
-    private AddToListState state;
+    private final Set<AddToListData$StateListener> listeners;
+    private AddToListData$AddToListState previousState;
+    private AddToListData$AddToListState state;
     
-    public AddToListData(final StateListener stateListener) {
-        this.listeners = new HashSet<StateListener>(2);
-        this.state = AddToListState.NOT_IN_LIST;
-        this.previousState = AddToListState.NOT_IN_LIST;
-        this.listeners.add(stateListener);
+    public AddToListData(final AddToListData$StateListener addToListData$StateListener) {
+        this.listeners = new HashSet<AddToListData$StateListener>(2);
+        this.state = AddToListData$AddToListState.NOT_IN_LIST;
+        this.previousState = AddToListData$AddToListState.NOT_IN_LIST;
+        this.listeners.add(addToListData$StateListener);
     }
     
-    public void addListener(final StateListener stateListener) {
-        this.listeners.add(stateListener);
+    public void addListener(final AddToListData$StateListener addToListData$StateListener) {
+        this.listeners.add(addToListData$StateListener);
     }
     
-    public AddToListState getState() {
+    public AddToListData$AddToListState getState() {
         return this.state;
     }
     
-    public void removeListener(final StateListener stateListener) {
-        this.listeners.remove(stateListener);
+    public void removeListener(final AddToListData$StateListener addToListData$StateListener) {
+        this.listeners.remove(addToListData$StateListener);
     }
     
     public void revertState() {
         this.setStateAndNotify(this.previousState);
     }
     
-    public void setStateAndNotify(final AddToListState state) {
-        if (this.state != AddToListState.LOADING) {
+    public void setStateAndNotify(final AddToListData$AddToListState state) {
+        if (this.state != AddToListData$AddToListState.LOADING) {
             this.previousState = this.state;
         }
         this.state = state;
-        final Iterator<StateListener> iterator = this.listeners.iterator();
+        final Iterator<AddToListData$StateListener> iterator = this.listeners.iterator();
         while (iterator.hasNext()) {
             iterator.next().update(state);
         }
-    }
-    
-    public enum AddToListState
-    {
-        IN_LIST, 
-        LOADING, 
-        NOT_IN_LIST;
-    }
-    
-    public interface StateListener
-    {
-        void update(final AddToListState p0);
     }
 }

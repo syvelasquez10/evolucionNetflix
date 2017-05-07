@@ -276,7 +276,7 @@ public final class TextTrackStyle
         }
     }
     
-    public void c(final JSONObject jsonObject) throws JSONException {
+    public void c(final JSONObject jsonObject) {
         this.clear();
         this.Gd = (float)jsonObject.optDouble("fontScale", 1.0);
         this.Ge = this.aC(jsonObject.optString("foregroundColor"));

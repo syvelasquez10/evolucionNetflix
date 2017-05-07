@@ -7,7 +7,7 @@ package com.google.android.gms.tagmanager;
 import android.net.NetworkInfo;
 import android.net.ConnectivityManager;
 import android.content.Context;
-import com.google.android.gms.internal.c;
+import com.google.android.gms.internal.c$j;
 
 class co implements Runnable
 {
@@ -15,7 +15,7 @@ class co implements Runnable
     private volatile String aon;
     private final bn aqg;
     private final String aqh;
-    private bg<c.j> aqi;
+    private bg<c$j> aqi;
     private volatile r aqj;
     private volatile String aqk;
     private final Context mContext;
@@ -231,7 +231,7 @@ class co implements Runnable
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    void a(final bg<c.j> aqi) {
+    void a(final bg<c$j> aqi) {
         this.aqi = aqi;
     }
     
@@ -259,7 +259,7 @@ class co implements Runnable
             }
         }
         String string = s2;
-        if (ce.oH().oI().equals(ce.a.apY)) {
+        if (ce.oH().oI().equals(ce$a.apY)) {
             string = s2 + "&gtm_debug=x";
         }
         return string;

@@ -6,6 +6,7 @@ package com.google.android.gms.drive.events;
 
 import java.util.ArrayList;
 import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import android.os.ParcelFileDescriptor;
 import com.google.android.gms.drive.DriveId;
@@ -88,7 +89,7 @@ public class b implements Parcelable$Creator<CompletionEvent>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new CompletionEvent(g2, driveId, o, parcelFileDescriptor2, parcelFileDescriptor, metadataBundle, c2, g, p);
     }

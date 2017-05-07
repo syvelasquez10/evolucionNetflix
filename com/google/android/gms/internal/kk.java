@@ -6,15 +6,15 @@ package com.google.android.gms.internal;
 
 import android.os.IInterface;
 import android.os.IBinder;
-import android.os.RemoteException;
 import com.google.android.gms.common.internal.j;
 import android.os.Bundle;
+import com.google.android.gms.common.internal.d$e;
 import com.google.android.gms.common.internal.k;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import android.os.Looper;
 import android.content.Context;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import com.google.android.gms.common.internal.d;
 
@@ -24,30 +24,21 @@ public class kk extends d<ko> implements kj
     private final String Dd;
     
     static {
-        Tm = Collections.unmodifiableSet((Set<? extends String>)new HashSet<String>() {
-            {
-                this.add("https://www.googleapis.com/auth/fitness.activity.read");
-                this.add("https://www.googleapis.com/auth/fitness.activity.write");
-                this.add("https://www.googleapis.com/auth/fitness.body.read");
-                this.add("https://www.googleapis.com/auth/fitness.body.write");
-                this.add("https://www.googleapis.com/auth/fitness.location.read");
-                this.add("https://www.googleapis.com/auth/fitness.location.write");
-            }
-        });
+        Tm = Collections.unmodifiableSet((Set<? extends String>)new kk$1());
     }
     
-    public kk(final Context context, final Looper looper, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String dd, final String[] array) {
-        super(context, looper, connectionCallbacks, onConnectionFailedListener, array);
+    public kk(final Context context, final Looper looper, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final String dd, final String[] array) {
+        super(context, looper, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, array);
         this.Dd = dd;
     }
     
     @Override
-    protected void a(final k k, final e e) throws RemoteException {
-        k.a(e, 6111000, this.getContext().getPackageName(), this.Dd, this.gR(), new Bundle());
+    protected void a(final k k, final d$e d$e) {
+        k.a(d$e, 6111000, this.getContext().getPackageName(), this.Dd, this.gR(), new Bundle());
     }
     
     protected ko ao(final IBinder binder) {
-        return ko.a.as(binder);
+        return ko$a.as(binder);
     }
     
     @Override

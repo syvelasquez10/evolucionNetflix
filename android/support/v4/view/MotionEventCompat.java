@@ -18,14 +18,14 @@ public class MotionEventCompat
     public static final int ACTION_POINTER_INDEX_SHIFT = 8;
     public static final int ACTION_POINTER_UP = 6;
     public static final int ACTION_SCROLL = 8;
-    static final MotionEventVersionImpl IMPL;
+    static final MotionEventCompat$MotionEventVersionImpl IMPL;
     
     static {
         if (Build$VERSION.SDK_INT >= 5) {
-            IMPL = (MotionEventVersionImpl)new EclairMotionEventVersionImpl();
+            IMPL = new MotionEventCompat$EclairMotionEventVersionImpl();
             return;
         }
-        IMPL = (MotionEventVersionImpl)new BaseMotionEventVersionImpl();
+        IMPL = new MotionEventCompat$BaseMotionEventVersionImpl();
     }
     
     public static int findPointerIndex(final MotionEvent motionEvent, final int n) {
@@ -54,86 +54,5 @@ public class MotionEventCompat
     
     public static float getY(final MotionEvent motionEvent, final int n) {
         return MotionEventCompat.IMPL.getY(motionEvent, n);
-    }
-    
-    static class BaseMotionEventVersionImpl implements MotionEventVersionImpl
-    {
-        @Override
-        public int findPointerIndex(final MotionEvent motionEvent, final int n) {
-            if (n == 0) {
-                return 0;
-            }
-            return -1;
-        }
-        
-        @Override
-        public int getPointerCount(final MotionEvent motionEvent) {
-            return 1;
-        }
-        
-        @Override
-        public int getPointerId(final MotionEvent motionEvent, final int n) {
-            if (n == 0) {
-                return 0;
-            }
-            throw new IndexOutOfBoundsException("Pre-Eclair does not support multiple pointers");
-        }
-        
-        @Override
-        public float getX(final MotionEvent motionEvent, final int n) {
-            if (n == 0) {
-                return motionEvent.getX();
-            }
-            throw new IndexOutOfBoundsException("Pre-Eclair does not support multiple pointers");
-        }
-        
-        @Override
-        public float getY(final MotionEvent motionEvent, final int n) {
-            if (n == 0) {
-                return motionEvent.getY();
-            }
-            throw new IndexOutOfBoundsException("Pre-Eclair does not support multiple pointers");
-        }
-    }
-    
-    static class EclairMotionEventVersionImpl implements MotionEventVersionImpl
-    {
-        @Override
-        public int findPointerIndex(final MotionEvent motionEvent, final int n) {
-            return MotionEventCompatEclair.findPointerIndex(motionEvent, n);
-        }
-        
-        @Override
-        public int getPointerCount(final MotionEvent motionEvent) {
-            return MotionEventCompatEclair.getPointerCount(motionEvent);
-        }
-        
-        @Override
-        public int getPointerId(final MotionEvent motionEvent, final int n) {
-            return MotionEventCompatEclair.getPointerId(motionEvent, n);
-        }
-        
-        @Override
-        public float getX(final MotionEvent motionEvent, final int n) {
-            return MotionEventCompatEclair.getX(motionEvent, n);
-        }
-        
-        @Override
-        public float getY(final MotionEvent motionEvent, final int n) {
-            return MotionEventCompatEclair.getY(motionEvent, n);
-        }
-    }
-    
-    interface MotionEventVersionImpl
-    {
-        int findPointerIndex(final MotionEvent p0, final int p1);
-        
-        int getPointerCount(final MotionEvent p0);
-        
-        int getPointerId(final MotionEvent p0, final int p1);
-        
-        float getX(final MotionEvent p0, final int p1);
-        
-        float getY(final MotionEvent p0, final int p1);
     }
 }

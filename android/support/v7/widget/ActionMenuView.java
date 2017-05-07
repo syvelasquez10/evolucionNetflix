@@ -4,13 +4,13 @@
 
 package android.support.v7.widget;
 
-import android.view.ViewDebug$ExportedProperty;
 import android.view.ContextThemeWrapper;
 import android.support.v7.internal.widget.ViewUtils;
 import android.os.Build$VERSION;
 import android.content.res.Configuration;
 import android.view.MenuItem;
-import android.support.v7.internal.view.menu.MenuItemImpl;
+import android.support.v7.internal.view.menu.m;
+import android.support.v7.internal.view.menu.y;
 import android.view.Menu;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.ViewGroup$LayoutParams;
@@ -18,25 +18,27 @@ import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.view.View$MeasureSpec;
 import android.view.View;
 import android.util.AttributeSet;
+import android.support.v7.internal.view.menu.j;
+import android.support.v7.internal.view.menu.i;
 import android.content.Context;
-import android.support.v7.internal.view.menu.MenuPresenter;
-import android.support.v7.internal.view.menu.MenuView;
-import android.support.v7.internal.view.menu.MenuBuilder;
+import android.support.v7.internal.view.menu.z;
+import android.support.v7.internal.view.menu.k;
+import android.support.v7.internal.view.menu.aa;
 
-public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, MenuView
+public class ActionMenuView extends LinearLayoutCompat implements aa, k
 {
     static final int GENERATED_ITEM_PADDING = 4;
     static final int MIN_CELL_SIZE = 56;
     private static final String TAG = "ActionMenuView";
-    private MenuPresenter.Callback mActionMenuPresenterCallback;
+    private z mActionMenuPresenterCallback;
     private Context mContext;
     private boolean mFormatItems;
     private int mFormatItemsWidth;
     private int mGeneratedItemPadding;
-    private MenuBuilder mMenu;
-    private Callback mMenuBuilderCallback;
+    private i mMenu;
+    private j mMenuBuilderCallback;
     private int mMinCellSize;
-    private OnMenuItemClickListener mOnMenuItemClickListener;
+    private ActionMenuView$OnMenuItemClickListener mOnMenuItemClickListener;
     private Context mPopupContext;
     private int mPopupTheme;
     private ActionMenuPresenter mPresenter;
@@ -52,13 +54,14 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
         this.setBaselineAligned(false);
         final float density = context.getResources().getDisplayMetrics().density;
         this.mMinCellSize = (int)(56.0f * density);
-        this.mGeneratedItemPadding = (int)(4.0f * density);
+        this.mGeneratedItemPadding = (int)(density * 4.0f);
         this.mPopupContext = context;
         this.mPopupTheme = 0;
     }
     
     static int measureChildForCells(final View view, final int n, int n2, int cellsUsed, int n3) {
-        final LayoutParams layoutParams = (LayoutParams)view.getLayoutParams();
+        final boolean b = false;
+        final ActionMenuView$LayoutParams actionMenuView$LayoutParams = (ActionMenuView$LayoutParams)view.getLayoutParams();
         final int measureSpec = View$MeasureSpec.makeMeasureSpec(View$MeasureSpec.getSize(cellsUsed) - n3, View$MeasureSpec.getMode(cellsUsed));
         ActionMenuItemView actionMenuItemView;
         if (view instanceof ActionMenuItemView) {
@@ -67,291 +70,294 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
         else {
             actionMenuItemView = null;
         }
-        if (actionMenuItemView != null && actionMenuItemView.hasText()) {
+        if (actionMenuItemView != null && actionMenuItemView.c()) {
             n3 = 1;
         }
         else {
             n3 = 0;
         }
-        final int n4 = cellsUsed = 0;
-        Label_0131: {
-            if (n2 > 0) {
-                if (n3 != 0) {
-                    cellsUsed = n4;
-                    if (n2 < 2) {
-                        break Label_0131;
-                    }
-                }
-                view.measure(View$MeasureSpec.makeMeasureSpec(n * n2, Integer.MIN_VALUE), measureSpec);
-                final int measuredWidth = view.getMeasuredWidth();
-                cellsUsed = (n2 = measuredWidth / n);
-                if (measuredWidth % n != 0) {
-                    n2 = cellsUsed + 1;
-                }
-                cellsUsed = n2;
-                if (n3 != 0 && (cellsUsed = n2) < 2) {
-                    cellsUsed = 2;
-                }
+        if (n2 > 0 && (n3 == 0 || n2 >= 2)) {
+            view.measure(View$MeasureSpec.makeMeasureSpec(n * n2, Integer.MIN_VALUE), measureSpec);
+            final int measuredWidth = view.getMeasuredWidth();
+            cellsUsed = (n2 = measuredWidth / n);
+            if (measuredWidth % n != 0) {
+                n2 = cellsUsed + 1;
+            }
+            cellsUsed = n2;
+            if (n3 != 0 && (cellsUsed = n2) < 2) {
+                cellsUsed = 2;
             }
         }
-        layoutParams.expandable = (!layoutParams.isOverflowButton && n3 != 0);
-        layoutParams.cellsUsed = cellsUsed;
+        else {
+            cellsUsed = 0;
+        }
+        boolean expandable = b;
+        if (!actionMenuView$LayoutParams.isOverflowButton) {
+            expandable = b;
+            if (n3 != 0) {
+                expandable = true;
+            }
+        }
+        actionMenuView$LayoutParams.expandable = expandable;
+        actionMenuView$LayoutParams.cellsUsed = cellsUsed;
         view.measure(View$MeasureSpec.makeMeasureSpec(cellsUsed * n, 1073741824), measureSpec);
         return cellsUsed;
     }
     
-    private void onMeasureExactFormat(int i, int mMinCellSize) {
-        final int mode = View$MeasureSpec.getMode(mMinCellSize);
+    private void onMeasureExactFormat(int i, int n) {
+        final int mode = View$MeasureSpec.getMode(n);
         i = View$MeasureSpec.getSize(i);
-        final int size = View$MeasureSpec.getSize(mMinCellSize);
+        final int size = View$MeasureSpec.getSize(n);
         final int paddingLeft = this.getPaddingLeft();
         final int paddingRight = this.getPaddingRight();
-        final int n = this.getPaddingTop() + this.getPaddingBottom();
-        final int childMeasureSpec = getChildMeasureSpec(mMinCellSize, n, -2);
-        final int n2 = i - (paddingLeft + paddingRight);
-        i = n2 / this.mMinCellSize;
-        mMinCellSize = this.mMinCellSize;
+        final int n2 = this.getPaddingTop() + this.getPaddingBottom();
+        final int childMeasureSpec = getChildMeasureSpec(n, n2, -2);
+        final int n3 = i - (paddingLeft + paddingRight);
+        i = n3 / this.mMinCellSize;
+        n = this.mMinCellSize;
         if (i == 0) {
-            this.setMeasuredDimension(n2, 0);
+            this.setMeasuredDimension(n3, 0);
             return;
         }
-        final int n3 = this.mMinCellSize + n2 % mMinCellSize / i;
-        int n4 = 0;
+        final int n4 = this.mMinCellSize + n3 % n / i;
+        int max = 0;
         int n5 = 0;
         int n6 = 0;
         int n7 = 0;
         int n8 = 0;
         long n9 = 0L;
         final int childCount = this.getChildCount();
-        long n10;
-        int n11;
-        for (int j = 0; j < childCount; ++j, n8 = n11, n9 = n10) {
+        int n10;
+        for (int j = 0; j < childCount; ++j, n7 = i, i = n10, n5 = n) {
             final View child = this.getChildAt(j);
             if (child.getVisibility() == 8) {
-                n10 = n9;
-                n11 = n8;
+                n = n5;
+                n10 = i;
+                i = n7;
             }
             else {
                 final boolean b = child instanceof ActionMenuItemView;
-                final int n12 = n7 + 1;
+                final int n11 = n7 + 1;
                 if (b) {
                     child.setPadding(this.mGeneratedItemPadding, 0, this.mGeneratedItemPadding, 0);
                 }
-                final LayoutParams layoutParams = (LayoutParams)child.getLayoutParams();
-                layoutParams.expanded = false;
-                layoutParams.extraPixels = 0;
-                layoutParams.cellsUsed = 0;
-                layoutParams.expandable = false;
-                layoutParams.leftMargin = 0;
-                layoutParams.rightMargin = 0;
-                layoutParams.preventEdgeOffset = (b && ((ActionMenuItemView)child).hasText());
-                if (layoutParams.isOverflowButton) {
-                    mMinCellSize = 1;
+                final ActionMenuView$LayoutParams actionMenuView$LayoutParams = (ActionMenuView$LayoutParams)child.getLayoutParams();
+                actionMenuView$LayoutParams.expanded = false;
+                actionMenuView$LayoutParams.extraPixels = 0;
+                actionMenuView$LayoutParams.cellsUsed = 0;
+                actionMenuView$LayoutParams.expandable = false;
+                actionMenuView$LayoutParams.leftMargin = 0;
+                actionMenuView$LayoutParams.rightMargin = 0;
+                actionMenuView$LayoutParams.preventEdgeOffset = (b && ((ActionMenuItemView)child).c());
+                if (actionMenuView$LayoutParams.isOverflowButton) {
+                    n = 1;
                 }
                 else {
-                    mMinCellSize = i;
+                    n = i;
                 }
-                final int measureChildForCells = measureChildForCells(child, n3, mMinCellSize, childMeasureSpec, n);
-                final int max = Math.max(n5, measureChildForCells);
-                mMinCellSize = n6;
-                if (layoutParams.expandable) {
-                    mMinCellSize = n6 + 1;
+                final int measureChildForCells = measureChildForCells(child, n4, n, childMeasureSpec, n2);
+                final int max2 = Math.max(n5, measureChildForCells);
+                if (actionMenuView$LayoutParams.expandable) {
+                    n = n6 + 1;
                 }
-                if (layoutParams.isOverflowButton) {
-                    n8 = 1;
+                else {
+                    n = n6;
+                }
+                int n12;
+                if (actionMenuView$LayoutParams.isOverflowButton) {
+                    n12 = 1;
+                }
+                else {
+                    n12 = n8;
                 }
                 final int n13 = i - measureChildForCells;
-                final int max2 = Math.max(n4, child.getMeasuredHeight());
-                i = n13;
-                n6 = mMinCellSize;
-                n11 = n8;
-                n5 = max;
-                n4 = max2;
-                n10 = n9;
-                n7 = n12;
+                max = Math.max(max, child.getMeasuredHeight());
                 if (measureChildForCells == 1) {
-                    n10 = (n9 | 1 << j);
-                    i = n13;
-                    n6 = mMinCellSize;
-                    n11 = n8;
-                    n5 = max;
-                    n4 = max2;
-                    n7 = n12;
+                    final long n14 = 1 << j;
+                    n6 = n;
+                    n9 |= n14;
+                    n = max2;
+                    i = n11;
+                    n8 = n12;
+                    n10 = n13;
+                }
+                else {
+                    i = n11;
+                    final int n15 = max2;
+                    final int n16 = n13;
+                    n6 = n;
+                    n = n15;
+                    n8 = n12;
+                    n10 = n16;
                 }
             }
         }
         final boolean b2 = n8 != 0 && n7 == 2;
-        mMinCellSize = 0;
-        int n14 = i;
-        long n15;
+        int n17 = 0;
         while (true) {
-            n15 = n9;
-            if (n6 <= 0) {
-                break;
-            }
-            n15 = n9;
-            if (n14 <= 0) {
-                break;
-            }
-            int n16 = Integer.MAX_VALUE;
-            long n17 = 0L;
-            int n18 = 0;
-            long n19;
-            int cellsUsed;
-            for (int k = 0; k < childCount; ++k, n16 = cellsUsed, n17 = n19, n18 = i) {
-                final LayoutParams layoutParams2 = (LayoutParams)this.getChildAt(k).getLayoutParams();
-                if (!layoutParams2.expandable) {
-                    i = n18;
-                    n19 = n17;
-                    cellsUsed = n16;
-                }
-                else if (layoutParams2.cellsUsed < n16) {
-                    cellsUsed = layoutParams2.cellsUsed;
-                    n19 = 1 << k;
-                    i = 1;
-                }
-                else {
-                    cellsUsed = n16;
-                    n19 = n17;
-                    i = n18;
-                    if (layoutParams2.cellsUsed == n16) {
-                        n19 = (n17 | 1 << k);
-                        i = n18 + 1;
-                        cellsUsed = n16;
+            for (int n18 = i; n6 > 0 && n18 > 0; n18 = n) {
+                i = Integer.MAX_VALUE;
+                long n19 = 0L;
+                n = 0;
+                int n23;
+                for (int k = 0; k < childCount; k = n23) {
+                    final ActionMenuView$LayoutParams actionMenuView$LayoutParams2 = (ActionMenuView$LayoutParams)this.getChildAt(k).getLayoutParams();
+                    if (!actionMenuView$LayoutParams2.expandable) {
+                        final int n20 = n;
+                        n = i;
+                        i = n20;
                     }
-                }
-            }
-            n9 |= n17;
-            if (n18 > n14) {
-                n15 = n9;
-                break;
-            }
-            View child2;
-            LayoutParams layoutParams3;
-            long n20;
-            for (i = 0; i < childCount; ++i, n14 = mMinCellSize, n9 = n20) {
-                child2 = this.getChildAt(i);
-                layoutParams3 = (LayoutParams)child2.getLayoutParams();
-                if ((1 << i & n17) == 0x0L) {
-                    mMinCellSize = n14;
-                    n20 = n9;
-                    if (layoutParams3.cellsUsed == n16 + 1) {
-                        n20 = (n9 | 1 << i);
-                        mMinCellSize = n14;
+                    else if (actionMenuView$LayoutParams2.cellsUsed < i) {
+                        n = actionMenuView$LayoutParams2.cellsUsed;
+                        n19 = 1 << k;
+                        i = 1;
                     }
-                }
-                else {
-                    if (b2 && layoutParams3.preventEdgeOffset && n14 == 1) {
-                        child2.setPadding(this.mGeneratedItemPadding + n3, 0, this.mGeneratedItemPadding, 0);
-                    }
-                    ++layoutParams3.cellsUsed;
-                    layoutParams3.expanded = true;
-                    mMinCellSize = n14 - 1;
-                    n20 = n9;
-                }
-            }
-            mMinCellSize = 1;
-        }
-        if (n8 == 0 && n7 == 1) {
-            i = 1;
-        }
-        else {
-            i = 0;
-        }
-        int n21 = mMinCellSize;
-        Label_1160: {
-            if (n14 > 0) {
-                n21 = mMinCellSize;
-                if (n15 != 0L) {
-                    if (n14 >= n7 - 1 && i == 0) {
-                        n21 = mMinCellSize;
-                        if (n5 <= 1) {
-                            break Label_1160;
-                        }
-                    }
-                    float n23;
-                    final float n22 = n23 = Long.bitCount(n15);
-                    if (i == 0) {
-                        float n24 = n22;
-                        if ((0x1L & n15) != 0x0L) {
-                            n24 = n22;
-                            if (!((LayoutParams)this.getChildAt(0).getLayoutParams()).preventEdgeOffset) {
-                                n24 = n22 - 0.5f;
-                            }
-                        }
-                        n23 = n24;
-                        if ((1 << childCount - 1 & n15) != 0x0L) {
-                            n23 = n24;
-                            if (!((LayoutParams)this.getChildAt(childCount - 1).getLayoutParams()).preventEdgeOffset) {
-                                n23 = n24 - 0.5f;
-                            }
-                        }
-                    }
-                    int n25;
-                    if (n23 > 0.0f) {
-                        n25 = (int)(n14 * n3 / n23);
+                    else if (actionMenuView$LayoutParams2.cellsUsed == i) {
+                        n19 |= 1 << k;
+                        final int n21 = n + 1;
+                        n = i;
+                        i = n21;
                     }
                     else {
-                        n25 = 0;
+                        final int n22 = i;
+                        i = n;
+                        n = n22;
                     }
-                    for (int l = 0; l < childCount; ++l, mMinCellSize = i) {
-                        if ((1 << l & n15) == 0x0L) {
-                            i = mMinCellSize;
+                    n23 = k + 1;
+                    final int n24 = n;
+                    n = i;
+                    i = n24;
+                }
+                n9 |= n19;
+                if (n > n18) {
+                    if (n8 == 0 && n7 == 1) {
+                        i = 1;
+                    }
+                    else {
+                        i = 0;
+                    }
+                    int n31 = 0;
+                    Label_1076: {
+                        if (n18 > 0 && n9 != 0L && (n18 < n7 - 1 || i != 0 || n5 > 1)) {
+                            float n26;
+                            final float n25 = n26 = Long.bitCount(n9);
+                            while (true) {
+                                Label_1175: {
+                                    if (i != 0) {
+                                        break Label_1175;
+                                    }
+                                    float n27 = n25;
+                                    if ((0x1L & n9) != 0x0L) {
+                                        n27 = n25;
+                                        if (!((ActionMenuView$LayoutParams)this.getChildAt(0).getLayoutParams()).preventEdgeOffset) {
+                                            n27 = n25 - 0.5f;
+                                        }
+                                    }
+                                    n26 = n27;
+                                    if ((1 << childCount - 1 & n9) == 0x0L) {
+                                        break Label_1175;
+                                    }
+                                    n26 = n27;
+                                    if (((ActionMenuView$LayoutParams)this.getChildAt(childCount - 1).getLayoutParams()).preventEdgeOffset) {
+                                        break Label_1175;
+                                    }
+                                    final float n28 = n27 - 0.5f;
+                                    if (n28 > 0.0f) {
+                                        n = (int)(n18 * n4 / n28);
+                                    }
+                                    else {
+                                        n = 0;
+                                    }
+                                    final int n29 = 0;
+                                    i = n17;
+                                    int n30 = n29;
+                                    while (true) {
+                                        n31 = i;
+                                        if (n30 >= childCount) {
+                                            break Label_1076;
+                                        }
+                                        if ((1 << n30 & n9) != 0x0L) {
+                                            final View child2 = this.getChildAt(n30);
+                                            final ActionMenuView$LayoutParams actionMenuView$LayoutParams3 = (ActionMenuView$LayoutParams)child2.getLayoutParams();
+                                            if (child2 instanceof ActionMenuItemView) {
+                                                actionMenuView$LayoutParams3.extraPixels = n;
+                                                actionMenuView$LayoutParams3.expanded = true;
+                                                if (n30 == 0 && !actionMenuView$LayoutParams3.preventEdgeOffset) {
+                                                    actionMenuView$LayoutParams3.leftMargin = -n / 2;
+                                                }
+                                                i = 1;
+                                            }
+                                            else if (actionMenuView$LayoutParams3.isOverflowButton) {
+                                                actionMenuView$LayoutParams3.extraPixels = n;
+                                                actionMenuView$LayoutParams3.expanded = true;
+                                                actionMenuView$LayoutParams3.rightMargin = -n / 2;
+                                                i = 1;
+                                            }
+                                            else {
+                                                if (n30 != 0) {
+                                                    actionMenuView$LayoutParams3.leftMargin = n / 2;
+                                                }
+                                                if (n30 != childCount - 1) {
+                                                    actionMenuView$LayoutParams3.rightMargin = n / 2;
+                                                }
+                                            }
+                                        }
+                                        ++n30;
+                                    }
+                                }
+                                final float n28 = n26;
+                                continue;
+                            }
                         }
-                        else {
-                            final View child3 = this.getChildAt(l);
-                            final LayoutParams layoutParams4 = (LayoutParams)child3.getLayoutParams();
-                            if (child3 instanceof ActionMenuItemView) {
-                                layoutParams4.extraPixels = n25;
-                                layoutParams4.expanded = true;
-                                if (l == 0 && !layoutParams4.preventEdgeOffset) {
-                                    layoutParams4.leftMargin = -n25 / 2;
-                                }
-                                i = 1;
-                            }
-                            else if (layoutParams4.isOverflowButton) {
-                                layoutParams4.extraPixels = n25;
-                                layoutParams4.expanded = true;
-                                layoutParams4.rightMargin = -n25 / 2;
-                                i = 1;
-                            }
-                            else {
-                                if (l != 0) {
-                                    layoutParams4.leftMargin = n25 / 2;
-                                }
-                                i = mMinCellSize;
-                                if (l != childCount - 1) {
-                                    layoutParams4.rightMargin = n25 / 2;
-                                    i = mMinCellSize;
-                                }
+                        n31 = n17;
+                    }
+                    if (n31 != 0) {
+                        View child3;
+                        ActionMenuView$LayoutParams actionMenuView$LayoutParams4;
+                        for (i = 0; i < childCount; ++i) {
+                            child3 = this.getChildAt(i);
+                            actionMenuView$LayoutParams4 = (ActionMenuView$LayoutParams)child3.getLayoutParams();
+                            if (actionMenuView$LayoutParams4.expanded) {
+                                n = actionMenuView$LayoutParams4.cellsUsed;
+                                child3.measure(View$MeasureSpec.makeMeasureSpec(actionMenuView$LayoutParams4.extraPixels + n * n4, 1073741824), childMeasureSpec);
                             }
                         }
                     }
-                    n21 = mMinCellSize;
+                    if (mode == 1073741824) {
+                        max = size;
+                    }
+                    this.setMeasuredDimension(n3, max);
+                    return;
                 }
-            }
-        }
-        if (n21 != 0) {
-            View child4;
-            LayoutParams layoutParams5;
-            for (i = 0; i < childCount; ++i) {
-                child4 = this.getChildAt(i);
-                layoutParams5 = (LayoutParams)child4.getLayoutParams();
-                if (layoutParams5.expanded) {
-                    child4.measure(View$MeasureSpec.makeMeasureSpec(layoutParams5.cellsUsed * n3 + layoutParams5.extraPixels, 1073741824), childMeasureSpec);
+                int l = 0;
+                n = n18;
+                while (l < childCount) {
+                    final View child4 = this.getChildAt(l);
+                    final ActionMenuView$LayoutParams actionMenuView$LayoutParams5 = (ActionMenuView$LayoutParams)child4.getLayoutParams();
+                    if ((1 << l & n19) == 0x0L) {
+                        if (actionMenuView$LayoutParams5.cellsUsed == i + 1) {
+                            n9 |= 1 << l;
+                        }
+                    }
+                    else {
+                        if (b2 && actionMenuView$LayoutParams5.preventEdgeOffset && n == 1) {
+                            child4.setPadding(this.mGeneratedItemPadding + n4, 0, this.mGeneratedItemPadding, 0);
+                        }
+                        ++actionMenuView$LayoutParams5.cellsUsed;
+                        actionMenuView$LayoutParams5.expanded = true;
+                        --n;
+                    }
+                    ++l;
                 }
+                n17 = 1;
             }
+            continue;
         }
-        i = size;
-        if (mode != 1073741824) {
-            i = n4;
-        }
-        this.setMeasuredDimension(n2, i);
     }
     
     @Override
     protected boolean checkLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        return viewGroup$LayoutParams != null && viewGroup$LayoutParams instanceof LayoutParams;
+        return viewGroup$LayoutParams != null && viewGroup$LayoutParams instanceof ActionMenuView$LayoutParams;
     }
     
     public void dismissPopupMenus() {
@@ -364,35 +370,38 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
         return false;
     }
     
-    protected LayoutParams generateDefaultLayoutParams() {
-        final LayoutParams layoutParams = new LayoutParams(-2, -2);
-        layoutParams.gravity = 16;
-        return layoutParams;
+    @Override
+    protected ActionMenuView$LayoutParams generateDefaultLayoutParams() {
+        final ActionMenuView$LayoutParams actionMenuView$LayoutParams = new ActionMenuView$LayoutParams(-2, -2);
+        actionMenuView$LayoutParams.gravity = 16;
+        return actionMenuView$LayoutParams;
     }
     
-    public LayoutParams generateLayoutParams(final AttributeSet set) {
-        return new LayoutParams(this.getContext(), set);
+    @Override
+    public ActionMenuView$LayoutParams generateLayoutParams(final AttributeSet set) {
+        return new ActionMenuView$LayoutParams(this.getContext(), set);
     }
     
-    protected LayoutParams generateLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
+    @Override
+    protected ActionMenuView$LayoutParams generateLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
         if (viewGroup$LayoutParams != null) {
-            LayoutParams layoutParams;
-            if (viewGroup$LayoutParams instanceof LayoutParams) {
-                layoutParams = new LayoutParams((LayoutParams)viewGroup$LayoutParams);
+            ActionMenuView$LayoutParams actionMenuView$LayoutParams;
+            if (viewGroup$LayoutParams instanceof ActionMenuView$LayoutParams) {
+                actionMenuView$LayoutParams = new ActionMenuView$LayoutParams((ActionMenuView$LayoutParams)viewGroup$LayoutParams);
             }
             else {
-                layoutParams = new LayoutParams(viewGroup$LayoutParams);
+                actionMenuView$LayoutParams = new ActionMenuView$LayoutParams(viewGroup$LayoutParams);
             }
-            if (layoutParams.gravity <= 0) {
-                layoutParams.gravity = 16;
+            if (actionMenuView$LayoutParams.gravity <= 0) {
+                actionMenuView$LayoutParams.gravity = 16;
             }
-            return layoutParams;
+            return actionMenuView$LayoutParams;
         }
         return this.generateDefaultLayoutParams();
     }
     
-    public LayoutParams generateOverflowButtonLayoutParams() {
-        final LayoutParams generateDefaultLayoutParams = this.generateDefaultLayoutParams();
+    public ActionMenuView$LayoutParams generateOverflowButtonLayoutParams() {
+        final ActionMenuView$LayoutParams generateDefaultLayoutParams = this.generateDefaultLayoutParams();
         generateDefaultLayoutParams.isOverflowButton = true;
         return generateDefaultLayoutParams;
     }
@@ -400,18 +409,18 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
     public Menu getMenu() {
         if (this.mMenu == null) {
             final Context context = this.getContext();
-            (this.mMenu = new MenuBuilder(context)).setCallback((MenuBuilder.Callback)new MenuBuilderCallback());
+            (this.mMenu = new i(context)).a(new ActionMenuView$MenuBuilderCallback(this, null));
             (this.mPresenter = new ActionMenuPresenter(context)).setReserveOverflow(true);
             final ActionMenuPresenter mPresenter = this.mPresenter;
-            MenuPresenter.Callback mActionMenuPresenterCallback;
+            z mActionMenuPresenterCallback;
             if (this.mActionMenuPresenterCallback != null) {
                 mActionMenuPresenterCallback = this.mActionMenuPresenterCallback;
             }
             else {
-                mActionMenuPresenterCallback = new ActionMenuPresenterCallback();
+                mActionMenuPresenterCallback = new ActionMenuView$ActionMenuPresenterCallback(this, null);
             }
             mPresenter.setCallback(mActionMenuPresenterCallback);
-            this.mMenu.addMenuPresenter(this.mPresenter, this.mPopupContext);
+            this.mMenu.a(this.mPresenter, this.mPopupContext);
             this.mPresenter.setMenuView(this);
         }
         return (Menu)this.mMenu;
@@ -427,30 +436,23 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
     }
     
     protected boolean hasSupportDividerBeforeChildAt(final int n) {
-        boolean b;
+        final boolean b = false;
         if (n == 0) {
-            b = false;
+            return false;
         }
-        else {
-            final View child = this.getChildAt(n - 1);
-            final View child2 = this.getChildAt(n);
-            boolean b3;
-            final boolean b2 = b3 = false;
-            if (n < this.getChildCount()) {
-                b3 = b2;
-                if (child instanceof ActionMenuChildView) {
-                    b3 = (false | ((ActionMenuChildView)child).needsDividerAfter());
-                }
-            }
-            b = b3;
-            if (n > 0) {
-                b = b3;
-                if (child2 instanceof ActionMenuChildView) {
-                    return b3 | ((ActionMenuChildView)child2).needsDividerBefore();
-                }
+        final View child = this.getChildAt(n - 1);
+        final View child2 = this.getChildAt(n);
+        boolean b2 = b;
+        if (n < this.getChildCount()) {
+            b2 = b;
+            if (child instanceof ActionMenuView$ActionMenuChildView) {
+                b2 = (false | ((ActionMenuView$ActionMenuChildView)child).needsDividerAfter());
             }
         }
-        return b;
+        if (n > 0 && child2 instanceof ActionMenuView$ActionMenuChildView) {
+            return ((ActionMenuView$ActionMenuChildView)child2).needsDividerBefore() | b2;
+        }
+        return b2;
     }
     
     public boolean hideOverflowMenu() {
@@ -458,13 +460,13 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
     }
     
     @Override
-    public void initialize(final MenuBuilder mMenu) {
+    public void initialize(final i mMenu) {
         this.mMenu = mMenu;
     }
     
     @Override
-    public boolean invokeItem(final MenuItemImpl menuItemImpl) {
-        return this.mMenu.performItemAction((MenuItem)menuItemImpl, 0);
+    public boolean invokeItem(final m m) {
+        return this.mMenu.a((MenuItem)m, 0);
     }
     
     public boolean isOverflowMenuShowPending() {
@@ -496,128 +498,143 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
     }
     
     @Override
-    protected void onLayout(final boolean b, int i, int n, int n2, int n3) {
+    protected void onLayout(final boolean b, int paddingLeft, int i, int max, int n) {
         if (!this.mFormatItems) {
-            super.onLayout(b, i, n, n2, n3);
+            super.onLayout(b, paddingLeft, i, max, n);
         }
         else {
             final int childCount = this.getChildCount();
-            final int n4 = (n + n3) / 2;
+            final int n2 = (i + n) / 2;
             final int dividerWidth = this.getDividerWidth();
-            int n5 = 0;
-            n3 = 0;
-            n = n2 - i - this.getPaddingRight() - this.getPaddingLeft();
-            boolean b2 = false;
+            n = 0;
+            i = 0;
+            int n3 = max - paddingLeft - this.getPaddingRight() - this.getPaddingLeft();
+            int n4 = 0;
             final boolean layoutRtl = ViewUtils.isLayoutRtl((View)this);
-            for (int j = 0; j < childCount; ++j) {
+            int n19;
+            for (int j = 0; j < childCount; j = n19) {
                 final View child = this.getChildAt(j);
-                if (child.getVisibility() != 8) {
-                    final LayoutParams layoutParams = (LayoutParams)child.getLayoutParams();
-                    if (layoutParams.isOverflowButton) {
+                int n7;
+                int n8;
+                if (child.getVisibility() == 8) {
+                    final int n5 = n4;
+                    final int n6 = n3;
+                    n7 = n;
+                    n8 = i;
+                    n = n6;
+                    i = n5;
+                }
+                else {
+                    final ActionMenuView$LayoutParams actionMenuView$LayoutParams = (ActionMenuView$LayoutParams)child.getLayoutParams();
+                    if (actionMenuView$LayoutParams.isOverflowButton) {
                         int measuredWidth;
-                        final int n6 = measuredWidth = child.getMeasuredWidth();
+                        final int n9 = measuredWidth = child.getMeasuredWidth();
                         if (this.hasSupportDividerBeforeChildAt(j)) {
-                            measuredWidth = n6 + dividerWidth;
+                            measuredWidth = n9 + dividerWidth;
                         }
                         final int measuredHeight = child.getMeasuredHeight();
-                        int n7;
-                        int n8;
+                        int n10;
+                        int n11;
                         if (layoutRtl) {
-                            n7 = this.getPaddingLeft() + layoutParams.leftMargin;
-                            n8 = n7 + measuredWidth;
+                            n10 = actionMenuView$LayoutParams.leftMargin + this.getPaddingLeft();
+                            n11 = n10 + measuredWidth;
                         }
                         else {
-                            n8 = this.getWidth() - this.getPaddingRight() - layoutParams.rightMargin;
-                            n7 = n8 - measuredWidth;
+                            n11 = this.getWidth() - this.getPaddingRight() - actionMenuView$LayoutParams.rightMargin;
+                            n10 = n11 - measuredWidth;
                         }
-                        final int n9 = n4 - measuredHeight / 2;
-                        child.layout(n7, n9, n8, n9 + measuredHeight);
-                        n -= measuredWidth;
-                        b2 = true;
+                        final int n12 = n2 - measuredHeight / 2;
+                        child.layout(n10, n12, n11, measuredHeight + n12);
+                        final int n13 = n3 - measuredWidth;
+                        final int n14 = 1;
+                        n8 = i;
+                        n7 = n;
+                        i = n14;
+                        n = n13;
                     }
                     else {
-                        final int n10 = child.getMeasuredWidth() + layoutParams.leftMargin + layoutParams.rightMargin;
-                        final int n11 = n5 + n10;
-                        final int n12 = n - n10;
-                        n = n11;
+                        final int n15 = child.getMeasuredWidth() + actionMenuView$LayoutParams.leftMargin + actionMenuView$LayoutParams.rightMargin;
+                        final int n16 = n += n15;
                         if (this.hasSupportDividerBeforeChildAt(j)) {
-                            n = n11 + dividerWidth;
+                            n = n16 + dividerWidth;
                         }
-                        ++n3;
-                        n5 = n;
-                        n = n12;
+                        final int n17 = n3 - n15;
+                        final int n18 = i + 1;
+                        n7 = n;
+                        i = n4;
+                        n = n17;
+                        n8 = n18;
                     }
                 }
+                n19 = j + 1;
+                final int n20 = n7;
+                final int n21 = n8;
+                n4 = i;
+                n3 = n;
+                i = n21;
+                n = n20;
             }
-            if (childCount == 1 && !b2) {
+            if (childCount == 1 && n4 == 0) {
                 final View child2 = this.getChildAt(0);
-                n = child2.getMeasuredWidth();
-                n3 = child2.getMeasuredHeight();
-                i = (n2 - i) / 2 - n / 2;
-                n2 = n4 - n3 / 2;
-                child2.layout(i, n2, i + n, n2 + n3);
+                i = child2.getMeasuredWidth();
+                n = child2.getMeasuredHeight();
+                paddingLeft = (max - paddingLeft) / 2 - i / 2;
+                max = n2 - n / 2;
+                child2.layout(paddingLeft, max, i + paddingLeft, n + max);
                 return;
             }
-            if (b2) {
-                i = 0;
+            if (n4 != 0) {
+                paddingLeft = 0;
             }
             else {
-                i = 1;
+                paddingLeft = 1;
             }
-            i = n3 - i;
-            if (i > 0) {
-                i = n / i;
+            paddingLeft = i - paddingLeft;
+            if (paddingLeft > 0) {
+                paddingLeft = n3 / paddingLeft;
             }
             else {
-                i = 0;
+                paddingLeft = 0;
             }
-            n3 = Math.max(0, i);
+            max = Math.max(0, paddingLeft);
             if (layoutRtl) {
-                n = this.getWidth() - this.getPaddingRight();
+                paddingLeft = this.getWidth() - this.getPaddingRight();
                 View child3;
-                LayoutParams layoutParams2;
+                ActionMenuView$LayoutParams actionMenuView$LayoutParams2;
                 int measuredHeight2;
-                int n13;
-                for (i = 0; i < childCount; ++i, n = n2) {
+                int n22;
+                for (i = 0; i < childCount; ++i) {
                     child3 = this.getChildAt(i);
-                    layoutParams2 = (LayoutParams)child3.getLayoutParams();
-                    n2 = n;
+                    actionMenuView$LayoutParams2 = (ActionMenuView$LayoutParams)child3.getLayoutParams();
                     if (child3.getVisibility() != 8) {
-                        if (layoutParams2.isOverflowButton) {
-                            n2 = n;
-                        }
-                        else {
-                            n -= layoutParams2.rightMargin;
-                            n2 = child3.getMeasuredWidth();
+                        if (!actionMenuView$LayoutParams2.isOverflowButton) {
+                            paddingLeft -= actionMenuView$LayoutParams2.rightMargin;
+                            n = child3.getMeasuredWidth();
                             measuredHeight2 = child3.getMeasuredHeight();
-                            n13 = n4 - measuredHeight2 / 2;
-                            child3.layout(n - n2, n13, n, n13 + measuredHeight2);
-                            n2 = n - (layoutParams2.leftMargin + n2 + n3);
+                            n22 = n2 - measuredHeight2 / 2;
+                            child3.layout(paddingLeft - n, n22, paddingLeft, measuredHeight2 + n22);
+                            paddingLeft -= actionMenuView$LayoutParams2.leftMargin + n + max;
                         }
                     }
                 }
             }
             else {
-                n = this.getPaddingLeft();
+                paddingLeft = this.getPaddingLeft();
                 View child4;
-                LayoutParams layoutParams3;
+                ActionMenuView$LayoutParams actionMenuView$LayoutParams3;
                 int measuredHeight3;
-                int n14;
-                for (i = 0; i < childCount; ++i, n = n2) {
+                int n23;
+                for (i = 0; i < childCount; ++i) {
                     child4 = this.getChildAt(i);
-                    layoutParams3 = (LayoutParams)child4.getLayoutParams();
-                    n2 = n;
+                    actionMenuView$LayoutParams3 = (ActionMenuView$LayoutParams)child4.getLayoutParams();
                     if (child4.getVisibility() != 8) {
-                        if (layoutParams3.isOverflowButton) {
-                            n2 = n;
-                        }
-                        else {
-                            n += layoutParams3.leftMargin;
-                            n2 = child4.getMeasuredWidth();
+                        if (!actionMenuView$LayoutParams3.isOverflowButton) {
+                            paddingLeft += actionMenuView$LayoutParams3.leftMargin;
+                            n = child4.getMeasuredWidth();
                             measuredHeight3 = child4.getMeasuredHeight();
-                            n14 = n4 - measuredHeight3 / 2;
-                            child4.layout(n, n14, n + n2, n14 + measuredHeight3);
-                            n2 = n + (layoutParams3.rightMargin + n2 + n3);
+                            n23 = n2 - measuredHeight3 / 2;
+                            child4.layout(paddingLeft, n23, paddingLeft + n, measuredHeight3 + n23);
+                            paddingLeft += actionMenuView$LayoutParams3.rightMargin + n + max;
                         }
                     }
                 }
@@ -635,7 +652,7 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
         final int size = View$MeasureSpec.getSize(n);
         if (this.mFormatItems && this.mMenu != null && size != this.mFormatItemsWidth) {
             this.mFormatItemsWidth = size;
-            this.mMenu.onItemsChanged(true);
+            this.mMenu.c(true);
         }
         final int childCount = this.getChildCount();
         if (this.mFormatItems && childCount > 0) {
@@ -643,14 +660,14 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
             return;
         }
         for (int i = 0; i < childCount; ++i) {
-            final LayoutParams layoutParams = (LayoutParams)this.getChildAt(i).getLayoutParams();
-            layoutParams.rightMargin = 0;
-            layoutParams.leftMargin = 0;
+            final ActionMenuView$LayoutParams actionMenuView$LayoutParams = (ActionMenuView$LayoutParams)this.getChildAt(i).getLayoutParams();
+            actionMenuView$LayoutParams.rightMargin = 0;
+            actionMenuView$LayoutParams.leftMargin = 0;
         }
         super.onMeasure(n, n2);
     }
     
-    public MenuBuilder peekMenu() {
+    public i peekMenu() {
         return this.mMenu;
     }
     
@@ -658,12 +675,12 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
         this.mPresenter.setExpandedActionViewsExclusive(expandedActionViewsExclusive);
     }
     
-    public void setMenuCallbacks(final MenuPresenter.Callback mActionMenuPresenterCallback, final Callback mMenuBuilderCallback) {
+    public void setMenuCallbacks(final z mActionMenuPresenterCallback, final j mMenuBuilderCallback) {
         this.mActionMenuPresenterCallback = mActionMenuPresenterCallback;
         this.mMenuBuilderCallback = mMenuBuilderCallback;
     }
     
-    public void setOnMenuItemClickListener(final OnMenuItemClickListener mOnMenuItemClickListener) {
+    public void setOnMenuItemClickListener(final ActionMenuView$OnMenuItemClickListener mOnMenuItemClickListener) {
         this.mOnMenuItemClickListener = mOnMenuItemClickListener;
     }
     
@@ -687,82 +704,5 @@ public class ActionMenuView extends LinearLayoutCompat implements ItemInvoker, M
     
     public boolean showOverflowMenu() {
         return this.mPresenter != null && this.mPresenter.showOverflowMenu();
-    }
-    
-    public interface ActionMenuChildView
-    {
-        boolean needsDividerAfter();
-        
-        boolean needsDividerBefore();
-    }
-    
-    private class ActionMenuPresenterCallback implements MenuPresenter.Callback
-    {
-        @Override
-        public void onCloseMenu(final MenuBuilder menuBuilder, final boolean b) {
-        }
-        
-        @Override
-        public boolean onOpenSubMenu(final MenuBuilder menuBuilder) {
-            return false;
-        }
-    }
-    
-    public static class LayoutParams extends LinearLayoutCompat.LayoutParams
-    {
-        @ViewDebug$ExportedProperty
-        public int cellsUsed;
-        @ViewDebug$ExportedProperty
-        public boolean expandable;
-        boolean expanded;
-        @ViewDebug$ExportedProperty
-        public int extraPixels;
-        @ViewDebug$ExportedProperty
-        public boolean isOverflowButton;
-        @ViewDebug$ExportedProperty
-        public boolean preventEdgeOffset;
-        
-        public LayoutParams(final int n, final int n2) {
-            super(n, n2);
-            this.isOverflowButton = false;
-        }
-        
-        LayoutParams(final int n, final int n2, final boolean isOverflowButton) {
-            super(n, n2);
-            this.isOverflowButton = isOverflowButton;
-        }
-        
-        public LayoutParams(final Context context, final AttributeSet set) {
-            super(context, set);
-        }
-        
-        public LayoutParams(final LayoutParams layoutParams) {
-            super((ViewGroup$LayoutParams)layoutParams);
-            this.isOverflowButton = layoutParams.isOverflowButton;
-        }
-        
-        public LayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-            super(viewGroup$LayoutParams);
-        }
-    }
-    
-    private class MenuBuilderCallback implements Callback
-    {
-        @Override
-        public boolean onMenuItemSelected(final MenuBuilder menuBuilder, final MenuItem menuItem) {
-            return ActionMenuView.this.mOnMenuItemClickListener != null && ActionMenuView.this.mOnMenuItemClickListener.onMenuItemClick(menuItem);
-        }
-        
-        @Override
-        public void onMenuModeChange(final MenuBuilder menuBuilder) {
-            if (ActionMenuView.this.mMenuBuilderCallback != null) {
-                ActionMenuView.this.mMenuBuilderCallback.onMenuModeChange(menuBuilder);
-            }
-        }
-    }
-    
-    public interface OnMenuItemClickListener
-    {
-        boolean onMenuItemClick(final MenuItem p0);
     }
 }

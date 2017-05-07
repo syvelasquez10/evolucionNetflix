@@ -9,9 +9,4 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public interface DriveEvent extends SafeParcelable
 {
     int getType();
-    
-    public interface Listener<E extends DriveEvent> extends c
-    {
-        void onEvent(final E p0);
-    }
 }

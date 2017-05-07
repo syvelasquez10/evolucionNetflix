@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.snapshot;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.Contents;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -44,7 +45,7 @@ public class SnapshotContentsCreator implements Parcelable$Creator<SnapshotConte
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new SnapshotContents(g, contents);
     }

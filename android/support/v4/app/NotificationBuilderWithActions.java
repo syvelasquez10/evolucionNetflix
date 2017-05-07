@@ -6,5 +6,5 @@ package android.support.v4.app;
 
 interface NotificationBuilderWithActions
 {
-    void addAction(final NotificationCompatBase.Action p0);
+    void addAction(final NotificationCompatBase$Action p0);
 }

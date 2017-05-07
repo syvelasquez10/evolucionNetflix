@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
-import android.app.NotificationManager;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
 import com.netflix.mediaclient.ui.details.ShowDetailsActivity;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
@@ -55,7 +53,7 @@ public final class NotificationReceiver extends BroadcastReceiver
     
     private void handleMdp(final Context context, final Intent intent) {
         Log.d("nf_push", "received show MDP from notificaton");
-        removeSocialNotification(context, intent);
+        markSocialNotificationAsRead(context, intent);
         intent.setClass(context, (Class)MovieDetailsActivity.class);
         intent.addFlags(872415232);
         context.startActivity(intent);
@@ -63,7 +61,7 @@ public final class NotificationReceiver extends BroadcastReceiver
     
     private void handlePlay(final Context context, final Intent intent) {
         Log.d("nf_push", "received play from notification");
-        removeSocialNotification(context, intent);
+        markSocialNotificationAsRead(context, intent);
         intent.setClass(context, (Class)PlayerActivity.class);
         intent.addFlags(872415232);
         context.startActivity(intent);
@@ -71,7 +69,7 @@ public final class NotificationReceiver extends BroadcastReceiver
     
     private void handleSayThankYoy(final Context context, final Intent intent) {
         Log.d("nf_push", "received Say Thank You from notificaton");
-        removeSocialNotification(context, intent);
+        markSocialNotificationAsRead(context, intent);
         intent.setClass(context, (Class)NetflixService.class);
         intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
         context.startService(intent);
@@ -79,24 +77,31 @@ public final class NotificationReceiver extends BroadcastReceiver
     
     private void handleSdp(final Context context, final Intent intent) {
         Log.d("nf_push", "received show SDP from notificaton");
-        removeSocialNotification(context, intent);
+        markSocialNotificationAsRead(context, intent);
         intent.setClass(context, (Class)ShowDetailsActivity.class);
         intent.addFlags(872415232);
         context.startActivity(intent);
     }
     
     private void handleSocial(final Context context, final Intent intent) {
-        Log.d("nf_push", "received social list from notificaton");
-        removeSocialNotification(context, intent);
+        Log.d("nf_push", "received a request to open social notifications list from notificaton");
         intent.setClass(context, (Class)SocialNotificationsActivity.class);
         intent.addFlags(872415232);
         context.startActivity(intent);
     }
     
-    private static void removeSocialNotification(final Context context, final Intent intent) {
-        context.sendBroadcast(new Intent("android.intent.action.CLOSE_SYSTEM_DIALOGS"));
-        ((NotificationManager)context.getSystemService("notification")).cancel(1000);
-        SocialNotificationsUtils.ifSocialNotificationWasCanceledUpdateItsStatus(context, intent, "nf_push");
+    private static void markSocialNotificationAsRead(final Context context, final Intent intent) {
+        Log.d("nf_push", "calling service to mark notification as read");
+        final String stringExtra = intent.getStringExtra("g");
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            final Intent intent2 = new Intent("com.netflix.mediaclient.intent.action.NOTIFICATION_MARK_AS_READ");
+            intent2.putExtra("g", stringExtra);
+            intent2.setClass(context, (Class)NetflixService.class);
+            intent2.addCategory("com.netflix.mediaclient.intent.category.PUSH");
+            context.startService(intent2);
+            return;
+        }
+        Log.e("nf_push", "Got empty notification ID inside markSocialNotificationAsRead()");
     }
     
     public void onReceive(final Context context, final Intent intent) {

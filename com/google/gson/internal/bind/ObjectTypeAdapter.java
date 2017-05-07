@@ -4,13 +4,10 @@
 
 package com.google.gson.internal.bind;
 
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
 import com.google.gson.internal.StringMap;
 import java.util.ArrayList;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.TypeAdapter;
@@ -21,15 +18,7 @@ public final class ObjectTypeAdapter extends TypeAdapter<Object>
     private final Gson gson;
     
     static {
-        FACTORY = new TypeAdapterFactory() {
-            @Override
-            public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> typeToken) {
-                if (typeToken.getRawType() == Object.class) {
-                    return (TypeAdapter<T>)new ObjectTypeAdapter(gson, null);
-                }
-                return null;
-            }
-        };
+        FACTORY = new ObjectTypeAdapter$1();
     }
     
     private ObjectTypeAdapter(final Gson gson) {
@@ -37,12 +26,12 @@ public final class ObjectTypeAdapter extends TypeAdapter<Object>
     }
     
     @Override
-    public Object read(final JsonReader jsonReader) throws IOException {
-        switch (jsonReader.peek()) {
+    public Object read(final JsonReader jsonReader) {
+        switch (ObjectTypeAdapter$2.$SwitchMap$com$google$gson$stream$JsonToken[jsonReader.peek().ordinal()]) {
             default: {
                 throw new IllegalStateException();
             }
-            case BEGIN_ARRAY: {
+            case 1: {
                 final ArrayList<Object> list = new ArrayList<Object>();
                 jsonReader.beginArray();
                 while (jsonReader.hasNext()) {
@@ -51,7 +40,7 @@ public final class ObjectTypeAdapter extends TypeAdapter<Object>
                 jsonReader.endArray();
                 return list;
             }
-            case BEGIN_OBJECT: {
+            case 2: {
                 final StringMap stringMap = new StringMap();
                 jsonReader.beginObject();
                 while (jsonReader.hasNext()) {
@@ -60,16 +49,16 @@ public final class ObjectTypeAdapter extends TypeAdapter<Object>
                 jsonReader.endObject();
                 return stringMap;
             }
-            case STRING: {
+            case 3: {
                 return jsonReader.nextString();
             }
-            case NUMBER: {
+            case 4: {
                 return jsonReader.nextDouble();
             }
-            case BOOLEAN: {
+            case 5: {
                 return jsonReader.nextBoolean();
             }
-            case NULL: {
+            case 6: {
                 jsonReader.nextNull();
                 return null;
             }
@@ -77,7 +66,7 @@ public final class ObjectTypeAdapter extends TypeAdapter<Object>
     }
     
     @Override
-    public void write(final JsonWriter jsonWriter, final Object o) throws IOException {
+    public void write(final JsonWriter jsonWriter, final Object o) {
         if (o == null) {
             jsonWriter.nullValue();
             return;

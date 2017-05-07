@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wallet.fragment;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.MaskedWalletRequest;
 import android.os.Parcelable;
@@ -60,7 +61,7 @@ public class a implements Parcelable$Creator<WalletFragmentInitParams>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new WalletFragmentInitParams(g, o, maskedWalletRequest, g2, maskedWallet);
     }

@@ -8,7 +8,7 @@ import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ImageView$ScaleType;
@@ -22,11 +22,11 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
+import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import android.widget.RelativeLayout;
 
 @SuppressLint({ "ViewConstructor" })
-public class KidsOneToOneVideoView extends RelativeLayout implements IVideoView<Video>
+public class KidsOneToOneVideoView extends RelativeLayout implements VideoViewGroup$IVideoView<Video>
 {
     private VideoDetailsClickListener clicker;
     private AdvancedImageView mainImage;
@@ -35,11 +35,11 @@ public class KidsOneToOneVideoView extends RelativeLayout implements IVideoView<
     
     public KidsOneToOneVideoView(final Context context, final boolean b) {
         super(context);
-        ((Activity)context).getLayoutInflater().inflate(2130903105, (ViewGroup)this);
+        ((Activity)context).getLayoutInflater().inflate(2130903106, (ViewGroup)this);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
-        (this.mainImage = (AdvancedImageView)this.findViewById(2131165423)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361962));
+        (this.mainImage = (AdvancedImageView)this.findViewById(2131165422)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361964));
         this.mainImage.setScaleType(ImageView$ScaleType.CENTER_CROP);
-        (this.tvCard = (AdvancedImageView)this.findViewById(2131165425)).setPressedStateHandlerEnabled(false);
+        (this.tvCard = (AdvancedImageView)this.findViewById(2131165424)).setPressedStateHandlerEnabled(false);
         this.mainImage.setFocusable(true);
         this.tvCard.setFocusable(true);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
@@ -64,7 +64,7 @@ public class KidsOneToOneVideoView extends RelativeLayout implements IVideoView<
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView mainImage = this.mainImage;
         final String squareUrl = video.getSquareUrl();
-        final IClientLogging.AssetType boxArt = IClientLogging.AssetType.boxArt;
+        final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final String title = video.getTitle();
         if (b) {
             n = 1;
@@ -76,7 +76,7 @@ public class KidsOneToOneVideoView extends RelativeLayout implements IVideoView<
         final ImageLoader imageLoader2 = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView tvCard = this.tvCard;
         final String tvCardUrl = video.getTvCardUrl();
-        final IClientLogging.AssetType boxArt2 = IClientLogging.AssetType.boxArt;
+        final IClientLogging$AssetType boxArt2 = IClientLogging$AssetType.boxArt;
         final String title2 = video.getTitle();
         if (b) {
             n = 1;

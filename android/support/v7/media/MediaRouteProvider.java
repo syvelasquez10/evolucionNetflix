@@ -4,8 +4,6 @@
 
 package android.support.v7.media;
 
-import android.content.Intent;
-import android.os.Message;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.content.ComponentName;
@@ -16,12 +14,12 @@ public abstract class MediaRouteProvider
 {
     private static final int MSG_DELIVER_DESCRIPTOR_CHANGED = 1;
     private static final int MSG_DELIVER_DISCOVERY_REQUEST_CHANGED = 2;
-    private Callback mCallback;
+    private MediaRouteProvider$Callback mCallback;
     private final Context mContext;
     private MediaRouteProviderDescriptor mDescriptor;
     private MediaRouteDiscoveryRequest mDiscoveryRequest;
-    private final ProviderHandler mHandler;
-    private final ProviderMetadata mMetadata;
+    private final MediaRouteProvider$ProviderHandler mHandler;
+    private final MediaRouteProvider$ProviderMetadata mMetadata;
     private boolean mPendingDescriptorChange;
     private boolean mPendingDiscoveryRequestChange;
     
@@ -29,14 +27,14 @@ public abstract class MediaRouteProvider
         this(context, null);
     }
     
-    MediaRouteProvider(final Context mContext, final ProviderMetadata mMetadata) {
-        this.mHandler = new ProviderHandler();
+    MediaRouteProvider(final Context mContext, final MediaRouteProvider$ProviderMetadata mMetadata) {
+        this.mHandler = new MediaRouteProvider$ProviderHandler(this, null);
         if (mContext == null) {
             throw new IllegalArgumentException("context must not be null");
         }
         this.mContext = mContext;
         if (mMetadata == null) {
-            this.mMetadata = new ProviderMetadata(new ComponentName(mContext, (Class)this.getClass()));
+            this.mMetadata = new MediaRouteProvider$ProviderMetadata(new ComponentName(mContext, (Class)this.getClass()));
             return;
         }
         this.mMetadata = mMetadata;
@@ -72,19 +70,19 @@ public abstract class MediaRouteProvider
         return this.mHandler;
     }
     
-    public final ProviderMetadata getMetadata() {
+    public final MediaRouteProvider$ProviderMetadata getMetadata() {
         return this.mMetadata;
     }
     
     @Nullable
-    public RouteController onCreateRouteController(final String s) {
+    public MediaRouteProvider$RouteController onCreateRouteController(final String s) {
         return null;
     }
     
     public void onDiscoveryRequestChanged(@Nullable final MediaRouteDiscoveryRequest mediaRouteDiscoveryRequest) {
     }
     
-    public final void setCallback(@Nullable final Callback mCallback) {
+    public final void setCallback(@Nullable final MediaRouteProvider$Callback mCallback) {
         MediaRouter.checkCallingThread();
         this.mCallback = mCallback;
     }
@@ -108,74 +106,6 @@ public abstract class MediaRouteProvider
                 this.mPendingDiscoveryRequestChange = true;
                 this.mHandler.sendEmptyMessage(2);
             }
-        }
-    }
-    
-    public abstract static class Callback
-    {
-        public void onDescriptorChanged(@NonNull final MediaRouteProvider mediaRouteProvider, @Nullable final MediaRouteProviderDescriptor mediaRouteProviderDescriptor) {
-        }
-    }
-    
-    private final class ProviderHandler extends Handler
-    {
-        public void handleMessage(final Message message) {
-            switch (message.what) {
-                default: {}
-                case 1: {
-                    MediaRouteProvider.this.deliverDescriptorChanged();
-                }
-                case 2: {
-                    MediaRouteProvider.this.deliverDiscoveryRequestChanged();
-                }
-            }
-        }
-    }
-    
-    public static final class ProviderMetadata
-    {
-        private final ComponentName mComponentName;
-        
-        ProviderMetadata(final ComponentName mComponentName) {
-            if (mComponentName == null) {
-                throw new IllegalArgumentException("componentName must not be null");
-            }
-            this.mComponentName = mComponentName;
-        }
-        
-        public ComponentName getComponentName() {
-            return this.mComponentName;
-        }
-        
-        public String getPackageName() {
-            return this.mComponentName.getPackageName();
-        }
-        
-        @Override
-        public String toString() {
-            return "ProviderMetadata{ componentName=" + this.mComponentName.flattenToShortString() + " }";
-        }
-    }
-    
-    public abstract static class RouteController
-    {
-        public boolean onControlRequest(final Intent intent, @Nullable final MediaRouter.ControlRequestCallback controlRequestCallback) {
-            return false;
-        }
-        
-        public void onRelease() {
-        }
-        
-        public void onSelect() {
-        }
-        
-        public void onSetVolume(final int n) {
-        }
-        
-        public void onUnselect() {
-        }
-        
-        public void onUpdateVolume(final int n) {
         }
     }
 }

@@ -7,7 +7,6 @@ package com.netflix.mediaclient.webapi;
 import java.util.ArrayList;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import java.io.UnsupportedEncodingException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,12 +25,12 @@ public abstract class WebApiPostCommand extends WebApiCommand
         }
     }
     
-    protected HttpEntity getEntity() throws UnsupportedEncodingException {
+    protected HttpEntity getEntity() {
         return (HttpEntity)new UrlEncodedFormEntity((List)this.getParameters());
     }
     
     @Override
-    protected HttpUriRequest getHttpMethod() throws UnsupportedEncodingException {
+    protected HttpUriRequest getHttpMethod() {
         final HttpPost httpPost = new HttpPost(this.getUrl().toString());
         httpPost.setEntity(this.getEntity());
         return (HttpUriRequest)httpPost;

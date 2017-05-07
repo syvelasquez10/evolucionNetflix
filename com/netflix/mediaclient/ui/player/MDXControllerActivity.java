@@ -5,16 +5,14 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.os.Bundle;
 import android.content.res.Configuration;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -37,13 +35,13 @@ public class MDXControllerActivity extends PlayerActivity
     public static final String EXTRA_SYNOPSIS = "extra_synopsis";
     public static final String EXTRA_TITLE = "extra_title";
     public static final int REQUEST_CODE = 69;
-    private FinishReceiver finishReceiver;
+    private MDXControllerActivity$FinishReceiver finishReceiver;
     private PostPlay mPostPlay;
     private View postPlay;
     private String videoId;
     
     public MDXControllerActivity() {
-        this.finishReceiver = new FinishReceiver();
+        this.finishReceiver = new MDXControllerActivity$FinishReceiver(this);
     }
     
     private static Intent createIntent(final NetflixActivity netflixActivity) {
@@ -56,7 +54,7 @@ public class MDXControllerActivity extends PlayerActivity
     
     private void setupPostplayViews() {
         this.postPlay = this.findViewById(2131165577);
-        this.mPostPlay = PostPlayFactory.create(this, PostPlayFactory.PostPlayType.EpisodesForMDX);
+        this.mPostPlay = PostPlayFactory.create(this, PostPlayFactory$PostPlayType.EpisodesForMDX);
     }
     
     private void setupReceivers() {
@@ -107,17 +105,7 @@ public class MDXControllerActivity extends PlayerActivity
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                MDXControllerActivity.this.showEpisodesData();
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-                MDXControllerActivity.this.cleanupAndExit();
-            }
-        };
+        return new MDXControllerActivity$1(this);
     }
     
     @Override
@@ -126,8 +114,8 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.mdxPlayback;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.mdxPlayback;
     }
     
     public boolean handleBackPressed() {
@@ -143,7 +131,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        this.setContentView(2130903122);
+        this.setContentView(2130903123);
         this.setupPostplayViews();
         this.showEpisodesData();
     }
@@ -151,7 +139,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903122);
+        this.setContentView(2130903123);
         this.setupPostplayViews();
         AndroidUtils.logDeviceDensity(this);
         this.getWindow().getAttributes().buttonBrightness = 0.0f;
@@ -191,15 +179,5 @@ public class MDXControllerActivity extends PlayerActivity
     
     @Override
     protected void showMDXPostPlayOnResume() {
-    }
-    
-    class FinishReceiver extends BroadcastReceiver
-    {
-        public void onReceive(final Context context, final Intent intent) {
-            if (intent.getAction() == "com.netflix.mediaclient.ui.player.MDXControllerActivity.ACTION_FINISH") {
-                MDXControllerActivity.this.setResult(0);
-                MDXControllerActivity.this.finish();
-            }
-        }
     }
 }

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.events.CompletionEvent;
 import com.google.android.gms.drive.events.ChangeEvent;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -73,7 +74,7 @@ public class am implements Parcelable$Creator<OnEventResponse>
             n2 = n8;
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new OnEventResponse(n2, n, changeEvent, completionEvent);
     }

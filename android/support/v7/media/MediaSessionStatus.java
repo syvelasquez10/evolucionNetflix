@@ -80,46 +80,4 @@ public final class MediaSessionStatus
         sb.append(" }");
         return sb.toString();
     }
-    
-    public static final class Builder
-    {
-        private final Bundle mBundle;
-        
-        public Builder(final int sessionState) {
-            this.mBundle = new Bundle();
-            this.setTimestamp(SystemClock.elapsedRealtime());
-            this.setSessionState(sessionState);
-        }
-        
-        public Builder(final MediaSessionStatus mediaSessionStatus) {
-            if (mediaSessionStatus == null) {
-                throw new IllegalArgumentException("status must not be null");
-            }
-            this.mBundle = new Bundle(mediaSessionStatus.mBundle);
-        }
-        
-        public MediaSessionStatus build() {
-            return new MediaSessionStatus(this.mBundle, null);
-        }
-        
-        public Builder setExtras(final Bundle bundle) {
-            this.mBundle.putBundle("extras", bundle);
-            return this;
-        }
-        
-        public Builder setQueuePaused(final boolean b) {
-            this.mBundle.putBoolean("queuePaused", b);
-            return this;
-        }
-        
-        public Builder setSessionState(final int n) {
-            this.mBundle.putInt("sessionState", n);
-            return this;
-        }
-        
-        public Builder setTimestamp(final long n) {
-            this.mBundle.putLong("timestamp", n);
-            return this;
-        }
-    }
 }

@@ -5,6 +5,7 @@
 package com.google.android.gms.maps.model;
 
 import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -59,7 +60,7 @@ public class w implements Parcelable$Creator<TileOverlayOptions>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new TileOverlayOptions(g, p, c, l, c3);
     }

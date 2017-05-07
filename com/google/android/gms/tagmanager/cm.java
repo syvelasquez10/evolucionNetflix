@@ -4,9 +4,9 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 
 interface cm
 {
-    dl e(final d.a p0);
+    dl e(final d$a p0);
 }

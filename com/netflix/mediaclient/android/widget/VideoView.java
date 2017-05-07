@@ -8,16 +8,16 @@ import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
+import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 
-public class VideoView extends AdvancedImageView implements IVideoView<Video>
+public class VideoView extends AdvancedImageView implements VideoViewGroup$IVideoView<Video>
 {
     public static final float LOMO_BOXART_HEIGHT_TO_WIDTH_RATIO = 1.43f;
     protected VideoDetailsClickListener clicker;
@@ -62,6 +62,7 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
         this.isHorizontal = isHorizontal;
     }
     
+    @Override
     public void update(final Video video, final Trackable trackable, int visibility, final boolean b) {
         this.playContext = new PlayContextImp(trackable, visibility);
         if (video.getBoxshotURL() == null) {
@@ -80,7 +81,7 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
         else {
             s = video.getBoxshotURL();
         }
-        final IClientLogging.AssetType boxArt = IClientLogging.AssetType.boxArt;
+        final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final String title = video.getTitle();
         if (b) {
             visibility = 1;

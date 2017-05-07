@@ -6,7 +6,6 @@ package com.google.android.gms.cast;
 
 import org.json.JSONArray;
 import com.google.android.gms.internal.ik;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public final class MediaStatus
@@ -39,11 +38,11 @@ public final class MediaStatus
     private long Fy;
     private long Fz;
     
-    public MediaStatus(final JSONObject jsonObject) throws JSONException {
+    public MediaStatus(final JSONObject jsonObject) {
         this.a(jsonObject, 0);
     }
     
-    public int a(JSONObject jsonObject, int i) throws JSONException {
+    public int a(JSONObject jsonObject, int i) {
         final int n = 2;
         final boolean b = false;
         final int n2 = 1;

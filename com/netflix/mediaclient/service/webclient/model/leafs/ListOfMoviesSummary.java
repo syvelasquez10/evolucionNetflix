@@ -25,15 +25,7 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
     private String type;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<ListOfMoviesSummary>() {
-            public ListOfMoviesSummary createFromParcel(final Parcel parcel) {
-                return new ListOfMoviesSummary(parcel);
-            }
-            
-            public ListOfMoviesSummary[] newArray(final int n) {
-                return new ListOfMoviesSummary[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new ListOfMoviesSummary$1();
     }
     
     public ListOfMoviesSummary() {

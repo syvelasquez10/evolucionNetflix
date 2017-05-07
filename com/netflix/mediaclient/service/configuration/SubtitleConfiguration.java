@@ -7,27 +7,28 @@ package com.netflix.mediaclient.service.configuration;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.javabridge.ui.IMedia;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 
 public enum SubtitleConfiguration
 {
     public static SubtitleConfiguration DEFAULT;
     
-    ENHANCED_XML(IMedia.SubtitleProfile.ENHANCED, IMedia.SubtitleOutputMode.DATA_XML, 1, 2131493301), 
-    SIMPLE_EVENTS(IMedia.SubtitleProfile.SIMPLE, IMedia.SubtitleOutputMode.EVENTS, 3, 2131493303), 
-    SIMPLE_XML(IMedia.SubtitleProfile.SIMPLE, IMedia.SubtitleOutputMode.DATA_XML, 2, 2131493302);
+    ENHANCED_XML(IMedia$SubtitleProfile.ENHANCED, IMedia$SubtitleOutputMode.DATA_XML, 1, 2131493251), 
+    SIMPLE_EVENTS(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.EVENTS, 3, 2131493253), 
+    SIMPLE_XML(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.DATA_XML, 2, 2131493252);
     
     private static final String TAG = "nf_conf";
     private int mLabelId;
     private int mLookupType;
-    private IMedia.SubtitleOutputMode mMode;
-    private IMedia.SubtitleProfile mProfile;
+    private IMedia$SubtitleOutputMode mMode;
+    private IMedia$SubtitleProfile mProfile;
     
     static {
         SubtitleConfiguration.DEFAULT = SubtitleConfiguration.ENHANCED_XML;
     }
     
-    private SubtitleConfiguration(final IMedia.SubtitleProfile mProfile, final IMedia.SubtitleOutputMode mMode, final int mLookupType, final int mLabelId) {
+    private SubtitleConfiguration(final IMedia$SubtitleProfile mProfile, final IMedia$SubtitleOutputMode mMode, final int mLookupType, final int mLabelId) {
         this.mProfile = mProfile;
         this.mMode = mMode;
         this.mLookupType = mLookupType;
@@ -110,11 +111,11 @@ public enum SubtitleConfiguration
         return this.mLookupType;
     }
     
-    public IMedia.SubtitleOutputMode getMode() {
+    public IMedia$SubtitleOutputMode getMode() {
         return this.mMode;
     }
     
-    public IMedia.SubtitleProfile getProfile() {
+    public IMedia$SubtitleProfile getProfile() {
         return this.mProfile;
     }
     

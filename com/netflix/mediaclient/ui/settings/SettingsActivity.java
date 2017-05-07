@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +24,12 @@ public class SettingsActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903094;
+        return 2130903095;
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.settings;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.settings;
     }
     
     @Override

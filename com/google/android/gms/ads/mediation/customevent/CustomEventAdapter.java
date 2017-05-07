@@ -83,7 +83,7 @@ public final class CustomEventAdapter implements MediationBannerAdapter, Mediati
         else {
             bundle2 = bundle2.getBundle(bundle.getString("class_name"));
         }
-        this.xf.requestBannerAd(context, new a(this, mediationBannerListener), bundle.getString("parameter"), adSize, mediationAdRequest, bundle2);
+        this.xf.requestBannerAd(context, new CustomEventAdapter$a(this, mediationBannerListener), bundle.getString("parameter"), adSize, mediationAdRequest, bundle2);
     }
     
     @Override
@@ -99,106 +99,11 @@ public final class CustomEventAdapter implements MediationBannerAdapter, Mediati
         else {
             bundle2 = bundle2.getBundle(bundle.getString("class_name"));
         }
-        this.xg.requestInterstitialAd(context, new b(this, mediationInterstitialListener), bundle.getString("parameter"), mediationAdRequest, bundle2);
+        this.xg.requestInterstitialAd(context, new CustomEventAdapter$b(this, this, mediationInterstitialListener), bundle.getString("parameter"), mediationAdRequest, bundle2);
     }
     
     @Override
     public void showInterstitial() {
         this.xg.showInterstitial();
-    }
-    
-    private static final class a implements CustomEventBannerListener
-    {
-        private final MediationBannerListener l;
-        private final CustomEventAdapter xh;
-        
-        public a(final CustomEventAdapter xh, final MediationBannerListener l) {
-            this.xh = xh;
-            this.l = l;
-        }
-        
-        @Override
-        public void onAdClicked() {
-            gs.S("Custom event adapter called onAdClicked.");
-            this.l.onAdClicked(this.xh);
-        }
-        
-        @Override
-        public void onAdClosed() {
-            gs.S("Custom event adapter called onAdClosed.");
-            this.l.onAdClosed(this.xh);
-        }
-        
-        @Override
-        public void onAdFailedToLoad(final int n) {
-            gs.S("Custom event adapter called onAdFailedToLoad.");
-            this.l.onAdFailedToLoad(this.xh, n);
-        }
-        
-        @Override
-        public void onAdLeftApplication() {
-            gs.S("Custom event adapter called onAdLeftApplication.");
-            this.l.onAdLeftApplication(this.xh);
-        }
-        
-        @Override
-        public void onAdLoaded(final View view) {
-            gs.S("Custom event adapter called onAdLoaded.");
-            this.xh.a(view);
-            this.l.onAdLoaded(this.xh);
-        }
-        
-        @Override
-        public void onAdOpened() {
-            gs.S("Custom event adapter called onAdOpened.");
-            this.l.onAdOpened(this.xh);
-        }
-    }
-    
-    private class b implements CustomEventInterstitialListener
-    {
-        private final MediationInterstitialListener m;
-        private final CustomEventAdapter xh;
-        
-        public b(final CustomEventAdapter xh, final MediationInterstitialListener m) {
-            this.xh = xh;
-            this.m = m;
-        }
-        
-        @Override
-        public void onAdClicked() {
-            gs.S("Custom event adapter called onAdClicked.");
-            this.m.onAdClicked(this.xh);
-        }
-        
-        @Override
-        public void onAdClosed() {
-            gs.S("Custom event adapter called onAdClosed.");
-            this.m.onAdClosed(this.xh);
-        }
-        
-        @Override
-        public void onAdFailedToLoad(final int n) {
-            gs.S("Custom event adapter called onFailedToReceiveAd.");
-            this.m.onAdFailedToLoad(this.xh, n);
-        }
-        
-        @Override
-        public void onAdLeftApplication() {
-            gs.S("Custom event adapter called onAdLeftApplication.");
-            this.m.onAdLeftApplication(this.xh);
-        }
-        
-        @Override
-        public void onAdLoaded() {
-            gs.S("Custom event adapter called onReceivedAd.");
-            this.m.onAdLoaded(CustomEventAdapter.this);
-        }
-        
-        @Override
-        public void onAdOpened() {
-            gs.S("Custom event adapter called onAdOpened.");
-            this.m.onAdOpened(this.xh);
-        }
     }
 }

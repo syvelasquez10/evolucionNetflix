@@ -4,15 +4,12 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.ui.kids.lolomo.KidsCharacterPagerAdapter;
 import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.content.IntentFilter;
-import android.content.Intent;
-import android.content.Context;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
@@ -24,10 +21,10 @@ import android.support.v4.view.PagerAdapter;
 
 public class LoMoViewPagerAdapter extends PagerAdapter
 {
-    private static final EnumMap<LoMoType, Type> LOMO_TYPE_TABLE;
+    private static final EnumMap<LoMoType, LoMoViewPagerAdapter$Type> LOMO_TYPE_TABLE;
     private static final String TAG = "LoMoViewPagerAdapter";
     private final NetflixActivity activity;
-    private final RowAdapterSet adapters;
+    private final LoMoViewPagerAdapter$RowAdapterSet adapters;
     private final BroadcastReceiver browseReceiver;
     private RowAdapter currentAdapter;
     private boolean isDestroyed;
@@ -36,102 +33,26 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     private final View$OnClickListener onReloadClickListener;
     private final LoMoViewPager pager;
     private final RowAdapterCallbacks pagerAdapterCallbacks;
-    private Type preErrorState;
+    private LoMoViewPagerAdapter$Type preErrorState;
     private final View reloadView;
-    private Type state;
-    private final ObjectRecycler.ViewRecycler viewRecycler;
+    private LoMoViewPagerAdapter$Type state;
+    private final ObjectRecycler$ViewRecycler viewRecycler;
     
     static {
-        LOMO_TYPE_TABLE = new EnumMap<LoMoType, Type>(LoMoType.class) {
-            {
-                this.put(LoMoType.BILLBOARD, Type.BILLBOARD);
-                this.put(LoMoType.CHARACTERS, Type.CHARACTER);
-                this.put(LoMoType.CONTINUE_WATCHING, Type.CW);
-                this.put(LoMoType.INSTANT_QUEUE, Type.IQ);
-                this.put(LoMoType.FLAT_GENRE, Type.STANDARD);
-                this.put(LoMoType.SOCIAL_FRIEND, Type.STANDARD);
-                this.put(LoMoType.SOCIAL_GROUP, Type.STANDARD);
-                this.put(LoMoType.SOCIAL_POPULAR, Type.STANDARD);
-                this.put(LoMoType.STANDARD, Type.STANDARD);
-            }
-        };
+        LOMO_TYPE_TABLE = new LoMoViewPagerAdapter$1(LoMoType.class);
     }
     
-    public LoMoViewPagerAdapter(final LoMoViewPager pager, final ServiceManager serviceManager, final ObjectRecycler.ViewRecycler viewRecycler, final View reloadView, final boolean b) {
-        this.state = Type.LOADING;
-        this.preErrorState = Type.LOADING;
-        this.onReloadClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                LoMoViewPagerAdapter.this.reload();
-            }
-        };
-        this.pagerAdapterCallbacks = new RowAdapterCallbacks() {
-            @Override
-            public NetflixActivity getActivity() {
-                return LoMoViewPagerAdapter.this.activity;
-            }
-            
-            @Override
-            public void notifyParentOfDataSetChange() {
-                if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
-                    Log.v("LoMoViewPagerAdapter", "Notified parent of data set change");
-                }
-                LoMoViewPagerAdapter.this.notifyDataSetChanged();
-                LoMoViewPagerAdapter.this.pager.notifyDataSetChanged();
-                if (LoMoViewPagerAdapter.this.pager.getCurrentItem() == 0) {
-                    if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
-                        Log.v("LoMoViewPagerAdapter", "Data loaded for page 0 - saving state");
-                    }
-                    LoMoViewPagerAdapter.this.pager.saveStateAndTrack(0);
-                }
-            }
-            
-            @Override
-            public void notifyParentOfError() {
-                if (LoMoViewPagerAdapter.this.state != Type.ERROR) {
-                    LoMoViewPagerAdapter.this.preErrorState = LoMoViewPagerAdapter.this.state;
-                }
-                if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
-                    Log.v("LoMoViewPagerAdapter", "Pre-error state: " + LoMoViewPagerAdapter.this.preErrorState);
-                }
-                LoMoViewPagerAdapter.this.setState(Type.ERROR);
-                LoMoViewPagerAdapter.this.notifyDataSetChanged();
-                LoMoViewPagerAdapter.this.showReloadViews();
-            }
-        };
-        this.browseReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                if (intent == null) {
-                    Log.w("LoMoViewPagerAdapter", "Received null intent");
-                }
-                else {
-                    final String action = intent.getAction();
-                    if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
-                        Log.v("LoMoViewPagerAdapter", "browseReceiver inovoked with Action: " + action);
-                    }
-                    if ("com.netflix.mediaclient.intent.action.BA_CW_REFRESH".equals(action)) {
-                        if (Type.CW.equals(LoMoViewPagerAdapter.this.state)) {
-                            Log.v("LoMoViewPagerAdapter", "Reloading cw row ");
-                            LoMoViewPagerAdapter.this.refresh(LoMoViewPagerAdapter.this.loMo, LoMoViewPagerAdapter.this.listViewPos);
-                        }
-                        LoMoViewPagerAdapter.this.pager.invalidateCwCache();
-                        return;
-                    }
-                    if ("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH".equals(action)) {
-                        if (Type.IQ.equals(LoMoViewPagerAdapter.this.state)) {
-                            Log.v("LoMoViewPagerAdapter", "Reloading iq row ");
-                            LoMoViewPagerAdapter.this.refresh(LoMoViewPagerAdapter.this.loMo, LoMoViewPagerAdapter.this.listViewPos);
-                        }
-                        LoMoViewPagerAdapter.this.pager.invalidateIqCache();
-                    }
-                }
-            }
-        };
+    public LoMoViewPagerAdapter(final LoMoViewPager pager, final ServiceManager serviceManager, final ObjectRecycler$ViewRecycler viewRecycler, final View reloadView, final boolean b) {
+        this.state = LoMoViewPagerAdapter$Type.LOADING;
+        this.preErrorState = LoMoViewPagerAdapter$Type.LOADING;
+        this.onReloadClickListener = (View$OnClickListener)new LoMoViewPagerAdapter$2(this);
+        this.pagerAdapterCallbacks = new LoMoViewPagerAdapter$3(this);
+        this.browseReceiver = new LoMoViewPagerAdapter$4(this);
         this.pager = pager;
         this.viewRecycler = viewRecycler;
         this.activity = (NetflixActivity)pager.getContext();
         this.reloadView = reloadView;
-        this.adapters = new RowAdapterSet(serviceManager, this.pagerAdapterCallbacks, viewRecycler, b);
+        this.adapters = new LoMoViewPagerAdapter$RowAdapterSet(serviceManager, this.pagerAdapterCallbacks, viewRecycler, b);
         this.registerBrowseNotificationReceiver();
         reloadView.setOnClickListener(this.onReloadClickListener);
         this.currentAdapter = this.adapters.loading;
@@ -164,34 +85,34 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.activity.registerReceiver(this.browseReceiver, intentFilter);
     }
     
-    private void setState(final Type state) {
+    private void setState(final LoMoViewPagerAdapter$Type state) {
         if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
             Log.v("LoMoViewPagerAdapter", "new state: " + state);
         }
         this.state = state;
-        switch (state) {
+        switch (LoMoViewPagerAdapter$5.$SwitchMap$com$netflix$mediaclient$ui$lomo$LoMoViewPagerAdapter$Type[state.ordinal()]) {
             default: {
                 throw new IllegalStateException("Bad state");
             }
-            case STANDARD: {
+            case 1: {
                 this.currentAdapter = this.adapters.standard;
             }
-            case LOADING: {
+            case 2: {
                 this.currentAdapter = this.adapters.loading;
             }
-            case ERROR: {
+            case 3: {
                 this.currentAdapter = this.adapters.error;
             }
-            case IQ: {
+            case 4: {
                 this.currentAdapter = this.adapters.iq;
             }
-            case CW: {
+            case 5: {
                 this.currentAdapter = this.adapters.cw;
             }
-            case BILLBOARD: {
+            case 6: {
                 this.currentAdapter = this.adapters.billboard;
             }
-            case CHARACTER: {
+            case 7: {
                 this.currentAdapter = this.adapters.character;
             }
         }
@@ -199,7 +120,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     
     private void showLoading() {
         this.hideReloadViews();
-        this.setState(Type.LOADING);
+        this.setState(LoMoViewPagerAdapter$Type.LOADING);
         this.notifyDataSetChanged();
     }
     
@@ -240,7 +161,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         if (this.currentAdapter.hasMoreData()) {
             n = 1;
         }
-        return count + n;
+        return n + count;
     }
     
     @Override
@@ -250,20 +171,20 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     
     public LinearLayout$LayoutParams getLayoutParams(final LoMoType loMoType) {
         int n = 0;
-        switch (loMoType) {
+        switch (LoMoViewPagerAdapter$5.$SwitchMap$com$netflix$mediaclient$servicemgr$model$LoMoType[loMoType.ordinal()]) {
             default: {
                 n = this.adapters.standard.getRowHeightInPx();
                 break;
             }
-            case BILLBOARD: {
+            case 1: {
                 n = this.adapters.billboard.getRowHeightInPx();
                 break;
             }
-            case CONTINUE_WATCHING: {
+            case 2: {
                 n = this.adapters.cw.getRowHeightInPx();
                 break;
             }
-            case CHARACTERS: {
+            case 3: {
                 n = this.adapters.character.getRowHeightInPx();
                 break;
             }
@@ -291,11 +212,11 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     public boolean isLoading() {
-        return this.state == Type.LOADING;
+        return this.state == LoMoViewPagerAdapter$Type.LOADING;
     }
     
     public boolean isShowingBillboard() {
-        return this.state == Type.BILLBOARD;
+        return this.state == LoMoViewPagerAdapter$Type.BILLBOARD;
     }
     
     @Override
@@ -304,7 +225,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     public void refresh(final BasicLoMo loMo, final int listViewPos) {
-        final Type state = LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(loMo.getType());
+        final LoMoViewPagerAdapter$Type state = LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(loMo.getType());
         if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
             final StringBuilder append = new StringBuilder().append("refreshing: ").append(listViewPos).append(", ");
             String title;
@@ -341,101 +262,34 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.currentAdapter.refreshData(this.loMo, this.listViewPos);
     }
     
-    public void restoreFromMemento(final Memento memento) {
-        this.loMo = memento.lomo;
-        final Type state = memento.state;
+    public void restoreFromMemento(final LoMoViewPagerAdapter$Memento loMoViewPagerAdapter$Memento) {
+        this.loMo = loMoViewPagerAdapter$Memento.lomo;
+        final LoMoViewPagerAdapter$Type state = loMoViewPagerAdapter$Memento.state;
         final View reloadView = this.reloadView;
         int visibility;
-        if (state == Type.ERROR) {
+        if (state == LoMoViewPagerAdapter$Type.ERROR) {
             visibility = 0;
         }
         else {
             visibility = 8;
         }
         reloadView.setVisibility(visibility);
-        if (state == Type.ERROR || state == Type.LOADING) {
+        if (state == LoMoViewPagerAdapter$Type.ERROR || state == LoMoViewPagerAdapter$Type.LOADING) {
             if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
                 Log.v("LoMoViewPagerAdapter", "Page was in error or loading state - ignoring restoration");
             }
             return;
         }
-        this.preErrorState = memento.preErrorState;
+        this.preErrorState = loMoViewPagerAdapter$Memento.preErrorState;
         this.setState(state);
-        this.currentAdapter.restoreFromMemento(memento.adapterMemento);
+        this.currentAdapter.restoreFromMemento(loMoViewPagerAdapter$Memento.adapterMemento);
     }
     
-    public Memento saveToMemento() {
-        return new Memento(this.state, this.preErrorState, this.loMo, this.currentAdapter);
+    public LoMoViewPagerAdapter$Memento saveToMemento() {
+        return new LoMoViewPagerAdapter$Memento(this.state, this.preErrorState, this.loMo, this.currentAdapter);
     }
     
     public void trackPresentation(final int n) {
         this.currentAdapter.trackPresentation(n);
-    }
-    
-    static class Memento
-    {
-        final BaseProgressivePagerAdapter.Memento adapterMemento;
-        final BasicLoMo lomo;
-        final Type preErrorState;
-        final Type state;
-        
-        protected Memento(final Type state, final Type preErrorState, final BasicLoMo lomo, final RowAdapter rowAdapter) {
-            this.state = state;
-            this.preErrorState = preErrorState;
-            this.lomo = lomo;
-            this.adapterMemento = (BaseProgressivePagerAdapter.Memento)rowAdapter.saveToMemento();
-        }
-        
-        @Override
-        public String toString() {
-            final StringBuilder append = new StringBuilder().append("lomo: ");
-            String title;
-            if (this.lomo == null) {
-                title = "n/a";
-            }
-            else {
-                title = this.lomo.getTitle();
-            }
-            return append.append(title).append(", state: ").append(this.state).append(", adapter: ").append(this.adapterMemento).toString();
-        }
-    }
-    
-    private static class RowAdapterSet
-    {
-        public final RowAdapter billboard;
-        public final RowAdapter character;
-        public final RowAdapter cw;
-        public final RowAdapter error;
-        public final RowAdapter iq;
-        public final RowAdapter loading;
-        public final RowAdapter standard;
-        
-        public RowAdapterSet(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler.ViewRecycler viewRecycler, final boolean b) {
-            this.character = new KidsCharacterPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
-            this.billboard = new BillboardPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
-            this.cw = new CwPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
-            this.iq = new IqPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
-            ProgressiveLoMoPagerAdapter standard;
-            if (b) {
-                standard = new GenreLoMoPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
-            }
-            else {
-                standard = new StandardLoMoPagerAdapter(serviceManager, rowAdapterCallbacks, viewRecycler);
-            }
-            this.standard = standard;
-            this.loading = new LoadingViewAdapter(rowAdapterCallbacks, viewRecycler);
-            this.error = new ErrorViewAdapter(rowAdapterCallbacks);
-        }
-    }
-    
-    private enum Type
-    {
-        BILLBOARD, 
-        CHARACTER, 
-        CW, 
-        ERROR, 
-        IQ, 
-        LOADING, 
-        STANDARD;
     }
 }

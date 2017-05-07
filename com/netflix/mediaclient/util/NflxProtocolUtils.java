@@ -4,14 +4,14 @@
 
 package com.netflix.mediaclient.util;
 
-import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
-import com.netflix.mediaclient.protocol.nflx.NflxHandler;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
@@ -70,15 +70,15 @@ public final class NflxProtocolUtils
     
     public static String getAction(final Map<String, String> map) {
         String s;
-        if (!StringUtils.isEmpty(s = map.get("action")) || !StringUtils.isEmpty(s = map.get("a"))) {
-            return s;
-        }
-        if (isVideoInfoAvailable(map)) {
+        if (StringUtils.isEmpty(s = map.get("action")) && StringUtils.isEmpty(s = map.get("a"))) {
+            if (!isVideoInfoAvailable(map)) {
+                Log.w("NflxHandler", "Action is empty and video info is NOT available, default action is home ");
+                return "home";
+            }
             Log.w("NflxHandler", "Action is empty, but video info is available, default action is video detail!");
-            return "view_details";
+            s = "view_details";
         }
-        Log.w("NflxHandler", "Action is empty and video info is NOT available, default action is home ");
-        return "home";
+        return s;
     }
     
     public static String getEpisodeId(Map<String, String> decode) {
@@ -131,23 +131,23 @@ public final class NflxProtocolUtils
         String s;
         if (StringUtils.isEmpty(s = map.get("source")) && StringUtils.isEmpty(s = map.get("s"))) {
             Log.w("NflxHandler", "Source is empty!");
-            return "uknown";
+            s = "uknown";
         }
         return s;
     }
     
     public static String getTargetUrl(final Map<String, String> map) {
-        final String s = map.get("target_url");
-        if (StringUtils.isEmpty(s)) {
-            return map.get("u");
+        String s;
+        if (StringUtils.isEmpty(s = map.get("target_url"))) {
+            s = map.get("u");
         }
         return s;
     }
     
     public static String getTrackId(final Map<String, String> map) {
-        final String s = map.get("trkid");
-        if (StringUtils.isEmpty(s)) {
-            return map.get("t");
+        String s;
+        if (StringUtils.isEmpty(s = map.get("trkid"))) {
+            s = map.get("t");
         }
         return s;
     }
@@ -175,7 +175,7 @@ public final class NflxProtocolUtils
         return null;
     }
     
-    public static VideoInfo getVideoInfoFromMovieIdUri(String s) {
+    public static NflxProtocolUtils$VideoInfo getVideoInfoFromMovieIdUri(String s) {
         while (true) {
             try {
                 s = URLDecoder.decode(s, "utf-8");
@@ -185,7 +185,7 @@ public final class NflxProtocolUtils
                 }
                 final String videoIdFromUri = getVideoIdFromUri(s, "series/");
                 if (videoIdFromUri != null) {
-                    return VideoInfo.createFromShow(videoIdFromUri);
+                    return NflxProtocolUtils$VideoInfo.createFromShow(videoIdFromUri);
                 }
             }
             catch (UnsupportedEncodingException ex) {
@@ -196,7 +196,7 @@ public final class NflxProtocolUtils
         }
         s = getVideoIdFromUri(s, "movies/");
         if (s != null) {
-            return VideoInfo.createFromMovie(s);
+            return NflxProtocolUtils$VideoInfo.createFromMovie(s);
         }
         Log.e("NflxHandler", "Unable to get video id! This should NOT happen!");
         return null;
@@ -246,16 +246,16 @@ public final class NflxProtocolUtils
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)netflixActivity);
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
         if (clientLogging != null) {
-            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, n, display);
+            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.profilesGate, n, display);
             reportApplicationLaunchedFromDeepLinking(netflixActivity, map, "profileGate");
-            reportUiSessions(netflixActivity, NflxHandler.Response.HANDLING, true, IClientLogging.ModalView.profilesGate, n);
+            reportUiSessions(netflixActivity, NflxHandler$Response.HANDLING, true, IClientLogging$ModalView.profilesGate, n);
         }
     }
     
-    public static void reportUiSessions(final NetflixActivity netflixActivity, final NflxHandler.Response response, final boolean b, final IClientLogging.ModalView modalView, final long n) {
+    public static void reportUiSessions(final NetflixActivity netflixActivity, final NflxHandler$Response nflxHandler$Response, final boolean b, final IClientLogging$ModalView clientLogging$ModalView, final long n) {
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
-        if (clientLogging != null && (response == NflxHandler.Response.HANDLING || response == NflxHandler.Response.HANDLING_WITH_DELAY)) {
-            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.externalControlProtocol, modalView, n, ConsolidatedLoggingUtils.getDisplay((Context)netflixActivity));
+        if (clientLogging != null && (nflxHandler$Response == NflxHandler$Response.HANDLING || nflxHandler$Response == NflxHandler$Response.HANDLING_WITH_DELAY)) {
+            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.externalControlProtocol, clientLogging$ModalView, n, ConsolidatedLoggingUtils.getDisplay((Context)netflixActivity));
             if (b) {
                 clientLogging.getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(n);
             }
@@ -293,70 +293,5 @@ public final class NflxProtocolUtils
             return;
         }
         reportUserOpenedNotification(serviceManager.getClientLogging(), intent);
-    }
-    
-    public static class VideoInfo
-    {
-        public static VideoInfo DELAYED;
-        private final String mCatalogId;
-        private final boolean mHandleWithDelay;
-        private final String mShowId;
-        private final VideoType mVideoType;
-        
-        static {
-            VideoInfo.DELAYED = new VideoInfo(true, VideoType.UNAVAILABLE, null);
-        }
-        
-        private VideoInfo(final boolean mHandleWithDelay, final VideoType mVideoType, final String mCatalogId) {
-            this.mHandleWithDelay = mHandleWithDelay;
-            this.mVideoType = mVideoType;
-            this.mCatalogId = mCatalogId;
-            this.mShowId = null;
-        }
-        
-        private VideoInfo(final boolean mHandleWithDelay, final String mCatalogId) {
-            this.mHandleWithDelay = mHandleWithDelay;
-            this.mVideoType = VideoType.SHOW;
-            this.mCatalogId = mCatalogId;
-            this.mShowId = null;
-        }
-        
-        private VideoInfo(final boolean mHandleWithDelay, final String mShowId, final String mCatalogId) {
-            this.mHandleWithDelay = mHandleWithDelay;
-            this.mVideoType = VideoType.EPISODE;
-            this.mCatalogId = mCatalogId;
-            this.mShowId = mShowId;
-        }
-        
-        public static VideoInfo createFromEpisode(final String s, final String s2) {
-            if (StringUtils.safeEquals(s, s2)) {
-                return new VideoInfo(false, s);
-            }
-            return new VideoInfo(false, s, s2);
-        }
-        
-        public static VideoInfo createFromMovie(final String s) {
-            return new VideoInfo(false, VideoType.MOVIE, s);
-        }
-        
-        public static VideoInfo createFromShow(final String s) {
-            return new VideoInfo(false, VideoType.SHOW, s);
-        }
-        
-        public String getCatalogId() {
-            return this.mCatalogId;
-        }
-        
-        public String getShowId() {
-            return this.mShowId;
-        }
-        
-        public VideoType getVideoType() {
-            return this.mVideoType;
-        }
-        
-        public boolean handleWithDelay() {
-            return this.mHandleWithDelay;
-        }
     }
 }

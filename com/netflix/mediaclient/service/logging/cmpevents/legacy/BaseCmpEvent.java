@@ -8,7 +8,6 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.webapi.CommonRequestParameters;
 import android.content.Context;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.UserData;
 
@@ -42,7 +41,7 @@ public abstract class BaseCmpEvent
         this.mUser = mUser;
     }
     
-    protected static void addIfNotNull(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
+    protected static void addIfNotNull(final JSONObject jsonObject, final String s, final String s2) {
         if (s2 != null) {
             jsonObject.put(s, (Object)s2);
         }

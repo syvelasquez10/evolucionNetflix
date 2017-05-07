@@ -4,10 +4,6 @@
 
 package com.google.gson.internal;
 
-import java.util.AbstractCollection;
-import java.util.NoSuchElementException;
-import java.util.Iterator;
-import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Collection;
@@ -22,82 +18,82 @@ public final class StringMap<V> extends AbstractMap<String, V>
     private static final int MINIMUM_CAPACITY = 4;
     private static final int seed;
     private Set<Entry<String, V>> entrySet;
-    private LinkedEntry<V> header;
+    private StringMap$LinkedEntry<V> header;
     private Set<String> keySet;
     private int size;
-    private LinkedEntry<V>[] table;
+    private StringMap$LinkedEntry<V>[] table;
     private int threshold;
     private Collection<V> values;
     
     static {
-        EMPTY_TABLE = new LinkedEntry[2];
+        EMPTY_TABLE = new StringMap$LinkedEntry[2];
         seed = new Random().nextInt();
     }
     
     public StringMap() {
-        this.table = (LinkedEntry<V>[])StringMap.EMPTY_TABLE;
+        this.table = (StringMap$LinkedEntry<V>[])StringMap.EMPTY_TABLE;
         this.threshold = -1;
-        this.header = new LinkedEntry<V>();
+        this.header = new StringMap$LinkedEntry<V>();
     }
     
     private void addNewEntry(final String s, final V v, final int n, final int n2) {
-        final LinkedEntry<V> header = this.header;
-        final LinkedEntry<V> prv = header.prv;
-        final LinkedEntry linkedEntry = new LinkedEntry<Object>(s, v, n, (LinkedEntry<Object>)this.table[n2], (LinkedEntry<Object>)header, (LinkedEntry<Object>)prv);
-        final LinkedEntry<V>[] table = this.table;
-        header.prv = (LinkedEntry<V>)linkedEntry;
-        table[n2] = (prv.nxt = (LinkedEntry<V>)linkedEntry);
+        final StringMap$LinkedEntry<V> header = this.header;
+        final StringMap$LinkedEntry<V> prv = header.prv;
+        final StringMap$LinkedEntry stringMap$LinkedEntry = new StringMap$LinkedEntry<Object>(s, v, n, (StringMap$LinkedEntry<Object>)this.table[n2], (StringMap$LinkedEntry<Object>)header, (StringMap$LinkedEntry<Object>)prv);
+        final StringMap$LinkedEntry<V>[] table = this.table;
+        header.prv = (StringMap$LinkedEntry<V>)stringMap$LinkedEntry;
+        table[n2] = (prv.nxt = (StringMap$LinkedEntry<V>)stringMap$LinkedEntry);
     }
     
-    private LinkedEntry<V>[] doubleCapacity() {
-        final LinkedEntry<V>[] table = this.table;
+    private StringMap$LinkedEntry<V>[] doubleCapacity() {
+        final StringMap$LinkedEntry<V>[] table = this.table;
         final int length = table.length;
         if (length == 1073741824) {
             return table;
         }
-        final LinkedEntry<V>[] table2 = this.makeTable(length * 2);
+        final StringMap$LinkedEntry<V>[] table2 = this.makeTable(length * 2);
         if (this.size == 0) {
             return table2;
         }
         for (int i = 0; i < length; ++i) {
-            LinkedEntry<V> linkedEntry = table[i];
-            if (linkedEntry != null) {
-                int n = linkedEntry.hash & length;
-                table2[i | n] = linkedEntry;
-                LinkedEntry<V> next = linkedEntry.next;
-                LinkedEntry<V> linkedEntry2 = null;
+            StringMap$LinkedEntry<V> stringMap$LinkedEntry = table[i];
+            if (stringMap$LinkedEntry != null) {
+                int n = stringMap$LinkedEntry.hash & length;
+                table2[i | n] = stringMap$LinkedEntry;
+                StringMap$LinkedEntry<V> next = stringMap$LinkedEntry.next;
+                StringMap$LinkedEntry<V> stringMap$LinkedEntry2 = null;
                 while (next != null) {
                     final int n2 = next.hash & length;
                     if (n2 != n) {
-                        if (linkedEntry2 == null) {
+                        if (stringMap$LinkedEntry2 == null) {
                             table2[i | n2] = next;
                         }
                         else {
-                            linkedEntry2.next = next;
+                            stringMap$LinkedEntry2.next = next;
                         }
                         n = n2;
                     }
                     else {
-                        linkedEntry = linkedEntry2;
+                        stringMap$LinkedEntry = stringMap$LinkedEntry2;
                     }
-                    final LinkedEntry<V> next2 = next.next;
-                    linkedEntry2 = linkedEntry;
-                    linkedEntry = next;
+                    final StringMap$LinkedEntry<V> next2 = next.next;
+                    stringMap$LinkedEntry2 = stringMap$LinkedEntry;
+                    stringMap$LinkedEntry = next;
                     next = next2;
                 }
-                if (linkedEntry2 != null) {
-                    linkedEntry2.next = null;
+                if (stringMap$LinkedEntry2 != null) {
+                    stringMap$LinkedEntry2.next = null;
                 }
             }
         }
         return table2;
     }
     
-    private LinkedEntry<V> getEntry(final String s) {
+    private StringMap$LinkedEntry<V> getEntry(final String s) {
         if (s != null) {
             final int hash = hash(s);
-            final LinkedEntry<V>[] table = this.table;
-            for (LinkedEntry<V> next = table[table.length - 1 & hash]; next != null; next = next.next) {
+            final StringMap$LinkedEntry<V>[] table = this.table;
+            for (StringMap$LinkedEntry<V> next = table[table.length - 1 & hash]; next != null; next = next.next) {
                 final String key = next.key;
                 if (key == s || (next.hash == hash && s.equals(key))) {
                     return next;
@@ -118,11 +114,11 @@ public final class StringMap<V> extends AbstractMap<String, V>
         return c3 >>> 4 ^ (c3 >>> 7 ^ c3);
     }
     
-    private LinkedEntry<V>[] makeTable(final int n) {
-        final LinkedEntry[] table = new LinkedEntry[n];
-        this.table = (LinkedEntry<V>[])table;
+    private StringMap$LinkedEntry<V>[] makeTable(final int n) {
+        final StringMap$LinkedEntry[] table = new StringMap$LinkedEntry[n];
+        this.table = (StringMap$LinkedEntry<V>[])table;
         this.threshold = (n >> 1) + (n >> 2);
-        return (LinkedEntry<V>[])table;
+        return (StringMap$LinkedEntry<V>[])table;
     }
     
     private boolean removeMapping(final Object o, final Object o2) {
@@ -130,45 +126,45 @@ public final class StringMap<V> extends AbstractMap<String, V>
             return false;
         }
         final int hash = hash((String)o);
-        final LinkedEntry<V>[] table = this.table;
+        final StringMap$LinkedEntry<V>[] table = this.table;
         final int n = hash & table.length - 1;
-        LinkedEntry<V> linkedEntry = table[n];
-        LinkedEntry<V> linkedEntry2 = null;
-        while (linkedEntry != null) {
-            if (linkedEntry.hash == hash && o.equals(linkedEntry.key)) {
+        StringMap$LinkedEntry<V> stringMap$LinkedEntry = table[n];
+        StringMap$LinkedEntry<V> stringMap$LinkedEntry2 = null;
+        while (stringMap$LinkedEntry != null) {
+            if (stringMap$LinkedEntry.hash == hash && o.equals(stringMap$LinkedEntry.key)) {
                 Label_0098: {
                     if (o2 == null) {
-                        if (linkedEntry.value == null) {
+                        if (stringMap$LinkedEntry.value == null) {
                             break Label_0098;
                         }
                     }
-                    else if (o2.equals(linkedEntry.value)) {
+                    else if (o2.equals(stringMap$LinkedEntry.value)) {
                         break Label_0098;
                     }
                     return false;
                 }
-                if (linkedEntry2 == null) {
-                    table[n] = linkedEntry.next;
+                if (stringMap$LinkedEntry2 == null) {
+                    table[n] = stringMap$LinkedEntry.next;
                 }
                 else {
-                    linkedEntry2.next = linkedEntry.next;
+                    stringMap$LinkedEntry2.next = stringMap$LinkedEntry.next;
                 }
                 --this.size;
-                this.unlink(linkedEntry);
+                this.unlink(stringMap$LinkedEntry);
                 return true;
             }
-            final LinkedEntry<V> next = linkedEntry.next;
-            linkedEntry2 = linkedEntry;
-            linkedEntry = next;
+            final StringMap$LinkedEntry<V> next = stringMap$LinkedEntry.next;
+            stringMap$LinkedEntry2 = stringMap$LinkedEntry;
+            stringMap$LinkedEntry = next;
         }
         return false;
     }
     
-    private void unlink(final LinkedEntry<V> linkedEntry) {
-        linkedEntry.prv.nxt = linkedEntry.nxt;
-        linkedEntry.nxt.prv = linkedEntry.prv;
-        linkedEntry.prv = null;
-        linkedEntry.nxt = null;
+    private void unlink(final StringMap$LinkedEntry<V> stringMap$LinkedEntry) {
+        stringMap$LinkedEntry.prv.nxt = stringMap$LinkedEntry.nxt;
+        stringMap$LinkedEntry.nxt.prv = stringMap$LinkedEntry.prv;
+        stringMap$LinkedEntry.prv = null;
+        stringMap$LinkedEntry.nxt = null;
     }
     
     @Override
@@ -177,9 +173,9 @@ public final class StringMap<V> extends AbstractMap<String, V>
             Arrays.fill(this.table, null);
             this.size = 0;
         }
-        final LinkedEntry<V> header = this.header;
-        LinkedEntry<V> nxt2;
-        for (LinkedEntry<V> nxt = header.nxt; nxt != header; nxt = nxt2) {
+        final StringMap$LinkedEntry<V> header = this.header;
+        StringMap$LinkedEntry<V> nxt2;
+        for (StringMap$LinkedEntry<V> nxt = header.nxt; nxt != header; nxt = nxt2) {
             nxt2 = nxt.nxt;
             nxt.prv = null;
             nxt.nxt = null;
@@ -195,11 +191,80 @@ public final class StringMap<V> extends AbstractMap<String, V>
     
     @Override
     public Set<Entry<String, V>> entrySet() {
-        final Set<Entry<String, V>> entrySet = this.entrySet;
-        if (entrySet != null) {
-            return entrySet;
-        }
-        return this.entrySet = new EntrySet();
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: getfield        com/google/gson/internal/StringMap.entrySet:Ljava/util/Set;
+        //     4: astore_1       
+        //     5: aload_1        
+        //     6: ifnull          11
+        //     9: aload_1        
+        //    10: areturn        
+        //    11: new             new            !!! ERROR
+        //    14: dup            
+        //    15: aload_0        
+        //    16: aconst_null    
+        //    17: invokespecial   invokespecial  !!! ERROR
+        //    20: astore_1       
+        //    21: aload_0        
+        //    22: aload_1        
+        //    23: putfield        com/google/gson/internal/StringMap.entrySet:Ljava/util/Set;
+        //    26: aload_1        
+        //    27: areturn        
+        //    Signature:
+        //  ()Ljava/util/Set<Ljava/util/Map$Entry<Ljava/lang/String;TV;>;>;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
+        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.reifyTypeArguments(Reifier.java:53)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:123)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
+        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
+        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
+        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     @Override
@@ -207,7 +272,7 @@ public final class StringMap<V> extends AbstractMap<String, V>
         Object value;
         final Object o2 = value = null;
         if (o instanceof String) {
-            final LinkedEntry<V> entry = this.getEntry((String)o);
+            final StringMap$LinkedEntry<V> entry = this.getEntry((String)o);
             value = o2;
             if (entry != null) {
                 value = entry.value;
@@ -222,7 +287,7 @@ public final class StringMap<V> extends AbstractMap<String, V>
         if (keySet != null) {
             return keySet;
         }
-        return this.keySet = new KeySet();
+        return this.keySet = new StringMap$KeySet(this, null);
     }
     
     @Override
@@ -231,9 +296,9 @@ public final class StringMap<V> extends AbstractMap<String, V>
             throw new NullPointerException("key == null");
         }
         final int hash = hash(s);
-        final LinkedEntry<V>[] table = this.table;
+        final StringMap$LinkedEntry<V>[] table = this.table;
         int n = table.length - 1 & hash;
-        for (LinkedEntry<V> next = table[n]; next != null; next = next.next) {
+        for (StringMap$LinkedEntry<V> next = table[n]; next != null; next = next.next) {
             if (next.hash == hash && s.equals(next.key)) {
                 final V value2 = next.value;
                 next.value = value;
@@ -253,25 +318,25 @@ public final class StringMap<V> extends AbstractMap<String, V>
             return null;
         }
         final int hash = hash((String)o);
-        final LinkedEntry<V>[] table = this.table;
+        final StringMap$LinkedEntry<V>[] table = this.table;
         final int n = hash & table.length - 1;
-        LinkedEntry<V> linkedEntry = table[n];
-        LinkedEntry<V> linkedEntry2 = null;
-        while (linkedEntry != null) {
-            if (linkedEntry.hash == hash && o.equals(linkedEntry.key)) {
-                if (linkedEntry2 == null) {
-                    table[n] = linkedEntry.next;
+        StringMap$LinkedEntry<V> stringMap$LinkedEntry = table[n];
+        StringMap$LinkedEntry<V> stringMap$LinkedEntry2 = null;
+        while (stringMap$LinkedEntry != null) {
+            if (stringMap$LinkedEntry.hash == hash && o.equals(stringMap$LinkedEntry.key)) {
+                if (stringMap$LinkedEntry2 == null) {
+                    table[n] = stringMap$LinkedEntry.next;
                 }
                 else {
-                    linkedEntry2.next = linkedEntry.next;
+                    stringMap$LinkedEntry2.next = stringMap$LinkedEntry.next;
                 }
                 --this.size;
-                this.unlink(linkedEntry);
-                return linkedEntry.value;
+                this.unlink(stringMap$LinkedEntry);
+                return stringMap$LinkedEntry.value;
             }
-            final LinkedEntry<V> next = linkedEntry.next;
-            linkedEntry2 = linkedEntry;
-            linkedEntry = next;
+            final StringMap$LinkedEntry<V> next = stringMap$LinkedEntry.next;
+            stringMap$LinkedEntry2 = stringMap$LinkedEntry;
+            stringMap$LinkedEntry = next;
         }
         return null;
     }
@@ -283,233 +348,76 @@ public final class StringMap<V> extends AbstractMap<String, V>
     
     @Override
     public Collection<V> values() {
-        final Collection<V> values = this.values;
-        if (values != null) {
-            return values;
-        }
-        return this.values = new Values();
-    }
-    
-    private final class EntrySet extends AbstractSet<Entry<String, V>>
-    {
-        @Override
-        public void clear() {
-            StringMap.this.clear();
-        }
-        
-        @Override
-        public boolean contains(final Object o) {
-            if (o instanceof Entry) {
-                final Entry entry = (Entry)o;
-                final V value = StringMap.this.get(entry.getKey());
-                if (value != null && value.equals(entry.getValue())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        @Override
-        public Iterator<Entry<String, V>> iterator() {
-            return new LinkedHashIterator<Entry<String, V>>() {
-                @Override
-                public final Entry<String, V> next() {
-                    return ((LinkedHashIterator)this).nextEntry();
-                }
-            };
-        }
-        
-        @Override
-        public boolean remove(final Object o) {
-            if (!(o instanceof Entry)) {
-                return false;
-            }
-            final Entry entry = (Entry)o;
-            return StringMap.this.removeMapping(entry.getKey(), entry.getValue());
-        }
-        
-        @Override
-        public int size() {
-            return StringMap.this.size;
-        }
-    }
-    
-    private final class KeySet extends AbstractSet<String>
-    {
-        @Override
-        public void clear() {
-            StringMap.this.clear();
-        }
-        
-        @Override
-        public boolean contains(final Object o) {
-            return StringMap.this.containsKey(o);
-        }
-        
-        @Override
-        public Iterator<String> iterator() {
-            return new LinkedHashIterator<String>() {
-                @Override
-                public final String next() {
-                    return ((LinkedHashIterator)this).nextEntry().key;
-                }
-            };
-        }
-        
-        @Override
-        public boolean remove(final Object o) {
-            final int access$500 = StringMap.this.size;
-            StringMap.this.remove(o);
-            return StringMap.this.size != access$500;
-        }
-        
-        @Override
-        public int size() {
-            return StringMap.this.size;
-        }
-    }
-    
-    static class LinkedEntry<V> implements Entry<String, V>
-    {
-        final int hash;
-        final String key;
-        LinkedEntry<V> next;
-        LinkedEntry<V> nxt;
-        LinkedEntry<V> prv;
-        V value;
-        
-        LinkedEntry() {
-            this(null, null, 0, null, null, null);
-            this.prv = this;
-            this.nxt = this;
-        }
-        
-        LinkedEntry(final String key, final V value, final int hash, final LinkedEntry<V> next, final LinkedEntry<V> nxt, final LinkedEntry<V> prv) {
-            this.key = key;
-            this.value = value;
-            this.hash = hash;
-            this.next = next;
-            this.nxt = nxt;
-            this.prv = prv;
-        }
-        
-        @Override
-        public final boolean equals(final Object o) {
-            if (o instanceof Entry) {
-                final Entry entry = (Entry)o;
-                final Object value = entry.getValue();
-                if (this.key.equals(entry.getKey())) {
-                    if (this.value == null) {
-                        if (value != null) {
-                            return false;
-                        }
-                    }
-                    else if (!this.value.equals(value)) {
-                        return false;
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        public final String getKey() {
-            return this.key;
-        }
-        
-        @Override
-        public final V getValue() {
-            return this.value;
-        }
-        
-        @Override
-        public final int hashCode() {
-            int hashCode = 0;
-            int hashCode2;
-            if (this.key == null) {
-                hashCode2 = 0;
-            }
-            else {
-                hashCode2 = this.key.hashCode();
-            }
-            if (this.value != null) {
-                hashCode = this.value.hashCode();
-            }
-            return hashCode2 ^ hashCode;
-        }
-        
-        @Override
-        public final V setValue(final V value) {
-            final V value2 = this.value;
-            this.value = value;
-            return value2;
-        }
-        
-        @Override
-        public final String toString() {
-            return this.key + "=" + this.value;
-        }
-    }
-    
-    private abstract class LinkedHashIterator<T> implements Iterator<T>
-    {
-        LinkedEntry<V> lastReturned;
-        LinkedEntry<V> next;
-        
-        private LinkedHashIterator() {
-            this.next = StringMap.this.header.nxt;
-            this.lastReturned = null;
-        }
-        
-        @Override
-        public final boolean hasNext() {
-            return this.next != StringMap.this.header;
-        }
-        
-        final LinkedEntry<V> nextEntry() {
-            final LinkedEntry<V> next = this.next;
-            if (next == StringMap.this.header) {
-                throw new NoSuchElementException();
-            }
-            this.next = next.nxt;
-            return this.lastReturned = next;
-        }
-        
-        @Override
-        public final void remove() {
-            if (this.lastReturned == null) {
-                throw new IllegalStateException();
-            }
-            StringMap.this.remove(this.lastReturned.key);
-            this.lastReturned = null;
-        }
-    }
-    
-    private final class Values extends AbstractCollection<V>
-    {
-        @Override
-        public void clear() {
-            StringMap.this.clear();
-        }
-        
-        @Override
-        public boolean contains(final Object o) {
-            return StringMap.this.containsValue(o);
-        }
-        
-        @Override
-        public Iterator<V> iterator() {
-            return new LinkedHashIterator<V>() {
-                @Override
-                public final V next() {
-                    return ((LinkedHashIterator)this).nextEntry().value;
-                }
-            };
-        }
-        
-        @Override
-        public int size() {
-            return StringMap.this.size;
-        }
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: getfield        com/google/gson/internal/StringMap.values:Ljava/util/Collection;
+        //     4: astore_1       
+        //     5: aload_1        
+        //     6: ifnull          11
+        //     9: aload_1        
+        //    10: areturn        
+        //    11: new             new            !!! ERROR
+        //    14: dup            
+        //    15: aload_0        
+        //    16: aconst_null    
+        //    17: invokespecial   invokespecial  !!! ERROR
+        //    20: astore_1       
+        //    21: aload_0        
+        //    22: aload_1        
+        //    23: putfield        com/google/gson/internal/StringMap.values:Ljava/util/Collection;
+        //    26: aload_1        
+        //    27: areturn        
+        //    Signature:
+        //  ()Ljava/util/Collection<TV;>;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
+        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
+        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
+        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
+        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
 }

@@ -4,25 +4,24 @@
 
 package com.netflix.mediaclient.service.logging.social.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.SocialLogging;
+import com.netflix.mediaclient.servicemgr.SocialLogging$Channel;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
 
 public class SocialConnectSessionEnded extends SessionEndedEvent
 {
     public static final String CHANNEL = "Channel";
     private static final String SESSION_NAME = "socialConnect";
-    private SocialLogging.Channel mChannel;
+    private SocialLogging$Channel mChannel;
     
-    public SocialConnectSessionEnded(final long duration, final SocialLogging.Channel mChannel) {
+    public SocialConnectSessionEnded(final long duration, final SocialLogging$Channel mChannel) {
         super("socialConnect");
         this.duration = duration;
         this.mChannel = mChannel;
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

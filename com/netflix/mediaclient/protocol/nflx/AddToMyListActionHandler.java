@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.protocol.nflx;
 
-import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.ui.details.DetailsActivity$Action;
 import java.util.Map;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
@@ -15,8 +15,8 @@ class AddToMyListActionHandler extends ViewDetailsActionHandler
     }
     
     @Override
-    protected DetailsActivity.Action getAction() {
-        return DetailsActivity.Action.AddToMyList;
+    protected DetailsActivity$Action getAction() {
+        return DetailsActivity$Action.AddToMyList;
     }
     
     @Override

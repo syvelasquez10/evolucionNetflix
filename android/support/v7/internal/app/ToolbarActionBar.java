@@ -4,29 +4,35 @@
 
 package android.support.v7.internal.app;
 
-import android.support.v7.widget.WindowCallbackWrapper;
 import android.support.v7.view.ActionMode;
-import android.support.v7.internal.widget.AdapterViewCompat;
+import android.support.v7.view.ActionMode$Callback;
+import android.support.v7.internal.widget.AdapterViewCompat$OnItemSelectedListener;
+import android.support.v7.app.ActionBar$OnNavigationListener;
 import android.widget.SpinnerAdapter;
+import android.support.v7.internal.view.menu.y;
 import android.view.ViewGroup$LayoutParams;
+import android.support.v7.app.ActionBar$LayoutParams;
 import android.view.LayoutInflater;
 import android.support.annotation.Nullable;
 import android.graphics.drawable.Drawable;
+import android.support.v7.internal.view.menu.i;
 import android.view.KeyEvent;
 import android.content.res.Configuration;
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.internal.view.menu.MenuBuilder;
-import android.support.v7.internal.view.menu.MenuPresenter;
+import android.support.v7.app.ActionBar$Tab;
+import android.support.v7.internal.view.menu.j;
+import android.support.v7.internal.view.menu.z;
 import android.view.ViewGroup;
 import android.view.View;
 import android.view.Menu;
 import android.support.v7.internal.widget.ToolbarWidgetWrapper;
-import android.view.MenuItem;
 import android.view.Window;
-import java.util.ArrayList;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.internal.view.menu.ListMenuPresenter;
+import android.support.v7.app.ActionBar$OnMenuVisibilityListener;
+import java.util.ArrayList;
+import android.support.v7.widget.Toolbar$OnMenuItemClickListener;
+import android.support.v7.internal.view.menu.g;
 import android.support.v7.internal.widget.DecorToolbar;
 import android.support.v7.app.ActionBar;
 
@@ -34,33 +40,23 @@ public class ToolbarActionBar extends ActionBar
 {
     private DecorToolbar mDecorToolbar;
     private boolean mLastMenuVisibility;
-    private ListMenuPresenter mListMenuPresenter;
+    private g mListMenuPresenter;
     private boolean mMenuCallbackSet;
-    private final Toolbar.OnMenuItemClickListener mMenuClicker;
+    private final Toolbar$OnMenuItemClickListener mMenuClicker;
     private final Runnable mMenuInvalidator;
-    private ArrayList<OnMenuVisibilityListener> mMenuVisibilityListeners;
+    private ArrayList<ActionBar$OnMenuVisibilityListener> mMenuVisibilityListeners;
     private Toolbar mToolbar;
     private boolean mToolbarMenuPrepared;
     private Window mWindow;
     private WindowCallback mWindowCallback;
     
     public ToolbarActionBar(final Toolbar mToolbar, final CharSequence windowTitle, final Window mWindow, final WindowCallback windowCallback) {
-        this.mMenuVisibilityListeners = new ArrayList<OnMenuVisibilityListener>();
-        this.mMenuInvalidator = new Runnable() {
-            @Override
-            public void run() {
-                ToolbarActionBar.this.populateOptionsMenu();
-            }
-        };
-        this.mMenuClicker = new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(final MenuItem menuItem) {
-                return ToolbarActionBar.this.mWindowCallback.onMenuItemSelected(0, menuItem);
-            }
-        };
+        this.mMenuVisibilityListeners = new ArrayList<ActionBar$OnMenuVisibilityListener>();
+        this.mMenuInvalidator = new ToolbarActionBar$1(this);
+        this.mMenuClicker = new ToolbarActionBar$2(this);
         this.mToolbar = mToolbar;
         this.mDecorToolbar = new ToolbarWidgetWrapper(mToolbar, false);
-        this.mWindowCallback = new ToolbarCallbackWrapper(windowCallback);
+        this.mWindowCallback = new ToolbarActionBar$ToolbarCallbackWrapper(this, windowCallback);
         this.mDecorToolbar.setWindowCallback(this.mWindowCallback);
         mToolbar.setOnMenuItemClickListener(this.mMenuClicker);
         this.mDecorToolbar.setWindowTitle(windowTitle);
@@ -68,7 +64,7 @@ public class ToolbarActionBar extends ActionBar
     }
     
     private View getListMenuView(final Menu menu) {
-        if (menu != null && this.mListMenuPresenter != null && this.mListMenuPresenter.getAdapter().getCount() > 0) {
+        if (menu != null && this.mListMenuPresenter != null && this.mListMenuPresenter.a().getCount() > 0) {
             return (View)this.mListMenuPresenter.getMenuView(this.mToolbar);
         }
         return null;
@@ -76,34 +72,34 @@ public class ToolbarActionBar extends ActionBar
     
     private Menu getMenu() {
         if (!this.mMenuCallbackSet) {
-            this.mToolbar.setMenuCallbacks(new ActionMenuPresenterCallback(), new MenuBuilderCallback());
+            this.mToolbar.setMenuCallbacks(new ToolbarActionBar$ActionMenuPresenterCallback(this, null), new ToolbarActionBar$MenuBuilderCallback(this, null));
             this.mMenuCallbackSet = true;
         }
         return this.mToolbar.getMenu();
     }
     
     @Override
-    public void addOnMenuVisibilityListener(final OnMenuVisibilityListener onMenuVisibilityListener) {
-        this.mMenuVisibilityListeners.add(onMenuVisibilityListener);
+    public void addOnMenuVisibilityListener(final ActionBar$OnMenuVisibilityListener actionBar$OnMenuVisibilityListener) {
+        this.mMenuVisibilityListeners.add(actionBar$OnMenuVisibilityListener);
     }
     
     @Override
-    public void addTab(final Tab tab) {
+    public void addTab(final ActionBar$Tab actionBar$Tab) {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
     @Override
-    public void addTab(final Tab tab, final int n) {
+    public void addTab(final ActionBar$Tab actionBar$Tab, final int n) {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
     @Override
-    public void addTab(final Tab tab, final int n, final boolean b) {
+    public void addTab(final ActionBar$Tab actionBar$Tab, final int n, final boolean b) {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
     @Override
-    public void addTab(final Tab tab, final boolean b) {
+    public void addTab(final ActionBar$Tab actionBar$Tab, final boolean b) {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
@@ -162,7 +158,7 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public Tab getSelectedTab() {
+    public ActionBar$Tab getSelectedTab() {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
@@ -172,7 +168,7 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public Tab getTabAt(final int n) {
+    public ActionBar$Tab getTabAt(final int n) {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
@@ -218,7 +214,7 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public Tab newTab() {
+    public ActionBar$Tab newTab() {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
@@ -241,23 +237,31 @@ public class ToolbarActionBar extends ActionBar
     }
     
     void populateOptionsMenu() {
-        MenuBuilder menuBuilder = null;
         final Menu menu = this.getMenu();
-        if (menu instanceof MenuBuilder) {
-            menuBuilder = (MenuBuilder)menu;
-        }
-        if (menuBuilder != null) {
-            menuBuilder.stopDispatchingItemsChanged();
-        }
-        try {
-            menu.clear();
-            if (!this.mWindowCallback.onCreatePanelMenu(0, menu) || !this.mWindowCallback.onPreparePanel(0, null, menu)) {
-                menu.clear();
+        Label_0075: {
+            if (!(menu instanceof i)) {
+                break Label_0075;
             }
-        }
-        finally {
-            if (menuBuilder != null) {
-                menuBuilder.startDispatchingItemsChanged();
+            i i = (i)menu;
+            while (true) {
+                if (i != null) {
+                    i.h();
+                }
+                try {
+                    menu.clear();
+                    if (!this.mWindowCallback.onCreatePanelMenu(0, menu) || !this.mWindowCallback.onPreparePanel(0, null, menu)) {
+                        menu.clear();
+                    }
+                    return;
+                    i = null;
+                    continue;
+                }
+                finally {
+                    if (i != null) {
+                        i.i();
+                    }
+                }
+                break;
             }
         }
     }
@@ -268,12 +272,12 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public void removeOnMenuVisibilityListener(final OnMenuVisibilityListener onMenuVisibilityListener) {
-        this.mMenuVisibilityListeners.remove(onMenuVisibilityListener);
+    public void removeOnMenuVisibilityListener(final ActionBar$OnMenuVisibilityListener actionBar$OnMenuVisibilityListener) {
+        this.mMenuVisibilityListeners.remove(actionBar$OnMenuVisibilityListener);
     }
     
     @Override
-    public void removeTab(final Tab tab) {
+    public void removeTab(final ActionBar$Tab actionBar$Tab) {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
@@ -283,7 +287,7 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public void selectTab(final Tab tab) {
+    public void selectTab(final ActionBar$Tab actionBar$Tab) {
         throw new UnsupportedOperationException("Tabs are not supported in toolbar action bars");
     }
     
@@ -299,11 +303,11 @@ public class ToolbarActionBar extends ActionBar
     
     @Override
     public void setCustomView(final View view) {
-        this.setCustomView(view, new LayoutParams(-2, -2));
+        this.setCustomView(view, new ActionBar$LayoutParams(-2, -2));
     }
     
     @Override
-    public void setCustomView(final View customView, final LayoutParams layoutParams) {
+    public void setCustomView(final View customView, final ActionBar$LayoutParams layoutParams) {
         customView.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
         this.mDecorToolbar.setCustomView(customView);
     }
@@ -331,7 +335,7 @@ public class ToolbarActionBar extends ActionBar
     
     @Override
     public void setDisplayOptions(final int n, final int n2) {
-        this.mDecorToolbar.setDisplayOptions((n & n2) | (~n2 & this.mDecorToolbar.getDisplayOptions()));
+        this.mDecorToolbar.setDisplayOptions((this.mDecorToolbar.getDisplayOptions() & ~n2) | (n & n2));
     }
     
     @Override
@@ -421,24 +425,24 @@ public class ToolbarActionBar extends ActionBar
         this.mDecorToolbar.setIcon(icon);
     }
     
-    public void setListMenuPresenter(final ListMenuPresenter mListMenuPresenter) {
+    public void setListMenuPresenter(final g mListMenuPresenter) {
         final Menu menu = this.getMenu();
-        if (menu instanceof MenuBuilder) {
-            final MenuBuilder menuBuilder = (MenuBuilder)menu;
+        if (menu instanceof i) {
+            final i i = (i)menu;
             if (this.mListMenuPresenter != null) {
                 this.mListMenuPresenter.setCallback(null);
-                menuBuilder.removeMenuPresenter(this.mListMenuPresenter);
+                i.b(this.mListMenuPresenter);
             }
             if ((this.mListMenuPresenter = mListMenuPresenter) != null) {
-                mListMenuPresenter.setCallback(new PanelMenuPresenterCallback());
-                menuBuilder.addMenuPresenter(mListMenuPresenter);
+                mListMenuPresenter.setCallback(new ToolbarActionBar$PanelMenuPresenterCallback(this, null));
+                i.a(mListMenuPresenter);
             }
         }
     }
     
     @Override
-    public void setListNavigationCallbacks(final SpinnerAdapter spinnerAdapter, final OnNavigationListener onNavigationListener) {
-        this.mDecorToolbar.setDropdownParams(spinnerAdapter, new NavItemSelectedListener(onNavigationListener));
+    public void setListNavigationCallbacks(final SpinnerAdapter spinnerAdapter, final ActionBar$OnNavigationListener actionBar$OnNavigationListener) {
+        this.mDecorToolbar.setDropdownParams(spinnerAdapter, new NavItemSelectedListener(actionBar$OnNavigationListener));
     }
     
     @Override
@@ -530,111 +534,7 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public ActionMode startActionMode(final ActionMode.Callback callback) {
-        return this.mWindowCallback.startActionMode(callback);
-    }
-    
-    private final class ActionMenuPresenterCallback implements MenuPresenter.Callback
-    {
-        private boolean mClosingActionMenu;
-        
-        @Override
-        public void onCloseMenu(final MenuBuilder menuBuilder, final boolean b) {
-            if (this.mClosingActionMenu) {
-                return;
-            }
-            this.mClosingActionMenu = true;
-            ToolbarActionBar.this.mToolbar.dismissPopupMenus();
-            if (ToolbarActionBar.this.mWindowCallback != null) {
-                ToolbarActionBar.this.mWindowCallback.onPanelClosed(8, (Menu)menuBuilder);
-            }
-            this.mClosingActionMenu = false;
-        }
-        
-        @Override
-        public boolean onOpenSubMenu(final MenuBuilder menuBuilder) {
-            if (ToolbarActionBar.this.mWindowCallback != null) {
-                ToolbarActionBar.this.mWindowCallback.onMenuOpened(8, (Menu)menuBuilder);
-                return true;
-            }
-            return false;
-        }
-    }
-    
-    private final class MenuBuilderCallback implements MenuBuilder.Callback
-    {
-        @Override
-        public boolean onMenuItemSelected(final MenuBuilder menuBuilder, final MenuItem menuItem) {
-            return false;
-        }
-        
-        @Override
-        public void onMenuModeChange(final MenuBuilder menuBuilder) {
-            if (ToolbarActionBar.this.mWindowCallback != null) {
-                if (ToolbarActionBar.this.mToolbar.isOverflowMenuShowing()) {
-                    ToolbarActionBar.this.mWindowCallback.onPanelClosed(8, (Menu)menuBuilder);
-                }
-                else if (ToolbarActionBar.this.mWindowCallback.onPreparePanel(0, null, (Menu)menuBuilder)) {
-                    ToolbarActionBar.this.mWindowCallback.onMenuOpened(8, (Menu)menuBuilder);
-                }
-            }
-        }
-    }
-    
-    private final class PanelMenuPresenterCallback implements MenuPresenter.Callback
-    {
-        @Override
-        public void onCloseMenu(final MenuBuilder menuBuilder, final boolean b) {
-            if (ToolbarActionBar.this.mWindowCallback != null) {
-                ToolbarActionBar.this.mWindowCallback.onPanelClosed(0, (Menu)menuBuilder);
-            }
-            ToolbarActionBar.this.mWindow.closePanel(0);
-        }
-        
-        @Override
-        public boolean onOpenSubMenu(final MenuBuilder menuBuilder) {
-            if (menuBuilder == null && ToolbarActionBar.this.mWindowCallback != null) {
-                ToolbarActionBar.this.mWindowCallback.onMenuOpened(0, (Menu)menuBuilder);
-            }
-            return true;
-        }
-    }
-    
-    private class ToolbarCallbackWrapper extends WindowCallbackWrapper
-    {
-        public ToolbarCallbackWrapper(final WindowCallback windowCallback) {
-            super(windowCallback);
-        }
-        
-        @Override
-        public View onCreatePanelView(final int n) {
-            switch (n) {
-                case 0: {
-                    if (!ToolbarActionBar.this.mToolbarMenuPrepared) {
-                        ToolbarActionBar.this.populateOptionsMenu();
-                        ToolbarActionBar.this.mToolbar.removeCallbacks(ToolbarActionBar.this.mMenuInvalidator);
-                    }
-                    if (!ToolbarActionBar.this.mToolbarMenuPrepared || ToolbarActionBar.this.mWindowCallback == null) {
-                        break;
-                    }
-                    final Menu access$500 = ToolbarActionBar.this.getMenu();
-                    if (ToolbarActionBar.this.mWindowCallback.onPreparePanel(n, null, access$500) && ToolbarActionBar.this.mWindowCallback.onMenuOpened(n, access$500)) {
-                        return ToolbarActionBar.this.getListMenuView(access$500);
-                    }
-                    break;
-                }
-            }
-            return super.onCreatePanelView(n);
-        }
-        
-        @Override
-        public boolean onPreparePanel(final int n, final View view, final Menu menu) {
-            final boolean onPreparePanel = super.onPreparePanel(n, view, menu);
-            if (onPreparePanel && !ToolbarActionBar.this.mToolbarMenuPrepared) {
-                ToolbarActionBar.this.mDecorToolbar.setMenuPrepared();
-                ToolbarActionBar.this.mToolbarMenuPrepared = true;
-            }
-            return onPreparePanel;
-        }
+    public ActionMode startActionMode(final ActionMode$Callback actionMode$Callback) {
+        return this.mWindowCallback.startActionMode(actionMode$Callback);
     }
 }

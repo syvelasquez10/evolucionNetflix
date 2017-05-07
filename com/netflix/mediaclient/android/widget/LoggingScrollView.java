@@ -11,7 +11,7 @@ import android.widget.ScrollView;
 public class LoggingScrollView extends ScrollView
 {
     private long lastScrollUpdate;
-    private OnScrollStopListener stopScrollListener;
+    private LoggingScrollView$OnScrollStopListener stopScrollListener;
     
     public LoggingScrollView(final Context context) {
         super(context);
@@ -41,30 +41,12 @@ public class LoggingScrollView extends ScrollView
         super.onScrollChanged(n, n2, n3, n4);
         if (this.lastScrollUpdate == -1L) {
             this.onScrollStart();
-            this.postDelayed((Runnable)new ScrollStateHandler(), 100L);
+            this.postDelayed((Runnable)new LoggingScrollView$ScrollStateHandler(this, null), 100L);
         }
         this.lastScrollUpdate = System.currentTimeMillis();
     }
     
-    public void setOnScrollStopListener(final OnScrollStopListener stopScrollListener) {
+    public void setOnScrollStopListener(final LoggingScrollView$OnScrollStopListener stopScrollListener) {
         this.stopScrollListener = stopScrollListener;
-    }
-    
-    public interface OnScrollStopListener
-    {
-        void log();
-    }
-    
-    private class ScrollStateHandler implements Runnable
-    {
-        @Override
-        public void run() {
-            if (System.currentTimeMillis() - LoggingScrollView.this.lastScrollUpdate > 100L) {
-                LoggingScrollView.this.lastScrollUpdate = -1L;
-                LoggingScrollView.this.onScrollEnd();
-                return;
-            }
-            LoggingScrollView.this.postDelayed((Runnable)this, 100L);
-        }
     }
 }

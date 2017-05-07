@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr.model;
 
-public interface CWVideo extends Video, Playable
+public interface CWVideo extends Playable, Video
 {
     String getInterestingUrl();
     

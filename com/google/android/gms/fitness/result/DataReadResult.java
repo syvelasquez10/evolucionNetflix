@@ -5,9 +5,11 @@
 package com.google.android.gms.fitness.result;
 
 import android.os.Parcel;
+import com.google.android.gms.common.internal.m$a;
 import com.google.android.gms.common.internal.m;
 import com.google.android.gms.fitness.data.DataPoint;
 import java.util.Collections;
+import com.google.android.gms.fitness.data.DataSource$Builder;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -74,7 +76,7 @@ public class DataReadResult implements Result, SafeParcelable
         }
         final Iterator<DataType> iterator2 = dataReadRequest.getDataTypes().iterator();
         while (iterator2.hasNext()) {
-            list.add(DataSet.create(new DataSource.Builder().setDataType(iterator2.next()).setType(1).setName("Default").build()));
+            list.add(DataSet.create(new DataSource$Builder().setDataType(iterator2.next()).setType(1).setName("Default").build()));
         }
         return new DataReadResult(list, Collections.emptyList(), status);
     }
@@ -198,7 +200,7 @@ public class DataReadResult implements Result, SafeParcelable
     
     @Override
     public String toString() {
-        final m.a a = m.h(this).a("status", this.CM);
+        final m$a a = m.h(this).a("status", this.CM);
         Object o;
         if (this.Sw.size() > 5) {
             o = this.Sw.size() + " data sets";
@@ -206,7 +208,7 @@ public class DataReadResult implements Result, SafeParcelable
         else {
             o = this.Sw;
         }
-        final m.a a2 = a.a("dataSets", o);
+        final m$a a2 = a.a("dataSets", o);
         Object o2;
         if (this.UK.size() > 5) {
             o2 = this.UK.size() + " buckets";

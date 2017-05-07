@@ -20,7 +20,7 @@ class av implements bm
 {
     private HttpClient apj;
     
-    private InputStream a(final HttpClient httpClient, final HttpResponse httpResponse) throws IOException {
+    private InputStream a(final HttpClient httpClient, final HttpResponse httpResponse) {
         final int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode == 200) {
             bh.V("Success response");
@@ -40,7 +40,7 @@ class av implements bm
     }
     
     @Override
-    public InputStream cA(final String s) throws IOException {
+    public InputStream cA(final String s) {
         this.apj = this.ot();
         return this.a(this.apj, this.apj.execute((HttpUriRequest)new HttpGet(s)));
     }

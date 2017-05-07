@@ -4,63 +4,47 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 import android.os.Handler;
 import android.content.Context;
 
 public final class AlertDialogFactory
 {
-    public static UpdateDialog.Builder createDialog(final Context context, final Handler handler, final AlertDialogDescriptor alertDialogDescriptor) {
-        if (alertDialogDescriptor instanceof TwoButtonAlertDialogDescriptor) {
-            final TwoButtonAlertDialogDescriptor twoButtonAlertDialogDescriptor = (TwoButtonAlertDialogDescriptor)alertDialogDescriptor;
-            return createDialog(context, twoButtonAlertDialogDescriptor.title, twoButtonAlertDialogDescriptor.message, handler, twoButtonAlertDialogDescriptor.posButtonLabel, twoButtonAlertDialogDescriptor.posButtonHandler, twoButtonAlertDialogDescriptor.negButtonLabel, twoButtonAlertDialogDescriptor.negButtonHandler, false);
+    public static UpdateDialog$Builder createDialog(final Context context, final Handler handler, final AlertDialogFactory$AlertDialogDescriptor alertDialogFactory$AlertDialogDescriptor) {
+        if (alertDialogFactory$AlertDialogDescriptor instanceof AlertDialogFactory$TwoButtonAlertDialogDescriptor) {
+            final AlertDialogFactory$TwoButtonAlertDialogDescriptor alertDialogFactory$TwoButtonAlertDialogDescriptor = (AlertDialogFactory$TwoButtonAlertDialogDescriptor)alertDialogFactory$AlertDialogDescriptor;
+            return createDialog(context, alertDialogFactory$TwoButtonAlertDialogDescriptor.title, alertDialogFactory$TwoButtonAlertDialogDescriptor.message, handler, alertDialogFactory$TwoButtonAlertDialogDescriptor.posButtonLabel, alertDialogFactory$TwoButtonAlertDialogDescriptor.posButtonHandler, alertDialogFactory$TwoButtonAlertDialogDescriptor.negButtonLabel, alertDialogFactory$TwoButtonAlertDialogDescriptor.negButtonHandler, false);
         }
-        return createOneButtonDialog(context, alertDialogDescriptor.title, alertDialogDescriptor.message, handler, alertDialogDescriptor.posButtonLabel, alertDialogDescriptor.posButtonHandler);
+        return createOneButtonDialog(context, alertDialogFactory$AlertDialogDescriptor.title, alertDialogFactory$AlertDialogDescriptor.message, handler, alertDialogFactory$AlertDialogDescriptor.posButtonLabel, alertDialogFactory$AlertDialogDescriptor.posButtonHandler);
     }
     
-    public static UpdateDialog.Builder createDialog(final Context context, String string, final String s, final Handler handler, final String s2, final Runnable runnable, String string2, final Runnable runnable2, final boolean b) {
-        final UpdateDialog.Builder builder = new UpdateDialog.Builder(context);
-        builder.setTitle(noNull(string));
-        builder.setMessage(noNull(s));
-        if (s2 != null) {
-            string = s2;
-        }
-        else {
-            string = context.getString(2131492983);
+    public static UpdateDialog$Builder createDialog(final Context context, final String s, final String s2, final Handler handler, String string, final Runnable runnable, String string2, final Runnable runnable2, final boolean b) {
+        final UpdateDialog$Builder updateDialog$Builder = new UpdateDialog$Builder(context);
+        updateDialog$Builder.setTitle(noNull(s));
+        updateDialog$Builder.setMessage(noNull(s2));
+        if (string == null) {
+            string = context.getString(2131492980);
         }
         if (string2 == null) {
-            string2 = context.getString(2131493127);
+            string2 = context.getString(2131493101);
         }
         if (handler != null) {
-            builder.setPositiveButton(string, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                public void onClick(final DialogInterface dialogInterface, final int n) {
-                    if (runnable != null) {
-                        handler.post(runnable);
-                    }
-                }
-            });
+            updateDialog$Builder.setPositiveButton(string, (DialogInterface$OnClickListener)new AlertDialogFactory$1(runnable, handler));
             if (!b) {
-                builder.setNegativeButton(string2, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                    public void onClick(final DialogInterface dialogInterface, final int n) {
-                        if (runnable2 != null) {
-                            handler.post(runnable2);
-                        }
-                    }
-                });
+                updateDialog$Builder.setNegativeButton(string2, (DialogInterface$OnClickListener)new AlertDialogFactory$2(runnable2, handler));
             }
         }
         else {
-            builder.setPositiveButton(string, null);
+            updateDialog$Builder.setPositiveButton(string, null);
             if (!b) {
-                builder.setNegativeButton(string2, null);
-                return builder;
+                updateDialog$Builder.setNegativeButton(string2, null);
+                return updateDialog$Builder;
             }
         }
-        return builder;
+        return updateDialog$Builder;
     }
     
-    public static UpdateDialog.Builder createOneButtonDialog(final Context context, final String s, final String s2, final Handler handler, final String s3, final Runnable runnable) {
+    public static UpdateDialog$Builder createOneButtonDialog(final Context context, final String s, final String s2, final Handler handler, final String s3, final Runnable runnable) {
         return createDialog(context, s, s2, handler, s3, runnable, null, null, true);
     }
     
@@ -70,36 +54,5 @@ public final class AlertDialogFactory
             s2 = "";
         }
         return s2;
-    }
-    
-    public static class AlertDialogDescriptor
-    {
-        String message;
-        Runnable posButtonHandler;
-        String posButtonLabel;
-        String title;
-        
-        public AlertDialogDescriptor(final String title, final String message, final String posButtonLabel, final Runnable posButtonHandler) {
-            this.title = title;
-            this.message = message;
-            this.posButtonLabel = posButtonLabel;
-            this.posButtonHandler = posButtonHandler;
-        }
-        
-        public String getMessage() {
-            return this.message;
-        }
-    }
-    
-    public static class TwoButtonAlertDialogDescriptor extends AlertDialogDescriptor
-    {
-        Runnable negButtonHandler;
-        String negButtonLabel;
-        
-        public TwoButtonAlertDialogDescriptor(final String s, final String s2, final String s3, final Runnable runnable, final String negButtonLabel, final Runnable negButtonHandler) {
-            super(s, s2, s3, runnable);
-            this.negButtonLabel = negButtonLabel;
-            this.negButtonHandler = negButtonHandler;
-        }
     }
 }

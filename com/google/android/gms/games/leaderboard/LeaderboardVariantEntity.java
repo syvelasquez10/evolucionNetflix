@@ -5,6 +5,7 @@
 package com.google.android.gms.games.leaderboard;
 
 import java.io.Serializable;
+import com.google.android.gms.common.internal.m$a;
 import com.google.android.gms.games.internal.constants.LeaderboardCollection;
 import com.google.android.gms.games.internal.constants.TimeSpan;
 import com.google.android.gms.common.internal.m;
@@ -66,7 +67,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
     }
     
     static String b(final LeaderboardVariant leaderboardVariant) {
-        final m.a a = m.h(leaderboardVariant).a("TimeSpan", TimeSpan.dH(leaderboardVariant.getTimeSpan())).a("Collection", LeaderboardCollection.dH(leaderboardVariant.getCollection()));
+        final m$a a = m.h(leaderboardVariant).a("TimeSpan", TimeSpan.dH(leaderboardVariant.getTimeSpan())).a("Collection", LeaderboardCollection.dH(leaderboardVariant.getCollection()));
         Serializable value;
         if (leaderboardVariant.hasPlayerInfo()) {
             value = leaderboardVariant.getRawPlayerScore();
@@ -74,7 +75,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
         else {
             value = "none";
         }
-        final m.a a2 = a.a("RawPlayerScore", value);
+        final m$a a2 = a.a("RawPlayerScore", value);
         String displayPlayerScore;
         if (leaderboardVariant.hasPlayerInfo()) {
             displayPlayerScore = leaderboardVariant.getDisplayPlayerScore();
@@ -82,7 +83,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
         else {
             displayPlayerScore = "none";
         }
-        final m.a a3 = a2.a("DisplayPlayerScore", displayPlayerScore);
+        final m$a a3 = a2.a("DisplayPlayerScore", displayPlayerScore);
         Serializable value2;
         if (leaderboardVariant.hasPlayerInfo()) {
             value2 = leaderboardVariant.getPlayerRank();
@@ -90,7 +91,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
         else {
             value2 = "none";
         }
-        final m.a a4 = a3.a("PlayerRank", value2);
+        final m$a a4 = a3.a("PlayerRank", value2);
         String displayPlayerRank;
         if (leaderboardVariant.hasPlayerInfo()) {
             displayPlayerRank = leaderboardVariant.getDisplayPlayerRank();

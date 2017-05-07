@@ -5,13 +5,9 @@
 package com.facebook;
 
 import java.io.FilterOutputStream;
-import java.io.OutputStream;
-import android.graphics.Bitmap$CompressFormat;
 import com.facebook.model.GraphMultiResult;
 import java.io.BufferedOutputStream;
-import java.net.URLEncoder;
 import android.text.TextUtils;
-import org.json.JSONException;
 import android.util.Pair;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -20,12 +16,9 @@ import com.facebook.model.GraphObjectList;
 import java.util.Map;
 import java.text.SimpleDateFormat;
 import android.os.Parcelable;
-import com.facebook.model.GraphPlace;
 import java.util.Locale;
-import com.facebook.model.GraphUser;
 import java.util.Date;
 import android.os.ParcelFileDescriptor;
-import java.io.FileNotFoundException;
 import java.io.File;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -36,7 +29,6 @@ import com.facebook.internal.Utility;
 import java.util.Arrays;
 import java.util.Collection;
 import com.facebook.internal.Validate;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Iterator;
 import android.net.Uri$Builder;
@@ -82,7 +74,7 @@ public class Request
     private String batchEntryDependsOn;
     private String batchEntryName;
     private boolean batchEntryOmitResultOnSuccess;
-    private Callback callback;
+    private Request$Callback callback;
     private GraphObject graphObject;
     private String graphPath;
     private HttpMethod httpMethod;
@@ -103,7 +95,7 @@ public class Request
         this(session, s, bundle, httpMethod, null);
     }
     
-    public Request(final Session session, final String graphPath, final Bundle bundle, final HttpMethod httpMethod, final Callback callback) {
+    public Request(final Session session, final String graphPath, final Bundle bundle, final HttpMethod httpMethod, final Request$Callback callback) {
         this.batchEntryOmitResultOnSuccess = true;
         this.session = session;
         this.graphPath = graphPath;
@@ -162,7 +154,7 @@ public class Request
         return encodedPath.toString();
     }
     
-    static HttpURLConnection createConnection(final URL url) throws IOException {
+    static HttpURLConnection createConnection(final URL url) {
         final HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
         httpURLConnection.setRequestProperty("User-Agent", getUserAgent());
         httpURLConnection.setRequestProperty("Content-Type", getMimeContentType());
@@ -252,40 +244,40 @@ public class Request
         return executeConnectionAsync(null, httpURLConnection, requestBatch);
     }
     
-    public static RequestAsyncTask executeGraphPathRequestAsync(final Session session, final String s, final Callback callback) {
-        return newGraphPathRequest(session, s, callback).executeAsync();
+    public static RequestAsyncTask executeGraphPathRequestAsync(final Session session, final String s, final Request$Callback request$Callback) {
+        return newGraphPathRequest(session, s, request$Callback).executeAsync();
     }
     
-    public static RequestAsyncTask executeMeRequestAsync(final Session session, final GraphUserCallback graphUserCallback) {
-        return newMeRequest(session, graphUserCallback).executeAsync();
+    public static RequestAsyncTask executeMeRequestAsync(final Session session, final Request$GraphUserCallback request$GraphUserCallback) {
+        return newMeRequest(session, request$GraphUserCallback).executeAsync();
     }
     
-    public static RequestAsyncTask executeMyFriendsRequestAsync(final Session session, final GraphUserListCallback graphUserListCallback) {
-        return newMyFriendsRequest(session, graphUserListCallback).executeAsync();
+    public static RequestAsyncTask executeMyFriendsRequestAsync(final Session session, final Request$GraphUserListCallback request$GraphUserListCallback) {
+        return newMyFriendsRequest(session, request$GraphUserListCallback).executeAsync();
     }
     
-    public static RequestAsyncTask executePlacesSearchRequestAsync(final Session session, final Location location, final int n, final int n2, final String s, final GraphPlaceListCallback graphPlaceListCallback) {
-        return newPlacesSearchRequest(session, location, n, n2, s, graphPlaceListCallback).executeAsync();
+    public static RequestAsyncTask executePlacesSearchRequestAsync(final Session session, final Location location, final int n, final int n2, final String s, final Request$GraphPlaceListCallback request$GraphPlaceListCallback) {
+        return newPlacesSearchRequest(session, location, n, n2, s, request$GraphPlaceListCallback).executeAsync();
     }
     
-    public static RequestAsyncTask executePostRequestAsync(final Session session, final String s, final GraphObject graphObject, final Callback callback) {
-        return newPostRequest(session, s, graphObject, callback).executeAsync();
+    public static RequestAsyncTask executePostRequestAsync(final Session session, final String s, final GraphObject graphObject, final Request$Callback request$Callback) {
+        return newPostRequest(session, s, graphObject, request$Callback).executeAsync();
     }
     
     public static RequestAsyncTask executeRestRequestAsync(final Session session, final String s, final Bundle bundle, final HttpMethod httpMethod) {
         return newRestRequest(session, s, bundle, httpMethod).executeAsync();
     }
     
-    public static RequestAsyncTask executeStatusUpdateRequestAsync(final Session session, final String s, final Callback callback) {
-        return newStatusUpdateRequest(session, s, callback).executeAsync();
+    public static RequestAsyncTask executeStatusUpdateRequestAsync(final Session session, final String s, final Request$Callback request$Callback) {
+        return newStatusUpdateRequest(session, s, request$Callback).executeAsync();
     }
     
-    public static RequestAsyncTask executeUploadPhotoRequestAsync(final Session session, final Bitmap bitmap, final Callback callback) {
-        return newUploadPhotoRequest(session, bitmap, callback).executeAsync();
+    public static RequestAsyncTask executeUploadPhotoRequestAsync(final Session session, final Bitmap bitmap, final Request$Callback request$Callback) {
+        return newUploadPhotoRequest(session, bitmap, request$Callback).executeAsync();
     }
     
-    public static RequestAsyncTask executeUploadPhotoRequestAsync(final Session session, final File file, final Callback callback) throws FileNotFoundException {
-        return newUploadPhotoRequest(session, file, callback).executeAsync();
+    public static RequestAsyncTask executeUploadPhotoRequestAsync(final Session session, final File file, final Request$Callback request$Callback) {
+        return newUploadPhotoRequest(session, file, request$Callback).executeAsync();
     }
     
     private static String getBatchAppId(final RequestBatch requestBatch) {
@@ -325,33 +317,19 @@ public class Request
         return o instanceof String || o instanceof Boolean || o instanceof Number || o instanceof Date;
     }
     
-    public static Request newGraphPathRequest(final Session session, final String s, final Callback callback) {
-        return new Request(session, s, null, null, callback);
+    public static Request newGraphPathRequest(final Session session, final String s, final Request$Callback request$Callback) {
+        return new Request(session, s, null, null, request$Callback);
     }
     
-    public static Request newMeRequest(final Session session, final GraphUserCallback graphUserCallback) {
-        return new Request(session, "me", null, null, (Callback)new Callback() {
-            @Override
-            public void onCompleted(final Response response) {
-                if (graphUserCallback != null) {
-                    graphUserCallback.onCompleted(response.getGraphObjectAs(GraphUser.class), response);
-                }
-            }
-        });
+    public static Request newMeRequest(final Session session, final Request$GraphUserCallback request$GraphUserCallback) {
+        return new Request(session, "me", null, null, new Request$1(request$GraphUserCallback));
     }
     
-    public static Request newMyFriendsRequest(final Session session, final GraphUserListCallback graphUserListCallback) {
-        return new Request(session, "me/friends", null, null, (Callback)new Callback() {
-            @Override
-            public void onCompleted(final Response response) {
-                if (graphUserListCallback != null) {
-                    graphUserListCallback.onCompleted(typedListFromResponse(response, (Class<GraphObject>)GraphUser.class), response);
-                }
-            }
-        });
+    public static Request newMyFriendsRequest(final Session session, final Request$GraphUserListCallback request$GraphUserListCallback) {
+        return new Request(session, "me/friends", null, null, new Request$2(request$GraphUserListCallback));
     }
     
-    public static Request newPlacesSearchRequest(final Session session, final Location location, final int n, final int n2, final String s, final GraphPlaceListCallback graphPlaceListCallback) {
+    public static Request newPlacesSearchRequest(final Session session, final Location location, final int n, final int n2, final String s, final Request$GraphPlaceListCallback request$GraphPlaceListCallback) {
         if (location == null && Utility.isNullOrEmpty(s)) {
             throw new FacebookException("Either location or searchText must be specified.");
         }
@@ -365,18 +343,11 @@ public class Request
         if (!Utility.isNullOrEmpty(s)) {
             bundle.putString("q", s);
         }
-        return new Request(session, "search", bundle, HttpMethod.GET, (Callback)new Callback() {
-            @Override
-            public void onCompleted(final Response response) {
-                if (graphPlaceListCallback != null) {
-                    graphPlaceListCallback.onCompleted(typedListFromResponse(response, (Class<GraphObject>)GraphPlace.class), response);
-                }
-            }
-        });
+        return new Request(session, "search", bundle, HttpMethod.GET, new Request$3(request$GraphPlaceListCallback));
     }
     
-    public static Request newPostRequest(final Session session, final String s, final GraphObject graphObject, final Callback callback) {
-        final Request request = new Request(session, s, null, HttpMethod.POST, callback);
+    public static Request newPostRequest(final Session session, final String s, final GraphObject graphObject, final Request$Callback request$Callback) {
+        final Request request = new Request(session, s, null, HttpMethod.POST, request$Callback);
         request.setGraphObject(graphObject);
         return request;
     }
@@ -387,30 +358,30 @@ public class Request
         return request;
     }
     
-    public static Request newStatusUpdateRequest(final Session session, final String s, final Callback callback) {
+    public static Request newStatusUpdateRequest(final Session session, final String s, final Request$Callback request$Callback) {
         final Bundle bundle = new Bundle();
         bundle.putString("message", s);
-        return new Request(session, "me/feed", bundle, HttpMethod.POST, callback);
+        return new Request(session, "me/feed", bundle, HttpMethod.POST, request$Callback);
     }
     
-    public static Request newUploadPhotoRequest(final Session session, final Bitmap bitmap, final Callback callback) {
+    public static Request newUploadPhotoRequest(final Session session, final Bitmap bitmap, final Request$Callback request$Callback) {
         final Bundle bundle = new Bundle(1);
         bundle.putParcelable("picture", (Parcelable)bitmap);
-        return new Request(session, "me/photos", bundle, HttpMethod.POST, callback);
+        return new Request(session, "me/photos", bundle, HttpMethod.POST, request$Callback);
     }
     
-    public static Request newUploadPhotoRequest(final Session session, final File file, final Callback callback) throws FileNotFoundException {
+    public static Request newUploadPhotoRequest(final Session session, final File file, final Request$Callback request$Callback) {
         final ParcelFileDescriptor open = ParcelFileDescriptor.open(file, 268435456);
         final Bundle bundle = new Bundle(1);
         bundle.putParcelable("picture", (Parcelable)open);
-        return new Request(session, "me/photos", bundle, HttpMethod.POST, callback);
+        return new Request(session, "me/photos", bundle, HttpMethod.POST, request$Callback);
     }
     
-    public static Request newUploadVideoRequest(final Session session, final File file, final Callback callback) throws FileNotFoundException {
+    public static Request newUploadVideoRequest(final Session session, final File file, final Request$Callback request$Callback) {
         final ParcelFileDescriptor open = ParcelFileDescriptor.open(file, 268435456);
         final Bundle bundle = new Bundle(1);
         bundle.putParcelable(file.getName(), (Parcelable)open);
-        return new Request(session, "me/videos", bundle, HttpMethod.POST, callback);
+        return new Request(session, "me/videos", bundle, HttpMethod.POST, request$Callback);
     }
     
     private static String parameterToString(final Object o) {
@@ -426,8 +397,8 @@ public class Request
         throw new IllegalArgumentException("Unsupported parameter type.");
     }
     
-    private static void processGraphObject(final GraphObject graphObject, final String s, final KeyValueSerializer keyValueSerializer) throws IOException {
-        boolean b = false;
+    private static void processGraphObject(final GraphObject graphObject, final String s, final Request$KeyValueSerializer request$KeyValueSerializer) {
+        boolean b;
         if (s.startsWith("me/") || s.startsWith("/me/")) {
             final int index = s.indexOf(":");
             final int index2 = s.indexOf("?");
@@ -438,56 +409,53 @@ public class Request
                 b = false;
             }
         }
+        else {
+            b = false;
+        }
         for (final Map.Entry<String, Object> entry : graphObject.asMap().entrySet()) {
-            processGraphObjectProperty(entry.getKey(), entry.getValue(), keyValueSerializer, b && entry.getKey().equalsIgnoreCase("image"));
+            processGraphObjectProperty(entry.getKey(), entry.getValue(), request$KeyValueSerializer, b && entry.getKey().equalsIgnoreCase("image"));
         }
     }
     
-    private static void processGraphObjectProperty(final String s, final Object o, final KeyValueSerializer keyValueSerializer, final boolean b) throws IOException {
-        final Class<?> class1 = o.getClass();
-        Object o2;
-        Class<?> clazz;
-        if (GraphObject.class.isAssignableFrom(class1)) {
-            o2 = ((GraphObject)o).getInnerJSONObject();
-            clazz = ((JSONObject)o2).getClass();
+    private static void processGraphObjectProperty(final String s, Object o, final Request$KeyValueSerializer request$KeyValueSerializer, final boolean b) {
+        Class<?> clazz = o.getClass();
+        if (GraphObject.class.isAssignableFrom(clazz)) {
+            o = ((GraphObject)o).getInnerJSONObject();
+            clazz = o.getClass();
         }
-        else {
-            clazz = class1;
-            o2 = o;
-            if (GraphObjectList.class.isAssignableFrom(class1)) {
-                o2 = ((GraphObjectList)o).getInnerJSONArray();
-                clazz = ((JSONObject)o2).getClass();
-            }
+        else if (GraphObjectList.class.isAssignableFrom(clazz)) {
+            o = ((GraphObjectList)o).getInnerJSONArray();
+            clazz = o.getClass();
         }
         if (JSONObject.class.isAssignableFrom(clazz)) {
-            final JSONObject jsonObject = (JSONObject)o2;
+            final JSONObject jsonObject = (JSONObject)o;
             if (b) {
                 final Iterator keys = jsonObject.keys();
                 while (keys.hasNext()) {
                     final String s2 = keys.next();
-                    processGraphObjectProperty(String.format("%s[%s]", s, s2), jsonObject.opt(s2), keyValueSerializer, b);
+                    processGraphObjectProperty(String.format("%s[%s]", s, s2), jsonObject.opt(s2), request$KeyValueSerializer, b);
                 }
             }
             else if (jsonObject.has("id")) {
-                processGraphObjectProperty(s, jsonObject.optString("id"), keyValueSerializer, b);
+                processGraphObjectProperty(s, jsonObject.optString("id"), request$KeyValueSerializer, b);
             }
             else if (jsonObject.has("url")) {
-                processGraphObjectProperty(s, jsonObject.optString("url"), keyValueSerializer, b);
+                processGraphObjectProperty(s, jsonObject.optString("url"), request$KeyValueSerializer, b);
             }
         }
         else if (JSONArray.class.isAssignableFrom(clazz)) {
-            final JSONArray jsonArray = (JSONArray)o2;
+            final JSONArray jsonArray = (JSONArray)o;
             for (int length = jsonArray.length(), i = 0; i < length; ++i) {
-                processGraphObjectProperty(String.format("%s[%d]", s, i), jsonArray.opt(i), keyValueSerializer, b);
+                processGraphObjectProperty(String.format("%s[%d]", s, i), jsonArray.opt(i), request$KeyValueSerializer, b);
             }
         }
         else {
             if (String.class.isAssignableFrom(clazz) || Number.class.isAssignableFrom(clazz) || Boolean.class.isAssignableFrom(clazz)) {
-                keyValueSerializer.writeString(s, o2.toString());
+                request$KeyValueSerializer.writeString(s, o.toString());
                 return;
             }
             if (Date.class.isAssignableFrom(clazz)) {
-                keyValueSerializer.writeString(s, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US).format((Date)o2));
+                request$KeyValueSerializer.writeString(s, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US).format((Date)o));
             }
         }
     }
@@ -502,55 +470,44 @@ public class Request
             }
         }
         if (list2.size() > 0) {
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    for (final Pair pair : list2) {
-                        ((Callback)pair.first).onCompleted((Response)pair.second);
-                    }
-                    final Iterator<RequestBatch.Callback> iterator2 = requestBatch.getCallbacks().iterator();
-                    while (iterator2.hasNext()) {
-                        ((RequestBatch.Callback)iterator2.next()).onBatchCompleted(requestBatch);
-                    }
-                }
-            };
+            final Request$4 request$4 = new Request$4(list2, requestBatch);
             final Handler callbackHandler = requestBatch.getCallbackHandler();
             if (callbackHandler != null) {
-                callbackHandler.post((Runnable)runnable);
+                callbackHandler.post((Runnable)request$4);
                 return;
             }
-            runnable.run();
+            request$4.run();
         }
     }
     
-    private static void serializeAttachments(final Bundle bundle, final Serializer serializer) throws IOException {
+    private static void serializeAttachments(final Bundle bundle, final Request$Serializer request$Serializer) {
         for (final String s : bundle.keySet()) {
             final Object value = bundle.get(s);
             if (isSupportedAttachmentType(value)) {
-                serializer.writeObject(s, value);
+                request$Serializer.writeObject(s, value);
             }
         }
     }
     
-    private static void serializeParameters(final Bundle bundle, final Serializer serializer) throws IOException {
+    private static void serializeParameters(final Bundle bundle, final Request$Serializer request$Serializer) {
         for (final String s : bundle.keySet()) {
             final Object value = bundle.get(s);
             if (isSupportedParameterType(value)) {
-                serializer.writeObject(s, value);
+                request$Serializer.writeObject(s, value);
             }
         }
     }
     
-    private static void serializeRequestsAsJSON(final Serializer serializer, final Collection<Request> collection, final Bundle bundle) throws JSONException, IOException {
+    private static void serializeRequestsAsJSON(final Request$Serializer request$Serializer, final Collection<Request> collection, final Bundle bundle) {
         final JSONArray jsonArray = new JSONArray();
         final Iterator<Request> iterator = collection.iterator();
         while (iterator.hasNext()) {
             iterator.next().serializeToBatch(jsonArray, bundle);
         }
-        serializer.writeString("batch", jsonArray.toString());
+        request$Serializer.writeString("batch", jsonArray.toString());
     }
     
-    private void serializeToBatch(final JSONArray jsonArray, final Bundle bundle) throws JSONException, IOException {
+    private void serializeToBatch(final JSONArray jsonArray, final Bundle bundle) {
         final JSONObject jsonObject = new JSONObject();
         if (this.batchEntryName != null) {
             jsonObject.put("name", (Object)this.batchEntryName);
@@ -580,19 +537,13 @@ public class Request
         }
         if (this.graphObject != null) {
             final ArrayList list2 = new ArrayList();
-            processGraphObject(this.graphObject, urlForBatchedRequest, (KeyValueSerializer)new KeyValueSerializer() {
-                @Override
-                public void writeString(final String s, final String s2) throws IOException {
-                    list2.add(String.format("%s=%s", s, URLEncoder.encode(s2, "UTF-8")));
-                }
-            });
+            processGraphObject(this.graphObject, urlForBatchedRequest, new Request$5(this, list2));
             jsonObject.put("body", (Object)TextUtils.join((CharSequence)"&", (Iterable)list2));
         }
         jsonArray.put((Object)jsonObject);
     }
     
-    static final void serializeToUrlConnection(final RequestBatch requestBatch, HttpURLConnection httpURLConnection) throws IOException, JSONException {
-        boolean b = false;
+    static final void serializeToUrlConnection(final RequestBatch requestBatch, HttpURLConnection httpURLConnection) {
         final Logger logger = new Logger(LoggingBehavior.REQUESTS, "Request");
         final int size = requestBatch.size();
         Object o;
@@ -612,10 +563,14 @@ public class Request
         logger.appendKeyValue("Content-Type", httpURLConnection.getRequestProperty("Content-Type"));
         httpURLConnection.setConnectTimeout(requestBatch.getTimeout());
         httpURLConnection.setReadTimeout(requestBatch.getTimeout());
+        int n;
         if (o == HttpMethod.POST) {
-            b = true;
+            n = 1;
         }
-        if (!b) {
+        else {
+            n = 0;
+        }
+        if (n == 0) {
             logger.log();
             return;
         }
@@ -624,15 +579,15 @@ public class Request
             httpURLConnection = (HttpURLConnection)new BufferedOutputStream(httpURLConnection.getOutputStream());
             while (true) {
                 try {
-                    o = new Serializer((BufferedOutputStream)httpURLConnection, logger);
+                    o = new Request$Serializer((BufferedOutputStream)httpURLConnection, logger);
                     if (size == 1) {
                         final Request value = requestBatch.get(0);
                         logger.append("  Parameters:\n");
-                        serializeParameters(value.parameters, (Serializer)o);
+                        serializeParameters(value.parameters, (Request$Serializer)o);
                         logger.append("  Attachments:\n");
-                        serializeAttachments(value.parameters, (Serializer)o);
+                        serializeAttachments(value.parameters, (Request$Serializer)o);
                         if (value.graphObject != null) {
-                            processGraphObject(value.graphObject, ((URL)o2).getPath(), (KeyValueSerializer)o);
+                            processGraphObject(value.graphObject, ((URL)o2).getPath(), (Request$KeyValueSerializer)o);
                         }
                         ((FilterOutputStream)httpURLConnection).close();
                         logger.log();
@@ -646,12 +601,12 @@ public class Request
                 finally {
                     ((FilterOutputStream)httpURLConnection).close();
                 }
-                ((Serializer)o).writeString("batch_app_id", (String)o2);
+                ((Request$Serializer)o).writeString("batch_app_id", (String)o2);
                 o2 = new Bundle();
                 final Collection<Request> collection;
-                serializeRequestsAsJSON((Serializer)o, collection, (Bundle)o2);
+                serializeRequestsAsJSON((Request$Serializer)o, collection, (Bundle)o2);
                 logger.append("  Attachments:\n");
-                serializeAttachments((Bundle)o2, (Serializer)o);
+                serializeAttachments((Bundle)o2, (Request$Serializer)o);
                 continue;
             }
         }
@@ -770,13 +725,14 @@ public class Request
     
     private static <T extends GraphObject> List<T> typedListFromResponse(final Response response, final Class<T> clazz) {
         final GraphMultiResult graphMultiResult = response.getGraphObjectAs(GraphMultiResult.class);
-        if (graphMultiResult != null) {
-            final GraphObjectList<GraphObject> data = graphMultiResult.getData();
-            if (data != null) {
-                return data.castToListOf(clazz);
-            }
+        if (graphMultiResult == null) {
+            return null;
         }
-        return null;
+        final GraphObjectList<GraphObject> data = graphMultiResult.getData();
+        if (data == null) {
+            return null;
+        }
+        return data.castToListOf(clazz);
     }
     
     private void validate() {
@@ -805,7 +761,7 @@ public class Request
         return this.batchEntryOmitResultOnSuccess;
     }
     
-    public final Callback getCallback() {
+    public final Request$Callback getCallback() {
         return this.callback;
     }
     
@@ -875,7 +831,7 @@ public class Request
         this.batchEntryOmitResultOnSuccess = batchEntryOmitResultOnSuccess;
     }
     
-    public final void setCallback(final Callback callback) {
+    public final void setCallback(final Request$Callback callback) {
         this.callback = callback;
     }
     
@@ -912,271 +868,5 @@ public class Request
     @Override
     public String toString() {
         return "{Request: " + " session: " + this.session + ", graphPath: " + this.graphPath + ", graphObject: " + this.graphObject + ", restMethod: " + this.restMethod + ", httpMethod: " + this.httpMethod + ", parameters: " + this.parameters + "}";
-    }
-    
-    public interface Callback
-    {
-        void onCompleted(final Response p0);
-    }
-    
-    public interface GraphPlaceListCallback
-    {
-        void onCompleted(final List<GraphPlace> p0, final Response p1);
-    }
-    
-    public interface GraphUserCallback
-    {
-        void onCompleted(final GraphUser p0, final Response p1);
-    }
-    
-    public interface GraphUserListCallback
-    {
-        void onCompleted(final List<GraphUser> p0, final Response p1);
-    }
-    
-    private interface KeyValueSerializer
-    {
-        void writeString(final String p0, final String p1) throws IOException;
-    }
-    
-    private static class Serializer implements KeyValueSerializer
-    {
-        private boolean firstWrite;
-        private final Logger logger;
-        private final BufferedOutputStream outputStream;
-        
-        public Serializer(final BufferedOutputStream outputStream, final Logger logger) {
-            this.firstWrite = true;
-            this.outputStream = outputStream;
-            this.logger = logger;
-        }
-        
-        public void write(final String s, final Object... array) throws IOException {
-            if (this.firstWrite) {
-                this.outputStream.write("--".getBytes());
-                this.outputStream.write("3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f".getBytes());
-                this.outputStream.write("\r\n".getBytes());
-                this.firstWrite = false;
-            }
-            this.outputStream.write(String.format(s, array).getBytes());
-        }
-        
-        public void writeBitmap(final String s, final Bitmap bitmap) throws IOException {
-            this.writeContentDisposition(s, s, "image/png");
-            bitmap.compress(Bitmap$CompressFormat.PNG, 100, (OutputStream)this.outputStream);
-            this.writeLine("", new Object[0]);
-            this.writeRecordBoundary();
-            this.logger.appendKeyValue("    " + s, "<Image>");
-        }
-        
-        public void writeBytes(final String s, final byte[] array) throws IOException {
-            this.writeContentDisposition(s, s, "content/unknown");
-            this.outputStream.write(array);
-            this.writeLine("", new Object[0]);
-            this.writeRecordBoundary();
-            this.logger.appendKeyValue("    " + s, String.format("<Data: %d>", array.length));
-        }
-        
-        public void writeContentDisposition(final String s, final String s2, final String s3) throws IOException {
-            this.write("Content-Disposition: form-data; name=\"%s\"", s);
-            if (s2 != null) {
-                this.write("; filename=\"%s\"", s2);
-            }
-            this.writeLine("", new Object[0]);
-            if (s3 != null) {
-                this.writeLine("%s: %s", "Content-Type", s3);
-            }
-            this.writeLine("", new Object[0]);
-        }
-        
-        public void writeFile(final String p0, final ParcelFileDescriptor p1) throws IOException {
-            // 
-            // This method could not be decompiled.
-            // 
-            // Original Bytecode:
-            // 
-            //     0: aload_0        
-            //     1: aload_1        
-            //     2: aload_1        
-            //     3: ldc             "content/unknown"
-            //     5: invokevirtual   com/facebook/Request$Serializer.writeContentDisposition:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-            //     8: aconst_null    
-            //     9: astore          6
-            //    11: aconst_null    
-            //    12: astore          5
-            //    14: iconst_0       
-            //    15: istore_3       
-            //    16: new             Landroid/os/ParcelFileDescriptor$AutoCloseInputStream;
-            //    19: dup            
-            //    20: aload_2        
-            //    21: invokespecial   android/os/ParcelFileDescriptor$AutoCloseInputStream.<init>:(Landroid/os/ParcelFileDescriptor;)V
-            //    24: astore_2       
-            //    25: new             Ljava/io/BufferedInputStream;
-            //    28: dup            
-            //    29: aload_2        
-            //    30: invokespecial   java/io/BufferedInputStream.<init>:(Ljava/io/InputStream;)V
-            //    33: astore          7
-            //    35: sipush          8192
-            //    38: newarray        B
-            //    40: astore          5
-            //    42: aload           7
-            //    44: aload           5
-            //    46: invokevirtual   java/io/BufferedInputStream.read:([B)I
-            //    49: istore          4
-            //    51: iload           4
-            //    53: iconst_m1      
-            //    54: if_icmpeq       77
-            //    57: aload_0        
-            //    58: getfield        com/facebook/Request$Serializer.outputStream:Ljava/io/BufferedOutputStream;
-            //    61: aload           5
-            //    63: iconst_0       
-            //    64: iload           4
-            //    66: invokevirtual   java/io/BufferedOutputStream.write:([BII)V
-            //    69: iload_3        
-            //    70: iload           4
-            //    72: iadd           
-            //    73: istore_3       
-            //    74: goto            42
-            //    77: aload           7
-            //    79: ifnull          87
-            //    82: aload           7
-            //    84: invokevirtual   java/io/BufferedInputStream.close:()V
-            //    87: aload_2        
-            //    88: ifnull          95
-            //    91: aload_2        
-            //    92: invokevirtual   android/os/ParcelFileDescriptor$AutoCloseInputStream.close:()V
-            //    95: aload_0        
-            //    96: ldc             ""
-            //    98: iconst_0       
-            //    99: anewarray       Ljava/lang/Object;
-            //   102: invokevirtual   com/facebook/Request$Serializer.writeLine:(Ljava/lang/String;[Ljava/lang/Object;)V
-            //   105: aload_0        
-            //   106: invokevirtual   com/facebook/Request$Serializer.writeRecordBoundary:()V
-            //   109: aload_0        
-            //   110: getfield        com/facebook/Request$Serializer.logger:Lcom/facebook/internal/Logger;
-            //   113: new             Ljava/lang/StringBuilder;
-            //   116: dup            
-            //   117: invokespecial   java/lang/StringBuilder.<init>:()V
-            //   120: ldc             "    "
-            //   122: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-            //   125: aload_1        
-            //   126: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-            //   129: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-            //   132: ldc             "<Data: %d>"
-            //   134: iconst_1       
-            //   135: anewarray       Ljava/lang/Object;
-            //   138: dup            
-            //   139: iconst_0       
-            //   140: iload_3        
-            //   141: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
-            //   144: aastore        
-            //   145: invokestatic    java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
-            //   148: invokevirtual   com/facebook/internal/Logger.appendKeyValue:(Ljava/lang/String;Ljava/lang/Object;)V
-            //   151: return         
-            //   152: astore_2       
-            //   153: aload           6
-            //   155: astore_1       
-            //   156: aload           5
-            //   158: ifnull          166
-            //   161: aload           5
-            //   163: invokevirtual   java/io/BufferedInputStream.close:()V
-            //   166: aload_1        
-            //   167: ifnull          174
-            //   170: aload_1        
-            //   171: invokevirtual   android/os/ParcelFileDescriptor$AutoCloseInputStream.close:()V
-            //   174: aload_2        
-            //   175: athrow         
-            //   176: astore          6
-            //   178: aload_2        
-            //   179: astore_1       
-            //   180: aload           6
-            //   182: astore_2       
-            //   183: goto            156
-            //   186: astore          6
-            //   188: aload           7
-            //   190: astore          5
-            //   192: aload_2        
-            //   193: astore_1       
-            //   194: aload           6
-            //   196: astore_2       
-            //   197: goto            156
-            //    Exceptions:
-            //  throws java.io.IOException
-            //    Exceptions:
-            //  Try           Handler
-            //  Start  End    Start  End    Type
-            //  -----  -----  -----  -----  ----
-            //  16     25     152    156    Any
-            //  25     35     176    186    Any
-            //  35     42     186    200    Any
-            //  42     51     186    200    Any
-            //  57     69     186    200    Any
-            // 
-            // The error that occurred was:
-            // 
-            // java.lang.IndexOutOfBoundsException: Index: 105, Size: 105
-            //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
-            //     at java.util.ArrayList.get(ArrayList.java:429)
-            //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
-            //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:113)
-            //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
-            //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:556)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-            //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-            //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-            //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-            //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-            //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-            //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-            // 
-            throw new IllegalStateException("An error occurred while decompiling this method.");
-        }
-        
-        public void writeLine(final String s, final Object... array) throws IOException {
-            this.write(s, array);
-            this.write("\r\n", new Object[0]);
-        }
-        
-        public void writeObject(final String s, final Object o) throws IOException {
-            if (isSupportedParameterType(o)) {
-                this.writeString(s, parameterToString(o));
-                return;
-            }
-            if (o instanceof Bitmap) {
-                this.writeBitmap(s, (Bitmap)o);
-                return;
-            }
-            if (o instanceof byte[]) {
-                this.writeBytes(s, (byte[])o);
-                return;
-            }
-            if (o instanceof ParcelFileDescriptor) {
-                this.writeFile(s, (ParcelFileDescriptor)o);
-                return;
-            }
-            throw new IllegalArgumentException("value is not a supported type: String, Bitmap, byte[]");
-        }
-        
-        public void writeRecordBoundary() throws IOException {
-            this.writeLine("--%s", "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f");
-        }
-        
-        @Override
-        public void writeString(final String s, final String s2) throws IOException {
-            this.writeContentDisposition(s, null, null);
-            this.writeLine("%s", s2);
-            this.writeRecordBoundary();
-            if (this.logger != null) {
-                this.logger.appendKeyValue("    " + s, s2);
-            }
-        }
     }
 }

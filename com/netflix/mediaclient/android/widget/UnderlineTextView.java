@@ -8,7 +8,7 @@ import android.text.style.UnderlineSpan;
 import android.text.SpannableString;
 import android.widget.TextView$BufferType;
 import android.content.res.TypedArray;
-import com.netflix.mediaclient.R;
+import com.netflix.mediaclient.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.TextView;
@@ -32,7 +32,7 @@ public class UnderlineTextView extends TextView
     }
     
     private void init(final AttributeSet set) {
-        final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R.styleable.UnderlineTextView);
+        final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R$styleable.UnderlineTextView);
         if (obtainStyledAttributes == null) {
             return;
         }

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.partner;
 
-import org.json.JSONException;
 import android.content.ComponentName;
 import org.json.JSONObject;
 
@@ -29,7 +28,7 @@ public class ExternalUserDataSuccess extends BaseResponse
     }
     
     @Override
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() {
         final JSONObject json = this.getJson();
         json.put("status", 0);
         json.put("data", (Object)this.data);

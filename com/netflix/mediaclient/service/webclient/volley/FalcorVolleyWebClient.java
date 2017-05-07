@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.volley;
 
+import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
 import com.netflix.mediaclient.service.logging.presentation.volley.PresentationEventRequest;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistryWrapper;
@@ -67,10 +68,10 @@ public class FalcorVolleyWebClient extends VolleyWebClient
     }
     
     public void sendRequest(final FalcorVolleyWebClientRequest<?> falcorVolleyWebClientRequest) {
-        this.sendRequest(falcorVolleyWebClientRequest, ApiEndpointRegistry.ResponsePathFormat.HIERARCHICAL);
+        this.sendRequest(falcorVolleyWebClientRequest, ApiEndpointRegistry$ResponsePathFormat.HIERARCHICAL);
     }
     
-    public void sendRequest(final FalcorVolleyWebClientRequest<?> falcorVolleyWebClientRequest, final ApiEndpointRegistry.ResponsePathFormat responsePathFormat) {
-        this.sendFalcorRequest(falcorVolleyWebClientRequest, this.mApiEndpointRegistry.getApiUrlFull(responsePathFormat));
+    public void sendRequest(final FalcorVolleyWebClientRequest<?> falcorVolleyWebClientRequest, final ApiEndpointRegistry$ResponsePathFormat apiEndpointRegistry$ResponsePathFormat) {
+        this.sendFalcorRequest(falcorVolleyWebClientRequest, this.mApiEndpointRegistry.getApiUrlFull(apiEndpointRegistry$ResponsePathFormat));
     }
 }

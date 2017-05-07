@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.nccp;
 
-import java.io.IOException;
 import org.apache.http.HttpResponse;
 import java.util.List;
 
@@ -28,5 +27,5 @@ public interface NccpTransaction
     
     NccpResponse processError(final Throwable p0);
     
-    NccpResponse processResponse(final HttpResponse p0) throws IOException;
+    NccpResponse processResponse(final HttpResponse p0);
 }

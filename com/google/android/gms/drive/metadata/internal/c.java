@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.metadata.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.metadata.CustomPropertyKey;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -48,7 +49,7 @@ public class c implements Parcelable$Creator<CustomProperty>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new CustomProperty(g, customPropertyKey, o);
     }

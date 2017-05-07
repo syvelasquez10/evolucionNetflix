@@ -5,13 +5,13 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import android.view.View$OnClickListener;
 import android.widget.Button;
+import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.content.DialogInterface;
 import android.app.Activity;
 import android.text.Html;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -34,6 +34,7 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
 {
     private static final String FRIENDS_SET = "friends_set";
     private static final String FULL_FRIENDS_LIST = "full_friends_list";
+    private static final String GUID = "guid";
     private static final int MAX_AVATARS_ICONS = 3;
     private static final String MESSAGE = "message";
     private static final String TAG;
@@ -42,6 +43,7 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
     private HashSet<FriendForRecommendation> mCheckedFriends;
     private TextView mDlgBodyTextView;
     private ViewGroup mFriendsAvatarLayout;
+    private String mGUID;
     private LayoutInflater mLayoutInflater;
     private String mMessage;
     private ServiceManager mServiceManager;
@@ -77,19 +79,20 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
         return "user_send_recommendation_via_facebook_approved" + profileGuid;
     }
     
-    public static SendAsFacebookMessageDialog newInstance(final Set<FriendForRecommendation> set, final String s, final String s2, final ArrayList<FriendForRecommendation> list) {
+    public static SendAsFacebookMessageDialog newInstance(final Set<FriendForRecommendation> set, final String s, final String s2, final String s3, final ArrayList<FriendForRecommendation> list) {
         final SendAsFacebookMessageDialog sendAsFacebookMessageDialog = new SendAsFacebookMessageDialog();
         final Bundle arguments = new Bundle();
         arguments.putParcelableArray("friends_set", (Parcelable[])set.toArray((Parcelable[])new FriendForRecommendation[set.size()]));
         arguments.putString("video_id", s);
         arguments.putString("message", s2);
+        arguments.putString("guid", s3);
         arguments.putParcelableArrayList("full_friends_list", (ArrayList)list);
         sendAsFacebookMessageDialog.setArguments(arguments);
         return sendAsFacebookMessageDialog;
     }
     
     private void sendMsgAndDismiss() {
-        this.mServiceManager.sendRecommendationsToFriends(this.mVideoID, this.mCheckedFriends, this.mMessage);
+        this.mServiceManager.sendRecommendationsToFriends(this.mVideoID, this.mCheckedFriends, this.mMessage, this.mGUID);
         this.dismiss();
     }
     
@@ -106,12 +109,15 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
             Log.e(SendAsFacebookMessageDialog.TAG, "Got 0 facebook profiles!");
             return;
         }
+        final Iterator<FriendForRecommendation> iterator = firstFacebookProfile.iterator();
         int n = 0;
-        for (final FriendForRecommendation friendForRecommendation : firstFacebookProfile) {
-            final ViewGroup viewGroup = (ViewGroup)this.mLayoutInflater.inflate(2130903180, (ViewGroup)null);
+        while (iterator.hasNext()) {
+            final FriendForRecommendation friendForRecommendation = iterator.next();
+            final ViewGroup viewGroup = (ViewGroup)this.mLayoutInflater.inflate(2130903181, (ViewGroup)null);
             this.mFriendsAvatarLayout.addView((View)viewGroup, 0);
-            NetflixActivity.getImageLoader((Context)this.getActivity()).showImg((AdvancedImageView)viewGroup.findViewById(2131165625), friendForRecommendation.getFriendProfile().getImageUrl(), IClientLogging.AssetType.profileAvatar, friendForRecommendation.getFriendProfile().getFullName(), true, true);
-            if (++n == 3) {
+            NetflixActivity.getImageLoader((Context)this.getActivity()).showImg((AdvancedImageView)viewGroup.findViewById(2131165625), friendForRecommendation.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, friendForRecommendation.getFriendProfile().getFullName(), true, true);
+            ++n;
+            if (n == 3) {
                 break;
             }
         }
@@ -127,49 +133,30 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
     public void onCancel(final DialogInterface dialogInterface) {
         super.onCancel(dialogInterface);
         if (this.getActivity() != null && !this.getActivity().isFinishing() && this.getFragmentManager() != null) {
-            RecommendToFriendsFrag.newInstance(this.mVideoID, this.mCheckedFriends, this.mMessage, this.mAllFriends).show(this.getFragmentManager(), "frag_dialog");
+            RecommendToFriendsFrag.newInstance(this.mVideoID, this.mCheckedFriends, this.mMessage, this.mGUID, this.mAllFriends).show(this.getFragmentManager(), "frag_dialog");
         }
     }
     
     @Override
     public void onCreate(final Bundle bundle) {
-        this.setStyle(1, 2131558710);
+        this.setStyle(1, 2131558713);
         super.onCreate(bundle);
         this.mVideoID = this.getArguments().getString("video_id");
         this.mMessage = this.getArguments().getString("message");
-        RecommendToFriendsFrag.restoreSetFromArray(this.getArguments().getParcelableArray("friends_set"), this.mCheckedFriends);
+        this.mGUID = this.getArguments().getString("guid");
+        SocialNotificationsUtils.castArrayToSet(this.getArguments().getParcelableArray("friends_set"), this.mCheckedFriends);
         this.mAllFriends = (ArrayList<FriendForRecommendation>)this.getArguments().getParcelableArrayList("full_friends_list");
     }
     
     public View onCreateView(final LayoutInflater mLayoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(SendAsFacebookMessageDialog.TAG, "Creating new frag view...");
         this.mLayoutInflater = mLayoutInflater;
-        final View inflate = this.mLayoutInflater.inflate(2130903179, viewGroup, false);
+        final View inflate = this.mLayoutInflater.inflate(2130903180, viewGroup, false);
         this.mFriendsAvatarLayout = (ViewGroup)inflate.findViewById(2131165648);
         this.mDlgBodyTextView = (TextView)inflate.findViewById(2131165649);
-        ((Button)inflate.findViewById(2131165650)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                PreferenceUtils.putBooleanPref((Context)SendAsFacebookMessageDialog.this.getActivity(), SendAsFacebookMessageDialog.getFacebookMsgOptInKey(SendAsFacebookMessageDialog.this.mServiceManager), true);
-                SendAsFacebookMessageDialog.this.sendMsgAndDismiss();
-            }
-        });
-        ((Button)inflate.findViewById(2131165651)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                final HashSet<FriendForRecommendation> set = new HashSet<FriendForRecommendation>();
-                for (final FriendForRecommendation friendForRecommendation : SendAsFacebookMessageDialog.this.mCheckedFriends) {
-                    if (friendForRecommendation.isNetlflixConnected()) {
-                        set.add(friendForRecommendation);
-                    }
-                }
-                SendAsFacebookMessageDialog.this.mCheckedFriends = set;
-                SendAsFacebookMessageDialog.this.sendMsgAndDismiss();
-            }
-        });
-        ((Button)inflate.findViewById(2131165652)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                SendAsFacebookMessageDialog.this.sendMsgAndDismiss();
-            }
-        });
+        ((Button)inflate.findViewById(2131165650)).setOnClickListener((View$OnClickListener)new SendAsFacebookMessageDialog$1(this));
+        ((Button)inflate.findViewById(2131165651)).setOnClickListener((View$OnClickListener)new SendAsFacebookMessageDialog$2(this));
+        ((Button)inflate.findViewById(2131165652)).setOnClickListener((View$OnClickListener)new SendAsFacebookMessageDialog$3(this));
         this.tryUpdateUI();
         this.getDialog().setCanceledOnTouchOutside(false);
         return inflate;

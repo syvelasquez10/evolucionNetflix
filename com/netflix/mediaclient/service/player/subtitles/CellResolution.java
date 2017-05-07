@@ -45,8 +45,8 @@ public class CellResolution
                 Log.d("nf_subtitles", "Cell resolution ajust using extent " + s2);
             }
             final Pair<Integer, Integer> numberPair2 = StringUtils.extractNumberPair(s2);
-            Pair numberPair3;
-            if ((numberPair3 = StringUtils.extractNumberPair(s3)) != null) {
+            Pair numberPair3 = StringUtils.extractNumberPair(s3);
+            if (numberPair3 != null) {
                 numberPair3 = new Pair((Object)1, (Object)1);
             }
             if (numberPair2 != null) {

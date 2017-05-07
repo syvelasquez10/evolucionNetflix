@@ -20,7 +20,7 @@ class AccountKeyMap
     private static final String TAG;
     private JSONObject mAccountKeyMap;
     private Context mContext;
-    private KeyIds mKeyIdsFromLegacy;
+    private AccountKeyMap$KeyIds mKeyIdsFromLegacy;
     
     static {
         TAG = AccountKeyMap.class.getSimpleName();
@@ -53,7 +53,7 @@ class AccountKeyMap
             Log.d(AccountKeyMap.TAG, "has legacy ksid [" + stringPref + "], kce_id [" + stringPref2 + "], kch_id [" + stringPref3 + "]");
         }
         if (StringUtils.isNotEmpty(stringPref) && StringUtils.isNotEmpty(stringPref2) && StringUtils.isNotEmpty(stringPref3)) {
-            this.mKeyIdsFromLegacy = new KeyIds(stringPref, stringPref2, stringPref3);
+            this.mKeyIdsFromLegacy = new AccountKeyMap$KeyIds(this, stringPref, stringPref2, stringPref3);
             PreferenceUtils.removePref(this.mContext, "nf_drm_cdm_keyset_id");
             PreferenceUtils.removePref(this.mContext, "nf_drm_kce_key_id");
             PreferenceUtils.removePref(this.mContext, "nf_drm_kch_key_id");
@@ -72,7 +72,7 @@ class AccountKeyMap
             try {
                 final String optString = this.mAccountKeyMap.optString("currentAccount");
                 if (StringUtils.isNotEmpty(optString)) {
-                    this.mAccountKeyMap.putOpt(optString, (Object)new KeyIds(s, s2, s3).toJSON().toString());
+                    this.mAccountKeyMap.putOpt(optString, (Object)new AccountKeyMap$KeyIds(this, s, s2, s3).toJSON().toString());
                 }
                 else {
                     Log.w(AccountKeyMap.TAG, "addCurrentKeyIds no current account");
@@ -96,8 +96,8 @@ class AccountKeyMap
         return this.mAccountKeyMap.optString("currentAccount");
     }
     
-    KeyIds getCurrentKeyIds() {
-        return new KeyIds(this.mAccountKeyMap.optString(this.mAccountKeyMap.optString("currentAccount")));
+    AccountKeyMap$KeyIds getCurrentKeyIds() {
+        return new AccountKeyMap$KeyIds(this, this.mAccountKeyMap.optString(this.mAccountKeyMap.optString("currentAccount")));
     }
     
     void removeCurrentKeyIds(final String s) {
@@ -105,7 +105,7 @@ class AccountKeyMap
         this.saveToPreference();
     }
     
-    KeyIds restoreKeyIdsForAccount(final String s) {
+    AccountKeyMap$KeyIds restoreKeyIdsForAccount(final String s) {
         if (StringUtils.isEmpty(s)) {
             return this.restoreKeyIdsWithoutAccount();
         }
@@ -147,60 +147,8 @@ class AccountKeyMap
         }
     }
     
-    KeyIds restoreKeyIdsWithoutAccount() {
+    AccountKeyMap$KeyIds restoreKeyIdsWithoutAccount() {
         Log.d(AccountKeyMap.TAG, "restoreKeyIdsWithoutAccount not supported");
         return null;
-    }
-    
-    class KeyIds
-    {
-        private String mKceKeyId;
-        private String mKchKeyId;
-        private String mKeySetId;
-        
-        KeyIds(final String s) {
-            if (Log.isLoggable(AccountKeyMap.TAG, 3)) {
-                Log.d(AccountKeyMap.TAG, "KeyIds from JSON " + s);
-            }
-            try {
-                final JSONObject jsonObject = new JSONObject(s);
-                this.mKeySetId = jsonObject.optString("keySetId");
-                this.mKceKeyId = jsonObject.optString("kceKeyId");
-                this.mKchKeyId = jsonObject.optString("kchKeyId");
-            }
-            catch (JSONException ex) {
-                Log.w(AccountKeyMap.TAG, "can't turn JSON to KeyIds " + ex);
-            }
-        }
-        
-        KeyIds(final String mKeySetId, final String mKceKeyId, final String mKchKeyId) {
-            this.mKeySetId = mKeySetId;
-            this.mKceKeyId = mKceKeyId;
-            this.mKchKeyId = mKchKeyId;
-        }
-        
-        public String getKceKeyId() {
-            return this.mKceKeyId;
-        }
-        
-        public String getKchKeyId() {
-            return this.mKchKeyId;
-        }
-        
-        public String getKeySetId() {
-            return this.mKeySetId;
-        }
-        
-        JSONObject toJSON() {
-            final JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.putOpt("keySetId", (Object)this.mKeySetId).putOpt("kceKeyId", (Object)this.mKceKeyId).putOpt("kchKeyId", (Object)this.mKchKeyId);
-                return jsonObject;
-            }
-            catch (JSONException ex) {
-                Log.w(AccountKeyMap.TAG, "can't turn KeyIds toJSON" + ex);
-                return jsonObject;
-            }
-        }
     }
 }

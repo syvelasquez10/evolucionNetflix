@@ -6,7 +6,8 @@ package com.google.android.gms.wallet.fragment;
 
 import android.os.Parcel;
 import android.util.DisplayMetrics;
-import com.google.android.gms.R;
+import com.google.android.gms.R$styleable;
+import com.google.android.gms.R$style;
 import android.content.Context;
 import android.util.TypedValue;
 import android.content.res.TypedArray;
@@ -70,23 +71,23 @@ public final class WalletFragmentStyle implements SafeParcelable
     public void Z(final Context context) {
         int n;
         if (this.aue <= 0) {
-            n = R.style.WalletFragmentDefaultStyle;
+            n = R$style.WalletFragmentDefaultStyle;
         }
         else {
             n = this.aue;
         }
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(n, R.styleable.WalletFragmentStyle);
-        this.a(obtainStyledAttributes, R.styleable.WalletFragmentStyle_buyButtonWidth, "buyButtonWidth");
-        this.a(obtainStyledAttributes, R.styleable.WalletFragmentStyle_buyButtonHeight, "buyButtonHeight");
-        this.b(obtainStyledAttributes, R.styleable.WalletFragmentStyle_buyButtonText, "buyButtonText");
-        this.b(obtainStyledAttributes, R.styleable.WalletFragmentStyle_buyButtonAppearance, "buyButtonAppearance");
-        this.b(obtainStyledAttributes, R.styleable.WalletFragmentStyle_maskedWalletDetailsTextAppearance, "maskedWalletDetailsTextAppearance");
-        this.b(obtainStyledAttributes, R.styleable.WalletFragmentStyle_maskedWalletDetailsHeaderTextAppearance, "maskedWalletDetailsHeaderTextAppearance");
-        this.a(obtainStyledAttributes, R.styleable.WalletFragmentStyle_maskedWalletDetailsBackground, "maskedWalletDetailsBackgroundColor", "maskedWalletDetailsBackgroundResource");
-        this.b(obtainStyledAttributes, R.styleable.WalletFragmentStyle_maskedWalletDetailsButtonTextAppearance, "maskedWalletDetailsButtonTextAppearance");
-        this.a(obtainStyledAttributes, R.styleable.WalletFragmentStyle_maskedWalletDetailsButtonBackground, "maskedWalletDetailsButtonBackgroundColor", "maskedWalletDetailsButtonBackgroundResource");
-        this.b(obtainStyledAttributes, R.styleable.WalletFragmentStyle_maskedWalletDetailsLogoTextColor, "maskedWalletDetailsLogoTextColor");
-        this.b(obtainStyledAttributes, R.styleable.WalletFragmentStyle_maskedWalletDetailsLogoImageType, "maskedWalletDetailsLogoImageType");
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(n, R$styleable.WalletFragmentStyle);
+        this.a(obtainStyledAttributes, R$styleable.WalletFragmentStyle_buyButtonWidth, "buyButtonWidth");
+        this.a(obtainStyledAttributes, R$styleable.WalletFragmentStyle_buyButtonHeight, "buyButtonHeight");
+        this.b(obtainStyledAttributes, R$styleable.WalletFragmentStyle_buyButtonText, "buyButtonText");
+        this.b(obtainStyledAttributes, R$styleable.WalletFragmentStyle_buyButtonAppearance, "buyButtonAppearance");
+        this.b(obtainStyledAttributes, R$styleable.WalletFragmentStyle_maskedWalletDetailsTextAppearance, "maskedWalletDetailsTextAppearance");
+        this.b(obtainStyledAttributes, R$styleable.WalletFragmentStyle_maskedWalletDetailsHeaderTextAppearance, "maskedWalletDetailsHeaderTextAppearance");
+        this.a(obtainStyledAttributes, R$styleable.WalletFragmentStyle_maskedWalletDetailsBackground, "maskedWalletDetailsBackgroundColor", "maskedWalletDetailsBackgroundResource");
+        this.b(obtainStyledAttributes, R$styleable.WalletFragmentStyle_maskedWalletDetailsButtonTextAppearance, "maskedWalletDetailsButtonTextAppearance");
+        this.a(obtainStyledAttributes, R$styleable.WalletFragmentStyle_maskedWalletDetailsButtonBackground, "maskedWalletDetailsButtonBackgroundColor", "maskedWalletDetailsButtonBackgroundResource");
+        this.b(obtainStyledAttributes, R$styleable.WalletFragmentStyle_maskedWalletDetailsLogoTextColor, "maskedWalletDetailsLogoTextColor");
+        this.b(obtainStyledAttributes, R$styleable.WalletFragmentStyle_maskedWalletDetailsLogoImageType, "maskedWalletDetailsLogoImageType");
         obtainStyledAttributes.recycle();
     }
     

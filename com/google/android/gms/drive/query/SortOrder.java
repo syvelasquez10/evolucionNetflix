@@ -4,8 +4,6 @@
 
 package com.google.android.gms.drive.query;
 
-import com.google.android.gms.drive.metadata.SortableMetadataField;
-import java.util.ArrayList;
 import android.os.Parcel;
 import android.text.TextUtils;
 import java.util.Locale;
@@ -46,30 +44,5 @@ public class SortOrder implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         b.a(this, parcel, n);
-    }
-    
-    public static class Builder
-    {
-        private final List<FieldWithSortOrder> QA;
-        private boolean QB;
-        
-        public Builder() {
-            this.QA = new ArrayList<FieldWithSortOrder>();
-            this.QB = false;
-        }
-        
-        public Builder addSortAscending(final SortableMetadataField sortableMetadataField) {
-            this.QA.add(new FieldWithSortOrder(sortableMetadataField.getName(), true));
-            return this;
-        }
-        
-        public Builder addSortDescending(final SortableMetadataField sortableMetadataField) {
-            this.QA.add(new FieldWithSortOrder(sortableMetadataField.getName(), false));
-            return this;
-        }
-        
-        public SortOrder build() {
-            return new SortOrder(this.QA, this.QB, null);
-        }
     }
 }

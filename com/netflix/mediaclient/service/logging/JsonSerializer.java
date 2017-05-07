@@ -4,10 +4,9 @@
 
 package com.netflix.mediaclient.service.logging;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface JsonSerializer
 {
-    JSONObject toJSONObject() throws JSONException;
+    JSONObject toJSONObject();
 }

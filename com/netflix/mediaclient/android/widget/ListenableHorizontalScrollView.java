@@ -10,7 +10,7 @@ import android.widget.HorizontalScrollView;
 
 public class ListenableHorizontalScrollView extends HorizontalScrollView
 {
-    private OnScrollChangedListener onScrollChangedListener;
+    private ListenableHorizontalScrollView$OnScrollChangedListener onScrollChangedListener;
     
     public ListenableHorizontalScrollView(final Context context) {
         super(context);
@@ -31,12 +31,7 @@ public class ListenableHorizontalScrollView extends HorizontalScrollView
         }
     }
     
-    public void setOnScrollChangedListener(final OnScrollChangedListener onScrollChangedListener) {
+    public void setOnScrollChangedListener(final ListenableHorizontalScrollView$OnScrollChangedListener onScrollChangedListener) {
         this.onScrollChangedListener = onScrollChangedListener;
-    }
-    
-    public interface OnScrollChangedListener
-    {
-        void onScrollChanged(final int p0, final int p1, final int p2, final int p3);
     }
 }

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message.target;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
@@ -24,7 +23,7 @@ public final class MessageIgnored extends MdxMessage
         MessageIgnored.PROPERTY_errorDesc = "errorDesc";
     }
     
-    public MessageIgnored(final JSONObject mJson) throws JSONException {
+    public MessageIgnored(final JSONObject mJson) {
         super("MESSAGE_IGNORED");
         this.mJson = mJson;
         this.mTransactionId = mJson.getString(MessageIgnored.PROPERTY_transactionId);

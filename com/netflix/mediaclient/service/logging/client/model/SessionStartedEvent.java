@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class SessionStartedEvent extends SessionEvent
@@ -18,7 +17,7 @@ public abstract class SessionStartedEvent extends SessionEvent
         this.sessionId = new DeviceUniqueId();
     }
     
-    public SessionStartedEvent(final JSONObject jsonObject) throws JSONException {
+    public SessionStartedEvent(final JSONObject jsonObject) {
         super(jsonObject);
     }
 }

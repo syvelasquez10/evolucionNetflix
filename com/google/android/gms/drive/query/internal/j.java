@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.query.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -34,7 +35,7 @@ public class j implements Parcelable$Creator<MatchAllFilter>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new MatchAllFilter(g);
     }

@@ -8,7 +8,6 @@ import java.util.Arrays;
 import org.json.JSONArray;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.JsonUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import android.util.Pair;
 
@@ -19,11 +18,12 @@ public class RemoteDialog
     private String mTitle;
     private Pair<String, String>[] options;
     
-    public RemoteDialog(final String s) throws JSONException {
+    public RemoteDialog(final String s) {
         this(new JSONObject(s));
     }
     
-    public RemoteDialog(final JSONObject jsonObject) throws JSONException {
+    public RemoteDialog(final JSONObject jsonObject) {
+        int i = 0;
         this.TAG = "mdxui";
         this.mTitle = JsonUtils.getString(jsonObject, "title", null);
         this.mMessage = JsonUtils.getString(jsonObject, "message", null);
@@ -34,9 +34,10 @@ public class RemoteDialog
         }
         else {
             this.options = (Pair<String, String>[])new Pair[jsonArray.length()];
-            for (int i = 0; i < jsonArray.length(); ++i) {
+            while (i < jsonArray.length()) {
                 final JSONObject jsonObject2 = jsonArray.getJSONObject(i);
                 this.options[i] = (Pair<String, String>)Pair.create((Object)JsonUtils.getString(jsonObject2, "name", null), (Object)JsonUtils.getString(jsonObject2, "data", null));
+                ++i;
             }
         }
     }

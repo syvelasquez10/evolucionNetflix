@@ -76,48 +76,31 @@ public class Region
         this.mTextStyle = mTextStyle;
     }
     
-    public static Region createInstanceOfDefaultRegion(final TextStyle textStyle) {
-        return new Region("DEFAULT_REGION", DoubleLength.ZERO, DoubleLength.ZERO, HorizontalAlignment.left, VerticalAlignment.top, null, textStyle);
-    }
-    
-    public static Region createInstanceOfSimpleSdhRegion(final TextStyle textStyle) {
-        return new Region("SIMPLE_SDH", DoubleLength.SIMPLE_SDH_EXTENT, DoubleLength.ZERO, HorizontalAlignment.left, VerticalAlignment.top, null, textStyle);
-    }
-    
     public static Region createRegion(final SubtitleParser subtitleParser, final Element element, final CellResolution cellResolution, final TextStyle textStyle) {
         return new Region(subtitleParser, element, cellResolution, textStyle);
     }
     
-    private TextStyle parseStyles(Element element) {
+    private TextStyle parseStyles(final Element element) {
         final NodeList elementsByTagName = element.getElementsByTagName("style");
-        TextStyle textStyle;
         if (elementsByTagName == null || elementsByTagName.getLength() < 1) {
             Log.e("nf_subtitles", "Styles element(s) not found in region");
-            textStyle = null;
+            return null;
         }
-        else {
-            if (Log.isLoggable("nf_subtitles", 3)) {
-                Log.d("nf_subtitles", "Found " + elementsByTagName.getLength() + " styles for region");
-            }
-            final TextStyle textStyle2 = new TextStyle();
-            int n = 0;
-            while (true) {
-                textStyle = textStyle2;
-                if (n >= elementsByTagName.getLength()) {
-                    break;
+        if (Log.isLoggable("nf_subtitles", 3)) {
+            Log.d("nf_subtitles", "Found " + elementsByTagName.getLength() + " styles for region");
+        }
+        final TextStyle textStyle = new TextStyle();
+        for (int i = 0; i < elementsByTagName.getLength(); ++i) {
+            final Node item = elementsByTagName.item(i);
+            if (item instanceof Element) {
+                final Element element2 = (Element)item;
+                if (textStyle.addStyle(element2)) {
+                    Log.d("nf_subtitles", "Style added");
                 }
-                final Node item = elementsByTagName.item(n);
-                if (item instanceof Element) {
-                    element = (Element)item;
-                    if (textStyle2.addStyle(element)) {
-                        Log.d("nf_subtitles", "Style added");
-                    }
-                    else {
-                        Log.d("nf_subtitles", "Style not added, check to see if it they are region attributes.");
-                        this.processRegionAttributes(element);
-                    }
+                else {
+                    Log.d("nf_subtitles", "Style not added, check to see if it they are region attributes.");
+                    this.processRegionAttributes(element2);
                 }
-                ++n;
             }
         }
         return textStyle;

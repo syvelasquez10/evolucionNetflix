@@ -198,20 +198,7 @@ public class ObjectPathEvaluator extends BasePathEvaluator
         final ArrayList<PathBoundValue> list = new ArrayList<PathBoundValue>();
         final Iterator<PQL> iterator = iterable.iterator();
         while (iterator.hasNext()) {
-            this.deletePath(this.map, iterator.next(), 0, new Watcher<PathBoundValue>() {
-                @Override
-                public void onCompleted() {
-                }
-                
-                @Override
-                public void onError(final Exception ex) {
-                }
-                
-                @Override
-                public void onNext(final PathBoundValue pathBoundValue) {
-                    list.add(pathBoundValue);
-                }
-            });
+            this.deletePath(this.map, iterator.next(), 0, new ObjectPathEvaluator$1(this, list));
         }
         return list;
     }
@@ -225,20 +212,7 @@ public class ObjectPathEvaluator extends BasePathEvaluator
         final ArrayList<PathBoundValue> list = new ArrayList<PathBoundValue>();
         final Iterator<PQL> iterator = iterable.iterator();
         while (iterator.hasNext()) {
-            this.getPath(this.map, iterator.next(), 0, new Watcher<PathBoundValue>() {
-                @Override
-                public void onCompleted() {
-                }
-                
-                @Override
-                public void onError(final Exception ex) {
-                }
-                
-                @Override
-                public void onNext(final PathBoundValue pathBoundValue) {
-                    list.add(pathBoundValue);
-                }
-            });
+            this.getPath(this.map, iterator.next(), 0, new ObjectPathEvaluator$3(this, list));
         }
         return list;
     }
@@ -252,20 +226,7 @@ public class ObjectPathEvaluator extends BasePathEvaluator
     public Iterable<PathBoundValue> setAbsolute(final Iterable<PathBoundValue> iterable) {
         final ArrayList<PathBoundValue> list = new ArrayList<PathBoundValue>();
         for (final PathBoundValue pathBoundValue : iterable) {
-            this.setPath(this.map, pathBoundValue.getPath(), 0, pathBoundValue.getValue(), new Watcher<PathBoundValue>() {
-                @Override
-                public void onCompleted() {
-                }
-                
-                @Override
-                public void onError(final Exception ex) {
-                }
-                
-                @Override
-                public void onNext(final PathBoundValue pathBoundValue) {
-                    list.add(pathBoundValue);
-                }
-            });
+            this.setPath(this.map, pathBoundValue.getPath(), 0, pathBoundValue.getValue(), new ObjectPathEvaluator$2(this, list));
         }
         return list;
     }

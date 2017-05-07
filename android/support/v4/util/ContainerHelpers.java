@@ -28,9 +28,8 @@ class ContainerHelpers
                 i = n5 + 1;
             }
             else {
-                final int n7 = n5;
                 if (n6 <= n) {
-                    return n7;
+                    return n5;
                 }
                 n4 = n5 - 1;
             }
@@ -50,9 +49,8 @@ class ContainerHelpers
                 i = n5 + 1;
             }
             else {
-                final int n7 = n5;
                 if (n6 <= n) {
-                    return n7;
+                    return n5;
                 }
                 n4 = n5 - 1;
             }

@@ -4,23 +4,22 @@
 
 package com.google.android.gms.tagmanager;
 
-import java.util.List;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 
 class bv implements cn
 {
     @Override
-    public void f(final d.a a) {
+    public void f(final d$a d$a) {
     }
     
     @Override
     public cl oA() {
-        return new a();
+        return new bv$a(this);
     }
     
     @Override
     public cl oB() {
-        return new a();
+        return new bv$a(this);
     }
     
     @Override
@@ -35,18 +34,11 @@ class bv implements cn
     
     @Override
     public cl oy() {
-        return new a();
+        return new bv$a(this);
     }
     
     @Override
     public cl oz() {
-        return new a();
-    }
-    
-    public class a implements cl
-    {
-        @Override
-        public void c(final List<cr.a> list, final List<String> list2) {
-        }
+        return new bv$a(this);
     }
 }

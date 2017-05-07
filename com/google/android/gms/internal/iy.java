@@ -4,7 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import android.graphics.Path;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.widget.ImageView;
@@ -14,7 +13,7 @@ public final class iy extends ImageView
     private Uri Lc;
     private int Ld;
     private int Le;
-    private a Lf;
+    private iy$a Lf;
     private int Lg;
     private float Lh;
     
@@ -58,10 +57,5 @@ public final class iy extends ImageView
             }
         }
         this.setMeasuredDimension(measuredWidth, measuredHeight);
-    }
-    
-    public interface a
-    {
-        Path g(final int p0, final int p1);
     }
 }

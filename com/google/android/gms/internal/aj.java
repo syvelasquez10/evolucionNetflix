@@ -26,13 +26,8 @@ public class aj implements ah
     }
     
     @Override
-    public void a(final a a) {
-        this.md.dv().a((gw.a)new gw.a() {
-            @Override
-            public void a(final gv gv) {
-                a.aM();
-            }
-        });
+    public void a(final ah$a ah$a) {
+        this.md.dv().a(new aj$3(this, ah$a));
     }
     
     @Override
@@ -47,12 +42,7 @@ public class aj implements ah
     
     @Override
     public void a(final String s, final JSONObject jsonObject) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                aj.this.md.a(s, jsonObject);
-            }
-        });
+        this.runOnUiThread(new aj$1(this, s, jsonObject));
     }
     
     @Override
@@ -62,12 +52,7 @@ public class aj implements ah
     
     @Override
     public void f(final String s) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                aj.this.md.loadUrl(s);
-            }
-        });
+        this.runOnUiThread(new aj$2(this, s));
     }
     
     @Override

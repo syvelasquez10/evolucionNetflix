@@ -5,10 +5,9 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile$Operation;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.android.app.NetflixStatus;
@@ -84,7 +83,7 @@ public class FetchConnectWithFacebookRequest extends FalcorVolleyWebClientReques
     }
     
     @Override
-    protected String parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(String s) {
         if (Log.isLoggable("nf_service_user_fetchwebuserrequest", 2)) {
             Log.v("nf_service_user_fetchwebuserrequest", "String response to parse = " + s);
         }
@@ -93,9 +92,9 @@ public class FetchConnectWithFacebookRequest extends FalcorVolleyWebClientReques
             throw new FalcorParseException("UserConnectWith empty!!!");
         }
         try {
-            s = (String)FalcorParseUtils.getPropertyObject(dataObj.getAsJsonObject("user"), "operation", UserProfile.Operation.class);
+            s = (String)FalcorParseUtils.getPropertyObject(dataObj.getAsJsonObject("user"), "operation", UserProfile$Operation.class);
             if (s != null) {
-                return ((UserProfile.Operation)s).status;
+                return ((UserProfile$Operation)s).status;
             }
         }
         catch (Exception ex) {

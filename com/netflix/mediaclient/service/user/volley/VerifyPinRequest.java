@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
@@ -57,7 +56,7 @@ public class VerifyPinRequest extends FalcorVolleyWebClientRequest<Boolean>
     }
     
     @Override
-    protected Boolean parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected Boolean parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_pin", 2)) {
             Log.v("nf_pin", "String response to parse = " + s);
         }

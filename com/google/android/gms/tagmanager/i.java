@@ -8,7 +8,7 @@ import java.util.Iterator;
 import android.net.Uri$Builder;
 import java.util.List;
 import android.net.Uri;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import java.util.HashSet;
 import com.google.android.gms.internal.b;
@@ -24,11 +24,11 @@ class i extends dg
     private static final String anL;
     static final String anM;
     private static final Set<String> anN;
-    private final a anO;
+    private final i$a anO;
     private final Context mContext;
     
     static {
-        ID = com.google.android.gms.internal.a.ay.toString();
+        ID = a.ay.toString();
         URL = b.eX.toString();
         anK = b.bl.toString();
         anL = b.eW.toString();
@@ -37,15 +37,10 @@ class i extends dg
     }
     
     public i(final Context context) {
-        this(context, (a)new a() {
-            @Override
-            public aq nM() {
-                return y.W(context);
-            }
-        });
+        this(context, new i$1(context));
     }
     
-    i(final Context mContext, final a anO) {
+    i(final Context mContext, final i$a anO) {
         super(i.ID, new String[] { i.URL });
         this.anO = anO;
         this.mContext = mContext;
@@ -69,7 +64,7 @@ class i extends dg
     }
     
     @Override
-    public void E(final Map<String, d.a> map) {
+    public void E(final Map<String, d$a> map) {
         String j;
         if (map.get(i.anL) != null) {
             j = di.j(map.get(i.anL));
@@ -79,9 +74,9 @@ class i extends dg
         }
         if (j == null || !this.cg(j)) {
             final Uri$Builder buildUpon = Uri.parse(di.j(map.get(i.URL))).buildUpon();
-            final d.a a = map.get(i.anK);
-            if (a != null) {
-                final Object o = di.o(a);
+            final d$a d$a = map.get(i.anK);
+            if (d$a != null) {
+                final Object o = di.o(d$a);
                 if (!(o instanceof List)) {
                     bh.T("ArbitraryPixel: additional params not a list: not sending partial hit: " + buildUpon.build().toString());
                     return;
@@ -114,10 +109,5 @@ class i extends dg
     
     boolean ci(final String s) {
         return i.anN.contains(s);
-    }
-    
-    public interface a
-    {
-        aq nM();
     }
 }

@@ -5,6 +5,7 @@
 package com.google.android.gms.internal;
 
 import android.os.IBinder;
+import com.google.android.gms.dynamic.g$a;
 import android.os.RemoteException;
 import com.google.android.gms.dynamic.e;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -35,19 +36,19 @@ public final class au extends g<be>
     
     private bd b(final Context context, final ay ay, final String s, final cs cs) {
         try {
-            return bd.a.f(this.L(context).a(e.k(context), ay, s, cs, 6111000));
+            return bd$a.f(this.L(context).a(e.k(context), ay, s, cs, 6111000));
         }
         catch (RemoteException ex) {
             gs.d("Could not create remote AdManager.", (Throwable)ex);
             return null;
         }
-        catch (a a) {
-            gs.d("Could not create remote AdManager.", a);
+        catch (g$a g$a) {
+            gs.d("Could not create remote AdManager.", g$a);
             return null;
         }
     }
     
     protected be c(final IBinder binder) {
-        return be.a.g(binder);
+        return be$a.g(binder);
     }
 }

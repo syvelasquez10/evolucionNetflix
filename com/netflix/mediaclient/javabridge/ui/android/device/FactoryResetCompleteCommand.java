@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.javabridge.ui.android.device;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.ui.BaseCommandCompletedEvent;
 
@@ -13,7 +12,7 @@ public class FactoryResetCompleteCommand extends BaseCommandCompletedEvent
     public static final String NAME = "factoryReset";
     public static final String OBJECT = "nrdp.device";
     
-    public FactoryResetCompleteCommand(final JSONObject jsonObject) throws JSONException {
+    public FactoryResetCompleteCommand(final JSONObject jsonObject) {
         super("factoryReset", jsonObject);
     }
     

@@ -10,15 +10,15 @@ import android.os.Build$VERSION;
 
 public class EdgeEffectCompat
 {
-    private static final EdgeEffectImpl IMPL;
+    private static final EdgeEffectCompat$EdgeEffectImpl IMPL;
     private Object mEdgeEffect;
     
     static {
         if (Build$VERSION.SDK_INT >= 14) {
-            IMPL = (EdgeEffectImpl)new EdgeEffectIcsImpl();
+            IMPL = new EdgeEffectCompat$EdgeEffectIcsImpl();
             return;
         }
-        IMPL = (EdgeEffectImpl)new BaseEdgeEffectImpl();
+        IMPL = new EdgeEffectCompat$BaseEdgeEffectImpl();
     }
     
     public EdgeEffectCompat(final Context context) {
@@ -51,108 +51,5 @@ public class EdgeEffectCompat
     
     public void setSize(final int n, final int n2) {
         EdgeEffectCompat.IMPL.setSize(this.mEdgeEffect, n, n2);
-    }
-    
-    static class BaseEdgeEffectImpl implements EdgeEffectImpl
-    {
-        @Override
-        public boolean draw(final Object o, final Canvas canvas) {
-            return false;
-        }
-        
-        @Override
-        public void finish(final Object o) {
-        }
-        
-        @Override
-        public boolean isFinished(final Object o) {
-            return true;
-        }
-        
-        @Override
-        public Object newEdgeEffect(final Context context) {
-            return null;
-        }
-        
-        @Override
-        public boolean onAbsorb(final Object o, final int n) {
-            return false;
-        }
-        
-        @Override
-        public boolean onPull(final Object o, final float n) {
-            return false;
-        }
-        
-        @Override
-        public boolean onRelease(final Object o) {
-            return false;
-        }
-        
-        @Override
-        public void setSize(final Object o, final int n, final int n2) {
-        }
-    }
-    
-    static class EdgeEffectIcsImpl implements EdgeEffectImpl
-    {
-        @Override
-        public boolean draw(final Object o, final Canvas canvas) {
-            return EdgeEffectCompatIcs.draw(o, canvas);
-        }
-        
-        @Override
-        public void finish(final Object o) {
-            EdgeEffectCompatIcs.finish(o);
-        }
-        
-        @Override
-        public boolean isFinished(final Object o) {
-            return EdgeEffectCompatIcs.isFinished(o);
-        }
-        
-        @Override
-        public Object newEdgeEffect(final Context context) {
-            return EdgeEffectCompatIcs.newEdgeEffect(context);
-        }
-        
-        @Override
-        public boolean onAbsorb(final Object o, final int n) {
-            return EdgeEffectCompatIcs.onAbsorb(o, n);
-        }
-        
-        @Override
-        public boolean onPull(final Object o, final float n) {
-            return EdgeEffectCompatIcs.onPull(o, n);
-        }
-        
-        @Override
-        public boolean onRelease(final Object o) {
-            return EdgeEffectCompatIcs.onRelease(o);
-        }
-        
-        @Override
-        public void setSize(final Object o, final int n, final int n2) {
-            EdgeEffectCompatIcs.setSize(o, n, n2);
-        }
-    }
-    
-    interface EdgeEffectImpl
-    {
-        boolean draw(final Object p0, final Canvas p1);
-        
-        void finish(final Object p0);
-        
-        boolean isFinished(final Object p0);
-        
-        Object newEdgeEffect(final Context p0);
-        
-        boolean onAbsorb(final Object p0, final int p1);
-        
-        boolean onPull(final Object p0, final float p1);
-        
-        boolean onRelease(final Object p0);
-        
-        void setSize(final Object p0, final int p1, final int p2);
     }
 }

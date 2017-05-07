@@ -6,7 +6,6 @@ package com.netflix.mediaclient.media;
 
 import java.util.Arrays;
 import java.io.Serializable;
-import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
@@ -56,54 +55,56 @@ public class Language
     }
     
     private static int countAllowedSubtitles(final Subtitle[] array, final AudioSource audioSource) {
+        int n = 0;
         final boolean b = false;
-        int n;
+        int n2;
         if (audioSource == null) {
-            n = (b ? 1 : 0);
+            n2 = (b ? 1 : 0);
         }
         else {
-            n = (b ? 1 : 0);
+            n2 = (b ? 1 : 0);
             if (array != null) {
-                n = (b ? 1 : 0);
+                n2 = (b ? 1 : 0);
                 if (array.length >= 1) {
-                    int n2 = 0;
                     final int length = array.length;
                     int n3 = 0;
                     while (true) {
-                        n = n2;
+                        n2 = n;
                         if (n3 >= length) {
                             break;
                         }
-                        int n4 = n2;
+                        int n4 = n;
                         if (audioSource.isAllowedSubtitle(array[n3])) {
-                            n4 = n2 + 1;
+                            n4 = n + 1;
                         }
                         ++n3;
-                        n2 = n4;
+                        n = n4;
                     }
                 }
             }
         }
-        return n;
+        return n2;
     }
     
     private static AudioSource getAudioSource(final AudioSource[] array, final int n) {
         if (array == null) {
             Log.e("nf_language", "Audios are null!");
-            return null;
         }
-        for (int length = array.length, i = 0; i < length; ++i) {
-            final AudioSource audioSource = array[i];
-            if (Log.isLoggable("nf_language", 3)) {
-                Log.d("nf_language", "Testing " + audioSource + " for NCCP order number " + n);
+        else {
+            for (int length = array.length, i = 0; i < length; ++i) {
+                final AudioSource audioSource = array[i];
+                if (Log.isLoggable("nf_language", 3)) {
+                    Log.d("nf_language", "Testing " + audioSource + " for NCCP order number " + n);
+                }
+                if (audioSource.getNccpOrderNumber() == n) {
+                    Log.d("nf_language", "Found!");
+                    return audioSource;
+                }
             }
-            if (audioSource.getNccpOrderNumber() == n) {
-                Log.d("nf_language", "Found!");
-                return audioSource;
+            if (Log.isLoggable("nf_language", 5)) {
+                Log.w("nf_language", "SHould NOT happen! Audio source NOT found for NCCP order number " + n);
+                return null;
             }
-        }
-        if (Log.isLoggable("nf_language", 5)) {
-            Log.w("nf_language", "SHould NOT happen! Audio source NOT found for NCCP order number " + n);
         }
         return null;
     }
@@ -119,25 +120,28 @@ public class Language
     private static Subtitle getSubtitle(final Subtitle[] array, final int n) {
         if (array == null) {
             Log.e("nf_language", "Subtitles are null!");
-            return null;
         }
-        for (int length = array.length, i = 0; i < length; ++i) {
-            final Subtitle subtitle = array[i];
-            if (Log.isLoggable("nf_language", 3)) {
-                Log.d("nf_language", "Testing " + subtitle + " for NCCP order number " + n);
+        else {
+            for (int length = array.length, i = 0; i < length; ++i) {
+                final Subtitle subtitle = array[i];
+                if (Log.isLoggable("nf_language", 3)) {
+                    Log.d("nf_language", "Testing " + subtitle + " for NCCP order number " + n);
+                }
+                if (subtitle.getNccpOrderNumber() == n) {
+                    Log.d("nf_language", "Found!");
+                    return subtitle;
+                }
             }
-            if (subtitle.getNccpOrderNumber() == n) {
-                Log.d("nf_language", "Found!");
-                return subtitle;
+            if (Log.isLoggable("nf_language", 5)) {
+                Log.w("nf_language", "Should NOT happen! Subtitle NOT found for NCCP order number " + n);
+                return null;
             }
-        }
-        if (Log.isLoggable("nf_language", 5)) {
-            Log.w("nf_language", "Should NOT happen! Subtitle NOT found for NCCP order number " + n);
         }
         return null;
     }
     
-    public static Language restoreLanguage(final String s) throws JSONException {
+    public static Language restoreLanguage(final String s) {
+        final int n = 0;
         final JSONObject jsonObject = new JSONObject(s);
         final int int1 = jsonObject.getInt("CurrentNccpSubtitleIndex");
         final int int2 = jsonObject.getInt("CurrentNccpAudioIndex");
@@ -146,33 +150,33 @@ public class Language
         final boolean boolean1 = jsonObject.getBoolean("subtitle_visible");
         final JSONArray optJSONArray = jsonObject.optJSONArray("audio_array");
         final JSONArray optJSONArray2 = jsonObject.optJSONArray("subtitle_array");
-        Subtitle[] array = null;
-        AudioSource[] array2 = null;
+        Subtitle[] array2;
         if (optJSONArray2 != null) {
-            final Subtitle[] array3 = new Subtitle[optJSONArray2.length()];
-            int n = 0;
-            while (true) {
-                array = array3;
-                if (n >= array3.length) {
-                    break;
-                }
-                array3[n] = Subtitle.restore(optJSONArray2.getJSONObject(n));
-                ++n;
-            }
-        }
-        if (optJSONArray != null) {
-            final AudioSource[] array4 = new AudioSource[optJSONArray.length()];
+            final Subtitle[] array = new Subtitle[optJSONArray2.length()];
             int n2 = 0;
             while (true) {
-                array2 = array4;
-                if (n2 >= array4.length) {
+                array2 = array;
+                if (n2 >= array.length) {
                     break;
                 }
-                array4[n2] = AudioSource.restore(optJSONArray.getJSONObject(n2));
+                array[n2] = Subtitle.restore(optJSONArray2.getJSONObject(n2));
                 ++n2;
             }
         }
-        final Language language = new Language(array2, int2, array, int1, boolean1);
+        else {
+            array2 = null;
+        }
+        AudioSource[] array3;
+        if (optJSONArray != null) {
+            array3 = new AudioSource[optJSONArray.length()];
+            for (int i = n; i < array3.length; ++i) {
+                array3[i] = AudioSource.restore(optJSONArray.getJSONObject(i));
+            }
+        }
+        else {
+            array3 = null;
+        }
+        final Language language = new Language(array3, int2, array2, int1, boolean1);
         language.mPreviousNccpAudioIndex = int4;
         language.mPreviousNccpSubtitleIndex = int3;
         return language;
@@ -354,7 +358,8 @@ public class Language
         return null;
     }
     
-    public String toJsonString() throws JSONException {
+    public String toJsonString() {
+        final int n = 0;
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("CurrentNccpAudioIndex", this.mCurrentNccpAudioIndex);
         jsonObject.put("CurrentNccpSubtitleIndex", this.mCurrentNccpSubtitleIndex);
@@ -370,7 +375,7 @@ public class Language
         }
         if (this.mAltAudios != null && this.mAltAudios.length > 0) {
             final JSONArray jsonArray2 = new JSONArray();
-            for (int j = 0; j < this.mAltAudios.length; ++j) {
+            for (int j = n; j < this.mAltAudios.length; ++j) {
                 jsonArray2.put((Object)this.mAltAudios[j].toJson());
             }
             jsonObject.put("audio_array", (Object)jsonArray2);

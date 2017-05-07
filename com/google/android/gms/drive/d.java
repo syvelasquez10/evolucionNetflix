@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -40,7 +41,7 @@ public class d implements Parcelable$Creator<DrivePreferences>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new DrivePreferences(g, c);
     }

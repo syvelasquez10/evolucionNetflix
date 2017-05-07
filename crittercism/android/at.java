@@ -72,39 +72,39 @@ public final class at
             while (true) {
                 Label_0328: {
                     synchronized (this) {
-                        new ap.a();
-                        this.a(ap.a.a(h));
-                        new ao.a();
+                        new ap$a();
+                        this.a(ap$a.a(h));
+                        new ao$a();
                         String s2;
                         if ((s2 = h.a(ae.g.a(), ae.g.b(), null)) == null) {
                             s2 = h.a(ae.i.a(), ae.i.b(), null);
                         }
                         ao ao;
                         if (s2 == null) {
-                            s2 = crittercism.android.ao.a.a(context);
+                            s2 = ao$a.a(context);
                             if (s2 != null) {
                                 break Label_0328;
                             }
                             s2 = s;
                             if (context.getPackageManager().checkPermission("android.permission.READ_PHONE_STATE", context.getPackageName()) == 0) {
-                                s2 = crittercism.android.ao.a.b(((TelephonyManager)context.getSystemService("phone")).getDeviceId());
+                                s2 = ao$a.b(((TelephonyManager)context.getSystemService("phone")).getDeviceId());
                             }
                             String string;
                             if ((string = s2) == null) {
                                 string = UUID.randomUUID().toString();
                             }
-                            ao = crittercism.android.ao.a.a(string);
+                            ao = ao$a.a(string);
                         }
                         else {
-                            ao = crittercism.android.ao.a.a(s2);
+                            ao = ao$a.a(s2);
                         }
                         this.a(ao);
                         if (!this.c.a()) {
                             this.a(new an(h.b(ae.e.a(), ae.e.b()), (byte)0));
-                            final aq a = aq.a.a(h, ae.d.a(), ae.d.b());
+                            final aq a = aq$a.a(h, ae.d.a(), ae.d.b());
                             ++a.c;
                             this.a(a);
-                            new ar.a();
+                            new ar$a();
                             int n;
                             if ((n = h.a(ae.h.a(), ae.h.b())) == 0) {
                                 n = h.a(ae.j.a(), ae.j.b());

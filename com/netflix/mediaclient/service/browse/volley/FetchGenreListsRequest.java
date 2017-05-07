@@ -8,11 +8,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
@@ -37,7 +36,7 @@ public class FetchGenreListsRequest extends FalcorVolleyWebClientRequest<List<Ge
     public FetchGenreListsRequest(final Context context, final int n, final int n2, final BrowseAgentCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
-        this.pqlQuery = new StringBuilder("['genreList']").toString();
+        this.pqlQuery = "['genreList']";
         if (Log.isLoggable("nf_service_browse_fetchgenrelistrequest", 2)) {
             Log.v("nf_service_browse_fetchgenrelistrequest", "PQL = " + this.pqlQuery);
         }
@@ -64,7 +63,7 @@ public class FetchGenreListsRequest extends FalcorVolleyWebClientRequest<List<Ge
     }
     
     @Override
-    protected List<GenreList> parseFalcorResponse(String value) throws FalcorParseException, FalcorServerException {
+    protected List<GenreList> parseFalcorResponse(String value) {
         this.rEnd = System.nanoTime();
         this.rDurationInMs = TimeUnit.MILLISECONDS.convert(this.rEnd - this.rStart, TimeUnit.NANOSECONDS);
         Log.d("nf_service_browse_fetchgenrelistrequest", String.format("genreList request took %d ms ", this.rDurationInMs));

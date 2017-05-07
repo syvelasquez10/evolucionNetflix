@@ -7,7 +7,6 @@ package com.netflix.mediaclient.httpstack;
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import java.util.List;
-import java.io.IOException;
 
 public interface HttpStack
 {
@@ -19,9 +18,9 @@ public interface HttpStack
     
     void disconnect(final HttpStackConnection p0);
     
-    HttpStackConnection getConnection(final String p0) throws IOException;
+    HttpStackConnection getConnection(final String p0);
     
     List<Cookie> getResponseCookies(final HttpStackConnection p0);
     
-    HttpResponse performGet(final HttpStackConnection p0) throws IOException;
+    HttpResponse performGet(final HttpStackConnection p0);
 }

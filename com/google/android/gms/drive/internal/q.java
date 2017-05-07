@@ -5,13 +5,13 @@
 package com.google.android.gms.drive.internal;
 
 import android.os.IInterface;
-import com.google.android.gms.common.internal.j;
-import com.google.android.gms.common.internal.k;
-import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
-import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.internal.j;
+import com.google.android.gms.common.internal.d$e;
+import com.google.android.gms.common.internal.k;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import android.os.IBinder;
 import android.content.pm.ServiceInfo;
 import java.util.List;
@@ -19,12 +19,13 @@ import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import com.google.android.gms.common.internal.n;
 import java.util.HashMap;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.internal.ClientSettings;
 import android.os.Looper;
 import android.content.Context;
 import com.google.android.gms.drive.events.c;
 import java.util.Map;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.google.android.gms.drive.DriveId;
 import android.os.Bundle;
 import com.google.android.gms.common.internal.d;
@@ -37,12 +38,12 @@ public class q extends d<ab>
     private final boolean Ot;
     private DriveId Ou;
     private DriveId Ov;
-    final GoogleApiClient.ConnectionCallbacks Ow;
-    final Map<DriveId, Map<com.google.android.gms.drive.events.c, y>> Ox;
+    final GoogleApiClient$ConnectionCallbacks Ow;
+    final Map<DriveId, Map<c, y>> Ox;
     
-    public q(final Context context, final Looper looper, final ClientSettings clientSettings, final GoogleApiClient.ConnectionCallbacks ow, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String[] array, final Bundle os) {
-        super(context, looper, ow, onConnectionFailedListener, array);
-        this.Ox = new HashMap<DriveId, Map<com.google.android.gms.drive.events.c, y>>();
+    public q(final Context context, final Looper looper, final ClientSettings clientSettings, final GoogleApiClient$ConnectionCallbacks ow, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final String[] array, final Bundle os) {
+        super(context, looper, ow, googleApiClient$OnConnectionFailedListener, array);
+        this.Ox = new HashMap<DriveId, Map<c, y>>();
         this.Dd = n.b(clientSettings.getAccountNameOrDefault(), (Object)"Must call Api.ClientBuilder.setAccountName()");
         this.IH = clientSettings.getRealClientPackageName();
         this.Ow = ow;
@@ -68,7 +69,7 @@ public class q extends d<ab>
     }
     
     protected ab T(final IBinder binder) {
-        return ab.a.U(binder);
+        return ab$a.U(binder);
     }
     
     PendingResult<Status> a(final GoogleApiClient googleApiClient, final DriveId driveId, final int n) {
@@ -78,14 +79,10 @@ public class q extends d<ab>
         if (!this.Ot) {
             throw new IllegalStateException("Application must define an exported DriveEventService subclass in AndroidManifest.xml to add event subscriptions");
         }
-        return googleApiClient.b((PendingResult<Status>)new p.a() {
-            protected void a(final q q) throws RemoteException {
-                q.hY().a(new AddEventListenerRequest(driveId, n), null, null, new bb((BaseImplementation.b<Status>)this));
-            }
-        });
+        return googleApiClient.b((PendingResult<Status>)new q$3(this, driveId, n));
     }
     
-    PendingResult<Status> a(final GoogleApiClient googleApiClient, final DriveId driveId, final int n, com.google.android.gms.drive.events.c c) {
+    PendingResult<Status> a(final GoogleApiClient googleApiClient, final DriveId driveId, final int n, c c) {
         while (true) {
             n.b(com.google.android.gms.drive.events.d.a(n, driveId), (Object)"id");
             n.b(c, "listener");
@@ -93,28 +90,24 @@ public class q extends d<ab>
             while (true) {
                 Label_0199: {
                     synchronized (this.Ox) {
-                        Map<com.google.android.gms.drive.events.c, y> map = this.Ox.get(driveId);
+                        Map<c, y> map = this.Ox.get(driveId);
                         if (map == null) {
-                            map = new HashMap<com.google.android.gms.drive.events.c, y>();
+                            map = new HashMap<c, y>();
                             this.Ox.put(driveId, map);
                             final Object o = map.get(c);
                             if (o == null) {
                                 final y y = new y(this.getLooper(), this.getContext(), n, c);
                                 map.put(c, y);
-                                c = (com.google.android.gms.drive.events.c)y;
+                                c = (c)y;
                             }
                             else {
-                                c = (com.google.android.gms.drive.events.c)o;
+                                c = (c)o;
                                 if (((y)o).br(n)) {
-                                    return (PendingResult<Status>)new o.m(googleApiClient, Status.Jo);
+                                    return (PendingResult<Status>)new o$m(googleApiClient, Status.Jo);
                                 }
                             }
                             ((y)c).bq(n);
-                            return googleApiClient.b((PendingResult<Status>)new p.a() {
-                                protected void a(final q q) throws RemoteException {
-                                    q.hY().a(new AddEventListenerRequest(driveId, n), c, null, new bb((BaseImplementation.b<Status>)this));
-                                }
-                            });
+                            return googleApiClient.b((PendingResult<Status>)new q$1(this, driveId, n, (y)c));
                         }
                         break Label_0199;
                     }
@@ -135,9 +128,9 @@ public class q extends d<ab>
     }
     
     @Override
-    protected void a(final k k, final e e) throws RemoteException {
+    protected void a(final k k, final d$e d$e) {
         final String packageName = this.getContext().getPackageName();
-        n.i(e);
+        n.i(d$e);
         n.i(packageName);
         n.i(this.gR());
         final Bundle bundle = new Bundle();
@@ -145,44 +138,36 @@ public class q extends d<ab>
             bundle.putString("proxy_package_name", this.IH);
         }
         bundle.putAll(this.Os);
-        k.a(e, 6111000, packageName, this.gR(), this.Dd, bundle);
+        k.a(d$e, 6111000, packageName, this.gR(), this.Dd, bundle);
     }
     
     PendingResult<Status> b(final GoogleApiClient googleApiClient, final DriveId driveId, final int n) {
         n.b(com.google.android.gms.drive.events.d.a(n, driveId), (Object)"id");
         n.i("eventService");
         n.a(this.isConnected(), (Object)"Client must be connected");
-        return googleApiClient.b((PendingResult<Status>)new p.a() {
-            protected void a(final q q) throws RemoteException {
-                q.hY().a(new RemoveEventListenerRequest(driveId, n), null, null, new bb((BaseImplementation.b<Status>)this));
-            }
-        });
+        return googleApiClient.b((PendingResult<Status>)new q$4(this, driveId, n));
     }
     
-    PendingResult<Status> b(final GoogleApiClient googleApiClient, final DriveId driveId, final int n, com.google.android.gms.drive.events.c c) {
+    PendingResult<Status> b(final GoogleApiClient googleApiClient, final DriveId driveId, final int n, c c) {
         n.b(com.google.android.gms.drive.events.d.a(n, driveId), (Object)"id");
         n.a(this.isConnected(), (Object)"Client must be connected");
         n.b(c, "listener");
-        final Map<com.google.android.gms.drive.events.c, y> map;
+        final Map<c, y> map;
         synchronized (this.Ox) {
             map = this.Ox.get(driveId);
             if (map == null) {
-                return (PendingResult<Status>)new o.m(googleApiClient, Status.Jo);
+                return (PendingResult<Status>)new o$m(googleApiClient, Status.Jo);
             }
-            c = (com.google.android.gms.drive.events.c)map.remove(c);
+            c = (c)map.remove(c);
             if (c == null) {
-                return (PendingResult<Status>)new o.m(googleApiClient, Status.Jo);
+                return (PendingResult<Status>)new o$m(googleApiClient, Status.Jo);
             }
         }
         if (map.isEmpty()) {
             this.Ox.remove(driveId);
         }
         final GoogleApiClient googleApiClient2;
-        final p.a b = googleApiClient2.b(new p.a() {
-            protected void a(final q q) throws RemoteException {
-                q.hY().a(new RemoveEventListenerRequest(driveId, n), c, null, new bb((BaseImplementation.b<Status>)this));
-            }
-        });
+        final q$2 b = googleApiClient2.b(new q$2(this, driveId, n, (y)c));
         // monitorexit(map2)
         return (PendingResult<Status>)b;
     }

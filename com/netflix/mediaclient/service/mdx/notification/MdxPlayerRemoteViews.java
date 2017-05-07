@@ -12,8 +12,8 @@ public final class MdxPlayerRemoteViews extends MdxRemoteViews
     private static final int SKIPBACK_SECONDS = -30;
     private String headerTitle;
     
-    public MdxPlayerRemoteViews(final String s, final boolean b, final MdxNotificationManager.MdxNotificationIntentRetriever mdxNotificationIntentRetriever, final Context headerTitle) {
-        super(s, b, mdxNotificationIntentRetriever, headerTitle);
+    public MdxPlayerRemoteViews(final String s, final boolean b, final MdxNotificationManager$MdxNotificationIntentRetriever mdxNotificationManager$MdxNotificationIntentRetriever, final Context headerTitle) {
+        super(s, b, mdxNotificationManager$MdxNotificationIntentRetriever, headerTitle);
         this.setHeaderTitle(headerTitle);
     }
     
@@ -21,15 +21,15 @@ public final class MdxPlayerRemoteViews extends MdxRemoteViews
         if (context == null) {
             return;
         }
-        this.headerTitle = context.getResources().getString(2131493250);
+        this.headerTitle = context.getResources().getString(2131493211);
     }
     
     @Override
     protected RemoteViews createViewForEpisodes(final boolean b) {
         if (b) {
-            return new RemoteViews(this.mPackageName, 2130903134);
+            return new RemoteViews(this.mPackageName, 2130903135);
         }
-        return new RemoteViews(this.mPackageName, 2130903133);
+        return new RemoteViews(this.mPackageName, 2130903134);
     }
     
     @Override

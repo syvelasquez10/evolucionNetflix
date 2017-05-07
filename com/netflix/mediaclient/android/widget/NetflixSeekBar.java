@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
+import com.netflix.mediaclient.util.api.Api21Util;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -36,18 +38,21 @@ public class NetflixSeekBar extends SeekBar
         super(context);
         this.dentPosition = -1;
         this.snapPosition = -1;
+        this.init();
     }
     
     public NetflixSeekBar(final Context context, final AttributeSet set) {
         super(context, set);
         this.dentPosition = -1;
         this.snapPosition = -1;
+        this.init();
     }
     
     public NetflixSeekBar(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
         this.dentPosition = -1;
         this.snapPosition = -1;
+        this.init();
     }
     
     private float computeXOffsetFromProgress(final int n) {
@@ -61,7 +66,7 @@ public class NetflixSeekBar extends SeekBar
                 final int n = (int)(this.cachedThumb.getBounds().centerX() - this.computeXOffsetFromProgress(this.getProgress() - this.snapPosition));
                 final int width = this.dent.getWidth();
                 final Rect bounds = this.getProgressDrawable().getBounds();
-                this.rectDent.set(n, bounds.top + this.progressBarPadding, n + width, bounds.bottom - this.progressBarPadding);
+                this.rectDent.set(n, bounds.top + this.progressBarPadding, width + n, bounds.bottom - this.progressBarPadding);
                 this.dentPosition = this.rectDent.centerX();
             }
             canvas.save();
@@ -86,7 +91,13 @@ public class NetflixSeekBar extends SeekBar
     
     private boolean inSnapZone(final int n) {
         final int dentDelta = this.getDentDelta();
-        return n >= this.snapPosition - dentDelta && n <= this.snapPosition + dentDelta;
+        return n >= this.snapPosition - dentDelta && n <= dentDelta + this.snapPosition;
+    }
+    
+    private void init() {
+        if (AndroidUtils.getAndroidVersion() >= 21) {
+            Api21Util.setSplitTrack(this, false);
+        }
     }
     
     private int touchEventToProgress(final MotionEvent motionEvent) {
@@ -104,7 +115,7 @@ public class NetflixSeekBar extends SeekBar
         else {
             n2 = (n - this.getPaddingLeft()) / (width - paddingLeft - paddingRight);
         }
-        return (int)(0.0f + this.getMax() * n2);
+        return (int)(n2 * this.getMax() + 0.0f);
     }
     
     private boolean validateSnap(final int n) {
@@ -178,7 +189,7 @@ public class NetflixSeekBar extends SeekBar
                     if (progress >= this.getMax()) {
                         break;
                     }
-                    if (this.validateSnap(this.getKeyProgressIncrement() + progress)) {
+                    if (this.validateSnap(progress + this.getKeyProgressIncrement())) {
                         return super.onKeyDown(n, keyEvent);
                     }
                     return b;
@@ -232,9 +243,8 @@ public class NetflixSeekBar extends SeekBar
     }
     
     public int setDentVisible(final boolean dentVisible) {
-        // monitorenter(this)
         int progress = -1;
-        try {
+        synchronized (this) {
             if (!(this.dentVisible = dentVisible)) {
                 this.rectDent = null;
                 this.snapPosition = -1;
@@ -247,9 +257,6 @@ public class NetflixSeekBar extends SeekBar
             this.invalidate();
             return progress;
         }
-        finally {
-        }
-        // monitorexit(this)
     }
     
     public void setProgress(final int progress) {

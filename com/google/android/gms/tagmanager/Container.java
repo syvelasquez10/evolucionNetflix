@@ -4,11 +4,13 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.List;
 import java.util.ArrayList;
+import com.google.android.gms.internal.c$i;
+import com.google.android.gms.internal.c$f;
 import java.util.HashMap;
-import com.google.android.gms.internal.c;
+import com.google.android.gms.internal.c$j;
 import android.content.Context;
 import java.util.Map;
 
@@ -17,52 +19,52 @@ public class Container
     private final String anR;
     private final DataLayer anS;
     private ct anT;
-    private Map<String, FunctionCallMacroCallback> anU;
-    private Map<String, FunctionCallTagCallback> anV;
+    private Map<String, Container$FunctionCallMacroCallback> anU;
+    private Map<String, Container$FunctionCallTagCallback> anV;
     private volatile long anW;
     private volatile String anX;
     private final Context mContext;
     
-    Container(final Context mContext, final DataLayer anS, final String anR, final long anW, final c.j j) {
-        this.anU = new HashMap<String, FunctionCallMacroCallback>();
-        this.anV = new HashMap<String, FunctionCallTagCallback>();
+    Container(final Context mContext, final DataLayer anS, final String anR, final long anW, final c$j c$j) {
+        this.anU = new HashMap<String, Container$FunctionCallMacroCallback>();
+        this.anV = new HashMap<String, Container$FunctionCallTagCallback>();
         this.anX = "";
         this.mContext = mContext;
         this.anS = anS;
         this.anR = anR;
         this.anW = anW;
-        this.a(j.gs);
-        if (j.gr != null) {
-            this.a(j.gr);
+        this.a(c$j.gs);
+        if (c$j.gr != null) {
+            this.a(c$j.gr);
         }
     }
     
-    Container(final Context mContext, final DataLayer anS, final String anR, final long anW, final cr.c c) {
-        this.anU = new HashMap<String, FunctionCallMacroCallback>();
-        this.anV = new HashMap<String, FunctionCallTagCallback>();
+    Container(final Context mContext, final DataLayer anS, final String anR, final long anW, final cr$c cr$c) {
+        this.anU = new HashMap<String, Container$FunctionCallMacroCallback>();
+        this.anV = new HashMap<String, Container$FunctionCallTagCallback>();
         this.anX = "";
         this.mContext = mContext;
         this.anS = anS;
         this.anR = anR;
         this.anW = anW;
-        this.a(c);
+        this.a(cr$c);
     }
     
-    private void a(final c.f f) {
-        if (f == null) {
+    private void a(final c$f c$f) {
+        if (c$f == null) {
             throw new NullPointerException();
         }
         try {
-            this.a(cr.b(f));
+            this.a(cr.b(c$f));
         }
-        catch (cr.g g) {
-            bh.T("Not loading resource: " + f + " because it is invalid: " + g.toString());
+        catch (cr$g cr$g) {
+            bh.T("Not loading resource: " + c$f + " because it is invalid: " + cr$g.toString());
         }
     }
     
-    private void a(final cr.c c) {
-        this.anX = c.getVersion();
-        this.a(new ct(this.mContext, c, this.anS, new a(), new b(), this.cn(this.anX)));
+    private void a(final cr$c cr$c) {
+        this.anX = cr$c.getVersion();
+        this.a(new ct(this.mContext, cr$c, this.anS, new Container$a(this, null), new Container$b(this, null), this.cn(this.anX)));
     }
     
     private void a(final ct anT) {
@@ -71,8 +73,8 @@ public class Container
         }
     }
     
-    private void a(final c.i[] array) {
-        final ArrayList<c.i> list = new ArrayList<c.i>();
+    private void a(final c$i[] array) {
+        final ArrayList<c$i> list = new ArrayList<c$i>();
         for (int length = array.length, i = 0; i < length; ++i) {
             list.add(array[i]);
         }
@@ -85,13 +87,13 @@ public class Container
         }
     }
     
-    FunctionCallMacroCallback ck(final String s) {
+    Container$FunctionCallMacroCallback ck(final String s) {
         synchronized (this.anU) {
             return this.anU.get(s);
         }
     }
     
-    FunctionCallTagCallback cl(final String s) {
+    Container$FunctionCallTagCallback cl(final String s) {
         synchronized (this.anV) {
             return this.anV.get(s);
         }
@@ -102,7 +104,7 @@ public class Container
     }
     
     ag cn(final String s) {
-        if (ce.oH().oI().equals(ce.a.apY)) {}
+        if (ce.oH().oI().equals(ce$a.apY)) {}
         return new br();
     }
     
@@ -183,21 +185,21 @@ public class Container
         return this.anX;
     }
     
-    public void registerFunctionCallMacroCallback(final String s, final FunctionCallMacroCallback functionCallMacroCallback) {
-        if (functionCallMacroCallback == null) {
+    public void registerFunctionCallMacroCallback(final String s, final Container$FunctionCallMacroCallback container$FunctionCallMacroCallback) {
+        if (container$FunctionCallMacroCallback == null) {
             throw new NullPointerException("Macro handler must be non-null");
         }
         synchronized (this.anU) {
-            this.anU.put(s, functionCallMacroCallback);
+            this.anU.put(s, container$FunctionCallMacroCallback);
         }
     }
     
-    public void registerFunctionCallTagCallback(final String s, final FunctionCallTagCallback functionCallTagCallback) {
-        if (functionCallTagCallback == null) {
+    public void registerFunctionCallTagCallback(final String s, final Container$FunctionCallTagCallback container$FunctionCallTagCallback) {
+        if (container$FunctionCallTagCallback == null) {
             throw new NullPointerException("Tag callback must be non-null");
         }
         synchronized (this.anV) {
-            this.anV.put(s, functionCallTagCallback);
+            this.anV.put(s, container$FunctionCallTagCallback);
         }
     }
     
@@ -214,40 +216,6 @@ public class Container
     public void unregisterFunctionCallTagCallback(final String s) {
         synchronized (this.anV) {
             this.anV.remove(s);
-        }
-    }
-    
-    public interface FunctionCallMacroCallback
-    {
-        Object getValue(final String p0, final Map<String, Object> p1);
-    }
-    
-    public interface FunctionCallTagCallback
-    {
-        void execute(final String p0, final Map<String, Object> p1);
-    }
-    
-    private class a implements s.a
-    {
-        @Override
-        public Object b(final String s, final Map<String, Object> map) {
-            final FunctionCallMacroCallback ck = Container.this.ck(s);
-            if (ck == null) {
-                return null;
-            }
-            return ck.getValue(s, map);
-        }
-    }
-    
-    private class b implements s.a
-    {
-        @Override
-        public Object b(final String s, final Map<String, Object> map) {
-            final FunctionCallTagCallback cl = Container.this.cl(s);
-            if (cl != null) {
-                cl.execute(s, map);
-            }
-            return di.pH();
         }
     }
 }

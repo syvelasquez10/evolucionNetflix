@@ -4,11 +4,12 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import java.util.List;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.UiUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -39,9 +40,9 @@ public class PaginatedLoMoAdapter extends BasePaginatedAdapter<Video>
     }
     
     @Override
-    protected View getView(final ObjectRecycler.ViewRecycler viewRecycler, final List<Video> list, final int n, final int n2, final BasicLoMo basicLoMo) {
+    protected View getView(final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final List<Video> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         LoMoViewGroup loMoViewGroup;
-        if ((loMoViewGroup = ((ObjectRecycler<LoMoViewGroup>)viewRecycler).pop(LoMoViewGroup.class)) == null) {
+        if ((loMoViewGroup = ((ObjectRecycler<LoMoViewGroup>)objectRecycler$ViewRecycler).pop(LoMoViewGroup.class)) == null) {
             loMoViewGroup = new LoMoViewGroup((Context)this.getActivity());
             loMoViewGroup.init(n);
         }

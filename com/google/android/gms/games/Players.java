@@ -4,8 +4,6 @@
 
 package com.google.android.gms.games;
 
-import com.google.android.gms.common.api.Releasable;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.PendingResult;
 import android.content.Intent;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -20,43 +18,15 @@ public interface Players
     
     Intent getPlayerSearchIntent(final GoogleApiClient p0);
     
-    PendingResult<LoadPlayersResult> loadConnectedPlayers(final GoogleApiClient p0, final boolean p1);
+    PendingResult<Players$LoadPlayersResult> loadConnectedPlayers(final GoogleApiClient p0, final boolean p1);
     
-    PendingResult<LoadPlayersResult> loadInvitablePlayers(final GoogleApiClient p0, final int p1, final boolean p2);
+    PendingResult<Players$LoadPlayersResult> loadInvitablePlayers(final GoogleApiClient p0, final int p1, final boolean p2);
     
-    PendingResult<LoadPlayersResult> loadMoreInvitablePlayers(final GoogleApiClient p0, final int p1);
+    PendingResult<Players$LoadPlayersResult> loadMoreInvitablePlayers(final GoogleApiClient p0, final int p1);
     
-    PendingResult<LoadPlayersResult> loadMoreRecentlyPlayedWithPlayers(final GoogleApiClient p0, final int p1);
+    PendingResult<Players$LoadPlayersResult> loadMoreRecentlyPlayedWithPlayers(final GoogleApiClient p0, final int p1);
     
-    PendingResult<LoadPlayersResult> loadPlayer(final GoogleApiClient p0, final String p1);
+    PendingResult<Players$LoadPlayersResult> loadPlayer(final GoogleApiClient p0, final String p1);
     
-    PendingResult<LoadPlayersResult> loadRecentlyPlayedWithPlayers(final GoogleApiClient p0, final int p1, final boolean p2);
-    
-    public interface LoadOwnerCoverPhotoUrisResult extends Result
-    {
-    }
-    
-    public interface LoadPlayersResult extends Releasable, Result
-    {
-        PlayerBuffer getPlayers();
-    }
-    
-    public interface LoadProfileSettingsResult extends Result
-    {
-        boolean isProfileVisible();
-        
-        boolean isVisibilityExplicitlySet();
-    }
-    
-    public interface LoadXpForGameCategoriesResult extends Result
-    {
-    }
-    
-    public interface LoadXpForGamesResult extends Result
-    {
-    }
-    
-    public interface LoadXpStreamResult extends Result
-    {
-    }
+    PendingResult<Players$LoadPlayersResult> loadRecentlyPlayedWithPlayers(final GoogleApiClient p0, final int p1, final boolean p2);
 }

@@ -6,7 +6,7 @@ package com.google.android.gms.tagmanager;
 
 import java.util.regex.PatternSyntaxException;
 import java.util.regex.Pattern;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
@@ -26,7 +26,7 @@ class ci extends dd
     }
     
     @Override
-    protected boolean a(final String s, final String s2, final Map<String, d.a> map) {
+    protected boolean a(final String s, final String s2, final Map<String, d$a> map) {
         while (true) {
             Label_0046: {
                 if (!di.n(map.get(ci.aqe))) {

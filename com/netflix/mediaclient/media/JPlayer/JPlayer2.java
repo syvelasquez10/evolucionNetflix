@@ -27,7 +27,7 @@ public class JPlayer2
     private static final String TAG = "NF_JPlayer2";
     private MediaDecoderBase mAudioPipe;
     private MediaCrypto mCrypto;
-    private DecoderListener mDecoderListener;
+    private JPlayer2$DecoderListener mDecoderListener;
     private VideoResolutionRange mMaxVideoRes;
     private long mNativePlayer;
     private volatile int mState;
@@ -36,7 +36,7 @@ public class JPlayer2
     
     public JPlayer2(final Surface mSurface) {
         this.mState = -1;
-        this.mDecoderListener = new DecoderListener();
+        this.mDecoderListener = new JPlayer2$DecoderListener(this);
         this.mSurface = mSurface;
     }
     
@@ -45,7 +45,7 @@ public class JPlayer2
         this.mCrypto = mCrypto;
     }
     
-    private void configureAudioPipe() throws Exception {
+    private void configureAudioPipe() {
         Log.d("NF_JPlayer2", "configureAudioPipe");
         final MediaFormat mediaFormat = new MediaFormat();
         mediaFormat.setString("mime", "audio/mp4a-latm");
@@ -53,10 +53,11 @@ public class JPlayer2
         mediaFormat.setInteger("channel-count", 2);
         mediaFormat.setInteger("sample-rate", 48000);
         mediaFormat.setInteger("is-adts", 1);
-        this.mAudioPipe = new MediaDecoder2Audio(new MediaDataSource(true), "audio/mp4a-latm", mediaFormat, this.mDecoderListener);
+        this.mAudioPipe = new MediaDecoder2Audio(new JPlayer2$MediaDataSource(this, true), "audio/mp4a-latm", mediaFormat, this.mDecoderListener);
     }
     
-    private void configureVideoPipe() throws Exception {
+    private void configureVideoPipe() {
+        int n = 1920;
         Log.d("NF_JPlayer2", "configureVideoPipe");
         if (DrmManagerRegistry.isWidevineDrmAllowed() && this.mCrypto == null) {
             this.mCrypto = DrmManagerRegistry.getWidevineMediaDrmEngine().getMediaCrypto();
@@ -65,9 +66,9 @@ public class JPlayer2
         mediaFormat.setString("mime", "video/avc");
         if (AndroidUtils.getAndroidVersion() > 18) {
             final Pair<Integer, Integer> requiredMaximumResolution = AdaptiveMediaDecoderHelper.getRequiredMaximumResolution(this.mMaxVideoRes, this.mCrypto != null);
-            int intValue;
-            if ((intValue = (int)requiredMaximumResolution.first) > 1920) {
-                intValue = 1920;
+            final int intValue = (int)requiredMaximumResolution.first;
+            if (intValue <= 1920) {
+                n = intValue;
             }
             int intValue2;
             if ((intValue2 = (int)requiredMaximumResolution.second) > 1080) {
@@ -75,11 +76,11 @@ public class JPlayer2
             }
             if (Log.isLoggable("NF_JPlayer2", 3)) {
                 Log.d("NF_JPlayer2", "video max resolution is " + requiredMaximumResolution.first + " x " + requiredMaximumResolution.second);
-                Log.d("NF_JPlayer2", "video real resolution is " + intValue + " x " + intValue2);
+                Log.d("NF_JPlayer2", "video real resolution is " + n + " x " + intValue2);
             }
-            mediaFormat.setInteger("max-width", intValue);
+            mediaFormat.setInteger("max-width", n);
             mediaFormat.setInteger("max-height", intValue2);
-            mediaFormat.setInteger("width", intValue);
+            mediaFormat.setInteger("width", n);
             mediaFormat.setInteger("height", intValue2);
         }
         else {
@@ -88,32 +89,32 @@ public class JPlayer2
             mediaFormat.setInteger("height", 1080);
         }
         if (this.mVideoPipe == null) {
-            this.mVideoPipe = new MediaDecoder2Video(new MediaDataSource(false), "video/avc", mediaFormat, this.mSurface, this.mCrypto, this.mDecoderListener);
+            this.mVideoPipe = new MediaDecoder2Video(new JPlayer2$MediaDataSource(this, false), "video/avc", mediaFormat, this.mSurface, this.mCrypto, this.mDecoderListener);
             Log.d("NF_JPlayer2", "video pipe is ready");
             return;
         }
         Log.d("NF_JPlayer2", "video pipe is not ready, wait...");
     }
     
-    private void getBuffer(final byte[] array, final boolean b, final InputDataSource.BufferMeta bufferMeta) {
+    private void getBuffer(final byte[] array, final boolean b, final MediaDecoderBase$InputDataSource$BufferMeta mediaDecoderBase$InputDataSource$BufferMeta) {
         synchronized (this) {
             if (this.mState != 0) {
-                this.nativeGetBuffer(array, b, bufferMeta);
+                this.nativeGetBuffer(array, b, mediaDecoderBase$InputDataSource$BufferMeta);
             }
         }
     }
     
-    private void getBufferDirect(final ByteBuffer byteBuffer, final boolean b, final InputDataSource.BufferMeta bufferMeta) {
+    private void getBufferDirect(final ByteBuffer byteBuffer, final boolean b, final MediaDecoderBase$InputDataSource$BufferMeta mediaDecoderBase$InputDataSource$BufferMeta) {
         synchronized (this) {
             if (this.mState != 0) {
-                this.nativeGetBufferDirect(byteBuffer, b, bufferMeta);
+                this.nativeGetBufferDirect(byteBuffer, b, mediaDecoderBase$InputDataSource$BufferMeta);
             }
         }
     }
     
-    private native void nativeGetBuffer(final byte[] p0, final boolean p1, final InputDataSource.BufferMeta p2);
+    private native void nativeGetBuffer(final byte[] p0, final boolean p1, final MediaDecoderBase$InputDataSource$BufferMeta p2);
     
-    private native void nativeGetBufferDirect(final ByteBuffer p0, final boolean p1, final InputDataSource.BufferMeta p2);
+    private native void nativeGetBufferDirect(final ByteBuffer p0, final boolean p1, final MediaDecoderBase$InputDataSource$BufferMeta p2);
     
     private native long nativeGetPlayer();
     
@@ -326,138 +327,5 @@ public class JPlayer2
             Log.d("NF_JPlayer2", "surface becomes null");
         }
         Log.d("NF_JPlayer2", "updateSurface done");
-    }
-    
-    public class DecoderListener implements EventListener
-    {
-        @Override
-        public void onDecoderReady(final boolean b) {
-            // monitorenter(this)
-            Label_0017: {
-                if (!b) {
-                    break Label_0017;
-                }
-                try {
-                    Log.d("NF_JPlayer2", "AUDIO init'd");
-                    return;
-                    Log.d("NF_JPlayer2", "VIDEO init'd");
-                    JPlayer2.this.notifyReady();
-                }
-                finally {
-                }
-                // monitorexit(this)
-            }
-        }
-        
-        @Override
-        public void onDecoderStarted(final boolean b) {
-            // monitorenter(this)
-            Label_0017: {
-                if (!b) {
-                    break Label_0017;
-                }
-                try {
-                    Log.d("NF_JPlayer2", "AUDIO ready");
-                    return;
-                    Log.d("NF_JPlayer2", "VIDEO ready");
-                    JPlayer2.this.mAudioPipe.unpause();
-                    JPlayer2.this.mVideoPipe.unpause();
-                }
-                finally {
-                }
-                // monitorexit(this)
-            }
-        }
-        
-        @Override
-        public void onEndOfStream(final boolean b) {
-            JPlayer2.this.notifyEndOfStream(b);
-            if (b) {
-                Log.d("NF_JPlayer2", "AUDIO END_OF_STREAM");
-                return;
-            }
-            Log.d("NF_JPlayer2", "VIDEO END_OF_STREAM");
-        }
-        
-        @Override
-        public void onFlushed(final boolean b) {
-            // monitorenter(this)
-            Label_0024: {
-                if (!b) {
-                    break Label_0024;
-                }
-                try {
-                    Log.d("NF_JPlayer2", "AUDIO flushed");
-                    JPlayer2.this.notifyReady();
-                    return;
-                    Log.d("NF_JPlayer2", "VIDEO flushed");
-                }
-                finally {
-                }
-                // monitorexit(this)
-            }
-        }
-        
-        @Override
-        public void onPasued(final boolean b) {
-            // monitorenter(this)
-            Label_0024: {
-                if (!b) {
-                    break Label_0024;
-                }
-                try {
-                    Log.d("NF_JPlayer2", "AUDIO paused");
-                    JPlayer2.this.notifyReady();
-                    return;
-                    Log.d("NF_JPlayer2", "VIDEO paused");
-                }
-                finally {
-                }
-                // monitorexit(this)
-            }
-        }
-        
-        @Override
-        public void onSampleRendered(final boolean b, final long n, final long n2) {
-            synchronized (this) {
-                JPlayer2.this.updatePosition(b, n2);
-                if (b) {}
-            }
-        }
-    }
-    
-    public class MediaDataSource implements InputDataSource
-    {
-        static final boolean TYPE_AUDIO = true;
-        static final boolean TYPE_VIDEO = false;
-        private boolean mIsAudio;
-        
-        MediaDataSource(final boolean mIsAudio) {
-            this.mIsAudio = mIsAudio;
-        }
-        
-        @Override
-        public BufferMeta onRequestData(final ByteBuffer byteBuffer) {
-            final BufferMeta bufferMeta = new BufferMeta();
-            bufferMeta.size = 0;
-            bufferMeta.flags = 0;
-            if (byteBuffer.isDirect()) {
-                JPlayer2.this.getBufferDirect(byteBuffer, this.mIsAudio, bufferMeta);
-            }
-            else {
-                Log.e("NF_JPlayer2", "WITH NON-DIRECT BYTEBUFFER");
-                final byte[] array = byteBuffer.array();
-                if (array == null) {
-                    bufferMeta.size = 0;
-                    bufferMeta.flags = 4;
-                    Log.e("NF_JPlayer2", "can't get bytearray");
-                    return bufferMeta;
-                }
-                JPlayer2.this.getBuffer(array, this.mIsAudio, bufferMeta);
-            }
-            byteBuffer.limit(bufferMeta.size);
-            byteBuffer.position(0);
-            return bufferMeta;
-        }
     }
 }

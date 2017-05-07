@@ -1,0 +1,27 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.google.gson.internal.bind;
+
+import com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.TypeAdapter;
+
+final class TypeAdapters$10 extends TypeAdapter<Number>
+{
+    @Override
+    public Number read(final JsonReader jsonReader) {
+        if (jsonReader.peek() == JsonToken.NULL) {
+            jsonReader.nextNull();
+            return null;
+        }
+        return jsonReader.nextDouble();
+    }
+    
+    @Override
+    public void write(final JsonWriter jsonWriter, final Number n) {
+        jsonWriter.value(n);
+    }
+}

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.repository.SecurityRepository;
@@ -49,7 +48,7 @@ public class Version
         this.nrdsdk = SecurityRepository.getNrdSdkVersion();
     }
     
-    public static Version createInstance(final JSONObject jsonObject) throws JSONException {
+    public static Version createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -92,7 +91,7 @@ public class Version
         return this.ui;
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.app != null) {
             jsonObject.put("app", (Object)this.app);

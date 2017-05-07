@@ -7,8 +7,9 @@ package com.netflix.mediaclient.service.mdx;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import android.app.DialogFragment;
-import android.content.Context;
 import com.netflix.mediaclient.ui.common.NetflixAlertDialog;
+import android.content.Context;
+import com.netflix.mediaclient.ui.common.NetflixAlertDialog$AlertDialogDescriptor;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
@@ -16,10 +17,10 @@ public class MdxErrorHandler
 {
     private static final String ERROR_DIALOG_ID = "mdx_error_dialog_id";
     private final NetflixActivity activity;
-    private final ErrorHandlerCallbacks callbacks;
+    private final MdxErrorHandler$ErrorHandlerCallbacks callbacks;
     private final String tag;
     
-    public MdxErrorHandler(final String tag, final NetflixActivity activity, final ErrorHandlerCallbacks callbacks) {
+    public MdxErrorHandler(final String tag, final NetflixActivity activity, final MdxErrorHandler$ErrorHandlerCallbacks callbacks) {
         this.tag = tag;
         this.activity = activity;
         this.callbacks = callbacks;
@@ -38,28 +39,28 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131493241);
+                return this.activity.getString(2131493203);
             }
             case 104: {
-                return this.activity.getString(2131493242);
+                return this.activity.getString(2131493204);
             }
             case 105: {
-                return this.activity.getString(2131493243);
+                return this.activity.getString(2131493205);
             }
             case 200: {
-                return this.activity.getString(2131493244);
+                return this.activity.getString(2131493206);
             }
             case 106: {
-                return String.format(this.activity.getString(2131493246), s);
+                return String.format(this.activity.getString(2131493208), s);
             }
             case 201: {
-                return this.activity.getString(2131493245);
+                return this.activity.getString(2131493207);
             }
         }
     }
     
     private void handleError(final int n, final String s) {
-        this.activity.showDialog(NetflixAlertDialog.newInstance(new NetflixAlertDialog.AlertDialogDescriptor((Context)this.activity, "mdx_error_dialog_id", this.getErrorMessage(n, s), false, false)));
+        this.activity.showDialog(NetflixAlertDialog.newInstance(new NetflixAlertDialog$AlertDialogDescriptor((Context)this.activity, "mdx_error_dialog_id", this.getErrorMessage(n, s), false, false)));
     }
     
     private void sendToast(final int n, final String s) {
@@ -121,10 +122,5 @@ public class MdxErrorHandler
             return;
         }
         Log.d(this.tag, "Not MDX related activity, do not show toast");
-    }
-    
-    public interface ErrorHandlerCallbacks
-    {
-        void destroy();
     }
 }

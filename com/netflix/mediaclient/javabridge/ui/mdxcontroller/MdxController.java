@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.javabridge.ui.mdxcontroller;
 
-import java.util.ArrayList;
 import com.netflix.mediaclient.javabridge.ui.Mdx;
 
 public interface MdxController extends Mdx
@@ -19,12 +18,5 @@ public interface MdxController extends Mdx
     
     void removePropertyUpdateListener();
     
-    void setPropertyUpdateListener(final PropertyUpdateListener p0);
-    
-    public interface PropertyUpdateListener
-    {
-        void onIsReady(final boolean p0);
-        
-        void onRemoteDeviceMap(final ArrayList<RemoteDevice> p0);
-    }
+    void setPropertyUpdateListener(final MdxController$PropertyUpdateListener p0);
 }

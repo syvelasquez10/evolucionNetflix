@@ -22,7 +22,7 @@ public final class iw extends Drawable implements Drawable$Callback
     private int KO;
     private int KP;
     private boolean KQ;
-    private b KR;
+    private iw$b KR;
     private Drawable KS;
     private Drawable KT;
     private boolean KU;
@@ -35,25 +35,25 @@ public final class iw extends Drawable implements Drawable$Callback
         this(null);
         Drawable gm2 = gm;
         if (gm == null) {
-            gm2 = a.KY;
+            gm2 = iw$a.KY;
         }
         (this.KS = gm2).setCallback((Drawable$Callback)this);
-        final b kr = this.KR;
+        final iw$b kr = this.KR;
         kr.Lb |= gm2.getChangingConfigurations();
         if ((gm = drawable) == null) {
-            gm = a.KY;
+            gm = iw$a.KY;
         }
         (this.KT = gm).setCallback((Drawable$Callback)this);
-        final b kr2 = this.KR;
+        final iw$b kr2 = this.KR;
         kr2.Lb |= gm.getChangingConfigurations();
     }
     
-    iw(final b b) {
+    iw(final iw$b iw$b) {
         this.KK = 0;
         this.KN = 255;
         this.KP = 0;
         this.KE = true;
-        this.KR = new b(b);
+        this.KR = new iw$b(iw$b);
     }
     
     public boolean canConstantState() {
@@ -212,66 +212,6 @@ public final class iw extends Drawable implements Drawable$Callback
             if (callback != null) {
                 callback.unscheduleDrawable((Drawable)this, runnable);
             }
-        }
-    }
-    
-    private static final class a extends Drawable
-    {
-        private static final iw.a KY;
-        private static final iw.a.a KZ;
-        
-        static {
-            KY = new iw.a();
-            KZ = new iw.a.a();
-        }
-        
-        public void draw(final Canvas canvas) {
-        }
-        
-        public Drawable$ConstantState getConstantState() {
-            return iw.a.KZ;
-        }
-        
-        public int getOpacity() {
-            return -2;
-        }
-        
-        public void setAlpha(final int n) {
-        }
-        
-        public void setColorFilter(final ColorFilter colorFilter) {
-        }
-        
-        private static final class a extends Drawable$ConstantState
-        {
-            public int getChangingConfigurations() {
-                return 0;
-            }
-            
-            public Drawable newDrawable() {
-                return iw.a.KY;
-            }
-        }
-    }
-    
-    static final class b extends Drawable$ConstantState
-    {
-        int La;
-        int Lb;
-        
-        b(final b b) {
-            if (b != null) {
-                this.La = b.La;
-                this.Lb = b.Lb;
-            }
-        }
-        
-        public int getChangingConfigurations() {
-            return this.La;
-        }
-        
-        public Drawable newDrawable() {
-            return new iw(this);
         }
     }
 }

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.quest;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -72,7 +73,7 @@ public class MilestoneEntityCreator implements Parcelable$Creator<MilestoneEntit
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new MilestoneEntity(g2, o2, j, i, r, g, o);
     }

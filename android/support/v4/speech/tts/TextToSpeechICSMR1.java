@@ -23,37 +23,11 @@ class TextToSpeechICSMR1
         return null;
     }
     
-    static void setUtteranceProgressListener(final TextToSpeech textToSpeech, final UtteranceProgressListenerICSMR1 utteranceProgressListenerICSMR1) {
+    static void setUtteranceProgressListener(final TextToSpeech textToSpeech, final TextToSpeechICSMR1$UtteranceProgressListenerICSMR1 textToSpeechICSMR1$UtteranceProgressListenerICSMR1) {
         if (Build$VERSION.SDK_INT >= 15) {
-            textToSpeech.setOnUtteranceProgressListener((UtteranceProgressListener)new UtteranceProgressListener() {
-                public void onDone(final String s) {
-                    utteranceProgressListenerICSMR1.onDone(s);
-                }
-                
-                public void onError(final String s) {
-                    utteranceProgressListenerICSMR1.onError(s);
-                }
-                
-                public void onStart(final String s) {
-                    utteranceProgressListenerICSMR1.onStart(s);
-                }
-            });
+            textToSpeech.setOnUtteranceProgressListener((UtteranceProgressListener)new TextToSpeechICSMR1$1(textToSpeechICSMR1$UtteranceProgressListenerICSMR1));
             return;
         }
-        textToSpeech.setOnUtteranceCompletedListener((TextToSpeech$OnUtteranceCompletedListener)new TextToSpeech$OnUtteranceCompletedListener() {
-            public void onUtteranceCompleted(final String s) {
-                utteranceProgressListenerICSMR1.onStart(s);
-                utteranceProgressListenerICSMR1.onDone(s);
-            }
-        });
-    }
-    
-    interface UtteranceProgressListenerICSMR1
-    {
-        void onDone(final String p0);
-        
-        void onError(final String p0);
-        
-        void onStart(final String p0);
+        textToSpeech.setOnUtteranceCompletedListener((TextToSpeech$OnUtteranceCompletedListener)new TextToSpeechICSMR1$2(textToSpeechICSMR1$UtteranceProgressListenerICSMR1));
     }
 }

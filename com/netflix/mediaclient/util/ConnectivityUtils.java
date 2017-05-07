@@ -63,13 +63,14 @@ public final class ConnectivityUtils
     }
     
     public static NetworkInfo getActiveNetworkInfo(final Context context) {
-        if (context != null) {
-            final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
-            if (connectivityManager != null) {
-                return connectivityManager.getActiveNetworkInfo();
-            }
+        if (context == null) {
+            return null;
         }
-        return null;
+        final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
+        if (connectivityManager == null) {
+            return null;
+        }
+        return connectivityManager.getActiveNetworkInfo();
     }
     
     public static long getApplicationRx() {
@@ -102,11 +103,11 @@ public final class ConnectivityUtils
     }
     
     public static String getLocalIP4Address(final Context context) {
+        NetworkInfo activeNetworkInfo = null;
         if (context == null) {
             return null;
         }
         final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
-        NetworkInfo activeNetworkInfo = null;
         if (connectivityManager != null) {
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         }
@@ -185,55 +186,51 @@ public final class ConnectivityUtils
     }
     
     public static NetworkInfo[] getNetworkInterfaces(final Context context) {
-        final NetworkInfo[] array = null;
-        NetworkInfo[] array2;
-        if (context == null) {
-            array2 = array;
-        }
-        else {
+        final int n = 0;
+        if (context != null) {
             final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
-            array2 = array;
             if (connectivityManager != null) {
                 final NetworkInfo[] allNetworkInfo = connectivityManager.getAllNetworkInfo();
-                array2 = array;
                 if (allNetworkInfo != null) {
-                    int n = 0;
-                    int n2;
-                    for (int i = 0; i < allNetworkInfo.length; ++i, n = n2) {
-                        n2 = n;
+                    int i = 0;
+                    int n2 = 0;
+                    while (i < allNetworkInfo.length) {
+                        int n3 = n2;
                         if (allNetworkInfo[i].getTypeName() != null) {
-                            n2 = n;
+                            n3 = n2;
                             if (isNRDPSupportedInterface(allNetworkInfo[i])) {
-                                n2 = n + 1;
+                                n3 = n2 + 1;
                             }
                         }
+                        ++i;
+                        n2 = n3;
                     }
-                    array2 = null;
-                    if (n > 0) {
-                        final NetworkInfo[] array3 = new NetworkInfo[n];
-                        int n3 = 0;
-                        int n4 = 0;
-                        while (true) {
-                            array2 = array3;
-                            if (n3 >= allNetworkInfo.length) {
-                                break;
-                            }
+                    NetworkInfo[] array;
+                    if (n2 > 0) {
+                        array = new NetworkInfo[n2];
+                        int j = 0;
+                        int n4 = n;
+                        while (j < allNetworkInfo.length) {
                             int n5 = n4;
-                            if (allNetworkInfo[n3].getTypeName() != null) {
+                            if (allNetworkInfo[j].getTypeName() != null) {
                                 n5 = n4;
-                                if (isNRDPSupportedInterface(allNetworkInfo[n3])) {
-                                    array3[n4] = allNetworkInfo[n3];
+                                if (isNRDPSupportedInterface(allNetworkInfo[j])) {
+                                    array[n4] = allNetworkInfo[j];
                                     n5 = n4 + 1;
                                 }
                             }
-                            ++n3;
+                            ++j;
                             n4 = n5;
                         }
                     }
+                    else {
+                        array = null;
+                    }
+                    return array;
                 }
             }
         }
-        return array2;
+        return null;
     }
     
     public static String getNetworkSpec(final LogMobileType logMobileType) {
@@ -255,33 +252,33 @@ public final class ConnectivityUtils
         return "";
     }
     
-    public static NetworkState getNetworkState(final Context context) {
+    public static ConnectivityUtils$NetworkState getNetworkState(final Context context) {
         if (context == null) {
-            return new NetworkState(false, false, null);
+            return new ConnectivityUtils$NetworkState(false, false, null);
         }
         final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
         if (connectivityManager == null) {
-            return new NetworkState(false, false, null);
+            return new ConnectivityUtils$NetworkState(false, false, null);
         }
         final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         if (activeNetworkInfo == null || !activeNetworkInfo.isConnectedOrConnecting()) {
-            return new NetworkState(false, false, null);
+            return new ConnectivityUtils$NetworkState(false, false, null);
         }
         if (activeNetworkInfo.getTypeName() == null || !"WIFI".equals(activeNetworkInfo.getTypeName().toUpperCase())) {
             Log.d("nf_net", "Local active network interface is Mobile (it also covers everything else).");
-            return new NetworkState(true, false, null);
+            return new ConnectivityUtils$NetworkState(true, false, null);
         }
         Log.d("nf_net", "Local active network interface is WiFi");
         final WifiManager wifiManager = (WifiManager)context.getSystemService("wifi");
         if (wifiManager == null) {
             Log.w("nf_net", "WiFi manager is not available!");
-            return new NetworkState(false, false, null);
+            return new ConnectivityUtils$NetworkState(false, false, null);
         }
         final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
         if (connectionInfo == null) {
-            return new NetworkState(true, true, null);
+            return new ConnectivityUtils$NetworkState(true, true, null);
         }
-        return new NetworkState(true, true, connectionInfo.getSSID());
+        return new ConnectivityUtils$NetworkState(true, true, connectionInfo.getSSID());
     }
     
     public static int getNetworkSubTypePerLoggingSpecification(final LogMobileType logMobileType) {
@@ -321,38 +318,34 @@ public final class ConnectivityUtils
     }
     
     public static int getNetworkTypePerLoggingSpecifcation(final Context context, final int n) {
-        if (context != null) {
-            switch (n) {
-                default: {
-                    final TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService("phone");
-                    if (telephonyManager == null) {
-                        break;
-                    }
+        if (context == null) {
+            return 0;
+        }
+        switch (n) {
+            default: {
+                final TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService("phone");
+                if (telephonyManager != null) {
                     switch (telephonyManager.getPhoneType()) {
-                        default: {
-                            return 0;
+                        case 2: {
+                            return 2;
                         }
                         case 1: {
                             return 1;
                         }
-                        case 2: {
-                            return 2;
-                        }
                     }
-                    break;
                 }
-                case 9: {
-                    return 5;
-                }
-                case 6: {
-                    return 3;
-                }
-                case 1: {
-                    return 4;
-                }
+                return 0;
+            }
+            case 9: {
+                return 5;
+            }
+            case 6: {
+                return 3;
+            }
+            case 1: {
+                return 4;
             }
         }
-        return 0;
     }
     
     public static String getNetworkTypePerLoggingSpecification(final Context context) {
@@ -430,29 +423,27 @@ public final class ConnectivityUtils
     }
     
     public static boolean isConnected(final Context context) {
-        if (context != null) {
-            final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
-            if (connectivityManager != null) {
-                final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-                if (activeNetworkInfo != null) {
-                    return activeNetworkInfo.isConnected();
-                }
-            }
+        if (context == null) {
+            return false;
         }
-        return false;
+        final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
+        if (connectivityManager == null) {
+            return false;
+        }
+        final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     
     public static boolean isConnectedOrConnecting(final Context context) {
-        if (context != null) {
-            final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
-            if (connectivityManager != null) {
-                final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-                if (activeNetworkInfo != null) {
-                    return activeNetworkInfo.isConnectedOrConnecting();
-                }
-            }
+        if (context == null) {
+            return false;
         }
-        return false;
+        final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
+        if (connectivityManager == null) {
+            return false;
+        }
+        final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
     
     public static boolean isNRDPSupportedInterface(final NetworkInfo networkInfo) {
@@ -479,15 +470,19 @@ public final class ConnectivityUtils
         return context != null && LogMobileType.WIFI.equals(getConnectionType(context));
     }
     
-    public static NetworkState processConnectivityChange(final Context context, final Intent intent) {
+    public static ConnectivityUtils$NetworkState processConnectivityChange(final Context context, final Intent intent) {
+        final String s = null;
         Log.d("nf_net", "Handle connectivity change, process...", intent);
-        boolean b = false;
-        LogMobileType logMobileType = null;
         final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
-        NetworkInfo activeNetworkInfo = null;
+        NetworkInfo activeNetworkInfo;
         if (connectivityManager != null) {
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         }
+        else {
+            activeNetworkInfo = null;
+        }
+        LogMobileType logMobileType;
+        boolean b;
         if (activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting()) {
             Log.d("nf_net", "Connect intent");
             logMobileType = LogMobileType.toLogMobileType(activeNetworkInfo);
@@ -496,78 +491,63 @@ public final class ConnectivityUtils
         }
         else {
             Log.d("nf_net", "Disconnect intent");
+            logMobileType = null;
+            b = false;
         }
-        final String s = null;
-        final String s2 = null;
-        String ipAddr;
-        boolean b3;
-        String ssid;
-        if (activeNetworkInfo != null) {
-            if (activeNetworkInfo.getTypeName() != null && "WIFI".equals(activeNetworkInfo.getTypeName().toUpperCase())) {
-                final boolean b2 = false;
-                final WifiManager wifiManager = (WifiManager)context.getSystemService("wifi");
-                ipAddr = s2;
-                b3 = b2;
-                ssid = s;
-                if (wifiManager != null) {
-                    final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
-                    ipAddr = s2;
-                    b3 = b2;
-                    ssid = s;
-                    if (connectionInfo != null) {
-                        if (Log.isLoggable("nf_net", 3)) {
-                            Log.d("nf_net", connectionInfo.toString());
-                            Log.d("nf_net", "" + connectionInfo.getSSID());
+        String s2 = null;
+        String ipAddr = null;
+        boolean b2 = false;
+        Label_0182: {
+            if (activeNetworkInfo != null) {
+                if (activeNetworkInfo.getTypeName() != null && "WIFI".equals(activeNetworkInfo.getTypeName().toUpperCase())) {
+                    final WifiManager wifiManager = (WifiManager)context.getSystemService("wifi");
+                    while (true) {
+                        Label_0326: {
+                            if (wifiManager == null) {
+                                break Label_0326;
+                            }
+                            final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+                            if (connectionInfo == null) {
+                                break Label_0326;
+                            }
+                            if (Log.isLoggable("nf_net", 3)) {
+                                Log.d("nf_net", connectionInfo.toString());
+                                Log.d("nf_net", "" + connectionInfo.getSSID());
+                            }
+                            final String ssid = connectionInfo.getSSID();
+                            final String localWifiIP4Address = getLocalWifiIP4Address(context);
+                            s2 = ssid;
+                            ipAddr = localWifiIP4Address;
+                            b2 = false;
+                            break Label_0182;
                         }
-                        ssid = connectionInfo.getSSID();
-                        ipAddr = getLocalWifiIP4Address(context);
-                        b3 = b2;
+                        ipAddr = null;
+                        s2 = s;
+                        continue;
                     }
                 }
+                Log.d("nf_net", "Not wifi");
+                ipAddr = getLocalMobileIP4Address(context);
+                s2 = null;
+                b2 = true;
             }
             else {
-                Log.d("nf_net", "Not wifi");
-                b3 = true;
-                ipAddr = getLocalMobileIP4Address(context);
-                ssid = s;
+                Log.e("nf_net", "Intent does not have network info. It should NOT happen!");
+                ipAddr = getLocalWifiIP4Address(context);
+                s2 = null;
+                b2 = true;
             }
         }
-        else {
-            Log.e("nf_net", "Intent does not have network info. It should NOT happen!");
-            b3 = true;
-            ipAddr = getLocalWifiIP4Address(context);
-            ssid = s;
-        }
-        String s3;
-        if ((s3 = ssid) == null) {
+        String s3 = s2;
+        if (s2 == null) {
             s3 = "";
         }
         if (Log.isLoggable("nf_net", 3)) {
             Log.d("nf_net", "LocalIPAddress:" + ipAddr);
         }
-        final NetworkState networkState = new NetworkState(b, !b3, s3);
-        networkState.currentConnectionType = logMobileType;
-        networkState.ipAddr = ipAddr;
-        return networkState;
-    }
-    
-    public static class NetworkState
-    {
-        public boolean connected;
-        public LogMobileType currentConnectionType;
-        public String ipAddr;
-        public String sid;
-        public boolean wifi;
-        
-        public NetworkState(final boolean connected, final boolean wifi, final String sid) {
-            this.connected = connected;
-            this.wifi = wifi;
-            this.sid = sid;
-        }
-        
-        @Override
-        public String toString() {
-            return "NetworkState [connected=" + this.connected + ", wifi=" + this.wifi + ", sid=" + this.sid + ", currentConnectionType=" + this.currentConnectionType + ", ipAddr=" + this.ipAddr + "]";
-        }
+        final ConnectivityUtils$NetworkState connectivityUtils$NetworkState = new ConnectivityUtils$NetworkState(b, !b2, s3);
+        connectivityUtils$NetworkState.currentConnectionType = logMobileType;
+        connectivityUtils$NetworkState.ipAddr = ipAddr;
+        return connectivityUtils$NetworkState;
     }
 }

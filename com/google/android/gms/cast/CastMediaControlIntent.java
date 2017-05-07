@@ -27,7 +27,7 @@ public final class CastMediaControlIntent
     public static final String EXTRA_DEBUG_LOGGING_ENABLED = "com.google.android.gms.cast.EXTRA_DEBUG_LOGGING_ENABLED";
     public static final String EXTRA_ERROR_CODE = "com.google.android.gms.cast.EXTRA_ERROR_CODE";
     
-    private static String a(final String s, final String s2, final Collection<String> collection) throws IllegalArgumentException {
+    private static String a(final String s, final String s2, final Collection<String> collection) {
         final StringBuffer sb = new StringBuffer(s);
         if (s2 != null) {
             final String upperCase = s2.toUpperCase();
@@ -53,7 +53,7 @@ public final class CastMediaControlIntent
         return sb.toString();
     }
     
-    public static String categoryForCast(final String s) throws IllegalArgumentException {
+    public static String categoryForCast(final String s) {
         if (s == null) {
             throw new IllegalArgumentException("applicationId cannot be null");
         }
@@ -70,7 +70,7 @@ public final class CastMediaControlIntent
         return a("com.google.android.gms.cast.CATEGORY_CAST", s, collection);
     }
     
-    public static String categoryForCast(final Collection<String> collection) throws IllegalArgumentException {
+    public static String categoryForCast(final Collection<String> collection) {
         if (collection == null) {
             throw new IllegalArgumentException("namespaces cannot be null");
         }
@@ -81,7 +81,7 @@ public final class CastMediaControlIntent
         return a("com.google.android.gms.cast.CATEGORY_CAST_REMOTE_PLAYBACK", null, null);
     }
     
-    public static String categoryForRemotePlayback(final String s) throws IllegalArgumentException {
+    public static String categoryForRemotePlayback(final String s) {
         if (TextUtils.isEmpty((CharSequence)s)) {
             throw new IllegalArgumentException("applicationId cannot be null or empty");
         }

@@ -4,8 +4,6 @@
 
 package com.google.android.gms.games.snapshot;
 
-import com.google.android.gms.common.api.Releasable;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.drive.Contents;
 import android.os.Bundle;
 import android.content.Intent;
@@ -18,9 +16,9 @@ public interface Snapshots
     public static final String EXTRA_SNAPSHOT_METADATA = "com.google.android.gms.games.SNAPSHOT_METADATA";
     public static final String EXTRA_SNAPSHOT_NEW = "com.google.android.gms.games.SNAPSHOT_NEW";
     
-    PendingResult<CommitSnapshotResult> commitAndClose(final GoogleApiClient p0, final Snapshot p1, final SnapshotMetadataChange p2);
+    PendingResult<Snapshots$CommitSnapshotResult> commitAndClose(final GoogleApiClient p0, final Snapshot p1, final SnapshotMetadataChange p2);
     
-    PendingResult<DeleteSnapshotResult> delete(final GoogleApiClient p0, final SnapshotMetadata p1);
+    PendingResult<Snapshots$DeleteSnapshotResult> delete(final GoogleApiClient p0, final SnapshotMetadata p1);
     
     void discardAndClose(final GoogleApiClient p0, final Snapshot p1);
     
@@ -32,45 +30,16 @@ public interface Snapshots
     
     SnapshotMetadata getSnapshotFromBundle(final Bundle p0);
     
-    PendingResult<LoadSnapshotsResult> load(final GoogleApiClient p0, final boolean p1);
+    PendingResult<Snapshots$LoadSnapshotsResult> load(final GoogleApiClient p0, final boolean p1);
     
-    PendingResult<OpenSnapshotResult> open(final GoogleApiClient p0, final SnapshotMetadata p1);
+    PendingResult<Snapshots$OpenSnapshotResult> open(final GoogleApiClient p0, final SnapshotMetadata p1);
     
-    PendingResult<OpenSnapshotResult> open(final GoogleApiClient p0, final String p1, final boolean p2);
+    PendingResult<Snapshots$OpenSnapshotResult> open(final GoogleApiClient p0, final String p1, final boolean p2);
     
-    PendingResult<OpenSnapshotResult> resolveConflict(final GoogleApiClient p0, final String p1, final Snapshot p2);
+    PendingResult<Snapshots$OpenSnapshotResult> resolveConflict(final GoogleApiClient p0, final String p1, final Snapshot p2);
     
     @Deprecated
-    PendingResult<OpenSnapshotResult> resolveConflict(final GoogleApiClient p0, final String p1, final String p2, final SnapshotMetadataChange p3, final Contents p4);
+    PendingResult<Snapshots$OpenSnapshotResult> resolveConflict(final GoogleApiClient p0, final String p1, final String p2, final SnapshotMetadataChange p3, final Contents p4);
     
-    PendingResult<OpenSnapshotResult> resolveConflict(final GoogleApiClient p0, final String p1, final String p2, final SnapshotMetadataChange p3, final SnapshotContents p4);
-    
-    public interface CommitSnapshotResult extends Result
-    {
-        SnapshotMetadata getSnapshotMetadata();
-    }
-    
-    public interface DeleteSnapshotResult extends Result
-    {
-        String getSnapshotId();
-    }
-    
-    public interface LoadSnapshotsResult extends Releasable, Result
-    {
-        SnapshotMetadataBuffer getSnapshots();
-    }
-    
-    public interface OpenSnapshotResult extends Result
-    {
-        String getConflictId();
-        
-        Snapshot getConflictingSnapshot();
-        
-        @Deprecated
-        Contents getResolutionContents();
-        
-        SnapshotContents getResolutionSnapshotContents();
-        
-        Snapshot getSnapshot();
-    }
+    PendingResult<Snapshots$OpenSnapshotResult> resolveConflict(final GoogleApiClient p0, final String p1, final String p2, final SnapshotMetadataChange p3, final SnapshotContents p4);
 }

@@ -8,13 +8,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.ShowDetails;
 import com.netflix.mediaclient.service.webclient.model.EpisodeDetails;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
@@ -78,7 +77,7 @@ public class HideVideoRequest extends FalcorVolleyWebClientRequest<String>
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
@@ -103,7 +102,7 @@ public class HideVideoRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_hidevideorequest", 2)) {
             Log.v("nf_service_browse_hidevideorequest", "String response to parse = " + s);
         }

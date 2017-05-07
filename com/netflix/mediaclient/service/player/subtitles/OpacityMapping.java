@@ -24,34 +24,30 @@ public enum OpacityMapping
     }
     
     public static Float lookup(final String s) {
-        Float n;
         if (StringUtils.isEmpty(s)) {
-            n = null;
+            return null;
         }
-        else {
-            final OpacityMapping[] values = values();
-            for (int length = values.length, i = 0; i < length; ++i) {
-                final OpacityMapping opacityMapping = values[i];
-                if (opacityMapping.mLookupValue.equalsIgnoreCase(s)) {
-                    return opacityMapping.getSize();
-                }
-            }
-            try {
-                final Float value = Float.valueOf(s);
-                if (value >= OpacityMapping.opaque.getSize()) {
-                    return OpacityMapping.opaque.getSize();
-                }
-                n = value;
-                if (value < OpacityMapping.none.getSize()) {
-                    return OpacityMapping.none.getSize();
-                }
-            }
-            catch (Throwable t) {
-                Log.e("nf_subtitles", "Failed to parse opacityt value " + s, t);
-                return null;
+        final OpacityMapping[] values = values();
+        for (int length = values.length, i = 0; i < length; ++i) {
+            final OpacityMapping opacityMapping = values[i];
+            if (opacityMapping.mLookupValue.equalsIgnoreCase(s)) {
+                return opacityMapping.getSize();
             }
         }
-        return n;
+        try {
+            final Float value = Float.valueOf(s);
+            if (value >= OpacityMapping.opaque.getSize()) {
+                return OpacityMapping.opaque.getSize();
+            }
+            if (value < OpacityMapping.none.getSize()) {
+                return OpacityMapping.none.getSize();
+            }
+            return value;
+        }
+        catch (Throwable t) {
+            Log.e("nf_subtitles", "Failed to parse opacityt value " + s, t);
+            return null;
+        }
     }
     
     public static String opacityToHex(final Float n) {

@@ -10,19 +10,19 @@ import android.os.SystemClock;
 import android.content.Context;
 
 @ez
-public class fb extends gg implements ff.a
+public class fb extends gg implements ff$a
 {
     private final Context mContext;
     private final Object mw;
     private cm pR;
-    private final fa.a sU;
+    private final fa$a sU;
     private final Object sV;
-    private final fi.a sW;
+    private final fi$a sW;
     private final k sX;
     private gg sY;
     private fk sZ;
     
-    public fb(final Context mContext, final fi.a sw, final k sx, final fa.a su) {
+    public fb(final Context mContext, final fi$a sw, final k sx, final fa$a su) {
         this.sV = new Object();
         this.mw = new Object();
         this.sU = su;
@@ -31,13 +31,13 @@ public class fb extends gg implements ff.a
         this.sX = sx;
     }
     
-    private ay a(final fi fi) throws a {
+    private ay a(final fi fi) {
         if (this.sZ.tL == null) {
-            throw new a("The ad response must specify one of the supported ad sizes.", 0);
+            throw new fb$a("The ad response must specify one of the supported ad sizes.", 0);
         }
         final String[] split = this.sZ.tL.split("x");
         if (split.length != 2) {
-            throw new a("Could not parse the ad size from the ad response: " + this.sZ.tL, 0);
+            throw new fb$a("Could not parse the ad size from the ad response: " + this.sZ.tL, 0);
         }
         while (true) {
             int int1;
@@ -79,7 +79,7 @@ public class fb extends gg implements ff.a
                             }
                         }
                         catch (NumberFormatException ex) {
-                            throw new a("Could not parse the ad size from the ad response: " + this.sZ.tL, 0);
+                            throw new fb$a("Could not parse the ad size from the ad response: " + this.sZ.tL, 0);
                         }
                         width = ay.width;
                         continue Label_0177_Outer;
@@ -91,10 +91,10 @@ public class fb extends gg implements ff.a
                 continue Label_0156_Outer;
             }
         }
-        throw new a("The ad size from the ad response was not one of the requested sizes: " + this.sZ.tL, 0);
+        throw new fb$a("The ad size from the ad response was not one of the requested sizes: " + this.sZ.tL, 0);
     }
     
-    private boolean c(long n) throws a {
+    private boolean c(long n) {
         n = 60000L - (SystemClock.elapsedRealtime() - n);
         if (n <= 0L) {
             return false;
@@ -104,14 +104,14 @@ public class fb extends gg implements ff.a
             return true;
         }
         catch (InterruptedException ex) {
-            throw new a("Ad request cancelled.", -1);
+            throw new fb$a("Ad request cancelled.", -1);
         }
     }
     
-    private void cy() throws a {
+    private void cy() {
         if (this.sZ.errorCode != -3) {
             if (TextUtils.isEmpty((CharSequence)this.sZ.tG)) {
-                throw new a("No fill from ad server.", 3);
+                throw new fb$a("No fill from ad server.", 3);
             }
             gb.a(this.mContext, this.sZ.tF);
             if (this.sZ.tI) {
@@ -119,26 +119,26 @@ public class fb extends gg implements ff.a
                     this.pR = new cm(this.sZ.tG);
                 }
                 catch (JSONException ex) {
-                    throw new a("Could not parse mediation config: " + this.sZ.tG, 0);
+                    throw new fb$a("Could not parse mediation config: " + this.sZ.tG, 0);
                 }
             }
         }
     }
     
-    private void e(final long n) throws a {
+    private void e(final long n) {
         while (this.c(n)) {
             if (this.sZ != null) {
                 synchronized (this.sV) {
                     this.sY = null;
                     // monitorexit(this.sV)
                     if (this.sZ.errorCode != -2 && this.sZ.errorCode != -3) {
-                        throw new a("There was a problem getting an ad response. ErrorCode: " + this.sZ.errorCode, this.sZ.errorCode);
+                        throw new fb$a("There was a problem getting an ad response. ErrorCode: " + this.sZ.errorCode, this.sZ.errorCode);
                     }
                 }
                 return;
             }
         }
-        throw new a("Timed out waiting for ad response.", 2);
+        throw new fb$a("Timed out waiting for ad response.", 2);
     }
     
     private void r(final boolean b) {
@@ -445,21 +445,6 @@ public class fb extends gg implements ff.a
             if (this.sY != null) {
                 this.sY.cancel();
             }
-        }
-    }
-    
-    @ez
-    private static final class a extends Exception
-    {
-        private final int tc;
-        
-        public a(final String s, final int tc) {
-            super(s);
-            this.tc = tc;
-        }
-        
-        public int getErrorCode() {
-            return this.tc;
         }
     }
 }

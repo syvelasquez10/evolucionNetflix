@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.nrdp;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
@@ -14,7 +13,7 @@ public class BackgroundEvent extends BaseNrdpEvent
     private static final String TAG = "nf-nccp";
     public static final String TYPE = "background";
     
-    public BackgroundEvent(final NccpError nccpError) throws JSONException {
+    public BackgroundEvent(final NccpError nccpError) {
         super("background");
         JSONObject json;
         if ((json = nccpError.json) == null) {

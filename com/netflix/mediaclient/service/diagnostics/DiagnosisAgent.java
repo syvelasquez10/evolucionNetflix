@@ -4,20 +4,19 @@
 
 package com.netflix.mediaclient.service.diagnostics;
 
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.event.network.NetworkEvent;
-import com.netflix.mediaclient.event.UIEvent;
 import java.util.List;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
+import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
+import com.netflix.mediaclient.servicemgr.IDiagnosis$DiagnosisListener;
 import com.netflix.mediaclient.javabridge.ui.NetworkDiagnosis;
 import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -32,9 +31,9 @@ public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
     private NetworkDiagnosis mDiagnosisTool;
     private int mIndex;
     private boolean mIsDiagnosisOngoing;
-    private DiagnosisListener mListener;
+    private IDiagnosis$DiagnosisListener mListener;
     private Nrdp mNrdp;
-    private NetworkListener mNtwkListener;
+    private DiagnosisAgent$NetworkListener mNtwkListener;
     private ArrayList<UrlNetworkState> mResultList;
     private String[] mUrlList;
     
@@ -79,10 +78,10 @@ public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
             this.mListener.onDiagnosisComplete();
             LogArguments logArguments;
             if (this.isTestSuccess()) {
-                logArguments = new LogArguments(LogArguments.LogLevel.DEBUG.getLevelInString(), this.getResultString(), "NetworkDiagnostics", null);
+                logArguments = new LogArguments(LogArguments$LogLevel.DEBUG.getLevelInString(), this.getResultString(), "NetworkDiagnostics", null);
             }
             else {
-                logArguments = new LogArguments(LogArguments.LogLevel.ERROR.getLevelInString(), this.getResultString(), "NetworkDiagnostics", null);
+                logArguments = new LogArguments(LogArguments$LogLevel.ERROR.getLevelInString(), this.getResultString(), "NetworkDiagnostics", null);
             }
             this.mNrdp.getLog().log(logArguments);
         }
@@ -91,7 +90,7 @@ public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
     
     private void runTestForCurrentIndex() {
         if (this.mIndex >= 0 && this.mIndex < this.mUrlList.length) {
-            this.mResultList.get(this.mIndex).setStatus(UrlStatus.TEST_ONGOING);
+            this.mResultList.get(this.mIndex).setStatus(DiagnosisAgent$UrlStatus.TEST_ONGOING);
             this.mDiagnosisTool.get(this.mUrlList[this.mIndex]);
             if (this.mListener != null) {
                 this.mListener.onDiagnosisListUpdated();
@@ -112,7 +111,7 @@ public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
     }
     
     @Override
-    public void addListener(final DiagnosisListener mListener) {
+    public void addListener(final IDiagnosis$DiagnosisListener mListener) {
         this.mListener = mListener;
     }
     
@@ -125,7 +124,7 @@ public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
             return;
         }
         this.mDiagnosisTool = this.mNrdp.getDiagnosisTool();
-        this.mNtwkListener = new NetworkListener();
+        this.mNtwkListener = new DiagnosisAgent$NetworkListener(this, null);
         this.mDiagnosisTool.addEventListener("INetwork", this.mNtwkListener);
         this.mResultList = new ArrayList<UrlNetworkState>();
         this.initCompleted(CommonStatus.OK);
@@ -148,57 +147,13 @@ public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
     
     @Override
     public void startNetworkDiagnosis() {
+        int i = 0;
         this.abortDiagnosis();
         this.mIndex = 0;
         this.mIsDiagnosisOngoing = true;
-        final String[] mUrlList = this.mUrlList;
-        for (int length = mUrlList.length, i = 0; i < length; ++i) {
-            this.mResultList.add(new UrlNetworkState(mUrlList[i], UrlStatus.NOT_TESTED));
+        for (String[] mUrlList = this.mUrlList; i < mUrlList.length; ++i) {
+            this.mResultList.add(new UrlNetworkState(mUrlList[i], DiagnosisAgent$UrlStatus.NOT_TESTED));
         }
         this.runTestForCurrentIndex();
-    }
-    
-    public interface NetflixError
-    {
-        boolean isFatal();
-    }
-    
-    private class NetworkListener implements EventListener
-    {
-        @Override
-        public void received(final UIEvent uiEvent) {
-            if (uiEvent instanceof NetworkEvent) {
-                final NetworkEvent networkEvent = (NetworkEvent)uiEvent;
-                if (DiagnosisAgent.this.mIndex >= 0 && DiagnosisAgent.this.mIndex < DiagnosisAgent.this.mResultList.size()) {
-                    final UrlNetworkState urlNetworkState = DiagnosisAgent.this.mResultList.get(DiagnosisAgent.this.mIndex);
-                    if (StringUtils.safeEquals(urlNetworkState.getUrl(), networkEvent.getUrl())) {
-                        urlNetworkState.setErrorGroup(networkEvent.getErrorGroup());
-                        urlNetworkState.setErrorCode(networkEvent.getErrorCode());
-                        urlNetworkState.setResult(networkEvent.getResult());
-                        urlNetworkState.setStatus(UrlStatus.COMPLETED);
-                        if (Log.isLoggable("nf_service_diagnosisagent", 3)) {
-                            Log.d("nf_service_diagnosisagent", "URL: " + urlNetworkState.getUrl());
-                            Log.d("nf_service_diagnosisagent", "Error Code: " + urlNetworkState.getErrorCode() + " Err Group: " + urlNetworkState.getErrorGroup());
-                        }
-                        ++DiagnosisAgent.this.mIndex;
-                        DiagnosisAgent.this.runTestForCurrentIndex();
-                        return;
-                    }
-                    if (Log.isLoggable("nf_service_diagnosisagent", 3)) {
-                        Log.d("nf_service_diagnosisagent", "URL: Ignoring response " + networkEvent.getUrl());
-                    }
-                }
-                else if (Log.isLoggable("nf_service_diagnosisagent", 3)) {
-                    Log.d("nf_service_diagnosisagent", "URL: Ignoring Network Event" + networkEvent.getUrl());
-                }
-            }
-        }
-    }
-    
-    public enum UrlStatus
-    {
-        COMPLETED, 
-        NOT_TESTED, 
-        TEST_ONGOING;
     }
 }

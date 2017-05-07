@@ -16,15 +16,7 @@ final class FragmentManagerState implements Parcelable
     BackStackState[] mBackStack;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<FragmentManagerState>() {
-            public FragmentManagerState createFromParcel(final Parcel parcel) {
-                return new FragmentManagerState(parcel);
-            }
-            
-            public FragmentManagerState[] newArray(final int n) {
-                return new FragmentManagerState[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new FragmentManagerState$1();
     }
     
     public FragmentManagerState() {

@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.util.TimeFormatterHelper;
-import java.nio.ByteBuffer;
 import com.netflix.mediaclient.Log;
+import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import android.widget.TextView;
 import android.view.View;
@@ -56,9 +56,8 @@ public abstract class CurrentTime extends PlayerSection
     @Override
     public void hide() {
         if (this.currentTime != null) {
-            Log.d("SP", "Hide");
             this.currentTime.clearAnimation();
-            this.currentTime.setVisibility(8);
+            this.currentTime.setVisibility(4);
         }
     }
     

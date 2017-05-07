@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -42,7 +43,7 @@ public class ak implements Parcelable$Creator<OnDriveIdResponse>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new OnDriveIdResponse(g, driveId);
     }

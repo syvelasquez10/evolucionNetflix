@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.social.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public final class RecommendImplicitFeedbackReadEvent extends BaseSocialDiscreteEvent
@@ -24,7 +23,7 @@ public final class RecommendImplicitFeedbackReadEvent extends BaseSocialDiscrete
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

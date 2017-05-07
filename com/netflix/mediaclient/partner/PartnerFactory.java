@@ -22,51 +22,33 @@ public class PartnerFactory
     }
     
     public String[] getExternalSignUpServices(final Context context) {
-        String[] array;
         if (context == null || context.getPackageManager() == null) {
-            array = new String[0];
+            return new String[0];
         }
-        else {
-            final List queryIntentActivities = context.getPackageManager().queryIntentActivities(new Intent(PartnerRequestType.getExternalSignUpService.getIntentName()), 0);
-            if (queryIntentActivities == null || queryIntentActivities.size() <= 0) {
-                return new String[0];
+        final List queryIntentActivities = context.getPackageManager().queryIntentActivities(new Intent(PartnerRequestType.getExternalSignUpService.getIntentName()), 0);
+        if (queryIntentActivities != null && queryIntentActivities.size() > 0) {
+            final String[] array = new String[queryIntentActivities.size()];
+            for (int i = 0; i < array.length; ++i) {
+                array[i] = queryIntentActivities.get(i).activityInfo.name;
             }
-            final String[] array2 = new String[queryIntentActivities.size()];
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = queryIntentActivities.get(n).activityInfo.name;
-                ++n;
-            }
+            return array;
         }
-        return array;
+        return new String[0];
     }
     
     public String[] getExternalSsoServices(final Context context) {
-        String[] array;
         if (context == null || context.getPackageManager() == null) {
-            array = new String[0];
+            return new String[0];
         }
-        else {
-            final List queryIntentActivities = context.getPackageManager().queryIntentActivities(new Intent(PartnerRequestType.getExternalSsoService.getIntentName()), 0);
-            if (queryIntentActivities == null || queryIntentActivities.size() <= 0) {
-                return new String[0];
+        final List queryIntentActivities = context.getPackageManager().queryIntentActivities(new Intent(PartnerRequestType.getExternalSsoService.getIntentName()), 0);
+        if (queryIntentActivities != null && queryIntentActivities.size() > 0) {
+            final String[] array = new String[queryIntentActivities.size()];
+            for (int i = 0; i < array.length; ++i) {
+                array[i] = queryIntentActivities.get(i).activityInfo.name;
             }
-            final String[] array2 = new String[queryIntentActivities.size()];
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = queryIntentActivities.get(n).activityInfo.name;
-                ++n;
-            }
+            return array;
         }
-        return array;
+        return new String[0];
     }
     
     public Partner getPartner(final Context p0, final String p1, final PartnerCommunicationHandler p2) {
@@ -123,17 +105,17 @@ public class PartnerFactory
         //    88: iload           4
         //    90: aload_1        
         //    91: arraylength    
-        //    92: if_icmpge       146
+        //    92: if_icmpge       160
         //    95: aload_1        
         //    96: iload           4
         //    98: aaload         
-        //    99: ifnull          164
+        //    99: ifnull          151
         //   102: aload_1        
         //   103: iload           4
         //   105: aaload         
         //   106: aload_2        
         //   107: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
-        //   110: ifeq            164
+        //   110: ifeq            151
         //   113: ldc             "nf_partner"
         //   115: ldc             "Partner implementation created!"
         //   117: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
@@ -151,34 +133,34 @@ public class PartnerFactory
         //   137: invokeinterface java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
         //   142: pop            
         //   143: goto            67
-        //   146: ldc             "nf_partner"
-        //   148: ldc             "Partner implementation NOT found!"
-        //   150: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   153: pop            
-        //   154: aconst_null    
-        //   155: astore_1       
-        //   156: goto            67
-        //   159: astore_1       
-        //   160: aload_0        
-        //   161: monitorexit    
-        //   162: aload_1        
-        //   163: athrow         
-        //   164: iload           4
-        //   166: iconst_1       
-        //   167: iadd           
-        //   168: istore          4
-        //   170: goto            88
+        //   146: astore_1       
+        //   147: aload_0        
+        //   148: monitorexit    
+        //   149: aload_1        
+        //   150: athrow         
+        //   151: iload           4
+        //   153: iconst_1       
+        //   154: iadd           
+        //   155: istore          4
+        //   157: goto            88
+        //   160: ldc             "nf_partner"
+        //   162: ldc             "Partner implementation NOT found!"
+        //   164: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   167: pop            
+        //   168: aconst_null    
+        //   169: astore_1       
+        //   170: goto            67
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type
         //  -----  -----  -----  -----  ----
-        //  2      36     159    164    Any
-        //  36     51     159    164    Any
-        //  56     64     159    164    Any
-        //  71     85     159    164    Any
-        //  88     95     159    164    Any
-        //  102    143    159    164    Any
-        //  146    154    159    164    Any
+        //  2      36     146    151    Any
+        //  36     51     146    151    Any
+        //  56     64     146    151    Any
+        //  71     85     146    151    Any
+        //  88     95     146    151    Any
+        //  102    143    146    151    Any
+        //  160    168    146    151    Any
         // 
         // The error that occurred was:
         // 

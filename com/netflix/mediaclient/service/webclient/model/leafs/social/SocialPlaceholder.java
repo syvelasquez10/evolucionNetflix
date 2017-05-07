@@ -8,10 +8,10 @@ import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
 
-public abstract class SocialPlaceholder implements Video, FriendProfilesProvider
+public abstract class SocialPlaceholder implements FriendProfilesProvider, Video
 {
     private final LoMo lomo;
     

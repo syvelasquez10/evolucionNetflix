@@ -9,16 +9,17 @@ import com.netflix.mediaclient.ui.homescreen.NetflixAppWidgetProvider;
 import android.appwidget.AppWidgetManager;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.Log;
+import android.content.Intent;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.Log;
-import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.service.ServiceAgent$PreAppAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
 
-public class PreAppAgent extends ServiceAgent implements PreAppAgentInterface
+public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgentInterface
 {
     public static final String PREAPP_AGENT_TO_ALL_UPDATED = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ALL_UPDATED";
     public static final String PREAPP_AGENT_TO_CW_UPDATED = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_CW_UPDATED";
@@ -29,35 +30,8 @@ public class PreAppAgent extends ServiceAgent implements PreAppAgentInterface
     public final BroadcastReceiver mUserAgentIntentReceiver;
     
     public PreAppAgent() {
-        this.mDataUpdateIntentReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                if (intent != null) {
-                    final String action = intent.getAction();
-                    if (Log.isLoggable("nf_preappagent", 3)) {
-                        Log.d("nf_preappagent", String.format("received intent action: %s", action));
-                    }
-                    if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ALL_UPDATED".equals(action)) {
-                        PreAppAgent.this.mDiskDataHandler.update(UpdateEventType.ALL_UPDATED);
-                        return;
-                    }
-                    if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_CW_UPDATED".equals(action)) {
-                        PreAppAgent.this.mDiskDataHandler.update(UpdateEventType.CW_UPDATED);
-                        return;
-                    }
-                    if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_IQ_UPDATED".equals(action)) {
-                        PreAppAgent.this.mDiskDataHandler.update(UpdateEventType.IQ_UPDATED);
-                    }
-                }
-            }
-        };
-        this.mUserAgentIntentReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                if (intent != null && "com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_DEACTIVE".equals(intent.getAction())) {
-                    Log.i("nf_preappagent", "UserAgentIntentReceiver inovoked and received Intent with Action NOTIFY_USER_PROFILE_DEACTIVE");
-                    PreAppAgent.this.handleProfileDeactive();
-                }
-            }
-        };
+        this.mDataUpdateIntentReceiver = new PreAppAgent$1(this);
+        this.mUserAgentIntentReceiver = new PreAppAgent$2(this);
     }
     
     private void handleProfileDeactive() {

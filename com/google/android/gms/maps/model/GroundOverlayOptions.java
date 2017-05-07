@@ -7,7 +7,7 @@ package com.google.android.gms.maps.model;
 import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
 import com.google.android.gms.common.internal.n;
-import com.google.android.gms.dynamic.d;
+import com.google.android.gms.dynamic.d$a;
 import android.os.IBinder;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
@@ -46,7 +46,7 @@ public final class GroundOverlayOptions implements SafeParcelable
         this.ajJ = 0.5f;
         this.ajK = 0.5f;
         this.BR = br;
-        this.ajD = new BitmapDescriptor(d.a.am(binder));
+        this.ajD = new BitmapDescriptor(d$a.am(binder));
         this.ajE = ajE;
         this.ajF = ajF;
         this.ajG = ajG;

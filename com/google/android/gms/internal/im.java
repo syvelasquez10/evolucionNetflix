@@ -4,6 +4,7 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -70,7 +71,7 @@ public class im implements Parcelable$Creator<il>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new il(g3, m, c2, g2, applicationMetadata, g);
     }

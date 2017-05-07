@@ -5,7 +5,6 @@
 package com.google.android.gms.fitness.data;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -40,17 +39,7 @@ public class AggregateDataTypes
         INPUT_TYPES = new HashSet<DataType>(Arrays.asList(DataTypes.STEP_COUNT_DELTA, DataTypes.DISTANCE_DELTA, DataTypes.ACTIVITY_SEGMENT, DataTypes.SPEED, DataTypes.HEART_RATE_BPM, DataTypes.WEIGHT, DataTypes.LOCATION_SAMPLE));
         Sm = new DataType[] { AggregateDataTypes.ACTIVITY_SUMMARY, AggregateDataTypes.DISTANCE_DELTA, AggregateDataTypes.HEART_RATE_SUMMARY, AggregateDataTypes.LOCATION_BOUNDING_BOX, AggregateDataTypes.POWER_SUMMARY, AggregateDataTypes.SPEED_SUMMARY, AggregateDataTypes.STEP_COUNT_DELTA, AggregateDataTypes.WEIGHT_SUMMARY };
         Sn = new String[] { AggregateDataTypes.ACTIVITY_SUMMARY.getName(), AggregateDataTypes.DISTANCE_DELTA.getName(), AggregateDataTypes.HEART_RATE_SUMMARY.getName(), AggregateDataTypes.LOCATION_BOUNDING_BOX.getName(), AggregateDataTypes.POWER_SUMMARY.getName(), AggregateDataTypes.SPEED_SUMMARY.getName(), AggregateDataTypes.STEP_COUNT_DELTA.getName(), AggregateDataTypes.WEIGHT_SUMMARY.getName() };
-        So = new HashMap<DataType, List<DataType>>() {
-            {
-                this.put(DataTypes.STEP_COUNT_DELTA, Arrays.asList(DataTypes.STEP_COUNT_DELTA));
-                this.put(DataTypes.DISTANCE_DELTA, Arrays.asList(DataTypes.DISTANCE_DELTA));
-                this.put(DataTypes.ACTIVITY_SEGMENT, Arrays.asList(AggregateDataTypes.ACTIVITY_SUMMARY));
-                this.put(DataTypes.SPEED, Arrays.asList(AggregateDataTypes.SPEED_SUMMARY));
-                this.put(DataTypes.HEART_RATE_BPM, Arrays.asList(AggregateDataTypes.HEART_RATE_SUMMARY));
-                this.put(DataTypes.WEIGHT, Arrays.asList(AggregateDataTypes.WEIGHT_SUMMARY));
-                this.put(DataTypes.LOCATION_SAMPLE, Arrays.asList(AggregateDataTypes.LOCATION_BOUNDING_BOX));
-            }
-        };
+        So = new AggregateDataTypes$1();
     }
     
     public static List<DataType> getForInput(final DataType dataType) {

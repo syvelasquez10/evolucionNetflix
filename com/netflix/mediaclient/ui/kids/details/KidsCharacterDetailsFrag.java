@@ -4,9 +4,8 @@
 
 package com.netflix.mediaclient.ui.kids.details;
 
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.content.Context;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewGroup;
@@ -90,7 +89,7 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
         if (KidsCharacterDetailsFrag.REFRESH_FETCH) {
             b = false;
         }
-        browse.fetchKidsCharacterDetails(charId, new FetchCharacterDetailsCallback(requestId, b));
+        browse.fetchKidsCharacterDetails(charId, new KidsCharacterDetailsFrag$FetchCharacterDetailsCallback(this, requestId, b));
     }
     
     private void refreshCharacterDetails() {
@@ -100,7 +99,7 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
         }
         this.refreshRequestId = System.nanoTime();
         Log.d("TAG", String.format("refresh watchNext for character id: %s, refreshRequestId: %d", this.charId, this.refreshRequestId));
-        this.manager.getBrowse().fetchKidsCharacterDetails(this.charId, new FetchCharacterDetailsCallback(this.refreshRequestId, KidsCharacterDetailsFrag.REFRESH_FETCH));
+        this.manager.getBrowse().fetchKidsCharacterDetails(this.charId, new KidsCharacterDetailsFrag$FetchCharacterDetailsCallback(this, this.refreshRequestId, KidsCharacterDetailsFrag.REFRESH_FETCH));
     }
     
     private void showErrorView() {
@@ -143,18 +142,12 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903116, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903117, (ViewGroup)null);
         (this.listView = (StickyListHeadersListView)this.content.findViewById(16908298)).setAreHeadersSticky(false);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
         this.listView.addHeaderView((View)this.detailsViewGroup, null, false);
-        this.leWrapper = new LoadingAndErrorWrapper(this.content, new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-                KidsCharacterDetailsFrag.this.showLoadingView();
-                KidsCharacterDetailsFrag.this.fetchCharacterDetails();
-            }
-        });
+        this.leWrapper = new LoadingAndErrorWrapper(this.content, new KidsCharacterDetailsFrag$1(this));
         return this.content;
     }
     
@@ -175,49 +168,5 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
     public void onResume() {
         super.onResume();
         this.refreshCharacterDetails();
-    }
-    
-    private class FetchCharacterDetailsCallback extends LoggingManagerCallback
-    {
-        private final Boolean isRefresh;
-        private final long requestId;
-        
-        public FetchCharacterDetailsCallback(final long requestId, final Boolean isRefresh) {
-            super("KidsCharacterDetailsFrag");
-            this.requestId = requestId;
-            this.isRefresh = isRefresh;
-        }
-        
-        @Override
-        public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
-            super.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, status);
-            if (this.isRefresh && !b) {
-                Log.v("KidsCharacterDetailsFrag", "refreshCase data not changed - nothing to do");
-                return;
-            }
-            long n = KidsCharacterDetailsFrag.this.requestId;
-            if (this.isRefresh) {
-                n = KidsCharacterDetailsFrag.this.refreshRequestId;
-            }
-            if (this.requestId != n) {
-                Log.v("KidsCharacterDetailsFrag", "Ignoring stale callback");
-                return;
-            }
-            if (status.isError()) {
-                Log.w("KidsCharacterDetailsFrag", "Invalid status code");
-                KidsCharacterDetailsFrag.this.showErrorView();
-                return;
-            }
-            if (kidsCharacterDetails == null) {
-                Log.v("KidsCharacterDetailsFrag", "No details in response");
-                KidsCharacterDetailsFrag.this.showErrorView();
-                return;
-            }
-            if (this.isRefresh) {
-                KidsCharacterDetailsFrag.this.detailsViewGroup.updateDetails(kidsCharacterDetails);
-                return;
-            }
-            KidsCharacterDetailsFrag.this.updateCharacterDetails(kidsCharacterDetails);
-        }
     }
 }

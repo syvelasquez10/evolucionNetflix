@@ -4,7 +4,7 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.a;
 
@@ -23,7 +23,7 @@ class ah extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         final String pl = this.anT.pl();
         if (pl == null) {
             return di.pI();

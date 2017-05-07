@@ -18,7 +18,7 @@ import android.graphics.Paint$Style;
 import android.graphics.Rect;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import com.netflix.mediaclient.R;
+import com.netflix.mediaclient.R$styleable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.Bitmap$Config;
 import android.util.AttributeSet;
@@ -39,9 +39,9 @@ public class MagicTextView extends TextView
     private WeakHashMap<String, Pair<Canvas, Bitmap>> canvasStore;
     private Drawable foregroundDrawable;
     private boolean frozen;
-    private ArrayList<Shadow> innerShadows;
+    private ArrayList<MagicTextView$Shadow> innerShadows;
     private int[] lockedCompoundPadding;
-    private ArrayList<Shadow> outerShadows;
+    private ArrayList<MagicTextView$Shadow> outerShadows;
     private Integer strokeColor;
     private Paint$Join strokeJoin;
     private float strokeMiter;
@@ -86,7 +86,7 @@ public class MagicTextView extends TextView
         if (n == 0.0f) {
             n5 = 1.0E-4f;
         }
-        this.innerShadows.add(new Shadow(n5, n2, n3, n4));
+        this.innerShadows.add(new MagicTextView$Shadow(n5, n2, n3, n4));
     }
     
     public void addOuterShadow(final float n, final float n2, final float n3, final int n4) {
@@ -94,7 +94,7 @@ public class MagicTextView extends TextView
         if (n == 0.0f) {
             n5 = 1.0E-4f;
         }
-        this.outerShadows.add(new Shadow(n5, n2, n3, n4));
+        this.outerShadows.add(new MagicTextView$Shadow(n5, n2, n3, n4));
     }
     
     public void clearInnerShadows() {
@@ -146,13 +146,13 @@ public class MagicTextView extends TextView
     }
     
     public void init(final AttributeSet set) {
-        this.outerShadows = new ArrayList<Shadow>();
-        this.innerShadows = new ArrayList<Shadow>();
+        this.outerShadows = new ArrayList<MagicTextView$Shadow>();
+        this.innerShadows = new ArrayList<MagicTextView$Shadow>();
         if (this.canvasStore == null) {
             this.canvasStore = new WeakHashMap<String, Pair<Canvas, Bitmap>>();
         }
         if (set != null) {
-            final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R.styleable.MagicTextView);
+            final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R$styleable.MagicTextView);
             final String string = obtainStyledAttributes.getString(8);
             if (string != null) {
                 this.setTypeface(Typeface.createFromAsset(this.getContext().getAssets(), String.format("fonts/%s.ttf", string)));
@@ -243,8 +243,8 @@ public class MagicTextView extends TextView
         final Drawable background = this.getBackground();
         final Drawable[] compoundDrawables = this.getCompoundDrawables();
         this.setCompoundDrawables((Drawable)null, (Drawable)null, (Drawable)null, (Drawable)null);
-        for (final Shadow shadow : this.outerShadows) {
-            this.setShadowLayer(shadow.r, shadow.dx, shadow.dy, shadow.color);
+        for (final MagicTextView$Shadow magicTextView$Shadow : this.outerShadows) {
+            this.setShadowLayer(magicTextView$Shadow.r, magicTextView$Shadow.dx, magicTextView$Shadow.dy, magicTextView$Shadow.color);
             super.onDraw(canvas);
         }
         this.setShadowLayer(0.0f, 0.0f, 0.0f, 0);
@@ -261,14 +261,14 @@ public class MagicTextView extends TextView
         if (this.innerShadows.size() > 0) {
             this.generateTempCanvas();
             final TextPaint paint2 = this.getPaint();
-            for (final Shadow shadow2 : this.innerShadows) {
-                this.setTextColor(shadow2.color);
+            for (final MagicTextView$Shadow magicTextView$Shadow2 : this.innerShadows) {
+                this.setTextColor(magicTextView$Shadow2.color);
                 super.onDraw(this.tempCanvas);
                 this.setTextColor(-16777216);
                 paint2.setXfermode((Xfermode)new PorterDuffXfermode(PorterDuff$Mode.DST_OUT));
-                paint2.setMaskFilter((MaskFilter)new BlurMaskFilter(shadow2.r, BlurMaskFilter$Blur.NORMAL));
+                paint2.setMaskFilter((MaskFilter)new BlurMaskFilter(magicTextView$Shadow2.r, BlurMaskFilter$Blur.NORMAL));
                 this.tempCanvas.save();
-                this.tempCanvas.translate(shadow2.dx, shadow2.dy);
+                this.tempCanvas.translate(magicTextView$Shadow2.dx, magicTextView$Shadow2.dy);
                 super.onDraw(this.tempCanvas);
                 this.tempCanvas.restore();
                 canvas.drawBitmap(this.tempBitmap, 0.0f, 0.0f, (Paint)null);
@@ -322,20 +322,5 @@ public class MagicTextView extends TextView
     
     public void unfreeze() {
         this.frozen = false;
-    }
-    
-    public static class Shadow
-    {
-        int color;
-        float dx;
-        float dy;
-        float r;
-        
-        public Shadow(final float r, final float dx, final float dy, final int color) {
-            this.r = r;
-            this.dx = dx;
-            this.dy = dy;
-            this.color = color;
-        }
     }
 }

@@ -18,10 +18,9 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 import java.net.URL;
 import java.io.InputStream;
+import java.io.IOException;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.HttpEntity;
-import com.android.volley.AuthFailureError;
-import java.io.IOException;
 import java.io.DataOutputStream;
 import com.android.volley.Request;
 import java.net.HttpURLConnection;
@@ -31,22 +30,22 @@ public class HurlStack implements HttpStack
 {
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
     private final SSLSocketFactory mSslSocketFactory;
-    private final UrlRewriter mUrlRewriter;
+    private final HurlStack$UrlRewriter mUrlRewriter;
     
     public HurlStack() {
         this(null);
     }
     
-    public HurlStack(final UrlRewriter urlRewriter) {
-        this(urlRewriter, null);
+    public HurlStack(final HurlStack$UrlRewriter hurlStack$UrlRewriter) {
+        this(hurlStack$UrlRewriter, null);
     }
     
-    public HurlStack(final UrlRewriter mUrlRewriter, final SSLSocketFactory mSslSocketFactory) {
+    public HurlStack(final HurlStack$UrlRewriter mUrlRewriter, final SSLSocketFactory mSslSocketFactory) {
         this.mUrlRewriter = mUrlRewriter;
         this.mSslSocketFactory = mSslSocketFactory;
     }
     
-    private static void addBodyIfExists(final HttpURLConnection httpURLConnection, final Request<?> request) throws IOException, AuthFailureError {
+    private static void addBodyIfExists(final HttpURLConnection httpURLConnection, final Request<?> request) {
         final byte[] body = request.getBody();
         if (body != null) {
             httpURLConnection.setDoOutput(true);
@@ -76,7 +75,7 @@ public class HurlStack implements HttpStack
         }
     }
     
-    private HttpURLConnection openConnection(final URL url, final Request<?> request) throws IOException {
+    private HttpURLConnection openConnection(final URL url, final Request<?> request) {
         final HttpURLConnection connection = this.createConnection(url);
         final int timeoutMs = request.getTimeoutMs();
         connection.setConnectTimeout(timeoutMs);
@@ -89,7 +88,7 @@ public class HurlStack implements HttpStack
         return connection;
     }
     
-    static void setConnectionParametersForRequest(final HttpURLConnection httpURLConnection, final Request<?> request) throws IOException, AuthFailureError {
+    static void setConnectionParametersForRequest(final HttpURLConnection httpURLConnection, final Request<?> request) {
         switch (request.getMethod()) {
             default: {
                 throw new IllegalStateException("Unknown method type.");
@@ -122,22 +121,24 @@ public class HurlStack implements HttpStack
         }
     }
     
-    protected HttpURLConnection createConnection(final URL url) throws IOException {
+    protected HttpURLConnection createConnection(final URL url) {
         return (HttpURLConnection)url.openConnection();
     }
     
     @Override
-    public HttpResponse performRequest(final Request<?> request, final Map<String, String> map) throws IOException, AuthFailureError {
+    public HttpResponse performRequest(final Request<?> request, final Map<String, String> map) {
         final String url = request.getUrl();
         final HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.putAll(request.getHeaders());
         hashMap.putAll(map);
-        String rewriteUrl = url;
+        String rewriteUrl;
         if (this.mUrlRewriter != null) {
-            rewriteUrl = this.mUrlRewriter.rewriteUrl(url);
-            if (rewriteUrl == null) {
+            if ((rewriteUrl = this.mUrlRewriter.rewriteUrl(url)) == null) {
                 throw new IOException("URL blocked by rewriter: " + url);
             }
+        }
+        else {
+            rewriteUrl = url;
         }
         final HttpURLConnection openConnection = this.openConnection(new URL(rewriteUrl), request);
         for (final String s : hashMap.keySet()) {
@@ -155,8 +156,10 @@ public class HurlStack implements HttpStack
                 if (entry.getKey().equalsIgnoreCase("Set-Cookie")) {
                     final List<String> list = entry.getValue();
                     final StringBuilder sb = new StringBuilder();
+                    final Iterator<String> iterator3 = list.iterator();
                     int n = 0;
-                    for (final String s2 : list) {
+                    while (iterator3.hasNext()) {
+                        final String s2 = iterator3.next();
                         if (n > 0) {
                             sb.append("; ");
                         }
@@ -171,10 +174,5 @@ public class HurlStack implements HttpStack
             }
         }
         return (HttpResponse)basicHttpResponse;
-    }
-    
-    public interface UrlRewriter
-    {
-        String rewriteUrl(final String p0);
     }
 }

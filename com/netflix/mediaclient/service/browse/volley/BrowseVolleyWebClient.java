@@ -7,18 +7,17 @@ package com.netflix.mediaclient.service.browse.volley;
 import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
+import java.util.List;
+import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import java.util.List;
-import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClient;
@@ -30,7 +29,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
 {
     private static final int GENRE_LIST_MAX = 30;
     private static final int MOVIE_DETAILS_MAX_SIMILARS = 50;
-    public static final int SEARCH_RESULTS_MAX = 75;
+    public static final int SEARCH_RESULTS_MAX = 50;
     private final BrowseWebClientCache browseCache;
     private final NetflixService service;
     private final FalcorVolleyWebClient webclient;
@@ -42,15 +41,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     private void fetchVideosAndInjectSocialData(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        this.fetchVideosInternal(loMo, n, n2, new SimpleBrowseAgentCallback() {
-            @Override
-            public void onVideosFetched(final List<Video> list, final Status status) {
-                if (status.isSucces() && n == 0) {
-                    LoMoUtils.injectSocialData(loMo, list);
-                }
-                browseAgentCallback.onVideosFetched(list, status);
-            }
-        });
+        this.fetchVideosInternal(loMo, n, n2, new BrowseVolleyWebClient$1(this, n, loMo, browseAgentCallback));
     }
     
     private void fetchVideosInternal(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -105,7 +96,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
             s = "flatGenre";
         }
         else {
-            s = "glists";
+            s = "lists";
         }
         webclient.sendRequest(new FetchVideosRequest(applicationContext, s, loMo, n, n2, browseAgentCallback));
     }
@@ -162,12 +153,12 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     
     @Override
     public void fetchSimilarVideosForPerson(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String s2) {
-        this.webclient.sendRequest(new FetchSimilarVideosRequest.FetchSimilarVideosForPersonRequest(this.service.getApplicationContext(), s, n, browseAgentCallback, s2));
+        this.webclient.sendRequest(new FetchSimilarVideosRequest$FetchSimilarVideosForPersonRequest(this.service.getApplicationContext(), s, n, browseAgentCallback, s2));
     }
     
     @Override
     public void fetchSimilarVideosForQuerySuggestion(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String s2) {
-        this.webclient.sendRequest(new FetchSimilarVideosRequest.FetchSimilarVideosForQuerySuggestionRequest(this.service.getApplicationContext(), s, n, browseAgentCallback, s2));
+        this.webclient.sendRequest(new FetchSimilarVideosRequest$FetchSimilarVideosForQuerySuggestionRequest(this.service.getApplicationContext(), s, n, browseAgentCallback, s2));
     }
     
     @Override
@@ -195,8 +186,8 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void logBillboardActivity(final Video video, final BrowseAgent.BillboardActivityType billboardActivityType) {
-        this.webclient.sendRequest(new LogBillboardActivityRequest(this.service.getApplicationContext(), video, billboardActivityType));
+    public void logBillboardActivity(final Video video, final BrowseAgent$BillboardActivityType browseAgent$BillboardActivityType) {
+        this.webclient.sendRequest(new LogBillboardActivityRequest(this.service.getApplicationContext(), video, browseAgent$BillboardActivityType));
     }
     
     @Override
@@ -255,7 +246,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     
     @Override
     public void searchNetflix(final String s, final ProfileType profileType, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchSearchRequest(this.service.getApplicationContext(), s, 0, 75, profileType, browseAgentCallback));
+        this.webclient.sendRequest(new FetchSearchRequest(this.service.getApplicationContext(), s, profileType, browseAgentCallback));
     }
     
     @Override

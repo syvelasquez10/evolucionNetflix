@@ -8,7 +8,7 @@ import android.net.Uri;
 import java.util.Map;
 import android.content.Context;
 
-class d implements b
+class d implements DataLayer$b
 {
     private final Context lB;
     

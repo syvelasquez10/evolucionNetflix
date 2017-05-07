@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UpdateVideoBitrate extends BaseMediaEvent
@@ -14,7 +13,7 @@ public class UpdateVideoBitrate extends BaseMediaEvent
     public static final String TYPE = "updateVideoBitrate";
     private int bitsPerSecond;
     
-    public UpdateVideoBitrate(final JSONObject jsonObject) throws JSONException {
+    public UpdateVideoBitrate(final JSONObject jsonObject) {
         super("updateVideoBitrate", jsonObject);
     }
     
@@ -23,7 +22,7 @@ public class UpdateVideoBitrate extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.bitsPerSecond = BaseNccpEvent.getInt(jsonObject, "bitsPerSecond", -1);
     }
 }

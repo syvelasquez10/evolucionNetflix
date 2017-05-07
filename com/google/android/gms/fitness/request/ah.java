@@ -28,10 +28,10 @@ public class ah implements SafeParcelable
         this.Sh = sh;
     }
     
-    private ah(final a a) {
+    private ah(final ah$a ah$a) {
         this.BR = 1;
-        this.SF = a.SF;
-        this.Sh = a.Sh;
+        this.SF = ah$a.SF;
+        this.Sh = ah$a.Sh;
     }
     
     private boolean a(final ah ah) {
@@ -66,28 +66,5 @@ public class ah implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         ai.a(this, parcel, n);
-    }
-    
-    public static class a
-    {
-        private DataType SF;
-        private DataSource Sh;
-        
-        public a d(final DataSource sh) {
-            this.Sh = sh;
-            return this;
-        }
-        
-        public a d(final DataType sf) {
-            this.SF = sf;
-            return this;
-        }
-        
-        public ah jE() {
-            if (this.SF != null && this.Sh != null) {
-                throw new IllegalArgumentException("Cannot specify both dataType and dataSource");
-            }
-            return new ah(this, null);
-        }
     }
 }

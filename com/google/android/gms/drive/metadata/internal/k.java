@@ -4,9 +4,9 @@
 
 package com.google.android.gms.drive.metadata.internal;
 
+import org.json.JSONException;
 import com.google.android.gms.common.data.DataHolder;
 import android.os.Bundle;
-import org.json.JSONException;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +19,7 @@ public class k extends b<String>
         super(s, Collections.singleton(s), Collections.emptySet(), n);
     }
     
-    public static final Collection<String> bk(final String s) throws JSONException {
+    public static final Collection<String> bk(final String s) {
         if (s == null) {
             return null;
         }

@@ -35,6 +35,6 @@ public final class g extends com.google.android.gms.dynamic.g<c>
     }
     
     protected c bI(final IBinder binder) {
-        return c.a.bF(binder);
+        return c$a.bF(binder);
     }
 }

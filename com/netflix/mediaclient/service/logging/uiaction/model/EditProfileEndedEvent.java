@@ -8,35 +8,37 @@ import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
 
 public final class EditProfileEndedEvent extends BaseUIActionSessionEndedEvent
 {
     public static final String PROFILE = "profile";
     public static final String UIA_SESSION_NAME = "editProfile";
-    private UserActionLogging.Profile mProfile;
+    private UserActionLogging$Profile mProfile;
     
-    public EditProfileEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging.ModalView modalView, final UserActionLogging.CommandName commandName, final IClientLogging.CompletionReason completionReason, final UIError uiError, final UserActionLogging.Profile mProfile) {
-        super("editProfile", deviceUniqueId, n, modalView, commandName, completionReason, uiError);
+    public EditProfileEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging$ModalView clientLogging$ModalView, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final UserActionLogging$Profile mProfile) {
+        super("editProfile", deviceUniqueId, n, clientLogging$ModalView, userActionLogging$CommandName, clientLogging$CompletionReason, uiError);
         if (mProfile == null) {
             throw new IllegalArgumentException("Profile can not be null!");
         }
         this.mProfile = mProfile;
     }
     
-    public EditProfileEndedEvent(JSONObject jsonObject) throws JSONException {
+    public EditProfileEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
         jsonObject = JsonUtils.getJSONObject(jsonObject, "profile", null);
         if (jsonObject == null) {
             throw new JSONException("Profile object missing!");
         }
-        this.mProfile = new UserActionLogging.Profile(jsonObject);
+        this.mProfile = new UserActionLogging$Profile(jsonObject);
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         final JSONObject data = super.getData();
         data.put("profile", (Object)this.mProfile.toJson());
         return data;

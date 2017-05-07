@@ -6,7 +6,6 @@ package com.netflix.mediaclient.ui.common;
 
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
-import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.Log;
@@ -19,7 +18,7 @@ import com.netflix.mediaclient.ui.Section;
 public class Social extends Section
 {
     private static final String TAG = "playcard";
-    protected SocialProviderCallback mCallback;
+    protected Social$SocialProviderCallback mCallback;
     private final Activity mContext;
     private boolean mIsShared;
     private boolean mIsSharingDisabled;
@@ -28,7 +27,7 @@ public class Social extends Section
     private View mNotSharingLabel;
     protected ImageButton mShareButton;
     
-    public Social(final Activity mContext, final SocialProviderCallback mCallback) {
+    public Social(final Activity mContext, final Social$SocialProviderCallback mCallback) {
         super(mContext);
         this.mIsShared = true;
         this.mIsSharingDisabled = true;
@@ -69,12 +68,7 @@ public class Social extends Section
     private void initSocial() {
         this.mShareButton = (ImageButton)this.mContext.findViewById(2131165550);
         if (this.mShareButton != null) {
-            this.mShareButton.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    Log.d("playcard", "Touch facebook!");
-                    Social.this.toggleMessageVisibility();
-                }
-            });
+            this.mShareButton.setOnClickListener((View$OnClickListener)new Social$1(this));
         }
         else {
             Log.e("playcard", "Social button not found!");
@@ -82,12 +76,7 @@ public class Social extends Section
         this.mNotSharingButton = this.mContext.findViewById(2131165567);
         this.mNotSharingLabel = this.mContext.findViewById(2131165568);
         if (this.mNotSharingButton != null) {
-            this.mNotSharingButton.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
-                public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                    Social.this.doNotShare();
-                    return true;
-                }
-            });
+            this.mNotSharingButton.setOnTouchListener((View$OnTouchListener)new Social$2(this));
             return;
         }
         Log.e("playcard", "Not sharing button not found!");
@@ -179,12 +168,5 @@ public class Social extends Section
         }
         ViewUtils.setVisibility((View)this.mShareButton, true);
         this.updateSharingStatusPosition(this.mNotSharingButton, this.mMessageVisible);
-    }
-    
-    public interface SocialProviderCallback
-    {
-        void doNotShare();
-        
-        void extendTimeoutTimer();
     }
 }

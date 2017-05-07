@@ -10,5 +10,5 @@ public interface RetryPolicy
     
     int getCurrentTimeout();
     
-    void retry(final VolleyError p0) throws VolleyError;
+    void retry(final VolleyError p0);
 }

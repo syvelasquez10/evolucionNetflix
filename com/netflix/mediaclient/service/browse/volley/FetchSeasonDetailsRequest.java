@@ -4,9 +4,8 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.branches.Season;
+import com.netflix.mediaclient.service.webclient.model.branches.Season$Detail;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -57,7 +56,7 @@ public class FetchSeasonDetailsRequest extends FalcorVolleyWebClientRequest<Seas
     }
     
     @Override
-    protected SeasonDetails parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected SeasonDetails parseFalcorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_fetchseasondetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchseasondetailsrequest", "String response to parse = " + s);
         }
@@ -68,7 +67,7 @@ public class FetchSeasonDetailsRequest extends FalcorVolleyWebClientRequest<Seas
         try {
             final JsonObject asJsonObject = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mSeasonId);
             s = (String)new com.netflix.mediaclient.service.webclient.model.SeasonDetails();
-            ((com.netflix.mediaclient.service.webclient.model.SeasonDetails)s).detail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Season.Detail.class);
+            ((com.netflix.mediaclient.service.webclient.model.SeasonDetails)s).detail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Season$Detail.class);
             return (SeasonDetails)s;
         }
         catch (Exception ex) {

@@ -7,8 +7,8 @@ package com.netflix.mediaclient.service.mdx;
 import org.json.JSONException;
 import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import com.netflix.mediaclient.Log;
-import java.util.HashMap;
 import android.annotation.SuppressLint;
+import com.netflix.mediaclient.servicemgr.IMdxSharedState$MdxPlaybackState;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 
@@ -17,11 +17,11 @@ public class MdxSharedState implements IMdxSharedState
     private static final long INVALID_TIME = -1L;
     private static final int INVALID_VOLUME = -1;
     @SuppressLint({ "UseSparseArrays" })
-    private static final Map<MdxPlaybackState, String> MDX_PLAYBACK_STATE_NAME;
+    private static final Map<IMdxSharedState$MdxPlaybackState, String> MDX_PLAYBACK_STATE_NAME;
     private static final String TAG;
     private boolean mAllowVolume;
     private boolean mHasActivePlayback;
-    private MdxPlaybackState mPlaybackState;
+    private IMdxSharedState$MdxPlaybackState mPlaybackState;
     private String mPostplay;
     private long mReportedPlaybackPositionInMs;
     private long mTimePositionReorptedInMs;
@@ -30,19 +30,11 @@ public class MdxSharedState implements IMdxSharedState
     
     static {
         TAG = MdxSharedState.class.getSimpleName();
-        MDX_PLAYBACK_STATE_NAME = new HashMap<MdxPlaybackState, String>() {
-            {
-                this.put(MdxPlaybackState.Playing, "Playing");
-                this.put(MdxPlaybackState.Paused, "Paused");
-                this.put(MdxPlaybackState.Stopped, "Stopped");
-                this.put(MdxPlaybackState.Loading, "Loading");
-                this.put(MdxPlaybackState.Transitioning, "Transitioning");
-            }
-        };
+        MDX_PLAYBACK_STATE_NAME = new MdxSharedState$1();
     }
     
     MdxSharedState(final String mUuid) {
-        this.mPlaybackState = MdxPlaybackState.Stopped;
+        this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Stopped;
         this.mReportedPlaybackPositionInMs = -1L;
         this.mVolume = -1;
         this.mUuid = mUuid;
@@ -50,13 +42,13 @@ public class MdxSharedState implements IMdxSharedState
     
     private void reset() {
         this.mHasActivePlayback = false;
-        this.mPlaybackState = MdxPlaybackState.Stopped;
+        this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Stopped;
         this.mReportedPlaybackPositionInMs = -1L;
         this.mVolume = -1;
     }
     
     @Override
-    public MdxPlaybackState getMdxPlaybackState() {
+    public IMdxSharedState$MdxPlaybackState getMdxPlaybackState() {
         synchronized (this) {
             return this.mPlaybackState;
         }
@@ -71,7 +63,7 @@ public class MdxSharedState implements IMdxSharedState
             if (this.mReportedPlaybackPositionInMs > -1L) {
                 mReportedPlaybackPositionInMs = n;
                 if (this.mHasActivePlayback) {
-                    if (this.mPlaybackState == MdxPlaybackState.Playing) {
+                    if (this.mPlaybackState == IMdxSharedState$MdxPlaybackState.Playing) {
                         mReportedPlaybackPositionInMs = System.currentTimeMillis() - this.mTimePositionReorptedInMs + this.mReportedPlaybackPositionInMs;
                     }
                     else {
@@ -115,7 +107,7 @@ public class MdxSharedState implements IMdxSharedState
     }
     
     void notifyPlayCommandReceived() {
-        this.mPlaybackState = MdxPlaybackState.Loading;
+        this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Loading;
         Log.d(MdxSharedState.TAG, "state: " + MdxSharedState.MDX_PLAYBACK_STATE_NAME.get(this.mPlaybackState) + ", pos: " + this.mReportedPlaybackPositionInMs + ", volume: " + this.mVolume);
     }
     
@@ -126,7 +118,7 @@ public class MdxSharedState implements IMdxSharedState
     
     void notifyPlaybackStart() {
         this.mHasActivePlayback = true;
-        this.mPlaybackState = MdxPlaybackState.Playing;
+        this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Playing;
         this.resetPostplayState();
         Log.d(MdxSharedState.TAG, "state: " + MdxSharedState.MDX_PLAYBACK_STATE_NAME.get(this.mPlaybackState) + ", pos: " + this.mReportedPlaybackPositionInMs + ", volume: " + this.mVolume);
     }
@@ -136,22 +128,22 @@ public class MdxSharedState implements IMdxSharedState
         this.mTimePositionReorptedInMs = System.currentTimeMillis();
         this.mVolume = mVolume;
         if ("prepause".equals(s) || "preplay".equals(s) || "preseek".equals(s)) {
-            this.mPlaybackState = MdxPlaybackState.Transitioning;
+            this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Transitioning;
             this.resetPostplayState();
         }
         else if ("PROGRESS".equals(s)) {
             this.resetPostplayState();
-            this.mPlaybackState = MdxPlaybackState.Transitioning;
+            this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Transitioning;
         }
         else if ("PLAY".equals(s) || "PLAYING".equals(s)) {
-            this.mPlaybackState = MdxPlaybackState.Playing;
+            this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Playing;
             this.resetPostplayState();
         }
         else if ("PAUSE".equals(s)) {
-            this.mPlaybackState = MdxPlaybackState.Paused;
+            this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Paused;
         }
         else {
-            this.mPlaybackState = MdxPlaybackState.Stopped;
+            this.mPlaybackState = IMdxSharedState$MdxPlaybackState.Stopped;
         }
         Log.d(MdxSharedState.TAG, "state: " + MdxSharedState.MDX_PLAYBACK_STATE_NAME.get(this.mPlaybackState) + ", pos: " + this.mReportedPlaybackPositionInMs + ", volume: " + this.mVolume);
     }

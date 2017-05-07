@@ -6,7 +6,6 @@ package com.netflix.falkor;
 
 import com.google.gson.stream.JsonWriter;
 import java.net.URISyntaxException;
-import java.io.IOException;
 import com.google.gson.stream.JsonReader;
 import java.net.URI;
 import com.google.gson.TypeAdapter;
@@ -14,7 +13,7 @@ import com.google.gson.TypeAdapter;
 public class URIAdapter extends TypeAdapter<URI>
 {
     @Override
-    public URI read(final JsonReader jsonReader) throws IOException {
+    public URI read(final JsonReader jsonReader) {
         try {
             return new URI(jsonReader.nextString());
         }
@@ -24,7 +23,7 @@ public class URIAdapter extends TypeAdapter<URI>
     }
     
     @Override
-    public void write(final JsonWriter jsonWriter, final URI uri) throws IOException {
+    public void write(final JsonWriter jsonWriter, final URI uri) {
         jsonWriter.value(uri.toString());
     }
 }

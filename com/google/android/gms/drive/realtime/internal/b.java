@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.realtime.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
@@ -33,7 +34,7 @@ public class b implements Parcelable$Creator<EndCompoundOperationRequest>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new EndCompoundOperationRequest(g);
     }

@@ -54,19 +54,7 @@ class as extends Thread implements ar
     }
     
     void b(final String s, final long n) {
-        this.b(new Runnable() {
-            final /* synthetic */ ar apg;
-            
-            @Override
-            public void run() {
-                if (as.this.apf == null) {
-                    final cy pu = cy.pu();
-                    pu.a(as.this.mContext, this.apg);
-                    as.this.apf = pu.pv();
-                }
-                as.this.apf.f(n, s);
-            }
-        });
+        this.b(new as$1(this, this, n, s));
     }
     
     @Override

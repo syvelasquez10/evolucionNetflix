@@ -4,67 +4,68 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.appstate.AppStateBuffer;
-import com.google.android.gms.common.api.a;
-import com.google.android.gms.common.data.DataHolder;
 import android.os.IInterface;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.internal.j;
+import com.google.android.gms.common.internal.d$e;
 import com.google.android.gms.common.internal.k;
+import com.google.android.gms.appstate.AppStateManager$StateResult;
+import com.google.android.gms.appstate.AppStateManager$StateDeletedResult;
 import android.os.RemoteException;
 import android.util.Log;
-import com.google.android.gms.appstate.AppStateManager;
-import com.google.android.gms.common.api.BaseImplementation;
+import com.google.android.gms.appstate.AppStateManager$StateListResult;
+import com.google.android.gms.common.api.BaseImplementation$b;
 import android.os.IBinder;
 import com.google.android.gms.common.internal.n;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import android.os.Looper;
 import android.content.Context;
 import com.google.android.gms.common.internal.d;
 
-public final class ib extends com.google.android.gms.common.internal.d<id>
+public final class ib extends d<id>
 {
     private final String Dd;
     
-    public ib(final Context context, final Looper looper, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String s, final String[] array) {
-        super(context, looper, connectionCallbacks, onConnectionFailedListener, array);
+    public ib(final Context context, final Looper looper, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final String s, final String[] array) {
+        super(context, looper, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, array);
         this.Dd = n.i(s);
     }
     
     protected id I(final IBinder binder) {
-        return id.a.K(binder);
+        return id$a.K(binder);
     }
     
-    public void a(final BaseImplementation.b<AppStateManager.StateListResult> b) {
+    public void a(final BaseImplementation$b<AppStateManager$StateListResult> baseImplementation$b) {
         try {
-            this.gS().a(new c(b));
+            this.gS().a(new ib$c(baseImplementation$b));
         }
         catch (RemoteException ex) {
             Log.w("AppStateClient", "service died");
         }
     }
     
-    public void a(final BaseImplementation.b<AppStateManager.StateDeletedResult> b, final int n) {
+    public void a(final BaseImplementation$b<AppStateManager$StateDeletedResult> baseImplementation$b, final int n) {
         try {
-            this.gS().b(new a(b), n);
+            this.gS().b(new ib$a(baseImplementation$b), n);
         }
         catch (RemoteException ex) {
             Log.w("AppStateClient", "service died");
         }
     }
     
-    public void a(final BaseImplementation.b<AppStateManager.StateResult> b, final int n, final String s, final byte[] array) {
+    public void a(final BaseImplementation$b<AppStateManager$StateResult> baseImplementation$b, final int n, final String s, final byte[] array) {
         try {
-            this.gS().a(new e(b), n, s, array);
+            this.gS().a(new ib$e(baseImplementation$b), n, s, array);
         }
         catch (RemoteException ex) {
             Log.w("AppStateClient", "service died");
         }
     }
     
-    public void a(final BaseImplementation.b<AppStateManager.StateResult> b, final int n, final byte[] array) {
+    public void a(final BaseImplementation$b<AppStateManager$StateResult> baseImplementation$b, final int n, final byte[] array) {
         Label_0022: {
-            if (b != null) {
+            if (baseImplementation$b != null) {
                 break Label_0022;
             }
             ic ic = null;
@@ -72,7 +73,7 @@ public final class ib extends com.google.android.gms.common.internal.d<id>
                 while (true) {
                     this.gS().a(ic, n, array);
                     return;
-                    ic = new e(b);
+                    ic = new ib$e(baseImplementation$b);
                     continue;
                 }
             }
@@ -83,22 +84,22 @@ public final class ib extends com.google.android.gms.common.internal.d<id>
     }
     
     @Override
-    protected void a(final k k, final com.google.android.gms.common.internal.d.e e) throws RemoteException {
-        k.a(e, 6111000, this.getContext().getPackageName(), this.Dd, this.gR());
+    protected void a(final k k, final d$e d$e) {
+        k.a(d$e, 6111000, this.getContext().getPackageName(), this.Dd, this.gR());
     }
     
-    public void b(final BaseImplementation.b<Status> b) {
+    public void b(final BaseImplementation$b<Status> baseImplementation$b) {
         try {
-            this.gS().b(new g(b));
+            this.gS().b(new ib$g(baseImplementation$b));
         }
         catch (RemoteException ex) {
             Log.w("AppStateClient", "service died");
         }
     }
     
-    public void b(final BaseImplementation.b<AppStateManager.StateResult> b, final int n) {
+    public void b(final BaseImplementation$b<AppStateManager$StateResult> baseImplementation$b, final int n) {
         try {
-            this.gS().a(new e(b), n);
+            this.gS().a(new ib$e(baseImplementation$b), n);
         }
         catch (RemoteException ex) {
             Log.w("AppStateClient", "service died");
@@ -146,164 +147,5 @@ public final class ib extends com.google.android.gms.common.internal.d<id>
     @Override
     protected String getStartServiceAction() {
         return "com.google.android.gms.appstate.service.START";
-    }
-    
-    private static final class a extends ia
-    {
-        private final BaseImplementation.b<AppStateManager.StateDeletedResult> De;
-        
-        public a(final BaseImplementation.b<AppStateManager.StateDeletedResult> b) {
-            this.De = (BaseImplementation.b<AppStateManager.StateDeletedResult>)n.b((BaseImplementation.b)b, "Result holder must not be null");
-        }
-        
-        @Override
-        public void e(final int n, final int n2) {
-            this.De.b(new b(new Status(n), n2));
-        }
-    }
-    
-    private static final class b implements StateDeletedResult
-    {
-        private final Status CM;
-        private final int Df;
-        
-        public b(final Status cm, final int df) {
-            this.CM = cm;
-            this.Df = df;
-        }
-        
-        @Override
-        public int getStateKey() {
-            return this.Df;
-        }
-        
-        @Override
-        public Status getStatus() {
-            return this.CM;
-        }
-    }
-    
-    private static final class c extends ia
-    {
-        private final BaseImplementation.b<AppStateManager.StateListResult> De;
-        
-        public c(final BaseImplementation.b<AppStateManager.StateListResult> b) {
-            this.De = (BaseImplementation.b<AppStateManager.StateListResult>)n.b((BaseImplementation.b)b, "Result holder must not be null");
-        }
-        
-        @Override
-        public void a(final DataHolder dataHolder) {
-            this.De.b(new d(dataHolder));
-        }
-    }
-    
-    private static final class d extends a implements StateListResult
-    {
-        private final AppStateBuffer Dg;
-        
-        public d(final DataHolder dataHolder) {
-            super(dataHolder);
-            this.Dg = new AppStateBuffer(dataHolder);
-        }
-        
-        @Override
-        public AppStateBuffer getStateBuffer() {
-            return this.Dg;
-        }
-    }
-    
-    private static final class e extends ia
-    {
-        private final BaseImplementation.b<AppStateManager.StateResult> De;
-        
-        public e(final BaseImplementation.b<AppStateManager.StateResult> b) {
-            this.De = (BaseImplementation.b<AppStateManager.StateResult>)n.b((BaseImplementation.b)b, "Result holder must not be null");
-        }
-        
-        @Override
-        public void a(final int n, final DataHolder dataHolder) {
-            this.De.b(new f(n, dataHolder));
-        }
-    }
-    
-    private static final class f extends a implements StateConflictResult, StateLoadedResult, StateResult
-    {
-        private final int Df;
-        private final AppStateBuffer Dg;
-        
-        public f(final int df, final DataHolder dataHolder) {
-            super(dataHolder);
-            this.Df = df;
-            this.Dg = new AppStateBuffer(dataHolder);
-        }
-        
-        private boolean ft() {
-            return this.CM.getStatusCode() == 2000;
-        }
-        
-        @Override
-        public StateConflictResult getConflictResult() {
-            if (this.ft()) {
-                return this;
-            }
-            return null;
-        }
-        
-        @Override
-        public StateLoadedResult getLoadedResult() {
-            f f = this;
-            if (this.ft()) {
-                f = null;
-            }
-            return f;
-        }
-        
-        @Override
-        public byte[] getLocalData() {
-            if (this.Dg.getCount() == 0) {
-                return null;
-            }
-            return this.Dg.get(0).getLocalData();
-        }
-        
-        @Override
-        public String getResolvedVersion() {
-            if (this.Dg.getCount() == 0) {
-                return null;
-            }
-            return this.Dg.get(0).getConflictVersion();
-        }
-        
-        @Override
-        public byte[] getServerData() {
-            if (this.Dg.getCount() == 0) {
-                return null;
-            }
-            return this.Dg.get(0).getConflictData();
-        }
-        
-        @Override
-        public int getStateKey() {
-            return this.Df;
-        }
-        
-        @Override
-        public void release() {
-            this.Dg.close();
-        }
-    }
-    
-    private static final class g extends ia
-    {
-        private final BaseImplementation.b<Status> De;
-        
-        public g(final BaseImplementation.b<Status> b) {
-            this.De = (BaseImplementation.b<Status>)n.b((BaseImplementation.b)b, "Holder must not be null");
-        }
-        
-        @Override
-        public void fq() {
-            this.De.b(new Status(0));
-        }
     }
 }

@@ -9,9 +9,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -60,7 +59,7 @@ public class FetchAvailableAvatarsRequest extends FalcorVolleyWebClientRequest<L
     }
     
     @Override
-    protected List<AvatarInfo> parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected List<AvatarInfo> parseFalcorResponse(String s) {
         if (Log.isLoggable("nf_service_user_fetchavailableavatarsrequest", 2)) {
             Log.i("nf_service_user_fetchavailableavatarsrequest", "Got result: " + s);
         }

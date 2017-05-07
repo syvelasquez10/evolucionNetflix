@@ -20,7 +20,7 @@ import android.content.Context;
 
 final class RegisteredMediaRouteProviderWatcher
 {
-    private final Callback mCallback;
+    private final RegisteredMediaRouteProviderWatcher$Callback mCallback;
     private final Context mContext;
     private final Handler mHandler;
     private final PackageManager mPackageManager;
@@ -29,19 +29,10 @@ final class RegisteredMediaRouteProviderWatcher
     private final BroadcastReceiver mScanPackagesReceiver;
     private final Runnable mScanPackagesRunnable;
     
-    public RegisteredMediaRouteProviderWatcher(final Context mContext, final Callback mCallback) {
+    public RegisteredMediaRouteProviderWatcher(final Context mContext, final RegisteredMediaRouteProviderWatcher$Callback mCallback) {
         this.mProviders = new ArrayList<RegisteredMediaRouteProvider>();
-        this.mScanPackagesReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                RegisteredMediaRouteProviderWatcher.this.scanPackages();
-            }
-        };
-        this.mScanPackagesRunnable = new Runnable() {
-            @Override
-            public void run() {
-                RegisteredMediaRouteProviderWatcher.this.scanPackages();
-            }
-        };
+        this.mScanPackagesReceiver = new RegisteredMediaRouteProviderWatcher$1(this);
+        this.mScanPackagesRunnable = new RegisteredMediaRouteProviderWatcher$2(this);
         this.mContext = mContext;
         this.mCallback = mCallback;
         this.mHandler = new Handler();
@@ -59,29 +50,39 @@ final class RegisteredMediaRouteProviderWatcher
     
     private void scanPackages() {
         if (this.mRunning) {
+            final Iterator<ResolveInfo> iterator = (Iterator<ResolveInfo>)this.mPackageManager.queryIntentServices(new Intent("android.media.MediaRouteProviderService"), 0).iterator();
             int n = 0;
-            final Iterator<ResolveInfo> iterator = this.mPackageManager.queryIntentServices(new Intent("android.media.MediaRouteProviderService"), 0).iterator();
+        Label_0153_Outer:
             while (iterator.hasNext()) {
                 final ServiceInfo serviceInfo = iterator.next().serviceInfo;
-                if (serviceInfo != null) {
-                    final int provider = this.findProvider(serviceInfo.packageName, serviceInfo.name);
-                    if (provider < 0) {
-                        final RegisteredMediaRouteProvider registeredMediaRouteProvider = new RegisteredMediaRouteProvider(this.mContext, new ComponentName(serviceInfo.packageName, serviceInfo.name));
-                        registeredMediaRouteProvider.start();
-                        this.mProviders.add(n, registeredMediaRouteProvider);
-                        this.mCallback.addProvider(registeredMediaRouteProvider);
-                        ++n;
+                if (serviceInfo == null) {
+                    continue Label_0153_Outer;
+                }
+                final int provider = this.findProvider(serviceInfo.packageName, serviceInfo.name);
+                if (provider < 0) {
+                    final RegisteredMediaRouteProvider registeredMediaRouteProvider = new RegisteredMediaRouteProvider(this.mContext, new ComponentName(serviceInfo.packageName, serviceInfo.name));
+                    registeredMediaRouteProvider.start();
+                    final ArrayList<RegisteredMediaRouteProvider> mProviders = this.mProviders;
+                    final int n2 = n + 1;
+                    mProviders.add(n, registeredMediaRouteProvider);
+                    this.mCallback.addProvider(registeredMediaRouteProvider);
+                    n = n2;
+                }
+                else {
+                    if (provider < n) {
+                        continue Label_0153_Outer;
                     }
-                    else {
-                        if (provider < n) {
-                            continue;
-                        }
-                        final RegisteredMediaRouteProvider registeredMediaRouteProvider2 = this.mProviders.get(provider);
-                        registeredMediaRouteProvider2.start();
-                        registeredMediaRouteProvider2.rebindIfDisconnected();
-                        Collections.swap(this.mProviders, provider, n);
-                        ++n;
-                    }
+                    final RegisteredMediaRouteProvider registeredMediaRouteProvider2 = this.mProviders.get(provider);
+                    registeredMediaRouteProvider2.start();
+                    registeredMediaRouteProvider2.rebindIfDisconnected();
+                    final ArrayList<RegisteredMediaRouteProvider> mProviders2 = this.mProviders;
+                    final int n3 = n + 1;
+                    Collections.swap(mProviders2, provider, n);
+                    n = n3;
+                }
+                while (true) {
+                    continue Label_0153_Outer;
+                    continue;
                 }
             }
             if (n < this.mProviders.size()) {
@@ -119,12 +120,5 @@ final class RegisteredMediaRouteProviderWatcher
                 this.mProviders.get(i).stop();
             }
         }
-    }
-    
-    public interface Callback
-    {
-        void addProvider(final MediaRouteProvider p0);
-        
-        void removeProvider(final MediaRouteProvider p0);
     }
 }

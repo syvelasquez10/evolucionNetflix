@@ -7,11 +7,10 @@ package com.netflix.mediaclient.ui.lolomo;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.MenuItem;
+import com.netflix.mediaclient.Log;
 import com.viewpagerindicator.android.osp.ViewPager;
 import android.view.ViewParent;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
-import com.netflix.mediaclient.Log;
-import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
 import android.view.View;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -37,15 +36,7 @@ public class LoLoMoFocusHandler extends DataSetObserver
         this.touchEnabled = true;
         this.validateViewIdsIfNecessary();
         this.activity = activity;
-        (this.listView = listView).setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
-            public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                if (!LoLoMoFocusHandler.this.touchEnabled) {
-                    Log.v("LoLoMoFocusHandler", "enabling touch");
-                }
-                LoLoMoFocusHandler.this.touchEnabled = true;
-                return false;
-            }
-        });
+        (this.listView = listView).setOnTouchListener((View$OnTouchListener)new LoLoMoFocusHandler$1(this));
     }
     
     private boolean canScrollHorizontally(final boolean b) {
@@ -81,17 +72,22 @@ public class LoLoMoFocusHandler extends DataSetObserver
     }
     
     private VideoViewGroup<?, ?> getVideoViewGroup(final View view) {
-        if (view != null) {
-            ViewParent viewParent2;
-            final ViewParent viewParent = viewParent2 = view.getParent();
-            if (!(viewParent instanceof VideoViewGroup)) {
-                viewParent2 = viewParent.getParent();
-            }
-            if (viewParent2 instanceof VideoViewGroup) {
-                return (VideoViewGroup<?, ?>)viewParent2;
-            }
+        if (view == null) {
+            return null;
         }
-        return null;
+        ViewParent viewParent2;
+        final ViewParent viewParent = viewParent2 = view.getParent();
+        if (!(viewParent instanceof VideoViewGroup)) {
+            viewParent2 = viewParent.getParent();
+        }
+        VideoViewGroup<?, ?> videoViewGroup;
+        if (viewParent2 instanceof VideoViewGroup) {
+            videoViewGroup = (VideoViewGroup<?, ?>)viewParent2;
+        }
+        else {
+            videoViewGroup = null;
+        }
+        return videoViewGroup;
     }
     
     private ViewPager getViewPager(final View view) {
@@ -104,50 +100,58 @@ public class LoLoMoFocusHandler extends DataSetObserver
     
     private void handleDpadEvent(final int n) {
         boolean b = true;
-        boolean b2 = false;
-        Label_0072: {
-            switch (n) {
-                default: {
-                    Log.w("LoLoMoFocusHandler", "Unknown keyCode");
-                    break;
-                }
-                case 20: {
-                    this.row = Math.min(this.row + 1, this.listView.getAdapter().getCount() - 1);
-                    break Label_0072;
-                }
-                case 19: {
-                    this.row = Math.max(0, this.row - 1);
-                    break Label_0072;
-                }
-                case 21: {
-                    b2 = true;
-                    if (this.canScrollHorizontally(false)) {
-                        --this.col;
-                        b2 = b2;
+        while (true) {
+            Label_0176: {
+                switch (n) {
+                    default: {
+                        Log.w("LoLoMoFocusHandler", "Unknown keyCode");
+                        break;
                     }
-                    break Label_0072;
-                }
-                case 22: {
-                    final boolean b3 = b2 = true;
-                    if (this.canScrollHorizontally(true)) {
-                        ++this.col;
-                        b2 = b3;
+                    case 20: {
+                        this.row = Math.min(this.row + 1, this.listView.getAdapter().getCount() - 1);
+                        final int n2 = 0;
+                        break Label_0070;
                     }
-                    break Label_0072;
+                    case 19: {
+                        this.row = Math.max(0, this.row - 1);
+                        final int n2 = 0;
+                        break Label_0070;
+                    }
+                    case 21: {
+                        if (this.canScrollHorizontally(false)) {
+                            --this.col;
+                            final int n2 = 1;
+                            break Label_0070;
+                        }
+                        break Label_0176;
+                    }
+                    case 22: {
+                        if (this.canScrollHorizontally(true)) {
+                            ++this.col;
+                            final int n2 = 1;
+                            break Label_0070;
+                        }
+                        break Label_0176;
+                    }
                 }
+                return;
+                int n2 = 0;
+                if (n2 != 0) {
+                    this.requestFocusAtCurrPos();
+                    this.scrollHorizontallyIfRequired();
+                    return;
+                }
+                if (n != 20) {
+                    b = false;
+                }
+                if (this.handleVerticalKeyEvent(b)) {
+                    this.scrollVertically(this.row);
+                    return;
+                }
+                return;
             }
-            return;
-        }
-        if (b2) {
-            this.requestFocusAtCurrPos();
-            this.scrollHorizontallyIfRequired();
-            return;
-        }
-        if (n != 20) {
-            b = false;
-        }
-        if (this.handleVerticalKeyEvent(b)) {
-            this.scrollVertically(this.row);
+            final int n2 = 1;
+            continue;
         }
     }
     
@@ -166,15 +170,16 @@ public class LoLoMoFocusHandler extends DataSetObserver
             n = 33;
         }
         final View focusSearch = this.prevFocusView.focusSearch(n);
-        if (focusSearch != null && !(focusSearch instanceof MenuItem)) {
-            final VideoViewGroup<?, ?> videoViewGroup = this.getVideoViewGroup(focusSearch);
-            if (videoViewGroup != null) {
-                this.col = this.computeColFromViewId(videoViewGroup.getChildAt(0).getId()) + this.col % videoViewGroup.getChildCount();
-                this.requestFocusAtCurrPos();
-                return true;
-            }
+        if (focusSearch == null || focusSearch instanceof MenuItem) {
+            return false;
         }
-        return false;
+        final VideoViewGroup<?, ?> videoViewGroup = this.getVideoViewGroup(focusSearch);
+        if (videoViewGroup == null) {
+            return false;
+        }
+        this.col = this.computeColFromViewId(videoViewGroup.getChildAt(0).getId()) + this.col % videoViewGroup.getChildCount();
+        this.requestFocusAtCurrPos();
+        return true;
     }
     
     private void requestFocusAtCurrPos() {

@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.javabridge.invoke.mdx.session;
 
-import com.netflix.mediaclient.Log;
 import org.json.JSONException;
+import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
 
@@ -21,37 +21,13 @@ public class EndSession extends BaseInvoke
     }
     
     private void setArguments(final int n) {
-        JSONObject jsonObject = null;
         try {
-            final JSONObject jsonObject2;
-            jsonObject = (jsonObject2 = new JSONObject());
-            final String s = "sid";
-            final int n2 = n;
-            jsonObject2.put(s, n2);
-            final EndSession endSession = this;
-            final JSONObject jsonObject3 = jsonObject;
-            final String s2 = jsonObject3.toString();
-            endSession.arguments = s2;
-            return;
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("sid", n);
+            this.arguments = jsonObject.toString();
         }
-        catch (JSONException ex) {}
-        while (true) {
-            try {
-                final JSONObject jsonObject2 = jsonObject;
-                final String s = "sid";
-                final int n2 = n;
-                jsonObject2.put(s, n2);
-                final EndSession endSession = this;
-                final JSONObject jsonObject3 = jsonObject;
-                final String s2 = jsonObject3.toString();
-                endSession.arguments = s2;
-                return;
-                Log.e("nf_invoke", "Failed to create JSON object", (Throwable)jsonObject);
-            }
-            catch (JSONException jsonObject) {
-                continue;
-            }
-            break;
+        catch (JSONException ex) {
+            Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
         }
     }
 }

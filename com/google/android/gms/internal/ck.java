@@ -5,7 +5,6 @@
 package com.google.android.gms.internal;
 
 import java.util.Iterator;
-import android.os.RemoteException;
 import android.content.Context;
 
 @ez
@@ -47,17 +46,7 @@ public final class ck
                     }
                 }
                 if (((cq)o).qz != null) {
-                    gr.wC.post((Runnable)new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                ((cq)o).qz.destroy();
-                            }
-                            catch (RemoteException ex) {
-                                gs.d("Could not destroy mediation adapter.", (Throwable)ex);
-                            }
-                        }
-                    });
+                    gr.wC.post((Runnable)new ck$1(this, (cq)o));
                 }
             }
         }

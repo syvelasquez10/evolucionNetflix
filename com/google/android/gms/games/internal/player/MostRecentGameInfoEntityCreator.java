@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.internal.player;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.net.Uri;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -72,7 +73,7 @@ public class MostRecentGameInfoEntityCreator implements Parcelable$Creator<MostR
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new MostRecentGameInfoEntity(g, o2, o, i, uri3, uri2, uri);
     }

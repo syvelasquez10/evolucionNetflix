@@ -6,12 +6,12 @@ package com.google.android.gms.tagmanager;
 
 import java.util.Map;
 import com.google.android.gms.internal.a;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 
 class cc extends aj
 {
     private static final String ID;
-    private static final d.a apP;
+    private static final d$a apP;
     
     static {
         ID = a.P.toString();
@@ -23,7 +23,7 @@ class cc extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         return cc.apP;
     }
     

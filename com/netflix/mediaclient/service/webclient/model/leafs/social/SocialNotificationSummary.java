@@ -6,7 +6,8 @@ package com.netflix.mediaclient.service.webclient.model.leafs.social;
 
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import android.os.Parcel;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
 import com.google.gson.annotations.SerializedName;
 import android.os.Parcelable$Creator;
 import android.os.Parcelable;
@@ -20,10 +21,9 @@ public class SocialNotificationSummary implements Parcelable
     private boolean bWasThanked;
     @SerializedName("fromUser")
     private SocialNotificationsFriendProfile friendProfile;
-    private String horizontalBoxartUrl;
     @SerializedName("id")
     private String id;
-    private Video.InQueue inQueue;
+    private Video$InQueue inQueue;
     @SerializedName("msgString")
     private String messageString;
     @SerializedName("storyId")
@@ -31,19 +31,11 @@ public class SocialNotificationSummary implements Parcelable
     @SerializedName("timestamp")
     private long timestamp;
     @SerializedName("msgType")
-    private NotificationTypes type;
-    private Video.Summary videoSummary;
+    private SocialNotificationSummary$NotificationTypes type;
+    private Video$Summary videoSummary;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<SocialNotificationSummary>() {
-            public SocialNotificationSummary createFromParcel(final Parcel parcel) {
-                return new SocialNotificationSummary(parcel);
-            }
-            
-            public SocialNotificationSummary[] newArray(final int n) {
-                return new SocialNotificationSummary[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new SocialNotificationSummary$1();
     }
     
     protected SocialNotificationSummary(final Parcel parcel) {
@@ -54,16 +46,16 @@ public class SocialNotificationSummary implements Parcelable
         this.friendProfile = new SocialNotificationsFriendProfile(array[2], array[3], array[4], array[5]);
         this.id = array[6];
         this.storyId = array[7];
-        this.type = NotificationTypes.valueOf(array[8]);
+        this.type = SocialNotificationSummary$NotificationTypes.valueOf(array[8]);
         this.messageString = array[9];
         this.timestamp = Long.valueOf(array[10]);
-        this.horizontalBoxartUrl = array[11];
-        this.videoSummary = new Video.Summary();
+        this.videoSummary = new Video$Summary();
+        this.videoSummary.horzDispUrl = array[11];
         this.videoSummary.id = array[12];
         this.videoSummary.title = array[13];
         this.videoSummary.type = array[14];
         this.videoSummary.boxartUrl = array[15];
-        this.inQueue = new Video.InQueue();
+        this.inQueue = new Video$InQueue();
         this.inQueue.inQueue = Boolean.parseBoolean(array[16]);
     }
     
@@ -121,15 +113,11 @@ public class SocialNotificationSummary implements Parcelable
         return this.friendProfile;
     }
     
-    public String getHorizontalBoxart() {
-        return this.horizontalBoxartUrl;
-    }
-    
     public String getId() {
         return this.id;
     }
     
-    public Video.InQueue getInQueue() {
+    public Video$InQueue getInQueue() {
         return this.inQueue;
     }
     
@@ -145,11 +133,11 @@ public class SocialNotificationSummary implements Parcelable
         return this.timestamp;
     }
     
-    public NotificationTypes getType() {
+    public SocialNotificationSummary$NotificationTypes getType() {
         return this.type;
     }
     
-    public Video.Summary getVideoSummary() {
+    public Video$Summary getVideoSummary() {
         return this.videoSummary;
     }
     
@@ -166,15 +154,11 @@ public class SocialNotificationSummary implements Parcelable
         return this.getId().hashCode();
     }
     
-    public void setHorizontalBoxart(final String horizontalBoxartUrl) {
-        this.horizontalBoxartUrl = horizontalBoxartUrl;
-    }
-    
-    public void setInQueue(final Video.InQueue inQueue) {
+    public void setInQueue(final Video$InQueue inQueue) {
         this.inQueue = inQueue;
     }
     
-    public void setVideoSummary(final Video.Summary videoSummary) {
+    public void setVideoSummary(final Video$Summary videoSummary) {
         this.videoSummary = videoSummary;
     }
     
@@ -192,18 +176,10 @@ public class SocialNotificationSummary implements Parcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        final String[] array = { String.valueOf(this.bWasRead), String.valueOf(this.bWasThanked), this.friendProfile.getId(), this.friendProfile.getFirstName(), this.friendProfile.getLastName(), this.friendProfile.getImageUrl(), this.id, this.storyId, this.type.name(), this.messageString, String.valueOf(this.timestamp), this.horizontalBoxartUrl, this.videoSummary.id, this.videoSummary.title, this.videoSummary.type, this.videoSummary.boxartUrl, null };
+        final String[] array = { String.valueOf(this.bWasRead), String.valueOf(this.bWasThanked), this.friendProfile.getId(), this.friendProfile.getFirstName(), this.friendProfile.getLastName(), this.friendProfile.getImageUrl(), this.id, this.storyId, this.type.name(), this.messageString, String.valueOf(this.timestamp), this.videoSummary.horzDispUrl, this.videoSummary.id, this.videoSummary.title, this.videoSummary.type, this.videoSummary.boxartUrl, null };
         if (this.inQueue != null) {
             array[16] = String.valueOf(this.inQueue.inQueue);
         }
         parcel.writeStringArray(array);
-    }
-    
-    public enum NotificationTypes
-    {
-        ADDED_TO_VIDEO_PLAYLIST, 
-        IMPLICIT_FEEDBACK, 
-        THANKS_SENT, 
-        VIDEO_RECOMMENDATION;
     }
 }

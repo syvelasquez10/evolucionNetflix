@@ -4,27 +4,26 @@
 
 package android.support.v7.app;
 
-import android.graphics.drawable.Drawable;
+import android.support.v7.view.ActionMode;
+import android.support.v7.view.ActionMode$Callback;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.content.res.TypedArray;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$styleable;
 import android.os.Bundle;
 import android.content.res.Configuration;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager$NameNotFoundException;
 import android.util.Log;
 import android.support.v7.internal.view.SupportMenuInflater;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActionBarDrawerToggle$Delegate;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.ViewGroup$LayoutParams;
-import android.os.Build$VERSION;
-import android.support.v7.view.ActionMode;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
+import android.os.Build$VERSION;
 import android.view.MenuInflater;
 import android.support.v7.internal.app.WindowCallback;
 
@@ -44,42 +43,7 @@ abstract class ActionBarActivityDelegate
     private WindowCallback mWindowCallback;
     
     ActionBarActivityDelegate(final ActionBarActivity mActivity) {
-        this.mDefaultWindowCallback = new WindowCallback() {
-            @Override
-            public boolean onCreatePanelMenu(final int n, final Menu menu) {
-                return ActionBarActivityDelegate.this.mActivity.superOnCreatePanelMenu(n, menu);
-            }
-            
-            @Override
-            public View onCreatePanelView(final int n) {
-                return null;
-            }
-            
-            @Override
-            public boolean onMenuItemSelected(final int n, final MenuItem menuItem) {
-                return ActionBarActivityDelegate.this.mActivity.onMenuItemSelected(n, menuItem);
-            }
-            
-            @Override
-            public boolean onMenuOpened(final int n, final Menu menu) {
-                return ActionBarActivityDelegate.this.mActivity.onMenuOpened(n, menu);
-            }
-            
-            @Override
-            public void onPanelClosed(final int n, final Menu menu) {
-                ActionBarActivityDelegate.this.mActivity.onPanelClosed(n, menu);
-            }
-            
-            @Override
-            public boolean onPreparePanel(final int n, final View view, final Menu menu) {
-                return ActionBarActivityDelegate.this.mActivity.superOnPreparePanel(n, view, menu);
-            }
-            
-            @Override
-            public ActionMode startActionMode(final ActionMode.Callback callback) {
-                return ActionBarActivityDelegate.this.startSupportActionModeFromWindow(callback);
-            }
-        };
+        this.mDefaultWindowCallback = new ActionBarActivityDelegate$1(this);
         this.mActivity = mActivity;
         this.mWindowCallback = this.mDefaultWindowCallback;
     }
@@ -114,8 +78,8 @@ abstract class ActionBarActivityDelegate
         return (Context)mActivity;
     }
     
-    final ActionBarDrawerToggle.Delegate getDrawerToggleDelegate() {
-        return new ActionBarDrawableToggleImpl();
+    final ActionBarDrawerToggle$Delegate getDrawerToggleDelegate() {
+        return new ActionBarActivityDelegate$ActionBarDrawableToggleImpl(this, null);
     }
     
     abstract int getHomeAsUpIndicatorAttrId();
@@ -135,9 +99,9 @@ abstract class ActionBarActivityDelegate
     }
     
     final String getUiOptionsFromMetadata() {
+        String string = null;
         try {
             final ActivityInfo activityInfo = this.mActivity.getPackageManager().getActivityInfo(this.mActivity.getComponentName(), 128);
-            String string = null;
             if (activityInfo.metaData != null) {
                 string = activityInfo.metaData.getString("android.support.UI_OPTIONS");
             }
@@ -149,8 +113,8 @@ abstract class ActionBarActivityDelegate
         }
     }
     
-    final android.support.v7.app.ActionBarDrawerToggle.Delegate getV7DrawerToggleDelegate() {
-        return new ActionBarDrawableToggleImpl();
+    final android.support.v7.app.ActionBarDrawerToggle$Delegate getV7DrawerToggleDelegate() {
+        return new ActionBarActivityDelegate$ActionBarDrawableToggleImpl(this, null);
     }
     
     final WindowCallback getWindowCallback() {
@@ -168,15 +132,15 @@ abstract class ActionBarActivityDelegate
     abstract void onContentChanged();
     
     void onCreate(final Bundle bundle) {
-        final TypedArray obtainStyledAttributes = this.mActivity.obtainStyledAttributes(R.styleable.Theme);
-        if (!obtainStyledAttributes.hasValue(R.styleable.Theme_windowActionBar)) {
+        final TypedArray obtainStyledAttributes = this.mActivity.obtainStyledAttributes(R$styleable.Theme);
+        if (!obtainStyledAttributes.hasValue(R$styleable.Theme_windowActionBar)) {
             obtainStyledAttributes.recycle();
             throw new IllegalStateException("You need to use a Theme.AppCompat theme (or descendant) with this activity.");
         }
-        this.mHasActionBar = obtainStyledAttributes.getBoolean(R.styleable.Theme_windowActionBar, false);
-        this.mOverlayActionBar = obtainStyledAttributes.getBoolean(R.styleable.Theme_windowActionBarOverlay, false);
-        this.mOverlayActionMode = obtainStyledAttributes.getBoolean(R.styleable.Theme_windowActionModeOverlay, false);
-        this.mIsFloating = obtainStyledAttributes.getBoolean(R.styleable.Theme_android_windowIsFloating, false);
+        this.mHasActionBar = obtainStyledAttributes.getBoolean(R$styleable.Theme_windowActionBar, false);
+        this.mOverlayActionBar = obtainStyledAttributes.getBoolean(R$styleable.Theme_windowActionBarOverlay, false);
+        this.mOverlayActionMode = obtainStyledAttributes.getBoolean(R$styleable.Theme_windowActionModeOverlay, false);
+        this.mIsFloating = obtainStyledAttributes.getBoolean(R$styleable.Theme_android_windowIsFloating, false);
         obtainStyledAttributes.recycle();
     }
     
@@ -236,44 +200,11 @@ abstract class ActionBarActivityDelegate
         this.mWindowCallback = mWindowCallback;
     }
     
-    abstract ActionMode startSupportActionMode(final ActionMode.Callback p0);
+    abstract ActionMode startSupportActionMode(final ActionMode$Callback p0);
     
-    abstract ActionMode startSupportActionModeFromWindow(final ActionMode.Callback p0);
+    abstract ActionMode startSupportActionModeFromWindow(final ActionMode$Callback p0);
     
     abstract void supportInvalidateOptionsMenu();
     
     abstract boolean supportRequestWindowFeature(final int p0);
-    
-    private class ActionBarDrawableToggleImpl implements ActionBarDrawerToggle.Delegate, ActionBarDrawerToggle.Delegate
-    {
-        @Override
-        public Context getActionBarThemedContext() {
-            return ActionBarActivityDelegate.this.getActionBarThemedContext();
-        }
-        
-        @Override
-        public Drawable getThemeUpIndicator() {
-            final TypedArray obtainStyledAttributes = ActionBarActivityDelegate.this.getActionBarThemedContext().obtainStyledAttributes(new int[] { ActionBarActivityDelegate.this.getHomeAsUpIndicatorAttrId() });
-            final Drawable drawable = obtainStyledAttributes.getDrawable(0);
-            obtainStyledAttributes.recycle();
-            return drawable;
-        }
-        
-        @Override
-        public void setActionBarDescription(final int homeActionContentDescription) {
-            final ActionBar supportActionBar = ActionBarActivityDelegate.this.getSupportActionBar();
-            if (supportActionBar != null) {
-                supportActionBar.setHomeActionContentDescription(homeActionContentDescription);
-            }
-        }
-        
-        @Override
-        public void setActionBarUpIndicator(final Drawable homeAsUpIndicator, final int homeActionContentDescription) {
-            final ActionBar supportActionBar = ActionBarActivityDelegate.this.getSupportActionBar();
-            if (supportActionBar != null) {
-                supportActionBar.setHomeAsUpIndicator(homeAsUpIndicator);
-                supportActionBar.setHomeActionContentDescription(homeActionContentDescription);
-            }
-        }
-    }
 }

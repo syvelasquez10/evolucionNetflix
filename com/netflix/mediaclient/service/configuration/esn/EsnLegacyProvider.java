@@ -17,12 +17,12 @@ public class EsnLegacyProvider extends BaseEsnProvider
     @Override
     protected String findDeviceId(final Context context) {
         String s;
-        if ((s = this.getIMEA(context)) == null) {
-            s = this.getMacAddress(context);
+        if ((s = BaseEsnProvider.getIMEA(context)) == null) {
+            s = BaseEsnProvider.getMacAddress(context);
         }
         String androidId;
         if ((androidId = s) == null) {
-            androidId = this.getAndroidId(context);
+            androidId = BaseEsnProvider.getAndroidId(context);
         }
         if (androidId == null) {
             Log.w("ESN", "Device ID not found");

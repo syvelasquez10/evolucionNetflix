@@ -31,7 +31,7 @@ class DrawerLayoutCompatApi21
     
     public static void configureApplyInsets(final View view) {
         if (view instanceof DrawerLayoutImpl) {
-            view.setOnApplyWindowInsetsListener((View$OnApplyWindowInsetsListener)new InsetsListener());
+            view.setOnApplyWindowInsetsListener((View$OnApplyWindowInsetsListener)new DrawerLayoutCompatApi21$InsetsListener());
             view.setSystemUiVisibility(1280);
         }
     }
@@ -56,13 +56,5 @@ class DrawerLayoutCompatApi21
             return ((WindowInsets)o).getSystemWindowInsetTop();
         }
         return 0;
-    }
-    
-    static class InsetsListener implements View$OnApplyWindowInsetsListener
-    {
-        public WindowInsets onApplyWindowInsets(final View view, final WindowInsets windowInsets) {
-            ((DrawerLayoutImpl)view).setChildInsets(windowInsets, windowInsets.getSystemWindowInsetTop() > 0);
-            return windowInsets.consumeSystemWindowInsets();
-        }
     }
 }

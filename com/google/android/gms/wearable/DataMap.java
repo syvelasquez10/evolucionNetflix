@@ -7,8 +7,9 @@ package com.google.android.gms.wearable;
 import com.google.android.gms.internal.pm;
 import java.util.Set;
 import com.google.android.gms.internal.pl;
-import java.util.List;
 import com.google.android.gms.internal.pb;
+import java.util.List;
+import com.google.android.gms.internal.pb$a;
 import com.google.android.gms.internal.pc;
 import java.util.Arrays;
 import android.text.TextUtils;
@@ -323,7 +324,7 @@ public class DataMap
     
     public static DataMap fromByteArray(final byte[] array) {
         try {
-            return pb.a(new pb.a(pc.n(array), new ArrayList<Asset>()));
+            return pb.a(new pb$a(pc.n(array), new ArrayList<Asset>()));
         }
         catch (pl pl) {
             throw new IllegalArgumentException("Unable to convert data", pl);

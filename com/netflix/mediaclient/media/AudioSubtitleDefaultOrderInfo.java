@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.media;
 
 import com.netflix.mediaclient.Log;
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 
@@ -21,7 +20,7 @@ public final class AudioSubtitleDefaultOrderInfo implements Comparable<AudioSubt
         this.preferenceOrder = preferenceOrder;
     }
     
-    public AudioSubtitleDefaultOrderInfo(final JSONObject jsonObject) throws JSONException {
+    public AudioSubtitleDefaultOrderInfo(final JSONObject jsonObject) {
         this.audioTrackId = JsonUtils.getString(jsonObject, "audioTrackId", null);
         this.subtitleTrackId = JsonUtils.getString(jsonObject, "subtitleTrackId", null);
         this.preferenceOrder = JsonUtils.getInt(jsonObject, "preferenceOrder", -1);

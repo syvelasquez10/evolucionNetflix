@@ -8,13 +8,17 @@ import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.view.View$OnClickListener;
 import android.widget.SeekBar$OnSeekBarChangeListener;
+import android.support.v7.mediarouter.R$id;
+import android.support.v7.mediarouter.R$layout;
 import android.os.Bundle;
+import android.support.v7.media.MediaRouter$Callback;
 import android.support.v7.media.MediaRouteSelector;
-import android.support.v7.mediarouter.R;
+import android.support.v7.mediarouter.R$attr;
 import android.content.Context;
 import android.widget.SeekBar;
 import android.widget.LinearLayout;
 import android.support.v7.media.MediaRouter;
+import android.support.v7.media.MediaRouter$RouteInfo;
 import android.widget.Button;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -24,14 +28,14 @@ public class MediaRouteControllerDialog extends Dialog
 {
     private static final String TAG = "MediaRouteControllerDialog";
     private static final int VOLUME_UPDATE_DELAY_MILLIS = 250;
-    private final MediaRouterCallback mCallback;
+    private final MediaRouteControllerDialog$MediaRouterCallback mCallback;
     private View mControlView;
     private boolean mCreated;
     private Drawable mCurrentIconDrawable;
     private Button mDisconnectButton;
     private Drawable mMediaRouteConnectingDrawable;
     private Drawable mMediaRouteOnDrawable;
-    private final MediaRouter.RouteInfo mRoute;
+    private final MediaRouter$RouteInfo mRoute;
     private final MediaRouter mRouter;
     private boolean mVolumeControlEnabled;
     private LinearLayout mVolumeLayout;
@@ -46,19 +50,19 @@ public class MediaRouteControllerDialog extends Dialog
         super(MediaRouterThemeHelper.createThemedContext(context, true), n);
         this.mVolumeControlEnabled = true;
         this.mRouter = MediaRouter.getInstance(this.getContext());
-        this.mCallback = new MediaRouterCallback();
+        this.mCallback = new MediaRouteControllerDialog$MediaRouterCallback(this, null);
         this.mRoute = this.mRouter.getSelectedRoute();
     }
     
     private Drawable getIconDrawable() {
         if (this.mRoute.isConnecting()) {
             if (this.mMediaRouteConnectingDrawable == null) {
-                this.mMediaRouteConnectingDrawable = MediaRouterThemeHelper.getThemeDrawable(this.getContext(), R.attr.mediaRouteConnectingDrawable);
+                this.mMediaRouteConnectingDrawable = MediaRouterThemeHelper.getThemeDrawable(this.getContext(), R$attr.mediaRouteConnectingDrawable);
             }
             return this.mMediaRouteConnectingDrawable;
         }
         if (this.mMediaRouteOnDrawable == null) {
-            this.mMediaRouteOnDrawable = MediaRouterThemeHelper.getThemeDrawable(this.getContext(), R.attr.mediaRouteOnDrawable);
+            this.mMediaRouteOnDrawable = MediaRouterThemeHelper.getThemeDrawable(this.getContext(), R$attr.mediaRouteOnDrawable);
         }
         return this.mMediaRouteOnDrawable;
     }
@@ -102,7 +106,7 @@ public class MediaRouteControllerDialog extends Dialog
         return this.mControlView;
     }
     
-    public MediaRouter.RouteInfo getRoute() {
+    public MediaRouter$RouteInfo getRoute() {
         return this.mRoute;
     }
     
@@ -112,56 +116,21 @@ public class MediaRouteControllerDialog extends Dialog
     
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        this.mRouter.addCallback(MediaRouteSelector.EMPTY, (MediaRouter.Callback)this.mCallback, 2);
+        this.mRouter.addCallback(MediaRouteSelector.EMPTY, this.mCallback, 2);
         this.update();
     }
     
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.getWindow().requestFeature(3);
-        this.setContentView(R.layout.mr_media_route_controller_dialog);
-        this.mVolumeLayout = (LinearLayout)this.findViewById(R.id.media_route_volume_layout);
-        (this.mVolumeSlider = (SeekBar)this.findViewById(R.id.media_route_volume_slider)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)new SeekBar$OnSeekBarChangeListener() {
-            private final Runnable mStopTrackingTouch = new Runnable() {
-                @Override
-                public void run() {
-                    if (MediaRouteControllerDialog.this.mVolumeSliderTouched) {
-                        MediaRouteControllerDialog.this.mVolumeSliderTouched = false;
-                        MediaRouteControllerDialog.this.updateVolume();
-                    }
-                }
-            };
-            
-            public void onProgressChanged(final SeekBar seekBar, final int n, final boolean b) {
-                if (b) {
-                    MediaRouteControllerDialog.this.mRoute.requestSetVolume(n);
-                }
-            }
-            
-            public void onStartTrackingTouch(final SeekBar seekBar) {
-                if (MediaRouteControllerDialog.this.mVolumeSliderTouched) {
-                    MediaRouteControllerDialog.this.mVolumeSlider.removeCallbacks(this.mStopTrackingTouch);
-                    return;
-                }
-                MediaRouteControllerDialog.this.mVolumeSliderTouched = true;
-            }
-            
-            public void onStopTrackingTouch(final SeekBar seekBar) {
-                MediaRouteControllerDialog.this.mVolumeSlider.postDelayed(this.mStopTrackingTouch, 250L);
-            }
-        });
-        (this.mDisconnectButton = (Button)this.findViewById(R.id.media_route_disconnect_button)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (MediaRouteControllerDialog.this.mRoute.isSelected()) {
-                    MediaRouteControllerDialog.this.mRouter.getDefaultRoute().select();
-                }
-                MediaRouteControllerDialog.this.dismiss();
-            }
-        });
+        this.setContentView(R$layout.mr_media_route_controller_dialog);
+        this.mVolumeLayout = (LinearLayout)this.findViewById(R$id.media_route_volume_layout);
+        (this.mVolumeSlider = (SeekBar)this.findViewById(R$id.media_route_volume_slider)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)new MediaRouteControllerDialog$1(this));
+        (this.mDisconnectButton = (Button)this.findViewById(R$id.media_route_disconnect_button)).setOnClickListener((View$OnClickListener)new MediaRouteControllerDialog$2(this));
         this.mCreated = true;
         if (this.update()) {
             this.mControlView = this.onCreateMediaControlView(bundle);
-            final FrameLayout frameLayout = (FrameLayout)this.findViewById(R.id.media_route_control_frame);
+            final FrameLayout frameLayout = (FrameLayout)this.findViewById(R$id.media_route_control_frame);
             if (this.mControlView == null) {
                 frameLayout.setVisibility(8);
                 return;
@@ -176,13 +145,13 @@ public class MediaRouteControllerDialog extends Dialog
     }
     
     public void onDetachedFromWindow() {
-        this.mRouter.removeCallback((MediaRouter.Callback)this.mCallback);
+        this.mRouter.removeCallback(this.mCallback);
         super.onDetachedFromWindow();
     }
     
     public boolean onKeyDown(int n, final KeyEvent keyEvent) {
         if (n == 25 || n == 24) {
-            final MediaRouter.RouteInfo mRoute = this.mRoute;
+            final MediaRouter$RouteInfo mRoute = this.mRoute;
             if (n == 25) {
                 n = -1;
             }
@@ -204,26 +173,6 @@ public class MediaRouteControllerDialog extends Dialog
             this.mVolumeControlEnabled = mVolumeControlEnabled;
             if (this.mCreated) {
                 this.updateVolume();
-            }
-        }
-    }
-    
-    private final class MediaRouterCallback extends Callback
-    {
-        @Override
-        public void onRouteChanged(final MediaRouter mediaRouter, final RouteInfo routeInfo) {
-            MediaRouteControllerDialog.this.update();
-        }
-        
-        @Override
-        public void onRouteUnselected(final MediaRouter mediaRouter, final RouteInfo routeInfo) {
-            MediaRouteControllerDialog.this.update();
-        }
-        
-        @Override
-        public void onRouteVolumeChanged(final MediaRouter mediaRouter, final RouteInfo routeInfo) {
-            if (routeInfo == MediaRouteControllerDialog.this.mRoute) {
-                MediaRouteControllerDialog.this.updateVolume();
             }
         }
     }

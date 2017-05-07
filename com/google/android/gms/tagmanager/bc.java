@@ -5,7 +5,7 @@
 package com.google.android.gms.tagmanager;
 
 import java.util.Locale;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.a;
 
@@ -22,7 +22,7 @@ class bc extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         final Locale default1 = Locale.getDefault();
         if (default1 == null) {
             return di.pI();

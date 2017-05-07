@@ -4,10 +4,9 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
@@ -26,13 +25,13 @@ public final class SearchFocusSessionEndedEvent extends SessionEndedEvent
     private void setupAttributes() {
         this.sessionName = "focus";
         this.type = EventType.sessionEnded;
-        this.modalView = IClientLogging.ModalView.search;
+        this.modalView = IClientLogging$ModalView.search;
         this.category = "uiView";
         this.name = "focus.ended";
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

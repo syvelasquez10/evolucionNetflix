@@ -5,14 +5,13 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
+import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
@@ -22,17 +21,12 @@ public class LogBillboardActivityRequest extends FalcorVolleyWebClientRequest<St
     private static final String TAG = "LogBillboardActivityRequest";
     private final String pqlQuery;
     
-    public LogBillboardActivityRequest(final Context context, final Video video, final BrowseAgent.BillboardActivityType billboardActivityType) {
+    public LogBillboardActivityRequest(final Context context, final Video video, final BrowseAgent$BillboardActivityType browseAgent$BillboardActivityType) {
         super(context);
-        this.pqlQuery = String.format("['logBillboardActivity', '%s', '%s']", video.getId(), billboardActivityType.getName());
+        this.pqlQuery = String.format("['logBillboardActivity', '%s', '%s']", video.getId(), browseAgent$BillboardActivityType.getName());
         if (Log.isLoggable("LogBillboardActivityRequest", 2)) {
             Log.v("LogBillboardActivityRequest", "PQL = " + this.pqlQuery);
         }
-    }
-    
-    @Override
-    protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameGet();
     }
     
     @Override
@@ -53,7 +47,7 @@ public class LogBillboardActivityRequest extends FalcorVolleyWebClientRequest<St
     }
     
     @Override
-    protected String parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(final String s) {
         if (Log.isLoggable("LogBillboardActivityRequest", 2)) {
             Log.v("LogBillboardActivityRequest", "parseFalcorResponse: " + s);
         }

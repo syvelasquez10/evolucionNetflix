@@ -4,7 +4,7 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
@@ -28,14 +28,14 @@ class u extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         final Object value = this.anS.get(di.j(map.get(u.NAME)));
         if (value != null) {
             return di.u(value);
         }
-        final d.a a = map.get(u.aoE);
-        if (a != null) {
-            return a;
+        final d$a d$a = map.get(u.aoE);
+        if (d$a != null) {
+            return d$a;
         }
         return di.pI();
     }

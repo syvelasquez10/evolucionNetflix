@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Exception extends BaseMediaEvent
@@ -14,7 +13,7 @@ public class Exception extends BaseMediaEvent
     public static final String TYPE = "exception";
     private String exception;
     
-    public Exception(final JSONObject jsonObject) throws JSONException {
+    public Exception(final JSONObject jsonObject) {
         super("exception", jsonObject);
     }
     
@@ -23,7 +22,7 @@ public class Exception extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.exception = BaseNccpEvent.getString(jsonObject, "exception", null);
     }
 }

@@ -4,9 +4,6 @@
 
 package com.netflix.mediaclient.nccp;
 
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
@@ -28,7 +25,7 @@ public abstract class BaseNccpResponse implements NccpResponse
     protected NccpError error;
     protected boolean success;
     
-    public BaseNccpResponse(final String s) throws IOException, ParserConfigurationException, SAXException {
+    public BaseNccpResponse(final String s) {
         final Document document = XmlDomUtils.createDocument(s);
         if (Log.isLoggable("nf_nccp", 3)) {
             Log.d("nf_nccp", "Doc: " + document);
@@ -64,11 +61,11 @@ public abstract class BaseNccpResponse implements NccpResponse
         return this.success;
     }
     
-    private void verify(final NodeList list, final String s) throws IllegalArgumentException {
+    private void verify(final NodeList list, final String s) {
         this.verify(list, s, true);
     }
     
-    private boolean verify(final NodeList list, final String s, final boolean b) throws IllegalArgumentException {
+    private boolean verify(final NodeList list, final String s, final boolean b) {
         boolean b2 = true;
         if (list == null || list.getLength() < 1) {
             if (b) {

@@ -4,22 +4,14 @@
 
 package com.google.android.gms.internal;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import org.json.JSONException;
+import android.text.TextUtils;
 import android.graphics.drawable.Drawable;
 import java.util.concurrent.Future;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.TimeoutException;
-import com.google.android.gms.common.internal.n;
-import android.text.TextUtils;
-import java.util.Map;
 import org.json.JSONArray;
-import org.json.JSONException;
-import java.util.concurrent.ExecutionException;
 import java.util.Arrays;
 import org.json.JSONObject;
 import java.util.List;
@@ -36,10 +28,10 @@ public class fo implements Callable<fz>
     private final ai tY;
     private boolean tZ;
     private int tc;
-    private final fz.a tn;
+    private final fz$a tn;
     private List<String> ua;
     
-    public fo(final Context mContext, final u pw, final ai ty, final go tx, final fz.a tn) {
+    public fo(final Context mContext, final u pw, final ai ty, final go tx, final fz$a tn) {
         this.mw = new Object();
         this.mContext = mContext;
         this.pw = pw;
@@ -51,7 +43,7 @@ public class fo implements Callable<fz>
         this.ua = null;
     }
     
-    private bq.a a(final ah ah, final a a, final JSONObject jsonObject) throws ExecutionException, InterruptedException, JSONException {
+    private bq$a a(final ah ah, final fo$a fo$a, final JSONObject jsonObject) {
         if (this.cI()) {
             return null;
         }
@@ -64,23 +56,23 @@ public class fo implements Callable<fz>
             list = Arrays.asList(b);
         }
         this.ua = list;
-        final bq.a a2 = a.a(this, jsonObject);
-        if (a2 == null) {
+        final bq$a a = fo$a.a(this, jsonObject);
+        if (a == null) {
             gs.T("Failed to retrieve ad assets.");
             return null;
         }
-        a2.a(new bq(this.pw, ah, jsonObject));
-        return a2;
+        a.a(new bq(this.pw, ah, jsonObject));
+        return a;
     }
     
-    private fz a(final bq.a a) {
+    private fz a(final bq$a bq$a) {
         while (true) {
             while (true) {
                 Label_0180: {
                     synchronized (this.mw) {
                         int tc;
                         final int n = tc = this.tc;
-                        if (a == null) {
+                        if (bq$a == null) {
                             tc = n;
                             if (this.tc == -2) {
                                 tc = 0;
@@ -88,8 +80,8 @@ public class fo implements Callable<fz>
                         }
                         // monitorexit(this.mw)
                         if (tc != -2) {
-                            final bq.a a2 = null;
-                            return new fz(this.tn.vv.tx, null, this.tn.vw.qf, tc, this.tn.vw.qg, this.ua, this.tn.vw.orientation, this.tn.vw.qj, this.tn.vv.tA, false, null, null, null, null, null, 0L, this.tn.lH, this.tn.vw.tH, this.tn.vs, this.tn.vt, this.tn.vw.tN, this.tn.vp, a2);
+                            final bq$a bq$a2 = null;
+                            return new fz(this.tn.vv.tx, null, this.tn.vw.qf, tc, this.tn.vw.qg, this.ua, this.tn.vw.orientation, this.tn.vw.qj, this.tn.vv.tA, false, null, null, null, null, null, 0L, this.tn.lH, this.tn.vw.tH, this.tn.vs, this.tn.vt, this.tn.vw.tN, this.tn.vp, bq$a2);
                         }
                         break Label_0180;
                     }
@@ -99,7 +91,7 @@ public class fo implements Callable<fz>
         }
     }
     
-    private String[] b(final JSONObject jsonObject, final String s) throws JSONException {
+    private String[] b(final JSONObject jsonObject, final String s) {
         final JSONArray optJSONArray = jsonObject.optJSONArray(s);
         if (optJSONArray == null) {
             return null;
@@ -111,35 +103,17 @@ public class fo implements Callable<fz>
         return array;
     }
     
-    private JSONObject c(final ah ah) throws TimeoutException, JSONException {
+    private JSONObject c(final ah ah) {
         if (this.cI()) {
             return null;
         }
         final gk<JSONObject> gk = new gk<JSONObject>();
-        ah.a("/nativeAdPreProcess", new by() {
-            @Override
-            public void a(final gv gv, final Map<String, String> map) {
-                ah.g("/nativeAdPreProcess");
-                try {
-                    final String s = map.get("success");
-                    if (!TextUtils.isEmpty((CharSequence)s)) {
-                        gk.a(new JSONObject(s).getJSONArray("ads").getJSONObject(0));
-                        return;
-                    }
-                }
-                catch (JSONException ex) {
-                    gs.b("Malformed native JSON response.", (Throwable)ex);
-                }
-                fo.this.s(0);
-                n.a(fo.this.cI(), (Object)"Unable to set the ad state error!");
-                gk.a(null);
-            }
-        });
+        ah.a("/nativeAdPreProcess", new fo$1(this, ah, gk));
         ah.a("google.afma.nativeAds.preProcessJsonGmsg", new JSONObject(this.tn.vw.tG));
         return gk.get();
     }
     
-    private ah cH() throws CancellationException, ExecutionException, InterruptedException, TimeoutException {
+    private ah cH() {
         if (this.cI()) {
             return null;
         }
@@ -148,7 +122,7 @@ public class fo implements Callable<fz>
         return ah;
     }
     
-    public Future<Drawable> a(JSONObject jsonObject, final String s, final boolean b) throws JSONException {
+    public Future<Drawable> a(JSONObject jsonObject, final String s, final boolean b) {
         if (b) {
             jsonObject = jsonObject.getJSONObject(s);
         }
@@ -170,36 +144,7 @@ public class fo implements Callable<fz>
             this.a(0, b);
             return new gl<Drawable>(null);
         }
-        return this.tX.a(s2, (go.a<Drawable>)new go.a<Drawable>() {
-            public Drawable a(final InputStream inputStream) {
-                byte[] d;
-                while (true) {
-                    try {
-                        d = jy.d(inputStream);
-                        if (d == null) {
-                            fo.this.a(2, b);
-                            return null;
-                        }
-                    }
-                    catch (IOException ex) {
-                        d = null;
-                        continue;
-                    }
-                    break;
-                }
-                final Bitmap decodeByteArray = BitmapFactory.decodeByteArray(d, 0, d.length);
-                if (decodeByteArray == null) {
-                    fo.this.a(2, b);
-                    return null;
-                }
-                return (Drawable)new BitmapDrawable(Resources.getSystem(), decodeByteArray);
-            }
-            
-            public Drawable cJ() {
-                fo.this.a(2, b);
-                return null;
-            }
-        });
+        return this.tX.a(s2, (go$a<Drawable>)new fo$2(this, b));
     }
     
     public void a(final int n, final boolean b) {
@@ -208,16 +153,16 @@ public class fo implements Callable<fz>
         }
     }
     
-    protected a b(final JSONObject jsonObject) throws JSONException {
+    protected fo$a b(final JSONObject jsonObject) {
         if (this.cI()) {
             return null;
         }
         final String string = jsonObject.getString("template_id");
         if ("2".equals(string)) {
-            return (a)new fp();
+            return new fp();
         }
         if ("1".equals(string)) {
-            return (a)new fq();
+            return new fq();
         }
         this.s(0);
         return null;
@@ -258,10 +203,5 @@ public class fo implements Callable<fz>
             this.tZ = true;
             this.tc = tc;
         }
-    }
-    
-    public interface a<T extends bq.a>
-    {
-        T a(final fo p0, final JSONObject p1) throws JSONException, InterruptedException, ExecutionException;
     }
 }

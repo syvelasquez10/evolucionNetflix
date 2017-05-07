@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 
@@ -22,7 +22,7 @@ public class SearchSessionStartedEvent extends SessionStartedEvent
     private void setupAttributes() {
         this.type = EventType.sessionStarted;
         this.sessionName = "search";
-        this.modalView = IClientLogging.ModalView.search;
+        this.modalView = IClientLogging$ModalView.search;
         this.category = "search";
         this.name = "session.started";
     }

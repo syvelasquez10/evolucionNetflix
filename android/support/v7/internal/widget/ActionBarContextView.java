@@ -8,9 +8,9 @@ import android.view.View$MeasureSpec;
 import android.os.Build$VERSION;
 import android.view.accessibility.AccessibilityEvent;
 import android.support.v7.widget.ActionMenuView;
-import android.support.v7.internal.view.menu.MenuPresenter;
+import android.support.v7.internal.view.menu.y;
 import android.support.v7.widget.ActionMenuPresenter;
-import android.support.v7.internal.view.menu.MenuBuilder;
+import android.support.v7.internal.view.menu.i;
 import android.view.View$OnClickListener;
 import android.support.v7.view.ActionMode;
 import android.view.ViewGroup$LayoutParams;
@@ -20,9 +20,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.text.TextUtils;
+import android.support.v7.appcompat.R$id;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$layout;
+import android.support.v7.appcompat.R$styleable;
+import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.LinearLayout;
@@ -59,18 +62,18 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
     }
     
     public ActionBarContextView(final Context context, final AttributeSet set) {
-        this(context, set, R.attr.actionModeStyle);
+        this(context, set, R$attr.actionModeStyle);
     }
     
     public ActionBarContextView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R.styleable.ActionMode, n, 0);
-        this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R.styleable.ActionMode_background));
-        this.mTitleStyleRes = obtainStyledAttributes.getResourceId(R.styleable.ActionMode_titleTextStyle, 0);
-        this.mSubtitleStyleRes = obtainStyledAttributes.getResourceId(R.styleable.ActionMode_subtitleTextStyle, 0);
-        this.mContentHeight = obtainStyledAttributes.getLayoutDimension(R.styleable.ActionMode_height, 0);
-        this.mSplitBackground = obtainStyledAttributes.getDrawable(R.styleable.ActionMode_backgroundSplit);
-        this.mCloseItemLayout = obtainStyledAttributes.getResourceId(R.styleable.ActionMode_closeItemLayout, R.layout.abc_action_mode_close_item_material);
+        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.ActionMode, n, 0);
+        this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R$styleable.ActionMode_background));
+        this.mTitleStyleRes = obtainStyledAttributes.getResourceId(R$styleable.ActionMode_titleTextStyle, 0);
+        this.mSubtitleStyleRes = obtainStyledAttributes.getResourceId(R$styleable.ActionMode_subtitleTextStyle, 0);
+        this.mContentHeight = obtainStyledAttributes.getLayoutDimension(R$styleable.ActionMode_height, 0);
+        this.mSplitBackground = obtainStyledAttributes.getDrawable(R$styleable.ActionMode_backgroundSplit);
+        this.mCloseItemLayout = obtainStyledAttributes.getResourceId(R$styleable.ActionMode_closeItemLayout, R$layout.abc_action_mode_close_item_material);
         obtainStyledAttributes.recycle();
     }
     
@@ -84,11 +87,12 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
     
     private void initTitle() {
         final int n = 8;
+        boolean b = true;
         if (this.mTitleLayout == null) {
-            LayoutInflater.from(this.getContext()).inflate(R.layout.abc_action_bar_title_item, (ViewGroup)this);
+            LayoutInflater.from(this.getContext()).inflate(R$layout.abc_action_bar_title_item, (ViewGroup)this);
             this.mTitleLayout = (LinearLayout)this.getChildAt(this.getChildCount() - 1);
-            this.mTitleView = (TextView)this.mTitleLayout.findViewById(R.id.action_bar_title);
-            this.mSubtitleView = (TextView)this.mTitleLayout.findViewById(R.id.action_bar_subtitle);
+            this.mTitleView = (TextView)this.mTitleLayout.findViewById(R$id.action_bar_title);
+            this.mSubtitleView = (TextView)this.mTitleLayout.findViewById(R$id.action_bar_subtitle);
             if (this.mTitleStyleRes != 0) {
                 this.mTitleView.setTextAppearance(this.getContext(), this.mTitleStyleRes);
             }
@@ -105,11 +109,7 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
         else {
             n2 = 0;
         }
-        boolean b;
-        if (!TextUtils.isEmpty(this.mSubtitle)) {
-            b = true;
-        }
-        else {
+        if (TextUtils.isEmpty(this.mSubtitle)) {
             b = false;
         }
         final TextView mSubtitleView = this.mSubtitleView;
@@ -168,15 +168,7 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
         translationX.setInterpolator((Interpolator)new DecelerateInterpolator());
         final ViewPropertyAnimatorCompatSet set = new ViewPropertyAnimatorCompatSet();
         set.play(translationX);
-        if (this.mMenuView != null && this.mMenuView.getChildCount() > 0) {
-            for (int i = 0; i < 0; ++i) {
-                final View child = this.mMenuView.getChildAt(i);
-                ViewCompat.setScaleY(child, 1.0f);
-                final ViewPropertyAnimatorCompat scaleY = ViewCompat.animate(child).scaleY(0.0f);
-                scaleY.setDuration(300L);
-                set.play(scaleY);
-            }
-        }
+        if (this.mMenuView == null || this.mMenuView.getChildCount() > 0) {}
         return set;
     }
     
@@ -221,19 +213,15 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
         else if (this.mClose.getParent() == null) {
             this.addView(this.mClose);
         }
-        this.mClose.findViewById(R.id.action_mode_close_button).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                actionMode.finish();
-            }
-        });
-        final MenuBuilder menuBuilder = (MenuBuilder)actionMode.getMenu();
+        this.mClose.findViewById(R$id.action_mode_close_button).setOnClickListener((View$OnClickListener)new ActionBarContextView$1(this, actionMode));
+        final i i = (i)actionMode.getMenu();
         if (this.mActionMenuPresenter != null) {
             this.mActionMenuPresenter.dismissPopupMenus();
         }
         (this.mActionMenuPresenter = new ActionMenuPresenter(this.getContext())).setReserveOverflow(true);
         final ViewGroup$LayoutParams viewGroup$LayoutParams = new ViewGroup$LayoutParams(-2, -1);
         if (!this.mSplitActionBar) {
-            menuBuilder.addMenuPresenter(this.mActionMenuPresenter, this.mPopupContext);
+            i.a(this.mActionMenuPresenter, this.mPopupContext);
             (this.mMenuView = (ActionMenuView)this.mActionMenuPresenter.getMenuView(this)).setBackgroundDrawable((Drawable)null);
             this.addView((View)this.mMenuView, viewGroup$LayoutParams);
         }
@@ -242,7 +230,7 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
             this.mActionMenuPresenter.setItemLimit(Integer.MAX_VALUE);
             viewGroup$LayoutParams.width = -1;
             viewGroup$LayoutParams.height = this.mContentHeight;
-            menuBuilder.addMenuPresenter(this.mActionMenuPresenter, this.mPopupContext);
+            i.a(this.mActionMenuPresenter, this.mPopupContext);
             (this.mMenuView = (ActionMenuView)this.mActionMenuPresenter.getMenuView(this)).setBackgroundDrawable(this.mSplitBackground);
             this.mSplitView.addView((View)this.mMenuView, viewGroup$LayoutParams);
         }
@@ -335,7 +323,7 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
                     n3 = viewGroup$MarginLayoutParams.rightMargin;
                 }
                 n = AbsActionBarView.next(paddingLeft2, n, layoutRtl);
-                n3 = (n = AbsActionBarView.next(n + this.positionChild(this.mClose, n, paddingTop, n4, layoutRtl), n3, layoutRtl));
+                n3 = (n = AbsActionBarView.next(this.positionChild(this.mClose, n, paddingTop, n4, layoutRtl) + n, n3, layoutRtl));
                 if (this.mAnimateInOnLayout) {
                     this.mAnimationMode = 1;
                     (this.mCurrentAnimation = this.makeInAnimation()).start();
@@ -368,109 +356,115 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
         }
     }
     
-    protected void onMeasure(int i, int n) {
-        if (View$MeasureSpec.getMode(i) != 1073741824) {
+    protected void onMeasure(int visibility, int i) {
+        final int n = 1073741824;
+        final int n2 = 0;
+        if (View$MeasureSpec.getMode(visibility) != 1073741824) {
             throw new IllegalStateException(this.getClass().getSimpleName() + " can only be used " + "with android:layout_width=\"match_parent\" (or fill_parent)");
         }
-        if (View$MeasureSpec.getMode(n) == 0) {
+        if (View$MeasureSpec.getMode(i) == 0) {
             throw new IllegalStateException(this.getClass().getSimpleName() + " can only be used " + "with android:layout_height=\"wrap_content\"");
         }
-        final int size = View$MeasureSpec.getSize(i);
-        int n2;
+        final int size = View$MeasureSpec.getSize(visibility);
+        int n3;
         if (this.mContentHeight > 0) {
-            n2 = this.mContentHeight;
+            n3 = this.mContentHeight;
         }
         else {
-            n2 = View$MeasureSpec.getSize(n);
+            n3 = View$MeasureSpec.getSize(i);
         }
-        final int n3 = this.getPaddingTop() + this.getPaddingBottom();
-        i = size - this.getPaddingLeft() - this.getPaddingRight();
-        int min = n2 - n3;
-        final int measureSpec = View$MeasureSpec.makeMeasureSpec(min, Integer.MIN_VALUE);
-        n = i;
+        final int n4 = this.getPaddingTop() + this.getPaddingBottom();
+        visibility = size - this.getPaddingLeft() - this.getPaddingRight();
+        final int n5 = n3 - n4;
+        final int measureSpec = View$MeasureSpec.makeMeasureSpec(n5, Integer.MIN_VALUE);
+        i = visibility;
         if (this.mClose != null) {
-            i = this.measureChildView(this.mClose, i, measureSpec, 0);
+            visibility = this.measureChildView(this.mClose, visibility, measureSpec, 0);
             final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams = (ViewGroup$MarginLayoutParams)this.mClose.getLayoutParams();
-            n = i - (viewGroup$MarginLayoutParams.leftMargin + viewGroup$MarginLayoutParams.rightMargin);
+            i = viewGroup$MarginLayoutParams.leftMargin;
+            i = visibility - (viewGroup$MarginLayoutParams.rightMargin + i);
         }
-        i = n;
+        visibility = i;
         if (this.mMenuView != null) {
-            i = n;
+            visibility = i;
             if (this.mMenuView.getParent() == this) {
-                i = this.measureChildView((View)this.mMenuView, n, measureSpec, 0);
+                visibility = this.measureChildView((View)this.mMenuView, i, measureSpec, 0);
             }
         }
-        n = i;
+        i = visibility;
         if (this.mTitleLayout != null) {
-            n = i;
+            i = visibility;
             if (this.mCustomView == null) {
                 if (this.mTitleOptional) {
-                    n = View$MeasureSpec.makeMeasureSpec(0, 0);
-                    this.mTitleLayout.measure(n, measureSpec);
+                    i = View$MeasureSpec.makeMeasureSpec(0, 0);
+                    this.mTitleLayout.measure(i, measureSpec);
                     final int measuredWidth = this.mTitleLayout.getMeasuredWidth();
                     boolean b;
-                    if (measuredWidth <= i) {
+                    if (measuredWidth <= visibility) {
                         b = true;
                     }
                     else {
                         b = false;
                     }
-                    n = i;
+                    i = visibility;
                     if (b) {
-                        n = i - measuredWidth;
+                        i = visibility - measuredWidth;
                     }
                     final LinearLayout mTitleLayout = this.mTitleLayout;
                     if (b) {
-                        i = 0;
+                        visibility = 0;
                     }
                     else {
-                        i = 8;
+                        visibility = 8;
                     }
-                    mTitleLayout.setVisibility(i);
+                    mTitleLayout.setVisibility(visibility);
                 }
                 else {
-                    n = this.measureChildView((View)this.mTitleLayout, i, measureSpec, 0);
+                    i = this.measureChildView((View)this.mTitleLayout, visibility, measureSpec, 0);
                 }
             }
         }
         if (this.mCustomView != null) {
             final ViewGroup$LayoutParams layoutParams = this.mCustomView.getLayoutParams();
             if (layoutParams.width != -2) {
-                i = 1073741824;
+                visibility = 1073741824;
+            }
+            else {
+                visibility = Integer.MIN_VALUE;
+            }
+            int min = i;
+            if (layoutParams.width >= 0) {
+                min = Math.min(layoutParams.width, i);
+            }
+            if (layoutParams.height != -2) {
+                i = n;
             }
             else {
                 i = Integer.MIN_VALUE;
             }
-            if (layoutParams.width >= 0) {
-                n = Math.min(layoutParams.width, n);
-            }
-            int n4;
-            if (layoutParams.height != -2) {
-                n4 = 1073741824;
+            int min2;
+            if (layoutParams.height >= 0) {
+                min2 = Math.min(layoutParams.height, n5);
             }
             else {
-                n4 = Integer.MIN_VALUE;
+                min2 = n5;
             }
-            if (layoutParams.height >= 0) {
-                min = Math.min(layoutParams.height, min);
-            }
-            this.mCustomView.measure(View$MeasureSpec.makeMeasureSpec(n, i), View$MeasureSpec.makeMeasureSpec(min, n4));
+            this.mCustomView.measure(View$MeasureSpec.makeMeasureSpec(min, visibility), View$MeasureSpec.makeMeasureSpec(min2, i));
         }
         if (this.mContentHeight <= 0) {
-            n = 0;
-            int childCount;
-            int n5;
+            final int childCount = this.getChildCount();
+            visibility = 0;
             int n6;
-            for (childCount = this.getChildCount(), i = 0; i < childCount; ++i, n = n6) {
-                n5 = this.getChildAt(i).getMeasuredHeight() + n3;
-                if (n5 > (n6 = n)) {
-                    n6 = n5;
+            for (i = n2; i < childCount; ++i) {
+                n6 = this.getChildAt(i).getMeasuredHeight() + n4;
+                if (n6 > visibility) {
+                    visibility = n6;
                 }
             }
-            this.setMeasuredDimension(size, n);
+            this.setMeasuredDimension(size, visibility);
             return;
         }
-        this.setMeasuredDimension(size, n2);
+        this.setMeasuredDimension(size, n3);
     }
     
     @Override

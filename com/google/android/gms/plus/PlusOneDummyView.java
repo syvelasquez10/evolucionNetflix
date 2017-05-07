@@ -4,9 +4,6 @@
 
 package com.google.android.gms.plus;
 
-import android.content.res.Resources;
-import android.content.pm.PackageManager$NameNotFoundException;
-import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.graphics.Point;
@@ -62,140 +59,15 @@ public class PlusOneDummyView extends FrameLayout
         return point;
     }
     
-    private d mY() {
-        d d;
-        if (!(d = new b(this.getContext())).isValid()) {
-            d = new c(this.getContext());
+    private PlusOneDummyView$d mY() {
+        PlusOneDummyView$d plusOneDummyView$d;
+        if (!(plusOneDummyView$d = new PlusOneDummyView$b(this.getContext(), null)).isValid()) {
+            plusOneDummyView$d = new PlusOneDummyView$c(this.getContext(), null);
         }
-        Object o = d;
-        if (!d.isValid()) {
-            o = new a(this.getContext());
+        PlusOneDummyView$d plusOneDummyView$d2 = plusOneDummyView$d;
+        if (!plusOneDummyView$d.isValid()) {
+            plusOneDummyView$d2 = new PlusOneDummyView$a(this.getContext(), null);
         }
-        return (d)o;
-    }
-    
-    private static class a implements d
-    {
-        private Context mContext;
-        
-        private a(final Context mContext) {
-            this.mContext = mContext;
-        }
-        
-        @Override
-        public Drawable getDrawable(final int n) {
-            return this.mContext.getResources().getDrawable(17301508);
-        }
-        
-        @Override
-        public boolean isValid() {
-            return true;
-        }
-    }
-    
-    private static class b implements d
-    {
-        private Context mContext;
-        
-        private b(final Context mContext) {
-            this.mContext = mContext;
-        }
-        
-        @Override
-        public Drawable getDrawable(final int n) {
-            while (true) {
-                while (true) {
-                    Label_0075: {
-                        Label_0069: {
-                            try {
-                                final Resources resources = this.mContext.createPackageContext("com.google.android.gms", 4).getResources();
-                                switch (n) {
-                                    case 2: {
-                                        final String s = "ic_plusone_tall";
-                                        return resources.getDrawable(resources.getIdentifier(s, "drawable", "com.google.android.gms"));
-                                    }
-                                    case 0: {
-                                        break Label_0069;
-                                    }
-                                    case 1: {
-                                        break Label_0075;
-                                    }
-                                }
-                            }
-                            catch (PackageManager$NameNotFoundException ex) {
-                                return null;
-                            }
-                            final String s = "ic_plusone_standard";
-                            continue;
-                        }
-                        final String s = "ic_plusone_small";
-                        continue;
-                    }
-                    final String s = "ic_plusone_medium";
-                    continue;
-                }
-            }
-        }
-        
-        @Override
-        public boolean isValid() {
-            try {
-                this.mContext.createPackageContext("com.google.android.gms", 4).getResources();
-                return true;
-            }
-            catch (PackageManager$NameNotFoundException ex) {
-                return false;
-            }
-        }
-    }
-    
-    private static class c implements d
-    {
-        private Context mContext;
-        
-        private c(final Context mContext) {
-            this.mContext = mContext;
-        }
-        
-        @Override
-        public Drawable getDrawable(int identifier) {
-            String s = null;
-            switch (identifier) {
-                default: {
-                    s = "ic_plusone_standard_off_client";
-                    break;
-                }
-                case 0: {
-                    s = "ic_plusone_small_off_client";
-                    break;
-                }
-                case 1: {
-                    s = "ic_plusone_medium_off_client";
-                    break;
-                }
-                case 2: {
-                    s = "ic_plusone_tall_off_client";
-                    break;
-                }
-            }
-            identifier = this.mContext.getResources().getIdentifier(s, "drawable", this.mContext.getPackageName());
-            return this.mContext.getResources().getDrawable(identifier);
-        }
-        
-        @Override
-        public boolean isValid() {
-            final int identifier = this.mContext.getResources().getIdentifier("ic_plusone_small_off_client", "drawable", this.mContext.getPackageName());
-            final int identifier2 = this.mContext.getResources().getIdentifier("ic_plusone_medium_off_client", "drawable", this.mContext.getPackageName());
-            final int identifier3 = this.mContext.getResources().getIdentifier("ic_plusone_tall_off_client", "drawable", this.mContext.getPackageName());
-            final int identifier4 = this.mContext.getResources().getIdentifier("ic_plusone_standard_off_client", "drawable", this.mContext.getPackageName());
-            return identifier != 0 && identifier2 != 0 && identifier3 != 0 && identifier4 != 0;
-        }
-    }
-    
-    private interface d
-    {
-        Drawable getDrawable(final int p0);
-        
-        boolean isValid();
+        return plusOneDummyView$d2;
     }
 }

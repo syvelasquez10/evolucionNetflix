@@ -5,11 +5,11 @@
 package com.netflix.mediaclient.ui.common;
 
 import com.netflix.mediaclient.ui.pin.PinDialogVault;
+import com.netflix.mediaclient.ui.pin.PinDialogVault$PinInvokedFrom;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
 import android.content.Context;
 import android.os.Handler;
-import com.netflix.mediaclient.service.mdx.MdxAgent;
+import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.servicemgr.model.Playable;
@@ -98,21 +98,14 @@ public final class PlaybackLauncher
             return;
         }
         Log.d("nf_play", "Starting MDX remote playback");
-        if (!MdxAgent.Utils.playVideo(netflixActivity, asset, false)) {
+        if (!MdxAgent$Utils.playVideo(netflixActivity, asset, false)) {
             return;
         }
-        new Handler(netflixActivity.getMainLooper()).postDelayed((Runnable)new Runnable() {
-            final /* synthetic */ Context val$context = netflixActivity.getApplication();
-            
-            @Override
-            public void run() {
-                MdxMiniPlayerFrag.sendShowAndDisableIntent(this.val$context);
-            }
-        }, 250L);
+        new Handler(netflixActivity.getMainLooper()).postDelayed((Runnable)new PlaybackLauncher$1((Context)netflixActivity.getApplication()), 250L);
     }
     
     private static void verifyPinAndPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
         Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s protected:%b", asset.getPlayableId(), asset.isPinProtected()));
-        PinVerifier.getInstance().verify(netflixActivity, asset.isPinProtected(), new PinDialogVault(PinDialogVault.PinInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b));
+        PinVerifier.getInstance().verify(netflixActivity, asset.isPinProtected(), new PinDialogVault(PinDialogVault$PinInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b));
     }
 }

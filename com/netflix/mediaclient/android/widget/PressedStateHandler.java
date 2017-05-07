@@ -28,7 +28,7 @@ public class PressedStateHandler
             Log.v("PressedStateHandler", "Prev pressed state: " + this.pressed + ", new pressed state: " + pressed);
         }
         if (this.pressed && !pressed) {
-            AnimationUtils.startAlphaFadeInAnimation(this.view);
+            AnimationUtils.startPressedStateCompleteAnimation(this.view);
         }
         else {
             final View view = this.view;

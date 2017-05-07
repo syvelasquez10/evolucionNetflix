@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.logging.client.model;
 
 import com.netflix.mediaclient.util.JsonUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
 import com.google.gson.annotations.Since;
@@ -55,35 +54,30 @@ public class HttpResponse implements JsonSerializer
     @Since(1.0)
     private Integer transferTime;
     
-    public static HttpResponse createInstance(final String s) throws JSONException {
+    public static HttpResponse createInstance(final String s) {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
         return createInstance(new JSONObject(s));
     }
     
-    public static HttpResponse createInstance(final JSONObject jsonObject) throws JSONException {
-        HttpResponse httpResponse;
-        if (jsonObject == null) {
-            httpResponse = null;
+    public static HttpResponse createInstance(JSONObject optJSONObject) {
+        if (optJSONObject == null) {
+            return null;
         }
-        else {
-            final HttpResponse httpResponse2 = new HttpResponse();
-            httpResponse2.contentLength = JsonUtils.getIntegerObject(jsonObject, "contentLength", null);
-            httpResponse2.dnsTime = JsonUtils.getIntegerObject(jsonObject, "dnsTime", null);
-            httpResponse2.sslTime = JsonUtils.getIntegerObject(jsonObject, "sslTime", null);
-            httpResponse2.responseTime = JsonUtils.getIntegerObject(jsonObject, "responseTime", null);
-            httpResponse2.transferTime = JsonUtils.getIntegerObject(jsonObject, "transferTime", null);
-            httpResponse2.serverExecutionTime = JsonUtils.getIntegerObject(jsonObject, "serverExecutionTime", null);
-            httpResponse2.parseTime = JsonUtils.getIntegerObject(jsonObject, "parseTime", null);
-            httpResponse2.mimeType = JsonUtils.getString(jsonObject, "mimeType", null);
-            final JSONObject optJSONObject = jsonObject.optJSONObject("custom");
-            httpResponse = httpResponse2;
-            if (optJSONObject != null) {
-                httpResponse2.apiScriptExecutionTime = JsonUtils.getIntegerObject(optJSONObject, "apiScriptExecutionTime", null);
-                httpResponse2.endpointRevision = JsonUtils.getString(optJSONObject, "apiScriptRevision", null);
-                return httpResponse2;
-            }
+        final HttpResponse httpResponse = new HttpResponse();
+        httpResponse.contentLength = JsonUtils.getIntegerObject(optJSONObject, "contentLength", null);
+        httpResponse.dnsTime = JsonUtils.getIntegerObject(optJSONObject, "dnsTime", null);
+        httpResponse.sslTime = JsonUtils.getIntegerObject(optJSONObject, "sslTime", null);
+        httpResponse.responseTime = JsonUtils.getIntegerObject(optJSONObject, "responseTime", null);
+        httpResponse.transferTime = JsonUtils.getIntegerObject(optJSONObject, "transferTime", null);
+        httpResponse.serverExecutionTime = JsonUtils.getIntegerObject(optJSONObject, "serverExecutionTime", null);
+        httpResponse.parseTime = JsonUtils.getIntegerObject(optJSONObject, "parseTime", null);
+        httpResponse.mimeType = JsonUtils.getString(optJSONObject, "mimeType", null);
+        optJSONObject = optJSONObject.optJSONObject("custom");
+        if (optJSONObject != null) {
+            httpResponse.apiScriptExecutionTime = JsonUtils.getIntegerObject(optJSONObject, "apiScriptExecutionTime", null);
+            httpResponse.endpointRevision = JsonUtils.getString(optJSONObject, "apiScriptRevision", null);
         }
         return httpResponse;
     }
@@ -169,7 +163,7 @@ public class HttpResponse implements JsonSerializer
     }
     
     @Override
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.dnsTime != null) {
             jsonObject.put("dnsTime", (Object)this.dnsTime);

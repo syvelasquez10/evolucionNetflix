@@ -4,7 +4,6 @@
 
 package com.google.android.gms.drive;
 
-import com.google.android.gms.drive.metadata.internal.AppVisibleCustomProperties;
 import com.google.android.gms.drive.metadata.MetadataField;
 import com.google.android.gms.internal.kf;
 import java.util.Date;
@@ -58,62 +57,5 @@ public final class MetadataChangeSet
     
     public Boolean isViewed() {
         return this.Nm.a(kd.PU);
-    }
-    
-    public static class Builder
-    {
-        private final MetadataBundle Nm;
-        private AppVisibleCustomProperties.a Nn;
-        
-        public Builder() {
-            this.Nm = MetadataBundle.io();
-        }
-        
-        public MetadataChangeSet build() {
-            if (this.Nn != null) {
-                this.Nm.b(kd.PG, this.Nn.im());
-            }
-            return new MetadataChangeSet(this.Nm);
-        }
-        
-        public Builder setDescription(final String s) {
-            this.Nm.b(kd.PH, s);
-            return this;
-        }
-        
-        public Builder setIndexableText(final String s) {
-            this.Nm.b(kd.PM, s);
-            return this;
-        }
-        
-        public Builder setLastViewedByMeDate(final Date date) {
-            this.Nm.b(kf.Qm, date);
-            return this;
-        }
-        
-        public Builder setMimeType(final String s) {
-            this.Nm.b(kd.PV, s);
-            return this;
-        }
-        
-        public Builder setPinned(final boolean b) {
-            this.Nm.b(kd.PQ, b);
-            return this;
-        }
-        
-        public Builder setStarred(final boolean b) {
-            this.Nm.b(kd.Qc, b);
-            return this;
-        }
-        
-        public Builder setTitle(final String s) {
-            this.Nm.b(kd.Qe, s);
-            return this;
-        }
-        
-        public Builder setViewed(final boolean b) {
-            this.Nm.b(kd.PU, b);
-            return this;
-        }
     }
 }

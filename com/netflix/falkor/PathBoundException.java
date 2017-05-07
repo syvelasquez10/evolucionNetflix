@@ -6,7 +6,7 @@ package com.netflix.falkor;
 
 import java.util.Date;
 
-public class PathBoundException extends Exception implements PathBound, ReferenceTarget, Expires
+public class PathBoundException extends Exception implements Expires, PathBound, ReferenceTarget
 {
     private Date expires;
     private PQL path;

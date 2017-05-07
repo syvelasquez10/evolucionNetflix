@@ -38,10 +38,10 @@ public final class LineItem implements SafeParcelable
         this.asl = asl;
     }
     
-    public static Builder newBuilder() {
+    public static LineItem$Builder newBuilder() {
         final LineItem lineItem = new LineItem();
         lineItem.getClass();
-        return new Builder();
+        return new LineItem$Builder(lineItem, null);
     }
     
     public int describeContents() {
@@ -78,49 +78,5 @@ public final class LineItem implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         i.a(this, parcel, n);
-    }
-    
-    public final class Builder
-    {
-        public LineItem build() {
-            return LineItem.this;
-        }
-        
-        public Builder setCurrencyCode(final String asl) {
-            LineItem.this.asl = asl;
-            return this;
-        }
-        
-        public Builder setDescription(final String description) {
-            LineItem.this.description = description;
-            return this;
-        }
-        
-        public Builder setQuantity(final String asE) {
-            LineItem.this.asE = asE;
-            return this;
-        }
-        
-        public Builder setRole(final int asG) {
-            LineItem.this.asG = asG;
-            return this;
-        }
-        
-        public Builder setTotalPrice(final String ask) {
-            LineItem.this.ask = ask;
-            return this;
-        }
-        
-        public Builder setUnitPrice(final String asF) {
-            LineItem.this.asF = asF;
-            return this;
-        }
-    }
-    
-    public interface Role
-    {
-        public static final int REGULAR = 0;
-        public static final int SHIPPING = 2;
-        public static final int TAX = 1;
     }
 }

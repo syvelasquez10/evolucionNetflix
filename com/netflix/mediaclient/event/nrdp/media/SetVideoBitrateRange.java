@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SetVideoBitrateRange extends BaseMediaEvent
@@ -14,7 +13,7 @@ public class SetVideoBitrateRange extends BaseMediaEvent
     public static final String TYPE = "setvideobitraterange";
     private boolean error;
     
-    public SetVideoBitrateRange(final JSONObject jsonObject) throws JSONException {
+    public SetVideoBitrateRange(final JSONObject jsonObject) {
         super("setvideobitraterange", jsonObject);
         this.error = false;
     }
@@ -24,7 +23,7 @@ public class SetVideoBitrateRange extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.error = BaseNccpEvent.getBoolean(jsonObject, "error", false);
     }
 }

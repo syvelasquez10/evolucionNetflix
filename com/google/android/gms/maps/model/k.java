@@ -5,6 +5,7 @@
 package com.google.android.gms.maps.model;
 
 import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -114,7 +115,7 @@ public class k implements Parcelable$Creator<MarkerOptions>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new MarkerOptions(g, latLng, o, o2, p, l, i, c2, c3, c4, j, k, m, l2);
     }

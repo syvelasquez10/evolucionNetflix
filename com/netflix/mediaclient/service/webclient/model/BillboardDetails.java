@@ -5,10 +5,13 @@
 package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.user.SocialBadge;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
 
 public class BillboardDetails extends PlayableVideo implements Billboard
 {
+    public SocialBadge socialBadge;
+    
     @Override
     public String getCertification() {
         if (this.detail == null) {
@@ -23,6 +26,11 @@ public class BillboardDetails extends PlayableVideo implements Billboard
             return 0;
         }
         return this.detail.seasonCount;
+    }
+    
+    @Override
+    public SocialBadge getSocialBadge() {
+        return this.socialBadge;
     }
     
     @Override

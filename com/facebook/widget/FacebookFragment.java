@@ -6,11 +6,14 @@ package com.facebook.widget;
 
 import android.app.Activity;
 import android.content.Intent;
+import com.facebook.Session$StatusCallback;
 import android.os.Bundle;
 import com.facebook.SessionState;
 import java.util.Date;
-import android.content.Context;
+import com.facebook.Session$OpenRequest;
 import com.facebook.Session;
+import android.content.Context;
+import com.facebook.Session$Builder;
 import com.facebook.internal.SessionAuthorizationType;
 import com.facebook.SessionLoginBehavior;
 import java.util.List;
@@ -32,11 +35,11 @@ class FacebookFragment extends Fragment
                         break Label_0061;
                     }
                 }
-                build = new Session.Builder((Context)this.getActivity()).setApplicationId(applicationId).build();
+                build = new Session$Builder((Context)this.getActivity()).setApplicationId(applicationId).build();
                 Session.setActiveSession(build);
             }
             if (!build.isOpened()) {
-                final Session.OpenRequest setRequestCode = new Session.OpenRequest(this).setPermissions(permissions).setLoginBehavior(loginBehavior).setRequestCode(requestCode);
+                final Session$OpenRequest setRequestCode = new Session$OpenRequest(this).setPermissions(permissions).setLoginBehavior(loginBehavior).setRequestCode(requestCode);
                 if (!SessionAuthorizationType.PUBLISH.equals(sessionAuthorizationType)) {
                     build.openForRead(setRequestCode);
                     return;
@@ -133,7 +136,7 @@ class FacebookFragment extends Fragment
     @Override
     public void onActivityCreated(final Bundle bundle) {
         super.onActivityCreated(bundle);
-        this.sessionTracker = new SessionTracker((Context)this.getActivity(), new DefaultSessionStatusCallback());
+        this.sessionTracker = new SessionTracker((Context)this.getActivity(), new FacebookFragment$DefaultSessionStatusCallback(this, null));
     }
     
     @Override
@@ -174,14 +177,6 @@ class FacebookFragment extends Fragment
     public void setSession(final Session session) {
         if (this.sessionTracker != null) {
             this.sessionTracker.setSession(session);
-        }
-    }
-    
-    private class DefaultSessionStatusCallback implements StatusCallback
-    {
-        @Override
-        public void call(final Session session, final SessionState sessionState, final Exception ex) {
-            FacebookFragment.this.onSessionStateChange(sessionState, ex);
         }
     }
 }

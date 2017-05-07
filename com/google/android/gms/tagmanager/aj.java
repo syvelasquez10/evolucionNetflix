@@ -5,7 +5,7 @@
 package com.google.android.gms.tagmanager;
 
 import java.util.Collection;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ abstract class aj
         }
     }
     
-    public abstract d.a C(final Map<String, d.a> p0);
+    public abstract d$a C(final Map<String, d$a> p0);
     
     boolean a(final Set<String> set) {
         return set.containsAll(this.aoY);

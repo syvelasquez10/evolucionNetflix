@@ -13,13 +13,13 @@ import android.util.SparseArray;
 public class SearchUtils
 {
     public static final String TAG = "nf_log_search";
-    private static TestCell currentTest;
+    private static SearchUtils$TestCell currentTest;
     private static final SparseArray<SparseIntArray> numPeopleColumnsTable;
     private static final SparseArray<SparseIntArray> numRelatedColumnsTable;
     private static final SparseArray<SparseIntArray> numVideoColumnsTable;
     
     static {
-        SearchUtils.currentTest = TestCell.ONE;
+        SearchUtils.currentTest = SearchUtils$TestCell.ONE;
         numRelatedColumnsTable = new SparseArray(2);
         numPeopleColumnsTable = new SparseArray(2);
         numVideoColumnsTable = new SparseArray(2);
@@ -37,8 +37,7 @@ public class SearchUtils
                 if (n3 == 0) {
                     break;
                 }
-                ++n;
-                n3 = n % numPeopleGridCols;
+                n3 = ++n % numPeopleGridCols;
             }
         }
         return n2;
@@ -65,11 +64,11 @@ public class SearchUtils
         }
         final int basicScreenOrientation = DeviceUtils.getBasicScreenOrientation(context);
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(context);
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 return computeMaxResultsForPeople(context);
             }
-            case THREE: {
+            case 1: {
                 if (basicScreenOrientation == 1 && (screenSizeCategory == 3 || screenSizeCategory == 4)) {
                     return 3;
                 }
@@ -120,7 +119,7 @@ public class SearchUtils
     }
     
     public static double getPeopleImageAspectRatio() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 return 1.0;
             }
@@ -128,72 +127,72 @@ public class SearchUtils
     }
     
     public static int getSearchFragLayout() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
-                return 2130903175;
-            }
-            case THREE: {
                 return 2130903176;
+            }
+            case 1: {
+                return 2130903177;
             }
         }
     }
     
     public static int getSearchViewLayoutPeople() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
-                return 2130903172;
+                return 2130903173;
             }
-            case THREE: {
-                return 2130903174;
+            case 1: {
+                return 2130903175;
             }
         }
     }
     
     public static int getSearchViewLayoutRelated() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
-                return 2130903173;
-            }
-            case THREE: {
                 return 2130903174;
+            }
+            case 1: {
+                return 2130903175;
             }
         }
     }
     
     public static double getVideoImageAspectRatio() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 return 1.4299999475479126;
             }
-            case THREE:
-            case TWO: {
+            case 1:
+            case 2: {
                 return 0.5625;
             }
         }
     }
     
     public static boolean handleBackPress() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 return false;
             }
-            case THREE: {
+            case 1: {
                 return true;
             }
         }
     }
     
     private static void initColumnsTable() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 intColumnTableTestONELandscape();
                 intColumnTableTestONEPortrait();
             }
-            case TWO: {
+            case 2: {
                 intColumnTableTestTWOLandscape();
                 intColumnTableTestTWOPortrait();
             }
-            case THREE: {
+            case 1: {
                 intColumnTableTestTHREELandscape();
                 intColumnTableTestTHREEPortrait();
             }
@@ -326,18 +325,26 @@ public class SearchUtils
         SearchUtils.numRelatedColumnsTable.put(1, (Object)sparseIntArray3);
     }
     
+    public static String sanitizeQuery(final String s) {
+        final String replaceAll = s.replaceAll("\\s+", " ");
+        if (Log.isLoggable("nf_log_search", 2)) {
+            Log.v("nf_log_search", "Sanitized query from: \"" + s + "\" to \"" + replaceAll + "\"");
+        }
+        return replaceAll;
+    }
+    
     public static void setTestCell(final int n) {
         switch (n) {
             default: {
-                SearchUtils.currentTest = TestCell.ONE;
+                SearchUtils.currentTest = SearchUtils$TestCell.ONE;
                 break;
             }
             case 2: {
-                SearchUtils.currentTest = TestCell.TWO;
+                SearchUtils.currentTest = SearchUtils$TestCell.TWO;
                 break;
             }
             case 3: {
-                SearchUtils.currentTest = TestCell.THREE;
+                SearchUtils.currentTest = SearchUtils$TestCell.THREE;
                 break;
             }
         }
@@ -345,54 +352,47 @@ public class SearchUtils
     }
     
     public static boolean shouldOpenNewActivityForRelated() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 return true;
             }
-            case THREE: {
+            case 1: {
                 return false;
             }
         }
     }
     
     public static boolean shouldResetQueryOnTouch() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 return true;
             }
-            case ONE: {
+            case 3: {
                 return false;
             }
         }
     }
     
     public static boolean shouldShowVerticalBoxArt() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 return true;
             }
-            case THREE:
-            case TWO: {
+            case 1:
+            case 2: {
                 return false;
             }
         }
     }
     
     public static boolean shouldUpperCaseTitleLabels() {
-        switch (SearchUtils.currentTest) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 return true;
             }
-            case THREE: {
+            case 1: {
                 return false;
             }
         }
-    }
-    
-    private enum TestCell
-    {
-        ONE, 
-        THREE, 
-        TWO;
     }
 }

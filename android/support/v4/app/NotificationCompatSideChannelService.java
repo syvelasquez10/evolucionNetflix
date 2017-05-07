@@ -4,7 +4,6 @@
 
 package android.support.v4.app;
 
-import android.os.RemoteException;
 import android.os.Build$VERSION;
 import android.os.IBinder;
 import android.content.Intent;
@@ -33,42 +32,6 @@ public abstract class NotificationCompatSideChannelService extends Service
         if (!intent.getAction().equals("android.support.BIND_NOTIFICATION_SIDE_CHANNEL") || Build$VERSION.SDK_INT > 19) {
             return null;
         }
-        return (IBinder)new NotificationSideChannelStub();
-    }
-    
-    private class NotificationSideChannelStub extends Stub
-    {
-        public void cancel(final String s, final int n, final String s2) throws RemoteException {
-            NotificationCompatSideChannelService.this.checkPermission(getCallingUid(), s);
-            final long clearCallingIdentity = clearCallingIdentity();
-            try {
-                NotificationCompatSideChannelService.this.cancel(s, n, s2);
-            }
-            finally {
-                restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-        
-        public void cancelAll(final String s) {
-            NotificationCompatSideChannelService.this.checkPermission(getCallingUid(), s);
-            final long clearCallingIdentity = clearCallingIdentity();
-            try {
-                NotificationCompatSideChannelService.this.cancelAll(s);
-            }
-            finally {
-                restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-        
-        public void notify(final String s, final int n, final String s2, final Notification notification) throws RemoteException {
-            NotificationCompatSideChannelService.this.checkPermission(getCallingUid(), s);
-            final long clearCallingIdentity = clearCallingIdentity();
-            try {
-                NotificationCompatSideChannelService.this.notify(s, n, s2, notification);
-            }
-            finally {
-                restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
+        return (IBinder)new NotificationCompatSideChannelService$NotificationSideChannelStub(this, null);
     }
 }

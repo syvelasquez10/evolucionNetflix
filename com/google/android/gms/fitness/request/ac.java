@@ -21,12 +21,12 @@ public class ac implements SafeParcelable
     
     ac(final int br, final IBinder binder) {
         this.BR = br;
-        this.UF = k.a.ay(binder);
+        this.UF = k$a.ay(binder);
     }
     
     public ac(final BleScanCallback bleScanCallback) {
         this.BR = 1;
-        this.UF = a.a.iV().b(bleScanCallback);
+        this.UF = a$a.iV().b(bleScanCallback);
     }
     
     public int describeContents() {

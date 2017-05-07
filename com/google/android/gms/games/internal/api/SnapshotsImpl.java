@@ -4,20 +4,17 @@
 
 package com.google.android.gms.games.internal.api;
 
-import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.games.snapshot.SnapshotMetadataBuffer;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.snapshot.SnapshotContents;
 import com.google.android.gms.drive.Contents;
+import com.google.android.gms.games.snapshot.SnapshotMetadataChange$Builder;
+import com.google.android.gms.games.snapshot.Snapshots$OpenSnapshotResult;
+import com.google.android.gms.games.snapshot.Snapshots$LoadSnapshotsResult;
 import android.os.Bundle;
 import android.content.Intent;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.snapshot.Snapshots$DeleteSnapshotResult;
 import com.google.android.gms.games.snapshot.SnapshotMetadata;
-import com.google.android.gms.common.api.BaseImplementation;
-import android.os.RemoteException;
-import com.google.android.gms.games.internal.GamesClientImpl;
-import com.google.android.gms.common.api.Api;
+import com.google.android.gms.games.snapshot.Snapshots$CommitSnapshotResult;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.games.snapshot.Snapshot;
@@ -27,21 +24,13 @@ import com.google.android.gms.games.snapshot.Snapshots;
 public final class SnapshotsImpl implements Snapshots
 {
     @Override
-    public PendingResult<CommitSnapshotResult> commitAndClose(final GoogleApiClient googleApiClient, final Snapshot snapshot, final SnapshotMetadataChange snapshotMetadataChange) {
-        return googleApiClient.b((PendingResult<CommitSnapshotResult>)new CommitImpl() {
-            protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.a((BaseImplementation.b<CommitSnapshotResult>)this, snapshot, snapshotMetadataChange);
-            }
-        });
+    public PendingResult<Snapshots$CommitSnapshotResult> commitAndClose(final GoogleApiClient googleApiClient, final Snapshot snapshot, final SnapshotMetadataChange snapshotMetadataChange) {
+        return googleApiClient.b((PendingResult<Snapshots$CommitSnapshotResult>)new SnapshotsImpl$3(this, snapshot, snapshotMetadataChange));
     }
     
     @Override
-    public PendingResult<DeleteSnapshotResult> delete(final GoogleApiClient googleApiClient, final SnapshotMetadata snapshotMetadata) {
-        return googleApiClient.b((PendingResult<DeleteSnapshotResult>)new DeleteImpl() {
-            protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.j((BaseImplementation.b<DeleteSnapshotResult>)this, snapshotMetadata.getSnapshotId());
-            }
-        });
+    public PendingResult<Snapshots$DeleteSnapshotResult> delete(final GoogleApiClient googleApiClient, final SnapshotMetadata snapshotMetadata) {
+        return googleApiClient.b((PendingResult<Snapshots$DeleteSnapshotResult>)new SnapshotsImpl$4(this, snapshotMetadata));
     }
     
     @Override
@@ -73,143 +62,33 @@ public final class SnapshotsImpl implements Snapshots
     }
     
     @Override
-    public PendingResult<LoadSnapshotsResult> load(final GoogleApiClient googleApiClient, final boolean b) {
-        return googleApiClient.a((PendingResult<LoadSnapshotsResult>)new LoadImpl() {
-            protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.e((BaseImplementation.b<LoadSnapshotsResult>)this, b);
-            }
-        });
+    public PendingResult<Snapshots$LoadSnapshotsResult> load(final GoogleApiClient googleApiClient, final boolean b) {
+        return googleApiClient.a((PendingResult<Snapshots$LoadSnapshotsResult>)new SnapshotsImpl$1(this, b));
     }
     
     @Override
-    public PendingResult<OpenSnapshotResult> open(final GoogleApiClient googleApiClient, final SnapshotMetadata snapshotMetadata) {
+    public PendingResult<Snapshots$OpenSnapshotResult> open(final GoogleApiClient googleApiClient, final SnapshotMetadata snapshotMetadata) {
         return this.open(googleApiClient, snapshotMetadata.getUniqueName(), false);
     }
     
     @Override
-    public PendingResult<OpenSnapshotResult> open(final GoogleApiClient googleApiClient, final String s, final boolean b) {
-        return googleApiClient.b((PendingResult<OpenSnapshotResult>)new OpenImpl() {
-            protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.b((BaseImplementation.b<OpenSnapshotResult>)this, s, b);
-            }
-        });
+    public PendingResult<Snapshots$OpenSnapshotResult> open(final GoogleApiClient googleApiClient, final String s, final boolean b) {
+        return googleApiClient.b((PendingResult<Snapshots$OpenSnapshotResult>)new SnapshotsImpl$2(this, s, b));
     }
     
     @Override
-    public PendingResult<OpenSnapshotResult> resolveConflict(final GoogleApiClient googleApiClient, final String s, final Snapshot snapshot) {
+    public PendingResult<Snapshots$OpenSnapshotResult> resolveConflict(final GoogleApiClient googleApiClient, final String s, final Snapshot snapshot) {
         final SnapshotMetadata metadata = snapshot.getMetadata();
-        return this.resolveConflict(googleApiClient, s, metadata.getSnapshotId(), new SnapshotMetadataChange.Builder().fromMetadata(metadata).build(), snapshot.getSnapshotContents());
+        return this.resolveConflict(googleApiClient, s, metadata.getSnapshotId(), new SnapshotMetadataChange$Builder().fromMetadata(metadata).build(), snapshot.getSnapshotContents());
     }
     
     @Override
-    public PendingResult<OpenSnapshotResult> resolveConflict(final GoogleApiClient googleApiClient, final String s, final String s2, final SnapshotMetadataChange snapshotMetadataChange, final Contents contents) {
-        return googleApiClient.b((PendingResult<OpenSnapshotResult>)new OpenImpl() {
-            final /* synthetic */ SnapshotContents ZI = new SnapshotContents(contents);
-            
-            protected void a(final GamesClientImpl gamesClientImpl) throws RemoteException {
-                gamesClientImpl.a((BaseImplementation.b<OpenSnapshotResult>)this, s, s2, snapshotMetadataChange, this.ZI);
-            }
-        });
+    public PendingResult<Snapshots$OpenSnapshotResult> resolveConflict(final GoogleApiClient googleApiClient, final String s, final String s2, final SnapshotMetadataChange snapshotMetadataChange, final Contents contents) {
+        return googleApiClient.b((PendingResult<Snapshots$OpenSnapshotResult>)new SnapshotsImpl$5(this, s, s2, snapshotMetadataChange, new SnapshotContents(contents)));
     }
     
     @Override
-    public PendingResult<OpenSnapshotResult> resolveConflict(final GoogleApiClient googleApiClient, final String s, final String s2, final SnapshotMetadataChange snapshotMetadataChange, final SnapshotContents snapshotContents) {
-        return googleApiClient.b((PendingResult<OpenSnapshotResult>)new OpenImpl() {
-            protected void a(final GamesClientImpl gamesClientImpl) throws RemoteException {
-                gamesClientImpl.a((BaseImplementation.b<OpenSnapshotResult>)this, s, s2, snapshotMetadataChange, snapshotContents);
-            }
-        });
-    }
-    
-    private abstract static class CommitImpl extends BaseGamesApiMethodImpl<CommitSnapshotResult>
-    {
-        public CommitSnapshotResult ao(final Status status) {
-            return new CommitSnapshotResult() {
-                @Override
-                public SnapshotMetadata getSnapshotMetadata() {
-                    return null;
-                }
-                
-                @Override
-                public Status getStatus() {
-                    return status;
-                }
-            };
-        }
-    }
-    
-    private abstract static class DeleteImpl extends BaseGamesApiMethodImpl<DeleteSnapshotResult>
-    {
-        public DeleteSnapshotResult ap(final Status status) {
-            return new DeleteSnapshotResult() {
-                @Override
-                public String getSnapshotId() {
-                    return null;
-                }
-                
-                @Override
-                public Status getStatus() {
-                    return status;
-                }
-            };
-        }
-    }
-    
-    private abstract static class LoadImpl extends BaseGamesApiMethodImpl<LoadSnapshotsResult>
-    {
-        public LoadSnapshotsResult aq(final Status status) {
-            return new LoadSnapshotsResult() {
-                @Override
-                public SnapshotMetadataBuffer getSnapshots() {
-                    return new SnapshotMetadataBuffer(DataHolder.as(14));
-                }
-                
-                @Override
-                public Status getStatus() {
-                    return status;
-                }
-                
-                @Override
-                public void release() {
-                }
-            };
-        }
-    }
-    
-    private abstract static class OpenImpl extends BaseGamesApiMethodImpl<OpenSnapshotResult>
-    {
-        public OpenSnapshotResult ar(final Status status) {
-            return new OpenSnapshotResult() {
-                @Override
-                public String getConflictId() {
-                    return null;
-                }
-                
-                @Override
-                public Snapshot getConflictingSnapshot() {
-                    return null;
-                }
-                
-                @Override
-                public Contents getResolutionContents() {
-                    return null;
-                }
-                
-                @Override
-                public SnapshotContents getResolutionSnapshotContents() {
-                    return null;
-                }
-                
-                @Override
-                public Snapshot getSnapshot() {
-                    return null;
-                }
-                
-                @Override
-                public Status getStatus() {
-                    return status;
-                }
-            };
-        }
+    public PendingResult<Snapshots$OpenSnapshotResult> resolveConflict(final GoogleApiClient googleApiClient, final String s, final String s2, final SnapshotMetadataChange snapshotMetadataChange, final SnapshotContents snapshotContents) {
+        return googleApiClient.b((PendingResult<Snapshots$OpenSnapshotResult>)new SnapshotsImpl$6(this, s, s2, snapshotMetadataChange, snapshotContents));
     }
 }

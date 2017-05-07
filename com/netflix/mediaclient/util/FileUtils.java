@@ -4,19 +4,17 @@
 
 package com.netflix.mediaclient.util;
 
+import java.io.InputStream;
 import java.net.URLConnection;
+import java.io.IOException;
 import java.io.FileWriter;
 import android.annotation.SuppressLint;
+import com.netflix.mediaclient.Log;
 import java.io.File;
 import android.os.Environment;
-import java.io.IOException;
-import java.net.URL;
-import java.io.InputStream;
 import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import com.netflix.mediaclient.Log;
-import java.io.FileNotFoundException;
 import java.io.Closeable;
+import java.net.URL;
 import android.content.Context;
 
 public final class FileUtils
@@ -25,90 +23,211 @@ public final class FileUtils
     public static final int BYTES_PER_MB = 1048576;
     private static final String TAG = "FileUtils";
     
-    public static boolean copyFileFromAssetToFS(final Context context, final String s, final String s2, final boolean b) {
-        final boolean b2 = false;
-        boolean b3 = false;
-        while (true) {
-            try {
-                final FileInputStream openFileInput = context.openFileInput(s2);
-                if (openFileInput != null) {
-                    b3 = true;
-                }
-                IoUtil.safeClose(openFileInput);
-                if (b3 && !b) {
-                    return false;
-                }
-            }
-            catch (FileNotFoundException ex2) {
-                IoUtil.safeClose(null);
-                b3 = b2;
-                continue;
-            }
-            finally {
-                IoUtil.safeClose(null);
-            }
-            break;
-        }
-        final Context context2;
-        if (b3 && b && !context2.deleteFile(s2)) {
-            Log.e("FileUtils", "Failed to delete file");
-        }
-        Closeable closeable = null;
-        Closeable openFileOutput = null;
-        final Closeable closeable2 = null;
-        Closeable closeable3 = null;
-        Closeable closeable4 = closeable2;
-        try {
-            try {
-                final FileOutputStream fileOutputStream = (FileOutputStream)(openFileOutput = context2.openFileOutput(s2, 0));
-                closeable3 = closeable3;
-                closeable = fileOutputStream;
-                closeable4 = closeable2;
-                final InputStream open = context2.getAssets().open(s);
-                if (open == null) {
-                    openFileOutput = fileOutputStream;
-                    closeable3 = open;
-                    closeable = fileOutputStream;
-                    closeable4 = open;
-                    Log.e("FileUtils", "IS is null");
-                    return false;
-                }
-                openFileOutput = fileOutputStream;
-                closeable3 = open;
-                closeable = fileOutputStream;
-                closeable4 = open;
-                final byte[] array = new byte[1024];
-                while (true) {
-                    openFileOutput = fileOutputStream;
-                    closeable3 = open;
-                    closeable = fileOutputStream;
-                    closeable4 = open;
-                    final int read = open.read(array);
-                    if (read == -1) {
-                        break;
-                    }
-                    openFileOutput = fileOutputStream;
-                    closeable3 = open;
-                    closeable = fileOutputStream;
-                    closeable4 = open;
-                    fileOutputStream.write(array, 0, read);
-                }
-            }
-            catch (Exception ex) {
-                closeable = openFileOutput;
-                closeable4 = closeable3;
-                Log.e("FileUtils", "Failed to extract CA", ex);
-                return false;
-            }
-            return true;
-        }
-        finally {
-            IoUtil.safeClose(closeable);
-            IoUtil.safeClose(closeable4);
-        }
+    public static boolean copyFileFromAssetToFS(final Context p0, final String p1, final String p2, final boolean p3) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aconst_null    
+        //     1: astore          6
+        //     3: aconst_null    
+        //     4: astore          7
+        //     6: aconst_null    
+        //     7: astore          5
+        //     9: aload_0        
+        //    10: aload_2        
+        //    11: invokevirtual   android/content/Context.openFileInput:(Ljava/lang/String;)Ljava/io/FileInputStream;
+        //    14: astore          8
+        //    16: aload           8
+        //    18: ifnull          258
+        //    21: iconst_1       
+        //    22: istore          4
+        //    24: aload           8
+        //    26: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //    29: iload           4
+        //    31: ifeq            59
+        //    34: iload_3        
+        //    35: ifne            59
+        //    38: iconst_0       
+        //    39: ireturn        
+        //    40: astore          8
+        //    42: aconst_null    
+        //    43: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //    46: iconst_0       
+        //    47: istore          4
+        //    49: goto            29
+        //    52: astore_0       
+        //    53: aconst_null    
+        //    54: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //    57: aload_0        
+        //    58: athrow         
+        //    59: iload           4
+        //    61: ifeq            84
+        //    64: iload_3        
+        //    65: ifeq            84
+        //    68: aload_0        
+        //    69: aload_2        
+        //    70: invokevirtual   android/content/Context.deleteFile:(Ljava/lang/String;)Z
+        //    73: ifne            84
+        //    76: ldc             "FileUtils"
+        //    78: ldc             "Failed to delete file"
+        //    80: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //    83: pop            
+        //    84: aload_0        
+        //    85: aload_2        
+        //    86: iconst_0       
+        //    87: invokevirtual   android/content/Context.openFileOutput:(Ljava/lang/String;I)Ljava/io/FileOutputStream;
+        //    90: astore_2       
+        //    91: aload           7
+        //    93: astore          5
+        //    95: aload_0        
+        //    96: invokevirtual   android/content/Context.getAssets:()Landroid/content/res/AssetManager;
+        //    99: aload_1        
+        //   100: invokevirtual   android/content/res/AssetManager.open:(Ljava/lang/String;)Ljava/io/InputStream;
+        //   103: astore_0       
+        //   104: aload_0        
+        //   105: ifnonnull       129
+        //   108: aload_0        
+        //   109: astore          5
+        //   111: ldc             "FileUtils"
+        //   113: ldc             "IS is null"
+        //   115: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   118: pop            
+        //   119: aload_2        
+        //   120: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   123: aload_0        
+        //   124: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   127: iconst_0       
+        //   128: ireturn        
+        //   129: aload_0        
+        //   130: astore          5
+        //   132: sipush          1024
+        //   135: newarray        B
+        //   137: astore_1       
+        //   138: aload_0        
+        //   139: astore          5
+        //   141: aload_0        
+        //   142: aload_1        
+        //   143: invokevirtual   java/io/InputStream.read:([B)I
+        //   146: istore          4
+        //   148: iload           4
+        //   150: iconst_m1      
+        //   151: if_icmpeq       194
+        //   154: aload_0        
+        //   155: astore          5
+        //   157: aload_2        
+        //   158: aload_1        
+        //   159: iconst_0       
+        //   160: iload           4
+        //   162: invokevirtual   java/io/FileOutputStream.write:([BII)V
+        //   165: goto            138
+        //   168: astore          5
+        //   170: aload_2        
+        //   171: astore_1       
+        //   172: aload           5
+        //   174: astore_2       
+        //   175: ldc             "FileUtils"
+        //   177: ldc             "Failed to extract CA"
+        //   179: aload_2        
+        //   180: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   183: pop            
+        //   184: aload_1        
+        //   185: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   188: aload_0        
+        //   189: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   192: iconst_0       
+        //   193: ireturn        
+        //   194: aload_2        
+        //   195: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   198: aload_0        
+        //   199: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   202: iconst_1       
+        //   203: ireturn        
+        //   204: astore_0       
+        //   205: aconst_null    
+        //   206: astore_2       
+        //   207: aload           6
+        //   209: astore          5
+        //   211: aload_2        
+        //   212: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   215: aload           5
+        //   217: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   220: aload_0        
+        //   221: athrow         
+        //   222: astore_0       
+        //   223: goto            211
+        //   226: astore_2       
+        //   227: aload_0        
+        //   228: astore          5
+        //   230: aload_2        
+        //   231: astore_0       
+        //   232: aload_1        
+        //   233: astore_2       
+        //   234: goto            211
+        //   237: astore_2       
+        //   238: aconst_null    
+        //   239: astore_0       
+        //   240: aload           5
+        //   242: astore_1       
+        //   243: goto            175
+        //   246: astore          5
+        //   248: aconst_null    
+        //   249: astore_0       
+        //   250: aload_2        
+        //   251: astore_1       
+        //   252: aload           5
+        //   254: astore_2       
+        //   255: goto            175
+        //   258: iconst_0       
+        //   259: istore          4
+        //   261: goto            24
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                           
+        //  -----  -----  -----  -----  -------------------------------
+        //  9      16     40     52     Ljava/io/FileNotFoundException;
+        //  9      16     52     59     Any
+        //  84     91     237    246    Ljava/lang/Exception;
+        //  84     91     204    211    Any
+        //  95     104    246    258    Ljava/lang/Exception;
+        //  95     104    222    226    Any
+        //  111    119    168    175    Ljava/lang/Exception;
+        //  111    119    222    226    Any
+        //  132    138    168    175    Ljava/lang/Exception;
+        //  132    138    222    226    Any
+        //  141    148    168    175    Ljava/lang/Exception;
+        //  141    148    222    226    Any
+        //  157    165    168    175    Ljava/lang/Exception;
+        //  157    165    222    226    Any
+        //  175    184    226    237    Any
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0129:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public static String download(final Context context, String openConnection) throws IOException {
+    public static String download(final Context context, String openConnection) {
         final Closeable closeable = null;
         final String substring = openConnection.substring(openConnection.lastIndexOf(47) + 1);
         final FileOutputStream outputStream = getOutputStream(context, substring, true);
@@ -146,7 +265,7 @@ public final class FileUtils
     }
     
     @SuppressLint({ "WorldReadableFiles" })
-    public static FileOutputStream getOutputStream(final Context context, final String s, final boolean b) throws FileNotFoundException, IOException {
+    public static FileOutputStream getOutputStream(final Context context, final String s, final boolean b) {
         if (b) {
             return context.openFileOutput(s, 0);
         }

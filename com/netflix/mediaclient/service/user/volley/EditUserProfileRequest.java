@@ -4,15 +4,12 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import android.text.TextUtils;
 import com.netflix.mediaclient.service.browse.volley.AddToQueueRequest;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
@@ -42,12 +39,12 @@ public class EditUserProfileRequest extends FalcorVolleyWebClientRequest<Account
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
     protected String getOptionalParams() {
-        final StringBuilder sb = new StringBuilder(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), "\"" + this.name + "\""));
+        final StringBuilder sb = new StringBuilder(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "\"" + this.name + "\""));
         String s;
         if (this.startInKidsZone) {
             s = "\"jfk\"";
@@ -57,7 +54,7 @@ public class EditUserProfileRequest extends FalcorVolleyWebClientRequest<Account
         }
         sb.append(AddToQueueRequest.optionalParam).append(s);
         if (!TextUtils.isEmpty((CharSequence)this.iconName)) {
-            sb.append(AddToQueueRequest.optionalParam).append("\"" + this.iconName + "\"");
+            sb.append(AddToQueueRequest.optionalParam).append("\"").append(this.iconName).append("\"");
         }
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", String.format("[{'to':%s}, 'summary']", 5)));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
@@ -87,7 +84,7 @@ public class EditUserProfileRequest extends FalcorVolleyWebClientRequest<Account
     }
     
     @Override
-    protected AccountData parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected AccountData parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_adduserprofilerequest", 2)) {
             Log.v("nf_service_user_adduserprofilerequest", "String response to parse = " + s);
         }

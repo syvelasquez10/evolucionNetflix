@@ -54,28 +54,42 @@ public class JsonUtils
         return list;
     }
     
-    public static boolean getBoolean(final JSONObject jsonObject, final String s, final boolean b) throws JSONException {
-        if (!jsonObject.isNull(s)) {
-            return jsonObject.getBoolean(s);
+    public static int getAsIntSafe(final JsonElement jsonElement) {
+        if (!jsonElement.isJsonNull() && (!jsonElement.isJsonPrimitive() || !"null".equals(jsonElement.getAsString()))) {
+            return jsonElement.getAsInt();
         }
-        return b;
+        return 0;
     }
     
-    public static int getInt(final JSONObject jsonObject, final String s, final int n) throws JSONException {
-        if (!jsonObject.isNull(s)) {
-            return jsonObject.getInt(s);
+    public static String getAsStringSafe(final JsonElement jsonElement) {
+        if (jsonElement.isJsonNull()) {
+            return null;
         }
-        return n;
+        return jsonElement.getAsString();
     }
     
-    public static Integer getIntegerObject(final JSONObject jsonObject, final String s, final Integer n) throws JSONException {
+    public static boolean getBoolean(final JSONObject jsonObject, final String s, boolean boolean1) {
         if (!jsonObject.isNull(s)) {
-            return jsonObject.getInt(s);
+            boolean1 = jsonObject.getBoolean(s);
         }
-        return n;
+        return boolean1;
     }
     
-    public static JSONArray getJSONArray(final JSONObject jsonObject, final String s) throws JSONException {
+    public static int getInt(final JSONObject jsonObject, final String s, int int1) {
+        if (!jsonObject.isNull(s)) {
+            int1 = jsonObject.getInt(s);
+        }
+        return int1;
+    }
+    
+    public static Integer getIntegerObject(final JSONObject jsonObject, final String s, Integer value) {
+        if (!jsonObject.isNull(s)) {
+            value = jsonObject.getInt(s);
+        }
+        return value;
+    }
+    
+    public static JSONArray getJSONArray(final JSONObject jsonObject, final String s) {
         JSONArray jsonArray = null;
         if (!jsonObject.isNull(s)) {
             jsonArray = jsonObject.getJSONArray(s);
@@ -83,24 +97,24 @@ public class JsonUtils
         return jsonArray;
     }
     
-    public static JSONObject getJSONObject(final JSONObject jsonObject, final String s, final JSONObject jsonObject2) throws JSONException {
+    public static JSONObject getJSONObject(final JSONObject jsonObject, final String s, JSONObject jsonObject2) {
         if (!jsonObject.isNull(s)) {
-            return jsonObject.getJSONObject(s);
+            jsonObject2 = jsonObject.getJSONObject(s);
         }
         return jsonObject2;
     }
     
-    public static long getLong(final JSONObject jsonObject, final String s, final long n) throws JSONException {
+    public static long getLong(final JSONObject jsonObject, final String s, long long1) {
         if (!jsonObject.isNull(s)) {
-            return jsonObject.getLong(s);
+            long1 = jsonObject.getLong(s);
         }
-        return n;
+        return long1;
     }
     
-    public static String getString(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
+    public static String getString(final JSONObject jsonObject, final String s, String string) {
         if (!jsonObject.isNull(s)) {
-            return jsonObject.getString(s);
+            string = jsonObject.getString(s);
         }
-        return s2;
+        return string;
     }
 }

@@ -5,6 +5,7 @@
 package com.google.android.gms.fitness.service;
 
 import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.fitness.data.DataSource;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -60,7 +61,7 @@ public class a implements Parcelable$Creator<FitnessSensorServiceRequest>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new FitnessSensorServiceRequest(g, dataSource, p, j, i);
     }

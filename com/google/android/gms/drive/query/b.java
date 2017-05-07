@@ -5,6 +5,7 @@
 package com.google.android.gms.drive.query;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.query.internal.FieldWithSortOrder;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcel;
@@ -47,7 +48,7 @@ public class b implements Parcelable$Creator<SortOrder>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new SortOrder(g, (List<FieldWithSortOrder>)c3, c);
     }

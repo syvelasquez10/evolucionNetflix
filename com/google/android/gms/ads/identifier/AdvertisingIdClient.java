@@ -7,12 +7,12 @@ package com.google.android.gms.ads.identifier;
 import android.os.RemoteException;
 import android.util.Log;
 import android.content.pm.PackageManager$NameNotFoundException;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import android.content.ServiceConnection;
 import android.content.Intent;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import java.io.IOException;
+import com.google.android.gms.internal.s$a;
 import com.google.android.gms.common.internal.n;
 import android.content.Context;
 import com.google.android.gms.internal.s;
@@ -31,16 +31,16 @@ public final class AdvertisingIdClient
         this.lm = false;
     }
     
-    static s a(final Context context, final a a) throws IOException {
+    static s a(final Context context, final a a) {
         try {
-            return s.a.b(a.fX());
+            return s$a.b(a.fX());
         }
         catch (InterruptedException ex) {
             throw new IOException("Interrupted exception");
         }
     }
     
-    public static Info getAdvertisingIdInfo(Context context) throws IOException, IllegalStateException, GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
+    public static AdvertisingIdClient$Info getAdvertisingIdInfo(Context context) {
         context = (Context)new AdvertisingIdClient(context);
         try {
             ((AdvertisingIdClient)context).start();
@@ -51,7 +51,7 @@ public final class AdvertisingIdClient
         }
     }
     
-    static a i(final Context context) throws IOException, GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
+    static a i(final Context context) {
         try {
             context.getPackageManager().getPackageInfo("com.android.vending", 0);
             final Context context2 = context;
@@ -101,7 +101,7 @@ public final class AdvertisingIdClient
         throw new IOException("Connection failure");
     }
     
-    public Info W() throws IOException {
+    public AdvertisingIdClient$Info W() {
         n.aU("Calling this from your main thread can lead to deadlock");
         n.i(this.lk);
         n.i(this.ll);
@@ -109,7 +109,7 @@ public final class AdvertisingIdClient
             throw new IOException("AdvertisingIdService is not connected.");
         }
         try {
-            return new Info(this.ll.getId(), this.ll.a(true));
+            return new AdvertisingIdClient$Info(this.ll.getId(), this.ll.a(true));
         }
         catch (RemoteException ex) {
             Log.i("AdvertisingIdClient", "GMS remote exception ", (Throwable)ex);
@@ -139,7 +139,7 @@ public final class AdvertisingIdClient
         }
     }
     
-    public void start() throws IOException, IllegalStateException, GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
+    public void start() {
         n.aU("Calling this from your main thread can lead to deadlock");
         if (this.lm) {
             this.finish();
@@ -147,29 +147,5 @@ public final class AdvertisingIdClient
         this.lk = i(this.mContext);
         this.ll = a(this.mContext, this.lk);
         this.lm = true;
-    }
-    
-    public static final class Info
-    {
-        private final String ln;
-        private final boolean lo;
-        
-        public Info(final String ln, final boolean lo) {
-            this.ln = ln;
-            this.lo = lo;
-        }
-        
-        public String getId() {
-            return this.ln;
-        }
-        
-        public boolean isLimitAdTrackingEnabled() {
-            return this.lo;
-        }
-        
-        @Override
-        public String toString() {
-            return "{" + this.ln + "}" + this.lo;
-        }
     }
 }

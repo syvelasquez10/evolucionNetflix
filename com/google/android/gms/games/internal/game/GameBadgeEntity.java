@@ -20,7 +20,7 @@ public final class GameBadgeEntity extends GamesDowngradeableSafeParcel implemen
     private Uri UW;
     
     static {
-        CREATOR = new GameBadgeEntityCreatorCompat();
+        CREATOR = new GameBadgeEntity$GameBadgeEntityCreatorCompat();
     }
     
     GameBadgeEntity(final int br, final int fd, final String no, final String tg, final Uri uw) {
@@ -136,27 +136,5 @@ public final class GameBadgeEntity extends GamesDowngradeableSafeParcel implemen
             string = this.UW.toString();
         }
         parcel.writeString(string);
-    }
-    
-    static final class GameBadgeEntityCreatorCompat extends GameBadgeEntityCreator
-    {
-        @Override
-        public GameBadgeEntity ch(final Parcel parcel) {
-            if (GamesDowngradeableSafeParcel.c(c.gP()) || c.aV(GameBadgeEntity.class.getCanonicalName())) {
-                return super.ch(parcel);
-            }
-            final int int1 = parcel.readInt();
-            final String string = parcel.readString();
-            final String string2 = parcel.readString();
-            final String string3 = parcel.readString();
-            Uri parse;
-            if (string3 == null) {
-                parse = null;
-            }
-            else {
-                parse = Uri.parse(string3);
-            }
-            return new GameBadgeEntity(1, int1, string, string2, parse);
-        }
     }
 }

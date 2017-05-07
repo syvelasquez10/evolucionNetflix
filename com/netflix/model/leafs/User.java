@@ -18,16 +18,16 @@ public class User implements com.netflix.mediaclient.servicemgr.model.user.User
     private static final String FIELD_LAST_NAME = "lastName";
     private static final String TAG = "User";
     public SubtitlePreference subtitleDefaults;
-    public Summary summary;
+    public User$Summary summary;
     
     public User() {
-        this.summary = new Summary();
+        this.summary = new User$Summary(this);
     }
     
     public User(final String s) {
         while (true) {
             final SubtitlePreference subtitlePreference = null;
-            this.summary = new Summary();
+            this.summary = new User$Summary(this);
             while (true) {
                 String string;
                 try {
@@ -116,13 +116,5 @@ public class User implements com.netflix.mediaclient.servicemgr.model.user.User
             }
             break;
         }
-    }
-    
-    public class Summary
-    {
-        private String email;
-        private String firstName;
-        private String lastName;
-        private String userId;
     }
 }

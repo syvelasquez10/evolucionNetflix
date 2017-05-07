@@ -9,7 +9,7 @@ import com.netflix.mediaclient.Log;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.Date;
 
-public class Ref implements ReferenceTarget, PathBound, Expires
+public class Ref implements Expires, PathBound, ReferenceTarget
 {
     static final String TAG = "Ref";
     private Date expires;
@@ -71,33 +71,40 @@ public class Ref implements ReferenceTarget, PathBound, Expires
     
     public Object getValue(final ModelProxy<?> modelProxy) {
         final Object value = this.valueRef.get();
+        Object o;
         if (value != null) {
+            o = value;
             if (Log.isLoggable("Ref", 2)) {
                 Log.v("Ref", "getValue returned hard ref for path: " + this.refPath);
+                o = value;
             }
-            return value;
         }
-        final Object value2 = modelProxy.getValue(this.refPath);
-        if (value2 instanceof ReferenceTarget) {
-            if (Log.isLoggable("Ref", 2)) {
-                Log.v("Ref", "Target is capable of storing references, create hard reference: " + this.refPath);
+        else {
+            final Object value2 = modelProxy.getValue(this.refPath);
+            if (value2 instanceof ReferenceTarget) {
+                if (Log.isLoggable("Ref", 2)) {
+                    Log.v("Ref", "Target is capable of storing references, create hard reference: " + this.refPath);
+                }
+                final ReferenceTarget referenceTarget = (ReferenceTarget)value2;
+                referenceTarget.setReferences(new LinkedList<Ref>(this, (LinkedList<Object>)referenceTarget.getReferences()));
+                this.valueRef.set(value2);
+                return value2;
             }
-            final ReferenceTarget referenceTarget = (ReferenceTarget)value2;
-            referenceTarget.setReferences(new LinkedList<Ref>(this, (LinkedList<Object>)referenceTarget.getReferences()));
-            this.valueRef.set(value2);
+            o = value2;
+            if (Log.isLoggable("Ref", 5)) {
+                final StringBuilder append = new StringBuilder().append("Target CANNOT store references, got value for path: ").append(this.refPath).append(", class: ");
+                Serializable class1;
+                if (value2 == null) {
+                    class1 = "n/a";
+                }
+                else {
+                    class1 = ((ReferenceTarget)value2).getClass();
+                }
+                Log.w("Ref", append.append(class1).toString());
+                return value2;
+            }
         }
-        else if (Log.isLoggable("Ref", 5)) {
-            final StringBuilder append = new StringBuilder().append("Target CANNOT store references, got value for path: ").append(this.refPath).append(", class: ");
-            Serializable class1;
-            if (value2 == null) {
-                class1 = "n/a";
-            }
-            else {
-                class1 = ((ReferenceTarget)value2).getClass();
-            }
-            Log.w("Ref", append.append(class1).toString());
-        }
-        return value2;
+        return o;
     }
     
     @Override

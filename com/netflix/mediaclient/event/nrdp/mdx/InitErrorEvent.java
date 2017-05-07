@@ -5,24 +5,23 @@
 package com.netflix.mediaclient.event.nrdp.mdx;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.javabridge.ui.Mdx;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
 public class InitErrorEvent extends JsonBaseNccpEvent
 {
     private static final String ATTR_errorCode = "errorCode";
     private static final String ATTR_errorDesc = "errorDesc";
-    public static final Mdx.Events TYPE;
+    public static final Mdx$Events TYPE;
     private int errorCode;
     private String errorDesc;
     
     static {
-        TYPE = Mdx.Events.mdx_init;
+        TYPE = Mdx$Events.mdx_init;
     }
     
-    public InitErrorEvent(final JSONObject jsonObject) throws JSONException {
+    public InitErrorEvent(final JSONObject jsonObject) {
         super(InitErrorEvent.TYPE.getName(), jsonObject);
     }
     
@@ -44,7 +43,7 @@ public class InitErrorEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.errorCode = BaseNccpEvent.getInt(jsonObject, "errorCode", -1);
         this.errorDesc = BaseNccpEvent.getString(jsonObject, "errorDesc", null);
     }

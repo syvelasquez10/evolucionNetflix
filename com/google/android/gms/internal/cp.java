@@ -11,7 +11,7 @@ import com.google.android.gms.dynamic.e;
 import android.content.Context;
 
 @ez
-public final class cp implements a
+public final class cp implements cq$a
 {
     private final ct lq;
     private final Context mContext;
@@ -126,24 +126,7 @@ public final class cp implements a
         synchronized (this.mw) {
             final long elapsedRealtime = SystemClock.elapsedRealtime();
             final co co = new co();
-            gr.wC.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (cp.this.mw) {
-                        if (cp.this.qu != -2) {
-                            return;
-                        }
-                        cp.this.qt = cp.this.bF();
-                        if (cp.this.qt == null) {
-                            cp.this.j(4);
-                            return;
-                        }
-                    }
-                    co.a(cp.this);
-                    cp.this.a(co);
-                }
-                // monitorexit(o)
-            });
+            gr.wC.post((Runnable)new cp$1(this, co));
             this.a(elapsedRealtime, this.qp, n, n2);
             return new cq(this.qq, this.qt, this.qo, co, this.qu);
         }

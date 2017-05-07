@@ -4,16 +4,15 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -43,12 +42,12 @@ public class SendThanksToSocialNotificationRequest extends FalcorVolleyWebClient
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
     protected String getOptionalParams() {
-        final String urlEncodPQLParam = FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), "\"" + this.mNotification.getStoryId() + "\"");
+        final String urlEncodPQLParam = FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "\"" + this.mNotification.getStoryId() + "\"");
         if (Log.isLoggable("nf_service_browse_sendsendtosocialnotificationrequest", 3)) {
             Log.d("nf_service_browse_sendsendtosocialnotificationrequest", " getOptionalParams: " + urlEncodPQLParam);
         }
@@ -75,7 +74,7 @@ public class SendThanksToSocialNotificationRequest extends FalcorVolleyWebClient
     }
     
     @Override
-    protected SocialNotificationSummary parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected SocialNotificationSummary parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_sendsendtosocialnotificationrequest", 4)) {
             Log.i("nf_service_browse_sendsendtosocialnotificationrequest", "Got result: " + s);
         }

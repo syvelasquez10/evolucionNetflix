@@ -8,13 +8,13 @@ import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.content.Context;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
-import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
+import com.netflix.mediaclient.servicemgr.FetchVideosHandler$FetchCallback;
 import com.netflix.mediaclient.servicemgr.model.Video;
 
-public abstract class BaseProgressivePagerAdapter<T extends Video> implements RowAdapter, FetchCallback<T>
+public abstract class BaseProgressivePagerAdapter<T extends Video> implements FetchVideosHandler$FetchCallback<T>, RowAdapter
 {
     protected static final String TAG = "BaseProgressivePagerAdapter";
     private final RowAdapterCallbacks adapterCallbacks;
@@ -24,9 +24,9 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Ro
     private final ServiceManager manager;
     private final BasePaginatedAdapter<T> paginatedAdapter;
     private long requestId;
-    private final ObjectRecycler.ViewRecycler viewRecycler;
+    private final ObjectRecycler$ViewRecycler viewRecycler;
     
-    public BaseProgressivePagerAdapter(final ServiceManager manager, final RowAdapterCallbacks adapterCallbacks, final ObjectRecycler.ViewRecycler viewRecycler) {
+    public BaseProgressivePagerAdapter(final ServiceManager manager, final RowAdapterCallbacks adapterCallbacks, final ObjectRecycler$ViewRecycler viewRecycler) {
         this.adapterCallbacks = adapterCallbacks;
         this.manager = manager;
         this.viewRecycler = viewRecycler;
@@ -122,17 +122,17 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Ro
     
     @Override
     public void restoreFromMemento(final Object o) {
-        final Memento memento = (Memento)o;
+        final BaseProgressivePagerAdapter$Memento baseProgressivePagerAdapter$Memento = (BaseProgressivePagerAdapter$Memento)o;
         this.invalidateRequestId();
-        this.lomo = memento.lomo;
-        this.hasMoreData = memento.hasMoreData;
-        this.currDataIndex = memento.currDataIndex;
-        this.paginatedAdapter.restoreFromMemento(memento.adapterMemento);
+        this.lomo = baseProgressivePagerAdapter$Memento.lomo;
+        this.hasMoreData = baseProgressivePagerAdapter$Memento.hasMoreData;
+        this.currDataIndex = baseProgressivePagerAdapter$Memento.currDataIndex;
+        this.paginatedAdapter.restoreFromMemento(baseProgressivePagerAdapter$Memento.adapterMemento);
     }
     
     @Override
-    public Memento saveToMemento() {
-        return new Memento(this.lomo, this.hasMoreData, this.currDataIndex, this.paginatedAdapter);
+    public BaseProgressivePagerAdapter$Memento saveToMemento() {
+        return new BaseProgressivePagerAdapter$Memento(this.lomo, this.hasMoreData, this.currDataIndex, this.paginatedAdapter);
     }
     
     @Override
@@ -149,33 +149,5 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Ro
         this.hasMoreData = (list.size() == this.getNumVideosToFetchPerBatch());
         this.paginatedAdapter.appendData(list, s, n, n2);
         this.adapterCallbacks.notifyParentOfDataSetChange();
-    }
-    
-    static class Memento
-    {
-        final BasePaginatedAdapter.Memento adapterMemento;
-        final int currDataIndex;
-        final boolean hasMoreData;
-        final BasicLoMo lomo;
-        
-        protected Memento(final BasicLoMo lomo, final boolean hasMoreData, final int currDataIndex, final BasePaginatedAdapter<?> basePaginatedAdapter) {
-            this.lomo = lomo;
-            this.hasMoreData = hasMoreData;
-            this.currDataIndex = currDataIndex;
-            this.adapterMemento = (BasePaginatedAdapter.Memento)basePaginatedAdapter.saveToMemento();
-        }
-        
-        @Override
-        public String toString() {
-            final StringBuilder append = new StringBuilder().append("lomo: ");
-            String title;
-            if (this.lomo == null) {
-                title = "no lomo";
-            }
-            else {
-                title = this.lomo.getTitle();
-            }
-            return append.append(title).append(", hasMoreData: ").append(this.hasMoreData).append(", currDataIndex: ").append(this.currDataIndex).append(", adapter: ").append(this.adapterMemento).toString();
-        }
     }
 }

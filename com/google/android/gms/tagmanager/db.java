@@ -31,9 +31,9 @@ class db implements ab
     private final Context arf;
     private final String arw;
     private final HttpClient arx;
-    private a ary;
+    private db$a ary;
     
-    db(final HttpClient arx, final Context context, final a ary) {
+    db(final HttpClient arx, final Context context, final db$a ary) {
         this.arf = context.getApplicationContext();
         this.arw = this.a("GoogleTagManager", "4.00", Build$VERSION.RELEASE, c(Locale.getDefault()), Build.MODEL, Build.ID);
         this.arx = arx;
@@ -165,10 +165,10 @@ class db implements ab
                     a.addHeader("Host", httpHost.toHostString());
                     this.a(a);
                     int n2 = 0;
-                    Label_0401: {
-                        Label_0167: {
+                    Label_0400: {
+                        Label_0166: {
                             if ((n2 = n) == 0) {
-                                break Label_0167;
+                                break Label_0166;
                             }
                             int n3 = n;
                             try {
@@ -195,12 +195,12 @@ class db implements ab
                                     n3 = n2;
                                     n = n2;
                                     this.ary.c(ap);
-                                    break Label_0401;
+                                    break Label_0400;
                                 }
                                 n3 = n2;
                                 n = n2;
                                 this.ary.a(ap);
-                                break Label_0401;
+                                break Label_0400;
                             }
                             catch (ClientProtocolException ex2) {
                                 bh.W("ClientProtocolException sending hit; discarding hit...");
@@ -221,14 +221,5 @@ class db implements ab
                 }
             }
         }
-    }
-    
-    public interface a
-    {
-        void a(final ap p0);
-        
-        void b(final ap p0);
-        
-        void c(final ap p0);
     }
 }

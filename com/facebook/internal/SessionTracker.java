@@ -4,35 +4,34 @@
 
 package com.facebook.internal;
 
-import com.facebook.SessionState;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Context;
-import android.content.BroadcastReceiver;
 import com.facebook.Session;
+import android.content.BroadcastReceiver;
+import com.facebook.Session$StatusCallback;
 import android.support.v4.content.LocalBroadcastManager;
 
 public class SessionTracker
 {
     private final LocalBroadcastManager broadcastManager;
-    private final Session.StatusCallback callback;
+    private final Session$StatusCallback callback;
     private boolean isTracking;
     private final BroadcastReceiver receiver;
     private Session session;
     
-    public SessionTracker(final Context context, final Session.StatusCallback statusCallback) {
-        this(context, statusCallback, null);
+    public SessionTracker(final Context context, final Session$StatusCallback session$StatusCallback) {
+        this(context, session$StatusCallback, null);
     }
     
-    SessionTracker(final Context context, final Session.StatusCallback statusCallback, final Session session) {
-        this(context, statusCallback, session, true);
+    SessionTracker(final Context context, final Session$StatusCallback session$StatusCallback, final Session session) {
+        this(context, session$StatusCallback, session, true);
     }
     
-    public SessionTracker(final Context context, final Session.StatusCallback statusCallback, final Session session, final boolean b) {
+    public SessionTracker(final Context context, final Session$StatusCallback session$StatusCallback, final Session session, final boolean b) {
         this.isTracking = false;
-        this.callback = new CallbackWrapper(statusCallback);
+        this.callback = new SessionTracker$CallbackWrapper(this, session$StatusCallback);
         this.session = session;
-        this.receiver = new ActiveSessionBroadcastReceiver();
+        this.receiver = new SessionTracker$ActiveSessionBroadcastReceiver(this, null);
         this.broadcastManager = LocalBroadcastManager.getInstance(context);
         if (b) {
             this.startTracking();
@@ -117,36 +116,5 @@ public class SessionTracker
         }
         this.broadcastManager.unregisterReceiver(this.receiver);
         this.isTracking = false;
-    }
-    
-    private class ActiveSessionBroadcastReceiver extends BroadcastReceiver
-    {
-        public void onReceive(final Context context, final Intent intent) {
-            if ("com.facebook.sdk.ACTIVE_SESSION_SET".equals(intent.getAction())) {
-                final Session activeSession = Session.getActiveSession();
-                if (activeSession != null) {
-                    activeSession.addCallback(SessionTracker.this.callback);
-                }
-            }
-        }
-    }
-    
-    private class CallbackWrapper implements StatusCallback
-    {
-        private final StatusCallback wrapped;
-        
-        public CallbackWrapper(final StatusCallback wrapped) {
-            this.wrapped = wrapped;
-        }
-        
-        @Override
-        public void call(final Session session, final SessionState sessionState, final Exception ex) {
-            if (this.wrapped != null && SessionTracker.this.isTracking()) {
-                this.wrapped.call(session, sessionState, ex);
-            }
-            if (session == SessionTracker.this.session && sessionState.isClosed()) {
-                SessionTracker.this.setSession(null);
-            }
-        }
     }
 }

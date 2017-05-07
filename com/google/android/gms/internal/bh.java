@@ -82,7 +82,7 @@ public final class bh
         }
     }
     
-    private void bi() throws RemoteException {
+    private void bi() {
         if ((this.oj == null || this.ok == null) && this.oz == null) {
             throw new IllegalStateException("The ad size and ad unit ID must be set before loadAd is called.");
         }

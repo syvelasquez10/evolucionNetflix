@@ -9,10 +9,6 @@ public class SubscriptionExtensions
     public static final Subscription EMPTY;
     
     static {
-        EMPTY = new Subscription() {
-            @Override
-            public void dispose() {
-            }
-        };
+        EMPTY = new SubscriptionExtensions$1();
     }
 }

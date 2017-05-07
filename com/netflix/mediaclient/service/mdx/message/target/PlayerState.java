@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message.target;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 
@@ -38,7 +37,7 @@ public class PlayerState
     private int mVolume;
     private String mXid;
     
-    public PlayerState(final JSONObject jsonObject) throws JSONException {
+    public PlayerState(final JSONObject jsonObject) {
         this.mTime = -1;
         this.mVolume = -1;
         this.mDuration = -1;

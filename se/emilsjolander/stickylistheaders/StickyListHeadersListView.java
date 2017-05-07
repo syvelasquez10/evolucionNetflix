@@ -5,9 +5,7 @@
 package se.emilsjolander.stickylistheaders;
 
 import android.content.res.TypedArray;
-import android.widget.AbsListView;
 import android.widget.AbsListView$RecyclerListener;
-import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
 import android.widget.AdapterView$OnItemLongClickListener;
 import android.widget.AdapterView$OnItemClickListener;
@@ -43,7 +41,7 @@ public class StickyListHeadersListView extends FrameLayout
     private AdapterWrapper mAdapter;
     private boolean mAreHeadersSticky;
     private boolean mClippingToPadding;
-    private AdapterWrapperDataSetObserver mDataSetObserver;
+    private StickyListHeadersListView$AdapterWrapperDataSetObserver mDataSetObserver;
     private Drawable mDivider;
     private int mDividerHeight;
     private View mHeader;
@@ -52,10 +50,10 @@ public class StickyListHeadersListView extends FrameLayout
     private Integer mHeaderPosition;
     private boolean mIsDrawingListUnderStickyHeader;
     private WrapperViewList mList;
-    private OnHeaderClickListener mOnHeaderClickListener;
+    private StickyListHeadersListView$OnHeaderClickListener mOnHeaderClickListener;
     private AbsListView$OnScrollListener mOnScrollListenerDelegate;
-    private OnStickyHeaderChangedListener mOnStickyHeaderChangedListener;
-    private OnStickyHeaderOffsetChangedListener mOnStickyHeaderOffsetChangedListener;
+    private StickyListHeadersListView$OnStickyHeaderChangedListener mOnStickyHeaderChangedListener;
+    private StickyListHeadersListView$OnStickyHeaderOffsetChangedListener mOnStickyHeaderOffsetChangedListener;
     private int mPaddingBottom;
     private int mPaddingLeft;
     private int mPaddingRight;
@@ -70,6 +68,7 @@ public class StickyListHeadersListView extends FrameLayout
     }
     
     public StickyListHeadersListView(Context obtainStyledAttributes, final AttributeSet set, int n) {
+        final boolean b = true;
         super(obtainStyledAttributes, set, n);
         this.mAreHeadersSticky = true;
         this.mClippingToPadding = true;
@@ -83,14 +82,14 @@ public class StickyListHeadersListView extends FrameLayout
         this.mDividerHeight = this.mList.getDividerHeight();
         this.mList.setDivider((Drawable)null);
         this.mList.setDividerHeight(0);
-        Label_0569: {
+        Label_0573: {
             if (set == null) {
-                break Label_0569;
+                break Label_0573;
             }
             while (true) {
-                obtainStyledAttributes = (Context)obtainStyledAttributes.getTheme().obtainStyledAttributes(set, R.styleable.StickyListHeadersListView, 0, 0);
+                obtainStyledAttributes = (Context)obtainStyledAttributes.getTheme().obtainStyledAttributes(set, R$styleable.StickyListHeadersListView, 0, 0);
                 while (true) {
-                    Label_0655: {
+                    Label_0659: {
                         try {
                             n = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(1, 0);
                             this.mPaddingLeft = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(2, n);
@@ -103,7 +102,7 @@ public class StickyListHeadersListView extends FrameLayout
                             this.mList.setClipToPadding(this.mClippingToPadding);
                             n = ((TypedArray)obtainStyledAttributes).getInt(6, 512);
                             this.mList.setVerticalScrollBarEnabled((n & 0x200) != 0x0);
-                            this.mList.setHorizontalScrollBarEnabled((n & 0x100) != 0x0);
+                            this.mList.setHorizontalScrollBarEnabled((n & 0x100) != 0x0 && b);
                             if (Build$VERSION.SDK_INT >= 9) {
                                 this.mList.setOverScrollMode(((TypedArray)obtainStyledAttributes).getInt(18, 0));
                             }
@@ -115,7 +114,7 @@ public class StickyListHeadersListView extends FrameLayout
                             }
                             else {
                                 if (n != 8192) {
-                                    break Label_0655;
+                                    break Label_0659;
                                 }
                                 this.mList.setVerticalFadingEdgeEnabled(true);
                                 this.mList.setHorizontalFadingEdgeEnabled(false);
@@ -142,8 +141,8 @@ public class StickyListHeadersListView extends FrameLayout
                             this.mAreHeadersSticky = ((TypedArray)obtainStyledAttributes).getBoolean(21, true);
                             this.mIsDrawingListUnderStickyHeader = ((TypedArray)obtainStyledAttributes).getBoolean(22, true);
                             ((TypedArray)obtainStyledAttributes).recycle();
-                            this.mList.setLifeCycleListener((WrapperViewList.LifeCycleListener)new WrapperViewListLifeCycleListener());
-                            this.mList.setOnScrollListener((AbsListView$OnScrollListener)new WrapperListScrollListener());
+                            this.mList.setLifeCycleListener(new StickyListHeadersListView$WrapperViewListLifeCycleListener(this, null));
+                            this.mList.setOnScrollListener((AbsListView$OnScrollListener)new StickyListHeadersListView$WrapperListScrollListener(this, null));
                             this.addView((View)this.mList);
                             return;
                         }
@@ -157,14 +156,6 @@ public class StickyListHeadersListView extends FrameLayout
                 }
             }
         }
-    }
-    
-    static /* synthetic */ boolean access$1200(final StickyListHeadersListView stickyListHeadersListView, final Canvas canvas, final View view, final long n) {
-        return stickyListHeadersListView.drawChild(canvas, view, n);
-    }
-    
-    static /* synthetic */ boolean access$1300(final StickyListHeadersListView stickyListHeadersListView, final Canvas canvas, final View view, final long n) {
-        return stickyListHeadersListView.drawChild(canvas, view, n);
     }
     
     private void clearHeader() {
@@ -250,16 +241,11 @@ public class StickyListHeadersListView extends FrameLayout
             this.removeView(this.mHeader);
         }
         this.addView(this.mHeader = mHeader);
-        this.mHeader.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (StickyListHeadersListView.this.mOnHeaderClickListener != null) {
-                    StickyListHeadersListView.this.mOnHeaderClickListener.onHeaderClick(StickyListHeadersListView.this, StickyListHeadersListView.this.mHeader, StickyListHeadersListView.this.mHeaderPosition, StickyListHeadersListView.this.mHeaderId, true);
-                }
-            }
-        });
+        this.mHeader.setOnClickListener((View$OnClickListener)new StickyListHeadersListView$1(this));
     }
     
     private void updateHeader(int mPaddingTop) {
+        final boolean b = false;
         if (this.mHeaderPosition == null || this.mHeaderPosition != mPaddingTop) {
             this.mHeaderPosition = mPaddingTop;
             final long headerId = this.mAdapter.getHeaderId(mPaddingTop);
@@ -280,7 +266,6 @@ public class StickyListHeadersListView extends FrameLayout
                 this.mHeaderOffset = null;
             }
         }
-        final boolean b = false;
         final int measuredHeight = this.mHeader.getMeasuredHeight();
         if (this.mClippingToPadding) {
             mPaddingTop = this.mPaddingTop;
@@ -336,7 +321,7 @@ public class StickyListHeadersListView extends FrameLayout
             else {
                 intValue = 0;
             }
-            mPaddingTop = measuredHeight + intValue;
+            mPaddingTop = intValue + measuredHeight;
         }
         else if (this.mClippingToPadding) {
             mPaddingTop = this.mPaddingTop;
@@ -596,12 +581,14 @@ public class StickyListHeadersListView extends FrameLayout
     }
     
     protected void onLayout(final boolean b, int mPaddingTop, int topMargin, final int n, final int n2) {
-        mPaddingTop = 0;
         this.mList.layout(0, 0, this.mList.getMeasuredWidth(), this.getHeight());
         if (this.mHeader != null) {
             topMargin = ((ViewGroup$MarginLayoutParams)this.mHeader.getLayoutParams()).topMargin;
             if (this.mClippingToPadding) {
                 mPaddingTop = this.mPaddingTop;
+            }
+            else {
+                mPaddingTop = 0;
             }
             mPaddingTop += topMargin;
             this.mHeader.layout(this.mPaddingLeft, mPaddingTop, this.mHeader.getMeasuredWidth() + this.mPaddingLeft, this.mHeader.getMeasuredHeight() + mPaddingTop);
@@ -652,10 +639,10 @@ public class StickyListHeadersListView extends FrameLayout
         else {
             this.mAdapter = new AdapterWrapper(this.getContext(), stickyListHeadersAdapter);
         }
-        this.mDataSetObserver = new AdapterWrapperDataSetObserver();
+        this.mDataSetObserver = new StickyListHeadersListView$AdapterWrapperDataSetObserver(this, null);
         this.mAdapter.registerDataSetObserver((DataSetObserver)this.mDataSetObserver);
         if (this.mOnHeaderClickListener != null) {
-            this.mAdapter.setOnHeaderClickListener((AdapterWrapper.OnHeaderClickListener)new AdapterWrapperHeaderClickHandler());
+            this.mAdapter.setOnHeaderClickListener(new StickyListHeadersListView$AdapterWrapperHeaderClickHandler(this, null));
         }
         else {
             this.mAdapter.setOnHeaderClickListener(null);
@@ -741,14 +728,14 @@ public class StickyListHeadersListView extends FrameLayout
         this.mList.setOnCreateContextMenuListener(onCreateContextMenuListener);
     }
     
-    public void setOnHeaderClickListener(final OnHeaderClickListener mOnHeaderClickListener) {
+    public void setOnHeaderClickListener(final StickyListHeadersListView$OnHeaderClickListener mOnHeaderClickListener) {
         this.mOnHeaderClickListener = mOnHeaderClickListener;
         if (this.mAdapter != null) {
             if (this.mOnHeaderClickListener == null) {
                 this.mAdapter.setOnHeaderClickListener(null);
                 return;
             }
-            this.mAdapter.setOnHeaderClickListener((AdapterWrapper.OnHeaderClickListener)new AdapterWrapperHeaderClickHandler());
+            this.mAdapter.setOnHeaderClickListener(new StickyListHeadersListView$AdapterWrapperHeaderClickHandler(this, null));
         }
     }
     
@@ -764,21 +751,17 @@ public class StickyListHeadersListView extends FrameLayout
         this.mOnScrollListenerDelegate = mOnScrollListenerDelegate;
     }
     
-    public void setOnStickyHeaderChangedListener(final OnStickyHeaderChangedListener mOnStickyHeaderChangedListener) {
+    public void setOnStickyHeaderChangedListener(final StickyListHeadersListView$OnStickyHeaderChangedListener mOnStickyHeaderChangedListener) {
         this.mOnStickyHeaderChangedListener = mOnStickyHeaderChangedListener;
     }
     
-    public void setOnStickyHeaderOffsetChangedListener(final OnStickyHeaderOffsetChangedListener mOnStickyHeaderOffsetChangedListener) {
+    public void setOnStickyHeaderOffsetChangedListener(final StickyListHeadersListView$OnStickyHeaderOffsetChangedListener mOnStickyHeaderOffsetChangedListener) {
         this.mOnStickyHeaderOffsetChangedListener = mOnStickyHeaderOffsetChangedListener;
     }
     
     public void setOnTouchListener(final View$OnTouchListener view$OnTouchListener) {
         if (view$OnTouchListener != null) {
-            this.mList.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
-                public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                    return view$OnTouchListener.onTouch((View)StickyListHeadersListView.this, motionEvent);
-                }
-            });
+            this.mList.setOnTouchListener((View$OnTouchListener)new StickyListHeadersListView$2(this, view$OnTouchListener));
             return;
         }
         this.mList.setOnTouchListener((View$OnTouchListener)null);
@@ -831,7 +814,7 @@ public class StickyListHeadersListView extends FrameLayout
         if (!this.mClippingToPadding) {
             mPaddingTop = this.mPaddingTop;
         }
-        this.mList.setSelectionFromTop(n, n2 + headerOverlap - mPaddingTop);
+        this.mList.setSelectionFromTop(n, headerOverlap + n2 - mPaddingTop);
     }
     
     public void setSelector(final int selector) {
@@ -912,7 +895,7 @@ public class StickyListHeadersListView extends FrameLayout
             if (!this.mClippingToPadding) {
                 mPaddingTop = this.mPaddingTop;
             }
-            this.mList.smoothScrollToPositionFromTop(n, n2 + headerOverlap - mPaddingTop);
+            this.mList.smoothScrollToPositionFromTop(n, headerOverlap + n2 - mPaddingTop);
         }
     }
     
@@ -930,77 +913,7 @@ public class StickyListHeadersListView extends FrameLayout
             if (!this.mClippingToPadding) {
                 mPaddingTop = this.mPaddingTop;
             }
-            this.mList.smoothScrollToPositionFromTop(n, n2 + headerOverlap - mPaddingTop, n3);
-        }
-    }
-    
-    private class AdapterWrapperDataSetObserver extends DataSetObserver
-    {
-        public void onChanged() {
-            StickyListHeadersListView.this.clearHeader();
-        }
-        
-        public void onInvalidated() {
-            StickyListHeadersListView.this.clearHeader();
-        }
-    }
-    
-    private class AdapterWrapperHeaderClickHandler implements AdapterWrapper.OnHeaderClickListener
-    {
-        @Override
-        public void onHeaderClick(final View view, final int n, final long n2) {
-            StickyListHeadersListView.this.mOnHeaderClickListener.onHeaderClick(StickyListHeadersListView.this, view, n, n2, false);
-        }
-    }
-    
-    public interface OnHeaderClickListener
-    {
-        void onHeaderClick(final StickyListHeadersListView p0, final View p1, final int p2, final long p3, final boolean p4);
-    }
-    
-    public interface OnStickyHeaderChangedListener
-    {
-        void onStickyHeaderChanged(final StickyListHeadersListView p0, final View p1, final int p2, final long p3);
-    }
-    
-    public interface OnStickyHeaderOffsetChangedListener
-    {
-        void onStickyHeaderOffsetChanged(final StickyListHeadersListView p0, final View p1, final int p2);
-    }
-    
-    private class WrapperListScrollListener implements AbsListView$OnScrollListener
-    {
-        public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
-            if (StickyListHeadersListView.this.mOnScrollListenerDelegate != null) {
-                StickyListHeadersListView.this.mOnScrollListenerDelegate.onScroll(absListView, n, n2, n3);
-            }
-            StickyListHeadersListView.this.updateOrClearHeader(StickyListHeadersListView.this.mList.getFixedFirstVisibleItem());
-        }
-        
-        public void onScrollStateChanged(final AbsListView absListView, final int n) {
-            if (StickyListHeadersListView.this.mOnScrollListenerDelegate != null) {
-                StickyListHeadersListView.this.mOnScrollListenerDelegate.onScrollStateChanged(absListView, n);
-            }
-        }
-    }
-    
-    private class WrapperViewListLifeCycleListener implements LifeCycleListener
-    {
-        @Override
-        public void onDispatchDrawOccurred(final Canvas canvas) {
-            if (Build$VERSION.SDK_INT < 8) {
-                StickyListHeadersListView.this.updateOrClearHeader(StickyListHeadersListView.this.mList.getFixedFirstVisibleItem());
-            }
-            if (StickyListHeadersListView.this.mHeader != null) {
-                if (!StickyListHeadersListView.this.mClippingToPadding) {
-                    StickyListHeadersListView.access$1300(StickyListHeadersListView.this, canvas, StickyListHeadersListView.this.mHeader, 0L);
-                    return;
-                }
-                canvas.save();
-                canvas.clipRect(0, StickyListHeadersListView.this.mPaddingTop, StickyListHeadersListView.this.getRight(), StickyListHeadersListView.this.getBottom());
-                StickyListHeadersListView.access$1200(StickyListHeadersListView.this, canvas, StickyListHeadersListView.this.mHeader, 0L);
-                canvas.restore();
-            }
+            this.mList.smoothScrollToPositionFromTop(n, headerOverlap + n2 - mPaddingTop, n3);
         }
     }
 }

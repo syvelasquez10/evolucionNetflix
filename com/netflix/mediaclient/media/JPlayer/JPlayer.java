@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.media.JPlayer;
 
 import java.util.Arrays;
-import com.netflix.mediaclient.util.AndroidUtils;
 import java.nio.ByteBuffer;
 import android.util.Log;
 import android.media.MediaFormat;
@@ -35,8 +34,8 @@ public class JPlayer
     private boolean mInitialAudioInit;
     private boolean mInitialVideoInit;
     private JSONObject mJPlayerConfig;
-    private JplayerListener mJplayerListener;
-    VideoEventListener mListener;
+    private JPlayer$JplayerListener mJplayerListener;
+    JPlayer$VideoEventListener mListener;
     private long mNativePlayer;
     private volatile int mState;
     private Surface mSurface1;
@@ -55,7 +54,7 @@ public class JPlayer
         this.mInitialAudioInit = false;
         this.mAudioErrStack = "";
         this.mJPlayerConfig = null;
-        this.mListener = new VideoEventListener();
+        this.mListener = new JPlayer$VideoEventListener(this);
         this.mJPlayerConfig = mjPlayerConfig;
         final MediaFormat mediaFormat = new MediaFormat();
         mediaFormat.setString("mime", "audio/mp4a-latm");
@@ -64,7 +63,7 @@ public class JPlayer
         mediaFormat.setInteger("sample-rate", 48000);
         while (true) {
             try {
-                this.mAudioPipe = new AudioDecoderPipe(new AudioDataSource(), "audio/mp4a-latm", mediaFormat, null, "1", mjPlayerConfig);
+                this.mAudioPipe = new AudioDecoderPipe(new JPlayer$AudioDataSource(this), "audio/mp4a-latm", mediaFormat, null, "1", mjPlayerConfig);
                 this.mInitialAudioInit = true;
                 this.mSurface1 = mSurface1;
             }
@@ -85,7 +84,7 @@ public class JPlayer
         this.mInitialAudioInit = false;
         this.mAudioErrStack = "";
         this.mJPlayerConfig = null;
-        this.mListener = new VideoEventListener();
+        this.mListener = new JPlayer$VideoEventListener(this);
         this.mJPlayerConfig = mjPlayerConfig;
         final MediaFormat mediaFormat = new MediaFormat();
         mediaFormat.setString("mime", "audio/mp4a-latm");
@@ -94,7 +93,7 @@ public class JPlayer
         mediaFormat.setInteger("sample-rate", 48000);
         while (true) {
             try {
-                this.mAudioPipe = new AudioDecoderPipe(new AudioDataSource(), "audio/mp4a-latm", mediaFormat, null, "1", mjPlayerConfig);
+                this.mAudioPipe = new AudioDecoderPipe(new JPlayer$AudioDataSource(this), "audio/mp4a-latm", mediaFormat, null, "1", mjPlayerConfig);
                 this.mInitialAudioInit = true;
                 this.mSurfaceHolder = mSurfaceHolder;
             }
@@ -109,104 +108,12 @@ public class JPlayer
     
     private void configureVideoPipe() {
         Log.d("NF_JPlayer", "start video pipe");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final MediaFormat mediaFormat = new MediaFormat();
-                mediaFormat.setString("mime", "video/avc");
-            Label_0194_Outer:
-                while (true) {
-                    while (true) {
-                        Label_0240: {
-                            if (AndroidUtils.getAndroidVersion() <= 18) {
-                                break Label_0240;
-                            }
-                            mediaFormat.setInteger("max-width", 720);
-                            mediaFormat.setInteger("max-height", 480);
-                            mediaFormat.setInteger("width", 720);
-                            mediaFormat.setInteger("height", 480);
-                            if (JPlayer.this.mVideoPipe1 != null && (JPlayer.this.mVideoPipe == JPlayer.this.mVideoPipe1 || !JPlayer.this.mVideoPipe1.isStopped())) {
-                                break Label_0240;
-                            }
-                            Log.d("NF_JPlayer", "mVideoPipe1 is idle");
-                            try {
-                                JPlayer.this.mVideoPipe1 = new VideoDecoderPipe(new VideoDataSource(), "video/avc", mediaFormat, JPlayer.this.mSurface1, "1", JPlayer.this.mJPlayerConfig);
-                                JPlayer.this.mVideoPipe = JPlayer.this.mVideoPipe1;
-                                JPlayer.this.mInitialVideoInit = true;
-                                JPlayer.this.mVideoPipe1.setEventListener((MediaDecoderPipe.EventListener)JPlayer.this.mListener);
-                                if (JPlayer.this.mVideoPipe.isDecoderCreated()) {
-                                    final MediaDecoderPipe.Clock clock = JPlayer.this.mAudioPipe.getClock();
-                                    JPlayer.this.mVideoPipe.start();
-                                    JPlayer.this.mVideoPipe.setReferenceClock(clock);
-                                    return;
-                                }
-                                break Label_0194_Outer;
-                                mediaFormat.setInteger("max-input-size", 163840);
-                                mediaFormat.setInteger("width", 720);
-                                mediaFormat.setInteger("height", 480);
-                                continue Label_0194_Outer;
-                            }
-                            catch (Exception ex) {
-                                Log.e("NF_JPlayer", Log.getStackTraceString((Throwable)ex));
-                                if (!JPlayer.this.mInitialVideoInit) {
-                                    JPlayer.this.nativeNotifyError(-2, Log.getStackTraceString((Throwable)ex));
-                                }
-                                JPlayer.this.mVideoPipe = null;
-                                return;
-                            }
-                        }
-                        if (JPlayer.this.mVideoPipe2 == null || (JPlayer.this.mVideoPipe != JPlayer.this.mVideoPipe2 && JPlayer.this.mVideoPipe2.isStopped())) {
-                            Log.d("NF_JPlayer", "mVideoPipe2 is idle");
-                            if (JPlayer.this.mSurface2 == null) {
-                                if (JPlayer.this.mJplayerListener != null) {
-                                    JPlayer.this.mSurface2 = JPlayer.this.mJplayerListener.onGetTextureSurface();
-                                }
-                                if (JPlayer.this.mSurface2 == null) {
-                                    Log.d("NF_JPlayer", "TextureSurface is not ready, wait...");
-                                    try {
-                                        Thread.sleep(10L);
-                                        continue Label_0194_Outer;
-                                    }
-                                    catch (InterruptedException ex3) {
-                                        Log.d("NF_JPlayer", "configureVideoPipe interrupted");
-                                        continue;
-                                    }
-                                }
-                            }
-                            try {
-                                JPlayer.this.mVideoPipe2 = new VideoDecoderPipe(new VideoDataSource(), "video/avc", mediaFormat, JPlayer.this.mSurface2, "2", JPlayer.this.mJPlayerConfig);
-                                JPlayer.this.mVideoPipe = JPlayer.this.mVideoPipe2;
-                                JPlayer.this.mVideoPipe2.setEventListener((MediaDecoderPipe.EventListener)JPlayer.this.mListener);
-                                continue;
-                            }
-                            catch (Exception ex2) {
-                                JPlayer.this.mVideoPipe = null;
-                                Log.e("NF_JPlayer", Log.getStackTraceString((Throwable)ex2));
-                                return;
-                            }
-                        }
-                        try {
-                            Thread.sleep(50L);
-                            Log.d("NF_JPlayer", "video pipe is not ready, wait...");
-                            continue Label_0194_Outer;
-                        }
-                        catch (InterruptedException ex4) {
-                            Log.d("NF_JPlayer", "configureVideoPipe interrupted");
-                            continue;
-                        }
-                        break;
-                    }
-                    break;
-                }
-                Log.e("NF_JPlayer", "VideoDecoder initialization failed, exiting...");
-                JPlayer.this.mVideoPipe = null;
-            }
-        }, "configure video pipe").start();
+        new Thread(new JPlayer$1(this), "configure video pipe").start();
     }
     
-    private native int nativeGetBuffer(final byte[] p0, final boolean p1, final InputBufInfo p2);
+    private native int nativeGetBuffer(final byte[] p0, final boolean p1, final JPlayer$InputBufInfo p2);
     
-    private native int nativeGetBufferDirect(final ByteBuffer p0, final boolean p1, final InputBufInfo p2);
+    private native int nativeGetBufferDirect(final ByteBuffer p0, final boolean p1, final JPlayer$InputBufInfo p2);
     
     private native long nativeGetPlayer();
     
@@ -215,18 +122,18 @@ public class JPlayer
     private native void nativeReleasePlayer(final long p0);
     
     private void setVideoCsd(byte[] array, final MediaFormat mediaFormat) {
-        final InputBufInfo inputBufInfo = new InputBufInfo();
+        final JPlayer$InputBufInfo player$InputBufInfo = new JPlayer$InputBufInfo(this);
         final ByteBuffer wrap = ByteBuffer.wrap(array);
-        inputBufInfo.mDataSize = array.length;
-        if (1 == inputBufInfo.mFlags) {
-            wrap.limit(inputBufInfo.mDataSize);
+        player$InputBufInfo.mDataSize = array.length;
+        if (1 == player$InputBufInfo.mFlags) {
+            wrap.limit(player$InputBufInfo.mDataSize);
             wrap.position(0);
-            array = new byte[inputBufInfo.mDataSize];
+            array = new byte[player$InputBufInfo.mDataSize];
             wrap.get(array);
             int n;
-            for (n = 1; n < inputBufInfo.mDataSize - 3 && (array[n] != 0 || array[n + 1] != 0 || array[n + 2] != 0 || array[n + 3] != 1); ++n) {}
+            for (n = 1; n < player$InputBufInfo.mDataSize - 3 && (array[n] != 0 || array[n + 1] != 0 || array[n + 2] != 0 || array[n + 3] != 1); ++n) {}
             final ByteBuffer wrap2 = ByteBuffer.wrap(array, 0, n - 1);
-            final ByteBuffer wrap3 = ByteBuffer.wrap(Arrays.copyOfRange(array, n, inputBufInfo.mDataSize - 1));
+            final ByteBuffer wrap3 = ByteBuffer.wrap(Arrays.copyOfRange(array, n, player$InputBufInfo.mDataSize - 1));
             mediaFormat.setByteBuffer("csd-0", wrap2);
             if (Log.isLoggable("NF_JPlayer", 3)) {
                 Log.d("NF_JPlayer", "csd-0: " + wrap2);
@@ -341,7 +248,7 @@ public class JPlayer
         }
     }
     
-    public void setJplayerListener(final JplayerListener mJplayerListener) {
+    public void setJplayerListener(final JPlayer$JplayerListener mJplayerListener) {
         this.mJplayerListener = mJplayerListener;
         if (this.mJplayerListener == null) {
             Log.e("NF_JPlayer", "setJplayerListener mJplayerListener is null");
@@ -354,154 +261,5 @@ public class JPlayer
     public void setSurface(final Surface mSurface2) {
         Log.d("NF_JPlayer", "setSurface");
         this.mSurface2 = mSurface2;
-    }
-    
-    public class AudioDataSource implements InputDataSource
-    {
-        @Override
-        public BufferMeta onRequestData(final ByteBuffer byteBuffer) {
-            final BufferMeta bufferMeta = new BufferMeta();
-            final InputBufInfo inputBufInfo = new InputBufInfo();
-            int n;
-            if (byteBuffer.isDirect()) {
-                n = JPlayer.this.nativeGetBufferDirect(byteBuffer, true, inputBufInfo);
-            }
-            else {
-                Log.e("NF_JPlayer", "WITH NON-DIRECT BYTEBUFFER");
-                final byte[] array = byteBuffer.array();
-                if (array == null) {
-                    bufferMeta.size = 0;
-                    bufferMeta.flags = 256;
-                    Log.e("NF_JPlayer", "can't get bytearray");
-                    return bufferMeta;
-                }
-                n = JPlayer.this.nativeGetBuffer(array, true, inputBufInfo);
-            }
-            assert n == inputBufInfo.mDataSize;
-            bufferMeta.timestamp = inputBufInfo.mTimeStamp;
-            bufferMeta.flags = inputBufInfo.mFlags;
-            bufferMeta.size = inputBufInfo.mDataSize;
-            byteBuffer.limit(inputBufInfo.mDataSize);
-            byteBuffer.position(0);
-            return bufferMeta;
-        }
-    }
-    
-    public class InputBufInfo
-    {
-        int mDataSize;
-        long mDebug;
-        int mFlags;
-        long mTimeStamp;
-    }
-    
-    public interface JplayerListener
-    {
-        Surface onGetTextureSurface();
-        
-        void onSurface2Visibility(final boolean p0);
-    }
-    
-    public class VideoDataSource implements InputDataSource
-    {
-        @Override
-        public BufferMeta onRequestData(final ByteBuffer byteBuffer) {
-            final BufferMeta bufferMeta = new BufferMeta();
-            final InputBufInfo inputBufInfo = new InputBufInfo();
-            int n;
-            if (byteBuffer.isDirect()) {
-                n = JPlayer.this.nativeGetBufferDirect(byteBuffer, false, inputBufInfo);
-            }
-            else {
-                Log.e("NF_JPlayer", "WITH NON-DIRECT BYTEBUFFER");
-                final byte[] array = byteBuffer.array();
-                if (array == null) {
-                    bufferMeta.size = 0;
-                    bufferMeta.flags = 256;
-                    Log.e("NF_JPlayer", "can't get bytearray");
-                    return bufferMeta;
-                }
-                n = JPlayer.this.nativeGetBuffer(array, false, inputBufInfo);
-            }
-            assert n == inputBufInfo.mDataSize;
-            bufferMeta.offset = 0;
-            bufferMeta.timestamp = inputBufInfo.mTimeStamp;
-            Label_0235: {
-                if ((inputBufInfo.mFlags & 0x4) == 0x0) {
-                    break Label_0235;
-                }
-                Label_0204: {
-                    if (!JPlayer.this.mEnablePlatformDrs) {
-                        break Label_0204;
-                    }
-                    bufferMeta.flags = 1;
-                    bufferMeta.size = inputBufInfo.mDataSize;
-                Label_0196_Outer:
-                    while (true) {
-                        if (byteBuffer.capacity() < bufferMeta.size) {
-                            bufferMeta.size = byteBuffer.capacity();
-                        }
-                        while (true) {
-                            try {
-                                byteBuffer.limit(bufferMeta.size);
-                                byteBuffer.position(0);
-                                return bufferMeta;
-                                bufferMeta.flags = inputBufInfo.mFlags;
-                                bufferMeta.size = inputBufInfo.mDataSize;
-                                continue Label_0196_Outer;
-                                bufferMeta.flags = 256;
-                                bufferMeta.size = 0;
-                                JPlayer.this.configureVideoPipe();
-                                JPlayer.this.mSwitchingPending = true;
-                                continue Label_0196_Outer;
-                            }
-                            catch (IllegalArgumentException ex) {
-                                bufferMeta.size = 0;
-                                continue;
-                            }
-                            break;
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    
-    public class VideoEventListener implements EventListener
-    {
-        @Override
-        public void onDecoderStarted() {
-            if (JPlayer.this.mAudioPipe != null && JPlayer.this.mAudioPipe.isPauseded()) {
-                JPlayer.this.mAudioPipe.unpause();
-            }
-        }
-        
-        @Override
-        public void onStartRender() {
-            if (JPlayer.this.mVideoPipe != JPlayer.this.mVideoPipe1) {
-                Log.d("NF_JPlayer", "mVideoPipe2 is current");
-                if (JPlayer.this.mJplayerListener != null) {
-                    JPlayer.this.mJplayerListener.onSurface2Visibility(true);
-                }
-                if (JPlayer.this.mVideoPipe1 != null && !JPlayer.this.mVideoPipe1.isStopped()) {
-                    JPlayer.this.mVideoPipe1.stop();
-                }
-                JPlayer.this.mVideoPipe1 = null;
-                return;
-            }
-            Log.d("NF_JPlayer", "mVideoPipe1 is current");
-            if (JPlayer.this.mJplayerListener != null) {
-                JPlayer.this.mJplayerListener.onSurface2Visibility(false);
-            }
-            if (JPlayer.this.mVideoPipe2 != null && !JPlayer.this.mVideoPipe2.isStopped()) {
-                JPlayer.this.mVideoPipe2.stop();
-            }
-            JPlayer.this.mVideoPipe2 = null;
-        }
-        
-        @Override
-        public void onStop() {
-        }
     }
 }

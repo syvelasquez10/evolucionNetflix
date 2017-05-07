@@ -7,6 +7,7 @@ package com.google.android.gms.fitness.request;
 import android.os.Parcel;
 import com.google.android.gms.common.internal.m;
 import java.util.Collections;
+import com.google.android.gms.fitness.data.k$a;
 import android.os.IBinder;
 import android.app.PendingIntent;
 import com.google.android.gms.location.LocationRequest;
@@ -48,7 +49,7 @@ public class n implements SafeParcelable
             an = null;
         }
         else {
-            an = k.a.an(binder);
+            an = k$a.an(binder);
         }
         this.Up = an;
         long ti = us;

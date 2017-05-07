@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class NccpActionId extends NccpError
@@ -26,7 +25,7 @@ public class NccpActionId extends NccpError
         this.type = "Nccp";
     }
     
-    public NccpActionId(final JSONObject jsonObject) throws JSONException {
+    public NccpActionId(final JSONObject jsonObject) {
         super(jsonObject);
     }
     
@@ -47,7 +46,7 @@ public class NccpActionId extends NccpError
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.actionId = BaseNccpEvent.getInt(jsonObject, "actionId", 0);
         this.reasonCode = BaseNccpEvent.getInt(jsonObject, "reasonCode", 0);
         this.message = BaseNccpEvent.getString(jsonObject, "message", null);

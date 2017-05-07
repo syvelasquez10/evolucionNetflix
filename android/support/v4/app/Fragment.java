@@ -4,8 +4,6 @@
 
 package android.support.v4.app;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
 import android.support.v4.util.DebugUtils;
 import java.util.ArrayList;
 import android.util.AttributeSet;
@@ -135,13 +133,13 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             return fragment;
         }
         catch (ClassNotFoundException ex) {
-            throw new InstantiationException("Unable to instantiate fragment " + s + ": make sure class name exists, is public, and has an" + " empty constructor that is public", ex);
+            throw new Fragment$InstantiationException("Unable to instantiate fragment " + s + ": make sure class name exists, is public, and has an" + " empty constructor that is public", ex);
         }
-        catch (java.lang.InstantiationException ex2) {
-            throw new InstantiationException("Unable to instantiate fragment " + s + ": make sure class name exists, is public, and has an" + " empty constructor that is public", ex2);
+        catch (InstantiationException ex2) {
+            throw new Fragment$InstantiationException("Unable to instantiate fragment " + s + ": make sure class name exists, is public, and has an" + " empty constructor that is public", ex2);
         }
         catch (IllegalAccessException ex3) {
-            throw new InstantiationException("Unable to instantiate fragment " + s + ": make sure class name exists, is public, and has an" + " empty constructor that is public", ex3);
+            throw new Fragment$InstantiationException("Unable to instantiate fragment " + s + ": make sure class name exists, is public, and has an" + " empty constructor that is public", ex3);
         }
     }
     
@@ -471,20 +469,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     void instantiateChildFragmentManager() {
-        (this.mChildFragmentManager = new FragmentManagerImpl()).attachActivity(this.mActivity, new FragmentContainer() {
-            @Override
-            public View findViewById(final int n) {
-                if (Fragment.this.mView == null) {
-                    throw new IllegalStateException("Fragment does not have a view");
-                }
-                return Fragment.this.mView.findViewById(n);
-            }
-            
-            @Override
-            public boolean hasView() {
-                return Fragment.this.mView != null;
-            }
-        }, this);
+        (this.mChildFragmentManager = new FragmentManagerImpl()).attachActivity(this.mActivity, new Fragment$1(this), this);
     }
     
     public final boolean isAdded() {
@@ -931,13 +916,13 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         this.mWho = "android:fragment:" + this.mIndex;
     }
     
-    public void setInitialSavedState(final SavedState savedState) {
+    public void setInitialSavedState(final Fragment$SavedState fragment$SavedState) {
         if (this.mIndex >= 0) {
             throw new IllegalStateException("Fragment already active");
         }
         Bundle mState;
-        if (savedState != null && savedState.mState != null) {
-            mState = savedState.mState;
+        if (fragment$SavedState != null && fragment$SavedState.mState != null) {
+            mState = fragment$SavedState.mState;
         }
         else {
             mState = null;
@@ -1025,49 +1010,5 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     
     public void unregisterForContextMenu(final View view) {
         view.setOnCreateContextMenuListener((View$OnCreateContextMenuListener)null);
-    }
-    
-    public static class InstantiationException extends RuntimeException
-    {
-        public InstantiationException(final String s, final Exception ex) {
-            super(s, ex);
-        }
-    }
-    
-    public static class SavedState implements Parcelable
-    {
-        public static final Parcelable$Creator<SavedState> CREATOR;
-        final Bundle mState;
-        
-        static {
-            CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                public SavedState createFromParcel(final Parcel parcel) {
-                    return new SavedState(parcel, null);
-                }
-                
-                public SavedState[] newArray(final int n) {
-                    return new SavedState[n];
-                }
-            };
-        }
-        
-        SavedState(final Bundle mState) {
-            this.mState = mState;
-        }
-        
-        SavedState(final Parcel parcel, final ClassLoader classLoader) {
-            this.mState = parcel.readBundle();
-            if (classLoader != null && this.mState != null) {
-                this.mState.setClassLoader(classLoader);
-            }
-        }
-        
-        public int describeContents() {
-            return 0;
-        }
-        
-        public void writeToParcel(final Parcel parcel, final int n) {
-            parcel.writeBundle(this.mState);
-        }
     }
 }

@@ -11,7 +11,7 @@ public abstract class VolumeProviderCompat
     public static final int VOLUME_CONTROL_ABSOLUTE = 2;
     public static final int VOLUME_CONTROL_FIXED = 0;
     public static final int VOLUME_CONTROL_RELATIVE = 1;
-    private Callback mCallback;
+    private VolumeProviderCompat$Callback mCallback;
     private final int mControlType;
     private int mCurrentVolume;
     private final int mMaxVolume;
@@ -39,17 +39,7 @@ public abstract class VolumeProviderCompat
         if (this.mVolumeProviderObj != null || Build$VERSION.SDK_INT < 21) {
             return this.mVolumeProviderObj;
         }
-        return this.mVolumeProviderObj = VolumeProviderCompatApi21.createVolumeProvider(this.mControlType, this.mMaxVolume, this.mCurrentVolume, (VolumeProviderCompatApi21.Delegate)new VolumeProviderCompatApi21.Delegate() {
-            @Override
-            public void onAdjustVolume(final int n) {
-                VolumeProviderCompat.this.onAdjustVolume(n);
-            }
-            
-            @Override
-            public void onSetVolumeTo(final int n) {
-                VolumeProviderCompat.this.onSetVolumeTo(n);
-            }
-        });
+        return this.mVolumeProviderObj = VolumeProviderCompatApi21.createVolumeProvider(this.mControlType, this.mMaxVolume, this.mCurrentVolume, new VolumeProviderCompat$1(this));
     }
     
     public void onAdjustVolume(final int n) {
@@ -58,7 +48,7 @@ public abstract class VolumeProviderCompat
     public void onSetVolumeTo(final int n) {
     }
     
-    public void setCallback(final Callback mCallback) {
+    public void setCallback(final VolumeProviderCompat$Callback mCallback) {
         this.mCallback = mCallback;
     }
     
@@ -66,10 +56,5 @@ public abstract class VolumeProviderCompat
         if (this.mCallback != null) {
             this.mCallback.onVolumeChanged(this);
         }
-    }
-    
-    public abstract static class Callback
-    {
-        public abstract void onVolumeChanged(final VolumeProviderCompat p0);
     }
 }

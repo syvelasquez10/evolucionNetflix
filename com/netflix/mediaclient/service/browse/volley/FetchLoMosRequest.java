@@ -4,13 +4,12 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
-import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
@@ -75,44 +74,45 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
     }
     
     @Override
-    protected List<LoMo> parseFalcorResponse(String o) throws FalcorParseException, FalcorServerException {
+    protected List<LoMo> parseFalcorResponse(String o) {
         if (Log.isLoggable("nf_service_browse_fetchlomosrequest", 2)) {}
-        final ArrayList<ListOfMoviesSummary> list = (ArrayList<ListOfMoviesSummary>)new ArrayList<LoMo>();
+        final ArrayList<ListOfMoviesSummary> list = new ArrayList<ListOfMoviesSummary>();
         final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchlomosrequest", (String)o);
-        if (!FalcorParseUtils.isEmpty(dataObj)) {
-            try {
-                if (this.lolomoIdInCache) {
-                    o = dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId);
-                }
-                else {
-                    o = dataObj.getAsJsonObject("lolomo");
-                }
-                if (!this.lolomoIdInCache) {
-                    PrefetchHomeLoLoMoRequest.putLoLoMoIdInBrowseCache(this.browseCache, (JsonObject)o);
-                }
-                for (int i = this.fromLoMo; i <= this.toLoMo; ++i) {
-                    final String string = Integer.toString(i);
-                    if (((JsonObject)o).has(string)) {
-                        final ListOfMoviesSummary listOfMoviesSummary = FalcorParseUtils.getPropertyObject(((JsonObject)o).getAsJsonObject(string), "summary", ListOfMoviesSummary.class);
-                        if (listOfMoviesSummary != null) {
-                            listOfMoviesSummary.setListPos(i);
+        if (FalcorParseUtils.isEmpty(dataObj)) {
+            return (List<LoMo>)list;
+        }
+        try {
+            if (this.lolomoIdInCache) {
+                o = dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId);
+            }
+            else {
+                o = dataObj.getAsJsonObject("lolomo");
+            }
+            if (!this.lolomoIdInCache) {
+                PrefetchHomeLoLoMoRequest.putLoLoMoIdInBrowseCache(this.browseCache, (JsonObject)o);
+            }
+            for (int i = this.fromLoMo; i <= this.toLoMo; ++i) {
+                final String string = Integer.toString(i);
+                if (((JsonObject)o).has(string)) {
+                    final ListOfMoviesSummary listOfMoviesSummary = FalcorParseUtils.getPropertyObject(((JsonObject)o).getAsJsonObject(string), "summary", ListOfMoviesSummary.class);
+                    if (listOfMoviesSummary != null) {
+                        listOfMoviesSummary.setListPos(i);
+                    }
+                    list.add(listOfMoviesSummary);
+                    if (!this.lolomoIdInCache) {
+                        if (listOfMoviesSummary.getType() == LoMoType.CONTINUE_WATCHING) {
+                            this.browseCache.putCWIdsInCache(listOfMoviesSummary, string);
                         }
-                        list.add(listOfMoviesSummary);
-                        if (!this.lolomoIdInCache) {
-                            if (listOfMoviesSummary.getType() == LoMoType.CONTINUE_WATCHING) {
-                                this.browseCache.putCWIdsInCache(listOfMoviesSummary, string);
-                            }
-                            if (listOfMoviesSummary.getType() == LoMoType.INSTANT_QUEUE) {
-                                this.browseCache.putIQIdsInCache(listOfMoviesSummary, string);
-                            }
+                        if (listOfMoviesSummary.getType() == LoMoType.INSTANT_QUEUE) {
+                            this.browseCache.putIQIdsInCache(listOfMoviesSummary, string);
                         }
                     }
                 }
             }
-            catch (Exception ex) {
-                Log.v("nf_service_browse_fetchlomosrequest", "String response to parse = " + (String)o);
-                throw new FalcorParseException("response missing expected json objects", ex);
-            }
+        }
+        catch (Exception ex) {
+            Log.v("nf_service_browse_fetchlomosrequest", "String response to parse = " + (String)o);
+            throw new FalcorParseException("response missing expected json objects", ex);
         }
         return (List<LoMo>)list;
     }

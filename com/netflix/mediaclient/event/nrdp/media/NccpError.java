@@ -6,7 +6,6 @@ package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class NccpError extends BaseMediaEvent
@@ -43,11 +42,11 @@ public abstract class NccpError extends BaseMediaEvent
         super("nccperror");
     }
     
-    public NccpError(final JSONObject jsonObject) throws JSONException {
+    public NccpError(final JSONObject jsonObject) {
         super("nccperror", jsonObject);
     }
     
-    public static NccpError toNccpError(final JSONObject jsonObject) throws JSONException {
+    public static NccpError toNccpError(final JSONObject jsonObject) {
         final String string = BaseNccpEvent.getString(jsonObject, "origin", null);
         if ("handleActionId".equalsIgnoreCase(string)) {
             Log.d("nf-nccp", "NCCP Action ID");

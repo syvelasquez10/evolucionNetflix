@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import org.json.JSONException;
 import org.json.JSONArray;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -18,7 +17,8 @@ public class NccpAudioSource extends AudioSource
     private static final String TRACK_TYPE_COMMENTARY = "COMMENTARY";
     private static final String TRACK_TYPE_PRIMARY = "PRIMARY";
     
-    protected NccpAudioSource(final JSONObject jsonObject, int i) throws JSONException {
+    protected NccpAudioSource(final JSONObject jsonObject, int i) {
+        final int n = 0;
         this.id = JsonUtils.getString(jsonObject, "id", null);
         this.numChannels = JsonUtils.getInt(jsonObject, "channels", 0);
         this.languageCodeIso639_1 = JsonUtils.getString(jsonObject, "language", "en");
@@ -42,7 +42,7 @@ public class NccpAudioSource extends AudioSource
         if (jsonArray != null) {
             Log.d("nf_audio_source", "DisallowedSubtitleTracks found: " + jsonArray.length());
             this.disallowedSubtitles = new String[jsonArray.length()];
-            for (i = 0; i < jsonArray.length(); ++i) {
+            for (i = n; i < jsonArray.length(); ++i) {
                 this.disallowedSubtitles[i] = jsonArray.getString(i);
             }
         }
@@ -52,12 +52,12 @@ public class NccpAudioSource extends AudioSource
         }
     }
     
-    public static AudioSource newInstance(final JSONObject jsonObject, final int n) throws JSONException {
+    public static AudioSource newInstance(final JSONObject jsonObject, final int n) {
         return new NccpAudioSource(jsonObject, n);
     }
     
     @Override
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("impl", 1);
         jsonObject.put("id", (Object)this.id);

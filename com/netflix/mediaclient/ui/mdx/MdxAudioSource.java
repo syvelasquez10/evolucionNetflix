@@ -6,7 +6,6 @@ package com.netflix.mediaclient.ui.mdx;
 
 import java.util.Arrays;
 import com.netflix.mediaclient.media.Subtitle;
-import org.json.JSONException;
 import org.json.JSONArray;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -21,7 +20,8 @@ public final class MdxAudioSource extends AudioSource
     private final boolean mSelected;
     private boolean mSupported;
     
-    protected MdxAudioSource(final JSONObject jsonObject, int i) throws JSONException {
+    protected MdxAudioSource(final JSONObject jsonObject, int i) {
+        final int n = 0;
         this.id = JsonUtils.getString(jsonObject, "id", null);
         this.languageDescription = JsonUtils.getString(jsonObject, "label", "English");
         this.mSelected = JsonUtils.getBoolean(jsonObject, "selected", false);
@@ -34,7 +34,7 @@ public final class MdxAudioSource extends AudioSource
                 Log.d("nf_audio_source", "DisallowedSubtitleTracks found: " + jsonArray.length());
             }
             this.disallowedSubtitles = new String[jsonArray.length()];
-            for (i = 0; i < jsonArray.length(); ++i) {
+            for (i = n; i < jsonArray.length(); ++i) {
                 this.disallowedSubtitles[i] = jsonArray.getString(i);
             }
         }
@@ -44,7 +44,7 @@ public final class MdxAudioSource extends AudioSource
         }
     }
     
-    public static MdxAudioSource newInstance(final JSONObject jsonObject, final int n) throws JSONException {
+    public static MdxAudioSource newInstance(final JSONObject jsonObject, final int n) {
         return new MdxAudioSource(jsonObject, n);
     }
     
@@ -66,7 +66,7 @@ public final class MdxAudioSource extends AudioSource
     }
     
     @Override
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("impl", 2);
         jsonObject.put("id", (Object)this.id);

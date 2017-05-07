@@ -4,10 +4,6 @@
 
 package android.support.v7.internal.widget;
 
-import android.widget.AdapterView;
-import android.widget.AdapterView$OnItemClickListener;
-import android.database.DataSetObserver;
-import android.view.ContextMenu$ContextMenuInfo;
 import android.view.View$OnClickListener;
 import android.view.ViewDebug$CapturedViewProperty;
 import android.os.SystemClock;
@@ -49,13 +45,13 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
     int mOldItemCount;
     int mOldSelectedPosition;
     long mOldSelectedRowId;
-    OnItemClickListener mOnItemClickListener;
-    OnItemLongClickListener mOnItemLongClickListener;
-    OnItemSelectedListener mOnItemSelectedListener;
+    AdapterViewCompat$OnItemClickListener mOnItemClickListener;
+    AdapterViewCompat$OnItemLongClickListener mOnItemLongClickListener;
+    AdapterViewCompat$OnItemSelectedListener mOnItemSelectedListener;
     @ViewDebug$ExportedProperty(category = "list")
     int mSelectedPosition;
     long mSelectedRowId;
-    private SelectionNotifier mSelectionNotifier;
+    private AdapterViewCompat$SelectionNotifier mSelectionNotifier;
     int mSpecificTop;
     long mSyncHeight;
     int mSyncMode;
@@ -105,14 +101,6 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
         this.mOldSelectedPosition = -1;
         this.mOldSelectedRowId = Long.MIN_VALUE;
         this.mBlockLayoutRequests = false;
-    }
-    
-    static /* synthetic */ void access$000(final AdapterViewCompat adapterViewCompat, final Parcelable parcelable) {
-        adapterViewCompat.onRestoreInstanceState(parcelable);
-    }
-    
-    static /* synthetic */ Parcelable access$100(final AdapterViewCompat adapterViewCompat) {
-        return adapterViewCompat.onSaveInstanceState();
     }
     
     private void fireOnSelected() {
@@ -239,27 +227,27 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
             }
             int min = Math.min(mItemCount - 1, Math.max(0, mSyncPosition));
             final long uptimeMillis = SystemClock.uptimeMillis();
-            int n2 = min;
-            int n3 = min;
-            int n4 = 0;
             final Adapter adapter = this.getAdapter();
             if (adapter == null) {
                 return -1;
             }
+            int n2 = min;
+            int n3 = min;
+            int n4 = 0;
             while (SystemClock.uptimeMillis() <= uptimeMillis + 100L) {
                 n = min;
                 if (adapter.getItemId(min) == mSyncRowId) {
                     return n;
                 }
                 boolean b;
-                if (n3 == mItemCount - 1) {
+                if (n2 == mItemCount - 1) {
                     b = true;
                 }
                 else {
                     b = false;
                 }
                 boolean b2;
-                if (n2 == 0) {
+                if (n3 == 0) {
                     b2 = true;
                 }
                 else {
@@ -269,14 +257,14 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
                     break;
                 }
                 if (b2 || (n4 != 0 && !b)) {
-                    n3 = (min = n3 + 1);
+                    min = ++n2;
                     n4 = 0;
                 }
                 else {
                     if (!b && (n4 != 0 || b2)) {
                         continue;
                     }
-                    n2 = (min = n2 - 1);
+                    min = --n3;
                     n4 = 1;
                 }
             }
@@ -320,35 +308,34 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
         return this.mFirstPosition + this.getChildCount() - 1;
     }
     
-    public final OnItemClickListener getOnItemClickListener() {
+    public final AdapterViewCompat$OnItemClickListener getOnItemClickListener() {
         return this.mOnItemClickListener;
     }
     
-    public final OnItemLongClickListener getOnItemLongClickListener() {
+    public final AdapterViewCompat$OnItemLongClickListener getOnItemLongClickListener() {
         return this.mOnItemLongClickListener;
     }
     
-    public final OnItemSelectedListener getOnItemSelectedListener() {
+    public final AdapterViewCompat$OnItemSelectedListener getOnItemSelectedListener() {
         return this.mOnItemSelectedListener;
     }
     
     public int getPositionForView(View view) {
-        Label_0031: {
-            try {
-                while (true) {
-                    final View view2 = (View)view.getParent();
-                    if (view2.equals(this)) {
-                        break Label_0031;
-                    }
-                    view = view2;
+        try {
+            while (true) {
+                final View view2 = (View)view.getParent();
+                if (view2.equals(this)) {
+                    break;
                 }
+                view = view2;
             }
-            catch (ClassCastException ex) {}
+        }
+        catch (ClassCastException ex) {
             return -1;
         }
         for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
             if (this.getChildAt(i).equals(view)) {
-                return this.mFirstPosition + i;
+                return i + this.mFirstPosition;
             }
         }
         return -1;
@@ -378,41 +365,46 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
     void handleDataChanged() {
         final int mItemCount = this.mItemCount;
         int n = 0;
-        final boolean b = false;
-        if (mItemCount > 0) {
-            boolean b2 = b;
-            if (this.mNeedSync) {
-                this.mNeedSync = false;
-                final int syncPosition = this.findSyncPosition();
-                b2 = b;
-                if (syncPosition >= 0) {
-                    b2 = b;
-                    if (this.lookForSelectablePosition(syncPosition, true) == syncPosition) {
+        Label_0112: {
+            if (mItemCount > 0) {
+                while (true) {
+                    Label_0156: {
+                        if (!this.mNeedSync) {
+                            break Label_0156;
+                        }
+                        this.mNeedSync = false;
+                        final int syncPosition = this.findSyncPosition();
+                        if (syncPosition < 0 || this.lookForSelectablePosition(syncPosition, true) != syncPosition) {
+                            break Label_0156;
+                        }
                         this.setNextSelectedPositionInt(syncPosition);
-                        b2 = true;
+                        n = 1;
+                        if (n == 0) {
+                            int selectedItemPosition;
+                            if ((selectedItemPosition = this.getSelectedItemPosition()) >= mItemCount) {
+                                selectedItemPosition = mItemCount - 1;
+                            }
+                            int n2;
+                            if ((n2 = selectedItemPosition) < 0) {
+                                n2 = 0;
+                            }
+                            int nextSelectedPositionInt = this.lookForSelectablePosition(n2, true);
+                            if (nextSelectedPositionInt < 0) {
+                                nextSelectedPositionInt = this.lookForSelectablePosition(n2, false);
+                            }
+                            if (nextSelectedPositionInt >= 0) {
+                                this.setNextSelectedPositionInt(nextSelectedPositionInt);
+                                this.checkSelectionChanged();
+                                n = 1;
+                            }
+                        }
+                        break Label_0112;
                     }
+                    n = 0;
+                    continue;
                 }
             }
-            if ((n = (b2 ? 1 : 0)) == 0) {
-                int selectedItemPosition;
-                if ((selectedItemPosition = this.getSelectedItemPosition()) >= mItemCount) {
-                    selectedItemPosition = mItemCount - 1;
-                }
-                int n2;
-                if ((n2 = selectedItemPosition) < 0) {
-                    n2 = 0;
-                }
-                int nextSelectedPositionInt;
-                if ((nextSelectedPositionInt = this.lookForSelectablePosition(n2, true)) < 0) {
-                    nextSelectedPositionInt = this.lookForSelectablePosition(n2, false);
-                }
-                n = (b2 ? 1 : 0);
-                if (nextSelectedPositionInt >= 0) {
-                    this.setNextSelectedPositionInt(nextSelectedPositionInt);
-                    this.checkSelectionChanged();
-                    n = 1;
-                }
-            }
+            n = 0;
         }
         if (n == 0) {
             this.mSelectedPosition = -1;
@@ -500,7 +492,7 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
         if (this.mOnItemSelectedListener != null) {
             if (this.mInLayout || this.mBlockLayoutRequests) {
                 if (this.mSelectionNotifier == null) {
-                    this.mSelectionNotifier = new SelectionNotifier();
+                    this.mSelectionNotifier = new AdapterViewCompat$SelectionNotifier(this, null);
                 }
                 this.post((Runnable)this.mSelectionNotifier);
             }
@@ -601,18 +593,18 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
         throw new RuntimeException("Don't call setOnClickListener for an AdapterView. You probably want setOnItemClickListener instead");
     }
     
-    public void setOnItemClickListener(final OnItemClickListener mOnItemClickListener) {
+    public void setOnItemClickListener(final AdapterViewCompat$OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
     
-    public void setOnItemLongClickListener(final OnItemLongClickListener mOnItemLongClickListener) {
+    public void setOnItemLongClickListener(final AdapterViewCompat$OnItemLongClickListener mOnItemLongClickListener) {
         if (!this.isLongClickable()) {
             this.setLongClickable(true);
         }
         this.mOnItemLongClickListener = mOnItemLongClickListener;
     }
     
-    public void setOnItemSelectedListener(final OnItemSelectedListener mOnItemSelectedListener) {
+    public void setOnItemSelectedListener(final AdapterViewCompat$OnItemSelectedListener mOnItemSelectedListener) {
         this.mOnItemSelectedListener = mOnItemSelectedListener;
     }
     
@@ -622,105 +614,4 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
     }
     
     public abstract void setSelection(final int p0);
-    
-    public static class AdapterContextMenuInfo implements ContextMenu$ContextMenuInfo
-    {
-        public long id;
-        public int position;
-        public View targetView;
-        
-        public AdapterContextMenuInfo(final View targetView, final int position, final long id) {
-            this.targetView = targetView;
-            this.position = position;
-            this.id = id;
-        }
-    }
-    
-    class AdapterDataSetObserver extends DataSetObserver
-    {
-        private Parcelable mInstanceState;
-        
-        AdapterDataSetObserver() {
-            this.mInstanceState = null;
-        }
-        
-        public void clearSavedState() {
-            this.mInstanceState = null;
-        }
-        
-        public void onChanged() {
-            AdapterViewCompat.this.mDataChanged = true;
-            AdapterViewCompat.this.mOldItemCount = AdapterViewCompat.this.mItemCount;
-            AdapterViewCompat.this.mItemCount = AdapterViewCompat.this.getAdapter().getCount();
-            if (AdapterViewCompat.this.getAdapter().hasStableIds() && this.mInstanceState != null && AdapterViewCompat.this.mOldItemCount == 0 && AdapterViewCompat.this.mItemCount > 0) {
-                AdapterViewCompat.access$000(AdapterViewCompat.this, this.mInstanceState);
-                this.mInstanceState = null;
-            }
-            else {
-                AdapterViewCompat.this.rememberSyncState();
-            }
-            AdapterViewCompat.this.checkFocus();
-            AdapterViewCompat.this.requestLayout();
-        }
-        
-        public void onInvalidated() {
-            AdapterViewCompat.this.mDataChanged = true;
-            if (AdapterViewCompat.this.getAdapter().hasStableIds()) {
-                this.mInstanceState = AdapterViewCompat.access$100(AdapterViewCompat.this);
-            }
-            AdapterViewCompat.this.mOldItemCount = AdapterViewCompat.this.mItemCount;
-            AdapterViewCompat.this.mItemCount = 0;
-            AdapterViewCompat.this.mSelectedPosition = -1;
-            AdapterViewCompat.this.mSelectedRowId = Long.MIN_VALUE;
-            AdapterViewCompat.this.mNextSelectedPosition = -1;
-            AdapterViewCompat.this.mNextSelectedRowId = Long.MIN_VALUE;
-            AdapterViewCompat.this.mNeedSync = false;
-            AdapterViewCompat.this.checkFocus();
-            AdapterViewCompat.this.requestLayout();
-        }
-    }
-    
-    public interface OnItemClickListener
-    {
-        void onItemClick(final AdapterViewCompat<?> p0, final View p1, final int p2, final long p3);
-    }
-    
-    class OnItemClickListenerWrapper implements AdapterView$OnItemClickListener
-    {
-        private final OnItemClickListener mWrappedListener;
-        
-        public OnItemClickListenerWrapper(final OnItemClickListener mWrappedListener) {
-            this.mWrappedListener = mWrappedListener;
-        }
-        
-        public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-            this.mWrappedListener.onItemClick(AdapterViewCompat.this, view, n, n2);
-        }
-    }
-    
-    public interface OnItemLongClickListener
-    {
-        boolean onItemLongClick(final AdapterViewCompat<?> p0, final View p1, final int p2, final long p3);
-    }
-    
-    public interface OnItemSelectedListener
-    {
-        void onItemSelected(final AdapterViewCompat<?> p0, final View p1, final int p2, final long p3);
-        
-        void onNothingSelected(final AdapterViewCompat<?> p0);
-    }
-    
-    private class SelectionNotifier implements Runnable
-    {
-        @Override
-        public void run() {
-            if (AdapterViewCompat.this.mDataChanged) {
-                if (AdapterViewCompat.this.getAdapter() != null) {
-                    AdapterViewCompat.this.post((Runnable)this);
-                }
-                return;
-            }
-            AdapterViewCompat.this.fireOnSelected();
-        }
-    }
 }

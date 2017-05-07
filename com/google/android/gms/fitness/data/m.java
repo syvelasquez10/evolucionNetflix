@@ -5,6 +5,7 @@
 package com.google.android.gms.fitness.data;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -78,7 +79,7 @@ public class m implements Parcelable$Creator<RawBucket>
             }
         }
         if (parcel.dataPosition() != c3) {
-            throw new a.a("Overread allowed size end=" + c3, parcel);
+            throw new a$a("Overread allowed size end=" + c3, parcel);
         }
         return new RawBucket(g3, j, i, session, g2, c, g, c2);
     }

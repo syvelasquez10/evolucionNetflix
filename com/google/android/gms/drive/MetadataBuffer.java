@@ -18,7 +18,7 @@ import com.google.android.gms.common.data.DataBuffer;
 public final class MetadataBuffer extends DataBuffer<Metadata>
 {
     private final String Ni;
-    private a Nj;
+    private MetadataBuffer$a Nj;
     
     public MetadataBuffer(final DataHolder dataHolder, final String ni) {
         super(dataHolder);
@@ -28,52 +28,19 @@ public final class MetadataBuffer extends DataBuffer<Metadata>
     
     @Override
     public Metadata get(final int n) {
-        final a nj = this.Nj;
+        final MetadataBuffer$a nj = this.Nj;
         if (nj != null) {
-            final a nj2 = nj;
+            final MetadataBuffer$a nj2 = nj;
             if (nj.Nk == n) {
                 return nj2;
             }
         }
-        final a nj2 = new a(this.IC, n);
+        final MetadataBuffer$a nj2 = new MetadataBuffer$a(this.IC, n);
         this.Nj = nj2;
         return nj2;
     }
     
     public String getNextPageToken() {
         return this.Ni;
-    }
-    
-    private static class a extends Metadata
-    {
-        private final DataHolder IC;
-        private final int JR;
-        private final int Nk;
-        
-        public a(final DataHolder ic, final int nk) {
-            this.IC = ic;
-            this.Nk = nk;
-            this.JR = ic.ar(nk);
-        }
-        
-        @Override
-        protected <T> T a(final MetadataField<T> metadataField) {
-            return metadataField.a(this.IC, this.Nk, this.JR);
-        }
-        
-        public Metadata hR() {
-            final MetadataBundle io = MetadataBundle.io();
-            for (final MetadataField<com.google.android.gms.common.data.a> metadataField : e.in()) {
-                if (!(metadataField instanceof b) && metadataField != kd.Qd) {
-                    metadataField.a(this.IC, io, this.Nk, this.JR);
-                }
-            }
-            return new l(io);
-        }
-        
-        @Override
-        public boolean isDataValid() {
-            return !this.IC.isClosed();
-        }
     }
 }

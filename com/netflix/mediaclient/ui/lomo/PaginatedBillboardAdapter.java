@@ -4,11 +4,12 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import java.util.List;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
@@ -55,9 +56,9 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     }
     
     @Override
-    protected View getView(final ObjectRecycler.ViewRecycler viewRecycler, final List<Billboard> list, final int n, final int n2, final BasicLoMo basicLoMo) {
+    protected View getView(final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final List<Billboard> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         BillboardViewGroup billboardViewGroup;
-        if ((billboardViewGroup = ((ObjectRecycler<BillboardViewGroup>)viewRecycler).pop(BillboardViewGroup.class)) == null) {
+        if ((billboardViewGroup = ((ObjectRecycler<BillboardViewGroup>)objectRecycler$ViewRecycler).pop(BillboardViewGroup.class)) == null) {
             billboardViewGroup = new BillboardViewGroup((Context)this.getActivity());
             billboardViewGroup.init(n);
         }

@@ -7,7 +7,7 @@ package com.google.android.gms.maps;
 import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
 import android.content.res.TypedArray;
-import com.google.android.gms.R;
+import com.google.android.gms.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -56,34 +56,34 @@ public final class GoogleMapOptions implements SafeParcelable
         if (set == null) {
             return null;
         }
-        final TypedArray obtainAttributes = context.getResources().obtainAttributes(set, R.styleable.MapAttrs);
+        final TypedArray obtainAttributes = context.getResources().obtainAttributes(set, R$styleable.MapAttrs);
         final GoogleMapOptions googleMapOptions = new GoogleMapOptions();
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_mapType)) {
-            googleMapOptions.mapType(obtainAttributes.getInt(R.styleable.MapAttrs_mapType, -1));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_mapType)) {
+            googleMapOptions.mapType(obtainAttributes.getInt(R$styleable.MapAttrs_mapType, -1));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_zOrderOnTop)) {
-            googleMapOptions.zOrderOnTop(obtainAttributes.getBoolean(R.styleable.MapAttrs_zOrderOnTop, false));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_zOrderOnTop)) {
+            googleMapOptions.zOrderOnTop(obtainAttributes.getBoolean(R$styleable.MapAttrs_zOrderOnTop, false));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_useViewLifecycle)) {
-            googleMapOptions.useViewLifecycleInFragment(obtainAttributes.getBoolean(R.styleable.MapAttrs_useViewLifecycle, false));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_useViewLifecycle)) {
+            googleMapOptions.useViewLifecycleInFragment(obtainAttributes.getBoolean(R$styleable.MapAttrs_useViewLifecycle, false));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_uiCompass)) {
-            googleMapOptions.compassEnabled(obtainAttributes.getBoolean(R.styleable.MapAttrs_uiCompass, true));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_uiCompass)) {
+            googleMapOptions.compassEnabled(obtainAttributes.getBoolean(R$styleable.MapAttrs_uiCompass, true));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_uiRotateGestures)) {
-            googleMapOptions.rotateGesturesEnabled(obtainAttributes.getBoolean(R.styleable.MapAttrs_uiRotateGestures, true));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_uiRotateGestures)) {
+            googleMapOptions.rotateGesturesEnabled(obtainAttributes.getBoolean(R$styleable.MapAttrs_uiRotateGestures, true));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_uiScrollGestures)) {
-            googleMapOptions.scrollGesturesEnabled(obtainAttributes.getBoolean(R.styleable.MapAttrs_uiScrollGestures, true));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_uiScrollGestures)) {
+            googleMapOptions.scrollGesturesEnabled(obtainAttributes.getBoolean(R$styleable.MapAttrs_uiScrollGestures, true));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_uiTiltGestures)) {
-            googleMapOptions.tiltGesturesEnabled(obtainAttributes.getBoolean(R.styleable.MapAttrs_uiTiltGestures, true));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_uiTiltGestures)) {
+            googleMapOptions.tiltGesturesEnabled(obtainAttributes.getBoolean(R$styleable.MapAttrs_uiTiltGestures, true));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_uiZoomGestures)) {
-            googleMapOptions.zoomGesturesEnabled(obtainAttributes.getBoolean(R.styleable.MapAttrs_uiZoomGestures, true));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_uiZoomGestures)) {
+            googleMapOptions.zoomGesturesEnabled(obtainAttributes.getBoolean(R$styleable.MapAttrs_uiZoomGestures, true));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_uiZoomControls)) {
-            googleMapOptions.zoomControlsEnabled(obtainAttributes.getBoolean(R.styleable.MapAttrs_uiZoomControls, true));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_uiZoomControls)) {
+            googleMapOptions.zoomControlsEnabled(obtainAttributes.getBoolean(R$styleable.MapAttrs_uiZoomControls, true));
         }
         googleMapOptions.camera(CameraPosition.createFromAttributes(context, set));
         obtainAttributes.recycle();

@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public final class jf implements SafeParcelable, b<String, Integer>
+public final class jf implements SafeParcelable, ji$b<String, Integer>
 {
     public static final jg CREATOR;
     private final int BR;
     private final HashMap<String, Integer> Ml;
     private final HashMap<Integer, String> Mm;
-    private final ArrayList<a> Mn;
+    private final ArrayList<jf$a> Mn;
     
     static {
         CREATOR = new jg();
@@ -29,7 +29,7 @@ public final class jf implements SafeParcelable, b<String, Integer>
         this.Mn = null;
     }
     
-    jf(final int br, final ArrayList<a> list) {
+    jf(final int br, final ArrayList<jf$a> list) {
         this.BR = br;
         this.Ml = new HashMap<String, Integer>();
         this.Mm = new HashMap<Integer, String>();
@@ -37,9 +37,9 @@ public final class jf implements SafeParcelable, b<String, Integer>
         this.b(list);
     }
     
-    private void b(final ArrayList<a> list) {
-        for (final a a : list) {
-            this.h(a.Mo, a.Mp);
+    private void b(final ArrayList<jf$a> list) {
+        for (final jf$a jf$a : list) {
+            this.h(jf$a.Mo, jf$a.Mp);
         }
     }
     
@@ -70,10 +70,10 @@ public final class jf implements SafeParcelable, b<String, Integer>
         return this;
     }
     
-    ArrayList<a> hc() {
-        final ArrayList<a> list = new ArrayList<a>();
+    ArrayList<jf$a> hc() {
+        final ArrayList<jf$a> list = new ArrayList<jf$a>();
         for (final String s : this.Ml.keySet()) {
-            list.add(new a(s, this.Ml.get(s)));
+            list.add(new jf$a(s, this.Ml.get(s)));
         }
         return list;
     }
@@ -91,39 +91,5 @@ public final class jf implements SafeParcelable, b<String, Integer>
     public void writeToParcel(final Parcel parcel, final int n) {
         final jg creator = jf.CREATOR;
         jg.a(this, parcel, n);
-    }
-    
-    public static final class a implements SafeParcelable
-    {
-        public static final jh CREATOR;
-        final String Mo;
-        final int Mp;
-        final int versionCode;
-        
-        static {
-            CREATOR = new jh();
-        }
-        
-        a(final int versionCode, final String mo, final int mp) {
-            this.versionCode = versionCode;
-            this.Mo = mo;
-            this.Mp = mp;
-        }
-        
-        a(final String mo, final int mp) {
-            this.versionCode = 1;
-            this.Mo = mo;
-            this.Mp = mp;
-        }
-        
-        public int describeContents() {
-            final jh creator = a.CREATOR;
-            return 0;
-        }
-        
-        public void writeToParcel(final Parcel parcel, final int n) {
-            final jh creator = a.CREATOR;
-            jh.a(this, parcel, n);
-        }
     }
 }

@@ -30,6 +30,10 @@ public class AccountConfiguration
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", null);
     }
     
+    public boolean enableHTTPSAuth() {
+        return this.mAccountConfigData != null && this.mAccountConfigData.enableHTTPSAuth();
+    }
+    
     public boolean getCastEnabled() {
         return this.mAccountConfigData != null && this.mAccountConfigData.getCastEnabled();
     }

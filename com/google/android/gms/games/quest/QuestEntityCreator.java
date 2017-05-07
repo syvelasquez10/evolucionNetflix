@@ -5,6 +5,7 @@
 package com.google.android.gms.games.quest;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.net.Uri;
 import com.google.android.gms.games.GameEntity;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -136,7 +137,7 @@ public class QuestEntityCreator implements Parcelable$Creator<QuestEntity>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new QuestEntity(g, gameEntity, o, i, uri, o2, o3, j, k, uri2, o4, o5, l, m, g2, g3, c2);
     }

@@ -4,9 +4,7 @@
 
 package com.google.gson;
 
-import com.google.gson.internal.$Gson$Preconditions;
 import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.reflect.TypeToken;
@@ -37,19 +35,19 @@ final class TreeTypeAdapter<T> extends TypeAdapter<T>
     }
     
     public static TypeAdapterFactory newFactory(final TypeToken<?> typeToken, final Object o) {
-        return new SingleTypeFactory(o, (TypeToken)typeToken, false, (Class)null);
+        return new TreeTypeAdapter$SingleTypeFactory(o, typeToken, false, null, null);
     }
     
     public static TypeAdapterFactory newFactoryWithMatchRawType(final TypeToken<?> typeToken, final Object o) {
-        return new SingleTypeFactory(o, (TypeToken)typeToken, typeToken.getType() == typeToken.getRawType(), (Class)null);
+        return new TreeTypeAdapter$SingleTypeFactory(o, typeToken, typeToken.getType() == typeToken.getRawType(), null, null);
     }
     
     public static TypeAdapterFactory newTypeHierarchyFactory(final Class<?> clazz, final Object o) {
-        return new SingleTypeFactory(o, (TypeToken)null, false, (Class)clazz);
+        return new TreeTypeAdapter$SingleTypeFactory(o, null, false, clazz, null);
     }
     
     @Override
-    public T read(final JsonReader jsonReader) throws IOException {
+    public T read(final JsonReader jsonReader) {
         if (this.deserializer == null) {
             return this.delegate().read(jsonReader);
         }
@@ -61,7 +59,7 @@ final class TreeTypeAdapter<T> extends TypeAdapter<T>
     }
     
     @Override
-    public void write(final JsonWriter jsonWriter, final T t) throws IOException {
+    public void write(final JsonWriter jsonWriter, final T t) {
         if (this.serializer == null) {
             this.delegate().write(jsonWriter, t);
             return;
@@ -71,57 +69,5 @@ final class TreeTypeAdapter<T> extends TypeAdapter<T>
             return;
         }
         Streams.write(this.serializer.serialize(t, this.typeToken.getType(), this.gson.serializationContext), jsonWriter);
-    }
-    
-    private static class SingleTypeFactory implements TypeAdapterFactory
-    {
-        private final JsonDeserializer<?> deserializer;
-        private final TypeToken<?> exactType;
-        private final Class<?> hierarchyType;
-        private final boolean matchRawType;
-        private final JsonSerializer<?> serializer;
-        
-        private SingleTypeFactory(final Object o, final TypeToken<?> exactType, final boolean matchRawType, final Class<?> hierarchyType) {
-            JsonSerializer<?> serializer;
-            if (o instanceof JsonSerializer) {
-                serializer = (JsonSerializer<?>)o;
-            }
-            else {
-                serializer = null;
-            }
-            this.serializer = serializer;
-            JsonDeserializer<?> deserializer;
-            if (o instanceof JsonDeserializer) {
-                deserializer = (JsonDeserializer<?>)o;
-            }
-            else {
-                deserializer = null;
-            }
-            this.deserializer = deserializer;
-            $Gson$Preconditions.checkArgument(this.serializer != null || this.deserializer != null);
-            this.exactType = exactType;
-            this.matchRawType = matchRawType;
-            this.hierarchyType = hierarchyType;
-        }
-        
-        @Override
-        public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> typeToken) {
-            int assignable;
-            if (this.exactType != null) {
-                if (this.exactType.equals(typeToken) || (this.matchRawType && this.exactType.getType() == typeToken.getRawType())) {
-                    assignable = 1;
-                }
-                else {
-                    assignable = 0;
-                }
-            }
-            else {
-                assignable = (this.hierarchyType.isAssignableFrom(typeToken.getRawType()) ? 1 : 0);
-            }
-            if (assignable != 0) {
-                return new TreeTypeAdapter<T>(this.serializer, this.deserializer, gson, typeToken, this, null);
-            }
-            return null;
-        }
     }
 }

@@ -70,78 +70,78 @@ final class SwipeProgressBar
         final int height = this.mBounds.height();
         final int n = width / 2;
         final int n2 = height / 2;
-        boolean b = false;
-        final int save = canvas.save();
+        int n3 = canvas.save();
         canvas.clipRect(this.mBounds);
-        int save2;
+        int n7;
         if (this.mRunning || this.mFinishTime > 0L) {
             final long currentAnimationTimeMillis = AnimationUtils.currentAnimationTimeMillis();
             final long mStartTime = this.mStartTime;
-            final long n3 = (currentAnimationTimeMillis - this.mStartTime) / 2000L;
-            final float n4 = (currentAnimationTimeMillis - mStartTime) % 2000L / 20.0f;
+            final long n4 = (currentAnimationTimeMillis - this.mStartTime) / 2000L;
+            final float n5 = (currentAnimationTimeMillis - mStartTime) % 2000L / 20.0f;
+            boolean b;
             if (!this.mRunning) {
                 if (currentAnimationTimeMillis - this.mFinishTime >= 1000L) {
                     this.mFinishTime = 0L;
                     return;
                 }
-                final float n5 = width / 2 * SwipeProgressBar.INTERPOLATOR.getInterpolation((currentAnimationTimeMillis - this.mFinishTime) % 1000L / 10.0f / 100.0f);
-                this.mClipRect.set(n - n5, 0.0f, n + n5, (float)height);
+                final float n6 = SwipeProgressBar.INTERPOLATOR.getInterpolation((currentAnimationTimeMillis - this.mFinishTime) % 1000L / 10.0f / 100.0f) * (width / 2);
+                this.mClipRect.set(n - n6, 0.0f, n6 + n, (float)height);
                 canvas.saveLayerAlpha(this.mClipRect, 0, 0);
                 b = true;
             }
-            if (n3 == 0L) {
+            else {
+                b = false;
+            }
+            if (n4 == 0L) {
                 canvas.drawColor(this.mColor1);
             }
-            else if (n4 >= 0.0f && n4 < 25.0f) {
+            else if (n5 >= 0.0f && n5 < 25.0f) {
                 canvas.drawColor(this.mColor4);
             }
-            else if (n4 >= 25.0f && n4 < 50.0f) {
+            else if (n5 >= 25.0f && n5 < 50.0f) {
                 canvas.drawColor(this.mColor1);
             }
-            else if (n4 >= 50.0f && n4 < 75.0f) {
+            else if (n5 >= 50.0f && n5 < 75.0f) {
                 canvas.drawColor(this.mColor2);
             }
             else {
                 canvas.drawColor(this.mColor3);
             }
-            if (n4 >= 0.0f && n4 <= 25.0f) {
-                this.drawCircle(canvas, n, n2, this.mColor1, (25.0f + n4) * 2.0f / 100.0f);
+            if (n5 >= 0.0f && n5 <= 25.0f) {
+                this.drawCircle(canvas, n, n2, this.mColor1, (25.0f + n5) * 2.0f / 100.0f);
             }
-            if (n4 >= 0.0f && n4 <= 50.0f) {
-                this.drawCircle(canvas, n, n2, this.mColor2, 2.0f * n4 / 100.0f);
+            if (n5 >= 0.0f && n5 <= 50.0f) {
+                this.drawCircle(canvas, n, n2, this.mColor2, 2.0f * n5 / 100.0f);
             }
-            if (n4 >= 25.0f && n4 <= 75.0f) {
-                this.drawCircle(canvas, n, n2, this.mColor3, (n4 - 25.0f) * 2.0f / 100.0f);
+            if (n5 >= 25.0f && n5 <= 75.0f) {
+                this.drawCircle(canvas, n, n2, this.mColor3, (n5 - 25.0f) * 2.0f / 100.0f);
             }
-            if (n4 >= 50.0f && n4 <= 100.0f) {
-                this.drawCircle(canvas, n, n2, this.mColor4, (n4 - 50.0f) * 2.0f / 100.0f);
+            if (n5 >= 50.0f && n5 <= 100.0f) {
+                this.drawCircle(canvas, n, n2, this.mColor4, (n5 - 50.0f) * 2.0f / 100.0f);
             }
-            if (n4 >= 75.0f && n4 <= 100.0f) {
-                this.drawCircle(canvas, n, n2, this.mColor1, (n4 - 75.0f) * 2.0f / 100.0f);
+            if (n5 >= 75.0f && n5 <= 100.0f) {
+                this.drawCircle(canvas, n, n2, this.mColor1, (n5 - 75.0f) * 2.0f / 100.0f);
             }
-            save2 = save;
-            if (this.mTriggerPercentage > 0.0f) {
-                save2 = save;
-                if (b) {
-                    canvas.restoreToCount(save);
-                    save2 = canvas.save();
-                    canvas.clipRect(this.mBounds);
-                    this.drawTrigger(canvas, n, n2);
-                }
+            if (this.mTriggerPercentage > 0.0f && b) {
+                canvas.restoreToCount(n3);
+                n3 = canvas.save();
+                canvas.clipRect(this.mBounds);
+                this.drawTrigger(canvas, n, n2);
             }
             ViewCompat.postInvalidateOnAnimation(this.mParent, this.mBounds.left, this.mBounds.top, this.mBounds.right, this.mBounds.bottom);
+            n7 = n3;
         }
         else {
-            save2 = save;
+            n7 = n3;
             if (this.mTriggerPercentage > 0.0f) {
-                save2 = save;
+                n7 = n3;
                 if (this.mTriggerPercentage <= 1.0) {
                     this.drawTrigger(canvas, n, n2);
-                    save2 = save;
+                    n7 = n3;
                 }
             }
         }
-        canvas.restoreToCount(save2);
+        canvas.restoreToCount(n7);
     }
     
     boolean isRunning() {

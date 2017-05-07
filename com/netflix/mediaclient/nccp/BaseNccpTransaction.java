@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.nccp;
 
-import java.io.IOException;
 import com.netflix.mediaclient.nccp.response.EmptyReponse;
 import org.apache.http.util.EntityUtils;
 import com.netflix.mediaclient.nccp.response.NccpTransactionHttpError;
@@ -153,7 +152,7 @@ public abstract class BaseNccpTransaction implements NccpTransaction
     }
     
     @Override
-    public NccpResponse processResponse(final HttpResponse httpResponse) throws IOException {
+    public NccpResponse processResponse(final HttpResponse httpResponse) {
         final int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode != 200) {
             if (Log.isLoggable("nf_nccp", 3)) {

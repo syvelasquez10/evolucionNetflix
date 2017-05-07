@@ -17,7 +17,6 @@ import android.util.DisplayMetrics;
 import android.content.res.TypedArray;
 import android.support.v4.view.ViewCompat;
 import android.view.ViewConfiguration;
-import android.view.animation.Transformation;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.View;
@@ -60,7 +59,7 @@ public class SwipeRefreshLayout extends ViewGroup
     protected int mFrom;
     private float mInitialMotionY;
     private boolean mIsBeingDragged;
-    private OnRefreshListener mListener;
+    private SwipeRefreshLayout$OnRefreshListener mListener;
     private int mMediumAnimationDuration;
     private boolean mNotify;
     private boolean mOriginalOffsetCalculated;
@@ -96,52 +95,9 @@ public class SwipeRefreshLayout extends ViewGroup
         this.mOriginalOffsetCalculated = false;
         this.mActivePointerId = -1;
         this.mCircleViewIndex = -1;
-        this.mRefreshListener = (Animation$AnimationListener)new Animation$AnimationListener() {
-            public void onAnimationEnd(final Animation animation) {
-                if (SwipeRefreshLayout.this.mRefreshing) {
-                    SwipeRefreshLayout.this.mProgress.setAlpha(255);
-                    SwipeRefreshLayout.this.mProgress.start();
-                    if (SwipeRefreshLayout.this.mNotify && SwipeRefreshLayout.this.mListener != null) {
-                        SwipeRefreshLayout.this.mListener.onRefresh();
-                    }
-                }
-                else {
-                    SwipeRefreshLayout.this.mProgress.stop();
-                    SwipeRefreshLayout.this.mCircleView.setVisibility(8);
-                    SwipeRefreshLayout.this.setColorViewAlpha(255);
-                    if (SwipeRefreshLayout.this.mScale) {
-                        SwipeRefreshLayout.this.setAnimationProgress(0.0f);
-                    }
-                    else {
-                        SwipeRefreshLayout.this.setTargetOffsetTopAndBottom(SwipeRefreshLayout.this.mOriginalOffsetTop - SwipeRefreshLayout.this.mCurrentTargetOffsetTop, true);
-                    }
-                }
-                SwipeRefreshLayout.this.mCurrentTargetOffsetTop = SwipeRefreshLayout.this.mCircleView.getTop();
-            }
-            
-            public void onAnimationRepeat(final Animation animation) {
-            }
-            
-            public void onAnimationStart(final Animation animation) {
-            }
-        };
-        this.mAnimateToCorrectPosition = new Animation() {
-            public void applyTransformation(final float n, final Transformation transformation) {
-                int n2;
-                if (!SwipeRefreshLayout.this.mUsingCustomStart) {
-                    n2 = (int)(SwipeRefreshLayout.this.mSpinnerFinalOffset - Math.abs(SwipeRefreshLayout.this.mOriginalOffsetTop));
-                }
-                else {
-                    n2 = (int)SwipeRefreshLayout.this.mSpinnerFinalOffset;
-                }
-                SwipeRefreshLayout.this.setTargetOffsetTopAndBottom(SwipeRefreshLayout.this.mFrom + (int)((n2 - SwipeRefreshLayout.this.mFrom) * n) - SwipeRefreshLayout.this.mCircleView.getTop(), false);
-            }
-        };
-        this.mAnimateToStartPosition = new Animation() {
-            public void applyTransformation(final float n, final Transformation transformation) {
-                SwipeRefreshLayout.this.moveToStart(n);
-            }
-        };
+        this.mRefreshListener = (Animation$AnimationListener)new SwipeRefreshLayout$1(this);
+        this.mAnimateToCorrectPosition = new SwipeRefreshLayout$6(this);
+        this.mAnimateToStartPosition = new SwipeRefreshLayout$7(this);
         this.mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         this.mMediumAnimationDuration = this.getResources().getInteger(17694721);
         this.setWillNotDraw(false);
@@ -154,7 +110,7 @@ public class SwipeRefreshLayout extends ViewGroup
         this.mCircleHeight = (int)(displayMetrics.density * 40.0f);
         this.createProgressView();
         ViewCompat.setChildrenDrawingOrderEnabled(this, true);
-        this.mSpinnerFinalOffset = 64.0f * displayMetrics.density;
+        this.mSpinnerFinalOffset = displayMetrics.density * 64.0f;
         this.mTotalDragDistance = this.mSpinnerFinalOffset;
     }
     
@@ -280,16 +236,12 @@ public class SwipeRefreshLayout extends ViewGroup
         if (this.mScale && this.isAlphaUsedForScale()) {
             return null;
         }
-        final Animation animation = new Animation() {
-            public void applyTransformation(final float n, final Transformation transformation) {
-                SwipeRefreshLayout.this.mProgress.setAlpha((int)(n + (n2 - n) * n));
-            }
-        };
-        animation.setDuration(300L);
+        final SwipeRefreshLayout$4 swipeRefreshLayout$4 = new SwipeRefreshLayout$4(this, n, n2);
+        swipeRefreshLayout$4.setDuration(300L);
         this.mCircleView.setAnimationListener(null);
         this.mCircleView.clearAnimation();
-        this.mCircleView.startAnimation((Animation)animation);
-        return animation;
+        this.mCircleView.startAnimation((Animation)swipeRefreshLayout$4);
+        return swipeRefreshLayout$4;
     }
     
     private void startProgressAlphaMaxAnimation() {
@@ -301,11 +253,7 @@ public class SwipeRefreshLayout extends ViewGroup
     }
     
     private void startScaleDownAnimation(final Animation$AnimationListener animationListener) {
-        (this.mScaleDownAnimation = new Animation() {
-            public void applyTransformation(final float n, final Transformation transformation) {
-                SwipeRefreshLayout.this.setAnimationProgress(1.0f - n);
-            }
-        }).setDuration(150L);
+        (this.mScaleDownAnimation = new SwipeRefreshLayout$3(this)).setDuration(150L);
         this.mCircleView.setAnimationListener(animationListener);
         this.mCircleView.clearAnimation();
         this.mCircleView.startAnimation(this.mScaleDownAnimation);
@@ -319,12 +267,7 @@ public class SwipeRefreshLayout extends ViewGroup
         else {
             this.mStartingScale = ViewCompat.getScaleX((View)this.mCircleView);
         }
-        (this.mScaleDownToStartAnimation = new Animation() {
-            public void applyTransformation(final float n, final Transformation transformation) {
-                SwipeRefreshLayout.this.setAnimationProgress(SwipeRefreshLayout.this.mStartingScale + -SwipeRefreshLayout.this.mStartingScale * n);
-                SwipeRefreshLayout.this.moveToStart(n);
-            }
-        }).setDuration(150L);
+        (this.mScaleDownToStartAnimation = new SwipeRefreshLayout$8(this)).setDuration(150L);
         if (animationListener != null) {
             this.mCircleView.setAnimationListener(animationListener);
         }
@@ -337,11 +280,7 @@ public class SwipeRefreshLayout extends ViewGroup
         if (Build$VERSION.SDK_INT >= 11) {
             this.mProgress.setAlpha(255);
         }
-        (this.mScaleAnimation = new Animation() {
-            public void applyTransformation(final float n, final Transformation transformation) {
-                SwipeRefreshLayout.this.setAnimationProgress(n);
-            }
-        }).setDuration((long)this.mMediumAnimationDuration);
+        (this.mScaleAnimation = new SwipeRefreshLayout$2(this)).setDuration((long)this.mMediumAnimationDuration);
         if (animationListener != null) {
             this.mCircleView.setAnimationListener(animationListener);
         }
@@ -350,19 +289,18 @@ public class SwipeRefreshLayout extends ViewGroup
     }
     
     public boolean canChildScrollUp() {
-        if (Build$VERSION.SDK_INT < 14) {
-            if (this.mTarget instanceof AbsListView) {
-                final AbsListView absListView = (AbsListView)this.mTarget;
-                if (absListView.getChildCount() <= 0 || (absListView.getFirstVisiblePosition() <= 0 && absListView.getChildAt(0).getTop() >= absListView.getPaddingTop())) {
-                    return false;
-                }
-            }
-            else if (this.mTarget.getScrollY() <= 0) {
-                return false;
-            }
-            return true;
+        boolean b = true;
+        if (Build$VERSION.SDK_INT >= 14) {
+            return ViewCompat.canScrollVertically(this.mTarget, -1);
         }
-        return ViewCompat.canScrollVertically(this.mTarget, -1);
+        if (this.mTarget instanceof AbsListView) {
+            final AbsListView absListView = (AbsListView)this.mTarget;
+            return absListView.getChildCount() > 0 && (absListView.getFirstVisiblePosition() > 0 || absListView.getChildAt(0).getTop() < absListView.getPaddingTop());
+        }
+        if (this.mTarget.getScrollY() <= 0) {
+            b = false;
+        }
+        return b;
     }
     
     protected int getChildDrawingOrder(final int n, final int n2) {
@@ -445,7 +383,7 @@ public class SwipeRefreshLayout extends ViewGroup
                 final View mTarget = this.mTarget;
                 n2 = this.getPaddingLeft();
                 paddingTop = this.getPaddingTop();
-                mTarget.layout(n2, paddingTop, n2 + (measuredWidth - this.getPaddingLeft() - this.getPaddingRight()), paddingTop + (n - this.getPaddingTop() - this.getPaddingBottom()));
+                mTarget.layout(n2, paddingTop, measuredWidth - this.getPaddingLeft() - this.getPaddingRight() + n2, n - this.getPaddingTop() - this.getPaddingBottom() + paddingTop);
                 n = this.mCircleView.getMeasuredWidth();
                 n2 = this.mCircleView.getMeasuredHeight();
                 this.mCircleView.layout(measuredWidth / 2 - n / 2, this.mCurrentTargetOffsetTop, measuredWidth / 2 + n / 2, this.mCurrentTargetOffsetTop + n2);
@@ -497,7 +435,7 @@ public class SwipeRefreshLayout extends ViewGroup
                     Log.e(SwipeRefreshLayout.LOG_TAG, "Got ACTION_MOVE event but have an invalid active pointer id.");
                     return false;
                 }
-                final float n = (MotionEventCompat.getY(motionEvent, pointerIndex) - this.mInitialMotionY) * 0.5f;
+                final float n = 0.5f * (MotionEventCompat.getY(motionEvent, pointerIndex) - this.mInitialMotionY);
                 if (!this.mIsBeingDragged) {
                     break;
                 }
@@ -535,14 +473,14 @@ public class SwipeRefreshLayout extends ViewGroup
                     if (this.mProgress.getAlpha() > 76 && !this.isAnimationRunning(this.mAlphaStartAnimation)) {
                         this.startProgressAlphaStartAnimation();
                     }
-                    this.mProgress.setStartEndTrim(0.0f, Math.min(0.8f, n3 * 0.8f));
+                    this.mProgress.setStartEndTrim(0.0f, Math.min(0.8f, 0.8f * n3));
                     this.mProgress.setArrowScale(Math.min(1.0f, n3));
                 }
                 else if (this.mProgress.getAlpha() < 255 && !this.isAnimationRunning(this.mAlphaMaxAnimation)) {
                     this.startProgressAlphaMaxAnimation();
                 }
                 this.mProgress.setProgressRotation((-0.25f + 0.4f * n3 + 2.0f * n4) * 0.5f);
-                this.setTargetOffsetTopAndBottom(mOriginalOffsetTop + n5 - this.mCurrentTargetOffsetTop, true);
+                this.setTargetOffsetTopAndBottom(n5 + mOriginalOffsetTop - this.mCurrentTargetOffsetTop, true);
                 break;
             }
             case 5: {
@@ -572,19 +510,7 @@ public class SwipeRefreshLayout extends ViewGroup
                     this.mProgress.setStartEndTrim(0.0f, 0.0f);
                     Object o = null;
                     if (!this.mScale) {
-                        o = new Animation$AnimationListener() {
-                            public void onAnimationEnd(final Animation animation) {
-                                if (!SwipeRefreshLayout.this.mScale) {
-                                    SwipeRefreshLayout.this.startScaleDownAnimation(null);
-                                }
-                            }
-                            
-                            public void onAnimationRepeat(final Animation animation) {
-                            }
-                            
-                            public void onAnimationStart(final Animation animation) {
-                            }
-                        };
+                        o = new SwipeRefreshLayout$5(this);
                     }
                     this.animateOffsetToStartPosition(this.mCurrentTargetOffsetTop, (Animation$AnimationListener)o);
                     this.mProgress.showArrow(false);
@@ -622,7 +548,7 @@ public class SwipeRefreshLayout extends ViewGroup
         this.mTotalDragDistance = n;
     }
     
-    public void setOnRefreshListener(final OnRefreshListener mListener) {
+    public void setOnRefreshListener(final SwipeRefreshLayout$OnRefreshListener mListener) {
         this.mListener = mListener;
     }
     
@@ -671,22 +597,17 @@ public class SwipeRefreshLayout extends ViewGroup
         }
         final DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         if (n == 0) {
-            final int n2 = (int)(56.0f * displayMetrics.density);
+            final int n2 = (int)(displayMetrics.density * 56.0f);
             this.mCircleWidth = n2;
             this.mCircleHeight = n2;
         }
         else {
-            final int n3 = (int)(40.0f * displayMetrics.density);
+            final int n3 = (int)(displayMetrics.density * 40.0f);
             this.mCircleWidth = n3;
             this.mCircleHeight = n3;
         }
         this.mCircleView.setImageDrawable((Drawable)null);
         this.mProgress.updateSizes(n);
         this.mCircleView.setImageDrawable((Drawable)this.mProgress);
-    }
-    
-    public interface OnRefreshListener
-    {
-        void onRefresh();
     }
 }

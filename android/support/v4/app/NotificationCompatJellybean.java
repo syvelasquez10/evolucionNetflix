@@ -4,8 +4,6 @@
 
 package android.support.v4.app;
 
-import android.widget.RemoteViews;
-import android.content.Context;
 import android.app.Notification$Builder;
 import android.os.Parcelable;
 import android.app.PendingIntent;
@@ -84,7 +82,7 @@ class NotificationCompatJellybean
     public static SparseArray<Bundle> buildActionExtrasMap(final List<Bundle> list) {
         SparseArray sparseArray = null;
         SparseArray sparseArray2;
-        for (int i = 0; i < list.size(); ++i, sparseArray = sparseArray2) {
+        for (int size = list.size(), i = 0; i < size; ++i, sparseArray = sparseArray2) {
             final Bundle bundle = list.get(i);
             sparseArray2 = sparseArray;
             if (bundle != null) {
@@ -133,26 +131,29 @@ class NotificationCompatJellybean
         }
     }
     
-    public static NotificationCompatBase.Action getAction(final Notification notification, final int n, final NotificationCompatBase.Action.Factory factory, final RemoteInputCompatBase.RemoteInput.Factory factory2) {
-        synchronized (NotificationCompatJellybean.sActionsLock) {
-            try {
-                final Object o = getActionObjectsLocked(notification)[n];
-                final Bundle bundle = null;
-                final Bundle extras = getExtras(notification);
-                Bundle bundle2 = bundle;
-                if (extras != null) {
-                    final SparseArray sparseParcelableArray = extras.getSparseParcelableArray("android.support.actionExtras");
-                    bundle2 = bundle;
-                    if (sparseParcelableArray != null) {
-                        bundle2 = (Bundle)sparseParcelableArray.get(n);
+    public static NotificationCompatBase$Action getAction(final Notification notification, final int n, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
+        while (true) {
+            while (true) {
+                synchronized (NotificationCompatJellybean.sActionsLock) {
+                    try {
+                        final Object o = getActionObjectsLocked(notification)[n];
+                        final Bundle extras = getExtras(notification);
+                        if (extras != null) {
+                            final SparseArray sparseParcelableArray = extras.getSparseParcelableArray("android.support.actionExtras");
+                            if (sparseParcelableArray != null) {
+                                final Bundle bundle = (Bundle)sparseParcelableArray.get(n);
+                                return readAction(notificationCompatBase$Action$Factory, remoteInputCompatBase$RemoteInput$Factory, NotificationCompatJellybean.sActionIconField.getInt(o), (CharSequence)NotificationCompatJellybean.sActionTitleField.get(o), (PendingIntent)NotificationCompatJellybean.sActionIntentField.get(o), bundle);
+                            }
+                        }
+                    }
+                    catch (IllegalAccessException ex) {
+                        Log.e("NotificationCompat", "Unable to access notification actions", (Throwable)ex);
+                        NotificationCompatJellybean.sActionsAccessFailed = true;
+                        return null;
                     }
                 }
-                return readAction(factory, factory2, NotificationCompatJellybean.sActionIconField.getInt(o), (CharSequence)NotificationCompatJellybean.sActionTitleField.get(o), (PendingIntent)NotificationCompatJellybean.sActionIntentField.get(o), bundle2);
-            }
-            catch (IllegalAccessException ex) {
-                Log.e("NotificationCompat", "Unable to access notification actions", (Throwable)ex);
-                NotificationCompatJellybean.sActionsAccessFailed = true;
-                return null;
+                final Bundle bundle = null;
+                continue;
             }
         }
     }
@@ -169,8 +170,8 @@ class NotificationCompatJellybean
         }
     }
     
-    private static NotificationCompatBase.Action getActionFromBundle(final Bundle bundle, final NotificationCompatBase.Action.Factory factory, final RemoteInputCompatBase.RemoteInput.Factory factory2) {
-        return factory.build(bundle.getInt("icon"), bundle.getCharSequence("title"), (PendingIntent)bundle.getParcelable("actionIntent"), bundle.getBundle("extras"), RemoteInputCompatJellybean.fromBundleArray(BundleUtil.getBundleArrayFromBundle(bundle, "remoteInputs"), factory2));
+    private static NotificationCompatBase$Action getActionFromBundle(final Bundle bundle, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
+        return notificationCompatBase$Action$Factory.build(bundle.getInt("icon"), bundle.getCharSequence("title"), (PendingIntent)bundle.getParcelable("actionIntent"), bundle.getBundle("extras"), RemoteInputCompatJellybean.fromBundleArray(BundleUtil.getBundleArrayFromBundle(bundle, "remoteInputs"), remoteInputCompatBase$RemoteInput$Factory));
     }
     
     private static Object[] getActionObjectsLocked(final Notification p0) {
@@ -252,33 +253,24 @@ class NotificationCompatJellybean
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public static NotificationCompatBase.Action[] getActionsFromParcelableArrayList(final ArrayList<Parcelable> list, final NotificationCompatBase.Action.Factory factory, final RemoteInputCompatBase.RemoteInput.Factory factory2) {
-        NotificationCompatBase.Action[] array;
+    public static NotificationCompatBase$Action[] getActionsFromParcelableArrayList(final ArrayList<Parcelable> list, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
         if (list == null) {
-            array = null;
+            return null;
         }
-        else {
-            final NotificationCompatBase.Action[] array2 = factory.newArray(list.size());
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = getActionFromBundle((Bundle)list.get(n), factory, factory2);
-                ++n;
-            }
+        final NotificationCompatBase$Action[] array = notificationCompatBase$Action$Factory.newArray(list.size());
+        for (int i = 0; i < array.length; ++i) {
+            array[i] = getActionFromBundle((Bundle)list.get(i), notificationCompatBase$Action$Factory, remoteInputCompatBase$RemoteInput$Factory);
         }
         return array;
     }
     
-    private static Bundle getBundleForAction(final NotificationCompatBase.Action action) {
+    private static Bundle getBundleForAction(final NotificationCompatBase$Action notificationCompatBase$Action) {
         final Bundle bundle = new Bundle();
-        bundle.putInt("icon", action.getIcon());
-        bundle.putCharSequence("title", action.getTitle());
-        bundle.putParcelable("actionIntent", (Parcelable)action.getActionIntent());
-        bundle.putBundle("extras", action.getExtras());
-        bundle.putParcelableArray("remoteInputs", (Parcelable[])RemoteInputCompatJellybean.toBundleArray(action.getRemoteInputs()));
+        bundle.putInt("icon", notificationCompatBase$Action.getIcon());
+        bundle.putCharSequence("title", notificationCompatBase$Action.getTitle());
+        bundle.putParcelable("actionIntent", (Parcelable)notificationCompatBase$Action.getActionIntent());
+        bundle.putBundle("extras", notificationCompatBase$Action.getExtras());
+        bundle.putParcelableArray("remoteInputs", (Parcelable[])RemoteInputCompatJellybean.toBundleArray(notificationCompatBase$Action.getRemoteInputs()));
         return bundle;
     }
     
@@ -426,7 +418,7 @@ class NotificationCompatJellybean
         return getExtras(notification).getBoolean("android.support.localOnly");
     }
     
-    public static ArrayList<Parcelable> getParcelableArrayListForActions(final NotificationCompatBase.Action[] array) {
+    public static ArrayList<Parcelable> getParcelableArrayListForActions(final NotificationCompatBase$Action[] array) {
         ArrayList<Parcelable> list;
         if (array == null) {
             list = null;
@@ -455,78 +447,20 @@ class NotificationCompatJellybean
         return getExtras(notification).getBoolean("android.support.isGroupSummary");
     }
     
-    public static NotificationCompatBase.Action readAction(final NotificationCompatBase.Action.Factory factory, final RemoteInputCompatBase.RemoteInput.Factory factory2, final int n, final CharSequence charSequence, final PendingIntent pendingIntent, final Bundle bundle) {
-        RemoteInputCompatBase.RemoteInput[] fromBundleArray = null;
+    public static NotificationCompatBase$Action readAction(final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory, final int n, final CharSequence charSequence, final PendingIntent pendingIntent, final Bundle bundle) {
+        RemoteInputCompatBase$RemoteInput[] fromBundleArray = null;
         if (bundle != null) {
-            fromBundleArray = RemoteInputCompatJellybean.fromBundleArray(BundleUtil.getBundleArrayFromBundle(bundle, "android.support.remoteInputs"), factory2);
+            fromBundleArray = RemoteInputCompatJellybean.fromBundleArray(BundleUtil.getBundleArrayFromBundle(bundle, "android.support.remoteInputs"), remoteInputCompatBase$RemoteInput$Factory);
         }
-        return factory.build(n, charSequence, pendingIntent, bundle, fromBundleArray);
+        return notificationCompatBase$Action$Factory.build(n, charSequence, pendingIntent, bundle, fromBundleArray);
     }
     
-    public static Bundle writeActionAndGetExtras(final Notification$Builder notification$Builder, final NotificationCompatBase.Action action) {
-        notification$Builder.addAction(action.getIcon(), action.getTitle(), action.getActionIntent());
-        final Bundle bundle = new Bundle(action.getExtras());
-        if (action.getRemoteInputs() != null) {
-            bundle.putParcelableArray("android.support.remoteInputs", (Parcelable[])RemoteInputCompatJellybean.toBundleArray(action.getRemoteInputs()));
+    public static Bundle writeActionAndGetExtras(final Notification$Builder notification$Builder, final NotificationCompatBase$Action notificationCompatBase$Action) {
+        notification$Builder.addAction(notificationCompatBase$Action.getIcon(), notificationCompatBase$Action.getTitle(), notificationCompatBase$Action.getActionIntent());
+        final Bundle bundle = new Bundle(notificationCompatBase$Action.getExtras());
+        if (notificationCompatBase$Action.getRemoteInputs() != null) {
+            bundle.putParcelableArray("android.support.remoteInputs", (Parcelable[])RemoteInputCompatJellybean.toBundleArray(notificationCompatBase$Action.getRemoteInputs()));
         }
         return bundle;
-    }
-    
-    public static class Builder implements NotificationBuilderWithBuilderAccessor, NotificationBuilderWithActions
-    {
-        private Notification$Builder b;
-        private List<Bundle> mActionExtrasList;
-        private final Bundle mExtras;
-        
-        public Builder(final Context context, final Notification notification, final CharSequence contentTitle, final CharSequence contentText, final CharSequence contentInfo, final RemoteViews remoteViews, final int number, final PendingIntent contentIntent, final PendingIntent pendingIntent, final Bitmap largeIcon, final int n, final int n2, final boolean b, final boolean usesChronometer, final int priority, final CharSequence subText, final boolean b2, final Bundle bundle, final String s, final boolean b3, final String s2) {
-            this.mActionExtrasList = new ArrayList<Bundle>();
-            this.b = new Notification$Builder(context).setWhen(notification.when).setSmallIcon(notification.icon, notification.iconLevel).setContent(notification.contentView).setTicker(notification.tickerText, remoteViews).setSound(notification.sound, notification.audioStreamType).setVibrate(notification.vibrate).setLights(notification.ledARGB, notification.ledOnMS, notification.ledOffMS).setOngoing((notification.flags & 0x2) != 0x0).setOnlyAlertOnce((notification.flags & 0x8) != 0x0).setAutoCancel((notification.flags & 0x10) != 0x0).setDefaults(notification.defaults).setContentTitle(contentTitle).setContentText(contentText).setSubText(subText).setContentInfo(contentInfo).setContentIntent(contentIntent).setDeleteIntent(notification.deleteIntent).setFullScreenIntent(pendingIntent, (notification.flags & 0x80) != 0x0).setLargeIcon(largeIcon).setNumber(number).setUsesChronometer(usesChronometer).setPriority(priority).setProgress(n, n2, b);
-            this.mExtras = new Bundle();
-            if (bundle != null) {
-                this.mExtras.putAll(bundle);
-            }
-            if (b2) {
-                this.mExtras.putBoolean("android.support.localOnly", true);
-            }
-            if (s != null) {
-                this.mExtras.putString("android.support.groupKey", s);
-                if (b3) {
-                    this.mExtras.putBoolean("android.support.isGroupSummary", true);
-                }
-                else {
-                    this.mExtras.putBoolean("android.support.useSideChannel", true);
-                }
-            }
-            if (s2 != null) {
-                this.mExtras.putString("android.support.sortKey", s2);
-            }
-        }
-        
-        @Override
-        public void addAction(final NotificationCompatBase.Action action) {
-            this.mActionExtrasList.add(NotificationCompatJellybean.writeActionAndGetExtras(this.b, action));
-        }
-        
-        public Notification build() {
-            final Notification build = this.b.build();
-            final Bundle extras = NotificationCompatJellybean.getExtras(build);
-            final Bundle bundle = new Bundle(this.mExtras);
-            for (final String s : this.mExtras.keySet()) {
-                if (extras.containsKey(s)) {
-                    bundle.remove(s);
-                }
-            }
-            extras.putAll(bundle);
-            final SparseArray<Bundle> buildActionExtrasMap = NotificationCompatJellybean.buildActionExtrasMap(this.mActionExtrasList);
-            if (buildActionExtrasMap != null) {
-                NotificationCompatJellybean.getExtras(build).putSparseParcelableArray("android.support.actionExtras", (SparseArray)buildActionExtrasMap);
-            }
-            return build;
-        }
-        
-        @Override
-        public Notification$Builder getBuilder() {
-            return this.b;
-        }
     }
 }

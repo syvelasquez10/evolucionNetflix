@@ -5,6 +5,7 @@
 package com.google.android.gms.games.internal.multiplayer;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.games.multiplayer.InvitationEntity;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.games.multiplayer.Invitation;
@@ -44,7 +45,7 @@ public class InvitationClusterCreator implements Parcelable$Creator<ZInvitationC
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ZInvitationCluster(g, c2);
     }

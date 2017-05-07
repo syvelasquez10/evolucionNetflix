@@ -4,7 +4,6 @@
 
 package android.support.v4.os;
 
-import android.os.Parcel;
 import android.os.Build$VERSION;
 import android.os.Parcelable$Creator;
 
@@ -14,23 +13,6 @@ public class ParcelableCompat
         if (Build$VERSION.SDK_INT >= 13) {
             ParcelableCompatCreatorHoneycombMR2Stub.instantiate(parcelableCompatCreatorCallbacks);
         }
-        return (Parcelable$Creator<T>)new CompatCreator((ParcelableCompatCreatorCallbacks<Object>)parcelableCompatCreatorCallbacks);
-    }
-    
-    static class CompatCreator<T> implements Parcelable$Creator<T>
-    {
-        final ParcelableCompatCreatorCallbacks<T> mCallbacks;
-        
-        public CompatCreator(final ParcelableCompatCreatorCallbacks<T> mCallbacks) {
-            this.mCallbacks = mCallbacks;
-        }
-        
-        public T createFromParcel(final Parcel parcel) {
-            return this.mCallbacks.createFromParcel(parcel, null);
-        }
-        
-        public T[] newArray(final int n) {
-            return this.mCallbacks.newArray(n);
-        }
+        return (Parcelable$Creator<T>)new ParcelableCompat$CompatCreator((ParcelableCompatCreatorCallbacks<Object>)parcelableCompatCreatorCallbacks);
     }
 }

@@ -4,11 +4,6 @@
 
 package com.tonicartos.widget.stickygridheaders;
 
-import android.widget.FrameLayout$LayoutParams;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.FrameLayout;
-import android.view.View$MeasureSpec;
-import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.View;
 import android.database.DataSetObserver;
@@ -39,17 +34,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     
     public StickyGridHeadersBaseAdapterWrapper(final Context mContext, final StickyGridHeadersGridView mGridView, final StickyGridHeadersBaseAdapter mDelegate) {
         this.mCounted = false;
-        this.mDataSetObserver = new DataSetObserver() {
-            public void onChanged() {
-                StickyGridHeadersBaseAdapterWrapper.this.updateCount();
-                StickyGridHeadersBaseAdapterWrapper.this.notifyDataSetChanged();
-            }
-            
-            public void onInvalidated() {
-                StickyGridHeadersBaseAdapterWrapper.this.mCounted = false;
-                StickyGridHeadersBaseAdapterWrapper.this.notifyDataSetInvalidated();
-            }
-        };
+        this.mDataSetObserver = new StickyGridHeadersBaseAdapterWrapper$1(this);
         this.mNumColumns = 1;
         this.mContext = mContext;
         this.mDelegate = mDelegate;
@@ -57,31 +42,20 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
         mDelegate.registerDataSetObserver(this.mDataSetObserver);
     }
     
-    private FillerView getFillerView(final View view, final ViewGroup viewGroup, final View measureTarget) {
-        View view2 = null;
-        Label_0026: {
-            if (view != null) {
-                view2 = view;
-                if (view instanceof FillerView) {
-                    break Label_0026;
-                }
-            }
-            view2 = new FillerView(this.mContext);
+    private StickyGridHeadersBaseAdapterWrapper$FillerView getFillerView(View view, final ViewGroup viewGroup, final View measureTarget) {
+        if (view == null || !(view instanceof StickyGridHeadersBaseAdapterWrapper$FillerView)) {
+            view = new StickyGridHeadersBaseAdapterWrapper$FillerView(this, this.mContext);
         }
-        final FillerView fillerView = (FillerView)view2;
-        fillerView.setMeasureTarget(measureTarget);
-        return fillerView;
+        final StickyGridHeadersBaseAdapterWrapper$FillerView stickyGridHeadersBaseAdapterWrapper$FillerView = (StickyGridHeadersBaseAdapterWrapper$FillerView)view;
+        stickyGridHeadersBaseAdapterWrapper$FillerView.setMeasureTarget(measureTarget);
+        return stickyGridHeadersBaseAdapterWrapper$FillerView;
     }
     
-    private HeaderFillerView getHeaderFillerView(final int n, final View view, final ViewGroup viewGroup) {
-        if (view != null) {
-            final Object o = view;
-            if (view instanceof HeaderFillerView) {
-                return (HeaderFillerView)o;
-            }
+    private StickyGridHeadersBaseAdapterWrapper$HeaderFillerView getHeaderFillerView(final int n, View view, final ViewGroup viewGroup) {
+        if (view == null || !(view instanceof StickyGridHeadersBaseAdapterWrapper$HeaderFillerView)) {
+            view = (View)new StickyGridHeadersBaseAdapterWrapper$HeaderFillerView(this, this.mContext);
         }
-        final Object o = new HeaderFillerView(this.mContext);
-        return (HeaderFillerView)o;
+        return (StickyGridHeadersBaseAdapterWrapper$HeaderFillerView)view;
     }
     
     private int unFilledSpacesInHeaderGroup(int n) {
@@ -97,6 +71,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     }
     
     public int getCount() {
+        int i = 0;
         if (this.mCounted) {
             return this.mCount;
         }
@@ -107,8 +82,9 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
             this.mCounted = true;
             return this.mCount;
         }
-        for (int i = 0; i < numHeaders; ++i) {
+        while (i < numHeaders) {
             this.mCount += this.mDelegate.getCountForHeader(i) + this.unFilledSpacesInHeaderGroup(i) + this.mNumColumns;
+            ++i;
         }
         this.mCounted = true;
         return this.mCount;
@@ -125,8 +101,8 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
         return this.mDelegate.getHeaderView(this.translatePosition(n).mHeader, view, viewGroup);
     }
     
-    public Object getItem(final int n) throws ArrayIndexOutOfBoundsException {
-        final Position translatePosition = this.translatePosition(n);
+    public Object getItem(final int n) {
+        final StickyGridHeadersBaseAdapterWrapper$Position translatePosition = this.translatePosition(n);
         if (translatePosition.mPosition == -1 || translatePosition.mPosition == -2) {
             return null;
         }
@@ -134,7 +110,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     }
     
     public long getItemId(final int n) {
-        final Position translatePosition = this.translatePosition(n);
+        final StickyGridHeadersBaseAdapterWrapper$Position translatePosition = this.translatePosition(n);
         if (translatePosition.mPosition == -2) {
             return -1L;
         }
@@ -148,7 +124,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     }
     
     public int getItemViewType(int n) {
-        final Position translatePosition = this.translatePosition(n);
+        final StickyGridHeadersBaseAdapterWrapper$Position translatePosition = this.translatePosition(n);
         if (translatePosition.mPosition == -2) {
             n = 1;
         }
@@ -168,23 +144,23 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     }
     
     public View getView(final int n, View view, final ViewGroup viewGroup) {
-        final Position translatePosition = this.translatePosition(n);
+        final StickyGridHeadersBaseAdapterWrapper$Position translatePosition = this.translatePosition(n);
         if (translatePosition.mPosition == -2) {
-            final HeaderFillerView headerFillerView = this.getHeaderFillerView(translatePosition.mHeader, view, viewGroup);
+            final StickyGridHeadersBaseAdapterWrapper$HeaderFillerView headerFillerView = this.getHeaderFillerView(translatePosition.mHeader, view, viewGroup);
             final View headerView = this.mDelegate.getHeaderView(translatePosition.mHeader, (View)headerFillerView.getTag(), viewGroup);
             this.mGridView.detachHeader((View)headerFillerView.getTag());
             headerFillerView.setTag((Object)headerView);
             this.mGridView.attachHeader(headerView);
-            ((HeaderFillerView)(this.mLastHeaderViewSeen = (View)headerFillerView)).forceLayout();
+            ((StickyGridHeadersBaseAdapterWrapper$HeaderFillerView)(this.mLastHeaderViewSeen = (View)headerFillerView)).forceLayout();
             return (View)headerFillerView;
         }
         if (translatePosition.mPosition == -3) {
-            final FillerView fillerView = this.getFillerView(view, viewGroup, this.mLastHeaderViewSeen);
+            final StickyGridHeadersBaseAdapterWrapper$FillerView fillerView = this.getFillerView(view, viewGroup, this.mLastHeaderViewSeen);
             fillerView.forceLayout();
             return fillerView;
         }
         if (translatePosition.mPosition == -1) {
-            final FillerView fillerView2 = this.getFillerView(view, viewGroup, this.mLastViewSeen);
+            final StickyGridHeadersBaseAdapterWrapper$FillerView fillerView2 = this.getFillerView(view, viewGroup, this.mLastViewSeen);
             fillerView2.forceLayout();
             return fillerView2;
         }
@@ -209,7 +185,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     }
     
     public boolean isEnabled(final int n) {
-        final Position translatePosition = this.translatePosition(n);
+        final StickyGridHeadersBaseAdapterWrapper$Position translatePosition = this.translatePosition(n);
         return translatePosition.mPosition != -1 && translatePosition.mPosition != -2 && this.mDelegate.isEnabled(translatePosition.mPosition);
     }
     
@@ -222,42 +198,41 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
         this.mCounted = false;
     }
     
-    protected Position translatePosition(int i) {
+    protected StickyGridHeadersBaseAdapterWrapper$Position translatePosition(int i) {
+        final int n = 0;
         final int numHeaders = this.mDelegate.getNumHeaders();
         if (numHeaders != 0) {
-            int n = i;
-            final int n2 = 0;
+            int n2 = i;
             int n3 = i;
             int countForHeader;
             int n4;
             int n5;
             int unFilledSpacesInHeaderGroup;
-            for (i = n2; i < numHeaders; ++i) {
+            for (i = n; i < numHeaders; ++i, n2 = n5 - unFilledSpacesInHeaderGroup) {
                 countForHeader = this.mDelegate.getCountForHeader(i);
                 if (n3 == 0) {
-                    return new Position(-2, i);
+                    return new StickyGridHeadersBaseAdapterWrapper$Position(this, -2, i);
                 }
                 n4 = n3 - this.mNumColumns;
                 if (n4 < 0) {
-                    return new Position(-3, i);
+                    return new StickyGridHeadersBaseAdapterWrapper$Position(this, -3, i);
                 }
-                n5 = n - this.mNumColumns;
+                n5 = n2 - this.mNumColumns;
                 if (n4 < countForHeader) {
-                    return new Position(n5, i);
+                    return new StickyGridHeadersBaseAdapterWrapper$Position(this, n5, i);
                 }
                 unFilledSpacesInHeaderGroup = this.unFilledSpacesInHeaderGroup(i);
-                n = n5 - unFilledSpacesInHeaderGroup;
-                n3 = n4 - (countForHeader + unFilledSpacesInHeaderGroup);
+                n3 = n4 - (unFilledSpacesInHeaderGroup + countForHeader);
                 if (n3 < 0) {
-                    return new Position(-1, i);
+                    return new StickyGridHeadersBaseAdapterWrapper$Position(this, -1, i);
                 }
             }
-            return new Position(-1, i);
+            return new StickyGridHeadersBaseAdapterWrapper$Position(this, -1, i);
         }
         if (i >= this.mDelegate.getCount()) {
-            return new Position(-1, 0);
+            return new StickyGridHeadersBaseAdapterWrapper$Position(this, -1, 0);
         }
-        return new Position(i, 0);
+        return new StickyGridHeadersBaseAdapterWrapper$Position(this, i, 0);
     }
     
     public void unregisterDataSetObserver(final DataSetObserver dataSetObserver) {
@@ -265,6 +240,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
     }
     
     protected void updateCount() {
+        int i = 0;
         this.mCount = 0;
         final int numHeaders = this.mDelegate.getNumHeaders();
         if (numHeaders == 0) {
@@ -272,93 +248,10 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter
             this.mCounted = true;
             return;
         }
-        for (int i = 0; i < numHeaders; ++i) {
+        while (i < numHeaders) {
             this.mCount += this.mDelegate.getCountForHeader(i) + this.mNumColumns;
+            ++i;
         }
         this.mCounted = true;
-    }
-    
-    protected class FillerView extends View
-    {
-        private View mMeasureTarget;
-        
-        public FillerView(final Context context) {
-            super(context);
-        }
-        
-        public FillerView(final Context context, final AttributeSet set) {
-            super(context, set);
-        }
-        
-        public FillerView(final Context context, final AttributeSet set, final int n) {
-            super(context, set, n);
-        }
-        
-        protected void onMeasure(final int n, final int n2) {
-            super.onMeasure(n, View$MeasureSpec.makeMeasureSpec(this.mMeasureTarget.getMeasuredHeight(), 1073741824));
-        }
-        
-        public void setMeasureTarget(final View mMeasureTarget) {
-            this.mMeasureTarget = mMeasureTarget;
-        }
-    }
-    
-    protected class HeaderFillerView extends FrameLayout
-    {
-        private int mHeaderId;
-        
-        public HeaderFillerView(final Context context) {
-            super(context);
-        }
-        
-        public HeaderFillerView(final Context context, final AttributeSet set) {
-            super(context, set);
-        }
-        
-        public HeaderFillerView(final Context context, final AttributeSet set, final int n) {
-            super(context, set, n);
-        }
-        
-        protected FrameLayout$LayoutParams generateDefaultLayoutParams() {
-            return new FrameLayout$LayoutParams(-1, -1);
-        }
-        
-        public int getHeaderId() {
-            return this.mHeaderId;
-        }
-        
-        protected void onMeasure(final int n, int childMeasureSpec) {
-            final View view = (View)this.getTag();
-            Object layoutParams;
-            if ((layoutParams = view.getLayoutParams()) == null) {
-                layoutParams = this.generateDefaultLayoutParams();
-                view.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
-            }
-            if (view.getVisibility() != 8) {
-                childMeasureSpec = getChildMeasureSpec(View$MeasureSpec.makeMeasureSpec(0, 0), 0, ((ViewGroup$LayoutParams)layoutParams).height);
-                view.measure(getChildMeasureSpec(View$MeasureSpec.makeMeasureSpec(StickyGridHeadersBaseAdapterWrapper.this.mGridView.getWidth(), 1073741824), 0, ((ViewGroup$LayoutParams)layoutParams).width), childMeasureSpec);
-            }
-            this.setMeasuredDimension(View$MeasureSpec.getSize(n), view.getMeasuredHeight());
-        }
-        
-        public void setHeaderId(final int mHeaderId) {
-            this.mHeaderId = mHeaderId;
-        }
-    }
-    
-    protected class HeaderHolder
-    {
-        protected View mHeaderView;
-    }
-    
-    protected class Position
-    {
-        protected int mHeader;
-        protected int mPosition;
-        
-        protected Position(final int mPosition, final int mHeader) {
-            this.mPosition = mPosition;
-            this.mHeader = mHeader;
-        }
     }
 }

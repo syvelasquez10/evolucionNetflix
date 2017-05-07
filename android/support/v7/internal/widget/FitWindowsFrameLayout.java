@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 
 public class FitWindowsFrameLayout extends FrameLayout implements FitWindowsViewGroup
 {
-    private OnFitSystemWindowsListener mListener;
+    private FitWindowsViewGroup$OnFitSystemWindowsListener mListener;
     
     public FitWindowsFrameLayout(final Context context) {
         super(context);
@@ -28,7 +28,7 @@ public class FitWindowsFrameLayout extends FrameLayout implements FitWindowsView
         return super.fitSystemWindows(rect);
     }
     
-    public void setOnFitSystemWindowsListener(final OnFitSystemWindowsListener mListener) {
+    public void setOnFitSystemWindowsListener(final FitWindowsViewGroup$OnFitSystemWindowsListener mListener) {
         this.mListener = mListener;
     }
 }

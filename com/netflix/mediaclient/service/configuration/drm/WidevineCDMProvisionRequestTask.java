@@ -24,12 +24,12 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
     public static final int DEFAULT_CONNECTION_TIMEOUT = 5000;
     public static final int DEFAULT_SOCKET_TIMEOUT = 3000;
     private final String TAG;
-    private WidevineDrmManager.WidewineProvisiongCallback callback;
+    private WidevineDrmManager$WidewineProvisiongCallback callback;
     private int connectionTimeout;
     private byte[] drmRequest;
     private int socketTimeout;
     
-    public WidevineCDMProvisionRequestTask(final byte[] drmRequest, final WidevineDrmManager.WidewineProvisiongCallback callback) {
+    public WidevineCDMProvisionRequestTask(final byte[] drmRequest, final WidevineDrmManager$WidewineProvisiongCallback callback) {
         this.TAG = "nf_net";
         this.connectionTimeout = 5000;
         this.socketTimeout = 3000;
@@ -37,8 +37,8 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
         this.callback = callback;
     }
     
-    public WidevineCDMProvisionRequestTask(final byte[] array, final WidevineDrmManager.WidewineProvisiongCallback widewineProvisiongCallback, final int connectionTimeout, final int socketTimeout) {
-        this(array, widewineProvisiongCallback);
+    public WidevineCDMProvisionRequestTask(final byte[] array, final WidevineDrmManager$WidewineProvisiongCallback widevineDrmManager$WidewineProvisiongCallback, final int connectionTimeout, final int socketTimeout) {
+        this(array, widevineDrmManager$WidewineProvisiongCallback);
         this.connectionTimeout = connectionTimeout;
         this.socketTimeout = socketTimeout;
     }

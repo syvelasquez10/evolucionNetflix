@@ -4,11 +4,8 @@
 
 package com.google.android.gms.internal;
 
-import org.json.JSONObject;
-import android.app.DownloadManager;
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
-import com.google.android.gms.R;
+import com.google.android.gms.R$string;
 import android.app.AlertDialog$Builder;
 import android.webkit.URLUtil;
 import android.text.TextUtils;
@@ -63,24 +60,10 @@ public class de
             return;
         }
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(this.mContext);
-        alertDialog$Builder.setTitle((CharSequence)gb.c(R.string.store_picture_title, "Save image"));
-        alertDialog$Builder.setMessage((CharSequence)gb.c(R.string.store_picture_message, "Allow Ad to store image in Picture gallery?"));
-        alertDialog$Builder.setPositiveButton((CharSequence)gb.c(R.string.accept, "Accept"), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                final DownloadManager downloadManager = (DownloadManager)de.this.mContext.getSystemService("download");
-                try {
-                    downloadManager.enqueue(de.this.b(s, b));
-                }
-                catch (IllegalStateException ex) {
-                    gs.U("Could not store picture.");
-                }
-            }
-        });
-        alertDialog$Builder.setNegativeButton((CharSequence)gb.c(R.string.decline, "Decline"), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                de.this.md.b("onStorePictureCanceled", new JSONObject());
-            }
-        });
+        alertDialog$Builder.setTitle((CharSequence)gb.c(R$string.store_picture_title, "Save image"));
+        alertDialog$Builder.setMessage((CharSequence)gb.c(R$string.store_picture_message, "Allow Ad to store image in Picture gallery?"));
+        alertDialog$Builder.setPositiveButton((CharSequence)gb.c(R$string.accept, "Accept"), (DialogInterface$OnClickListener)new de$1(this, s, b));
+        alertDialog$Builder.setNegativeButton((CharSequence)gb.c(R$string.decline, "Decline"), (DialogInterface$OnClickListener)new de$2(this));
         alertDialog$Builder.create().show();
     }
 }

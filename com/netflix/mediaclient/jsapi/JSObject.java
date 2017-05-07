@@ -33,12 +33,7 @@ public abstract class JSObject
         if (s == null) {
             return;
         }
-        this.mainHandler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                JSObject.this.webview.loadUrl(s);
-            }
-        });
+        this.mainHandler.post((Runnable)new JSObject$1(this, s));
     }
     
     public void release() {

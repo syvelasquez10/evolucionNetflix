@@ -7,19 +7,19 @@ package com.google.ads.mediation;
 import java.util.Calendar;
 import android.location.Location;
 import java.util.Set;
-import com.google.ads.AdRequest;
+import com.google.ads.AdRequest$Gender;
 import java.util.Date;
 
 @Deprecated
 public final class MediationAdRequest
 {
     private final Date d;
-    private final AdRequest.Gender e;
+    private final AdRequest$Gender e;
     private final Set<String> f;
     private final boolean g;
     private final Location h;
     
-    public MediationAdRequest(final Date d, final AdRequest.Gender e, final Set<String> f, final boolean g, final Location h) {
+    public MediationAdRequest(final Date d, final AdRequest$Gender e, final Set<String> f, final boolean g, final Location h) {
         this.d = d;
         this.e = e;
         this.f = f;
@@ -52,7 +52,7 @@ public final class MediationAdRequest
         return this.d;
     }
     
-    public AdRequest.Gender getGender() {
+    public AdRequest$Gender getGender() {
         return this.e;
     }
     

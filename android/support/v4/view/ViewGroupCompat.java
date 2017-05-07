@@ -11,29 +11,29 @@ import android.os.Build$VERSION;
 
 public class ViewGroupCompat
 {
-    static final ViewGroupCompatImpl IMPL;
+    static final ViewGroupCompat$ViewGroupCompatImpl IMPL;
     public static final int LAYOUT_MODE_CLIP_BOUNDS = 0;
     public static final int LAYOUT_MODE_OPTICAL_BOUNDS = 1;
     
     static {
         final int sdk_INT = Build$VERSION.SDK_INT;
         if (sdk_INT >= 21) {
-            IMPL = (ViewGroupCompatImpl)new ViewGroupCompatApi21Impl();
+            IMPL = new ViewGroupCompat$ViewGroupCompatApi21Impl();
             return;
         }
         if (sdk_INT >= 18) {
-            IMPL = (ViewGroupCompatImpl)new ViewGroupCompatJellybeanMR2Impl();
+            IMPL = new ViewGroupCompat$ViewGroupCompatJellybeanMR2Impl();
             return;
         }
         if (sdk_INT >= 14) {
-            IMPL = (ViewGroupCompatImpl)new ViewGroupCompatIcsImpl();
+            IMPL = new ViewGroupCompat$ViewGroupCompatIcsImpl();
             return;
         }
         if (sdk_INT >= 11) {
-            IMPL = (ViewGroupCompatImpl)new ViewGroupCompatHCImpl();
+            IMPL = new ViewGroupCompat$ViewGroupCompatHCImpl();
             return;
         }
-        IMPL = (ViewGroupCompatImpl)new ViewGroupCompatStubImpl();
+        IMPL = new ViewGroupCompat$ViewGroupCompatStubImpl();
     }
     
     public static int getLayoutMode(final ViewGroup viewGroup) {
@@ -58,92 +58,5 @@ public class ViewGroupCompat
     
     public static void setTransitionGroup(final ViewGroup viewGroup, final boolean b) {
         ViewGroupCompat.IMPL.setTransitionGroup(viewGroup, b);
-    }
-    
-    static class ViewGroupCompatApi21Impl extends ViewGroupCompatJellybeanMR2Impl
-    {
-        @Override
-        public boolean isTransitionGroup(final ViewGroup viewGroup) {
-            return ViewGroupCompatApi21.isTransitionGroup(viewGroup);
-        }
-        
-        @Override
-        public void setTransitionGroup(final ViewGroup viewGroup, final boolean b) {
-            ViewGroupCompatApi21.setTransitionGroup(viewGroup, b);
-        }
-    }
-    
-    static class ViewGroupCompatHCImpl extends ViewGroupCompatStubImpl
-    {
-        @Override
-        public void setMotionEventSplittingEnabled(final ViewGroup viewGroup, final boolean b) {
-            ViewGroupCompatHC.setMotionEventSplittingEnabled(viewGroup, b);
-        }
-    }
-    
-    static class ViewGroupCompatIcsImpl extends ViewGroupCompatHCImpl
-    {
-        @Override
-        public boolean onRequestSendAccessibilityEvent(final ViewGroup viewGroup, final View view, final AccessibilityEvent accessibilityEvent) {
-            return ViewGroupCompatIcs.onRequestSendAccessibilityEvent(viewGroup, view, accessibilityEvent);
-        }
-    }
-    
-    interface ViewGroupCompatImpl
-    {
-        int getLayoutMode(final ViewGroup p0);
-        
-        boolean isTransitionGroup(final ViewGroup p0);
-        
-        boolean onRequestSendAccessibilityEvent(final ViewGroup p0, final View p1, final AccessibilityEvent p2);
-        
-        void setLayoutMode(final ViewGroup p0, final int p1);
-        
-        void setMotionEventSplittingEnabled(final ViewGroup p0, final boolean p1);
-        
-        void setTransitionGroup(final ViewGroup p0, final boolean p1);
-    }
-    
-    static class ViewGroupCompatJellybeanMR2Impl extends ViewGroupCompatIcsImpl
-    {
-        @Override
-        public int getLayoutMode(final ViewGroup viewGroup) {
-            return ViewGroupCompatJellybeanMR2.getLayoutMode(viewGroup);
-        }
-        
-        @Override
-        public void setLayoutMode(final ViewGroup viewGroup, final int n) {
-            ViewGroupCompatJellybeanMR2.setLayoutMode(viewGroup, n);
-        }
-    }
-    
-    static class ViewGroupCompatStubImpl implements ViewGroupCompatImpl
-    {
-        @Override
-        public int getLayoutMode(final ViewGroup viewGroup) {
-            return 0;
-        }
-        
-        @Override
-        public boolean isTransitionGroup(final ViewGroup viewGroup) {
-            return false;
-        }
-        
-        @Override
-        public boolean onRequestSendAccessibilityEvent(final ViewGroup viewGroup, final View view, final AccessibilityEvent accessibilityEvent) {
-            return true;
-        }
-        
-        @Override
-        public void setLayoutMode(final ViewGroup viewGroup, final int n) {
-        }
-        
-        @Override
-        public void setMotionEventSplittingEnabled(final ViewGroup viewGroup, final boolean b) {
-        }
-        
-        @Override
-        public void setTransitionGroup(final ViewGroup viewGroup, final boolean b) {
-        }
     }
 }

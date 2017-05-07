@@ -5,7 +5,6 @@
 package com.google.android.gms.auth.api;
 
 import android.os.Parcel;
-import org.json.JSONException;
 import java.io.UnsupportedEncodingException;
 import android.util.Log;
 import org.json.JSONObject;
@@ -173,7 +172,7 @@ public class GoogleAuthApiRequest implements SafeParcelable
         return this.DA;
     }
     
-    public JSONObject getHttpBodyAsJson() throws JSONException {
+    public JSONObject getHttpBodyAsJson() {
         try {
             return new JSONObject(new String(this.DA, "UTF-8"));
         }

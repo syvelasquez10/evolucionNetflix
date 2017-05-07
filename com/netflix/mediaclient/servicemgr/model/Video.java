@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr.model;
 
-public interface Video
+public interface Video extends BasicVideo
 {
     String getBoxshotURL();
     
@@ -12,13 +12,7 @@ public interface Video
     
     String getHorzDispUrl();
     
-    String getId();
-    
     String getSquareUrl();
     
-    String getTitle();
-    
     String getTvCardUrl();
-    
-    VideoType getType();
 }

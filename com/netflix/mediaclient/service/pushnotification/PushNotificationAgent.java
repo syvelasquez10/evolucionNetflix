@@ -5,12 +5,14 @@
 package com.netflix.mediaclient.service.pushnotification;
 
 import com.netflix.mediaclient.util.NflxProtocolUtils;
+import java.util.List;
+import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.IntentUtils;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.net.Uri;
+import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -18,9 +20,9 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import com.google.android.gcm.GCMRegistrar;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.service.logging.UserData;
-import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
+import com.netflix.mediaclient.Log;
 import android.content.BroadcastReceiver;
 import java.util.Map;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
@@ -48,38 +50,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     }
     
     public PushNotificationAgent() {
-        this.pushNotificationReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                if (Log.isLoggable("nf_push", 2)) {
-                    Log.v("nf_push", "Received intent " + intent);
-                }
-                final String action = intent.getAction();
-                if ("com.netflix.mediaclient.intent.action.PUSH_ONLOGIN".equals(action)) {
-                    Log.d("nf_push", "onLogin");
-                    PushNotificationAgent.this.onLogin();
-                }
-                else {
-                    if ("com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT".equals(action)) {
-                        Log.d("nf_push", "onLogout");
-                        PushNotificationAgent.this.onLogout(PushNotificationAgent.this.createUserData(intent));
-                        return;
-                    }
-                    if ("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTIN".equals(action)) {
-                        Log.d("nf_push", "optIn");
-                        PushNotificationAgent.this.onNotificationOptIn(true);
-                        return;
-                    }
-                    if ("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTOUT".equals(action)) {
-                        Log.d("nf_push", "optOut");
-                        PushNotificationAgent.this.onNotificationOptIn(false);
-                        return;
-                    }
-                    if (Log.isLoggable("nf_push", 3)) {
-                        Log.d("nf_push", "We do not support action " + action);
-                    }
-                }
-            }
-        };
+        this.pushNotificationReceiver = new PushNotificationAgent$3(this);
         Log.d("nf_push", "PushNotificationAgent::");
     }
     
@@ -124,12 +95,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             }
             final int idCounter = PushNotificationAgent.idCounter;
             ++PushNotificationAgent.idCounter;
-            new BackgroundTask().execute(new Runnable() {
-                @Override
-                public void run() {
-                    PreferenceUtils.putIntPref(context, "nf_notification_id_counter", PushNotificationAgent.idCounter);
-                }
-            });
+            new BackgroundTask().execute(new PushNotificationAgent$2(this, context));
             return idCounter;
         }
     }
@@ -251,6 +217,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                 }
                 this.saveSettings();
                 this.mCurrentUserSettings = null;
+                SocialNotificationsUtils.removeSocialNotificationsFromStatusBar(this.getContext());
             }
         }
     }
@@ -344,12 +311,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.e("nf_push", "This should not happen! Map is null!");
             return;
         }
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                NotificationUserSettings.saveSettings(PushNotificationAgent.this.getContext(), mSettings);
-            }
-        });
+        new BackgroundTask().execute(new PushNotificationAgent$1(this, mSettings));
     }
     
     private void unregisterReceiver() {
@@ -449,13 +411,17 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.d("nf_push", "Handle notification browser redirect");
             this.onNotificationBrowserRedirect(intent);
         }
+        else if ("com.netflix.mediaclient.intent.action.NOTIFICATION_SAY_THANKS".equals(intent.getAction())) {
+            Log.d("nf_push", "Handle notification respond thanks redirect");
+            this.sayThanks(intent);
+        }
         else {
-            if (!"com.netflix.mediaclient.intent.action.NOTIFICATION_SAY_THANKS".equals(intent.getAction())) {
+            if (!"com.netflix.mediaclient.intent.action.NOTIFICATION_MARK_AS_READ".equals(intent.getAction())) {
                 Log.e("nf_push", "Uknown command!");
                 return false;
             }
-            Log.d("nf_push", "Handle notification respond thanks redirect");
-            this.sayThanks(intent);
+            Log.d("nf_push", "Handle notification respond mark as read redirect");
+            this.markAsRead(intent);
         }
         return true;
     }
@@ -483,6 +449,14 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     @Override
     public boolean isSupported() {
         return this.isGcmSupported();
+    }
+    
+    public void markAsRead(final Intent intent) {
+        Log.d("nf_push", "markAsRead", intent);
+        final SocialNotificationSummary socialNotificationSummary = new SocialNotificationSummary(intent.getStringExtra("g"), null);
+        final ArrayList<SocialNotificationSummary> list = new ArrayList<SocialNotificationSummary>(1);
+        list.add(socialNotificationSummary);
+        this.getService().getBrowseAgent().markSocialNotificationsAsRead(list);
     }
     
     @Override

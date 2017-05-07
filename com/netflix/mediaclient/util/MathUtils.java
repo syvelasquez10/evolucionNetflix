@@ -27,30 +27,4 @@ public class MathUtils
     public static boolean isEven(final int n) {
         return (n & 0x1) == 0x0;
     }
-    
-    public static class Range
-    {
-        private final int end;
-        private final int midpoint;
-        private final int start;
-        
-        public Range(final int start, final int end) {
-            this.start = start;
-            this.end = end;
-            this.midpoint = MathUtils.divideInts(start + end, 2);
-        }
-        
-        public boolean contains(final int n) {
-            return n >= this.start && n <= this.end;
-        }
-        
-        public int getMidpoint() {
-            return this.midpoint;
-        }
-        
-        @Override
-        public String toString() {
-            return "Range [start=" + this.start + ", end=" + this.end + "]";
-        }
-    }
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 
 interface cs
 {
-    void b(final Set<cr.a> p0);
+    void b(final Set<cr$a> p0);
     
     cn oC();
 }

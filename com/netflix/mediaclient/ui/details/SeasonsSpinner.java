@@ -38,9 +38,8 @@ public class SeasonsSpinner extends Spinner
         this.init();
     }
     
-    private void init() {
-        this.setBackgroundResource(2130837857);
-        this.setAdapter((SpinnerAdapter)(this.spinnerAdapter = new SeasonsSpinnerAdapter((NetflixActivity)this.getContext())));
+    protected SeasonsSpinner(final Context context, final AttributeSet set, final int n, final int n2, final int n3) {
+        super(context, set, n, n2, n3);
     }
     
     public int getSeasonIndexBySeasonNumber(final int n) {
@@ -49,6 +48,11 @@ public class SeasonsSpinner extends Spinner
     
     public int getSeasonNumberForPosition(final int n) {
         return this.spinnerAdapter.getSeasonNumberForPosition(n);
+    }
+    
+    protected void init() {
+        this.setBackgroundResource(2130837857);
+        this.setAdapter((SpinnerAdapter)(this.spinnerAdapter = new SeasonsSpinnerAdapter((NetflixActivity)this.getContext())));
     }
     
     public void setOnItemSelectedListener(final AdapterView$OnItemSelectedListener itemSelectedListener) {

@@ -4,10 +4,9 @@
 
 package com.google.android.gms.internal;
 
-import android.os.RemoteException;
 import android.os.IInterface;
 
 public interface bu extends IInterface
 {
-    void a(final bs p0) throws RemoteException;
+    void a(final bs p0);
 }

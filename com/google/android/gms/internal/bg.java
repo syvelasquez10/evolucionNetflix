@@ -41,23 +41,23 @@ public final class bg
         DEVICE_ID_EMULATOR = gr.R("emulator");
     }
     
-    public bg(final a a) {
-        this(a, null);
+    public bg(final bg$a bg$a) {
+        this(bg$a, null);
     }
     
-    public bg(final a a, final SearchAdRequest or) {
-        this.d = a.d;
-        this.ol = a.ol;
-        this.om = a.om;
-        this.f = Collections.unmodifiableSet((Set<? extends String>)a.ou);
-        this.h = a.h;
-        this.on = a.on;
-        this.oo = a.oo;
-        this.op = Collections.unmodifiableMap((Map<? extends Class<? extends NetworkExtras>, ? extends NetworkExtras>)a.ov);
-        this.oq = a.oq;
+    public bg(final bg$a bg$a, final SearchAdRequest or) {
+        this.d = bg$a.d;
+        this.ol = bg$a.ol;
+        this.om = bg$a.om;
+        this.f = Collections.unmodifiableSet((Set<? extends String>)bg$a.ou);
+        this.h = bg$a.h;
+        this.on = bg$a.on;
+        this.oo = bg$a.oo;
+        this.op = Collections.unmodifiableMap((Map<? extends Class<? extends NetworkExtras>, ? extends NetworkExtras>)bg$a.ov);
+        this.oq = bg$a.oq;
         this.or = or;
-        this.os = a.os;
-        this.ot = Collections.unmodifiableSet((Set<? extends String>)a.ow);
+        this.os = bg$a.os;
+        this.ot = Collections.unmodifiableSet((Set<? extends String>)bg$a.ow);
     }
     
     public SearchAdRequest bd() {
@@ -123,93 +123,5 @@ public final class bg
     
     public boolean isTestDevice(final Context context) {
         return this.ot.contains(gr.v(context));
-    }
-    
-    public static final class a
-    {
-        private Date d;
-        private Location h;
-        private String ol;
-        private int om;
-        private boolean on;
-        private final Bundle oo;
-        private String oq;
-        private int os;
-        private final HashSet<String> ou;
-        private final HashMap<Class<? extends NetworkExtras>, NetworkExtras> ov;
-        private final HashSet<String> ow;
-        
-        public a() {
-            this.ou = new HashSet<String>();
-            this.oo = new Bundle();
-            this.ov = new HashMap<Class<? extends NetworkExtras>, NetworkExtras>();
-            this.ow = new HashSet<String>();
-            this.om = -1;
-            this.on = false;
-            this.os = -1;
-        }
-        
-        public void a(final Location h) {
-            this.h = h;
-        }
-        
-        @Deprecated
-        public void a(final NetworkExtras networkExtras) {
-            if (networkExtras instanceof AdMobExtras) {
-                this.a(AdMobAdapter.class, ((AdMobExtras)networkExtras).getExtras());
-                return;
-            }
-            this.ov.put(networkExtras.getClass(), networkExtras);
-        }
-        
-        public void a(final Class<? extends MediationAdapter> clazz, final Bundle bundle) {
-            this.oo.putBundle(clazz.getName(), bundle);
-        }
-        
-        public void a(final Date d) {
-            this.d = d;
-        }
-        
-        public void b(final Class<? extends CustomEvent> clazz, final Bundle bundle) {
-            if (this.oo.getBundle("com.google.android.gms.ads.mediation.customevent.CustomEventAdapter") == null) {
-                this.oo.putBundle("com.google.android.gms.ads.mediation.customevent.CustomEventAdapter", new Bundle());
-            }
-            this.oo.getBundle("com.google.android.gms.ads.mediation.customevent.CustomEventAdapter").putBundle(clazz.getName(), bundle);
-        }
-        
-        public void g(final int om) {
-            this.om = om;
-        }
-        
-        public void g(final boolean on) {
-            this.on = on;
-        }
-        
-        public void h(final boolean b) {
-            int os;
-            if (b) {
-                os = 1;
-            }
-            else {
-                os = 0;
-            }
-            this.os = os;
-        }
-        
-        public void r(final String s) {
-            this.ou.add(s);
-        }
-        
-        public void s(final String s) {
-            this.ow.add(s);
-        }
-        
-        public void t(final String ol) {
-            this.ol = ol;
-        }
-        
-        public void u(final String oq) {
-            this.oq = oq;
-        }
     }
 }

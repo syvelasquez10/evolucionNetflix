@@ -10,7 +10,6 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.webapi.CommonRequestParameters;
 import android.content.Context;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.UserData;
 
@@ -47,7 +46,7 @@ public abstract class BaseCustomerEvent
         this.mUser = mUser;
     }
     
-    protected static void addIfNotNull(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
+    protected static void addIfNotNull(final JSONObject jsonObject, final String s, final String s2) {
         if (s2 != null) {
             jsonObject.put(s, (Object)s2);
         }
@@ -66,7 +65,7 @@ public abstract class BaseCustomerEvent
         return instanceWithCredentials;
     }
     
-    protected JSONObject getEvent(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials, final long n, final String s2) throws JSONException {
+    protected JSONObject getEvent(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials, final long n, final String s2) {
         final JSONObject jsonObject = new JSONObject();
         addIfNotNull(jsonObject, "user_id", commonRequestParameters.profileToken);
         addIfNotNull(jsonObject, "app_version", commonRequestParameters.appVersion);

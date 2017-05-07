@@ -6,10 +6,11 @@ package com.google.android.gms.auth.api;
 
 import android.os.IInterface;
 import android.os.IBinder;
-import android.os.RemoteException;
 import com.google.android.gms.common.internal.j;
+import com.google.android.gms.common.internal.d$e;
 import com.google.android.gms.common.internal.k;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.google.android.gms.common.internal.ClientSettings;
 import android.os.Looper;
 import android.content.Context;
@@ -22,23 +23,23 @@ public final class GoogleAuthApiClientImpl extends d<IGoogleAuthService>
     private final String Dd;
     private String[] Ds;
     
-    public GoogleAuthApiClientImpl(final Context context, final Looper looper, final ClientSettings clientSettings, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String dd, final String[] ds) {
-        super(context, looper, connectionCallbacks, onConnectionFailedListener, ds);
+    public GoogleAuthApiClientImpl(final Context context, final Looper looper, final ClientSettings clientSettings, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final String dd, final String[] ds) {
+        super(context, looper, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, ds);
         this.Dd = dd;
         this.Ds = ds;
     }
     
-    public GoogleAuthApiClientImpl(final Context context, final ClientSettings clientSettings, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String s, final String[] array) {
-        this(context, context.getMainLooper(), clientSettings, connectionCallbacks, onConnectionFailedListener, s, array);
+    public GoogleAuthApiClientImpl(final Context context, final ClientSettings clientSettings, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final String s, final String[] array) {
+        this(context, context.getMainLooper(), clientSettings, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, s, array);
     }
     
     @Override
-    protected void a(final k k, final e e) throws RemoteException {
-        k.b(e, 6111000, this.getContext().getPackageName(), this.Dd, this.gR());
+    protected void a(final k k, final d$e d$e) {
+        k.b(d$e, 6111000, this.getContext().getPackageName(), this.Dd, this.gR());
     }
     
     protected IGoogleAuthService createServiceInterface(final IBinder binder) {
-        return IGoogleAuthService.Stub.asInterface(binder);
+        return IGoogleAuthService$Stub.asInterface(binder);
     }
     
     public String getAccountName() {

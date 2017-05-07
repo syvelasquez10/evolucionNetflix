@@ -4,46 +4,57 @@
 
 package com.netflix.model.branches;
 
+import com.netflix.falkor.CachedModelProxy;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.service.falkor.Falkor;
+import com.netflix.mediaclient.service.falkor.Falkor$Creator;
 import java.util.HashSet;
 import java.util.Set;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.model.leafs.Episode;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.model.leafs.Episode$Detail;
 import com.netflix.mediaclient.Log;
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
+import com.netflix.model.leafs.Video$Summary;
 import com.netflix.model.leafs.SocialEvidence;
-import com.netflix.model.leafs.Season;
-import com.netflix.mediaclient.service.webclient.model.PostPlayVideo;
-import com.netflix.model.leafs.KidsCharacter;
+import com.netflix.mediaclient.servicemgr.model.user.SocialBadge;
 import com.netflix.model.leafs.TrackableListSummary;
+import com.netflix.model.leafs.Video$SearchTitle;
+import com.netflix.model.leafs.Video$UserRating;
+import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.falkor.Ref;
 import com.netflix.falkor.BranchMap;
+import com.netflix.model.leafs.Video$Detail;
+import com.netflix.model.leafs.Video$BookmarkStill;
+import com.netflix.model.leafs.Video$Bookmark;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.UserRating;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.BasicVideo;
 import com.netflix.model.BaseFalkorObject;
 
-public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, CWVideo, Playable
+public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboard, CWVideo, Playable, UserRating, Video, MovieDetails, ShowDetails, SearchVideo, FalkorObject
 {
     private static final String TAG = "FalkorVideo";
-    public com.netflix.model.leafs.Video.Bookmark bookmark;
-    public com.netflix.model.leafs.Video.BookmarkStill bookmarkStill;
-    public com.netflix.model.leafs.Video.Detail detail;
-    public BranchMap<Ref> episodes;
-    public SummarizedList<Ref, TrackableListSummary> galleryVideos;
-    public com.netflix.model.leafs.Video.InQueue inQueue;
-    public KidsCharacter.KidsDetail kidsDetail;
-    public KidsCharacter.KidsSummary kidsSummary;
-    public PostPlayVideo.PostPlayContext postplayContext;
-    public com.netflix.model.leafs.Video.Rating rating;
-    public com.netflix.model.leafs.Video.SearchTitle searchTitle;
-    public Season.Detail seasonDetail;
-    public SummarizedList<Ref, TrackableListSummary> sims;
-    public SocialEvidence socialEvidence;
-    public com.netflix.model.leafs.Video.Summary summary;
+    protected Video$Bookmark bookmark;
+    private Video$BookmarkStill bookmarkStill;
+    private Video$Detail detail;
+    private BranchMap<Ref> episodes;
+    private Video$InQueue inQueue;
+    private Video$UserRating rating;
+    private Video$SearchTitle searchTitle;
+    private BranchMap<Ref> seasons;
+    private SummarizedList<Ref, TrackableListSummary> sims;
+    private SocialBadge socialBadge;
+    private SocialEvidence socialEvidence;
+    private Video$Summary summary;
     
     public FalkorVideo(final ModelProxy<? extends BranchNode> modelProxy) {
         super(modelProxy);
@@ -53,38 +64,47 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     }
     
     private long getBookmarkLastUpdateTime() {
-        long lastModified = -1L;
+        long lastModified;
         if (this.bookmark != null) {
             lastModified = this.bookmark.getLastModified();
         }
+        else {
+            lastModified = -1L;
+        }
         long lastModified2 = lastModified;
         if (this.getCurrentEpisodeDetail() != null) {
-            final com.netflix.model.leafs.Video.Bookmark bookmark = (com.netflix.model.leafs.Video.Bookmark)this.getCurrentEpisode().get("bookmark");
+            final Video$Bookmark video$Bookmark = (Video$Bookmark)this.getCurrentEpisode().get("bookmark");
             lastModified2 = lastModified;
-            if (bookmark != null) {
-                lastModified2 = bookmark.getLastModified();
+            if (video$Bookmark != null) {
+                lastModified2 = video$Bookmark.getLastModified();
             }
         }
         return lastModified2;
     }
     
     private int getBookmarkPosition() {
-        int bookmarkPosition = -1;
+        int bookmarkPosition;
         if (this.bookmark != null) {
             bookmarkPosition = this.bookmark.getBookmarkPosition();
         }
+        else {
+            bookmarkPosition = -1;
+        }
         int bookmarkPosition2 = bookmarkPosition;
         if (this.getCurrentEpisodeDetail() != null) {
-            final com.netflix.model.leafs.Video.Bookmark bookmark = (com.netflix.model.leafs.Video.Bookmark)this.getCurrentEpisode().get("bookmark");
+            final Video$Bookmark video$Bookmark = (Video$Bookmark)this.getCurrentEpisode().get("bookmark");
             bookmarkPosition2 = bookmarkPosition;
-            if (bookmark != null) {
-                bookmarkPosition2 = bookmark.getBookmarkPosition();
+            if (video$Bookmark != null) {
+                bookmarkPosition2 = video$Bookmark.getBookmarkPosition();
             }
         }
         return bookmarkPosition2;
     }
     
     private FalkorEpisode getCurrentEpisode() {
+        if (this.episodes == null) {
+            return null;
+        }
         final Ref ref = (Ref)this.episodes.get("current");
         if (ref == null) {
             return null;
@@ -92,12 +112,19 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
         return (FalkorEpisode)ref.getValue(this.getModelProxy());
     }
     
-    private Episode.Detail getCurrentEpisodeDetail() {
+    private Episode$Detail getCurrentEpisodeDetail() {
         final FalkorEpisode currentEpisode = this.getCurrentEpisode();
         if (currentEpisode == null) {
             return null;
         }
-        return (Episode.Detail)currentEpisode.get("detail");
+        return (Episode$Detail)currentEpisode.get("detail");
+    }
+    
+    private TrackableListSummary getSimilarsSummary() {
+        if (this.sims == null) {
+            return null;
+        }
+        return (TrackableListSummary)this.sims.get("summary");
     }
     
     @Override
@@ -132,13 +159,36 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
             case "socialEvidence": {
                 return this.socialEvidence;
             }
+            case "searchTitle": {
+                return this.searchTitle;
+            }
             case "similars": {
                 return this.sims;
             }
             case "episodes": {
                 return this.episodes;
             }
+            case "seasons": {
+                return this.seasons;
+            }
         }
+    }
+    
+    @Override
+    public String getActors() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.actors;
+    }
+    
+    @Override
+    public String getBifUrl() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.bifUrl;
     }
     
     @Override
@@ -150,21 +200,94 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     }
     
     @Override
-    public String getCertification() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+    public String getCatalogIdUrl() {
+        final Video$Detail detail = this.getDetail();
         if (detail == null) {
             return null;
         }
-        return detail.certification;
+        return detail.restUrl;
     }
     
-    protected com.netflix.model.leafs.Video.Detail getDetail() {
+    @Override
+    public String getCertification() {
+        final Video$Detail detail = this.getDetail();
+        String certification;
+        if (detail == null) {
+            certification = null;
+        }
+        else {
+            certification = detail.certification;
+        }
+        if (!StringUtils.isEmpty(certification)) {
+            return certification;
+        }
+        if (this.searchTitle == null) {
+            return null;
+        }
+        return this.searchTitle.certification;
+    }
+    
+    @Override
+    public String getCreators() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.directors;
+    }
+    
+    @Override
+    public String getCurrentEpisodeId() {
+        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+        if (currentEpisodeDetail == null) {
+            return null;
+        }
+        return currentEpisodeDetail.getId();
+    }
+    
+    @Override
+    public int getCurrentEpisodeNumber() {
+        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+        if (currentEpisodeDetail == null) {
+            return -1;
+        }
+        return currentEpisodeDetail.getEpisodeNumber();
+    }
+    
+    @Override
+    public String getCurrentEpisodeTitle() {
+        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+        if (currentEpisodeDetail == null) {
+            return null;
+        }
+        return currentEpisodeDetail.getTitle();
+    }
+    
+    @Override
+    public int getCurrentSeasonNumber() {
+        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+        if (currentEpisodeDetail == null) {
+            return -1;
+        }
+        return currentEpisodeDetail.getSeasonNumber();
+    }
+    
+    protected Video$Detail getDetail() {
         return this.detail;
     }
     
     @Override
+    public String getDirectors() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.directors;
+    }
+    
+    @Override
     public int getEndtime() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
         if (detail == null) {
             return 0;
         }
@@ -173,7 +296,7 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     
     @Override
     public int getEpisodeNumber() {
-        final Episode.Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
         if (currentEpisodeDetail == null) {
             return -1;
         }
@@ -189,8 +312,42 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     }
     
     @Override
+    public List<FriendProfile> getFacebookFriends() {
+        if (this.socialEvidence == null) {
+            return null;
+        }
+        return this.socialEvidence.getFacebookFriends();
+    }
+    
+    @Override
+    public String getGenres() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.genres;
+    }
+    
+    @Override
+    public String getHighResolutionLandscapeBoxArtUrl() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.mdxHorzUrl;
+    }
+    
+    @Override
+    public String getHighResolutionPortraitBoxArtUrl() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.mdxVertUrl;
+    }
+    
+    @Override
     public String getHorzDispUrl() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
         if (detail != null) {
             return detail.horzDispUrl;
         }
@@ -210,7 +367,7 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     
     @Override
     public String getInterestingUrl() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
         if (detail == null) {
             return null;
         }
@@ -241,18 +398,38 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
         if (this.socialEvidence != null) {
             set.add("socialEvidence");
         }
+        if (this.searchTitle != null) {
+            set.add("searchTitle");
+        }
         if (this.sims != null) {
             set.add("similars");
         }
         if (this.episodes != null) {
             set.add("episodes");
         }
+        if (this.seasons != null) {
+            set.add("seasons");
+        }
         return set;
     }
     
     @Override
+    public int getNumDirectors() {
+        return StringUtils.getCsvCount(this.getDirectors());
+    }
+    
+    @Override
+    public int getNumOfEpisodes() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return -1;
+        }
+        return detail.episodeCount;
+    }
+    
+    @Override
     public int getNumOfSeasons() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
         if (!VideoType.SHOW.equals(this.getType()) || detail == null) {
             return 0;
         }
@@ -273,31 +450,37 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
                 return null;
             }
             case "summary": {
-                return this.summary = new com.netflix.model.leafs.Video.Summary();
+                return this.summary = new Video$Summary();
             }
             case "detail": {
-                return this.detail = new com.netflix.model.leafs.Video.Detail();
+                return this.detail = new Video$Detail();
             }
             case "rating": {
-                return this.rating = new com.netflix.model.leafs.Video.Rating();
+                return this.rating = new Video$UserRating();
             }
             case "inQueue": {
-                return this.inQueue = new com.netflix.model.leafs.Video.InQueue();
+                return this.inQueue = new Video$InQueue();
             }
             case "bookmark": {
-                return this.bookmark = new com.netflix.model.leafs.Video.Bookmark();
+                return this.bookmark = new Video$Bookmark();
             }
             case "bookmarkStill": {
-                return this.bookmarkStill = new com.netflix.model.leafs.Video.BookmarkStill();
+                return this.bookmarkStill = new Video$BookmarkStill();
             }
             case "socialEvidence": {
                 return this.socialEvidence = new SocialEvidence();
             }
+            case "searchTitle": {
+                return this.searchTitle = new Video$SearchTitle();
+            }
             case "similars": {
-                return this.sims = new SummarizedList<Ref, TrackableListSummary>(Falkor.Creator.Ref, Falkor.Creator.TrackableListSummary);
+                return this.sims = new SummarizedList<Ref, TrackableListSummary>(Falkor$Creator.Ref, Falkor$Creator.TrackableListSummary);
             }
             case "episodes": {
-                return this.episodes = new BranchMap<Ref>(Falkor.Creator.Ref);
+                return this.episodes = new BranchMap<Ref>(Falkor$Creator.Ref);
+            }
+            case "seasons": {
+                return this.seasons = new BranchMap<Ref>(Falkor$Creator.Ref);
             }
         }
     }
@@ -313,6 +496,11 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
             return null;
         }
         return this.getTitle();
+    }
+    
+    @Override
+    public Playable getPlayable() {
+        return this;
     }
     
     @Override
@@ -346,8 +534,25 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     }
     
     @Override
+    public float getPredictedRating() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return -1.0f;
+        }
+        return detail.predictedRating;
+    }
+    
+    @Override
+    public String getQuality() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.quality;
+    }
+    
+    @Override
     public int getRuntime() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
         if (detail == null) {
             return 0;
         }
@@ -356,11 +561,44 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     
     @Override
     public int getSeasonNumber() {
-        final Episode.Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
         if (currentEpisodeDetail == null) {
             return -1;
         }
         return currentEpisodeDetail.getSeasonNumber();
+    }
+    
+    @Override
+    public List<Video> getSimilars() {
+        return this.getModelProxy().getItemsAsList(CachedModelProxy.buildVideoSimsPql(this.getType() == VideoType.MOVIE, this.getId()));
+    }
+    
+    @Override
+    public int getSimilarsListPos() {
+        return 0;
+    }
+    
+    @Override
+    public String getSimilarsRequestId() {
+        final TrackableListSummary similarsSummary = this.getSimilarsSummary();
+        if (similarsSummary == null) {
+            return null;
+        }
+        return similarsSummary.getRequestId();
+    }
+    
+    @Override
+    public int getSimilarsTrackId() {
+        final TrackableListSummary similarsSummary = this.getSimilarsSummary();
+        if (similarsSummary == null) {
+            return 0;
+        }
+        return similarsSummary.getTrackId();
+    }
+    
+    @Override
+    public SocialBadge getSocialBadge() {
+        return this.socialBadge;
     }
     
     @Override
@@ -380,8 +618,17 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     }
     
     @Override
+    public String getStoryDispUrl() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.storyImgDispUrl;
+    }
+    
+    @Override
     public String getStoryUrl() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
         if (detail == null) {
             return null;
         }
@@ -390,7 +637,7 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     
     @Override
     public String getSynopsis() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
         if (detail == null) {
             return null;
         }
@@ -407,7 +654,7 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     
     @Override
     public String getTvCardUrl() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
         if (detail != null) {
             return detail.tvCardUrl;
         }
@@ -426,24 +673,42 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     }
     
     @Override
+    public float getUserRating() {
+        if (this.rating == null) {
+            return -1.0f;
+        }
+        return this.rating.userRating;
+    }
+    
+    @Override
     public int getYear() {
-        final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+        final Video$Detail detail = this.getDetail();
+        int year;
         if (detail == null) {
+            year = 0;
+        }
+        else {
+            year = detail.year;
+        }
+        if (year > 0) {
+            return year;
+        }
+        if (this.searchTitle == null) {
             return 0;
         }
-        return detail.year;
+        return this.searchTitle.releaseYear;
     }
     
     @Override
     public boolean isAutoPlayEnabled() {
         if (VideoType.MOVIE.equals(this.getType())) {
-            final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+            final Video$Detail detail = this.getDetail();
             if (detail != null) {
                 return detail.isAutoPlayEnabled;
             }
         }
         else {
-            final Episode.Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+            final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
             if (currentEpisodeDetail != null) {
                 return currentEpisodeDetail.isAutoPlayEnabled();
             }
@@ -452,9 +717,14 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     }
     
     @Override
+    public boolean isInQueue() {
+        return this.inQueue != null && this.inQueue.inQueue;
+    }
+    
+    @Override
     public boolean isNextPlayableEpisode() {
         if (VideoType.SHOW.equals(this.getType())) {
-            final Episode.Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+            final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
             if (currentEpisodeDetail != null) {
                 return currentEpisodeDetail.isNextPlayableEpisode();
             }
@@ -465,13 +735,13 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     @Override
     public boolean isPinProtected() {
         if (VideoType.MOVIE.equals(this.getType())) {
-            final com.netflix.model.leafs.Video.Detail detail = this.getDetail();
+            final Video$Detail detail = this.getDetail();
             if (detail != null) {
                 return detail.isPinProtected;
             }
         }
         else {
-            final Episode.Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+            final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
             if (currentEpisodeDetail != null) {
                 return currentEpisodeDetail.isPinProtected();
             }
@@ -485,42 +755,58 @@ public class FalkorVideo extends BaseFalkorObject implements Video, Billboard, C
     }
     
     @Override
+    public boolean isVideoHd() {
+        final Video$Detail detail = this.getDetail();
+        return detail != null && detail.isHdAvailable;
+    }
+    
+    @Override
     public void set(final String s, final Object o) {
-        if ("summary".equals(s)) {
-            this.summary = (com.netflix.model.leafs.Video.Summary)o;
-        }
-        else {
-            if ("detail".equals(s)) {
-                this.detail = (com.netflix.model.leafs.Video.Detail)o;
-                return;
+        switch (s) {
+            default: {}
+            case "summary": {
+                this.summary = (Video$Summary)o;
             }
-            if ("rating".equals(s)) {
-                this.rating = (com.netflix.model.leafs.Video.Rating)o;
-                return;
+            case "detail": {
+                this.detail = (Video$Detail)o;
             }
-            if ("inQueue".equals(s)) {
-                this.inQueue = (com.netflix.model.leafs.Video.InQueue)o;
-                return;
+            case "rating": {
+                this.rating = (Video$UserRating)o;
             }
-            if ("bookmark".equals(s)) {
-                this.bookmark = (com.netflix.model.leafs.Video.Bookmark)o;
-                return;
+            case "inQueue": {
+                this.inQueue = (Video$InQueue)o;
             }
-            if ("bookmarkStill".equals(s)) {
-                this.bookmarkStill = (com.netflix.model.leafs.Video.BookmarkStill)o;
-                return;
+            case "bookmark": {
+                this.bookmark = (Video$Bookmark)o;
             }
-            if ("socialEvidence".equals(s)) {
+            case "bookmarkStill": {
+                this.bookmarkStill = (Video$BookmarkStill)o;
+            }
+            case "socialEvidence": {
                 this.socialEvidence = (SocialEvidence)o;
-                return;
             }
-            if ("similars".equals(s)) {
+            case "searchTitle": {
+                this.searchTitle = (Video$SearchTitle)o;
+            }
+            case "similars": {
                 this.sims = (SummarizedList<Ref, TrackableListSummary>)o;
-                return;
             }
-            if ("episodes".equals(s)) {
+            case "episodes": {
                 this.episodes = (BranchMap<Ref>)o;
             }
+            case "seasons": {
+                this.seasons = (BranchMap<Ref>)o;
+            }
         }
+    }
+    
+    @Override
+    public void setUserRating(final float userRating) {
+        this.rating.userRating = userRating;
+    }
+    
+    @Override
+    public String toString() {
+        return "FalkorVideo [getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + "]";
     }
 }

@@ -31,7 +31,7 @@ public interface UserWebClient
     
     void removeWebUserProfile(final String p0, final UserAgentWebCallback p1);
     
-    void sendRecommendationsToFriends(final String p0, final Set<FriendForRecommendation> p1, final String p2, final UserAgentWebCallback p3);
+    void sendRecommendationsToFriends(final String p0, final Set<FriendForRecommendation> p1, final String p2, final String p3, final UserAgentWebCallback p4);
     
     void switchWebUserProfile(final String p0, final UserAgentWebCallback p1);
     

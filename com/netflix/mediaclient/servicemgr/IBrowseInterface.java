@@ -9,25 +9,24 @@ import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
+import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 
 public interface IBrowseInterface
 {
     void addToQueue(final String p0, final int p1, final String p2, final int p3, final int p4);
     
+    void dumpCacheToDisk();
+    
     void dumpHomeLoLoMosAndVideos(final String p0, final String p1);
-    
-    void dumpHomeLoLoMosAndVideosToLog();
-    
-    void dumpHomeLoMos();
     
     void fetchCWVideos(final int p0, final int p1, final int p2, final int p3);
     
     void fetchEpisodeDetails(final String p0, final int p1, final int p2);
     
-    void fetchEpisodes(final String p0, final int p1, final int p2, final int p3, final int p4);
+    void fetchEpisodes(final String p0, final VideoType p1, final int p2, final int p3, final int p4, final int p5);
     
     void fetchGenreLists(final int p0, final int p1);
     
@@ -65,7 +64,7 @@ public interface IBrowseInterface
     
     void hideVideo(final String p0, final int p1, final int p2);
     
-    void logBillboardActivity(final Video p0, final BrowseAgent.BillboardActivityType p1);
+    void logBillboardActivity(final Video p0, final BrowseAgent$BillboardActivityType p1);
     
     void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0);
     
@@ -91,7 +90,7 @@ public interface IBrowseInterface
     
     void sendThanksToSocialNotificationFromService(final SocialNotificationSummary p0, final NetflixService p1, final boolean p2);
     
-    void setVideoRating(final String p0, final int p1, final int p2, final int p3, final int p4);
+    void setVideoRating(final String p0, final VideoType p1, final int p2, final int p3, final int p4, final int p5);
     
     void updateCachedVideoPosition(final Asset p0);
 }

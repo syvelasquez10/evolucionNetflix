@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
@@ -13,10 +12,16 @@ import java.util.Arrays;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
+import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$BookmarkStill;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$UserRating;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Detail;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import com.netflix.mediaclient.service.webclient.model.ShowDetails;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
 import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
@@ -100,7 +105,6 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
             final String string = Integer.toString(i);
             int n4;
             if (jsonObject.has(string)) {
-                n4 = 1;
                 final com.netflix.mediaclient.service.webclient.model.CWVideo cwVideo = new com.netflix.mediaclient.service.webclient.model.CWVideo();
                 fillPlayableVideo(jsonObject, cwVideo, string, n2, b);
                 cwVideo.inQueue = browseWebClientCache.updateInQueueCacheRecord(cwVideo.getId(), cwVideo.inQueue);
@@ -111,6 +115,7 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
                     syncWithSDP(browseWebClientCache, cwVideo);
                 }
                 list.add(0, cwVideo);
+                n4 = 1;
             }
             else if ((n4 = n3) != 0) {
                 Log.d("nf_service_browse_fetchcwvideosrequest", String.format("Adding sentinel at index %s", string));
@@ -163,29 +168,29 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
     
     public static void fillPlayableVideo(JsonObject jsonObject, final PlayableVideo playableVideo, final String s, final int n, final boolean userConnectedToFacebook) {
         jsonObject = jsonObject.getAsJsonObject(s);
-        playableVideo.summary = FalcorParseUtils.getPropertyObject(jsonObject, "summary", Video.Summary.class);
-        playableVideo.detail = FalcorParseUtils.getPropertyObject(jsonObject, "detail", Video.Detail.class);
-        playableVideo.rating = FalcorParseUtils.getPropertyObject(jsonObject, "rating", Video.Rating.class);
-        playableVideo.inQueue = FalcorParseUtils.getPropertyObject(jsonObject, "inQueue", Video.InQueue.class);
-        playableVideo.bookmark = FalcorParseUtils.getPropertyObject(jsonObject, "bookmark", Video.Bookmark.class);
-        playableVideo.bookmarkStill = FalcorParseUtils.getPropertyObject(jsonObject, "bookmarkStill", Video.BookmarkStill.class);
+        playableVideo.summary = FalcorParseUtils.getPropertyObject(jsonObject, "summary", Video$Summary.class);
+        playableVideo.detail = FalcorParseUtils.getPropertyObject(jsonObject, "detail", Video$Detail.class);
+        playableVideo.rating = FalcorParseUtils.getPropertyObject(jsonObject, "rating", Video$UserRating.class);
+        playableVideo.inQueue = FalcorParseUtils.getPropertyObject(jsonObject, "inQueue", Video$InQueue.class);
+        playableVideo.bookmark = FalcorParseUtils.getPropertyObject(jsonObject, "bookmark", Video$Bookmark.class);
+        playableVideo.bookmarkStill = FalcorParseUtils.getPropertyObject(jsonObject, "bookmarkStill", Video$BookmarkStill.class);
         playableVideo.socialEvidence = FalcorParseUtils.getPropertyObject(jsonObject, "socialEvidence", SocialEvidence.class);
         if (!VideoType.MOVIE.equals(playableVideo.summary.getType()) && jsonObject.has("episodes")) {
             final JsonObject asJsonObject = jsonObject.getAsJsonObject("episodes");
             if (asJsonObject.has("current")) {
                 final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject("current");
-                playableVideo.currentEpisode = FalcorParseUtils.getPropertyObject(asJsonObject2, "detail", Episode.Detail.class);
-                playableVideo.currentEpisodeBookmark = FalcorParseUtils.getPropertyObject(asJsonObject2, "bookmark", Video.Bookmark.class);
+                playableVideo.currentEpisode = FalcorParseUtils.getPropertyObject(asJsonObject2, "detail", Episode$Detail.class);
+                playableVideo.currentEpisodeBookmark = FalcorParseUtils.getPropertyObject(asJsonObject2, "bookmark", Video$Bookmark.class);
             }
         }
         playableVideo.userConnectedToFacebook = userConnectedToFacebook;
-        final ArrayList<com.netflix.mediaclient.servicemgr.model.Video> similarVideos = new ArrayList<com.netflix.mediaclient.servicemgr.model.Video>();
+        final ArrayList<Video> similarVideos = new ArrayList<Video>();
         if (jsonObject.has("similars")) {
             jsonObject = jsonObject.getAsJsonObject("similars");
             for (int i = 0; i <= n; ++i) {
                 final String string = Integer.toString(i);
                 if (jsonObject.has(string)) {
-                    similarVideos.add(FalcorParseUtils.getPropertyObject(jsonObject.getAsJsonObject(string), "summary", Video.Summary.class));
+                    similarVideos.add(FalcorParseUtils.getPropertyObject(jsonObject.getAsJsonObject(string), "summary", Video$Summary.class));
                 }
             }
             playableVideo.similarListSummary = FalcorParseUtils.getPropertyObject(jsonObject, "summary", TrackableListSummary.class);
@@ -305,7 +310,7 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
     }
     
     @Override
-    protected List<CWVideo> parseFalcorResponse(String asJsonObject) throws FalcorParseException, FalcorServerException {
+    protected List<CWVideo> parseFalcorResponse(String asJsonObject) {
         if (Log.isLoggable("nf_service_browse_fetchcwvideosrequest", 2)) {}
         final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchcwvideosrequest", (String)asJsonObject);
         if (FalcorParseUtils.isEmpty(dataObj)) {

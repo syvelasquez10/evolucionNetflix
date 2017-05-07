@@ -4,22 +4,23 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import android.widget.AdapterView;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import com.netflix.mediaclient.android.fragment.LoadingView;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.content.Context;
 import android.widget.FrameLayout;
 import com.netflix.mediaclient.util.ThreadUtils;
 import java.util.ArrayList;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.view.ViewGroup;
@@ -27,11 +28,11 @@ import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.widget.AdapterView$OnItemClickListener;
 import com.netflix.mediaclient.android.app.LoadingStatus;
+import android.widget.AdapterView$OnItemClickListener;
 import android.widget.BaseAdapter;
 
-public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, AdapterView$OnItemClickListener
+public class EpisodeListAdapter extends BaseAdapter implements AdapterView$OnItemClickListener, LoadingStatus
 {
     public static final int FETCH_REQUEST_BATCH_SIZE = 40;
     private static final String TAG = "EpisodeListAdapter";
@@ -46,7 +47,7 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
     private final ViewGroup leViewGroup;
     private final LoadingAndErrorWrapper leWrapper;
     private final View loadingRow;
-    protected LoadingStatusCallback mLoadingStatusCallback;
+    protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
     private int prevCount;
     private long requestId;
     private int selectedEpisodeIndex;
@@ -58,13 +59,8 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         this.activity = activity;
         this.episodeListFrag = episodeListFrag;
         this.leViewGroup = (ViewGroup)new FrameLayout((Context)activity);
-        activity.getLayoutInflater().inflate(2130903118, this.leViewGroup);
-        (this.leWrapper = new LoadingAndErrorWrapper((View)this.leViewGroup, new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-                EpisodeListAdapter.this.initToLoadingState();
-            }
-        })).hide(false);
+        activity.getLayoutInflater().inflate(2130903119, this.leViewGroup);
+        (this.leWrapper = new LoadingAndErrorWrapper((View)this.leViewGroup, new EpisodeListAdapter$1(this))).hide(false);
         (this.loadingRow = (View)new LoadingView((Context)activity)).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.initToLoadingState();
     }
@@ -88,7 +84,7 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         if (Log.isLoggable("EpisodeListAdapter", 2)) {
             Log.v("EpisodeListAdapter", "Fetching data for: " + id + ", start: " + this.episodeStartIndex + ", end: " + n);
         }
-        serviceManager.getBrowse().fetchEpisodes(id, this.episodeStartIndex, n, new FetchEpisodesCallback(this.requestId, n - this.episodeStartIndex + 1));
+        serviceManager.getBrowse().fetchEpisodes(id, VideoType.SEASON, this.episodeStartIndex, n, new EpisodeListAdapter$FetchEpisodesCallback(this, this.requestId, n - this.episodeStartIndex + 1));
     }
     
     private void initToLoadingState() {
@@ -118,20 +114,18 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
     }
     
     public int getCount() {
+        int n = 1;
+        final int n2 = 1;
         int prevCount;
         if (this.hasError) {
-            prevCount = 1;
+            prevCount = n2;
         }
         else {
             final int size = this.episodes.size();
-            int n;
-            if (this.hasMoreData) {
-                n = 1;
-            }
-            else {
+            if (!this.hasMoreData) {
                 n = 0;
             }
-            prevCount = size + n;
+            prevCount = n + size;
         }
         if (Log.isLoggable("EpisodeListAdapter", 2) && this.prevCount != prevCount) {
             this.prevCount = prevCount;
@@ -148,7 +142,7 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         return n;
     }
     
-    public View getView(final int n, final View view, final ViewGroup viewGroup) {
+    public View getView(final int n, View view, final ViewGroup viewGroup) {
         boolean b = false;
         if (this.activity.destroyed()) {
             return this.loadingRow;
@@ -167,26 +161,19 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         if (this.hasMoreData && n == this.getCount() - 20) {
             this.fetchMoreData();
         }
-        Object o = null;
-        Label_0184: {
-            if (view != null) {
-                o = view;
-                if (view instanceof EpisodeRowView) {
-                    break Label_0184;
-                }
-            }
-            o = new EpisodeRowView((Context)this.activity);
+        if (view == null || !(view instanceof EpisodeRowView)) {
+            view = (View)new EpisodeRowView((Context)this.activity);
         }
         final EpisodeDetails episodeDetails = this.episodes.get(n);
         if (Log.isLoggable("EpisodeListAdapter", 2)) {
             Log.v("EpisodeListAdapter", "updating: " + episodeDetails.getTitle() + ", pos/curr: " + n + "/" + this.selectedEpisodeIndex);
         }
-        final EpisodeRowView episodeRowView = (EpisodeRowView)o;
+        final EpisodeRowView episodeRowView = (EpisodeRowView)view;
         if (n == this.selectedEpisodeIndex) {
             b = true;
         }
         episodeRowView.updateToEpisode(episodeDetails, b);
-        return (View)o;
+        return view;
     }
     
     public boolean isLoadingData() {
@@ -210,7 +197,7 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         }
     }
     
-    public void setLoadingStatusCallback(final LoadingStatusCallback mLoadingStatusCallback) {
+    public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback mLoadingStatusCallback) {
         if (!this.isLoadingData() && mLoadingStatusCallback != null) {
             mLoadingStatusCallback.onDataLoaded(CommonStatus.OK);
             return;
@@ -236,51 +223,5 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         this.currSeasonDetails = currSeasonDetails;
         this.selectedEpisodeIndex = this.currSeasonDetails.getCurrentEpisodeNumber() - 1;
         this.initToLoadingState();
-    }
-    
-    private class FetchEpisodesCallback extends LoggingManagerCallback
-    {
-        private final int numItems;
-        private final long requestId;
-        
-        public FetchEpisodesCallback(final long requestId, final int numItems) {
-            super("EpisodeListAdapter");
-            this.requestId = requestId;
-            this.numItems = numItems;
-        }
-        
-        @Override
-        public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
-            super.onEpisodesFetched(list, status);
-            if (EpisodeListAdapter.this.activity.destroyed()) {
-                return;
-            }
-            if (this.requestId != EpisodeListAdapter.this.requestId) {
-                Log.v("EpisodeListAdapter", "Ignoring stale request");
-                return;
-            }
-            EpisodeListAdapter.this.hasMoreData = true;
-            EpisodeListAdapter.this.isLoading = false;
-            EpisodeListAdapter.this.onLoaded(status);
-            if (status.isError()) {
-                Log.w("EpisodeListAdapter", "Invalid status code");
-                EpisodeListAdapter.this.hasMoreData = false;
-                EpisodeListAdapter.this.onFetchError();
-                return;
-            }
-            if (list == null || list.size() == 0) {
-                Log.v("EpisodeListAdapter", "No details in response");
-                EpisodeListAdapter.this.hasMoreData = false;
-                EpisodeListAdapter.this.notifyDataSetChanged();
-                return;
-            }
-            if (Log.isLoggable("EpisodeListAdapter", 2)) {
-                Log.v("EpisodeListAdapter", "Got " + list.size() + " items, expected " + this.numItems);
-            }
-            if (list.size() < this.numItems) {
-                EpisodeListAdapter.this.hasMoreData = false;
-            }
-            EpisodeListAdapter.this.updateEpisodesData(list);
-        }
     }
 }

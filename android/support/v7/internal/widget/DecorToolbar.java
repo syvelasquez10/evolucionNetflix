@@ -5,7 +5,7 @@
 package android.support.v7.internal.widget;
 
 import android.support.v7.internal.app.WindowCallback;
-import android.support.v7.internal.view.menu.MenuPresenter;
+import android.support.v7.internal.view.menu.z;
 import android.view.Menu;
 import android.widget.SpinnerAdapter;
 import android.graphics.drawable.Drawable;
@@ -81,7 +81,7 @@ public interface DecorToolbar
     
     void setDisplayOptions(final int p0);
     
-    void setDropdownParams(final SpinnerAdapter p0, final AdapterViewCompat.OnItemSelectedListener p1);
+    void setDropdownParams(final SpinnerAdapter p0, final AdapterViewCompat$OnItemSelectedListener p1);
     
     void setDropdownSelectedPosition(final int p0);
     
@@ -97,7 +97,7 @@ public interface DecorToolbar
     
     void setLogo(final Drawable p0);
     
-    void setMenu(final Menu p0, final MenuPresenter.Callback p1);
+    void setMenu(final Menu p0, final z p1);
     
     void setMenuPrepared();
     

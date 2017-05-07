@@ -28,10 +28,10 @@ public class ae implements SafeParcelable
         this.UI = ui;
     }
     
-    private ae(final a a) {
+    private ae(final ae$a ae$a) {
         this.BR = 1;
-        this.UH = a.UH;
-        this.UI = a.UI;
+        this.UH = ae$a.UH;
+        this.UI = ae$a.UI;
     }
     
     public int describeContents() {
@@ -57,25 +57,5 @@ public class ae implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         af.a(this, parcel, n);
-    }
-    
-    public static class a
-    {
-        private Subscription UH;
-        private boolean UI;
-        
-        public a() {
-            this.UI = false;
-        }
-        
-        public a b(final Subscription uh) {
-            this.UH = uh;
-            return this;
-        }
-        
-        public ae jD() {
-            n.a(this.UH != null, (Object)"Must call setSubscription()");
-            return new ae(this, null);
-        }
     }
 }

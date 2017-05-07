@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wearable;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -76,7 +77,7 @@ public class d implements Parcelable$Creator<c>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new c(g3, o3, o2, g2, g, c3, c, o);
     }

@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.javabridge.invoke.mdx.pair;
 
-import com.netflix.mediaclient.Log;
 import org.json.JSONException;
+import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
 
@@ -20,38 +20,14 @@ public class PairingRequest extends BaseInvoke
         this.setArguments(arguments);
     }
     
-    private void setArguments(final String ex) {
-        JSONObject jsonObject = null;
+    private void setArguments(final String s) {
         try {
-            final JSONObject jsonObject2;
-            jsonObject = (jsonObject2 = new JSONObject());
-            final String s = "uuid";
-            final JSONException ex2 = ex;
-            jsonObject2.put(s, (Object)ex2);
-            final PairingRequest pairingRequest = this;
-            final JSONObject jsonObject3 = jsonObject;
-            final String s2 = jsonObject3.toString();
-            pairingRequest.arguments = s2;
-            return;
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uuid", (Object)s);
+            this.arguments = jsonObject.toString();
         }
-        catch (JSONException ex3) {}
-        while (true) {
-            try {
-                final JSONObject jsonObject2 = jsonObject;
-                final String s = "uuid";
-                final JSONException ex2 = ex;
-                jsonObject2.put(s, (Object)ex2);
-                final PairingRequest pairingRequest = this;
-                final JSONObject jsonObject3 = jsonObject;
-                final String s2 = jsonObject3.toString();
-                pairingRequest.arguments = s2;
-                return;
-                Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
-            }
-            catch (JSONException ex) {
-                continue;
-            }
-            break;
+        catch (JSONException ex) {
+            Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
         }
     }
 }

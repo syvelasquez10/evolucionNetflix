@@ -9,7 +9,7 @@ import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.graphics.Canvas;
 import android.content.res.TypedArray;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -18,7 +18,7 @@ import android.view.View;
 
 public final class ViewStubCompat extends View
 {
-    private OnInflateListener mInflateListener;
+    private ViewStubCompat$OnInflateListener mInflateListener;
     private int mInflatedId;
     private WeakReference<View> mInflatedViewRef;
     private LayoutInflater mInflater;
@@ -31,10 +31,10 @@ public final class ViewStubCompat extends View
     public ViewStubCompat(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
         this.mLayoutResource = 0;
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.ViewStubCompat, n, 0);
-        this.mInflatedId = obtainStyledAttributes.getResourceId(R.styleable.ViewStubCompat_android_inflatedId, -1);
-        this.mLayoutResource = obtainStyledAttributes.getResourceId(R.styleable.ViewStubCompat_android_layout, 0);
-        this.setId(obtainStyledAttributes.getResourceId(R.styleable.ViewStubCompat_android_id, -1));
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.ViewStubCompat, n, 0);
+        this.mInflatedId = obtainStyledAttributes.getResourceId(R$styleable.ViewStubCompat_android_inflatedId, -1);
+        this.mLayoutResource = obtainStyledAttributes.getResourceId(R$styleable.ViewStubCompat_android_layout, 0);
+        this.setId(obtainStyledAttributes.getResourceId(R$styleable.ViewStubCompat_android_id, -1));
         obtainStyledAttributes.recycle();
         this.setVisibility(8);
         this.setWillNotDraw(true);
@@ -110,7 +110,7 @@ public final class ViewStubCompat extends View
         this.mLayoutResource = mLayoutResource;
     }
     
-    public void setOnInflateListener(final OnInflateListener mInflateListener) {
+    public void setOnInflateListener(final ViewStubCompat$OnInflateListener mInflateListener) {
         this.mInflateListener = mInflateListener;
     }
     
@@ -128,10 +128,5 @@ public final class ViewStubCompat extends View
                 this.inflate();
             }
         }
-    }
-    
-    public interface OnInflateListener
-    {
-        void onInflate(final ViewStubCompat p0, final View p1);
     }
 }

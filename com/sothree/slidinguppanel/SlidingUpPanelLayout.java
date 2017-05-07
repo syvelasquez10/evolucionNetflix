@@ -4,7 +4,6 @@
 
 package com.sothree.slidinguppanel;
 
-import java.io.Serializable;
 import android.util.Log;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.MotionEventCompat;
@@ -15,7 +14,8 @@ import android.view.ViewGroup$LayoutParams;
 import android.support.v4.view.ViewCompat;
 import android.content.res.TypedArray;
 import android.view.ViewConfiguration;
-import com.netflix.mediaclient.R;
+import android.support.v4.widget.ViewDragHelper$Callback;
+import com.netflix.mediaclient.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Rect;
@@ -49,13 +49,13 @@ public class SlidingUpPanelLayout extends ViewGroup
     private boolean mIsUsingDragViewTouchEvents;
     private int mMinFlingVelocity;
     private int mPanelHeight;
-    private PanelSlideListener mPanelSlideListener;
+    private SlidingUpPanelLayout$PanelSlideListener mPanelSlideListener;
     private final int mScrollTouchSlop;
     private Drawable mShadowDrawable;
     private int mShadowHeight;
     private float mSlideOffset;
     private int mSlideRange;
-    private SlideState mSlideState;
+    private SlidingUpPanelLayout$SlideState mSlideState;
     private View mSlideableView;
     private final Rect mTmpRect;
     
@@ -80,7 +80,7 @@ public class SlidingUpPanelLayout extends ViewGroup
         this.mPanelHeight = -1;
         this.mShadowHeight = -1;
         this.mDragViewResId = -1;
-        this.mSlideState = SlideState.COLLAPSED;
+        this.mSlideState = SlidingUpPanelLayout$SlideState.COLLAPSED;
         this.mAnchorPoint = 0.0f;
         this.mFirstLayout = true;
         this.mTmpRect = new Rect();
@@ -94,7 +94,7 @@ public class SlidingUpPanelLayout extends ViewGroup
                 this.mIsSlidingUp = (int1 == 80);
             }
             obtainStyledAttributes.recycle();
-            final TypedArray obtainStyledAttributes2 = context.obtainStyledAttributes(set, R.styleable.SlidingUpPanelLayout);
+            final TypedArray obtainStyledAttributes2 = context.obtainStyledAttributes(set, R$styleable.SlidingUpPanelLayout);
             if (obtainStyledAttributes2 != null) {
                 this.mPanelHeight = obtainStyledAttributes2.getDimensionPixelSize(0, -1);
                 this.mShadowHeight = obtainStyledAttributes2.getDimensionPixelSize(1, -1);
@@ -112,7 +112,7 @@ public class SlidingUpPanelLayout extends ViewGroup
             this.mShadowHeight = (int)(4.0f * density + 0.5f);
         }
         this.setWillNotDraw(false);
-        (this.mDragHelper = ViewDragHelper.create(this, 0.5f, (ViewDragHelper.Callback)new DragHelperCallback())).setMinVelocity(this.mMinFlingVelocity * density);
+        (this.mDragHelper = ViewDragHelper.create(this, 0.5f, new SlidingUpPanelLayout$DragHelperCallback(this, null))).setMinVelocity(density * this.mMinFlingVelocity);
         this.mCanSlide = true;
         this.mIsSlidingEnabled = true;
         this.mScrollTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -164,9 +164,15 @@ public class SlidingUpPanelLayout extends ViewGroup
         this.getLocationOnScreen(array2);
         n += array2[0];
         n2 += array2[1];
-        if (n < array[0] || n >= array[0] + view.getWidth() || n2 < array[1] || n2 >= array[1] + view.getHeight()) {
-            b = false;
+        if (n < array[0] || n >= array[0] + view.getWidth() || n2 < array[1]) {
+            return false;
         }
+        n = array[1];
+        if (n2 >= view.getHeight() + n) {
+            return false;
+        }
+        return b;
+        b = false;
         return b;
     }
     
@@ -201,11 +207,17 @@ public class SlidingUpPanelLayout extends ViewGroup
                 }
             }
         }
-        return b && ViewCompat.canScrollHorizontally(view, -n);
+        Label_0144: {
+            break Label_0144;
+        }
+        if (!b || !ViewCompat.canScrollHorizontally(view, -n)) {
+            return false;
+        }
+        return true;
     }
     
     protected boolean checkLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        return viewGroup$LayoutParams instanceof LayoutParams && super.checkLayoutParams(viewGroup$LayoutParams);
+        return viewGroup$LayoutParams instanceof SlidingUpPanelLayout$LayoutParams && super.checkLayoutParams(viewGroup$LayoutParams);
     }
     
     public boolean collapsePane() {
@@ -272,37 +284,36 @@ public class SlidingUpPanelLayout extends ViewGroup
     }
     
     protected boolean drawChild(final Canvas canvas, final View view, final long n) {
-        final LayoutParams layoutParams = (LayoutParams)view.getLayoutParams();
+        final SlidingUpPanelLayout$LayoutParams slidingUpPanelLayout$LayoutParams = (SlidingUpPanelLayout$LayoutParams)view.getLayoutParams();
         final int save = canvas.save(2);
-        boolean b2;
-        final boolean b = b2 = false;
-        if (this.mCanSlide) {
-            b2 = b;
-            if (!layoutParams.slideable) {
-                b2 = b;
-                if (this.mSlideableView != null) {
-                    canvas.getClipBounds(this.mTmpRect);
-                    if (this.mIsSlidingUp) {
-                        this.mTmpRect.bottom = Math.min(this.mTmpRect.bottom, this.mSlideableView.getTop());
-                    }
-                    else {
-                        this.mTmpRect.top = Math.max(this.mTmpRect.top, this.mSlideableView.getBottom());
-                    }
-                    canvas.clipRect(this.mTmpRect);
-                    b2 = b;
-                    if (this.mSlideOffset < 1.0f) {
-                        b2 = true;
-                    }
+        while (true) {
+            Label_0208: {
+                if (!this.mCanSlide || slidingUpPanelLayout$LayoutParams.slideable || this.mSlideableView == null) {
+                    break Label_0208;
                 }
+                canvas.getClipBounds(this.mTmpRect);
+                if (this.mIsSlidingUp) {
+                    this.mTmpRect.bottom = Math.min(this.mTmpRect.bottom, this.mSlideableView.getTop());
+                }
+                else {
+                    this.mTmpRect.top = Math.max(this.mTmpRect.top, this.mSlideableView.getBottom());
+                }
+                canvas.clipRect(this.mTmpRect);
+                if (this.mSlideOffset >= 1.0f) {
+                    break Label_0208;
+                }
+                final int n2 = 1;
+                final boolean drawChild = super.drawChild(canvas, view, n);
+                canvas.restoreToCount(save);
+                if (n2 != 0) {
+                    this.mCoveredFadePaint.setColor((int)(((this.mCoveredFadeColor & 0xFF000000) >>> 24) * (1.0f - this.mSlideOffset)) << 24 | (this.mCoveredFadeColor & 0xFFFFFF));
+                    canvas.drawRect(this.mTmpRect, this.mCoveredFadePaint);
+                }
+                return drawChild;
             }
+            final int n2 = 0;
+            continue;
         }
-        final boolean drawChild = super.drawChild(canvas, view, n);
-        canvas.restoreToCount(save);
-        if (b2) {
-            this.mCoveredFadePaint.setColor((int)(((this.mCoveredFadeColor & 0xFF000000) >>> 24) * (1.0f - this.mSlideOffset)) << 24 | (this.mCoveredFadeColor & 0xFFFFFF));
-            canvas.drawRect(this.mTmpRect, this.mCoveredFadePaint);
-        }
-        return drawChild;
     }
     
     public boolean expandPane() {
@@ -317,18 +328,18 @@ public class SlidingUpPanelLayout extends ViewGroup
     }
     
     protected ViewGroup$LayoutParams generateDefaultLayoutParams() {
-        return (ViewGroup$LayoutParams)new LayoutParams();
+        return (ViewGroup$LayoutParams)new SlidingUpPanelLayout$LayoutParams();
     }
     
     public ViewGroup$LayoutParams generateLayoutParams(final AttributeSet set) {
-        return (ViewGroup$LayoutParams)new LayoutParams(this.getContext(), set);
+        return (ViewGroup$LayoutParams)new SlidingUpPanelLayout$LayoutParams(this.getContext(), set);
     }
     
     protected ViewGroup$LayoutParams generateLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
         if (viewGroup$LayoutParams instanceof ViewGroup$MarginLayoutParams) {
-            return (ViewGroup$LayoutParams)new LayoutParams((ViewGroup$MarginLayoutParams)viewGroup$LayoutParams);
+            return (ViewGroup$LayoutParams)new SlidingUpPanelLayout$LayoutParams((ViewGroup$MarginLayoutParams)viewGroup$LayoutParams);
         }
-        return (ViewGroup$LayoutParams)new LayoutParams(viewGroup$LayoutParams);
+        return (ViewGroup$LayoutParams)new SlidingUpPanelLayout$LayoutParams(viewGroup$LayoutParams);
     }
     
     public int getCoveredFadeColor() {
@@ -348,11 +359,11 @@ public class SlidingUpPanelLayout extends ViewGroup
     }
     
     public boolean isAnchored() {
-        return this.mSlideState == SlideState.ANCHORED;
+        return this.mSlideState == SlidingUpPanelLayout$SlideState.ANCHORED;
     }
     
     public boolean isExpanded() {
-        return this.mSlideState == SlideState.EXPANDED;
+        return this.mSlideState == SlidingUpPanelLayout$SlideState.EXPANDED;
     }
     
     public boolean isPaneVisible() {
@@ -401,91 +412,78 @@ public class SlidingUpPanelLayout extends ViewGroup
             }
             final float x = motionEvent.getX();
             final float y = motionEvent.getY();
-            final boolean b = false;
-            int dragViewUnder;
-            final int n = dragViewUnder = 0;
-            while (true) {
+            boolean dragViewUnder = false;
+            Label_0115: {
                 switch (actionMasked) {
-                    default: {
-                        dragViewUnder = n;
-                    }
-                    case 1: {
-                        if (this.mDragHelper.shouldInterceptTouchEvent(motionEvent) || dragViewUnder != 0) {
-                            return true;
-                        }
-                        break;
-                    }
                     case 0: {
                         this.mIsUnableToDrag = false;
                         this.mInitialMotionX = x;
                         this.mInitialMotionY = y;
-                        dragViewUnder = n;
-                        if (!this.isDragViewUnder((int)x, (int)y)) {
-                            continue;
+                        if (this.isDragViewUnder((int)x, (int)y) && !this.mIsUsingDragViewTouchEvents) {
+                            dragViewUnder = true;
+                            break Label_0115;
                         }
-                        dragViewUnder = n;
-                        if (!this.mIsUsingDragViewTouchEvents) {
-                            dragViewUnder = 1;
-                        }
-                        continue;
+                        break;
                     }
                     case 2: {
                         final float abs = Math.abs(x - this.mInitialMotionX);
                         final float abs2 = Math.abs(y - this.mInitialMotionY);
                         final int touchSlop = this.mDragHelper.getTouchSlop();
-                        dragViewUnder = (b ? 1 : 0);
-                        if (this.mIsUsingDragViewTouchEvents) {
-                            if (abs > this.mScrollTouchSlop && abs2 < this.mScrollTouchSlop) {
-                                return super.onInterceptTouchEvent(motionEvent);
+                        while (true) {
+                            Label_0301: {
+                                if (!this.mIsUsingDragViewTouchEvents) {
+                                    break Label_0301;
+                                }
+                                if (abs > this.mScrollTouchSlop && abs2 < this.mScrollTouchSlop) {
+                                    return super.onInterceptTouchEvent(motionEvent);
+                                }
+                                if (abs2 <= this.mScrollTouchSlop) {
+                                    break Label_0301;
+                                }
+                                dragViewUnder = this.isDragViewUnder((int)x, (int)y);
+                                if ((abs2 > touchSlop && abs > abs2) || !this.isDragViewUnder((int)x, (int)y)) {
+                                    this.mDragHelper.cancel();
+                                    this.mIsUnableToDrag = true;
+                                    return false;
+                                }
+                                break Label_0115;
                             }
-                            dragViewUnder = (b ? 1 : 0);
-                            if (abs2 > this.mScrollTouchSlop) {
-                                dragViewUnder = (this.isDragViewUnder((int)x, (int)y) ? 1 : 0);
-                            }
+                            dragViewUnder = false;
+                            continue;
                         }
-                        if ((abs2 > touchSlop && abs > abs2) || !this.isDragViewUnder((int)x, (int)y)) {
-                            this.mDragHelper.cancel();
-                            this.mIsUnableToDrag = true;
-                            return false;
-                        }
-                        continue;
                     }
                 }
-                break;
+                dragViewUnder = false;
+            }
+            if (this.mDragHelper.shouldInterceptTouchEvent(motionEvent) || dragViewUnder) {
+                return true;
             }
         }
         return onInterceptTouchEvent;
     }
     
     protected void onLayout(final boolean b, int n, int i, int paddingTop, int paddingLeft) {
+        float mAnchorPoint = 1.0f;
         paddingLeft = this.getPaddingLeft();
         paddingTop = this.getPaddingTop();
         final int slidingTop = this.getSlidingTop();
         final int childCount = this.getChildCount();
         if (this.mFirstLayout) {
-            switch (this.mSlideState) {
+            switch (SlidingUpPanelLayout$1.$SwitchMap$com$sothree$slidinguppanel$SlidingUpPanelLayout$SlideState[this.mSlideState.ordinal()]) {
                 default: {
                     this.mSlideOffset = 1.0f;
                     break;
                 }
-                case EXPANDED: {
-                    float mSlideOffset;
+                case 1: {
                     if (this.mCanSlide) {
-                        mSlideOffset = 0.0f;
+                        mAnchorPoint = 0.0f;
                     }
-                    else {
-                        mSlideOffset = 1.0f;
-                    }
-                    this.mSlideOffset = mSlideOffset;
+                    this.mSlideOffset = mAnchorPoint;
                     break;
                 }
-                case ANCHORED: {
-                    float mAnchorPoint;
+                case 2: {
                     if (this.mCanSlide) {
                         mAnchorPoint = this.mAnchorPoint;
-                    }
-                    else {
-                        mAnchorPoint = 1.0f;
                     }
                     this.mSlideOffset = mAnchorPoint;
                     break;
@@ -493,31 +491,31 @@ public class SlidingUpPanelLayout extends ViewGroup
             }
         }
         View child;
-        LayoutParams layoutParams;
+        SlidingUpPanelLayout$LayoutParams slidingUpPanelLayout$LayoutParams;
         int measuredHeight;
         for (i = 0; i < childCount; ++i) {
             child = this.getChildAt(i);
             if (child.getVisibility() != 8) {
-                layoutParams = (LayoutParams)child.getLayoutParams();
+                slidingUpPanelLayout$LayoutParams = (SlidingUpPanelLayout$LayoutParams)child.getLayoutParams();
                 measuredHeight = child.getMeasuredHeight();
-                if (layoutParams.slideable) {
+                if (slidingUpPanelLayout$LayoutParams.slideable) {
                     this.mSlideRange = measuredHeight - this.mPanelHeight;
                 }
                 if (this.mIsSlidingUp) {
-                    if (layoutParams.slideable) {
-                        n = slidingTop + (int)(this.mSlideRange * this.mSlideOffset);
+                    if (slidingUpPanelLayout$LayoutParams.slideable) {
+                        n = (int)(this.mSlideRange * this.mSlideOffset) + slidingTop;
                     }
                     else {
                         n = paddingTop;
                     }
                 }
-                else if (layoutParams.slideable) {
+                else if (slidingUpPanelLayout$LayoutParams.slideable) {
                     n = slidingTop - (int)(this.mSlideRange * this.mSlideOffset);
                 }
                 else {
-                    n = paddingTop + this.mPanelHeight;
+                    n = this.mPanelHeight + paddingTop;
                 }
-                child.layout(paddingLeft, n, paddingLeft + child.getMeasuredWidth(), n + measuredHeight);
+                child.layout(paddingLeft, n, child.getMeasuredWidth() + paddingLeft, measuredHeight + n);
             }
         }
         if (this.mFirstLayout) {
@@ -537,54 +535,55 @@ public class SlidingUpPanelLayout extends ViewGroup
         if (n != 1073741824) {
             throw new IllegalStateException("Height must have an exact value or MATCH_PARENT");
         }
-        final int paddingTop = this.getPaddingTop();
-        final int paddingBottom = this.getPaddingBottom();
-        int mPanelHeight = this.mPanelHeight;
+        final int n3 = size2 - this.getPaddingTop() - this.getPaddingBottom();
+        n = this.mPanelHeight;
         final int childCount = this.getChildCount();
         if (childCount > 2) {
             Log.e(SlidingUpPanelLayout.TAG, "onMeasure: More than two child views are not supported.");
         }
         else if (this.getChildAt(1).getVisibility() == 8) {
-            mPanelHeight = 0;
+            n = 0;
         }
         this.mSlideableView = null;
         this.mCanSlide = false;
         for (int i = 0; i < childCount; ++i) {
             final View child = this.getChildAt(i);
-            final LayoutParams layoutParams = (LayoutParams)child.getLayoutParams();
-            n2 = size2 - paddingTop - paddingBottom;
+            final SlidingUpPanelLayout$LayoutParams slidingUpPanelLayout$LayoutParams = (SlidingUpPanelLayout$LayoutParams)child.getLayoutParams();
             if (child.getVisibility() == 8) {
-                layoutParams.dimWhenOffset = false;
+                slidingUpPanelLayout$LayoutParams.dimWhenOffset = false;
             }
             else {
+                int n4;
                 if (i == 1) {
-                    layoutParams.slideable = true;
-                    layoutParams.dimWhenOffset = true;
+                    slidingUpPanelLayout$LayoutParams.slideable = true;
+                    slidingUpPanelLayout$LayoutParams.dimWhenOffset = true;
                     this.mSlideableView = child;
                     this.mCanSlide = true;
+                    n4 = n3;
                 }
                 else {
-                    n2 -= mPanelHeight;
+                    n4 = n3 - n;
                 }
-                if (layoutParams.width == -2) {
-                    n = View$MeasureSpec.makeMeasureSpec(size, Integer.MIN_VALUE);
+                if (slidingUpPanelLayout$LayoutParams.width == -2) {
+                    n2 = View$MeasureSpec.makeMeasureSpec(size, Integer.MIN_VALUE);
                 }
-                else if (layoutParams.width == -1) {
-                    n = View$MeasureSpec.makeMeasureSpec(size, 1073741824);
-                }
-                else {
-                    n = View$MeasureSpec.makeMeasureSpec(layoutParams.width, 1073741824);
-                }
-                if (layoutParams.height == -2) {
-                    n2 = View$MeasureSpec.makeMeasureSpec(n2, Integer.MIN_VALUE);
-                }
-                else if (layoutParams.height == -1) {
-                    n2 = View$MeasureSpec.makeMeasureSpec(n2, 1073741824);
+                else if (slidingUpPanelLayout$LayoutParams.width == -1) {
+                    n2 = View$MeasureSpec.makeMeasureSpec(size, 1073741824);
                 }
                 else {
-                    n2 = View$MeasureSpec.makeMeasureSpec(layoutParams.height, 1073741824);
+                    n2 = View$MeasureSpec.makeMeasureSpec(slidingUpPanelLayout$LayoutParams.width, 1073741824);
                 }
-                child.measure(n, n2);
+                int n5;
+                if (slidingUpPanelLayout$LayoutParams.height == -2) {
+                    n5 = View$MeasureSpec.makeMeasureSpec(n4, Integer.MIN_VALUE);
+                }
+                else if (slidingUpPanelLayout$LayoutParams.height == -1) {
+                    n5 = View$MeasureSpec.makeMeasureSpec(n4, 1073741824);
+                }
+                else {
+                    n5 = View$MeasureSpec.makeMeasureSpec(slidingUpPanelLayout$LayoutParams.height, 1073741824);
+                }
+                child.measure(n2, n5);
             }
         }
         this.setMeasuredDimension(size, size2);
@@ -652,7 +651,7 @@ public class SlidingUpPanelLayout extends ViewGroup
     }
     
     void setAllChildrenVisible() {
-        for (int i = 0; i < this.getChildCount(); ++i) {
+        for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
             final View child = this.getChildAt(i);
             if (child.getVisibility() == 4) {
                 child.setVisibility(0);
@@ -684,7 +683,7 @@ public class SlidingUpPanelLayout extends ViewGroup
         this.requestLayout();
     }
     
-    public void setPanelSlideListener(final PanelSlideListener mPanelSlideListener) {
+    public void setPanelSlideListener(final SlidingUpPanelLayout$PanelSlideListener mPanelSlideListener) {
         this.mPanelSlideListener = mPanelSlideListener;
     }
     
@@ -705,24 +704,26 @@ public class SlidingUpPanelLayout extends ViewGroup
     }
     
     boolean smoothSlideTo(final float n, int slidingTop) {
-        if (this.mCanSlide) {
-            slidingTop = this.getSlidingTop();
-            if (this.mIsSlidingUp) {
-                slidingTop += (int)(this.mSlideRange * n);
-            }
-            else {
-                slidingTop -= (int)(this.mSlideRange * n);
-            }
-            if (this.mDragHelper.smoothSlideViewTo(this.mSlideableView, this.mSlideableView.getLeft(), slidingTop)) {
-                this.setAllChildrenVisible();
-                ViewCompat.postInvalidateOnAnimation((View)this);
-                return true;
-            }
+        if (!this.mCanSlide) {
+            return false;
+        }
+        slidingTop = this.getSlidingTop();
+        if (this.mIsSlidingUp) {
+            slidingTop += (int)(this.mSlideRange * n);
+        }
+        else {
+            slidingTop -= (int)(this.mSlideRange * n);
+        }
+        if (this.mDragHelper.smoothSlideViewTo(this.mSlideableView, this.mSlideableView.getLeft(), slidingTop)) {
+            this.setAllChildrenVisible();
+            ViewCompat.postInvalidateOnAnimation((View)this);
+            return true;
         }
         return false;
     }
     
     void updateObscuredViewVisibility() {
+        final int n = 0;
         if (this.getChildCount() == 0) {
             return;
         }
@@ -753,214 +754,19 @@ public class SlidingUpPanelLayout extends ViewGroup
         final int max2 = Math.max(paddingTop, child.getTop());
         final int min = Math.min(width - paddingRight, child.getRight());
         final int min2 = Math.min(height - paddingBottom, child.getBottom());
-        int visibility;
-        if (max >= left && max2 >= top && min <= right && min2 <= bottom) {
-            visibility = 4;
-        }
-        else {
-            visibility = 0;
+        int visibility = n;
+        if (max >= left) {
+            visibility = n;
+            if (max2 >= top) {
+                visibility = n;
+                if (min <= right) {
+                    visibility = n;
+                    if (min2 <= bottom) {
+                        visibility = 4;
+                    }
+                }
+            }
         }
         child.setVisibility(visibility);
-    }
-    
-    private class DragHelperCallback extends Callback
-    {
-        @Override
-        public int clampViewPositionVertical(final View view, final int n, int paddingTop) {
-            int access$1100;
-            if (SlidingUpPanelLayout.this.mIsSlidingUp) {
-                access$1100 = SlidingUpPanelLayout.this.getSlidingTop();
-                paddingTop = access$1100 + SlidingUpPanelLayout.this.mSlideRange;
-            }
-            else {
-                paddingTop = SlidingUpPanelLayout.this.getPaddingTop();
-                access$1100 = paddingTop - SlidingUpPanelLayout.this.mSlideRange;
-            }
-            return Math.min(Math.max(n, access$1100), paddingTop);
-        }
-        
-        @Override
-        public int getViewVerticalDragRange(final View view) {
-            return SlidingUpPanelLayout.this.mSlideRange;
-        }
-        
-        @Override
-        public void onViewCaptured(final View view, final int n) {
-            SlidingUpPanelLayout.this.setAllChildrenVisible();
-        }
-        
-        @Override
-        public void onViewDragStateChanged(int n) {
-            if (Log.isLoggable(SlidingUpPanelLayout.TAG, 2)) {
-                final String access$200 = SlidingUpPanelLayout.TAG;
-                final StringBuilder append = new StringBuilder().append("onViewDragStateChanged - ").append(n).append(", sliding top: ");
-                Serializable value;
-                if (SlidingUpPanelLayout.this.mSlideableView == null) {
-                    value = "null";
-                }
-                else {
-                    value = SlidingUpPanelLayout.this.mSlideableView.getTop();
-                }
-                Log.v(access$200, append.append(value).toString());
-            }
-            n = (int)(SlidingUpPanelLayout.this.mAnchorPoint * SlidingUpPanelLayout.this.mSlideRange);
-            if (SlidingUpPanelLayout.this.mDragHelper.getViewDragState() == 0) {
-                if (SlidingUpPanelLayout.this.mSlideOffset == 0.0f || (SlidingUpPanelLayout.this.mSlideableView != null && SlidingUpPanelLayout.this.mSlideableView.getTop() == 0)) {
-                    if (SlidingUpPanelLayout.this.mSlideState != SlideState.EXPANDED) {
-                        SlidingUpPanelLayout.this.updateObscuredViewVisibility();
-                        SlidingUpPanelLayout.this.dispatchOnPanelExpanded(SlidingUpPanelLayout.this.mSlideableView);
-                        SlidingUpPanelLayout.this.mSlideState = SlideState.EXPANDED;
-                    }
-                }
-                else if (SlidingUpPanelLayout.this.mSlideOffset == n / SlidingUpPanelLayout.this.mSlideRange) {
-                    if (SlidingUpPanelLayout.this.mSlideState != SlideState.ANCHORED) {
-                        SlidingUpPanelLayout.this.updateObscuredViewVisibility();
-                        SlidingUpPanelLayout.this.dispatchOnPanelAnchored(SlidingUpPanelLayout.this.mSlideableView);
-                        SlidingUpPanelLayout.this.mSlideState = SlideState.ANCHORED;
-                    }
-                }
-                else if (SlidingUpPanelLayout.this.mSlideState != SlideState.COLLAPSED) {
-                    SlidingUpPanelLayout.this.dispatchOnPanelCollapsed(SlidingUpPanelLayout.this.mSlideableView);
-                    SlidingUpPanelLayout.this.mSlideState = SlideState.COLLAPSED;
-                }
-            }
-        }
-        
-        @Override
-        public void onViewPositionChanged(final View view, final int n, final int n2, final int n3, final int n4) {
-            SlidingUpPanelLayout.this.onPanelDragged(n2);
-            SlidingUpPanelLayout.this.invalidate();
-        }
-        
-        @Override
-        public void onViewReleased(final View view, float n, final float n2) {
-            int access$1100;
-            if (SlidingUpPanelLayout.this.mIsSlidingUp) {
-                access$1100 = SlidingUpPanelLayout.this.getSlidingTop();
-            }
-            else {
-                access$1100 = SlidingUpPanelLayout.this.getSlidingTop() - SlidingUpPanelLayout.this.mSlideRange;
-            }
-            int n3 = 0;
-            Label_0109: {
-                if (SlidingUpPanelLayout.this.mAnchorPoint != 0.0f) {
-                    if (SlidingUpPanelLayout.this.mIsSlidingUp) {
-                        n = (int)(SlidingUpPanelLayout.this.mAnchorPoint * SlidingUpPanelLayout.this.mSlideRange) / SlidingUpPanelLayout.this.mSlideRange;
-                    }
-                    else {
-                        n = (SlidingUpPanelLayout.this.mPanelHeight - (SlidingUpPanelLayout.this.mPanelHeight - (int)(SlidingUpPanelLayout.this.mAnchorPoint * SlidingUpPanelLayout.this.mSlideRange))) / SlidingUpPanelLayout.this.mSlideRange;
-                    }
-                    if (n2 > 0.0f || (n2 == 0.0f && SlidingUpPanelLayout.this.mSlideOffset >= (1.0f + n) / 2.0f)) {
-                        n3 = access$1100 + SlidingUpPanelLayout.this.mSlideRange;
-                    }
-                    else {
-                        n3 = access$1100;
-                        if (n2 == 0.0f) {
-                            n3 = access$1100;
-                            if (SlidingUpPanelLayout.this.mSlideOffset < (1.0f + n) / 2.0f) {
-                                n3 = access$1100;
-                                if (SlidingUpPanelLayout.this.mSlideOffset >= n / 2.0f) {
-                                    n3 = (int)(access$1100 + SlidingUpPanelLayout.this.mSlideRange * SlidingUpPanelLayout.this.mAnchorPoint);
-                                }
-                            }
-                        }
-                    }
-                }
-                else {
-                    if (n2 <= 0.0f) {
-                        n3 = access$1100;
-                        if (n2 != 0.0f) {
-                            break Label_0109;
-                        }
-                        n3 = access$1100;
-                        if (SlidingUpPanelLayout.this.mSlideOffset <= 0.5f) {
-                            break Label_0109;
-                        }
-                    }
-                    n3 = access$1100 + SlidingUpPanelLayout.this.mSlideRange;
-                }
-            }
-            SlidingUpPanelLayout.this.mDragHelper.settleCapturedViewAt(view.getLeft(), n3);
-            SlidingUpPanelLayout.this.invalidate();
-        }
-        
-        @Override
-        public boolean tryCaptureView(final View view, final int n) {
-            return !SlidingUpPanelLayout.this.mIsUnableToDrag && ((LayoutParams)view.getLayoutParams()).slideable;
-        }
-    }
-    
-    public static class LayoutParams extends ViewGroup$MarginLayoutParams
-    {
-        private static final int[] ATTRS;
-        Paint dimPaint;
-        boolean dimWhenOffset;
-        boolean slideable;
-        
-        static {
-            ATTRS = new int[] { 16843137 };
-        }
-        
-        public LayoutParams() {
-            super(-1, -1);
-        }
-        
-        public LayoutParams(final int n, final int n2) {
-            super(n, n2);
-        }
-        
-        public LayoutParams(final Context context, final AttributeSet set) {
-            super(context, set);
-            context.obtainStyledAttributes(set, LayoutParams.ATTRS).recycle();
-        }
-        
-        public LayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-            super(viewGroup$LayoutParams);
-        }
-        
-        public LayoutParams(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams) {
-            super(viewGroup$MarginLayoutParams);
-        }
-        
-        public LayoutParams(final LayoutParams layoutParams) {
-            super((ViewGroup$MarginLayoutParams)layoutParams);
-        }
-    }
-    
-    public interface PanelSlideListener
-    {
-        void onPanelAnchored(final View p0);
-        
-        void onPanelCollapsed(final View p0);
-        
-        void onPanelExpanded(final View p0);
-        
-        void onPanelSlide(final View p0, final float p1);
-    }
-    
-    public static class SimplePanelSlideListener implements PanelSlideListener
-    {
-        @Override
-        public void onPanelAnchored(final View view) {
-        }
-        
-        @Override
-        public void onPanelCollapsed(final View view) {
-        }
-        
-        @Override
-        public void onPanelExpanded(final View view) {
-        }
-        
-        @Override
-        public void onPanelSlide(final View view, final float n) {
-        }
-    }
-    
-    private enum SlideState
-    {
-        ANCHORED, 
-        COLLAPSED, 
-        EXPANDED;
     }
 }

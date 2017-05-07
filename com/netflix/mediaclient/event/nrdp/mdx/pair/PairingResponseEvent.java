@@ -5,9 +5,8 @@
 package com.netflix.mediaclient.event.nrdp.mdx.pair;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.javabridge.ui.Mdx;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
 public class PairingResponseEvent extends JsonBaseNccpEvent
@@ -17,7 +16,7 @@ public class PairingResponseEvent extends JsonBaseNccpEvent
     private static final String ATTR_match = "match";
     private static final String ATTR_pairingContext = "pairingContext";
     private static final String ATTR_remoteDevice = "remoteDevice";
-    public static final Mdx.Events TYPE;
+    public static final Mdx$Events TYPE;
     private String errorCode;
     private String errorDesc;
     private int match;
@@ -25,10 +24,10 @@ public class PairingResponseEvent extends JsonBaseNccpEvent
     private String remoteDevice;
     
     static {
-        TYPE = Mdx.Events.mdx_pair_pairingresponse;
+        TYPE = Mdx$Events.mdx_pair_pairingresponse;
     }
     
-    public PairingResponseEvent(final JSONObject jsonObject) throws JSONException {
+    public PairingResponseEvent(final JSONObject jsonObject) {
         super(PairingResponseEvent.TYPE.getName(), jsonObject);
     }
     
@@ -58,7 +57,7 @@ public class PairingResponseEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.errorCode = BaseNccpEvent.getString(jsonObject, "errorCode", null);
         this.errorDesc = BaseNccpEvent.getString(jsonObject, "errorMessage", null);
         this.match = BaseNccpEvent.getInt(jsonObject, "match", 0);

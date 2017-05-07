@@ -1,0 +1,69 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.ui.profiles;
+
+import com.netflix.mediaclient.android.app.CommonStatus;
+import android.view.Menu;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.os.Bundle;
+import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.service.logging.client.model.UIError;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.ui.RelaunchActivity;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import android.view.ViewGroup$MarginLayoutParams;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.util.StringUtils;
+import java.util.Iterator;
+import android.widget.ListAdapter;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import android.view.ViewPropertyAnimator;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import android.content.Intent;
+import com.netflix.mediaclient.Log;
+import android.content.Context;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.android.app.Status;
+import android.app.Activity;
+import android.widget.TextView;
+import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import java.util.List;
+import android.widget.AdapterView$OnItemClickListener;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
+import com.netflix.mediaclient.android.widget.StaticGridView;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
+import android.view.View;
+import android.util.SparseIntArray;
+import android.util.SparseArray;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.view.MenuItem;
+import android.view.MenuItem$OnMenuItemClickListener;
+
+class ProfileSelectionActivity$3 implements MenuItem$OnMenuItemClickListener
+{
+    final /* synthetic */ ProfileSelectionActivity this$0;
+    
+    ProfileSelectionActivity$3(final ProfileSelectionActivity this$0) {
+        this.this$0 = this$0;
+    }
+    
+    public boolean onMenuItemClick(final MenuItem menuItem) {
+        this.this$0.isProfileEditMode = !this.this$0.isProfileEditMode;
+        this.this$0.refreshEditProfileModeViews();
+        return true;
+    }
+}

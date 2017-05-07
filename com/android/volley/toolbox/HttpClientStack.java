@@ -5,18 +5,17 @@
 package com.android.volley.toolbox;
 
 import java.io.ObjectInputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpConnectionParams;
-import java.io.IOException;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import org.apache.http.NameValuePair;
 import java.util.List;
-import com.android.volley.AuthFailureError;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpDelete;
@@ -45,7 +44,7 @@ public class HttpClientStack implements HttpStack
         }
     }
     
-    static HttpUriRequest createHttpRequest(final Request<?> request, final Map<String, String> map) throws AuthFailureError {
+    static HttpUriRequest createHttpRequest(final Request<?> request, final Map<String, String> map) {
         switch (request.getMethod()) {
             default: {
                 throw new IllegalStateException("Unknown request method.");
@@ -107,18 +106,18 @@ public class HttpClientStack implements HttpStack
         }
     }
     
-    private static void setEntityIfNonEmptyBody(final HttpEntityEnclosingRequestBase httpEntityEnclosingRequestBase, final Request<?> request) throws AuthFailureError {
+    private static void setEntityIfNonEmptyBody(final HttpEntityEnclosingRequestBase httpEntityEnclosingRequestBase, final Request<?> request) {
         final byte[] body = request.getBody();
         if (body != null) {
             httpEntityEnclosingRequestBase.setEntity((HttpEntity)new ByteArrayEntity(body));
         }
     }
     
-    protected void onPrepareRequest(final HttpUriRequest httpUriRequest) throws IOException {
+    protected void onPrepareRequest(final HttpUriRequest httpUriRequest) {
     }
     
     @Override
-    public HttpResponse performRequest(final Request<?> request, final Map<String, String> map) throws IOException, AuthFailureError {
+    public HttpResponse performRequest(final Request<?> request, final Map<String, String> map) {
         final HttpUriRequest httpRequest = createHttpRequest(request, map);
         addHeaders(httpRequest, map);
         addHeaders(httpRequest, request.getHeaders());

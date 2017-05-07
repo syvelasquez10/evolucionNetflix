@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.javabridge.ui.android;
 
 import java.util.Iterator;
+import org.json.JSONException;
 import org.json.JSONArray;
 import java.util.ArrayList;
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
@@ -19,14 +19,14 @@ import com.netflix.mediaclient.javabridge.ui.Storage;
 
 public final class NativeStorage extends NativeNrdObject implements Storage
 {
-    private Map<String, List<KeyValuePair>> itemMapsByAccount;
+    private Map<String, List<NativeStorage$KeyValuePair>> itemMapsByAccount;
     
     public NativeStorage(final Bridge bridge) {
         super(bridge);
-        this.itemMapsByAccount = new HashMap<String, List<KeyValuePair>>();
+        this.itemMapsByAccount = new HashMap<String, List<NativeStorage$KeyValuePair>>();
     }
     
-    private int handlePropertyUpdate(JSONObject jsonObject) throws JSONException {
+    private int handlePropertyUpdate(JSONObject jsonObject) {
         jsonObject = this.getJSONObject(jsonObject, "properties", null);
         if (jsonObject == null) {
             Log.w("nf_object", "handlePropertyUpdate:: properties does not exist");
@@ -36,7 +36,7 @@ public final class NativeStorage extends NativeNrdObject implements Storage
         return 1;
     }
     
-    private void load(final String s) throws JSONException {
+    private void load(final String s) {
         this.itemMapsByAccount.clear();
         if (s != null && !s.equals("")) {
             final JSONObject jsonObject = new JSONObject(s);
@@ -46,12 +46,12 @@ public final class NativeStorage extends NativeNrdObject implements Storage
                     for (int i = 0; i < jsonArray.length(); ++i) {
                         final JSONObject jsonObject2 = jsonArray.getJSONObject(i);
                         final String string = JsonUtils.getString(jsonObject2, "dak", null);
-                        final ArrayList<KeyValuePair> list = new ArrayList<KeyValuePair>();
+                        final ArrayList<NativeStorage$KeyValuePair> list = new ArrayList<NativeStorage$KeyValuePair>();
                         this.itemMapsByAccount.put(string, list);
                         final JSONArray jsonArray2 = JsonUtils.getJSONArray(jsonObject2, "items");
                         int n = 0;
                         while (i < jsonArray2.length()) {
-                            list.add(new KeyValuePair(jsonArray2.getJSONObject(n)));
+                            list.add(new NativeStorage$KeyValuePair(this, jsonArray2.getJSONObject(n)));
                             ++n;
                         }
                     }
@@ -70,11 +70,11 @@ public final class NativeStorage extends NativeNrdObject implements Storage
                 final JSONObject jsonObject2 = new JSONObject();
                 jsonObject2.put("dak", (Object)s);
                 jsonArray.put((Object)jsonObject2);
-                final List<KeyValuePair> list = this.itemMapsByAccount.get(s);
+                final List<NativeStorage$KeyValuePair> list = this.itemMapsByAccount.get(s);
                 if (list != null) {
                     final JSONArray jsonArray2 = new JSONArray();
                     jsonObject2.put("items", (Object)jsonArray2);
-                    final Iterator<KeyValuePair> iterator2 = list.iterator();
+                    final Iterator<NativeStorage$KeyValuePair> iterator2 = list.iterator();
                     while (iterator2.hasNext()) {
                         jsonArray2.put((Object)iterator2.next().toJson());
                     }
@@ -124,39 +124,30 @@ public final class NativeStorage extends NativeNrdObject implements Storage
     }
     
     @Override
-    public String getItem(final String s, final String s2) {
-        final KeyValuePair keyValuePair = null;
+    public String getItem(String value, final String s) {
         // monitorenter(this)
-        Object value = keyValuePair;
-        Label_0019: {
-            if (s2 != null) {
-                if (s == null) {
-                    value = keyValuePair;
-                }
-                else {
-                    try {
-                        final List<KeyValuePair> list = this.itemMapsByAccount.get(s);
-                        value = keyValuePair;
-                        if (list != null) {
-                            final Iterator<KeyValuePair> iterator = list.iterator();
-                            do {
-                                value = keyValuePair;
-                                if (!iterator.hasNext()) {
-                                    break Label_0019;
-                                }
-                                value = iterator.next();
-                            } while (!s2.equals(((KeyValuePair)value).key));
-                            value = ((KeyValuePair)value).value;
+        final String s2;
+        if (s == null || value == null) {
+            s2 = null;
+        }
+        else {
+            try {
+                final List<NativeStorage$KeyValuePair> list = this.itemMapsByAccount.get(value);
+                if (list != null) {
+                    for (final NativeStorage$KeyValuePair nativeStorage$KeyValuePair : list) {
+                        if (s.equals(nativeStorage$KeyValuePair.key)) {
+                            value = nativeStorage$KeyValuePair.value;
+                            break;
                         }
                     }
-                    finally {
-                    }
-                    // monitorexit(this)
                 }
             }
+            finally {
+            }
+            // monitorexit(this)
         }
         // monitorexit(this)
-        return (String)value;
+        return s2;
     }
     
     @Override
@@ -170,24 +161,23 @@ public final class NativeStorage extends NativeNrdObject implements Storage
     }
     
     @Override
-    public String key(final String s, final int n) {
-        final String s2 = null;
+    public String key(String key, final int n) {
         synchronized (this) {
-            final List<KeyValuePair> list = this.itemMapsByAccount.get(s);
-            String key;
+            final List<NativeStorage$KeyValuePair> list = this.itemMapsByAccount.get(key);
             if (list != null) {
-                final KeyValuePair keyValuePair = list.get(n);
-                key = s2;
-                if (keyValuePair != null) {
-                    key = keyValuePair.key;
+                final NativeStorage$KeyValuePair nativeStorage$KeyValuePair = list.get(n);
+                if (nativeStorage$KeyValuePair != null) {
+                    key = nativeStorage$KeyValuePair.key;
+                }
+                else {
+                    key = null;
                 }
             }
             else {
-                key = s2;
                 if (Log.isLoggable("nf_object", 3)) {
-                    Log.d("nf_object", "Map not found for account key " + s);
-                    key = s2;
+                    Log.d("nf_object", "Map not found for account key " + key);
                 }
+                key = null;
             }
             return key;
         }
@@ -223,7 +213,7 @@ public final class NativeStorage extends NativeNrdObject implements Storage
         // monitorenter(this)
         Label_0006: {
             if (s != null) {
-                List<KeyValuePair> list;
+                List<NativeStorage$KeyValuePair> list;
                 try {
                     list = this.itemMapsByAccount.get(s);
                     if (list == null) {
@@ -234,24 +224,23 @@ public final class NativeStorage extends NativeNrdObject implements Storage
                 finally {
                 }
                 // monitorexit(this)
-                final KeyValuePair keyValuePair = null;
-                final Iterator<KeyValuePair> iterator = list.iterator();
-                KeyValuePair keyValuePair2;
-                do {
-                    keyValuePair2 = keyValuePair;
-                    if (!iterator.hasNext()) {
-                        break;
+                while (true) {
+                    for (final NativeStorage$KeyValuePair nativeStorage$KeyValuePair : list) {
+                        if (s2.equals(nativeStorage$KeyValuePair.key)) {
+                            if (nativeStorage$KeyValuePair != null) {
+                                list.remove(nativeStorage$KeyValuePair);
+                            }
+                            else if (Log.isLoggable("nf_object", 3)) {
+                                final String s3;
+                                Log.d("nf_object", "Item was not found for key " + s2 + " and account " + s3);
+                            }
+                            this.save();
+                            break Label_0006;
+                        }
                     }
-                    keyValuePair2 = iterator.next();
-                } while (!s2.equals(keyValuePair2.key));
-                if (keyValuePair2 != null) {
-                    list.remove(keyValuePair2);
+                    NativeStorage$KeyValuePair nativeStorage$KeyValuePair = null;
+                    continue;
                 }
-                else if (Log.isLoggable("nf_object", 3)) {
-                    final String s3;
-                    Log.d("nf_object", "Item was not found for key " + s2 + " and account " + s3);
-                }
-                this.save();
             }
         }
     }
@@ -262,12 +251,12 @@ public final class NativeStorage extends NativeNrdObject implements Storage
         // monitorenter(this)
         if (s != null) {
             try {
-                List<KeyValuePair> list;
+                List<NativeStorage$KeyValuePair> list;
                 if ((list = this.itemMapsByAccount.get(s)) == null) {
-                    list = new ArrayList<KeyValuePair>();
+                    list = new ArrayList<NativeStorage$KeyValuePair>();
                     this.itemMapsByAccount.put(s, list);
                 }
-                list.add(new KeyValuePair(s2, s3));
+                list.add(new NativeStorage$KeyValuePair(this, s2, s3));
                 this.save();
             }
             finally {
@@ -280,28 +269,5 @@ public final class NativeStorage extends NativeNrdObject implements Storage
     @Override
     public int size() {
         return 0;
-    }
-    
-    private class KeyValuePair
-    {
-        public String key;
-        public String value;
-        
-        public KeyValuePair(final String key, final String value) {
-            this.key = key;
-            this.value = value;
-        }
-        
-        public KeyValuePair(final JSONObject jsonObject) throws JSONException {
-            this.key = JsonUtils.getString(jsonObject, "key", null);
-            this.value = JsonUtils.getString(jsonObject, "value", null);
-        }
-        
-        public JSONObject toJson() throws JSONException {
-            final JSONObject jsonObject = new JSONObject();
-            jsonObject.put("key", (Object)this.key);
-            jsonObject.put("value", (Object)this.value);
-            return jsonObject;
-        }
     }
 }

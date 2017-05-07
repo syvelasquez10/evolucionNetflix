@@ -32,8 +32,4 @@ public final class w implements o
     public w(final JSONArray jsonArray) {
         this(jsonArray.getString(0), jsonArray.getString(1));
     }
-    
-    public static final class a implements p
-    {
-    }
 }

@@ -8,31 +8,26 @@ import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import com.netflix.mediaclient.android.widget.UpdateDialog;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.android.widget.UpdateDialog$Builder;
+import android.content.Context;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.NccpNetworkingError;
 import com.netflix.mediaclient.event.android.NetworkError;
-import com.netflix.mediaclient.event.UIEvent;
-import com.netflix.mediaclient.event.nrdp.device.ReasonCode;
 import org.json.JSONObject;
 import org.json.JSONException;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$TwoButtonAlertDialogDescriptor;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
-import com.netflix.mediaclient.ui.login.LogoutActivity;
-import com.netflix.mediaclient.util.AndroidUtils;
-import android.net.Uri;
-import com.netflix.mediaclient.service.NetflixService;
-import android.content.Intent;
-import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import android.os.Handler;
 import java.util.Locale;
 
@@ -54,7 +49,7 @@ public class ErrorManager
     private final Runnable forceExit;
     private Handler handler;
     private Runnable launchHelpInBrowser;
-    private ServiceAgent.ConfigurationAgentInterface mConfig;
+    private ServiceAgent$ConfigurationAgentInterface mConfig;
     private MediaEvent reportedError;
     private Runnable resetApp;
     private Runnable restartApp;
@@ -65,83 +60,21 @@ public class ErrorManager
         ACTION_IDS = new String[] { "NFErr_MC_NCCP_NonRecoverableError", "NFErr_MC_NCCP_PotentiallyRecoverableError", "NFErr_MC_NCCP_CustomError", "NFErr_MC_NCCP_RegistrationRequired", "NFErr_MC_NCCP_CTicketRenewalRequired", "NFErr_MC_NCCP_MTicketRenewalRequired", "NFErr_MC_NCCP_ImpossibleImpossibility", "NFErr_MC_NCCP_GetNewCredentials", "NFErr_MC_NCCP_UnsupportedVersion", "NFErr_MC_NCCP_SecondaryCredentialsRenewalRequired", "NFErr_MC_NCCP_AbortPlayback", "NFErr_MC_NCCP_StaleCredentials" };
     }
     
-    public ErrorManager(final Handler handler, final PlayerActivity context, final ServiceAgent.ConfigurationAgentInterface mConfig) {
+    public ErrorManager(final Handler handler, final PlayerActivity context, final ServiceAgent$ConfigurationAgentInterface mConfig) {
         this.errorPosted = false;
         this.destroyed = false;
-        this.exit = new Runnable() {
-            @Override
-            public void run() {
-                Log.e("ErrorManager", "Exit");
-                ErrorManager.this.context.finish();
-            }
-        };
-        this.restartApp = new Runnable() {
-            @Override
-            public void run() {
-                Log.e("ErrorManager", "restartApp");
-                if (ErrorManager.this.context instanceof NetflixActivity) {
-                    NetflixActivity.finishAllActivities((Context)ErrorManager.this.context);
-                }
-                final Intent intent = new Intent();
-                intent.setClass((Context)ErrorManager.this.context, (Class)NetflixService.class);
-                ErrorManager.this.context.stopService(intent);
-            }
-        };
-        this.launchHelpInBrowser = new Runnable() {
-            @Override
-            public void run() {
-                final Intent setData = new Intent("android.intent.action.VIEW").setData(Uri.parse("https://help.netflix.com/en/node/14384"));
-                if (setData.resolveActivity(ErrorManager.this.context.getPackageManager()) != null) {
-                    ErrorManager.this.context.startActivityForResult(setData, 0);
-                    return;
-                }
-                Log.e("ErrorManager", "Unable to launchHelp");
-            }
-        };
-        this.resetApp = new Runnable() {
-            @Override
-            public void run() {
-                AndroidUtils.clearApplicationData((Context)ErrorManager.this.context);
-                Log.e("ErrorManager", "resetApp");
-                if (ErrorManager.this.context instanceof NetflixActivity) {
-                    NetflixActivity.finishAllActivities((Context)ErrorManager.this.context);
-                }
-                final Intent intent = new Intent();
-                intent.setClass((Context)ErrorManager.this.context, (Class)NetflixService.class);
-                ErrorManager.this.context.stopService(intent);
-            }
-        };
-        this.unregister = new Runnable() {
-            @Override
-            public void run() {
-                ErrorManager.this.context.startActivity(LogoutActivity.create((Context)ErrorManager.this.context));
-                ErrorManager.this.context.finish();
-            }
-        };
-        this.forceExit = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Log.d("ErrorManager", "Waiting 1.5 second to exit app");
-                        this.wait(1500L);
-                        Log.d("ErrorManager", "Kill app");
-                        AndroidUtils.forceStop((Context)ErrorManager.this.context);
-                    }
-                    catch (Exception ex) {
-                        Log.w("ErrorManager", "Wait is interrupted", ex);
-                        continue;
-                    }
-                    break;
-                }
-            }
-        };
+        this.exit = new ErrorManager$4(this);
+        this.restartApp = new ErrorManager$5(this);
+        this.launchHelpInBrowser = new ErrorManager$6(this);
+        this.resetApp = new ErrorManager$7(this);
+        this.unregister = new ErrorManager$8(this);
+        this.forceExit = new ErrorManager$9(this);
         this.handler = handler;
         this.context = context;
         this.mConfig = mConfig;
     }
     
-    private LinkTag extractLink(final String s, final StringBuilder sb) {
+    private ErrorManager$LinkTag extractLink(final String s, final StringBuilder sb) {
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "Trimmed message: " + s);
         }
@@ -150,140 +83,135 @@ public class ErrorManager
             Log.d("ErrorManager", "Lower case test message: " + lowerCase);
         }
         final int index = lowerCase.indexOf("<a href=\"");
-        LinkTag linkTag;
         if (index < 0) {
             Log.d("ErrorManager", "Not a concurrent stream upgrade message");
-            linkTag = null;
+            return null;
+        }
+        final int index2 = lowerCase.indexOf("\"", index + 10);
+        if (index2 < 0) {
+            Log.d("ErrorManager", "Not a concurrent stream upgrade message");
+            return null;
+        }
+        final ErrorManager$LinkTag errorManager$LinkTag = new ErrorManager$LinkTag(null);
+        errorManager$LinkTag.href = s.substring(index + 9, index2);
+        final int index3 = lowerCase.indexOf(">", index2);
+        final String substring = lowerCase.substring(index3 + 1);
+        if (Log.isLoggable("ErrorManager", 3)) {
+            Log.d("ErrorManager", "HREF extracted: " + errorManager$LinkTag.href);
+            Log.d("ErrorManager", "Rest of message: " + substring);
+        }
+        final int index4 = lowerCase.indexOf("</a>");
+        if (index > index4) {
+            Log.e("ErrorManager", "Closing </a> found before <a>!" + index4 + " < " + index);
+            return null;
+        }
+        errorManager$LinkTag.text = s.substring(index3 + 1, index4);
+        String substring2;
+        if (index4 + 5 >= s.length()) {
+            substring2 = "";
         }
         else {
-            final int index2 = lowerCase.indexOf("\"", index + 10);
-            if (index2 < 0) {
-                Log.d("ErrorManager", "Not a concurrent stream upgrade message");
-                return null;
-            }
-            final LinkTag linkTag2 = new LinkTag();
-            linkTag2.href = s.substring(index + 9, index2);
-            final int index3 = lowerCase.indexOf(">", index2);
-            final String substring = lowerCase.substring(index3 + 1);
-            if (Log.isLoggable("ErrorManager", 3)) {
-                Log.d("ErrorManager", "HREF extracted: " + linkTag2.href);
-                Log.d("ErrorManager", "Rest of message: " + substring);
-            }
-            final int index4 = lowerCase.indexOf("</a>");
-            if (index > index4) {
-                Log.e("ErrorManager", "Closing </a> found before <a>!" + index4 + " < " + index);
-                return null;
-            }
-            linkTag2.text = s.substring(index3 + 1, index4);
-            String substring2;
-            if (index4 + 5 >= s.length()) {
-                substring2 = "";
-            }
-            else {
-                substring2 = s.substring(index4 + 4);
-            }
-            if (Log.isLoggable("ErrorManager", 3)) {
-                Log.d("ErrorManager", "TEXT extracted: " + linkTag2.text);
-                Log.d("ErrorManager", "Rest of message: " + substring2);
-            }
-            sb.append(s.substring(0, index));
-            if (Log.isLoggable("ErrorManager", 3)) {
-                Log.d("ErrorManager", "User message (part before link): " + sb.toString());
-            }
-            sb.append(" ").append(substring2);
-            linkTag = linkTag2;
-            if (Log.isLoggable("ErrorManager", 3)) {
-                Log.d("ErrorManager", "User message (part after link): " + sb.toString());
-                return linkTag2;
-            }
+            substring2 = s.substring(index4 + 4);
         }
-        return linkTag;
+        if (Log.isLoggable("ErrorManager", 3)) {
+            Log.d("ErrorManager", "TEXT extracted: " + errorManager$LinkTag.text);
+            Log.d("ErrorManager", "Rest of message: " + substring2);
+        }
+        sb.append(s.substring(0, index));
+        if (Log.isLoggable("ErrorManager", 3)) {
+            Log.d("ErrorManager", "User message (part before link): " + sb.toString());
+        }
+        sb.append(" ").append(substring2);
+        if (Log.isLoggable("ErrorManager", 3)) {
+            Log.d("ErrorManager", "User message (part after link): " + sb.toString());
+        }
+        return errorManager$LinkTag;
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId1(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId1(final NccpActionId nccpActionId, final String s) {
         Log.d("ErrorManager", "actionID 1 NFErr_MC_NCCP_NonRecoverableError");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492998), null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492986), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId10(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId10(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 10 NFErr_MC_NCCP_CustomerCredentialsRenewalRequired");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493004), null, this.unregister, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492992), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId11(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId11(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 11 ");
         final String message = nccpActionId.getMessage();
         if (message != null) {
             final String string = message;
             if (!"".equals(message.trim())) {
-                return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, string, null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+                return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
             }
         }
-        final String string = this.context.getString(2131493005);
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, string, null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+        final String string = this.context.getString(2131492993);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId12(final NccpActionId nccpActionId, final String s) {
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493006), null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId12(final NccpActionId nccpActionId, final String s) {
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492994), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId2(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId2(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 2 NFErr_MC_NCCP_PotentiallyRecoverableError");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492999), null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492987), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId3(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId3(final NccpActionId nccpActionId, final String s) {
         final String message = nccpActionId.getMessage();
         final Runnable exit = this.exit;
         String string;
         if (message == null) {
-            string = this.context.getString(2131493000);
+            string = this.context.getString(2131492988);
             Log.e("ErrorManager", "ActionID 3 NFErr_MC_NCCP_CustomError: Error message expected, but not received, displaying generic error");
         }
         else {
             if (Log.isLoggable("ErrorManager", 6)) {
                 Log.e("ErrorManager", "ActionID 3 NFErr_MC_NCCP_CustomError: " + message);
             }
-            final AlertDialogFactory.AlertDialogDescriptor errorDescriptorForConcurrentStreamUpgrade = this.getErrorDescriptorForConcurrentStreamUpgrade(nccpActionId, s);
+            final AlertDialogFactory$AlertDialogDescriptor errorDescriptorForConcurrentStreamUpgrade = this.getErrorDescriptorForConcurrentStreamUpgrade(nccpActionId, s);
             string = message;
             if (errorDescriptorForConcurrentStreamUpgrade != null) {
                 Log.d("ErrorManager", "ActionID 3: Concurrent stream upgrade message");
                 return errorDescriptorForConcurrentStreamUpgrade;
             }
         }
-        return new AlertDialogFactory.AlertDialogDescriptor(s, string, null, exit);
+        return new AlertDialogFactory$AlertDialogDescriptor(s, string, null, exit);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId4(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId4(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 4 NFErr_MC_NCCP_RegistrationRequired");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493099), null, this.unregister, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493077), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId5(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId5(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 5 NFErr_MC_NCCP_CTicketRenewalRequired, AUTHENTICATION_RENEW_REQUIRE");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493001), null, this.unregister, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492989), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId6(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId6(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 6 NFErr_MC_NCCP_MTicketRenewalRequired, AUTHORIZATION_RENEW_REQUIRED");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493101), null, this.unregister, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493079), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId7(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId7(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 7 NFErr_MC_NCCP_ImpossibleImpossibility, logout");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493102), null, this.unregister, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493080), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId8(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId8(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 8 NFErr_MC_NCCP_GetNewCredentials");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493002), null, this.unregister, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492990), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForActionId9(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId9(final NccpActionId nccpActionId, final String s) {
         final String message = nccpActionId.getMessage();
         String string;
         if (message == null) {
-            string = this.context.getString(2131493003);
+            string = this.context.getString(2131492991);
             Log.e("ErrorManager", "ActionID 9 NFErr_MC_NCCP_UnsupportedVersion: force exit app, generic message");
         }
         else {
@@ -293,10 +221,10 @@ public class ErrorManager
                 string = message;
             }
         }
-        return new AlertDialogFactory.AlertDialogDescriptor(s, string, null, this.forceExit);
+        return new AlertDialogFactory$AlertDialogDescriptor(s, string, null, this.forceExit);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForConcurrentStreamUpgrade(final NccpActionId nccpActionId, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForConcurrentStreamUpgrade(final NccpActionId nccpActionId, final String s) {
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "Original message: " + nccpActionId.getMessage());
         }
@@ -305,10 +233,10 @@ public class ErrorManager
         }
         final StringBuilder sb = new StringBuilder();
         final String trimWhiteSpace = StringUtils.trimWhiteSpace(nccpActionId.getMessage());
-        final LinkTag link = this.extractLink(trimWhiteSpace, sb);
+        final ErrorManager$LinkTag link = this.extractLink(trimWhiteSpace, sb);
         if (link == null) {
-            this.context.setMaxStreamsReachedDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.maxStreamsReached));
-            return new AlertDialogFactory.AlertDialogDescriptor(s, trimWhiteSpace, null, this.exit);
+            this.context.setMaxStreamsReachedDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging$ModalView.maxStreamsReached));
+            return new AlertDialogFactory$AlertDialogDescriptor(s, trimWhiteSpace, null, this.exit);
         }
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "Link found: href=" + link.href + ", text=" + link.text);
@@ -322,9 +250,9 @@ public class ErrorManager
                     break Label_0200;
                 }
             }
-            string = this.context.getString(2131493117);
+            string = this.context.getString(2131493094);
         }
-        final String string2 = this.context.getString(2131493118);
+        final String string2 = this.context.getString(2131493095);
         Log.d("ErrorManager", "Check if link contains NCCP reason code");
         if (link.href.startsWith("RC:")) {
             Log.d("ErrorManager", "NCCP reason code found");
@@ -337,44 +265,21 @@ public class ErrorManager
             }
         }
         Log.d("ErrorManager", "NCCP reason code NOT found, treat it as path of URL");
-        this.context.setMaxStreamsReachedDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.maxStreamsReached));
+        this.context.setMaxStreamsReachedDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging$ModalView.maxStreamsReached));
         return this.getErrorDescriptorForConcurrentStreamUpgradeRegular(link, s, sb.toString(), string, string2);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForConcurrentStreamUpgradeRegular(final LinkTag linkTag, final String s, final String s2, final String s3, final String s4) {
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                String s;
-                if (linkTag.href.toLowerCase(ErrorManager.US_LOCALE).trim().startsWith("http")) {
-                    s = linkTag.href;
-                }
-                else {
-                    s = "http://www.netflix.com" + "/" + linkTag.href;
-                }
-                Log.d("ErrorManager", "Launch browser");
-                ErrorManager.this.context.runOnUiThread((Runnable)new Runnable() {
-                    @Override
-                    public void run() {
-                        if (Log.isLoggable("ErrorManager", 3)) {
-                            Log.d("ErrorManager", "Open browser to " + s);
-                        }
-                        ErrorManager.this.context.startActivity(new Intent("android.intent.action.VIEW", Uri.parse(s)));
-                        Log.d("ErrorManager", "Exit from playback after browser is started");
-                        ErrorManager.this.context.finish();
-                    }
-                });
-            }
-        };
-        this.context.setMaxStreamsReachedDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.maxStreamsReached));
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, s2, s3, runnable, s4, this.exit);
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForConcurrentStreamUpgradeRegular(final ErrorManager$LinkTag errorManager$LinkTag, final String s, final String s2, final String s3, final String s4) {
+        final ErrorManager$3 errorManager$3 = new ErrorManager$3(this, errorManager$LinkTag);
+        this.context.setMaxStreamsReachedDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging$ModalView.maxStreamsReached));
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, s2, s3, errorManager$3, s4, this.exit);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getErrorDescriptorForConcurrentStreamUpgradeWithNccpReasonCode(final LinkTag linkTag, final String s, final String s2, final String s3, final String s4) throws JSONException {
+    private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForConcurrentStreamUpgradeWithNccpReasonCode(final ErrorManager$LinkTag errorManager$LinkTag, final String s, final String s2, final String s3, final String s4) {
         if (Log.isLoggable("ErrorManager", 3)) {
-            Log.d("ErrorManager", "Link found: href=" + linkTag.href + ", text=" + linkTag.text);
+            Log.d("ErrorManager", "Link found: href=" + errorManager$LinkTag.href + ", text=" + errorManager$LinkTag.text);
         }
-        final String[] tokens = StringUtils.extractTokens(linkTag.href, ";");
+        final String[] tokens = StringUtils.extractTokens(errorManager$LinkTag.href, ";");
         final JSONObject jsonObject = new JSONObject();
         if (tokens.length != 2) {
             Log.e("ErrorManager", "Problem with RC format! ; is missing!");
@@ -409,20 +314,12 @@ public class ErrorManager
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "JSON: " + jsonObject);
         }
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                Log.d("ErrorManager", "Publish NCCP reason code event to UI");
-                ErrorManager.this.context.getNetflixApplication().publishEvent(new ReasonCode(jsonObject));
-                Log.d("ErrorManager", "Exit from playback after UI is alerted to handle");
-                ErrorManager.this.context.finish();
-            }
-        };
-        this.context.setMaxStreamsReachedDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.maxStreamsReached));
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, s2, s3, runnable, s4, this.exit);
+        final ErrorManager$2 errorManager$2 = new ErrorManager$2(this, jsonObject);
+        this.context.setMaxStreamsReachedDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging$ModalView.maxStreamsReached));
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, s2, s3, errorManager$2, s4, this.exit);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getHandler(final MediaEvent mediaEvent) {
+    private AlertDialogFactory$AlertDialogDescriptor getHandler(final MediaEvent mediaEvent) {
         if (mediaEvent instanceof NccpActionId) {
             return this.getHandlerForActionIdError((NccpActionId)mediaEvent);
         }
@@ -439,7 +336,7 @@ public class ErrorManager
         return this.getUknownErrorDescriptor(mediaEvent, "");
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getHandlerForActionIdError(final NccpActionId nccpActionId) {
+    private AlertDialogFactory$AlertDialogDescriptor getHandlerForActionIdError(final NccpActionId nccpActionId) {
         Log.d("ErrorManager", "NccpError " + nccpActionId);
         switch (nccpActionId.getActionId()) {
             default: {
@@ -487,37 +384,37 @@ public class ErrorManager
         }
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getHandlerForMediaError(final Error error) {
+    private AlertDialogFactory$AlertDialogDescriptor getHandlerForMediaError(final Error error) {
         final boolean checkForOpenDeviceFailureInStack = error.checkForOpenDeviceFailureInStack();
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "MediaError " + error);
             Log.d("ErrorManager", "checkForOpenDeviceFailureInStack : " + checkForOpenDeviceFailureInStack);
         }
         if (error.getError() == -268369916) {
-            return new AlertDialogFactory.TwoButtonAlertDialogDescriptor("", this.context.getString(2131493094), null, this.restartApp, this.context.getString(2131493378), this.launchHelpInBrowser);
+            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493072), null, this.restartApp, this.context.getString(2131493320), this.launchHelpInBrowser);
         }
         if (error.getError() != -268369915 || !checkForOpenDeviceFailureInStack) {
-            return new AlertDialogFactory.TwoButtonAlertDialogDescriptor("", this.context.getString(2131493037), null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493016), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
         }
-        final String string = this.context.getString(2131493094);
+        final String string = this.context.getString(2131493072);
         if (this.mConfig.getCurrentPlayerType() == PlayerType.device12 && this.mConfig.isCurrentDrmWidevine()) {
-            return new AlertDialogFactory.TwoButtonAlertDialogDescriptor("", string, null, this.restartApp, this.context.getString(2131493378), this.launchHelpInBrowser);
+            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, this.restartApp, this.context.getString(2131493320), this.launchHelpInBrowser);
         }
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor("", string, null, this.resetApp, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, this.resetApp, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getHandlerForNetworkError(final NetworkError networkError) {
+    private AlertDialogFactory$AlertDialogDescriptor getHandlerForNetworkError(final NetworkError networkError) {
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "NetworkError " + networkError);
         }
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor("", this.context.getString(2131493140), null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493113), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getHandlerForNetworkingError(final NccpNetworkingError nccpNetworkingError) {
+    private AlertDialogFactory$AlertDialogDescriptor getHandlerForNetworkingError(final NccpNetworkingError nccpNetworkingError) {
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "NccpNetworkingError " + nccpNetworkingError);
         }
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor("", this.context.getString(2131493065), null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493044), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
     private static JSONObject getJSonSafely(final MediaEvent mediaEvent) {
@@ -529,19 +426,14 @@ public class ErrorManager
         }
     }
     
-    private AlertDialogFactory.AlertDialogDescriptor getUknownErrorDescriptor(final MediaEvent mediaEvent, final String s) {
+    private AlertDialogFactory$AlertDialogDescriptor getUknownErrorDescriptor(final MediaEvent mediaEvent, final String s) {
         Log.w("ErrorManager", "Uknown error");
-        return new AlertDialogFactory.TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492997), null, this.exit, this.context.getString(2131493378), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492985), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
     private Runnable handle(final MediaEvent mediaEvent) {
         Log.d("ErrorManager", "Handle error " + mediaEvent);
-        return new Runnable() {
-            @Override
-            public void run() {
-                ErrorManager.this.handleError(mediaEvent);
-            }
-        };
+        return new ErrorManager$1(this, mediaEvent);
     }
     
     private void handleError(final MediaEvent mediaEvent) {
@@ -562,17 +454,17 @@ public class ErrorManager
                 }
             }
             final MediaEvent mediaEvent2;
-            final AlertDialogFactory.AlertDialogDescriptor handler = this.getHandler(mediaEvent2);
+            final AlertDialogFactory$AlertDialogDescriptor handler = this.getHandler(mediaEvent2);
             if (handler == null) {
                 Log.w("ErrorManager", "We decided to ignore " + mediaEvent2);
                 this.errorPosted = false;
                 return;
             }
             this.reportStartPlayEnded(RootCause.clientFailure, ActionOnUIError.displayedError, handler.getMessage(), null, mediaEvent2);
-            final UpdateDialog.Builder dialog = AlertDialogFactory.createDialog((Context)this.context, this.handler, handler);
+            final UpdateDialog$Builder dialog = AlertDialogFactory.createDialog((Context)this.context, this.handler, handler);
             if (dialog != null) {
                 dialog.show();
-                this.context.setErrorDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.errorDialog));
+                this.context.setErrorDialogId(this.context.reportUiModelessViewSessionStart(IClientLogging$ModalView.errorDialog));
             }
         }
     }
@@ -592,7 +484,7 @@ public class ErrorManager
     
     private void reportStartPlayEnded(final RootCause rootCause, final ActionOnUIError actionOnUIError, final String s, final Integer n, final MediaEvent mediaEvent) {
         if (this.context.getState().playStartInProgress.getAndSet(false)) {
-            UserActionLogUtils.reportPlayActionEnded((Context)this.context, IClientLogging.CompletionReason.failed, StatusUtils.createUiError("Media Error", actionOnUIError, s, true, rootCause, ConsolidatedLoggingUtils.createDebug(null, getJSonSafely(mediaEvent))), n, this.context.getServiceManager().getConfiguration().getCurrentPlayerType());
+            UserActionLogUtils.reportPlayActionEnded((Context)this.context, IClientLogging$CompletionReason.failed, StatusUtils.createUiError("Media Error", actionOnUIError, s, true, rootCause, ConsolidatedLoggingUtils.createDebug(null, getJSonSafely(mediaEvent))), n, this.context.getServiceManager().getConfiguration().getCurrentPlayerType());
         }
     }
     
@@ -662,11 +554,5 @@ public class ErrorManager
         synchronized (this) {
             this.errorPosted = false;
         }
-    }
-    
-    private static class LinkTag
-    {
-        public String href;
-        public String text;
     }
 }

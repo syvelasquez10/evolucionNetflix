@@ -16,6 +16,7 @@ public class DataUtil
     public static final float ASPECT_RATIO_16_9_INVERTED = 0.5625f;
     public static final float ASPECT_RATIO_4_3 = 1.333f;
     public static final float ASPECT_RATIO_4_3_INVERTED = 0.75f;
+    public static final float UNDEFINED_FLOAT = -1.0f;
     public static final int UNDEFINED_INT = -1;
     
     public static List<String> createStringListFromList(final List<?> list) {

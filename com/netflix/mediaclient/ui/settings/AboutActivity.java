@@ -4,11 +4,8 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.app.Fragment;
-import android.util.Log;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.Context;
 import android.content.Intent;
@@ -25,17 +22,7 @@ public class AboutActivity extends FragmentHostActivity
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                AboutActivity.this.getNetflixActionBar().setDisplayHomeAsUpEnabled(serviceManager.isUserLoggedIn());
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-                Log.e("nf_AboutActivity", "NetflixService is NOT available!");
-            }
-        };
+        return new AboutActivity$1(this);
     }
     
     @Override
@@ -45,12 +32,12 @@ public class AboutActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903094;
+        return 2130903095;
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.settings;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.settings;
     }
     
     @Override

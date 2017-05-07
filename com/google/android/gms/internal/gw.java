@@ -20,7 +20,7 @@ public class gw extends WebViewClient
     private bz pL;
     private v pM;
     private bw pz;
-    private a tg;
+    private gw$a tg;
     private final HashMap<String, by> wP;
     private t wQ;
     private dn wR;
@@ -84,7 +84,7 @@ public class gw extends WebViewClient
         dk.a(this.md.getContext(), dm);
     }
     
-    public final void a(final a tg) {
+    public final void a(final gw$a tg) {
         this.tg = tg;
     }
     
@@ -176,12 +176,7 @@ public class gw extends WebViewClient
             final dk du = this.md.du();
             if (du != null) {
                 if (!gr.dt()) {
-                    gr.wC.post((Runnable)new Runnable() {
-                        @Override
-                        public void run() {
-                            du.bY();
-                        }
-                    });
+                    gr.wC.post((Runnable)new gw$1(this, du));
                 }
                 else {
                     du.bY();
@@ -279,10 +274,5 @@ public class gw extends WebViewClient
     
     public final void y(final boolean ws) {
         this.wS = ws;
-    }
-    
-    public interface a
-    {
-        void a(final gv p0);
     }
 }

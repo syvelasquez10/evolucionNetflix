@@ -4,9 +4,6 @@
 
 package android.support.v7.internal.widget;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.view.View$BaseSavedState;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.AnimationUtils;
 import android.graphics.drawable.Drawable$Callback;
@@ -60,7 +57,7 @@ public class ProgressBarCompat extends View
     private boolean mOnlyIndeterminate;
     private int mProgress;
     private Drawable mProgressDrawable;
-    private RefreshProgressRunnable mRefreshProgressRunnable;
+    private ProgressBarCompat$RefreshProgressRunnable mRefreshProgressRunnable;
     Bitmap mSampleTile;
     private int mSecondaryProgress;
     private boolean mShouldStartAnimationDrawable;
@@ -110,40 +107,35 @@ public class ProgressBarCompat extends View
     }
     
     private void doRefreshProgress(int level, final int n, final boolean b, final boolean b2) {
-    Label_0071_Outer:
         while (true) {
             while (true) {
-                while (true) {
-                    float n2 = 0.0f;
-                    final Drawable drawable;
-                    Label_0092: {
-                        synchronized (this) {
-                            if (this.mMax > 0) {
-                                n2 = n / this.mMax;
-                            }
-                            else {
-                                n2 = 0.0f;
-                            }
-                            final Drawable mCurrentDrawable = this.mCurrentDrawable;
-                            if (mCurrentDrawable == null) {
-                                this.invalidate();
-                                return;
-                            }
-                            if (mCurrentDrawable instanceof LayerDrawable) {
-                                ((LayerDrawable)mCurrentDrawable).findDrawableByLayerId(level);
-                            }
-                            break Label_0092;
-                            drawable.setLevel(level);
-                            return;
-                            drawable = mCurrentDrawable;
-                            continue Label_0071_Outer;
+                float n2 = 0.0f;
+                Label_0085: {
+                    synchronized (this) {
+                        if (this.mMax > 0) {
+                            n2 = n / this.mMax;
                         }
+                        else {
+                            n2 = 0.0f;
+                        }
+                        final Drawable mCurrentDrawable = this.mCurrentDrawable;
+                        if (mCurrentDrawable == null) {
+                            this.invalidate();
+                            return;
+                        }
+                        if (mCurrentDrawable instanceof LayerDrawable) {
+                            ((LayerDrawable)mCurrentDrawable).findDrawableByLayerId(level);
+                        }
+                        break Label_0085;
+                        mCurrentDrawable.setLevel(level);
+                        return;
                     }
-                    level = (int)(10000.0f * n2);
-                    if (drawable != null) {
-                        continue Label_0071_Outer;
-                    }
-                    break;
+                }
+                level = (int)(n2 * 10000.0f);
+                final Drawable drawable;
+                if (drawable != null) {
+                    final Drawable mCurrentDrawable = drawable;
+                    continue;
                 }
                 continue;
             }
@@ -176,7 +168,7 @@ public class ProgressBarCompat extends View
                             if (this.mRefreshProgressRunnable == null) {
                                 break Label_0070;
                             }
-                            final RefreshProgressRunnable mRefreshProgressRunnable = this.mRefreshProgressRunnable;
+                            final ProgressBarCompat$RefreshProgressRunnable mRefreshProgressRunnable = this.mRefreshProgressRunnable;
                             this.mRefreshProgressRunnable = null;
                             mRefreshProgressRunnable.setup(n, n2, b);
                             this.post((Runnable)mRefreshProgressRunnable);
@@ -184,13 +176,14 @@ public class ProgressBarCompat extends View
                         return;
                     }
                 }
-                final RefreshProgressRunnable mRefreshProgressRunnable = new RefreshProgressRunnable(n, n2, b);
+                final ProgressBarCompat$RefreshProgressRunnable mRefreshProgressRunnable = new ProgressBarCompat$RefreshProgressRunnable(this, n, n2, b);
                 continue;
             }
         }
     }
     
     private Drawable tileify(final Drawable drawable, final boolean b) {
+        final int n = 0;
         Object o;
         if (drawable instanceof LayerDrawable) {
             final LayerDrawable layerDrawable = (LayerDrawable)drawable;
@@ -201,14 +194,14 @@ public class ProgressBarCompat extends View
                 array[i] = this.tileify(layerDrawable.getDrawable(i), id == 16908301 || id == 16908303);
             }
             final LayerDrawable layerDrawable2 = new LayerDrawable(array);
-            int n = 0;
+            int n2 = n;
             while (true) {
                 o = layerDrawable2;
-                if (n >= numberOfLayers) {
+                if (n2 >= numberOfLayers) {
                     break;
                 }
-                layerDrawable2.setId(n, layerDrawable.getId(n));
-                ++n;
+                layerDrawable2.setId(n2, layerDrawable.getId(n2));
+                ++n2;
             }
         }
         else {
@@ -221,10 +214,10 @@ public class ProgressBarCompat extends View
             }
             final ShapeDrawable shapeDrawable = new ShapeDrawable(this.getDrawableShape());
             shapeDrawable.getPaint().setShader((Shader)new BitmapShader(bitmap, Shader$TileMode.REPEAT, Shader$TileMode.CLAMP));
-            o = shapeDrawable;
-            if (b) {
-                o = new ClipDrawable((Drawable)shapeDrawable, 3, 1);
+            if (!b) {
+                return (Drawable)shapeDrawable;
             }
+            o = new ClipDrawable((Drawable)shapeDrawable, 3, 1);
         }
         return (Drawable)o;
     }
@@ -249,49 +242,52 @@ public class ProgressBarCompat extends View
     private void updateDrawableBounds(int n, int n2) {
         final int n3 = n - this.getPaddingRight() - this.getPaddingLeft();
         final int n4 = n2 - this.getPaddingBottom() - this.getPaddingTop();
-        final boolean b = false;
-        final boolean b2 = false;
-        int n5 = n4;
-        int n6 = n3;
-        if (this.mIndeterminateDrawable != null) {
-            n5 = n4;
-            int n7 = b2 ? 1 : 0;
-            n6 = n3;
-            int n8 = b ? 1 : 0;
-            if (this.mOnlyIndeterminate) {
-                n5 = n4;
-                n7 = (b2 ? 1 : 0);
-                n6 = n3;
-                n8 = (b ? 1 : 0);
-                if (!(this.mIndeterminateDrawable instanceof AnimationDrawable)) {
-                    final float n9 = this.mIndeterminateDrawable.getIntrinsicWidth() / this.mIndeterminateDrawable.getIntrinsicHeight();
-                    final float n10 = n / n2;
-                    n5 = n4;
-                    n7 = (b2 ? 1 : 0);
-                    n6 = n3;
-                    n8 = (b ? 1 : 0);
-                    if (n9 != n10) {
-                        if (n10 > n9) {
-                            n2 *= (int)n9;
-                            n7 = (n - n2) / 2;
-                            n6 = n7 + n2;
-                            n8 = (b ? 1 : 0);
-                            n5 = n4;
+        Label_0138: {
+            if (this.mIndeterminateDrawable != null) {
+                while (true) {
+                    Label_0194: {
+                        if (!this.mOnlyIndeterminate || this.mIndeterminateDrawable instanceof AnimationDrawable) {
+                            break Label_0194;
+                        }
+                        final float n5 = this.mIndeterminateDrawable.getIntrinsicWidth() / this.mIndeterminateDrawable.getIntrinsicHeight();
+                        final float n6 = n / n2;
+                        if (n5 == n6) {
+                            break Label_0194;
+                        }
+                        int n8;
+                        int n9;
+                        if (n6 > n5) {
+                            n2 *= (int)n5;
+                            final int n7 = (n - n2) / 2;
+                            n2 += n7;
+                            n = n4;
+                            n8 = 0;
+                            n9 = n7;
                         }
                         else {
-                            n *= (int)(1.0f / n9);
-                            n8 = (n2 - n) / 2;
-                            n5 = n8 + n;
-                            n7 = (b2 ? 1 : 0);
-                            n6 = n3;
+                            n *= (int)(1.0f / n5);
+                            final int n10 = (n2 - n) / 2;
+                            n2 = n3;
+                            n += n10;
+                            n8 = n10;
+                            n9 = 0;
                         }
+                        this.mIndeterminateDrawable.setBounds(n9, n8, n2, n);
+                        break Label_0138;
                     }
+                    final int n11 = 0;
+                    n2 = n3;
+                    n = n4;
+                    int n8 = 0;
+                    int n9 = n11;
+                    continue;
                 }
             }
-            this.mIndeterminateDrawable.setBounds(n7, n8, n6, n5);
+            n = n4;
+            n2 = n3;
         }
         if (this.mProgressDrawable != null) {
-            this.mProgressDrawable.setBounds(0, 0, n6, n5);
+            this.mProgressDrawable.setBounds(0, 0, n2, n);
         }
     }
     
@@ -379,7 +375,7 @@ public class ProgressBarCompat extends View
             final Rect bounds = drawable.getBounds();
             final int n = this.getScrollX() + this.getPaddingLeft();
             final int n2 = this.getScrollY() + this.getPaddingTop();
-            this.invalidate(bounds.left + n, bounds.top + n2, bounds.right + n, bounds.bottom + n2);
+            this.invalidate(bounds.left + n, bounds.top + n2, n + bounds.right, bounds.bottom + n2);
         }
     }
     
@@ -424,7 +420,7 @@ public class ProgressBarCompat extends View
                 final float alpha = this.mTransformation.getAlpha();
                 try {
                     this.mInDrawing = true;
-                    mCurrentDrawable.setLevel((int)(10000.0f * alpha));
+                    mCurrentDrawable.setLevel((int)(alpha * 10000.0f));
                     this.mInDrawing = false;
                     if (SystemClock.uptimeMillis() - this.mLastDrawTime >= 200L) {
                         this.mLastDrawTime = SystemClock.uptimeMillis();
@@ -445,31 +441,37 @@ public class ProgressBarCompat extends View
     }
     
     protected void onMeasure(final int n, final int n2) {
-        synchronized (this) {
-            final Drawable mCurrentDrawable = this.mCurrentDrawable;
+        while (true) {
             int max = 0;
-            int max2 = 0;
-            if (mCurrentDrawable != null) {
-                max = Math.max(this.mMinWidth, Math.min(this.mMaxWidth, mCurrentDrawable.getIntrinsicWidth()));
-                max2 = Math.max(this.mMinHeight, Math.min(this.mMaxHeight, mCurrentDrawable.getIntrinsicHeight()));
+            while (true) {
+                synchronized (this) {
+                    final Drawable mCurrentDrawable = this.mCurrentDrawable;
+                    if (mCurrentDrawable != null) {
+                        final int max2 = Math.max(this.mMinWidth, Math.min(this.mMaxWidth, mCurrentDrawable.getIntrinsicWidth()));
+                        max = Math.max(this.mMinHeight, Math.min(this.mMaxHeight, mCurrentDrawable.getIntrinsicHeight()));
+                        this.updateDrawableState();
+                        this.setMeasuredDimension(resolveSize(max2 + (this.getPaddingLeft() + this.getPaddingRight()), n), resolveSize(max + (this.getPaddingTop() + this.getPaddingBottom()), n2));
+                        return;
+                    }
+                }
+                final int max2 = 0;
+                continue;
             }
-            this.updateDrawableState();
-            this.setMeasuredDimension(resolveSize(max + (this.getPaddingLeft() + this.getPaddingRight()), n), resolveSize(max2 + (this.getPaddingTop() + this.getPaddingBottom()), n2));
         }
     }
     
     public void onRestoreInstanceState(final Parcelable parcelable) {
-        final SavedState savedState = (SavedState)parcelable;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        this.setProgress(savedState.progress);
-        this.setSecondaryProgress(savedState.secondaryProgress);
+        final ProgressBarCompat$SavedState progressBarCompat$SavedState = (ProgressBarCompat$SavedState)parcelable;
+        super.onRestoreInstanceState(progressBarCompat$SavedState.getSuperState());
+        this.setProgress(progressBarCompat$SavedState.progress);
+        this.setSecondaryProgress(progressBarCompat$SavedState.secondaryProgress);
     }
     
     public Parcelable onSaveInstanceState() {
-        final SavedState savedState = new SavedState(super.onSaveInstanceState());
-        savedState.progress = this.mProgress;
-        savedState.secondaryProgress = this.mSecondaryProgress;
-        return (Parcelable)savedState;
+        final ProgressBarCompat$SavedState progressBarCompat$SavedState = new ProgressBarCompat$SavedState(super.onSaveInstanceState());
+        progressBarCompat$SavedState.progress = this.mProgress;
+        progressBarCompat$SavedState.secondaryProgress = this.mSecondaryProgress;
+        return (Parcelable)progressBarCompat$SavedState;
     }
     
     protected void onSizeChanged(final int n, final int n2, final int n3, final int n4) {
@@ -557,19 +559,28 @@ public class ProgressBarCompat extends View
         }
     }
     
-    void setProgress(int mMax, final boolean b) {
-        synchronized (this) {
-            if (!this.mIndeterminate) {
-                int n;
-                if ((n = mMax) < 0) {
-                    n = 0;
+    void setProgress(int n, final boolean b) {
+        while (true) {
+            while (true) {
+                Label_0071: {
+                    synchronized (this) {
+                        if (!this.mIndeterminate) {
+                            if (n >= 0) {
+                                break Label_0071;
+                            }
+                            n = 0;
+                            int mMax = n;
+                            if (n > this.mMax) {
+                                mMax = this.mMax;
+                            }
+                            if (mMax != this.mProgress) {
+                                this.refreshProgress(16908301, this.mProgress = mMax, b);
+                            }
+                        }
+                        return;
+                    }
                 }
-                if ((mMax = n) > this.mMax) {
-                    mMax = this.mMax;
-                }
-                if (mMax != this.mProgress) {
-                    this.refreshProgress(16908301, this.mProgress = mMax, b);
-                }
+                continue;
             }
         }
     }
@@ -604,19 +615,29 @@ public class ProgressBarCompat extends View
         }
     }
     
-    public void setSecondaryProgress(int mMax) {
-        synchronized (this) {
-            if (!this.mIndeterminate) {
-                int n;
-                if ((n = mMax) < 0) {
-                    n = 0;
+    public void setSecondaryProgress(int n) {
+        while (true) {
+            final int n2 = 0;
+            while (true) {
+                Label_0071: {
+                    synchronized (this) {
+                        if (!this.mIndeterminate) {
+                            if (n >= 0) {
+                                break Label_0071;
+                            }
+                            n = n2;
+                            int mMax = n;
+                            if (n > this.mMax) {
+                                mMax = this.mMax;
+                            }
+                            if (mMax != this.mSecondaryProgress) {
+                                this.refreshProgress(16908303, this.mSecondaryProgress = mMax, false);
+                            }
+                        }
+                        return;
+                    }
                 }
-                if ((mMax = n) > this.mMax) {
-                    mMax = this.mMax;
-                }
-                if (mMax != this.mSecondaryProgress) {
-                    this.refreshProgress(16908303, this.mSecondaryProgress = mMax, false);
-                }
+                continue;
             }
         }
     }
@@ -668,65 +689,5 @@ public class ProgressBarCompat extends View
     
     protected boolean verifyDrawable(final Drawable drawable) {
         return drawable == this.mProgressDrawable || drawable == this.mIndeterminateDrawable || super.verifyDrawable(drawable);
-    }
-    
-    private class RefreshProgressRunnable implements Runnable
-    {
-        private boolean mFromUser;
-        private int mId;
-        private int mProgress;
-        
-        RefreshProgressRunnable(final int mId, final int mProgress, final boolean mFromUser) {
-            this.mId = mId;
-            this.mProgress = mProgress;
-            this.mFromUser = mFromUser;
-        }
-        
-        @Override
-        public void run() {
-            ProgressBarCompat.this.doRefreshProgress(this.mId, this.mProgress, this.mFromUser, true);
-            ProgressBarCompat.this.mRefreshProgressRunnable = this;
-        }
-        
-        public void setup(final int mId, final int mProgress, final boolean mFromUser) {
-            this.mId = mId;
-            this.mProgress = mProgress;
-            this.mFromUser = mFromUser;
-        }
-    }
-    
-    static class SavedState extends View$BaseSavedState
-    {
-        public static final Parcelable$Creator<SavedState> CREATOR;
-        int progress;
-        int secondaryProgress;
-        
-        static {
-            CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                public SavedState createFromParcel(final Parcel parcel) {
-                    return new SavedState(parcel);
-                }
-                
-                public SavedState[] newArray(final int n) {
-                    return new SavedState[n];
-                }
-            };
-        }
-        
-        private SavedState(final Parcel parcel) {
-            super(parcel);
-            this.progress = parcel.readInt();
-            this.secondaryProgress = parcel.readInt();
-        }
-        
-        SavedState(final Parcelable parcelable) {
-            super(parcelable);
-        }
-        
-        public void writeToParcel(final Parcel parcel, final int n) {
-            super.writeToParcel(parcel, n);
-            parcel.writeInt(this.progress);
-            parcel.writeInt(this.secondaryProgress);
-        }
     }
 }

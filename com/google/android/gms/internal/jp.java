@@ -8,6 +8,7 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import java.util.ArrayList;
 import java.util.Set;
 import android.os.Bundle;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.Map;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.Iterator;
@@ -61,22 +62,22 @@ public class jp extends ji implements SafeParcelable
     private static void a(final jm jm, ji ji) {
         final Class<? extends ji> class1 = ji.getClass();
         if (!jm.b(class1)) {
-            final HashMap<String, a<?, ?>> hf = ji.hf();
+            final HashMap<String, ji$a<?, ?>> hf = ji.hf();
             jm.a(class1, ji.hf());
             final Iterator<String> iterator = hf.keySet().iterator();
             while (iterator.hasNext()) {
                 ji = (ji)hf.get(iterator.next());
-                final Class<? extends ji> hn = ((a)ji).hn();
+                final Class<? extends ji> hn = ((ji$a)ji).hn();
                 if (hn != null) {
                     try {
                         a(jm, (ji)hn.newInstance());
                         continue;
                     }
                     catch (InstantiationException ex) {
-                        throw new IllegalStateException("Could not instantiate an object of type " + ((a)ji).hn().getCanonicalName(), ex);
+                        throw new IllegalStateException("Could not instantiate an object of type " + ((ji$a)ji).hn().getCanonicalName(), ex);
                     }
                     catch (IllegalAccessException ex2) {
-                        throw new IllegalStateException("Could not access object of type " + ((a)ji).hn().getCanonicalName(), ex2);
+                        throw new IllegalStateException("Could not access object of type " + ((ji$a)ji).hn().getCanonicalName(), ex2);
                     }
                     break;
                 }
@@ -117,41 +118,41 @@ public class jp extends ji implements SafeParcelable
         }
     }
     
-    private void a(final StringBuilder sb, final a<?, ?> a, final Parcel parcel, final int n) {
-        switch (a.he()) {
+    private void a(final StringBuilder sb, final ji$a<?, ?> ji$a, final Parcel parcel, final int n) {
+        switch (ji$a.he()) {
             default: {
-                throw new IllegalArgumentException("Unknown field out type = " + a.he());
+                throw new IllegalArgumentException("Unknown field out type = " + ji$a.he());
             }
             case 0: {
-                this.b(sb, a, this.a(a, a.g(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.g(parcel, n)));
             }
             case 1: {
-                this.b(sb, a, this.a(a, a.k(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.k(parcel, n)));
             }
             case 2: {
-                this.b(sb, a, this.a(a, a.i(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.i(parcel, n)));
             }
             case 3: {
-                this.b(sb, a, this.a(a, a.l(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.l(parcel, n)));
             }
             case 4: {
-                this.b(sb, a, this.a(a, a.m(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.m(parcel, n)));
             }
             case 5: {
-                this.b(sb, a, this.a(a, a.n(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.n(parcel, n)));
             }
             case 6: {
-                this.b(sb, a, this.a(a, a.c(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.c(parcel, n)));
             }
             case 7: {
-                this.b(sb, a, this.a(a, a.o(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.o(parcel, n)));
             }
             case 8:
             case 9: {
-                this.b(sb, a, this.a(a, a.r(parcel, n)));
+                this.b(sb, ji$a, this.a(ji$a, a.r(parcel, n)));
             }
             case 10: {
-                this.b(sb, a, this.a(a, e(a.q(parcel, n))));
+                this.b(sb, ji$a, this.a(ji$a, e(a.q(parcel, n))));
             }
             case 11: {
                 throw new IllegalArgumentException("Method does not accept concrete type.");
@@ -159,33 +160,33 @@ public class jp extends ji implements SafeParcelable
         }
     }
     
-    private void a(final StringBuilder sb, final String s, final a<?, ?> a, final Parcel parcel, final int n) {
+    private void a(final StringBuilder sb, final String s, final ji$a<?, ?> ji$a, final Parcel parcel, final int n) {
         sb.append("\"").append(s).append("\":");
-        if (a.hp()) {
-            this.a(sb, a, parcel, n);
+        if (ji$a.hp()) {
+            this.a(sb, ji$a, parcel, n);
             return;
         }
-        this.b(sb, a, parcel, n);
+        this.b(sb, ji$a, parcel, n);
     }
     
-    private void a(final StringBuilder sb, final HashMap<String, a<?, ?>> hashMap, final Parcel parcel) {
-        final HashMap<Integer, Map.Entry<String, a<?, ?>>> b = b(hashMap);
+    private void a(final StringBuilder sb, final HashMap<String, ji$a<?, ?>> hashMap, final Parcel parcel) {
+        final HashMap<Integer, Map.Entry<String, ji$a<?, ?>>> b = b(hashMap);
         sb.append('{');
-        final int c = com.google.android.gms.common.internal.safeparcel.a.C(parcel);
+        final int c = a.C(parcel);
         int n = 0;
         while (parcel.dataPosition() < c) {
-            final int b2 = com.google.android.gms.common.internal.safeparcel.a.B(parcel);
-            final Map.Entry<String, V> entry = (Map.Entry<String, V>)b.get(com.google.android.gms.common.internal.safeparcel.a.aD(b2));
+            final int b2 = a.B(parcel);
+            final Map.Entry<String, V> entry = (Map.Entry<String, V>)b.get(a.aD(b2));
             if (entry != null) {
                 if (n != 0) {
                     sb.append(",");
                 }
-                this.a(sb, entry.getKey(), (a<?, ?>)entry.getValue(), parcel, b2);
+                this.a(sb, entry.getKey(), (ji$a<?, ?>)entry.getValue(), parcel, b2);
                 n = 1;
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         sb.append('}');
     }
@@ -198,18 +199,18 @@ public class jp extends ji implements SafeParcelable
         return jm;
     }
     
-    private static HashMap<Integer, Map.Entry<String, a<?, ?>>> b(final HashMap<String, a<?, ?>> hashMap) {
-        final HashMap<Integer, Map.Entry<K, a>> hashMap2 = (HashMap<Integer, Map.Entry<K, a>>)new HashMap<Integer, Map.Entry<String, a<?, ?>>>();
-        for (final Map.Entry<String, a<?, ?>> entry : hashMap.entrySet()) {
-            hashMap2.put(((a)entry.getValue()).hm(), entry);
+    private static HashMap<Integer, Map.Entry<String, ji$a<?, ?>>> b(final HashMap<String, ji$a<?, ?>> hashMap) {
+        final HashMap<Integer, Map.Entry<K, ji$a>> hashMap2 = (HashMap<Integer, Map.Entry<K, ji$a>>)new HashMap<Integer, Map.Entry<String, ji$a<?, ?>>>();
+        for (final Map.Entry<String, ji$a<?, ?>> entry : hashMap.entrySet()) {
+            hashMap2.put(entry.getValue().hm(), entry);
         }
-        return (HashMap<Integer, Map.Entry<String, a<?, ?>>>)hashMap2;
+        return (HashMap<Integer, Map.Entry<String, ji$a<?, ?>>>)hashMap2;
     }
     
-    private void b(final StringBuilder sb, final a<?, ?> a, Parcel d, int i) {
-        if (a.hk()) {
+    private void b(final StringBuilder sb, final ji$a<?, ?> ji$a, Parcel d, int i) {
+        if (ji$a.hk()) {
             sb.append("[");
-            switch (a.he()) {
+            switch (ji$a.he()) {
                 default: {
                     throw new IllegalStateException("Unknown field type out.");
                 }
@@ -258,7 +259,7 @@ public class jp extends ji implements SafeParcelable
                             sb.append(",");
                         }
                         e[i].setDataPosition(0);
-                        this.a(sb, a.hr(), e[i]);
+                        this.a(sb, ji$a.hr(), e[i]);
                     }
                     break;
                 }
@@ -266,7 +267,7 @@ public class jp extends ji implements SafeParcelable
             sb.append("]");
             return;
         }
-        switch (a.he()) {
+        switch (ji$a.he()) {
             default: {
                 throw new IllegalStateException("Unknown field type out");
             }
@@ -323,26 +324,26 @@ public class jp extends ji implements SafeParcelable
             case 11: {
                 d = a.D(d, i);
                 d.setDataPosition(0);
-                this.a(sb, a.hr(), d);
+                this.a(sb, ji$a.hr(), d);
             }
         }
     }
     
-    private void b(final StringBuilder sb, final a<?, ?> a, final Object o) {
-        if (a.hj()) {
-            this.b(sb, a, (ArrayList<?>)o);
+    private void b(final StringBuilder sb, final ji$a<?, ?> ji$a, final Object o) {
+        if (ji$a.hj()) {
+            this.b(sb, ji$a, (ArrayList<?>)o);
             return;
         }
-        this.a(sb, a.hd(), o);
+        this.a(sb, ji$a.hd(), o);
     }
     
-    private void b(final StringBuilder sb, final a<?, ?> a, final ArrayList<?> list) {
+    private void b(final StringBuilder sb, final ji$a<?, ?> ji$a, final ArrayList<?> list) {
         sb.append("[");
         for (int size = list.size(), i = 0; i < size; ++i) {
             if (i != 0) {
                 sb.append(",");
             }
-            this.a(sb, a.hd(), list.get(i));
+            this.a(sb, ji$a.hd(), list.get(i));
         }
         sb.append("]");
     }
@@ -375,7 +376,7 @@ public class jp extends ji implements SafeParcelable
     }
     
     @Override
-    public HashMap<String, a<?, ?>> hf() {
+    public HashMap<String, ji$a<?, ?>> hf() {
         if (this.My == null) {
             return null;
         }
@@ -385,13 +386,13 @@ public class jp extends ji implements SafeParcelable
     public Parcel hx() {
         switch (this.MH) {
             case 0: {
-                this.MI = com.google.android.gms.common.internal.safeparcel.b.D(this.MF);
-                com.google.android.gms.common.internal.safeparcel.b.H(this.MF, this.MI);
+                this.MI = b.D(this.MF);
+                b.H(this.MF, this.MI);
                 this.MH = 2;
                 break;
             }
             case 1: {
-                com.google.android.gms.common.internal.safeparcel.b.H(this.MF, this.MI);
+                b.H(this.MF, this.MI);
                 this.MH = 2;
                 break;
             }

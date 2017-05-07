@@ -10,7 +10,7 @@ import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPu
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.CmpEventLogging;
@@ -30,7 +30,7 @@ public final class LegacyCmpEventLoggingImpl implements CmpEventLogging
         final UserData userData = new UserData();
         userData.esn = this.mOwner.getConfigurationAgent().getEsnProvider().getEsn();
         userData.deviceCategory = this.mOwner.getConfigurationAgent().getDeviceCategory().getValue();
-        final ServiceAgent.UserAgentInterface user = this.mOwner.getUser();
+        final ServiceAgent$UserAgentInterface user = this.mOwner.getUser();
         UserData userData2;
         if (user == null) {
             Log.w("nf_log", "User agent should not be null here!");

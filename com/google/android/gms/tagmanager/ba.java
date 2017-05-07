@@ -8,27 +8,26 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.HashMap;
 import org.json.JSONArray;
-import org.json.JSONException;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import com.google.android.gms.internal.b;
 import org.json.JSONObject;
 
 class ba
 {
-    public static cr.c cD(final String s) throws JSONException {
-        final d.a n = n(new JSONObject(s));
-        final cr.d ov = cr.c.oV();
+    public static cr$c cD(final String s) {
+        final d$a n = n(new JSONObject(s));
+        final cr$d ov = cr$c.oV();
         for (int i = 0; i < n.gx.length; ++i) {
-            ov.a(cr.a.oR().b(b.df.toString(), n.gx[i]).b(b.cU.toString(), di.cU(m.nO())).b(m.nP(), n.gy[i]).oU());
+            ov.a(cr$a.oR().b(b.df.toString(), n.gx[i]).b(b.cU.toString(), di.cU(m.nO())).b(m.nP(), n.gy[i]).oU());
         }
         return ov.oY();
     }
     
-    private static d.a n(final Object o) throws JSONException {
+    private static d$a n(final Object o) {
         return di.u(o(o));
     }
     
-    static Object o(final Object o) throws JSONException {
+    static Object o(final Object o) {
         if (o instanceof JSONArray) {
             throw new RuntimeException("JSONArrays are not supported");
         }

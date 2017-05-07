@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Swim extends BaseMediaEvent
@@ -22,7 +21,7 @@ public class Swim extends BaseMediaEvent
     private int pts;
     private int startPts;
     
-    public Swim(final JSONObject jsonObject) throws JSONException {
+    public Swim(final JSONObject jsonObject) {
         super("swim", jsonObject);
         this.error = false;
     }
@@ -48,7 +47,7 @@ public class Swim extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.startPts = BaseNccpEvent.getInt(jsonObject, "startPts", 0);
         this.endPts = BaseNccpEvent.getInt(jsonObject, "endPts", 0);
         this.currentPts = BaseNccpEvent.getInt(jsonObject, "currentPts", 0);

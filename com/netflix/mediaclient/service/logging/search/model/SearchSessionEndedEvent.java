@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
@@ -23,7 +23,7 @@ public final class SearchSessionEndedEvent extends SessionEndedEvent
     private void setupAttributes() {
         this.type = EventType.sessionEnded;
         this.sessionName = "search";
-        this.modalView = IClientLogging.ModalView.search;
+        this.modalView = IClientLogging$ModalView.search;
         this.category = "search";
         this.name = "session.ended";
     }

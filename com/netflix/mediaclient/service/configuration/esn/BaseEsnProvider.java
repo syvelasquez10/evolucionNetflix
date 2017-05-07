@@ -4,15 +4,15 @@
 
 package com.netflix.mediaclient.service.configuration.esn;
 
-import android.net.wifi.WifiManager;
-import android.telephony.TelephonyManager;
-import android.provider.Settings$Secure;
 import java.util.Locale;
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
-import com.netflix.mediaclient.util.CryptoUtils;
 import java.util.UUID;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import android.net.wifi.WifiManager;
+import android.telephony.TelephonyManager;
+import java.security.NoSuchAlgorithmException;
+import com.netflix.mediaclient.util.CryptoUtils;
+import android.provider.Settings$Secure;
 import android.content.Context;
 import com.netflix.mediaclient.util.StringUtils;
 import android.os.Build;
@@ -30,6 +30,7 @@ public abstract class BaseEsnProvider implements EsnProvider
     protected static final int MODEL_LIMIT = 45;
     protected static final String TAG = "ESN";
     protected static final String UKNOWN = "unknown";
+    protected static String hashedDeviceId;
     protected String deviceId;
     protected String esn;
     protected String fesn;
@@ -85,24 +86,24 @@ public abstract class BaseEsnProvider implements EsnProvider
     }
     
     public static String findDeviceModel() {
+        int length = 10;
         final StringBuilder sb = new StringBuilder();
         final String manufacturer = Build.MANUFACTURER;
         final String model = Build.MODEL;
         Log.d("ESN", "BRAND " + manufacturer);
         Log.d("ESN", "MODEL " + model);
-        int length = 0;
         if (manufacturer != null && !"".equals(manufacturer.trim())) {
             if (manufacturer.length() <= 10) {
                 length = manufacturer.length();
                 sb.append(manufacturer);
             }
             else {
-                length = 10;
                 sb.append(manufacturer.substring(0, 10));
             }
         }
         else {
             sb.append("unknown");
+            length = 0;
         }
         sb.append("_");
         if (model != null && !"".equals(model.trim())) {
@@ -120,18 +121,18 @@ public abstract class BaseEsnProvider implements EsnProvider
         return sb.toString();
     }
     
-    private String findFutureDeviceId(final Context context) {
+    private static String findFutureDeviceId(final Context context) {
         String s;
-        if ((s = this.getIMEA(context)) == null) {
-            s = this.getMacAddressAndSerial(context);
+        if ((s = getIMEA(context)) == null) {
+            s = getMacAddressAndSerial(context);
         }
         String androidId;
         if ((androidId = s) == null) {
-            androidId = this.getAndroidId(context);
+            androidId = getAndroidId(context);
         }
         if (androidId == null) {
             Log.w("ESN", "Device ID not found, use and save random id");
-            return this.getRandom(context);
+            return getRandom(context);
         }
         if ("000000000000000".equalsIgnoreCase(androidId)) {
             Log.w("ESN", "Emulator");
@@ -140,16 +141,71 @@ public abstract class BaseEsnProvider implements EsnProvider
         return StringUtils.replaceWhiteSpace(androidId, BaseEsnProvider.DELIM);
     }
     
-    private String getMacAddressAndSerial(final Context context) {
-        final String macAddress = this.getMacAddress(context);
+    protected static String getAndroidId(final Context context) {
+        final String string = Settings$Secure.getString(context.getContentResolver(), "android_id");
+        if (Log.isLoggable("ESN", 3)) {
+            Log.d("ESN", "Android ID is " + string);
+        }
+        return string;
+    }
+    
+    public static String getHashedDeviceId(Context hashedDeviceId) {
+        synchronized (BaseEsnProvider.class) {
+            if (BaseEsnProvider.hashedDeviceId != null) {
+                hashedDeviceId = (Context)BaseEsnProvider.hashedDeviceId;
+            }
+            else {
+                hashedDeviceId = (Context)findFutureDeviceId(hashedDeviceId);
+                if (Log.isLoggable("ESN", 3)) {
+                    Log.d("ESN", "===> Future Device ID: " + (String)hashedDeviceId);
+                }
+                try {
+                    BaseEsnProvider.hashedDeviceId = CryptoUtils.hashSHA256((String)hashedDeviceId, SecurityRepository.getDeviceIdToken());
+                    if (Log.isLoggable("ESN", 3)) {
+                        Log.d("ESN", "===> Hashed Device ID: " + BaseEsnProvider.hashedDeviceId);
+                    }
+                    hashedDeviceId = (Context)validateChars(BaseEsnProvider.hashedDeviceId);
+                }
+                catch (NoSuchAlgorithmException ex) {
+                    Log.e("ESN", "===> Failed to hash device id. Use plain and report this", ex);
+                    BaseEsnProvider.hashedDeviceId = (String)hashedDeviceId;
+                }
+            }
+            return (String)hashedDeviceId;
+        }
+    }
+    
+    protected static String getIMEA(final Context context) {
+        final TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService("phone");
+        String deviceId;
+        if (telephonyManager == null) {
+            Log.d("ESN", "Device is not a phone");
+            deviceId = null;
+        }
+        else {
+            final String s = deviceId = telephonyManager.getDeviceId();
+            if (Log.isLoggable("ESN", 3)) {
+                Log.d("ESN", "IMEA is " + s);
+                return s;
+            }
+        }
+        return deviceId;
+    }
+    
+    protected static String getMacAddress(final Context context) {
+        return ((WifiManager)context.getSystemService("wifi")).getConnectionInfo().getMacAddress();
+    }
+    
+    private static String getMacAddressAndSerial(final Context context) {
+        final String macAddress = getMacAddress(context);
         final String serial = Build.SERIAL;
-        String s;
+        String string;
         if (macAddress == null && serial == null) {
             Log.w("ESN", "Both mac address and SERIAL are null!");
-            s = null;
+            string = null;
         }
         else if (macAddress == null) {
-            s = serial;
+            string = serial;
             if (Log.isLoggable("ESN", 3)) {
                 Log.d("ESN", "MAC address is NULL, but SERIAL exist: " + serial);
                 return serial;
@@ -162,13 +218,13 @@ public abstract class BaseEsnProvider implements EsnProvider
                 }
                 return macAddress;
             }
-            final String string = macAddress + serial;
+            final String s = string = macAddress + serial;
             if (Log.isLoggable("ESN", 3)) {
-                Log.d("ESN", "SERIAL and MAC address both exist, return : " + string);
+                Log.d("ESN", "SERIAL and MAC address both exist, return : " + s);
+                return s;
             }
-            return string;
         }
-        return s;
+        return string;
     }
     
     protected static String getManufactorer() {
@@ -194,8 +250,8 @@ public abstract class BaseEsnProvider implements EsnProvider
         return replaceWhiteSpace;
     }
     
-    private String getRandom(final Context context) {
-        synchronized (this) {
+    private static String getRandom(final Context context) {
+        synchronized (BaseEsnProvider.class) {
             String s;
             if ((s = PreferenceUtils.getStringPref(context, "nf_rnd_device_id", null)) == null) {
                 s = UUID.randomUUID().toString();
@@ -236,29 +292,15 @@ public abstract class BaseEsnProvider implements EsnProvider
         }
     }
     
-    private void initFutureEsn(Context context) {
-        context = (Context)this.findFutureDeviceId(context);
+    private void initFutureEsn(final Context context) {
+        this.fesnModelId = validateChars(findBaseModelId());
+        BaseEsnProvider.hashedDeviceId = getHashedDeviceId(context);
+        final StringBuilder sb = new StringBuilder();
+        sb.append(BaseEsnProvider.ESN_PREFIX);
+        sb.append(this.fesnModelId).append(BaseEsnProvider.ESN_DELIM).append(BaseEsnProvider.hashedDeviceId);
+        this.fesn = sb.toString();
         if (Log.isLoggable("ESN", 3)) {
-            Log.d("ESN", "===> Future Device ID: " + (String)context);
-        }
-        while (true) {
-            try {
-                context = (Context)CryptoUtils.hashSHA256((String)context, SecurityRepository.getDeviceIdToken());
-                context = (Context)validateChars((String)context);
-                this.fesnModelId = validateChars(findBaseModelId());
-                final StringBuilder sb = new StringBuilder();
-                sb.append(BaseEsnProvider.ESN_PREFIX);
-                sb.append(this.fesnModelId).append(BaseEsnProvider.ESN_DELIM).append((String)context);
-                this.fesn = sb.toString();
-                if (Log.isLoggable("ESN", 3)) {
-                    Log.d("ESN", "===> Future ESN: " + this.fesn);
-                }
-            }
-            catch (NoSuchAlgorithmException ex) {
-                Log.e("ESN", "===> Failed to hash device id. Use plain and report this", ex);
-                continue;
-            }
-            break;
+            Log.d("ESN", "===> Future ESN: " + this.fesn);
         }
     }
     
@@ -283,14 +325,6 @@ public abstract class BaseEsnProvider implements EsnProvider
     protected abstract String findDeviceId(final Context p0);
     
     protected abstract String findModelId();
-    
-    protected String getAndroidId(final Context context) {
-        final String string = Settings$Secure.getString(context.getContentResolver(), "android_id");
-        if (Log.isLoggable("ESN", 3)) {
-            Log.d("ESN", "Android ID is " + string);
-        }
-        return string;
-    }
     
     @Override
     public abstract int getCryptoFactoryType();
@@ -323,27 +357,6 @@ public abstract class BaseEsnProvider implements EsnProvider
     @Override
     public String getFesnModelId() {
         return this.fesnModelId;
-    }
-    
-    protected String getIMEA(final Context context) {
-        final TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService("phone");
-        String deviceId;
-        if (telephonyManager == null) {
-            Log.d("ESN", "Device is not a phone");
-            deviceId = null;
-        }
-        else {
-            final String s = deviceId = telephonyManager.getDeviceId();
-            if (Log.isLoggable("ESN", 3)) {
-                Log.d("ESN", "IMEA is " + s);
-                return s;
-            }
-        }
-        return deviceId;
-    }
-    
-    protected String getMacAddress(final Context context) {
-        return ((WifiManager)context.getSystemService("wifi")).getConnectionInfo().getMacAddress();
     }
     
     @Override

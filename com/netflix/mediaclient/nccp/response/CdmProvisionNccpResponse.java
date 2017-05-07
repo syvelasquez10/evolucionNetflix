@@ -10,9 +10,6 @@ import android.util.Base64;
 import com.netflix.mediaclient.util.XmlDomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import com.netflix.mediaclient.nccp.BaseNccpResponse;
 
 public final class CdmProvisionNccpResponse extends BaseNccpResponse
@@ -24,7 +21,7 @@ public final class CdmProvisionNccpResponse extends BaseNccpResponse
     private byte[] kchkeyid;
     private byte[] keyResponse;
     
-    public CdmProvisionNccpResponse(final String s) throws IOException, ParserConfigurationException, SAXException {
+    public CdmProvisionNccpResponse(final String s) {
         super(s);
     }
     

@@ -13,19 +13,19 @@ import java.io.FileNotFoundException;
 import com.google.android.gms.internal.pm;
 import java.io.FileOutputStream;
 import com.google.android.gms.internal.pl;
-import com.google.android.gms.internal.c;
+import com.google.android.gms.internal.c$f;
 import org.json.JSONException;
 import java.io.UnsupportedEncodingException;
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.Executors;
 import android.content.Context;
 import java.util.concurrent.ExecutorService;
-import com.google.android.gms.internal.ok;
+import com.google.android.gms.internal.ok$a;
 
-class cq implements f
+class cq implements o$f
 {
     private final String anR;
-    private bg<ok.a> aqi;
+    private bg<ok$a> aqi;
     private final ExecutorService aqp;
     private final Context mContext;
     
@@ -35,7 +35,7 @@ class cq implements f
         this.aqp = Executors.newSingleThreadExecutor();
     }
     
-    private cr.c a(final ByteArrayOutputStream byteArrayOutputStream) {
+    private cr$c a(final ByteArrayOutputStream byteArrayOutputStream) {
         try {
             return ba.cD(byteArrayOutputStream.toString("UTF-8"));
         }
@@ -49,15 +49,15 @@ class cq implements f
         }
     }
     
-    private void d(final ok.a a) throws IllegalArgumentException {
-        if (a.gs == null && a.ash == null) {
+    private void d(final ok$a ok$a) {
+        if (ok$a.gs == null && ok$a.ash == null) {
             throw new IllegalArgumentException("Resource and SupplementedResource are NULL.");
         }
     }
     
-    private cr.c k(final byte[] array) {
+    private cr$c k(final byte[] array) {
         try {
-            final cr.c b = cr.b(com.google.android.gms.internal.c.f.a(array));
+            final cr$c b = cr.b(c$f.a(array));
             if (b != null) {
                 bh.V("The container was successfully loaded from the resource (using binary file)");
             }
@@ -67,35 +67,30 @@ class cq implements f
             bh.T("The resource file is corrupted. The container cannot be extracted from the binary file");
             return null;
         }
-        catch (cr.g g) {
+        catch (cr$g cr$g) {
             bh.W("The resource file is invalid. The container from the binary file is invalid");
             return null;
         }
     }
     
     @Override
-    public void a(final bg<ok.a> aqi) {
+    public void a(final bg<ok$a> aqi) {
         this.aqi = aqi;
     }
     
     @Override
-    public void b(final ok.a a) {
-        this.aqp.execute(new Runnable() {
-            @Override
-            public void run() {
-                cq.this.c(a);
-            }
-        });
+    public void b(final ok$a ok$a) {
+        this.aqp.execute(new cq$2(this, ok$a));
     }
     
-    boolean c(final ok.a a) {
+    boolean c(final ok$a ok$a) {
         final File oq = this.oQ();
         FileOutputStream fileOutputStream;
         try {
             final FileOutputStream fileOutputStream2;
             fileOutputStream = (fileOutputStream2 = new FileOutputStream(oq));
-            final ok.a a2 = a;
-            final byte[] array = pm.f(a2);
+            final ok$a ok$a2 = ok$a;
+            final byte[] array = pm.f(ok$a2);
             fileOutputStream2.write(array);
             final FileOutputStream fileOutputStream3 = fileOutputStream;
             fileOutputStream3.close();
@@ -107,8 +102,8 @@ class cq implements f
         }
         try {
             final FileOutputStream fileOutputStream2 = fileOutputStream;
-            final ok.a a2 = a;
-            final byte[] array = pm.f(a2);
+            final ok$a ok$a2 = ok$a;
+            final byte[] array = pm.f(ok$a2);
             fileOutputStream2.write(array);
             try {
                 final FileOutputStream fileOutputStream3 = fileOutputStream;
@@ -143,7 +138,7 @@ class cq implements f
     }
     
     @Override
-    public cr.c fe(final int n) {
+    public cr$c fe(final int n) {
         Label_0113: {
             InputStream openRawResource;
             try {
@@ -155,13 +150,13 @@ class cq implements f
                 cr.b(inputStream, byteArrayOutputStream2);
                 final cq cq = this;
                 final ByteArrayOutputStream byteArrayOutputStream3 = byteArrayOutputStream;
-                final cr.c c = cq.a(byteArrayOutputStream3);
-                final cr.c c3;
-                final cr.c c2 = c3 = c;
-                if (c3 != null) {
+                final cr$c cr$c = cq.a(byteArrayOutputStream3);
+                final cr$c cr$c3;
+                final cr$c cr$c2 = cr$c3 = cr$c;
+                if (cr$c3 != null) {
                     final String s = "The container was successfully loaded from the resource (using JSON file format)";
                     bh.V(s);
-                    return c2;
+                    return cr$c2;
                 }
                 break Label_0113;
             }
@@ -176,13 +171,13 @@ class cq implements f
                 cr.b(inputStream, byteArrayOutputStream2);
                 final cq cq = this;
                 final ByteArrayOutputStream byteArrayOutputStream3 = byteArrayOutputStream;
-                final cr.c c = cq.a(byteArrayOutputStream3);
-                final cr.c c3;
-                final cr.c c2 = c3 = c;
-                if (c3 != null) {
+                final cr$c cr$c = cq.a(byteArrayOutputStream3);
+                final cr$c cr$c3;
+                final cr$c cr$c2 = cr$c3 = cr$c;
+                if (cr$c3 != null) {
                     final String s = "The container was successfully loaded from the resource (using JSON file format)";
                     bh.V(s);
-                    return c2;
+                    return cr$c2;
                 }
                 return this.k(byteArrayOutputStream.toByteArray());
             }
@@ -354,12 +349,7 @@ class cq implements f
     
     @Override
     public void oa() {
-        this.aqp.execute(new Runnable() {
-            @Override
-            public void run() {
-                cq.this.oP();
-            }
-        });
+        this.aqp.execute(new cq$1(this));
     }
     
     @Override

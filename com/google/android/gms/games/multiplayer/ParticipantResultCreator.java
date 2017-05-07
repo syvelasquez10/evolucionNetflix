@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.multiplayer;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -54,7 +55,7 @@ public class ParticipantResultCreator implements Parcelable$Creator<ParticipantR
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ParticipantResult(g3, o, g2, g);
     }

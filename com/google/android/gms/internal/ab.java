@@ -4,13 +4,10 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Handler;
-import java.lang.ref.WeakReference;
-
 @ez
 public class ab
 {
-    private final a mj;
+    private final ab$a mj;
     private final Runnable mk;
     private av ml;
     private boolean mm;
@@ -18,26 +15,15 @@ public class ab
     private long mo;
     
     public ab(final u u) {
-        this(u, new a(gr.wC));
+        this(u, new ab$a(gr.wC));
     }
     
-    ab(final u u, final a mj) {
+    ab(final u u, final ab$a mj) {
         this.mm = false;
         this.mn = false;
         this.mo = 0L;
         this.mj = mj;
-        this.mk = new Runnable() {
-            private final WeakReference<u> mp = new WeakReference<u>(u);
-            
-            @Override
-            public void run() {
-                ab.this.mm = false;
-                final u u = this.mp.get();
-                if (u != null) {
-                    u.b(ab.this.ml);
-                }
-            }
-        };
+        this.mk = new ab$1(this, u);
     }
     
     public void a(final av ml, final long mo) {
@@ -80,23 +66,6 @@ public class ab
         if (this.mm) {
             this.mm = false;
             this.a(this.ml, this.mo);
-        }
-    }
-    
-    public static class a
-    {
-        private final Handler mHandler;
-        
-        public a(final Handler mHandler) {
-            this.mHandler = mHandler;
-        }
-        
-        public boolean postDelayed(final Runnable runnable, final long n) {
-            return this.mHandler.postDelayed(runnable, n);
-        }
-        
-        public void removeCallbacks(final Runnable runnable) {
-            this.mHandler.removeCallbacks(runnable);
         }
     }
 }

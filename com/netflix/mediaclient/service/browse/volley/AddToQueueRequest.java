@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.google.gson.JsonParser;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.google.gson.JsonParser;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
@@ -14,6 +14,8 @@ import java.util.Arrays;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import java.util.ArrayList;
 import com.google.gson.JsonObject;
 import java.util.Iterator;
@@ -21,7 +23,6 @@ import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
@@ -46,7 +47,7 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
     private final int trackId;
     
     static {
-        optionalParam = "&" + FalcorParseUtils.getParamNameParam() + "=";
+        optionalParam = "&" + "param" + "=";
     }
     
     public AddToQueueRequest(final Context context, final BrowseWebClientCache browseCache, final String mVideoId, final int fromVideo, final int toVideo, final int trackId, final String messageToken, final BrowseAgentCallback responseCallback) {
@@ -78,13 +79,13 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
     
     public static void parseRefreshIqVideosAndUpdateCache(final JsonObject jsonObject, final int n, final int n2, final BrowseWebClientCache browseWebClientCache) {
         clearMdpAndSdpMyListStatus(n, n2, browseWebClientCache);
-        final ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary> list = new ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary>();
+        final ArrayList<Video$Summary> list = new ArrayList<Video$Summary>();
         for (int i = n; i <= n2; ++i) {
             final String string = Integer.toString(i);
             if (jsonObject.has(string)) {
-                final com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary = FalcorParseUtils.getPropertyObject(jsonObject.getAsJsonObject(string), "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
-                browseWebClientCache.updateInQueueCacheRecord(summary.getId(), true);
-                list.add(summary);
+                final Video$Summary video$Summary = FalcorParseUtils.getPropertyObject(jsonObject.getAsJsonObject(string), "summary", Video$Summary.class);
+                browseWebClientCache.updateInQueueCacheRecord(video$Summary.getId(), true);
+                list.add(video$Summary);
             }
         }
         final ListOfMoviesSummary listOfMoviesSummary = FalcorParseUtils.getPropertyObject(jsonObject, "summary", ListOfMoviesSummary.class);
@@ -135,7 +136,7 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @SuppressLint({ "DefaultLocale" })
@@ -145,9 +146,9 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
         final String format2 = String.format("[{'from':%d,'to':%d},'summary']", this.fromVideo, this.toVideo);
         final String format3 = String.format("'%s'", this.iqLoMoId);
         final StringBuilder sb = new StringBuilder();
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), format3));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", format3));
         sb.append(AddToQueueRequest.optionalParam).append(this.iqLoMoIndex);
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), format));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", format));
         sb.append(AddToQueueRequest.optionalParam).append(this.trackId);
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", format2));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
@@ -193,7 +194,7 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String parseFalcorResponse(String errorMessage) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(String errorMessage) {
         if (Log.isLoggable("nf_service_browse_addtoqueuerequest", 2)) {
             Log.v("nf_service_browse_addtoqueuerequest", "String response to parse = " + errorMessage);
         }

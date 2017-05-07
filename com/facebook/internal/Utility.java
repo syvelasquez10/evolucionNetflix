@@ -9,6 +9,7 @@ import java.util.Arrays;
 import android.text.TextUtils;
 import java.io.InputStream;
 import com.facebook.model.GraphObject;
+import com.facebook.Request$Callback;
 import com.facebook.Session;
 import com.facebook.Request;
 import android.os.Parcelable;
@@ -160,21 +161,17 @@ public final class Utility
         return null;
     }
     
-    public static Object getStringPropertyAsJSON(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
-        Object o2;
-        final Object o = o2 = jsonObject.opt(s);
-        if (o != null) {
-            o2 = o;
-            if (o instanceof String) {
-                o2 = new JSONTokener((String)o).nextValue();
-            }
+    public static Object getStringPropertyAsJSON(final JSONObject jsonObject, final String s, final String s2) {
+        Object o = jsonObject.opt(s);
+        if (o != null && o instanceof String) {
+            o = new JSONTokener((String)o).nextValue();
         }
-        if (o2 == null || o2 instanceof JSONObject || o2 instanceof JSONArray) {
-            return o2;
+        if (o == null || o instanceof JSONObject || o instanceof JSONArray) {
+            return o;
         }
         if (s2 != null) {
             final JSONObject jsonObject2 = new JSONObject();
-            jsonObject2.putOpt(s2, o2);
+            jsonObject2.putOpt(s2, o);
             return jsonObject2;
         }
         throw new FacebookException("Got an unexpected non-JSON object.");
@@ -250,125 +247,120 @@ public final class Utility
     public static boolean queryAppAttributionSupportAndWait(final String lastAppCheckedForAttributionStatus) {
         while (true) {
             while (true) {
-                Label_0135: {
-                    while (true) {
-                        synchronized (Utility.LOCK) {
-                            if (lastAppCheckedForAttributionStatus.equals(Utility.lastAppCheckedForAttributionStatus)) {
-                                return Utility.attributionAllowedForLastAppChecked;
-                            }
-                            Object parameters = new Bundle();
-                            ((Bundle)parameters).putString("fields", "supports_attribution");
-                            final Request graphPathRequest = Request.newGraphPathRequest(null, lastAppCheckedForAttributionStatus, null);
-                            graphPathRequest.setParameters((Bundle)parameters);
-                            final GraphObject graphObject = graphPathRequest.executeAndWait().getGraphObject();
-                            parameters = false;
-                            if (graphObject != null) {
-                                parameters = graphObject.getProperty("supports_attribution");
-                            }
-                            if (parameters instanceof Boolean) {
-                                break Label_0135;
-                            }
-                            parameters = false;
-                            Utility.lastAppCheckedForAttributionStatus = lastAppCheckedForAttributionStatus;
-                            if (parameters) {
-                                final boolean attributionAllowedForLastAppChecked = true;
-                                return Utility.attributionAllowedForLastAppChecked = attributionAllowedForLastAppChecked;
-                            }
-                        }
-                        final boolean attributionAllowedForLastAppChecked = false;
-                        continue;
+                synchronized (Utility.LOCK) {
+                    if (lastAppCheckedForAttributionStatus.equals(Utility.lastAppCheckedForAttributionStatus)) {
+                        return Utility.attributionAllowedForLastAppChecked;
+                    }
+                    final Bundle parameters = new Bundle();
+                    parameters.putString("fields", "supports_attribution");
+                    final Request graphPathRequest = Request.newGraphPathRequest(null, lastAppCheckedForAttributionStatus, null);
+                    graphPathRequest.setParameters(parameters);
+                    final GraphObject graphObject = graphPathRequest.executeAndWait().getGraphObject();
+                    Object o = false;
+                    if (graphObject != null) {
+                        o = graphObject.getProperty("supports_attribution");
+                    }
+                    Object value = o;
+                    if (!(o instanceof Boolean)) {
+                        value = false;
+                    }
+                    Utility.lastAppCheckedForAttributionStatus = lastAppCheckedForAttributionStatus;
+                    if (value) {
+                        final boolean attributionAllowedForLastAppChecked = true;
+                        return Utility.attributionAllowedForLastAppChecked = attributionAllowedForLastAppChecked;
                     }
                 }
+                final boolean attributionAllowedForLastAppChecked = false;
                 continue;
             }
         }
     }
     
-    public static String readStreamToString(final InputStream p0) throws IOException {
+    public static String readStreamToString(final InputStream p0) {
         // 
         // This method could not be decompiled.
         // 
         // Original Bytecode:
         // 
         //     0: aconst_null    
-        //     1: astore_2       
-        //     2: aconst_null    
-        //     3: astore_3       
-        //     4: new             Ljava/io/BufferedInputStream;
-        //     7: dup            
-        //     8: aload_0        
-        //     9: invokespecial   java/io/BufferedInputStream.<init>:(Ljava/io/InputStream;)V
-        //    12: astore_0       
-        //    13: new             Ljava/io/InputStreamReader;
-        //    16: dup            
-        //    17: aload_0        
-        //    18: invokespecial   java/io/InputStreamReader.<init>:(Ljava/io/InputStream;)V
-        //    21: astore_2       
-        //    22: new             Ljava/lang/StringBuilder;
-        //    25: dup            
-        //    26: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    29: astore_3       
-        //    30: sipush          2048
-        //    33: newarray        C
-        //    35: astore          4
-        //    37: aload_2        
-        //    38: aload           4
-        //    40: invokevirtual   java/io/InputStreamReader.read:([C)I
-        //    43: istore_1       
-        //    44: iload_1        
-        //    45: iconst_m1      
-        //    46: if_icmpeq       78
-        //    49: aload_3        
-        //    50: aload           4
-        //    52: iconst_0       
-        //    53: iload_1        
-        //    54: invokevirtual   java/lang/StringBuilder.append:([CII)Ljava/lang/StringBuilder;
-        //    57: pop            
-        //    58: goto            37
-        //    61: astore          4
-        //    63: aload_2        
-        //    64: astore_3       
-        //    65: aload           4
-        //    67: astore_2       
-        //    68: aload_0        
-        //    69: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //    72: aload_3        
-        //    73: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //    76: aload_2        
-        //    77: athrow         
-        //    78: aload_3        
-        //    79: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    82: astore_3       
-        //    83: aload_0        
-        //    84: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //    87: aload_2        
-        //    88: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //    91: aload_3        
-        //    92: areturn        
-        //    93: astore          4
-        //    95: aload_2        
-        //    96: astore_0       
-        //    97: aload           4
-        //    99: astore_2       
-        //   100: goto            68
-        //   103: astore_2       
-        //   104: goto            68
-        //    Exceptions:
-        //  throws java.io.IOException
+        //     1: astore_3       
+        //     2: new             Ljava/io/BufferedInputStream;
+        //     5: dup            
+        //     6: aload_0        
+        //     7: invokespecial   java/io/BufferedInputStream.<init>:(Ljava/io/InputStream;)V
+        //    10: astore_0       
+        //    11: new             Ljava/io/InputStreamReader;
+        //    14: dup            
+        //    15: aload_0        
+        //    16: invokespecial   java/io/InputStreamReader.<init>:(Ljava/io/InputStream;)V
+        //    19: astore_2       
+        //    20: new             Ljava/lang/StringBuilder;
+        //    23: dup            
+        //    24: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    27: astore_3       
+        //    28: sipush          2048
+        //    31: newarray        C
+        //    33: astore          4
+        //    35: aload_2        
+        //    36: aload           4
+        //    38: invokevirtual   java/io/InputStreamReader.read:([C)I
+        //    41: istore_1       
+        //    42: iload_1        
+        //    43: iconst_m1      
+        //    44: if_icmpeq       76
+        //    47: aload_3        
+        //    48: aload           4
+        //    50: iconst_0       
+        //    51: iload_1        
+        //    52: invokevirtual   java/lang/StringBuilder.append:([CII)Ljava/lang/StringBuilder;
+        //    55: pop            
+        //    56: goto            35
+        //    59: astore          4
+        //    61: aload_0        
+        //    62: astore_3       
+        //    63: aload           4
+        //    65: astore_0       
+        //    66: aload_3        
+        //    67: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //    70: aload_2        
+        //    71: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //    74: aload_0        
+        //    75: athrow         
+        //    76: aload_3        
+        //    77: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    80: astore_3       
+        //    81: aload_0        
+        //    82: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //    85: aload_2        
+        //    86: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //    89: aload_3        
+        //    90: areturn        
+        //    91: astore_0       
+        //    92: aconst_null    
+        //    93: astore_2       
+        //    94: goto            66
+        //    97: astore          4
+        //    99: aconst_null    
+        //   100: astore_2       
+        //   101: aload_0        
+        //   102: astore_3       
+        //   103: aload           4
+        //   105: astore_0       
+        //   106: goto            66
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type
         //  -----  -----  -----  -----  ----
-        //  4      13     93     103    Any
-        //  13     22     103    107    Any
-        //  22     37     61     68     Any
-        //  37     44     61     68     Any
-        //  49     58     61     68     Any
-        //  78     83     61     68     Any
+        //  2      11     91     97     Any
+        //  11     20     97     109    Any
+        //  20     35     59     66     Any
+        //  35     42     59     66     Any
+        //  47     56     59     66     Any
+        //  76     81     59     66     Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0037:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0035:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)

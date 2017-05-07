@@ -4,9 +4,6 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
-import java.util.Collection;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.LogUtils;
@@ -30,12 +27,13 @@ import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
-import com.netflix.mediaclient.android.app.LoadingStatus;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag$ILoLoMoAdapter;
 import android.widget.BaseAdapter;
 
-public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
+public class KidsLomoDetailAdapter extends BaseAdapter implements LoLoMoFrag$ILoLoMoAdapter
 {
     public static final int NUM_VIDEOS_TO_FETCH_PER_BATCH = 20;
     private static final String TAG = "KidsLomoDetailAdapter";
@@ -43,7 +41,7 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
     private final LoLoMoFrag frag;
     private boolean hasMoreData;
     private boolean isLoading;
-    private LoadingStatusCallback loadingStatusCallback;
+    private LoadingStatus$LoadingStatusCallback loadingStatusCallback;
     private final BasicLoMo lomo;
     private ServiceManager manager;
     private long requestId;
@@ -58,11 +56,6 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
         this.lomo = lomo;
     }
     
-    static /* synthetic */ int access$312(final KidsLomoDetailAdapter kidsLomoDetailAdapter, int videoStartIndex) {
-        videoStartIndex += kidsLomoDetailAdapter.videoStartIndex;
-        return kidsLomoDetailAdapter.videoStartIndex = videoStartIndex;
-    }
-    
     private void fetchMoreData() {
         this.isLoading = true;
         this.requestId = System.nanoTime();
@@ -74,16 +67,16 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
             Log.w("KidsLomoDetailAdapter", "Manager is null - can't refresh data");
             return;
         }
-        final FetchVideosCallback fetchVideosCallback = new FetchVideosCallback(this.requestId, n - this.videoStartIndex + 1);
+        final KidsLomoDetailAdapter$FetchVideosCallback kidsLomoDetailAdapter$FetchVideosCallback = new KidsLomoDetailAdapter$FetchVideosCallback(this, this.requestId, n - this.videoStartIndex + 1);
         if (this.lomo.getType() == LoMoType.CONTINUE_WATCHING) {
-            this.manager.getBrowse().fetchCWVideos(this.videoStartIndex, n, fetchVideosCallback);
+            this.manager.getBrowse().fetchCWVideos(this.videoStartIndex, n, kidsLomoDetailAdapter$FetchVideosCallback);
             return;
         }
         if (this.lomo.getType() == LoMoType.FLAT_GENRE) {
-            this.manager.getBrowse().fetchGenreVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, fetchVideosCallback);
+            this.manager.getBrowse().fetchGenreVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, kidsLomoDetailAdapter$FetchVideosCallback);
             return;
         }
-        this.manager.getBrowse().fetchVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, fetchVideosCallback);
+        this.manager.getBrowse().fetchVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, kidsLomoDetailAdapter$FetchVideosCallback);
     }
     
     private void hideLoadingAndErrorViews() {
@@ -129,8 +122,8 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
             linearLayout = new KidsLoMoViewGroup<Object>((Context)this.activity, false);
         }
         ((VideoViewGroup)linearLayout).init(1);
-        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361971);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361972);
+        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361973);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361974);
         ((VideoViewGroup)linearLayout).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
         int n;
         if (b) {
@@ -171,31 +164,40 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
         return 1;
     }
     
-    public View getView(int n, final View view, final ViewGroup viewGroup) {
+    public View getView(final int n, View videoViewGroup, final ViewGroup viewGroup) {
+        final boolean b = false;
+        View dummyView;
         if (this.activity.destroyed()) {
             Log.d("KidsLomoDetailAdapter", "activity destroyed - can't getView");
-            return this.createDummyView();
-        }
-        Object videoViewGroup;
-        if ((videoViewGroup = view) == null) {
-            Log.v("KidsLomoDetailAdapter", "Creating Kids video view, type: " + this.lomo.getType());
-            videoViewGroup = this.createVideoViewGroup();
-        }
-        final List<Video> item = this.getItem(n);
-        ((VideoViewGroup<Video, V>)videoViewGroup).updateDataThenViews(item, this.getNumItemsPerPage(), n, 0, this.lomo);
-        if (this.shouldReportPresentationTracking()) {
-            LogUtils.reportPresentationTracking(this.manager, this.lomo, item.get(0), n);
-        }
-        if (this.hasMoreData && !this.isLoading && this.shouldLoadMoreData(n)) {
-            n = 1;
+            dummyView = this.createDummyView();
         }
         else {
-            n = 0;
+            if (videoViewGroup == null) {
+                Log.v("KidsLomoDetailAdapter", "Creating Kids video view, type: " + this.lomo.getType());
+                videoViewGroup = (View)this.createVideoViewGroup();
+            }
+            final List<Video> item = this.getItem(n);
+            ((VideoViewGroup)videoViewGroup).updateDataThenViews(item, this.getNumItemsPerPage(), n, 0, this.lomo);
+            if (this.shouldReportPresentationTracking()) {
+                LogUtils.reportPresentationTracking(this.manager, this.lomo, item.get(0), n);
+            }
+            boolean b2 = b;
+            if (this.hasMoreData) {
+                b2 = b;
+                if (!this.isLoading) {
+                    b2 = b;
+                    if (this.shouldLoadMoreData(n)) {
+                        b2 = true;
+                    }
+                }
+            }
+            dummyView = videoViewGroup;
+            if (b2) {
+                this.fetchMoreData();
+                return videoViewGroup;
+            }
         }
-        if (n != 0) {
-            this.fetchMoreData();
-        }
-        return (View)videoViewGroup;
+        return dummyView;
     }
     
     protected void initLoadingState() {
@@ -250,7 +252,7 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
         this.fetchMoreData();
     }
     
-    public void setLoadingStatusCallback(final LoadingStatusCallback loadingStatusCallback) {
+    public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback loadingStatusCallback) {
         if (!this.isLoadingData() && loadingStatusCallback != null) {
             loadingStatusCallback.onDataLoaded(CommonStatus.OK);
             return;
@@ -260,64 +262,5 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
     
     protected boolean shouldReportPresentationTracking() {
         return true;
-    }
-    
-    private class FetchVideosCallback extends LoggingManagerCallback
-    {
-        private final int numItems;
-        private final long requestId;
-        
-        public FetchVideosCallback(final long requestId, final int numItems) {
-            super("KidsLomoDetailAdapter");
-            this.requestId = requestId;
-            this.numItems = numItems;
-        }
-        
-        private void handleResponse(final List<? extends Video> list, final Status status) {
-            KidsLomoDetailAdapter.this.hasMoreData = true;
-            if (this.requestId != KidsLomoDetailAdapter.this.requestId) {
-                Log.v("KidsLomoDetailAdapter", "Ignoring stale callback");
-                return;
-            }
-            KidsLomoDetailAdapter.this.isLoading = false;
-            try {
-                if (status.isError()) {
-                    Log.w("KidsLomoDetailAdapter", "Invalid status code");
-                    KidsLomoDetailAdapter.this.hasMoreData = false;
-                    KidsLomoDetailAdapter.this.notifyDataSetChanged();
-                    return;
-                }
-                if (list == null || list.size() <= 0) {
-                    Log.v("KidsLomoDetailAdapter", "No videos in response");
-                    KidsLomoDetailAdapter.this.hasMoreData = false;
-                    KidsLomoDetailAdapter.this.notifyDataSetChanged();
-                    return;
-                }
-                if (list.size() < this.numItems) {
-                    KidsLomoDetailAdapter.this.hasMoreData = false;
-                }
-                if (Log.isLoggable("KidsLomoDetailAdapter", 2)) {
-                    Log.v("KidsLomoDetailAdapter", "Got " + list.size() + " items, expected " + this.numItems + ", hasMoreData: " + KidsLomoDetailAdapter.this.hasMoreData);
-                }
-                KidsLomoDetailAdapter.this.videoData.addAll(list);
-                KidsLomoDetailAdapter.access$312(KidsLomoDetailAdapter.this, list.size());
-                KidsLomoDetailAdapter.this.notifyDataSetChanged();
-            }
-            finally {
-                KidsLomoDetailAdapter.this.onDataLoaded(status);
-            }
-        }
-        
-        @Override
-        public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
-            super.onCWVideosFetched(list, status);
-            this.handleResponse(list, status);
-        }
-        
-        @Override
-        public void onVideosFetched(final List<Video> list, final Status status) {
-            super.onVideosFetched(list, status);
-            this.handleResponse(list, status);
-        }
     }
 }

@@ -59,8 +59,8 @@ public final class fi implements SafeParcelable
         this(4, bundle, av, ay, s, applicationInfo, packageInfo, s2, s3, s4, gt, bundle2, n, list, bundle3, b);
     }
     
-    public fi(final a a, final String s) {
-        this(a.tw, a.tx, a.lH, a.lA, a.applicationInfo, a.ty, s, a.tA, a.tB, a.lD, a.tC, a.tD, a.lS, a.tE, a.tF);
+    public fi(final fi$a fi$a, final String s) {
+        this(fi$a.tw, fi$a.tx, fi$a.lH, fi$a.lA, fi$a.applicationInfo, fi$a.ty, s, fi$a.tA, fi$a.tB, fi$a.lD, fi$a.tC, fi$a.tD, fi$a.lS, fi$a.tE, fi$a.tF);
     }
     
     public int describeContents() {
@@ -69,47 +69,5 @@ public final class fi implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         fj.a(this, parcel, n);
-    }
-    
-    @ez
-    public static final class a
-    {
-        public final ApplicationInfo applicationInfo;
-        public final String lA;
-        public final gt lD;
-        public final ay lH;
-        public final List<String> lS;
-        public final String tA;
-        public final String tB;
-        public final Bundle tC;
-        public final int tD;
-        public final Bundle tE;
-        public final boolean tF;
-        public final Bundle tw;
-        public final av tx;
-        public final PackageInfo ty;
-        
-        public a(final Bundle tw, final av tx, final ay lh, final String la, final ApplicationInfo applicationInfo, final PackageInfo ty, final String ta, final String tb, final gt ld, final Bundle tc, final List<String> ls, final Bundle te, final boolean tf) {
-            this.tw = tw;
-            this.tx = tx;
-            this.lH = lh;
-            this.lA = la;
-            this.applicationInfo = applicationInfo;
-            this.ty = ty;
-            this.tA = ta;
-            this.tB = tb;
-            this.lD = ld;
-            this.tC = tc;
-            this.tF = tf;
-            if (ls != null && ls.size() > 0) {
-                this.tD = 2;
-                this.lS = ls;
-            }
-            else {
-                this.tD = 0;
-                this.lS = null;
-            }
-            this.tE = te;
-        }
     }
 }

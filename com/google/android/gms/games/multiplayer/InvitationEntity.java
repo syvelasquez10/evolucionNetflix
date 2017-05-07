@@ -30,7 +30,7 @@ public final class InvitationEntity extends GamesDowngradeableSafeParcel impleme
     private final int abT;
     
     static {
-        CREATOR = (Parcelable$Creator)new InvitationEntityCreatorCompat();
+        CREATOR = (Parcelable$Creator)new InvitationEntity$InvitationEntityCreatorCompat();
     }
     
     InvitationEntity(final int br, final GameEntity aan, final String wd, final long abO, final int abP, final ParticipantEntity abQ, final ArrayList<ParticipantEntity> abR, final int abS, final int abT) {
@@ -187,27 +187,6 @@ public final class InvitationEntity extends GamesDowngradeableSafeParcel impleme
             for (int i = 0; i < size; ++i) {
                 this.abR.get(i).writeToParcel(parcel, n);
             }
-        }
-    }
-    
-    static final class InvitationEntityCreatorCompat extends InvitationEntityCreator
-    {
-        @Override
-        public InvitationEntity cl(final Parcel parcel) {
-            if (GamesDowngradeableSafeParcel.c(c.gP()) || c.aV(InvitationEntity.class.getCanonicalName())) {
-                return super.cl(parcel);
-            }
-            final GameEntity gameEntity = (GameEntity)GameEntity.CREATOR.createFromParcel(parcel);
-            final String string = parcel.readString();
-            final long long1 = parcel.readLong();
-            final int int1 = parcel.readInt();
-            final ParticipantEntity participantEntity = (ParticipantEntity)ParticipantEntity.CREATOR.createFromParcel(parcel);
-            final int int2 = parcel.readInt();
-            final ArrayList list = new ArrayList<ParticipantEntity>(int2);
-            for (int i = 0; i < int2; ++i) {
-                list.add(ParticipantEntity.CREATOR.createFromParcel(parcel));
-            }
-            return new InvitationEntity(2, gameEntity, string, long1, int1, participantEntity, (ArrayList<ParticipantEntity>)list, -1, 0);
         }
     }
 }

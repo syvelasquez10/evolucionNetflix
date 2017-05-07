@@ -4,8 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
-
 public final class pe
 {
     private int awo;
@@ -56,7 +54,7 @@ public final class pe
         this.awq = 0;
     }
     
-    public void a(final pm pm) throws IOException {
+    public void a(final pm pm) {
         final int qn = this.qn();
         if (this.awu >= this.awv) {
             throw pl.qE();
@@ -69,7 +67,7 @@ public final class pe
         this.gp(go);
     }
     
-    public void a(final pm pm, final int n) throws IOException {
+    public void a(final pm pm, final int n) {
         if (this.awu >= this.awv) {
             throw pl.qE();
         }
@@ -83,13 +81,13 @@ public final class pe
         return this.awr - this.awo;
     }
     
-    public void gl(final int n) throws pl {
+    public void gl(final int n) {
         if (this.aws != n) {
             throw pl.qC();
         }
     }
     
-    public boolean gm(final int n) throws IOException {
+    public boolean gm(final int n) {
         switch (pp.gG(n)) {
             default: {
                 throw pl.qD();
@@ -121,7 +119,7 @@ public final class pe
         }
     }
     
-    public int go(int awt) throws pl {
+    public int go(int awt) {
         if (awt < 0) {
             throw pl.qz();
         }
@@ -150,7 +148,7 @@ public final class pe
         this.awr = this.awo + n;
     }
     
-    public byte[] gr(final int n) throws IOException {
+    public byte[] gr(final int n) {
         if (n < 0) {
             throw pl.qz();
         }
@@ -167,7 +165,7 @@ public final class pe
         throw pl.qy();
     }
     
-    public void gs(final int n) throws IOException {
+    public void gs(final int n) {
         if (n < 0) {
             throw pl.qz();
         }
@@ -182,7 +180,7 @@ public final class pe
         throw pl.qy();
     }
     
-    public int qg() throws IOException {
+    public int qg() {
         if (this.qt()) {
             return this.aws = 0;
         }
@@ -193,34 +191,34 @@ public final class pe
         return this.aws;
     }
     
-    public void qh() throws IOException {
+    public void qh() {
         int qg;
         do {
             qg = this.qg();
         } while (qg != 0 && this.gm(qg));
     }
     
-    public long qi() throws IOException {
+    public long qi() {
         return this.qo();
     }
     
-    public int qj() throws IOException {
+    public int qj() {
         return this.qn();
     }
     
-    public boolean qk() throws IOException {
+    public boolean qk() {
         return this.qn() != 0;
     }
     
-    public int ql() throws IOException {
+    public int ql() {
         return gn(this.qn());
     }
     
-    public long qm() throws IOException {
+    public long qm() {
         return A(this.qo());
     }
     
-    public int qn() throws IOException {
+    public int qn() {
         int qu = this.qu();
         if (qu < 0) {
             final int n = qu & 0x7F;
@@ -253,7 +251,7 @@ public final class pe
         return qu;
     }
     
-    public long qo() throws IOException {
+    public long qo() {
         int i = 0;
         long n = 0L;
         while (i < 64) {
@@ -267,11 +265,11 @@ public final class pe
         throw pl.qA();
     }
     
-    public int qp() throws IOException {
+    public int qp() {
         return (this.qu() & 0xFF) | (this.qu() & 0xFF) << 8 | (this.qu() & 0xFF) << 16 | (this.qu() & 0xFF) << 24;
     }
     
-    public long qq() throws IOException {
+    public long qq() {
         return (this.qu() & 0xFFL) << 8 | (this.qu() & 0xFFL) | (this.qu() & 0xFFL) << 16 | (this.qu() & 0xFFL) << 24 | (this.qu() & 0xFFL) << 32 | (this.qu() & 0xFFL) << 40 | (this.qu() & 0xFFL) << 48 | (this.qu() & 0xFFL) << 56;
     }
     
@@ -286,7 +284,7 @@ public final class pe
         return this.awr == this.awp;
     }
     
-    public byte qu() throws IOException {
+    public byte qu() {
         if (this.awr == this.awp) {
             throw pl.qy();
         }
@@ -302,7 +300,7 @@ public final class pe
         return array;
     }
     
-    public byte[] readBytes() throws IOException {
+    public byte[] readBytes() {
         final int qn = this.qn();
         if (qn <= this.awp - this.awr && qn > 0) {
             final byte[] array = new byte[qn];
@@ -313,15 +311,15 @@ public final class pe
         return this.gr(qn);
     }
     
-    public double readDouble() throws IOException {
+    public double readDouble() {
         return Double.longBitsToDouble(this.qq());
     }
     
-    public float readFloat() throws IOException {
+    public float readFloat() {
         return Float.intBitsToFloat(this.qp());
     }
     
-    public String readString() throws IOException {
+    public String readString() {
         final int qn = this.qn();
         if (qn <= this.awp - this.awr && qn > 0) {
             final String s = new String(this.buffer, this.awr, qn, "UTF-8");

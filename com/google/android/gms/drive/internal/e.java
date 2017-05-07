@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.Contents;
 import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import com.google.android.gms.drive.DriveId;
@@ -74,7 +75,7 @@ public class e implements Parcelable$Creator<CloseContentsAndUpdateMetadataReque
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new CloseContentsAndUpdateMetadataRequest(g2, driveId, metadataBundle, contents, c2, o, g);
     }

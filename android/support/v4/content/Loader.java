@@ -4,8 +4,6 @@
 
 package android.support.v4.content;
 
-import android.os.Handler;
-import android.database.ContentObserver;
 import java.io.PrintWriter;
 import java.io.FileDescriptor;
 import android.support.v4.util.DebugUtils;
@@ -17,7 +15,7 @@ public class Loader<D>
     boolean mContentChanged;
     Context mContext;
     int mId;
-    OnLoadCompleteListener<D> mListener;
+    Loader$OnLoadCompleteListener<D> mListener;
     boolean mProcessingChange;
     boolean mReset;
     boolean mStarted;
@@ -124,7 +122,7 @@ public class Loader<D>
     protected void onStopLoading() {
     }
     
-    public void registerListener(final int mId, final OnLoadCompleteListener<D> mListener) {
+    public void registerListener(final int mId, final Loader$OnLoadCompleteListener<D> mListener) {
         if (this.mListener != null) {
             throw new IllegalStateException("There is already a listener registered");
         }
@@ -176,33 +174,13 @@ public class Loader<D>
         return sb.toString();
     }
     
-    public void unregisterListener(final OnLoadCompleteListener<D> onLoadCompleteListener) {
+    public void unregisterListener(final Loader$OnLoadCompleteListener<D> loader$OnLoadCompleteListener) {
         if (this.mListener == null) {
             throw new IllegalStateException("No listener register");
         }
-        if (this.mListener != onLoadCompleteListener) {
+        if (this.mListener != loader$OnLoadCompleteListener) {
             throw new IllegalArgumentException("Attempting to unregister the wrong listener");
         }
         this.mListener = null;
-    }
-    
-    public final class ForceLoadContentObserver extends ContentObserver
-    {
-        public ForceLoadContentObserver() {
-            super(new Handler());
-        }
-        
-        public boolean deliverSelfNotifications() {
-            return true;
-        }
-        
-        public void onChange(final boolean b) {
-            Loader.this.onContentChanged();
-        }
-    }
-    
-    public interface OnLoadCompleteListener<D>
-    {
-        void onLoadComplete(final Loader<D> p0, final D p1);
     }
 }

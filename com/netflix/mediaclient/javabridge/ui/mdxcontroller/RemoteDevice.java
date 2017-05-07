@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.javabridge.ui.mdxcontroller;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import java.net.URLDecoder;
@@ -48,7 +47,7 @@ public class RemoteDevice
         }
     }
     
-    public static RemoteDevice toRemoteDevice(final JSONObject jsonObject) throws JSONException {
+    public static RemoteDevice toRemoteDevice(final JSONObject jsonObject) {
         final RemoteDevice remoteDevice = new RemoteDevice();
         remoteDevice.usn = JsonUtils.getString(jsonObject, "usn", JsonUtils.getString(jsonObject, "USN", null));
         remoteDevice.dialUsn = JsonUtils.getString(jsonObject, "dialUsn", null);

@@ -4,44 +4,32 @@
 
 package com.netflix.mediaclient.ui.signup;
 
-import android.webkit.ConsoleMessage;
-import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.mediaclient.NetflixApplication;
-import org.json.JSONException;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import org.json.JSONObject;
-import com.netflix.mediaclient.util.ConnectivityUtils;
-import android.net.Uri;
-import java.util.Locale;
-import android.webkit.JavascriptInterface;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$TwoButtonAlertDialogDescriptor;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
+import android.view.View;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.util.ThreadUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebSettings;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
-import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.Log;
+import android.content.Context;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Intent;
-import com.netflix.mediaclient.android.app.Status;
-import android.content.Context;
-import com.netflix.mediaclient.ui.login.LoginActivity;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import android.webkit.WebView;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import android.os.Handler;
@@ -57,7 +45,7 @@ public class SignupActivity extends AccountActivity
     private static final String DEFAULT_LOCALE = "en";
     private static final String TAG = "SignupActivity";
     private final SimpleManagerCallback loginQueryCallback;
-    private NFAndroidJS mAndroidJS;
+    private SignupActivity$NFAndroidJS mAndroidJS;
     private String mDeviceCategory;
     private String mESN;
     private String mESNPrefix;
@@ -66,6 +54,7 @@ public class SignupActivity extends AccountActivity
     Runnable mHandleError;
     private Handler mHandler;
     Runnable mJumpToSignInTask;
+    private String mSharedContextSessionUuid;
     private SignUpParams mSignUpParams;
     private boolean mSignupLoaded;
     private boolean mSignupMenuItem;
@@ -81,36 +70,10 @@ public class SignupActivity extends AccountActivity
         this.mSignupMenuItem = true;
         this.mSignupLoaded = false;
         this.mSignupOngoing = false;
-        this.mJumpToSignInTask = new Runnable() {
-            @Override
-            public void run() {
-                Log.d("SignupActivity", "Timeout triggered, switching to LoginActivity");
-                if (!SignupActivity.this.mSignupLoaded) {
-                    SignupActivity.this.startNextActivity(LoginActivity.createStartIntent((Context)SignupActivity.this));
-                    SignupActivity.this.finish();
-                }
-            }
-        };
-        this.loginQueryCallback = new SimpleManagerCallback() {
-            @Override
-            public void onLoginComplete(final Status status) {
-                SignupActivity.this.runOnUiThread((Runnable)new Runnable() {
-                    @Override
-                    public void run() {
-                        SignupActivity.this.handleLoginComplete(status);
-                    }
-                });
-            }
-        };
-        this.mHandleError = new Runnable() {
-            @Override
-            public void run() {
-                Log.d("SignupActivity", "Handling error during signup");
-                SignupActivity.this.clearCookies();
-                SignupActivity.this.startNextActivity(LoginActivity.createStartIntent((Context)SignupActivity.this));
-                SignupActivity.this.finish();
-            }
-        };
+        this.mSharedContextSessionUuid = ConsolidatedLoggingUtils.createGUID();
+        this.mJumpToSignInTask = new SignupActivity$3(this);
+        this.loginQueryCallback = new SignupActivity$7(this);
+        this.mHandleError = new SignupActivity$9(this);
     }
     
     public static Intent createStartIntent(final Context context, final Intent intent) {
@@ -131,11 +94,11 @@ public class SignupActivity extends AccountActivity
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131493223);
+            this.showToast(2131493188);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493284) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493236) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -146,12 +109,7 @@ public class SignupActivity extends AccountActivity
     }
     
     private void noConnectivityWarning() {
-        this.runOnUiThread((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493140), SignupActivity.this.getString(17039370), null)));
-            }
-        });
+        this.runOnUiThread((Runnable)new SignupActivity$8(this));
     }
     
     private void reloadSignUp(final boolean b) {
@@ -163,7 +121,7 @@ public class SignupActivity extends AccountActivity
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903182);
+        this.setContentView(2130903183);
         this.mWebView = (WebView)this.findViewById(2131165654);
         this.mFlipper = (ViewFlipper)this.findViewById(2131165537);
         this.mESN = serviceManager.getESNProvider().getEsn();
@@ -177,29 +135,15 @@ public class SignupActivity extends AccountActivity
         settings.setJavaScriptEnabled(true);
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
-        this.mAndroidJS = new NFAndroidJS();
+        this.mAndroidJS = new SignupActivity$NFAndroidJS(this);
         this.mWebView.addJavascriptInterface((Object)this.mAndroidJS, "nfandroid");
-        this.mWebView.setWebChromeClient((WebChromeClient)new signUpWebChromeClient());
+        this.mWebView.setWebChromeClient((WebChromeClient)new SignupActivity$signUpWebChromeClient(this, null));
         this.mWebViewClient = new SignUpWebViewClient(this);
         this.mWebView.setWebViewClient((WebViewClient)this.mWebViewClient);
-        this.mWebView.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
-            @SuppressLint({ "ClickableViewAccessibility" })
-            public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case 0:
-                    case 1: {
-                        if (!view.hasFocus()) {
-                            view.requestFocus();
-                            break;
-                        }
-                        break;
-                    }
-                }
-                return false;
-            }
-        });
-        this.mUiBoot = new Bootloader(serviceManager, signUpBootloader, this.getDeviceLanguage(), AndroidUtils.isNetflixPreloaded((Context)this));
+        this.mWebView.setOnTouchListener((View$OnTouchListener)new SignupActivity$6(this));
+        this.mUiBoot = new Bootloader(serviceManager, signUpBootloader, this.getDeviceLanguage(), AndroidUtils.isNetflixPreloaded((Context)this), this.mSharedContextSessionUuid);
         this.mWebView.loadUrl(this.mUiBoot.getUrl());
+        ApmLogUtils.reportStartSharedContext((Context)this, this.mSharedContextSessionUuid);
         Log.d("SignupActivity", "Adding timeout for webview to load");
         this.mHandler.postDelayed(this.mJumpToSignInTask, this.mSignUpParams.getSignUpTimeout());
     }
@@ -216,12 +160,7 @@ public class SignupActivity extends AccountActivity
     }
     
     private void updateMenuItems() {
-        this.runOnUiThread((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                SignupActivity.this.invalidateOptionsMenu();
-            }
-        });
+        this.runOnUiThread((Runnable)new SignupActivity$4(this));
     }
     
     public void clearCookies() {
@@ -232,21 +171,7 @@ public class SignupActivity extends AccountActivity
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                if (Log.isLoggable("SignupActivity", 6)) {
-                    Log.d("SignupActivity", "ServiceManager ready: " + status.getStatusCode());
-                }
-                ThreadUtils.assertOnMain();
-                SignupActivity.this.setUpSignInView(serviceManager);
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-                Log.e("SignupActivity", "NetflixService is NOT available!");
-            }
-        };
+        return new SignupActivity$5(this);
     }
     
     public String getDeviceLanguage() {
@@ -258,8 +183,8 @@ public class SignupActivity extends AccountActivity
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.nmLanding;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.nmLanding;
     }
     
     public boolean handleBackPressed() {
@@ -270,12 +195,7 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131493285), new Runnable() {
-                @Override
-                public void run() {
-                    SignupActivity.this.reloadSignUp(false);
-                }
-            });
+            this.provideTwoButtonDialog(this.getString(2131493237), new SignupActivity$10(this));
         }
         return true;
     }
@@ -291,33 +211,20 @@ public class SignupActivity extends AccountActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.mHandler = new Handler();
-        this.getNetflixActionBar().setBackgroundResource(2130837561);
     }
     
     public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         super.onCreateOptionsMenu(menu, menu2);
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493190));
+            menuItem = menu.add((CharSequence)this.getString(2131493156));
             menuItem.setShowAsAction(1);
-            menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
-                public boolean onMenuItemClick(final MenuItem menuItem) {
-                    Log.d("SignupActivity", "User tapped sign-in button");
-                    UserActionLogUtils.reportLoginActionStarted((Context)SignupActivity.this, null, SignupActivity.this.getUiScreen());
-                    SignupActivity.this.startNextActivity(LoginActivity.createStartIntent((Context)SignupActivity.this));
-                    return true;
-                }
-            });
+            menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$1(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493191));
+            menuItem = menu.add((CharSequence)this.getString(2131493157));
             menuItem.setShowAsAction(1);
-            menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
-                public boolean onMenuItemClick(final MenuItem menuItem) {
-                    SignupActivity.this.reloadSignUp(true);
-                    return true;
-                }
-            });
+            menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$2(this));
         }
         if (menuItem != null) {
             final View actionView = menuItem.getActionView();
@@ -328,17 +235,23 @@ public class SignupActivity extends AccountActivity
     }
     
     @Override
+    protected void onDestroy() {
+        ApmLogUtils.reportEndSharedContext((Context)this);
+        super.onDestroy();
+    }
+    
+    @Override
     protected void onStop() {
         super.onStop();
         this.mHandler.removeCallbacks(this.mJumpToSignInTask);
     }
     
     void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, s, this.getString(17039370), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(17039370), runnable)));
     }
     
     void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, (AlertDialogFactory.AlertDialogDescriptor)new AlertDialogFactory.TwoButtonAlertDialogDescriptor(null, s, this.getString(17039370), runnable, this.getString(17039360), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(17039370), runnable, this.getString(17039360), null)));
     }
     
     @Override
@@ -355,185 +268,6 @@ public class SignupActivity extends AccountActivity
             Log.d("SignupActivity", "WebView visibility:" + this.mWebViewVisibility);
             this.mFlipper.showNext();
             this.mWebViewVisibility = !this.mWebViewVisibility;
-        }
-    }
-    
-    public class NFAndroidJS
-    {
-        @JavascriptInterface
-        public String getDeviceCategory() {
-            if (SignupActivity.this.mDeviceCategory != null) {
-                return SignupActivity.this.mDeviceCategory;
-            }
-            return "phone";
-        }
-        
-        @JavascriptInterface
-        public String getESN() {
-            if (SignupActivity.this.mESN != null) {
-                return SignupActivity.this.mESN;
-            }
-            return "";
-        }
-        
-        @JavascriptInterface
-        public String getESNPrefix() {
-            if (SignupActivity.this.mESNPrefix != null) {
-                return SignupActivity.this.mESNPrefix;
-            }
-            return "";
-        }
-        
-        @JavascriptInterface
-        public String getLanguage() {
-            return SignupActivity.this.getDeviceLanguage();
-        }
-        
-        @JavascriptInterface
-        public String getSoftwareVersion() {
-            if (SignupActivity.this.mSoftwareVersion != null) {
-                return SignupActivity.this.mSoftwareVersion;
-            }
-            return "";
-        }
-        
-        @JavascriptInterface
-        public String isNetflixPreloaded() {
-            if (AndroidUtils.isNetflixPreloaded((Context)SignupActivity.this)) {
-                return "true";
-            }
-            return "false";
-        }
-        
-        @JavascriptInterface
-        public void launchUrl(String s) {
-            if (s == null) {
-                s = "http://netflix.com";
-            }
-            else {
-                final String s2 = s = s.trim();
-                if (!s2.toLowerCase(Locale.ENGLISH).startsWith("http")) {
-                    s = "http://" + s2;
-                }
-            }
-            SignupActivity.this.startActivity(new Intent("android.intent.action.VIEW", Uri.parse(s)));
-        }
-        
-        @JavascriptInterface
-        public void loginCompleted() {
-            Log.d("SignupActivity", "loginCompleted, noop");
-        }
-        
-        @JavascriptInterface
-        public void loginToApp(final String s, final String s2) {
-            if (SignupActivity.this.mSignupOngoing) {
-                Log.d("SignupActivity", "loginToApp ongoing, returning NULL operation");
-                return;
-            }
-            Log.d("SignupActivity", "Login with Tokens " + s + " ErrHandler: " + s2);
-            SignupActivity.this.mErrHandler = s2;
-            if (!ConnectivityUtils.isConnectedOrConnecting((Context)SignupActivity.this)) {
-                SignupActivity.this.noConnectivityWarning();
-                return;
-            }
-            try {
-                final JSONObject jsonObject = new JSONObject(s);
-                Log.d("SignupActivity", "NetflixId: " + jsonObject.getString("NetflixId"));
-                Log.d("SignupActivity", "SecureNetflixId: " + jsonObject.getString("SecureNetflixId"));
-                final ActivationTokens activationTokens = new ActivationTokens(jsonObject);
-                final ServiceManager serviceManager = SignupActivity.this.getServiceManager();
-                if (serviceManager != null && serviceManager.isReady()) {
-                    serviceManager.loginUserByTokens(activationTokens, SignupActivity.this.loginQueryCallback);
-                    SignupActivity.this.mSignupOngoing = true;
-                    SignupActivity.this.runOnUiThread((Runnable)new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("SignupActivity", "Disabling webview visibility");
-                            SignupActivity.this.webViewVisibility(false);
-                        }
-                    });
-                    return;
-                }
-            }
-            catch (JSONException ex) {
-                Log.e("SignupActivity", "Failed to LoginToApp");
-                ex.printStackTrace();
-                SignupActivity.this.mSignupOngoing = false;
-                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493284), SignupActivity.this.mHandleError);
-                return;
-            }
-            Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");
-        }
-        
-        @JavascriptInterface
-        public void notifyReady() {
-            Log.d("SignupActivity", "Signup UI ready to interact");
-            SignupActivity.this.mHandler.removeCallbacks(SignupActivity.this.mJumpToSignInTask);
-            SignupActivity.this.runOnUiThread((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    if (!SignupActivity.this.mSignupLoaded) {
-                        SignupActivity.this.webViewVisibility(true);
-                        SignupActivity.this.mSignupLoaded = true;
-                    }
-                }
-            });
-        }
-        
-        @JavascriptInterface
-        public void setLanguage(final String currentAppLocale) {
-            final boolean equals = currentAppLocale.equals(this.getLanguage());
-            Log.d("SignupActivity", "Update language to " + currentAppLocale);
-            if (!equals) {
-                final ServiceManager serviceManager = SignupActivity.this.getServiceManager();
-                if (serviceManager == null || !serviceManager.isReady()) {
-                    Log.w("SignupActivity", "setLanguage  failed, invalid state");
-                    return;
-                }
-                SignupActivity.this.getServiceManager().setCurrentAppLocale(currentAppLocale);
-                ((NetflixApplication)SignupActivity.this.getApplication()).refreshLocale(currentAppLocale);
-                SignupActivity.this.updateMenuItems();
-            }
-        }
-        
-        @JavascriptInterface
-        public void showSignIn() {
-            Log.d("SignupActivity", "Show SignIn: ");
-            SignupActivity.this.mSignupMenuItem = true;
-            SignupActivity.this.updateMenuItems();
-        }
-        
-        @JavascriptInterface
-        public void showSignOut() {
-            Log.d("SignupActivity", "Show SignOut");
-            SignupActivity.this.mSignupMenuItem = false;
-            SignupActivity.this.updateMenuItems();
-        }
-        
-        @JavascriptInterface
-        public void signupCompleted() {
-            Log.d("SignupActivity", "signupCompleted, report");
-            LogUtils.reportSignUpOnDevice((Context)SignupActivity.this);
-        }
-        
-        @JavascriptInterface
-        public void supportsSignUp(final String s) {
-            Log.d("SignupActivity", "SupportSignUp flag: " + s);
-        }
-        
-        @JavascriptInterface
-        public void toSignIn() {
-            Log.d("SignupActivity", "Redirecting to Login screen");
-            SignupActivity.this.startNextActivity(LoginActivity.createStartIntent((Context)SignupActivity.this));
-            SignupActivity.this.finish();
-        }
-    }
-    
-    private class signUpWebChromeClient extends WebChromeClient
-    {
-        public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
-            Log.i("JavaScript", consoleMessage.message() + " -- From line " + consoleMessage.lineNumber() + " of " + consoleMessage.sourceId());
-            return true;
         }
     }
 }

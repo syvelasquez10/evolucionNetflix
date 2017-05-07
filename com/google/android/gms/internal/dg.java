@@ -59,7 +59,7 @@ public class dg
     }
     
     private df bV() {
-        return new df.a().j(this.rg.bj()).i(this.rg.bk()).k(this.rg.bo()).l(this.rg.bl()).m(this.rg.bm()).bM();
+        return new df$a().j(this.rg.bj()).i(this.rg.bk()).k(this.rg.bo()).l(this.rg.bl()).m(this.rg.bm()).bM();
     }
     
     void bO() {

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.realtime.internal.event;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -46,7 +47,7 @@ public class e implements Parcelable$Creator<TextDeletedDetails>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new TextDeletedDetails(g3, g2, g);
     }

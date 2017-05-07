@@ -5,6 +5,7 @@
 package com.google.android.gms.fitness.request;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.fitness.data.Session;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.DataSource;
@@ -80,7 +81,7 @@ public class d implements Parcelable$Creator<DataDeleteRequest>
             }
         }
         if (parcel.dataPosition() != c3) {
-            throw new a.a("Overread allowed size end=" + c3, parcel);
+            throw new a$a("Overread allowed size end=" + c3, parcel);
         }
         return new DataDeleteRequest(g, j, i, c6, c5, c, c4, c2);
     }

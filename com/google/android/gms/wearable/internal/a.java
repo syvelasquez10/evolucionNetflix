@@ -7,7 +7,7 @@ package com.google.android.gms.wearable.internal;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.common.api.Status;
 
-public abstract class a extends ad.a
+public abstract class a extends ad$a
 {
     public void a(final Status status) {
         throw new UnsupportedOperationException();

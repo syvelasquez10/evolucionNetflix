@@ -4,33 +4,12 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
-import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
-import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.servicemgr.model.LoLoMo;
-import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
-import com.netflix.mediaclient.servicemgr.model.genre.Genre;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
-import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
-import com.netflix.mediaclient.android.app.NetflixStatus;
-import java.util.Iterator;
-import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
@@ -39,11 +18,7 @@ import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.content.Context;
 import android.content.Intent;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.Log;
-import android.os.IBinder;
-import android.content.ComponentName;
 import com.netflix.mediaclient.service.NetflixService;
 import android.content.ServiceConnection;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -64,40 +39,18 @@ public final class ServiceManager implements IServiceManagerAccess
     private final NetflixActivity mActivity;
     private final IBrowseManager mBrowseManager;
     private ManagerStatusListener mCallback;
-    private final CallbackMuxer mCallbackMuxer;
+    private final ServiceManager$CallbackMuxer mCallbackMuxer;
     private int mClientId;
     private final ServiceConnection mConnection;
     private NetflixService mLocalService;
     private boolean mReady;
     private INetflixService mService;
-    private ServiceListener mServiceListener;
+    private ServiceManager$ServiceListener mServiceListener;
     
     public ServiceManager(final NetflixActivity mActivity, final ManagerStatusListener mCallback) {
         this.mClientId = -1;
-        this.mCallbackMuxer = new CallbackMuxer();
-        this.mConnection = (ServiceConnection)new ServiceConnection() {
-            public final void onServiceConnected(final ComponentName componentName, final IBinder binder) {
-                Log.d("ServiceManager", "ServiceConnected with IBinder: " + binder);
-                final NetflixService.LocalBinder localBinder = (NetflixService.LocalBinder)binder;
-                ServiceManager.this.mService = localBinder.getService();
-                ServiceManager.this.addToMyListWrapper = new AddToMyListWrapper(ServiceManager.this);
-                ServiceManager.this.mLocalService = localBinder.getService();
-                if (ServiceManager.this.mServiceListener == null) {
-                    ServiceManager.this.mServiceListener = new ServiceListener();
-                }
-                ServiceManager.this.mService.registerCallback(ServiceManager.this.mServiceListener);
-            }
-            
-            public final void onServiceDisconnected(final ComponentName componentName) {
-                Log.d("ServiceManager", "onServiceDisconnected");
-                if (ServiceManager.this.mCallback != null) {
-                    ServiceManager.this.mCallback.onManagerUnavailable(ServiceManager.this, CommonStatus.INTERNAL_ERROR);
-                    ServiceManager.this.mCallback = null;
-                }
-                ServiceManager.this.mLocalService = null;
-                ServiceManager.this.mService = null;
-            }
-        };
+        this.mCallbackMuxer = new ServiceManager$CallbackMuxer(null);
+        this.mConnection = (ServiceConnection)new ServiceManager$1(this);
         if (mCallback == null) {
             throw new IllegalStateException("listener is null");
         }
@@ -134,7 +87,7 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     private ManagerCallback wrapForAddToList(final ManagerCallback managerCallback, final String s) {
-        return new AddToListCallbackWrapper(managerCallback, s);
+        return new ServiceManager$AddToListCallbackWrapper(this, managerCallback, s);
     }
     
     public void addProfile(final String s, final boolean b, final String s2, final ManagerCallback managerCallback) {
@@ -169,11 +122,11 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
-    public AddToListData.StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final int n, final boolean b) {
+    public AddToListData$StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final int n, final boolean b) {
         return this.addToMyListWrapper.createAddToMyListWrapper(netflixActivity, textView, s, n, b);
     }
     
-    public AddToListData.StateListener createAddToMyListWrapper(final DetailsActivity detailsActivity, final TextView textView, final boolean b) {
+    public AddToListData$StateListener createAddToMyListWrapper(final DetailsActivity detailsActivity, final TextView textView, final boolean b) {
         return this.addToMyListWrapper.createAddToMyListWrapper(detailsActivity, textView, detailsActivity.getVideoId(), detailsActivity.getTrackId(), b);
     }
     
@@ -208,7 +161,7 @@ public final class ServiceManager implements IServiceManagerAccess
         return -1;
     }
     
-    public boolean fetchResource(final String s, final IClientLogging.AssetType assetType, final ManagerCallback managerCallback) {
+    public boolean fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ManagerCallback managerCallback) {
         boolean b = false;
         // monitorenter(this)
         if (s != null) {
@@ -219,7 +172,7 @@ public final class ServiceManager implements IServiceManagerAccess
                 }
                 final INetflixService validateService = this.validateService();
                 if (validateService != null) {
-                    validateService.fetchResource(s, assetType, this.mClientId, addCallback);
+                    validateService.fetchResource(s, clientLogging$AssetType, this.mClientId, addCallback);
                     b = true;
                 }
                 else {
@@ -265,7 +218,7 @@ public final class ServiceManager implements IServiceManagerAccess
         return null;
     }
     
-    public ServiceAgent.ConfigurationAgentInterface getConfiguration() {
+    public ServiceAgent$ConfigurationAgentInterface getConfiguration() {
         final INetflixService mService = this.mService;
         if (mService != null) {
             return mService.getConfiguration();
@@ -493,10 +446,10 @@ public final class ServiceManager implements IServiceManagerAccess
         Log.w("ServiceManager", "refreshProfileSwitchingStatus:: service is not available");
     }
     
-    public void registerAddToMyListListener(final String s, final AddToListData.StateListener stateListener) {
+    public void registerAddToMyListListener(final String s, final AddToListData$StateListener addToListData$StateListener) {
         final AddToMyListWrapper addToMyListWrapper = this.addToMyListWrapper;
         if (addToMyListWrapper != null) {
-            addToMyListWrapper.register(s, stateListener);
+            addToMyListWrapper.register(s, addToListData$StateListener);
         }
     }
     
@@ -536,10 +489,10 @@ public final class ServiceManager implements IServiceManagerAccess
         Log.w("ServiceManager", "selectProfile:: service is not available");
     }
     
-    public boolean sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2) {
+    public boolean sendRecommendationsToFriends(final String s, final Set<FriendForRecommendation> set, final String s2, final String s3) {
         final INetflixService mService = this.mService;
         if (mService != null) {
-            mService.sendRecommendationsToFriends(s, set, s2);
+            mService.sendRecommendationsToFriends(s, set, s2, s3);
             return true;
         }
         Log.w("ServiceManager", "sendRecommendationsToFriends:: service is not available");
@@ -556,10 +509,10 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
-    public void unregisterAddToMyListListener(final String s, final AddToListData.StateListener stateListener) {
+    public void unregisterAddToMyListListener(final String s, final AddToListData$StateListener addToListData$StateListener) {
         final AddToMyListWrapper addToMyListWrapper = this.addToMyListWrapper;
         if (addToMyListWrapper != null) {
-            addToMyListWrapper.unregister(s, stateListener);
+            addToMyListWrapper.unregister(s, addToListData$StateListener);
         }
     }
     
@@ -577,659 +530,5 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "verifyPin:: service is not available");
         return false;
-    }
-    
-    private class AddToListCallbackWrapper extends SimpleManagerCallback
-    {
-        private final ManagerCallback cb;
-        private final String videoId;
-        
-        public AddToListCallbackWrapper(final ManagerCallback cb, final String videoId) {
-            this.cb = cb;
-            this.videoId = videoId;
-            final AddToMyListWrapper access$700 = ServiceManager.this.addToMyListWrapper;
-            if (access$700 != null) {
-                access$700.updateToLoading(videoId);
-            }
-        }
-        
-        private void updateListeners(final Status status, final boolean b, final boolean b2) {
-            final AddToMyListWrapper access$700 = ServiceManager.this.addToMyListWrapper;
-            if (access$700 == null) {
-                return;
-            }
-            if (status.isSucces()) {
-                access$700.updateState(this.videoId, b);
-                return;
-            }
-            access$700.updateToError(status, this.videoId, b2);
-        }
-        
-        @Override
-        public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
-            super.onMovieDetailsFetched(movieDetails, status);
-            this.cb.onMovieDetailsFetched(movieDetails, status);
-            this.updateListeners(status, movieDetails != null && movieDetails.isInQueue(), false);
-        }
-        
-        @Override
-        public void onQueueAdd(final Status status) {
-            this.onQueueAdd(status);
-            this.cb.onQueueAdd(status);
-            this.updateListeners(status, true, true);
-        }
-        
-        @Override
-        public void onQueueRemove(final Status status) {
-            this.onQueueRemove(status);
-            this.cb.onQueueRemove(status);
-            this.updateListeners(status, false, true);
-        }
-        
-        @Override
-        public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
-            super.onShowDetailsFetched(showDetails, status);
-            this.cb.onShowDetailsFetched(showDetails, status);
-            this.updateListeners(status, showDetails != null && showDetails.isInQueue(), false);
-        }
-    }
-    
-    private static class CallbackMuxer
-    {
-        private final ArrayList<MuxedCallback> muxedCallbacks;
-        
-        private CallbackMuxer() {
-            this.muxedCallbacks = new ArrayList<MuxedCallback>();
-        }
-        
-        public ManagerCallback demuxCallback(final int n) {
-            synchronized (this) {
-                for (final MuxedCallback muxedCallback : this.muxedCallbacks) {
-                    if (muxedCallback.getRequestId() == n) {
-                        this.muxedCallbacks.remove(muxedCallback);
-                        return muxedCallback.getDemuxedCallback();
-                    }
-                }
-                return null;
-            }
-        }
-        
-        public int muxCallback(final ManagerCallback managerCallback) {
-            synchronized (this) {
-                final MuxedCallback muxedCallback = new MuxedCallback(managerCallback);
-                this.muxedCallbacks.add(muxedCallback);
-                return muxedCallback.getRequestId();
-            }
-        }
-        
-        public void reset() {
-            synchronized (this) {
-                this.muxedCallbacks.clear();
-            }
-        }
-        
-        private static class MuxedCallback
-        {
-            private static int sRequestIdCounter;
-            private final ManagerCallback callback;
-            private final int requestId;
-            
-            static {
-                MuxedCallback.sRequestIdCounter = 0;
-            }
-            
-            public MuxedCallback(final ManagerCallback callback) {
-                ++MuxedCallback.sRequestIdCounter;
-                this.requestId = MuxedCallback.sRequestIdCounter;
-                this.callback = callback;
-            }
-            
-            public ManagerCallback getDemuxedCallback() {
-                return this.callback;
-            }
-            
-            public int getRequestId() {
-                return this.requestId;
-            }
-        }
-    }
-    
-    private class ServiceListener implements INetflixServiceCallback
-    {
-        private void updateStatusRequestId(final Status status, final int requestId) {
-            if (status instanceof NetflixStatus) {
-                ((NetflixStatus)status).setRequestId(requestId);
-            }
-        }
-        
-        @Override
-        public int hashCode() {
-            int hashCode;
-            final int n = hashCode = super.hashCode();
-            if (n < 0) {
-                hashCode = -n;
-            }
-            return hashCode;
-        }
-        
-        @Override
-        public void onAvailableAvatarsListFetched(final int n, final List<AvatarInfo> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onAvailableAvatarsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onAvailableAvatarsListFetched requestId " + n);
-                return;
-            }
-            access$400.onAvailableAvatarsListFetched(list, status);
-        }
-        
-        @Override
-        public void onBBVideosFetched(final int n, final List<Billboard> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onBBVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onBBVideosFetched requestedVideos=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onBBVideosFetched requestId " + n);
-                return;
-            }
-            access$400.onBBVideosFetched(list, status);
-        }
-        
-        @Override
-        public void onCWVideosFetched(final int n, final List<CWVideo> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onCWVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onCWVideosFetched requestedVideos=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onCWVideosFetched requestId " + n);
-                return;
-            }
-            access$400.onCWVideosFetched(list, status);
-        }
-        
-        @Override
-        public void onConnectWithFacebookComplete(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onConnectWithFacebookComplete requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onConnectWithFacebookComplete requestId " + n);
-                return;
-            }
-            access$400.onConnectWithFacebookComplete(status);
-        }
-        
-        @Override
-        public void onEpisodeDetailsFetched(final int n, final EpisodeDetails episodeDetails, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onEpisodeDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onEpisodeDetailsFetched requestedEdp=" + episodeDetails);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onEpisodeDetailsFetched requestId " + n);
-                return;
-            }
-            access$400.onEpisodeDetailsFetched(episodeDetails, status);
-        }
-        
-        @Override
-        public void onEpisodesFetched(final int n, final List<EpisodeDetails> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onEpisodesFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onEpisodesFetched requestedEpisodes=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onEpisodesFetched requestId " + n);
-                return;
-            }
-            access$400.onEpisodesFetched(list, status);
-        }
-        
-        @Override
-        public void onFriendsForRecommendationsListFetched(final int n, final List<FriendForRecommendation> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onFriendsForRecommendationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onFriendsForRecommendationsListFetched requestId " + n);
-                return;
-            }
-            access$400.onFriendsForRecommendationsListFetched(list, status);
-        }
-        
-        @Override
-        public void onGenreListsFetched(final int n, final List<GenreList> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onGenreListsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onGenreListsFetched requestedGenreLists=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onGenreListsFetched requestId " + n);
-                return;
-            }
-            access$400.onGenreListsFetched(list, status);
-        }
-        
-        @Override
-        public void onGenreLoLoMoPrefetched(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onGenreLoLoMoPrefetched requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                if (Log.isLoggable("ServiceManager", 3)) {
-                    Log.d("ServiceManager", "No callback for onGenreLoLoMoPrefetched requestId " + n);
-                }
-                return;
-            }
-            access$400.onGenreLoLoMoPrefetched(status);
-        }
-        
-        @Override
-        public void onGenresFetched(final int n, final List<Genre> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onGenresFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onGenresFetched requestedGenres=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onGenresFetched requestId " + n);
-                return;
-            }
-            access$400.onGenresFetched(list, status);
-        }
-        
-        @Override
-        public void onKidsCharacterDetailsFetched(final int n, final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onKidsCharacterDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onKidsCharacterDetailsFetched kidsCharacterDetails=" + kidsCharacterDetails);
-                if (kidsCharacterDetails != null) {
-                    Log.d("ServiceManager", "onKidsCharacterDetailsFetched gallery size=" + kidsCharacterDetails.getGallery().size());
-                    Log.d("ServiceManager", "onKidsCharacterDetailsFetched gallery track id=" + kidsCharacterDetails.getGalleryTrackId());
-                }
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onKidsCharacterDetailsFetched requestId " + n);
-                return;
-            }
-            access$400.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, status);
-        }
-        
-        @Override
-        public void onLoLoMoPrefetched(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onLoLoMoPrefetched requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                if (Log.isLoggable("ServiceManager", 3)) {
-                    Log.d("ServiceManager", "No callback for onLoLoMoPrefetched requestId " + n);
-                }
-                return;
-            }
-            access$400.onLoLoMoPrefetched(status);
-        }
-        
-        @Override
-        public void onLoLoMoSummaryFetched(final int n, final LoLoMo loLoMo, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onLoLoMoSummaryFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onLoLoMoSummaryFetched requestId " + n);
-                return;
-            }
-            access$400.onLoLoMoSummaryFetched(loLoMo, status);
-        }
-        
-        @Override
-        public void onLoMosFetched(final int n, final List<LoMo> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onLoMosFetched requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            if (Log.isLoggable("ServiceManager", 2)) {
-                Log.v("ServiceManager", "onLoMosFetched requestedLoMos=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                if (Log.isLoggable("ServiceManager", 3)) {
-                    Log.d("ServiceManager", "No callback for onLoMosFetched requestId " + n);
-                }
-                return;
-            }
-            access$400.onLoMosFetched(list, status);
-        }
-        
-        @Override
-        public void onLoginComplete(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onLoginComplete requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onLoginComplete requestId " + n);
-                return;
-            }
-            access$400.onLoginComplete(status);
-        }
-        
-        @Override
-        public void onLogoutComplete(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onLogoutComplete requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onLogoutComplete requestId " + n);
-                return;
-            }
-            access$400.onLogoutComplete(status);
-        }
-        
-        @Override
-        public void onMovieDetailsFetched(final int n, final MovieDetails movieDetails, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onMovieDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onMovieDetailsFetched requestedMdp=" + movieDetails);
-                if (movieDetails != null) {
-                    Log.d("ServiceManager", "onMovieDetailsFetched sims size=" + movieDetails.getSimilars().size());
-                    Log.d("ServiceManager", "onMovieDetailsFetched sims track id=" + movieDetails.getSimilarsTrackId());
-                }
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onMovieDetailsFetched requestId " + n);
-                return;
-            }
-            access$400.onMovieDetailsFetched(movieDetails, status);
-        }
-        
-        @Override
-        public void onPinVerified(final int n, final boolean b, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onPinVerified requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onPinVerified requestId " + n);
-                return;
-            }
-            access$400.onPinVerified(b, status);
-        }
-        
-        @Override
-        public void onPostPlayVideosFetched(final int n, final List<PostPlayVideo> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onPostPlayVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onPostPlayVideosFetched requestedVideos=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onPostPlayVideoFetched requestId " + n);
-                return;
-            }
-            access$400.onPostPlayVideosFetched(list, status);
-        }
-        
-        @Override
-        public void onProfileListUpdateStatus(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onProfileListUpdateStatus requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onProfileListUpdateStatus requestId " + n);
-                return;
-            }
-            access$400.onProfileListUpdateStatus(status);
-        }
-        
-        @Override
-        public void onQueueAdd(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onQueueAdd requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onQueueAdd requestId " + n);
-                return;
-            }
-            access$400.onQueueAdd(status);
-        }
-        
-        @Override
-        public void onQueueRemove(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onQueueRemove requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onQueueRemove requestId " + n);
-                return;
-            }
-            access$400.onQueueRemove(status);
-        }
-        
-        @Override
-        public void onResourceFetched(final int n, final String s, final String s2, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 2)) {
-                Log.v("ServiceManager", "onResourceFetched requestId=" + n + " requestedUrl=" + s + " localUrl=" + s2 + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            final ManagerCallback demuxCallback = ServiceManager.this.mCallbackMuxer.demuxCallback(n);
-            if (demuxCallback == null) {
-                Log.d("ServiceManager", "No callback for onResourceFetched requestId " + n);
-                return;
-            }
-            demuxCallback.onResourceFetched(s, s2, status);
-        }
-        
-        @Override
-        public void onSearchResultsFetched(final int n, final ISearchResults searchResults, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onSearchResultsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onSearchResultsFetched results=" + searchResults);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onSearchResultsFetched requestId " + n);
-                return;
-            }
-            access$400.onSearchResultsFetched(searchResults, status);
-        }
-        
-        @Override
-        public void onSeasonDetailsFetched(final int n, final SeasonDetails seasonDetails, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onSeasonDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                final StringBuilder append = new StringBuilder().append("onSeasonDetailsFetched seasonDetailsId=");
-                String id;
-                if (seasonDetails == null) {
-                    id = "n/a";
-                }
-                else {
-                    id = seasonDetails.getId();
-                }
-                Log.d("ServiceManager", append.append(id).toString());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onSeasonDetailsFetched requestId " + n);
-                return;
-            }
-            access$400.onSeasonDetailsFetched(seasonDetails, status);
-        }
-        
-        @Override
-        public void onSeasonsFetched(final int n, final List<SeasonDetails> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onSeasonsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onSeasonsFetched requestedSeasons=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onSeasonsFetched requestId " + n);
-                return;
-            }
-            access$400.onSeasonsFetched(list, status);
-        }
-        
-        @Override
-        public void onServiceReady(final int n, final Status status) {
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onServiceReady clientId=" + n + " res.getStatusCode()=" + status.getStatusCode());
-            }
-            ServiceManager.this.mClientId = n;
-            final ManagerStatusListener access$200 = ServiceManager.this.mCallback;
-            if (access$200 != null) {
-                if (!status.isSucces()) {
-                    access$200.onManagerUnavailable(ServiceManager.this, status);
-                    return;
-                }
-                ServiceManager.this.mReady = true;
-                access$200.onManagerReady(ServiceManager.this, status);
-            }
-        }
-        
-        @Override
-        public void onShowDetailsFetched(final int n, final ShowDetails showDetails, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onShowDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onShowDetailsFetched requestedSdp=" + showDetails);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onShowDetailsFetched requestId " + n);
-                return;
-            }
-            access$400.onShowDetailsFetched(showDetails, status);
-        }
-        
-        @Override
-        public void onSimilarVideosFetched(final int n, final SearchVideoList list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onSimilarVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onSimilarVideosFetched requestId " + n);
-                return;
-            }
-            access$400.onSimilarVideosFetched(list, status);
-        }
-        
-        @Override
-        public void onSocialNotificationWasThanked(final int n, final SocialNotificationSummary socialNotificationSummary, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onSocialNotificationWasThanked requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onSocialNotificationWasThanked requestId " + n);
-                return;
-            }
-            access$400.onSocialNotificationWasThanked(socialNotificationSummary, status);
-        }
-        
-        @Override
-        public void onSocialNotificationsListFetched(final int n, final SocialNotificationsList list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onSocialNotificationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onSocialNotificationsListFetched requestId " + n);
-                return;
-            }
-            access$400.onSocialNotificationsListFetched(list, status);
-        }
-        
-        @Override
-        public void onVideoHide(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onVideoHide requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onVideoHide requestId " + n);
-                return;
-            }
-            access$400.onVideoHide(status);
-        }
-        
-        @Override
-        public void onVideoRatingSet(final int n, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onVideoRatingSet requestId=" + n + " erroCode=" + status.getStatusCode());
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onVideoRatingSet requestId " + n);
-                return;
-            }
-            access$400.onVideoRatingSet(status);
-        }
-        
-        @Override
-        public void onVideosFetched(final int n, final List<Video> list, final Status status) {
-            this.updateStatusRequestId(status, n);
-            if (Log.isLoggable("ServiceManager", 3)) {
-                Log.d("ServiceManager", "onVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-                Log.d("ServiceManager", "onVideosFetched requestedVideos=" + list);
-            }
-            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
-            if (access$400 == null) {
-                if (Log.isLoggable("ServiceManager", 3)) {
-                    Log.d("ServiceManager", "No callback for onVideosFetched requestId " + n);
-                }
-                return;
-            }
-            access$400.onVideosFetched(list, status);
-        }
     }
 }

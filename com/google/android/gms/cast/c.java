@@ -4,6 +4,7 @@
 
 package com.google.android.gms.cast;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -50,7 +51,7 @@ public class c implements Parcelable$Creator<LaunchOptions>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new LaunchOptions(g, c, o);
     }

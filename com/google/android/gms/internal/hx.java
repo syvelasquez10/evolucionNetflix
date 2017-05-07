@@ -6,13 +6,13 @@ package com.google.android.gms.internal;
 
 import android.os.ParcelFileDescriptor;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.BaseImplementation;
+import com.google.android.gms.common.api.BaseImplementation$b;
 
-public abstract class hx<T> extends hw.a
+public abstract class hx<T> extends hw$a
 {
-    protected BaseImplementation.b<T> CH;
+    protected BaseImplementation$b<T> CH;
     
-    public hx(final BaseImplementation.b<T> ch) {
+    public hx(final BaseImplementation$b<T> ch) {
         this.CH = ch;
     }
     
@@ -25,6 +25,6 @@ public abstract class hx<T> extends hw.a
     public void a(final Status status, final boolean b) {
     }
     
-    public void a(final hm.b b) {
+    public void a(final hm$b hm$b) {
     }
 }

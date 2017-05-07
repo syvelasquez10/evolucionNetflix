@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.media;
 
 import org.json.JSONObject;
-import com.netflix.mediaclient.media.JPlayer.JPlayer;
+import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
 import android.content.Context;
 import android.view.Surface;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
@@ -39,7 +39,7 @@ public class JPlayer2Helper implements MediaPlayerHelper
     }
     
     @Override
-    public void prepareJPlayer(final IMedia media, final Surface surface, final JPlayer.JplayerListener jplayerListener, final boolean b, final JSONObject jsonObject) {
+    public void prepareJPlayer(final IMedia media, final Surface surface, final JPlayer$JplayerListener player$JplayerListener, final boolean b, final JSONObject jsonObject) {
     }
     
     @Override

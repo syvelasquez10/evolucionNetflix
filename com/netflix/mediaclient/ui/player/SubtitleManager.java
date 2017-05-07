@@ -12,6 +12,8 @@ public interface SubtitleManager
     
     void clearPendingUpdates();
     
+    void onPlayerOverlayVisibiltyChange(final boolean p0);
+    
     void onSubtitleChange(final SubtitleScreen p0);
     
     void onSubtitleRemove();

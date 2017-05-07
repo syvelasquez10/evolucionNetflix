@@ -6,24 +6,25 @@ package com.netflix.mediaclient.service.logging.uiaction;
 
 import com.netflix.mediaclient.service.logging.uiaction.model.DeleteProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 
 public final class DeleteProfileSession extends BaseUIActionSession
 {
     public static final String NAME = "deleteProfile";
     private String mProfileId;
     
-    public DeleteProfileSession(final String mProfileId, final UserActionLogging.CommandName commandName, final IClientLogging.ModalView modalView) {
-        super(commandName, modalView);
+    public DeleteProfileSession(final String mProfileId, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        super(userActionLogging$CommandName, clientLogging$ModalView);
         if (mProfileId == null) {
             throw new IllegalArgumentException("Profile ID is null!");
         }
         this.mProfileId = mProfileId;
     }
     
-    public DeleteProfileEndedEvent createEndedEvent(final IClientLogging.CompletionReason completionReason, final UIError uiError, final IClientLogging.ModalView modalView) {
-        final DeleteProfileEndedEvent deleteProfileEndedEvent = new DeleteProfileEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mAction, completionReason, uiError, this.mProfileId);
+    public DeleteProfileEndedEvent createEndedEvent(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final IClientLogging$ModalView clientLogging$ModalView) {
+        final DeleteProfileEndedEvent deleteProfileEndedEvent = new DeleteProfileEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mAction, clientLogging$CompletionReason, uiError, this.mProfileId);
         deleteProfileEndedEvent.setCategory(this.getCategory());
         deleteProfileEndedEvent.setSessionId(this.mId);
         return deleteProfileEndedEvent;

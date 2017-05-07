@@ -5,9 +5,7 @@
 package com.google.android.gms.drive.internal;
 
 import com.google.android.gms.internal.pe;
-import java.io.IOException;
 import com.google.android.gms.internal.pf;
-import com.google.android.gms.internal.pl;
 import com.google.android.gms.internal.pm;
 import com.google.android.gms.internal.pg;
 
@@ -22,12 +20,12 @@ public final class ah extends pg<ah>
         this.ic();
     }
     
-    public static ah g(final byte[] array) throws pl {
+    public static ah g(final byte[] array) {
         return pm.a(new ah(), array);
     }
     
     @Override
-    public void a(final pf pf) throws IOException {
+    public void a(final pf pf) {
         pf.s(1, this.versionCode);
         pf.b(2, this.Pd);
         pf.c(3, this.Pe);
@@ -98,7 +96,7 @@ public final class ah extends pg<ah>
         return this;
     }
     
-    public ah m(final pe pe) throws IOException {
+    public ah m(final pe pe) {
     Label_0065:
         while (true) {
             final int qg = pe.qg();

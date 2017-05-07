@@ -15,7 +15,6 @@ public final class AdvertisingIdProviderFactory
     
     public static AdvertisingIdProvider getInstance(final Context context) {
         ThreadUtils.assertNotOnMain();
-        GooglePlayAdvertisingIdProvider googlePlayAdvertisingIdProvider2;
         try {
             final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
             if (Log.isLoggable("nf_log", 3)) {
@@ -25,18 +24,17 @@ public final class AdvertisingIdProviderFactory
                 Log.e("nf_log", "Not success!");
                 return null;
             }
-            final GooglePlayAdvertisingIdProvider googlePlayAdvertisingIdProvider = googlePlayAdvertisingIdProvider2 = new GooglePlayAdvertisingIdProvider(context);
+            final GooglePlayAdvertisingIdProvider googlePlayAdvertisingIdProvider = new GooglePlayAdvertisingIdProvider(context);
             if (Log.isLoggable("nf_log", 3)) {
                 Log.d("nf_log", "Google Play Advertising ID: " + googlePlayAdvertisingIdProvider.getId());
                 Log.d("nf_log", "Google Play Advertising ID is resettable : " + googlePlayAdvertisingIdProvider.isResettable());
                 Log.d("nf_log", "Google Play Advertising ID is limited : " + googlePlayAdvertisingIdProvider.isLimitAdTrackingEnabled());
-                return googlePlayAdvertisingIdProvider;
             }
+            return googlePlayAdvertisingIdProvider;
         }
         catch (Throwable t) {
             Log.e("nf_log", "Failed to create Google Play provider", t);
-            googlePlayAdvertisingIdProvider2 = null;
+            return null;
         }
-        return googlePlayAdvertisingIdProvider2;
     }
 }

@@ -22,6 +22,7 @@ public abstract class AccountActivity extends NetflixActivity
         return false;
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }

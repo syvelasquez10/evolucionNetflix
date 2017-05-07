@@ -36,21 +36,30 @@ public class ErrorLoggingSpecification
     
     public static ErrorLoggingSpecification loadFromPreferences(Context context) {
         final Context context2 = null;
-        final Context context3 = null;
         final String stringPref = PreferenceUtils.getStringPref(context, "error_log_configuration", null);
-        if (StringUtils.isEmpty(stringPref)) {
-            Log.d(ErrorLoggingSpecification.TAG, "Error specification not found in file system");
-            context = context3;
-        }
-        else {
-            context = context2;
-            try {
-                final Object o = context = (Context)FalcorParseUtils.getGson().fromJson(stringPref, ErrorLoggingSpecification.class);
-                Log.d(ErrorLoggingSpecification.TAG, "Error logging specification loaded from file system");
-                context = (Context)o;
+        Label_0028: {
+            if (StringUtils.isEmpty(stringPref)) {
+                Log.d(ErrorLoggingSpecification.TAG, "Error specification not found in file system");
+                context = null;
             }
-            catch (Throwable t) {
-                Log.e(ErrorLoggingSpecification.TAG, "Failed to load error logging specification from file system", t);
+            else {
+                while (true) {
+                    try {
+                        context = (Context)FalcorParseUtils.getGson().fromJson(stringPref, ErrorLoggingSpecification.class);
+                        try {
+                            Log.d(ErrorLoggingSpecification.TAG, "Error logging specification loaded from file system");
+                            break Label_0028;
+                        }
+                        catch (Throwable t2) {}
+                        final Throwable t;
+                        Log.e(ErrorLoggingSpecification.TAG, "Failed to load error logging specification from file system", t);
+                    }
+                    catch (Throwable t) {
+                        context = context2;
+                        continue;
+                    }
+                    break;
+                }
             }
         }
         Object default1 = context;
@@ -70,6 +79,26 @@ public class ErrorLoggingSpecification
         return errorLoggingSpecification;
     }
     
+    @Override
+    public boolean equals(final Object o) {
+        if (this != o) {
+            if (o == null) {
+                return false;
+            }
+            if (this.getClass() != o.getClass()) {
+                return false;
+            }
+            final ErrorLoggingSpecification errorLoggingSpecification = (ErrorLoggingSpecification)o;
+            if (this.disable != errorLoggingSpecification.disable) {
+                return false;
+            }
+            if (this.disableChancePercentage != errorLoggingSpecification.disableChancePercentage) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public int getDisableChancePercentage() {
         return this.disableChancePercentage;
     }
@@ -78,7 +107,24 @@ public class ErrorLoggingSpecification
         return this.implementation;
     }
     
+    @Override
+    public int hashCode() {
+        int n;
+        if (this.disable) {
+            n = 1231;
+        }
+        else {
+            n = 1237;
+        }
+        return (n + 31) * 31 + this.disableChancePercentage;
+    }
+    
     public boolean isDisabled() {
         return this.disable;
+    }
+    
+    @Override
+    public String toString() {
+        return "ErrorLoggingSpecification [implementation=" + this.implementation + ", disable=" + this.disable + ", disableChancePercentage=" + this.disableChancePercentage + "]";
     }
 }

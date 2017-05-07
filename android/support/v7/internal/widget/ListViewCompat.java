@@ -29,7 +29,7 @@ public class ListViewCompat extends ListView
     int mSelectionLeftPadding;
     int mSelectionRightPadding;
     int mSelectionTopPadding;
-    private GateKeeperDrawable mSelector;
+    private ListViewCompat$GateKeeperDrawable mSelector;
     final Rect mSelectorRect;
     
     static {
@@ -80,71 +80,73 @@ public class ListViewCompat extends ListView
     
     public int lookForSelectablePosition(int n, final boolean b) {
         final ListAdapter adapter = this.getAdapter();
-        if (adapter != null && !this.isInTouchMode()) {
+        int n2;
+        if (adapter == null || this.isInTouchMode()) {
+            n2 = -1;
+        }
+        else {
             final int count = adapter.getCount();
             if (!this.getAdapter().areAllItemsEnabled()) {
-                int n2;
                 if (b) {
-                    n = Math.max(0, n);
+                    int max = Math.max(0, n);
                     while (true) {
-                        n2 = n;
-                        if (n >= count) {
+                        n = max;
+                        if (max >= count) {
                             break;
                         }
-                        n2 = n;
-                        if (adapter.isEnabled(n)) {
+                        n = max;
+                        if (adapter.isEnabled(max)) {
                             break;
                         }
-                        ++n;
+                        ++max;
                     }
                 }
                 else {
-                    n = Math.min(n, count - 1);
+                    int min = Math.min(n, count - 1);
                     while (true) {
-                        n2 = n;
-                        if (n < 0) {
+                        n = min;
+                        if (min < 0) {
                             break;
                         }
-                        n2 = n;
-                        if (adapter.isEnabled(n)) {
+                        n = min;
+                        if (adapter.isEnabled(min)) {
                             break;
                         }
-                        --n;
+                        --min;
                     }
                 }
-                if (n2 >= 0 && n2 < count) {
-                    return n2;
+                if (n < 0 || (n2 = n) >= count) {
+                    return -1;
                 }
             }
-            else if (n >= 0 && n < count) {
-                return n;
+            else if (n < 0 || (n2 = n) >= count) {
+                return -1;
             }
         }
-        return -1;
+        return n2;
     }
     
-    public int measureHeightOfChildrenCompat(final int n, int listPaddingTop, int listPaddingBottom, final int n2, final int n3) {
+    public int measureHeightOfChildrenCompat(int n, int listPaddingTop, int dividerHeight, final int n2, final int n3) {
         listPaddingTop = this.getListPaddingTop();
-        listPaddingBottom = this.getListPaddingBottom();
+        final int listPaddingBottom = this.getListPaddingBottom();
         this.getListPaddingLeft();
         this.getListPaddingRight();
-        int dividerHeight = this.getDividerHeight();
+        dividerHeight = this.getDividerHeight();
         final Drawable divider = this.getDivider();
         final ListAdapter adapter = this.getAdapter();
         if (adapter != null) {
-            listPaddingBottom += listPaddingTop;
+            listPaddingTop += listPaddingBottom;
             if (dividerHeight <= 0 || divider == null) {
                 dividerHeight = 0;
             }
-            listPaddingTop = 0;
-            View view = null;
             int n4 = 0;
+            View view = null;
+            int n5 = 0;
             final int count = adapter.getCount();
             int i = 0;
             while (i < count) {
                 final int itemViewType = adapter.getItemViewType(i);
-                int n5;
-                if (itemViewType != (n5 = n4)) {
+                if (itemViewType != n5) {
                     view = null;
                     n5 = itemViewType;
                 }
@@ -158,34 +160,41 @@ public class ListViewCompat extends ListView
                     n6 = View$MeasureSpec.makeMeasureSpec(0, 0);
                 }
                 view.measure(n, n6);
-                int n7 = listPaddingBottom;
                 if (i > 0) {
-                    n7 = listPaddingBottom + dividerHeight;
+                    listPaddingTop += dividerHeight;
                 }
-                listPaddingBottom = n7 + view.getMeasuredHeight();
-                if (listPaddingBottom >= n2) {
-                    if (n3 < 0 || i <= n3 || listPaddingTop <= 0 || listPaddingBottom == n2) {
-                        return n2;
+                listPaddingTop += view.getMeasuredHeight();
+                if (listPaddingTop >= n2) {
+                    n = n2;
+                    if (n3 < 0) {
+                        return n;
                     }
-                    return listPaddingTop;
+                    n = n2;
+                    if (i <= n3) {
+                        return n;
+                    }
+                    n = n2;
+                    if (n4 > 0 && listPaddingTop != (n = n2)) {
+                        return n4;
+                    }
+                    return n;
                 }
                 else {
-                    int n8 = listPaddingTop;
+                    int n7 = n4;
                     if (n3 >= 0) {
-                        n8 = listPaddingTop;
+                        n7 = n4;
                         if (i >= n3) {
-                            n8 = listPaddingBottom;
+                            n7 = listPaddingTop;
                         }
                     }
                     ++i;
-                    listPaddingTop = n8;
-                    n4 = n5;
+                    n4 = n7;
                 }
             }
-            return listPaddingBottom;
+            return listPaddingTop;
         }
-        listPaddingTop += listPaddingBottom;
-        return listPaddingTop;
+        n = listPaddingTop + listPaddingBottom;
+        return n;
     }
     
     protected void positionSelectorCompat(final int n, final View view) {
@@ -244,7 +253,7 @@ public class ListViewCompat extends ListView
     }
     
     public void setSelector(final Drawable drawable) {
-        super.setSelector((Drawable)(this.mSelector = new GateKeeperDrawable(drawable)));
+        super.setSelector((Drawable)(this.mSelector = new ListViewCompat$GateKeeperDrawable(drawable)));
         final Rect rect = new Rect();
         drawable.getPadding(rect);
         this.mSelectionLeftPadding = rect.left;
@@ -269,51 +278,6 @@ public class ListViewCompat extends ListView
         final Drawable selector = this.getSelector();
         if (selector != null && this.shouldShowSelectorCompat()) {
             selector.setState(this.getDrawableState());
-        }
-    }
-    
-    private static class GateKeeperDrawable extends DrawableWrapper
-    {
-        private boolean mEnabled;
-        
-        public GateKeeperDrawable(final Drawable drawable) {
-            super(drawable);
-            this.mEnabled = true;
-        }
-        
-        @Override
-        public void draw(final Canvas canvas) {
-            if (this.mEnabled) {
-                super.draw(canvas);
-            }
-        }
-        
-        void setEnabled(final boolean mEnabled) {
-            this.mEnabled = mEnabled;
-        }
-        
-        @Override
-        public void setHotspot(final float n, final float n2) {
-            if (this.mEnabled) {
-                super.setHotspot(n, n2);
-            }
-        }
-        
-        @Override
-        public void setHotspotBounds(final int n, final int n2, final int n3, final int n4) {
-            if (this.mEnabled) {
-                super.setHotspotBounds(n, n2, n3, n4);
-            }
-        }
-        
-        @Override
-        public boolean setState(final int[] state) {
-            return this.mEnabled && super.setState(state);
-        }
-        
-        @Override
-        public boolean setVisible(final boolean b, final boolean b2) {
-            return this.mEnabled && super.setVisible(b, b2);
         }
     }
 }

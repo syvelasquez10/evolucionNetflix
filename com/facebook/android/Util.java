@@ -11,10 +11,8 @@ import java.io.Reader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.InputStream;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.io.IOException;
 import java.net.MalformedURLException;
+import org.json.JSONObject;
 import java.io.FileNotFoundException;
 import java.io.BufferedOutputStream;
 import java.net.URLDecoder;
@@ -36,21 +34,21 @@ public final class Util
         // 
         // Original Bytecode:
         // 
-        //     0: new             Landroid/os/Bundle;
-        //     3: dup            
-        //     4: invokespecial   android/os/Bundle.<init>:()V
-        //     7: astore_3       
-        //     8: aload_0        
-        //     9: ifnull          101
-        //    12: aload_0        
-        //    13: ldc             "&"
-        //    15: invokevirtual   java/lang/String.split:(Ljava/lang/String;)[Ljava/lang/String;
-        //    18: astore_0       
-        //    19: aload_0        
-        //    20: arraylength    
-        //    21: istore_2       
-        //    22: iconst_0       
-        //    23: istore_1       
+        //     0: iconst_0       
+        //     1: istore_1       
+        //     2: new             Landroid/os/Bundle;
+        //     5: dup            
+        //     6: invokespecial   android/os/Bundle.<init>:()V
+        //     9: astore_3       
+        //    10: aload_0        
+        //    11: ifnull          101
+        //    14: aload_0        
+        //    15: ldc             "&"
+        //    17: invokevirtual   java/lang/String.split:(Ljava/lang/String;)[Ljava/lang/String;
+        //    20: astore_0       
+        //    21: aload_0        
+        //    22: arraylength    
+        //    23: istore_2       
         //    24: iload_1        
         //    25: iload_2        
         //    26: if_icmpge       101
@@ -154,8 +152,10 @@ public final class Util
             return "";
         }
         final StringBuilder sb = new StringBuilder();
+        final Iterator<String> iterator = (Iterator<String>)bundle.keySet().iterator();
         int n = 1;
-        for (final String s : bundle.keySet()) {
+        while (iterator.hasNext()) {
+            final String s = iterator.next();
             if (bundle.get(s) instanceof String) {
                 if (n != 0) {
                     n = 0;
@@ -170,7 +170,7 @@ public final class Util
     }
     
     @Deprecated
-    public static String openUrl(String s, String read, final Bundle bundle) throws MalformedURLException, IOException {
+    public static String openUrl(String s, String read, final Bundle bundle) {
         String string = s;
         if (read.equals("GET")) {
             string = s + "?" + encodeUrl(bundle);
@@ -222,7 +222,7 @@ public final class Util
     }
     
     @Deprecated
-    public static JSONObject parseJson(final String s) throws JSONException, FacebookError {
+    public static JSONObject parseJson(final String s) {
         if (s.equals("false")) {
             throw new FacebookError("request failed");
         }
@@ -265,7 +265,7 @@ public final class Util
     }
     
     @Deprecated
-    private static String read(final InputStream inputStream) throws IOException {
+    private static String read(final InputStream inputStream) {
         final StringBuilder sb = new StringBuilder();
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream), 1000);
         for (String s = bufferedReader.readLine(); s != null; s = bufferedReader.readLine()) {

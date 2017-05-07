@@ -4,10 +4,8 @@
 
 package com.netflix.mediaclient.service.logging.customerevents.legacy;
 
-import org.apache.http.HttpException;
-import java.io.IOException;
 import android.os.Build$VERSION;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import org.json.JSONException;
 import com.netflix.mediaclient.webapi.AuthorizationCredentials;
 import com.netflix.mediaclient.Log;
@@ -70,14 +68,14 @@ public class MdxLoggingManager
         }
     }
     
-    private JSONObject getCommonEventData(final ServiceAgent.UserAgentInterface userAgentInterface) {
+    private JSONObject getCommonEventData(final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface) {
         final JSONObject jsonObject = new JSONObject();
         Label_0047: {
-            if (userAgentInterface == null) {
+            if (serviceAgent$UserAgentInterface == null) {
                 break Label_0047;
             }
             try {
-                jsonObject.putOpt("languages", (Object)userAgentInterface.getLanguagesInCsv()).putOpt("geolocation_country", (Object)userAgentInterface.getGeoCountry()).putOpt("country", (Object)userAgentInterface.getReqCountry());
+                jsonObject.putOpt("languages", (Object)serviceAgent$UserAgentInterface.getLanguagesInCsv()).putOpt("geolocation_country", (Object)serviceAgent$UserAgentInterface.getGeoCountry()).putOpt("country", (Object)serviceAgent$UserAgentInterface.getReqCountry());
                 jsonObject.putOpt("timestamp", (Object)System.currentTimeMillis()).putOpt("ui_version", (Object)this.mOwner.getConfigurationAgent().getSoftwareVersion()).putOpt("app_version", (Object)this.mOwner.getConfigurationAgent().getSoftwareVersion()).putOpt("device_cat", (Object)this.mOwner.getConfigurationAgent().getDeviceCategory().name()).putOpt("os_version", (Object)("Android " + Build$VERSION.RELEASE)).putOpt("device_type", (Object)this.mOwner.getConfigurationAgent().getEsnProvider().getESNPrefix());
                 return jsonObject;
             }
@@ -89,70 +87,54 @@ public class MdxLoggingManager
     }
     
     private void sendEvent(final MdxCustomerEvent mdxCustomerEvent) {
-        this.mHandler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mdxCustomerEvent.execute();
-                }
-                catch (IOException ex) {
-                    Log.e("nf_mdxMdxLoggingManager", "sendEvent IOException " + ex);
-                }
-                catch (JSONException ex2) {
-                    Log.e("nf_mdxMdxLoggingManager", "sendEvent JSONException " + ex2);
-                }
-                catch (HttpException ex3) {
-                    Log.e("nf_mdxMdxLoggingManager", "sendEvent HttpException " + ex3);
-                }
-            }
-        });
+        this.mHandler.post((Runnable)new MdxLoggingManager$1(this, mdxCustomerEvent));
     }
     
-    public void logPlaybackStart(final String s, final String s2, final String s3, final int n, final ServiceAgent.UserAgentInterface userAgentInterface) {
-        if (userAgentInterface == null) {
+    public void logPlaybackStart(final String s, final String s2, final String s3, final int n, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface) {
+        if (serviceAgent$UserAgentInterface == null) {
             Log.e("nf_mdxMdxLoggingManager", "userAgent is null");
             return;
         }
-        final JSONObject commonEventData = this.getCommonEventData(userAgentInterface);
+        final JSONObject commonEventData = this.getCommonEventData(serviceAgent$UserAgentInterface);
         final JSONObject jsonObject = new JSONObject();
         try {
             commonEventData.putOpt("deviceName", (Object)"Android").putOpt("catalogId", (Object)s).putOpt("appContext", (Object)"home").putOpt("esn", (Object)this.mOwner.getConfigurationAgent().getEsnProvider().getEsn()).putOpt("episodeId", (Object)s2).putOpt("location", (Object)s3);
             jsonObject.putOpt("EventName", (Object)"MDX Controller Start Playback").putOpt("TrackId", (Object)n);
-            this.buildEventAndSend(jsonObject, commonEventData, userAgentInterface.getUserCredentialRegistry().getNetflixID(), userAgentInterface.getUserCredentialRegistry().getSecureNetflixID());
+            this.buildEventAndSend(jsonObject, commonEventData, serviceAgent$UserAgentInterface.getUserCredentialRegistry().getNetflixID(), serviceAgent$UserAgentInterface.getUserCredentialRegistry().getSecureNetflixID());
         }
         catch (JSONException ex) {
             Log.e("nf_mdxMdxLoggingManager", "logPlaybackStart fail " + ex);
         }
     }
     
-    public void logTarget(final String s, final String s2, final String s3, final String s4, final ServiceAgent.UserAgentInterface userAgentInterface) {
-        if (userAgentInterface == null) {
+    public void logTarget(final String s, final String s2, final String s3, final String s4, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface) {
+        if (serviceAgent$UserAgentInterface == null) {
             Log.e("nf_mdxMdxLoggingManager", "userAgent is null");
             return;
         }
-        final JSONObject commonEventData = this.getCommonEventData(userAgentInterface);
+        final JSONObject commonEventData = this.getCommonEventData(serviceAgent$UserAgentInterface);
         final JSONObject jsonObject = new JSONObject();
         try {
             commonEventData.putOpt("deviceName", (Object)"Android").putOpt("targetUuid", (Object)s2).putOpt("serviceType", (Object)s4).putOpt("eventType", (Object)s).putOpt("dialUuid", (Object)s3);
             jsonObject.putOpt("EventName", (Object)"MDX Target");
-            this.buildEventAndSend(jsonObject, commonEventData, userAgentInterface.getUserCredentialRegistry().getNetflixID(), userAgentInterface.getUserCredentialRegistry().getSecureNetflixID());
+            this.buildEventAndSend(jsonObject, commonEventData, serviceAgent$UserAgentInterface.getUserCredentialRegistry().getNetflixID(), serviceAgent$UserAgentInterface.getUserCredentialRegistry().getSecureNetflixID());
         }
         catch (JSONException ex) {
             Log.e("nf_mdxMdxLoggingManager", "logTarget fail " + ex);
         }
     }
     
-    public void logTargetSelection(final String s, final ServiceAgent.UserAgentInterface userAgentInterface) {
-        if (userAgentInterface == null) {
+    public void logTargetSelection(final String s, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface) {
+        if (serviceAgent$UserAgentInterface == null) {
             Log.e("nf_mdxMdxLoggingManager", "userAgent is null");
             return;
         }
-        final JSONObject commonEventData = this.getCommonEventData(userAgentInterface);
+        final JSONObject commonEventData = this.getCommonEventData(serviceAgent$UserAgentInterface);
         final JSONObject jsonObject = new JSONObject();
         try {
             commonEventData.putOpt("eventType", (Object)s);
             jsonObject.putOpt("EventName", (Object)"MDX Target Manager Action");
-            this.buildEventAndSend(jsonObject, commonEventData, userAgentInterface.getUserCredentialRegistry().getNetflixID(), userAgentInterface.getUserCredentialRegistry().getSecureNetflixID());
+            this.buildEventAndSend(jsonObject, commonEventData, serviceAgent$UserAgentInterface.getUserCredentialRegistry().getNetflixID(), serviceAgent$UserAgentInterface.getUserCredentialRegistry().getSecureNetflixID());
         }
         catch (JSONException ex) {
             Log.e("nf_mdxMdxLoggingManager", "logTargetSelection fail " + ex);

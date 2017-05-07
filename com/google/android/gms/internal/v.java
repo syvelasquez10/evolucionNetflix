@@ -4,14 +4,12 @@
 
 package com.google.android.gms.internal;
 
-import android.text.TextUtils;
-import android.net.Uri$Builder;
 import android.os.Bundle;
 
 @ez
 public class v
 {
-    private a lZ;
+    private v$a lZ;
     private boolean ma;
     private boolean mb;
     
@@ -32,7 +30,7 @@ public class v
         this.mb = mb;
     }
     
-    public void a(final a lz) {
+    public void a(final v$a lz) {
         this.lZ = lz;
     }
     
@@ -48,39 +46,6 @@ public class v
         gs.S("Action was blocked because no click was detected.");
         if (this.lZ != null) {
             this.lZ.e(s);
-        }
-    }
-    
-    public interface a
-    {
-        void e(final String p0);
-    }
-    
-    @ez
-    public static class b implements a
-    {
-        private final fz.a mc;
-        private final gv md;
-        
-        public b(final fz.a mc, final gv md) {
-            this.mc = mc;
-            this.md = md;
-        }
-        
-        @Override
-        public void e(final String s) {
-            gs.S("An auto-clicking creative is blocked");
-            final Uri$Builder uri$Builder = new Uri$Builder();
-            uri$Builder.scheme("https");
-            uri$Builder.path("//pagead2.googlesyndication.com/pagead/gen_204");
-            uri$Builder.appendQueryParameter("id", "gmob-apps-blocked-navigation");
-            if (!TextUtils.isEmpty((CharSequence)s)) {
-                uri$Builder.appendQueryParameter("navigationURL", s);
-            }
-            if (this.mc != null && this.mc.vw != null && !TextUtils.isEmpty((CharSequence)this.mc.vw.tN)) {
-                uri$Builder.appendQueryParameter("debugDialog", this.mc.vw.tN);
-            }
-            gj.c(this.md.getContext(), this.md.dy().wD, uri$Builder.toString());
         }
     }
 }

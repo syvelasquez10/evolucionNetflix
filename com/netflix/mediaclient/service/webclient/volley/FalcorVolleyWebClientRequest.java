@@ -8,7 +8,6 @@ import android.os.SystemClock;
 import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
 import com.netflix.mediaclient.util.StringUtils;
-import com.android.volley.AuthFailureError;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -22,7 +21,7 @@ import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.FetchErrorUtils;
 import com.netflix.mediaclient.util.VolleyUtils;
 import com.netflix.mediaclient.Log;
@@ -37,6 +36,8 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     public static final String ENDPOINT_REVISION = "X-Netflix.api-script-revision";
     public static final String NETFLIX_API_SCRIPT_EXECUTION_TIME_HEADER = "X-Netflix.api-script-execution-time";
     public static final String NETFLIX_SERVER_EXECUTION_TIME_HEADER = "X-Netflix.execution-time";
+    private static final String PARAM_NAME_CALLPATH = "callPath";
+    private static final String PARAM_NAME_PATH = "path";
     public static final String PARAM_NAME_SIGNATURE = "signature";
     private static final String TAG = "FalcorVolleyWebClientRequest";
     protected ApiEndpointRegistry mApiEndpointRegistry;
@@ -77,7 +78,7 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
                 FetchErrorUtils.notifyOthersOfAccountErrors(this.mContext, status.getStatusCode());
             }
             else {
-                ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging.CompletionReason.failed, ConsolidatedLoggingUtils.toFalcorPathResultList(this.getPQLQueries()), ConsolidatedLoggingUtils.toError(volleyError), ConsolidatedLoggingUtils.createHttpResponse(durationTimeMs, this.getResponseSizeInBytes()));
+                ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.toFalcorPathResultList(this.getPQLQueries()), ConsolidatedLoggingUtils.toError(volleyError), ConsolidatedLoggingUtils.createHttpResponse(durationTimeMs, this.getResponseSizeInBytes()));
             }
         }
         this.onFailure(status);
@@ -112,7 +113,7 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
                     list.add(new FalcorPathResult(iterator.next(), true, null));
                 }
             }
-            ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging.CompletionReason.success, (List<FalcorPathResult>)list, null, httpResponse);
+            ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging$CompletionReason.success, (List<FalcorPathResult>)list, null, httpResponse);
         }
     }
     
@@ -121,7 +122,7 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     }
     
     @Override
-    public Map<String, String> getHeaders() throws AuthFailureError {
+    public Map<String, String> getHeaders() {
         Map<String, String> headers;
         if ((headers = super.getHeaders()) == null) {
             headers = new HashMap<String, String>();
@@ -132,16 +133,16 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameGet();
+        return "get";
     }
     
     protected abstract List<String> getPQLQueries();
     
     protected String getQueryPathName() {
-        if (StringUtils.safeEquals(FalcorParseUtils.getMethodNameGet(), this.getMethodType())) {
-            return FalcorParseUtils.getParamNamePath();
+        if ("get".equals(this.getMethodType())) {
+            return "path";
         }
-        return FalcorParseUtils.getParamNameCallPath();
+        return "callPath";
     }
     
     protected String getRawPQLQuery() {
@@ -179,10 +180,14 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         if (Log.isLoggable("FalcorVolleyWebClientRequest", 2)) {
             Log.v("FalcorVolleyWebClientRequest", "VolleyWebClientRequest URL = " + string);
         }
+        if (Log.isLoggable("FalcorVolleyWebClientRequest", 5) && string.length() > 2000) {
+            Log.w("FalcorVolleyWebClientRequest", "URL length is over 2000 chars... this will probably cause problems");
+            Log.w("FalcorVolleyWebClientRequest", "URL: " + string);
+        }
         return string;
     }
     
-    protected abstract T parseFalcorResponse(final String p0) throws FalcorParseException, FalcorServerException;
+    protected abstract T parseFalcorResponse(final String p0);
     
     @Override
     protected Response<T> parseNetworkResponse(final NetworkResponse p0) {
@@ -311,7 +316,7 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     }
     
     @Override
-    protected T parseResponse(final String s) throws VolleyError {
+    protected T parseResponse(final String s) {
         this.mParseTimeInMs = SystemClock.elapsedRealtime();
         T falcorResponse;
         try {

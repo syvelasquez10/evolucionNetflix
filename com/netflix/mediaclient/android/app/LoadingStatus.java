@@ -8,10 +8,5 @@ public interface LoadingStatus
 {
     boolean isLoadingData();
     
-    void setLoadingStatusCallback(final LoadingStatusCallback p0);
-    
-    public interface LoadingStatusCallback
-    {
-        void onDataLoaded(final Status p0);
-    }
+    void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback p0);
 }

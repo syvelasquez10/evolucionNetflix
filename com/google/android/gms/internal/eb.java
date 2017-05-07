@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.ServiceConnection;
 
 @ez
-public final class eb extends ek.a implements ServiceConnection
+public final class eb extends ek$a implements ServiceConnection
 {
     private Context mContext;
     private boolean sD;

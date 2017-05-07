@@ -19,11 +19,11 @@ import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
-import com.netflix.mediaclient.nccp.NccpKeyStore;
+import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.nccp.NccpKeyStore;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
-import java.util.Iterator;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.api.Api19Util;
@@ -33,21 +33,20 @@ import java.util.Locale;
 import java.io.IOException;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
-import com.netflix.mediaclient.Log;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
 
 @SuppressLint({ "InlinedApi" })
-public class ConfigurationAgent extends ServiceAgent implements ConfigurationAgentInterface
+public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$ConfigurationAgentInterface
 {
     private static final int APM_USER_SESSION_TIMEOUT_SEC = 1800;
     private static final long CONFIG_REFRESH_DELAY_MS = 28800000L;
@@ -76,7 +75,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private static final String sMemLevel;
     private AccountConfiguration mAccountConfigOverride;
     private int mAppVersionCode;
-    private final ArrayList<ConfigAgentListener> mConfigAgentListeners;
+    private final ArrayList<ConfigurationAgent$ConfigAgentListener> mConfigAgentListeners;
     private Status mConfigRefreshStatus;
     private ConfigurationWebClient mConfigurationWebClient;
     private DeviceConfiguration mDeviceConfigOverride;
@@ -93,72 +92,19 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private final Runnable refreshRunnable;
     
     static {
-        DUMMY_KIDS_CONFIG = new KidsOnPhoneConfiguration() {
-            @Override
-            public ActionBarNavType getActionBarNavType() {
-                return ActionBarNavType.UP;
-            }
-            
-            @Override
-            public LolomoImageType getLolomoImageType() {
-                return LolomoImageType.HORIZONTAL;
-            }
-            
-            @Override
-            public ScrollBehavior getScrollBehavior() {
-                return ScrollBehavior.UP_DOWN;
-            }
-            
-            @Override
-            public boolean isKidsOnPhoneEnabled() {
-                return true;
-            }
-            
-            @Override
-            public boolean shouldShowKidsEntryInActionBar() {
-                return true;
-            }
-            
-            @Override
-            public boolean shouldShowKidsEntryInGenreLomo() {
-                return true;
-            }
-            
-            @Override
-            public boolean shouldShowKidsEntryInMenu() {
-                return true;
-            }
-        };
+        DUMMY_KIDS_CONFIG = new ConfigurationAgent$1();
         DEFAULT_IMAGE_CACHE_SIZE_BYTES = (int)(Runtime.getRuntime().maxMemory() * 0.5f);
         sMemLevel = getMemLevel();
     }
     
     public ConfigurationAgent() {
-        this.mConfigAgentListeners = new ArrayList<ConfigAgentListener>();
+        this.mConfigAgentListeners = new ArrayList<ConfigurationAgent$ConfigAgentListener>();
         this.mIsConfigRefreshInBackground = false;
         this.mAppVersionCode = -1;
         this.mSoftwareVersion = null;
         this.mNeedLogout = false;
         this.mNeedEsMigration = false;
-        this.refreshRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Log.i("nf_configurationagent", "Refreshing config via runnable");
-                ConfigurationAgent.this.fetchAccountConfigData(null);
-                Log.i("nf_configurationagent", "Check if we should report ad id via runnable");
-                final IClientLogging clientLogging = ConfigurationAgent.this.getService().getClientLogging();
-                if (clientLogging == null) {
-                    Log.e("nf_configurationagent", "CL is not available!");
-                    return;
-                }
-                final AdvertiserIdLogging advertiserIdLogging = clientLogging.getAdvertiserIdLogging();
-                if (advertiserIdLogging == null) {
-                    Log.e("nf_configurationagent", "AD logger is not available!");
-                    return;
-                }
-                advertiserIdLogging.sendAdvertiserId(AdvertiserIdLogging.EventType.check_in);
-            }
-        };
+        this.refreshRunnable = new ConfigurationAgent$4(this);
     }
     
     private void doRefreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback) {
@@ -170,7 +116,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         this.prepareConfigWebClient();
         Log.d("nf_configurationagent", "fetchConfigData");
         this.mIsConfigRefreshInBackground = true;
-        this.launchTask((FetchTask)new FetchConfigDataTask(configurationAgentWebCallback));
+        this.launchTask(new ConfigurationAgent$FetchConfigDataTask(this, configurationAgentWebCallback));
     }
     
     private Status fetchConfigSynchronouslyOnAppStart(String s) {
@@ -230,15 +176,15 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         return ConfigurationAgent.sMemLevel;
     }
     
-    private void launchTask(final FetchTask fetchTask) {
+    private void launchTask(final ConfigurationAgent$FetchTask configurationAgent$FetchTask) {
         if (Log.isLoggable("nf_configurationagent", 2)) {
-            Log.v("nf_configurationagent", "Launching task: " + fetchTask.getClass().getSimpleName());
+            Log.v("nf_configurationagent", "Launching task: " + configurationAgent$FetchTask.getClass().getSimpleName());
         }
         if (this.mConfigurationWebClient.isSynchronous()) {
-            new BackgroundTask().execute(fetchTask);
+            new BackgroundTask().execute(configurationAgent$FetchTask);
             return;
         }
-        fetchTask.run();
+        configurationAgent$FetchTask.run();
     }
     
     private Status loadConfigOverridesOnAppStart(final String s) {
@@ -251,21 +197,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     private void notifyConfigRefreshed() {
-        this.getMainHandler().post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                synchronized (ConfigurationAgent.this) {
-                    Log.d("nf_configurationagent", "Invoking ConfigAgentListeners.");
-                    ConfigurationAgent.this.mIsConfigRefreshInBackground = false;
-                    final Iterator<ConfigAgentListener> iterator = ConfigurationAgent.this.mConfigAgentListeners.iterator();
-                    while (iterator.hasNext()) {
-                        iterator.next().onConfigRefreshed(ConfigurationAgent.this.mConfigRefreshStatus);
-                    }
-                }
-                ConfigurationAgent.this.mConfigAgentListeners.clear();
-            }
-            // monitorexit(configurationAgent)
-        });
+        this.getMainHandler().post((Runnable)new ConfigurationAgent$3(this));
     }
     
     private void persistConfigOverride(final ConfigData configData) {
@@ -289,13 +221,13 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         return "low".equals(ConfigurationAgent.sMemLevel);
     }
     
-    public void addConfigAgentListener(final ConfigAgentListener configAgentListener) {
+    public void addConfigAgentListener(final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {
         // monitorenter(this)
-        if (configAgentListener == null) {
+        if (configurationAgent$ConfigAgentListener == null) {
             return;
         }
         try {
-            this.mConfigAgentListeners.add(configAgentListener);
+            this.mConfigAgentListeners.add(configurationAgent$ConfigAgentListener);
         }
         finally {
         }
@@ -360,30 +292,18 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             this.initCompleted(loadConfigOverridesOnAppStart);
             return;
         }
-        final DrmManager.DrmReadyCallback drmReadyCallback = new DrmManager.DrmReadyCallback() {
-            @Override
-            public void drmError(final Status status) {
-                if (Log.isLoggable("nf_configurationagent", 6)) {
-                    Log.e("nf_configurationagent", "DRM failed to initialize, Error code: " + status.getStatusCode());
-                }
-                ConfigurationAgent.this.initCompleted(status);
-            }
-            
-            @Override
-            public void drmReady() {
-                Log.d("nf_configurationagent", "DRM manager is ready");
-                if (DrmManagerRegistry.isDrmSystemChanged()) {
-                    ConfigurationAgent.this.mNeedEsMigration = true;
-                }
-                ConfigurationAgent.this.initCompleted(CommonStatus.OK);
-            }
-        };
+        final ConfigurationAgent$2 configurationAgent$2 = new ConfigurationAgent$2(this);
         NccpKeyStore.init(this.getContext());
-        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), drmReadyCallback);
+        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), configurationAgent$2);
         this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
         Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
         PlayerTypeFactory.initialize(this.mESN);
         this.mDrmManager.init();
+    }
+    
+    @Override
+    public boolean enableHTTPSAuth() {
+        return this.mAccountConfigOverride.enableHTTPSAuth();
     }
     
     @Override
@@ -588,29 +508,25 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
                 }
             }
         }
-        int heightPixels = Integer.MAX_VALUE;
         if (AndroidUtils.getAndroidVersion() >= 17) {
             final Display[] displays = ((DisplayManager)this.getContext().getSystemService("display")).getDisplays();
-            final int length = displays.length;
-            int n2 = 0;
-            while (true) {
-                heightPixels = heightPixels;
-                if (n2 >= length) {
-                    break;
-                }
-                final Display display = displays[n2];
+            for (int length = displays.length, i = 0; i < length; ++i) {
+                final Display display = displays[i];
                 if (Log.isLoggable("nf_configurationagent", 3)) {
                     Log.d("nf_configurationagent", "getMaxResolutionRestriction " + display.toString());
                 }
                 if (display.isValid() && display.getDisplayId() == 0) {
                     final DisplayMetrics displayMetrics = new DisplayMetrics();
                     display.getMetrics(displayMetrics);
-                    heightPixels = displayMetrics.heightPixels;
-                    break;
+                    final int heightPixels = displayMetrics.heightPixels;
+                    return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(Math.min(maxResolutionConfigured, heightPixels));
                 }
-                ++n2;
             }
         }
+        Label_0207: {
+            break Label_0207;
+        }
+        final int heightPixels = Integer.MAX_VALUE;
         return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(Math.min(maxResolutionConfigured, heightPixels));
     }
     
@@ -678,14 +594,14 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         return DeviceCategory.TABLET.equals(this.getDeviceCategory());
     }
     
-    public void refreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback, final ConfigAgentListener configAgentListener) {
+    public void refreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback, final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {
         // monitorenter(this)
         Label_0015: {
-            if (configAgentListener == null) {
+            if (configurationAgent$ConfigAgentListener == null) {
                 break Label_0015;
             }
             try {
-                this.mConfigAgentListeners.add(configAgentListener);
+                this.mConfigAgentListeners.add(configurationAgent$ConfigAgentListener);
                 if (!this.mIsConfigRefreshInBackground) {
                     Log.i("nf_configurationagent", "Starting a config refresh in the background.");
                     this.doRefreshConfig(configurationAgentWebCallback);
@@ -700,13 +616,13 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         }
     }
     
-    public void removeConfigAgentListener(final ConfigAgentListener configAgentListener) {
+    public void removeConfigAgentListener(final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {
         // monitorenter(this)
-        if (configAgentListener == null) {
+        if (configurationAgent$ConfigAgentListener == null) {
             return;
         }
         try {
-            this.mConfigAgentListeners.remove(configAgentListener);
+            this.mConfigAgentListeners.remove(configurationAgent$ConfigAgentListener);
         }
         finally {
         }
@@ -721,55 +637,5 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     @Override
     public void userAgentLogoutComplete() {
         this.mNeedLogout = false;
-    }
-    
-    public interface ConfigAgentListener
-    {
-        void onConfigRefreshed(final Status p0);
-    }
-    
-    private class FetchConfigDataTask extends FetchTask
-    {
-        private final ConfigurationAgentWebCallback webClientCallback;
-        
-        public FetchConfigDataTask(final ConfigurationAgentWebCallback configurationAgentWebCallback) {
-            super(configurationAgentWebCallback);
-            this.webClientCallback = new SimpleConfigurationAgentWebCallback() {
-                @Override
-                public void onConfigDataFetched(final ConfigData configData, final Status status) {
-                    if (Log.isLoggable("nf_configurationagent", 3)) {
-                        Log.d("nf_configurationagent", String.format("onConfigDataFetched statusCode=%d", status.getStatusCode().getValue()));
-                    }
-                    ConfigurationAgent.this.mConfigRefreshStatus = status;
-                    if (status.isSucces() && configData != null) {
-                        ConfigurationAgent.this.persistConfigOverride(configData);
-                    }
-                    ConfigurationAgent.this.mIsConfigRefreshInBackground = false;
-                    ConfigurationAgent.this.refreshHandler.postDelayed(ConfigurationAgent.this.refreshRunnable, 28800000L);
-                    ConfigurationAgent.this.notifyConfigRefreshed();
-                    if (((FetchTask)FetchConfigDataTask.this).getCallback() != null) {
-                        ((FetchTask)FetchConfigDataTask.this).getCallback().onConfigDataFetched(configData, ConfigurationAgent.this.mConfigRefreshStatus);
-                    }
-                }
-            };
-        }
-        
-        @Override
-        public void run() {
-            ConfigurationAgent.this.mConfigurationWebClient.fetchConfigData(this.webClientCallback);
-        }
-    }
-    
-    private abstract static class FetchTask implements Runnable
-    {
-        private final ConfigurationAgentWebCallback callback;
-        
-        public FetchTask(final ConfigurationAgentWebCallback callback) {
-            this.callback = callback;
-        }
-        
-        protected ConfigurationAgentWebCallback getCallback() {
-            return this.callback;
-        }
     }
 }

@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.javabridge.ui;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.Bridge;
@@ -30,27 +29,27 @@ public abstract class BaseNrdObject implements NrdpObject
         this.bridge = bridge;
     }
     
-    protected boolean getBoolean(final JSONObject jsonObject, final String s, final boolean b) throws JSONException {
+    protected boolean getBoolean(final JSONObject jsonObject, final String s, final boolean b) {
         return JsonUtils.getBoolean(jsonObject, s, b);
     }
     
-    protected int getInt(final JSONObject jsonObject, final String s, final int n) throws JSONException {
+    protected int getInt(final JSONObject jsonObject, final String s, final int n) {
         return JsonUtils.getInt(jsonObject, s, n);
     }
     
-    protected JSONArray getJSONArray(final JSONObject jsonObject, final String s) throws JSONException {
+    protected JSONArray getJSONArray(final JSONObject jsonObject, final String s) {
         return JsonUtils.getJSONArray(jsonObject, s);
     }
     
-    protected JSONObject getJSONObject(final JSONObject jsonObject, final String s, final JSONObject jsonObject2) throws JSONException {
+    protected JSONObject getJSONObject(final JSONObject jsonObject, final String s, final JSONObject jsonObject2) {
         return JsonUtils.getJSONObject(jsonObject, s, jsonObject2);
     }
     
-    protected long getLong(final JSONObject jsonObject, final String s, final long n) throws JSONException {
+    protected long getLong(final JSONObject jsonObject, final String s, final long n) {
         return JsonUtils.getLong(jsonObject, s, n);
     }
     
-    protected String getString(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
+    protected String getString(final JSONObject jsonObject, final String s, final String s2) {
         return JsonUtils.getString(jsonObject, s, s2);
     }
 }

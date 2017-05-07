@@ -5,20 +5,19 @@
 package com.google.android.gms.tagmanager;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Executors;
 import android.content.Context;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
-import com.google.android.gms.internal.c;
+import com.google.android.gms.internal.c$j;
 
-class cp implements e
+class cp implements o$e
 {
     private final String anR;
     private String aon;
-    private bg<com.google.android.gms.internal.c.j> aqi;
+    private bg<c$j> aqi;
     private r aqj;
     private final ScheduledExecutorService aql;
-    private final a aqm;
+    private final cp$a aqm;
     private ScheduledFuture<?> aqn;
     private boolean mClosed;
     private final Context mContext;
@@ -27,27 +26,17 @@ class cp implements e
         this(context, s, r, null, null);
     }
     
-    cp(final Context mContext, final String anR, final r aqj, final b b, final a aqm) {
+    cp(final Context mContext, final String anR, final r aqj, final cp$b cp$b, final cp$a aqm) {
         this.aqj = aqj;
         this.mContext = mContext;
         this.anR = anR;
-        Object o = b;
-        if (b == null) {
-            o = new b() {
-                @Override
-                public ScheduledExecutorService oO() {
-                    return Executors.newSingleThreadScheduledExecutor();
-                }
-            };
+        cp$b cp$b2 = cp$b;
+        if (cp$b == null) {
+            cp$b2 = new cp$1(this);
         }
-        this.aql = ((b)o).oO();
+        this.aql = cp$b2.oO();
         if (aqm == null) {
-            this.aqm = (a)new a() {
-                @Override
-                public co a(final r r) {
-                    return new co(cp.this.mContext, cp.this.anR, r);
-                }
-            };
+            this.aqm = new cp$2(this);
             return;
         }
         this.aqm = aqm;
@@ -71,7 +60,7 @@ class cp implements e
     // monitorexit(this)
     
     @Override
-    public void a(final bg<com.google.android.gms.internal.c.j> aqi) {
+    public void a(final bg<c$j> aqi) {
         synchronized (this) {
             this.oN();
             this.aqi = aqi;
@@ -113,15 +102,5 @@ class cp implements e
             this.aql.shutdown();
             this.mClosed = true;
         }
-    }
-    
-    interface a
-    {
-        co a(final r p0);
-    }
-    
-    interface b
-    {
-        ScheduledExecutorService oO();
     }
 }

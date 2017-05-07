@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.leaderboard;
 
+import com.google.android.gms.common.internal.m$a;
 import com.google.android.gms.games.internal.constants.TimeSpan;
 import com.google.android.gms.common.internal.m;
 import com.google.android.gms.common.internal.n;
@@ -15,7 +16,7 @@ public final class ScoreSubmissionData
     private static final String[] abh;
     private int HF;
     private String Vz;
-    private HashMap<Integer, Result> abN;
+    private HashMap<Integer, ScoreSubmissionData$Result> abN;
     private String abj;
     
     static {
@@ -24,7 +25,7 @@ public final class ScoreSubmissionData
     
     public ScoreSubmissionData(final DataHolder dataHolder) {
         this.HF = dataHolder.getStatusCode();
-        this.abN = new HashMap<Integer, Result>();
+        this.abN = new HashMap<Integer, ScoreSubmissionData$Result>();
         final int count = dataHolder.getCount();
         n.K(count == 3);
         for (int i = 0; i < count; ++i) {
@@ -34,13 +35,13 @@ public final class ScoreSubmissionData
                 this.Vz = dataHolder.c("playerId", i, ar);
             }
             if (dataHolder.d("hasResult", i, ar)) {
-                this.a(new Result(dataHolder.a("rawScore", i, ar), dataHolder.c("formattedScore", i, ar), dataHolder.c("scoreTag", i, ar), dataHolder.d("newBest", i, ar)), dataHolder.b("timeSpan", i, ar));
+                this.a(new ScoreSubmissionData$Result(dataHolder.a("rawScore", i, ar), dataHolder.c("formattedScore", i, ar), dataHolder.c("scoreTag", i, ar), dataHolder.d("newBest", i, ar)), dataHolder.b("timeSpan", i, ar));
             }
         }
     }
     
-    private void a(final Result result, final int n) {
-        this.abN.put(n, result);
+    private void a(final ScoreSubmissionData$Result scoreSubmissionData$Result, final int n) {
+        this.abN.put(n, scoreSubmissionData$Result);
     }
     
     public String getLeaderboardId() {
@@ -51,45 +52,25 @@ public final class ScoreSubmissionData
         return this.Vz;
     }
     
-    public Result getScoreResult(final int n) {
+    public ScoreSubmissionData$Result getScoreResult(final int n) {
         return this.abN.get(n);
     }
     
     @Override
     public String toString() {
-        final m.a a = m.h(this).a("PlayerId", this.Vz).a("StatusCode", this.HF);
+        final m$a a = m.h(this).a("PlayerId", this.Vz).a("StatusCode", this.HF);
         for (int i = 0; i < 3; ++i) {
-            final Result result = this.abN.get(i);
+            final ScoreSubmissionData$Result scoreSubmissionData$Result = this.abN.get(i);
             a.a("TimesSpan", TimeSpan.dH(i));
             String string;
-            if (result == null) {
+            if (scoreSubmissionData$Result == null) {
                 string = "null";
             }
             else {
-                string = result.toString();
+                string = scoreSubmissionData$Result.toString();
             }
             a.a("Result", string);
         }
         return a.toString();
-    }
-    
-    public static final class Result
-    {
-        public final String formattedScore;
-        public final boolean newBest;
-        public final long rawScore;
-        public final String scoreTag;
-        
-        public Result(final long rawScore, final String formattedScore, final String scoreTag, final boolean newBest) {
-            this.rawScore = rawScore;
-            this.formattedScore = formattedScore;
-            this.scoreTag = scoreTag;
-            this.newBest = newBest;
-        }
-        
-        @Override
-        public String toString() {
-            return m.h(this).a("RawScore", this.rawScore).a("FormattedScore", this.formattedScore).a("ScoreTag", this.scoreTag).a("NewBest", this.newBest).toString();
-        }
     }
 }

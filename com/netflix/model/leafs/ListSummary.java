@@ -17,8 +17,7 @@ public class ListSummary implements JsonPopulator
     private static final String TAG = "ListSummary";
     private int length;
     
-    public ListSummary(final int length) {
-        this.length = length;
+    public ListSummary() {
     }
     
     protected ListSummary(final Parcel parcel) {

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.android.widget;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import android.util.AttributeSet;

@@ -4,9 +4,6 @@
 
 package com.viewpagerindicator;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.view.View$BaseSavedState;
 import android.annotation.SuppressLint;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
@@ -23,9 +20,10 @@ import android.view.ViewConfiguration;
 import android.graphics.Paint$Style;
 import android.util.AttributeSet;
 import android.content.Context;
+import com.viewpagerindicator.android.osp.ViewPager;
 import android.graphics.Path;
 import android.graphics.Paint;
-import com.viewpagerindicator.android.osp.ViewPager;
+import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
 import android.graphics.Rect;
 import android.view.View;
 
@@ -38,20 +36,20 @@ public class TitlePageIndicator extends View implements PageIndicator
     private int mActivePointerId;
     private boolean mBoldText;
     private final Rect mBounds;
-    private OnCenterItemClickListener mCenterItemClickListener;
+    private TitlePageIndicator$OnCenterItemClickListener mCenterItemClickListener;
     private float mClipPadding;
     private int mColorSelected;
     private int mColorText;
     private int mCurrentPage;
     private float mFooterIndicatorHeight;
-    private IndicatorStyle mFooterIndicatorStyle;
+    private TitlePageIndicator$IndicatorStyle mFooterIndicatorStyle;
     private float mFooterIndicatorUnderlinePadding;
     private float mFooterLineHeight;
     private float mFooterPadding;
     private boolean mIsDragging;
     private float mLastMotionX;
-    private LinePosition mLinePosition;
-    private OnPageChangeListener mListener;
+    private TitlePageIndicator$LinePosition mLinePosition;
+    private ViewPager$OnPageChangeListener mListener;
     private float mPageOffset;
     private final Paint mPaintFooterIndicator;
     private final Paint mPaintFooterLine;
@@ -68,7 +66,7 @@ public class TitlePageIndicator extends View implements PageIndicator
     }
     
     public TitlePageIndicator(final Context context, final AttributeSet set) {
-        this(context, set, R.attr.vpiTitlePageIndicatorStyle);
+        this(context, set, R$attr.vpiTitlePageIndicatorStyle);
     }
     
     public TitlePageIndicator(final Context context, final AttributeSet set, int color) {
@@ -85,27 +83,27 @@ public class TitlePageIndicator extends View implements PageIndicator
             return;
         }
         final Resources resources = this.getResources();
-        final int color2 = resources.getColor(R.color.default_title_indicator_footer_color);
-        final float dimension = resources.getDimension(R.dimen.default_title_indicator_footer_line_height);
-        final int integer = resources.getInteger(R.integer.default_title_indicator_footer_indicator_style);
-        final float dimension2 = resources.getDimension(R.dimen.default_title_indicator_footer_indicator_height);
-        final float dimension3 = resources.getDimension(R.dimen.default_title_indicator_footer_indicator_underline_padding);
-        final float dimension4 = resources.getDimension(R.dimen.default_title_indicator_footer_padding);
-        final int integer2 = resources.getInteger(R.integer.default_title_indicator_line_position);
-        final int color3 = resources.getColor(R.color.default_title_indicator_selected_color);
-        final boolean boolean1 = resources.getBoolean(R.bool.default_title_indicator_selected_bold);
-        final int color4 = resources.getColor(R.color.default_title_indicator_text_color);
-        final float dimension5 = resources.getDimension(R.dimen.default_title_indicator_text_size);
-        final float dimension6 = resources.getDimension(R.dimen.default_title_indicator_title_padding);
-        final float dimension7 = resources.getDimension(R.dimen.default_title_indicator_clip_padding);
-        final float dimension8 = resources.getDimension(R.dimen.default_title_indicator_top_padding);
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.TitlePageIndicator, color, 0);
+        final int color2 = resources.getColor(R$color.default_title_indicator_footer_color);
+        final float dimension = resources.getDimension(R$dimen.default_title_indicator_footer_line_height);
+        final int integer = resources.getInteger(R$integer.default_title_indicator_footer_indicator_style);
+        final float dimension2 = resources.getDimension(R$dimen.default_title_indicator_footer_indicator_height);
+        final float dimension3 = resources.getDimension(R$dimen.default_title_indicator_footer_indicator_underline_padding);
+        final float dimension4 = resources.getDimension(R$dimen.default_title_indicator_footer_padding);
+        final int integer2 = resources.getInteger(R$integer.default_title_indicator_line_position);
+        final int color3 = resources.getColor(R$color.default_title_indicator_selected_color);
+        final boolean boolean1 = resources.getBoolean(R$bool.default_title_indicator_selected_bold);
+        final int color4 = resources.getColor(R$color.default_title_indicator_text_color);
+        final float dimension5 = resources.getDimension(R$dimen.default_title_indicator_text_size);
+        final float dimension6 = resources.getDimension(R$dimen.default_title_indicator_title_padding);
+        final float dimension7 = resources.getDimension(R$dimen.default_title_indicator_clip_padding);
+        final float dimension8 = resources.getDimension(R$dimen.default_title_indicator_top_padding);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.TitlePageIndicator, color, 0);
         this.mFooterLineHeight = obtainStyledAttributes.getDimension(6, dimension);
-        this.mFooterIndicatorStyle = IndicatorStyle.fromValue(obtainStyledAttributes.getInteger(7, integer));
+        this.mFooterIndicatorStyle = TitlePageIndicator$IndicatorStyle.fromValue(obtainStyledAttributes.getInteger(7, integer));
         this.mFooterIndicatorHeight = obtainStyledAttributes.getDimension(8, dimension2);
         this.mFooterIndicatorUnderlinePadding = obtainStyledAttributes.getDimension(9, dimension3);
         this.mFooterPadding = obtainStyledAttributes.getDimension(10, dimension4);
-        this.mLinePosition = LinePosition.fromValue(obtainStyledAttributes.getInteger(11, integer2));
+        this.mLinePosition = TitlePageIndicator$LinePosition.fromValue(obtainStyledAttributes.getInteger(11, integer2));
         this.mTopPadding = obtainStyledAttributes.getDimension(14, dimension8);
         this.mTitlePadding = obtainStyledAttributes.getDimension(13, dimension6);
         this.mClipPadding = obtainStyledAttributes.getDimension(4, dimension7);
@@ -148,7 +146,7 @@ public class TitlePageIndicator extends View implements PageIndicator
             final int bottom = calcBounds.bottom;
             final int top = calcBounds.top;
             calcBounds.left = (int)(n - n2 / 2.0f + (i - this.mCurrentPage - this.mPageOffset) * width);
-            calcBounds.right = calcBounds.left + n2;
+            calcBounds.right = n2 + calcBounds.left;
             calcBounds.top = 0;
             calcBounds.bottom = bottom - top;
             list.add(calcBounds);
@@ -190,7 +188,7 @@ public class TitlePageIndicator extends View implements PageIndicator
         return this.mFooterPadding;
     }
     
-    public IndicatorStyle getFooterIndicatorStyle() {
+    public TitlePageIndicator$IndicatorStyle getFooterIndicatorStyle() {
         return this.mFooterIndicatorStyle;
     }
     
@@ -198,7 +196,7 @@ public class TitlePageIndicator extends View implements PageIndicator
         return this.mFooterLineHeight;
     }
     
-    public LinePosition getLinePosition() {
+    public TitlePageIndicator$LinePosition getLinePosition() {
         return this.mLinePosition;
     }
     
@@ -261,8 +259,9 @@ public class TitlePageIndicator extends View implements PageIndicator
                     mPageOffset = this.mPageOffset;
                 }
                 else {
+                    final float mPageOffset2 = this.mPageOffset;
                     ++mCurrentPage;
-                    mPageOffset = 1.0f - this.mPageOffset;
+                    mPageOffset = 1.0f - mPageOffset2;
                 }
                 final boolean b = mPageOffset <= 0.25f;
                 final boolean b2 = mPageOffset <= 0.05f;
@@ -336,43 +335,44 @@ public class TitlePageIndicator extends View implements PageIndicator
                         }
                     }
                 }
-                final float mFooterLineHeight = this.mFooterLineHeight;
-                float mFooterIndicatorHeight;
-                final float n11 = mFooterIndicatorHeight = this.mFooterIndicatorHeight;
-                float n12 = mFooterLineHeight;
-                int n13 = height;
-                if (this.mLinePosition == LinePosition.Top) {
-                    n13 = 0;
-                    n12 = -mFooterLineHeight;
-                    mFooterIndicatorHeight = -n11;
+                float mFooterLineHeight = this.mFooterLineHeight;
+                float mFooterIndicatorHeight = this.mFooterIndicatorHeight;
+                int n11;
+                if (this.mLinePosition == TitlePageIndicator$LinePosition.Top) {
+                    n11 = 0;
+                    mFooterLineHeight = -mFooterLineHeight;
+                    mFooterIndicatorHeight = -mFooterIndicatorHeight;
+                }
+                else {
+                    n11 = height;
                 }
                 this.mPath.reset();
-                this.mPath.moveTo(0.0f, n13 - n12 / 2.0f);
-                this.mPath.lineTo((float)width, n13 - n12 / 2.0f);
+                this.mPath.moveTo(0.0f, n11 - mFooterLineHeight / 2.0f);
+                this.mPath.lineTo((float)width, n11 - mFooterLineHeight / 2.0f);
                 this.mPath.close();
                 canvas.drawPath(this.mPath, this.mPaintFooterLine);
-                final float n14 = n13 - n12;
-                switch (this.mFooterIndicatorStyle) {
+                final float n12 = n11 - mFooterLineHeight;
+                switch (TitlePageIndicator$1.$SwitchMap$com$viewpagerindicator$TitlePageIndicator$IndicatorStyle[this.mFooterIndicatorStyle.ordinal()]) {
                     default: {}
-                    case Triangle: {
+                    case 1: {
                         this.mPath.reset();
-                        this.mPath.moveTo(n, n14 - mFooterIndicatorHeight);
-                        this.mPath.lineTo(n + mFooterIndicatorHeight, n14);
-                        this.mPath.lineTo(n - mFooterIndicatorHeight, n14);
+                        this.mPath.moveTo(n, n12 - mFooterIndicatorHeight);
+                        this.mPath.lineTo(n + mFooterIndicatorHeight, n12);
+                        this.mPath.lineTo(n - mFooterIndicatorHeight, n12);
                         this.mPath.close();
                         canvas.drawPath(this.mPath, this.mPaintFooterIndicator);
                     }
-                    case Underline: {
+                    case 2: {
                         if (b && mCurrentPage < size) {
                             final Rect rect8 = calculateAllBounds.get(mCurrentPage);
-                            final float n15 = rect8.right + this.mFooterIndicatorUnderlinePadding;
-                            final float n16 = rect8.left - this.mFooterIndicatorUnderlinePadding;
-                            final float n17 = n14 - mFooterIndicatorHeight;
+                            final float n13 = rect8.right + this.mFooterIndicatorUnderlinePadding;
+                            final float n14 = rect8.left - this.mFooterIndicatorUnderlinePadding;
+                            final float n15 = n12 - mFooterIndicatorHeight;
                             this.mPath.reset();
-                            this.mPath.moveTo(n16, n14);
-                            this.mPath.lineTo(n15, n14);
-                            this.mPath.lineTo(n15, n17);
-                            this.mPath.lineTo(n16, n17);
+                            this.mPath.moveTo(n14, n12);
+                            this.mPath.lineTo(n13, n12);
+                            this.mPath.lineTo(n13, n15);
+                            this.mPath.lineTo(n14, n15);
                             this.mPath.close();
                             this.mPaintFooterIndicator.setAlpha((int)(255.0f * n5));
                             canvas.drawPath(this.mPath, this.mPaintFooterIndicator);
@@ -396,7 +396,7 @@ public class TitlePageIndicator extends View implements PageIndicator
             this.mBounds.setEmpty();
             this.mBounds.bottom = (int)(this.mPaintText.descent() - this.mPaintText.ascent());
             n2 = this.mBounds.bottom - this.mBounds.top + this.mFooterLineHeight + this.mFooterPadding + this.mTopPadding;
-            if (this.mFooterIndicatorStyle != IndicatorStyle.None) {
+            if (this.mFooterIndicatorStyle != TitlePageIndicator$IndicatorStyle.None) {
                 n2 += this.mFooterIndicatorHeight;
             }
         }
@@ -430,105 +430,106 @@ public class TitlePageIndicator extends View implements PageIndicator
     }
     
     public void onRestoreInstanceState(final Parcelable parcelable) {
-        final SavedState savedState = (SavedState)parcelable;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        this.mCurrentPage = savedState.currentPage;
+        final TitlePageIndicator$SavedState titlePageIndicator$SavedState = (TitlePageIndicator$SavedState)parcelable;
+        super.onRestoreInstanceState(titlePageIndicator$SavedState.getSuperState());
+        this.mCurrentPage = titlePageIndicator$SavedState.currentPage;
         this.requestLayout();
     }
     
     public Parcelable onSaveInstanceState() {
-        final SavedState savedState = new SavedState(super.onSaveInstanceState());
-        savedState.currentPage = this.mCurrentPage;
-        return (Parcelable)savedState;
+        final TitlePageIndicator$SavedState titlePageIndicator$SavedState = new TitlePageIndicator$SavedState(super.onSaveInstanceState());
+        titlePageIndicator$SavedState.currentPage = this.mCurrentPage;
+        return (Parcelable)titlePageIndicator$SavedState;
     }
     
     @SuppressLint({ "ClickableViewAccessibility" })
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        if (super.onTouchEvent(motionEvent)) {
-            return true;
-        }
-        if (this.mViewPager == null || this.mViewPager.getAdapter().getCount() == 0) {
-            return false;
-        }
-        final int n = motionEvent.getAction() & 0xFF;
-        switch (n) {
-            case 0: {
-                this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, 0);
-                this.mLastMotionX = motionEvent.getX();
-                break;
+        int n = 0;
+        if (!super.onTouchEvent(motionEvent)) {
+            if (this.mViewPager == null || this.mViewPager.getAdapter().getCount() == 0) {
+                return false;
             }
-            case 2: {
-                final float x = MotionEventCompat.getX(motionEvent, MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId));
-                final float n2 = x - this.mLastMotionX;
-                if (!this.mIsDragging && Math.abs(n2) > this.mTouchSlop) {
-                    this.mIsDragging = true;
+            final int n2 = motionEvent.getAction() & 0xFF;
+            switch (n2) {
+                default: {
+                    return true;
                 }
-                if (!this.mIsDragging) {
+                case 0: {
+                    this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, 0);
+                    this.mLastMotionX = motionEvent.getX();
+                    return true;
+                }
+                case 2: {
+                    final float x = MotionEventCompat.getX(motionEvent, MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId));
+                    final float n3 = x - this.mLastMotionX;
+                    if (!this.mIsDragging && Math.abs(n3) > this.mTouchSlop) {
+                        this.mIsDragging = true;
+                    }
+                    if (!this.mIsDragging) {
+                        break;
+                    }
+                    this.mLastMotionX = x;
+                    if (this.mViewPager.isFakeDragging() || this.mViewPager.beginFakeDrag()) {
+                        this.mViewPager.fakeDragBy(n3);
+                        return true;
+                    }
                     break;
                 }
-                this.mLastMotionX = x;
-                if (this.mViewPager.isFakeDragging() || this.mViewPager.beginFakeDrag()) {
-                    this.mViewPager.fakeDragBy(n2);
-                    break;
-                }
-                break;
-            }
-            case 1:
-            case 3: {
-                if (!this.mIsDragging) {
-                    final int count = this.mViewPager.getAdapter().getCount();
-                    final int width = this.getWidth();
-                    final float n3 = width / 2.0f;
-                    final float n4 = width / 6.0f;
-                    final float x2 = motionEvent.getX();
-                    if (x2 < n3 - n4) {
-                        if (this.mCurrentPage > 0) {
-                            if (n != 3) {
-                                this.mViewPager.setCurrentItem(this.mCurrentPage - 1);
+                case 1:
+                case 3: {
+                    if (!this.mIsDragging) {
+                        final int count = this.mViewPager.getAdapter().getCount();
+                        final int width = this.getWidth();
+                        final float n4 = width / 2.0f;
+                        final float n5 = width / 6.0f;
+                        final float x2 = motionEvent.getX();
+                        if (x2 < n4 - n5) {
+                            if (this.mCurrentPage > 0) {
+                                if (n2 != 3) {
+                                    this.mViewPager.setCurrentItem(this.mCurrentPage - 1);
+                                    return true;
+                                }
+                                break;
                             }
-                            return true;
+                        }
+                        else if (x2 > n5 + n4) {
+                            if (this.mCurrentPage < count - 1) {
+                                if (n2 != 3) {
+                                    this.mViewPager.setCurrentItem(this.mCurrentPage + 1);
+                                    return true;
+                                }
+                                break;
+                            }
+                        }
+                        else if (this.mCenterItemClickListener != null && n2 != 3) {
+                            this.mCenterItemClickListener.onCenterItemClick(this.mCurrentPage);
                         }
                     }
-                    else if (x2 > n3 + n4) {
-                        if (this.mCurrentPage < count - 1) {
-                            if (n != 3) {
-                                this.mViewPager.setCurrentItem(this.mCurrentPage + 1);
-                            }
-                            return true;
-                        }
+                    this.mIsDragging = false;
+                    this.mActivePointerId = -1;
+                    if (this.mViewPager.isFakeDragging()) {
+                        this.mViewPager.endFakeDrag();
+                        return true;
                     }
-                    else if (this.mCenterItemClickListener != null && n != 3) {
-                        this.mCenterItemClickListener.onCenterItemClick(this.mCurrentPage);
-                    }
-                }
-                this.mIsDragging = false;
-                this.mActivePointerId = -1;
-                if (this.mViewPager.isFakeDragging()) {
-                    this.mViewPager.endFakeDrag();
                     break;
                 }
-                break;
-            }
-            case 5: {
-                final int actionIndex = MotionEventCompat.getActionIndex(motionEvent);
-                this.mLastMotionX = MotionEventCompat.getX(motionEvent, actionIndex);
-                this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, actionIndex);
-                break;
-            }
-            case 6: {
-                final int actionIndex2 = MotionEventCompat.getActionIndex(motionEvent);
-                if (MotionEventCompat.getPointerId(motionEvent, actionIndex2) == this.mActivePointerId) {
-                    int n5;
-                    if (actionIndex2 == 0) {
-                        n5 = 1;
-                    }
-                    else {
-                        n5 = 0;
-                    }
-                    this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, n5);
+                case 5: {
+                    final int actionIndex = MotionEventCompat.getActionIndex(motionEvent);
+                    this.mLastMotionX = MotionEventCompat.getX(motionEvent, actionIndex);
+                    this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, actionIndex);
+                    return true;
                 }
-                this.mLastMotionX = MotionEventCompat.getX(motionEvent, MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId));
-                break;
+                case 6: {
+                    final int actionIndex2 = MotionEventCompat.getActionIndex(motionEvent);
+                    if (MotionEventCompat.getPointerId(motionEvent, actionIndex2) == this.mActivePointerId) {
+                        if (actionIndex2 == 0) {
+                            n = 1;
+                        }
+                        this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, n);
+                    }
+                    this.mLastMotionX = MotionEventCompat.getX(motionEvent, MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId));
+                    return true;
+                }
             }
         }
         return true;
@@ -564,7 +565,7 @@ public class TitlePageIndicator extends View implements PageIndicator
         this.invalidate();
     }
     
-    public void setFooterIndicatorStyle(final IndicatorStyle mFooterIndicatorStyle) {
+    public void setFooterIndicatorStyle(final TitlePageIndicator$IndicatorStyle mFooterIndicatorStyle) {
         this.mFooterIndicatorStyle = mFooterIndicatorStyle;
         this.invalidate();
     }
@@ -575,16 +576,16 @@ public class TitlePageIndicator extends View implements PageIndicator
         this.invalidate();
     }
     
-    public void setLinePosition(final LinePosition mLinePosition) {
+    public void setLinePosition(final TitlePageIndicator$LinePosition mLinePosition) {
         this.mLinePosition = mLinePosition;
         this.invalidate();
     }
     
-    public void setOnCenterItemClickListener(final OnCenterItemClickListener mCenterItemClickListener) {
+    public void setOnCenterItemClickListener(final TitlePageIndicator$OnCenterItemClickListener mCenterItemClickListener) {
         this.mCenterItemClickListener = mCenterItemClickListener;
     }
     
-    public void setOnPageChangeListener(final OnPageChangeListener mListener) {
+    public void setOnPageChangeListener(final ViewPager$OnPageChangeListener mListener) {
         this.mListener = mListener;
     }
     
@@ -634,96 +635,12 @@ public class TitlePageIndicator extends View implements PageIndicator
         if (mViewPager.getAdapter() == null) {
             throw new IllegalStateException("ViewPager does not have adapter instance.");
         }
-        (this.mViewPager = mViewPager).setOnPageChangeListener((ViewPager.OnPageChangeListener)this);
+        (this.mViewPager = mViewPager).setOnPageChangeListener(this);
         this.invalidate();
     }
     
     public void setViewPager(final ViewPager viewPager, final int currentItem) {
         this.setViewPager(viewPager);
         this.setCurrentItem(currentItem);
-    }
-    
-    public enum IndicatorStyle
-    {
-        None(0), 
-        Triangle(1), 
-        Underline(2);
-        
-        public final int value;
-        
-        private IndicatorStyle(final int value) {
-            this.value = value;
-        }
-        
-        public static IndicatorStyle fromValue(final int n) {
-            final IndicatorStyle[] values = values();
-            for (int length = values.length, i = 0; i < length; ++i) {
-                final IndicatorStyle indicatorStyle = values[i];
-                if (indicatorStyle.value == n) {
-                    return indicatorStyle;
-                }
-            }
-            return null;
-        }
-    }
-    
-    public enum LinePosition
-    {
-        Bottom(0), 
-        Top(1);
-        
-        public final int value;
-        
-        private LinePosition(final int value) {
-            this.value = value;
-        }
-        
-        public static LinePosition fromValue(final int n) {
-            final LinePosition[] values = values();
-            for (int length = values.length, i = 0; i < length; ++i) {
-                final LinePosition linePosition = values[i];
-                if (linePosition.value == n) {
-                    return linePosition;
-                }
-            }
-            return null;
-        }
-    }
-    
-    public interface OnCenterItemClickListener
-    {
-        void onCenterItemClick(final int p0);
-    }
-    
-    static class SavedState extends View$BaseSavedState
-    {
-        public static final Parcelable$Creator<SavedState> CREATOR;
-        int currentPage;
-        
-        static {
-            CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                public SavedState createFromParcel(final Parcel parcel) {
-                    return new SavedState(parcel);
-                }
-                
-                public SavedState[] newArray(final int n) {
-                    return new SavedState[n];
-                }
-            };
-        }
-        
-        private SavedState(final Parcel parcel) {
-            super(parcel);
-            this.currentPage = parcel.readInt();
-        }
-        
-        public SavedState(final Parcelable parcelable) {
-            super(parcelable);
-        }
-        
-        public void writeToParcel(final Parcel parcel, final int n) {
-            super.writeToParcel(parcel, n);
-            parcel.writeInt(this.currentPage);
-        }
     }
 }

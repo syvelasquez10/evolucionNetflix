@@ -225,9 +225,12 @@ public class SimpleArrayMap<K, V>
     public int hashCode() {
         final int[] mHashes = this.mHashes;
         final Object[] mArray = this.mArray;
-        int n = 0;
-        for (int i = 0, n2 = 1; i < this.mSize; ++i, n2 += 2) {
-            final Object o = mArray[n2];
+        final int mSize = this.mSize;
+        int n = 1;
+        int i = 0;
+        int n2 = 0;
+        while (i < mSize) {
+            final Object o = mArray[n];
             final int n3 = mHashes[i];
             int hashCode;
             if (o == null) {
@@ -236,9 +239,11 @@ public class SimpleArrayMap<K, V>
             else {
                 hashCode = o.hashCode();
             }
-            n += (hashCode ^ n3);
+            n2 += (hashCode ^ n3);
+            ++i;
+            n += 2;
         }
-        return n;
+        return n2;
     }
     
     int indexOf(final Object o, final int n) {
@@ -259,8 +264,9 @@ public class SimpleArrayMap<K, V>
                         }
                     }
                     for (int n4 = binarySearch - 1; n4 >= 0 && this.mHashes[n4] == n; --n4) {
+                        n2 = n4;
                         if (o.equals(this.mArray[n4 << 1])) {
-                            return n4;
+                            return n2;
                         }
                     }
                     return ~n3;
@@ -295,8 +301,9 @@ public class SimpleArrayMap<K, V>
                         }
                     }
                     for (int n3 = binarySearch - 1; n3 >= 0 && this.mHashes[n3] == 0; --n3) {
+                        n = n3;
                         if (this.mArray[n3 << 1] == null) {
-                            return n3;
+                            return n;
                         }
                     }
                     return ~n2;
@@ -307,20 +314,23 @@ public class SimpleArrayMap<K, V>
     }
     
     int indexOfValue(final Object o) {
-        final int n = this.mSize * 2;
+        int i = 1;
+        final int n = 1;
+        final int n2 = this.mSize * 2;
         final Object[] mArray = this.mArray;
         if (o == null) {
-            for (int i = 1; i < n; i += 2) {
-                if (mArray[i] == null) {
-                    return i >> 1;
+            for (int j = n; j < n2; j += 2) {
+                if (mArray[j] == null) {
+                    return j >> 1;
                 }
             }
         }
         else {
-            for (int j = 1; j < n; j += 2) {
-                if (o.equals(mArray[j])) {
-                    return j >> 1;
+            while (i < n2) {
+                if (o.equals(mArray[i])) {
+                    return i >> 1;
                 }
+                i += 2;
             }
         }
         return -1;
@@ -336,11 +346,11 @@ public class SimpleArrayMap<K, V>
     
     public V put(final K k, final V v) {
         final int n = 8;
-        int hashCode;
         int n2;
+        int hashCode;
         if (k == null) {
-            hashCode = 0;
             n2 = this.indexOfNull();
+            hashCode = 0;
         }
         else {
             hashCode = k.hashCode();
@@ -385,6 +395,7 @@ public class SimpleArrayMap<K, V>
     }
     
     public void putAll(final SimpleArrayMap<? extends K, ? extends V> simpleArrayMap) {
+        int i = 0;
         final int mSize = simpleArrayMap.mSize;
         this.ensureCapacity(this.mSize + mSize);
         if (this.mSize == 0) {
@@ -395,8 +406,9 @@ public class SimpleArrayMap<K, V>
             }
         }
         else {
-            for (int i = 0; i < mSize; ++i) {
+            while (i < mSize) {
                 this.put(simpleArrayMap.keyAt(i), simpleArrayMap.valueAt(i));
+                ++i;
             }
         }
     }

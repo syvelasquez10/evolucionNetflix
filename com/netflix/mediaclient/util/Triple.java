@@ -74,6 +74,6 @@ public class Triple<T, U, V>
         if (this.third != null) {
             hashCode = this.third.hashCode();
         }
-        return ((hashCode2 + 31) * 31 + hashCode3) * 31 + hashCode;
+        return (hashCode3 + (hashCode2 + 31) * 31) * 31 + hashCode;
     }
 }

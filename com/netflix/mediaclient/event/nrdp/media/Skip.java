@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Skip extends BaseMediaEvent
@@ -16,7 +15,7 @@ public class Skip extends BaseMediaEvent
     private boolean error;
     private int pts;
     
-    public Skip(final JSONObject jsonObject) throws JSONException {
+    public Skip(final JSONObject jsonObject) {
         super("skip", jsonObject);
         this.error = false;
     }
@@ -30,7 +29,7 @@ public class Skip extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.pts = BaseNccpEvent.getInt(jsonObject, "pts", 0);
         this.error = BaseNccpEvent.getBoolean(jsonObject, "error", false);
     }

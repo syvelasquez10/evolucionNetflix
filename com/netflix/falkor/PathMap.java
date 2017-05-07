@@ -23,31 +23,30 @@ public class PathMap
     
     public void add(final PQL pql, final PQL pql2) {
         final int n = pql.getKeySegments().size() - 1;
-        Map<K, V> map = (Map<K, V>)this.map;
-        final HashMap<Object, Set> hashMap = null;
-        HashMap<Object, HashMap> hashMap2;
-        for (int i = 0; i < n; ++i, map = (Map<K, V>)hashMap2) {
+        Map<Object, HashMap<Object, HashMap>> map = (Map<Object, HashMap<Object, HashMap>>)this.map;
+        Map<K, V> map2;
+        for (int i = 0; i < n; ++i, map = (Map<Object, HashMap<Object, HashMap>>)map2) {
             final Object value = pql.getKeySegments().get(i);
-            if ((hashMap2 = (HashMap<Object, HashMap>)map.get(value)) == null) {
-                hashMap2 = new HashMap<Object, HashMap>();
-                map.put((K)value, (V)hashMap2);
+            if ((map2 = (Map<K, V>)map.get(value)) == null) {
+                map2 = (Map<K, V>)new HashMap<Object, HashMap<Object, HashMap>>();
+                map.put(value, (HashMap<Object, HashMap>)map2);
             }
         }
         final Object value2 = pql.getKeySegments().get(n);
         Object o;
         if (map.get(value2) != null) {
-            o = ((HashMap<Object, HashMap>)map.get(value2)).get("____");
+            o = map.get(value2).get("____");
         }
         else {
-            map.put((K)value2, (V)new HashMap<Object, HashMap>());
-            o = hashMap;
+            map.put(value2, new HashMap<Object, HashMap>());
+            o = null;
         }
-        Cloneable cloneable = (Cloneable)o;
+        Object o2 = o;
         if (o == null) {
-            cloneable = new HashSet<Object>();
-            ((HashMap<Object, HashMap>)map.get(value2)).put("____", (HashMap<Object, Set>)cloneable);
+            o2 = new HashSet<PQL>();
+            map.get(value2).put("____", (HashMap<Object, Set>)o2);
         }
-        ((Set<PQL>)cloneable).add(pql2);
+        ((Set<PQL>)o2).add(pql2);
     }
     
     public List<PQL> translate(final PQL pql) {

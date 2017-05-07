@@ -4,10 +4,11 @@
 
 package android.support.v7.app;
 
+import android.support.v7.mediarouter.R$attr;
 import android.util.TypedValue;
 import android.graphics.drawable.Drawable;
 import android.view.ContextThemeWrapper;
-import android.support.v7.mediarouter.R;
+import android.support.v7.mediarouter.R$style;
 import android.content.Context;
 
 final class MediaRouterThemeHelper
@@ -20,16 +21,16 @@ final class MediaRouterThemeHelper
             lightTheme = b2;
             o = context;
             if (b) {
-                o = new ContextThemeWrapper(context, R.style.Theme_AppCompat);
+                o = new ContextThemeWrapper(context, R$style.Theme_AppCompat);
                 lightTheme = false;
             }
         }
         int n;
         if (lightTheme) {
-            n = R.style.Theme_MediaRouter_Light;
+            n = R$style.Theme_MediaRouter_Light;
         }
         else {
-            n = R.style.Theme_MediaRouter;
+            n = R$style.Theme_MediaRouter;
         }
         return (Context)new ContextThemeWrapper((Context)o, n);
     }
@@ -52,6 +53,6 @@ final class MediaRouterThemeHelper
     
     private static boolean isLightTheme(final Context context) {
         final TypedValue typedValue = new TypedValue();
-        return context.getTheme().resolveAttribute(R.attr.isLightTheme, typedValue, true) && typedValue.data != 0;
+        return context.getTheme().resolveAttribute(R$attr.isLightTheme, typedValue, true) && typedValue.data != 0;
     }
 }

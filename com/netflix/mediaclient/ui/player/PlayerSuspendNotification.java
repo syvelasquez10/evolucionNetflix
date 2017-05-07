@@ -5,20 +5,17 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 import com.netflix.mediaclient.ui.Asset;
 import android.app.Notification;
 import android.text.TextUtils;
 import android.app.Notification$Builder;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.IntentFilter;
 import android.widget.RemoteViews;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
@@ -69,25 +66,7 @@ public final class PlayerSuspendNotification
         }
         final ImageLoader imageLoader = this.mServiceManager.getImageLoader();
         if (imageLoader != null) {
-            imageLoader.getImg(s, IClientLogging.AssetType.boxArt, 0, 0, (ImageLoader.ImageLoaderListener)new ImageLoader.ImageLoaderListener() {
-                @Override
-                public void onErrorResponse(final String s) {
-                    Log.e(PlayerSuspendNotification.TAG, "failed to downlod " + s);
-                }
-                
-                @Override
-                public void onResponse(Bitmap copy, final String s) {
-                    if (copy != null && !copy.isRecycled()) {
-                        if (Log.isLoggable(PlayerSuspendNotification.TAG, 3)) {
-                            Log.d(PlayerSuspendNotification.TAG, "downloaded image from " + s);
-                        }
-                        copy = copy.copy(copy.getConfig(), copy.isMutable());
-                        PlayerSuspendNotification.this.show(copy);
-                        return;
-                    }
-                    Log.e(PlayerSuspendNotification.TAG, "bitmap is not valid " + copy);
-                }
-            });
+            imageLoader.getImg(s, IClientLogging$AssetType.boxArt, 0, 0, new PlayerSuspendNotification$2(this));
             return;
         }
         Log.e(PlayerSuspendNotification.TAG, "ImageLoader is null!");
@@ -99,17 +78,17 @@ public final class PlayerSuspendNotification
         RemoteViews remoteViews;
         if (b) {
             if (notEmpty) {
-                remoteViews = new RemoteViews(packageName, 2130903189);
+                remoteViews = new RemoteViews(packageName, 2130903190);
             }
             else {
-                remoteViews = new RemoteViews(packageName, 2130903191);
+                remoteViews = new RemoteViews(packageName, 2130903192);
             }
         }
         else if (notEmpty) {
-            remoteViews = new RemoteViews(packageName, 2130903188);
+            remoteViews = new RemoteViews(packageName, 2130903189);
         }
         else {
-            remoteViews = new RemoteViews(packageName, 2130903190);
+            remoteViews = new RemoteViews(packageName, 2130903191);
         }
         if (bitmap != null) {
             remoteViews.setImageViewBitmap(2131165667, bitmap);
@@ -142,7 +121,7 @@ public final class PlayerSuspendNotification
         }
         Notification notification2;
         if (AndroidUtils.getAndroidVersion() < 21) {
-            final Notification notification = notification2 = new NotificationCompat.Builder((Context)this.mPlayerActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837768).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
+            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mPlayerActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837768).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
             if (AndroidUtils.getAndroidVersion() >= 16) {
                 notification.bigContentView = this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, true);
                 notification2 = notification;
@@ -150,7 +129,7 @@ public final class PlayerSuspendNotification
         }
         else {
             final int color = this.mPlayerActivity.getResources().getColor(2131296356);
-            final String string = this.mPlayerActivity.getResources().getString(2131493362);
+            final String string = this.mPlayerActivity.getResources().getString(2131493304);
             final Notification$Builder setVisibility = new Notification$Builder((Context)this.mPlayerActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837768).setLargeIcon(largeIcon).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (TextUtils.isEmpty((CharSequence)this.mSecondaryTitle)) {
                 setVisibility.setContentText((CharSequence)string);
@@ -174,28 +153,14 @@ public final class PlayerSuspendNotification
             return;
         }
         this.mShowNotification.set(true);
-        final SimpleManagerCallback simpleManagerCallback = new SimpleManagerCallback() {
-            @Override
-            public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
-                if (status.isSucces()) {
-                    PlayerSuspendNotification.this.fetchImageWithLoader(episodeDetails.getHighResolutionPortraitBoxArtUrl());
-                }
-            }
-            
-            @Override
-            public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
-                if (status.isSucces()) {
-                    PlayerSuspendNotification.this.fetchImageWithLoader(movieDetails.getHighResolutionPortraitBoxArtUrl());
-                }
-            }
-        };
+        final PlayerSuspendNotification$1 playerSuspendNotification$1 = new PlayerSuspendNotification$1(this);
         if (asset.isEpisode()) {
-            this.mSecondaryTitle = this.mPlayerActivity.getApplicationContext().getString(2131493259, new Object[] { asset.getSeasonNumber(), asset.getEpisodeNumber(), asset.getTitle() });
+            this.mSecondaryTitle = this.mPlayerActivity.getApplicationContext().getString(2131493218, new Object[] { asset.getSeasonNumber(), asset.getEpisodeNumber(), asset.getTitle() });
             this.mTitle = asset.getParentTitle();
-            this.mServiceManager.getBrowse().fetchEpisodeDetails(String.valueOf(asset.getPlayableId()), simpleManagerCallback);
+            this.mServiceManager.getBrowse().fetchEpisodeDetails(String.valueOf(asset.getPlayableId()), playerSuspendNotification$1);
             return;
         }
-        this.mServiceManager.getBrowse().fetchMovieDetails(String.valueOf(asset.getPlayableId()), simpleManagerCallback);
+        this.mServiceManager.getBrowse().fetchMovieDetails(String.valueOf(asset.getPlayableId()), playerSuspendNotification$1);
         this.mSecondaryTitle = null;
         this.mTitle = asset.getTitle();
     }

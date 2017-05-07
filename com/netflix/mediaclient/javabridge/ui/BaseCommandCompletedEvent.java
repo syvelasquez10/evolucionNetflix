@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.javabridge.ui;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.event.CallbackEvent;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
@@ -23,7 +22,7 @@ public abstract class BaseCommandCompletedEvent extends JsonBaseNccpEvent implem
         super(s);
     }
     
-    public BaseCommandCompletedEvent(final String s, final JSONObject jsonObject) throws JSONException {
+    public BaseCommandCompletedEvent(final String s, final JSONObject jsonObject) {
         super(s, jsonObject);
     }
     
@@ -42,7 +41,7 @@ public abstract class BaseCommandCompletedEvent extends JsonBaseNccpEvent implem
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.idx = Integer.parseInt(BaseNccpEvent.getString(jsonObject, "idx", null));
         this.failed = !"COMPLETE".equals(BaseNccpEvent.getString(jsonObject, "result", null));
     }

@@ -4,27 +4,27 @@
 
 package com.facebook.widget;
 
-import android.content.DialogInterface;
-import android.content.DialogInterface$OnClickListener;
-import android.app.AlertDialog$Builder;
-import android.view.View;
 import android.util.Log;
 import java.util.Collection;
 import java.util.Collections;
 import com.facebook.internal.SessionAuthorizationType;
-import com.facebook.SessionState;
 import android.app.Activity;
 import android.content.Intent;
 import com.facebook.FacebookException;
 import java.util.List;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionDefaultAudience;
+import com.facebook.android.R$string;
 import android.content.res.TypedArray;
+import com.facebook.android.R$styleable;
 import com.facebook.internal.Utility;
+import com.facebook.Session$StatusCallback;
 import android.view.View$OnClickListener;
-import com.facebook.Response;
+import com.facebook.Request$GraphUserCallback;
 import com.facebook.Request;
-import com.facebook.android.R;
+import com.facebook.android.R$drawable;
+import com.facebook.android.R$dimen;
+import com.facebook.android.R$color;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.facebook.Session;
@@ -42,10 +42,10 @@ public class LoginButton extends Button
     private String loginText;
     private String logoutText;
     private Fragment parentFragment;
-    private LoginButtonProperties properties;
+    private LoginButton$LoginButtonProperties properties;
     private SessionTracker sessionTracker;
     private GraphUser user;
-    private UserInfoChangedCallback userInfoChangedCallback;
+    private LoginButton$UserInfoChangedCallback userInfoChangedCallback;
     private Session userInfoSession;
     
     static {
@@ -57,7 +57,7 @@ public class LoginButton extends Button
         this.applicationId = null;
         this.user = null;
         this.userInfoSession = null;
-        this.properties = new LoginButtonProperties();
+        this.properties = new LoginButton$LoginButtonProperties();
         this.initializeActiveSessionWithCachedToken(context);
         this.finishInit();
     }
@@ -67,20 +67,20 @@ public class LoginButton extends Button
         this.applicationId = null;
         this.user = null;
         this.userInfoSession = null;
-        this.properties = new LoginButtonProperties();
+        this.properties = new LoginButton$LoginButtonProperties();
         if (set.getStyleAttribute() == 0) {
-            this.setTextColor(this.getResources().getColor(R.color.com_facebook_loginview_text_color));
-            this.setTextSize(0, this.getResources().getDimension(R.dimen.com_facebook_loginview_text_size));
-            this.setPadding(this.getResources().getDimensionPixelSize(R.dimen.com_facebook_loginview_padding_left), this.getResources().getDimensionPixelSize(R.dimen.com_facebook_loginview_padding_top), this.getResources().getDimensionPixelSize(R.dimen.com_facebook_loginview_padding_right), this.getResources().getDimensionPixelSize(R.dimen.com_facebook_loginview_padding_bottom));
-            this.setWidth(this.getResources().getDimensionPixelSize(R.dimen.com_facebook_loginview_width));
-            this.setHeight(this.getResources().getDimensionPixelSize(R.dimen.com_facebook_loginview_height));
+            this.setTextColor(this.getResources().getColor(R$color.com_facebook_loginview_text_color));
+            this.setTextSize(0, this.getResources().getDimension(R$dimen.com_facebook_loginview_text_size));
+            this.setPadding(this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_left), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_top), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_right), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_bottom));
+            this.setWidth(this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_width));
+            this.setHeight(this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_height));
             this.setGravity(17);
             if (this.isInEditMode()) {
-                this.setBackgroundColor(this.getResources().getColor(R.color.com_facebook_blue));
+                this.setBackgroundColor(this.getResources().getColor(R$color.com_facebook_blue));
                 this.loginText = "Log in";
             }
             else {
-                this.setBackgroundResource(R.drawable.com_facebook_loginbutton_blue);
+                this.setBackgroundResource(R$drawable.com_facebook_loginbutton_blue);
             }
         }
         this.parseAttributes(set);
@@ -94,7 +94,7 @@ public class LoginButton extends Button
         this.applicationId = null;
         this.user = null;
         this.userInfoSession = null;
-        this.properties = new LoginButtonProperties();
+        this.properties = new LoginButton$LoginButtonProperties();
         this.parseAttributes(set);
         this.initializeActiveSessionWithCachedToken(context);
     }
@@ -104,20 +104,7 @@ public class LoginButton extends Button
             final Session openSession = this.sessionTracker.getOpenSession();
             if (openSession != null) {
                 if (openSession != this.userInfoSession) {
-                    Request.executeBatchAsync(Request.newMeRequest(openSession, (Request.GraphUserCallback)new Request.GraphUserCallback() {
-                        @Override
-                        public void onCompleted(final GraphUser graphUser, final Response response) {
-                            if (openSession == LoginButton.this.sessionTracker.getOpenSession()) {
-                                LoginButton.this.user = graphUser;
-                                if (LoginButton.this.userInfoChangedCallback != null) {
-                                    LoginButton.this.userInfoChangedCallback.onUserInfoFetched(LoginButton.this.user);
-                                }
-                            }
-                            if (response.getError() != null) {
-                                LoginButton.this.handleError(response.getError().getException());
-                            }
-                        }
-                    }));
+                    Request.executeBatchAsync(Request.newMeRequest(openSession, new LoginButton$1(this, openSession)));
                     this.userInfoSession = openSession;
                 }
             }
@@ -131,10 +118,10 @@ public class LoginButton extends Button
     }
     
     private void finishInit() {
-        this.setOnClickListener((View$OnClickListener)new LoginClickListener());
+        this.setOnClickListener((View$OnClickListener)new LoginButton$LoginClickListener(this, null));
         this.setButtonText();
         if (!this.isInEditMode()) {
-            this.sessionTracker = new SessionTracker(this.getContext(), new LoginButtonCallback(), null, false);
+            this.sessionTracker = new SessionTracker(this.getContext(), new LoginButton$LoginButtonCallback(this, null), null, false);
             this.fetchUserInfo();
         }
     }
@@ -153,7 +140,7 @@ public class LoginButton extends Button
     }
     
     private void parseAttributes(final AttributeSet set) {
-        final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R.styleable.com_facebook_login_view);
+        final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R$styleable.com_facebook_login_view);
         this.confirmLogout = obtainStyledAttributes.getBoolean(0, true);
         this.fetchUserInfo = obtainStyledAttributes.getBoolean(1, true);
         this.loginText = obtainStyledAttributes.getString(2);
@@ -168,7 +155,7 @@ public class LoginButton extends Button
                 text = this.logoutText;
             }
             else {
-                text = this.getResources().getString(R.string.com_facebook_loginview_log_out_button);
+                text = this.getResources().getString(R$string.com_facebook_loginview_log_out_button);
             }
             this.setText((CharSequence)text);
             return;
@@ -178,7 +165,7 @@ public class LoginButton extends Button
             text2 = this.loginText;
         }
         else {
-            text2 = this.getResources().getString(R.string.com_facebook_loginview_log_in_button);
+            text2 = this.getResources().getString(R$string.com_facebook_loginview_log_in_button);
         }
         this.setText((CharSequence)text2);
     }
@@ -195,7 +182,7 @@ public class LoginButton extends Button
         return this.properties.getLoginBehavior();
     }
     
-    public OnErrorListener getOnErrorListener() {
+    public LoginButton$OnErrorListener getOnErrorListener() {
         return this.properties.getOnErrorListener();
     }
     
@@ -203,11 +190,11 @@ public class LoginButton extends Button
         return this.properties.getPermissions();
     }
     
-    public Session.StatusCallback getSessionStatusCallback() {
+    public Session$StatusCallback getSessionStatusCallback() {
         return this.properties.getSessionStatusCallback();
     }
     
-    public UserInfoChangedCallback getUserInfoChangedCallback() {
+    public LoginButton$UserInfoChangedCallback getUserInfoChangedCallback() {
         return this.userInfoChangedCallback;
     }
     
@@ -263,11 +250,11 @@ public class LoginButton extends Button
         this.properties.setLoginBehavior(loginBehavior);
     }
     
-    public void setOnErrorListener(final OnErrorListener onErrorListener) {
+    public void setOnErrorListener(final LoginButton$OnErrorListener onErrorListener) {
         this.properties.setOnErrorListener(onErrorListener);
     }
     
-    void setProperties(final LoginButtonProperties properties) {
+    void setProperties(final LoginButton$LoginButtonProperties properties) {
         this.properties = properties;
     }
     
@@ -285,189 +272,11 @@ public class LoginButton extends Button
         this.setButtonText();
     }
     
-    public void setSessionStatusCallback(final Session.StatusCallback sessionStatusCallback) {
+    public void setSessionStatusCallback(final Session$StatusCallback sessionStatusCallback) {
         this.properties.setSessionStatusCallback(sessionStatusCallback);
     }
     
-    public void setUserInfoChangedCallback(final UserInfoChangedCallback userInfoChangedCallback) {
+    public void setUserInfoChangedCallback(final LoginButton$UserInfoChangedCallback userInfoChangedCallback) {
         this.userInfoChangedCallback = userInfoChangedCallback;
-    }
-    
-    private class LoginButtonCallback implements StatusCallback
-    {
-        @Override
-        public void call(final Session session, final SessionState sessionState, final Exception ex) {
-            LoginButton.this.fetchUserInfo();
-            LoginButton.this.setButtonText();
-            if (ex != null) {
-                LoginButton.this.handleError(ex);
-            }
-            if (LoginButton.this.properties.sessionStatusCallback != null) {
-                LoginButton.this.properties.sessionStatusCallback.call(session, sessionState, ex);
-            }
-        }
-    }
-    
-    static class LoginButtonProperties
-    {
-        private SessionAuthorizationType authorizationType;
-        private SessionDefaultAudience defaultAudience;
-        private SessionLoginBehavior loginBehavior;
-        private OnErrorListener onErrorListener;
-        private List<String> permissions;
-        private Session.StatusCallback sessionStatusCallback;
-        
-        LoginButtonProperties() {
-            this.defaultAudience = SessionDefaultAudience.FRIENDS;
-            this.permissions = Collections.emptyList();
-            this.authorizationType = null;
-            this.loginBehavior = SessionLoginBehavior.SSO_WITH_FALLBACK;
-        }
-        
-        private boolean validatePermissions(final List<String> list, final SessionAuthorizationType sessionAuthorizationType, final Session session) {
-            if (SessionAuthorizationType.PUBLISH.equals(sessionAuthorizationType) && Utility.isNullOrEmpty((Collection<Object>)list)) {
-                throw new IllegalArgumentException("Permissions for publish actions cannot be null or empty.");
-            }
-            if (session != null && session.isOpened() && !Utility.isSubset(list, session.getPermissions())) {
-                Log.e(LoginButton.TAG, "Cannot set additional permissions when session is already open.");
-                return false;
-            }
-            return true;
-        }
-        
-        public void clearPermissions() {
-            this.permissions = null;
-            this.authorizationType = null;
-        }
-        
-        public SessionDefaultAudience getDefaultAudience() {
-            return this.defaultAudience;
-        }
-        
-        public SessionLoginBehavior getLoginBehavior() {
-            return this.loginBehavior;
-        }
-        
-        public OnErrorListener getOnErrorListener() {
-            return this.onErrorListener;
-        }
-        
-        List<String> getPermissions() {
-            return this.permissions;
-        }
-        
-        public Session.StatusCallback getSessionStatusCallback() {
-            return this.sessionStatusCallback;
-        }
-        
-        public void setDefaultAudience(final SessionDefaultAudience defaultAudience) {
-            this.defaultAudience = defaultAudience;
-        }
-        
-        public void setLoginBehavior(final SessionLoginBehavior loginBehavior) {
-            this.loginBehavior = loginBehavior;
-        }
-        
-        public void setOnErrorListener(final OnErrorListener onErrorListener) {
-            this.onErrorListener = onErrorListener;
-        }
-        
-        public void setPublishPermissions(final List<String> permissions, final Session session) {
-            if (SessionAuthorizationType.READ.equals(this.authorizationType)) {
-                throw new UnsupportedOperationException("Cannot call setPublishPermissions after setReadPermissions has been called.");
-            }
-            if (this.validatePermissions(permissions, SessionAuthorizationType.PUBLISH, session)) {
-                this.permissions = permissions;
-                this.authorizationType = SessionAuthorizationType.PUBLISH;
-            }
-        }
-        
-        public void setReadPermissions(final List<String> permissions, final Session session) {
-            if (SessionAuthorizationType.PUBLISH.equals(this.authorizationType)) {
-                throw new UnsupportedOperationException("Cannot call setReadPermissions after setPublishPermissions has been called.");
-            }
-            if (this.validatePermissions(permissions, SessionAuthorizationType.READ, session)) {
-                this.permissions = permissions;
-                this.authorizationType = SessionAuthorizationType.READ;
-            }
-        }
-        
-        public void setSessionStatusCallback(final Session.StatusCallback sessionStatusCallback) {
-            this.sessionStatusCallback = sessionStatusCallback;
-        }
-    }
-    
-    private class LoginClickListener implements View$OnClickListener
-    {
-        public void onClick(final View view) {
-            final Context context = LoginButton.this.getContext();
-            final Session openSession = LoginButton.this.sessionTracker.getOpenSession();
-            if (openSession != null) {
-                if (!LoginButton.this.confirmLogout) {
-                    openSession.closeAndClearTokenInformation();
-                    return;
-                }
-                final String string = LoginButton.this.getResources().getString(R.string.com_facebook_loginview_log_out_action);
-                final String string2 = LoginButton.this.getResources().getString(R.string.com_facebook_loginview_cancel_action);
-                String message;
-                if (LoginButton.this.user != null && LoginButton.this.user.getName() != null) {
-                    message = String.format(LoginButton.this.getResources().getString(R.string.com_facebook_loginview_logged_in_as), LoginButton.this.user.getName());
-                }
-                else {
-                    message = LoginButton.this.getResources().getString(R.string.com_facebook_loginview_logged_in_using_facebook);
-                }
-                final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(context);
-                alertDialog$Builder.setMessage((CharSequence)message).setCancelable(true).setPositiveButton((CharSequence)string, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-                    public void onClick(final DialogInterface dialogInterface, final int n) {
-                        openSession.closeAndClearTokenInformation();
-                    }
-                }).setNegativeButton((CharSequence)string2, (DialogInterface$OnClickListener)null);
-                alertDialog$Builder.create().show();
-            }
-            else {
-                final Session session = LoginButton.this.sessionTracker.getSession();
-                Session build = null;
-                Label_0257: {
-                    if (session != null) {
-                        build = session;
-                        if (!session.getState().isClosed()) {
-                            break Label_0257;
-                        }
-                    }
-                    LoginButton.this.sessionTracker.setSession(null);
-                    build = new Session.Builder(context).setApplicationId(LoginButton.this.applicationId).build();
-                    Session.setActiveSession(build);
-                }
-                if (!build.isOpened()) {
-                    Session.OpenRequest openRequest = null;
-                    if (LoginButton.this.parentFragment != null) {
-                        openRequest = new Session.OpenRequest(LoginButton.this.parentFragment);
-                    }
-                    else if (context instanceof Activity) {
-                        openRequest = new Session.OpenRequest((Activity)context);
-                    }
-                    if (openRequest != null) {
-                        openRequest.setDefaultAudience(LoginButton.this.properties.defaultAudience);
-                        openRequest.setPermissions(LoginButton.this.properties.permissions);
-                        openRequest.setLoginBehavior(LoginButton.this.properties.loginBehavior);
-                        if (SessionAuthorizationType.PUBLISH.equals(LoginButton.this.properties.authorizationType)) {
-                            build.openForPublish(openRequest);
-                            return;
-                        }
-                        build.openForRead(openRequest);
-                    }
-                }
-            }
-        }
-    }
-    
-    public interface OnErrorListener
-    {
-        void onError(final FacebookException p0);
-    }
-    
-    public interface UserInfoChangedCallback
-    {
-        void onUserInfoFetched(final GraphUser p0);
     }
 }

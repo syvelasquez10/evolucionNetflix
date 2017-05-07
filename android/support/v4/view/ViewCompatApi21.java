@@ -4,7 +4,6 @@
 
 package android.support.v4.view;
 
-import android.view.WindowInsets;
 import android.view.View$OnApplyWindowInsetsListener;
 import android.view.View;
 
@@ -31,11 +30,7 @@ class ViewCompatApi21
     }
     
     public static void setOnApplyWindowInsetsListener(final View view, final OnApplyWindowInsetsListener onApplyWindowInsetsListener) {
-        view.setOnApplyWindowInsetsListener((View$OnApplyWindowInsetsListener)new View$OnApplyWindowInsetsListener() {
-            public WindowInsets onApplyWindowInsets(final View view, final WindowInsets windowInsets) {
-                return ((WindowInsetsCompatApi21)onApplyWindowInsetsListener.onApplyWindowInsets(view, new WindowInsetsCompatApi21(windowInsets))).unwrap();
-            }
-        });
+        view.setOnApplyWindowInsetsListener((View$OnApplyWindowInsetsListener)new ViewCompatApi21$1(onApplyWindowInsetsListener));
     }
     
     public static void setTransitionName(final View view, final String transitionName) {

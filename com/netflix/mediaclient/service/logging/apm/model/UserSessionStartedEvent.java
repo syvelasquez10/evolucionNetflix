@@ -4,10 +4,9 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 
 public final class UserSessionStartedEvent extends SessionStartedEvent
@@ -16,9 +15,9 @@ public final class UserSessionStartedEvent extends SessionStartedEvent
     public static final String TRIGGER = "trigger";
     private static final String USER_SESSION_NAME = "userSession";
     private long idleTime;
-    private ApplicationPerformanceMetricsLogging.Trigger trigger;
+    private ApplicationPerformanceMetricsLogging$Trigger trigger;
     
-    public UserSessionStartedEvent(final ApplicationPerformanceMetricsLogging.Trigger trigger, final long idleTime) {
+    public UserSessionStartedEvent(final ApplicationPerformanceMetricsLogging$Trigger trigger, final long idleTime) {
         super("userSession");
         if (trigger == null) {
             throw new IllegalArgumentException("Trigger is null!");
@@ -27,20 +26,20 @@ public final class UserSessionStartedEvent extends SessionStartedEvent
         this.idleTime = idleTime;
     }
     
-    public UserSessionStartedEvent(JSONObject jsonObject) throws JSONException {
+    public UserSessionStartedEvent(JSONObject jsonObject) {
         super(jsonObject);
         jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null) {
             final String string = JsonUtils.getString(jsonObject, "trigger", null);
             if (string != null) {
-                this.trigger = Enum.valueOf(ApplicationPerformanceMetricsLogging.Trigger.class, string);
+                this.trigger = Enum.valueOf(ApplicationPerformanceMetricsLogging$Trigger.class, string);
             }
             this.idleTime = JsonUtils.getLong(jsonObject, "idleTime", 0L);
         }
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();
@@ -54,7 +53,7 @@ public final class UserSessionStartedEvent extends SessionStartedEvent
         return this.idleTime;
     }
     
-    public ApplicationPerformanceMetricsLogging.Trigger getTrigger() {
+    public ApplicationPerformanceMetricsLogging$Trigger getTrigger() {
         return this.trigger;
     }
 }

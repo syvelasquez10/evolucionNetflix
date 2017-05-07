@@ -15,7 +15,7 @@ import android.database.Cursor;
 public class CursorLoader extends AsyncTaskLoader<Cursor>
 {
     Cursor mCursor;
-    final ForceLoadContentObserver mObserver;
+    final Loader$ForceLoadContentObserver mObserver;
     String[] mProjection;
     String mSelection;
     String[] mSelectionArgs;
@@ -24,12 +24,12 @@ public class CursorLoader extends AsyncTaskLoader<Cursor>
     
     public CursorLoader(final Context context) {
         super(context);
-        this.mObserver = new ForceLoadContentObserver(this);
+        this.mObserver = new Loader$ForceLoadContentObserver(this);
     }
     
     public CursorLoader(final Context context, final Uri mUri, final String[] mProjection, final String mSelection, final String[] mSelectionArgs, final String mSortOrder) {
         super(context);
-        this.mObserver = new ForceLoadContentObserver(this);
+        this.mObserver = new Loader$ForceLoadContentObserver(this);
         this.mUri = mUri;
         this.mProjection = mProjection;
         this.mSelection = mSelection;

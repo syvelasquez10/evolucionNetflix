@@ -4,14 +4,6 @@
 
 package android.support.v7.internal.widget;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.widget.PopupWindow$OnDismissListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView$OnItemClickListener;
-import android.database.DataSetObserver;
-import android.app.AlertDialog$Builder;
-import android.app.AlertDialog;
 import android.util.Log;
 import android.widget.Adapter;
 import android.view.MotionEvent;
@@ -28,11 +20,12 @@ import android.view.ViewGroup$LayoutParams;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.view.View;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$styleable;
+import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v7.widget.ListPopupWindow;
+import android.support.v7.widget.ListPopupWindow$ForwardingListener;
 import android.content.DialogInterface$OnClickListener;
 
 class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickListener
@@ -44,10 +37,10 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     private static final String TAG = "Spinner";
     private boolean mDisableChildrenWhenDisabled;
     int mDropDownWidth;
-    private ListPopupWindow.ForwardingListener mForwardingListener;
+    private ListPopupWindow$ForwardingListener mForwardingListener;
     private int mGravity;
-    private SpinnerPopup mPopup;
-    private DropDownAdapter mTempAdapter;
+    private SpinnerCompat$SpinnerPopup mPopup;
+    private SpinnerCompat$DropDownAdapter mTempAdapter;
     private Rect mTempRect;
     private final TintManager mTintManager;
     
@@ -56,11 +49,11 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     }
     
     SpinnerCompat(final Context context, final int n) {
-        this(context, null, R.attr.spinnerStyle, n);
+        this(context, null, R$attr.spinnerStyle, n);
     }
     
     SpinnerCompat(final Context context, final AttributeSet set) {
-        this(context, set, R.attr.spinnerStyle);
+        this(context, set, R$attr.spinnerStyle);
     }
     
     SpinnerCompat(final Context context, final AttributeSet set, final int n) {
@@ -70,41 +63,29 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     SpinnerCompat(final Context context, final AttributeSet set, final int n, final int n2) {
         super(context, set, n);
         this.mTempRect = new Rect();
-        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R.styleable.Spinner, n, 0);
-        this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R.styleable.Spinner_android_background));
+        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.Spinner, n, 0);
+        this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R$styleable.Spinner_android_background));
         int int1 = n2;
         if (n2 == -1) {
-            int1 = obtainStyledAttributes.getInt(R.styleable.Spinner_spinnerMode, 0);
+            int1 = obtainStyledAttributes.getInt(R$styleable.Spinner_spinnerMode, 0);
         }
         switch (int1) {
             case 0: {
-                this.mPopup = (SpinnerPopup)new DialogPopup();
+                this.mPopup = new SpinnerCompat$DialogPopup(this, null);
                 break;
             }
             case 1: {
-                final DropdownPopup mPopup = new DropdownPopup(context, set, n);
-                this.mDropDownWidth = obtainStyledAttributes.getLayoutDimension(R.styleable.Spinner_android_dropDownWidth, -2);
-                mPopup.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R.styleable.Spinner_android_popupBackground));
-                this.mPopup = (SpinnerPopup)mPopup;
-                this.mForwardingListener = new ListPopupWindow.ForwardingListener(this) {
-                    @Override
-                    public ListPopupWindow getPopup() {
-                        return mPopup;
-                    }
-                    
-                    public boolean onForwardingStarted() {
-                        if (!SpinnerCompat.this.mPopup.isShowing()) {
-                            SpinnerCompat.this.mPopup.show();
-                        }
-                        return true;
-                    }
-                };
+                final SpinnerCompat$DropdownPopup mPopup = new SpinnerCompat$DropdownPopup(this, context, set, n);
+                this.mDropDownWidth = obtainStyledAttributes.getLayoutDimension(R$styleable.Spinner_android_dropDownWidth, -2);
+                mPopup.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R$styleable.Spinner_android_popupBackground));
+                this.mPopup = mPopup;
+                this.mForwardingListener = new SpinnerCompat$1(this, (View)this, mPopup);
                 break;
             }
         }
-        this.mGravity = obtainStyledAttributes.getInt(R.styleable.Spinner_android_gravity, 17);
-        this.mPopup.setPromptText(obtainStyledAttributes.getString(R.styleable.Spinner_prompt));
-        this.mDisableChildrenWhenDisabled = obtainStyledAttributes.getBoolean(R.styleable.Spinner_disableChildrenWhenDisabled, false);
+        this.mGravity = obtainStyledAttributes.getInt(R$styleable.Spinner_android_gravity, 17);
+        this.mPopup.setPromptText(obtainStyledAttributes.getString(R$styleable.Spinner_prompt));
+        this.mDisableChildrenWhenDisabled = obtainStyledAttributes.getBoolean(R$styleable.Spinner_disableChildrenWhenDisabled, false);
         obtainStyledAttributes.recycle();
         if (this.mTempAdapter != null) {
             this.mPopup.setAdapter((ListAdapter)this.mTempAdapter);
@@ -140,7 +121,7 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
         }
         view.measure(ViewGroup.getChildMeasureSpec(this.mWidthMeasureSpec, this.mSpinnerPadding.left + this.mSpinnerPadding.right, viewGroup$LayoutParams.width), ViewGroup.getChildMeasureSpec(this.mHeightMeasureSpec, this.mSpinnerPadding.top + this.mSpinnerPadding.bottom, viewGroup$LayoutParams.height));
         final int n = this.mSpinnerPadding.top + (this.getMeasuredHeight() - this.mSpinnerPadding.bottom - this.mSpinnerPadding.top - view.getMeasuredHeight()) / 2;
-        view.layout(0, n, 0 + view.getMeasuredWidth(), n + view.getMeasuredHeight());
+        view.layout(0, n, view.getMeasuredWidth() + 0, view.getMeasuredHeight() + n);
     }
     
     public int getBaseline() {
@@ -192,9 +173,9 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     }
     
     @Override
-    void layout(int n, final boolean b) {
-        final int left = this.mSpinnerPadding.left;
-        final int n2 = this.getRight() - this.getLeft() - this.mSpinnerPadding.left - this.mSpinnerPadding.right;
+    void layout(int left, final boolean b) {
+        left = this.mSpinnerPadding.left;
+        final int n = this.getRight() - this.getLeft() - this.mSpinnerPadding.left - this.mSpinnerPadding.right;
         if (this.mDataChanged) {
             this.handleDataChanged();
         }
@@ -211,18 +192,17 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
         if (this.mAdapter != null) {
             final View view = this.makeView(this.mSelectedPosition, true);
             final int measuredWidth = view.getMeasuredWidth();
-            n = left;
             switch (GravityCompat.getAbsoluteGravity(this.mGravity, ViewCompat.getLayoutDirection((View)this)) & 0x7) {
                 case 1: {
-                    n = n2 / 2 + left - measuredWidth / 2;
+                    left = left + n / 2 - measuredWidth / 2;
                     break;
                 }
                 case 5: {
-                    n = left + n2 - measuredWidth;
+                    left = left + n - measuredWidth;
                     break;
                 }
             }
-            view.offsetLeftAndRight(n);
+            view.offsetLeftAndRight(left);
         }
         this.mRecycler.clear();
         this.invalidate();
@@ -233,38 +213,36 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     }
     
     int measureContentWidth(final SpinnerAdapter spinnerAdapter, final Drawable drawable) {
-        int n;
         if (spinnerAdapter == null) {
-            n = 0;
+            return 0;
         }
-        else {
-            int max = 0;
-            View view = null;
-            int n2 = 0;
-            final int measureSpec = View$MeasureSpec.makeMeasureSpec(0, 0);
-            final int measureSpec2 = View$MeasureSpec.makeMeasureSpec(0, 0);
-            final int max2 = Math.max(0, this.getSelectedItemPosition());
-            int n3;
-            for (int min = Math.min(spinnerAdapter.getCount(), max2 + 15), i = Math.max(0, max2 - (15 - (min - max2))); i < min; ++i, n2 = n3) {
-                final int itemViewType = spinnerAdapter.getItemViewType(i);
-                if (itemViewType != (n3 = n2)) {
-                    n3 = itemViewType;
-                    view = null;
-                }
-                view = spinnerAdapter.getView(i, view, (ViewGroup)this);
-                if (view.getLayoutParams() == null) {
-                    view.setLayoutParams(new ViewGroup$LayoutParams(-2, -2));
-                }
-                view.measure(measureSpec, measureSpec2);
-                max = Math.max(max, view.getMeasuredWidth());
+        final int measureSpec = View$MeasureSpec.makeMeasureSpec(0, 0);
+        final int measureSpec2 = View$MeasureSpec.makeMeasureSpec(0, 0);
+        final int max = Math.max(0, this.getSelectedItemPosition());
+        final int min = Math.min(spinnerAdapter.getCount(), max + 15);
+        int i = Math.max(0, max - (15 - (min - max)));
+        View view = null;
+        int max2 = 0;
+        int n = 0;
+        while (i < min) {
+            final int itemViewType = spinnerAdapter.getItemViewType(i);
+            if (itemViewType != n) {
+                view = null;
+                n = itemViewType;
             }
-            n = max;
-            if (drawable != null) {
-                drawable.getPadding(this.mTempRect);
-                return max + (this.mTempRect.left + this.mTempRect.right);
+            view = spinnerAdapter.getView(i, view, (ViewGroup)this);
+            if (view.getLayoutParams() == null) {
+                view.setLayoutParams(new ViewGroup$LayoutParams(-2, -2));
             }
+            view.measure(measureSpec, measureSpec2);
+            max2 = Math.max(max2, view.getMeasuredWidth());
+            ++i;
         }
-        return n;
+        if (drawable != null) {
+            drawable.getPadding(this.mTempRect);
+            return this.mTempRect.left + this.mTempRect.right + max2;
+        }
+        return max2;
     }
     
     public void onClick(final DialogInterface dialogInterface, final int selection) {
@@ -296,31 +274,21 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     
     @Override
     public void onRestoreInstanceState(final Parcelable parcelable) {
-        final SavedState savedState = (SavedState)parcelable;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        if (savedState.showDropdown) {
+        final SpinnerCompat$SavedState spinnerCompat$SavedState = (SpinnerCompat$SavedState)parcelable;
+        super.onRestoreInstanceState(spinnerCompat$SavedState.getSuperState());
+        if (spinnerCompat$SavedState.showDropdown) {
             final ViewTreeObserver viewTreeObserver = this.getViewTreeObserver();
             if (viewTreeObserver != null) {
-                viewTreeObserver.addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-                    public void onGlobalLayout() {
-                        if (!SpinnerCompat.this.mPopup.isShowing()) {
-                            SpinnerCompat.this.mPopup.show();
-                        }
-                        final ViewTreeObserver viewTreeObserver = SpinnerCompat.this.getViewTreeObserver();
-                        if (viewTreeObserver != null) {
-                            viewTreeObserver.removeGlobalOnLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)this);
-                        }
-                    }
-                });
+                viewTreeObserver.addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new SpinnerCompat$2(this));
             }
         }
     }
     
     @Override
     public Parcelable onSaveInstanceState() {
-        final SavedState savedState = new SavedState(super.onSaveInstanceState());
-        savedState.showDropdown = (this.mPopup != null && this.mPopup.isShowing());
-        return (Parcelable)savedState;
+        final SpinnerCompat$SavedState spinnerCompat$SavedState = new SpinnerCompat$SavedState(super.onSaveInstanceState());
+        spinnerCompat$SavedState.showDropdown = (this.mPopup != null && this.mPopup.isShowing());
+        return (Parcelable)spinnerCompat$SavedState;
     }
     
     public boolean onTouchEvent(final MotionEvent motionEvent) {
@@ -347,10 +315,10 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
             throw new IllegalArgumentException("Spinner adapter view type count must be 1");
         }
         if (this.mPopup != null) {
-            this.mPopup.setAdapter((ListAdapter)new DropDownAdapter(adapter));
+            this.mPopup.setAdapter((ListAdapter)new SpinnerCompat$DropDownAdapter(adapter));
             return;
         }
-        this.mTempAdapter = new DropDownAdapter(adapter);
+        this.mTempAdapter = new SpinnerCompat$DropDownAdapter(adapter);
     }
     
     public void setDropDownHorizontalOffset(final int horizontalOffset) {
@@ -362,7 +330,7 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     }
     
     public void setDropDownWidth(final int mDropDownWidth) {
-        if (!(this.mPopup instanceof DropdownPopup)) {
+        if (!(this.mPopup instanceof SpinnerCompat$DropdownPopup)) {
             Log.e("Spinner", "Cannot set dropdown width for MODE_DIALOG, ignoring");
             return;
         }
@@ -389,20 +357,20 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
         }
     }
     
-    public void setOnItemClickListener(final OnItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(final AdapterViewCompat$OnItemClickListener adapterViewCompat$OnItemClickListener) {
         throw new RuntimeException("setOnItemClickListener cannot be used with a spinner.");
     }
     
-    void setOnItemClickListenerInt(final OnItemClickListener onItemClickListener) {
+    void setOnItemClickListenerInt(final AdapterViewCompat$OnItemClickListener onItemClickListener) {
         super.setOnItemClickListener(onItemClickListener);
     }
     
     public void setPopupBackgroundDrawable(final Drawable backgroundDrawable) {
-        if (!(this.mPopup instanceof DropdownPopup)) {
+        if (!(this.mPopup instanceof SpinnerCompat$DropdownPopup)) {
             Log.e("Spinner", "setPopupBackgroundDrawable: incompatible spinner mode; ignoring...");
             return;
         }
-        ((DropdownPopup)this.mPopup).setBackgroundDrawable(backgroundDrawable);
+        ((SpinnerCompat$DropdownPopup)this.mPopup).setBackgroundDrawable(backgroundDrawable);
     }
     
     public void setPopupBackgroundResource(final int n) {
@@ -415,351 +383,5 @@ class SpinnerCompat extends AbsSpinnerCompat implements DialogInterface$OnClickL
     
     public void setPromptId(final int n) {
         this.setPrompt(this.getContext().getText(n));
-    }
-    
-    private class DialogPopup implements SpinnerPopup, DialogInterface$OnClickListener
-    {
-        private ListAdapter mListAdapter;
-        private AlertDialog mPopup;
-        private CharSequence mPrompt;
-        
-        @Override
-        public void dismiss() {
-            if (this.mPopup != null) {
-                this.mPopup.dismiss();
-                this.mPopup = null;
-            }
-        }
-        
-        @Override
-        public Drawable getBackground() {
-            return null;
-        }
-        
-        @Override
-        public CharSequence getHintText() {
-            return this.mPrompt;
-        }
-        
-        @Override
-        public int getHorizontalOffset() {
-            return 0;
-        }
-        
-        @Override
-        public int getVerticalOffset() {
-            return 0;
-        }
-        
-        @Override
-        public boolean isShowing() {
-            return this.mPopup != null && this.mPopup.isShowing();
-        }
-        
-        public void onClick(final DialogInterface dialogInterface, final int selection) {
-            SpinnerCompat.this.setSelection(selection);
-            if (SpinnerCompat.this.mOnItemClickListener != null) {
-                SpinnerCompat.this.performItemClick(null, selection, this.mListAdapter.getItemId(selection));
-            }
-            this.dismiss();
-        }
-        
-        @Override
-        public void setAdapter(final ListAdapter mListAdapter) {
-            this.mListAdapter = mListAdapter;
-        }
-        
-        @Override
-        public void setBackgroundDrawable(final Drawable drawable) {
-            Log.e("Spinner", "Cannot set popup background for MODE_DIALOG, ignoring");
-        }
-        
-        @Override
-        public void setHorizontalOffset(final int n) {
-            Log.e("Spinner", "Cannot set horizontal offset for MODE_DIALOG, ignoring");
-        }
-        
-        @Override
-        public void setPromptText(final CharSequence mPrompt) {
-            this.mPrompt = mPrompt;
-        }
-        
-        @Override
-        public void setVerticalOffset(final int n) {
-            Log.e("Spinner", "Cannot set vertical offset for MODE_DIALOG, ignoring");
-        }
-        
-        @Override
-        public void show() {
-            if (this.mListAdapter == null) {
-                return;
-            }
-            final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(SpinnerCompat.this.getContext());
-            if (this.mPrompt != null) {
-                alertDialog$Builder.setTitle(this.mPrompt);
-            }
-            (this.mPopup = alertDialog$Builder.setSingleChoiceItems(this.mListAdapter, SpinnerCompat.this.getSelectedItemPosition(), (DialogInterface$OnClickListener)this).create()).show();
-        }
-    }
-    
-    private static class DropDownAdapter implements ListAdapter, SpinnerAdapter
-    {
-        private SpinnerAdapter mAdapter;
-        private ListAdapter mListAdapter;
-        
-        public DropDownAdapter(final SpinnerAdapter mAdapter) {
-            this.mAdapter = mAdapter;
-            if (mAdapter instanceof ListAdapter) {
-                this.mListAdapter = (ListAdapter)mAdapter;
-            }
-        }
-        
-        public boolean areAllItemsEnabled() {
-            final ListAdapter mListAdapter = this.mListAdapter;
-            return mListAdapter == null || mListAdapter.areAllItemsEnabled();
-        }
-        
-        public int getCount() {
-            if (this.mAdapter == null) {
-                return 0;
-            }
-            return this.mAdapter.getCount();
-        }
-        
-        public View getDropDownView(final int n, final View view, final ViewGroup viewGroup) {
-            if (this.mAdapter == null) {
-                return null;
-            }
-            return this.mAdapter.getDropDownView(n, view, viewGroup);
-        }
-        
-        public Object getItem(final int n) {
-            if (this.mAdapter == null) {
-                return null;
-            }
-            return this.mAdapter.getItem(n);
-        }
-        
-        public long getItemId(final int n) {
-            if (this.mAdapter == null) {
-                return -1L;
-            }
-            return this.mAdapter.getItemId(n);
-        }
-        
-        public int getItemViewType(final int n) {
-            return 0;
-        }
-        
-        public View getView(final int n, final View view, final ViewGroup viewGroup) {
-            return this.getDropDownView(n, view, viewGroup);
-        }
-        
-        public int getViewTypeCount() {
-            return 1;
-        }
-        
-        public boolean hasStableIds() {
-            return this.mAdapter != null && this.mAdapter.hasStableIds();
-        }
-        
-        public boolean isEmpty() {
-            return this.getCount() == 0;
-        }
-        
-        public boolean isEnabled(final int n) {
-            final ListAdapter mListAdapter = this.mListAdapter;
-            return mListAdapter == null || mListAdapter.isEnabled(n);
-        }
-        
-        public void registerDataSetObserver(final DataSetObserver dataSetObserver) {
-            if (this.mAdapter != null) {
-                this.mAdapter.registerDataSetObserver(dataSetObserver);
-            }
-        }
-        
-        public void unregisterDataSetObserver(final DataSetObserver dataSetObserver) {
-            if (this.mAdapter != null) {
-                this.mAdapter.unregisterDataSetObserver(dataSetObserver);
-            }
-        }
-    }
-    
-    private class DropdownPopup extends ListPopupWindow implements SpinnerPopup
-    {
-        private ListAdapter mAdapter;
-        private CharSequence mHintText;
-        
-        public DropdownPopup(final Context context, final AttributeSet set, final int n) {
-            super(context, set, n);
-            this.setAnchorView((View)SpinnerCompat.this);
-            this.setModal(true);
-            this.setPromptPosition(0);
-            this.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
-                public void onItemClick(final AdapterView<?> adapterView, final View view, final int selection, final long n) {
-                    SpinnerCompat.this.setSelection(selection);
-                    if (SpinnerCompat.this.mOnItemClickListener != null) {
-                        SpinnerCompat.this.performItemClick(view, selection, DropdownPopup.this.mAdapter.getItemId(selection));
-                    }
-                    DropdownPopup.this.dismiss();
-                }
-            });
-        }
-        
-        void computeContentWidth() {
-            final Drawable background = this.getBackground();
-            int right = 0;
-            if (background != null) {
-                background.getPadding(SpinnerCompat.this.mTempRect);
-                if (ViewUtils.isLayoutRtl((View)SpinnerCompat.this)) {
-                    right = SpinnerCompat.this.mTempRect.right;
-                }
-                else {
-                    right = -SpinnerCompat.this.mTempRect.left;
-                }
-            }
-            else {
-                final Rect access$400 = SpinnerCompat.this.mTempRect;
-                SpinnerCompat.this.mTempRect.right = 0;
-                access$400.left = 0;
-            }
-            final int paddingLeft = SpinnerCompat.this.getPaddingLeft();
-            final int paddingRight = SpinnerCompat.this.getPaddingRight();
-            final int width = SpinnerCompat.this.getWidth();
-            if (SpinnerCompat.this.mDropDownWidth == -2) {
-                final int measureContentWidth = SpinnerCompat.this.measureContentWidth((SpinnerAdapter)this.mAdapter, this.getBackground());
-                final int n = SpinnerCompat.this.getContext().getResources().getDisplayMetrics().widthPixels - SpinnerCompat.this.mTempRect.left - SpinnerCompat.this.mTempRect.right;
-                int n2;
-                if ((n2 = measureContentWidth) > n) {
-                    n2 = n;
-                }
-                this.setContentWidth(Math.max(n2, width - paddingLeft - paddingRight));
-            }
-            else if (SpinnerCompat.this.mDropDownWidth == -1) {
-                this.setContentWidth(width - paddingLeft - paddingRight);
-            }
-            else {
-                this.setContentWidth(SpinnerCompat.this.mDropDownWidth);
-            }
-            int horizontalOffset;
-            if (ViewUtils.isLayoutRtl((View)SpinnerCompat.this)) {
-                horizontalOffset = right + (width - paddingRight - this.getWidth());
-            }
-            else {
-                horizontalOffset = right + paddingLeft;
-            }
-            this.setHorizontalOffset(horizontalOffset);
-        }
-        
-        @Override
-        public CharSequence getHintText() {
-            return this.mHintText;
-        }
-        
-        @Override
-        public void setAdapter(final ListAdapter listAdapter) {
-            super.setAdapter(listAdapter);
-            this.mAdapter = listAdapter;
-        }
-        
-        @Override
-        public void setPromptText(final CharSequence mHintText) {
-            this.mHintText = mHintText;
-        }
-        
-        public void show(final int n, final int n2) {
-            final boolean showing = this.isShowing();
-            this.computeContentWidth();
-            this.setInputMethodMode(2);
-            super.show();
-            this.getListView().setChoiceMode(1);
-            this.setSelection(SpinnerCompat.this.getSelectedItemPosition());
-            if (!showing) {
-                final ViewTreeObserver viewTreeObserver = SpinnerCompat.this.getViewTreeObserver();
-                if (viewTreeObserver != null) {
-                    final ViewTreeObserver$OnGlobalLayoutListener viewTreeObserver$OnGlobalLayoutListener = (ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-                        public void onGlobalLayout() {
-                            DropdownPopup.this.computeContentWidth();
-                            DropdownPopup.this.show();
-                        }
-                    };
-                    viewTreeObserver.addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)viewTreeObserver$OnGlobalLayoutListener);
-                    this.setOnDismissListener((PopupWindow$OnDismissListener)new PopupWindow$OnDismissListener() {
-                        public void onDismiss() {
-                            final ViewTreeObserver viewTreeObserver = SpinnerCompat.this.getViewTreeObserver();
-                            if (viewTreeObserver != null) {
-                                viewTreeObserver.removeGlobalOnLayoutListener(viewTreeObserver$OnGlobalLayoutListener);
-                            }
-                        }
-                    });
-                }
-            }
-        }
-    }
-    
-    static class SavedState extends AbsSpinnerCompat.SavedState
-    {
-        public static final Parcelable$Creator<SavedState> CREATOR;
-        boolean showDropdown;
-        
-        static {
-            CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                public SavedState createFromParcel(final Parcel parcel) {
-                    return new SavedState(parcel);
-                }
-                
-                public SavedState[] newArray(final int n) {
-                    return new SavedState[n];
-                }
-            };
-        }
-        
-        private SavedState(final Parcel parcel) {
-            super(parcel);
-            this.showDropdown = (parcel.readByte() != 0);
-        }
-        
-        SavedState(final Parcelable parcelable) {
-            super(parcelable);
-        }
-        
-        @Override
-        public void writeToParcel(final Parcel parcel, int n) {
-            super.writeToParcel(parcel, n);
-            if (this.showDropdown) {
-                n = 1;
-            }
-            else {
-                n = 0;
-            }
-            parcel.writeByte((byte)n);
-        }
-    }
-    
-    private interface SpinnerPopup
-    {
-        void dismiss();
-        
-        Drawable getBackground();
-        
-        CharSequence getHintText();
-        
-        int getHorizontalOffset();
-        
-        int getVerticalOffset();
-        
-        boolean isShowing();
-        
-        void setAdapter(final ListAdapter p0);
-        
-        void setBackgroundDrawable(final Drawable p0);
-        
-        void setHorizontalOffset(final int p0);
-        
-        void setPromptText(final CharSequence p0);
-        
-        void setVerticalOffset(final int p0);
-        
-        void show();
     }
 }

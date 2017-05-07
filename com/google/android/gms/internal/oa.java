@@ -4,6 +4,7 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.HashSet;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.Set;
@@ -11,24 +12,24 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class oa implements Parcelable$Creator<ny.a>
+public class oa implements Parcelable$Creator<ny$a>
 {
-    static void a(final ny.a a, final Parcel parcel, int d) {
+    static void a(final ny$a ny$a, final Parcel parcel, int d) {
         d = b.D(parcel);
-        final Set<Integer> alR = a.alR;
+        final Set<Integer> alR = ny$a.alR;
         if (alR.contains(1)) {
-            b.c(parcel, 1, a.BR);
+            b.c(parcel, 1, ny$a.BR);
         }
         if (alR.contains(2)) {
-            b.c(parcel, 2, a.ani);
+            b.c(parcel, 2, ny$a.ani);
         }
         if (alR.contains(3)) {
-            b.c(parcel, 3, a.anj);
+            b.c(parcel, 3, ny$a.anj);
         }
         b.H(parcel, d);
     }
     
-    public ny.a de(final Parcel parcel) {
+    public ny$a de(final Parcel parcel) {
         int g = 0;
         final int c = a.C(parcel);
         final HashSet<Integer> set = new HashSet<Integer>();
@@ -59,12 +60,12 @@ public class oa implements Parcelable$Creator<ny.a>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
-        return new ny.a(set, g3, g2, g);
+        return new ny$a(set, g3, g2, g);
     }
     
-    public ny.a[] eV(final int n) {
-        return new ny.a[n];
+    public ny$a[] eV(final int n) {
+        return new ny$a[n];
     }
 }

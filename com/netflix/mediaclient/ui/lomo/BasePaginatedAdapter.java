@@ -11,7 +11,7 @@ import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.app.Activity;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
@@ -145,32 +145,32 @@ public abstract class BasePaginatedAdapter<T extends Video>
         return n;
     }
     
-    public View getView(final ObjectRecycler.ViewRecycler viewRecycler, final BasicLoMo basicLoMo, final int n) {
+    public View getView(final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final BasicLoMo basicLoMo, final int n) {
         Log.v("BasePaginatedAdapter", this.printLomo() + " Getting page for position: " + n);
-        return this.getView(viewRecycler, this.getDataForPage(n), this.numItemsPerPage, n, basicLoMo);
+        return this.getView(objectRecycler$ViewRecycler, this.getDataForPage(n), this.numItemsPerPage, n, basicLoMo);
     }
     
-    protected abstract View getView(final ObjectRecycler.ViewRecycler p0, final List<T> p1, final int p2, final int p3, final BasicLoMo p4);
+    protected abstract View getView(final ObjectRecycler$ViewRecycler p0, final List<T> p1, final int p2, final int p3, final BasicLoMo p4);
     
     public boolean isLastItem(final int n) {
         return n == this.computeNumPages() - 1;
     }
     
-    public void restoreFromMemento(final Memento<T> memento) {
-        this.data = memento.data;
-        this.listViewPos = memento.listViewPos;
-        this.currTitle = memento.currTitle;
+    public void restoreFromMemento(final BasePaginatedAdapter$Memento<T> basePaginatedAdapter$Memento) {
+        this.data = basePaginatedAdapter$Memento.data;
+        this.listViewPos = basePaginatedAdapter$Memento.listViewPos;
+        this.currTitle = basePaginatedAdapter$Memento.currTitle;
         if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("BasePaginatedAdapter", this.printLomo() + "restored from memento: " + memento);
+            Log.v("BasePaginatedAdapter", this.printLomo() + "restored from memento: " + basePaginatedAdapter$Memento);
         }
     }
     
-    public Memento<T> saveToMemento() {
-        final Memento<T> memento = new Memento<T>(this.data, this.listViewPos, this.currTitle);
+    public BasePaginatedAdapter$Memento<T> saveToMemento() {
+        final BasePaginatedAdapter$Memento<T> basePaginatedAdapter$Memento = new BasePaginatedAdapter$Memento<T>(this.data, this.listViewPos, this.currTitle);
         if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("BasePaginatedAdapter", this.printLomo() + "saving memento: " + memento);
+            Log.v("BasePaginatedAdapter", this.printLomo() + "saving memento: " + basePaginatedAdapter$Memento);
         }
-        return memento;
+        return basePaginatedAdapter$Memento;
     }
     
     public void setListViewPos(final int listViewPos) {
@@ -193,7 +193,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
             Log.d("nf_presentation", "No videos found for presentation tracking - row: " + basicLoMo.getTitle());
             return;
         }
-        n = n * this.numItemsPerPage + LoMoUtils.getClientInjectedVideoCount(basicLoMo, serviceManager.isCurrentProfileFacebookConnected(), n);
+        n = LoMoUtils.getClientInjectedVideoCount(basicLoMo, serviceManager.isCurrentProfileFacebookConnected(), n) + this.numItemsPerPage * n;
         UiLocation uiLocation;
         if (b) {
             uiLocation = UiLocation.GENRE_LOLOMO;
@@ -205,23 +205,5 @@ public abstract class BasePaginatedAdapter<T extends Video>
             Log.v("nf_presentation", String.format("%s, %s, offset %d %s", basicLoMo.getTitle(), uiLocation, n, list));
         }
         serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, (List<String>)list, n, uiLocation);
-    }
-    
-    static class Memento<T>
-    {
-        final String currTitle;
-        final List<T> data;
-        final int listViewPos;
-        
-        protected Memento(final List<T> data, final int listViewPos, final String currTitle) {
-            this.data = data;
-            this.listViewPos = listViewPos;
-            this.currTitle = currTitle;
-        }
-        
-        @Override
-        public String toString() {
-            return "title: " + this.currTitle + ", data size: " + this.data.size() + ", listViewPos: " + this.listViewPos;
-        }
     }
 }

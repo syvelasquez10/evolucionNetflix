@@ -18,7 +18,6 @@ import android.app.ActivityManager$RunningAppProcessInfo;
 import android.os.PowerManager;
 import android.app.KeyguardManager;
 import android.app.ActivityManager;
-import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.view.View;
 import android.app.Activity;
@@ -77,20 +76,7 @@ public class an extends Thread
             return false;
         }
         ak.aR();
-        webView.post((Runnable)new Runnable() {
-            ValueCallback<String> nC = new ValueCallback<String>() {
-                public void k(final String s) {
-                    an.this.a(ak, webView, s);
-                }
-            };
-            
-            @Override
-            public void run() {
-                if (webView.getSettings().getJavaScriptEnabled()) {
-                    webView.evaluateJavascript("(function() { return  {text:document.body.innerText}})();", (ValueCallback)this.nC);
-                }
-            }
-        });
+        webView.post((Runnable)new an$2(this, ak, webView));
         return true;
     }
     
@@ -127,21 +113,21 @@ public class an extends Thread
         return false;
     }
     
-    a a(final View view, final ak ak) {
+    an$a a(final View view, final ak ak) {
         int i = 0;
         if (view == null) {
-            return new a(0, 0);
+            return new an$a(this, 0, 0);
         }
         if (view instanceof TextView && !(view instanceof EditText)) {
             ak.i(((TextView)view).getText().toString());
-            return new a(1, 0);
+            return new an$a(this, 1, 0);
         }
         if (view instanceof WebView && !(view instanceof gv)) {
             ak.aR();
             if (this.a((WebView)view, ak)) {
-                return new a(0, 1);
+                return new an$a(this, 0, 1);
             }
-            return new a(0, 0);
+            return new an$a(this, 0, 0);
         }
         else {
             if (view instanceof ViewGroup) {
@@ -149,14 +135,14 @@ public class an extends Thread
                 int n = 0;
                 int n2 = 0;
                 while (i < viewGroup.getChildCount()) {
-                    final a a = this.a(viewGroup.getChildAt(i), ak);
+                    final an$a a = this.a(viewGroup.getChildAt(i), ak);
                     n2 += a.nG;
                     n += a.nH;
                     ++i;
                 }
-                return new a(n2, n);
+                return new an$a(this, n2, n);
             }
-            return new a(0, 0);
+            return new an$a(this, 0, 0);
         }
     }
     
@@ -216,19 +202,14 @@ public class an extends Thread
         if (view == null) {
             return false;
         }
-        view.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                an.this.h(view);
-            }
-        });
+        view.post((Runnable)new an$1(this, view));
         return true;
     }
     
     void h(final View view) {
         try {
             final ak ak = new ak(this.nf, this.ny, this.nh, this.nz);
-            final a a = this.a(view, ak);
+            final an$a a = this.a(view, ak);
             ak.aS();
             if (a.nG == 0 && a.nH == 0) {
                 return;
@@ -274,11 +255,11 @@ public class an extends Thread
                             catch (InterruptedException ex) {}
                         }
                         continue Label_0051_Outer;
-                        this.a((Activity)o);
+                        gs.S("ContentFetchTask: sleeping");
+                        this.aY();
                         Label_0092: {
                             break Label_0092;
-                            gs.S("ContentFetchTask: sleeping");
-                            this.aY();
+                            this.a((Activity)o);
                         }
                         Thread.sleep(this.nx * 1000);
                         continue;
@@ -295,18 +276,6 @@ public class an extends Thread
             this.ns = false;
             this.mw.notifyAll();
             gs.S("ContentFetchThread: wakeup");
-        }
-    }
-    
-    @ez
-    class a
-    {
-        final int nG;
-        final int nH;
-        
-        a(final int ng, final int nh) {
-            this.nG = ng;
-            this.nH = nh;
         }
     }
 }

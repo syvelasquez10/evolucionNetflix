@@ -5,6 +5,7 @@
 package com.google.android.gms.internal;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.List;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -25,7 +26,7 @@ public class jn implements Parcelable$Creator<jm>
         String o = null;
         final int c = a.C(parcel);
         int g = 0;
-        ArrayList<jm.a> c2 = null;
+        ArrayList<jm$a> c2 = null;
         while (parcel.dataPosition() < c) {
             final int b = a.B(parcel);
             switch (a.aD(b)) {
@@ -38,7 +39,7 @@ public class jn implements Parcelable$Creator<jm>
                     continue;
                 }
                 case 2: {
-                    c2 = a.c(parcel, b, (android.os.Parcelable$Creator<jm.a>)jm.a.CREATOR);
+                    c2 = a.c(parcel, b, (android.os.Parcelable$Creator<jm$a>)jm$a.CREATOR);
                     continue;
                 }
                 case 3: {
@@ -48,7 +49,7 @@ public class jn implements Parcelable$Creator<jm>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new jm(g, c2, o);
     }

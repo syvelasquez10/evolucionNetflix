@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UpdatePts extends BaseMediaEvent
@@ -14,7 +13,7 @@ public class UpdatePts extends BaseMediaEvent
     public static final String TYPE = "updatePts";
     private int pts;
     
-    public UpdatePts(final JSONObject jsonObject) throws JSONException {
+    public UpdatePts(final JSONObject jsonObject) {
         super("updatePts", jsonObject);
     }
     
@@ -23,7 +22,7 @@ public class UpdatePts extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.pts = BaseNccpEvent.getInt(jsonObject, "pts", 0);
     }
 }

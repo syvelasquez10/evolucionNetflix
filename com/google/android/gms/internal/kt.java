@@ -6,6 +6,7 @@ package com.google.android.gms.internal;
 
 import com.google.android.gms.common.api.ResultCallback;
 import java.util.concurrent.TimeUnit;
+import com.google.android.gms.common.api.PendingResult$a;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Result;
 
@@ -18,8 +19,8 @@ class kt<T extends Result> implements PendingResult<T>
     }
     
     @Override
-    public void a(final a a) {
-        a.n(this.Tn.getStatus());
+    public void a(final PendingResult$a pendingResult$a) {
+        pendingResult$a.n(this.Tn.getStatus());
     }
     
     @Override

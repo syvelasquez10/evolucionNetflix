@@ -21,7 +21,7 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class DataHolder implements SafeParcelable
 {
     public static final f CREATOR;
-    private static final a Kc;
+    private static final DataHolder$a Kc;
     private final int BR;
     private final int HF;
     private final String[] JU;
@@ -36,7 +36,7 @@ public final class DataHolder implements SafeParcelable
     
     static {
         CREATOR = new f();
-        Kc = (a)new a(new String[0], null) {};
+        Kc = new DataHolder$1(new String[0], null);
     }
     
     DataHolder(final int br, final String[] ju, final CursorWindow[] jw, final int hf, final Bundle jx) {
@@ -49,8 +49,8 @@ public final class DataHolder implements SafeParcelable
         this.JX = jx;
     }
     
-    private DataHolder(final a a, final int n, final Bundle bundle) {
-        this(a.JU, a(a, -1), n, bundle);
+    private DataHolder(final DataHolder$a dataHolder$a, final int n, final Bundle bundle) {
+        this(dataHolder$a.JU, a(dataHolder$a, -1), n, bundle);
     }
     
     public DataHolder(final String[] array, final CursorWindow[] array2, final int hf, final Bundle jx) {
@@ -68,9 +68,9 @@ public final class DataHolder implements SafeParcelable
         return new DataHolder(DataHolder.Kc, n, bundle);
     }
     
-    private static CursorWindow[] a(final a a, int i) {
+    private static CursorWindow[] a(final DataHolder$a dataHolder$a, int i) {
         final int n = 0;
-        if (a.JU.length == 0) {
+        if (dataHolder$a.JU.length == 0) {
             return new CursorWindow[0];
         }
         ArrayList<CursorWindow> list2 = null;
@@ -79,8 +79,8 @@ public final class DataHolder implements SafeParcelable
             Label_0088: {
                 List<Map<K, String>> list = null;
                 Label_0037: {
-                    if (i < 0 || i >= a.Kd.size()) {
-                        list = (List<Map<K, String>>)a.Kd;
+                    if (i < 0 || i >= dataHolder$a.Kd.size()) {
+                        list = (List<Map<K, String>>)dataHolder$a.Kd;
                         break Label_0037;
                     }
                     CursorWindow cursorWindow = null;
@@ -109,7 +109,7 @@ public final class DataHolder implements SafeParcelable
                                                 Log.d("DataHolder", "Allocating additional cursor window for large data set (row " + i + ")");
                                                 cursorWindow = new CursorWindow(false);
                                                 cursorWindow.setStartPosition(i);
-                                                cursorWindow.setNumColumns(a.JU.length);
+                                                cursorWindow.setNumColumns(dataHolder$a.JU.length);
                                                 list2.add(cursorWindow);
                                                 if (!cursorWindow.allocRow()) {
                                                     Log.e("DataHolder", "Unable to allocate row to hold data.");
@@ -120,10 +120,10 @@ public final class DataHolder implements SafeParcelable
                                                 map = list.get(i);
                                                 b = true;
                                                 n3 = 0;
-                                                if (n3 >= a.JU.length || !b) {
+                                                if (n3 >= dataHolder$a.JU.length || !b) {
                                                     break;
                                                 }
-                                                s = a.JU[n3];
+                                                s = dataHolder$a.JU[n3];
                                                 value = map.get(s);
                                                 if (value == null) {
                                                     b = cursorWindow.putNull(n2, n3);
@@ -164,7 +164,7 @@ public final class DataHolder implements SafeParcelable
                                                     }
                                                     throw new IllegalArgumentException("Unsupported object for column " + s + ": " + (Object)value);
                                                 }
-                                                list = a.Kd.subList(0, i);
+                                                list = dataHolder$a.Kd.subList(0, i);
                                                 break Label_0037;
                                             }
                                             catch (RuntimeException ex) {
@@ -190,7 +190,7 @@ public final class DataHolder implements SafeParcelable
                         Log.d("DataHolder", "Couldn't populate window data for row " + i + " - allocating new window.");
                         cursorWindow.freeLastRow();
                         cursorWindow = new CursorWindow(false);
-                        cursorWindow.setNumColumns(a.JU.length);
+                        cursorWindow.setNumColumns(dataHolder$a.JU.length);
                         list2.add(cursorWindow);
                         n5 = i - 1;
                         i = 0;
@@ -209,7 +209,7 @@ public final class DataHolder implements SafeParcelable
                 CursorWindow cursorWindow = new CursorWindow(false);
                 list2 = new ArrayList<CursorWindow>();
                 list2.add(cursorWindow);
-                cursorWindow.setNumColumns(a.JU.length);
+                cursorWindow.setNumColumns(dataHolder$a.JU.length);
                 i = 0;
                 int n2 = 0;
             }
@@ -317,7 +317,7 @@ public final class DataHolder implements SafeParcelable
     }
     
     @Override
-    protected void finalize() throws Throwable {
+    protected void finalize() {
         try {
             if (this.Kb && this.JW.length > 0 && !this.isClosed()) {
                 String s;
@@ -399,24 +399,5 @@ public final class DataHolder implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         f.a(this, parcel, n);
-    }
-    
-    public static class a
-    {
-        private final String[] JU;
-        private final ArrayList<HashMap<String, Object>> Kd;
-        private final String Ke;
-        private final HashMap<Object, Integer> Kf;
-        private boolean Kg;
-        private String Kh;
-        
-        private a(final String[] array, final String ke) {
-            this.JU = n.i(array);
-            this.Kd = new ArrayList<HashMap<String, Object>>();
-            this.Ke = ke;
-            this.Kf = new HashMap<Object, Integer>();
-            this.Kg = false;
-            this.Kh = null;
-        }
     }
 }

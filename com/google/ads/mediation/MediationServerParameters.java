@@ -8,11 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import com.google.android.gms.internal.gs;
 import java.lang.reflect.Field;
@@ -25,14 +20,14 @@ public abstract class MediationServerParameters
     protected void a() {
     }
     
-    public void load(Map<String, String> iterator) throws MappingException {
+    public void load(Map<String, String> iterator) {
         final HashMap<Object, Field> hashMap = new HashMap<Object, Field>();
         final Field[] fields = this.getClass().getFields();
         for (int length = fields.length, i = 0; i < length; ++i) {
             final Field field = fields[i];
-            final Parameter parameter = field.getAnnotation(Parameter.class);
-            if (parameter != null) {
-                hashMap.put(parameter.name(), field);
+            final MediationServerParameters$Parameter mediationServerParameters$Parameter = field.getAnnotation(MediationServerParameters$Parameter.class);
+            if (mediationServerParameters$Parameter != null) {
+                hashMap.put(mediationServerParameters$Parameter.name(), field);
             }
         }
         if (hashMap.isEmpty()) {
@@ -59,32 +54,17 @@ public abstract class MediationServerParameters
         }
         final StringBuilder sb = new StringBuilder();
         for (final Field field3 : hashMap.values()) {
-            if (field3.getAnnotation(Parameter.class).required()) {
-                gs.W("Required server option missing: " + field3.getAnnotation(Parameter.class).name());
+            if (field3.getAnnotation(MediationServerParameters$Parameter.class).required()) {
+                gs.W("Required server option missing: " + field3.getAnnotation(MediationServerParameters$Parameter.class).name());
                 if (sb.length() > 0) {
                     sb.append(", ");
                 }
-                sb.append(field3.getAnnotation(Parameter.class).name());
+                sb.append(field3.getAnnotation(MediationServerParameters$Parameter.class).name());
             }
         }
         if (sb.length() > 0) {
-            throw new MappingException("Required server option(s) missing: " + sb.toString());
+            throw new MediationServerParameters$MappingException("Required server option(s) missing: " + sb.toString());
         }
         this.a();
-    }
-    
-    public static final class MappingException extends Exception
-    {
-        public MappingException(final String s) {
-            super(s);
-        }
-    }
-    
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.FIELD })
-    protected @interface Parameter {
-        String name();
-        
-        boolean required() default true;
     }
 }

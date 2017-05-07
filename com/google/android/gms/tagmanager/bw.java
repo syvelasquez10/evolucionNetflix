@@ -9,7 +9,7 @@ import java.util.Set;
 class bw implements cs
 {
     @Override
-    public void b(final Set<cr.a> set) {
+    public void b(final Set<cr$a> set) {
     }
     
     @Override

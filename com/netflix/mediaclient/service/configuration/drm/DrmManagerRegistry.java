@@ -11,7 +11,8 @@ import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import android.content.Context;
 
 public final class DrmManagerRegistry
@@ -37,7 +38,7 @@ public final class DrmManagerRegistry
         getWidevineMediaDrmEngine().clearLicense(array);
     }
     
-    public static DrmManager createDrmManager(Context instance, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final ServiceAgent.UserAgentInterface userAgentInterface, final ErrorLogging errorLogging, final DrmManager.DrmReadyCallback drmReadyCallback) {
+    public static DrmManager createDrmManager(Context instance, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface, final ErrorLogging errorLogging, final DrmManager$DrmReadyCallback drmManager$DrmReadyCallback) {
         int androidVersion;
         Label_0101_Outer:Label_0111_Outer:
         while (true) {
@@ -54,15 +55,15 @@ public final class DrmManagerRegistry
                             while (true) {
                                 while (true) {
                                     try {
-                                        DrmManagerRegistry.disableWidevine = configurationAgentInterface.isDisableWidevine();
+                                        DrmManagerRegistry.disableWidevine = serviceAgent$ConfigurationAgentInterface.isDisableWidevine();
                                         if (androidVersion >= 18 && isWidevineDrmAllowed()) {
-                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, userAgentInterface, errorLogging, drmReadyCallback);
+                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, drmManager$DrmReadyCallback);
                                         }
                                         else {
                                             if (Log.isLoggable("nf_drm", 3)) {
                                                 Log.d("nf_drm", "LegacyDrmManager for devices running android version = " + androidVersion);
                                             }
-                                            DrmManagerRegistry.instance = new LegacyDrmManager(drmReadyCallback);
+                                            DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
                                         }
                                         if (DrmManagerRegistry.instance.getDrmType() != 0) {
                                             break Label_0256;
@@ -80,7 +81,7 @@ public final class DrmManagerRegistry
                                     }
                                     catch (Throwable t) {
                                         Log.e("nf_drm", "Unable to create WidevineDrmManager, default to LegacyDrmManager", t);
-                                        DrmManagerRegistry.instance = new LegacyDrmManager(drmReadyCallback);
+                                        DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
                                         continue Label_0101_Outer;
                                     }
                                     continue Label_0101_Outer;

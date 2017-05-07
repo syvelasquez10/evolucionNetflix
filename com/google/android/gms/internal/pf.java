@@ -4,7 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public final class pf
@@ -184,15 +183,15 @@ public final class pf
         return gy(n) + gw(n2);
     }
     
-    public void B(final long n) throws IOException {
+    public void B(final long n) {
         this.F(n);
     }
     
-    public void C(final long n) throws IOException {
+    public void C(final long n) {
         this.F(I(n));
     }
     
-    public void F(long n) throws IOException {
+    public void F(long n) {
         while ((0xFFFFFFFFFFFFFF80L & n) != 0x0L) {
             this.gx(((int)n & 0x7F) | 0x80);
             n >>>= 7;
@@ -200,7 +199,7 @@ public final class pf
         this.gx((int)n);
     }
     
-    public void H(final long n) throws IOException {
+    public void H(final long n) {
         this.gx((int)n & 0xFF);
         this.gx((int)(n >> 8) & 0xFF);
         this.gx((int)(n >> 16) & 0xFF);
@@ -211,7 +210,7 @@ public final class pf
         this.gx((int)(n >> 56) & 0xFF);
     }
     
-    public void U(final boolean b) throws IOException {
+    public void U(final boolean b) {
         int n;
         if (b) {
             n = 1;
@@ -222,93 +221,93 @@ public final class pf
         this.gx(n);
     }
     
-    public void a(final int n, final double n2) throws IOException {
+    public void a(final int n, final double n2) {
         this.w(n, 1);
         this.e(n2);
     }
     
-    public void a(final int n, final pm pm) throws IOException {
+    public void a(final int n, final pm pm) {
         this.w(n, 2);
         this.c(pm);
     }
     
-    public void a(final int n, final byte[] array) throws IOException {
+    public void a(final int n, final byte[] array) {
         this.w(n, 2);
         this.r(array);
     }
     
-    public void b(final byte b) throws IOException {
+    public void b(final byte b) {
         if (this.position == this.awx) {
-            throw new a(this.position, this.awx);
+            throw new pf$a(this.position, this.awx);
         }
         this.buffer[this.position++] = b;
     }
     
-    public void b(final int n, final float n2) throws IOException {
+    public void b(final int n, final float n2) {
         this.w(n, 5);
         this.d(n2);
     }
     
-    public void b(final int n, final long n2) throws IOException {
+    public void b(final int n, final long n2) {
         this.w(n, 0);
         this.B(n2);
     }
     
-    public void b(final int n, final String s) throws IOException {
+    public void b(final int n, final String s) {
         this.w(n, 2);
         this.de(s);
     }
     
-    public void b(final int n, final boolean b) throws IOException {
+    public void b(final int n, final boolean b) {
         this.w(n, 0);
         this.U(b);
     }
     
-    public void b(final pm pm) throws IOException {
+    public void b(final pm pm) {
         pm.a(this);
     }
     
-    public void c(final int n, final long n2) throws IOException {
+    public void c(final int n, final long n2) {
         this.w(n, 0);
         this.C(n2);
     }
     
-    public void c(final pm pm) throws IOException {
+    public void c(final pm pm) {
         this.gz(pm.qF());
         pm.a(this);
     }
     
-    public void c(final byte[] array, final int n, final int n2) throws IOException {
+    public void c(final byte[] array, final int n, final int n2) {
         if (this.awx - this.position >= n2) {
             System.arraycopy(array, n, this.buffer, this.position, n2);
             this.position += n2;
             return;
         }
-        throw new a(this.position, this.awx);
+        throw new pf$a(this.position, this.awx);
     }
     
-    public void d(final float n) throws IOException {
+    public void d(final float n) {
         this.gB(Float.floatToIntBits(n));
     }
     
-    public void de(final String s) throws IOException {
+    public void de(final String s) {
         final byte[] bytes = s.getBytes("UTF-8");
         this.gz(bytes.length);
         this.t(bytes);
     }
     
-    public void e(final double n) throws IOException {
+    public void e(final double n) {
         this.H(Double.doubleToLongBits(n));
     }
     
-    public void gB(final int n) throws IOException {
+    public void gB(final int n) {
         this.gx(n & 0xFF);
         this.gx(n >> 8 & 0xFF);
         this.gx(n >> 16 & 0xFF);
         this.gx(n >> 24 & 0xFF);
     }
     
-    public void gt(final int n) throws IOException {
+    public void gt(final int n) {
         if (n >= 0) {
             this.gz(n);
             return;
@@ -316,15 +315,15 @@ public final class pf
         this.F(n);
     }
     
-    public void gu(final int n) throws IOException {
+    public void gu(final int n) {
         this.gz(gC(n));
     }
     
-    public void gx(final int n) throws IOException {
+    public void gx(final int n) {
         this.b((byte)n);
     }
     
-    public void gz(int n) throws IOException {
+    public void gz(int n) {
         while ((n & 0xFFFFFF80) != 0x0) {
             this.gx((n & 0x7F) | 0x80);
             n >>>= 7;
@@ -342,33 +341,26 @@ public final class pf
         }
     }
     
-    public void r(final byte[] array) throws IOException {
+    public void r(final byte[] array) {
         this.gz(array.length);
         this.t(array);
     }
     
-    public void s(final int n, final int n2) throws IOException {
+    public void s(final int n, final int n2) {
         this.w(n, 0);
         this.gt(n2);
     }
     
-    public void t(final int n, final int n2) throws IOException {
+    public void t(final int n, final int n2) {
         this.w(n, 0);
         this.gu(n2);
     }
     
-    public void t(final byte[] array) throws IOException {
+    public void t(final byte[] array) {
         this.c(array, 0, array.length);
     }
     
-    public void w(final int n, final int n2) throws IOException {
+    public void w(final int n, final int n2) {
         this.gz(pp.x(n, n2));
-    }
-    
-    public static class a extends IOException
-    {
-        a(final int n, final int n2) {
-            super("CodedOutputStream was writing to a flat byte array and ran out of space (pos " + n + " limit " + n2 + ").");
-        }
     }
 }

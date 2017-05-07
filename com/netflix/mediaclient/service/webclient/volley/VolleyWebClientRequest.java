@@ -4,13 +4,14 @@
 
 package com.netflix.mediaclient.service.webclient.volley;
 
-import com.android.volley.Cache;
+import com.android.volley.Cache$Entry;
 import java.io.UnsupportedEncodingException;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
 import android.net.Uri;
 import android.text.TextUtils;
-import com.android.volley.AuthFailureError;
+import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
@@ -24,7 +25,7 @@ import com.netflix.mediaclient.Log;
 import com.android.volley.VolleyError;
 import android.os.SystemClock;
 import java.util.HashMap;
-import com.android.volley.Response;
+import com.android.volley.Response$ErrorListener;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
@@ -105,7 +106,7 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
     }
     
     @Override
-    public Map<String, String> getHeaders() throws AuthFailureError {
+    public Map<String, String> getHeaders() {
         final String string = this.mUserCredentialRegistry.getNetflixIdName() + "=" + this.mUserCredentialRegistry.getNetflixID() + "; " + this.mUserCredentialRegistry.getSecureNetflixIdName() + "=" + this.mUserCredentialRegistry.getSecureNetflixID();
         if (Log.isLoggable("nf_volleyrequest", 2)) {
             Log.v("nf_volleyrequest", "VolleyWebClientRequest with cookies: " + string);
@@ -121,8 +122,8 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
     }
     
     @Override
-    public Priority getPriority() {
-        return Priority.HIGH;
+    public Request$Priority getPriority() {
+        return Request$Priority.HIGH;
     }
     
     protected int getResponseSizeInBytes() {
@@ -200,11 +201,11 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                         if (Log.isLoggable("nf_volleyrequest", 2)) {
                             Log.v("nf_volleyrequest", "Received Volley response with Set-Cookie = " + s);
                         }
-                        String s2 = null;
-                        String s3 = null;
                         final String[] split = s.split(";");
                         final int length = split.length;
                         int n = 0;
+                        String s2 = null;
+                        String s3 = null;
                     Label_0175_Outer:
                         while (true) {
                             if (n >= length) {
@@ -218,18 +219,18 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                     if (!this.mUserCredentialRegistry.getNetflixIdName().equalsIgnoreCase(split2[0].trim())) {
                                         break Label_0310;
                                     }
-                                    s4 = split2[1];
-                                    s5 = s3;
+                                    s5 = split2[1];
+                                    s4 = s2;
                                 }
                             Label_0269_Outer:
                                 while (true) {
                                     Label_0353: {
-                                        if (!StringUtils.isNotEmpty(s4) || !StringUtils.isNotEmpty(s5)) {
+                                        if (!StringUtils.isNotEmpty(s5) || !StringUtils.isNotEmpty(s4)) {
                                             break Label_0353;
                                         }
-                                        Log.d("nf_volleyrequest", String.format("update cookies ? %b - currentNetflixId %s, newId %s", responseValid, this.getCurrentNetflixId(), s4));
+                                        Log.d("nf_volleyrequest", String.format("update cookies ? %b - currentNetflixId %s, newId %s", responseValid, this.getCurrentNetflixId(), s5));
                                         if (responseValid) {
-                                            this.mUserCredentialRegistry.updateUserCredentials(s4, s5);
+                                            this.mUserCredentialRegistry.updateUserCredentials(s5, s4);
                                         }
                                         while (true) {
                                             try {
@@ -240,18 +241,18 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     return Response.error(new ParseException((String)networkResponse));
                                                 }
                                                 break Label_0385;
-                                                ++n;
-                                                s2 = s4;
-                                                s3 = s5;
-                                                continue Label_0175_Outer;
                                                 responseValid = true;
                                                 continue Label_0112_Outer;
                                                 s4 = s2;
                                                 s5 = s3;
                                                 // iftrue(Label_0175:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
-                                                s5 = split2[1];
-                                                s4 = s2;
+                                                s4 = split2[1];
+                                                s5 = s3;
                                                 continue Label_0269_Outer;
+                                                ++n;
+                                                s2 = s4;
+                                                s3 = s5;
+                                                continue Label_0175_Outer;
                                             }
                                             catch (UnsupportedEncodingException ex2) {
                                                 networkResponse = (NetworkResponse)new String(networkResponse.data);
@@ -285,7 +286,7 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
         return Response.success(response, null);
     }
     
-    protected abstract T parseResponse(final String p0) throws VolleyError;
+    protected abstract T parseResponse(final String p0);
     
     protected boolean parsedResponseCanBeNull() {
         return false;

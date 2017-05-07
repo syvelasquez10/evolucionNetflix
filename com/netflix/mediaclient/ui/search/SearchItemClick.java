@@ -14,28 +14,20 @@ class SearchItemClick implements Parcelable
     public String displayName;
     public long id;
     public int position;
-    public SearchResultsFrag.SearchCategory searchCategory;
+    public SearchResultsFrag$SearchCategory searchCategory;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<SearchItemClick>() {
-            public SearchItemClick createFromParcel(final Parcel parcel) {
-                return new SearchItemClick(parcel);
-            }
-            
-            public SearchItemClick[] newArray(final int n) {
-                return new SearchItemClick[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new SearchItemClick$1();
     }
     
     public SearchItemClick(final Parcel parcel) {
-        this.searchCategory = SearchResultsFrag.SearchCategory.valueOf(parcel.readString());
+        this.searchCategory = SearchResultsFrag$SearchCategory.valueOf(parcel.readString());
         this.displayName = parcel.readString();
         this.position = parcel.readInt();
         this.id = parcel.readLong();
     }
     
-    SearchItemClick(final SearchResultsFrag.SearchCategory searchCategory, final int position, final long id, final String displayName) {
+    SearchItemClick(final SearchResultsFrag$SearchCategory searchCategory, final int position, final long id, final String displayName) {
         this.searchCategory = searchCategory;
         this.displayName = displayName;
         this.position = position;

@@ -4,11 +4,6 @@
 
 package android.support.v4.app;
 
-import android.graphics.Bitmap;
-import android.app.PendingIntent;
-import android.widget.RemoteViews;
-import android.content.Context;
-import android.os.Bundle;
 import android.os.Parcelable;
 import java.util.ArrayList;
 import android.app.Notification$Action;
@@ -19,31 +14,31 @@ import android.app.Notification$Builder;
 
 class NotificationCompatApi20
 {
-    public static void addAction(final Notification$Builder notification$Builder, final NotificationCompatBase.Action action) {
-        final Notification$Action$Builder notification$Action$Builder = new Notification$Action$Builder(action.getIcon(), action.getTitle(), action.getActionIntent());
-        if (action.getRemoteInputs() != null) {
-            final RemoteInput[] fromCompat = RemoteInputCompatApi20.fromCompat(action.getRemoteInputs());
+    public static void addAction(final Notification$Builder notification$Builder, final NotificationCompatBase$Action notificationCompatBase$Action) {
+        final Notification$Action$Builder notification$Action$Builder = new Notification$Action$Builder(notificationCompatBase$Action.getIcon(), notificationCompatBase$Action.getTitle(), notificationCompatBase$Action.getActionIntent());
+        if (notificationCompatBase$Action.getRemoteInputs() != null) {
+            final RemoteInput[] fromCompat = RemoteInputCompatApi20.fromCompat(notificationCompatBase$Action.getRemoteInputs());
             for (int length = fromCompat.length, i = 0; i < length; ++i) {
                 notification$Action$Builder.addRemoteInput(fromCompat[i]);
             }
         }
-        if (action.getExtras() != null) {
-            notification$Action$Builder.addExtras(action.getExtras());
+        if (notificationCompatBase$Action.getExtras() != null) {
+            notification$Action$Builder.addExtras(notificationCompatBase$Action.getExtras());
         }
         notification$Builder.addAction(notification$Action$Builder.build());
     }
     
-    public static NotificationCompatBase.Action getAction(final Notification notification, final int n, final NotificationCompatBase.Action.Factory factory, final RemoteInputCompatBase.RemoteInput.Factory factory2) {
-        return getActionCompatFromAction(notification.actions[n], factory, factory2);
+    public static NotificationCompatBase$Action getAction(final Notification notification, final int n, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
+        return getActionCompatFromAction(notification.actions[n], notificationCompatBase$Action$Factory, remoteInputCompatBase$RemoteInput$Factory);
     }
     
-    private static NotificationCompatBase.Action getActionCompatFromAction(final Notification$Action notification$Action, final NotificationCompatBase.Action.Factory factory, final RemoteInputCompatBase.RemoteInput.Factory factory2) {
-        return factory.build(notification$Action.icon, notification$Action.title, notification$Action.actionIntent, notification$Action.getExtras(), RemoteInputCompatApi20.toCompat(notification$Action.getRemoteInputs(), factory2));
+    private static NotificationCompatBase$Action getActionCompatFromAction(final Notification$Action notification$Action, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
+        return notificationCompatBase$Action$Factory.build(notification$Action.icon, notification$Action.title, notification$Action.actionIntent, notification$Action.getExtras(), RemoteInputCompatApi20.toCompat(notification$Action.getRemoteInputs(), remoteInputCompatBase$RemoteInput$Factory));
     }
     
-    private static Notification$Action getActionFromActionCompat(final NotificationCompatBase.Action action) {
-        final Notification$Action$Builder addExtras = new Notification$Action$Builder(action.getIcon(), action.getTitle(), action.getActionIntent()).addExtras(action.getExtras());
-        final RemoteInputCompatBase.RemoteInput[] remoteInputs = action.getRemoteInputs();
+    private static Notification$Action getActionFromActionCompat(final NotificationCompatBase$Action notificationCompatBase$Action) {
+        final Notification$Action$Builder addExtras = new Notification$Action$Builder(notificationCompatBase$Action.getIcon(), notificationCompatBase$Action.getTitle(), notificationCompatBase$Action.getActionIntent()).addExtras(notificationCompatBase$Action.getExtras());
+        final RemoteInputCompatBase$RemoteInput[] remoteInputs = notificationCompatBase$Action.getRemoteInputs();
         if (remoteInputs != null) {
             final RemoteInput[] fromCompat = RemoteInputCompatApi20.fromCompat(remoteInputs);
             for (int length = fromCompat.length, i = 0; i < length; ++i) {
@@ -53,22 +48,13 @@ class NotificationCompatApi20
         return addExtras.build();
     }
     
-    public static NotificationCompatBase.Action[] getActionsFromParcelableArrayList(final ArrayList<Parcelable> list, final NotificationCompatBase.Action.Factory factory, final RemoteInputCompatBase.RemoteInput.Factory factory2) {
-        NotificationCompatBase.Action[] array;
+    public static NotificationCompatBase$Action[] getActionsFromParcelableArrayList(final ArrayList<Parcelable> list, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
         if (list == null) {
-            array = null;
+            return null;
         }
-        else {
-            final NotificationCompatBase.Action[] array2 = factory.newArray(list.size());
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (n >= array2.length) {
-                    break;
-                }
-                array2[n] = getActionCompatFromAction((Notification$Action)list.get(n), factory, factory2);
-                ++n;
-            }
+        final NotificationCompatBase$Action[] array = notificationCompatBase$Action$Factory.newArray(list.size());
+        for (int i = 0; i < array.length; ++i) {
+            array[i] = getActionCompatFromAction((Notification$Action)list.get(i), notificationCompatBase$Action$Factory, remoteInputCompatBase$RemoteInput$Factory);
         }
         return array;
     }
@@ -81,7 +67,7 @@ class NotificationCompatApi20
         return (notification.flags & 0x100) != 0x0;
     }
     
-    public static ArrayList<Parcelable> getParcelableArrayListForActions(final NotificationCompatBase.Action[] array) {
+    public static ArrayList<Parcelable> getParcelableArrayListForActions(final NotificationCompatBase$Action[] array) {
         ArrayList<Parcelable> list;
         if (array == null) {
             list = null;
@@ -108,37 +94,5 @@ class NotificationCompatApi20
     
     public static boolean isGroupSummary(final Notification notification) {
         return (notification.flags & 0x200) != 0x0;
-    }
-    
-    public static class Builder implements NotificationBuilderWithBuilderAccessor, NotificationBuilderWithActions
-    {
-        private Notification$Builder b;
-        private Bundle mExtras;
-        
-        public Builder(final Context context, final Notification notification, final CharSequence contentTitle, final CharSequence contentText, final CharSequence contentInfo, final RemoteViews remoteViews, final int number, final PendingIntent contentIntent, final PendingIntent pendingIntent, final Bitmap largeIcon, final int n, final int n2, final boolean b, final boolean showWhen, final boolean usesChronometer, final int priority, final CharSequence subText, final boolean localOnly, final ArrayList<String> list, final Bundle bundle, final String group, final boolean groupSummary, final String sortKey) {
-            this.b = new Notification$Builder(context).setWhen(notification.when).setShowWhen(showWhen).setSmallIcon(notification.icon, notification.iconLevel).setContent(notification.contentView).setTicker(notification.tickerText, remoteViews).setSound(notification.sound, notification.audioStreamType).setVibrate(notification.vibrate).setLights(notification.ledARGB, notification.ledOnMS, notification.ledOffMS).setOngoing((notification.flags & 0x2) != 0x0).setOnlyAlertOnce((notification.flags & 0x8) != 0x0).setAutoCancel((notification.flags & 0x10) != 0x0).setDefaults(notification.defaults).setContentTitle(contentTitle).setContentText(contentText).setSubText(subText).setContentInfo(contentInfo).setContentIntent(contentIntent).setDeleteIntent(notification.deleteIntent).setFullScreenIntent(pendingIntent, (notification.flags & 0x80) != 0x0).setLargeIcon(largeIcon).setNumber(number).setUsesChronometer(usesChronometer).setPriority(priority).setProgress(n, n2, b).setLocalOnly(localOnly).setGroup(group).setGroupSummary(groupSummary).setSortKey(sortKey);
-            this.mExtras = new Bundle();
-            if (bundle != null) {
-                this.mExtras.putAll(bundle);
-            }
-            if (list != null && !list.isEmpty()) {
-                this.mExtras.putStringArray("android.people", (String[])list.toArray(new String[list.size()]));
-            }
-        }
-        
-        @Override
-        public void addAction(final NotificationCompatBase.Action action) {
-            NotificationCompatApi20.addAction(this.b, action);
-        }
-        
-        public Notification build() {
-            this.b.setExtras(this.mExtras);
-            return this.b.build();
-        }
-        
-        @Override
-        public Notification$Builder getBuilder() {
-            return this.b;
-        }
     }
 }

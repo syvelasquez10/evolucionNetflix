@@ -18,12 +18,12 @@ class SyncActionHandler extends BaseNflxHandlerWithoutDelayedActionSupport
     }
     
     @Override
-    public Response handle() {
+    public NflxHandler$Response handle() {
         final String justUuid = NflxProtocolUtils.extractJustUuid(this.mParamsMap.get("targetid"));
         final IMdx mdx = this.mActivity.getServiceManager().getMdx();
         if (mdx == null) {
             Log.e("NflxHandler", "Sync action is required, MDX agent is null. This should NOT happen!");
-            return Response.NOT_HANDLING;
+            return NflxHandler$Response.NOT_HANDLING;
         }
         if (MdxUtils.isMdxTargetAvailable(this.mActivity.getServiceManager(), justUuid)) {
             Log.d("NflxHandler", "Sync action is required, target is available, sync");
@@ -31,9 +31,9 @@ class SyncActionHandler extends BaseNflxHandlerWithoutDelayedActionSupport
             if (Log.isLoggable("NflxHandler", 3)) {
                 Log.d("NflxHandler", "Set dial uuid as current target was success " + setDialUuidAsCurrentTarget);
             }
-            return Response.NOT_HANDLING;
+            return NflxHandler$Response.NOT_HANDLING;
         }
         Log.d("NflxHandler", "Sync action is required, target not available, do nothing!");
-        return Response.NOT_HANDLING;
+        return NflxHandler$Response.NOT_HANDLING;
     }
 }

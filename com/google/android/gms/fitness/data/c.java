@@ -5,6 +5,7 @@
 package com.google.android.gms.fitness.data;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -59,7 +60,7 @@ public class c implements Parcelable$Creator<BleDevice>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new BleDevice(g, o2, o, c3, c);
     }

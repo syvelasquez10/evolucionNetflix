@@ -5,6 +5,7 @@
 package com.google.android.gms.common.data;
 
 import android.os.Bundle;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.database.CursorWindow;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -64,7 +65,7 @@ public class f implements Parcelable$Creator<DataHolder>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         final DataHolder dataHolder = new DataHolder(g2, a, array, g, q);
         dataHolder.gB();

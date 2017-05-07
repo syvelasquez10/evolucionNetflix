@@ -24,7 +24,7 @@ public class NativeNetworkDiagnosis extends NativeNrdObject implements NetworkDi
         super(bridge);
     }
     
-    private int handleEvent(JSONObject jsonObject) throws Exception {
+    private int handleEvent(JSONObject jsonObject) {
         jsonObject = this.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null && jsonObject.has("type")) {
             final String string = this.getString(jsonObject, "type", null);

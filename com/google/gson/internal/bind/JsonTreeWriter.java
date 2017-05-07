@@ -4,11 +4,11 @@
 
 package com.google.gson.internal.bind;
 
+import java.io.IOException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonNull;
 import java.util.ArrayList;
-import java.io.IOException;
 import java.util.List;
 import com.google.gson.JsonElement;
 import java.io.Writer;
@@ -24,22 +24,7 @@ public final class JsonTreeWriter extends JsonWriter
     private final List<JsonElement> stack;
     
     static {
-        UNWRITABLE_WRITER = new Writer() {
-            @Override
-            public void close() throws IOException {
-                throw new AssertionError();
-            }
-            
-            @Override
-            public void flush() throws IOException {
-                throw new AssertionError();
-            }
-            
-            @Override
-            public void write(final char[] array, final int n, final int n2) {
-                throw new AssertionError();
-            }
-        };
+        UNWRITABLE_WRITER = new JsonTreeWriter$1();
         SENTINEL_CLOSED = new JsonPrimitive("closed");
     }
     
@@ -74,7 +59,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter beginArray() throws IOException {
+    public JsonWriter beginArray() {
         final JsonArray jsonArray = new JsonArray();
         this.put(jsonArray);
         this.stack.add(jsonArray);
@@ -82,7 +67,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter beginObject() throws IOException {
+    public JsonWriter beginObject() {
         final JsonObject jsonObject = new JsonObject();
         this.put(jsonObject);
         this.stack.add(jsonObject);
@@ -90,7 +75,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (!this.stack.isEmpty()) {
             throw new IOException("Incomplete document");
         }
@@ -98,7 +83,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter endArray() throws IOException {
+    public JsonWriter endArray() {
         if (this.stack.isEmpty() || this.pendingName != null) {
             throw new IllegalStateException();
         }
@@ -110,7 +95,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter endObject() throws IOException {
+    public JsonWriter endObject() {
         if (this.stack.isEmpty() || this.pendingName != null) {
             throw new IllegalStateException();
         }
@@ -122,7 +107,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public void flush() throws IOException {
+    public void flush() {
     }
     
     public JsonElement get() {
@@ -133,7 +118,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter name(final String pendingName) throws IOException {
+    public JsonWriter name(final String pendingName) {
         if (this.stack.isEmpty() || this.pendingName != null) {
             throw new IllegalStateException();
         }
@@ -145,13 +130,13 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter nullValue() throws IOException {
+    public JsonWriter nullValue() {
         this.put(JsonNull.INSTANCE);
         return this;
     }
     
     @Override
-    public JsonWriter value(final double n) throws IOException {
+    public JsonWriter value(final double n) {
         if (!this.isLenient() && (Double.isNaN(n) || Double.isInfinite(n))) {
             throw new IllegalArgumentException("JSON forbids NaN and infinities: " + n);
         }
@@ -160,13 +145,13 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter value(final long n) throws IOException {
+    public JsonWriter value(final long n) {
         this.put(new JsonPrimitive(n));
         return this;
     }
     
     @Override
-    public JsonWriter value(final Number n) throws IOException {
+    public JsonWriter value(final Number n) {
         if (n == null) {
             return this.nullValue();
         }
@@ -181,7 +166,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter value(final String s) throws IOException {
+    public JsonWriter value(final String s) {
         if (s == null) {
             return this.nullValue();
         }
@@ -190,7 +175,7 @@ public final class JsonTreeWriter extends JsonWriter
     }
     
     @Override
-    public JsonWriter value(final boolean b) throws IOException {
+    public JsonWriter value(final boolean b) {
         this.put(new JsonPrimitive(Boolean.valueOf(b)));
         return this;
     }

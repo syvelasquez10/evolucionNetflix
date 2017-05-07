@@ -5,6 +5,7 @@
 package com.google.android.gms.drive.realtime.internal.event;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -61,7 +62,7 @@ public class c implements Parcelable$Creator<ParcelableEventList>
             }
         }
         if (parcel.dataPosition() != c3) {
-            throw new a.a("Overread allowed size end=" + c3, parcel);
+            throw new a$a("Overread allowed size end=" + c3, parcel);
         }
         return new ParcelableEventList(g, c4, dataHolder, c, c2);
     }

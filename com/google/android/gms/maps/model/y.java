@@ -4,6 +4,7 @@
 
 package com.google.android.gms.maps.model;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -65,7 +66,7 @@ public class y implements Parcelable$Creator<VisibleRegion>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new VisibleRegion(g, latLng4, latLng3, latLng2, latLng, latLngBounds);
     }

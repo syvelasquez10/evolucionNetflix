@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.javabridge.invoke.media;
 
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
@@ -28,78 +27,62 @@ public class Open extends BaseInvoke
     private static final String PROPERTY_TRACKID = "trackerId";
     private static final String TARGET = "media";
     
-    public Open(final long n, final PlayContext playContext, final NetType netType) {
+    public Open(final long n, final PlayContext playContext, final Open$NetType open$NetType) {
         super("media", "open");
-        this.setArguments(n, playContext, netType);
+        this.setArguments(n, playContext, open$NetType);
     }
     
-    private void setArguments(final long n, final PlayContext ex, final NetType netType) {
-        if (ex == null) {
+    private void setArguments(final long n, final PlayContext playContext, final Open$NetType open$NetType) {
+        if (playContext == null) {
             throw new IllegalArgumentException("Play context can not be null!");
         }
-        Label_0014: {
-            break Label_0014;
+        while (true) {
             while (true) {
-                try {
-                    while (true) {
+                JSONObject jsonObject2 = null;
+                Label_0290: {
+                    try {
                         final JSONObject jsonObject = new JSONObject();
-                        while (true) {
-                            JSONObject jsonObject2 = null;
-                            Label_0292: {
-                                try {
-                                    jsonObject.put("movieId", n);
-                                    jsonObject.put("trackerId", ((Trackable)ex).getTrackId());
-                                    jsonObject2 = new JSONObject();
-                                    if (NetType.mobile.equals(netType)) {
-                                        jsonObject2.put("nettype", (Object)"mobile");
-                                    }
-                                    else {
-                                        if (!NetType.wifi.equals(netType)) {
-                                            break Label_0292;
-                                        }
-                                        jsonObject2.put("nettype", (Object)"wifi");
-                                    }
-                                    jsonObject2.put("pinCapableClient", true);
-                                    final JSONObject jsonObject3 = new JSONObject();
-                                    jsonObject3.put("request_id", (Object)((Trackable)ex).getRequestId());
-                                    jsonObject3.put("row", ((Trackable)ex).getListPos());
-                                    jsonObject3.put("rank", ((PlayContext)ex).getVideoPos());
-                                    jsonObject2.put("uiplaycontext", (Object)jsonObject3);
-                                    if (Log.isLoggable("nf_invoke", 3)) {
-                                        Log.d("nf_invoke", String.format("DEBUG info: reqId %s, listPos %d,  videoPos %d", ((Trackable)ex).getRequestId(), ((Trackable)ex).getListPos(), ((PlayContext)ex).getVideoPos()));
-                                    }
-                                    jsonObject.put("params", (Object)jsonObject2);
-                                    this.arguments = jsonObject.toString();
-                                    if (Log.isLoggable("nf_invoke", 3)) {
-                                        Log.d("nf_invoke", String.format("DEBUG info: sessionParams: %s", jsonObject.toString()));
-                                    }
-                                    return;
-                                }
-                                catch (JSONException ex2) {}
-                                break;
-                            }
-                            if (NetType.wired.equals(netType)) {
-                                jsonObject2.put("nettype", (Object)"wired");
-                                continue;
-                            }
+                        jsonObject.put("movieId", n);
+                        jsonObject.put("trackerId", playContext.getTrackId());
+                        jsonObject2 = new JSONObject();
+                        if (Open$NetType.mobile.equals(open$NetType)) {
                             jsonObject2.put("nettype", (Object)"mobile");
-                            continue;
                         }
+                        else {
+                            if (!Open$NetType.wifi.equals(open$NetType)) {
+                                break Label_0290;
+                            }
+                            jsonObject2.put("nettype", (Object)"wifi");
+                        }
+                        jsonObject2.put("pinCapableClient", true);
+                        final JSONObject jsonObject3 = new JSONObject();
+                        jsonObject3.put("request_id", (Object)playContext.getRequestId());
+                        jsonObject3.put("row", playContext.getListPos());
+                        jsonObject3.put("rank", playContext.getVideoPos());
+                        jsonObject2.put("uiplaycontext", (Object)jsonObject3);
+                        if (Log.isLoggable("nf_invoke", 3)) {
+                            Log.d("nf_invoke", String.format("DEBUG info: reqId %s, listPos %d,  videoPos %d", playContext.getRequestId(), playContext.getListPos(), playContext.getVideoPos()));
+                        }
+                        jsonObject.put("params", (Object)jsonObject2);
+                        this.arguments = jsonObject.toString();
+                        if (Log.isLoggable("nf_invoke", 3)) {
+                            Log.d("nf_invoke", String.format("DEBUG info: sessionParams: %s", jsonObject.toString()));
+                            return;
+                        }
+                        break;
                     }
-                    Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
+                    catch (JSONException ex) {
+                        Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
+                        return;
+                    }
                 }
-                catch (JSONException ex) {
+                if (Open$NetType.wired.equals(open$NetType)) {
+                    jsonObject2.put("nettype", (Object)"wired");
                     continue;
                 }
-                break;
+                jsonObject2.put("nettype", (Object)"mobile");
+                continue;
             }
         }
-    }
-    
-    public enum NetType
-    {
-        mobile, 
-        wifi, 
-        wired;
     }
 }

@@ -4,12 +4,9 @@
 
 package android.support.v7.app;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.os.Parcelable;
-import android.support.v7.internal.view.menu.MenuView;
 import android.support.v7.internal.view.StandaloneActionMode;
 import android.support.v7.internal.widget.ViewStubCompat;
+import android.support.v7.view.ActionMode$Callback;
 import android.support.v7.internal.app.ToolbarActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -18,8 +15,8 @@ import android.support.v4.app.NavUtils;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.widget.FrameLayout;
+import android.support.v7.internal.widget.FitWindowsViewGroup$OnFitSystemWindowsListener;
 import android.support.v7.internal.widget.FitWindowsViewGroup;
-import android.support.v4.view.WindowInsetsCompat;
 import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.view.LayoutInflater;
 import android.support.v7.internal.widget.TintCheckedTextView;
@@ -32,6 +29,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.support.v7.internal.app.WindowDecorActionBar;
 import android.view.ViewGroup$LayoutParams;
+import android.support.v7.appcompat.R$color;
 import android.support.v7.internal.widget.ViewUtils;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.view.KeyCharacterMap;
@@ -39,19 +37,24 @@ import android.support.v4.view.ViewConfigurationCompat;
 import android.view.ViewConfiguration;
 import android.support.v4.view.ViewCompat;
 import android.content.res.Resources$Theme;
-import android.support.v7.internal.view.menu.MenuPresenter;
+import android.support.v7.internal.view.menu.z;
+import android.support.v7.appcompat.R$id;
 import android.support.v7.internal.widget.ProgressBarCompat;
+import android.support.v7.appcompat.R$layout;
 import android.content.Context;
 import android.view.ContextThemeWrapper;
+import android.support.v7.appcompat.R$style;
+import android.support.v7.appcompat.R$attr;
 import android.view.KeyEvent;
 import android.os.Bundle;
 import android.support.v7.internal.app.WindowCallback;
 import android.util.DisplayMetrics;
 import android.content.res.TypedArray;
 import android.util.TypedValue;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$styleable;
+import android.support.v7.internal.view.menu.i;
 import android.view.Menu;
-import android.support.v7.internal.view.menu.ListMenuPresenter;
+import android.support.v7.internal.view.menu.g;
 import android.graphics.Rect;
 import android.view.ViewGroup;
 import android.view.View;
@@ -59,12 +62,12 @@ import android.support.v7.internal.widget.DecorContentParent;
 import android.support.v7.internal.widget.ActionBarContextView;
 import android.widget.PopupWindow;
 import android.support.v7.view.ActionMode;
-import android.support.v7.internal.view.menu.MenuBuilder;
+import android.support.v7.internal.view.menu.j;
 
-class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements Callback
+class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements j
 {
     private static final String TAG = "ActionBarActivityDelegateBase";
-    private ActionMenuPresenterCallback mActionMenuPresenterCallback;
+    private ActionBarActivityDelegateBase$ActionMenuPresenterCallback mActionMenuPresenterCallback;
     ActionMode mActionMode;
     PopupWindow mActionModePopup;
     ActionBarContextView mActionModeView;
@@ -76,9 +79,9 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     private int mInvalidatePanelMenuFeatures;
     private boolean mInvalidatePanelMenuPosted;
     private final Runnable mInvalidatePanelMenuRunnable;
-    private PanelMenuPresenterCallback mPanelMenuPresenterCallback;
-    private PanelFeatureState[] mPanels;
-    private PanelFeatureState mPreparedPanel;
+    private ActionBarActivityDelegateBase$PanelMenuPresenterCallback mPanelMenuPresenterCallback;
+    private ActionBarActivityDelegateBase$PanelFeatureState[] mPanels;
+    private ActionBarActivityDelegateBase$PanelFeatureState mPreparedPanel;
     Runnable mShowActionModePopup;
     private View mStatusGuard;
     private ViewGroup mSubDecor;
@@ -86,63 +89,63 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     private Rect mTempRect1;
     private Rect mTempRect2;
     private CharSequence mTitleToSet;
-    private ListMenuPresenter mToolbarListMenuPresenter;
+    private g mToolbarListMenuPresenter;
     private ViewGroup mWindowDecor;
     
     ActionBarActivityDelegateBase(final ActionBarActivity actionBarActivity) {
         super(actionBarActivity);
-        this.mInvalidatePanelMenuRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if ((ActionBarActivityDelegateBase.this.mInvalidatePanelMenuFeatures & 0x1) != 0x0) {
-                    ActionBarActivityDelegateBase.this.doInvalidatePanelMenu(0);
-                }
-                if ((ActionBarActivityDelegateBase.this.mInvalidatePanelMenuFeatures & 0x100) != 0x0) {
-                    ActionBarActivityDelegateBase.this.doInvalidatePanelMenu(8);
-                }
-                ActionBarActivityDelegateBase.this.mInvalidatePanelMenuPosted = false;
-                ActionBarActivityDelegateBase.this.mInvalidatePanelMenuFeatures = 0;
-            }
-        };
+        this.mInvalidatePanelMenuRunnable = new ActionBarActivityDelegateBase$1(this);
     }
     
     private void applyFixedSizeWindow() {
-        final TypedArray obtainStyledAttributes = this.mActivity.obtainStyledAttributes(R.styleable.Theme);
         TypedValue typedValue = null;
         final TypedValue typedValue2 = null;
-        TypedValue typedValue3 = null;
-        final TypedValue typedValue4 = null;
-        TypedValue typedValue5 = null;
-        final TypedValue typedValue6 = null;
-        TypedValue typedValue7 = null;
-        final TypedValue typedValue8 = null;
-        if (obtainStyledAttributes.hasValue(R.styleable.Theme_windowFixedWidthMajor)) {
+        final TypedArray obtainStyledAttributes = this.mActivity.obtainStyledAttributes(R$styleable.Theme);
+        TypedValue typedValue3;
+        if (obtainStyledAttributes.hasValue(R$styleable.Theme_windowFixedWidthMajor)) {
+            if (!false) {
+                typedValue3 = new TypedValue();
+            }
+            else {
+                typedValue3 = null;
+            }
+            obtainStyledAttributes.getValue(R$styleable.Theme_windowFixedWidthMajor, typedValue3);
+        }
+        else {
+            typedValue3 = null;
+        }
+        TypedValue typedValue4;
+        if (obtainStyledAttributes.hasValue(R$styleable.Theme_windowFixedWidthMinor)) {
+            if (!false) {
+                typedValue4 = new TypedValue();
+            }
+            else {
+                typedValue4 = null;
+            }
+            obtainStyledAttributes.getValue(R$styleable.Theme_windowFixedWidthMinor, typedValue4);
+        }
+        else {
+            typedValue4 = null;
+        }
+        TypedValue typedValue5;
+        if (obtainStyledAttributes.hasValue(R$styleable.Theme_windowFixedHeightMajor)) {
+            if (!false) {
+                typedValue5 = new TypedValue();
+            }
+            else {
+                typedValue5 = null;
+            }
+            obtainStyledAttributes.getValue(R$styleable.Theme_windowFixedHeightMajor, typedValue5);
+        }
+        else {
+            typedValue5 = null;
+        }
+        if (obtainStyledAttributes.hasValue(R$styleable.Theme_windowFixedHeightMinor)) {
             typedValue = typedValue2;
             if (!false) {
                 typedValue = new TypedValue();
             }
-            obtainStyledAttributes.getValue(R.styleable.Theme_windowFixedWidthMajor, typedValue);
-        }
-        if (obtainStyledAttributes.hasValue(R.styleable.Theme_windowFixedWidthMinor)) {
-            typedValue3 = typedValue4;
-            if (!false) {
-                typedValue3 = new TypedValue();
-            }
-            obtainStyledAttributes.getValue(R.styleable.Theme_windowFixedWidthMinor, typedValue3);
-        }
-        if (obtainStyledAttributes.hasValue(R.styleable.Theme_windowFixedHeightMajor)) {
-            typedValue5 = typedValue6;
-            if (!false) {
-                typedValue5 = new TypedValue();
-            }
-            obtainStyledAttributes.getValue(R.styleable.Theme_windowFixedHeightMajor, typedValue5);
-        }
-        if (obtainStyledAttributes.hasValue(R.styleable.Theme_windowFixedHeightMinor)) {
-            typedValue7 = typedValue8;
-            if (!false) {
-                typedValue7 = new TypedValue();
-            }
-            obtainStyledAttributes.getValue(R.styleable.Theme_windowFixedHeightMinor, typedValue7);
+            obtainStyledAttributes.getValue(R$styleable.Theme_windowFixedHeightMinor, typedValue);
         }
         final DisplayMetrics displayMetrics = this.mActivity.getResources().getDisplayMetrics();
         boolean b;
@@ -152,78 +155,85 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         else {
             b = false;
         }
-        final int n = -1;
-        final int n2 = -1;
         if (!b) {
-            typedValue3 = typedValue;
+            typedValue4 = typedValue3;
         }
-        int n3 = n;
-        if (typedValue3 != null) {
-            n3 = n;
-            if (typedValue3.type != 0) {
-                if (typedValue3.type == 5) {
-                    n3 = (int)typedValue3.getDimension(displayMetrics);
+        while (true) {
+            Label_0372: {
+                if (typedValue4 == null || typedValue4.type == 0) {
+                    break Label_0372;
+                }
+                int n;
+                if (typedValue4.type == 5) {
+                    n = (int)typedValue4.getDimension(displayMetrics);
                 }
                 else {
-                    n3 = n;
-                    if (typedValue3.type == 6) {
-                        n3 = (int)typedValue3.getFraction((float)displayMetrics.widthPixels, (float)displayMetrics.widthPixels);
+                    if (typedValue4.type != 6) {
+                        break Label_0372;
                     }
+                    n = (int)typedValue4.getFraction((float)displayMetrics.widthPixels, (float)displayMetrics.widthPixels);
+                }
+                if (!b) {
+                    typedValue5 = typedValue;
+                }
+                while (true) {
+                    Label_0367: {
+                        if (typedValue5 == null || typedValue5.type == 0) {
+                            break Label_0367;
+                        }
+                        int n2;
+                        if (typedValue5.type == 5) {
+                            n2 = (int)typedValue5.getDimension(displayMetrics);
+                        }
+                        else {
+                            if (typedValue5.type != 6) {
+                                break Label_0367;
+                            }
+                            n2 = (int)typedValue5.getFraction((float)displayMetrics.heightPixels, (float)displayMetrics.heightPixels);
+                        }
+                        if (n != -1 || n2 != -1) {
+                            this.mActivity.getWindow().setLayout(n, n2);
+                        }
+                        obtainStyledAttributes.recycle();
+                        return;
+                    }
+                    int n2 = -1;
+                    continue;
                 }
             }
+            int n = -1;
+            continue;
         }
-        if (!b) {
-            typedValue5 = typedValue7;
-        }
-        int n4 = n2;
-        if (typedValue5 != null) {
-            n4 = n2;
-            if (typedValue5.type != 0) {
-                if (typedValue5.type == 5) {
-                    n4 = (int)typedValue5.getDimension(displayMetrics);
-                }
-                else {
-                    n4 = n2;
-                    if (typedValue5.type == 6) {
-                        n4 = (int)typedValue5.getFraction((float)displayMetrics.heightPixels, (float)displayMetrics.heightPixels);
-                    }
-                }
-            }
-        }
-        if (n3 != -1 || n4 != -1) {
-            this.mActivity.getWindow().setLayout(n3, n4);
-        }
-        obtainStyledAttributes.recycle();
     }
     
-    private void callOnPanelClosed(final int n, final PanelFeatureState panelFeatureState, final Menu menu) {
-        PanelFeatureState panelFeatureState2 = panelFeatureState;
+    private void callOnPanelClosed(final int n, final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState, final Menu menu) {
+        ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState2 = actionBarActivityDelegateBase$PanelFeatureState;
         Object menu2 = menu;
         if (menu == null) {
-            PanelFeatureState panelFeatureState3;
-            if ((panelFeatureState3 = panelFeatureState) == null) {
-                panelFeatureState3 = panelFeatureState;
+            ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState3;
+            if ((actionBarActivityDelegateBase$PanelFeatureState3 = actionBarActivityDelegateBase$PanelFeatureState) == null) {
+                actionBarActivityDelegateBase$PanelFeatureState3 = actionBarActivityDelegateBase$PanelFeatureState;
                 if (n >= 0) {
-                    panelFeatureState3 = panelFeatureState;
+                    actionBarActivityDelegateBase$PanelFeatureState3 = actionBarActivityDelegateBase$PanelFeatureState;
                     if (n < this.mPanels.length) {
-                        panelFeatureState3 = this.mPanels[n];
+                        actionBarActivityDelegateBase$PanelFeatureState3 = this.mPanels[n];
                     }
                 }
             }
-            panelFeatureState2 = panelFeatureState3;
+            actionBarActivityDelegateBase$PanelFeatureState2 = actionBarActivityDelegateBase$PanelFeatureState3;
             menu2 = menu;
-            if (panelFeatureState3 != null) {
-                menu2 = panelFeatureState3.menu;
-                panelFeatureState2 = panelFeatureState3;
+            if (actionBarActivityDelegateBase$PanelFeatureState3 != null) {
+                menu2 = actionBarActivityDelegateBase$PanelFeatureState3.menu;
+                actionBarActivityDelegateBase$PanelFeatureState2 = actionBarActivityDelegateBase$PanelFeatureState3;
             }
         }
-        if (panelFeatureState2 != null && !panelFeatureState2.isOpen) {
+        if (actionBarActivityDelegateBase$PanelFeatureState2 != null && !actionBarActivityDelegateBase$PanelFeatureState2.isOpen) {
             return;
         }
         this.getWindowCallback().onPanelClosed(n, (Menu)menu2);
     }
     
-    private void checkCloseActionMenu(final MenuBuilder menuBuilder) {
+    private void checkCloseActionMenu(final i i) {
         if (this.mClosingActionMenu) {
             return;
         }
@@ -231,45 +241,45 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         this.mDecorContentParent.dismissPopups();
         final WindowCallback windowCallback = this.getWindowCallback();
         if (windowCallback != null && !this.isDestroyed()) {
-            windowCallback.onPanelClosed(8, (Menu)menuBuilder);
+            windowCallback.onPanelClosed(8, (Menu)i);
         }
         this.mClosingActionMenu = false;
     }
     
-    private void closePanel(final PanelFeatureState panelFeatureState, final boolean b) {
-        if (b && panelFeatureState.featureId == 0 && this.mDecorContentParent != null && this.mDecorContentParent.isOverflowMenuShowing()) {
-            this.checkCloseActionMenu(panelFeatureState.menu);
+    private void closePanel(final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState, final boolean b) {
+        if (b && actionBarActivityDelegateBase$PanelFeatureState.featureId == 0 && this.mDecorContentParent != null && this.mDecorContentParent.isOverflowMenuShowing()) {
+            this.checkCloseActionMenu(actionBarActivityDelegateBase$PanelFeatureState.menu);
         }
         else {
-            if (panelFeatureState.isOpen && b) {
-                this.callOnPanelClosed(panelFeatureState.featureId, panelFeatureState, null);
+            if (actionBarActivityDelegateBase$PanelFeatureState.isOpen && b) {
+                this.callOnPanelClosed(actionBarActivityDelegateBase$PanelFeatureState.featureId, actionBarActivityDelegateBase$PanelFeatureState, null);
             }
-            panelFeatureState.isPrepared = false;
-            panelFeatureState.isHandled = false;
-            panelFeatureState.isOpen = false;
-            panelFeatureState.shownPanelView = null;
-            panelFeatureState.refreshDecorView = true;
-            if (this.mPreparedPanel == panelFeatureState) {
+            actionBarActivityDelegateBase$PanelFeatureState.isPrepared = false;
+            actionBarActivityDelegateBase$PanelFeatureState.isHandled = false;
+            actionBarActivityDelegateBase$PanelFeatureState.isOpen = false;
+            actionBarActivityDelegateBase$PanelFeatureState.shownPanelView = null;
+            actionBarActivityDelegateBase$PanelFeatureState.refreshDecorView = true;
+            if (this.mPreparedPanel == actionBarActivityDelegateBase$PanelFeatureState) {
                 this.mPreparedPanel = null;
             }
         }
     }
     
     private void doInvalidatePanelMenu(final int n) {
-        final PanelFeatureState panelState = this.getPanelState(n, true);
+        final ActionBarActivityDelegateBase$PanelFeatureState panelState = this.getPanelState(n, true);
         if (panelState.menu != null) {
             final Bundle frozenActionViewState = new Bundle();
-            panelState.menu.saveActionViewStates(frozenActionViewState);
+            panelState.menu.c(frozenActionViewState);
             if (frozenActionViewState.size() > 0) {
                 panelState.frozenActionViewState = frozenActionViewState;
             }
-            panelState.menu.stopDispatchingItemsChanged();
+            panelState.menu.h();
             panelState.menu.clear();
         }
         panelState.refreshMenuContent = true;
         panelState.refreshDecorView = true;
         if ((n == 8 || n == 0) && this.mDecorContentParent != null) {
-            final PanelFeatureState panelState2 = this.getPanelState(0, false);
+            final ActionBarActivityDelegateBase$PanelFeatureState panelState2 = this.getPanelState(0, false);
             if (panelState2 != null) {
                 panelState2.isPrepared = false;
                 this.preparePanel(panelState2, null);
@@ -280,21 +290,21 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     private void ensureToolbarListMenuPresenter() {
         if (this.mToolbarListMenuPresenter == null) {
             final TypedValue typedValue = new TypedValue();
-            this.mActivity.getTheme().resolveAttribute(R.attr.panelMenuListTheme, typedValue, true);
+            this.mActivity.getTheme().resolveAttribute(R$attr.panelMenuListTheme, typedValue, true);
             final ActionBarActivity mActivity = this.mActivity;
             int n;
             if (typedValue.resourceId != 0) {
                 n = typedValue.resourceId;
             }
             else {
-                n = R.style.Theme_AppCompat_CompactMenu;
+                n = R$style.Theme_AppCompat_CompactMenu;
             }
-            this.mToolbarListMenuPresenter = new ListMenuPresenter((Context)new ContextThemeWrapper((Context)mActivity, n), R.layout.abc_list_menu_item_layout);
+            this.mToolbarListMenuPresenter = new g((Context)new ContextThemeWrapper((Context)mActivity, n), R$layout.abc_list_menu_item_layout);
         }
     }
     
-    private PanelFeatureState findMenuPanel(final Menu menu) {
-        final PanelFeatureState[] mPanels = this.mPanels;
+    private ActionBarActivityDelegateBase$PanelFeatureState findMenuPanel(final Menu menu) {
+        final ActionBarActivityDelegateBase$PanelFeatureState[] mPanels = this.mPanels;
         int length;
         if (mPanels != null) {
             length = mPanels.length;
@@ -303,16 +313,16 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
             length = 0;
         }
         for (int i = 0; i < length; ++i) {
-            final PanelFeatureState panelFeatureState = mPanels[i];
-            if (panelFeatureState != null && panelFeatureState.menu == menu) {
-                return panelFeatureState;
+            final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState = mPanels[i];
+            if (actionBarActivityDelegateBase$PanelFeatureState != null && actionBarActivityDelegateBase$PanelFeatureState.menu == menu) {
+                return actionBarActivityDelegateBase$PanelFeatureState;
             }
         }
         return null;
     }
     
     private ProgressBarCompat getCircularProgressBar() {
-        final ProgressBarCompat progressBarCompat = (ProgressBarCompat)this.mActivity.findViewById(R.id.progress_circular);
+        final ProgressBarCompat progressBarCompat = (ProgressBarCompat)this.mActivity.findViewById(R$id.progress_circular);
         if (progressBarCompat != null) {
             progressBarCompat.setVisibility(4);
         }
@@ -320,36 +330,34 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     }
     
     private ProgressBarCompat getHorizontalProgressBar() {
-        final ProgressBarCompat progressBarCompat = (ProgressBarCompat)this.mActivity.findViewById(R.id.progress_horizontal);
+        final ProgressBarCompat progressBarCompat = (ProgressBarCompat)this.mActivity.findViewById(R$id.progress_horizontal);
         if (progressBarCompat != null) {
             progressBarCompat.setVisibility(4);
         }
         return progressBarCompat;
     }
     
-    private PanelFeatureState getPanelState(final int n, final boolean b) {
-        final PanelFeatureState[] mPanels = this.mPanels;
-        PanelFeatureState[] array = null;
-        Label_0055: {
+    private ActionBarActivityDelegateBase$PanelFeatureState getPanelState(final int n, final boolean b) {
+        final ActionBarActivityDelegateBase$PanelFeatureState[] mPanels = this.mPanels;
+        ActionBarActivityDelegateBase$PanelFeatureState[] mPanels2 = null;
+        Label_0049: {
             if (mPanels != null) {
-                array = mPanels;
+                mPanels2 = mPanels;
                 if (mPanels.length > n) {
-                    break Label_0055;
+                    break Label_0049;
                 }
             }
-            final PanelFeatureState[] mPanels2 = new PanelFeatureState[n + 1];
+            mPanels2 = new ActionBarActivityDelegateBase$PanelFeatureState[n + 1];
             if (mPanels != null) {
                 System.arraycopy(mPanels, 0, mPanels2, 0, mPanels.length);
             }
-            array = mPanels2;
             this.mPanels = mPanels2;
         }
-        PanelFeatureState panelFeatureState;
-        if ((panelFeatureState = array[n]) == null) {
-            panelFeatureState = new PanelFeatureState(n);
-            array[n] = panelFeatureState;
+        final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState = mPanels2[n];
+        if (actionBarActivityDelegateBase$PanelFeatureState == null) {
+            return mPanels2[n] = new ActionBarActivityDelegateBase$PanelFeatureState(n);
         }
-        return panelFeatureState;
+        return actionBarActivityDelegateBase$PanelFeatureState;
     }
     
     private void hideProgressBars(final ProgressBarCompat progressBarCompat, final ProgressBarCompat progressBarCompat2) {
@@ -361,48 +369,41 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         }
     }
     
-    private boolean initializePanelContent(final PanelFeatureState panelFeatureState) {
-        if (panelFeatureState.menu != null) {
-            if (this.mPanelMenuPresenterCallback == null) {
-                this.mPanelMenuPresenterCallback = new PanelMenuPresenterCallback();
-            }
-            panelFeatureState.shownPanelView = (View)panelFeatureState.getListMenuView(this.mPanelMenuPresenterCallback);
-            if (panelFeatureState.shownPanelView != null) {
-                return true;
-            }
+    private boolean initializePanelContent(final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState) {
+        if (actionBarActivityDelegateBase$PanelFeatureState.menu == null) {
+            return false;
         }
-        return false;
+        if (this.mPanelMenuPresenterCallback == null) {
+            this.mPanelMenuPresenterCallback = new ActionBarActivityDelegateBase$PanelMenuPresenterCallback(this, null);
+        }
+        actionBarActivityDelegateBase$PanelFeatureState.shownPanelView = (View)actionBarActivityDelegateBase$PanelFeatureState.getListMenuView(this.mPanelMenuPresenterCallback);
+        return actionBarActivityDelegateBase$PanelFeatureState.shownPanelView != null;
     }
     
-    private void initializePanelDecor(final PanelFeatureState panelFeatureState) {
-        panelFeatureState.decorView = this.mWindowDecor;
-        panelFeatureState.setStyle(this.getActionBarThemedContext());
+    private void initializePanelDecor(final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState) {
+        actionBarActivityDelegateBase$PanelFeatureState.decorView = this.mWindowDecor;
+        actionBarActivityDelegateBase$PanelFeatureState.setStyle(this.getActionBarThemedContext());
     }
     
-    private boolean initializePanelMenu(final PanelFeatureState panelFeatureState) {
+    private boolean initializePanelMenu(final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState) {
         final ActionBarActivity mActivity = this.mActivity;
-        Object o = null;
-        Label_0176: {
-            if (panelFeatureState.featureId != 0) {
-                o = mActivity;
-                if (panelFeatureState.featureId != 8) {
-                    break Label_0176;
+        while (true) {
+            Label_0203: {
+                if ((actionBarActivityDelegateBase$PanelFeatureState.featureId != 0 && actionBarActivityDelegateBase$PanelFeatureState.featureId != 8) || this.mDecorContentParent == null) {
+                    break Label_0203;
                 }
-            }
-            o = mActivity;
-            if (this.mDecorContentParent != null) {
                 final TypedValue typedValue = new TypedValue();
                 final Resources$Theme theme = ((Context)mActivity).getTheme();
-                theme.resolveAttribute(R.attr.actionBarTheme, typedValue, true);
+                theme.resolveAttribute(R$attr.actionBarTheme, typedValue, true);
                 Resources$Theme theme2 = null;
                 if (typedValue.resourceId != 0) {
                     theme2 = ((Context)mActivity).getResources().newTheme();
                     theme2.setTo(theme);
                     theme2.applyStyle(typedValue.resourceId, true);
-                    theme2.resolveAttribute(R.attr.actionBarWidgetTheme, typedValue, true);
+                    theme2.resolveAttribute(R$attr.actionBarWidgetTheme, typedValue, true);
                 }
                 else {
-                    theme.resolveAttribute(R.attr.actionBarWidgetTheme, typedValue, true);
+                    theme.resolveAttribute(R$attr.actionBarWidgetTheme, typedValue, true);
                 }
                 Resources$Theme theme3 = theme2;
                 if (typedValue.resourceId != 0) {
@@ -412,17 +413,19 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                     }
                     theme3.applyStyle(typedValue.resourceId, true);
                 }
-                o = mActivity;
-                if (theme3 != null) {
-                    o = new ContextThemeWrapper((Context)mActivity, 0);
-                    ((Context)o).getTheme().setTo(theme3);
+                if (theme3 == null) {
+                    break Label_0203;
                 }
+                final Object o = new ContextThemeWrapper((Context)mActivity, 0);
+                ((Context)o).getTheme().setTo(theme3);
+                final i menu = new i((Context)o);
+                menu.a(this);
+                actionBarActivityDelegateBase$PanelFeatureState.setMenu(menu);
+                return true;
             }
+            final Object o = mActivity;
+            continue;
         }
-        final MenuBuilder menu = new MenuBuilder((Context)o);
-        menu.setCallback((MenuBuilder.Callback)this);
-        panelFeatureState.setMenu(menu);
-        return true;
     }
     
     private void invalidatePanelMenu(final int n) {
@@ -441,9 +444,9 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         this.openPanel(this.getPanelState(n, true), keyEvent);
     }
     
-    private void openPanel(final PanelFeatureState panelFeatureState, final KeyEvent keyEvent) {
-        if (!panelFeatureState.isOpen && !this.isDestroyed()) {
-            if (panelFeatureState.featureId == 0) {
+    private void openPanel(final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState, final KeyEvent keyEvent) {
+        if (!actionBarActivityDelegateBase$PanelFeatureState.isOpen && !this.isDestroyed()) {
+            if (actionBarActivityDelegateBase$PanelFeatureState.featureId == 0) {
                 final ActionBarActivity mActivity = this.mActivity;
                 boolean b;
                 if ((((Context)mActivity).getResources().getConfiguration().screenLayout & 0xF) == 0x4) {
@@ -464,23 +467,23 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                 }
             }
             final WindowCallback windowCallback = this.getWindowCallback();
-            if (windowCallback != null && !windowCallback.onMenuOpened(panelFeatureState.featureId, (Menu)panelFeatureState.menu)) {
-                this.closePanel(panelFeatureState, true);
+            if (windowCallback != null && !windowCallback.onMenuOpened(actionBarActivityDelegateBase$PanelFeatureState.featureId, (Menu)actionBarActivityDelegateBase$PanelFeatureState.menu)) {
+                this.closePanel(actionBarActivityDelegateBase$PanelFeatureState, true);
                 return;
             }
-            if (this.preparePanel(panelFeatureState, keyEvent)) {
-                if (panelFeatureState.decorView == null || panelFeatureState.refreshDecorView) {
-                    this.initializePanelDecor(panelFeatureState);
+            if (this.preparePanel(actionBarActivityDelegateBase$PanelFeatureState, keyEvent)) {
+                if (actionBarActivityDelegateBase$PanelFeatureState.decorView == null || actionBarActivityDelegateBase$PanelFeatureState.refreshDecorView) {
+                    this.initializePanelDecor(actionBarActivityDelegateBase$PanelFeatureState);
                 }
-                if (this.initializePanelContent(panelFeatureState) && panelFeatureState.hasPanelItems()) {
-                    panelFeatureState.isHandled = false;
-                    panelFeatureState.isOpen = true;
+                if (this.initializePanelContent(actionBarActivityDelegateBase$PanelFeatureState) && actionBarActivityDelegateBase$PanelFeatureState.hasPanelItems()) {
+                    actionBarActivityDelegateBase$PanelFeatureState.isHandled = false;
+                    actionBarActivityDelegateBase$PanelFeatureState.isOpen = true;
                 }
             }
         }
     }
     
-    private boolean preparePanel(final PanelFeatureState mPreparedPanel, final KeyEvent keyEvent) {
+    private boolean preparePanel(final ActionBarActivityDelegateBase$PanelFeatureState mPreparedPanel, final KeyEvent keyEvent) {
         if (!this.isDestroyed()) {
             if (mPreparedPanel.isPrepared) {
                 return true;
@@ -504,11 +507,11 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                 }
                 if (b && this.mDecorContentParent != null) {
                     if (this.mActionMenuPresenterCallback == null) {
-                        this.mActionMenuPresenterCallback = new ActionMenuPresenterCallback();
+                        this.mActionMenuPresenterCallback = new ActionBarActivityDelegateBase$ActionMenuPresenterCallback(this, null);
                     }
                     this.mDecorContentParent.setMenu((Menu)mPreparedPanel.menu, this.mActionMenuPresenterCallback);
                 }
-                mPreparedPanel.menu.stopDispatchingItemsChanged();
+                mPreparedPanel.menu.h();
                 if (!this.getWindowCallback().onCreatePanelMenu(mPreparedPanel.featureId, (Menu)mPreparedPanel.menu)) {
                     mPreparedPanel.setMenu(null);
                     if (b && this.mDecorContentParent != null) {
@@ -521,16 +524,16 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                     mPreparedPanel.refreshMenuContent = false;
                 }
             }
-            mPreparedPanel.menu.stopDispatchingItemsChanged();
+            mPreparedPanel.menu.h();
             if (mPreparedPanel.frozenActionViewState != null) {
-                mPreparedPanel.menu.restoreActionViewStates(mPreparedPanel.frozenActionViewState);
+                mPreparedPanel.menu.d(mPreparedPanel.frozenActionViewState);
                 mPreparedPanel.frozenActionViewState = null;
             }
             if (!this.getWindowCallback().onPreparePanel(0, null, (Menu)mPreparedPanel.menu)) {
                 if (b && this.mDecorContentParent != null) {
                     this.mDecorContentParent.setMenu(null, this.mActionMenuPresenterCallback);
                 }
-                mPreparedPanel.menu.startDispatchingItemsChanged();
+                mPreparedPanel.menu.i();
                 return false;
             }
             int deviceId;
@@ -542,7 +545,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
             }
             mPreparedPanel.qwertyMode = (KeyCharacterMap.load(deviceId).getKeyboardType() != 1);
             mPreparedPanel.menu.setQwertyMode(mPreparedPanel.qwertyMode);
-            mPreparedPanel.menu.startDispatchingItemsChanged();
+            mPreparedPanel.menu.i();
             mPreparedPanel.isPrepared = true;
             mPreparedPanel.isHandled = false;
             this.mPreparedPanel = mPreparedPanel;
@@ -551,7 +554,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         return false;
     }
     
-    private void reopenMenu(final MenuBuilder menuBuilder, final boolean b) {
+    private void reopenMenu(final i i, final boolean b) {
         if (this.mDecorContentParent != null && this.mDecorContentParent.canShowOverflowMenu() && (!ViewConfigurationCompat.hasPermanentMenuKey(ViewConfiguration.get((Context)this.mActivity)) || this.mDecorContentParent.isOverflowMenuShowPending())) {
             final WindowCallback windowCallback = this.getWindowCallback();
             if (!this.mDecorContentParent.isOverflowMenuShowing() || !b) {
@@ -560,7 +563,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                         this.mWindowDecor.removeCallbacks(this.mInvalidatePanelMenuRunnable);
                         this.mInvalidatePanelMenuRunnable.run();
                     }
-                    final PanelFeatureState panelState = this.getPanelState(0, true);
+                    final ActionBarActivityDelegateBase$PanelFeatureState panelState = this.getPanelState(0, true);
                     if (panelState.menu != null && !panelState.refreshMenuContent && windowCallback.onPreparePanel(0, null, (Menu)panelState.menu)) {
                         windowCallback.onMenuOpened(8, (Menu)panelState.menu);
                         this.mDecorContentParent.showOverflowMenu();
@@ -575,7 +578,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
             }
             return;
         }
-        final PanelFeatureState panelState2 = this.getPanelState(0, true);
+        final ActionBarActivityDelegateBase$PanelFeatureState panelState2 = this.getPanelState(0, true);
         panelState2.refreshDecorView = true;
         this.closePanel(panelState2, false);
         this.openPanel(panelState2, null);
@@ -636,106 +639,90 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         }
     }
     
-    private int updateStatusGuard(int visibility) {
-        final int n = 0;
-        final boolean b = false;
+    private int updateStatusGuard(int n) {
+        int n2 = 1;
+        boolean b = true;
         final boolean b2 = false;
-        boolean b3 = b;
-        int n2 = visibility;
-        if (this.mActionModeView != null) {
-            b3 = b;
-            n2 = visibility;
-            if (this.mActionModeView.getLayoutParams() instanceof ViewGroup$MarginLayoutParams) {
-                final ViewGroup$MarginLayoutParams layoutParams = (ViewGroup$MarginLayoutParams)this.mActionModeView.getLayoutParams();
-                int n3 = 0;
-                boolean b4 = false;
-                boolean b7;
-                int n5;
-                if (this.mActionModeView.isShown()) {
-                    if (this.mTempRect1 == null) {
-                        this.mTempRect1 = new Rect();
-                        this.mTempRect2 = new Rect();
-                    }
-                    final Rect mTempRect1 = this.mTempRect1;
-                    final Rect mTempRect2 = this.mTempRect2;
-                    mTempRect1.set(0, visibility, 0, 0);
-                    ViewUtils.computeFitSystemWindows((View)this.mSubDecor, mTempRect1, mTempRect2);
-                    int n4;
-                    if (mTempRect2.top == 0) {
-                        n4 = visibility;
-                    }
-                    else {
-                        n4 = 0;
-                    }
-                    if (layoutParams.topMargin != n4) {
-                        final boolean b5 = true;
-                        layoutParams.topMargin = visibility;
-                        if (this.mStatusGuard == null) {
-                            (this.mStatusGuard = new View((Context)this.mActivity)).setBackgroundColor(this.mActivity.getResources().getColor(R.color.abc_input_method_navigation_guard));
-                            this.mSubDecor.addView(this.mStatusGuard, -1, new ViewGroup$LayoutParams(-1, visibility));
-                            b4 = b5;
-                        }
-                        else {
-                            final ViewGroup$LayoutParams layoutParams2 = this.mStatusGuard.getLayoutParams();
-                            b4 = b5;
-                            if (layoutParams2.height != visibility) {
-                                layoutParams2.height = visibility;
-                                this.mStatusGuard.setLayoutParams(layoutParams2);
-                                b4 = b5;
-                            }
-                        }
-                    }
-                    boolean b6;
-                    if (this.mStatusGuard != null) {
-                        b6 = true;
+        int n6;
+        if (this.mActionModeView != null && this.mActionModeView.getLayoutParams() instanceof ViewGroup$MarginLayoutParams) {
+            final ViewGroup$MarginLayoutParams layoutParams = (ViewGroup$MarginLayoutParams)this.mActionModeView.getLayoutParams();
+            if (this.mActionModeView.isShown()) {
+                if (this.mTempRect1 == null) {
+                    this.mTempRect1 = new Rect();
+                    this.mTempRect2 = new Rect();
+                }
+                final Rect mTempRect1 = this.mTempRect1;
+                final Rect mTempRect2 = this.mTempRect2;
+                mTempRect1.set(0, n, 0, 0);
+                ViewUtils.computeFitSystemWindows((View)this.mSubDecor, mTempRect1, mTempRect2);
+                int n3;
+                if (mTempRect2.top == 0) {
+                    n3 = n;
+                }
+                else {
+                    n3 = 0;
+                }
+                int n4;
+                if (layoutParams.topMargin != n3) {
+                    layoutParams.topMargin = n;
+                    if (this.mStatusGuard == null) {
+                        (this.mStatusGuard = new View((Context)this.mActivity)).setBackgroundColor(this.mActivity.getResources().getColor(R$color.abc_input_method_navigation_guard));
+                        this.mSubDecor.addView(this.mStatusGuard, -1, new ViewGroup$LayoutParams(-1, n));
+                        n4 = 1;
                     }
                     else {
-                        b6 = false;
-                    }
-                    n3 = (b4 ? 1 : 0);
-                    b7 = b6;
-                    n5 = visibility;
-                    if (!this.mOverlayActionMode) {
-                        n3 = (b4 ? 1 : 0);
-                        b7 = b6;
-                        n5 = visibility;
-                        if (b6) {
-                            n5 = 0;
-                            b7 = b6;
-                            n3 = (b4 ? 1 : 0);
+                        final ViewGroup$LayoutParams layoutParams2 = this.mStatusGuard.getLayoutParams();
+                        if (layoutParams2.height != n) {
+                            layoutParams2.height = n;
+                            this.mStatusGuard.setLayoutParams(layoutParams2);
                         }
+                        n4 = 1;
                     }
                 }
                 else {
-                    b7 = b2;
-                    n5 = visibility;
-                    if (layoutParams.topMargin != 0) {
-                        n3 = 1;
-                        layoutParams.topMargin = 0;
-                        b7 = b2;
-                        n5 = visibility;
+                    n4 = 0;
+                }
+                if (this.mStatusGuard == null) {
+                    b = false;
+                }
+                int n5 = n;
+                if (!this.mOverlayActionMode) {
+                    n5 = n;
+                    if (b) {
+                        n5 = 0;
                     }
                 }
-                b3 = b7;
-                n2 = n5;
-                if (n3 != 0) {
-                    this.mActionModeView.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
-                    n2 = n5;
-                    b3 = b7;
-                }
+                n = n5;
+                n2 = n4;
+                n6 = (b ? 1 : 0);
             }
+            else if (layoutParams.topMargin != 0) {
+                layoutParams.topMargin = 0;
+                n6 = 0;
+            }
+            else {
+                n2 = 0;
+                n6 = 0;
+            }
+            if (n2 != 0) {
+                this.mActionModeView.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+            }
+        }
+        else {
+            n6 = 0;
         }
         if (this.mStatusGuard != null) {
             final View mStatusGuard = this.mStatusGuard;
-            if (b3) {
-                visibility = n;
+            int visibility;
+            if (n6 != 0) {
+                visibility = (b2 ? 1 : 0);
             }
             else {
                 visibility = 8;
             }
             mStatusGuard.setVisibility(visibility);
         }
-        return n2;
+        return n;
     }
     
     public void addContentView(final View view, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
@@ -779,7 +766,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         if (!this.mSubDecorInstalled) {
             if (this.mHasActionBar) {
                 final TypedValue typedValue = new TypedValue();
-                this.mActivity.getTheme().resolveAttribute(R.attr.actionBarTheme, typedValue, true);
+                this.mActivity.getTheme().resolveAttribute(R$attr.actionBarTheme, typedValue, true);
                 Object mActivity;
                 if (typedValue.resourceId != 0) {
                     mActivity = new ContextThemeWrapper((Context)this.mActivity, typedValue.resourceId);
@@ -787,8 +774,8 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                 else {
                     mActivity = this.mActivity;
                 }
-                this.mSubDecor = (ViewGroup)LayoutInflater.from((Context)mActivity).inflate(R.layout.abc_screen_toolbar, (ViewGroup)null);
-                (this.mDecorContentParent = (DecorContentParent)this.mSubDecor.findViewById(R.id.decor_content_parent)).setWindowCallback(this.getWindowCallback());
+                this.mSubDecor = (ViewGroup)LayoutInflater.from((Context)mActivity).inflate(R$layout.abc_screen_toolbar, (ViewGroup)null);
+                (this.mDecorContentParent = (DecorContentParent)this.mSubDecor.findViewById(R$id.decor_content_parent)).setWindowCallback(this.getWindowCallback());
                 if (this.mOverlayActionBar) {
                     this.mDecorContentParent.initFeature(9);
                 }
@@ -801,39 +788,23 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
             }
             else {
                 if (this.mOverlayActionMode) {
-                    this.mSubDecor = (ViewGroup)LayoutInflater.from((Context)this.mActivity).inflate(R.layout.abc_screen_simple_overlay_action_mode, (ViewGroup)null);
+                    this.mSubDecor = (ViewGroup)LayoutInflater.from((Context)this.mActivity).inflate(R$layout.abc_screen_simple_overlay_action_mode, (ViewGroup)null);
                 }
                 else {
-                    this.mSubDecor = (ViewGroup)LayoutInflater.from((Context)this.mActivity).inflate(R.layout.abc_screen_simple, (ViewGroup)null);
+                    this.mSubDecor = (ViewGroup)LayoutInflater.from((Context)this.mActivity).inflate(R$layout.abc_screen_simple, (ViewGroup)null);
                 }
                 if (Build$VERSION.SDK_INT >= 21) {
-                    ViewCompat.setOnApplyWindowInsetsListener((View)this.mSubDecor, new OnApplyWindowInsetsListener() {
-                        @Override
-                        public WindowInsetsCompat onApplyWindowInsets(final View view, final WindowInsetsCompat windowInsetsCompat) {
-                            final int systemWindowInsetTop = windowInsetsCompat.getSystemWindowInsetTop();
-                            final int access$300 = ActionBarActivityDelegateBase.this.updateStatusGuard(systemWindowInsetTop);
-                            WindowInsetsCompat replaceSystemWindowInsets = windowInsetsCompat;
-                            if (systemWindowInsetTop != access$300) {
-                                replaceSystemWindowInsets = windowInsetsCompat.replaceSystemWindowInsets(windowInsetsCompat.getSystemWindowInsetLeft(), access$300, windowInsetsCompat.getSystemWindowInsetRight(), windowInsetsCompat.getSystemWindowInsetBottom());
-                            }
-                            return replaceSystemWindowInsets;
-                        }
-                    });
+                    ViewCompat.setOnApplyWindowInsetsListener((View)this.mSubDecor, new ActionBarActivityDelegateBase$2(this));
                 }
                 else {
-                    ((FitWindowsViewGroup)this.mSubDecor).setOnFitSystemWindowsListener((FitWindowsViewGroup.OnFitSystemWindowsListener)new FitWindowsViewGroup.OnFitSystemWindowsListener() {
-                        @Override
-                        public void onFitSystemWindows(final Rect rect) {
-                            rect.top = ActionBarActivityDelegateBase.this.updateStatusGuard(rect.top);
-                        }
-                    });
+                    ((FitWindowsViewGroup)this.mSubDecor).setOnFitSystemWindowsListener(new ActionBarActivityDelegateBase$3(this));
                 }
             }
             ViewUtils.makeOptionalFitsSystemWindows((View)this.mSubDecor);
             this.mActivity.superSetContentView((View)this.mSubDecor);
             final View viewById = this.mActivity.findViewById(16908290);
             viewById.setId(-1);
-            this.mActivity.findViewById(R.id.action_bar_activity_content).setId(16908290);
+            this.mActivity.findViewById(R$id.action_bar_activity_content).setId(16908290);
             if (viewById instanceof FrameLayout) {
                 ((FrameLayout)viewById).setForeground((Drawable)null);
             }
@@ -844,7 +815,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
             this.applyFixedSizeWindow();
             this.onSubDecorInstalled();
             this.mSubDecorInstalled = true;
-            final PanelFeatureState panelState = this.getPanelState(0, false);
+            final ActionBarActivityDelegateBase$PanelFeatureState panelState = this.getPanelState(0, false);
             if (!this.isDestroyed() && (panelState == null || panelState.menu == null)) {
                 this.invalidatePanelMenu(8);
             }
@@ -853,7 +824,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     
     @Override
     int getHomeAsUpIndicatorAttrId() {
-        return R.attr.homeAsUpIndicator;
+        return R$attr.homeAsUpIndicator;
     }
     
     public boolean onBackPressed() {
@@ -900,17 +871,20 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     }
     
     public View onCreatePanelView(final int n) {
-        View shownPanelView = null;
-        View onCreatePanelView = null;
         if (this.mActionMode == null) {
             final WindowCallback windowCallback = this.getWindowCallback();
+            View onCreatePanelView;
             if (windowCallback != null) {
                 onCreatePanelView = windowCallback.onCreatePanelView(n);
             }
-            if ((shownPanelView = onCreatePanelView) == null) {
+            else {
+                onCreatePanelView = null;
+            }
+            View shownPanelView = onCreatePanelView;
+            if (onCreatePanelView == null) {
                 shownPanelView = onCreatePanelView;
                 if (this.mToolbarListMenuPresenter == null) {
-                    final PanelFeatureState panelState = this.getPanelState(n, true);
+                    final ActionBarActivityDelegateBase$PanelFeatureState panelState = this.getPanelState(n, true);
                     this.openPanel(panelState, null);
                     shownPanelView = onCreatePanelView;
                     if (panelState.isOpen) {
@@ -918,8 +892,9 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
                     }
                 }
             }
+            return shownPanelView;
         }
-        return shownPanelView;
+        return null;
     }
     
     @Override
@@ -931,7 +906,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     boolean onKeyShortcut(final int n, final KeyEvent keyEvent) {
         if (this.mPreparedPanel == null || !this.performPanelShortcut(this.mPreparedPanel, keyEvent.getKeyCode(), keyEvent, 1)) {
             if (this.mPreparedPanel == null) {
-                final PanelFeatureState panelState = this.getPanelState(0, true);
+                final ActionBarActivityDelegateBase$PanelFeatureState panelState = this.getPanelState(0, true);
                 this.preparePanel(panelState, keyEvent);
                 final boolean performPanelShortcut = this.performPanelShortcut(panelState, keyEvent.getKeyCode(), keyEvent, 1);
                 panelState.isPrepared = false;
@@ -948,10 +923,10 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     }
     
     @Override
-    public boolean onMenuItemSelected(final MenuBuilder menuBuilder, final MenuItem menuItem) {
+    public boolean onMenuItemSelected(final i i, final MenuItem menuItem) {
         final WindowCallback windowCallback = this.getWindowCallback();
         if (windowCallback != null && !this.isDestroyed()) {
-            final PanelFeatureState menuPanel = this.findMenuPanel((Menu)menuBuilder.getRootMenu());
+            final ActionBarActivityDelegateBase$PanelFeatureState menuPanel = this.findMenuPanel((Menu)i.q());
             if (menuPanel != null) {
                 return windowCallback.onMenuItemSelected(menuPanel.featureId, menuItem);
             }
@@ -960,8 +935,8 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     }
     
     @Override
-    public void onMenuModeChange(final MenuBuilder menuBuilder) {
-        this.reopenMenu(menuBuilder, true);
+    public void onMenuModeChange(final i i) {
+        this.reopenMenu(i, true);
     }
     
     @Override
@@ -977,7 +952,7 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
     }
     
     public void onPanelClosed(final int n, final Menu menu) {
-        final PanelFeatureState panelState = this.getPanelState(n, false);
+        final ActionBarActivityDelegateBase$PanelFeatureState panelState = this.getPanelState(n, false);
         if (panelState != null) {
             this.closePanel(panelState, false);
         }
@@ -1025,39 +1000,40 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         this.mTitleToSet = mTitleToSet;
     }
     
-    final boolean performPanelShortcut(final PanelFeatureState panelFeatureState, final int n, final KeyEvent keyEvent, final int n2) {
-        boolean b;
+    final boolean performPanelShortcut(final ActionBarActivityDelegateBase$PanelFeatureState actionBarActivityDelegateBase$PanelFeatureState, final int n, final KeyEvent keyEvent, final int n2) {
+        final boolean b = false;
+        final boolean b2 = false;
+        boolean b3;
         if (keyEvent.isSystem()) {
-            b = false;
+            b3 = b2;
         }
         else {
-            final boolean b2 = false;
             boolean performShortcut = false;
-            Label_0060: {
-                if (!panelFeatureState.isPrepared) {
-                    performShortcut = b2;
-                    if (!this.preparePanel(panelFeatureState, keyEvent)) {
-                        break Label_0060;
+            Label_0064: {
+                if (!actionBarActivityDelegateBase$PanelFeatureState.isPrepared) {
+                    performShortcut = b;
+                    if (!this.preparePanel(actionBarActivityDelegateBase$PanelFeatureState, keyEvent)) {
+                        break Label_0064;
                     }
                 }
-                performShortcut = b2;
-                if (panelFeatureState.menu != null) {
-                    performShortcut = panelFeatureState.menu.performShortcut(n, keyEvent, n2);
+                performShortcut = b;
+                if (actionBarActivityDelegateBase$PanelFeatureState.menu != null) {
+                    performShortcut = actionBarActivityDelegateBase$PanelFeatureState.menu.performShortcut(n, keyEvent, n2);
                 }
             }
-            b = performShortcut;
+            b3 = performShortcut;
             if (performShortcut) {
-                b = performShortcut;
+                b3 = performShortcut;
                 if ((n2 & 0x1) == 0x0) {
-                    b = performShortcut;
+                    b3 = performShortcut;
                     if (this.mDecorContentParent == null) {
-                        this.closePanel(panelFeatureState, true);
+                        this.closePanel(actionBarActivityDelegateBase$PanelFeatureState, true);
                         return performShortcut;
                     }
                 }
             }
         }
-        return b;
+        return b3;
     }
     
     public void setContentView(final int n) {
@@ -1142,52 +1118,47 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         this.updateProgressBars(n);
     }
     
-    public ActionMode startSupportActionMode(final ActionMode.Callback callback) {
-        if (callback == null) {
+    public ActionMode startSupportActionMode(final ActionMode$Callback actionMode$Callback) {
+        if (actionMode$Callback == null) {
             throw new IllegalArgumentException("ActionMode callback can not be null.");
         }
         if (this.mActionMode != null) {
             this.mActionMode.finish();
         }
-        final ActionModeCallbackWrapper actionModeCallbackWrapper = new ActionModeCallbackWrapper(callback);
+        final ActionBarActivityDelegateBase$ActionModeCallbackWrapper actionBarActivityDelegateBase$ActionModeCallbackWrapper = new ActionBarActivityDelegateBase$ActionModeCallbackWrapper(this, actionMode$Callback);
         final ActionBar supportActionBar = this.getSupportActionBar();
         if (supportActionBar != null) {
-            this.mActionMode = supportActionBar.startActionMode(actionModeCallbackWrapper);
+            this.mActionMode = supportActionBar.startActionMode(actionBarActivityDelegateBase$ActionModeCallbackWrapper);
             if (this.mActionMode != null) {
                 this.mActivity.onSupportActionModeStarted(this.mActionMode);
             }
         }
         if (this.mActionMode == null) {
-            this.mActionMode = this.startSupportActionModeFromWindow(actionModeCallbackWrapper);
+            this.mActionMode = this.startSupportActionModeFromWindow(actionBarActivityDelegateBase$ActionModeCallbackWrapper);
         }
         return this.mActionMode;
     }
     
     @Override
-    ActionMode startSupportActionModeFromWindow(final ActionMode.Callback callback) {
+    ActionMode startSupportActionModeFromWindow(final ActionMode$Callback actionMode$Callback) {
         if (this.mActionMode != null) {
             this.mActionMode.finish();
         }
-        final ActionModeCallbackWrapper actionModeCallbackWrapper = new ActionModeCallbackWrapper(callback);
+        final ActionBarActivityDelegateBase$ActionModeCallbackWrapper actionBarActivityDelegateBase$ActionModeCallbackWrapper = new ActionBarActivityDelegateBase$ActionModeCallbackWrapper(this, actionMode$Callback);
         final Context actionBarThemedContext = this.getActionBarThemedContext();
         if (this.mActionModeView == null) {
             if (this.mIsFloating) {
                 this.mActionModeView = new ActionBarContextView(actionBarThemedContext);
-                (this.mActionModePopup = new PopupWindow(actionBarThemedContext, (AttributeSet)null, R.attr.actionModePopupWindowStyle)).setContentView((View)this.mActionModeView);
+                (this.mActionModePopup = new PopupWindow(actionBarThemedContext, (AttributeSet)null, R$attr.actionModePopupWindowStyle)).setContentView((View)this.mActionModeView);
                 this.mActionModePopup.setWidth(-1);
                 final TypedValue typedValue = new TypedValue();
-                this.mActivity.getTheme().resolveAttribute(R.attr.actionBarSize, typedValue, true);
+                this.mActivity.getTheme().resolveAttribute(R$attr.actionBarSize, typedValue, true);
                 this.mActionModeView.setContentHeight(TypedValue.complexToDimensionPixelSize(typedValue.data, this.mActivity.getResources().getDisplayMetrics()));
                 this.mActionModePopup.setHeight(-2);
-                this.mShowActionModePopup = new Runnable() {
-                    @Override
-                    public void run() {
-                        ActionBarActivityDelegateBase.this.mActionModePopup.showAtLocation((View)ActionBarActivityDelegateBase.this.mActionModeView, 55, 0, 0);
-                    }
-                };
+                this.mShowActionModePopup = new ActionBarActivityDelegateBase$4(this);
             }
             else {
-                final ViewStubCompat viewStubCompat = (ViewStubCompat)this.mActivity.findViewById(R.id.action_mode_bar_stub);
+                final ViewStubCompat viewStubCompat = (ViewStubCompat)this.mActivity.findViewById(R$id.action_mode_bar_stub);
                 if (viewStubCompat != null) {
                     viewStubCompat.setLayoutInflater(LayoutInflater.from(actionBarThemedContext));
                     this.mActionModeView = (ActionBarContextView)viewStubCompat.inflate();
@@ -1196,8 +1167,8 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         }
         if (this.mActionModeView != null) {
             this.mActionModeView.killMode();
-            final StandaloneActionMode mActionMode = new StandaloneActionMode(actionBarThemedContext, this.mActionModeView, actionModeCallbackWrapper, this.mActionModePopup == null);
-            if (callback.onCreateActionMode(mActionMode, mActionMode.getMenu())) {
+            final StandaloneActionMode mActionMode = new StandaloneActionMode(actionBarThemedContext, this.mActionModeView, actionBarActivityDelegateBase$ActionModeCallbackWrapper, this.mActionModePopup == null);
+            if (actionMode$Callback.onCreateActionMode(mActionMode, mActionMode.getMenu())) {
                 mActionMode.invalidate();
                 this.mActionModeView.initForMode(mActionMode);
                 this.mActionModeView.setVisibility(0);
@@ -1248,282 +1219,6 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
             case 5: {
                 return this.mFeatureIndeterminateProgress = true;
             }
-        }
-    }
-    
-    private final class ActionMenuPresenterCallback implements MenuPresenter.Callback
-    {
-        @Override
-        public void onCloseMenu(final MenuBuilder menuBuilder, final boolean b) {
-            ActionBarActivityDelegateBase.this.checkCloseActionMenu(menuBuilder);
-        }
-        
-        @Override
-        public boolean onOpenSubMenu(final MenuBuilder menuBuilder) {
-            final WindowCallback windowCallback = ActionBarActivityDelegateBase.this.getWindowCallback();
-            if (windowCallback != null) {
-                windowCallback.onMenuOpened(8, (Menu)menuBuilder);
-            }
-            return true;
-        }
-    }
-    
-    private class ActionModeCallbackWrapper implements ActionMode.Callback
-    {
-        private ActionMode.Callback mWrapped;
-        
-        public ActionModeCallbackWrapper(final ActionMode.Callback mWrapped) {
-            this.mWrapped = mWrapped;
-        }
-        
-        @Override
-        public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
-            return this.mWrapped.onActionItemClicked(actionMode, menuItem);
-        }
-        
-        @Override
-        public boolean onCreateActionMode(final ActionMode actionMode, final Menu menu) {
-            return this.mWrapped.onCreateActionMode(actionMode, menu);
-        }
-        
-        @Override
-        public void onDestroyActionMode(final ActionMode actionMode) {
-            this.mWrapped.onDestroyActionMode(actionMode);
-            Label_0110: {
-                if (ActionBarActivityDelegateBase.this.mActionModePopup == null) {
-                    break Label_0110;
-                }
-                ActionBarActivityDelegateBase.this.mActivity.getWindow().getDecorView().removeCallbacks(ActionBarActivityDelegateBase.this.mShowActionModePopup);
-                ActionBarActivityDelegateBase.this.mActionModePopup.dismiss();
-            Label_0101_Outer:
-                while (true) {
-                    if (ActionBarActivityDelegateBase.this.mActionModeView != null) {
-                        ActionBarActivityDelegateBase.this.mActionModeView.removeAllViews();
-                    }
-                    while (true) {
-                        if (ActionBarActivityDelegateBase.this.mActivity == null) {
-                            break Label_0101;
-                        }
-                        try {
-                            ActionBarActivityDelegateBase.this.mActivity.onSupportActionModeFinished(ActionBarActivityDelegateBase.this.mActionMode);
-                            ActionBarActivityDelegateBase.this.mActionMode = null;
-                            return;
-                            // iftrue(Label_0054:, this.this$0.mActionModeView == null)
-                            ActionBarActivityDelegateBase.this.mActionModeView.setVisibility(8);
-                            // iftrue(Label_0054:, this.this$0.mActionModeView.getParent() == null)
-                            ViewCompat.requestApplyInsets((View)ActionBarActivityDelegateBase.this.mActionModeView.getParent());
-                            continue Label_0101_Outer;
-                        }
-                        catch (AbstractMethodError abstractMethodError) {
-                            continue;
-                        }
-                        break;
-                    }
-                    break;
-                }
-            }
-        }
-        
-        @Override
-        public boolean onPrepareActionMode(final ActionMode actionMode, final Menu menu) {
-            return this.mWrapped.onPrepareActionMode(actionMode, menu);
-        }
-    }
-    
-    private static final class PanelFeatureState
-    {
-        ViewGroup decorView;
-        int featureId;
-        Bundle frozenActionViewState;
-        Bundle frozenMenuState;
-        boolean isHandled;
-        boolean isOpen;
-        boolean isPrepared;
-        ListMenuPresenter listMenuPresenter;
-        Context listPresenterContext;
-        MenuBuilder menu;
-        public boolean qwertyMode;
-        boolean refreshDecorView;
-        boolean refreshMenuContent;
-        View shownPanelView;
-        boolean wasLastOpen;
-        
-        PanelFeatureState(final int featureId) {
-            this.featureId = featureId;
-            this.refreshDecorView = false;
-        }
-        
-        void applyFrozenState() {
-            if (this.menu != null && this.frozenMenuState != null) {
-                this.menu.restorePresenterStates(this.frozenMenuState);
-                this.frozenMenuState = null;
-            }
-        }
-        
-        public void clearMenuPresenters() {
-            if (this.menu != null) {
-                this.menu.removeMenuPresenter(this.listMenuPresenter);
-            }
-            this.listMenuPresenter = null;
-        }
-        
-        MenuView getListMenuView(final MenuPresenter.Callback callback) {
-            if (this.menu == null) {
-                return null;
-            }
-            if (this.listMenuPresenter == null) {
-                (this.listMenuPresenter = new ListMenuPresenter(this.listPresenterContext, R.layout.abc_list_menu_item_layout)).setCallback(callback);
-                this.menu.addMenuPresenter(this.listMenuPresenter);
-            }
-            return this.listMenuPresenter.getMenuView(this.decorView);
-        }
-        
-        public boolean hasPanelItems() {
-            return this.shownPanelView != null && this.listMenuPresenter.getAdapter().getCount() > 0;
-        }
-        
-        void onRestoreInstanceState(final Parcelable parcelable) {
-            final SavedState savedState = (SavedState)parcelable;
-            this.featureId = savedState.featureId;
-            this.wasLastOpen = savedState.isOpen;
-            this.frozenMenuState = savedState.menuState;
-            this.shownPanelView = null;
-            this.decorView = null;
-        }
-        
-        Parcelable onSaveInstanceState() {
-            final SavedState savedState = new SavedState();
-            savedState.featureId = this.featureId;
-            savedState.isOpen = this.isOpen;
-            if (this.menu != null) {
-                savedState.menuState = new Bundle();
-                this.menu.savePresenterStates(savedState.menuState);
-            }
-            return (Parcelable)savedState;
-        }
-        
-        void setMenu(final MenuBuilder menu) {
-            if (menu != this.menu) {
-                if (this.menu != null) {
-                    this.menu.removeMenuPresenter(this.listMenuPresenter);
-                }
-                this.menu = menu;
-                if (menu != null && this.listMenuPresenter != null) {
-                    menu.addMenuPresenter(this.listMenuPresenter);
-                }
-            }
-        }
-        
-        void setStyle(final Context context) {
-            final TypedValue typedValue = new TypedValue();
-            final Resources$Theme theme = context.getResources().newTheme();
-            theme.setTo(context.getTheme());
-            theme.resolveAttribute(R.attr.actionBarPopupTheme, typedValue, true);
-            if (typedValue.resourceId != 0) {
-                theme.applyStyle(typedValue.resourceId, true);
-            }
-            theme.resolveAttribute(R.attr.panelMenuListTheme, typedValue, true);
-            if (typedValue.resourceId != 0) {
-                theme.applyStyle(typedValue.resourceId, true);
-            }
-            else {
-                theme.applyStyle(R.style.Theme_AppCompat_CompactMenu, true);
-            }
-            final ContextThemeWrapper listPresenterContext = new ContextThemeWrapper(context, 0);
-            ((Context)listPresenterContext).getTheme().setTo(theme);
-            this.listPresenterContext = (Context)listPresenterContext;
-        }
-        
-        private static class SavedState implements Parcelable
-        {
-            public static final Parcelable$Creator<SavedState> CREATOR;
-            int featureId;
-            boolean isOpen;
-            Bundle menuState;
-            
-            static {
-                CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                    public SavedState createFromParcel(final Parcel parcel) {
-                        return readFromParcel(parcel);
-                    }
-                    
-                    public SavedState[] newArray(final int n) {
-                        return new SavedState[n];
-                    }
-                };
-            }
-            
-            private static SavedState readFromParcel(final Parcel parcel) {
-                boolean isOpen = true;
-                final SavedState savedState = new SavedState();
-                savedState.featureId = parcel.readInt();
-                if (parcel.readInt() != 1) {
-                    isOpen = false;
-                }
-                savedState.isOpen = isOpen;
-                if (savedState.isOpen) {
-                    savedState.menuState = parcel.readBundle();
-                }
-                return savedState;
-            }
-            
-            public int describeContents() {
-                return 0;
-            }
-            
-            public void writeToParcel(final Parcel parcel, int n) {
-                parcel.writeInt(this.featureId);
-                if (this.isOpen) {
-                    n = 1;
-                }
-                else {
-                    n = 0;
-                }
-                parcel.writeInt(n);
-                if (this.isOpen) {
-                    parcel.writeBundle(this.menuState);
-                }
-            }
-        }
-    }
-    
-    private final class PanelMenuPresenterCallback implements MenuPresenter.Callback
-    {
-        @Override
-        public void onCloseMenu(MenuBuilder menuBuilder, final boolean b) {
-            final Object rootMenu = menuBuilder.getRootMenu();
-            boolean b2;
-            if (rootMenu != menuBuilder) {
-                b2 = true;
-            }
-            else {
-                b2 = false;
-            }
-            final ActionBarActivityDelegateBase this$0 = ActionBarActivityDelegateBase.this;
-            if (b2) {
-                menuBuilder = (MenuBuilder)rootMenu;
-            }
-            final PanelFeatureState access$600 = this$0.findMenuPanel((Menu)menuBuilder);
-            if (access$600 != null) {
-                if (!b2) {
-                    ActionBarActivityDelegateBase.this.mActivity.closeOptionsMenu();
-                    ActionBarActivityDelegateBase.this.closePanel(access$600, b);
-                    return;
-                }
-                ActionBarActivityDelegateBase.this.callOnPanelClosed(access$600.featureId, access$600, (Menu)rootMenu);
-                ActionBarActivityDelegateBase.this.closePanel(access$600, true);
-            }
-        }
-        
-        @Override
-        public boolean onOpenSubMenu(final MenuBuilder menuBuilder) {
-            if (menuBuilder == null && ActionBarActivityDelegateBase.this.mHasActionBar) {
-                final WindowCallback windowCallback = ActionBarActivityDelegateBase.this.getWindowCallback();
-                if (windowCallback != null && !ActionBarActivityDelegateBase.this.isDestroyed()) {
-                    windowCallback.onMenuOpened(8, (Menu)menuBuilder);
-                }
-            }
-            return true;
         }
     }
 }

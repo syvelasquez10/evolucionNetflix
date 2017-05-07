@@ -5,15 +5,12 @@
 package com.google.android.gms.tagmanager;
 
 import android.os.Handler;
+import android.os.Looper;
 import com.google.android.gms.common.api.PendingResult;
 import android.net.Uri;
 import android.content.ComponentCallbacks;
-import android.content.res.Configuration;
-import android.content.ComponentCallbacks2;
 import android.os.Build$VERSION;
-import android.os.Looper;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import android.content.Context;
 import java.util.concurrent.ConcurrentMap;
@@ -25,10 +22,10 @@ public class TagManager
     private final r aqj;
     private final cx arA;
     private final ConcurrentMap<n, Boolean> arB;
-    private final a arz;
+    private final TagManager$a arz;
     private final Context mContext;
     
-    TagManager(final Context context, final a arz, final DataLayer anS, final cx arA) {
+    TagManager(final Context context, final TagManager$a arz, final DataLayer anS, final cx arA) {
         if (context == null) {
             throw new NullPointerException("context cannot be null");
         }
@@ -36,16 +33,8 @@ public class TagManager
         this.arA = arA;
         this.arz = arz;
         this.arB = new ConcurrentHashMap<n, Boolean>();
-        (this.anS = anS).a((DataLayer.b)new DataLayer.b() {
-            @Override
-            public void D(final Map<String, Object> map) {
-                final Object value = map.get("event");
-                if (value != null) {
-                    TagManager.this.cQ(value.toString());
-                }
-            }
-        });
-        this.anS.a((DataLayer.b)new d(this.mContext));
+        (this.anS = anS).a(new TagManager$1(this));
+        this.anS.a(new d(this.mContext));
         this.aqj = new r();
         this.pw();
     }
@@ -69,12 +58,7 @@ public class TagManager
                 }
             }
             final Context context2;
-            TagManager.arC = new TagManager(context2, (a)new a() {
-                @Override
-                public o a(final Context context, final TagManager tagManager, final Looper looper, final String s, final int n, final r r) {
-                    return new o(context, tagManager, looper, s, n, r);
-                }
-            }, new DataLayer((DataLayer.c)new v(context2)), cy.pu());
+            TagManager.arC = new TagManager(context2, new TagManager$2(), new DataLayer(new v(context2)), cy.pu());
         }
         // monitorexit(TagManager.class)
         return TagManager.arC;
@@ -82,19 +66,7 @@ public class TagManager
     
     private void pw() {
         if (Build$VERSION.SDK_INT >= 14) {
-            this.mContext.registerComponentCallbacks((ComponentCallbacks)new ComponentCallbacks2() {
-                public void onConfigurationChanged(final Configuration configuration) {
-                }
-                
-                public void onLowMemory() {
-                }
-                
-                public void onTrimMemory(final int n) {
-                    if (n == 20) {
-                        TagManager.this.dispatch();
-                    }
-                }
-            });
+            this.mContext.registerComponentCallbacks((ComponentCallbacks)new TagManager$3(this));
         }
     }
     
@@ -209,10 +181,5 @@ public class TagManager
             logLevel = 5;
         }
         bh.setLogLevel(logLevel);
-    }
-    
-    interface a
-    {
-        o a(final Context p0, final TagManager p1, final Looper p2, final String p3, final int p4, final r p5);
     }
 }

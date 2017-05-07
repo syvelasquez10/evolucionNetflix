@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 
@@ -17,17 +16,17 @@ public class Display
     public static final String RESOLUTION = "resolution";
     public static final String SCAN_MODE = "scanMode";
     public static final String WIDTH = "width";
-    private AspectRatio aspectRatio;
-    private Connector connector;
+    private Display$AspectRatio aspectRatio;
+    private Display$Connector connector;
     private Integer height;
     private Integer refreshRate;
-    private ScanMode scanMode;
+    private Display$ScanMode scanMode;
     private Integer width;
     
     private Display() {
     }
     
-    public Display(final Connector connector, final AspectRatio aspectRatio, final Integer width, final Integer height, final Integer refreshRate, final ScanMode scanMode) {
+    public Display(final Display$Connector connector, final Display$AspectRatio aspectRatio, final Integer width, final Integer height, final Integer refreshRate, final Display$ScanMode scanMode) {
         this.connector = connector;
         this.aspectRatio = aspectRatio;
         this.width = width;
@@ -36,31 +35,26 @@ public class Display
         this.scanMode = scanMode;
     }
     
-    public static Display createInstance(final JSONObject jsonObject) throws JSONException {
-        Display display;
+    public static Display createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
-            display = null;
+            return null;
         }
-        else {
-            final Display display2 = new Display();
-            display2.refreshRate = JsonUtils.getIntegerObject(jsonObject, "refreshRate", null);
-            display2.aspectRatio = AspectRatio.find(JsonUtils.getString(jsonObject, "aspectRatio", null));
-            final JSONObject jsonObject2 = JsonUtils.getJSONObject(jsonObject, "resolution", null);
-            if (jsonObject2 != null) {
-                display2.width = JsonUtils.getIntegerObject(jsonObject2, "width", null);
-                display2.height = JsonUtils.getIntegerObject(jsonObject2, "height", null);
-            }
-            final String string = JsonUtils.getString(jsonObject, "connector", null);
-            display = display2;
-            if (string != null) {
-                display2.connector = Connector.valueOf(string);
-                return display2;
-            }
+        final Display display = new Display();
+        display.refreshRate = JsonUtils.getIntegerObject(jsonObject, "refreshRate", null);
+        display.aspectRatio = Display$AspectRatio.find(JsonUtils.getString(jsonObject, "aspectRatio", null));
+        final JSONObject jsonObject2 = JsonUtils.getJSONObject(jsonObject, "resolution", null);
+        if (jsonObject2 != null) {
+            display.width = JsonUtils.getIntegerObject(jsonObject2, "width", null);
+            display.height = JsonUtils.getIntegerObject(jsonObject2, "height", null);
+        }
+        final String string = JsonUtils.getString(jsonObject, "connector", null);
+        if (string != null) {
+            display.connector = Display$Connector.valueOf(string);
         }
         return display;
     }
     
-    public Connector getConnector() {
+    public Display$Connector getConnector() {
         return this.connector;
     }
     
@@ -72,7 +66,7 @@ public class Display
         return this.refreshRate;
     }
     
-    public ScanMode getScanMode() {
+    public Display$ScanMode getScanMode() {
         return this.scanMode;
     }
     
@@ -80,7 +74,7 @@ public class Display
         return this.width;
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.connector != null) {
             jsonObject.put("connector", (Object)this.connector.name());
@@ -101,45 +95,5 @@ public class Display
             jsonObject.put("refreshRate", (int)this.refreshRate);
         }
         return jsonObject;
-    }
-    
-    public enum AspectRatio
-    {
-        _16x9("16x9"), 
-        _4x3("4x3");
-        
-        private String desc;
-        
-        private AspectRatio(final String desc) {
-            this.desc = desc;
-        }
-        
-        public static AspectRatio find(final String s) {
-            if (AspectRatio._16x9.desc.equals(s)) {
-                return AspectRatio._16x9;
-            }
-            if (AspectRatio._4x3.desc.equals(s)) {
-                return AspectRatio._4x3;
-            }
-            return null;
-        }
-        
-        public String getDesc() {
-            return this.desc;
-        }
-    }
-    
-    public enum Connector
-    {
-        component, 
-        composite, 
-        hdmi, 
-        internal;
-    }
-    
-    public enum ScanMode
-    {
-        interlaced, 
-        progressive;
     }
 }

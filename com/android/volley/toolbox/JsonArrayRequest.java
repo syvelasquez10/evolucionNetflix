@@ -8,14 +8,16 @@ import org.json.JSONException;
 import java.io.UnsupportedEncodingException;
 import com.android.volley.VolleyError;
 import com.android.volley.ParseError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Response$ErrorListener;
+import com.android.volley.Response$Listener;
 import org.json.JSONArray;
 
 public class JsonArrayRequest extends JsonRequest<JSONArray>
 {
-    public JsonArrayRequest(final String s, final Response.Listener<JSONArray> listener, final Response.ErrorListener errorListener) {
-        super(0, s, null, listener, errorListener);
+    public JsonArrayRequest(final String s, final Response$Listener<JSONArray> response$Listener, final Response$ErrorListener response$ErrorListener) {
+        super(0, s, null, response$Listener, response$ErrorListener);
     }
     
     @Override

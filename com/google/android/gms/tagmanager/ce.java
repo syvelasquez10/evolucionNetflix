@@ -12,7 +12,7 @@ class ce
 {
     private static ce apS;
     private volatile String anR;
-    private volatile a apT;
+    private volatile ce$a apT;
     private volatile String apU;
     private volatile String apV;
     
@@ -38,7 +38,7 @@ class ce
     }
     
     void clear() {
-        this.apT = a.apW;
+        this.apT = ce$a.apW;
         this.apU = null;
         this.anR = null;
         this.apV = null;
@@ -62,9 +62,9 @@ class ce
                             }
                             bh.V("Container preview url: " + decode);
                             if (decode.matches(".*?&gtm_debug=x$")) {
-                                this.apT = a.apY;
+                                this.apT = ce$a.apY;
                                 this.apV = this.j(uri);
-                                if (this.apT == a.apX || this.apT == a.apY) {
+                                if (this.apT == ce$a.apX || this.apT == ce$a.apY) {
                                     this.apU = "/r?" + this.apV;
                                 }
                                 this.anR = this.cF(this.apV);
@@ -75,7 +75,7 @@ class ce
                             b = false;
                             return b;
                         }
-                        this.apT = a.apX;
+                        this.apT = ce$a.apX;
                         continue;
                     }
                 }
@@ -88,7 +88,7 @@ class ce
             final Uri uri2;
             if (this.cF(uri2.getQuery()).equals(this.anR)) {
                 bh.V("Exit preview mode for container: " + this.anR);
-                this.apT = a.apW;
+                this.apT = ce$a.apW;
                 this.apU = null;
                 return b;
             }
@@ -97,18 +97,11 @@ class ce
         }
     }
     
-    a oI() {
+    ce$a oI() {
         return this.apT;
     }
     
     String oJ() {
         return this.apU;
-    }
-    
-    enum a
-    {
-        apW, 
-        apX, 
-        apY;
     }
 }

@@ -5,63 +5,36 @@
 package com.netflix.mediaclient.android.fragment;
 
 import android.view.MotionEvent;
+import com.netflix.mediaclient.Log;
 import android.widget.ListView;
 import android.view.ViewParent;
 import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
-import com.netflix.mediaclient.Log;
 import android.content.Context;
+import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
 import com.viewpagerindicator.android.osp.ViewPager;
 
 public class CustomViewPager extends ViewPager
 {
     private static final boolean ALLOW_OVERLAPPED_PAGES = true;
     private static final String TAG = "CustomViewPager";
-    private final OnPageChangeListener onPageChangeListener;
+    private final ViewPager$OnPageChangeListener onPageChangeListener;
     private int pageMarginOffsetPx;
     private final boolean shouldOverlapPagesByDefault;
     
     public CustomViewPager(final Context context) {
         super(context);
         this.shouldOverlapPagesByDefault = true;
-        this.onPageChangeListener = new OnPageChangeListener() {
-            @Override
-            public void onPageScrollStateChanged(final int n) {
-            }
-            
-            @Override
-            public void onPageScrolled(final int n, final float n2, final int n3) {
-            }
-            
-            @Override
-            public void onPageSelected(final int n) {
-                Log.v("CustomViewPager", "onPageSelected, position: " + n);
-                CustomViewPager.this.onPageSelected(n);
-            }
-        };
+        this.onPageChangeListener = new CustomViewPager$1(this);
         this.init();
     }
     
     public CustomViewPager(final Context context, final AttributeSet set) {
         super(context, set);
         this.shouldOverlapPagesByDefault = true;
-        this.onPageChangeListener = new OnPageChangeListener() {
-            @Override
-            public void onPageScrollStateChanged(final int n) {
-            }
-            
-            @Override
-            public void onPageScrolled(final int n, final float n2, final int n3) {
-            }
-            
-            @Override
-            public void onPageSelected(final int n) {
-                Log.v("CustomViewPager", "onPageSelected, position: " + n);
-                CustomViewPager.this.onPageSelected(n);
-            }
-        };
+        this.onPageChangeListener = new CustomViewPager$1(this);
         this.init();
     }
     
@@ -81,7 +54,7 @@ public class CustomViewPager extends ViewPager
         this.setPagesToOverlap(true);
     }
     
-    public OnPageChangeListener getOnPageChangeListener() {
+    public ViewPager$OnPageChangeListener getOnPageChangeListener() {
         return this.onPageChangeListener;
     }
     

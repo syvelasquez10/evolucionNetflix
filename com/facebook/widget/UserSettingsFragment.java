@@ -6,6 +6,8 @@ package com.facebook.widget;
 
 import com.facebook.SessionState;
 import android.support.v4.app.Fragment;
+import com.facebook.android.R$id;
+import com.facebook.android.R$layout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -14,18 +16,22 @@ import java.util.List;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionDefaultAudience;
 import java.net.URL;
+import com.facebook.android.R$drawable;
+import com.facebook.android.R$string;
+import com.facebook.android.R$color;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import java.net.MalformedURLException;
 import android.content.Context;
-import com.facebook.android.R;
+import com.facebook.android.R$dimen;
 import android.os.Bundle;
-import com.facebook.Response;
+import com.facebook.Request$GraphUserCallback;
 import com.facebook.Request;
 import android.text.TextUtils;
 import android.graphics.drawable.Drawable;
-import com.facebook.model.GraphUser;
 import com.facebook.Session;
+import com.facebook.model.GraphUser;
+import com.facebook.Session$StatusCallback;
 import android.widget.TextView;
 
 public class UserSettingsFragment extends FacebookFragment
@@ -37,8 +43,8 @@ public class UserSettingsFragment extends FacebookFragment
     private static final String REQUEST_FIELDS;
     private TextView connectedStateLabel;
     private LoginButton loginButton;
-    private LoginButton.LoginButtonProperties loginButtonProperties;
-    private Session.StatusCallback sessionStatusCallback;
+    private LoginButton$LoginButtonProperties loginButtonProperties;
+    private Session$StatusCallback sessionStatusCallback;
     private GraphUser user;
     private Session userInfoSession;
     private Drawable userProfilePic;
@@ -49,25 +55,14 @@ public class UserSettingsFragment extends FacebookFragment
     }
     
     public UserSettingsFragment() {
-        this.loginButtonProperties = new LoginButton.LoginButtonProperties();
+        this.loginButtonProperties = new LoginButton$LoginButtonProperties();
     }
     
     private void fetchUserInfo() {
         final Session session = this.getSession();
         if (session != null && session.isOpened()) {
             if (session != this.userInfoSession) {
-                final Request meRequest = Request.newMeRequest(session, (Request.GraphUserCallback)new Request.GraphUserCallback() {
-                    @Override
-                    public void onCompleted(final GraphUser graphUser, final Response response) {
-                        if (session == UserSettingsFragment.this.getSession()) {
-                            UserSettingsFragment.this.user = graphUser;
-                            UserSettingsFragment.this.updateUI();
-                        }
-                        if (response.getError() != null) {
-                            UserSettingsFragment.this.loginButton.handleError(response.getError().getException());
-                        }
-                    }
-                });
+                final Request meRequest = Request.newMeRequest(session, new UserSettingsFragment$1(this, session));
                 final Bundle parameters = new Bundle();
                 parameters.putString("fields", UserSettingsFragment.REQUEST_FIELDS);
                 meRequest.setParameters(parameters);
@@ -81,12 +76,7 @@ public class UserSettingsFragment extends FacebookFragment
     
     private ImageRequest getImageRequest() {
         try {
-            return new ImageRequest.Builder((Context)this.getActivity(), ImageRequest.getProfilePictureUrl(this.user.getId(), this.getResources().getDimensionPixelSize(R.dimen.com_facebook_usersettingsfragment_profile_picture_width), this.getResources().getDimensionPixelSize(R.dimen.com_facebook_usersettingsfragment_profile_picture_height))).setCallerTag(this).setCallback(new ImageRequest.Callback() {
-                @Override
-                public void onCompleted(final ImageResponse imageResponse) {
-                    UserSettingsFragment.this.processImageResponse(UserSettingsFragment.this.user.getId(), imageResponse);
-                }
-            }).build();
+            return new ImageRequest$Builder((Context)this.getActivity(), ImageRequest.getProfilePictureUrl(this.user.getId(), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_usersettingsfragment_profile_picture_width), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_usersettingsfragment_profile_picture_height))).setCallerTag(this).setCallback(new UserSettingsFragment$2(this)).build();
         }
         catch (MalformedURLException ex) {
             return null;
@@ -98,7 +88,7 @@ public class UserSettingsFragment extends FacebookFragment
             final Bitmap bitmap = imageResponse.getBitmap();
             if (bitmap != null) {
                 final BitmapDrawable userProfilePic = new BitmapDrawable(this.getResources(), bitmap);
-                userProfilePic.setBounds(0, 0, this.getResources().getDimensionPixelSize(R.dimen.com_facebook_usersettingsfragment_profile_picture_width), this.getResources().getDimensionPixelSize(R.dimen.com_facebook_usersettingsfragment_profile_picture_height));
+                userProfilePic.setBounds(0, 0, this.getResources().getDimensionPixelSize(R$dimen.com_facebook_usersettingsfragment_profile_picture_width), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_usersettingsfragment_profile_picture_height));
                 this.userProfilePic = (Drawable)userProfilePic;
                 this.userProfilePicID = userProfilePicID;
                 this.connectedStateLabel.setCompoundDrawables((Drawable)null, (Drawable)userProfilePic, (Drawable)null, (Drawable)null);
@@ -112,16 +102,16 @@ public class UserSettingsFragment extends FacebookFragment
             return;
         }
         if (!this.isSessionOpen()) {
-            final int color = this.getResources().getColor(R.color.com_facebook_usersettingsfragment_not_connected_text_color);
+            final int color = this.getResources().getColor(R$color.com_facebook_usersettingsfragment_not_connected_text_color);
             this.connectedStateLabel.setTextColor(color);
             this.connectedStateLabel.setShadowLayer(0.0f, 0.0f, 0.0f, color);
-            this.connectedStateLabel.setText((CharSequence)this.getResources().getString(R.string.com_facebook_usersettingsfragment_not_logged_in));
+            this.connectedStateLabel.setText((CharSequence)this.getResources().getString(R$string.com_facebook_usersettingsfragment_not_logged_in));
             this.connectedStateLabel.setCompoundDrawables((Drawable)null, (Drawable)null, (Drawable)null, (Drawable)null);
             this.connectedStateLabel.setTag((Object)null);
             return;
         }
-        this.connectedStateLabel.setTextColor(this.getResources().getColor(R.color.com_facebook_usersettingsfragment_connected_text_color));
-        this.connectedStateLabel.setShadowLayer(1.0f, 0.0f, -1.0f, this.getResources().getColor(R.color.com_facebook_usersettingsfragment_connected_shadow_color));
+        this.connectedStateLabel.setTextColor(this.getResources().getColor(R$color.com_facebook_usersettingsfragment_connected_text_color));
+        this.connectedStateLabel.setShadowLayer(1.0f, 0.0f, -1.0f, this.getResources().getColor(R$color.com_facebook_usersettingsfragment_connected_shadow_color));
         if (this.user != null) {
             final ImageRequest imageRequest = this.getImageRequest();
             if (imageRequest != null) {
@@ -139,9 +129,9 @@ public class UserSettingsFragment extends FacebookFragment
             this.connectedStateLabel.setText((CharSequence)this.user.getName());
             return;
         }
-        this.connectedStateLabel.setText((CharSequence)this.getResources().getString(R.string.com_facebook_usersettingsfragment_logged_in));
-        final Drawable drawable = this.getResources().getDrawable(R.drawable.com_facebook_profile_default_icon);
-        drawable.setBounds(0, 0, this.getResources().getDimensionPixelSize(R.dimen.com_facebook_usersettingsfragment_profile_picture_width), this.getResources().getDimensionPixelSize(R.dimen.com_facebook_usersettingsfragment_profile_picture_height));
+        this.connectedStateLabel.setText((CharSequence)this.getResources().getString(R$string.com_facebook_usersettingsfragment_logged_in));
+        final Drawable drawable = this.getResources().getDrawable(R$drawable.com_facebook_profile_default_icon);
+        drawable.setBounds(0, 0, this.getResources().getDimensionPixelSize(R$dimen.com_facebook_usersettingsfragment_profile_picture_width), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_usersettingsfragment_profile_picture_height));
         this.connectedStateLabel.setCompoundDrawables((Drawable)null, drawable, (Drawable)null, (Drawable)null);
     }
     
@@ -157,7 +147,7 @@ public class UserSettingsFragment extends FacebookFragment
         return this.loginButtonProperties.getLoginBehavior();
     }
     
-    public LoginButton.OnErrorListener getOnErrorListener() {
+    public LoginButton$OnErrorListener getOnErrorListener() {
         return this.loginButtonProperties.getOnErrorListener();
     }
     
@@ -165,7 +155,7 @@ public class UserSettingsFragment extends FacebookFragment
         return this.loginButtonProperties.getPermissions();
     }
     
-    public Session.StatusCallback getSessionStatusCallback() {
+    public Session$StatusCallback getSessionStatusCallback() {
         return this.sessionStatusCallback;
     }
     
@@ -177,16 +167,16 @@ public class UserSettingsFragment extends FacebookFragment
     
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(R.layout.com_facebook_usersettingsfragment, viewGroup, false);
-        (this.loginButton = (LoginButton)inflate.findViewById(R.id.com_facebook_usersettingsfragment_login_button)).setProperties(this.loginButtonProperties);
+        final View inflate = layoutInflater.inflate(R$layout.com_facebook_usersettingsfragment, viewGroup, false);
+        (this.loginButton = (LoginButton)inflate.findViewById(R$id.com_facebook_usersettingsfragment_login_button)).setProperties(this.loginButtonProperties);
         this.loginButton.setFragment(this);
         final Session session = this.getSession();
         if (session != null && !session.equals(Session.getActiveSession())) {
             this.loginButton.setSession(session);
         }
-        this.connectedStateLabel = (TextView)inflate.findViewById(R.id.com_facebook_usersettingsfragment_profile_name);
+        this.connectedStateLabel = (TextView)inflate.findViewById(R$id.com_facebook_usersettingsfragment_profile_name);
         if (inflate.getBackground() == null) {
-            inflate.setBackgroundColor(this.getResources().getColor(R.color.com_facebook_blue));
+            inflate.setBackgroundColor(this.getResources().getColor(R$color.com_facebook_blue));
             return inflate;
         }
         inflate.getBackground().setDither(true);
@@ -217,7 +207,7 @@ public class UserSettingsFragment extends FacebookFragment
         this.loginButtonProperties.setLoginBehavior(loginBehavior);
     }
     
-    public void setOnErrorListener(final LoginButton.OnErrorListener onErrorListener) {
+    public void setOnErrorListener(final LoginButton$OnErrorListener onErrorListener) {
         this.loginButtonProperties.setOnErrorListener(onErrorListener);
     }
     
@@ -239,7 +229,7 @@ public class UserSettingsFragment extends FacebookFragment
         this.updateUI();
     }
     
-    public void setSessionStatusCallback(final Session.StatusCallback sessionStatusCallback) {
+    public void setSessionStatusCallback(final Session$StatusCallback sessionStatusCallback) {
         this.sessionStatusCallback = sessionStatusCallback;
     }
 }

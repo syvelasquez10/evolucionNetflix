@@ -4,25 +4,24 @@
 
 package android.support.v7.internal.widget;
 
-import android.view.ViewGroup$MarginLayoutParams;
 import android.support.v7.internal.app.WindowCallback;
-import android.support.v7.internal.view.menu.MenuPresenter;
+import android.support.v7.internal.view.menu.z;
 import android.view.Menu;
 import android.support.v7.internal.VersionUtils;
 import android.os.Parcelable;
 import android.util.SparseArray;
+import android.support.v7.appcompat.R$id;
 import android.os.Build$VERSION;
 import android.content.res.Configuration;
+import android.support.v4.view.ViewCompat;
 import android.graphics.Canvas;
 import android.view.ViewGroup$LayoutParams;
 import android.content.res.TypedArray;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.support.v4.view.ViewCompat;
 import android.view.View;
-import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
+import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.appcompat.R;
+import android.support.v7.appcompat.R$attr;
 import android.graphics.drawable.Drawable;
 import android.support.v4.widget.ScrollerCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -38,7 +37,7 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
     private ActionBarContainer mActionBarBottom;
     private int mActionBarHeight;
     private ActionBarContainer mActionBarTop;
-    private ActionBarVisibilityCallback mActionBarVisibilityCallback;
+    private ActionBarOverlayLayout$ActionBarVisibilityCallback mActionBarVisibilityCallback;
     private final Runnable mAddActionBarHideOffset;
     private boolean mAnimatingForFling;
     private final Rect mBaseContentInsets;
@@ -65,7 +64,7 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
     private int mWindowVisibility;
     
     static {
-        ATTRS = new int[] { R.attr.actionBarSize, 16842841 };
+        ATTRS = new int[] { R$attr.actionBarSize, 16842841 };
     }
     
     public ActionBarOverlayLayout(final Context context) {
@@ -78,52 +77,10 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         this.mInnerInsets = new Rect();
         this.mLastInnerInsets = new Rect();
         this.ACTION_BAR_ANIMATE_DELAY = 600;
-        this.mTopAnimatorListener = new ViewPropertyAnimatorListenerAdapter() {
-            @Override
-            public void onAnimationCancel(final View view) {
-                ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = null;
-                ActionBarOverlayLayout.this.mAnimatingForFling = false;
-            }
-            
-            @Override
-            public void onAnimationEnd(final View view) {
-                ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = null;
-                ActionBarOverlayLayout.this.mAnimatingForFling = false;
-            }
-        };
-        this.mBottomAnimatorListener = new ViewPropertyAnimatorListenerAdapter() {
-            @Override
-            public void onAnimationCancel(final View view) {
-                ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = null;
-                ActionBarOverlayLayout.this.mAnimatingForFling = false;
-            }
-            
-            @Override
-            public void onAnimationEnd(final View view) {
-                ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = null;
-                ActionBarOverlayLayout.this.mAnimatingForFling = false;
-            }
-        };
-        this.mRemoveActionBarHideOffset = new Runnable() {
-            @Override
-            public void run() {
-                ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
-                ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = ViewCompat.animate((View)ActionBarOverlayLayout.this.mActionBarTop).translationY(0.0f).setListener(ActionBarOverlayLayout.this.mTopAnimatorListener);
-                if (ActionBarOverlayLayout.this.mActionBarBottom != null && ActionBarOverlayLayout.this.mActionBarBottom.getVisibility() != 8) {
-                    ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = ViewCompat.animate((View)ActionBarOverlayLayout.this.mActionBarBottom).translationY(0.0f).setListener(ActionBarOverlayLayout.this.mBottomAnimatorListener);
-                }
-            }
-        };
-        this.mAddActionBarHideOffset = new Runnable() {
-            @Override
-            public void run() {
-                ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
-                ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = ViewCompat.animate((View)ActionBarOverlayLayout.this.mActionBarTop).translationY(-ActionBarOverlayLayout.this.mActionBarTop.getHeight()).setListener(ActionBarOverlayLayout.this.mTopAnimatorListener);
-                if (ActionBarOverlayLayout.this.mActionBarBottom != null && ActionBarOverlayLayout.this.mActionBarBottom.getVisibility() != 8) {
-                    ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = ViewCompat.animate((View)ActionBarOverlayLayout.this.mActionBarBottom).translationY(ActionBarOverlayLayout.this.mActionBarBottom.getHeight()).setListener(ActionBarOverlayLayout.this.mBottomAnimatorListener);
-                }
-            }
-        };
+        this.mTopAnimatorListener = new ActionBarOverlayLayout$1(this);
+        this.mBottomAnimatorListener = new ActionBarOverlayLayout$2(this);
+        this.mRemoveActionBarHideOffset = new ActionBarOverlayLayout$3(this);
+        this.mAddActionBarHideOffset = new ActionBarOverlayLayout$4(this);
         this.init(context);
     }
     
@@ -137,52 +94,10 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         this.mInnerInsets = new Rect();
         this.mLastInnerInsets = new Rect();
         this.ACTION_BAR_ANIMATE_DELAY = 600;
-        this.mTopAnimatorListener = new ViewPropertyAnimatorListenerAdapter() {
-            @Override
-            public void onAnimationCancel(final View view) {
-                ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = null;
-                ActionBarOverlayLayout.this.mAnimatingForFling = false;
-            }
-            
-            @Override
-            public void onAnimationEnd(final View view) {
-                ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = null;
-                ActionBarOverlayLayout.this.mAnimatingForFling = false;
-            }
-        };
-        this.mBottomAnimatorListener = new ViewPropertyAnimatorListenerAdapter() {
-            @Override
-            public void onAnimationCancel(final View view) {
-                ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = null;
-                ActionBarOverlayLayout.this.mAnimatingForFling = false;
-            }
-            
-            @Override
-            public void onAnimationEnd(final View view) {
-                ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = null;
-                ActionBarOverlayLayout.this.mAnimatingForFling = false;
-            }
-        };
-        this.mRemoveActionBarHideOffset = new Runnable() {
-            @Override
-            public void run() {
-                ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
-                ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = ViewCompat.animate((View)ActionBarOverlayLayout.this.mActionBarTop).translationY(0.0f).setListener(ActionBarOverlayLayout.this.mTopAnimatorListener);
-                if (ActionBarOverlayLayout.this.mActionBarBottom != null && ActionBarOverlayLayout.this.mActionBarBottom.getVisibility() != 8) {
-                    ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = ViewCompat.animate((View)ActionBarOverlayLayout.this.mActionBarBottom).translationY(0.0f).setListener(ActionBarOverlayLayout.this.mBottomAnimatorListener);
-                }
-            }
-        };
-        this.mAddActionBarHideOffset = new Runnable() {
-            @Override
-            public void run() {
-                ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
-                ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = ViewCompat.animate((View)ActionBarOverlayLayout.this.mActionBarTop).translationY(-ActionBarOverlayLayout.this.mActionBarTop.getHeight()).setListener(ActionBarOverlayLayout.this.mTopAnimatorListener);
-                if (ActionBarOverlayLayout.this.mActionBarBottom != null && ActionBarOverlayLayout.this.mActionBarBottom.getVisibility() != 8) {
-                    ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = ViewCompat.animate((View)ActionBarOverlayLayout.this.mActionBarBottom).translationY(ActionBarOverlayLayout.this.mActionBarBottom.getHeight()).setListener(ActionBarOverlayLayout.this.mBottomAnimatorListener);
-                }
-            }
-        };
+        this.mTopAnimatorListener = new ActionBarOverlayLayout$1(this);
+        this.mBottomAnimatorListener = new ActionBarOverlayLayout$2(this);
+        this.mRemoveActionBarHideOffset = new ActionBarOverlayLayout$3(this);
+        this.mAddActionBarHideOffset = new ActionBarOverlayLayout$4(this);
         this.init(context);
     }
     
@@ -193,40 +108,36 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
     
     private boolean applyInsets(final View view, final Rect rect, final boolean b, final boolean b2, final boolean b3, final boolean b4) {
         final boolean b5 = false;
-        final LayoutParams layoutParams = (LayoutParams)view.getLayoutParams();
+        final ActionBarOverlayLayout$LayoutParams actionBarOverlayLayout$LayoutParams = (ActionBarOverlayLayout$LayoutParams)view.getLayoutParams();
         boolean b6 = b5;
         if (b) {
             b6 = b5;
-            if (layoutParams.leftMargin != rect.left) {
+            if (actionBarOverlayLayout$LayoutParams.leftMargin != rect.left) {
+                actionBarOverlayLayout$LayoutParams.leftMargin = rect.left;
                 b6 = true;
-                layoutParams.leftMargin = rect.left;
             }
         }
         boolean b7 = b6;
         if (b2) {
             b7 = b6;
-            if (layoutParams.topMargin != rect.top) {
+            if (actionBarOverlayLayout$LayoutParams.topMargin != rect.top) {
+                actionBarOverlayLayout$LayoutParams.topMargin = rect.top;
                 b7 = true;
-                layoutParams.topMargin = rect.top;
             }
         }
         boolean b8 = b7;
         if (b4) {
             b8 = b7;
-            if (layoutParams.rightMargin != rect.right) {
+            if (actionBarOverlayLayout$LayoutParams.rightMargin != rect.right) {
+                actionBarOverlayLayout$LayoutParams.rightMargin = rect.right;
                 b8 = true;
-                layoutParams.rightMargin = rect.right;
             }
         }
-        boolean b9 = b8;
-        if (b3) {
-            b9 = b8;
-            if (layoutParams.bottomMargin != rect.bottom) {
-                b9 = true;
-                layoutParams.bottomMargin = rect.bottom;
-            }
+        if (b3 && actionBarOverlayLayout$LayoutParams.bottomMargin != rect.bottom) {
+            actionBarOverlayLayout$LayoutParams.bottomMargin = rect.bottom;
+            return true;
         }
-        return b9;
+        return b8;
     }
     
     private DecorToolbar getDecorToolbar(final View view) {
@@ -291,7 +202,7 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
     }
     
     protected boolean checkLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        return viewGroup$LayoutParams instanceof LayoutParams;
+        return viewGroup$LayoutParams instanceof ActionBarOverlayLayout$LayoutParams;
     }
     
     public void dismissPopups() {
@@ -324,8 +235,8 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         this.mBaseInnerInsets.set(rect);
         ViewUtils.computeFitSystemWindows((View)this, this.mBaseInnerInsets, this.mBaseContentInsets);
         if (!this.mLastBaseContentInsets.equals((Object)this.mBaseContentInsets)) {
-            applyInsets = true;
             this.mLastBaseContentInsets.set(this.mBaseContentInsets);
+            applyInsets = true;
         }
         if (applyInsets) {
             this.requestLayout();
@@ -333,16 +244,16 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         return true;
     }
     
-    protected LayoutParams generateDefaultLayoutParams() {
-        return new LayoutParams(-1, -1);
+    protected ActionBarOverlayLayout$LayoutParams generateDefaultLayoutParams() {
+        return new ActionBarOverlayLayout$LayoutParams(-1, -1);
     }
     
-    public LayoutParams generateLayoutParams(final AttributeSet set) {
-        return new LayoutParams(this.getContext(), set);
+    public ActionBarOverlayLayout$LayoutParams generateLayoutParams(final AttributeSet set) {
+        return new ActionBarOverlayLayout$LayoutParams(this.getContext(), set);
     }
     
     protected ViewGroup$LayoutParams generateLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        return (ViewGroup$LayoutParams)new LayoutParams(viewGroup$LayoutParams);
+        return (ViewGroup$LayoutParams)new ActionBarOverlayLayout$LayoutParams(viewGroup$LayoutParams);
     }
     
     public int getActionBarHideOffset() {
@@ -426,90 +337,90 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         final int paddingTop = this.getPaddingTop();
         final int paddingBottom = this.getPaddingBottom();
         View child;
-        LayoutParams layoutParams;
+        ActionBarOverlayLayout$LayoutParams actionBarOverlayLayout$LayoutParams;
         int measuredWidth;
         int measuredHeight;
         int n4;
         for (i = 0; i < childCount; ++i) {
             child = this.getChildAt(i);
             if (child.getVisibility() != 8) {
-                layoutParams = (LayoutParams)child.getLayoutParams();
+                actionBarOverlayLayout$LayoutParams = (ActionBarOverlayLayout$LayoutParams)child.getLayoutParams();
                 measuredWidth = child.getMeasuredWidth();
                 measuredHeight = child.getMeasuredHeight();
-                n4 = paddingLeft + layoutParams.leftMargin;
+                n4 = actionBarOverlayLayout$LayoutParams.leftMargin + paddingLeft;
                 if (child == this.mActionBarBottom) {
-                    n2 = n3 - n - paddingBottom - measuredHeight - layoutParams.bottomMargin;
+                    n2 = n3 - n - paddingBottom - measuredHeight - actionBarOverlayLayout$LayoutParams.bottomMargin;
                 }
                 else {
-                    n2 = paddingTop + layoutParams.topMargin;
+                    n2 = actionBarOverlayLayout$LayoutParams.topMargin + paddingTop;
                 }
-                child.layout(n4, n2, n4 + measuredWidth, n2 + measuredHeight);
+                child.layout(n4, n2, measuredWidth + n4, measuredHeight + n2);
             }
         }
     }
     
     protected void onMeasure(final int n, final int n2) {
         this.pullChildren();
-        int n3 = 0;
-        final boolean b = false;
         this.measureChildWithMargins((View)this.mActionBarTop, n, 0, n2, 0);
-        final LayoutParams layoutParams = (LayoutParams)this.mActionBarTop.getLayoutParams();
-        final int max = Math.max(0, this.mActionBarTop.getMeasuredWidth() + layoutParams.leftMargin + layoutParams.rightMargin);
-        final int max2 = Math.max(0, this.mActionBarTop.getMeasuredHeight() + layoutParams.topMargin + layoutParams.bottomMargin);
-        int n4 = ViewUtils.combineMeasuredStates(0, ViewCompat.getMeasuredState((View)this.mActionBarTop));
-        int max3 = max2;
-        int max4 = max;
+        final ActionBarOverlayLayout$LayoutParams actionBarOverlayLayout$LayoutParams = (ActionBarOverlayLayout$LayoutParams)this.mActionBarTop.getLayoutParams();
+        int n3 = Math.max(0, this.mActionBarTop.getMeasuredWidth() + actionBarOverlayLayout$LayoutParams.leftMargin + actionBarOverlayLayout$LayoutParams.rightMargin);
+        int n4 = Math.max(0, actionBarOverlayLayout$LayoutParams.bottomMargin + (this.mActionBarTop.getMeasuredHeight() + actionBarOverlayLayout$LayoutParams.topMargin));
+        int n5 = ViewUtils.combineMeasuredStates(0, ViewCompat.getMeasuredState((View)this.mActionBarTop));
         if (this.mActionBarBottom != null) {
             this.measureChildWithMargins((View)this.mActionBarBottom, n, 0, n2, 0);
-            final LayoutParams layoutParams2 = (LayoutParams)this.mActionBarBottom.getLayoutParams();
-            max4 = Math.max(max, this.mActionBarBottom.getMeasuredWidth() + layoutParams2.leftMargin + layoutParams2.rightMargin);
-            max3 = Math.max(max2, this.mActionBarBottom.getMeasuredHeight() + layoutParams2.topMargin + layoutParams2.bottomMargin);
-            n4 = ViewUtils.combineMeasuredStates(n4, ViewCompat.getMeasuredState((View)this.mActionBarBottom));
+            final ActionBarOverlayLayout$LayoutParams actionBarOverlayLayout$LayoutParams2 = (ActionBarOverlayLayout$LayoutParams)this.mActionBarBottom.getLayoutParams();
+            n3 = Math.max(n3, this.mActionBarBottom.getMeasuredWidth() + actionBarOverlayLayout$LayoutParams2.leftMargin + actionBarOverlayLayout$LayoutParams2.rightMargin);
+            n4 = Math.max(n4, actionBarOverlayLayout$LayoutParams2.bottomMargin + (this.mActionBarBottom.getMeasuredHeight() + actionBarOverlayLayout$LayoutParams2.topMargin));
+            n5 = ViewUtils.combineMeasuredStates(n5, ViewCompat.getMeasuredState((View)this.mActionBarBottom));
         }
-        boolean b2;
+        boolean b;
         if ((ViewCompat.getWindowSystemUiVisibility((View)this) & 0x100) != 0x0) {
-            b2 = true;
+            b = true;
         }
         else {
-            b2 = false;
+            b = false;
         }
-        if (b2) {
-            final int n5 = n3 = this.mActionBarHeight;
+        int n7;
+        if (b) {
+            final int n6 = n7 = this.mActionBarHeight;
             if (this.mHasNonEmbeddedTabs) {
-                n3 = n5;
+                n7 = n6;
                 if (this.mActionBarTop.getTabContainer() != null) {
-                    n3 = n5 + this.mActionBarHeight;
+                    n7 = n6 + this.mActionBarHeight;
                 }
             }
         }
         else if (this.mActionBarTop.getVisibility() != 8) {
-            n3 = this.mActionBarTop.getMeasuredHeight();
+            n7 = this.mActionBarTop.getMeasuredHeight();
         }
-        int n6 = b ? 1 : 0;
-        if (this.mDecorToolbar.isSplit()) {
-            n6 = (b ? 1 : 0);
-            if (this.mActionBarBottom != null) {
-                if (b2) {
-                    n6 = this.mActionBarHeight;
-                }
-                else {
-                    n6 = this.mActionBarBottom.getMeasuredHeight();
-                }
+        else {
+            n7 = 0;
+        }
+        int n8;
+        if (this.mDecorToolbar.isSplit() && this.mActionBarBottom != null) {
+            if (b) {
+                n8 = this.mActionBarHeight;
             }
+            else {
+                n8 = this.mActionBarBottom.getMeasuredHeight();
+            }
+        }
+        else {
+            n8 = 0;
         }
         this.mContentInsets.set(this.mBaseContentInsets);
         this.mInnerInsets.set(this.mBaseInnerInsets);
-        if (!this.mOverlayMode && !b2) {
+        if (!this.mOverlayMode && !b) {
             final Rect mContentInsets = this.mContentInsets;
-            mContentInsets.top += n3;
+            mContentInsets.top += n7;
             final Rect mContentInsets2 = this.mContentInsets;
-            mContentInsets2.bottom += n6;
+            mContentInsets2.bottom += n8;
         }
         else {
             final Rect mInnerInsets = this.mInnerInsets;
-            mInnerInsets.top += n3;
+            mInnerInsets.top += n7;
             final Rect mInnerInsets2 = this.mInnerInsets;
-            mInnerInsets2.bottom += n6;
+            mInnerInsets2.bottom += n8;
         }
         this.applyInsets((View)this.mContent, this.mContentInsets, true, true, true, true);
         if (!this.mLastInnerInsets.equals((Object)this.mInnerInsets)) {
@@ -517,11 +428,11 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
             this.mContent.dispatchFitSystemWindows(this.mInnerInsets);
         }
         this.measureChildWithMargins((View)this.mContent, n, 0, n2, 0);
-        final LayoutParams layoutParams3 = (LayoutParams)this.mContent.getLayoutParams();
-        final int max5 = Math.max(max4, this.mContent.getMeasuredWidth() + layoutParams3.leftMargin + layoutParams3.rightMargin);
-        final int max6 = Math.max(max3, this.mContent.getMeasuredHeight() + layoutParams3.topMargin + layoutParams3.bottomMargin);
-        final int combineMeasuredStates = ViewUtils.combineMeasuredStates(n4, ViewCompat.getMeasuredState((View)this.mContent));
-        this.setMeasuredDimension(ViewCompat.resolveSizeAndState(Math.max(max5 + (this.getPaddingLeft() + this.getPaddingRight()), this.getSuggestedMinimumWidth()), n, combineMeasuredStates), ViewCompat.resolveSizeAndState(Math.max(max6 + (this.getPaddingTop() + this.getPaddingBottom()), this.getSuggestedMinimumHeight()), n2, combineMeasuredStates << 16));
+        final ActionBarOverlayLayout$LayoutParams actionBarOverlayLayout$LayoutParams3 = (ActionBarOverlayLayout$LayoutParams)this.mContent.getLayoutParams();
+        final int max = Math.max(n3, this.mContent.getMeasuredWidth() + actionBarOverlayLayout$LayoutParams3.leftMargin + actionBarOverlayLayout$LayoutParams3.rightMargin);
+        final int max2 = Math.max(n4, actionBarOverlayLayout$LayoutParams3.bottomMargin + (this.mContent.getMeasuredHeight() + actionBarOverlayLayout$LayoutParams3.topMargin));
+        final int combineMeasuredStates = ViewUtils.combineMeasuredStates(n5, ViewCompat.getMeasuredState((View)this.mContent));
+        this.setMeasuredDimension(ViewCompat.resolveSizeAndState(Math.max(max + (this.getPaddingLeft() + this.getPaddingRight()), this.getSuggestedMinimumWidth()), n, combineMeasuredStates), ViewCompat.resolveSizeAndState(Math.max(max2 + (this.getPaddingTop() + this.getPaddingBottom()), this.getSuggestedMinimumHeight()), n2, combineMeasuredStates << 16));
     }
     
     public boolean onNestedFling(final View view, final float n, final float n2, final boolean b) {
@@ -592,7 +503,7 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
             b3 = false;
         }
         if (this.mActionBarVisibilityCallback != null) {
-            final ActionBarVisibilityCallback mActionBarVisibilityCallback = this.mActionBarVisibilityCallback;
+            final ActionBarOverlayLayout$ActionBarVisibilityCallback mActionBarVisibilityCallback = this.mActionBarVisibilityCallback;
             if (b3) {
                 b = false;
             }
@@ -619,10 +530,10 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
     
     void pullChildren() {
         if (this.mContent == null) {
-            this.mContent = (ContentFrameLayout)this.findViewById(R.id.action_bar_activity_content);
-            this.mActionBarTop = (ActionBarContainer)this.findViewById(R.id.action_bar_container);
-            this.mDecorToolbar = this.getDecorToolbar(this.findViewById(R.id.action_bar));
-            this.mActionBarBottom = (ActionBarContainer)this.findViewById(R.id.split_action_bar);
+            this.mContent = (ContentFrameLayout)this.findViewById(R$id.action_bar_activity_content);
+            this.mActionBarTop = (ActionBarContainer)this.findViewById(R$id.action_bar_container);
+            this.mDecorToolbar = this.getDecorToolbar(this.findViewById(R$id.action_bar));
+            this.mActionBarBottom = (ActionBarContainer)this.findViewById(R$id.split_action_bar);
         }
     }
     
@@ -642,12 +553,12 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         max = Math.max(0, Math.min(max, height));
         ViewCompat.setTranslationY((View)this.mActionBarTop, -max);
         if (this.mActionBarBottom != null && this.mActionBarBottom.getVisibility() != 8) {
-            max = this.mActionBarBottom.getHeight() * (max / height);
+            max = max / height * this.mActionBarBottom.getHeight();
             ViewCompat.setTranslationY((View)this.mActionBarBottom, max);
         }
     }
     
-    public void setActionBarVisibilityCallback(final ActionBarVisibilityCallback mActionBarVisibilityCallback) {
+    public void setActionBarVisibilityCallback(final ActionBarOverlayLayout$ActionBarVisibilityCallback mActionBarVisibilityCallback) {
         this.mActionBarVisibilityCallback = mActionBarVisibilityCallback;
         if (this.getWindowToken() != null) {
             this.mActionBarVisibilityCallback.onWindowVisibilityChanged(this.mWindowVisibility);
@@ -687,9 +598,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         this.mDecorToolbar.setLogo(logo);
     }
     
-    public void setMenu(final Menu menu, final MenuPresenter.Callback callback) {
+    public void setMenu(final Menu menu, final z z) {
         this.pullChildren();
-        this.mDecorToolbar.setMenu(menu, callback);
+        this.mDecorToolbar.setMenu(menu, z);
     }
     
     public void setMenuPrepared() {
@@ -725,39 +636,5 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
     public boolean showOverflowMenu() {
         this.pullChildren();
         return this.mDecorToolbar.showOverflowMenu();
-    }
-    
-    public interface ActionBarVisibilityCallback
-    {
-        void enableContentAnimations(final boolean p0);
-        
-        void hideForSystem();
-        
-        void onContentScrollStarted();
-        
-        void onContentScrollStopped();
-        
-        void onWindowVisibilityChanged(final int p0);
-        
-        void showForSystem();
-    }
-    
-    public static class LayoutParams extends ViewGroup$MarginLayoutParams
-    {
-        public LayoutParams(final int n, final int n2) {
-            super(n, n2);
-        }
-        
-        public LayoutParams(final Context context, final AttributeSet set) {
-            super(context, set);
-        }
-        
-        public LayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-            super(viewGroup$LayoutParams);
-        }
-        
-        public LayoutParams(final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams) {
-            super(viewGroup$MarginLayoutParams);
-        }
     }
 }

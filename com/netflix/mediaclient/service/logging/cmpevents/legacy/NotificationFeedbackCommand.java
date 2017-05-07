@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.logging.cmpevents.legacy;
 
 import android.util.Pair;
-import java.io.UnsupportedEncodingException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.HttpEntity;
 import com.netflix.mediaclient.Log;
@@ -33,7 +32,7 @@ public class NotificationFeedbackCommand extends ResponseWebApiPostCommand
     }
     
     @Override
-    protected HttpEntity getEntity() throws UnsupportedEncodingException {
+    protected HttpEntity getEntity() {
         return (HttpEntity)new StringEntity(this.mPayload, "UTF-8");
     }
     

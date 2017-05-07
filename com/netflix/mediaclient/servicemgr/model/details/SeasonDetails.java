@@ -4,24 +4,18 @@
 
 package com.netflix.mediaclient.servicemgr.model.details;
 
-import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.content.Context;
+import com.netflix.mediaclient.servicemgr.model.BasicVideo;
 
-public interface SeasonDetails
+public interface SeasonDetails extends BasicVideo
 {
     int getCurrentEpisodeNumber();
-    
-    String getId();
     
     int getNumOfEpisodes();
     
     int getSeasonNumber();
     
     String getSeasonNumberTitle(final Context p0);
-    
-    String getTitle();
-    
-    VideoType getType();
     
     int getYear();
 }

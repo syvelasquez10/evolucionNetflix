@@ -49,15 +49,15 @@ public final class MaskedWallet implements SafeParcelable
         this.asz = asz;
     }
     
-    public static Builder newBuilderFrom(final MaskedWallet maskedWallet) {
+    public static MaskedWallet$Builder newBuilderFrom(final MaskedWallet maskedWallet) {
         n.i(maskedWallet);
         return pK().setGoogleTransactionId(maskedWallet.getGoogleTransactionId()).setMerchantTransactionId(maskedWallet.getMerchantTransactionId()).setPaymentDescriptions(maskedWallet.getPaymentDescriptions()).setInstrumentInfos(maskedWallet.getInstrumentInfos()).setEmail(maskedWallet.getEmail()).setLoyaltyWalletObjects(maskedWallet.getLoyaltyWalletObjects()).setOfferWalletObjects(maskedWallet.getOfferWalletObjects()).setBuyerBillingAddress(maskedWallet.getBuyerBillingAddress()).setBuyerShippingAddress(maskedWallet.getBuyerShippingAddress());
     }
     
-    public static Builder pK() {
+    public static MaskedWallet$Builder pK() {
         final MaskedWallet maskedWallet = new MaskedWallet();
         maskedWallet.getClass();
-        return new Builder();
+        return new MaskedWallet$Builder(maskedWallet, null);
     }
     
     public int describeContents() {
@@ -116,67 +116,5 @@ public final class MaskedWallet implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         k.a(this, parcel, n);
-    }
-    
-    public final class Builder
-    {
-        public MaskedWallet build() {
-            return MaskedWallet.this;
-        }
-        
-        public Builder setBillingAddress(final Address asu) {
-            MaskedWallet.this.asu = asu;
-            return this;
-        }
-        
-        public Builder setBuyerBillingAddress(final UserAddress asx) {
-            MaskedWallet.this.asx = asx;
-            return this;
-        }
-        
-        public Builder setBuyerShippingAddress(final UserAddress asy) {
-            MaskedWallet.this.asy = asy;
-            return this;
-        }
-        
-        public Builder setEmail(final String ast) {
-            MaskedWallet.this.ast = ast;
-            return this;
-        }
-        
-        public Builder setGoogleTransactionId(final String asq) {
-            MaskedWallet.this.asq = asq;
-            return this;
-        }
-        
-        public Builder setInstrumentInfos(final InstrumentInfo[] asz) {
-            MaskedWallet.this.asz = asz;
-            return this;
-        }
-        
-        public Builder setLoyaltyWalletObjects(final LoyaltyWalletObject[] atb) {
-            MaskedWallet.this.atb = atb;
-            return this;
-        }
-        
-        public Builder setMerchantTransactionId(final String asr) {
-            MaskedWallet.this.asr = asr;
-            return this;
-        }
-        
-        public Builder setOfferWalletObjects(final OfferWalletObject[] atc) {
-            MaskedWallet.this.atc = atc;
-            return this;
-        }
-        
-        public Builder setPaymentDescriptions(final String[] asw) {
-            MaskedWallet.this.asw = asw;
-            return this;
-        }
-        
-        public Builder setShippingAddress(final Address asv) {
-            MaskedWallet.this.asv = asv;
-            return this;
-        }
     }
 }

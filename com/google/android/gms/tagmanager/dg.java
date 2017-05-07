@@ -4,7 +4,7 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 
 abstract class dg extends aj
@@ -14,12 +14,12 @@ abstract class dg extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
+    public d$a C(final Map<String, d$a> map) {
         this.E(map);
         return di.pI();
     }
     
-    public abstract void E(final Map<String, d.a> p0);
+    public abstract void E(final Map<String, d$a> p0);
     
     @Override
     public boolean nL() {

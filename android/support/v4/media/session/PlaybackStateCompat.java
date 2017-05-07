@@ -4,7 +4,6 @@
 
 package android.support.v4.media.session;
 
-import android.os.SystemClock;
 import android.os.Build$VERSION;
 import android.text.TextUtils;
 import android.os.Parcel;
@@ -49,15 +48,7 @@ public final class PlaybackStateCompat implements Parcelable
     private final long mUpdateTime;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<PlaybackStateCompat>() {
-            public PlaybackStateCompat createFromParcel(final Parcel parcel) {
-                return new PlaybackStateCompat(parcel, null);
-            }
-            
-            public PlaybackStateCompat[] newArray(final int n) {
-                return new PlaybackStateCompat[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new PlaybackStateCompat$1();
     }
     
     private PlaybackStateCompat(final int mState, final long mPosition, final long mBufferedPosition, final float mSpeed, final long mActions, final CharSequence mErrorMessage, final long mUpdateTime) {
@@ -150,52 +141,5 @@ public final class PlaybackStateCompat implements Parcelable
         parcel.writeLong(this.mBufferedPosition);
         parcel.writeLong(this.mActions);
         TextUtils.writeToParcel(this.mErrorMessage, parcel, n);
-    }
-    
-    public static final class Builder
-    {
-        private long mActions;
-        private long mBufferedPosition;
-        private CharSequence mErrorMessage;
-        private long mPosition;
-        private float mRate;
-        private int mState;
-        private long mUpdateTime;
-        
-        public Builder() {
-        }
-        
-        public Builder(final PlaybackStateCompat playbackStateCompat) {
-            this.mState = playbackStateCompat.mState;
-            this.mPosition = playbackStateCompat.mPosition;
-            this.mRate = playbackStateCompat.mSpeed;
-            this.mUpdateTime = playbackStateCompat.mUpdateTime;
-            this.mBufferedPosition = playbackStateCompat.mBufferedPosition;
-            this.mActions = playbackStateCompat.mActions;
-            this.mErrorMessage = playbackStateCompat.mErrorMessage;
-        }
-        
-        public PlaybackStateCompat build() {
-            return new PlaybackStateCompat(this.mState, this.mPosition, this.mBufferedPosition, this.mRate, this.mActions, this.mErrorMessage, this.mUpdateTime, null);
-        }
-        
-        public void setActions(final long mActions) {
-            this.mActions = mActions;
-        }
-        
-        public void setBufferedPosition(final long mBufferedPosition) {
-            this.mBufferedPosition = mBufferedPosition;
-        }
-        
-        public void setErrorMessage(final CharSequence mErrorMessage) {
-            this.mErrorMessage = mErrorMessage;
-        }
-        
-        public void setState(final int mState, final long mPosition, final float mRate) {
-            this.mState = mState;
-            this.mPosition = mPosition;
-            this.mRate = mRate;
-            this.mUpdateTime = SystemClock.elapsedRealtime();
-        }
     }
 }

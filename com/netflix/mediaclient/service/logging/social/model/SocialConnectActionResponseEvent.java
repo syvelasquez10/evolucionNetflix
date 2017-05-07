@@ -4,20 +4,20 @@
 
 package com.netflix.mediaclient.service.logging.social.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+import com.netflix.mediaclient.servicemgr.SocialLogging$Source;
 import com.netflix.mediaclient.service.logging.client.model.Error;
-import com.netflix.mediaclient.servicemgr.SocialLogging;
+import com.netflix.mediaclient.servicemgr.SocialLogging$Channel;
 
 public final class SocialConnectActionResponseEvent extends BaseSocialDiscreteEvent
 {
     protected static final String NAME = "socialConnectActionResponse";
-    private SocialLogging.Channel mChannel;
+    private SocialLogging$Channel mChannel;
     private Error mError;
-    private SocialLogging.Source mSource;
+    private SocialLogging$Source mSource;
     private boolean mSuccess;
     
-    public SocialConnectActionResponseEvent(final SocialLogging.Channel mChannel, final SocialLogging.Source mSource, final boolean mSuccess, final Error mError) {
+    public SocialConnectActionResponseEvent(final SocialLogging$Channel mChannel, final SocialLogging$Source mSource, final boolean mSuccess, final Error mError) {
         super("socialConnectActionResponse");
         this.mChannel = mChannel;
         this.mSource = mSource;
@@ -26,7 +26,7 @@ public final class SocialConnectActionResponseEvent extends BaseSocialDiscreteEv
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

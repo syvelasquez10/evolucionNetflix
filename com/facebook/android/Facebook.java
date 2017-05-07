@@ -4,19 +4,6 @@
 
 package com.facebook.android;
 
-import android.os.IBinder;
-import android.content.ComponentName;
-import android.os.RemoteException;
-import android.os.Messenger;
-import com.facebook.LegacyHelper;
-import android.os.Message;
-import java.lang.ref.WeakReference;
-import android.os.Handler;
-import com.facebook.AccessTokenSource;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.io.Serializable;
 import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.content.Intent;
@@ -30,7 +17,10 @@ import com.facebook.TokenCachingStrategy;
 import com.facebook.Settings;
 import android.content.ContentResolver;
 import java.util.Arrays;
+import com.facebook.Session$StatusCallback;
+import com.facebook.Session$OpenRequest;
 import android.content.Context;
+import com.facebook.Session$Builder;
 import com.facebook.SessionLoginBehavior;
 import java.util.List;
 import com.facebook.SessionState;
@@ -77,7 +67,7 @@ public class Facebook
     private Session pendingOpeningSession;
     private volatile Session session;
     private boolean sessionInvalidated;
-    private SetterTokenCachingStrategy tokenCache;
+    private Facebook$SetterTokenCachingStrategy tokenCache;
     private volatile Session userSetSession;
     
     static {
@@ -99,9 +89,9 @@ public class Facebook
         this.mAppId = mAppId;
     }
     
-    private void authorize(final Activity pendingAuthorizationActivity, final String[] array, final int requestCode, final SessionLoginBehavior loginBehavior, final DialogListener dialogListener) {
+    private void authorize(final Activity pendingAuthorizationActivity, final String[] array, final int requestCode, final SessionLoginBehavior loginBehavior, final Facebook$DialogListener facebook$DialogListener) {
         this.checkUserSession("authorize");
-        this.pendingOpeningSession = new Session.Builder((Context)pendingAuthorizationActivity).setApplicationId(this.mAppId).setTokenCachingStrategy(this.getTokenCache()).build();
+        this.pendingOpeningSession = new Session$Builder((Context)pendingAuthorizationActivity).setApplicationId(this.mAppId).setTokenCachingStrategy(this.getTokenCache()).build();
         this.pendingAuthorizationActivity = pendingAuthorizationActivity;
         String[] pendingAuthorizationPermissions;
         if (array != null) {
@@ -111,12 +101,7 @@ public class Facebook
             pendingAuthorizationPermissions = new String[0];
         }
         this.pendingAuthorizationPermissions = pendingAuthorizationPermissions;
-        this.openSession(this.pendingOpeningSession, new Session.OpenRequest(pendingAuthorizationActivity).setCallback(new Session.StatusCallback() {
-            @Override
-            public void call(final Session session, final SessionState sessionState, final Exception ex) {
-                Facebook.this.onSessionCallback(session, sessionState, ex, dialogListener);
-            }
-        }).setLoginBehavior(loginBehavior).setRequestCode(requestCode).setPermissions(Arrays.asList(array)), this.pendingAuthorizationPermissions.length > 0);
+        this.openSession(this.pendingOpeningSession, new Session$OpenRequest(pendingAuthorizationActivity).setCallback(new Facebook$1(this, facebook$DialogListener)).setLoginBehavior(loginBehavior).setRequestCode(requestCode).setPermissions(Arrays.asList(array)), this.pendingAuthorizationPermissions.length > 0);
     }
     
     private void checkUserSession(final String s) {
@@ -132,12 +117,12 @@ public class Facebook
     
     private TokenCachingStrategy getTokenCache() {
         if (this.tokenCache == null) {
-            this.tokenCache = new SetterTokenCachingStrategy();
+            this.tokenCache = new Facebook$SetterTokenCachingStrategy(this, null);
         }
         return this.tokenCache;
     }
     
-    private void onSessionCallback(final Session session, final SessionState sessionState, final Exception ex, final DialogListener dialogListener) {
+    private void onSessionCallback(final Session session, final SessionState sessionState, final Exception ex, final Facebook$DialogListener facebook$DialogListener) {
         final Bundle authorizationBundle = session.getAuthorizationBundle();
         Label_0070: {
             if (sessionState != SessionState.OPENED) {
@@ -154,7 +139,7 @@ public class Facebook
                 if (session2 != null) {
                     session2.close();
                 }
-                dialogListener.onComplete(authorizationBundle);
+                facebook$DialogListener.onComplete(authorizationBundle);
                 return;
             }
         }
@@ -162,23 +147,23 @@ public class Facebook
             return;
         }
         if (ex instanceof FacebookOperationCanceledException) {
-            dialogListener.onCancel();
+            facebook$DialogListener.onCancel();
             return;
         }
         if (ex instanceof FacebookAuthorizationException && authorizationBundle != null && authorizationBundle.containsKey("com.facebook.sdk.WebViewErrorCode") && authorizationBundle.containsKey("com.facebook.sdk.FailingUrl")) {
-            dialogListener.onError(new DialogError(ex.getMessage(), authorizationBundle.getInt("com.facebook.sdk.WebViewErrorCode"), authorizationBundle.getString("com.facebook.sdk.FailingUrl")));
+            facebook$DialogListener.onError(new DialogError(ex.getMessage(), authorizationBundle.getInt("com.facebook.sdk.WebViewErrorCode"), authorizationBundle.getString("com.facebook.sdk.FailingUrl")));
             return;
         }
-        dialogListener.onFacebookError(new FacebookError(ex.getMessage()));
+        facebook$DialogListener.onFacebookError(new FacebookError(ex.getMessage()));
     }
     
-    private void openSession(final Session session, final Session.OpenRequest openRequest, final boolean b) {
-        ((Session.AuthorizationRequest)openRequest).setIsLegacy(true);
+    private void openSession(final Session session, final Session$OpenRequest session$OpenRequest, final boolean b) {
+        session$OpenRequest.setIsLegacy(true);
         if (b) {
-            session.openForPublish(openRequest);
+            session.openForPublish(session$OpenRequest);
             return;
         }
-        session.openForRead(openRequest);
+        session.openForRead(session$OpenRequest);
     }
     
     private static String[] stringArray(final List<String> list) {
@@ -199,31 +184,27 @@ public class Facebook
     }
     
     private boolean validateAppSignatureForPackage(final Context context, final String s) {
-        while (true) {
-            final boolean b = false;
+        final boolean b = false;
+        try {
+            final Signature[] signatures = context.getPackageManager().getPackageInfo(s, 64).signatures;
+            final int length = signatures.length;
+            int n = 0;
+            boolean b2;
             while (true) {
-                int n = 0;
-                Label_0058: {
-                    try {
-                        final Signature[] signatures = context.getPackageManager().getPackageInfo(s, 64).signatures;
-                        final int length = signatures.length;
-                        n = 0;
-                        boolean b2 = b;
-                        if (n < length) {
-                            if (!signatures[n].toCharsString().equals("30820268308201d102044a9c4610300d06092a864886f70d0101040500307a310b3009060355040613025553310b3009060355040813024341311230100603550407130950616c6f20416c746f31183016060355040a130f46616365626f6f6b204d6f62696c653111300f060355040b130846616365626f6f6b311d301b0603550403131446616365626f6f6b20436f72706f726174696f6e3020170d3039303833313231353231365a180f32303530303932353231353231365a307a310b3009060355040613025553310b3009060355040813024341311230100603550407130950616c6f20416c746f31183016060355040a130f46616365626f6f6b204d6f62696c653111300f060355040b130846616365626f6f6b311d301b0603550403131446616365626f6f6b20436f72706f726174696f6e30819f300d06092a864886f70d010101050003818d0030818902818100c207d51df8eb8c97d93ba0c8c1002c928fab00dc1b42fca5e66e99cc3023ed2d214d822bc59e8e35ddcf5f44c7ae8ade50d7e0c434f500e6c131f4a2834f987fc46406115de2018ebbb0d5a3c261bd97581ccfef76afc7135a6d59e8855ecd7eacc8f8737e794c60a761c536b72b11fac8e603f5da1a2d54aa103b8a13c0dbc10203010001300d06092a864886f70d0101040500038181005ee9be8bcbb250648d3b741290a82a1c9dc2e76a0af2f2228f1d9f9c4007529c446a70175c5a900d5141812866db46be6559e2141616483998211f4a673149fb2232a10d247663b26a9031e15f84bc1c74d141ff98a02d76f85b2c8ab2571b6469b232d8e768a7f7ca04f7abe4a775615916c07940656b58717457b42bd928a2")) {
-                                break Label_0058;
-                            }
-                            b2 = true;
-                        }
-                        return b2;
-                    }
-                    catch (PackageManager$NameNotFoundException ex) {
-                        return false;
-                    }
+                b2 = b;
+                if (n >= length) {
+                    break;
+                }
+                if (signatures[n].toCharsString().equals("30820268308201d102044a9c4610300d06092a864886f70d0101040500307a310b3009060355040613025553310b3009060355040813024341311230100603550407130950616c6f20416c746f31183016060355040a130f46616365626f6f6b204d6f62696c653111300f060355040b130846616365626f6f6b311d301b0603550403131446616365626f6f6b20436f72706f726174696f6e3020170d3039303833313231353231365a180f32303530303932353231353231365a307a310b3009060355040613025553310b3009060355040813024341311230100603550407130950616c6f20416c746f31183016060355040a130f46616365626f6f6b204d6f62696c653111300f060355040b130846616365626f6f6b311d301b0603550403131446616365626f6f6b20436f72706f726174696f6e30819f300d06092a864886f70d010101050003818d0030818902818100c207d51df8eb8c97d93ba0c8c1002c928fab00dc1b42fca5e66e99cc3023ed2d214d822bc59e8e35ddcf5f44c7ae8ade50d7e0c434f500e6c131f4a2834f987fc46406115de2018ebbb0d5a3c261bd97581ccfef76afc7135a6d59e8855ecd7eacc8f8737e794c60a761c536b72b11fac8e603f5da1a2d54aa103b8a13c0dbc10203010001300d06092a864886f70d0101040500038181005ee9be8bcbb250648d3b741290a82a1c9dc2e76a0af2f2228f1d9f9c4007529c446a70175c5a900d5141812866db46be6559e2141616483998211f4a673149fb2232a10d247663b26a9031e15f84bc1c74d141ff98a02d76f85b2c8ab2571b6469b232d8e768a7f7ca04f7abe4a775615916c07940656b58717457b42bd928a2")) {
+                    b2 = true;
+                    break;
                 }
                 ++n;
-                continue;
             }
+            return b2;
+        }
+        catch (PackageManager$NameNotFoundException ex) {
+            return false;
         }
     }
     
@@ -233,12 +214,12 @@ public class Facebook
     }
     
     @Deprecated
-    public void authorize(final Activity activity, final DialogListener dialogListener) {
-        this.authorize(activity, new String[0], 32665, SessionLoginBehavior.SSO_WITH_FALLBACK, dialogListener);
+    public void authorize(final Activity activity, final Facebook$DialogListener facebook$DialogListener) {
+        this.authorize(activity, new String[0], 32665, SessionLoginBehavior.SSO_WITH_FALLBACK, facebook$DialogListener);
     }
     
     @Deprecated
-    public void authorize(final Activity activity, final String[] array, final int n, final DialogListener dialogListener) {
+    public void authorize(final Activity activity, final String[] array, final int n, final Facebook$DialogListener facebook$DialogListener) {
         SessionLoginBehavior sessionLoginBehavior;
         if (n >= 0) {
             sessionLoginBehavior = SessionLoginBehavior.SSO_WITH_FALLBACK;
@@ -246,12 +227,12 @@ public class Facebook
         else {
             sessionLoginBehavior = SessionLoginBehavior.SUPPRESS_SSO;
         }
-        this.authorize(activity, array, n, sessionLoginBehavior, dialogListener);
+        this.authorize(activity, array, n, sessionLoginBehavior, facebook$DialogListener);
     }
     
     @Deprecated
-    public void authorize(final Activity activity, final String[] array, final DialogListener dialogListener) {
-        this.authorize(activity, array, 32665, SessionLoginBehavior.SSO_WITH_FALLBACK, dialogListener);
+    public void authorize(final Activity activity, final String[] array, final Facebook$DialogListener facebook$DialogListener) {
+        this.authorize(activity, array, 32665, SessionLoginBehavior.SSO_WITH_FALLBACK, facebook$DialogListener);
     }
     
     @Deprecated
@@ -266,7 +247,7 @@ public class Facebook
     }
     
     @Deprecated
-    public void dialog(final Context context, final String s, final Bundle bundle, final DialogListener dialogListener) {
+    public void dialog(final Context context, final String s, final Bundle bundle, final Facebook$DialogListener facebook$DialogListener) {
         bundle.putString("display", "touch");
         bundle.putString("redirect_uri", "fbconnect://success");
         if (s.equals("oauth")) {
@@ -283,26 +264,26 @@ public class Facebook
             Util.showAlert(context, "Error", "Application requires permission to access the Internet");
             return;
         }
-        new FbDialog(context, s, bundle, dialogListener).show();
+        new FbDialog(context, s, bundle, facebook$DialogListener).show();
     }
     
     @Deprecated
-    public void dialog(final Context context, final String s, final DialogListener dialogListener) {
-        this.dialog(context, s, new Bundle(), dialogListener);
+    public void dialog(final Context context, final String s, final Facebook$DialogListener facebook$DialogListener) {
+        this.dialog(context, s, new Bundle(), facebook$DialogListener);
     }
     
     @Deprecated
-    public boolean extendAccessToken(final Context context, final ServiceListener serviceListener) {
+    public boolean extendAccessToken(final Context context, final Facebook$ServiceListener facebook$ServiceListener) {
         this.checkUserSession("extendAccessToken");
         final Intent intent = new Intent();
         intent.setClassName("com.facebook.katana", "com.facebook.katana.platform.TokenRefreshService");
-        return this.validateServiceIntent(context, intent) && context.bindService(intent, (ServiceConnection)new TokenRefreshServiceConnection(context, serviceListener), 1);
+        return this.validateServiceIntent(context, intent) && context.bindService(intent, (ServiceConnection)new Facebook$TokenRefreshServiceConnection(this, context, facebook$ServiceListener), 1);
     }
     
     @Deprecated
-    public boolean extendAccessTokenIfNeeded(final Context context, final ServiceListener serviceListener) {
+    public boolean extendAccessTokenIfNeeded(final Context context, final Facebook$ServiceListener facebook$ServiceListener) {
         this.checkUserSession("extendAccessTokenIfNeeded");
-        return !this.shouldExtendAccessToken() || this.extendAccessToken(context, serviceListener);
+        return !this.shouldExtendAccessToken() || this.extendAccessToken(context, facebook$ServiceListener);
     }
     
     @Deprecated
@@ -360,36 +341,43 @@ public class Facebook
             else {
                 permissions = (List<String>)Collections.emptyList();
             }
-            final Session build = new Session.Builder((Context)this.pendingAuthorizationActivity).setApplicationId(this.mAppId).setTokenCachingStrategy(this.getTokenCache()).build();
+            Session build = new Session$Builder((Context)this.pendingAuthorizationActivity).setApplicationId(this.mAppId).setTokenCachingStrategy(this.getTokenCache()).build();
             if (build.getState() != SessionState.CREATED_TOKEN_LOADED) {
                 return null;
             }
-            Serializable setPermissions = new Session.OpenRequest(this.pendingAuthorizationActivity).setPermissions(permissions);
-            Label_0247: {
+            final Session$OpenRequest setPermissions = new Session$OpenRequest(this.pendingAuthorizationActivity).setPermissions(permissions);
+            Label_0238: {
                 if (permissions.isEmpty()) {
-                    break Label_0247;
+                    break Label_0238;
                 }
                 boolean b = true;
+            Label_0221_Outer:
                 while (true) {
-                    this.openSession(build, (Session.OpenRequest)setPermissions, b);
-                    Session session2 = null;
-                    setPermissions = null;
-                    synchronized (this.lock) {
-                        if (this.sessionInvalidated || this.session == null) {
-                            session2 = this.session;
-                            this.session = build;
-                            setPermissions = build;
-                            this.sessionInvalidated = false;
+                    this.openSession(build, setPermissions, b);
+                    while (true) {
+                        Label_0249: {
+                            synchronized (this.lock) {
+                                if (!this.sessionInvalidated && this.session != null) {
+                                    break Label_0249;
+                                }
+                                final Session session2 = this.session;
+                                this.session = build;
+                                this.sessionInvalidated = false;
+                                // monitorexit(this.lock)
+                                if (session2 != null) {
+                                    session2.close();
+                                }
+                                if (build != null) {
+                                    return build;
+                                }
+                                break;
+                                b = false;
+                                continue Label_0221_Outer;
+                            }
                         }
-                        // monitorexit(this.lock)
-                        if (session2 != null) {
-                            session2.close();
-                        }
-                        if (setPermissions != null) {
-                            return (Session)setPermissions;
-                        }
-                        break;
-                        b = false;
+                        build = null;
+                        final Session session2 = null;
+                        continue;
                     }
                 }
             }
@@ -407,11 +395,11 @@ public class Facebook
     }
     
     @Deprecated
-    public String logout(final Context context) throws MalformedURLException, IOException {
+    public String logout(final Context context) {
         return this.logoutImpl(context);
     }
     
-    String logoutImpl(final Context context) throws MalformedURLException, IOException {
+    String logoutImpl(final Context context) {
         this.checkUserSession("logout");
         final Bundle bundle = new Bundle();
         bundle.putString("method", "auth.expireSession");
@@ -439,7 +427,7 @@ public class Facebook
     }
     
     @Deprecated
-    public String request(final Bundle bundle) throws MalformedURLException, IOException {
+    public String request(final Bundle bundle) {
         if (!bundle.containsKey("method")) {
             throw new IllegalArgumentException("API method must be specified. (parameters must contain key \"method\" and value). See http://developers.facebook.com/docs/reference/rest/");
         }
@@ -447,21 +435,21 @@ public class Facebook
     }
     
     @Deprecated
-    public String request(final String s) throws MalformedURLException, IOException {
+    public String request(final String s) {
         return this.requestImpl(s, new Bundle(), "GET");
     }
     
     @Deprecated
-    public String request(final String s, final Bundle bundle) throws MalformedURLException, IOException {
+    public String request(final String s, final Bundle bundle) {
         return this.requestImpl(s, bundle, "GET");
     }
     
     @Deprecated
-    public String request(final String s, final Bundle bundle, final String s2) throws FileNotFoundException, MalformedURLException, IOException {
+    public String request(final String s, final Bundle bundle, final String s2) {
         return this.requestImpl(s, bundle, s2);
     }
     
-    String requestImpl(String s, final Bundle bundle, final String s2) throws FileNotFoundException, MalformedURLException, IOException {
+    String requestImpl(String s, final Bundle bundle, final String s2) {
         bundle.putString("format", "json");
         if (this.isSessionValid()) {
             bundle.putString("access_token", this.getAccessToken());
@@ -548,146 +536,5 @@ public class Facebook
     public boolean shouldExtendAccessToken() {
         this.checkUserSession("shouldExtendAccessToken");
         return this.isSessionValid() && System.currentTimeMillis() - this.lastAccessUpdateMillisecondsAfterEpoch >= 86400000L;
-    }
-    
-    public interface DialogListener
-    {
-        void onCancel();
-        
-        void onComplete(final Bundle p0);
-        
-        void onError(final DialogError p0);
-        
-        void onFacebookError(final FacebookError p0);
-    }
-    
-    public interface ServiceListener
-    {
-        void onComplete(final Bundle p0);
-        
-        void onError(final Error p0);
-        
-        void onFacebookError(final FacebookError p0);
-    }
-    
-    private class SetterTokenCachingStrategy extends TokenCachingStrategy
-    {
-        @Override
-        public void clear() {
-            Facebook.this.accessToken = null;
-        }
-        
-        @Override
-        public Bundle load() {
-            final Bundle bundle = new Bundle();
-            if (Facebook.this.accessToken != null) {
-                TokenCachingStrategy.putToken(bundle, Facebook.this.accessToken);
-                TokenCachingStrategy.putExpirationMilliseconds(bundle, Facebook.this.accessExpiresMillisecondsAfterEpoch);
-                TokenCachingStrategy.putPermissions(bundle, stringList(Facebook.this.pendingAuthorizationPermissions));
-                TokenCachingStrategy.putSource(bundle, AccessTokenSource.WEB_VIEW);
-                TokenCachingStrategy.putLastRefreshMilliseconds(bundle, Facebook.this.lastAccessUpdateMillisecondsAfterEpoch);
-            }
-            return bundle;
-        }
-        
-        @Override
-        public void save(final Bundle bundle) {
-            Facebook.this.accessToken = TokenCachingStrategy.getToken(bundle);
-            Facebook.this.accessExpiresMillisecondsAfterEpoch = TokenCachingStrategy.getExpirationMilliseconds(bundle);
-            Facebook.this.pendingAuthorizationPermissions = stringArray(TokenCachingStrategy.getPermissions(bundle));
-            Facebook.this.lastAccessUpdateMillisecondsAfterEpoch = TokenCachingStrategy.getLastRefreshMilliseconds(bundle);
-        }
-    }
-    
-    private static class TokenRefreshConnectionHandler extends Handler
-    {
-        WeakReference<TokenRefreshServiceConnection> connectionWeakReference;
-        WeakReference<Facebook> facebookWeakReference;
-        
-        TokenRefreshConnectionHandler(final Facebook facebook, final TokenRefreshServiceConnection tokenRefreshServiceConnection) {
-            this.facebookWeakReference = new WeakReference<Facebook>(facebook);
-            this.connectionWeakReference = new WeakReference<TokenRefreshServiceConnection>(tokenRefreshServiceConnection);
-        }
-        
-        public void handleMessage(final Message message) {
-            final Facebook facebook = this.facebookWeakReference.get();
-            final TokenRefreshServiceConnection tokenRefreshServiceConnection = this.connectionWeakReference.get();
-            if (facebook != null && tokenRefreshServiceConnection != null) {
-                final String string = message.getData().getString("access_token");
-                final long accessExpires = message.getData().getLong("expires_in") * 1000L;
-                if (string != null) {
-                    facebook.setAccessToken(string);
-                    facebook.setAccessExpires(accessExpires);
-                    final Session access$200 = facebook.session;
-                    if (access$200 != null) {
-                        LegacyHelper.extendTokenCompleted(access$200, message.getData());
-                    }
-                    if (tokenRefreshServiceConnection.serviceListener != null) {
-                        final Bundle bundle = (Bundle)message.getData().clone();
-                        bundle.putLong("expires_in", accessExpires);
-                        tokenRefreshServiceConnection.serviceListener.onComplete(bundle);
-                    }
-                }
-                else if (tokenRefreshServiceConnection.serviceListener != null) {
-                    final String string2 = message.getData().getString("error");
-                    if (message.getData().containsKey("error_code")) {
-                        tokenRefreshServiceConnection.serviceListener.onFacebookError(new FacebookError(string2, null, message.getData().getInt("error_code")));
-                    }
-                    else {
-                        final ServiceListener serviceListener = tokenRefreshServiceConnection.serviceListener;
-                        String s;
-                        if (string2 != null) {
-                            s = string2;
-                        }
-                        else {
-                            s = "Unknown service error";
-                        }
-                        serviceListener.onError(new Error(s));
-                    }
-                }
-                if (tokenRefreshServiceConnection != null) {
-                    tokenRefreshServiceConnection.applicationsContext.unbindService((ServiceConnection)tokenRefreshServiceConnection);
-                }
-            }
-        }
-    }
-    
-    private class TokenRefreshServiceConnection implements ServiceConnection
-    {
-        final Context applicationsContext;
-        final Messenger messageReceiver;
-        Messenger messageSender;
-        final ServiceListener serviceListener;
-        
-        public TokenRefreshServiceConnection(final Context applicationsContext, final ServiceListener serviceListener) {
-            this.messageReceiver = new Messenger((Handler)new TokenRefreshConnectionHandler(Facebook.this, this));
-            this.messageSender = null;
-            this.applicationsContext = applicationsContext;
-            this.serviceListener = serviceListener;
-        }
-        
-        private void refreshToken() {
-            final Bundle data = new Bundle();
-            data.putString("access_token", Facebook.this.accessToken);
-            final Message obtain = Message.obtain();
-            obtain.setData(data);
-            obtain.replyTo = this.messageReceiver;
-            try {
-                this.messageSender.send(obtain);
-            }
-            catch (RemoteException ex) {
-                this.serviceListener.onError(new Error("Service connection error"));
-            }
-        }
-        
-        public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
-            this.messageSender = new Messenger(binder);
-            this.refreshToken();
-        }
-        
-        public void onServiceDisconnected(final ComponentName componentName) {
-            this.serviceListener.onError(new Error("Service disconnected"));
-            this.applicationsContext.unbindService((ServiceConnection)this);
-        }
     }
 }

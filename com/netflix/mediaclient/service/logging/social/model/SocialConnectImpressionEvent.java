@@ -4,22 +4,21 @@
 
 package com.netflix.mediaclient.service.logging.social.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 
 public final class SocialConnectImpressionEvent extends BaseSocialDiscreteEvent
 {
     protected static final String NAME = "socialConnectImpression";
-    private IClientLogging.ModalView mView;
+    private IClientLogging$ModalView mView;
     
-    public SocialConnectImpressionEvent(final IClientLogging.ModalView mView) {
+    public SocialConnectImpressionEvent(final IClientLogging$ModalView mView) {
         super("socialConnectImpression");
         this.mView = mView;
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

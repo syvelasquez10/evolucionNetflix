@@ -12,11 +12,11 @@ import com.google.android.gms.ads.mediation.NetworkExtras;
 import java.util.Map;
 
 @ez
-public final class cs extends ct.a
+public final class cs extends ct$a
 {
     private Map<Class<? extends NetworkExtras>, NetworkExtras> qC;
     
-    private <NETWORK_EXTRAS extends com.google.ads.mediation.NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> cu z(final String s) throws RemoteException {
+    private <NETWORK_EXTRAS extends com.google.ads.mediation.NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> cu z(final String s) {
         try {
             final Class<?> forName = Class.forName(s, false, cs.class.getClassLoader());
             if (MediationAdapter.class.isAssignableFrom(forName)) {
@@ -39,11 +39,11 @@ public final class cs extends ct.a
         this.qC = qc;
     }
     
-    public cu x(final String s) throws RemoteException {
+    public cu x(final String s) {
         return this.z(s);
     }
     
-    public boolean y(final String s) throws RemoteException {
+    public boolean y(final String s) {
         try {
             return CustomEvent.class.isAssignableFrom(Class.forName(s, false, cs.class.getClassLoader()));
         }

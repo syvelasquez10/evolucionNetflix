@@ -4,8 +4,6 @@
 
 package com.google.android.gms.tagmanager;
 
-import android.os.Message;
-import android.os.Handler;
 import android.os.Looper;
 import com.google.android.gms.common.api.Status;
 
@@ -16,8 +14,8 @@ class n implements ContainerHolder
     private boolean NM;
     private Container anZ;
     private Container aoa;
-    private b aob;
-    private a aoc;
+    private n$b aob;
+    private n$a aoc;
     private TagManager aod;
     
     public n(final Status cm) {
@@ -25,7 +23,7 @@ class n implements ContainerHolder
         this.IB = null;
     }
     
-    public n(final TagManager aod, Looper mainLooper, final Container anZ, final a aoc) {
+    public n(final TagManager aod, Looper mainLooper, final Container anZ, final n$a aoc) {
         this.aod = aod;
         if (mainLooper == null) {
             mainLooper = Looper.getMainLooper();
@@ -148,7 +146,7 @@ class n implements ContainerHolder
     }
     
     @Override
-    public void setContainerAvailableListener(final ContainerAvailableListener containerAvailableListener) {
+    public void setContainerAvailableListener(final ContainerHolder$ContainerAvailableListener containerHolder$ContainerAvailableListener) {
         while (true) {
             Label_0034: {
                 synchronized (this) {
@@ -156,7 +154,7 @@ class n implements ContainerHolder
                         bh.T("ContainerHolder is released.");
                     }
                     else {
-                        if (containerAvailableListener != null) {
+                        if (containerHolder$ContainerAvailableListener != null) {
                             break Label_0034;
                         }
                         this.aob = null;
@@ -164,48 +162,10 @@ class n implements ContainerHolder
                     return;
                 }
             }
-            final ContainerAvailableListener containerAvailableListener2;
-            this.aob = new b(containerAvailableListener2, this.IB);
+            final ContainerHolder$ContainerAvailableListener containerHolder$ContainerAvailableListener2;
+            this.aob = new n$b(this, containerHolder$ContainerAvailableListener2, this.IB);
             if (this.aoa != null) {
                 this.nT();
-            }
-        }
-    }
-    
-    public interface a
-    {
-        void co(final String p0);
-        
-        String nS();
-        
-        void nU();
-    }
-    
-    private class b extends Handler
-    {
-        private final ContainerAvailableListener aoe;
-        
-        public b(final ContainerAvailableListener aoe, final Looper looper) {
-            super(looper);
-            this.aoe = aoe;
-        }
-        
-        public void cp(final String s) {
-            this.sendMessage(this.obtainMessage(1, (Object)s));
-        }
-        
-        protected void cq(final String s) {
-            this.aoe.onContainerAvailable(n.this, s);
-        }
-        
-        public void handleMessage(final Message message) {
-            switch (message.what) {
-                default: {
-                    bh.T("Don't know how to handle this message.");
-                }
-                case 1: {
-                    this.cq((String)message.obj);
-                }
             }
         }
     }

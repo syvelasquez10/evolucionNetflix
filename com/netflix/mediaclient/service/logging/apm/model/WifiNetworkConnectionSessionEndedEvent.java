@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
@@ -17,7 +16,7 @@ public class WifiNetworkConnectionSessionEndedEvent extends SessionEndedEvent
         super("wifiNetworkConnection", deviceUniqueId, n);
     }
     
-    public WifiNetworkConnectionSessionEndedEvent(final JSONObject jsonObject) throws JSONException {
+    public WifiNetworkConnectionSessionEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
     }
 }

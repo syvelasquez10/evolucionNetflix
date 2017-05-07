@@ -4,7 +4,6 @@
 
 package com.google.android.gms.analytics;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import android.content.Intent;
@@ -18,7 +17,7 @@ import java.util.Queue;
 import com.google.android.gms.internal.ju;
 import android.content.Context;
 
-class r implements af, com.google.android.gms.analytics.c.b, com.google.android.gms.analytics.c.c
+class r implements af, c$b, c$c
 {
     private final Context mContext;
     private boolean yA;
@@ -26,15 +25,15 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
     private boolean yC;
     private ju yD;
     private long yE;
-    private com.google.android.gms.analytics.d yd;
+    private d yd;
     private final f ye;
     private boolean yg;
     private volatile long yq;
-    private volatile a yr;
-    private volatile com.google.android.gms.analytics.b ys;
-    private com.google.android.gms.analytics.d yt;
+    private volatile r$a yr;
+    private volatile b ys;
+    private d yt;
     private final GoogleAnalytics yu;
-    private final Queue<d> yv;
+    private final Queue<r$d> yv;
     private volatile int yw;
     private volatile Timer yx;
     private volatile Timer yy;
@@ -44,8 +43,8 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
         this(context, f, null, GoogleAnalytics.getInstance(context));
     }
     
-    r(final Context mContext, final f ye, final com.google.android.gms.analytics.d yt, final GoogleAnalytics yu) {
-        this.yv = new ConcurrentLinkedQueue<d>();
+    r(final Context mContext, final f ye, final d yt, final GoogleAnalytics yu) {
+        this.yv = new ConcurrentLinkedQueue<r$d>();
         this.yE = 300000L;
         this.yt = yt;
         this.mContext = mContext;
@@ -53,7 +52,7 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
         this.yu = yu;
         this.yD = jw.hA();
         this.yw = 0;
-        this.yr = a.yN;
+        this.yr = r$a.yN;
     }
     
     private Timer a(final Timer timer) {
@@ -65,8 +64,8 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
     
     private void cD() {
         synchronized (this) {
-            if (this.ys != null && this.yr == a.yI) {
-                this.yr = a.yM;
+            if (this.ys != null && this.yr == r$a.yI) {
+                this.yr = r$a.yM;
                 this.ys.disconnect();
             }
         }
@@ -80,18 +79,13 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
     
     private void ei() {
         while (true) {
-            Label_0340: {
+            Label_0339: {
                 Label_0205: {
                     Label_0188: {
                         Label_0219: {
                             synchronized (this) {
                                 if (!Thread.currentThread().equals(this.ye.getThread())) {
-                                    this.ye.dP().add(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            r.this.ei();
-                                        }
-                                    });
+                                    this.ye.dP().add(new r$1(this));
                                     return;
                                 }
                                 if (this.yA) {
@@ -100,9 +94,9 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
                                 switch (r$2.yG[this.yr.ordinal()]) {
                                     case 1: {
                                         while (!this.yv.isEmpty()) {
-                                            final d d = this.yv.poll();
-                                            z.V("Sending hit to store  " + d);
-                                            this.yd.a(d.en(), d.eo(), d.getPath(), d.ep());
+                                            final r$d r$d = this.yv.poll();
+                                            z.V("Sending hit to store  " + r$d);
+                                            this.yd.a(r$d.en(), r$d.eo(), r$d.getPath(), r$d.ep());
                                         }
                                         break Label_0205;
                                     }
@@ -113,7 +107,7 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
                                         break Label_0219;
                                     }
                                     case 6: {
-                                        break Label_0340;
+                                        break Label_0339;
                                     }
                                     default: {
                                         return;
@@ -123,10 +117,10 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
                             break Label_0188;
                         }
                         while (!this.yv.isEmpty()) {
-                            final d d2 = this.yv.peek();
-                            z.V("Sending hit to service   " + d2);
+                            final r$d r$d2 = this.yv.peek();
+                            z.V("Sending hit to service   " + r$d2);
                             if (!this.yu.isDryRunEnabled()) {
-                                this.ys.a(d2.en(), d2.eo(), d2.getPath(), d2.ep());
+                                this.ys.a(r$d2.en(), r$d2.eo(), r$d2.getPath(), r$d2.ep());
                             }
                             else {
                                 z.V("Dry run enabled. Hit not actually sent to service.");
@@ -162,11 +156,11 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
         while (true) {
             Label_0072: {
                 synchronized (this) {
-                    if (this.yr != a.yJ) {
+                    if (this.yr != r$a.yJ) {
                         if (this.mContext == null || !"com.google.android.gms".equals(this.mContext.getPackageName())) {
                             break Label_0072;
                         }
-                        this.yr = a.yK;
+                        this.yr = r$a.yK;
                         this.ys.disconnect();
                         z.W("Attempted to fall back to local store from service.");
                     }
@@ -183,7 +177,7 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
                 ea.a(this.mContext, this.ye);
                 this.yd = ea.ed();
             }
-            this.yr = a.yJ;
+            this.yr = r$a.yJ;
             this.ei();
         }
     }
@@ -191,12 +185,12 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
     private void el() {
         while (true) {
             synchronized (this) {
-                if (!this.yC && this.ys != null && this.yr != a.yJ) {
+                if (!this.yC && this.ys != null && this.yr != r$a.yJ) {
                     try {
                         ++this.yw;
                         this.a(this.yy);
-                        this.yr = a.yH;
-                        (this.yy = new Timer("Failed Connect")).schedule(new c(), 3000L);
+                        this.yr = r$a.yH;
+                        (this.yy = new Timer("Failed Connect")).schedule(new r$c(this, null), 3000L);
                         z.V("connecting to Analytics service");
                         this.ys.connect();
                         return;
@@ -214,13 +208,13 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
     
     private void em() {
         this.yx = this.a(this.yx);
-        (this.yx = new Timer("Service Reconnect")).schedule(new e(), 5000L);
+        (this.yx = new Timer("Service Reconnect")).schedule(new r$e(this, null), 5000L);
     }
     
     @Override
     public void a(final int n, final Intent intent) {
         synchronized (this) {
-            this.yr = a.yL;
+            this.yr = r$a.yL;
             if (this.yw < 2) {
                 z.W("Service unavailable (code=" + n + "), will retry.");
                 this.em();
@@ -235,7 +229,7 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
     @Override
     public void b(final Map<String, String> map, final long n, final String s, final List<hb> list) {
         z.V("putHit called");
-        this.yv.add(new d(map, n, s, list));
+        this.yv.add(new r$d(map, n, s, list));
         this.ei();
     }
     
@@ -307,7 +301,7 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
         if (this.ys != null) {
             return;
         }
-        this.ys = new com.google.android.gms.analytics.c(this.mContext, (com.google.android.gms.analytics.c.b)this, (com.google.android.gms.analytics.c.c)this);
+        this.ys = new c(this.mContext, this, this);
         this.el();
     }
     
@@ -317,7 +311,7 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
             this.yy = this.a(this.yy);
             this.yw = 0;
             z.V("Connected to service");
-            this.yr = a.yI;
+            this.yr = r$a.yI;
             if (this.yB) {
                 this.cD();
                 this.yB = false;
@@ -325,7 +319,7 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
             else {
                 this.ei();
                 this.yz = this.a(this.yz);
-                (this.yz = new Timer("disconnect check")).schedule(new b(), this.yE);
+                (this.yz = new Timer("disconnect check")).schedule(new r$b(this, null), this.yE);
             }
         }
     }
@@ -335,118 +329,28 @@ class r implements af, com.google.android.gms.analytics.c.b, com.google.android.
         while (true) {
             Label_0060: {
                 synchronized (this) {
-                    if (this.yr == a.yK) {
+                    if (this.yr == r$a.yK) {
                         z.V("Service blocked.");
                         this.eg();
                     }
                     else {
-                        if (this.yr != a.yM) {
+                        if (this.yr != r$a.yM) {
                             break Label_0060;
                         }
                         z.V("Disconnected from service");
                         this.eg();
-                        this.yr = a.yN;
+                        this.yr = r$a.yN;
                     }
                     return;
                 }
             }
             z.V("Unexpected disconnect.");
-            this.yr = a.yL;
+            this.yr = r$a.yL;
             if (this.yw < 2) {
                 this.em();
                 return;
             }
             this.ek();
-        }
-    }
-    
-    private enum a
-    {
-        yH, 
-        yI, 
-        yJ, 
-        yK, 
-        yL, 
-        yM, 
-        yN;
-    }
-    
-    private class b extends TimerTask
-    {
-        @Override
-        public void run() {
-            if (r.this.yr == a.yI && r.this.yv.isEmpty() && r.this.yq + r.this.yE < r.this.yD.elapsedRealtime()) {
-                z.V("Disconnecting due to inactivity");
-                r.this.cD();
-                return;
-            }
-            r.this.yz.schedule(new b(), r.this.yE);
-        }
-    }
-    
-    private class c extends TimerTask
-    {
-        @Override
-        public void run() {
-            if (r.this.yr == a.yH) {
-                r.this.ek();
-            }
-        }
-    }
-    
-    private static class d
-    {
-        private final Map<String, String> yP;
-        private final long yQ;
-        private final String yR;
-        private final List<hb> yS;
-        
-        public d(final Map<String, String> yp, final long yq, final String yr, final List<hb> ys) {
-            this.yP = yp;
-            this.yQ = yq;
-            this.yR = yr;
-            this.yS = ys;
-        }
-        
-        public Map<String, String> en() {
-            return this.yP;
-        }
-        
-        public long eo() {
-            return this.yQ;
-        }
-        
-        public List<hb> ep() {
-            return this.yS;
-        }
-        
-        public String getPath() {
-            return this.yR;
-        }
-        
-        @Override
-        public String toString() {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("PATH: ");
-            sb.append(this.yR);
-            if (this.yP != null) {
-                sb.append("  PARAMS: ");
-                for (final Map.Entry<String, String> entry : this.yP.entrySet()) {
-                    sb.append(entry.getKey());
-                    sb.append("=");
-                    sb.append(entry.getValue());
-                    sb.append(",  ");
-                }
-            }
-            return sb.toString();
-        }
-    }
-    
-    private class e extends TimerTask
-    {
-        @Override
-        public void run() {
-            r.this.el();
         }
     }
 }

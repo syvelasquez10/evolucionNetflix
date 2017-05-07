@@ -165,22 +165,12 @@ class s extends Thread implements f
     
     @Override
     public void dI() {
-        this.b(new Runnable() {
-            @Override
-            public void run() {
-                s.this.yY.dI();
-            }
-        });
+        this.b(new s$3(this));
     }
     
     @Override
     public void dO() {
-        this.b(new Runnable() {
-            @Override
-            public void run() {
-                s.this.yY.dO();
-            }
-        });
+        this.b(new s$4(this));
     }
     
     @Override
@@ -190,12 +180,7 @@ class s extends Thread implements f
     
     @Override
     public void dispatch() {
-        this.b(new Runnable() {
-            @Override
-            public void run() {
-                s.this.yY.dispatch();
-            }
-        });
+        this.b(new s$2(this));
     }
     
     @Override
@@ -352,26 +337,7 @@ class s extends Thread implements f
                 if (s2 == null) {
                     hashMap.put("&ht", Long.toString(System.currentTimeMillis()));
                 }
-                this.b(new Runnable() {
-                    @Override
-                    public void run() {
-                        s.this.x(hashMap);
-                        if (TextUtils.isEmpty((CharSequence)hashMap.get("&cid"))) {
-                            hashMap.put("&cid", h.dR().getValue("&cid"));
-                        }
-                        if (GoogleAnalytics.getInstance(s.this.mContext).getAppOptOut() || s.this.w(hashMap)) {
-                            return;
-                        }
-                        if (!TextUtils.isEmpty((CharSequence)s.this.yW)) {
-                            t.eq().B(true);
-                            hashMap.putAll(new HitBuilders.HitBuilder<HitBuilders.HitBuilder>().setCampaignParamsFromUrl(s.this.yW).build());
-                            t.eq().B(false);
-                            s.this.yW = null;
-                        }
-                        s.this.y(hashMap);
-                        s.this.yY.b(x.z(hashMap), Long.valueOf(hashMap.get("&ht")), s.this.v(hashMap), s.this.yV);
-                    }
-                });
+                this.b(new s$1(this, hashMap));
             }
             catch (NumberFormatException ex) {
                 s2 = null;

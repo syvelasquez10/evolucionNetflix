@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games.achievement;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.games.PlayerEntity;
 import android.net.Uri;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -135,7 +136,7 @@ public class AchievementEntityCreator implements Parcelable$Creator<AchievementE
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new AchievementEntity(g, o, g2, o2, o3, uri, o4, uri2, o5, g3, o6, playerEntity, g4, g5, o7, i, j);
     }

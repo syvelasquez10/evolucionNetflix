@@ -4,11 +4,10 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.EventType;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
 
@@ -21,11 +20,11 @@ public class SearchImpressionEvent extends DiscreteEvent
     private int from;
     private String searchReferenceId;
     private int to;
-    private IClientLogging.ModalView view;
+    private IClientLogging$ModalView view;
     
-    public SearchImpressionEvent(final String s, final int n, final int n2, final String[] array, final IClientLogging.ModalView modalView, final IClientLogging.ModalView modalView2) {
-        this.setupData(s, n, n2, array, modalView, modalView2);
-        this.setupAttributes(modalView);
+    public SearchImpressionEvent(final String s, final int n, final int n2, final String[] array, final IClientLogging$ModalView clientLogging$ModalView, final IClientLogging$ModalView clientLogging$ModalView2) {
+        this.setupData(s, n, n2, array, clientLogging$ModalView, clientLogging$ModalView2);
+        this.setupAttributes(clientLogging$ModalView);
     }
     
     private String idsToString() {
@@ -40,7 +39,7 @@ public class SearchImpressionEvent extends DiscreteEvent
         return sb.toString();
     }
     
-    private void setupAttributes(final IClientLogging.ModalView modalView) {
+    private void setupAttributes(final IClientLogging$ModalView modalView) {
         this.modalView = modalView;
         this.type = EventType.event;
         this.category = "uiView";
@@ -48,7 +47,7 @@ public class SearchImpressionEvent extends DiscreteEvent
         this.name = "impression";
     }
     
-    private void setupData(final String searchReferenceId, final int from, final int to, final String[] childIds, final IClientLogging.ModalView modalView, final IClientLogging.ModalView view) {
+    private void setupData(final String searchReferenceId, final int from, final int to, final String[] childIds, final IClientLogging$ModalView modalView, final IClientLogging$ModalView view) {
         this.modalView = modalView;
         this.childIds = childIds;
         this.searchReferenceId = searchReferenceId;
@@ -58,7 +57,7 @@ public class SearchImpressionEvent extends DiscreteEvent
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

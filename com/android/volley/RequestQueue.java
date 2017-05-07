@@ -87,10 +87,10 @@ public class RequestQueue
         }
     }
     
-    public void cancelAll(final RequestFilter requestFilter) {
+    public void cancelAll(final RequestQueue$RequestFilter requestQueue$RequestFilter) {
         synchronized (this.mCurrentRequests) {
             for (final Request<?> request : this.mCurrentRequests) {
-                if (requestFilter.apply(request)) {
+                if (requestQueue$RequestFilter.apply(request)) {
                     VolleyLog.v("Cancelling req %s", request.getUrl());
                     request.cancel();
                 }
@@ -103,12 +103,7 @@ public class RequestQueue
         if (o == null) {
             throw new IllegalArgumentException("Cannot cancelAll with a null tag");
         }
-        this.cancelAll((RequestFilter)new RequestFilter() {
-            @Override
-            public boolean apply(final Request<?> request) {
-                return request.getTag() == o;
-            }
-        });
+        this.cancelAll(new RequestQueue$1(this, o));
     }
     
     void finish(final Request p0) {
@@ -243,10 +238,5 @@ public class RequestQueue
                 this.mDispatchers[i].quit();
             }
         }
-    }
-    
-    public interface RequestFilter
-    {
-        boolean apply(final Request<?> p0);
     }
 }

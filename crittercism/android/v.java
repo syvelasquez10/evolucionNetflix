@@ -32,7 +32,7 @@ public final class v extends s
             if (packageName != null && !packageName.equals("")) {
                 final File file = new File(string);
                 if (file.exists()) {
-                    final String[] list = file.list(new a(".dmp"));
+                    final String[] list = file.list(new v$a(".dmp"));
                     if (list != null && list.length > 0) {
                         final Vector<String> vector = new Vector<String>();
                         for (int i = 0; i < list.length; ++i) {
@@ -198,22 +198,5 @@ public final class v extends s
     
     @Override
     protected final void e() {
-    }
-    
-    public static final class a implements FilenameFilter
-    {
-        private String a;
-        
-        public a(final String a) {
-            this.a = new String();
-            if (a != null) {
-                this.a = a;
-            }
-        }
-        
-        @Override
-        public final boolean accept(final File file, final String s) {
-            return s.endsWith(this.a);
-        }
     }
 }

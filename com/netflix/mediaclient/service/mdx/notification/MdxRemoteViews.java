@@ -16,7 +16,7 @@ public abstract class MdxRemoteViews
     protected Bitmap mBoxart;
     protected RemoteViews mExpandedRemoteView;
     protected boolean mInTransition;
-    protected final MdxNotificationManager.MdxNotificationIntentRetriever mIntentRetriever;
+    protected final MdxNotificationManager$MdxNotificationIntentRetriever mIntentRetriever;
     protected boolean mIsEpisode;
     protected String mMainTitle;
     protected RemoteViews mNormalRemoteView;
@@ -24,7 +24,7 @@ public abstract class MdxRemoteViews
     protected boolean mPaused;
     protected String mSubTitle;
     
-    public MdxRemoteViews(final String mPackageName, final boolean mIsEpisode, final MdxNotificationManager.MdxNotificationIntentRetriever mIntentRetriever, final Context context) {
+    public MdxRemoteViews(final String mPackageName, final boolean mIsEpisode, final MdxNotificationManager$MdxNotificationIntentRetriever mIntentRetriever, final Context context) {
         this.mIntentRetriever = mIntentRetriever;
         this.mPackageName = mPackageName;
         this.mIsEpisode = mIsEpisode;
@@ -51,9 +51,9 @@ public abstract class MdxRemoteViews
             return null;
         }
         if (b) {
-            return new RemoteViews(this.mPackageName, 2130903138);
+            return new RemoteViews(this.mPackageName, 2130903139);
         }
-        return new RemoteViews(this.mPackageName, 2130903137);
+        return new RemoteViews(this.mPackageName, 2130903138);
     }
     
     private void updateBoxart(final RemoteViews remoteViews) {

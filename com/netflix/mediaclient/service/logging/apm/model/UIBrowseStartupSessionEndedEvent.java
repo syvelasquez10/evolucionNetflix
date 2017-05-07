@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
@@ -27,7 +26,7 @@ public final class UIBrowseStartupSessionEndedEvent extends SessionEndedEvent
         this.timeToBrowseInteractive = timeToBrowseInteractive;
     }
     
-    public UIBrowseStartupSessionEndedEvent(JSONObject jsonObject) throws JSONException {
+    public UIBrowseStartupSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
         this.success = true;
         jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
@@ -39,7 +38,7 @@ public final class UIBrowseStartupSessionEndedEvent extends SessionEndedEvent
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

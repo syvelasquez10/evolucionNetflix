@@ -8,8 +8,6 @@ import android.view.MotionEvent;
 import java.util.Iterator;
 import java.util.Map;
 import android.net.Uri;
-import android.content.Intent;
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 import android.app.AlertDialog$Builder;
 import android.net.Uri$Builder;
@@ -102,15 +100,8 @@ public final class gm
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(this.mContext);
         alertDialog$Builder.setMessage((CharSequence)trim);
         alertDialog$Builder.setTitle((CharSequence)"Ad Information");
-        alertDialog$Builder.setPositiveButton((CharSequence)"Share", (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                gm.this.mContext.startActivity(Intent.createChooser(new Intent("android.intent.action.SEND").setType("text/plain").putExtra("android.intent.extra.TEXT", trim), (CharSequence)"Share via"));
-            }
-        });
-        alertDialog$Builder.setNegativeButton((CharSequence)"Close", (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-            }
-        });
+        alertDialog$Builder.setPositiveButton((CharSequence)"Share", (DialogInterface$OnClickListener)new gm$1(this, trim));
+        alertDialog$Builder.setNegativeButton((CharSequence)"Close", (DialogInterface$OnClickListener)new gm$2(this));
         alertDialog$Builder.create().show();
     }
     

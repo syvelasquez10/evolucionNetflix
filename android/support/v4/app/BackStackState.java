@@ -28,15 +28,7 @@ final class BackStackState implements Parcelable
     final int mTransitionStyle;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<BackStackState>() {
-            public BackStackState createFromParcel(final Parcel parcel) {
-                return new BackStackState(parcel);
-            }
-            
-            public BackStackState[] newArray(final int n) {
-                return new BackStackState[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new BackStackState$1();
     }
     
     public BackStackState(final Parcel parcel) {
@@ -54,29 +46,31 @@ final class BackStackState implements Parcelable
     }
     
     public BackStackState(final FragmentManagerImpl fragmentManagerImpl, final BackStackRecord backStackRecord) {
+        BackStackRecord$Op backStackRecord$Op = backStackRecord.mHead;
         int n = 0;
-        int n2;
-        for (BackStackRecord.Op op = backStackRecord.mHead; op != null; op = op.next, n = n2) {
-            n2 = n;
-            if (op.removed != null) {
-                n2 = n + op.removed.size();
+        while (backStackRecord$Op != null) {
+            int n2 = n;
+            if (backStackRecord$Op.removed != null) {
+                n2 = n + backStackRecord$Op.removed.size();
             }
+            backStackRecord$Op = backStackRecord$Op.next;
+            n = n2;
         }
-        this.mOps = new int[backStackRecord.mNumOp * 7 + n];
+        this.mOps = new int[n + backStackRecord.mNumOp * 7];
         if (!backStackRecord.mAddToBackStack) {
             throw new IllegalStateException("Not on back stack");
         }
-        BackStackRecord.Op op2 = backStackRecord.mHead;
+        BackStackRecord$Op backStackRecord$Op2 = backStackRecord.mHead;
         int n3 = 0;
-        while (op2 != null) {
+        while (backStackRecord$Op2 != null) {
             final int[] mOps = this.mOps;
             final int n4 = n3 + 1;
-            mOps[n3] = op2.cmd;
+            mOps[n3] = backStackRecord$Op2.cmd;
             final int[] mOps2 = this.mOps;
             final int n5 = n4 + 1;
             int mIndex;
-            if (op2.fragment != null) {
-                mIndex = op2.fragment.mIndex;
+            if (backStackRecord$Op2.fragment != null) {
+                mIndex = backStackRecord$Op2.fragment.mIndex;
             }
             else {
                 mIndex = -1;
@@ -84,29 +78,31 @@ final class BackStackState implements Parcelable
             mOps2[n4] = mIndex;
             final int[] mOps3 = this.mOps;
             final int n6 = n5 + 1;
-            mOps3[n5] = op2.enterAnim;
+            mOps3[n5] = backStackRecord$Op2.enterAnim;
             final int[] mOps4 = this.mOps;
             final int n7 = n6 + 1;
-            mOps4[n6] = op2.exitAnim;
+            mOps4[n6] = backStackRecord$Op2.exitAnim;
             final int[] mOps5 = this.mOps;
             final int n8 = n7 + 1;
-            mOps5[n7] = op2.popEnterAnim;
+            mOps5[n7] = backStackRecord$Op2.popEnterAnim;
             final int[] mOps6 = this.mOps;
             final int n9 = n8 + 1;
-            mOps6[n8] = op2.popExitAnim;
-            if (op2.removed != null) {
-                final int size = op2.removed.size();
-                this.mOps[n9] = size;
-                for (int i = 0, n3 = n9 + 1; i < size; ++i, ++n3) {
-                    this.mOps[n3] = op2.removed.get(i).mIndex;
+            mOps6[n8] = backStackRecord$Op2.popExitAnim;
+            if (backStackRecord$Op2.removed != null) {
+                final int size = backStackRecord$Op2.removed.size();
+                final int[] mOps7 = this.mOps;
+                n3 = n9 + 1;
+                mOps7[n9] = size;
+                for (int i = 0; i < size; ++i, ++n3) {
+                    this.mOps[n3] = backStackRecord$Op2.removed.get(i).mIndex;
                 }
             }
             else {
-                final int[] mOps7 = this.mOps;
+                final int[] mOps8 = this.mOps;
                 n3 = n9 + 1;
-                mOps7[n9] = 0;
+                mOps8[n9] = 0;
             }
-            op2 = op2.next;
+            backStackRecord$Op2 = backStackRecord$Op2.next;
         }
         this.mTransition = backStackRecord.mTransition;
         this.mTransitionStyle = backStackRecord.mTransitionStyle;
@@ -126,13 +122,13 @@ final class BackStackState implements Parcelable
     
     public BackStackRecord instantiate(final FragmentManagerImpl fragmentManagerImpl) {
         final BackStackRecord backStackRecord = new BackStackRecord(fragmentManagerImpl);
-        int i = 0;
         int n = 0;
+        int i = 0;
         while (i < this.mOps.length) {
-            final BackStackRecord.Op op = new BackStackRecord.Op();
+            final BackStackRecord$Op backStackRecord$Op = new BackStackRecord$Op();
             final int[] mOps = this.mOps;
             final int n2 = i + 1;
-            op.cmd = mOps[i];
+            backStackRecord$Op.cmd = mOps[i];
             if (FragmentManagerImpl.DEBUG) {
                 Log.v("FragmentManager", "Instantiate " + backStackRecord + " op #" + n + " base fragment #" + this.mOps[n2]);
             }
@@ -140,45 +136,44 @@ final class BackStackState implements Parcelable
             final int n3 = n2 + 1;
             final int n4 = mOps2[n2];
             if (n4 >= 0) {
-                op.fragment = fragmentManagerImpl.mActive.get(n4);
+                backStackRecord$Op.fragment = fragmentManagerImpl.mActive.get(n4);
             }
             else {
-                op.fragment = null;
+                backStackRecord$Op.fragment = null;
             }
             final int[] mOps3 = this.mOps;
             final int n5 = n3 + 1;
-            op.enterAnim = mOps3[n3];
+            backStackRecord$Op.enterAnim = mOps3[n3];
             final int[] mOps4 = this.mOps;
             final int n6 = n5 + 1;
-            op.exitAnim = mOps4[n5];
+            backStackRecord$Op.exitAnim = mOps4[n5];
             final int[] mOps5 = this.mOps;
             final int n7 = n6 + 1;
-            op.popEnterAnim = mOps5[n6];
+            backStackRecord$Op.popEnterAnim = mOps5[n6];
             final int[] mOps6 = this.mOps;
             final int n8 = n7 + 1;
-            op.popExitAnim = mOps6[n7];
+            backStackRecord$Op.popExitAnim = mOps6[n7];
             final int[] mOps7 = this.mOps;
             int n9 = n8 + 1;
             final int n10 = mOps7[n8];
-            int n11 = n9;
+            i = n9;
             if (n10 > 0) {
-                op.removed = new ArrayList<Fragment>(n10);
-                int n12 = 0;
+                backStackRecord$Op.removed = new ArrayList<Fragment>(n10);
+                int n11 = 0;
                 while (true) {
-                    n11 = n9;
-                    if (n12 >= n10) {
+                    i = n9;
+                    if (n11 >= n10) {
                         break;
                     }
                     if (FragmentManagerImpl.DEBUG) {
                         Log.v("FragmentManager", "Instantiate " + backStackRecord + " set remove fragment #" + this.mOps[n9]);
                     }
-                    op.removed.add(fragmentManagerImpl.mActive.get(this.mOps[n9]));
-                    ++n12;
+                    backStackRecord$Op.removed.add(fragmentManagerImpl.mActive.get(this.mOps[n9]));
+                    ++n11;
                     ++n9;
                 }
             }
-            i = n11;
-            backStackRecord.addOp(op);
+            backStackRecord.addOp(backStackRecord$Op);
             ++n;
         }
         backStackRecord.mTransition = this.mTransition;

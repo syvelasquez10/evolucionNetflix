@@ -4,9 +4,6 @@
 
 package com.google.android.gms.drive.metadata.internal;
 
-import java.util.HashMap;
-import com.google.android.gms.drive.metadata.CustomPropertyKey;
-import java.util.Map;
 import android.os.Parcel;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -24,8 +21,8 @@ public final class AppVisibleCustomProperties implements SafeParcelable, Iterabl
     final List<CustomProperty> Pz;
     
     static {
-        CREATOR = (Parcelable$Creator)new com.google.android.gms.drive.metadata.internal.a();
-        Py = new a().im();
+        CREATOR = (Parcelable$Creator)new a();
+        Py = new AppVisibleCustomProperties$a().im();
     }
     
     AppVisibleCustomProperties(final int br, final Collection<CustomProperty> collection) {
@@ -48,19 +45,6 @@ public final class AppVisibleCustomProperties implements SafeParcelable, Iterabl
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        com.google.android.gms.drive.metadata.internal.a.a(this, parcel, n);
-    }
-    
-    public static class a
-    {
-        private final Map<CustomPropertyKey, CustomProperty> PA;
-        
-        public a() {
-            this.PA = new HashMap<CustomPropertyKey, CustomProperty>();
-        }
-        
-        public AppVisibleCustomProperties im() {
-            return new AppVisibleCustomProperties(this.PA.values(), null);
-        }
+        a.a(this, parcel, n);
     }
 }

@@ -20,7 +20,7 @@ public class a implements ServiceConnection
         this.HD = new LinkedBlockingQueue<IBinder>();
     }
     
-    public IBinder fX() throws InterruptedException {
+    public IBinder fX() {
         if (this.HC) {
             throw new IllegalStateException();
         }

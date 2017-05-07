@@ -11,13 +11,7 @@ public abstract class gg
     private volatile Thread wf;
     
     public gg() {
-        this.mk = new Runnable() {
-            @Override
-            public final void run() {
-                gg.this.wf = Thread.currentThread();
-                gg.this.cp();
-            }
-        };
+        this.mk = new gg$1(this);
     }
     
     public final void cancel() {

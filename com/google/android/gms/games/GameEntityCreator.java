@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.net.Uri;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -180,7 +181,7 @@ public class GameEntityCreator implements Parcelable$Creator<GameEntity>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new GameEntity(g, o, o2, o3, o4, o5, o6, uri, uri2, uri3, c2, c3, o7, g2, g3, g4, c4, c5, o8, o9, o10, c6, c7, c8, o11);
     }

@@ -5,6 +5,7 @@
 package com.google.android.gms.wallet;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import java.util.List;
@@ -122,7 +123,7 @@ public class l implements Parcelable$Creator<MaskedWalletRequest>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new MaskedWalletRequest(g, o, c2, c3, c4, o2, o3, o4, cart, c5, c6, array, c7, c8, c9);
     }

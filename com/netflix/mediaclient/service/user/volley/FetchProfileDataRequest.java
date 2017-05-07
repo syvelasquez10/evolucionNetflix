@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile$Summary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -58,7 +58,7 @@ public class FetchProfileDataRequest extends FalcorVolleyWebClientRequest<UserPr
     }
     
     @Override
-    protected UserProfile parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected UserProfile parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_fetchprofiledatarequest", 2)) {
             Log.v("nf_service_user_fetchprofiledatarequest", "String response to parse = " + s);
         }
@@ -71,7 +71,7 @@ public class FetchProfileDataRequest extends FalcorVolleyWebClientRequest<UserPr
         try {
             asJsonObject = dataObj.getAsJsonObject("profiles").getAsJsonObject(this.mProfileId);
             userProfile = new UserProfile();
-            userProfile.summary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", UserProfile.Summary.class);
+            userProfile.summary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", UserProfile$Summary.class);
             if (userProfile.summary == null || StringUtils.isEmpty(userProfile.getProfileToken())) {
                 throw new FalcorParseException("response missing summary" + s);
             }

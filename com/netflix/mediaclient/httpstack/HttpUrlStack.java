@@ -63,7 +63,7 @@ public class HttpUrlStack implements HttpStack
     }
     
     @Override
-    public HttpStackConnection getConnection(final String s) throws IOException {
+    public HttpStackConnection getConnection(final String s) {
         final HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(s).openConnection();
         if (!(httpURLConnection instanceof HttpURLConnection)) {
             throw new IOException("Not an HTTP connection");
@@ -79,29 +79,20 @@ public class HttpUrlStack implements HttpStack
     
     @Override
     public List<Cookie> getResponseCookies(final HttpStackConnection httpStackConnection) {
-        List<Cookie> list;
         if (!(httpStackConnection instanceof HttpUrlStackConnection)) {
             Log.e("HttpUrlStack", "urlConnection null - wrong HttpStackConnection object?");
-            list = null;
+            return null;
         }
-        else {
-            final HttpURLConnection urlConnection = ((HttpUrlStackConnection)httpStackConnection).getUrlConnection();
-            final ArrayList<Cookie> list2 = new ArrayList<Cookie>();
-            final Iterator<String> iterator = urlConnection.getHeaderFields().get("Set-Cookie").iterator();
-            while (true) {
-                list = list2;
-                if (!iterator.hasNext()) {
-                    break;
-                }
-                final String s = iterator.next();
-                list2.add((Cookie)new BasicClientCookie(s.substring(0, s.indexOf("=")), s.substring(s.indexOf("=") + 1, s.length())));
-            }
+        final HttpURLConnection urlConnection = ((HttpUrlStackConnection)httpStackConnection).getUrlConnection();
+        final ArrayList<BasicClientCookie> list = (ArrayList<BasicClientCookie>)new ArrayList<Cookie>();
+        for (final String s : urlConnection.getHeaderFields().get("Set-Cookie")) {
+            list.add((Cookie)new BasicClientCookie(s.substring(0, s.indexOf("=")), s.substring(s.indexOf("=") + 1, s.length())));
         }
-        return list;
+        return (List<Cookie>)list;
     }
     
     @Override
-    public HttpResponse performGet(final HttpStackConnection httpStackConnection) throws IOException {
+    public HttpResponse performGet(final HttpStackConnection httpStackConnection) {
         if (!(httpStackConnection instanceof HttpUrlStackConnection)) {
             throw new IOException("urlConnection null - wrong HttpStackConnection object?");
         }

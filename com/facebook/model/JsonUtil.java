@@ -4,7 +4,6 @@
 
 package com.facebook.model;
 
-import android.annotation.SuppressLint;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.json.JSONException;
@@ -36,11 +35,11 @@ class JsonUtil
     }
     
     static Set<Map.Entry<String, Object>> jsonObjectEntrySet(final JSONObject jsonObject) {
-        final HashSet<JSONObjectEntry> set = (HashSet<JSONObjectEntry>)new HashSet<Map.Entry<String, Object>>();
+        final HashSet<JsonUtil$JSONObjectEntry> set = (HashSet<JsonUtil$JSONObjectEntry>)new HashSet<Map.Entry<String, Object>>();
         final Iterator keys = jsonObject.keys();
         while (keys.hasNext()) {
             final String s = keys.next();
-            set.add(new JSONObjectEntry(s, jsonObject.opt(s)));
+            set.add(new JsonUtil$JSONObjectEntry(s, jsonObject.opt(s)));
         }
         return (Set<Map.Entry<String, Object>>)set;
     }
@@ -74,31 +73,5 @@ class JsonUtil
             list.add(jsonObject.opt((String)keys.next()));
         }
         return list;
-    }
-    
-    private static final class JSONObjectEntry implements Entry<String, Object>
-    {
-        private final String key;
-        private final Object value;
-        
-        JSONObjectEntry(final String key, final Object value) {
-            this.key = key;
-            this.value = value;
-        }
-        
-        @SuppressLint({ "FieldGetter" })
-        public String getKey() {
-            return this.key;
-        }
-        
-        @Override
-        public Object getValue() {
-            return this.value;
-        }
-        
-        @Override
-        public Object setValue(final Object o) {
-            throw new UnsupportedOperationException("JSONObjectEntry is immutable");
-        }
     }
 }

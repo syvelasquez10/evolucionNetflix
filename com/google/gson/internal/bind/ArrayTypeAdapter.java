@@ -5,15 +5,11 @@
 package com.google.gson.internal.bind;
 
 import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonReader;
 import java.lang.reflect.Type;
-import com.google.gson.internal.$Gson$Types;
-import java.lang.reflect.GenericArrayType;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.TypeAdapter;
@@ -25,17 +21,7 @@ public final class ArrayTypeAdapter<E> extends TypeAdapter<Object>
     private final TypeAdapter<E> componentTypeAdapter;
     
     static {
-        FACTORY = new TypeAdapterFactory() {
-            @Override
-            public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> typeToken) {
-                final Type type = typeToken.getType();
-                if (!(type instanceof GenericArrayType) && (!(type instanceof Class) || !((Class)type).isArray())) {
-                    return null;
-                }
-                final Type arrayComponentType = $Gson$Types.getArrayComponentType(type);
-                return (TypeAdapter<T>)new ArrayTypeAdapter(gson, (TypeAdapter<Object>)gson.getAdapter(TypeToken.get(arrayComponentType)), (Class<Object>)$Gson$Types.getRawType(arrayComponentType));
-            }
-        };
+        FACTORY = new ArrayTypeAdapter$1();
     }
     
     public ArrayTypeAdapter(final Gson gson, final TypeAdapter<E> typeAdapter, final Class<E> componentType) {
@@ -44,7 +30,7 @@ public final class ArrayTypeAdapter<E> extends TypeAdapter<Object>
     }
     
     @Override
-    public Object read(final JsonReader jsonReader) throws IOException {
+    public Object read(final JsonReader jsonReader) {
         if (jsonReader.peek() == JsonToken.NULL) {
             jsonReader.nextNull();
             return null;
@@ -63,7 +49,7 @@ public final class ArrayTypeAdapter<E> extends TypeAdapter<Object>
     }
     
     @Override
-    public void write(final JsonWriter jsonWriter, final Object o) throws IOException {
+    public void write(final JsonWriter jsonWriter, final Object o) {
         if (o == null) {
             jsonWriter.nullValue();
             return;

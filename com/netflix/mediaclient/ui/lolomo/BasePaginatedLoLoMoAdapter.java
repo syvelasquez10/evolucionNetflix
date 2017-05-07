@@ -38,7 +38,7 @@ public abstract class BasePaginatedLoLoMoAdapter<T extends BasicLoMo> extends Ba
     }
     
     @Override
-    protected LoMoRowContent createRowContent(final LinearLayout linearLayout, final View view) {
+    protected BaseLoLoMoAdapter$LoMoRowContent createRowContent(final LinearLayout linearLayout, final View view) {
         final CirclePageIndicator circlePageIndicator = new CirclePageIndicator((Context)this.activity);
         final LoMoViewPager viewPager = new LoMoViewPager(this.frag, this.manager, circlePageIndicator, this.viewRecycler, view, this.isGenreList());
         this.pagerSet.add(viewPager);

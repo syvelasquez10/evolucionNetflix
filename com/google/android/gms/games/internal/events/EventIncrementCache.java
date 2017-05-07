@@ -49,12 +49,7 @@ public abstract class EventIncrementCache
         synchronized (this.aaf) {
             if (!this.aah) {
                 this.aah = true;
-                this.aag.postDelayed((Runnable)new Runnable() {
-                    @Override
-                    public void run() {
-                        EventIncrementCache.this.kN();
-                    }
-                }, (long)this.aaj);
+                this.aag.postDelayed((Runnable)new EventIncrementCache$1(this), (long)this.aaj);
             }
             AtomicInteger atomicInteger;
             if ((atomicInteger = this.aai.get(s)) == null) {

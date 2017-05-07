@@ -16,7 +16,7 @@ import android.app.Activity;
 import android.content.ServiceConnection;
 
 @ez
-public class dz extends ei.a implements ServiceConnection
+public class dz extends ei$a implements ServiceConnection
 {
     private final Activity nr;
     private el sm;

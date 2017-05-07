@@ -6,7 +6,7 @@ package com.netflix.falkor;
 
 import java.util.Date;
 
-public class Sentinel<T> implements ReferenceTarget, PathBound, Expires
+public class Sentinel<T> implements Expires, PathBound, ReferenceTarget
 {
     public static final String JSON_KEY = "_sentinel";
     private Date expires;

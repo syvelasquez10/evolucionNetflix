@@ -4,6 +4,7 @@
 
 package com.android.volley.toolbox;
 
+import com.android.volley.Cache$Entry;
 import com.android.volley.Cache;
 
 public class NoCache implements Cache
@@ -13,7 +14,7 @@ public class NoCache implements Cache
     }
     
     @Override
-    public Entry get(final String s) {
+    public Cache$Entry get(final String s) {
         return null;
     }
     
@@ -26,7 +27,7 @@ public class NoCache implements Cache
     }
     
     @Override
-    public void put(final String s, final Entry entry) {
+    public void put(final String s, final Cache$Entry cache$Entry) {
     }
     
     @Override

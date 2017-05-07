@@ -12,10 +12,10 @@ class da<K, V> implements k<K, V>
 {
     private final Map<K, V> ars;
     private final int art;
-    private final l.a<K, V> aru;
+    private final l$a<K, V> aru;
     private int arv;
     
-    da(final int art, final l.a<K, V> aru) {
+    da(final int art, final l$a<K, V> aru) {
         this.ars = new HashMap<K, V>();
         this.art = art;
         this.aru = aru;

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.internal;
 
+import android.view.MotionEvent;
 import android.widget.ViewSwitcher;
 import android.view.Window;
 import android.graphics.Rect;
@@ -16,7 +17,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import java.util.ArrayList;
 import android.net.Uri;
 import android.view.View$OnClickListener;
-import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
 import java.util.List;
 import com.google.android.gms.dynamic.e;
@@ -31,36 +31,26 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager$NameNotFoundException;
 import android.os.Bundle;
 import android.os.Build$VERSION;
-import android.content.res.Configuration;
 import android.content.Context;
 import android.content.ComponentCallbacks;
 
 @ez
-public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, gd, t
+public class u extends bd$a implements aa, bw, bz, cb, cn, dn, dq, fa$a, fd$a, gd, t
 {
     private av lp;
     private final ct lq;
-    private final b lr;
+    private final u$b lr;
     private final ab ls;
     private final ae lt;
     private boolean lu;
     private final ComponentCallbacks lv;
     
     public u(final Context context, final ay ay, final String s, final ct ct, final gt gt) {
-        this(new b(context, ay, s, gt), ct, null);
+        this(new u$b(context, ay, s, gt), ct, null);
     }
     
-    u(final b lr, final ct lq, ab ls) {
-        this.lv = (ComponentCallbacks)new ComponentCallbacks() {
-            public void onConfigurationChanged(final Configuration configuration) {
-                if (u.this.lr != null && u.this.lr.lI != null && u.this.lr.lI.rN != null) {
-                    u.this.lr.lI.rN.bT();
-                }
-            }
-            
-            public void onLowMemory() {
-            }
-        };
+    u(final u$b lr, final ct lq, ab ls) {
+        this.lv = (ComponentCallbacks)new u$1(this);
         this.lr = lr;
         this.lq = lq;
         if (ls == null) {
@@ -79,7 +69,7 @@ public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, g
         }
     }
     
-    private fi.a a(final av av, final Bundle bundle) {
+    private fi$a a(final av av, final Bundle bundle) {
         final ApplicationInfo applicationInfo = this.lr.lB.getApplicationInfo();
         while (true) {
             try {
@@ -123,7 +113,7 @@ public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, g
                 }
                 final String cx = gb.cX();
                 (this.lr.lK = new ga(cx, this.lr.lA)).e(av);
-                return new fi.a(bundle3, av, this.lr.lH, this.lr.lA, applicationInfo, packageInfo, cx, gb.vK, this.lr.lD, gb.a(this.lr.lB, this, cx), this.lr.lS, bundle, gb.dd());
+                return new fi$a(bundle3, av, this.lr.lH, this.lr.lA, applicationInfo, packageInfo, cx, gb.vK, this.lr.lD, gb.a(this.lr.lB, this, cx), this.lr.lS, bundle, gb.dd());
             }
             catch (PackageManager$NameNotFoundException ex) {
                 final PackageInfo packageInfo = null;
@@ -533,7 +523,7 @@ public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, g
     }
     
     @Override
-    public void a(final fz.a lj) {
+    public void a(final fz$a lj) {
         String string = null;
         this.lr.lF = null;
         this.lr.lJ = lj;
@@ -542,18 +532,9 @@ public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, g
         if (!lj.vw.tS) {
             final v v = new v();
             a = this.a(v);
-            v.a((v.a)new v.b(lj, a));
-            a.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
-                public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                    v.ar();
-                    return false;
-                }
-            });
-            a.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    v.ar();
-                }
-            });
+            v.a(new v$b(lj, a));
+            a.setOnTouchListener((View$OnTouchListener)new u$2(this, v));
+            a.setOnClickListener((View$OnClickListener)new u$3(this, v));
         }
         else {
             a = null;
@@ -592,7 +573,7 @@ public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, g
             }
         }
         this.lr.lW = 0;
-        this.lr.lG = fd.a(this.lr.lB, this, lj, a, this.lq, (fd.a)this);
+        this.lr.lG = fd.a(this.lr.lB, this, lj, a, this.lq, this);
     }
     
     @Override
@@ -664,7 +645,7 @@ public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, g
                     this.lr.lI.rN.dv().dG();
                 }
                 if (b) {
-                    final bq.a vu = li.vu;
+                    final bq$a vu = li.vu;
                     if (vu instanceof bp && this.lr.lR != null) {
                         this.ap();
                     }
@@ -761,7 +742,7 @@ public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, g
                 final Bundle a = this.a(gb.cV().l(this.lr.lB));
                 this.ls.cancel();
                 this.lr.lW = 0;
-                this.lr.lF = fa.a(this.lr.lB, this.a(lp, a), this.lr.lC, (fa.a)this);
+                this.lr.lF = fa.a(this.lr.lB, this.a(lp, a), this.lr.lC, this);
                 return true;
             }
         }
@@ -1099,82 +1080,6 @@ public class u extends bd.a implements aa, bw, bz, cb, cn, dn, dq, fa.a, fd.a, g
         }
         if (this.lr.lG != null) {
             this.lr.lG.cancel();
-        }
-    }
-    
-    @ez
-    private static final class a extends ViewSwitcher
-    {
-        private final gm ly;
-        
-        public a(final Context context) {
-            super(context);
-            this.ly = new gm(context);
-        }
-        
-        public boolean onInterceptTouchEvent(final MotionEvent motionEvent) {
-            this.ly.c(motionEvent);
-            return false;
-        }
-    }
-    
-    @ez
-    static class b
-    {
-        public final String lA;
-        public final Context lB;
-        public final k lC;
-        public final gt lD;
-        public bc lE;
-        public gg lF;
-        public gg lG;
-        public ay lH;
-        public fz lI;
-        public fz.a lJ;
-        public ga lK;
-        public bf lL;
-        public el lM;
-        public eh lN;
-        public et lO;
-        public eu lP;
-        public bt lQ;
-        public bu lR;
-        public List<String> lS;
-        public ee lT;
-        public ge lU;
-        public View lV;
-        public int lW;
-        public boolean lX;
-        private HashSet<ga> lY;
-        public final a lz;
-        
-        public b(final Context lb, final ay lh, final String la, final gt ld) {
-            this.lU = null;
-            this.lV = null;
-            this.lW = 0;
-            this.lX = false;
-            this.lY = null;
-            if (lh.og) {
-                this.lz = null;
-            }
-            else {
-                (this.lz = new a(lb)).setMinimumWidth(lh.widthPixels);
-                this.lz.setMinimumHeight(lh.heightPixels);
-                this.lz.setVisibility(4);
-            }
-            this.lH = lh;
-            this.lA = la;
-            this.lB = lb;
-            this.lD = ld;
-            this.lC = new k(new w(this));
-        }
-        
-        public void a(final HashSet<ga> ly) {
-            this.lY = ly;
-        }
-        
-        public HashSet<ga> au() {
-            return this.lY;
         }
     }
 }

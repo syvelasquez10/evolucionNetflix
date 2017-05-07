@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.android.activity;
 
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.app.LoadingStatus;
@@ -59,7 +60,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     }
     
     protected int getContentLayoutId() {
-        return 2130903093;
+        return 2130903094;
     }
     
     public Fragment getPrimaryFrag() {
@@ -78,10 +79,11 @@ public abstract class FragmentHostActivity extends NetflixActivity
         return this.secondaryFragContainer;
     }
     
+    @Override
     public boolean isLoadingData() {
-        boolean loadingData = ((LoadingStatus)this.primaryFrag).isLoadingData();
+        final boolean loadingData = ((LoadingStatus)this.primaryFrag).isLoadingData();
         if (this.secondaryFrag != null) {
-            loadingData |= ((LoadingStatus)this.secondaryFrag).isLoadingData();
+            return ((LoadingStatus)this.secondaryFrag).isLoadingData() | loadingData;
         }
         return loadingData;
     }
@@ -90,16 +92,16 @@ public abstract class FragmentHostActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(this.getContentLayoutId());
-        this.contentHost = (LinearLayout)this.findViewById(2131165389);
-        this.primaryFragContainer = (ViewGroup)this.findViewById(2131165390);
-        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131165391);
+        this.contentHost = (LinearLayout)this.findViewById(2131165388);
+        this.primaryFragContainer = (ViewGroup)this.findViewById(2131165389);
+        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131165390);
         if (bundle == null) {
             this.primaryFrag = this.createPrimaryFrag();
             this.secondaryFrag = this.createSecondaryFrag();
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            beginTransaction.add(2131165390, this.primaryFrag, "primary");
+            beginTransaction.add(2131165389, this.primaryFrag, "primary");
             if (this.secondaryFrag != null) {
-                beginTransaction.add(2131165391, this.secondaryFrag, "secondary");
+                beginTransaction.add(2131165390, this.secondaryFrag, "secondary");
             }
             beginTransaction.commit();
         }
@@ -124,7 +126,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     }
     
     @Override
-    public void setLoadingStatusCallback(final LoadingStatusCallback loadingStatusCallback) {
+    public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback loadingStatusCallback) {
         super.setLoadingStatusCallback(loadingStatusCallback);
         if (this.primaryFrag != null) {
             ((LoadingStatus)this.primaryFrag).setLoadingStatusCallback(loadingStatusCallback);

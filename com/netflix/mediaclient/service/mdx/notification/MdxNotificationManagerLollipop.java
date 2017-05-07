@@ -4,9 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.notification;
 
-import android.annotation.SuppressLint;
-import android.app.Notification$Style;
-import android.app.Notification$MediaStyle;
 import android.app.Service;
 import android.util.Pair;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -25,7 +22,7 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     private static final String TAG = "nf_mdxnotification";
     private Bitmap boxart;
     private Notification$Builder builder;
-    private BuilderFactory builderFactory;
+    private MdxNotificationManagerLollipop$BuilderFactory builderFactory;
     private Context context;
     private boolean isEpisode;
     private boolean isPlaying;
@@ -39,7 +36,7 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     
     public MdxNotificationManagerLollipop(final Context context, final boolean isEpisode, final MdxAgent mdxAgent) {
         this.mNotificationId = 1;
-        this.builderFactory = new BuilderFactory();
+        this.builderFactory = new MdxNotificationManagerLollipop$BuilderFactory(this, null);
         Log.d("nf_mdxnotification", "is episode " + isEpisode);
         this.isEpisode = isEpisode;
         this.context = context;
@@ -78,10 +75,10 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
             this.builder.setSubText((CharSequence)this.secondTitle);
         }
         if (this.isPostplay) {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493251));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493212));
         }
         else {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493250));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493211));
         }
         this.builder.setSmallIcon(2130837768);
         this.notification = this.builder.build();
@@ -197,54 +194,5 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
             service.stopForeground(true);
             this.isPlaying = false;
         }
-    }
-    
-    private class BuilderFactory
-    {
-        private static final String PAUSE = "Pause";
-        private static final String PLAY = "Play";
-        private static final String REWIND = "Rewind";
-        private static final int SKIPBACK_SECONDS = -30;
-        private static final String STOP = "Stop";
-        
-        @SuppressLint({ "InlinedApi" })
-        private Notification$Builder createPlayerBuilder() {
-            return new Notification$Builder(MdxNotificationManagerLollipop.this.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837768).setStyle((Notification$Style)new Notification$MediaStyle().setShowActionsInCompactView(new int[] { 0, 1 })).addAction(2130837775, (CharSequence)"Rewind", MdxNotificationManagerLollipop.this.mdxAgent.getSkipbackIntent(-30)).addAction(2130837779, (CharSequence)"Pause", MdxNotificationManagerLollipop.this.mdxAgent.getResumeIntent()).addAction(2130837781, (CharSequence)"Stop", MdxNotificationManagerLollipop.this.mdxAgent.getStopIntent());
-        }
-        
-        @SuppressLint({ "InlinedApi" })
-        private Notification$Builder createPlayerPausedBuilder() {
-            return new Notification$Builder(MdxNotificationManagerLollipop.this.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837768).setStyle((Notification$Style)new Notification$MediaStyle().setShowActionsInCompactView(new int[] { 0, 1 })).addAction(2130837775, (CharSequence)"Rewind", MdxNotificationManagerLollipop.this.mdxAgent.getSkipbackIntent(-30)).addAction(2130837777, (CharSequence)"Play", MdxNotificationManagerLollipop.this.mdxAgent.getPauseIntent()).addAction(2130837781, (CharSequence)"Stop", MdxNotificationManagerLollipop.this.mdxAgent.getStopIntent());
-        }
-        
-        @SuppressLint({ "InlinedApi" })
-        private Notification$Builder createPostPlayerBuilder() {
-            return new Notification$Builder(MdxNotificationManagerLollipop.this.context).setOngoing(true).setVisibility(1).setShowWhen(false).setOnlyAlertOnce(true).setSmallIcon(2130837768).setStyle((Notification$Style)new Notification$MediaStyle().setShowActionsInCompactView(new int[] { 0, 1 })).addAction(2130837779, (CharSequence)"Play", MdxNotificationManagerLollipop.this.mdxAgent.getPlayNextIntent()).addAction(2130837781, (CharSequence)"Stop", MdxNotificationManagerLollipop.this.mdxAgent.getStopIntent());
-        }
-        
-        Notification$Builder getBuilder(final boolean b, final boolean b2) {
-            if (b) {
-                return this.createPostPlayerBuilder();
-            }
-            if (b2) {
-                return this.createPlayerBuilder();
-            }
-            return this.createPlayerPausedBuilder();
-        }
-    }
-    
-    public interface MdxNotificationIntentRetriever
-    {
-        PendingIntent getNoActionIntent();
-        
-        PendingIntent getPauseIntent();
-        
-        PendingIntent getPlayNextIntent();
-        
-        PendingIntent getResumeIntent();
-        
-        PendingIntent getSkipbackIntent(final int p0);
-        
-        PendingIntent getStopIntent();
     }
 }

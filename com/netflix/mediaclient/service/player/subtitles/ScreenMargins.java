@@ -24,14 +24,14 @@ public class ScreenMargins
     }
     
     public static ScreenMargins getScreenMargins(final String s, final String s2, float n) {
-        float n2 = 0.0f;
-        float n3 = 0.0f;
         final ScreenMargins screenMargins = new ScreenMargins();
         if (!StringUtils.isEmpty(s)) {
             if (Log.isLoggable("nf_subtitles", 3)) {
                 Log.d("nf_subtitles", "Calculate AspectDiff using extent " + s);
             }
             final Pair<Integer, Integer> numberPair = StringUtils.extractNumberPair(s);
+            float n2;
+            float n3;
             if (numberPair != null) {
                 final Pair<Integer, Integer> numberPair2 = StringUtils.extractNumberPair(s2);
                 if (numberPair2 != null) {
@@ -42,6 +42,10 @@ public class ScreenMargins
                     n2 = (int)numberPair.first;
                     n3 = (int)numberPair.second;
                 }
+            }
+            else {
+                n3 = 0.0f;
+                n2 = 0.0f;
             }
             float n4;
             if (n2 > 0.0f && n3 > 0.0f) {

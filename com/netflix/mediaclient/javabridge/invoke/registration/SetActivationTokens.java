@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.javabridge.invoke.registration;
 
-import com.netflix.mediaclient.Log;
 import org.json.JSONException;
+import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
 
@@ -21,46 +21,15 @@ public class SetActivationTokens extends BaseInvoke
         this.setArguments(s, s2);
     }
     
-    private void setArguments(final String ex, final String s) {
-        JSONObject jsonObject = null;
+    private void setArguments(final String s, final String s2) {
         try {
-            final JSONObject jsonObject2;
-            jsonObject = (jsonObject2 = new JSONObject());
-            final String s2 = "NetflixId";
-            final JSONException ex2 = ex;
-            jsonObject2.put(s2, (Object)ex2);
-            final JSONObject jsonObject3 = jsonObject;
-            final String s3 = "SecureNetflixId";
-            final String s4 = s;
-            jsonObject3.put(s3, (Object)s4);
-            final SetActivationTokens setActivationTokens = this;
-            final JSONObject jsonObject4 = jsonObject;
-            final String s5 = jsonObject4.toString();
-            setActivationTokens.arguments = s5;
-            return;
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("NetflixId", (Object)s);
+            jsonObject.put("SecureNetflixId", (Object)s2);
+            this.arguments = jsonObject.toString();
         }
-        catch (JSONException ex3) {}
-        while (true) {
-            try {
-                final JSONObject jsonObject2 = jsonObject;
-                final String s2 = "NetflixId";
-                final JSONException ex2 = ex;
-                jsonObject2.put(s2, (Object)ex2);
-                final JSONObject jsonObject3 = jsonObject;
-                final String s3 = "SecureNetflixId";
-                final String s4 = s;
-                jsonObject3.put(s3, (Object)s4);
-                final SetActivationTokens setActivationTokens = this;
-                final JSONObject jsonObject4 = jsonObject;
-                final String s5 = jsonObject4.toString();
-                setActivationTokens.arguments = s5;
-                return;
-                Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
-            }
-            catch (JSONException ex) {
-                continue;
-            }
-            break;
+        catch (JSONException ex) {
+            Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
         }
     }
 }

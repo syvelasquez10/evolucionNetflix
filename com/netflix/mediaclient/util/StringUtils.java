@@ -4,11 +4,13 @@
 
 package com.netflix.mediaclient.util;
 
+import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.Locale;
-import java.io.IOException;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
+import java.io.FileInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
@@ -26,6 +28,7 @@ public final class StringUtils
     private static final String DETAILS_TEXT_SPACER = "   ";
     public static final String EMPTY_STRING = "";
     private static final char[] HEX_CHAR;
+    public static final String NULL_STRING_VALUE = "null";
     private static final Pattern PERCENTAGE_PATTERN;
     private static final Pattern PIXEL_PATTERN;
     public static final String SPACE_SPLIT_REG_EXP = " ";
@@ -76,7 +79,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         string = s;
         if (isEmpty(s)) {
-            string = context.getString(2131493180);
+            string = context.getString(2131493146);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string);
@@ -124,25 +127,18 @@ public final class StringUtils
     }
     
     public static String[] extractTokens(final String s, final String s2) {
-        String[] array;
+        int n = 0;
         if (s == null || "".equals(s.trim())) {
-            array = new String[0];
+            return new String[0];
         }
-        else {
-            if (s2 == null) {
-                return new String[] { s };
-            }
-            final StringTokenizer stringTokenizer = new StringTokenizer(s, s2);
-            final String[] array2 = new String[stringTokenizer.countTokens()];
-            int n = 0;
-            while (true) {
-                array = array2;
-                if (!stringTokenizer.hasMoreTokens()) {
-                    break;
-                }
-                array2[n] = stringTokenizer.nextToken();
-                ++n;
-            }
+        if (s2 == null) {
+            return new String[] { s };
+        }
+        final StringTokenizer stringTokenizer = new StringTokenizer(s, s2);
+        final String[] array = new String[stringTokenizer.countTokens()];
+        while (stringTokenizer.hasMoreTokens()) {
+            array[n] = stringTokenizer.nextToken();
+            ++n;
         }
         return array;
     }
@@ -162,7 +158,7 @@ public final class StringUtils
         if (isNotEmpty(s)) {
             sb.append(s).append("   ");
         }
-        sb.append(String.format(resources.getString(2131493185), TimeUtils.convertSecondsToMinutes(n2)));
+        sb.append(String.format(resources.getString(2131493152), TimeUtils.convertSecondsToMinutes(n2)));
         return sb.toString();
     }
     
@@ -202,131 +198,80 @@ public final class StringUtils
         return getBasicShowInfoString(context, showDetails.getYear(), showDetails.getCertification(), showDetails.getNumOfSeasons());
     }
     
-    public static String getFileAsString(final File p0) throws Exception {
-        // 
-        // This method could not be decompiled.
-        // 
-        // Original Bytecode:
-        // 
-        //     0: aconst_null    
-        //     1: astore_2       
-        //     2: aconst_null    
-        //     3: astore_3       
-        //     4: new             Ljava/io/ByteArrayOutputStream;
-        //     7: dup            
-        //     8: invokespecial   java/io/ByteArrayOutputStream.<init>:()V
-        //    11: astore          4
-        //    13: new             Ljava/io/FileInputStream;
-        //    16: dup            
-        //    17: aload_0        
-        //    18: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
-        //    21: astore_0       
-        //    22: sipush          1024
-        //    25: newarray        B
-        //    27: astore_2       
-        //    28: aload_0        
-        //    29: aload_2        
-        //    30: invokevirtual   java/io/InputStream.read:([B)I
-        //    33: istore_1       
-        //    34: iload_1        
-        //    35: iconst_m1      
-        //    36: if_icmpeq       79
-        //    39: aload           4
-        //    41: aload_2        
-        //    42: iconst_0       
-        //    43: iload_1        
-        //    44: invokevirtual   java/io/ByteArrayOutputStream.write:([BII)V
-        //    47: goto            28
-        //    50: astore_3       
-        //    51: aload_0        
-        //    52: astore_2       
-        //    53: aload_3        
-        //    54: astore_0       
-        //    55: new             Ljava/lang/Exception;
-        //    58: dup            
-        //    59: ldc_w           "Problem while trying to read file"
-        //    62: aload_0        
-        //    63: invokespecial   java/lang/Exception.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
-        //    66: athrow         
-        //    67: astore_0       
-        //    68: aload           4
-        //    70: invokevirtual   java/io/ByteArrayOutputStream.close:()V
-        //    73: aload_2        
-        //    74: invokevirtual   java/io/InputStream.close:()V
-        //    77: aload_0        
-        //    78: athrow         
-        //    79: aload           4
-        //    81: invokevirtual   java/io/ByteArrayOutputStream.flush:()V
-        //    84: new             Ljava/lang/String;
-        //    87: dup            
-        //    88: aload           4
-        //    90: invokevirtual   java/io/ByteArrayOutputStream.toByteArray:()[B
-        //    93: invokespecial   java/lang/String.<init>:([B)V
-        //    96: astore_2       
-        //    97: aload           4
-        //    99: invokevirtual   java/io/ByteArrayOutputStream.close:()V
-        //   102: aload_0        
-        //   103: invokevirtual   java/io/InputStream.close:()V
-        //   106: aload_2        
-        //   107: areturn        
-        //   108: astore_2       
-        //   109: goto            77
-        //   112: astore_3       
-        //   113: aload_0        
-        //   114: astore_2       
-        //   115: aload_3        
-        //   116: astore_0       
-        //   117: goto            68
-        //   120: astore_0       
-        //   121: aload_3        
-        //   122: astore_2       
-        //   123: goto            55
-        //   126: astore_0       
-        //   127: aload_2        
-        //   128: areturn        
-        //    Exceptions:
-        //  throws java.lang.Exception
-        //    Exceptions:
-        //  Try           Handler
-        //  Start  End    Start  End    Type                 
-        //  -----  -----  -----  -----  ---------------------
-        //  13     22     120    126    Ljava/lang/Exception;
-        //  13     22     67     68     Any
-        //  22     28     50     55     Ljava/lang/Exception;
-        //  22     28     112    120    Any
-        //  28     34     50     55     Ljava/lang/Exception;
-        //  28     34     112    120    Any
-        //  39     47     50     55     Ljava/lang/Exception;
-        //  39     47     112    120    Any
-        //  55     67     67     68     Any
-        //  68     77     108    112    Ljava/lang/Exception;
-        //  79     97     50     55     Ljava/lang/Exception;
-        //  79     97     112    120    Any
-        //  97     106    126    129    Ljava/lang/Exception;
-        // 
-        // The error that occurred was:
-        // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0068:
-        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
-        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-        // 
-        throw new IllegalStateException("An error occurred while decompiling this method.");
+    public static int getCsvCount(final String s) {
+        if (isEmpty(s)) {
+            return 0;
+        }
+        return s.split(",").length;
+    }
+    
+    public static String getFileAsString(File file) {
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        Object o2 = null;
+        Object o = null;
+        while (true) {
+            try {
+                final File file2 = file = (File)new FileInputStream(file);
+                Label_0085: {
+                    try {
+                        final byte[] array = new byte[1024];
+                        while (true) {
+                            file = file2;
+                            final int read = ((InputStream)file2).read(array);
+                            if (read == -1) {
+                                break Label_0085;
+                            }
+                            file = file2;
+                            byteArrayOutputStream.write(array, 0, read);
+                        }
+                    }
+                    catch (Exception o2) {
+                        file = file2;
+                        o = o2;
+                        throw new Exception("Problem while trying to read file", (Throwable)o);
+                    }
+                    finally {
+                        o = file;
+                        file = (File)o2;
+                    }
+                    try {
+                        byteArrayOutputStream.close();
+                        ((InputStream)o).close();
+                        throw file;
+                        file = (File)o;
+                        byteArrayOutputStream.flush();
+                        file = (File)o;
+                        o2 = new String(byteArrayOutputStream.toByteArray());
+                        final ByteArrayOutputStream byteArrayOutputStream2 = byteArrayOutputStream;
+                        byteArrayOutputStream2.close();
+                        final Throwable t = (Throwable)o;
+                        ((InputStream)t).close();
+                        final Object o3 = o2;
+                        return (String)o3;
+                    }
+                    catch (Exception ex) {}
+                }
+            }
+            catch (Exception ex2) {}
+            finally {
+                final File file3;
+                file = file3;
+                o = null;
+                continue;
+            }
+            break;
+        }
+        try {
+            final ByteArrayOutputStream byteArrayOutputStream2 = byteArrayOutputStream;
+            byteArrayOutputStream2.close();
+            final Throwable t = (Throwable)o;
+            ((InputStream)t).close();
+            final Object o3 = o2;
+            return (String)o3;
+        }
+        catch (Exception ex3) {
+            return (String)o2;
+        }
     }
     
     public static String getFilenameFromUri(final String s) {
@@ -361,7 +306,7 @@ public final class StringUtils
         return parse.getPath();
     }
     
-    public static String getRawString(final Resources p0, final int p1) throws Exception {
+    public static String getRawString(final Resources p0, final int p1) {
         // 
         // This method could not be decompiled.
         // 
@@ -424,8 +369,6 @@ public final class StringUtils
         //    81: astore_2       
         //    82: goto            75
         //    Exceptions:
-        //  throws java.lang.Exception
-        //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
@@ -466,167 +409,153 @@ public final class StringUtils
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public static String getRemoteDataAsString(final String p0) throws IOException {
+    public static String getRemoteDataAsString(final String p0) {
         // 
         // This method could not be decompiled.
         // 
         // Original Bytecode:
         // 
         //     0: aconst_null    
-        //     1: astore          4
-        //     3: new             Ljava/io/ByteArrayOutputStream;
-        //     6: dup            
-        //     7: invokespecial   java/io/ByteArrayOutputStream.<init>:()V
-        //    10: astore          5
-        //    12: aconst_null    
-        //    13: astore_2       
-        //    14: aload           4
-        //    16: astore_3       
-        //    17: new             Ljava/net/URL;
-        //    20: dup            
-        //    21: aload_0        
-        //    22: invokespecial   java/net/URL.<init>:(Ljava/lang/String;)V
-        //    25: invokevirtual   java/net/URL.openConnection:()Ljava/net/URLConnection;
+        //     1: astore_3       
+        //     2: aconst_null    
+        //     3: astore          4
+        //     5: new             Ljava/io/ByteArrayOutputStream;
+        //     8: dup            
+        //     9: invokespecial   java/io/ByteArrayOutputStream.<init>:()V
+        //    12: astore          5
+        //    14: new             Ljava/net/URL;
+        //    17: dup            
+        //    18: aload_0        
+        //    19: invokespecial   java/net/URL.<init>:(Ljava/lang/String;)V
+        //    22: invokevirtual   java/net/URL.openConnection:()Ljava/net/URLConnection;
+        //    25: astore_2       
+        //    26: aload           4
         //    28: astore_0       
-        //    29: aload_0        
-        //    30: astore_2       
-        //    31: aload           4
-        //    33: astore_3       
-        //    34: aload_0        
-        //    35: sipush          5000
-        //    38: invokevirtual   java/net/URLConnection.setConnectTimeout:(I)V
-        //    41: aload_0        
-        //    42: astore_2       
-        //    43: aload           4
-        //    45: astore_3       
-        //    46: aload_0        
-        //    47: sipush          5000
-        //    50: invokevirtual   java/net/URLConnection.setReadTimeout:(I)V
-        //    53: aload_0        
-        //    54: astore_2       
-        //    55: aload           4
-        //    57: astore_3       
-        //    58: aload_0        
-        //    59: invokevirtual   java/net/URLConnection.connect:()V
-        //    62: aload_0        
-        //    63: astore_2       
-        //    64: aload           4
-        //    66: astore_3       
-        //    67: aload_0        
-        //    68: invokevirtual   java/net/URLConnection.getInputStream:()Ljava/io/InputStream;
-        //    71: astore          4
-        //    73: aload_0        
-        //    74: astore_2       
-        //    75: aload           4
-        //    77: astore_3       
-        //    78: sipush          1024
-        //    81: newarray        B
-        //    83: astore          6
-        //    85: aload_0        
-        //    86: astore_2       
-        //    87: aload           4
-        //    89: astore_3       
-        //    90: aload           4
-        //    92: aload           6
-        //    94: invokevirtual   java/io/InputStream.read:([B)I
-        //    97: istore_1       
-        //    98: iload_1        
-        //    99: iconst_m1      
-        //   100: if_icmpeq       159
-        //   103: aload_0        
-        //   104: astore_2       
-        //   105: aload           4
-        //   107: astore_3       
-        //   108: aload           5
-        //   110: aload           6
-        //   112: iconst_0       
-        //   113: iload_1        
-        //   114: invokevirtual   java/io/ByteArrayOutputStream.write:([BII)V
-        //   117: goto            85
-        //   120: astore_0       
-        //   121: aload           5
-        //   123: ifnull          131
-        //   126: aload           5
-        //   128: invokevirtual   java/io/ByteArrayOutputStream.close:()V
-        //   131: aload_3        
-        //   132: ifnull          139
-        //   135: aload_3        
-        //   136: invokevirtual   java/io/InputStream.close:()V
-        //   139: aload_2        
-        //   140: ifnull          157
-        //   143: aload_2        
-        //   144: instanceof      Ljava/net/HttpURLConnection;
-        //   147: ifeq            157
-        //   150: aload_2        
-        //   151: checkcast       Ljava/net/HttpURLConnection;
-        //   154: invokevirtual   java/net/HttpURLConnection.disconnect:()V
-        //   157: aload_0        
-        //   158: athrow         
-        //   159: aload_0        
-        //   160: astore_2       
-        //   161: aload           4
-        //   163: astore_3       
-        //   164: aload           5
-        //   166: invokevirtual   java/io/ByteArrayOutputStream.flush:()V
-        //   169: aload_0        
-        //   170: astore_2       
-        //   171: aload           4
-        //   173: astore_3       
-        //   174: new             Ljava/lang/String;
-        //   177: dup            
-        //   178: aload           5
-        //   180: invokevirtual   java/io/ByteArrayOutputStream.toByteArray:()[B
-        //   183: invokespecial   java/lang/String.<init>:([B)V
-        //   186: astore          6
-        //   188: aload           5
-        //   190: ifnull          198
-        //   193: aload           5
-        //   195: invokevirtual   java/io/ByteArrayOutputStream.close:()V
-        //   198: aload           4
-        //   200: ifnull          208
-        //   203: aload           4
-        //   205: invokevirtual   java/io/InputStream.close:()V
-        //   208: aload_0        
-        //   209: ifnull          226
-        //   212: aload_0        
-        //   213: instanceof      Ljava/net/HttpURLConnection;
-        //   216: ifeq            226
-        //   219: aload_0        
-        //   220: checkcast       Ljava/net/HttpURLConnection;
-        //   223: invokevirtual   java/net/HttpURLConnection.disconnect:()V
-        //   226: aload           6
-        //   228: areturn        
-        //   229: astore_2       
-        //   230: goto            157
-        //   233: astore_0       
-        //   234: aload           6
-        //   236: areturn        
-        //    Exceptions:
-        //  throws java.io.IOException
+        //    29: aload_2        
+        //    30: sipush          5000
+        //    33: invokevirtual   java/net/URLConnection.setConnectTimeout:(I)V
+        //    36: aload           4
+        //    38: astore_0       
+        //    39: aload_2        
+        //    40: sipush          5000
+        //    43: invokevirtual   java/net/URLConnection.setReadTimeout:(I)V
+        //    46: aload           4
+        //    48: astore_0       
+        //    49: aload_2        
+        //    50: invokevirtual   java/net/URLConnection.connect:()V
+        //    53: aload           4
+        //    55: astore_0       
+        //    56: aload_2        
+        //    57: invokevirtual   java/net/URLConnection.getInputStream:()Ljava/io/InputStream;
+        //    60: astore_3       
+        //    61: aload_3        
+        //    62: astore_0       
+        //    63: sipush          1024
+        //    66: newarray        B
+        //    68: astore          4
+        //    70: aload_3        
+        //    71: astore_0       
+        //    72: aload_3        
+        //    73: aload           4
+        //    75: invokevirtual   java/io/InputStream.read:([B)I
+        //    78: istore_1       
+        //    79: iload_1        
+        //    80: iconst_m1      
+        //    81: if_icmpeq       143
+        //    84: aload_3        
+        //    85: astore_0       
+        //    86: aload           5
+        //    88: aload           4
+        //    90: iconst_0       
+        //    91: iload_1        
+        //    92: invokevirtual   java/io/ByteArrayOutputStream.write:([BII)V
+        //    95: goto            70
+        //    98: astore          4
+        //   100: aload_0        
+        //   101: astore_3       
+        //   102: aload           4
+        //   104: astore_0       
+        //   105: aload           5
+        //   107: ifnull          115
+        //   110: aload           5
+        //   112: invokevirtual   java/io/ByteArrayOutputStream.close:()V
+        //   115: aload_3        
+        //   116: ifnull          123
+        //   119: aload_3        
+        //   120: invokevirtual   java/io/InputStream.close:()V
+        //   123: aload_2        
+        //   124: ifnull          141
+        //   127: aload_2        
+        //   128: instanceof      Ljava/net/HttpURLConnection;
+        //   131: ifeq            141
+        //   134: aload_2        
+        //   135: checkcast       Ljava/net/HttpURLConnection;
+        //   138: invokevirtual   java/net/HttpURLConnection.disconnect:()V
+        //   141: aload_0        
+        //   142: athrow         
+        //   143: aload_3        
+        //   144: astore_0       
+        //   145: aload           5
+        //   147: invokevirtual   java/io/ByteArrayOutputStream.flush:()V
+        //   150: aload_3        
+        //   151: astore_0       
+        //   152: new             Ljava/lang/String;
+        //   155: dup            
+        //   156: aload           5
+        //   158: invokevirtual   java/io/ByteArrayOutputStream.toByteArray:()[B
+        //   161: invokespecial   java/lang/String.<init>:([B)V
+        //   164: astore          4
+        //   166: aload           5
+        //   168: ifnull          176
+        //   171: aload           5
+        //   173: invokevirtual   java/io/ByteArrayOutputStream.close:()V
+        //   176: aload_3        
+        //   177: ifnull          184
+        //   180: aload_3        
+        //   181: invokevirtual   java/io/InputStream.close:()V
+        //   184: aload_2        
+        //   185: ifnull          202
+        //   188: aload_2        
+        //   189: instanceof      Ljava/net/HttpURLConnection;
+        //   192: ifeq            202
+        //   195: aload_2        
+        //   196: checkcast       Ljava/net/HttpURLConnection;
+        //   199: invokevirtual   java/net/HttpURLConnection.disconnect:()V
+        //   202: aload           4
+        //   204: areturn        
+        //   205: astore_2       
+        //   206: goto            141
+        //   209: astore_0       
+        //   210: aconst_null    
+        //   211: astore_2       
+        //   212: goto            105
+        //   215: astore_0       
+        //   216: aload           4
+        //   218: areturn        
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  17     29     120    159    Any
-        //  34     41     120    159    Any
-        //  46     53     120    159    Any
-        //  58     62     120    159    Any
-        //  67     73     120    159    Any
-        //  78     85     120    159    Any
-        //  90     98     120    159    Any
-        //  108    117    120    159    Any
-        //  126    131    229    233    Ljava/lang/Exception;
-        //  135    139    229    233    Ljava/lang/Exception;
-        //  143    157    229    233    Ljava/lang/Exception;
-        //  164    169    120    159    Any
-        //  174    188    120    159    Any
-        //  193    198    233    237    Ljava/lang/Exception;
-        //  203    208    233    237    Ljava/lang/Exception;
-        //  212    226    233    237    Ljava/lang/Exception;
+        //  14     26     209    215    Any
+        //  29     36     98     105    Any
+        //  39     46     98     105    Any
+        //  49     53     98     105    Any
+        //  56     61     98     105    Any
+        //  63     70     98     105    Any
+        //  72     79     98     105    Any
+        //  86     95     98     105    Any
+        //  110    115    205    209    Ljava/lang/Exception;
+        //  119    123    205    209    Ljava/lang/Exception;
+        //  127    141    205    209    Ljava/lang/Exception;
+        //  145    150    98     105    Any
+        //  152    166    98     105    Any
+        //  171    176    215    219    Ljava/lang/Exception;
+        //  180    184    215    219    Ljava/lang/Exception;
+        //  188    202    215    219    Ljava/lang/Exception;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0131:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0176:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -692,6 +621,7 @@ public final class StringUtils
     }
     
     public static String joinArray(final String[] array, final String s) {
+        int n = 1;
         if (array == null || array.length < 1) {
             return "";
         }
@@ -699,7 +629,6 @@ public final class StringUtils
         if ((s2 = s) == null) {
             s2 = ",";
         }
-        int n = 1;
         final StringBuilder sb = new StringBuilder();
         for (int length = array.length, i = 0; i < length; ++i) {
             final String s3 = array[i];
@@ -741,7 +670,7 @@ public final class StringUtils
         return s;
     }
     
-    public static String notNull(final String s, final String s2) throws IllegalArgumentException {
+    public static String notNull(final String s, final String s2) {
         if (s2 == null) {
             throw new IllegalArgumentException(s + " can not be null!");
         }
@@ -777,20 +706,19 @@ public final class StringUtils
     }
     
     public static Integer safeParsePercentage(final String s) {
-        if (isEmpty(s)) {
-            return null;
-        }
-        try {
-            final Matcher matcher = StringUtils.PERCENTAGE_PATTERN.matcher(s);
-            if (!matcher.find()) {
+        if (!isEmpty(s)) {
+            try {
+                final Matcher matcher = StringUtils.PERCENTAGE_PATTERN.matcher(s);
+                if (matcher.find()) {
+                    return Integer.valueOf(matcher.group().replaceAll("%", ""));
+                }
+            }
+            catch (NumberFormatException ex) {
+                Log.e("StringUtils", "Failed to parse percentage ", ex);
                 return null;
             }
-            return Integer.valueOf(matcher.group().replaceAll("%", ""));
         }
-        catch (NumberFormatException ex) {
-            Log.e("StringUtils", "Failed to parse percentage ", ex);
-            return null;
-        }
+        return null;
     }
     
     public static Integer safeParsePercentage(final String s, final int n, final int n2, final boolean b) {
@@ -813,20 +741,19 @@ public final class StringUtils
     }
     
     public static Integer safeParsePixelSize(final String s) {
-        if (isEmpty(s)) {
-            return null;
-        }
-        try {
-            final Matcher matcher = StringUtils.PIXEL_PATTERN.matcher(s.toLowerCase(Locale.US));
-            if (!matcher.find()) {
+        if (!isEmpty(s)) {
+            try {
+                final Matcher matcher = StringUtils.PIXEL_PATTERN.matcher(s.toLowerCase(Locale.US));
+                if (matcher.find()) {
+                    return Integer.valueOf(matcher.group().replaceAll("px", ""));
+                }
+            }
+            catch (NumberFormatException ex) {
+                Log.e("StringUtils", "Failed to parse pixel size ", ex);
                 return null;
             }
-            return Integer.valueOf(matcher.group().replaceAll("px", ""));
         }
-        catch (NumberFormatException ex) {
-            Log.e("StringUtils", "Failed to parse pixel size ", ex);
-            return null;
-        }
+        return null;
     }
     
     public static Integer safeParsePixelSize(final String s, final int n, final int n2, final boolean b) {

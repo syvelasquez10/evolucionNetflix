@@ -4,8 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import android.database.sqlite.SQLiteDatabase$CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteException;
 import java.util.List;
 import android.os.SystemClock;
@@ -20,7 +18,7 @@ public class ec
     private static final Object mw;
     private static final String sG;
     private static ec sI;
-    private final a sH;
+    private final ec$a sH;
     
     static {
         sG = String.format("CREATE TABLE IF NOT EXISTS %s ( %s INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, %s TEXT NOT NULL, %s TEXT NOT NULL, %s INTEGER)", "InAppPurchase", "purchase_id", "product_id", "developer_payload", "record_time");
@@ -28,7 +26,7 @@ public class ec
     }
     
     private ec(final Context context) {
-        this.sH = new a(context, "google_inapp_purchase.db");
+        this.sH = new ec$a(this, context, "google_inapp_purchase.db");
     }
     
     public static ec j(final Context context) {
@@ -523,23 +521,6 @@ public class ec
         catch (SQLiteException ex) {
             gs.W("Error opening writable conversion tracking database");
             return null;
-        }
-    }
-    
-    public class a extends SQLiteOpenHelper
-    {
-        public a(final Context context, final String s) {
-            super(context, s, (SQLiteDatabase$CursorFactory)null, 4);
-        }
-        
-        public void onCreate(final SQLiteDatabase sqLiteDatabase) {
-            sqLiteDatabase.execSQL(ec.sG);
-        }
-        
-        public void onUpgrade(final SQLiteDatabase sqLiteDatabase, final int n, final int n2) {
-            gs.U("Database updated from version " + n + " to version " + n2);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS InAppPurchase");
-            this.onCreate(sqLiteDatabase);
         }
     }
 }

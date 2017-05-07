@@ -6,28 +6,32 @@ package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$UserRating;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Detail;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 
-public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo, Playable
+public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo
 {
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Bookmark bookmark;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Detail detail;
-    public Episode.Detail episodeDetail;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.InQueue inQueue;
-    public PostPlayContext postplayContext;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Rating rating;
+    public Video$Bookmark bookmark;
+    public Video$Detail detail;
+    public Episode$Detail episodeDetail;
+    public Video$InQueue inQueue;
+    public PostPlayVideo$PostPlayContext postplayContext;
+    public Video$UserRating rating;
     public SocialEvidence socialEvidence;
-    public com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary;
+    public Video$Summary summary;
     public boolean userConnectedToFacebook;
     
-    private String getSynopsisNarrative(final com.netflix.mediaclient.service.webclient.model.branches.Video.Detail detail) {
-        if (detail.synopsisNarrative != null) {
-            return detail.synopsisNarrative;
+    private String getSynopsisNarrative(final Video$Detail video$Detail) {
+        if (video$Detail.synopsisNarrative != null) {
+            return video$Detail.synopsisNarrative;
         }
-        return detail.synopsis;
+        return video$Detail.synopsis;
     }
     
     @Override
@@ -448,11 +452,5 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.model.d
     
     @Override
     public void setUserRating(final float n) {
-    }
-    
-    public class PostPlayContext
-    {
-        String requestId;
-        int trackId;
     }
 }

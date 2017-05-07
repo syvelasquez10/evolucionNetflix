@@ -13,10 +13,5 @@ public interface ContainerHolder extends Releasable, Result
     
     void refresh();
     
-    void setContainerAvailableListener(final ContainerAvailableListener p0);
-    
-    public interface ContainerAvailableListener
-    {
-        void onContainerAvailable(final ContainerHolder p0, final String p1);
-    }
+    void setContainerAvailableListener(final ContainerHolder$ContainerAvailableListener p0);
 }

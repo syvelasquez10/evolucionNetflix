@@ -4,13 +4,9 @@
 
 package com.netflix.mediaclient.jsapi;
 
-import com.netflix.mediaclient.partner.Partner;
-import com.netflix.mediaclient.partner.Response;
-import com.netflix.mediaclient.partner.ResponseListener;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
-import org.json.JSONException;
 import org.json.JSONObject;
 import android.webkit.WebView;
 import android.content.Context;
@@ -34,7 +30,7 @@ public class PartnerJSObject extends JSObject
         this.partnerFactory = new PartnerFactory();
     }
     
-    private static JSONObject getErrorForPartner(final String s, final int n, final String s2, final String s3, final String s4) throws JSONException {
+    private static JSONObject getErrorForPartner(final String s, final int n, final String s2, final String s3, final String s4) {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("idx", n);
         jsonObject.put("service", (Object)s2);
@@ -79,93 +75,14 @@ public class PartnerJSObject extends JSObject
         if (Log.isLoggable("nf_partner", 3)) {
             Log.d("nf_partner", "nrdpPartner.Signup.getExternalUserData: service " + s + ", idx " + n + ", userid " + s2);
         }
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("nf_partner", "Find partner");
-                final Partner partner = PartnerJSObject.this.partnerFactory.getPartner(PartnerJSObject.this.context, s, PartnerJSObject.this.comHandler);
-                while (true) {
-                    if (partner == null) {
-                        try {
-                            Log.e("nf_partner", "Service not found!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserData", getErrorForPartner(null, n, s, "101", "Service not found!"));
-                            return;
-                            while (true) {
-                                Log.e("nf_partner", "Service does not support SSO!");
-                                PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserData", getErrorForPartner(s2, n, s, "102", "Service does not support Signup!"));
-                                return;
-                                continue;
-                            }
-                        }
-                        // iftrue(Label_0132:, partner.getSignup() != null)
-                        catch (Exception ex) {
-                            Log.e("nf_partner", "Failed to work with JSON", ex);
-                            return;
-                        }
-                        Label_0132: {
-                            partner.getSignup().getExternalUserData(s, s2, n, new ResponseListener() {
-                                @Override
-                                public void onResponseReceived(final Response response) {
-                                    try {
-                                        PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserData", response.toJson());
-                                    }
-                                    catch (Exception ex) {
-                                        Log.e("nf_partner", "Failed to get JSON from response", ex);
-                                    }
-                                }
-                            });
-                        }
-                        return;
-                    }
-                    continue;
-                }
-            }
-        });
+        new BackgroundTask().execute(new PartnerJSObject$3(this, s, n, s2));
     }
     
     public void getExternalUserToken(final String s, final int n) {
         if (Log.isLoggable("nf_partner", 3)) {
             Log.d("nf_partner", "nrdpPartner.Sso.getExternalUserToken:: service " + s + ", idx " + n);
         }
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("nf_partner", "Find partner");
-                final Partner partner = PartnerJSObject.this.partnerFactory.getPartner(PartnerJSObject.this.context, s, PartnerJSObject.this.comHandler);
-                while (true) {
-                    if (partner == null) {
-                        try {
-                            Log.e("nf_partner", "Service not found!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserToken", getErrorForPartner(null, n, s, "101", "Service not found!"));
-                            return;
-                            // iftrue(Label_0129:, partner.getSSO() != null)
-                            Log.e("nf_partner", "Service does not support SSO!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserToken", getErrorForPartner(null, n, s, "102", "Service does not support SSO!"));
-                            return;
-                        }
-                        catch (Exception ex) {
-                            Log.e("nf_partner", "Failed to work with JSON", ex);
-                            return;
-                        }
-                        Label_0129: {
-                            partner.getSSO().getExternalUserToken(s, n, new ResponseListener() {
-                                @Override
-                                public void onResponseReceived(final Response response) {
-                                    try {
-                                        PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserToken", response.toJson());
-                                    }
-                                    catch (Exception ex) {
-                                        Log.e("nf_partner", "Failed to get JSON from response", ex);
-                                    }
-                                }
-                            });
-                        }
-                        return;
-                    }
-                    continue;
-                }
-            }
-        });
+        new BackgroundTask().execute(new PartnerJSObject$1(this, s, n));
     }
     
     @Override
@@ -185,92 +102,13 @@ public class PartnerJSObject extends JSObject
         if (Log.isLoggable("nf_partner", 3)) {
             Log.d("nf_partner", "nrdpPartner.Sso.requestExternalUserAuth:: service " + s + ", idx " + n);
         }
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("nf_partner", "Find partner");
-                final Partner partner = PartnerJSObject.this.partnerFactory.getPartner(PartnerJSObject.this.context, s, PartnerJSObject.this.comHandler);
-                while (true) {
-                    if (partner == null) {
-                        try {
-                            Log.e("nf_partner", "Service not found!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserAuth", getErrorForPartner(null, n, s, "101", "Service not found!"));
-                            return;
-                            // iftrue(Label_0129:, partner.getSSO() != null)
-                            Log.e("nf_partner", "Service does not support SSO!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserAuth", getErrorForPartner(null, n, s, "102", "Service does not support SSO!"));
-                            return;
-                        }
-                        catch (Exception ex) {
-                            Log.e("nf_partner", "Failed to work with JSON", ex);
-                            return;
-                        }
-                        Label_0129: {
-                            partner.getSSO().requestExternalUserAuth(s, n, new ResponseListener() {
-                                @Override
-                                public void onResponseReceived(final Response response) {
-                                    try {
-                                        PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserAuth", response.toJson());
-                                    }
-                                    catch (Exception ex) {
-                                        Log.e("nf_partner", "Failed to get JSON from response", ex);
-                                    }
-                                }
-                            });
-                        }
-                        return;
-                    }
-                    continue;
-                }
-            }
-        });
+        new BackgroundTask().execute(new PartnerJSObject$2(this, s, n));
     }
     
     public void requestExternalUserConfirmation(final String s, final String s2, final int n) {
         if (Log.isLoggable("nf_partner", 3)) {
             Log.d("nf_partner", "nrdpPartner.Signup.requestExternalUserConfirmation: service " + s + ", idx " + n + ", userid " + s2);
         }
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("nf_partner", "Find partner");
-                final Partner partner = PartnerJSObject.this.partnerFactory.getPartner(PartnerJSObject.this.context, s, PartnerJSObject.this.comHandler);
-                while (true) {
-                    if (partner == null) {
-                        try {
-                            Log.e("nf_partner", "Service not found!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", getErrorForPartner(null, n, s, "101", "Service not found!"));
-                            return;
-                            while (true) {
-                                Log.e("nf_partner", "Service does not support Signup!");
-                                PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", getErrorForPartner(s2, n, s, "102", "Service does not support Signup!"));
-                                return;
-                                continue;
-                            }
-                        }
-                        // iftrue(Label_0132:, partner.getSignup() != null)
-                        catch (Exception ex) {
-                            Log.e("nf_partner", "Failed to work with JSON", ex);
-                            return;
-                        }
-                        Label_0132: {
-                            partner.getSignup().requestExternalUserConfirmation(s, s2, n, new ResponseListener() {
-                                @Override
-                                public void onResponseReceived(final Response response) {
-                                    try {
-                                        PartnerJSObject.this.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", response.toJson());
-                                    }
-                                    catch (Exception ex) {
-                                        Log.e("nf_partner", "Failed to get JSON from response", ex);
-                                    }
-                                }
-                            });
-                        }
-                        return;
-                    }
-                    continue;
-                }
-            }
-        });
+        new BackgroundTask().execute(new PartnerJSObject$4(this, s, n, s2));
     }
 }

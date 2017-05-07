@@ -6,11 +6,11 @@ package com.netflix.mediaclient.service.logging.client.model;
 
 import java.util.Iterator;
 import java.util.Collection;
-import org.json.JSONException;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,42 +54,32 @@ public class LoggingRequest
         this.events = new ArrayList<Event>();
     }
     
-    public LoggingRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final ServiceAgent.UserAgentInterface userAgentInterface, final String locale) {
+    public LoggingRequest(final Context context, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface, final String locale) {
         this.appName = "android";
         this.time = System.currentTimeMillis();
         this.events = new ArrayList<Event>();
         this.version = new Version(context);
-        this.device = new Device(configurationAgentInterface);
-        this.netflixId = userAgentInterface.getUserCredentialRegistry().getNetflixID();
+        this.device = new Device(serviceAgent$ConfigurationAgentInterface);
+        this.netflixId = serviceAgent$UserAgentInterface.getUserCredentialRegistry().getNetflixID();
         this.locale = locale;
     }
     
-    public static LoggingRequest createInstance(final JSONObject jsonObject) throws JSONException {
-        LoggingRequest loggingRequest;
+    public static LoggingRequest createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
-            loggingRequest = null;
+            return null;
         }
-        else {
-            final LoggingRequest loggingRequest2 = new LoggingRequest();
-            loggingRequest2.time = JsonUtils.getLong(jsonObject, "time", 0L);
-            loggingRequest2.netflixId = JsonUtils.getString(jsonObject, "netflixId", null);
-            loggingRequest2.locale = JsonUtils.getString(jsonObject, "locale", null);
-            loggingRequest2.version = Version.createInstance(JsonUtils.getJSONObject(jsonObject, "version", null));
-            loggingRequest2.device = Device.createInstance(JsonUtils.getJSONObject(jsonObject, "device", null));
-            final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "events");
-            loggingRequest = loggingRequest2;
-            if (jsonArray != null) {
-                int n = 0;
-                while (true) {
-                    loggingRequest = loggingRequest2;
-                    if (n >= jsonArray.length()) {
-                        break;
-                    }
-                    final Event event = Event.createEvent(jsonArray.getJSONObject(n));
-                    if (event != null) {
-                        loggingRequest2.events.add(event);
-                    }
-                    ++n;
+        final LoggingRequest loggingRequest = new LoggingRequest();
+        loggingRequest.time = JsonUtils.getLong(jsonObject, "time", 0L);
+        loggingRequest.netflixId = JsonUtils.getString(jsonObject, "netflixId", null);
+        loggingRequest.locale = JsonUtils.getString(jsonObject, "locale", null);
+        loggingRequest.version = Version.createInstance(JsonUtils.getJSONObject(jsonObject, "version", null));
+        loggingRequest.device = Device.createInstance(JsonUtils.getJSONObject(jsonObject, "device", null));
+        final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "events");
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.length(); ++i) {
+                final Event event = Event.createEvent(jsonArray.getJSONObject(i));
+                if (event != null) {
+                    loggingRequest.events.add(event);
                 }
             }
         }
@@ -128,7 +118,7 @@ public class LoggingRequest
         return this.version;
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("appName", (Object)this.appName);
         if (this.version != null) {

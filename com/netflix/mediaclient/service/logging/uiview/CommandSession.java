@@ -5,16 +5,16 @@
 package com.netflix.mediaclient.service.logging.uiview;
 
 import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 
 public final class CommandSession extends BaseUIViewSession
 {
     public static final String NAME = "command";
-    protected UIViewLogging.UIViewCommandName mCommandName;
+    protected UIViewLogging$UIViewCommandName mCommandName;
     
-    public CommandSession(final UIViewLogging.UIViewCommandName mCommandName, final IClientLogging.ModalView modalView) {
-        super(modalView);
+    public CommandSession(final UIViewLogging$UIViewCommandName mCommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        super(clientLogging$ModalView);
         this.mCommandName = mCommandName;
     }
     
@@ -25,7 +25,7 @@ public final class CommandSession extends BaseUIViewSession
         return commandEndedEvent;
     }
     
-    public UIViewLogging.UIViewCommandName getAction() {
+    public UIViewLogging$UIViewCommandName getAction() {
         return this.mCommandName;
     }
     

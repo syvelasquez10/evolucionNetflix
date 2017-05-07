@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import android.content.Context;
 
 @ez
-public final class dy extends eg.a
+public final class dy extends eg$a
 {
     private Context mContext;
     private String mv;

@@ -5,14 +5,24 @@
 package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
-import com.netflix.mediaclient.service.webclient.model.leafs.SearchTrackableListSummary;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
 import java.util.ArrayList;
+import java.util.List;
+import com.netflix.mediaclient.service.webclient.model.leafs.SearchTrackableListSummary;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 
-public class SearchVideoList extends ArrayList<SearchVideo> implements com.netflix.mediaclient.servicemgr.model.SearchVideoList
+public class SearchVideoList implements SearchVideoListProvider
 {
-    private static final long serialVersionUID = 174629524528102565L;
     private SearchTrackableListSummary videoListSummary;
+    private final List<SearchVideo> videos;
+    
+    public SearchVideoList() {
+        this.videos = new ArrayList<SearchVideo>();
+    }
+    
+    @Override
+    public List<SearchVideo> getVideosList() {
+        return this.videos;
+    }
     
     @Override
     public SearchTrackable getVideosListTrackable() {

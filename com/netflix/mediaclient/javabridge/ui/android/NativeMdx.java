@@ -4,14 +4,6 @@
 
 package com.netflix.mediaclient.javabridge.ui.android;
 
-import com.netflix.mediaclient.javabridge.invoke.mdx.session.StartSession;
-import com.netflix.mediaclient.javabridge.invoke.mdx.session.SendMessage;
-import com.netflix.mediaclient.javabridge.invoke.mdx.session.EndSession;
-import com.netflix.mediaclient.javabridge.invoke.mdx.pair.RegistrationPairingRequest;
-import com.netflix.mediaclient.javabridge.invoke.mdx.pair.PairingRequest;
-import com.netflix.mediaclient.javabridge.invoke.mdx.pair.DeletePairing;
-import com.netflix.mediaclient.javabridge.invoke.mdx.discovery.LaunchNetflix;
-import com.netflix.mediaclient.javabridge.invoke.mdx.discovery.IsRemoteDeviceReady;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.RemoteDevice;
 import java.util.ArrayList;
 import com.netflix.mediaclient.javabridge.invoke.registration.Ping;
@@ -24,7 +16,6 @@ import com.netflix.mediaclient.javabridge.invoke.mdx.Exit;
 import com.netflix.mediaclient.javabridge.invoke.mdx.Configure;
 import java.util.Map;
 import com.netflix.mediaclient.javabridge.invoke.mdx.ClearDeviceMap;
-import org.json.JSONException;
 import com.netflix.mediaclient.event.nrdp.mdx.session.MessageEvent;
 import com.netflix.mediaclient.event.nrdp.mdx.session.SessionEndedEvent;
 import com.netflix.mediaclient.event.nrdp.mdx.session.MessagingErrorEvent;
@@ -44,25 +35,26 @@ import com.netflix.mediaclient.event.nrdp.mdx.InitEvent;
 import org.json.JSONObject;
 import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import com.netflix.mediaclient.javabridge.Bridge;
+import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController$PropertyUpdateListener;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
 
 public final class NativeMdx extends NativeNrdObject implements MdxController
 {
     protected static final String MDX_EVENT_DATA_FIELD_TYPE = "type";
     private static final String TAG = "nf_mdx";
-    DiscoveryControllerImpl mDiscovery;
-    PairingControllerImpl mPairing;
-    private PropertyUpdateListener mPropertyListener;
-    SessionControllerImpl mSession;
+    NativeMdx$DiscoveryControllerImpl mDiscovery;
+    NativeMdx$PairingControllerImpl mPairing;
+    private MdxController$PropertyUpdateListener mPropertyListener;
+    NativeMdx$SessionControllerImpl mSession;
     
     public NativeMdx(final Bridge bridge) {
         super(bridge);
-        this.mDiscovery = new DiscoveryControllerImpl();
-        this.mPairing = new PairingControllerImpl();
-        this.mSession = new SessionControllerImpl();
+        this.mDiscovery = new NativeMdx$DiscoveryControllerImpl(this);
+        this.mPairing = new NativeMdx$PairingControllerImpl(this);
+        this.mSession = new NativeMdx$SessionControllerImpl(this);
     }
     
-    private void handleEvents(final JSONObject jsonObject) throws JSONException {
+    private void handleEvents(final JSONObject jsonObject) {
         final String string = this.getString(jsonObject, "type", null);
         if (InitEvent.TYPE.getName().equalsIgnoreCase(string)) {
             Log.d("nf_mdx", "NativeMdx: InitEvent event");
@@ -198,7 +190,7 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
         while (true) {
             while (true) {
                 int n = 0;
-                Label_0410: {
+                Label_0408: {
                     try {
                         final String string = this.getString(jsonObject, "type", null);
                         if (Log.isLoggable("nf_mdx", 3)) {
@@ -235,7 +227,7 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
                                     Log.d("nf_mdx", "NativeMdx: add to list");
                                     list.add(remoteDevice);
                                 }
-                                break Label_0410;
+                                break Label_0408;
                             }
                             else if (jsonObject.has("isReady")) {
                                 if (this.mPropertyListener != null) {
@@ -274,81 +266,7 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
     }
     
     @Override
-    public void setPropertyUpdateListener(final PropertyUpdateListener mPropertyListener) {
+    public void setPropertyUpdateListener(final MdxController$PropertyUpdateListener mPropertyListener) {
         this.mPropertyListener = mPropertyListener;
-    }
-    
-    class DiscoveryControllerImpl implements DiscoveryController
-    {
-        @Override
-        public void isRemoteDeviceReady(final String s) {
-            NativeMdx.this.invokeNrdMethod(new IsRemoteDeviceReady(s));
-        }
-        
-        @Override
-        public void launchNetflix(final String s, final Map<String, String> map) {
-            NativeMdx.this.invokeNrdMethod(new LaunchNetflix(s, map));
-        }
-    }
-    
-    class PairingControllerImpl implements PairingController
-    {
-        @Override
-        public void deletePairing(final String s) {
-            NativeMdx.this.invokeNrdMethod(new DeletePairing(s));
-        }
-        
-        @Override
-        public void pairingRequest(final String s) {
-            NativeMdx.this.invokeNrdMethod(new PairingRequest(s));
-        }
-        
-        @Override
-        public void registrationPairingRequest(final String s) {
-            NativeMdx.this.invokeNrdMethod(new RegistrationPairingRequest(s, null));
-        }
-        
-        @Override
-        public void registrationPairingRequest(final String s, final String s2) {
-            NativeMdx.this.invokeNrdMethod(new RegistrationPairingRequest(s, s2));
-        }
-    }
-    
-    class SessionControllerImpl implements SessionController
-    {
-        private String mMessageName;
-        private int mSessionId;
-        
-        SessionControllerImpl() {
-            this.mSessionId = -1;
-        }
-        
-        @Override
-        public void endSession(final int n) {
-            NativeMdx.this.invokeNrdMethod(new EndSession(n));
-            this.mSessionId = -1;
-        }
-        
-        @Override
-        public String getLastMessageName(final int n) {
-            if (this.mSessionId == n) {
-                return this.mMessageName;
-            }
-            return null;
-        }
-        
-        @Override
-        public long sendMessage(final int mSessionId, final String mMessageName, final JSONObject jsonObject) {
-            this.mMessageName = mMessageName;
-            this.mSessionId = mSessionId;
-            final SendMessage sendMessage = new SendMessage(mSessionId, mMessageName, jsonObject);
-            NativeMdx.this.invokeNrdMethod(sendMessage);
-            return sendMessage.getXid();
-        }
-        
-        @Override
-        public void startSession(final String s) {
-            NativeMdx.this.invokeNrdMethod(new StartSession(s));
-        }
     }
 }

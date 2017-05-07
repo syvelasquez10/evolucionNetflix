@@ -6,18 +6,20 @@ package com.netflix.mediaclient.service.logging.uiview;
 
 import com.netflix.mediaclient.service.logging.uiview.model.ImpressionSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.client.model.Error;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 
 public class ImpressionSession extends BaseUIViewSession
 {
     public static final String NAME = "impression";
+    private String mOriginatingRequestGuid;
     
-    public ImpressionSession(final IClientLogging.ModalView modalView) {
-        super(modalView);
+    public ImpressionSession(final IClientLogging$ModalView clientLogging$ModalView, final String mOriginatingRequestGuid) {
+        super(clientLogging$ModalView);
+        this.mOriginatingRequestGuid = mOriginatingRequestGuid;
     }
     
     public ImpressionSessionEndedEvent createEndedEvent(final boolean b, final Error error) {
-        final ImpressionSessionEndedEvent impressionSessionEndedEvent = new ImpressionSessionEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, b, error);
+        final ImpressionSessionEndedEvent impressionSessionEndedEvent = new ImpressionSessionEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mOriginatingRequestGuid, b, error);
         impressionSessionEndedEvent.setCategory(this.getCategory());
         impressionSessionEndedEvent.setSessionId(this.mId);
         return impressionSessionEndedEvent;

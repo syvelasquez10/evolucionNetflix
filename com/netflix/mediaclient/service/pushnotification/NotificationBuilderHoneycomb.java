@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.service.pushnotification;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
@@ -36,26 +36,7 @@ public class NotificationBuilderHoneycomb extends NotificationBuilder
                 try {
                     notification$Builder.setSound(NotificationBuilder.getSound(payload.sound), 5);
                     if (!StringUtils.isEmpty(payload.largeIcon) && imageLoader != null) {
-                        imageLoader.getImg(payload.largeIcon, IClientLogging.AssetType.boxArt, 0, 0, (ImageLoader.ImageLoaderListener)new ImageLoader.ImageLoaderListener() {
-                            @Override
-                            public void onErrorResponse(final String s) {
-                                if (Log.isLoggable("nf_push", 6)) {
-                                    Log.e("nf_push", "Failed to downlod " + payload.largeIcon + ". Reason: " + s);
-                                }
-                            }
-                            
-                            @Override
-                            public void onResponse(final Bitmap largeIcon, final String s) {
-                                if (Log.isLoggable("nf_push", 3)) {
-                                    Log.d("nf_push", "Image is downloaded " + payload.largeIcon + " from " + s);
-                                }
-                                if (largeIcon != null) {
-                                    notification$Builder.setLargeIcon(largeIcon);
-                                }
-                                send(context, notification$Builder, n, errorLogging);
-                                Log.d("nf_push", "Image set!");
-                            }
-                        });
+                        imageLoader.getImg(payload.largeIcon, IClientLogging$AssetType.boxArt, 0, 0, new NotificationBuilderHoneycomb$1(payload, notification$Builder, context, n, errorLogging));
                         return;
                     }
                 }

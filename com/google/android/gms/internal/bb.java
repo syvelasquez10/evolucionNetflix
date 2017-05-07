@@ -6,7 +6,7 @@ package com.google.android.gms.internal;
 
 import android.content.res.TypedArray;
 import android.text.TextUtils;
-import com.google.android.gms.R;
+import com.google.android.gms.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.google.android.gms.ads.AdSize;
@@ -19,9 +19,9 @@ public final class bb
     
     public bb(final Context context, final AttributeSet set) {
         boolean b = true;
-        final TypedArray obtainAttributes = context.getResources().obtainAttributes(set, R.styleable.AdsAttrs);
-        final String string = obtainAttributes.getString(R.styleable.AdsAttrs_adSize);
-        final String string2 = obtainAttributes.getString(R.styleable.AdsAttrs_adSizes);
+        final TypedArray obtainAttributes = context.getResources().obtainAttributes(set, R$styleable.AdsAttrs);
+        final String string = obtainAttributes.getString(R$styleable.AdsAttrs_adSize);
+        final String string2 = obtainAttributes.getString(R$styleable.AdsAttrs_adSizes);
         boolean b2;
         if (!TextUtils.isEmpty((CharSequence)string)) {
             b2 = true;
@@ -44,7 +44,7 @@ public final class bb
             }
             throw new IllegalArgumentException("Required XML attribute \"adSize\" was missing.");
         }
-        this.ok = obtainAttributes.getString(R.styleable.AdsAttrs_adUnitId);
+        this.ok = obtainAttributes.getString(R$styleable.AdsAttrs_adUnitId);
         if (TextUtils.isEmpty((CharSequence)this.ok)) {
             throw new IllegalArgumentException("Required XML attribute \"adUnitId\" was missing.");
         }

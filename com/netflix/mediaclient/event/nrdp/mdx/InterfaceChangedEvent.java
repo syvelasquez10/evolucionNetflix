@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.nrdp.mdx;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.event.nrdp.BaseUIEvent;
 
@@ -33,7 +32,7 @@ public class InterfaceChangedEvent extends BaseUIEvent
     }
     
     @Override
-    public JSONObject getData() throws JSONException {
+    public JSONObject getData() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("connected", this.connected);
         jsonObject.put("interface", (Object)this.networkInterface);

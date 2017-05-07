@@ -4,10 +4,6 @@
 
 package android.support.v4.app;
 
-import android.support.annotation.IntDef;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Annotation;
 import android.view.View;
 import android.support.annotation.Nullable;
 
@@ -70,9 +66,4 @@ public abstract class FragmentTransaction
     public abstract FragmentTransaction setTransitionStyle(final int p0);
     
     public abstract FragmentTransaction show(final Fragment p0);
-    
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({ 0L, 4097L, 8194L })
-    private @interface Transit {
-    }
 }

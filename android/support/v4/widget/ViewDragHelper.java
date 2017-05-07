@@ -36,7 +36,7 @@ public class ViewDragHelper
     private static final String TAG = "ViewDragHelper";
     private static final Interpolator sInterpolator;
     private int mActivePointerId;
-    private final Callback mCallback;
+    private final ViewDragHelper$Callback mCallback;
     private View mCapturedView;
     private int mDragState;
     private int[] mEdgeDragsInProgress;
@@ -59,22 +59,12 @@ public class ViewDragHelper
     private VelocityTracker mVelocityTracker;
     
     static {
-        sInterpolator = (Interpolator)new Interpolator() {
-            public float getInterpolation(float n) {
-                --n;
-                return n * n * n * n * n + 1.0f;
-            }
-        };
+        sInterpolator = (Interpolator)new ViewDragHelper$1();
     }
     
-    private ViewDragHelper(final Context context, final ViewGroup mParentView, final Callback mCallback) {
+    private ViewDragHelper(final Context context, final ViewGroup mParentView, final ViewDragHelper$Callback mCallback) {
         this.mActivePointerId = -1;
-        this.mSetIdleRunnable = new Runnable() {
-            @Override
-            public void run() {
-                ViewDragHelper.this.setDragState(0);
-            }
-        };
+        this.mSetIdleRunnable = new ViewDragHelper$2(this);
         if (mParentView == null) {
             throw new IllegalArgumentException("Parent view may not be null");
         }
@@ -84,7 +74,7 @@ public class ViewDragHelper
         this.mParentView = mParentView;
         this.mCallback = mCallback;
         final ViewConfiguration value = ViewConfiguration.get(context);
-        this.mEdgeSize = (int)(20.0f * context.getResources().getDisplayMetrics().density + 0.5f);
+        this.mEdgeSize = (int)(context.getResources().getDisplayMetrics().density * 20.0f + 0.5f);
         this.mTouchSlop = value.getScaledTouchSlop();
         this.mMaxVelocity = value.getScaledMaximumFlingVelocity();
         this.mMinVelocity = value.getScaledMinimumFlingVelocity();
@@ -95,7 +85,7 @@ public class ViewDragHelper
         abs = Math.abs(abs);
         abs2 = Math.abs(abs2);
         if ((this.mInitialEdgesTouched[n] & n2) == n2 && (this.mTrackingEdges & n2) != 0x0 && (this.mEdgeDragsLocked[n] & n2) != n2 && (this.mEdgeDragsInProgress[n] & n2) != n2 && (abs > this.mTouchSlop || abs2 > this.mTouchSlop)) {
-            if (abs < 0.5f * abs2 && this.mCallback.onEdgeLock(n2)) {
+            if (abs < abs2 * 0.5f && this.mCallback.onEdgeLock(n2)) {
                 final int[] mEdgeDragsLocked = this.mEdgeDragsLocked;
                 mEdgeDragsLocked[n] |= n2;
                 return false;
@@ -223,7 +213,7 @@ public class ViewDragHelper
         final float distanceInfluenceForSnapDuration = this.distanceInfluenceForSnapDuration(min);
         abs = Math.abs(abs);
         if (abs > 0) {
-            n = Math.round(1000.0f * Math.abs((n4 + n5 * distanceInfluenceForSnapDuration) / abs)) * 4;
+            n = Math.round(Math.abs((distanceInfluenceForSnapDuration * n5 + n4) / abs) * 1000.0f) * 4;
         }
         else {
             n = (int)((Math.abs(n) / n2 + 1.0f) * 256.0f);
@@ -256,17 +246,17 @@ public class ViewDragHelper
         }
         computeAxisDuration = this.computeAxisDuration(computeAxisDuration, clampMag, this.mCallback.getViewHorizontalDragRange(view));
         computeAxisDuration2 = this.computeAxisDuration(computeAxisDuration2, clampMag2, this.mCallback.getViewVerticalDragRange(view));
-        return (int)(computeAxisDuration * n3 + computeAxisDuration2 * n4);
+        return (int)(n4 * computeAxisDuration2 + n3 * computeAxisDuration);
     }
     
-    public static ViewDragHelper create(final ViewGroup viewGroup, final float n, final Callback callback) {
-        final ViewDragHelper create = create(viewGroup, callback);
+    public static ViewDragHelper create(final ViewGroup viewGroup, final float n, final ViewDragHelper$Callback viewDragHelper$Callback) {
+        final ViewDragHelper create = create(viewGroup, viewDragHelper$Callback);
         create.mTouchSlop *= (int)(1.0f / n);
         return create;
     }
     
-    public static ViewDragHelper create(final ViewGroup viewGroup, final Callback callback) {
-        return new ViewDragHelper(viewGroup.getContext(), viewGroup, callback);
+    public static ViewDragHelper create(final ViewGroup viewGroup, final ViewDragHelper$Callback viewDragHelper$Callback) {
+        return new ViewDragHelper(viewGroup.getContext(), viewGroup, viewDragHelper$Callback);
     }
     
     private void dispatchViewReleased(final float n, final float n2) {
@@ -282,20 +272,18 @@ public class ViewDragHelper
         return (float)Math.sin((float)((n - 0.5f) * 0.4712389167638204));
     }
     
-    private void dragTo(final int n, final int n2, final int n3, final int n4) {
-        int clampViewPositionHorizontal = n;
-        int clampViewPositionVertical = n2;
+    private void dragTo(int clampViewPositionHorizontal, int clampViewPositionVertical, final int n, final int n2) {
         final int left = this.mCapturedView.getLeft();
         final int top = this.mCapturedView.getTop();
-        if (n3 != 0) {
-            clampViewPositionHorizontal = this.mCallback.clampViewPositionHorizontal(this.mCapturedView, n, n3);
+        if (n != 0) {
+            clampViewPositionHorizontal = this.mCallback.clampViewPositionHorizontal(this.mCapturedView, clampViewPositionHorizontal, n);
             this.mCapturedView.offsetLeftAndRight(clampViewPositionHorizontal - left);
         }
-        if (n4 != 0) {
-            clampViewPositionVertical = this.mCallback.clampViewPositionVertical(this.mCapturedView, n2, n4);
+        if (n2 != 0) {
+            clampViewPositionVertical = this.mCallback.clampViewPositionVertical(this.mCapturedView, clampViewPositionVertical, n2);
             this.mCapturedView.offsetTopAndBottom(clampViewPositionVertical - top);
         }
-        if (n3 != 0 || n4 != 0) {
+        if (n != 0 || n2 != 0) {
             this.mCallback.onViewPositionChanged(this.mCapturedView, clampViewPositionHorizontal, clampViewPositionVertical, clampViewPositionHorizontal - left, clampViewPositionVertical - top);
         }
     }
@@ -347,7 +335,7 @@ public class ViewDragHelper
     private int getEdgesTouched(int n, final int n2) {
         boolean b = false;
         if (n < this.mParentView.getLeft() + this.mEdgeSize) {
-            b = (false | true);
+            b = true;
         }
         int n3 = b ? 1 : 0;
         if (n2 < this.mParentView.getTop() + this.mEdgeSize) {
@@ -370,9 +358,9 @@ public class ViewDragHelper
     }
     
     private void reportNewEdgeDrags(final float n, final float n2, final int n3) {
-        boolean b = false;
-        if (this.checkNewEdgeDrag(n, n2, n3, 1)) {
-            b = (false | true);
+        boolean b = true;
+        if (!this.checkNewEdgeDrag(n, n2, n3, 1)) {
+            b = false;
         }
         int n4 = b ? 1 : 0;
         if (this.checkNewEdgeDrag(n2, n, n3, 4)) {
@@ -459,12 +447,22 @@ public class ViewDragHelper
     }
     
     public boolean checkTouchSlop(final int n) {
-        for (int length = this.mInitialMotionX.length, i = 0; i < length; ++i) {
-            if (this.checkTouchSlop(n, i)) {
-                return true;
+        final boolean b = false;
+        final int length = this.mInitialMotionX.length;
+        int n2 = 0;
+        boolean b2;
+        while (true) {
+            b2 = b;
+            if (n2 >= length) {
+                break;
             }
+            if (this.checkTouchSlop(n, n2)) {
+                b2 = true;
+                break;
+            }
+            ++n2;
         }
-        return false;
+        return b2;
     }
     
     public boolean checkTouchSlop(int n, final int n2) {
@@ -512,7 +510,7 @@ public class ViewDragHelper
     
     public boolean continueSettling(final boolean b) {
         if (this.mDragState == 2) {
-            final boolean computeScrollOffset = this.mScroller.computeScrollOffset();
+            int computeScrollOffset = this.mScroller.computeScrollOffset() ? 1 : 0;
             final int currX = this.mScroller.getCurrX();
             final int currY = this.mScroller.getCurrY();
             final int n = currX - this.mCapturedView.getLeft();
@@ -526,18 +524,11 @@ public class ViewDragHelper
             if (n != 0 || n2 != 0) {
                 this.mCallback.onViewPositionChanged(this.mCapturedView, currX, currY, n, n2);
             }
-            boolean b2 = computeScrollOffset;
-            if (computeScrollOffset) {
-                b2 = computeScrollOffset;
-                if (currX == this.mScroller.getFinalX()) {
-                    b2 = computeScrollOffset;
-                    if (currY == this.mScroller.getFinalY()) {
-                        this.mScroller.abortAnimation();
-                        b2 = false;
-                    }
-                }
+            if (computeScrollOffset != 0 && currX == this.mScroller.getFinalX() && currY == this.mScroller.getFinalY()) {
+                this.mScroller.abortAnimation();
+                computeScrollOffset = 0;
             }
-            if (!b2) {
+            if (computeScrollOffset == 0) {
                 if (b) {
                     this.mParentView.post(this.mSetIdleRunnable);
                 }
@@ -596,12 +587,22 @@ public class ViewDragHelper
     }
     
     public boolean isEdgeTouched(final int n) {
-        for (int length = this.mInitialEdgesTouched.length, i = 0; i < length; ++i) {
-            if (this.isEdgeTouched(n, i)) {
-                return true;
+        final boolean b = false;
+        final int length = this.mInitialEdgesTouched.length;
+        int n2 = 0;
+        boolean b2;
+        while (true) {
+            b2 = b;
+            if (n2 >= length) {
+                break;
             }
+            if (this.isEdgeTouched(n, n2)) {
+                b2 = true;
+                break;
+            }
+            ++n2;
         }
-        return false;
+        return b2;
     }
     
     public boolean isEdgeTouched(final int n, final int n2) {
@@ -617,6 +618,8 @@ public class ViewDragHelper
     }
     
     public void processTouchEvent(final MotionEvent motionEvent) {
+        int i = 0;
+        final int n = 0;
         final int actionMasked = MotionEventCompat.getActionMasked(motionEvent);
         final int actionIndex = MotionEventCompat.getActionIndex(motionEvent);
         if (actionMasked == 0) {
@@ -634,9 +637,9 @@ public class ViewDragHelper
                 final View topChildUnder = this.findTopChildUnder((int)x, (int)y);
                 this.saveInitialMotion(x, y, pointerId);
                 this.tryCaptureViewForDrag(topChildUnder, pointerId);
-                final int n = this.mInitialEdgesTouched[pointerId];
-                if ((this.mTrackingEdges & n) != 0x0) {
-                    this.mCallback.onEdgeTouched(this.mTrackingEdges & n, pointerId);
+                final int n2 = this.mInitialEdgesTouched[pointerId];
+                if ((this.mTrackingEdges & n2) != 0x0) {
+                    this.mCallback.onEdgeTouched(n2 & this.mTrackingEdges, pointerId);
                     return;
                 }
                 break;
@@ -648,9 +651,9 @@ public class ViewDragHelper
                 this.saveInitialMotion(x2, y2, pointerId2);
                 if (this.mDragState == 0) {
                     this.tryCaptureViewForDrag(this.findTopChildUnder((int)x2, (int)y2), pointerId2);
-                    final int n2 = this.mInitialEdgesTouched[pointerId2];
-                    if ((this.mTrackingEdges & n2) != 0x0) {
-                        this.mCallback.onEdgeTouched(this.mTrackingEdges & n2, pointerId2);
+                    final int n3 = this.mInitialEdgesTouched[pointerId2];
+                    if ((this.mTrackingEdges & n3) != 0x0) {
+                        this.mCallback.onEdgeTouched(n3 & this.mTrackingEdges, pointerId2);
                         return;
                     }
                     break;
@@ -669,24 +672,24 @@ public class ViewDragHelper
                     final int pointerIndex = MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId);
                     final float x3 = MotionEventCompat.getX(motionEvent, pointerIndex);
                     final float y3 = MotionEventCompat.getY(motionEvent, pointerIndex);
-                    final int n3 = (int)(x3 - this.mLastMotionX[this.mActivePointerId]);
-                    final int n4 = (int)(y3 - this.mLastMotionY[this.mActivePointerId]);
-                    this.dragTo(this.mCapturedView.getLeft() + n3, this.mCapturedView.getTop() + n4, n3, n4);
+                    final int n4 = (int)(x3 - this.mLastMotionX[this.mActivePointerId]);
+                    final int n5 = (int)(y3 - this.mLastMotionY[this.mActivePointerId]);
+                    this.dragTo(this.mCapturedView.getLeft() + n4, this.mCapturedView.getTop() + n5, n4, n5);
                     this.saveLastMotion(motionEvent);
                     return;
                 }
-                for (int pointerCount = MotionEventCompat.getPointerCount(motionEvent), i = 0; i < pointerCount; ++i) {
-                    final int pointerId3 = MotionEventCompat.getPointerId(motionEvent, i);
-                    final float x4 = MotionEventCompat.getX(motionEvent, i);
-                    final float y4 = MotionEventCompat.getY(motionEvent, i);
-                    final float n5 = x4 - this.mInitialMotionX[pointerId3];
-                    final float n6 = y4 - this.mInitialMotionY[pointerId3];
-                    this.reportNewEdgeDrags(n5, n6, pointerId3);
+                for (int pointerCount = MotionEventCompat.getPointerCount(motionEvent), j = n; j < pointerCount; ++j) {
+                    final int pointerId3 = MotionEventCompat.getPointerId(motionEvent, j);
+                    final float x4 = MotionEventCompat.getX(motionEvent, j);
+                    final float y4 = MotionEventCompat.getY(motionEvent, j);
+                    final float n6 = x4 - this.mInitialMotionX[pointerId3];
+                    final float n7 = y4 - this.mInitialMotionY[pointerId3];
+                    this.reportNewEdgeDrags(n6, n7, pointerId3);
                     if (this.mDragState == 1) {
                         break;
                     }
                     final View topChildUnder2 = this.findTopChildUnder((int)x4, (int)y4);
-                    if (this.checkTouchSlop(topChildUnder2, n5, n6) && this.tryCaptureViewForDrag(topChildUnder2, pointerId3)) {
+                    if (this.checkTouchSlop(topChildUnder2, n6, n7) && this.tryCaptureViewForDrag(topChildUnder2, pointerId3)) {
                         break;
                     }
                 }
@@ -694,25 +697,25 @@ public class ViewDragHelper
             }
             case 6: {
                 final int pointerId4 = MotionEventCompat.getPointerId(motionEvent, actionIndex);
-                if (this.mDragState == 1 && pointerId4 == this.mActivePointerId) {
-                    final int n7 = -1;
-                    final int pointerCount2 = MotionEventCompat.getPointerCount(motionEvent);
-                    int n8 = 0;
-                    int mActivePointerId;
-                    while (true) {
-                        mActivePointerId = n7;
-                        if (n8 >= pointerCount2) {
-                            break;
+                Label_0626: {
+                    if (this.mDragState == 1 && pointerId4 == this.mActivePointerId) {
+                        while (true) {
+                            while (i < MotionEventCompat.getPointerCount(motionEvent)) {
+                                final int pointerId5 = MotionEventCompat.getPointerId(motionEvent, i);
+                                if (pointerId5 != this.mActivePointerId && this.findTopChildUnder((int)MotionEventCompat.getX(motionEvent, i), (int)MotionEventCompat.getY(motionEvent, i)) == this.mCapturedView && this.tryCaptureViewForDrag(this.mCapturedView, pointerId5)) {
+                                    final int mActivePointerId = this.mActivePointerId;
+                                    if (mActivePointerId == -1) {
+                                        this.releaseViewForPointerUp();
+                                    }
+                                    break Label_0626;
+                                }
+                                else {
+                                    ++i;
+                                }
+                            }
+                            final int mActivePointerId = -1;
+                            continue;
                         }
-                        final int pointerId5 = MotionEventCompat.getPointerId(motionEvent, n8);
-                        if (pointerId5 != this.mActivePointerId && this.findTopChildUnder((int)MotionEventCompat.getX(motionEvent, n8), (int)MotionEventCompat.getY(motionEvent, n8)) == this.mCapturedView && this.tryCaptureViewForDrag(this.mCapturedView, pointerId5)) {
-                            mActivePointerId = this.mActivePointerId;
-                            break;
-                        }
-                        ++n8;
-                    }
-                    if (mActivePointerId == -1) {
-                        this.releaseViewForPointerUp();
                     }
                 }
                 this.clearMotionHistory(pointerId4);
@@ -779,7 +782,7 @@ public class ViewDragHelper
                 }
                 final int n = this.mInitialEdgesTouched[pointerId];
                 if ((this.mTrackingEdges & n) != 0x0) {
-                    this.mCallback.onEdgeTouched(this.mTrackingEdges & n, pointerId);
+                    this.mCallback.onEdgeTouched(n & this.mTrackingEdges, pointerId);
                     break;
                 }
                 break;
@@ -792,7 +795,7 @@ public class ViewDragHelper
                 if (this.mDragState == 0) {
                     final int n2 = this.mInitialEdgesTouched[pointerId2];
                     if ((this.mTrackingEdges & n2) != 0x0) {
-                        this.mCallback.onEdgeTouched(this.mTrackingEdges & n2, pointerId2);
+                        this.mCallback.onEdgeTouched(n2 & this.mTrackingEdges, pointerId2);
                         break;
                     }
                     break;
@@ -827,9 +830,9 @@ public class ViewDragHelper
                     }
                     if (b) {
                         final int left = topChildUnder3.getLeft();
-                        final int clampViewPositionHorizontal = this.mCallback.clampViewPositionHorizontal(topChildUnder3, left + (int)n3, (int)n3);
+                        final int clampViewPositionHorizontal = this.mCallback.clampViewPositionHorizontal(topChildUnder3, (int)n3 + left, (int)n3);
                         final int top = topChildUnder3.getTop();
-                        final int clampViewPositionVertical = this.mCallback.clampViewPositionVertical(topChildUnder3, top + (int)n4, (int)n4);
+                        final int clampViewPositionVertical = this.mCallback.clampViewPositionVertical(topChildUnder3, (int)n4 + top, (int)n4);
                         final int viewHorizontalDragRange = this.mCallback.getViewHorizontalDragRange(topChildUnder3);
                         final int viewVerticalDragRange = this.mCallback.getViewVerticalDragRange(topChildUnder3);
                         if ((viewHorizontalDragRange == 0 || (viewHorizontalDragRange > 0 && clampViewPositionHorizontal == left)) && (viewVerticalDragRange == 0 || (viewVerticalDragRange > 0 && clampViewPositionVertical == top))) {
@@ -876,52 +879,5 @@ public class ViewDragHelper
             return true;
         }
         return false;
-    }
-    
-    public abstract static class Callback
-    {
-        public int clampViewPositionHorizontal(final View view, final int n, final int n2) {
-            return 0;
-        }
-        
-        public int clampViewPositionVertical(final View view, final int n, final int n2) {
-            return 0;
-        }
-        
-        public int getOrderedChildIndex(final int n) {
-            return n;
-        }
-        
-        public int getViewHorizontalDragRange(final View view) {
-            return 0;
-        }
-        
-        public int getViewVerticalDragRange(final View view) {
-            return 0;
-        }
-        
-        public void onEdgeDragStarted(final int n, final int n2) {
-        }
-        
-        public boolean onEdgeLock(final int n) {
-            return false;
-        }
-        
-        public void onEdgeTouched(final int n, final int n2) {
-        }
-        
-        public void onViewCaptured(final View view, final int n) {
-        }
-        
-        public void onViewDragStateChanged(final int n) {
-        }
-        
-        public void onViewPositionChanged(final View view, final int n, final int n2, final int n3, final int n4) {
-        }
-        
-        public void onViewReleased(final View view, final float n, final float n2) {
-        }
-        
-        public abstract boolean tryCaptureView(final View p0, final int p1);
     }
 }

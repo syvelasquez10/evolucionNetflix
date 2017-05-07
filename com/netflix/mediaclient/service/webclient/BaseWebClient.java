@@ -20,24 +20,19 @@ public abstract class BaseWebClient
         final StatusCode wrong_PATH = StatusCode.WRONG_PATH;
         Log.w(BaseWebClient.TAG, "Received Error", t);
         final String message = t.getMessage();
-        if (message == null) {
-            return wrong_PATH;
-        }
-        final String lowerCase = message.toLowerCase(Locale.US);
-        Log.d(BaseWebClient.TAG, ".next call failed with error =" + lowerCase);
-        StatusCode statusCode;
-        if (lowerCase.contains("map error")) {
-            statusCode = StatusCode.MAP_ERROR;
-        }
-        else if (lowerCase.contains("not authorized")) {
-            statusCode = StatusCode.USER_NOT_AUTHORIZED;
-        }
-        else {
-            statusCode = wrong_PATH;
+        if (message != null) {
+            final String lowerCase = message.toLowerCase(Locale.US);
+            Log.d(BaseWebClient.TAG, ".next call failed with error =" + lowerCase);
+            if (lowerCase.contains("map error")) {
+                return StatusCode.MAP_ERROR;
+            }
+            if (lowerCase.contains("not authorized")) {
+                return StatusCode.USER_NOT_AUTHORIZED;
+            }
             if (lowerCase.contains("path error")) {
-                statusCode = StatusCode.WRONG_PATH;
+                return StatusCode.WRONG_PATH;
             }
         }
-        return statusCode;
+        return wrong_PATH;
     }
 }

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.fitness.request;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -49,7 +50,7 @@ public class ai implements Parcelable$Creator<ah>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ah(g, dataType, dataSource);
     }

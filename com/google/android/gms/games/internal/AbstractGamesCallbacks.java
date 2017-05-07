@@ -9,7 +9,7 @@ import android.os.Bundle;
 import com.google.android.gms.drive.Contents;
 import com.google.android.gms.common.data.DataHolder;
 
-public abstract class AbstractGamesCallbacks extends Stub
+public abstract class AbstractGamesCallbacks extends IGamesCallbacks$Stub
 {
     public void A(final DataHolder dataHolder) {
     }

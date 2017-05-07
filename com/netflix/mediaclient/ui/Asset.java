@@ -64,15 +64,7 @@ public class Asset implements Parcelable, PlayContext
     private long mWatchedDate;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<Asset>() {
-            public Asset createFromParcel(final Parcel parcel) {
-                return new Asset(parcel, null);
-            }
-            
-            public Asset[] newArray(final int n) {
-                return new Asset[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new Asset$1();
     }
     
     private Asset() {

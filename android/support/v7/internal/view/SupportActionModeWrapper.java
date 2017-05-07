@@ -4,10 +4,7 @@
 
 package android.support.v7.internal.view;
 
-import android.view.MenuItem;
-import android.view.ActionMode$Callback;
-import android.support.v4.util.SimpleArrayMap;
-import android.support.v7.internal.view.menu.MenuWrapperFactory;
+import android.support.v7.internal.view.menu.ac;
 import android.view.Menu;
 import android.view.View;
 import android.content.Context;
@@ -35,7 +32,7 @@ public class SupportActionModeWrapper extends ActionMode
     }
     
     public Menu getMenu() {
-        return MenuWrapperFactory.createMenuWrapper(this.mWrappedObject.getMenu());
+        return ac.a(this.mWrappedObject.getMenu());
     }
     
     public MenuInflater getMenuInflater() {
@@ -92,48 +89,5 @@ public class SupportActionModeWrapper extends ActionMode
     
     public void setTitleOptionalHint(final boolean titleOptionalHint) {
         this.mWrappedObject.setTitleOptionalHint(titleOptionalHint);
-    }
-    
-    public static class CallbackWrapper implements Callback
-    {
-        final SimpleArrayMap<ActionMode, SupportActionModeWrapper> mActionModes;
-        final Context mContext;
-        final ActionMode$Callback mWrappedCallback;
-        
-        public CallbackWrapper(final Context mContext, final ActionMode$Callback mWrappedCallback) {
-            this.mContext = mContext;
-            this.mWrappedCallback = mWrappedCallback;
-            this.mActionModes = new SimpleArrayMap<ActionMode, SupportActionModeWrapper>();
-        }
-        
-        private android.view.ActionMode getActionModeWrapper(final ActionMode actionMode) {
-            final SupportActionModeWrapper supportActionModeWrapper = this.mActionModes.get(actionMode);
-            if (supportActionModeWrapper != null) {
-                return supportActionModeWrapper;
-            }
-            final SupportActionModeWrapper supportActionModeWrapper2 = new SupportActionModeWrapper(this.mContext, actionMode);
-            this.mActionModes.put(actionMode, supportActionModeWrapper2);
-            return supportActionModeWrapper2;
-        }
-        
-        @Override
-        public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
-            return this.mWrappedCallback.onActionItemClicked(this.getActionModeWrapper(actionMode), MenuWrapperFactory.createMenuItemWrapper(menuItem));
-        }
-        
-        @Override
-        public boolean onCreateActionMode(final ActionMode actionMode, final Menu menu) {
-            return this.mWrappedCallback.onCreateActionMode(this.getActionModeWrapper(actionMode), MenuWrapperFactory.createMenuWrapper(menu));
-        }
-        
-        @Override
-        public void onDestroyActionMode(final ActionMode actionMode) {
-            this.mWrappedCallback.onDestroyActionMode(this.getActionModeWrapper(actionMode));
-        }
-        
-        @Override
-        public boolean onPrepareActionMode(final ActionMode actionMode, final Menu menu) {
-            return this.mWrappedCallback.onPrepareActionMode(this.getActionModeWrapper(actionMode), MenuWrapperFactory.createMenuWrapper(menu));
-        }
     }
 }

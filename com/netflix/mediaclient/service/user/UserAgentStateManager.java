@@ -41,12 +41,12 @@ public class UserAgentStateManager implements Callback
     private String mProfileId;
     private final UserProfileMap mProfileMap;
     private final Registration mRegistration;
-    private STATES mState;
+    private UserAgentStateManager$STATES mState;
     private ActivationTokens mToken;
-    private final StateManagerCallback mUserAgent;
+    private final UserAgentStateManager$StateManagerCallback mUserAgent;
     
-    UserAgentStateManager(final Registration mRegistration, final DrmManager drmManager, final StateManagerCallback mUserAgent, final Context context, final ErrorLogging mErrorLogger) {
-        this.mState = STATES.INIT;
+    UserAgentStateManager(final Registration mRegistration, final DrmManager drmManager, final UserAgentStateManager$StateManagerCallback mUserAgent, final Context context, final ErrorLogging mErrorLogger) {
+        this.mState = UserAgentStateManager$STATES.INIT;
         this.mPrimaryAccountIndex = 0;
         this.mRegistration = mRegistration;
         this.mUserAgent = mUserAgent;
@@ -60,7 +60,7 @@ public class UserAgentStateManager implements Callback
         this.mRegistration.deactivateAll(this);
         this.mUserAgent.userAccountDeactivated();
         this.mProfileMap.clear();
-        this.transitionTo(STATES.INIT);
+        this.transitionTo(UserAgentStateManager$STATES.INIT);
     }
     
     private void deviceAccountCreated(final boolean b, final String s) {
@@ -68,7 +68,7 @@ public class UserAgentStateManager implements Callback
             Log.d("nf_service_useragentstate", "@event deviceAccountCreated");
             Label_0084: {
                 synchronized (this.mState) {
-                    if (!this.validateState(STATES.NEED_CREATE_DEVACC, "deviceAccountCreated")) {
+                    if (!this.validateState(UserAgentStateManager$STATES.NEED_CREATE_DEVACC, "deviceAccountCreated")) {
                         return;
                     }
                     if (!b) {
@@ -76,27 +76,27 @@ public class UserAgentStateManager implements Callback
                     }
                     this.mCurrentDeviceAcc = this.getAccountWithKey(this.mRegistration.getDeviceAccounts(), s);
                     if (this.mCurrentDeviceAcc != null) {
-                        this.transitionTo(STATES.NEED_SELECT_DEVACC);
+                        this.transitionTo(UserAgentStateManager$STATES.NEED_SELECT_DEVACC);
                         return;
                     }
                 }
-                this.transitionTo(STATES.FATAL_ERROR);
+                this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
                 return;
             }
-            this.transitionTo(STATES.FATAL_ERROR);
+            this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
         }
     }
     
     private void deviceAccountDeactivated(final boolean b) {
         Log.d("nf_service_useragentstate", "@event deviceAccountDeactivated");
-        final STATES mState = this.mState;
+        final UserAgentStateManager$STATES mState = this.mState;
         // monitorenter(mState)
         Label_0029: {
             if (!b) {
                 break Label_0029;
             }
             try {
-                this.transitionTo(STATES.NEED_DEACTIVATE_ACC);
+                this.transitionTo(UserAgentStateManager$STATES.NEED_DEACTIVATE_ACC);
                 return;
                 this.cleanupAfterDeactivation();
             }
@@ -110,7 +110,7 @@ public class UserAgentStateManager implements Callback
         while (true) {
             Log.d("nf_service_useragentstate", "@event deviceAccountSelected");
             synchronized (this.mState) {
-                if (!this.validateState(STATES.NEED_SELECT_DEVACC, "deviceAccountSelected")) {
+                if (!this.validateState(UserAgentStateManager$STATES.NEED_SELECT_DEVACC, "deviceAccountSelected")) {
                     return;
                 }
                 if (b) {
@@ -118,7 +118,7 @@ public class UserAgentStateManager implements Callback
                     return;
                 }
             }
-            this.transitionTo(STATES.FATAL_ERROR);
+            this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
         }
     }
     
@@ -132,7 +132,7 @@ public class UserAgentStateManager implements Callback
                 if (accountWithKey != null) {
                     this.mCurrentDeviceAcc = accountWithKey;
                     this.mProfileId = null;
-                    this.transitionTo(STATES.NEED_SELECT_DEVACC);
+                    this.transitionTo(UserAgentStateManager$STATES.NEED_SELECT_DEVACC);
                     return true;
                 }
             }
@@ -163,15 +163,15 @@ public class UserAgentStateManager implements Callback
             this.mNeedLogout = false;
             this.mProfileMap.clearEsnMigrationForCurrentAccount();
             if (!this.isProfileIdValid()) {
-                this.transitionTo(STATES.WAIT_ACTIVATE_ACC);
+                this.transitionTo(UserAgentStateManager$STATES.WAIT_ACTIVATE_ACC);
             }
             else {
                 if (this.mToken != null) {
-                    this.transitionTo(STATES.NEED_ACTIVATE_PROFILE);
+                    this.transitionTo(UserAgentStateManager$STATES.NEED_ACTIVATE_PROFILE);
                     return;
                 }
                 if (!this.fallbackToPrimaryAccount()) {
-                    this.transitionTo(STATES.FATAL_ERROR);
+                    this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
                 }
             }
             return;
@@ -179,26 +179,26 @@ public class UserAgentStateManager implements Callback
         if (this.mProfileMap.isCurrentAccountNeedEsnMigration()) {
             this.mProfileMap.clearEsnMigrationForCurrentAccount();
             if (!this.isProfileIdValid()) {
-                this.transitionTo(STATES.NEED_ESN_MIGRATION);
+                this.transitionTo(UserAgentStateManager$STATES.NEED_ESN_MIGRATION);
                 return;
             }
             if (this.mToken != null) {
-                this.transitionTo(STATES.NEED_ACTIVATE_PROFILE);
+                this.transitionTo(UserAgentStateManager$STATES.NEED_ACTIVATE_PROFILE);
                 return;
             }
-            this.transitionTo(STATES.NEED_ESN_MIGRATION);
+            this.transitionTo(UserAgentStateManager$STATES.NEED_ESN_MIGRATION);
         }
         else {
             if (this.mNeedLogout) {
-                this.transitionTo(STATES.NEED_DEACTIVATE_ACC);
+                this.transitionTo(UserAgentStateManager$STATES.NEED_DEACTIVATE_ACC);
                 this.mNeedLogout = false;
                 return;
             }
             if (!this.isProfileIdValid()) {
-                this.transitionTo(STATES.NEED_FETCH_PROFILE_DATA);
+                this.transitionTo(UserAgentStateManager$STATES.NEED_FETCH_PROFILE_DATA);
                 return;
             }
-            this.transitionTo(STATES.NEED_VALIDATE_PROFILE_DATA);
+            this.transitionTo(UserAgentStateManager$STATES.NEED_VALIDATE_PROFILE_DATA);
         }
     }
     
@@ -226,7 +226,7 @@ public class UserAgentStateManager implements Callback
                     if (StringUtils.isNotEmpty(s)) {
                         Log.w("nf_service_useragentstate", "@init no device account but has current account key " + s);
                     }
-                    this.transitionTo(STATES.NEED_CREATE_DEVACC);
+                    this.transitionTo(UserAgentStateManager$STATES.NEED_CREATE_DEVACC);
                     return;
                 }
             }
@@ -237,7 +237,7 @@ public class UserAgentStateManager implements Callback
             if (this.mCurrentDeviceAcc == null) {
                 this.mCurrentDeviceAcc = deviceAccounts[0];
             }
-            this.transitionTo(STATES.NEED_SELECT_DEVACC);
+            this.transitionTo(UserAgentStateManager$STATES.NEED_SELECT_DEVACC);
         }
     }
     
@@ -274,7 +274,7 @@ public class UserAgentStateManager implements Callback
             }
         }
         if (!this.fallbackToPrimaryAccount()) {
-            this.transitionTo(STATES.FATAL_ERROR);
+            this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
         }
     }
     
@@ -285,30 +285,30 @@ public class UserAgentStateManager implements Callback
         }
     }
     
-    private void transitionTo(final STATES mState) {
-        final STATES mState2 = this.mState;
+    private void transitionTo(final UserAgentStateManager$STATES mState) {
+        final UserAgentStateManager$STATES mState2 = this.mState;
         this.mState = mState;
-        switch (mState) {
+        switch (UserAgentStateManager$1.$SwitchMap$com$netflix$mediaclient$service$user$UserAgentStateManager$STATES[mState.ordinal()]) {
             default: {
                 Log.d("nf_service_useragentstate", "@state default");
                 break;
             }
-            case INIT: {
+            case 1: {
                 Log.d("nf_service_useragentstate", "@state INIT");
                 this.init();
             }
-            case NEED_ACTIVATE_PROFILE: {
+            case 2: {
                 Log.d("nf_service_useragentstate", "@state NEED_ACTIVATE_PROFILE");
                 if (this.mRegistration != null) {
                     this.mRegistration.tokenActivate(this.mToken);
                 }
                 this.mToken = null;
             }
-            case NEED_CHANGE_PROFILE_FROM_PRIMARY: {
+            case 3: {
                 Log.d("nf_service_useragentstate", "@state NEED_CHANGE_PROFILE_FROM_PRIMARY");
                 this.mUserAgent.switchWebUserProfile(this.mProfileId);
             }
-            case NEED_CHANGE_PROFILE: {
+            case 4: {
                 Log.d("nf_service_useragentstate", "@state NEED_CHANGE_PROFILE");
                 if (this.mCurrentDeviceAcc != null) {
                     this.mRegistration.deactivate(this.mCurrentDeviceAcc, null);
@@ -316,13 +316,13 @@ public class UserAgentStateManager implements Callback
                 this.mUserAgent.profileInactive();
                 this.mUserAgent.switchWebUserProfile(this.mProfileId);
             }
-            case NEED_CREATE_DEVACC: {
+            case 5: {
                 Log.d("nf_service_useragentstate", "@state NEED_CREATE_DEVACC");
                 this.mUserAgent.profileInactive();
                 this.mUserAgent.userAccountInactive();
                 this.mRegistration.createDeviceAccount(this);
             }
-            case NEED_DEACTIVATE_ACC: {
+            case 6: {
                 Log.d("nf_service_useragentstate", "@state NEED_DEACTIVATE_ACC");
                 final DeviceAccount nextAccountToDeactivate = this.getNextAccountToDeactivate();
                 if (nextAccountToDeactivate != null) {
@@ -331,7 +331,7 @@ public class UserAgentStateManager implements Callback
                 }
                 this.cleanupAfterDeactivation();
             }
-            case NEED_EMAIL_ACTIVATE: {
+            case 7: {
                 Log.d("nf_service_useragentstate", "@state NEED_EMAIL_ACTIVATE");
                 if (this.mRegistration != null) {
                     this.mRegistration.emailActivate(this.mEmail, this.mPassword);
@@ -339,7 +339,7 @@ public class UserAgentStateManager implements Callback
                 }
                 break;
             }
-            case NEED_ESN_MIGRATION: {
+            case 8: {
                 Log.d("nf_service_useragentstate", "@state NEED_ESN_MIGRATION");
                 if (this.mRegistration != null) {
                     this.mRegistration.esnMigration();
@@ -347,52 +347,52 @@ public class UserAgentStateManager implements Callback
                 }
                 break;
             }
-            case NEED_FETCH_PROFILE_DATA: {
+            case 9: {
                 Log.d("nf_service_useragentstate", "@state NEED_FETCH_PROFILE_DATA");
                 this.mUserAgent.userAccountActivated(this.mCurrentDeviceAcc);
                 this.mUserAgent.fetchAccountData();
             }
-            case NEED_SELECT_DEVACC: {
+            case 10: {
                 Log.d("nf_service_useragentstate", "@state NEED_SELECT_DEVACC");
                 this.mProfileMap.setCurrentAccount(this.mProfileId, this.mCurrentDeviceAcc.getAccountKey());
                 this.mRegistration.selectDeviceAccount(this.mCurrentDeviceAcc, this);
             }
-            case NEED_TOKEN_ACTIVATE: {
+            case 11: {
                 Log.d("nf_service_useragentstate", "@state NEED_TOKEN_ACTIVATE");
                 if (this.mRegistration != null) {
                     this.mRegistration.tokenActivate(this.mToken);
                 }
                 this.mToken = null;
             }
-            case NEED_VALIDATE_PROFILE_DATA: {
+            case 12: {
                 Log.d("nf_service_useragentstate", "@state NEED_VALIDATE_PROFILE_DATA");
                 this.mUserAgent.userAccountActivated(this.mCurrentDeviceAcc);
                 this.mUserAgent.fetchAccountData();
             }
-            case PROFILE_ACTIVATED: {
+            case 13: {
                 Log.d("nf_service_useragentstate", "@state PROFILE_ACTIVATED");
                 this.mUserAgent.profileActivated(this.mProfileId, this.mCurrentDeviceAcc);
                 this.signalInitilizationCompleted();
             }
-            case WAIT_ACTIVATE_ACC: {
+            case 14: {
                 Log.d("nf_service_useragentstate", "@state WAIT_ACTIVATE_ACC");
                 this.signalInitilizationCompleted();
             }
-            case WAIT_SELECT_PROFILE: {
+            case 15: {
                 Log.d("nf_service_useragentstate", "@state WAIT_SELECT_PROFILE");
                 this.signalInitilizationCompleted();
                 this.mUserAgent.readyToSelectProfile();
             }
-            case FATAL_ERROR: {
+            case 16: {
                 Log.d("nf_service_useragentstate", "@state FATAL_ERROR");
                 this.mErrorLogger.logHandledException("FATAL_ERROR in user agent state - prev state: " + mState2);
-                this.transitionTo(STATES.NEED_DEACTIVATE_ACC);
+                this.transitionTo(UserAgentStateManager$STATES.NEED_DEACTIVATE_ACC);
             }
         }
     }
     
-    private boolean validateState(final STATES states, final String s) {
-        if (this.mState == states) {
+    private boolean validateState(final UserAgentStateManager$STATES userAgentStateManager$STATES, final String s) {
+        if (this.mState == userAgentStateManager$STATES) {
             if (Log.isLoggable("nf_service_useragentstate", 3)) {
                 Log.d("nf_service_useragentstate", s + " in expected state");
             }
@@ -408,7 +408,7 @@ public class UserAgentStateManager implements Callback
         }
         while (true) {
             synchronized (this.mState) {
-                if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed") && !b) {
+                if (this.validateState(UserAgentStateManager$STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed") && !b) {
                     this.mUserAgent.userAccountDataResult(status);
                 }
                 else {
@@ -416,20 +416,20 @@ public class UserAgentStateManager implements Callback
                 }
                 if (status.getStatusCode() == StatusCode.USER_NOT_AUTHORIZED) {
                     if (!this.isProfileIdValid() || !this.fallbackToPrimaryAccount()) {
-                        this.transitionTo(STATES.FATAL_ERROR);
+                        this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
                     }
                     return;
                 }
             }
-            if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed")) {
+            if (this.validateState(UserAgentStateManager$STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed")) {
                 if (b) {
-                    this.transitionTo(STATES.WAIT_SELECT_PROFILE);
+                    this.transitionTo(UserAgentStateManager$STATES.WAIT_SELECT_PROFILE);
                     return;
                 }
-                this.transitionTo(STATES.FATAL_ERROR);
+                this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
             }
-            else if (this.validateState(STATES.NEED_VALIDATE_PROFILE_DATA, "accountDataFetchFailed")) {
-                this.transitionTo(STATES.PROFILE_ACTIVATED);
+            else if (this.validateState(UserAgentStateManager$STATES.NEED_VALIDATE_PROFILE_DATA, "accountDataFetchFailed")) {
+                this.transitionTo(UserAgentStateManager$STATES.PROFILE_ACTIVATED);
             }
         }
     }
@@ -440,20 +440,20 @@ public class UserAgentStateManager implements Callback
             Label_0090: {
                 synchronized (this.mState) {
                     this.mUserAgent.userAccountDataResult(CommonStatus.OK);
-                    if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetched")) {
-                        this.transitionTo(STATES.WAIT_SELECT_PROFILE);
+                    if (this.validateState(UserAgentStateManager$STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetched")) {
+                        this.transitionTo(UserAgentStateManager$STATES.WAIT_SELECT_PROFILE);
                     }
-                    else if (this.validateState(STATES.NEED_VALIDATE_PROFILE_DATA, "accountDataFetched")) {
+                    else if (this.validateState(UserAgentStateManager$STATES.NEED_VALIDATE_PROFILE_DATA, "accountDataFetched")) {
                         if (!this.isCurrentProfileValid(accountData.getUserProfiles())) {
                             break Label_0090;
                         }
-                        this.transitionTo(STATES.PROFILE_ACTIVATED);
+                        this.transitionTo(UserAgentStateManager$STATES.PROFILE_ACTIVATED);
                     }
                     return;
                 }
             }
             if (!this.fallbackToPrimaryAccount()) {
-                this.transitionTo(STATES.FATAL_ERROR);
+                this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
             }
         }
     }
@@ -465,7 +465,7 @@ public class UserAgentStateManager implements Callback
             Label_0180:
                 while (true) {
                     synchronized (this.mState) {
-                        if (!this.validateState(STATES.NEED_TOKEN_ACTIVATE, "accountOrProfileActivated") && !this.validateState(STATES.NEED_EMAIL_ACTIVATE, "accountOrProfileActivated") && !this.validateState(STATES.NEED_ACTIVATE_PROFILE, "accountOrProfileActivated") && !this.validateState(STATES.NEED_ESN_MIGRATION, "accountOrProfileActivated")) {
+                        if (!this.validateState(UserAgentStateManager$STATES.NEED_TOKEN_ACTIVATE, "accountOrProfileActivated") && !this.validateState(UserAgentStateManager$STATES.NEED_EMAIL_ACTIVATE, "accountOrProfileActivated") && !this.validateState(UserAgentStateManager$STATES.NEED_ACTIVATE_PROFILE, "accountOrProfileActivated") && !this.validateState(UserAgentStateManager$STATES.NEED_ESN_MIGRATION, "accountOrProfileActivated")) {
                             Log.d("nf_service_useragentstate", "@event accountOrProfileActivated not expected, ignored");
                             return;
                         }
@@ -477,8 +477,8 @@ public class UserAgentStateManager implements Callback
                             this.mCurrentDeviceAcc.setNetflixId(netflixId);
                             this.mCurrentDeviceAcc.setSecureId(secureId);
                             this.setNetflixIdToNrdpAccount(netflixId, secureId);
-                            if (this.validateState(STATES.NEED_TOKEN_ACTIVATE, "accountOrProfileActivated") || this.validateState(STATES.NEED_EMAIL_ACTIVATE, "accountOrProfileActivated")) {
-                                this.transitionTo(STATES.NEED_FETCH_PROFILE_DATA);
+                            if (this.validateState(UserAgentStateManager$STATES.NEED_TOKEN_ACTIVATE, "accountOrProfileActivated") || this.validateState(UserAgentStateManager$STATES.NEED_EMAIL_ACTIVATE, "accountOrProfileActivated")) {
+                                this.transitionTo(UserAgentStateManager$STATES.NEED_FETCH_PROFILE_DATA);
                                 return;
                             }
                             break Label_0180;
@@ -487,27 +487,27 @@ public class UserAgentStateManager implements Callback
                     final int n = 0;
                     continue;
                 }
-                if (this.validateState(STATES.NEED_ACTIVATE_PROFILE, "accountOrProfileActivated")) {
-                    this.transitionTo(STATES.PROFILE_ACTIVATED);
+                if (this.validateState(UserAgentStateManager$STATES.NEED_ACTIVATE_PROFILE, "accountOrProfileActivated")) {
+                    this.transitionTo(UserAgentStateManager$STATES.PROFILE_ACTIVATED);
                     return;
                 }
-                if (!this.validateState(STATES.NEED_ESN_MIGRATION, "accountOrProfileActivated")) {
+                if (!this.validateState(UserAgentStateManager$STATES.NEED_ESN_MIGRATION, "accountOrProfileActivated")) {
                     return;
                 }
                 if (this.isProfileIdValid()) {
-                    this.transitionTo(STATES.PROFILE_ACTIVATED);
+                    this.transitionTo(UserAgentStateManager$STATES.PROFILE_ACTIVATED);
                     return;
                 }
-                this.transitionTo(STATES.NEED_FETCH_PROFILE_DATA);
+                this.transitionTo(UserAgentStateManager$STATES.NEED_FETCH_PROFILE_DATA);
                 return;
             }
             if (!this.isProfileIdValid()) {
-                this.transitionTo(STATES.WAIT_ACTIVATE_ACC);
+                this.transitionTo(UserAgentStateManager$STATES.WAIT_ACTIVATE_ACC);
                 return;
             }
             this.mUserAgent.selectProfileResult(new NetflixStatus(StatusCode.NRD_ERROR));
             if (!this.fallbackToPrimaryAccount()) {
-                this.transitionTo(STATES.FATAL_ERROR);
+                this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
             }
         }
     }
@@ -515,12 +515,12 @@ public class UserAgentStateManager implements Callback
     public boolean activateAccByEmailPassword(final String mEmail, final String mPassword) {
         Log.d("nf_service_useragentstate", "@event activateAccByEmailPassword");
         synchronized (this.mState) {
-            if (!this.validateState(STATES.WAIT_ACTIVATE_ACC, "activateAccByEmailPassword")) {
+            if (!this.validateState(UserAgentStateManager$STATES.WAIT_ACTIVATE_ACC, "activateAccByEmailPassword")) {
                 return false;
             }
             this.mEmail = mEmail;
             this.mPassword = mPassword;
-            this.transitionTo(STATES.NEED_EMAIL_ACTIVATE);
+            this.transitionTo(UserAgentStateManager$STATES.NEED_EMAIL_ACTIVATE);
             return true;
         }
     }
@@ -528,11 +528,11 @@ public class UserAgentStateManager implements Callback
     public boolean activateAccByToken(final ActivationTokens mToken) {
         Log.d("nf_service_useragentstate", "@event activateAccByToken");
         synchronized (this.mState) {
-            if (!this.validateState(STATES.WAIT_ACTIVATE_ACC, "activateAccByToken")) {
+            if (!this.validateState(UserAgentStateManager$STATES.WAIT_ACTIVATE_ACC, "activateAccByToken")) {
                 return false;
             }
             this.mToken = mToken;
-            this.transitionTo(STATES.NEED_TOKEN_ACTIVATE);
+            this.transitionTo(UserAgentStateManager$STATES.NEED_TOKEN_ACTIVATE);
             return true;
         }
     }
@@ -589,7 +589,7 @@ public class UserAgentStateManager implements Callback
                 UserAgentBroadcastIntents.signalProfileInvalid(context);
                 return;
             }
-            this.transitionTo(STATES.FATAL_ERROR);
+            this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
         }
     }
     
@@ -605,7 +605,7 @@ public class UserAgentStateManager implements Callback
                         this.mCurrentDeviceAcc = this.getAccountWithKey(this.mRegistration.getDeviceAccounts(), (String)acccountKeyFromProfileId);
                     }
                     if (this.mCurrentDeviceAcc != null) {
-                        this.transitionTo(STATES.NEED_SELECT_DEVACC);
+                        this.transitionTo(UserAgentStateManager$STATES.NEED_SELECT_DEVACC);
                         return;
                     }
                 }
@@ -613,12 +613,12 @@ public class UserAgentStateManager implements Callback
                     Log.e("nf_service_useragentstate", "profileSwitched failed with userBoundCookies " + acccountKeyFromProfileId);
                     this.mUserAgent.selectProfileResult(CommonStatus.INTERNAL_ERROR);
                     if (!this.fallbackToPrimaryAccount()) {
-                        this.transitionTo(STATES.FATAL_ERROR);
+                        this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
                     }
                     return;
                 }
             }
-            this.transitionTo(STATES.NEED_CREATE_DEVACC);
+            this.transitionTo(UserAgentStateManager$STATES.NEED_CREATE_DEVACC);
         }
     }
     
@@ -633,25 +633,25 @@ public class UserAgentStateManager implements Callback
                     this.mUserAgent.selectProfileResult(status);
                     if (statusCode == StatusCode.USER_NOT_AUTHORIZED) {
                         if (!this.fallbackToPrimaryAccount()) {
-                            this.transitionTo(STATES.FATAL_ERROR);
+                            this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
                         }
                     }
                     else {
                         if (statusCode != StatusCode.NETWORK_ERROR) {
                             break Label_0118;
                         }
-                        this.transitionTo(STATES.WAIT_SELECT_PROFILE);
+                        this.transitionTo(UserAgentStateManager$STATES.WAIT_SELECT_PROFILE);
                     }
                     return;
                 }
             }
-            if (this.validateState(STATES.NEED_CHANGE_PROFILE_FROM_PRIMARY, "profileSwitchedFailed")) {
+            if (this.validateState(UserAgentStateManager$STATES.NEED_CHANGE_PROFILE_FROM_PRIMARY, "profileSwitchedFailed")) {
                 if (!this.fallbackToPrimaryAccount()) {
-                    this.transitionTo(STATES.FATAL_ERROR);
+                    this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
                 }
             }
             else if (!this.fallbackToPrimaryAccount()) {
-                this.transitionTo(STATES.FATAL_ERROR);
+                this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
             }
         }
     }
@@ -660,27 +660,27 @@ public class UserAgentStateManager implements Callback
         while (true) {
             Log.d("nf_service_useragentstate", "@event selectNewProfile");
             synchronized (this.mState) {
-                if (!this.validateState(STATES.WAIT_SELECT_PROFILE, "selectNewProfile") && !this.validateState(STATES.PROFILE_ACTIVATED, "selectNewProfile")) {
+                if (!this.validateState(UserAgentStateManager$STATES.WAIT_SELECT_PROFILE, "selectNewProfile") && !this.validateState(UserAgentStateManager$STATES.PROFILE_ACTIVATED, "selectNewProfile")) {
                     return;
                 }
                 if (this.isProfileIdValid()) {
                     this.mCurrentDeviceAcc = null;
                     this.mProfileId = mProfileId;
-                    this.transitionTo(STATES.NEED_CHANGE_PROFILE);
+                    this.transitionTo(UserAgentStateManager$STATES.NEED_CHANGE_PROFILE);
                     return;
                 }
             }
             this.mCurrentDeviceAcc = null;
             final String mProfileId2;
             this.mProfileId = mProfileId2;
-            this.transitionTo(STATES.NEED_CHANGE_PROFILE_FROM_PRIMARY);
+            this.transitionTo(UserAgentStateManager$STATES.NEED_CHANGE_PROFILE_FROM_PRIMARY);
         }
     }
     
     public void signoutAcc() {
         Log.d("nf_service_useragentstate", "@event signoutAcc");
         synchronized (this.mState) {
-            this.transitionTo(STATES.NEED_DEACTIVATE_ACC);
+            this.transitionTo(UserAgentStateManager$STATES.NEED_DEACTIVATE_ACC);
         }
     }
     
@@ -694,50 +694,5 @@ public class UserAgentStateManager implements Callback
             // monitorexit(this.mState)
             return this.mCurrentDeviceAcc;
         }
-    }
-    
-    enum STATES
-    {
-        FATAL_ERROR, 
-        INIT, 
-        NEED_ACTIVATE_PROFILE, 
-        NEED_CHANGE_PROFILE, 
-        NEED_CHANGE_PROFILE_FROM_PRIMARY, 
-        NEED_CREATE_DEVACC, 
-        NEED_DEACTIVATE_ACC, 
-        NEED_EMAIL_ACTIVATE, 
-        NEED_ESN_MIGRATION, 
-        NEED_FETCH_PROFILE_DATA, 
-        NEED_SELECT_DEVACC, 
-        NEED_TOKEN_ACTIVATE, 
-        NEED_VALIDATE_PROFILE_DATA, 
-        PROFILE_ACTIVATED, 
-        WAIT_ACTIVATE_ACC, 
-        WAIT_SELECT_PROFILE;
-    }
-    
-    public interface StateManagerCallback
-    {
-        void fetchAccountData();
-        
-        void initialized(final Status p0);
-        
-        void profileActivated(final String p0, final DeviceAccount p1);
-        
-        void profileInactive();
-        
-        void readyToSelectProfile();
-        
-        void selectProfileResult(final Status p0);
-        
-        void switchWebUserProfile(final String p0);
-        
-        void userAccountActivated(final DeviceAccount p0);
-        
-        void userAccountDataResult(final Status p0);
-        
-        void userAccountDeactivated();
-        
-        void userAccountInactive();
     }
 }

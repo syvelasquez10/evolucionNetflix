@@ -4,6 +4,7 @@
 
 package com.google.android.gms.maps.model;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.List;
 import java.util.ArrayList;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -84,7 +85,7 @@ public class m implements Parcelable$Creator<PolygonOptions>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new PolygonOptions(g3, c3, list, i, g2, g, l, c4, c);
     }

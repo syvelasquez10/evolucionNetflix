@@ -13,7 +13,7 @@ import com.google.android.gms.drive.MetadataChangeSet;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import android.os.RemoteException;
-import com.google.android.gms.drive.internal.ae;
+import com.google.android.gms.drive.internal.ae$a;
 import com.google.android.gms.drive.internal.v;
 import com.google.android.gms.internal.jy;
 import android.os.IBinder;
@@ -80,7 +80,7 @@ public final class CompletionEvent implements SafeParcelable, ResourceEvent
             return;
         }
         try {
-            ae.a.X(this.NJ).L(b);
+            ae$a.X(this.NJ).L(b);
         }
         catch (RemoteException ex) {
             final StringBuilder append2 = new StringBuilder().append("RemoteException on ");

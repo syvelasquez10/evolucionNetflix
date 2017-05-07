@@ -4,6 +4,7 @@
 
 package android.support.v7.app;
 
+import android.support.v7.view.ActionMode$Callback;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.ActionMode;
@@ -12,6 +13,7 @@ import android.view.KeyEvent;
 import android.util.AttributeSet;
 import android.support.annotation.NonNull;
 import android.content.Context;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.os.Bundle;
 import android.content.res.Configuration;
@@ -20,13 +22,14 @@ import android.app.Activity;
 import android.support.v4.app.NavUtils;
 import android.content.Intent;
 import android.view.MenuInflater;
+import android.support.v4.app.ActionBarDrawerToggle$Delegate;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.app.TaskStackBuilder$SupportParentable;
+import android.support.v4.app.ActionBarDrawerToggle$DelegateProvider;
 import android.support.v4.app.FragmentActivity;
 
-public class ActionBarActivity extends FragmentActivity implements Callback, SupportParentable, ActionBarDrawerToggle.DelegateProvider, TmpDelegateProvider
+public class ActionBarActivity extends FragmentActivity implements ActionBarDrawerToggle$DelegateProvider, TaskStackBuilder$SupportParentable, ActionBar$Callback, ActionBarDrawerToggle$TmpDelegateProvider
 {
     private ActionBarActivityDelegate mDelegate;
     
@@ -42,7 +45,7 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
     }
     
     @Override
-    public final ActionBarDrawerToggle.Delegate getDrawerToggleDelegate() {
+    public final ActionBarDrawerToggle$Delegate getDrawerToggleDelegate() {
         return this.getDelegate().getDrawerToggleDelegate();
     }
     
@@ -61,7 +64,7 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
     
     @Nullable
     @Override
-    public ActionBarDrawerToggle.Delegate getV7DrawerToggleDelegate() {
+    public android.support.v7.app.ActionBarDrawerToggle$Delegate getV7DrawerToggleDelegate() {
         return this.getDelegate().getV7DrawerToggleDelegate();
     }
     
@@ -247,8 +250,8 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
         this.getDelegate().setSupportProgressBarVisibility(supportProgressBarVisibility);
     }
     
-    public ActionMode startSupportActionMode(final ActionMode.Callback callback) {
-        return this.getDelegate().startSupportActionMode(callback);
+    public ActionMode startSupportActionMode(final ActionMode$Callback actionMode$Callback) {
+        return this.getDelegate().startSupportActionMode(actionMode$Callback);
     }
     
     void superAddContentView(final View view, final ViewGroup$LayoutParams viewGroup$LayoutParams) {

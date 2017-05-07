@@ -20,7 +20,7 @@ public final class FieldAttributes
         this.field = field;
     }
     
-    Object get(final Object o) throws IllegalAccessException {
+    Object get(final Object o) {
         return this.field.get(o);
     }
     

@@ -4,8 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
-
 public abstract class pg<M extends pg<M>> extends pm
 {
     protected pi awy;
@@ -21,7 +19,7 @@ public abstract class pg<M extends pg<M>> extends pm
     }
     
     @Override
-    public void a(final pf pf) throws IOException {
+    public void a(final pf pf) {
         if (this.awy != null) {
             for (int i = 0; i < this.awy.size(); ++i) {
                 this.awy.gE(i).a(pf);
@@ -29,7 +27,7 @@ public abstract class pg<M extends pg<M>> extends pm
         }
     }
     
-    protected final boolean a(final pe pe, final int n) throws IOException {
+    protected final boolean a(final pe pe, final int n) {
         final int position = pe.getPosition();
         if (!pe.gm(n)) {
             return false;

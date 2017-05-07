@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -42,7 +43,7 @@ public class ao implements Parcelable$Creator<OnListParentsResponse>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new OnListParentsResponse(g, dataHolder);
     }

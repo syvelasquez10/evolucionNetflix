@@ -5,12 +5,10 @@
 package com.netflix.mediaclient.service.pushnotification;
 
 import android.net.Uri;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.Notification$BigTextStyle;
-import android.graphics.Bitmap;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.StringUtils;
 import android.app.Notification$BigPictureStyle;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
@@ -24,27 +22,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
 {
     private static void addBigPicture(final Context context, final Payload payload, final Notification$BigPictureStyle notification$BigPictureStyle, final int n, final ImageLoader imageLoader, final ErrorLogging errorLogging) {
         if (!StringUtils.isEmpty(payload.largeIcon) && imageLoader != null) {
-            imageLoader.getImg(payload.bigViewPicture, IClientLogging.AssetType.merchStill, 0, 0, (ImageLoader.ImageLoaderListener)new ImageLoader.ImageLoaderListener() {
-                @Override
-                public void onErrorResponse(final String s) {
-                    if (Log.isLoggable("nf_push", 6)) {
-                        Log.e("nf_push", "Failed to downlod " + payload.largeIcon + ". Reason: " + s);
-                    }
-                    NotificationBuilder.sendNotification(context, notification$BigPictureStyle.build(), n, errorLogging);
-                }
-                
-                @Override
-                public void onResponse(final Bitmap bitmap, final String s) {
-                    if (Log.isLoggable("nf_push", 3)) {
-                        Log.d("nf_push", "Image is downloaded " + payload.bigViewPicture + " from " + s);
-                    }
-                    if (bitmap != null) {
-                        notification$BigPictureStyle.bigPicture(bitmap);
-                    }
-                    Log.d("nf_push", "Large icon image set!");
-                    NotificationBuilder.sendNotification(context, notification$BigPictureStyle.build(), n, errorLogging);
-                }
-            });
+            imageLoader.getImg(payload.bigViewPicture, IClientLogging$AssetType.merchStill, 0, 0, new NotificationBuilderJellyBean$2(payload, notification$BigPictureStyle, context, n, errorLogging));
             return;
         }
         Log.d("nf_push", "Large picture view was not set");
@@ -98,12 +76,12 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
             try {
                 notification$Builder.setSound(NotificationBuilder.getSound(payload.sound), 5);
                 notification$Builder.setSubText((CharSequence)payload.subtext);
-                final Payload.Action[] actions = payload.getActions();
+                final Payload$Action[] actions = payload.getActions();
                 for (int length = actions.length, i = 0; i < length; ++i) {
-                    final Payload.Action action = actions[i];
-                    final Uri payload2 = action.getPayload();
+                    final Payload$Action payload$Action = actions[i];
+                    final Uri payload2 = payload$Action.getPayload();
                     if (payload2 != null) {
-                        notification$Builder.addAction(action.getIcon(), (CharSequence)action.text, NotificationBuilder.getNotificationOpenedIntent(context, payload2, payload));
+                        notification$Builder.addAction(payload$Action.getIcon(), (CharSequence)payload$Action.text, NotificationBuilder.getNotificationOpenedIntent(context, payload2, payload));
                     }
                 }
             }
@@ -114,34 +92,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
             break;
         }
         if (!StringUtils.isEmpty(payload.largeIcon) && imageLoader != null) {
-            imageLoader.getImg(payload.largeIcon, IClientLogging.AssetType.boxArt, 0, 0, (ImageLoader.ImageLoaderListener)new ImageLoader.ImageLoaderListener() {
-                @Override
-                public void onErrorResponse(final String s) {
-                    if (Log.isLoggable("nf_push", 6)) {
-                        Log.e("nf_push", "Failed to downlod " + payload.largeIcon + ". Reason: " + s);
-                    }
-                    addBigView(context, payload, notification$Builder, n, imageLoader, errorLogging);
-                }
-                
-                @Override
-                public void onResponse(Bitmap squaredBitmap, final String s) {
-                    if (Log.isLoggable("nf_push", 3)) {
-                        Log.d("nf_push", "Image is downloaded " + payload.largeIcon + " from " + s);
-                    }
-                    if (squaredBitmap != null) {
-                        if (AndroidUtils.getAndroidVersion() >= 21) {
-                            squaredBitmap = ViewUtils.createSquaredBitmap(squaredBitmap);
-                            notification$Builder.setLargeIcon(squaredBitmap);
-                            notification$Builder.setColor(context.getResources().getColor(2131296356));
-                        }
-                        else {
-                            notification$Builder.setLargeIcon(squaredBitmap);
-                        }
-                    }
-                    addBigView(context, payload, notification$Builder, n, imageLoader, errorLogging);
-                    Log.d("nf_push", "Large icon image set!");
-                }
-            });
+            imageLoader.getImg(payload.largeIcon, IClientLogging$AssetType.boxArt, 0, 0, new NotificationBuilderJellyBean$1(payload, notification$Builder, context, n, imageLoader, errorLogging));
             return;
         }
         Log.d("nf_push", "Icon was not set");

@@ -7,6 +7,7 @@ package com.google.android.gms.games.leaderboard;
 import com.google.android.gms.common.data.Freezable;
 import com.google.android.gms.internal.jv;
 import android.database.CharArrayBuffer;
+import com.google.android.gms.common.internal.m$a;
 import com.google.android.gms.common.internal.m;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.common.internal.n;
@@ -78,7 +79,7 @@ public final class LeaderboardScoreEntity implements LeaderboardScore
     }
     
     static String b(final LeaderboardScore leaderboardScore) {
-        final m.a a = m.h(leaderboardScore).a("Rank", leaderboardScore.getRank()).a("DisplayRank", leaderboardScore.getDisplayRank()).a("Score", leaderboardScore.getRawScore()).a("DisplayScore", leaderboardScore.getDisplayScore()).a("Timestamp", leaderboardScore.getTimestampMillis()).a("DisplayName", leaderboardScore.getScoreHolderDisplayName()).a("IconImageUri", leaderboardScore.getScoreHolderIconImageUri()).a("IconImageUrl", leaderboardScore.getScoreHolderIconImageUrl()).a("HiResImageUri", leaderboardScore.getScoreHolderHiResImageUri()).a("HiResImageUrl", leaderboardScore.getScoreHolderHiResImageUrl());
+        final m$a a = m.h(leaderboardScore).a("Rank", leaderboardScore.getRank()).a("DisplayRank", leaderboardScore.getDisplayRank()).a("Score", leaderboardScore.getRawScore()).a("DisplayScore", leaderboardScore.getDisplayScore()).a("Timestamp", leaderboardScore.getTimestampMillis()).a("DisplayName", leaderboardScore.getScoreHolderDisplayName()).a("IconImageUri", leaderboardScore.getScoreHolderIconImageUri()).a("IconImageUrl", leaderboardScore.getScoreHolderIconImageUrl()).a("HiResImageUri", leaderboardScore.getScoreHolderHiResImageUri()).a("HiResImageUrl", leaderboardScore.getScoreHolderHiResImageUrl());
         Object scoreHolder;
         if (leaderboardScore.getScoreHolder() == null) {
             scoreHolder = null;

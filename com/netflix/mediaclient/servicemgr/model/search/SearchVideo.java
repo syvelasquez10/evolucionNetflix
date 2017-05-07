@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr.model.search;
 
+import com.netflix.model.branches.FalkorValidator;
 import com.netflix.mediaclient.servicemgr.model.Video;
 
-public interface SearchVideo extends Video
+public interface SearchVideo extends Video, FalkorValidator
 {
     String getCertification();
     

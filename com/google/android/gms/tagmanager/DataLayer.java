@@ -6,6 +6,7 @@ package com.google.android.gms.tagmanager;
 
 import java.util.concurrent.CountedCompleter;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.LockSupport;
@@ -38,13 +39,12 @@ import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.Iterator;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -59,9 +59,9 @@ public class DataLayer
     static final String[] aov;
     private static final Pattern aow;
     private final LinkedList<Map<String, Object>> aoA;
-    private final c aoB;
+    private final DataLayer$c aoB;
     private final CountDownLatch aoC;
-    private final ConcurrentHashMap<b, Integer> aox;
+    private final ConcurrentHashMap<DataLayer$b, Integer> aox;
     private final Map<String, Object> aoy;
     private final ReentrantLock aoz;
     
@@ -72,25 +72,12 @@ public class DataLayer
     }
     
     DataLayer() {
-        this((c)new c() {
-            @Override
-            public void a(final c.a a) {
-                a.g(new ArrayList<DataLayer.a>());
-            }
-            
-            @Override
-            public void a(final List<DataLayer.a> list, final long n) {
-            }
-            
-            @Override
-            public void cu(final String s) {
-            }
-        });
+        this(new DataLayer$1());
     }
     
-    DataLayer(final c aoB) {
+    DataLayer(final DataLayer$c aoB) {
         this.aoB = aoB;
-        this.aox = new ConcurrentHashMap<b, Integer>();
+        this.aox = new ConcurrentHashMap<DataLayer$b, Integer>();
         this.aoy = new HashMap<String, Object>();
         this.aoz = new ReentrantLock();
         this.aoA = new LinkedList<Map<String, Object>>();
@@ -117,7 +104,7 @@ public class DataLayer
         if (h == null) {
             return;
         }
-        final List<a> j = this.J(map);
+        final List<DataLayer$a> j = this.J(map);
         j.remove("gtm.lifetime");
         this.aoB.a(j, h);
     }
@@ -151,8 +138,8 @@ public class DataLayer
         return o;
     }
     
-    private List<a> J(final Map<String, Object> map) {
-        final ArrayList<a> list = new ArrayList<a>();
+    private List<DataLayer$a> J(final Map<String, Object> map) {
+        final ArrayList<DataLayer$a> list = new ArrayList<DataLayer$a>();
         this.a(map, "", list);
         return list;
     }
@@ -169,13 +156,13 @@ public class DataLayer
     }
     
     private void L(final Map<String, Object> map) {
-        final Iterator<b> iterator = this.aox.keySet().iterator();
+        final Iterator<DataLayer$b> iterator = this.aox.keySet().iterator();
         while (iterator.hasNext()) {
             iterator.next().D(map);
         }
     }
     
-    private void a(final Map<String, Object> map, final String s, final Collection<a> collection) {
+    private void a(final Map<String, Object> map, final String s, final Collection<DataLayer$a> collection) {
         for (final Map.Entry<String, Object> entry : map.entrySet()) {
             final StringBuilder append = new StringBuilder().append(s);
             String s2;
@@ -193,7 +180,7 @@ public class DataLayer
                 if (string.equals("gtm.lifetime")) {
                     continue;
                 }
-                collection.add(new a(string, entry.getValue()));
+                collection.add(new DataLayer$a(string, entry.getValue()));
             }
         }
     }
@@ -267,15 +254,7 @@ public class DataLayer
     }
     
     private void oc() {
-        this.aoB.a((c.a)new c.a() {
-            @Override
-            public void g(final List<DataLayer.a> list) {
-                for (final DataLayer.a a : list) {
-                    DataLayer.this.F(DataLayer.this.c(a.JH, a.wq));
-                }
-                DataLayer.this.aoC.countDown();
-            }
-        });
+        this.aoB.a(new DataLayer$2(this));
     }
     
     private void od() {
@@ -294,8 +273,8 @@ public class DataLayer
         }
     }
     
-    void a(final b b) {
-        this.aox.put(b, 0);
+    void a(final DataLayer$b dataLayer$b) {
+        this.aox.put(dataLayer$b, 0);
     }
     
     void a(final Map<String, Object> map, final Map<String, Object> map2) {
@@ -425,56 +404,5 @@ public class DataLayer
         final StringBuilder sb2;
         // monitorexit(map)
         return sb2.toString();
-    }
-    
-    static final class a
-    {
-        public final String JH;
-        public final Object wq;
-        
-        a(final String jh, final Object wq) {
-            this.JH = jh;
-            this.wq = wq;
-        }
-        
-        @Override
-        public boolean equals(final Object o) {
-            if (o instanceof a) {
-                final a a = (a)o;
-                if (this.JH.equals(a.JH) && this.wq.equals(a.wq)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(new Integer[] { this.JH.hashCode(), this.wq.hashCode() });
-        }
-        
-        @Override
-        public String toString() {
-            return "Key: " + this.JH + " value: " + this.wq.toString();
-        }
-    }
-    
-    interface b
-    {
-        void D(final Map<String, Object> p0);
-    }
-    
-    interface c
-    {
-        void a(final a p0);
-        
-        void a(final List<DataLayer.a> p0, final long p1);
-        
-        void cu(final String p0);
-        
-        public interface a
-        {
-            void g(final List<DataLayer.a> p0);
-        }
     }
 }

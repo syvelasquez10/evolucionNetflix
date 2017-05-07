@@ -4,10 +4,6 @@
 
 package android.support.v7.internal.widget;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.view.View$BaseSavedState;
-import android.util.SparseArray;
 import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup;
@@ -26,7 +22,7 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
     SpinnerAdapter mAdapter;
     private DataSetObserver mDataSetObserver;
     int mHeightMeasureSpec;
-    final RecycleBin mRecycler;
+    final AbsSpinnerCompat$RecycleBin mRecycler;
     int mSelectionBottomPadding;
     int mSelectionLeftPadding;
     int mSelectionRightPadding;
@@ -42,7 +38,7 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
         this.mSelectionRightPadding = 0;
         this.mSelectionBottomPadding = 0;
         this.mSpinnerPadding = new Rect();
-        this.mRecycler = new RecycleBin();
+        this.mRecycler = new AbsSpinnerCompat$RecycleBin(this);
         this.initAbsSpinner();
     }
     
@@ -57,12 +53,8 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
         this.mSelectionRightPadding = 0;
         this.mSelectionBottomPadding = 0;
         this.mSpinnerPadding = new Rect();
-        this.mRecycler = new RecycleBin();
+        this.mRecycler = new AbsSpinnerCompat$RecycleBin(this);
         this.initAbsSpinner();
-    }
-    
-    static /* synthetic */ void access$000(final AbsSpinnerCompat absSpinnerCompat, final View view, final boolean b) {
-        absSpinnerCompat.removeDetachedView(view, b);
     }
     
     private void initAbsSpinner() {
@@ -143,81 +135,73 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
         if (this.mDataChanged) {
             this.handleDataChanged();
         }
-        final boolean b = false;
-        final boolean b2 = false;
-        final boolean b3 = true;
         final int selectedItemPosition = this.getSelectedItemPosition();
-        boolean b4 = b3;
-        int n = b ? 1 : 0;
-        int n2 = b2 ? 1 : 0;
-        if (selectedItemPosition >= 0) {
-            b4 = b3;
-            n = (b ? 1 : 0);
-            n2 = (b2 ? 1 : 0);
-            if (this.mAdapter != null) {
-                b4 = b3;
-                n = (b ? 1 : 0);
-                n2 = (b2 ? 1 : 0);
-                if (selectedItemPosition < this.mAdapter.getCount()) {
-                    View view;
-                    if ((view = this.mRecycler.get(selectedItemPosition)) == null) {
-                        view = this.mAdapter.getView(selectedItemPosition, (View)null, (ViewGroup)this);
-                    }
-                    b4 = b3;
-                    n = (b ? 1 : 0);
-                    n2 = (b2 ? 1 : 0);
-                    if (view != null) {
-                        this.mRecycler.put(selectedItemPosition, view);
-                        if (view.getLayoutParams() == null) {
-                            this.mBlockLayoutRequests = true;
-                            view.setLayoutParams(this.generateDefaultLayoutParams());
-                            this.mBlockLayoutRequests = false;
-                        }
-                        this.measureChild(view, mWidthMeasureSpec, mHeightMeasureSpec);
-                        n = this.getChildHeight(view) + this.mSpinnerPadding.top + this.mSpinnerPadding.bottom;
-                        n2 = this.getChildWidth(view) + this.mSpinnerPadding.left + this.mSpinnerPadding.right;
-                        b4 = false;
+        while (true) {
+            Label_0435: {
+                if (selectedItemPosition < 0 || this.mAdapter == null || selectedItemPosition >= this.mAdapter.getCount()) {
+                    break Label_0435;
+                }
+                View view;
+                if ((view = this.mRecycler.get(selectedItemPosition)) == null) {
+                    view = this.mAdapter.getView(selectedItemPosition, (View)null, (ViewGroup)this);
+                }
+                if (view == null) {
+                    break Label_0435;
+                }
+                this.mRecycler.put(selectedItemPosition, view);
+                if (view.getLayoutParams() == null) {
+                    this.mBlockLayoutRequests = true;
+                    view.setLayoutParams(this.generateDefaultLayoutParams());
+                    this.mBlockLayoutRequests = false;
+                }
+                this.measureChild(view, mWidthMeasureSpec, mHeightMeasureSpec);
+                int n = this.getChildHeight(view) + this.mSpinnerPadding.top + this.mSpinnerPadding.bottom;
+                final int n2 = this.getChildWidth(view) + this.mSpinnerPadding.left + this.mSpinnerPadding.right;
+                final int n3 = 0;
+                int n4 = n2;
+                if (n3 != 0) {
+                    final int n5 = this.mSpinnerPadding.top + this.mSpinnerPadding.bottom;
+                    n4 = n2;
+                    n = n5;
+                    if (mode == 0) {
+                        n4 = this.mSpinnerPadding.left + this.mSpinnerPadding.right;
+                        n = n5;
                     }
                 }
+                this.setMeasuredDimension(ViewCompat.resolveSizeAndState(Math.max(n4, this.getSuggestedMinimumWidth()), mWidthMeasureSpec, 0), ViewCompat.resolveSizeAndState(Math.max(n, this.getSuggestedMinimumHeight()), mHeightMeasureSpec, 0));
+                this.mHeightMeasureSpec = mHeightMeasureSpec;
+                this.mWidthMeasureSpec = mWidthMeasureSpec;
+                return;
             }
+            final int n3 = 1;
+            final int n2 = 0;
+            int n = 0;
+            continue;
         }
-        int n3 = n;
-        int n4 = n2;
-        if (b4) {
-            n3 = this.mSpinnerPadding.top + this.mSpinnerPadding.bottom;
-            n4 = n2;
-            if (mode == 0) {
-                n4 = this.mSpinnerPadding.left + this.mSpinnerPadding.right;
-                n3 = n3;
-            }
-        }
-        this.setMeasuredDimension(ViewCompat.resolveSizeAndState(Math.max(n4, this.getSuggestedMinimumWidth()), mWidthMeasureSpec, 0), ViewCompat.resolveSizeAndState(Math.max(n3, this.getSuggestedMinimumHeight()), mHeightMeasureSpec, 0));
-        this.mHeightMeasureSpec = mHeightMeasureSpec;
-        this.mWidthMeasureSpec = mWidthMeasureSpec;
     }
     
     public void onRestoreInstanceState(final Parcelable parcelable) {
-        final SavedState savedState = (SavedState)parcelable;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        if (savedState.selectedId >= 0L) {
+        final AbsSpinnerCompat$SavedState absSpinnerCompat$SavedState = (AbsSpinnerCompat$SavedState)parcelable;
+        super.onRestoreInstanceState(absSpinnerCompat$SavedState.getSuperState());
+        if (absSpinnerCompat$SavedState.selectedId >= 0L) {
             this.mDataChanged = true;
             this.mNeedSync = true;
-            this.mSyncRowId = savedState.selectedId;
-            this.mSyncPosition = savedState.position;
+            this.mSyncRowId = absSpinnerCompat$SavedState.selectedId;
+            this.mSyncPosition = absSpinnerCompat$SavedState.position;
             this.mSyncMode = 0;
             this.requestLayout();
         }
     }
     
     public Parcelable onSaveInstanceState() {
-        final SavedState savedState = new SavedState(super.onSaveInstanceState());
-        savedState.selectedId = this.getSelectedItemId();
-        if (savedState.selectedId >= 0L) {
-            savedState.position = this.getSelectedItemPosition();
-            return (Parcelable)savedState;
+        final AbsSpinnerCompat$SavedState absSpinnerCompat$SavedState = new AbsSpinnerCompat$SavedState(super.onSaveInstanceState());
+        absSpinnerCompat$SavedState.selectedId = this.getSelectedItemId();
+        if (absSpinnerCompat$SavedState.selectedId >= 0L) {
+            absSpinnerCompat$SavedState.position = this.getSelectedItemPosition();
+            return (Parcelable)absSpinnerCompat$SavedState;
         }
-        savedState.position = -1;
-        return (Parcelable)savedState;
+        absSpinnerCompat$SavedState.position = -1;
+        return (Parcelable)absSpinnerCompat$SavedState;
     }
     
     public int pointToPosition(final int n, final int n2) {
@@ -240,7 +224,7 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
     
     void recycleAllViews() {
         final int childCount = this.getChildCount();
-        final RecycleBin mRecycler = this.mRecycler;
+        final AbsSpinnerCompat$RecycleBin mRecycler = this.mRecycler;
         final int mFirstPosition = this.mFirstPosition;
         for (int i = 0; i < childCount; ++i) {
             mRecycler.put(mFirstPosition + i, this.getChildAt(i));
@@ -278,7 +262,7 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
             this.mOldItemCount = this.mItemCount;
             this.mItemCount = this.mAdapter.getCount();
             this.checkFocus();
-            this.mDataSetObserver = new AdapterDataSetObserver(this);
+            this.mDataSetObserver = new AdapterViewCompat$AdapterDataSetObserver(this);
             this.mAdapter.registerDataSetObserver(this.mDataSetObserver);
             if (this.mItemCount > 0) {
                 n = 0;
@@ -315,77 +299,6 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
             this.setNextSelectedPositionInt(nextSelectedPositionInt);
             this.layout(nextSelectedPositionInt - mSelectedPosition, b);
             this.mBlockLayoutRequests = false;
-        }
-    }
-    
-    class RecycleBin
-    {
-        private final SparseArray<View> mScrapHeap;
-        
-        RecycleBin() {
-            this.mScrapHeap = (SparseArray<View>)new SparseArray();
-        }
-        
-        void clear() {
-            final SparseArray<View> mScrapHeap = this.mScrapHeap;
-            for (int size = mScrapHeap.size(), i = 0; i < size; ++i) {
-                final View view = (View)mScrapHeap.valueAt(i);
-                if (view != null) {
-                    AbsSpinnerCompat.access$000(AbsSpinnerCompat.this, view, true);
-                }
-            }
-            mScrapHeap.clear();
-        }
-        
-        View get(final int n) {
-            final View view = (View)this.mScrapHeap.get(n);
-            if (view != null) {
-                this.mScrapHeap.delete(n);
-            }
-            return view;
-        }
-        
-        public void put(final int n, final View view) {
-            this.mScrapHeap.put(n, (Object)view);
-        }
-    }
-    
-    static class SavedState extends View$BaseSavedState
-    {
-        public static final Parcelable$Creator<SavedState> CREATOR;
-        int position;
-        long selectedId;
-        
-        static {
-            CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                public SavedState createFromParcel(final Parcel parcel) {
-                    return new SavedState(parcel);
-                }
-                
-                public SavedState[] newArray(final int n) {
-                    return new SavedState[n];
-                }
-            };
-        }
-        
-        SavedState(final Parcel parcel) {
-            super(parcel);
-            this.selectedId = parcel.readLong();
-            this.position = parcel.readInt();
-        }
-        
-        SavedState(final Parcelable parcelable) {
-            super(parcelable);
-        }
-        
-        public String toString() {
-            return "AbsSpinner.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " selectedId=" + this.selectedId + " position=" + this.position + "}";
-        }
-        
-        public void writeToParcel(final Parcel parcel, final int n) {
-            super.writeToParcel(parcel, n);
-            parcel.writeLong(this.selectedId);
-            parcel.writeInt(this.position);
         }
     }
 }

@@ -5,6 +5,7 @@
 package com.google.android.gms.cast;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.images.WebImage;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcel;
@@ -93,7 +94,7 @@ public class b implements Parcelable$Creator<CastDevice>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new CastDevice(g4, o5, o4, o3, o2, o, g3, c, g2, g);
     }

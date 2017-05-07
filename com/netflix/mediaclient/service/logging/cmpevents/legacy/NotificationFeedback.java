@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.logging.cmpevents.legacy;
 
 import com.netflix.mediaclient.Log;
-import org.json.JSONException;
 import com.netflix.mediaclient.util.DeviceUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +36,7 @@ public class NotificationFeedback extends BaseCmpEvent implements Runnable
         this.mMsg = mMsg;
     }
     
-    private JSONObject getEvent(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials) throws JSONException {
+    private JSONObject getEvent(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials) {
         final JSONObject jsonObject = new JSONObject();
         BaseCmpEvent.addIfNotNull(jsonObject, "appName", "Android");
         BaseCmpEvent.addIfNotNull(jsonObject, "time", "" + System.currentTimeMillis());

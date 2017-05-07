@@ -4,24 +4,19 @@
 
 package com.netflix.mediaclient.ui.profiles;
 
-import android.content.res.Resources;
-import android.widget.ImageView;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 import java.util.ArrayList;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListAdapter;
+import android.widget.FrameLayout$LayoutParams;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.os.Parcelable;
 import android.content.Intent;
 import android.content.Context;
@@ -32,7 +27,7 @@ import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.widget.GridView;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class AvatarsGridActivity extends NetflixActivity
@@ -41,8 +36,8 @@ public class AvatarsGridActivity extends NetflixActivity
     private static final String EXTRA_CURRENT_AVATAR = "extra_current_avatar";
     private static final String EXTRA_DEFAULT_AVATAR = "extra_default_avatar";
     private static final String TAG = "AvatarsGridActivity";
-    private final ErrorWrapper.Callback errorCallback;
-    private ProfileAvatarAdapter mAdapter;
+    private final ErrorWrapper$Callback errorCallback;
+    private AvatarsGridActivity$ProfileAvatarAdapter mAdapter;
     private List<AvatarInfo> mAvatars;
     private AvatarInfo mCurrentAvatar;
     private AvatarInfo mDefaultAvatar;
@@ -52,11 +47,7 @@ public class AvatarsGridActivity extends NetflixActivity
     private ServiceManager mServiceManager;
     
     public AvatarsGridActivity() {
-        this.errorCallback = new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-            }
-        };
+        this.errorCallback = new AvatarsGridActivity$2(this);
     }
     
     public static Intent getStartIntent(final Context context, final AvatarInfo avatarInfo, final AvatarInfo avatarInfo2) {
@@ -70,14 +61,14 @@ public class AvatarsGridActivity extends NetflixActivity
     }
     
     private void initUI() {
-        this.setContentView(2130903066);
-        this.mGridView = (GridView)this.findViewById(2131165297);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165296), this.errorCallback);
-        this.mAdapter = new ProfileAvatarAdapter();
+        this.setContentView(2130903068);
+        this.mGridView = (GridView)this.findViewById(2131165294);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165293), this.errorCallback);
+        this.mAdapter = new AvatarsGridActivity$ProfileAvatarAdapter(this, null);
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getResources().getString(2131493350));
-            netflixActionBar.setLogoType(NetflixActionBar.LogoType.GONE);
+            netflixActionBar.setTitle(this.getResources().getString(2131493293));
+            netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         }
     }
     
@@ -100,6 +91,14 @@ public class AvatarsGridActivity extends NetflixActivity
         this.mLoadingWrapper.hide(true);
     }
     
+    private void updateTopGridViewMargin() {
+        int topMargin = (int)this.getResources().getDimension(2131361948);
+        if (DeviceUtils.isNotTabletByContext((Context)this)) {
+            topMargin += (int)ViewUtils.getDefaultActionBarHeight((Context)this);
+        }
+        ((FrameLayout$LayoutParams)this.mGridView.getLayoutParams()).topMargin = topMargin;
+    }
+    
     private void updateUI() {
         boolean b;
         if (this.mServiceManager != null) {
@@ -113,66 +112,31 @@ public class AvatarsGridActivity extends NetflixActivity
             return;
         }
         this.showLoading(false, true);
+        this.updateTopGridViewMargin();
         this.mGridView.setAdapter((ListAdapter)this.mAdapter);
-        this.mGridView.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                final Intent intent = new Intent();
-                AvatarInfo access$500;
-                if (n == 0) {
-                    access$500 = AvatarsGridActivity.this.mDefaultAvatar;
-                }
-                else {
-                    access$500 = AvatarsGridActivity.this.mAvatars.get(n - 1);
-                }
-                intent.putExtra("avatar_name", (Parcelable)access$500);
-                AvatarsGridActivity.this.setResult(-1, intent);
-                AvatarsGridActivity.this.finish();
-            }
-        });
-        this.mGridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                AvatarsGridActivity.this.mAdapter.setupGridViewColumns();
-            }
-        });
+        this.mGridView.setOnItemClickListener((AdapterView$OnItemClickListener)new AvatarsGridActivity$3(this));
+        this.mGridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new AvatarsGridActivity$4(this));
         this.mAdapter.notifyDataSetChanged();
     }
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                Log.d("AvatarsGridActivity", "Manager is here!");
-                AvatarsGridActivity.this.mServiceManager = serviceManager;
-                if (AvatarsGridActivity.this.mAvatars == null) {
-                    AvatarsGridActivity.this.mServiceManager.fetchAvailableAvatarsList(new AvatarsFetchedCallback());
-                    return;
-                }
-                AvatarsGridActivity.this.refreshCurrentIconSelection();
-                AvatarsGridActivity.this.updateUI();
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-                Log.d("AvatarsGridActivity", "Manager isn't available!");
-                AvatarsGridActivity.this.mServiceManager = null;
-                AvatarsGridActivity.this.updateUI();
-            }
-        };
+        return new AvatarsGridActivity$1(this);
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.profilesGate;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.profilesGate;
     }
     
     @Override
     protected void handleProfilesListUpdated() {
         if (this.mServiceManager != null) {
-            this.mServiceManager.fetchAvailableAvatarsList(new AvatarsFetchedCallback());
+            this.mServiceManager.fetchAvailableAvatarsList(new AvatarsGridActivity$AvatarsFetchedCallback(this, null));
         }
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }
@@ -208,6 +172,11 @@ public class AvatarsGridActivity extends NetflixActivity
     }
     
     @Override
+    protected boolean shouldAttachToolbar() {
+        return DeviceUtils.isNotTabletByContext((Context)this);
+    }
+    
+    @Override
     protected boolean showAboutInMenu() {
         return false;
     }
@@ -220,110 +189,5 @@ public class AvatarsGridActivity extends NetflixActivity
     @Override
     protected boolean showSignOutInMenu() {
         return false;
-    }
-    
-    private class AvatarsFetchedCallback extends SimpleManagerCallback
-    {
-        @Override
-        public void onAvailableAvatarsListFetched(final List<AvatarInfo> list, final Status status) {
-            if (Log.isLoggable("AvatarsGridActivity", 4)) {
-                Log.i("AvatarsGridActivity", "onAvailableAvatarsListFetched: " + list);
-            }
-            if (status.isSucces() && list != null) {
-                AvatarsGridActivity.this.mAvatars = list;
-                if (AvatarsGridActivity.this.mAvatars.contains(AvatarsGridActivity.this.mDefaultAvatar)) {
-                    AvatarsGridActivity.this.mAvatars.remove(AvatarsGridActivity.this.mDefaultAvatar);
-                }
-                AvatarsGridActivity.this.refreshCurrentIconSelection();
-                AvatarsGridActivity.this.updateUI();
-                return;
-            }
-            AvatarsGridActivity.this.handleUserAgentErrors(AvatarsGridActivity.this, status);
-        }
-    }
-    
-    private class ProfileAvatarAdapter extends BaseAdapter
-    {
-        private void adjustGridViewPaddings(final int n, int n2, final float n3, final float n4) {
-            n2 *= (int)n3;
-            final int n5 = (int)((n - n2 + n4) / 2.0f);
-            if (Log.isLoggable("AvatarsGridActivity", 2)) {
-                Log.v("AvatarsGridActivity", String.format("gridWidthWithoutPadding: %d, gridWidth: %d, padding: %d, avatarWidth: %d", n2, n, n5, (int)n3));
-            }
-            AvatarsGridActivity.this.mGridView.setPadding(n5, 0, (int)(n5 - n4), 0);
-        }
-        
-        public int getCount() {
-            if (AvatarsGridActivity.this.mAvatars == null) {
-                return 1;
-            }
-            return AvatarsGridActivity.this.mAvatars.size() + 1;
-        }
-        
-        public String getItem(final int n) {
-            if (AvatarsGridActivity.this.mAvatars == null || n == 0) {
-                return AvatarsGridActivity.this.mDefaultAvatar.getUrl();
-            }
-            return AvatarsGridActivity.this.mAvatars.get(n - 1).getUrl();
-        }
-        
-        public long getItemId(final int n) {
-            return n;
-        }
-        
-        public String getItemName(final int n) {
-            if (AvatarsGridActivity.this.mAvatars == null || n == 0) {
-                return AvatarsGridActivity.this.mDefaultAvatar.getName();
-            }
-            return AvatarsGridActivity.this.mAvatars.get(n - 1).getName();
-        }
-        
-        public View getView(final int n, final View view, final ViewGroup viewGroup) {
-            View inflate = view;
-            if (view == null) {
-                inflate = AvatarsGridActivity.this.getLayoutInflater().inflate(2130903067, viewGroup, false);
-                inflate.setTag((Object)new ViewHolder((AdvancedImageView)inflate.findViewById(2131165299), (ImageView)inflate.findViewById(2131165300)));
-            }
-            final ViewHolder viewHolder = (ViewHolder)inflate.getTag();
-            final String item = this.getItem(n);
-            if (AvatarsGridActivity.this.mSelectedIconPos == n) {
-                viewHolder.topEditImg.setVisibility(0);
-                viewHolder.topEditImg.setBackgroundResource(2130837825);
-            }
-            else {
-                viewHolder.topEditImg.setVisibility(8);
-            }
-            NetflixActivity.getImageLoader((Context)AvatarsGridActivity.this).showImg(viewHolder.img, item, IClientLogging.AssetType.profileAvatar, this.getItemName(n), true, false);
-            return inflate;
-        }
-        
-        public void notifyDataSetChanged() {
-            super.notifyDataSetChanged();
-            this.setupGridViewColumns();
-        }
-        
-        public void setupGridViewColumns() {
-            final int width = AvatarsGridActivity.this.mGridView.getWidth();
-            if (width > 0) {
-                final Resources resources = AvatarsGridActivity.this.getResources();
-                final float dimension = resources.getDimension(2131361947);
-                final float n = resources.getDimension(2131361946) + dimension;
-                final int numColumns = (int)(width / n);
-                AvatarsGridActivity.this.mGridView.setNumColumns(numColumns);
-                this.adjustGridViewPaddings(width, numColumns, n, dimension);
-            }
-        }
-    }
-    
-    private static class ViewHolder
-    {
-        private final AdvancedImageView img;
-        private final ImageView topEditImg;
-        
-        public ViewHolder(final AdvancedImageView img, final ImageView topEditImg) {
-            this.img = img;
-            this.topEditImg = topEditImg;
-            img.setPressedStateHandlerEnabled(false);
-        }
     }
 }

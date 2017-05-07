@@ -5,9 +5,10 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.UserRating;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
@@ -175,9 +176,9 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
-    public void onSimilarVideosFetched(final SearchVideoList list, final Status status) {
+    public void onSimilarVideosFetched(final SearchVideoListProvider searchVideoListProvider, final Status status) {
         this.handleResultTiming("onSimilarVideosFetched");
-        this.callback.onSimilarVideosFetched(list, this.wrapStatus(status));
+        this.callback.onSimilarVideosFetched(searchVideoListProvider, this.wrapStatus(status));
     }
     
     @Override
@@ -205,9 +206,9 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
-    public void onVideoRatingSet(final Status status) {
+    public void onVideoRatingSet(final UserRating userRating, final Status status) {
         this.handleResultTiming("onVideoRatingSet");
-        this.callback.onVideoRatingSet(this.wrapStatus(status));
+        this.callback.onVideoRatingSet(userRating, this.wrapStatus(status));
     }
     
     @Override

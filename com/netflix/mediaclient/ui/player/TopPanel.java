@@ -11,9 +11,8 @@ import com.netflix.mediaclient.media.AudioSource;
 import android.media.AudioManager;
 import android.widget.SeekBar$OnSeekBarChangeListener;
 import android.widget.ImageView;
+import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Dialog;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.media.Language;
 import android.app.Activity;
@@ -44,20 +43,15 @@ public final class TopPanel extends PlayerSection
     private TextView mTitleLabel;
     private View mTopPanel;
     
-    public TopPanel(final PlayerActivity playerActivity, final PlayScreen.Listeners listeners) {
+    public TopPanel(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners) {
         super(playerActivity);
-        this.backListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                TopPanel.this.context.performUpAction();
-                TopPanel.this.context.cleanupAndExit();
-            }
-        };
+        this.backListener = (View$OnClickListener)new TopPanel$1(this);
         this.mSocial = new Social(playerActivity, playerActivity.getSocialProviderCallback());
-        this.initGeneric(listeners);
+        this.initGeneric(playScreen$Listeners);
         this.initBack();
         this.initQa();
         this.initLanguages();
-        this.initSound(listeners.audioPositionListener);
+        this.initSound(playScreen$Listeners.audioPositionListener);
     }
     
     private void initBack() {
@@ -71,7 +65,7 @@ public final class TopPanel extends PlayerSection
         }
     }
     
-    private void initGeneric(final PlayScreen.Listeners listeners) {
+    private void initGeneric(final PlayScreen$Listeners playScreen$Listeners) {
         this.mTopPanel = this.context.findViewById(2131165543);
         if (this.mTopPanel == null) {
             Log.e("screen", "========>top null!");
@@ -82,52 +76,13 @@ public final class TopPanel extends PlayerSection
         }
         this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131165551);
         if (this.mEpisodeSelector != null) {
-            this.mEpisodeSelector.setOnClickListener(listeners.episodeSelectorListener);
+            this.mEpisodeSelector.setOnClickListener(playScreen$Listeners.episodeSelectorListener);
         }
     }
     
     private void initLanguages() {
-        this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), (LanguageSelector.LanguageSelectorCallback)new LanguageSelector.LanguageSelectorCallback() {
-            @Override
-            public void languageChanged(final Language language, final boolean b) {
-                Log.d("screen", "Language changed");
-                if (TopPanel.this.processLanguageChange(language) && b) {
-                    TopPanel.this.context.doUnpause();
-                }
-                TopPanel.this.context.startScreenUpdateTask();
-                TopPanel.this.context.reportUiModelessViewSessionEnded(IClientLogging.ModalView.audioSubtitlesSelector, TopPanel.this.mDialogLanguageId);
-            }
-            
-            @Override
-            public void updateDialog(final Dialog dialog) {
-                TopPanel.this.context.updateVisibleDialog(dialog);
-            }
-            
-            @Override
-            public void userCanceled() {
-                Log.d("screen", "User canceled selection");
-                TopPanel.this.context.doUnpause();
-                TopPanel.this.context.startScreenUpdateTask();
-                TopPanel.this.context.reportUiModelessViewSessionEnded(IClientLogging.ModalView.audioSubtitlesSelector, TopPanel.this.mDialogLanguageId);
-            }
-            
-            @Override
-            public boolean wasPlaying() {
-                return TopPanel.this.context.getPlayer().isPlaying();
-            }
-        });
-        final View$OnClickListener onClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                Log.d("screen", "Display language dialog");
-                final PlayerActivity context = TopPanel.this.context;
-                if (context != null) {
-                    context.extendTimeoutTimer();
-                }
-                TopPanel.this.mLanguageSelector.display(TopPanel.this.context.getLanguage());
-                TopPanel.this.context.stopScreenUpdateTask();
-                TopPanel.this.mDialogLanguageId = TopPanel.this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.audioSubtitlesSelector);
-            }
-        };
+        this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$2(this));
+        final TopPanel$3 onClickListener = new TopPanel$3(this);
         final View viewById = this.context.findViewById(2131165552);
         if (viewById instanceof ImageView) {
             Log.d("screen", "Add language button");
@@ -161,61 +116,62 @@ public final class TopPanel extends PlayerSection
     }
     
     private boolean processLanguageChange(final Language language) {
-        if (this.context.getScreen() != null) {
-            final AudioSource selectedAudio = language.getSelectedAudio();
-            final Subtitle selectedSubtitle = language.getSelectedSubtitle();
-            boolean subtitleVisibility;
-            if (selectedSubtitle == null) {
-                Log.d("screen", "Selected subtitle is NONE");
-                subtitleVisibility = false;
-            }
-            else {
-                subtitleVisibility = true;
-            }
+        final boolean b = true;
+        if (this.context.getScreen() == null) {
+            return false;
+        }
+        final AudioSource selectedAudio = language.getSelectedAudio();
+        final Subtitle selectedSubtitle = language.getSelectedSubtitle();
+        boolean subtitleVisibility;
+        if (selectedSubtitle == null) {
+            Log.d("screen", "Selected subtitle is NONE");
+            subtitleVisibility = false;
+        }
+        else {
+            subtitleVisibility = true;
+        }
+        if (Log.isLoggable("screen", 3)) {
+            Log.d("screen", "Selected subtitle " + selectedSubtitle);
+            Log.d("screen", "Selected audio source " + selectedAudio);
+        }
+        this.context.getSubtitleManager().setSubtitleVisibility(subtitleVisibility);
+        final int nccpOrderNumber = selectedAudio.getNccpOrderNumber();
+        boolean b2;
+        int n;
+        if (nccpOrderNumber != language.getCurrentNccpAudioIndex()) {
             if (Log.isLoggable("screen", 3)) {
-                Log.d("screen", "Selected subtitle " + selectedSubtitle);
-                Log.d("screen", "Selected audio source " + selectedAudio);
+                Log.d("screen", "Audio source is switched from " + language.getCurrentNccpAudioIndex() + " to " + nccpOrderNumber + " NCCP index");
             }
-            this.context.getSubtitleManager().setSubtitleVisibility(subtitleVisibility);
-            int n = 0;
-            boolean b = false;
-            final int nccpOrderNumber = selectedAudio.getNccpOrderNumber();
-            if (nccpOrderNumber != language.getCurrentNccpAudioIndex()) {
+            Log.d("screen", "Start change language, get awake clock");
+            b2 = true;
+            n = 1;
+        }
+        else {
+            Log.d("screen", "No need to change audio.");
+            b2 = false;
+            n = 0;
+        }
+        if (selectedSubtitle != null) {
+            final int nccpOrderNumber2 = selectedSubtitle.getNccpOrderNumber();
+            if (nccpOrderNumber2 != language.getCurrentNccpSubtitleIndex()) {
                 if (Log.isLoggable("screen", 3)) {
-                    Log.d("screen", "Audio source is switched from " + language.getCurrentNccpAudioIndex() + " to " + nccpOrderNumber + " NCCP index");
+                    Log.d("screen", "Subtitle is now visible and it is switched from " + language.getCurrentNccpSubtitleIndex() + " to " + nccpOrderNumber2 + " NCCP index");
                 }
                 n = 1;
-                b = true;
-                Log.d("screen", "Start change language, get awake clock");
             }
             else {
-                Log.d("screen", "No need to change audio.");
-            }
-            if (selectedSubtitle != null) {
-                final int nccpOrderNumber2 = selectedSubtitle.getNccpOrderNumber();
-                if (nccpOrderNumber2 != language.getCurrentNccpSubtitleIndex()) {
-                    if (Log.isLoggable("screen", 3)) {
-                        Log.d("screen", "Subtitle is now visible and it is switched from " + language.getCurrentNccpSubtitleIndex() + " to " + nccpOrderNumber2 + " NCCP index");
-                    }
-                    n = 1;
-                }
-                else {
-                    Log.d("screen", "No need to change subtitle.");
-                }
-            }
-            else {
-                Log.d("screen", "Subtitle is off");
-                n = 1;
-            }
-            if (n != 0) {
-                Log.d("screen", "Reloading tracks");
-                this.context.changeLanguage(language, b);
-            }
-            if (!b) {
-                return true;
+                Log.d("screen", "No need to change subtitle.");
             }
         }
-        return false;
+        else {
+            Log.d("screen", "Subtitle is off");
+            n = 1;
+        }
+        if (n != 0) {
+            Log.d("screen", "Reloading tracks");
+            this.context.changeLanguage(language, b2);
+        }
+        return !b2 && b;
     }
     
     @Override
@@ -340,15 +296,7 @@ public final class TopPanel extends PlayerSection
         if (this.mLanguage != null && language != null && language.isLanguageSwitchEnabled()) {
             final PlayerActivity context = this.context;
             if (context != null) {
-                context.runInUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final ImageButton access$300 = TopPanel.this.mLanguage;
-                        if (access$300 != null && !((ImageView)access$300).isShown()) {
-                            ((ImageView)access$300).setVisibility(0);
-                        }
-                    }
-                });
+                context.runInUiThread(new TopPanel$6(this));
             }
         }
     }
@@ -361,20 +309,7 @@ public final class TopPanel extends PlayerSection
         }
         string = sb.append(string).toString();
         if (context != null && !context.isFinishing()) {
-            context.runInUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    final TextView access$400 = TopPanel.this.mTitleLabel;
-                    if (access$400 == null) {
-                        return;
-                    }
-                    if (StringUtils.isEmpty(string)) {
-                        access$400.setText((CharSequence)"");
-                        return;
-                    }
-                    access$400.setText((CharSequence)string);
-                }
-            });
+            context.runInUiThread(new TopPanel$7(this, string));
         }
     }
     

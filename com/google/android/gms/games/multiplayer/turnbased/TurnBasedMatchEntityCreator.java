@@ -6,6 +6,7 @@ package com.google.android.gms.games.multiplayer.turnbased;
 
 import android.os.Bundle;
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.games.multiplayer.ParticipantEntity;
 import com.google.android.gms.games.GameEntity;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -163,7 +164,7 @@ public class TurnBasedMatchEntityCreator implements Parcelable$Creator<TurnBased
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new TurnBasedMatchEntity(g, gameEntity, o, o2, i, o3, j, o4, g2, g3, g4, r, c2, o5, r2, g5, q, g6, c3, o6, o7);
     }

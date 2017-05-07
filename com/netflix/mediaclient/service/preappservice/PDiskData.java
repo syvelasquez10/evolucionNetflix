@@ -8,7 +8,7 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Map;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
@@ -22,9 +22,9 @@ public class PDiskData
     @SerializedName("continueWatchingList")
     List<PVideo> cwObjs;
     @SerializedName("iqList")
-    List<Video.Summary> iqObjs;
+    List<Video$Summary> iqObjs;
     @SerializedName("recoList")
-    List<Video.Summary> recoObjs;
+    List<Video$Summary> recoObjs;
     @SerializedName("urlMap")
     public Map<String, String> urlMap;
     

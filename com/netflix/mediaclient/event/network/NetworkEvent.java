@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.network;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
@@ -17,7 +16,7 @@ public class NetworkEvent extends JsonBaseNccpEvent
     private String type;
     private String url;
     
-    public NetworkEvent(final JSONObject jsonObject) throws JSONException {
+    public NetworkEvent(final JSONObject jsonObject) {
         super("INetwork", jsonObject);
     }
     
@@ -48,7 +47,7 @@ public class NetworkEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.type = BaseNccpEvent.getString(jsonObject, "type", null);
         this.result = BaseNccpEvent.getInt(jsonObject, "result", 0);
         this.errorCode = BaseNccpEvent.getInt(jsonObject, "errorcode", 0);

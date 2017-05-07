@@ -18,15 +18,7 @@ public class FriendForRecommendation implements Parcelable
     private FriendProfile profile;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<FriendForRecommendation>() {
-            public FriendForRecommendation createFromParcel(final Parcel parcel) {
-                return new FriendForRecommendation(parcel);
-            }
-            
-            public FriendForRecommendation[] newArray(final int n) {
-                return new FriendForRecommendation[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new FriendForRecommendation$1();
     }
     
     protected FriendForRecommendation(final Parcel parcel) {

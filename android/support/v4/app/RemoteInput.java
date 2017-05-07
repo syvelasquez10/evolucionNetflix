@@ -4,16 +4,15 @@
 
 package android.support.v4.app;
 
-import android.util.Log;
 import android.content.Intent;
 import android.os.Build$VERSION;
 import android.os.Bundle;
 
-public class RemoteInput extends RemoteInputCompatBase.RemoteInput
+public class RemoteInput extends RemoteInputCompatBase$RemoteInput
 {
     public static final String EXTRA_RESULTS_DATA = "android.remoteinput.resultsData";
-    public static final Factory FACTORY;
-    private static final Impl IMPL;
+    public static final RemoteInputCompatBase$RemoteInput$Factory FACTORY;
+    private static final RemoteInput$Impl IMPL;
     public static final String RESULTS_CLIP_LABEL = "android.remoteinput.results";
     private static final String TAG = "RemoteInput";
     private final boolean mAllowFreeFormInput;
@@ -24,23 +23,15 @@ public class RemoteInput extends RemoteInputCompatBase.RemoteInput
     
     static {
         if (Build$VERSION.SDK_INT >= 20) {
-            IMPL = (Impl)new ImplApi20();
+            IMPL = new RemoteInput$ImplApi20();
         }
         else if (Build$VERSION.SDK_INT >= 16) {
-            IMPL = (Impl)new ImplJellybean();
+            IMPL = new RemoteInput$ImplJellybean();
         }
         else {
-            IMPL = (Impl)new ImplBase();
+            IMPL = new RemoteInput$ImplBase();
         }
-        FACTORY = new Factory() {
-            public RemoteInput build(final String s, final CharSequence charSequence, final CharSequence[] array, final boolean b, final Bundle bundle) {
-                return new RemoteInput(s, charSequence, array, b, bundle);
-            }
-            
-            public RemoteInput[] newArray(final int n) {
-                return new RemoteInput[n];
-            }
-        };
+        FACTORY = new RemoteInput$1();
     }
     
     RemoteInput(final String mResultKey, final CharSequence mLabel, final CharSequence[] mChoices, final boolean mAllowFreeFormInput, final Bundle mExtras) {
@@ -77,100 +68,5 @@ public class RemoteInput extends RemoteInputCompatBase.RemoteInput
     
     public String getResultKey() {
         return this.mResultKey;
-    }
-    
-    public static final class Builder
-    {
-        private boolean mAllowFreeFormInput;
-        private CharSequence[] mChoices;
-        private Bundle mExtras;
-        private CharSequence mLabel;
-        private final String mResultKey;
-        
-        public Builder(final String mResultKey) {
-            this.mAllowFreeFormInput = true;
-            this.mExtras = new Bundle();
-            if (mResultKey == null) {
-                throw new IllegalArgumentException("Result key can't be null");
-            }
-            this.mResultKey = mResultKey;
-        }
-        
-        public Builder addExtras(final Bundle bundle) {
-            if (bundle != null) {
-                this.mExtras.putAll(bundle);
-            }
-            return this;
-        }
-        
-        public RemoteInput build() {
-            return new RemoteInput(this.mResultKey, this.mLabel, this.mChoices, this.mAllowFreeFormInput, this.mExtras);
-        }
-        
-        public Bundle getExtras() {
-            return this.mExtras;
-        }
-        
-        public Builder setAllowFreeFormInput(final boolean mAllowFreeFormInput) {
-            this.mAllowFreeFormInput = mAllowFreeFormInput;
-            return this;
-        }
-        
-        public Builder setChoices(final CharSequence[] mChoices) {
-            this.mChoices = mChoices;
-            return this;
-        }
-        
-        public Builder setLabel(final CharSequence mLabel) {
-            this.mLabel = mLabel;
-            return this;
-        }
-    }
-    
-    interface Impl
-    {
-        void addResultsToIntent(final RemoteInput[] p0, final Intent p1, final Bundle p2);
-        
-        Bundle getResultsFromIntent(final Intent p0);
-    }
-    
-    static class ImplApi20 implements Impl
-    {
-        @Override
-        public void addResultsToIntent(final RemoteInput[] array, final Intent intent, final Bundle bundle) {
-            RemoteInputCompatApi20.addResultsToIntent(array, intent, bundle);
-        }
-        
-        @Override
-        public Bundle getResultsFromIntent(final Intent intent) {
-            return RemoteInputCompatApi20.getResultsFromIntent(intent);
-        }
-    }
-    
-    static class ImplBase implements Impl
-    {
-        @Override
-        public void addResultsToIntent(final RemoteInput[] array, final Intent intent, final Bundle bundle) {
-            Log.w("RemoteInput", "RemoteInput is only supported from API Level 16");
-        }
-        
-        @Override
-        public Bundle getResultsFromIntent(final Intent intent) {
-            Log.w("RemoteInput", "RemoteInput is only supported from API Level 16");
-            return null;
-        }
-    }
-    
-    static class ImplJellybean implements Impl
-    {
-        @Override
-        public void addResultsToIntent(final RemoteInput[] array, final Intent intent, final Bundle bundle) {
-            RemoteInputCompatJellybean.addResultsToIntent(array, intent, bundle);
-        }
-        
-        @Override
-        public Bundle getResultsFromIntent(final Intent intent) {
-            return RemoteInputCompatJellybean.getResultsFromIntent(intent);
-        }
     }
 }

@@ -31,16 +31,15 @@ public class FalcorParseException extends VolleyError
     }
     
     public static StatusCode getErrorCode(final String s) {
-        StatusCode statusCode = StatusCode.FALCOR_RESPONSE_PARSE_ERROR;
-        if (StringUtils.isEmpty(s)) {
-            return statusCode;
+        final StatusCode falcor_RESPONSE_PARSE_ERROR = StatusCode.FALCOR_RESPONSE_PARSE_ERROR;
+        if (!StringUtils.isEmpty(s)) {
+            if (Log.isLoggable(FalcorParseException.TAG, 3)) {
+                Log.d(FalcorParseException.TAG, "errorMsg:" + s);
+            }
+            if (FalcorParseUtils.isWrongState(s.toLowerCase(Locale.US))) {
+                return StatusCode.BROWSE_AGENT_WRONG_STATE;
+            }
         }
-        if (Log.isLoggable(FalcorParseException.TAG, 3)) {
-            Log.d(FalcorParseException.TAG, "errorMsg:" + s);
-        }
-        if (FalcorParseUtils.isWrongState(s.toLowerCase(Locale.US))) {
-            statusCode = StatusCode.BROWSE_AGENT_WRONG_STATE;
-        }
-        return statusCode;
+        return falcor_RESPONSE_PARSE_ERROR;
     }
 }

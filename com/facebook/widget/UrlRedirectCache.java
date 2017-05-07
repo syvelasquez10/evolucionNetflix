@@ -5,9 +5,10 @@
 package com.facebook.widget;
 
 import java.io.OutputStream;
+import com.facebook.internal.FileLruCache$Limits;
+import java.io.IOException;
 import java.io.Closeable;
 import com.facebook.internal.Utility;
-import java.io.IOException;
 import java.net.URL;
 import android.content.Context;
 import com.facebook.internal.FileLruCache;
@@ -23,24 +24,58 @@ class UrlRedirectCache
         REDIRECT_CONTENT_TAG = UrlRedirectCache.TAG + "_Redirect";
     }
     
-    static void cacheUrlRedirect(final Context context, final URL url, final URL url2) {
+    static void cacheUrlRedirect(Context ex, final URL url, final URL url2) {
         if (url == null || url2 == null) {
             return;
         }
         Closeable openPutStream = null;
         try {
-            ((OutputStream)(openPutStream = getCache(context).openPutStream(url.toString(), UrlRedirectCache.REDIRECT_CONTENT_TAG))).write(url2.toString().getBytes());
+            final Object o;
+            ex = (IOException)(o = (openPutStream = getCache((Context)ex).openPutStream(url.toString(), UrlRedirectCache.REDIRECT_CONTENT_TAG)));
+            final URL url3 = url2;
+            final String s = url3.toString();
+            final byte[] array = s.getBytes();
+            ((OutputStream)o).write(array);
+            final IOException ex2 = ex;
+            Utility.closeQuietly((Closeable)ex2);
+            return;
         }
-        catch (IOException ex) {}
-        finally {
+        catch (IOException ex) {
             Utility.closeQuietly(openPutStream);
+            return;
+        }
+        finally {
+            final IOException ex3;
+            ex = ex3;
+            final Object o2 = null;
+            final IOException ex4 = ex;
+        }
+        while (true) {
+            try {
+                final Object o = ex;
+                final URL url3 = url2;
+                final String s = url3.toString();
+                final byte[] array = s.getBytes();
+                ((OutputStream)o).write(array);
+                final IOException ex2 = ex;
+                Utility.closeQuietly((Closeable)ex2);
+                return;
+                final Object o2;
+                Utility.closeQuietly((Closeable)o2);
+                throw;
+            }
+            finally {
+                final Object o2 = ex;
+                continue;
+            }
+            break;
         }
     }
     
-    static FileLruCache getCache(final Context context) throws IOException {
+    static FileLruCache getCache(final Context context) {
         synchronized (UrlRedirectCache.class) {
             if (UrlRedirectCache.urlRedirectCache == null) {
-                UrlRedirectCache.urlRedirectCache = new FileLruCache(context.getApplicationContext(), UrlRedirectCache.TAG, new FileLruCache.Limits());
+                UrlRedirectCache.urlRedirectCache = new FileLruCache(context.getApplicationContext(), UrlRedirectCache.TAG, new FileLruCache$Limits());
             }
             return UrlRedirectCache.urlRedirectCache;
         }
@@ -52,193 +87,154 @@ class UrlRedirectCache
         // 
         // Original Bytecode:
         // 
-        //     0: aload_1        
-        //     1: ifnonnull       6
-        //     4: aconst_null    
-        //     5: areturn        
-        //     6: aload_1        
-        //     7: invokevirtual   java/net/URL.toString:()Ljava/lang/String;
-        //    10: astore_1       
-        //    11: aconst_null    
-        //    12: astore          7
-        //    14: aconst_null    
-        //    15: astore          5
-        //    17: aconst_null    
-        //    18: astore          6
-        //    20: aconst_null    
-        //    21: astore          4
-        //    23: aload_0        
-        //    24: invokestatic    com/facebook/widget/UrlRedirectCache.getCache:(Landroid/content/Context;)Lcom/facebook/internal/FileLruCache;
-        //    27: astore          8
-        //    29: iconst_0       
-        //    30: istore_2       
-        //    31: aconst_null    
-        //    32: astore_0       
-        //    33: aload           8
-        //    35: aload_1        
-        //    36: getstatic       com/facebook/widget/UrlRedirectCache.REDIRECT_CONTENT_TAG:Ljava/lang/String;
-        //    39: invokevirtual   com/facebook/internal/FileLruCache.get:(Ljava/lang/String;Ljava/lang/String;)Ljava/io/InputStream;
-        //    42: astore          4
-        //    44: aload           4
-        //    46: ifnull          184
-        //    49: iconst_1       
-        //    50: istore_2       
-        //    51: new             Ljava/io/InputStreamReader;
-        //    54: dup            
-        //    55: aload           4
-        //    57: invokespecial   java/io/InputStreamReader.<init>:(Ljava/io/InputStream;)V
-        //    60: astore_1       
-        //    61: aload_1        
-        //    62: astore          4
-        //    64: aload_1        
-        //    65: astore          5
-        //    67: aload_1        
-        //    68: astore          6
-        //    70: sipush          128
-        //    73: newarray        C
-        //    75: astore_0       
-        //    76: aload_1        
-        //    77: astore          4
-        //    79: aload_1        
-        //    80: astore          5
-        //    82: aload_1        
-        //    83: astore          6
-        //    85: new             Ljava/lang/StringBuilder;
-        //    88: dup            
-        //    89: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    92: astore          9
-        //    94: aload_1        
-        //    95: astore          4
-        //    97: aload_1        
-        //    98: astore          5
-        //   100: aload_1        
-        //   101: astore          6
-        //   103: aload_1        
-        //   104: aload_0        
-        //   105: iconst_0       
-        //   106: aload_0        
-        //   107: arraylength    
-        //   108: invokevirtual   java/io/InputStreamReader.read:([CII)I
-        //   111: istore_3       
-        //   112: iload_3        
-        //   113: ifle            145
-        //   116: aload_1        
-        //   117: astore          4
-        //   119: aload_1        
-        //   120: astore          5
-        //   122: aload_1        
-        //   123: astore          6
-        //   125: aload           9
-        //   127: aload_0        
-        //   128: iconst_0       
-        //   129: iload_3        
-        //   130: invokevirtual   java/lang/StringBuilder.append:([CII)Ljava/lang/StringBuilder;
-        //   133: pop            
-        //   134: goto            94
+        //     0: iconst_0       
+        //     1: istore_2       
+        //     2: aload_1        
+        //     3: ifnonnull       8
+        //     6: aconst_null    
+        //     7: areturn        
+        //     8: aload_1        
+        //     9: invokevirtual   java/net/URL.toString:()Ljava/lang/String;
+        //    12: astore_1       
+        //    13: aload_0        
+        //    14: invokestatic    com/facebook/widget/UrlRedirectCache.getCache:(Landroid/content/Context;)Lcom/facebook/internal/FileLruCache;
+        //    17: astore          4
+        //    19: aconst_null    
+        //    20: astore_0       
+        //    21: aload           4
+        //    23: aload_1        
+        //    24: getstatic       com/facebook/widget/UrlRedirectCache.REDIRECT_CONTENT_TAG:Ljava/lang/String;
+        //    27: invokevirtual   com/facebook/internal/FileLruCache.get:(Ljava/lang/String;Ljava/lang/String;)Ljava/io/InputStream;
+        //    30: astore_3       
+        //    31: aload_3        
+        //    32: ifnull          107
+        //    35: new             Ljava/io/InputStreamReader;
+        //    38: dup            
+        //    39: aload_3        
+        //    40: invokespecial   java/io/InputStreamReader.<init>:(Ljava/io/InputStream;)V
+        //    43: astore_1       
+        //    44: sipush          128
+        //    47: newarray        C
+        //    49: astore_0       
+        //    50: new             Ljava/lang/StringBuilder;
+        //    53: dup            
+        //    54: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    57: astore_3       
+        //    58: aload_1        
+        //    59: aload_0        
+        //    60: iconst_0       
+        //    61: aload_0        
+        //    62: arraylength    
+        //    63: invokevirtual   java/io/InputStreamReader.read:([CII)I
+        //    66: istore_2       
+        //    67: iload_2        
+        //    68: ifle            89
+        //    71: aload_3        
+        //    72: aload_0        
+        //    73: iconst_0       
+        //    74: iload_2        
+        //    75: invokevirtual   java/lang/StringBuilder.append:([CII)Ljava/lang/StringBuilder;
+        //    78: pop            
+        //    79: goto            58
+        //    82: astore_0       
+        //    83: aload_1        
+        //    84: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //    87: aconst_null    
+        //    88: areturn        
+        //    89: aload_1        
+        //    90: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //    93: aload_3        
+        //    94: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    97: astore_3       
+        //    98: aload_1        
+        //    99: astore_0       
+        //   100: iconst_1       
+        //   101: istore_2       
+        //   102: aload_3        
+        //   103: astore_1       
+        //   104: goto            21
+        //   107: iload_2        
+        //   108: ifeq            178
+        //   111: new             Ljava/net/URL;
+        //   114: dup            
+        //   115: aload_1        
+        //   116: invokespecial   java/net/URL.<init>:(Ljava/lang/String;)V
+        //   119: astore_1       
+        //   120: aload_0        
+        //   121: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   124: aload_1        
+        //   125: areturn        
+        //   126: astore_0       
+        //   127: aconst_null    
+        //   128: astore_1       
+        //   129: aload_1        
+        //   130: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   133: aconst_null    
+        //   134: areturn        
+        //   135: astore_1       
+        //   136: aconst_null    
         //   137: astore_0       
-        //   138: aload           4
-        //   140: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   143: aconst_null    
-        //   144: areturn        
+        //   138: aload_0        
+        //   139: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
+        //   142: aload_1        
+        //   143: athrow         
+        //   144: astore_3       
         //   145: aload_1        
-        //   146: astore          4
-        //   148: aload_1        
-        //   149: astore          5
-        //   151: aload_1        
-        //   152: astore          6
-        //   154: aload_1        
-        //   155: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   158: aload_1        
-        //   159: astore          4
-        //   161: aload_1        
-        //   162: astore          5
-        //   164: aload_1        
-        //   165: astore          6
-        //   167: aload           9
-        //   169: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   172: astore_0       
+        //   146: astore_0       
+        //   147: aload_3        
+        //   148: astore_1       
+        //   149: goto            138
+        //   152: astore_1       
+        //   153: goto            138
+        //   156: astore_0       
+        //   157: goto            129
+        //   160: astore_1       
+        //   161: aload_0        
+        //   162: astore_1       
+        //   163: goto            129
+        //   166: astore_0       
+        //   167: aconst_null    
+        //   168: astore_1       
+        //   169: goto            83
+        //   172: astore_1       
         //   173: aload_0        
-        //   174: astore          4
-        //   176: aload_1        
-        //   177: astore_0       
-        //   178: aload           4
-        //   180: astore_1       
-        //   181: goto            33
-        //   184: aload           7
-        //   186: astore          4
-        //   188: iload_2        
-        //   189: ifeq            202
-        //   192: new             Ljava/net/URL;
-        //   195: dup            
-        //   196: aload_1        
-        //   197: invokespecial   java/net/URL.<init>:(Ljava/lang/String;)V
-        //   200: astore          4
-        //   202: aload_0        
-        //   203: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   206: aload           4
-        //   208: areturn        
-        //   209: astore_0       
-        //   210: aload           5
-        //   212: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   215: aconst_null    
-        //   216: areturn        
-        //   217: astore_0       
-        //   218: aload           6
-        //   220: invokestatic    com/facebook/internal/Utility.closeQuietly:(Ljava/io/Closeable;)V
-        //   223: aload_0        
-        //   224: athrow         
-        //   225: astore_1       
-        //   226: aload_0        
-        //   227: astore          6
-        //   229: aload_1        
-        //   230: astore_0       
-        //   231: goto            218
-        //   234: astore_1       
-        //   235: aload_0        
-        //   236: astore          5
-        //   238: goto            210
-        //   241: astore_1       
-        //   242: aload_0        
-        //   243: astore          4
-        //   245: goto            138
+        //   174: astore_1       
+        //   175: goto            83
+        //   178: aconst_null    
+        //   179: astore_1       
+        //   180: goto            120
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                            
         //  -----  -----  -----  -----  --------------------------------
-        //  23     29     137    138    Ljava/net/MalformedURLException;
-        //  23     29     209    210    Ljava/io/IOException;
-        //  23     29     217    218    Any
-        //  33     44     241    248    Ljava/net/MalformedURLException;
-        //  33     44     234    241    Ljava/io/IOException;
-        //  33     44     225    234    Any
-        //  51     61     241    248    Ljava/net/MalformedURLException;
-        //  51     61     234    241    Ljava/io/IOException;
-        //  51     61     225    234    Any
-        //  70     76     137    138    Ljava/net/MalformedURLException;
-        //  70     76     209    210    Ljava/io/IOException;
-        //  70     76     217    218    Any
-        //  85     94     137    138    Ljava/net/MalformedURLException;
-        //  85     94     209    210    Ljava/io/IOException;
-        //  85     94     217    218    Any
-        //  103    112    137    138    Ljava/net/MalformedURLException;
-        //  103    112    209    210    Ljava/io/IOException;
-        //  103    112    217    218    Any
-        //  125    134    137    138    Ljava/net/MalformedURLException;
-        //  125    134    209    210    Ljava/io/IOException;
-        //  125    134    217    218    Any
-        //  154    158    137    138    Ljava/net/MalformedURLException;
-        //  154    158    209    210    Ljava/io/IOException;
-        //  154    158    217    218    Any
-        //  167    173    137    138    Ljava/net/MalformedURLException;
-        //  167    173    209    210    Ljava/io/IOException;
-        //  167    173    217    218    Any
-        //  192    202    241    248    Ljava/net/MalformedURLException;
-        //  192    202    234    241    Ljava/io/IOException;
-        //  192    202    225    234    Any
+        //  13     19     166    172    Ljava/net/MalformedURLException;
+        //  13     19     126    129    Ljava/io/IOException;
+        //  13     19     135    138    Any
+        //  21     31     172    178    Ljava/net/MalformedURLException;
+        //  21     31     160    166    Ljava/io/IOException;
+        //  21     31     152    156    Any
+        //  35     44     172    178    Ljava/net/MalformedURLException;
+        //  35     44     160    166    Ljava/io/IOException;
+        //  35     44     152    156    Any
+        //  44     58     82     83     Ljava/net/MalformedURLException;
+        //  44     58     156    160    Ljava/io/IOException;
+        //  44     58     144    152    Any
+        //  58     67     82     83     Ljava/net/MalformedURLException;
+        //  58     67     156    160    Ljava/io/IOException;
+        //  58     67     144    152    Any
+        //  71     79     82     83     Ljava/net/MalformedURLException;
+        //  71     79     156    160    Ljava/io/IOException;
+        //  71     79     144    152    Any
+        //  89     98     82     83     Ljava/net/MalformedURLException;
+        //  89     98     156    160    Ljava/io/IOException;
+        //  89     98     144    152    Any
+        //  111    120    172    178    Ljava/net/MalformedURLException;
+        //  111    120    160    166    Ljava/io/IOException;
+        //  111    120    152    156    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0033:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0021:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)

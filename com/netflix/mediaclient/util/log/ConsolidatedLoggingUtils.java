@@ -5,15 +5,18 @@
 package com.netflix.mediaclient.util.log;
 
 import java.util.Iterator;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
+import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import com.android.volley.NetworkError;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import android.support.v4.content.LocalBroadcastManager;
 import java.util.Locale;
 import com.android.volley.VolleyError;
+import com.netflix.mediaclient.service.logging.apm.model.Display$ScanMode;
+import com.netflix.mediaclient.service.logging.apm.model.Display$AspectRatio;
+import com.netflix.mediaclient.service.logging.apm.model.Display$Connector;
 import android.graphics.Point;
 import android.view.WindowManager;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
@@ -25,8 +28,9 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 import java.util.UUID;
 import java.util.ArrayList;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement$Debug;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
@@ -58,21 +62,21 @@ public abstract class ConsolidatedLoggingUtils
         }
     }
     
-    public static DeepErrorElement.Debug createDebug(final String stackTrace, final JSONObject message) {
+    public static DeepErrorElement$Debug createDebug(final String stackTrace, final JSONObject message) {
         if (stackTrace == null && message == null) {
             return null;
         }
-        final DeepErrorElement.Debug debug = new DeepErrorElement.Debug();
-        debug.setMessage(message);
-        debug.setStackTrace(stackTrace);
-        return debug;
+        final DeepErrorElement$Debug deepErrorElement$Debug = new DeepErrorElement$Debug();
+        deepErrorElement$Debug.setMessage(message);
+        deepErrorElement$Debug.setStackTrace(stackTrace);
+        return deepErrorElement$Debug;
     }
     
     protected static List<DeepErrorElement> createDeepErrorList(final StatusCode statusCode, final String stackTrace) {
         final ArrayList<DeepErrorElement> list = new ArrayList<DeepErrorElement>();
         final DeepErrorElement deepErrorElement = new DeepErrorElement();
         deepErrorElement.setErrorCode(String.valueOf(statusCode.getValue()));
-        final DeepErrorElement.Debug debug = new DeepErrorElement.Debug();
+        final DeepErrorElement$Debug debug = new DeepErrorElement$Debug();
         debug.setStackTrace(stackTrace);
         deepErrorElement.setDebug(debug);
         list.add(deepErrorElement);
@@ -115,53 +119,53 @@ public abstract class ConsolidatedLoggingUtils
         final StatusCode statusCode = status.getStatusCode();
         final List<DeepErrorElement> deepErrorList = createDeepErrorList(statusCode, s);
         RootCause rootCause = null;
-        switch (statusCode) {
+        switch (ConsolidatedLoggingUtils$1.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
                 rootCause = RootCause.unknownFailure;
                 break;
             }
-            case NRD_ERROR:
-            case INTERNAL_ERROR: {
+            case 10:
+            case 11: {
                 rootCause = RootCause.clientFailure;
                 break;
             }
-            case FALCOR_RESPONSE_PARSE_ERROR: {
+            case 12: {
                 rootCause = RootCause.serverResponseBad;
                 break;
             }
-            case NRD_LOGIN_ACTIONID_4:
-            case NRD_LOGIN_ACTIONID_8: {
+            case 13:
+            case 14: {
                 rootCause = RootCause.clientRequestBad;
                 break;
             }
-            case SERVER_ERROR:
-            case NRD_LOGIN_ACTIONID_1:
-            case NRD_LOGIN_ACTIONID_2:
-            case NRD_LOGIN_ACTIONID_3:
-            case NRD_LOGIN_ACTIONID_5:
-            case NRD_LOGIN_ACTIONID_6:
-            case NRD_LOGIN_ACTIONID_7:
-            case NRD_LOGIN_ACTIONID_9:
-            case NRD_LOGIN_ACTIONID_10:
-            case NRD_LOGIN_ACTIONID_11:
-            case NRD_LOGIN_ACTIONID_12: {
+            case 8:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+            case 24: {
                 rootCause = RootCause.serverFailure;
                 break;
             }
-            case NETWORK_ERROR:
-            case NO_CONNECTIVITY: {
+            case 3:
+            case 4: {
                 rootCause = RootCause.networkFailure;
                 break;
             }
-            case HTTP_SSL_DATE_TIME_ERROR: {
+            case 6: {
                 rootCause = RootCause.sslExpiredCert;
                 break;
             }
-            case HTTP_SSL_ERROR: {
+            case 7: {
                 rootCause = RootCause.sslHandshakeFailure;
                 break;
             }
-            case HTTP_SSL_NO_VALID_CERT: {
+            case 5: {
                 rootCause = RootCause.sslUntrustedCert;
                 break;
             }
@@ -174,17 +178,16 @@ public abstract class ConsolidatedLoggingUtils
             final WindowManager windowManager = (WindowManager)context.getSystemService("window");
             if (windowManager != null) {
                 final android.view.Display defaultDisplay = windowManager.getDefaultDisplay();
-                final float refreshRate = defaultDisplay.getRefreshRate();
+                float refreshRate = defaultDisplay.getRefreshRate();
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Refresh rate: " + refreshRate);
                 }
-                float n = refreshRate;
                 if (refreshRate < 10.0f) {
-                    n = 60.0f;
+                    refreshRate = 60.0f;
                 }
                 final Point point = new Point();
                 defaultDisplay.getSize(point);
-                return new Display(Display.Connector.internal, null, point.x, point.y, (int)n, null);
+                return new Display(Display$Connector.internal, null, point.x, point.y, (int)refreshRate, null);
             }
         }
         return null;
@@ -256,7 +259,7 @@ public abstract class ConsolidatedLoggingUtils
                                     try {
                                         message.put("bodyResponse", (Object)new String(volleyError.networkResponse.data));
                                         deepErrorElement = new DeepErrorElement();
-                                        final DeepErrorElement.Debug debug = new DeepErrorElement.Debug();
+                                        final DeepErrorElement$Debug debug = new DeepErrorElement$Debug();
                                         debug.setStackTrace(android.util.Log.getStackTraceString((Throwable)volleyError));
                                         debug.setMessage(message);
                                         deepErrorElement.setDebug(debug);
@@ -266,31 +269,27 @@ public abstract class ConsolidatedLoggingUtils
                                             return error;
                                         }
                                         break Label_0330;
+                                        Label_0298: {
+                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                        }
+                                        // iftrue(Label_0115:, !volleyError instanceof NetworkError)
+                                        break;
+                                        // iftrue(Label_0264:, !volleyError instanceof FalcorServerException)
                                         // iftrue(Label_0281:, !volleyError instanceof ServerError)
                                         // iftrue(Label_0298:, !volleyError instanceof TimeoutError)
-                                        // iftrue(Label_0115:, !volleyError instanceof NetworkError)
-                                        // iftrue(Label_0264:, !volleyError instanceof FalcorServerException)
-                                    Block_12:
+                                    Block_10:
                                         while (true) {
-                                            error.setRootCause(RootCause.serverFailure);
+                                            error.setRootCause(RootCause.tcpConnectionTimeout);
                                             break;
-                                            Block_13: {
-                                                Block_11: {
-                                                    break Block_11;
-                                                    Label_0281: {
-                                                        break Block_12;
-                                                    }
-                                                    Label_0298:
-                                                    break Block_13;
-                                                }
+                                            break Block_10;
+                                            Label_0264: {
                                                 error.setRootCause(RootCause.serverFailure);
-                                                break;
                                             }
-                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
                                             break;
+                                            Label_0281:
                                             continue;
                                         }
-                                        error.setRootCause(RootCause.tcpConnectionTimeout);
+                                        error.setRootCause(RootCause.serverFailure);
                                         break;
                                     }
                                     catch (Throwable t) {
@@ -335,82 +334,72 @@ public abstract class ConsolidatedLoggingUtils
     }
     
     protected static Error toError(final StatusCode statusCode, final String s) {
-        final Error error = null;
-        Error error2 = null;
-        switch (statusCode) {
+        switch (ConsolidatedLoggingUtils$1.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report  generic failure for " + s + ", status code not found " + statusCode);
                 }
-                error2 = new Error(RootCause.unknownFailure, null);
-                break;
+                return new Error(RootCause.unknownFailure, null);
             }
-            case OK:
-            case NON_RECOMMENDED_APP_VERSION: {
-                error2 = error;
+            case 1:
+            case 2: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report success for " + s);
-                    return null;
                 }
-                break;
+                return null;
             }
-            case NETWORK_ERROR: {
+            case 3: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report network error for " + s);
                 }
-                error2 = new Error(RootCause.networkFailure, null);
-                break;
+                return new Error(RootCause.networkFailure, null);
             }
-            case NO_CONNECTIVITY: {
+            case 4: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report no connectivity for " + s);
                 }
-                error2 = new Error(RootCause.tcpNoRouteToHost, null);
-                break;
+                return new Error(RootCause.tcpNoRouteToHost, null);
             }
-            case HTTP_SSL_NO_VALID_CERT: {
+            case 5: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report SSL error, no valid certificate for " + s);
                 }
-                error2 = new Error(RootCause.sslExpiredCert, null);
-                break;
+                return new Error(RootCause.sslExpiredCert, null);
             }
-            case HTTP_SSL_DATE_TIME_ERROR: {
+            case 6: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report SSL error, date time error for " + s);
                 }
-                error2 = new Error(RootCause.sslUntrustedCert, null);
-                break;
+                return new Error(RootCause.sslUntrustedCert, null);
             }
-            case HTTP_SSL_ERROR: {
+            case 7: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report SSL error, generic for " + s);
                 }
-                error2 = new Error(RootCause.sslUntrustedCert, null);
-                break;
+                return new Error(RootCause.sslUntrustedCert, null);
             }
-            case SERVER_ERROR: {
+            case 8: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report server error, generic for " + s);
                 }
-                error2 = new Error(RootCause.serverFailure, null);
-                break;
+                return new Error(RootCause.serverFailure, null);
             }
-            case UNKNOWN: {
+            case 9: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report uknown error for " + s);
                 }
-                error2 = new Error(RootCause.unknownFailure, null);
-                break;
+                return new Error(RootCause.unknownFailure, null);
             }
         }
-        return error2;
     }
     
     public static List<FalcorPathResult> toFalcorPathResultList(final List<String> list) {
-        int size = 0;
+        int size;
         if (list != null) {
             size = list.size();
+        }
+        else {
+            size = 0;
         }
         final ArrayList list2 = new ArrayList<FalcorPathResult>(size);
         if (list != null) {
@@ -440,71 +429,61 @@ public abstract class ConsolidatedLoggingUtils
         if (statusCode == null) {
             unknown = StatusCode.UNKNOWN;
         }
-        UIError uiError = null;
-        switch (unknown) {
+        switch (ConsolidatedLoggingUtils$1.$SwitchMap$com$netflix$mediaclient$StatusCode[unknown.ordinal()]) {
             default: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report  generic failure for, status code not found " + unknown);
                 }
-                uiError = new UIError(RootCause.unknownFailure, null, null, null);
-                break;
+                return new UIError(RootCause.unknownFailure, null, null, null);
             }
-            case OK:
-            case NON_RECOMMENDED_APP_VERSION: {
+            case 1:
+            case 2: {
                 Log.d("nf_log", "Report success");
                 return null;
             }
-            case NETWORK_ERROR: {
+            case 3: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report network error for");
                 }
-                uiError = new UIError(RootCause.networkFailure, null, null, null);
-                break;
+                return new UIError(RootCause.networkFailure, null, null, null);
             }
-            case NO_CONNECTIVITY: {
+            case 4: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report no connectivity for");
                 }
-                uiError = new UIError(RootCause.tcpNoRouteToHost, null, null, null);
-                break;
+                return new UIError(RootCause.tcpNoRouteToHost, null, null, null);
             }
-            case HTTP_SSL_NO_VALID_CERT: {
+            case 5: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report SSL error, no valid certificate for");
                 }
-                uiError = new UIError(RootCause.sslExpiredCert, null, null, null);
-                break;
+                return new UIError(RootCause.sslExpiredCert, null, null, null);
             }
-            case HTTP_SSL_DATE_TIME_ERROR: {
+            case 6: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report SSL error, date time error for");
                 }
-                uiError = new UIError(RootCause.sslUntrustedCert, null, null, null);
-                break;
+                return new UIError(RootCause.sslUntrustedCert, null, null, null);
             }
-            case HTTP_SSL_ERROR: {
+            case 7: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report SSL error, generic for");
                 }
-                uiError = new UIError(RootCause.sslUntrustedCert, null, null, null);
-                break;
+                return new UIError(RootCause.sslUntrustedCert, null, null, null);
             }
-            case SERVER_ERROR: {
+            case 8: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report server error, generic for");
                 }
-                uiError = new UIError(RootCause.serverFailure, null, null, null);
-                break;
+                return new UIError(RootCause.serverFailure, null, null, null);
             }
-            case UNKNOWN: {
+            case 9: {
                 if (Log.isLoggable("nf_log", 3)) {
                     Log.d("nf_log", "Report uknown error for");
                 }
-                uiError = new UIError(RootCause.unknownFailure, null, null, null);
-                break;
+                return new UIError(RootCause.unknownFailure, null, null, null);
             }
         }
-        return uiError;
     }
     
     protected static void validateArgument(final Object o, final String s) {

@@ -4,7 +4,6 @@
 
 package android.support.v4.net;
 
-import java.net.SocketException;
 import java.net.Socket;
 import android.net.TrafficStats;
 
@@ -30,11 +29,11 @@ class TrafficStatsCompatIcs
         TrafficStats.setThreadStatsTag(threadStatsTag);
     }
     
-    public static void tagSocket(final Socket socket) throws SocketException {
+    public static void tagSocket(final Socket socket) {
         TrafficStats.tagSocket(socket);
     }
     
-    public static void untagSocket(final Socket socket) throws SocketException {
+    public static void untagSocket(final Socket socket) {
         TrafficStats.untagSocket(socket);
     }
 }

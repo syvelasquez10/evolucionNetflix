@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.player;
 
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import com.netflix.mediaclient.Log;
 import android.view.TextureView;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView;
@@ -55,11 +56,11 @@ public class VideoWindowForPostplayFullScreen implements VideoWindowForPostplay
     @Override
     public void setVisible(final boolean b) {
         if (b) {
-            ViewUtils.setVisibility((View)this.mSurface, ViewUtils.Visibility.VISIBLE);
-            ViewUtils.setVisibility((View)this.mSurface2, ViewUtils.Visibility.VISIBLE);
+            ViewUtils.setVisibility((View)this.mSurface, ViewUtils$Visibility.VISIBLE);
+            ViewUtils.setVisibility((View)this.mSurface2, ViewUtils$Visibility.VISIBLE);
             return;
         }
-        ViewUtils.setVisibility((View)this.mSurface, ViewUtils.Visibility.INVISIBLE);
-        ViewUtils.setVisibility((View)this.mSurface2, ViewUtils.Visibility.INVISIBLE);
+        ViewUtils.setVisibility((View)this.mSurface, ViewUtils$Visibility.INVISIBLE);
+        ViewUtils.setVisibility((View)this.mSurface2, ViewUtils$Visibility.INVISIBLE);
     }
 }

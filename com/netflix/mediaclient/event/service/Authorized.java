@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.service;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class Authorized extends BaseServiceEvent
@@ -25,7 +24,7 @@ public abstract class Authorized extends BaseServiceEvent
     }
     
     @Override
-    public JSONObject getData() throws JSONException {
+    public JSONObject getData() {
         final JSONObject jsonObject = new JSONObject();
         final JSONObject jsonObject2 = new JSONObject();
         jsonObject2.put("service", (Object)this.service.getName());

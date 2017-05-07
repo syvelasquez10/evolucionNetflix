@@ -5,12 +5,9 @@
 package com.google.android.gms.tagmanager;
 
 import android.os.Process;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import java.io.IOException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.internal.jw;
 import com.google.android.gms.internal.ju;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient$Info;
 import android.content.Context;
 
 class a
@@ -20,11 +17,11 @@ class a
     private volatile long anB;
     private volatile long anC;
     private volatile long anD;
-    private a anE;
+    private a$a anE;
     private volatile boolean mClosed;
     private final Context mContext;
     private final Thread wf;
-    private volatile AdvertisingIdClient.Info xB;
+    private volatile AdvertisingIdClient$Info xB;
     private final ju yD;
     
     static {
@@ -35,38 +32,11 @@ class a
         this(context, null, jw.hA());
     }
     
-    a(final Context mContext, final a anE, final ju yd) {
+    a(final Context mContext, final a$a anE, final ju yd) {
         this.anB = 900000L;
         this.anC = 30000L;
         this.mClosed = false;
-        this.anE = (a)new a() {
-            @Override
-            public AdvertisingIdClient.Info nK() {
-                try {
-                    return AdvertisingIdClient.getAdvertisingIdInfo(a.this.mContext);
-                }
-                catch (IllegalStateException ex) {
-                    bh.W("IllegalStateException getting Advertising Id Info");
-                    return null;
-                }
-                catch (GooglePlayServicesRepairableException ex2) {
-                    bh.W("GooglePlayServicesRepairableException getting Advertising Id Info");
-                    return null;
-                }
-                catch (IOException ex3) {
-                    bh.W("IOException getting Ad Id Info");
-                    return null;
-                }
-                catch (GooglePlayServicesNotAvailableException ex4) {
-                    bh.W("GooglePlayServicesNotAvailableException getting Advertising Id Info");
-                    return null;
-                }
-                catch (Exception ex5) {
-                    bh.W("Unknown exception. Could not get the Advertising Id Info.");
-                    return null;
-                }
-            }
-        };
+        this.anE = new a$1(this);
         this.yD = yd;
         if (mContext != null) {
             this.mContext = mContext.getApplicationContext();
@@ -77,12 +47,7 @@ class a
         if (anE != null) {
             this.anE = anE;
         }
-        this.wf = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                a.this.nI();
-            }
-        });
+        this.wf = new Thread(new a$2(this));
     }
     
     static a V(final Context context) {
@@ -139,10 +104,5 @@ class a
     
     void start() {
         this.wf.start();
-    }
-    
-    public interface a
-    {
-        AdvertisingIdClient.Info nK();
     }
 }

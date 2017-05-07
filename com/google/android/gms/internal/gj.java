@@ -6,6 +6,7 @@ package com.google.android.gms.internal;
 
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+import org.json.JSONException;
 import android.view.Window;
 import android.graphics.Rect;
 import android.app.Activity;
@@ -34,11 +35,9 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import android.webkit.WebSettings;
 import android.content.Context;
-import org.json.JSONException;
 import java.util.Iterator;
 import org.json.JSONArray;
 import java.util.Collection;
-import java.io.IOException;
 import java.nio.CharBuffer;
 import java.text.ParseException;
 import java.util.TimeZone;
@@ -107,7 +106,7 @@ public final class gj
         }
     }
     
-    public static String a(final Readable readable) throws IOException {
+    public static String a(final Readable readable) {
         final StringBuilder sb = new StringBuilder();
         final CharBuffer allocate = CharBuffer.allocate(2048);
         while (true) {
@@ -121,7 +120,7 @@ public final class gj
         return sb.toString();
     }
     
-    private static JSONArray a(final Collection<?> collection) throws JSONException {
+    private static JSONArray a(final Collection<?> collection) {
         final JSONArray jsonArray = new JSONArray();
         final Iterator<?> iterator = collection.iterator();
         while (iterator.hasNext()) {
@@ -130,7 +129,7 @@ public final class gj
         return jsonArray;
     }
     
-    static JSONArray a(final Object[] array) throws JSONException {
+    static JSONArray a(final Object[] array) {
         final JSONArray jsonArray = new JSONArray();
         for (int length = array.length, i = 0; i < length; ++i) {
             a(jsonArray, array[i]);
@@ -182,7 +181,7 @@ public final class gj
         }
     }
     
-    private static void a(final JSONArray jsonArray, final Object o) throws JSONException {
+    private static void a(final JSONArray jsonArray, final Object o) {
         if (o instanceof Bundle) {
             jsonArray.put((Object)c((Bundle)o));
             return;
@@ -202,7 +201,7 @@ public final class gj
         jsonArray.put(o);
     }
     
-    private static void a(final JSONObject jsonObject, String s, final Object o) throws JSONException {
+    private static void a(final JSONObject jsonObject, String s, final Object o) {
         if (o instanceof Bundle) {
             jsonObject.put(s, (Object)c((Bundle)o));
             return;
@@ -296,15 +295,7 @@ public final class gj
         }
         while (true) {
             if (!gr.dt()) {
-                gr.wC.post((Runnable)new Runnable() {
-                    @Override
-                    public void run() {
-                        synchronized (gj.uf) {
-                            gj.wo = r(context);
-                            gj.uf.notifyAll();
-                        }
-                    }
-                });
+                gr.wC.post((Runnable)new gj$1(context));
                 while (gj.wo == null) {
                     try {
                         gj.uf.wait();
@@ -345,7 +336,7 @@ public final class gj
         return hashMap;
     }
     
-    private static JSONObject c(final Bundle bundle) throws JSONException {
+    private static JSONObject c(final Bundle bundle) {
         final JSONObject jsonObject = new JSONObject();
         for (final String s : bundle.keySet()) {
             a(jsonObject, s, bundle.get(s));
@@ -474,7 +465,7 @@ public final class gj
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.intent.action.USER_PRESENT");
         intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        context.getApplicationContext().registerReceiver((BroadcastReceiver)new a(), intentFilter);
+        context.getApplicationContext().registerReceiver((BroadcastReceiver)new gj$a(null), intentFilter);
         gj.wp = true;
     }
     
@@ -498,7 +489,7 @@ public final class gj
         return n + top;
     }
     
-    public static JSONObject t(final Map<String, ?> map) throws JSONException {
+    public static JSONObject t(final Map<String, ?> map) {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject();
@@ -518,17 +509,5 @@ public final class gj
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         final float n = 160.0f / displayMetrics.densityDpi;
         return new int[] { (int)(displayMetrics.widthPixels * n), (int)(n * displayMetrics.heightPixels) };
-    }
-    
-    private static final class a extends BroadcastReceiver
-    {
-        public void onReceive(final Context context, final Intent intent) {
-            if ("android.intent.action.USER_PRESENT".equals(intent.getAction())) {
-                gj.wn = true;
-            }
-            else if ("android.intent.action.SCREEN_OFF".equals(intent.getAction())) {
-                gj.wn = false;
-            }
-        }
     }
 }

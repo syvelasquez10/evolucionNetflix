@@ -7,9 +7,8 @@ package com.netflix.mediaclient.service.user.volley;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
@@ -87,7 +86,7 @@ public class FetchFriendsForRecommendationRequest extends FalcorVolleyWebClientR
     }
     
     @Override
-    protected List<FriendForRecommendation> parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected List<FriendForRecommendation> parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 4)) {
             Log.i("nf_service_user_fetchfriendsforrecommendationrequest", "Got result: " + s);
         }
@@ -95,64 +94,62 @@ public class FetchFriendsForRecommendationRequest extends FalcorVolleyWebClientR
         if (FalcorParseUtils.isEmpty(dataObj)) {
             throw new FalcorParseException("UserProfiles empty!!!");
         }
-        while (true) {
-            final JsonObject jsonObject = null;
-            JsonObject jsonObject2;
-            ArrayList<FriendForRecommendation> list;
-            try {
-                if (this.isSearchTermValid() && dataObj.has("videos") && dataObj.getAsJsonObject("videos").has(this.videoId) && dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).has("filteredPotentialRecommendations") && dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).getAsJsonObject("filteredPotentialRecommendations").has(this.searchTerm)) {
-                    jsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).getAsJsonObject("filteredPotentialRecommendations").getAsJsonObject(this.searchTerm);
-                }
-                else {
+        final JsonObject jsonObject = null;
+        JsonObject jsonObject2;
+        ArrayList<FriendForRecommendation> list;
+        try {
+            if (this.isSearchTermValid() && dataObj.has("videos") && dataObj.getAsJsonObject("videos").has(this.videoId) && dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).has("filteredPotentialRecommendations") && dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).getAsJsonObject("filteredPotentialRecommendations").has(this.searchTerm)) {
+                jsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).getAsJsonObject("filteredPotentialRecommendations").getAsJsonObject(this.searchTerm);
+            }
+            else {
+                jsonObject2 = jsonObject;
+                if (dataObj.has("videos")) {
                     jsonObject2 = jsonObject;
-                    if (dataObj.has("videos")) {
+                    if (dataObj.getAsJsonObject("videos").has(this.videoId)) {
                         jsonObject2 = jsonObject;
-                        if (dataObj.getAsJsonObject("videos").has(this.videoId)) {
-                            jsonObject2 = jsonObject;
-                            if (dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).has("potentialRecommendations")) {
-                                jsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).getAsJsonObject("potentialRecommendations");
-                            }
+                        if (dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).has("potentialRecommendations")) {
+                            jsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.videoId).getAsJsonObject("potentialRecommendations");
                         }
                     }
                 }
-                list = new ArrayList<FriendForRecommendation>();
-                if (jsonObject2 == null) {
-                    Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "While parsing the response got null friendsListObj");
-                    return list;
-                }
             }
-            catch (Exception ex) {
-                if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 2)) {
-                    Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "While getting recommendations field from the response got an exception: " + ex);
-                }
-                throw new FalcorParseException("response missing user json objects", ex);
+            list = new ArrayList<FriendForRecommendation>();
+            if (jsonObject2 == null) {
+                Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "While parsing the response got null friendsListObj");
+                return list;
             }
-            for (int i = this.fromIndex; i < this.fromIndex + 20; ++i) {
-                final String string = Integer.toString(i);
-                if (jsonObject2.has(string)) {
-                    final JsonObject asJsonObject = jsonObject2.getAsJsonObject(string);
-                    if (asJsonObject.has("friend")) {
-                        final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject("friend").getAsJsonObject("summary");
-                        final String asString = asJsonObject2.getAsJsonPrimitive("id").getAsString();
-                        final String asString2 = asJsonObject2.getAsJsonPrimitive("firstName").getAsString();
-                        final String asString3 = asJsonObject2.getAsJsonPrimitive("lastName").getAsString();
-                        final String asString4 = asJsonObject2.getAsJsonPrimitive("imageUrl").getAsString();
-                        final boolean equals = "connected".equals(asJsonObject2.getAsJsonPrimitive("netflixConnected").getAsString());
-                        final FriendProfile friendProfile = new FriendProfile(asString, asString2, asString3, asString4);
-                        if (asJsonObject.has("wasWatched")) {
-                            list.add(new FriendForRecommendation(friendProfile, asJsonObject.getAsJsonPrimitive("wasWatched").getAsBoolean(), equals));
-                        }
-                        else if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 6)) {
-                            Log.e("nf_service_user_fetchfriendsforrecommendationrequest", "Wierd profileObj: " + asJsonObject + " without 'wasWatched' field! Skipping...");
-                        }
+        }
+        catch (Exception ex) {
+            if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 2)) {
+                Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "While getting recommendations field from the response got an exception: " + ex);
+            }
+            throw new FalcorParseException("response missing user json objects", ex);
+        }
+        for (int i = this.fromIndex; i < this.fromIndex + 20; ++i) {
+            final String string = Integer.toString(i);
+            if (jsonObject2.has(string)) {
+                final JsonObject asJsonObject = jsonObject2.getAsJsonObject(string);
+                if (asJsonObject.has("friend")) {
+                    final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject("friend").getAsJsonObject("summary");
+                    final String asString = asJsonObject2.getAsJsonPrimitive("id").getAsString();
+                    final String asString2 = asJsonObject2.getAsJsonPrimitive("firstName").getAsString();
+                    final String asString3 = asJsonObject2.getAsJsonPrimitive("lastName").getAsString();
+                    final String asString4 = asJsonObject2.getAsJsonPrimitive("imageUrl").getAsString();
+                    final boolean equals = "connected".equals(asJsonObject2.getAsJsonPrimitive("netflixConnected").getAsString());
+                    final FriendProfile friendProfile = new FriendProfile(asString, asString2, asString3, asString4);
+                    if (asJsonObject.has("wasWatched")) {
+                        list.add(new FriendForRecommendation(friendProfile, asJsonObject.getAsJsonPrimitive("wasWatched").getAsBoolean(), equals));
                     }
                     else if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 6)) {
-                        Log.e("nf_service_user_fetchfriendsforrecommendationrequest", "Wierd profileObj: " + asJsonObject + " without 'friend' field! Skipping...");
+                        Log.e("nf_service_user_fetchfriendsforrecommendationrequest", "Wierd profileObj: " + asJsonObject + " without 'wasWatched' field! Skipping...");
                     }
                 }
+                else if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 6)) {
+                    Log.e("nf_service_user_fetchfriendsforrecommendationrequest", "Wierd profileObj: " + asJsonObject + " without 'friend' field! Skipping...");
+                }
             }
-            return list;
         }
+        return list;
     }
     
     @Override

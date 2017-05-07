@@ -4,15 +4,13 @@
 
 package com.netflix.mediaclient.ui.kids.details;
 
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.app.Fragment;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -28,32 +26,22 @@ public class KidsDetailsActivity extends FragmentHostActivity implements PlayCon
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                ((ManagerStatusListener)KidsDetailsActivity.this.getPrimaryFrag()).onManagerReady(serviceManager, status);
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-                ((ManagerStatusListener)KidsDetailsActivity.this.getPrimaryFrag()).onManagerUnavailable(serviceManager, status);
-            }
-        };
+        return new KidsDetailsActivity$1(this);
     }
     
     @Override
     protected Fragment createPrimaryFrag() {
-        switch (this.videoType) {
+        switch (KidsDetailsActivity$2.$SwitchMap$com$netflix$mediaclient$servicemgr$model$VideoType[this.videoType.ordinal()]) {
             default: {
                 throw new IllegalStateException("Don't know how to handle type: " + this.videoType);
             }
-            case MOVIE: {
+            case 1: {
                 return KidsMovieDetailsFrag.create(this.videoId);
             }
-            case SHOW: {
+            case 2: {
                 return KidsShowDetailsFrag.create(this.videoId);
             }
-            case CHARACTERS: {
+            case 3: {
                 return KidsCharacterDetailsFrag.create(this.videoId);
             }
         }
@@ -70,11 +58,11 @@ public class KidsDetailsActivity extends FragmentHostActivity implements PlayCon
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
+    public IClientLogging$ModalView getUiScreen() {
         if (this.videoType == VideoType.CHARACTERS) {
-            return IClientLogging.ModalView.characterDetails;
+            return IClientLogging$ModalView.characterDetails;
         }
-        return IClientLogging.ModalView.movieDetails;
+        return IClientLogging$ModalView.movieDetails;
     }
     
     @Override
@@ -87,14 +75,14 @@ public class KidsDetailsActivity extends FragmentHostActivity implements PlayCon
         if (!this.getIntent().hasExtra("extra_video_type")) {
             throw new IllegalStateException("Start intent must provide extra value: extra_video_type");
         }
-        this.videoId = this.getIntent().getStringExtra("extra_video_id");
         this.videoType = (VideoType)this.getIntent().getSerializableExtra("extra_video_type");
+        this.videoId = this.getIntent().getStringExtra("extra_video_id");
         this.playContext = (PlayContextImp)this.getIntent().getParcelableExtra("extra_playcontext");
         if (Log.isLoggable("KidsShowDetailsActivity", 2)) {
             Log.v("KidsShowDetailsActivity", "TRACK_ID: " + this.playContext.getTrackId());
         }
         super.onCreate(bundle);
-        this.getNetflixActionBar().setLogoType(NetflixActionBar.LogoType.GONE);
+        this.getNetflixActionBar().setLogoType(NetflixActionBar$LogoType.GONE);
         this.getNetflixActionBar().setTitle(this.getIntent().getStringExtra("extra_video_title"));
     }
 }

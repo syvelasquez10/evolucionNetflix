@@ -10,16 +10,16 @@ import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Show;
 
-public class ShowDetails extends Show implements com.netflix.mediaclient.servicemgr.model.details.ShowDetails, Playable
+public class ShowDetails extends Show implements Playable, com.netflix.mediaclient.servicemgr.model.details.ShowDetails
 {
     private static final String TAG = "nf_service_browse_showdetails";
-    public Episode.Detail currentEpisode;
-    public Bookmark currentEpisodeBookmark;
+    public Episode$Detail currentEpisode;
+    public Video$Bookmark currentEpisodeBookmark;
     public boolean userConnectedToFacebook;
     
     @Override

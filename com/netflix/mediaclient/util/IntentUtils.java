@@ -21,11 +21,11 @@ public final class IntentUtils
     }
     
     private static int getSafePriority(final int n) {
-        int n2 = n;
+        int n2;
         if (n < -1000) {
             n2 = -999;
         }
-        else if (n > 1000) {
+        else if ((n2 = n) > 1000) {
             return 999;
         }
         return n2;

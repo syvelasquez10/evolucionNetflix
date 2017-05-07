@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message.target;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
 
@@ -17,7 +16,7 @@ public class DialogCancel extends MdxMessage
         DialogCancel.PROPERTY_uid = "uid";
     }
     
-    public DialogCancel(final JSONObject mJson) throws JSONException {
+    public DialogCancel(final JSONObject mJson) {
         super("DIALOG_CANCEL");
         this.mJson = mJson;
         this.mUid = mJson.getString(DialogCancel.PROPERTY_uid);

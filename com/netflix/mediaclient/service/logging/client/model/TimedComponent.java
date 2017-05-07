@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.google.gson.annotations.Since;
@@ -29,7 +28,7 @@ public class TimedComponent
         this.elapsed = elapsed;
     }
     
-    public static TimedComponent createInstance(final JSONObject jsonObject) throws JSONException {
+    public static TimedComponent createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -55,7 +54,7 @@ public class TimedComponent
         this.name = name;
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.name != null) {
             jsonObject.put("name", (Object)this.name);

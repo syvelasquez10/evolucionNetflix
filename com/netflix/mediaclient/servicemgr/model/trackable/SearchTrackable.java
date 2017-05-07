@@ -4,7 +4,9 @@
 
 package com.netflix.mediaclient.servicemgr.model.trackable;
 
-public interface SearchTrackable extends Trackable
+import com.netflix.model.branches.FalkorValidator;
+
+public interface SearchTrackable extends Trackable, FalkorValidator
 {
     String getReferenceId();
 }

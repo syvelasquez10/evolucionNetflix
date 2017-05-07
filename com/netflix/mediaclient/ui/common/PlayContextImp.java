@@ -17,15 +17,7 @@ public class PlayContextImp implements PlayContext
     private final int videoPos;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<PlayContextImp>() {
-            public PlayContextImp createFromParcel(final Parcel parcel) {
-                return new PlayContextImp(parcel);
-            }
-            
-            public PlayContextImp[] newArray(final int n) {
-                return new PlayContextImp[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new PlayContextImp$1();
     }
     
     PlayContextImp() {
@@ -51,17 +43,14 @@ public class PlayContextImp implements PlayContext
         return 0;
     }
     
-    @Override
     public int getListPos() {
         return this.listPos;
     }
     
-    @Override
     public String getRequestId() {
         return this.requestId;
     }
     
-    @Override
     public int getTrackId() {
         return this.trackId;
     }

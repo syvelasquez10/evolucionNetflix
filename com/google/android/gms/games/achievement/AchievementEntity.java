@@ -9,6 +9,7 @@ import android.os.Parcel;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.internal.jv;
 import android.database.CharArrayBuffer;
+import com.google.android.gms.common.internal.m$a;
 import com.google.android.gms.common.internal.m;
 import com.google.android.gms.common.internal.a;
 import com.google.android.gms.games.PlayerEntity;
@@ -137,7 +138,7 @@ public final class AchievementEntity implements SafeParcelable, Achievement
     }
     
     static String b(final Achievement achievement) {
-        final m.a a = m.h(achievement).a("Id", achievement.getAchievementId()).a("Type", achievement.getType()).a("Name", achievement.getName()).a("Description", achievement.getDescription()).a("Player", achievement.getPlayer()).a("State", achievement.getState());
+        final m$a a = m.h(achievement).a("Id", achievement.getAchievementId()).a("Type", achievement.getType()).a("Name", achievement.getName()).a("Description", achievement.getDescription()).a("Player", achievement.getPlayer()).a("State", achievement.getState());
         if (achievement.getType() == 1) {
             a.a("CurrentSteps", achievement.getCurrentSteps());
             a.a("TotalSteps", achievement.getTotalSteps());

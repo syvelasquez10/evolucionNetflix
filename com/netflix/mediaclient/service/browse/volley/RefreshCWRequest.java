@@ -6,15 +6,15 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.google.gson.JsonParser;
 import java.util.concurrent.TimeUnit;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
@@ -126,7 +126,7 @@ public class RefreshCWRequest extends FalcorVolleyWebClientRequest<String>
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @SuppressLint({ "DefaultLocale" })
@@ -138,9 +138,9 @@ public class RefreshCWRequest extends FalcorVolleyWebClientRequest<String>
         final String format4 = String.format("[{'from':%d,'to':%d}, 'similars', 'summary']", this.fromVideo, this.toVideo);
         final String string = "'" + this.cwLoMoId + "'";
         final StringBuilder sb = new StringBuilder();
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), string));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), this.cwLoMoIndex));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), "'continueWatching'"));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", string));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", this.cwLoMoIndex));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "'continueWatching'"));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", format));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", format2));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
@@ -172,7 +172,7 @@ public class RefreshCWRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String parseFalcorResponse(String buildCWVideoList) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(String buildCWVideoList) {
         this.rEnd = System.nanoTime();
         this.rDurationInMs = TimeUnit.MILLISECONDS.convert(this.rEnd - this.rStart, TimeUnit.NANOSECONDS);
         Log.d("nf_service_browse_refreshcwrequest", String.format(" request took %d ms ", this.rDurationInMs));

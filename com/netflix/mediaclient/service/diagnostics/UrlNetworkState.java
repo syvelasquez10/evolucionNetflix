@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.diagnostics;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UrlNetworkState
@@ -17,19 +16,19 @@ public class UrlNetworkState
     private int errorCode;
     private int errorGroup;
     private int result;
-    private DiagnosisAgent.UrlStatus status;
+    private DiagnosisAgent$UrlStatus status;
     private String url;
     
     public UrlNetworkState(final String url) {
-        this.status = DiagnosisAgent.UrlStatus.NOT_TESTED;
+        this.status = DiagnosisAgent$UrlStatus.NOT_TESTED;
         this.errorCode = 0;
         this.errorGroup = 0;
         this.result = 0;
         this.url = url;
     }
     
-    public UrlNetworkState(final String url, final DiagnosisAgent.UrlStatus status) {
-        this.status = DiagnosisAgent.UrlStatus.NOT_TESTED;
+    public UrlNetworkState(final String url, final DiagnosisAgent$UrlStatus status) {
+        this.status = DiagnosisAgent$UrlStatus.NOT_TESTED;
         this.errorCode = 0;
         this.errorGroup = 0;
         this.result = 0;
@@ -53,7 +52,7 @@ public class UrlNetworkState
         return this.result;
     }
     
-    public DiagnosisAgent.UrlStatus getStatus() {
+    public DiagnosisAgent$UrlStatus getStatus() {
         return this.status;
     }
     
@@ -73,11 +72,11 @@ public class UrlNetworkState
         this.result = result;
     }
     
-    public void setStatus(final DiagnosisAgent.UrlStatus status) {
+    public void setStatus(final DiagnosisAgent$UrlStatus status) {
         this.status = status;
     }
     
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("URL", (Object)this.url);
         jsonObject.put("errorgroup", this.errorGroup);

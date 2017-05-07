@@ -5,9 +5,6 @@
 package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.ui.lomo.PaginatedCwAdapter;
 import com.netflix.mediaclient.ui.lomo.PaginatedLoMoAdapter;
 import android.content.Context;
@@ -52,19 +49,6 @@ public class LoLoMoAdapter extends BasePaginatedLoLoMoAdapter<LoMo>
         Log.v("LoLoMoAdapter", "Prefetching lolomo...");
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)this.getActivity());
         this.requestId = System.nanoTime();
-        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, PaginatedLoMoAdapter.computeNumVideosToFetchPerBatch(this.activity, screenSizeCategory) - 1, 0, PaginatedCwAdapter.computeNumVideosToFetchPerBatch(this.activity, screenSizeCategory) - 1, this.activity.isForKids(), false, new LoggingManagerCallback("LoLoMoAdapter") {
-            final /* synthetic */ long val$requestIdClone = LoLoMoAdapter.this.requestId;
-            
-            @Override
-            public void onLoLoMoPrefetched(final Status status) {
-                super.onLoLoMoPrefetched(status);
-                ThreadUtils.assertOnMain();
-                if (this.val$requestIdClone != LoLoMoAdapter.this.requestId) {
-                    Log.d("LoLoMoAdapter", "Request IDs do not match - skipping prefetch callback");
-                    return;
-                }
-                LoLoMoAdapter.this.handlePrefetchComplete();
-            }
-        });
+        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, PaginatedLoMoAdapter.computeNumVideosToFetchPerBatch(this.activity, screenSizeCategory) - 1, 0, PaginatedCwAdapter.computeNumVideosToFetchPerBatch(this.activity, screenSizeCategory) - 1, this.activity.isForKids(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
     }
 }

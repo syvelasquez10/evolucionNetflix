@@ -6,7 +6,7 @@ package com.netflix.mediaclient.servicemgr;
 
 public interface IMdxSharedState
 {
-    MdxPlaybackState getMdxPlaybackState();
+    IMdxSharedState$MdxPlaybackState getMdxPlaybackState();
     
     long getPlaybackPositionInMs();
     
@@ -17,13 +17,4 @@ public interface IMdxSharedState
     boolean hasActivePlayback();
     
     boolean isVolumeEnabled();
-    
-    public enum MdxPlaybackState
-    {
-        Loading, 
-        Paused, 
-        Playing, 
-        Stopped, 
-        Transitioning;
-    }
 }

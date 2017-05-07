@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.volley;
 
+import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,16 +17,11 @@ import com.google.gson.Gson;
 
 public class FalcorParseUtils
 {
-    public static final String FIELD_CURRENT = "current";
-    public static final String FIELD_EPISODES = "episodes";
     private static final String FIELD_PATH = "path";
     private static final String FIELD_VALUE = "value";
-    public static final String FIELD_VIDEOS = "videos";
-    private static final String METHOD_TYPE_CALL = "call";
-    private static final String METHOD_TYPE_GET = "get";
-    private static final String PARAM_NAME_CALLPATH = "callPath";
-    private static final String PARAM_NAME_PARAM = "param";
-    private static final String PARAM_NAME_PATH = "path";
+    public static final String METHOD_TYPE_CALL = "call";
+    public static final String METHOD_TYPE_GET = "get";
+    public static final String URL_PARAM_KEY_PARAM = "param";
     private static final Gson gson;
     
     static {
@@ -67,7 +63,7 @@ public class FalcorParseUtils
         return FalcorParseUtils.gson.fromJson(jsonElement, clazz);
     }
     
-    public static JsonObject getDataObj(final String s, final String s2) throws FalcorParseException, FalcorServerException {
+    public static JsonObject getDataObj(final String s, final String s2) {
         JsonObject asJsonObject;
         try {
             asJsonObject = new JsonParser().parse(s2).getAsJsonObject();
@@ -95,26 +91,32 @@ public class FalcorParseUtils
         return null;
     }
     
-    public static JsonObject getFirstJsonObject(final JsonObject jsonObject) {
-        if (jsonObject != null) {
-            final JsonElement jsonElement = null;
-            final Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
-            JsonElement jsonElement2 = jsonElement;
-            if (iterator.hasNext()) {
-                jsonElement2 = ((Map.Entry<String, JsonElement>)iterator.next()).getValue();
-            }
-            if (jsonElement2 != null) {
-                return jsonElement2.getAsJsonObject();
-            }
+    public static JsonObject getFirstJsonObject(JsonObject asJsonObject) {
+        if (asJsonObject == null) {
+            return null;
         }
-        return null;
+        final Iterator<Map.Entry<String, JsonElement>> iterator = asJsonObject.entrySet().iterator();
+        JsonElement jsonElement;
+        if (iterator.hasNext()) {
+            jsonElement = ((Map.Entry<String, JsonElement>)iterator.next()).getValue();
+        }
+        else {
+            jsonElement = null;
+        }
+        if (jsonElement != null) {
+            asJsonObject = jsonElement.getAsJsonObject();
+        }
+        else {
+            asJsonObject = null;
+        }
+        return asJsonObject;
     }
     
     public static Gson getGson() {
         return FalcorParseUtils.gson;
     }
     
-    public static String getIdFromPath(final String s, final JsonObject jsonObject) throws FalcorParseException, FalcorServerException {
+    public static String getIdFromPath(final String s, final JsonObject jsonObject) {
         try {
             return jsonObject.getAsJsonArray("path").get(1).getAsString();
         }
@@ -124,26 +126,6 @@ public class FalcorParseUtils
         }
     }
     
-    public static String getMethodNameCall() {
-        return "call";
-    }
-    
-    public static String getMethodNameGet() {
-        return "get";
-    }
-    
-    public static String getParamNameCallPath() {
-        return "callPath";
-    }
-    
-    public static String getParamNameParam() {
-        return "param";
-    }
-    
-    public static String getParamNamePath() {
-        return "path";
-    }
-    
     public static <T> T getPropertyObject(final JsonObject jsonObject, final String s, final Class<T> clazz) {
         if (jsonObject.has(s)) {
             return FalcorParseUtils.gson.fromJson(jsonObject.get(s), clazz);
@@ -151,7 +133,7 @@ public class FalcorParseUtils
         return null;
     }
     
-    public static VideoType getTypeFromPath(final String s, final JsonObject jsonObject) throws FalcorParseException, FalcorServerException {
+    public static VideoType getTypeFromPath(final String s, final JsonObject jsonObject) {
         try {
             return VideoType.create(jsonObject.getAsJsonArray("path").get(0).getAsString());
         }
@@ -162,15 +144,19 @@ public class FalcorParseUtils
     }
     
     public static boolean isAlreadyInQueue(final String s) {
-        return s != null && s.contains("AlreadyInQueue");
+        return s != null && s.toLowerCase(Locale.US).contains("alreadyinqueue");
     }
     
     public static boolean isDeletedProfile(final String s) {
-        return s.contains("deleted profile");
+        return s.toLowerCase(Locale.US).contains("deleted profile");
     }
     
     public static boolean isEmpty(final JsonObject jsonObject) {
         return jsonObject.isJsonNull() || jsonObject.toString().equals("{}");
+    }
+    
+    public static boolean isInvalidCounty(final String s) {
+        return s.toLowerCase(Locale.US).contains("failurereason=invalidcountry");
     }
     
     public static boolean isMapCacheError(final String s) {
@@ -178,19 +164,19 @@ public class FalcorParseUtils
     }
     
     public static boolean isMapError(final String s) {
-        return s.contains("map error");
+        return s.toLowerCase(Locale.US).contains("map error");
     }
     
     public static boolean isNotAuthorized(final String s) {
-        return s.contains("not authorized") || s.contains("unauthorized");
+        return s.toLowerCase(Locale.US).contains("not authorized") || s.toLowerCase(Locale.US).contains("unauthorized");
     }
     
     public static boolean isNotInQueue(final String s) {
-        return s.contains("NotInQueue");
+        return s.toLowerCase(Locale.US).contains("notinqueue");
     }
     
     public static boolean isNullPointerException(final String s) {
-        return s.contains("nullpointerexception");
+        return s.toLowerCase(Locale.US).contains("nullpointerexception");
     }
     
     public static boolean isWrongState(final String s) {
@@ -198,6 +184,6 @@ public class FalcorParseUtils
     }
     
     public static boolean wasRequestNotValid(final String s) {
-        return s != null && s.contains("NotValidRequest");
+        return s != null && s.toLowerCase(Locale.US).contains("notvalidrequest");
     }
 }

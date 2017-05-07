@@ -27,15 +27,7 @@ final class FragmentState implements Parcelable
     final String mTag;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<FragmentState>() {
-            public FragmentState createFromParcel(final Parcel parcel) {
-                return new FragmentState(parcel);
-            }
-            
-            public FragmentState[] newArray(final int n) {
-                return new FragmentState[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new FragmentState$1();
     }
     
     public FragmentState(final Parcel parcel) {

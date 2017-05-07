@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.client.volley;
 
-import com.android.volley.AuthFailureError;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.VolleyWebClientRequest;
@@ -34,7 +33,7 @@ public abstract class ClientLoggingVolleyWebClientRequest<T> extends VolleyWebCl
     }
     
     @Override
-    public Map<String, String> getHeaders() throws AuthFailureError {
+    public Map<String, String> getHeaders() {
         final Map<String, String> headers = super.getHeaders();
         headers.put("X-Netflix.ichnaea.request.type", "UiRequest");
         return headers;

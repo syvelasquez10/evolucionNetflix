@@ -4,14 +4,13 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
-import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
+import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
@@ -67,55 +66,53 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
     }
     
     @Override
-    protected List<EpisodeDetails> parseFalcorResponse(String o) throws FalcorParseException, FalcorServerException {
-        final ArrayList<com.netflix.mediaclient.service.webclient.model.EpisodeDetails> list = (ArrayList<com.netflix.mediaclient.service.webclient.model.EpisodeDetails>)new ArrayList<EpisodeDetails>();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchepisodesrequest", (String)o);
-        if (!FalcorParseUtils.isEmpty(dataObj)) {
+    protected List<EpisodeDetails> parseFalcorResponse(String asJsonObject) {
+        final ArrayList<com.netflix.mediaclient.service.webclient.model.EpisodeDetails> list = new ArrayList<com.netflix.mediaclient.service.webclient.model.EpisodeDetails>();
+        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchepisodesrequest", (String)asJsonObject);
+        if (FalcorParseUtils.isEmpty(dataObj)) {
+            return (List<EpisodeDetails>)list;
+        }
+        while (true) {
             while (true) {
-                JsonObject asJsonObject = null;
-                while (true) {
-                    int n = 0;
-                    Label_0219: {
-                        try {
-                            final JsonObject asJsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mVideoId);
-                            if (asJsonObject2.has("episodes")) {
-                                asJsonObject = asJsonObject2.getAsJsonObject("episodes");
-                            }
-                            if (asJsonObject != null) {
-                                n = 0;
-                                int n2;
-                                for (int i = this.toEpisodes; i >= this.fromEpisodes; --i, n = n2) {
-                                    o = Integer.toString(i);
-                                    if (!asJsonObject.has((String)o)) {
-                                        break Label_0219;
-                                    }
-                                    n2 = 1;
-                                    o = asJsonObject.getAsJsonObject((String)o);
-                                    final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails = new com.netflix.mediaclient.service.webclient.model.EpisodeDetails();
-                                    episodeDetails.detail = FalcorParseUtils.getPropertyObject((JsonObject)o, "detail", Episode.Detail.class);
-                                    episodeDetails.bookmark = FalcorParseUtils.getPropertyObject((JsonObject)o, "bookmark", Video.Bookmark.class);
-                                    episodeDetails.userConnectedToFacebook = this.userConnectedToFacebook;
-                                    list.add(0, episodeDetails);
-                                }
-                                break;
-                            }
-                            break;
+                Label_0262: {
+                    try {
+                        final JsonObject asJsonObject2 = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mVideoId);
+                        if (!asJsonObject2.has("episodes")) {
+                            break Label_0262;
                         }
-                        catch (Exception ex) {
-                            Log.v("nf_service_browse_fetchepisodesrequest", "String response to parse = " + (String)o);
-                            throw new FalcorParseException("Does not contain required fields", ex);
+                        asJsonObject = asJsonObject2.getAsJsonObject("episodes");
+                        if (asJsonObject == null) {
+                            return (List<EpisodeDetails>)list;
                         }
                     }
-                    int n2;
-                    if ((n2 = n) != 0) {
-                        Log.d("nf_service_browse_fetchepisodesrequest", String.format("Adding sentinel at index %s", o));
-                        list.add(0, BrowseVideoSentinels.getUnavailableEpisodeDetails());
-                        n2 = n;
-                        continue;
+                    catch (Exception ex) {
+                        Log.v("nf_service_browse_fetchepisodesrequest", "String response to parse = " + (String)asJsonObject);
+                        throw new FalcorParseException("Does not contain required fields", ex);
                     }
-                    continue;
+                    break;
                 }
+                asJsonObject = null;
+                continue;
             }
+        }
+        int i = this.toEpisodes;
+        boolean b = false;
+        while (i >= this.fromEpisodes) {
+            final String string = Integer.toString(i);
+            if (((JsonObject)asJsonObject).has(string)) {
+                final JsonObject asJsonObject3 = ((JsonObject)asJsonObject).getAsJsonObject(string);
+                final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails = new com.netflix.mediaclient.service.webclient.model.EpisodeDetails();
+                episodeDetails.detail = FalcorParseUtils.getPropertyObject(asJsonObject3, "detail", Episode$Detail.class);
+                episodeDetails.bookmark = FalcorParseUtils.getPropertyObject(asJsonObject3, "bookmark", Video$Bookmark.class);
+                episodeDetails.userConnectedToFacebook = this.userConnectedToFacebook;
+                list.add(0, episodeDetails);
+                b = true;
+            }
+            else if (b) {
+                Log.d("nf_service_browse_fetchepisodesrequest", String.format("Adding sentinel at index %s", string));
+                list.add(0, BrowseVideoSentinels.getUnavailableEpisodeDetails());
+            }
+            --i;
         }
         return (List<EpisodeDetails>)list;
     }

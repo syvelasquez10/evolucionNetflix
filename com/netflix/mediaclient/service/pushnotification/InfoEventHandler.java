@@ -27,42 +27,10 @@ public class InfoEventHandler
     }
     
     private InfoEventHandler() {
-        this.refreshCWRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Log.i("nf_push_info", "Refreshing CW via runnable");
-                if (InfoEventHandler.mService != null) {
-                    InfoEventHandler.mService.getBrowse().refreshCW();
-                }
-            }
-        };
-        this.refreshIQRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Log.i("nf_push_info", "Refreshing IQ via runnable");
-                if (InfoEventHandler.mService != null) {
-                    InfoEventHandler.mService.getBrowse().refreshIQ();
-                }
-            }
-        };
-        this.refreshAllRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Log.i("nf_push_info", "Refreshing ALL lolomo via runnable");
-                if (InfoEventHandler.mService != null) {
-                    InfoEventHandler.mService.getBrowse().refreshAll();
-                }
-            }
-        };
-        this.refreshSocialNotificationRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Log.i("nf_push_info", "Refreshing socialNotifications via runnable");
-                if (InfoEventHandler.mService != null) {
-                    InfoEventHandler.mService.getBrowse().refreshSocialNotifications(true, false, null);
-                }
-            }
-        };
+        this.refreshCWRunnable = new InfoEventHandler$1(this);
+        this.refreshIQRunnable = new InfoEventHandler$2(this);
+        this.refreshAllRunnable = new InfoEventHandler$3(this);
+        this.refreshSocialNotificationRunnable = new InfoEventHandler$4(this);
     }
     
     private long getBrowseEventRateLimitMs(final NetflixService netflixService) {
@@ -89,6 +57,15 @@ public class InfoEventHandler
             return rateLimitForNListChangeEvents * 1000;
         }
         return 1000L;
+    }
+    
+    private void handleLolomoRefreshEvent(final NetflixService netflixService, final boolean b) {
+        if (!b) {
+            this.informServerAndKillSelf(netflixService);
+            return;
+        }
+        netflixService.getHandler().removeCallbacks(this.refreshAllRunnable);
+        netflixService.getHandler().postDelayed(this.refreshAllRunnable, this.getBrowseEventRateLimitMs(netflixService));
     }
     
     private void handleMyListEvent(final NetflixService netflixService, final boolean b, final boolean b2) {
@@ -173,19 +150,23 @@ public class InfoEventHandler
             this.informServerAndKillSelf(mService);
             return;
         }
-        if (Payload.ActionInfoType.isMylistChangedEvent(payload.actionInfoType)) {
+        if (Payload$ActionInfoType.isLolomoRefreshEvent(payload.actionInfoType)) {
+            this.handleLolomoRefreshEvent(mService, boolean1);
+            return;
+        }
+        if (Payload$ActionInfoType.isMylistChangedEvent(payload.actionInfoType)) {
             this.handleMyListEvent(mService, boolean1, widgetInstalled);
             return;
         }
-        if (Payload.ActionInfoType.isPlayEndEvent(payload.actionInfoType)) {
+        if (Payload$ActionInfoType.isPlayEndEvent(payload.actionInfoType)) {
             this.handlePlayEndEvent(mService, boolean1, widgetInstalled);
             return;
         }
-        if (Payload.ActionInfoType.isNotificationReadEvent(payload.actionInfoType)) {
+        if (Payload$ActionInfoType.isNotificationReadEvent(payload.actionInfoType)) {
             this.handleNReadEvent(mService, boolean1);
             return;
         }
-        if (Payload.ActionInfoType.isNotificationListChangedEvent(payload.actionInfoType)) {
+        if (Payload$ActionInfoType.isNotificationListChangedEvent(payload.actionInfoType)) {
             this.handleNListChangeEvent(mService, boolean1);
             return;
         }

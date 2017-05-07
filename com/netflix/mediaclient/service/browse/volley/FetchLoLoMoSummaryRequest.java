@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.LoLoMoSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
@@ -22,8 +21,8 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientReq
 
 public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLoMo>
 {
-    private static final String FIELD_GENRE_LOLOMO = "genreLolomo";
-    private static final String FIELD_TOP_GENRE = "topGenre";
+    private static final String FIELD_GENRE_LOLOMO = "lolomos";
+    private static final String FIELD_TOP_GENRE = "topGenres";
     private static final String TAG = "nf_service_browse_fetchlolomosummaryrequest";
     private final String lolomoCategoryId;
     private final String lolomoId;
@@ -38,10 +37,10 @@ public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLo
         this.lolomoId = browseWebClientCache.getGenreLoLoMoId(lolomoCategoryId);
         this.lolomoIdInCache = (this.lolomoId != null);
         if (this.lolomoIdInCache) {
-            this.pqlQuery = String.format("['genreLolomo','%s', 'summary']", this.lolomoId);
+            this.pqlQuery = String.format("['lolomos','%s', 'summary']", this.lolomoId);
         }
         else {
-            this.pqlQuery = String.format("['topGenre','%s', 'summary']", lolomoCategoryId);
+            this.pqlQuery = String.format("['topGenres','%s', 'summary']", lolomoCategoryId);
         }
         if (Log.isLoggable("nf_service_browse_fetchlolomosummaryrequest", 2)) {
             Log.v("nf_service_browse_fetchlolomosummaryrequest", "PQL = " + this.pqlQuery);
@@ -68,7 +67,7 @@ public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLo
     }
     
     @Override
-    protected LoLoMo parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected LoLoMo parseFalcorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_fetchlolomosummaryrequest", 2)) {
             Log.v("nf_service_browse_fetchlolomosummaryrequest", "String response to parse = " + s);
         }
@@ -78,10 +77,10 @@ public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLo
         }
         try {
             if (this.lolomoIdInCache) {
-                s = (String)dataObj.getAsJsonObject("genreLolomo").getAsJsonObject(this.lolomoId);
+                s = (String)dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId);
             }
             else {
-                s = (String)dataObj.getAsJsonObject("topGenre").getAsJsonObject(this.lolomoCategoryId);
+                s = (String)dataObj.getAsJsonObject("topGenres").getAsJsonObject(this.lolomoCategoryId);
             }
             s = (String)FalcorParseUtils.getPropertyObject((JsonObject)s, "summary", LoLoMoSummary.class);
             ((LoLoMoSummary)s).setId(this.lolomoCategoryId);

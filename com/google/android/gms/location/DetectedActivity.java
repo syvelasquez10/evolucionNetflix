@@ -25,15 +25,7 @@ public class DetectedActivity implements SafeParcelable
     int adV;
     
     static {
-        adT = new Comparator<DetectedActivity>() {
-            public int a(final DetectedActivity detectedActivity, final DetectedActivity detectedActivity2) {
-                int n;
-                if ((n = Integer.valueOf(detectedActivity2.getConfidence()).compareTo(Integer.valueOf(detectedActivity.getConfidence()))) == 0) {
-                    n = Integer.valueOf(detectedActivity.getType()).compareTo(Integer.valueOf(detectedActivity2.getType()));
-                }
-                return n;
-            }
-        };
+        adT = new DetectedActivity$1();
         CREATOR = new DetectedActivityCreator();
     }
     

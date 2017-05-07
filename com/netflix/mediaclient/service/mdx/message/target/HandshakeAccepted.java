@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message.target;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
 
@@ -19,7 +18,7 @@ public final class HandshakeAccepted extends MdxMessage
     private boolean mVolumeControl;
     private int mVolumeStep;
     
-    public HandshakeAccepted(final JSONObject mJson) throws JSONException {
+    public HandshakeAccepted(final JSONObject mJson) {
         super("HANDSHAKE_ACCEPTED");
         this.mJson = mJson;
         this.mContractVersion = mJson.optInt("contractVersion");

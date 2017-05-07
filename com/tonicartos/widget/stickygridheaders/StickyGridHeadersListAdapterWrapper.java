@@ -16,15 +16,7 @@ public class StickyGridHeadersListAdapterWrapper extends BaseAdapter implements 
     private ListAdapter mDelegate;
     
     public StickyGridHeadersListAdapterWrapper(final ListAdapter mDelegate) {
-        this.mDataSetObserver = new DataSetObserver() {
-            public void onChanged() {
-                StickyGridHeadersListAdapterWrapper.this.notifyDataSetChanged();
-            }
-            
-            public void onInvalidated() {
-                StickyGridHeadersListAdapterWrapper.this.notifyDataSetInvalidated();
-            }
-        };
+        this.mDataSetObserver = new StickyGridHeadersListAdapterWrapper$1(this);
         this.mDelegate = mDelegate;
         if (mDelegate != null) {
             mDelegate.registerDataSetObserver(this.mDataSetObserver);

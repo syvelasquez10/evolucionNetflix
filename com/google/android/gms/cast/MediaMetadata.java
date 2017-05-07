@@ -4,8 +4,6 @@
 
 package com.google.android.gms.cast;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.Calendar;
 import android.text.TextUtils;
@@ -24,7 +22,7 @@ import java.util.List;
 public class MediaMetadata
 {
     private static final String[] Fn;
-    private static final a Fo;
+    private static final MediaMetadata$a Fo;
     public static final String KEY_ALBUM_ARTIST = "com.google.android.gms.cast.metadata.ALBUM_ARTIST";
     public static final String KEY_ALBUM_TITLE = "com.google.android.gms.cast.metadata.ALBUM_TITLE";
     public static final String KEY_ARTIST = "com.google.android.gms.cast.metadata.ARTIST";
@@ -57,7 +55,7 @@ public class MediaMetadata
     
     static {
         Fn = new String[] { null, "String", "int", "double", "ISO-8601 date String" };
-        Fo = new a().a("com.google.android.gms.cast.metadata.CREATION_DATE", "creationDateTime", 4).a("com.google.android.gms.cast.metadata.RELEASE_DATE", "releaseDate", 4).a("com.google.android.gms.cast.metadata.BROADCAST_DATE", "originalAirdate", 4).a("com.google.android.gms.cast.metadata.TITLE", "title", 1).a("com.google.android.gms.cast.metadata.SUBTITLE", "subtitle", 1).a("com.google.android.gms.cast.metadata.ARTIST", "artist", 1).a("com.google.android.gms.cast.metadata.ALBUM_ARTIST", "albumArtist", 1).a("com.google.android.gms.cast.metadata.ALBUM_TITLE", "albumName", 1).a("com.google.android.gms.cast.metadata.COMPOSER", "composer", 1).a("com.google.android.gms.cast.metadata.DISC_NUMBER", "discNumber", 2).a("com.google.android.gms.cast.metadata.TRACK_NUMBER", "trackNumber", 2).a("com.google.android.gms.cast.metadata.SEASON_NUMBER", "season", 2).a("com.google.android.gms.cast.metadata.EPISODE_NUMBER", "episode", 2).a("com.google.android.gms.cast.metadata.SERIES_TITLE", "seriesTitle", 1).a("com.google.android.gms.cast.metadata.STUDIO", "studio", 1).a("com.google.android.gms.cast.metadata.WIDTH", "width", 2).a("com.google.android.gms.cast.metadata.HEIGHT", "height", 2).a("com.google.android.gms.cast.metadata.LOCATION_NAME", "location", 1).a("com.google.android.gms.cast.metadata.LOCATION_LATITUDE", "latitude", 3).a("com.google.android.gms.cast.metadata.LOCATION_LONGITUDE", "longitude", 3);
+        Fo = new MediaMetadata$a().a("com.google.android.gms.cast.metadata.CREATION_DATE", "creationDateTime", 4).a("com.google.android.gms.cast.metadata.RELEASE_DATE", "releaseDate", 4).a("com.google.android.gms.cast.metadata.BROADCAST_DATE", "originalAirdate", 4).a("com.google.android.gms.cast.metadata.TITLE", "title", 1).a("com.google.android.gms.cast.metadata.SUBTITLE", "subtitle", 1).a("com.google.android.gms.cast.metadata.ARTIST", "artist", 1).a("com.google.android.gms.cast.metadata.ALBUM_ARTIST", "albumArtist", 1).a("com.google.android.gms.cast.metadata.ALBUM_TITLE", "albumName", 1).a("com.google.android.gms.cast.metadata.COMPOSER", "composer", 1).a("com.google.android.gms.cast.metadata.DISC_NUMBER", "discNumber", 2).a("com.google.android.gms.cast.metadata.TRACK_NUMBER", "trackNumber", 2).a("com.google.android.gms.cast.metadata.SEASON_NUMBER", "season", 2).a("com.google.android.gms.cast.metadata.EPISODE_NUMBER", "episode", 2).a("com.google.android.gms.cast.metadata.SERIES_TITLE", "seriesTitle", 1).a("com.google.android.gms.cast.metadata.STUDIO", "studio", 1).a("com.google.android.gms.cast.metadata.WIDTH", "width", 2).a("com.google.android.gms.cast.metadata.HEIGHT", "height", 2).a("com.google.android.gms.cast.metadata.LOCATION_NAME", "location", 1).a("com.google.android.gms.cast.metadata.LOCATION_LATITUDE", "latitude", 3).a("com.google.android.gms.cast.metadata.LOCATION_LONGITUDE", "longitude", 3);
     }
     
     public MediaMetadata() {
@@ -143,15 +141,11 @@ public class MediaMetadata
         array = (String[])(Object)new HashSet((Collection<? extends E>)Arrays.asList(array));
         try {
             final Iterator keys = jsonObject.keys();
-            String s;
-            String aa;
-            Object value;
-            Object value2 = null;
-            Block_17_Outer:Block_16_Outer:
+        Label_0018:
             while (keys.hasNext()) {
-                s = keys.next();
+                final String s = keys.next();
                 if (!"metadataType".equals(s)) {
-                    aa = MediaMetadata.Fo.aA(s);
+                    final String aa = MediaMetadata.Fo.aA(s);
                     Label_0249: {
                         if (aa == null) {
                             break Label_0249;
@@ -160,64 +154,59 @@ public class MediaMetadata
                             continue;
                         }
                         try {
-                            value = jsonObject.get(s);
+                            final Object value = jsonObject.get(s);
                             if (value == null) {
-                                continue Block_17_Outer;
+                                continue;
                             }
                             switch (MediaMetadata.Fo.aB(aa)) {
                                 case 1: {
                                     if (value instanceof String) {
                                         this.Fp.putString(aa, (String)value);
-                                        continue Block_17_Outer;
+                                        continue;
                                     }
-                                    continue Block_17_Outer;
+                                    continue;
                                 }
                                 case 4: {
                                     if (value instanceof String && iu.aL((String)value) != null) {
                                         this.Fp.putString(aa, (String)value);
-                                        continue Block_17_Outer;
+                                        continue;
                                     }
-                                    continue Block_17_Outer;
+                                    continue;
                                 }
                                 case 2: {
                                     if (value instanceof Integer) {
                                         this.Fp.putInt(aa, (int)value);
-                                        continue Block_17_Outer;
+                                        continue;
                                     }
-                                    continue Block_17_Outer;
+                                    continue;
                                 }
                                 case 3: {
                                     if (value instanceof Double) {
                                         this.Fp.putDouble(aa, (double)value);
-                                        continue Block_17_Outer;
+                                        continue;
                                     }
-                                    continue Block_17_Outer;
+                                    continue;
                                 }
                                 default: {
-                                    continue Block_17_Outer;
-                                }
-                            }
-                            // iftrue(Label_0018:, !value2 instanceof Double)
-                            while (true) {
-                                this.Fp.putDouble(s, (double)value2);
-                                continue Block_17_Outer;
-                                Label_0310: {
-                                    continue Block_16_Outer;
-                                }
-                            }
-                            value2 = jsonObject.get(s);
-                            // iftrue(Label_0282:, !value2 instanceof String)
-                            this.Fp.putString(s, (String)value2);
-                            continue Block_17_Outer;
-                            while (true) {
-                                this.Fp.putInt(s, (int)value2);
-                                continue Block_17_Outer;
-                                Label_0282: {
                                     continue;
                                 }
                             }
+                            // iftrue(Label_0018:, !value2 instanceof Double)
+                            // iftrue(Label_0282:, !value2 instanceof String)
+                            // iftrue(Label_0310:, !value2 instanceof Integer)
+                            final Object value2;
+                            Block_17: {
+                                break Block_17;
+                                value2 = jsonObject.get(s);
+                                this.Fp.putString(s, (String)value2);
+                                continue;
+                                Label_0282: {
+                                    this.Fp.putInt(s, (int)value2);
+                                }
+                                continue;
+                            }
+                            this.Fp.putDouble(s, (double)value2);
                         }
-                        // iftrue(Label_0310:, !value2 instanceof Integer)
                         catch (JSONException ex) {}
                     }
                 }
@@ -226,7 +215,7 @@ public class MediaMetadata
         catch (JSONException ex2) {}
     }
     
-    private void f(final String s, final int n) throws IllegalArgumentException {
+    private void f(final String s, final int n) {
         if (TextUtils.isEmpty((CharSequence)s)) {
             throw new IllegalArgumentException("null and empty keys are not allowed");
         }
@@ -415,41 +404,5 @@ public class MediaMetadata
     public void putString(final String s, final String s2) {
         this.f(s, 1);
         this.Fp.putString(s, s2);
-    }
-    
-    private static class a
-    {
-        private final Map<String, String> Fr;
-        private final Map<String, String> Fs;
-        private final Map<String, Integer> Ft;
-        
-        public a() {
-            this.Fr = new HashMap<String, String>();
-            this.Fs = new HashMap<String, String>();
-            this.Ft = new HashMap<String, Integer>();
-        }
-        
-        public a a(final String s, final String s2, final int n) {
-            this.Fr.put(s, s2);
-            this.Fs.put(s2, s);
-            this.Ft.put(s, n);
-            return this;
-        }
-        
-        public String aA(final String s) {
-            return this.Fs.get(s);
-        }
-        
-        public int aB(final String s) {
-            final Integer n = this.Ft.get(s);
-            if (n != null) {
-                return n;
-            }
-            return 0;
-        }
-        
-        public String az(final String s) {
-            return this.Fr.get(s);
-        }
     }
 }

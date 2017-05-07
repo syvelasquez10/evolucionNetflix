@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 public interface ah
 {
-    void a(final a p0);
+    void a(final ah$a p0);
     
     void a(final t p0, final dn p1, final bw p2, final dq p3, final boolean p4, final bz p5);
     
@@ -25,9 +25,4 @@ public interface ah
     void pause();
     
     void resume();
-    
-    public interface a
-    {
-        void aM();
-    }
 }

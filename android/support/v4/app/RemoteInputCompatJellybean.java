@@ -19,13 +19,13 @@ class RemoteInputCompatJellybean
     private static final String KEY_RESULT_KEY = "resultKey";
     public static final String RESULTS_CLIP_LABEL = "android.remoteinput.results";
     
-    static void addResultsToIntent(final RemoteInputCompatBase.RemoteInput[] array, final Intent intent, final Bundle bundle) {
+    static void addResultsToIntent(final RemoteInputCompatBase$RemoteInput[] array, final Intent intent, final Bundle bundle) {
         final Bundle bundle2 = new Bundle();
         for (int length = array.length, i = 0; i < length; ++i) {
-            final RemoteInputCompatBase.RemoteInput remoteInput = array[i];
-            final Object value = bundle.get(remoteInput.getResultKey());
+            final RemoteInputCompatBase$RemoteInput remoteInputCompatBase$RemoteInput = array[i];
+            final Object value = bundle.get(remoteInputCompatBase$RemoteInput.getResultKey());
             if (value instanceof CharSequence) {
-                bundle2.putCharSequence(remoteInput.getResultKey(), (CharSequence)value);
+                bundle2.putCharSequence(remoteInputCompatBase$RemoteInput.getResultKey(), (CharSequence)value);
             }
         }
         final Intent intent2 = new Intent();
@@ -33,26 +33,17 @@ class RemoteInputCompatJellybean
         intent.setClipData(ClipData.newIntent((CharSequence)"android.remoteinput.results", intent2));
     }
     
-    static RemoteInputCompatBase.RemoteInput fromBundle(final Bundle bundle, final RemoteInputCompatBase.RemoteInput.Factory factory) {
-        return factory.build(bundle.getString("resultKey"), bundle.getCharSequence("label"), bundle.getCharSequenceArray("choices"), bundle.getBoolean("allowFreeFormInput"), bundle.getBundle("extras"));
+    static RemoteInputCompatBase$RemoteInput fromBundle(final Bundle bundle, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
+        return remoteInputCompatBase$RemoteInput$Factory.build(bundle.getString("resultKey"), bundle.getCharSequence("label"), bundle.getCharSequenceArray("choices"), bundle.getBoolean("allowFreeFormInput"), bundle.getBundle("extras"));
     }
     
-    static RemoteInputCompatBase.RemoteInput[] fromBundleArray(final Bundle[] array, final RemoteInputCompatBase.RemoteInput.Factory factory) {
-        RemoteInputCompatBase.RemoteInput[] array2;
+    static RemoteInputCompatBase$RemoteInput[] fromBundleArray(final Bundle[] array, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
         if (array == null) {
-            array2 = null;
+            return null;
         }
-        else {
-            final RemoteInputCompatBase.RemoteInput[] array3 = factory.newArray(array.length);
-            int n = 0;
-            while (true) {
-                array2 = array3;
-                if (n >= array.length) {
-                    break;
-                }
-                array3[n] = fromBundle(array[n], factory);
-                ++n;
-            }
+        final RemoteInputCompatBase$RemoteInput[] array2 = remoteInputCompatBase$RemoteInput$Factory.newArray(array.length);
+        for (int i = 0; i < array.length; ++i) {
+            array2[i] = fromBundle(array[i], remoteInputCompatBase$RemoteInput$Factory);
         }
         return array2;
     }
@@ -68,32 +59,23 @@ class RemoteInputCompatJellybean
         return null;
     }
     
-    static Bundle toBundle(final RemoteInputCompatBase.RemoteInput remoteInput) {
+    static Bundle toBundle(final RemoteInputCompatBase$RemoteInput remoteInputCompatBase$RemoteInput) {
         final Bundle bundle = new Bundle();
-        bundle.putString("resultKey", remoteInput.getResultKey());
-        bundle.putCharSequence("label", remoteInput.getLabel());
-        bundle.putCharSequenceArray("choices", remoteInput.getChoices());
-        bundle.putBoolean("allowFreeFormInput", remoteInput.getAllowFreeFormInput());
-        bundle.putBundle("extras", remoteInput.getExtras());
+        bundle.putString("resultKey", remoteInputCompatBase$RemoteInput.getResultKey());
+        bundle.putCharSequence("label", remoteInputCompatBase$RemoteInput.getLabel());
+        bundle.putCharSequenceArray("choices", remoteInputCompatBase$RemoteInput.getChoices());
+        bundle.putBoolean("allowFreeFormInput", remoteInputCompatBase$RemoteInput.getAllowFreeFormInput());
+        bundle.putBundle("extras", remoteInputCompatBase$RemoteInput.getExtras());
         return bundle;
     }
     
-    static Bundle[] toBundleArray(final RemoteInputCompatBase.RemoteInput[] array) {
-        Bundle[] array2;
+    static Bundle[] toBundleArray(final RemoteInputCompatBase$RemoteInput[] array) {
         if (array == null) {
-            array2 = null;
+            return null;
         }
-        else {
-            final Bundle[] array3 = new Bundle[array.length];
-            int n = 0;
-            while (true) {
-                array2 = array3;
-                if (n >= array.length) {
-                    break;
-                }
-                array3[n] = toBundle(array[n]);
-                ++n;
-            }
+        final Bundle[] array2 = new Bundle[array.length];
+        for (int i = 0; i < array.length; ++i) {
+            array2[i] = toBundle(array[i]);
         }
         return array2;
     }

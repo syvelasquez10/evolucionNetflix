@@ -7,12 +7,10 @@ package com.netflix.mediaclient.service.mdx;
 import android.media.RemoteControlClient$MetadataEditor;
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import android.view.KeyEvent;
 import com.netflix.mediaclient.Log;
-import android.content.Intent;
 import android.content.BroadcastReceiver;
 import android.media.RemoteControlClient;
 import android.content.ComponentName;
@@ -42,45 +40,10 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     private final BroadcastReceiver mediaButtonIntentHandler;
     
     public RemoteControlClientManager(final Context mContext) {
-        this.mediaButtonIntentHandler = new BroadcastReceiver() {
-            private final PostPlayMediaButtonHandler postPlayMediaButtonHandler = new PostPlayMediaButtonHandler();
-            private final StandardMediaButtonHandler standardMediaButtonHandler = new StandardMediaButtonHandler();
-            
-            public void onReceive(final Context context, final Intent intent) {
-                if (!intent.getAction().equals("com.netflix.mediaclient.service.mdx.MediaButtonIntentHandlerProxy")) {
-                    Log.w("RemoteControlClientManager", "Received broadcast event but not for Media Button proxy action!");
-                }
-                else {
-                    final KeyEvent keyEvent = (KeyEvent)intent.getExtras().get("android.intent.extra.KEY_EVENT");
-                    if (keyEvent.getAction() == 0) {
-                        if (Log.isLoggable("RemoteControlClientManager", 2)) {
-                            Log.v("RemoteControlClientManager", "received ACTION_MEDIA_BUTTON, key down event, keyCode: " + keyEvent.getKeyCode());
-                        }
-                        if (RemoteControlClientManager.this.mIsPostPlay) {
-                            final int n = -1;
-                            final int n2 = -1;
-                            int int1 = n;
-                            int int2 = n2;
-                            if (RemoteControlClientManager.this.mEpisodeDetails instanceof EpisodeDetails) {
-                                final EpisodeDetails episodeDetails = (EpisodeDetails)RemoteControlClientManager.this.mEpisodeDetails;
-                                int1 = n;
-                                int2 = n2;
-                                if (episodeDetails.getPlayable() != null) {
-                                    int1 = Integer.parseInt(episodeDetails.getPlayable().getParentId());
-                                    int2 = Integer.parseInt(episodeDetails.getId());
-                                }
-                            }
-                            this.postPlayMediaButtonHandler.handleButtonDown(context, keyEvent, int1, int2, RemoteControlClientManager.this.mTargetUUID);
-                            return;
-                        }
-                        this.standardMediaButtonHandler.handleButtonDown(context, keyEvent);
-                    }
-                }
-            }
-        };
+        this.mediaButtonIntentHandler = new RemoteControlClientManager$1(this);
         Log.d("RemoteControlClientManager", "Creating RemoteControlClientManager");
         this.mContext = mContext;
-        this.mProxyReceiverComponentName = new ComponentName(this.mContext, (Class)MediaButtonIntentHandlerProxy.class);
+        this.mProxyReceiverComponentName = new ComponentName(this.mContext, (Class)RemoteControlClientManager$MediaButtonIntentHandlerProxy.class);
         this.mAudioManager = (AudioManager)this.mContext.getSystemService("audio");
         this.mRemoteControlClient = this.createRemoteControlClient();
         LocalBroadcastManager.getInstance(this.mContext).registerReceiver(this.mediaButtonIntentHandler, new IntentFilter("com.netflix.mediaclient.service.mdx.MediaButtonIntentHandlerProxy"));
@@ -198,16 +161,5 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
         this.mIsPostPlay = false;
         this.mEpisodeDetails = null;
         this.mTargetUUID = null;
-    }
-    
-    public static class MediaButtonIntentHandlerProxy extends BroadcastReceiver
-    {
-        public static final String RESEND_MEDIA_BUTTON_ACTION = "com.netflix.mediaclient.service.mdx.MediaButtonIntentHandlerProxy";
-        
-        public void onReceive(final Context context, final Intent intent) {
-            Log.d("RemoteControlClientManager", "Re-sending media button event as local broadcast...");
-            intent.setAction("com.netflix.mediaclient.service.mdx.MediaButtonIntentHandlerProxy");
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-        }
     }
 }

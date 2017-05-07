@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
@@ -61,7 +60,7 @@ public class RefreshKidsCharacterDetails extends FalcorVolleyWebClientRequest<Ki
     }
     
     @Override
-    protected KidsCharacterDetails parseFalcorResponse(String s) throws FalcorParseException, FalcorServerException {
+    protected KidsCharacterDetails parseFalcorResponse(String s) {
         if (Log.isLoggable("nf_kidscharacter", 2)) {
             Log.v("nf_kidscharacter", "String response to parse = " + s);
         }

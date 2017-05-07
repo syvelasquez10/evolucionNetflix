@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.javabridge.invoke.media;
 
-import com.netflix.mediaclient.Log;
 import org.json.JSONException;
+import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
@@ -31,45 +31,14 @@ public class SetAudioBitrateRange extends BaseInvoke
     }
     
     private void setArguments(final int n, final int n2) {
-        JSONObject jsonObject = null;
         try {
-            final JSONObject jsonObject2;
-            jsonObject = (jsonObject2 = new JSONObject());
-            final String s = "minBitrate";
-            final int n3 = n;
-            jsonObject2.put(s, n3);
-            final JSONObject jsonObject3 = jsonObject;
-            final String s2 = "maxBitrate";
-            final int n4 = n2;
-            jsonObject3.put(s2, n4);
-            final SetAudioBitrateRange setAudioBitrateRange = this;
-            final JSONObject jsonObject4 = jsonObject;
-            final String s3 = jsonObject4.toString();
-            setAudioBitrateRange.arguments = s3;
-            return;
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("minBitrate", n);
+            jsonObject.put("maxBitrate", n2);
+            this.arguments = jsonObject.toString();
         }
-        catch (JSONException ex) {}
-        while (true) {
-            try {
-                final JSONObject jsonObject2 = jsonObject;
-                final String s = "minBitrate";
-                final int n3 = n;
-                jsonObject2.put(s, n3);
-                final JSONObject jsonObject3 = jsonObject;
-                final String s2 = "maxBitrate";
-                final int n4 = n2;
-                jsonObject3.put(s2, n4);
-                final SetAudioBitrateRange setAudioBitrateRange = this;
-                final JSONObject jsonObject4 = jsonObject;
-                final String s3 = jsonObject4.toString();
-                setAudioBitrateRange.arguments = s3;
-                return;
-                Log.e("nf_invoke", "Failed to create JSON object", (Throwable)jsonObject);
-            }
-            catch (JSONException jsonObject) {
-                continue;
-            }
-            break;
+        catch (JSONException ex) {
+            Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
         }
     }
 }

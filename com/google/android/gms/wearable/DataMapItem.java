@@ -4,8 +4,9 @@
 
 package com.google.android.gms.wearable;
 
-import java.util.List;
 import com.google.android.gms.internal.pb;
+import java.util.List;
+import com.google.android.gms.internal.pb$a;
 import com.google.android.gms.internal.pc;
 import com.google.android.gms.internal.pl;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class DataMapItem
                 continue;
             }
         }
-        return pb.a(new pb.a(pc.n(dataItem.getData()), list));
+        return pb.a(new pb$a(pc.n(dataItem.getData()), list));
     }
     
     public static DataMapItem fromDataItem(final DataItem dataItem) {

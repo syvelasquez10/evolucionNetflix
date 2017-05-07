@@ -5,26 +5,27 @@
 package com.google.android.gms.common.internal;
 
 import java.util.List;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class ParcelableClientSettingsCreator implements Parcelable$Creator<ClientSettings.ParcelableClientSettings>
+public class ParcelableClientSettingsCreator implements Parcelable$Creator<ClientSettings$ParcelableClientSettings>
 {
     public static final int CONTENT_DESCRIPTION = 0;
     
-    static void a(final ClientSettings.ParcelableClientSettings parcelableClientSettings, final Parcel parcel, int d) {
+    static void a(final ClientSettings$ParcelableClientSettings clientSettings$ParcelableClientSettings, final Parcel parcel, int d) {
         d = b.D(parcel);
-        b.a(parcel, 1, parcelableClientSettings.getAccountName(), false);
-        b.c(parcel, 1000, parcelableClientSettings.getVersionCode());
-        b.b(parcel, 2, parcelableClientSettings.getScopes(), false);
-        b.c(parcel, 3, parcelableClientSettings.getGravityForPopups());
-        b.a(parcel, 4, parcelableClientSettings.getRealClientPackageName(), false);
+        b.a(parcel, 1, clientSettings$ParcelableClientSettings.getAccountName(), false);
+        b.c(parcel, 1000, clientSettings$ParcelableClientSettings.getVersionCode());
+        b.b(parcel, 2, clientSettings$ParcelableClientSettings.getScopes(), false);
+        b.c(parcel, 3, clientSettings$ParcelableClientSettings.getGravityForPopups());
+        b.a(parcel, 4, clientSettings$ParcelableClientSettings.getRealClientPackageName(), false);
         b.H(parcel, d);
     }
     
-    public ClientSettings.ParcelableClientSettings createFromParcel(final Parcel parcel) {
+    public ClientSettings$ParcelableClientSettings createFromParcel(final Parcel parcel) {
         int g = 0;
         String o = null;
         final int c = a.C(parcel);
@@ -61,12 +62,12 @@ public class ParcelableClientSettingsCreator implements Parcelable$Creator<Clien
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
-        return new ClientSettings.ParcelableClientSettings(g2, o2, c2, g, o);
+        return new ClientSettings$ParcelableClientSettings(g2, o2, c2, g, o);
     }
     
-    public ClientSettings.ParcelableClientSettings[] newArray(final int n) {
-        return new ClientSettings.ParcelableClientSettings[n];
+    public ClientSettings$ParcelableClientSettings[] newArray(final int n) {
+        return new ClientSettings$ParcelableClientSettings[n];
     }
 }

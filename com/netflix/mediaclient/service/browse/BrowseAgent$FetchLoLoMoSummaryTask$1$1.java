@@ -1,0 +1,26 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.service.browse;
+
+import com.netflix.mediaclient.servicemgr.model.LoLoMo;
+import com.netflix.mediaclient.android.app.Status;
+
+class BrowseAgent$FetchLoLoMoSummaryTask$1$1 implements Runnable
+{
+    final /* synthetic */ BrowseAgent$FetchLoLoMoSummaryTask$1 this$2;
+    final /* synthetic */ Status val$res;
+    final /* synthetic */ LoLoMo val$summary;
+    
+    BrowseAgent$FetchLoLoMoSummaryTask$1$1(final BrowseAgent$FetchLoLoMoSummaryTask$1 this$2, final LoLoMo val$summary, final Status val$res) {
+        this.this$2 = this$2;
+        this.val$summary = val$summary;
+        this.val$res = val$res;
+    }
+    
+    @Override
+    public void run() {
+        this.this$2.this$1.getCallback().onLoLoMoSummaryFetched(this.val$summary, this.val$res);
+    }
+}

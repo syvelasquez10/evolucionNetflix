@@ -12,7 +12,7 @@ import com.netflix.mediaclient.service.NetflixService;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat$Builder;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -30,8 +30,8 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     private NotificationManager notificationManager;
     private Notification notificationPlayer;
     private Notification notificationPostPlayer;
-    private NotificationCompat.Builder playerBuilder;
-    private NotificationCompat.Builder postPlayerBuilder;
+    private NotificationCompat$Builder playerBuilder;
+    private NotificationCompat$Builder postPlayerBuilder;
     private boolean supportBigContent;
     
     public MdxNotificationManager(final Context context, final boolean isEpisode, final MdxAgent mdxAgent) {
@@ -57,11 +57,11 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     }
     
     private void createPlayerBuilder() {
-        this.playerBuilder = new NotificationCompat.Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837739).setWhen(System.currentTimeMillis());
+        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837739).setWhen(System.currentTimeMillis());
     }
     
     private void createPostPlayerBuilder() {
-        this.postPlayerBuilder = new NotificationCompat.Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837739).setWhen(System.currentTimeMillis());
+        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837739).setWhen(System.currentTimeMillis());
     }
     
     private void createRemoteViews(final MdxAgent mdxAgent) {
@@ -231,20 +231,5 @@ public final class MdxNotificationManager implements IMdxNotificationManager
             service.stopForeground(true);
             this.isPlaying = false;
         }
-    }
-    
-    public interface MdxNotificationIntentRetriever
-    {
-        PendingIntent getNoActionIntent();
-        
-        PendingIntent getPauseIntent();
-        
-        PendingIntent getPlayNextIntent();
-        
-        PendingIntent getResumeIntent();
-        
-        PendingIntent getSkipbackIntent(final int p0);
-        
-        PendingIntent getStopIntent();
     }
 }

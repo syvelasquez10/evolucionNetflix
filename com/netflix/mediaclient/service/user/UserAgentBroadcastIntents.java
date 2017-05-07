@@ -10,7 +10,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.content.Context;
 import java.util.Iterator;
 import android.content.IntentFilter;
-import java.util.HashSet;
 import java.util.Set;
 
 public final class UserAgentBroadcastIntents
@@ -28,18 +27,7 @@ public final class UserAgentBroadcastIntents
     private static final Set<String> notifSet;
     
     static {
-        notifSet = new HashSet<String>() {
-            {
-                this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_ACTIVE");
-                this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_DEACTIVE");
-                this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_ACTIVE");
-                this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_DEACTIVE");
-                this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_READY_TO_SELECT");
-                this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_SELECTION_RESULT");
-                this.add("com.netflix.mediaclient.intent.action.NOTIFY_PROFILES_LIST_UPDATED");
-                this.add("com.netflix.mediaclient.intent.action.NOTIFY_CURRENT_PROFILE_INVALID");
-            }
-        };
+        notifSet = new UserAgentBroadcastIntents$1();
     }
     
     public static IntentFilter getNotificationIntentFilter() {

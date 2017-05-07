@@ -5,7 +5,7 @@
 package android.support.v7.internal.widget;
 
 import android.support.v7.internal.app.WindowCallback;
-import android.support.v7.internal.view.menu.MenuPresenter;
+import android.support.v7.internal.view.menu.z;
 import android.view.Menu;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
@@ -41,7 +41,7 @@ public interface DecorContentParent
     
     void setLogo(final int p0);
     
-    void setMenu(final Menu p0, final MenuPresenter.Callback p1);
+    void setMenu(final Menu p0, final z p1);
     
     void setMenuPrepared();
     

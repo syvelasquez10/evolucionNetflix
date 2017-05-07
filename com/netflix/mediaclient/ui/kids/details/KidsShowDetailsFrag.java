@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.kids.details;
 
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
+import android.content.Context;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -17,11 +17,9 @@ import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
 import android.app.Fragment;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import java.util.List;
-import com.netflix.mediaclient.Log;
-import android.content.Intent;
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -47,17 +45,7 @@ public class KidsShowDetailsFrag extends NetflixFrag
     private String showId;
     
     public KidsShowDetailsFrag() {
-        this.episodeRefreshReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                if (!KidsShowDetailsFrag.this.isDestroyed()) {
-                    final String action = intent.getAction();
-                    Log.v("KidsShowDetailsFrag", "receiver inovoked, action: " + action);
-                    if ("com.netflix.mediaclient.intent.action.BA_EPISODE_REFRESH".equals(action)) {
-                        return;
-                    }
-                }
-            }
-        };
+        this.episodeRefreshReceiver = new KidsShowDetailsFrag$2(this);
     }
     
     private void completeInitIfPossible() {
@@ -97,7 +85,7 @@ public class KidsShowDetailsFrag extends NetflixFrag
         this.requestId = System.nanoTime();
         final int n = this.showDetails.getNumOfSeasons() - 1;
         Log.v("KidsShowDetailsFrag", "Fetching seasons data from: " + 0 + " to " + n + ", id: " + this.requestId);
-        this.manager.getBrowse().fetchSeasons(this.showDetails.getId(), 0, n, new FetchSeasonsCallback(this.requestId));
+        this.manager.getBrowse().fetchSeasons(this.showDetails.getId(), 0, n, new KidsShowDetailsFrag$FetchSeasonsCallback(this, this.requestId));
     }
     
     private void fetchShowDetails() {
@@ -109,7 +97,7 @@ public class KidsShowDetailsFrag extends NetflixFrag
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("KidsShowDetailsFrag", "Fetching data for show ID: " + this.showId);
-        this.manager.getBrowse().fetchShowDetails(this.showId, null, new FetchShowDetailsCallback(this.requestId));
+        this.manager.getBrowse().fetchShowDetails(this.showId, null, new KidsShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
     }
     
     private void showErrorView() {
@@ -163,18 +151,12 @@ public class KidsShowDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903116, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903117, (ViewGroup)null);
         this.listView = (StickyListHeadersListView)this.content.findViewById(16908298);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
         this.listView.addHeaderView((View)this.detailsViewGroup, null, false);
-        this.leWrapper = new LoadingAndErrorWrapper(this.content, new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-                KidsShowDetailsFrag.this.showLoadingView();
-                KidsShowDetailsFrag.this.fetchShowDetails();
-            }
-        });
+        this.leWrapper = new LoadingAndErrorWrapper(this.content, new KidsShowDetailsFrag$1(this));
         return this.content;
     }
     
@@ -196,66 +178,5 @@ public class KidsShowDetailsFrag extends NetflixFrag
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
         super.onManagerUnavailable(serviceManager, status);
         this.manager = null;
-    }
-    
-    private class FetchSeasonsCallback extends LoggingManagerCallback
-    {
-        private final long requestId;
-        
-        public FetchSeasonsCallback(final long requestId) {
-            super("KidsShowDetailsFrag");
-            this.requestId = requestId;
-        }
-        
-        @Override
-        public void onSeasonsFetched(final List<SeasonDetails> list, final Status status) {
-            super.onSeasonsFetched(list, status);
-            if (this.requestId != KidsShowDetailsFrag.this.requestId) {
-                Log.v("KidsShowDetailsFrag", "Stale request - ignoring");
-                return;
-            }
-            KidsShowDetailsFrag.this.isLoading = false;
-            if (status.isError()) {
-                Log.w("KidsShowDetailsFrag", "Invalid status code");
-                KidsShowDetailsFrag.this.showErrorView();
-                return;
-            }
-            if (list == null) {
-                Log.v("KidsShowDetailsFrag", "No details in response");
-                KidsShowDetailsFrag.this.showErrorView();
-                return;
-            }
-            KidsShowDetailsFrag.this.updateSeasonData(list);
-        }
-    }
-    
-    private class FetchShowDetailsCallback extends LoggingManagerCallback
-    {
-        private final long requestId;
-        
-        public FetchShowDetailsCallback(final long requestId) {
-            super("KidsShowDetailsFrag");
-            this.requestId = requestId;
-        }
-        
-        @Override
-        public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
-            super.onShowDetailsFetched(showDetails, status);
-            if (this.requestId != KidsShowDetailsFrag.this.requestId) {
-                Log.v("KidsShowDetailsFrag", "Ignoring stale callback");
-                return;
-            }
-            if (status.isError()) {
-                Log.w("KidsShowDetailsFrag", "Invalid status code");
-                KidsShowDetailsFrag.this.showErrorView();
-                return;
-            }
-            if (showDetails == null) {
-                Log.v("KidsShowDetailsFrag", "No details in response");
-                KidsShowDetailsFrag.this.showErrorView();
-                return;
-            }
-            KidsShowDetailsFrag.this.updateShowDetails(showDetails);
-        }
     }
 }

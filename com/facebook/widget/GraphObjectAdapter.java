@@ -7,16 +7,19 @@ package com.facebook.widget;
 import android.widget.TextView$BufferType;
 import android.widget.TextView;
 import java.net.MalformedURLException;
+import com.facebook.model.GraphObject$Factory;
 import org.json.JSONObject;
 import android.view.ViewGroup$LayoutParams;
 import java.util.HashSet;
+import com.facebook.android.R$drawable;
 import android.widget.CheckBox;
 import android.view.ViewStub;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.Collections;
 import android.graphics.Bitmap;
+import com.facebook.android.R$id;
 import android.widget.ProgressBar;
-import com.facebook.android.R;
+import com.facebook.android.R$layout;
 import android.view.ViewGroup;
 import android.view.View;
 import java.net.URL;
@@ -47,14 +50,14 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     private static final String PICTURE = "picture";
     private Context context;
     private GraphObjectCursor<T> cursor;
-    private DataNeededListener dataNeededListener;
+    private GraphObjectAdapter$DataNeededListener dataNeededListener;
     private boolean displaySections;
-    private Filter<T> filter;
+    private GraphObjectAdapter$Filter<T> filter;
     private Map<String, T> graphObjectsById;
     private Map<String, ArrayList<T>> graphObjectsBySection;
     private String groupByField;
     private final LayoutInflater inflater;
-    private OnErrorListener onErrorListener;
+    private GraphObjectAdapter$OnErrorListener onErrorListener;
     private final Map<String, ImageRequest> pendingRequests;
     private Map<String, ImageResponse> prefetchedPictureCache;
     private ArrayList<String> prefetchedProfilePictureIds;
@@ -74,13 +77,12 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         this.inflater = LayoutInflater.from(context);
     }
     
-    private void callOnErrorListener(final Exception ex) {
+    private void callOnErrorListener(Exception ex) {
         if (this.onErrorListener != null) {
-            Exception ex2 = ex;
             if (!(ex instanceof FacebookException)) {
-                ex2 = new FacebookException(ex);
+                ex = new FacebookException(ex);
             }
-            this.onErrorListener.onError(this, (FacebookException)ex2);
+            this.onErrorListener.onError(this, (FacebookException)ex);
         }
     }
     
@@ -96,17 +98,13 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 continue;
             }
             else {
-                if (s2 != null || s3 != null) {
-                    int n;
-                    if (s2 == null) {
-                        n = -1;
-                    }
-                    else {
-                        n = 1;
-                    }
-                    return n;
+                if (s2 == null && s3 == null) {
+                    continue;
                 }
-                continue;
+                if (s2 == null) {
+                    return -1;
+                }
+                return 1;
             }
         }
         return 0;
@@ -126,12 +124,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                     imageView.setTag((Object)tag);
                     imageView.setImageResource(this.getDefaultPicture());
                 }
-                final ImageRequest build = new ImageRequest.Builder(this.context.getApplicationContext(), url).setCallerTag(this).setCallback(new ImageRequest.Callback() {
-                    @Override
-                    public void onCompleted(final ImageResponse imageResponse) {
-                        GraphObjectAdapter.this.processImageResponse(imageResponse, tag, imageView);
-                    }
-                }).build();
+                final ImageRequest build = new ImageRequest$Builder(this.context.getApplicationContext(), url).setCallerTag(this).setCallback(new GraphObjectAdapter$2(this, tag, imageView)).build();
                 this.pendingRequests.put(tag, build);
                 ImageDownloader.downloadAsync(build);
             }
@@ -141,9 +134,9 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     private View getActivityCircleView(final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.inflater.inflate(R.layout.com_facebook_picker_activity_circle_row, (ViewGroup)null);
+            inflate = this.inflater.inflate(R$layout.com_facebook_picker_activity_circle_row, (ViewGroup)null);
         }
-        ((ProgressBar)inflate.findViewById(R.id.com_facebook_picker_row_activity_circle)).setVisibility(0);
+        ((ProgressBar)inflate.findViewById(R$id.com_facebook_picker_row_activity_circle)).setVisibility(0);
         return inflate;
     }
     
@@ -171,7 +164,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     private void rebuildSections() {
-        boolean displaySections = true;
+        final boolean b = false;
         this.sectionKeys = new ArrayList<String>();
         this.graphObjectsBySection = new HashMap<String, ArrayList<T>>();
         this.graphObjectsById = new HashMap<String, T>();
@@ -179,16 +172,12 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         if (this.cursor == null || this.cursor.getCount() == 0) {
             return;
         }
-        int n = 0;
         this.cursor.moveToFirst();
-        int n2;
+        int n = 0;
         do {
             final GraphObject graphObject = this.cursor.getGraphObject();
-            if (!this.filterIncludesItem((T)graphObject)) {
-                n2 = n;
-            }
-            else {
-                n2 = n + 1;
+            if (this.filterIncludesItem((T)graphObject)) {
+                ++n;
                 final String sectionKeyOfGraphObject = this.getSectionKeyOfGraphObject((T)graphObject);
                 if (!this.graphObjectsBySection.containsKey(sectionKeyOfGraphObject)) {
                     this.sectionKeys.add(sectionKeyOfGraphObject);
@@ -197,23 +186,21 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 this.graphObjectsBySection.get(sectionKeyOfGraphObject).add((T)graphObject);
                 this.graphObjectsById.put(this.getIdOfGraphObject((T)graphObject), (T)graphObject);
             }
-            n = n2;
         } while (this.cursor.moveToNext());
         if (this.sortFields != null) {
             final Collator instance = Collator.getInstance();
             final Iterator<ArrayList<T>> iterator = this.graphObjectsBySection.values().iterator();
             while (iterator.hasNext()) {
-                Collections.sort(iterator.next(), new Comparator<GraphObject>() {
-                    @Override
-                    public int compare(final GraphObject graphObject, final GraphObject graphObject2) {
-                        return compareGraphObjects(graphObject, graphObject2, GraphObjectAdapter.this.sortFields, instance);
-                    }
-                });
+                Collections.sort(iterator.next(), new GraphObjectAdapter$1(this, instance));
             }
         }
         Collections.sort(this.sectionKeys, Collator.getInstance());
-        if (this.sectionKeys.size() <= 1 || n2 <= 1) {
-            displaySections = false;
+        boolean displaySections = b;
+        if (this.sectionKeys.size() > 1) {
+            displaySections = b;
+            if (n > 1) {
+                displaySections = true;
+            }
         }
         this.displaySections = displaySections;
     }
@@ -240,7 +227,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     
     protected View createGraphObjectView(final T t, final View view) {
         final View inflate = this.inflater.inflate(this.getGraphObjectRowLayoutId(t), (ViewGroup)null);
-        final ViewStub viewStub = (ViewStub)inflate.findViewById(R.id.com_facebook_picker_checkbox_stub);
+        final ViewStub viewStub = (ViewStub)inflate.findViewById(R$id.com_facebook_picker_checkbox_stub);
         if (viewStub != null) {
             if (!this.getShowCheckbox()) {
                 viewStub.setVisibility(8);
@@ -249,7 +236,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 this.updateCheckboxState((CheckBox)viewStub.inflate(), false);
             }
         }
-        final ViewStub viewStub2 = (ViewStub)inflate.findViewById(R.id.com_facebook_picker_profile_pic_stub);
+        final ViewStub viewStub2 = (ViewStub)inflate.findViewById(R$id.com_facebook_picker_profile_pic_stub);
         if (!this.getShowPicture()) {
             viewStub2.setVisibility(8);
             return inflate;
@@ -264,19 +251,19 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     
     public int getCount() {
         int size = 0;
-        int n = 0;
-        if (this.sectionKeys.size() != 0) {
-            if (this.displaySections) {
-                size = this.sectionKeys.size();
-            }
-            final Iterator<ArrayList<T>> iterator = this.graphObjectsBySection.values().iterator();
-            while (iterator.hasNext()) {
-                size += iterator.next().size();
-            }
-            n = size;
-            if (this.shouldShowActivityCircleCell()) {
-                return size + 1;
-            }
+        if (this.sectionKeys.size() == 0) {
+            return 0;
+        }
+        if (this.displaySections) {
+            size = this.sectionKeys.size();
+        }
+        final Iterator<ArrayList<T>> iterator = this.graphObjectsBySection.values().iterator();
+        while (iterator.hasNext()) {
+            size += iterator.next().size();
+        }
+        int n = size;
+        if (this.shouldShowActivityCircleCell()) {
+            n = size + 1;
         }
         return n;
     }
@@ -285,20 +272,20 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         return this.cursor;
     }
     
-    public DataNeededListener getDataNeededListener() {
+    public GraphObjectAdapter$DataNeededListener getDataNeededListener() {
         return this.dataNeededListener;
     }
     
     protected int getDefaultPicture() {
-        return R.drawable.com_facebook_profile_default_icon;
+        return R$drawable.com_facebook_profile_default_icon;
     }
     
-    Filter<T> getFilter() {
+    GraphObjectAdapter$Filter<T> getFilter() {
         return this.filter;
     }
     
     protected int getGraphObjectRowLayoutId(final T t) {
-        return R.layout.com_facebook_picker_list_row;
+        return R$layout.com_facebook_picker_list_row;
     }
     
     protected View getGraphObjectView(final T t, final View view, final ViewGroup viewGroup) {
@@ -339,15 +326,15 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     public Object getItem(final int n) {
-        final SectionAndItem<T> sectionAndItem = this.getSectionAndItem(n);
-        if (sectionAndItem.getType() == Type.GRAPH_OBJECT) {
+        final GraphObjectAdapter$SectionAndItem<T> sectionAndItem = this.getSectionAndItem(n);
+        if (sectionAndItem.getType() == GraphObjectAdapter$SectionAndItem$Type.GRAPH_OBJECT) {
             return sectionAndItem.graphObject;
         }
         return null;
     }
     
     public long getItemId(final int n) {
-        final SectionAndItem<T> sectionAndItem = this.getSectionAndItem(n);
+        final GraphObjectAdapter$SectionAndItem<T> sectionAndItem = this.getSectionAndItem(n);
         if (sectionAndItem != null && sectionAndItem.graphObject != null) {
             final String idOfGraphObject = this.getIdOfGraphObject((T)sectionAndItem.graphObject);
             if (idOfGraphObject != null) {
@@ -358,28 +345,28 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     public int getItemViewType(final int n) {
-        switch (this.getSectionAndItem(n).getType()) {
+        switch (GraphObjectAdapter$3.$SwitchMap$com$facebook$widget$GraphObjectAdapter$SectionAndItem$Type[this.getSectionAndItem(n).getType().ordinal()]) {
             default: {
                 throw new FacebookException("Unexpected type of section and item.");
             }
-            case SECTION_HEADER: {
+            case 1: {
                 return 0;
             }
-            case GRAPH_OBJECT: {
+            case 2: {
                 return 1;
             }
-            case ACTIVITY_CIRCLE: {
+            case 3: {
                 return 2;
             }
         }
     }
     
-    public OnErrorListener getOnErrorListener() {
+    public GraphObjectAdapter$OnErrorListener getOnErrorListener() {
         return this.onErrorListener;
     }
     
     String getPictureFieldSpecifier() {
-        final ImageView imageView = (ImageView)this.createGraphObjectView(null, null).findViewById(R.id.com_facebook_picker_image);
+        final ImageView imageView = (ImageView)this.createGraphObjectView(null, null).findViewById(R$id.com_facebook_picker_image);
         if (imageView == null) {
             return null;
         }
@@ -388,78 +375,86 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     protected URL getPictureUrlOfGraphObject(final T t) {
-        final String s = null;
         final Object property = t.getProperty("picture");
-        Label_0038: {
-            if (!(property instanceof String)) {
-                break Label_0038;
-            }
-            String url = (String)property;
-            while (true) {
+    Block_5_Outer:
+        while (true) {
+            Label_0036: {
+                if (!(property instanceof String)) {
+                    break Label_0036;
+                }
+                String url = (String)property;
                 if (url == null) {
                     return null;
                 }
                 try {
                     return new URL(url);
-                    url = s;
-                    // iftrue(Label_0023:, !property instanceof JSONObject)
-                    final ItemPictureData data = GraphObject.Factory.create((JSONObject)property).cast(ItemPicture.class).getData();
-                    url = s;
-                    // iftrue(Label_0023:, data == null)
-                    url = data.getUrl();
-                    continue;
+                    // iftrue(Label_0084:, !property instanceof JSONObject)
+                    while (true) {
+                        Block_4: {
+                            break Block_4;
+                            final GraphObjectAdapter$ItemPictureData data;
+                            url = data.getUrl();
+                            continue Block_5_Outer;
+                        }
+                        final GraphObjectAdapter$ItemPictureData data = GraphObject$Factory.create((JSONObject)property).cast(GraphObjectAdapter$ItemPicture.class).getData();
+                        continue;
+                    }
                 }
+                // iftrue(Label_0084:, data == null)
                 catch (MalformedURLException ex) {}
-                break;
             }
+            return null;
+            Label_0084: {
+                final String url = null;
+            }
+            continue;
         }
-        return null;
     }
     
     int getPosition(final String s, final T t) {
-        int n = 0;
-        final boolean b = false;
+        final int n = 0;
         final Iterator<String> iterator = this.sectionKeys.iterator();
-        boolean b2;
-        int n2;
+        int n2 = 0;
         while (true) {
-            b2 = b;
-            n2 = n;
-            if (!iterator.hasNext()) {
-                break;
+            while (iterator.hasNext()) {
+                final String s2 = iterator.next();
+                int n3 = n2;
+                if (this.displaySections) {
+                    n3 = n2 + 1;
+                }
+                if (s2.equals(s)) {
+                    final boolean b = true;
+                    n2 = n3;
+                    final int n4 = b ? 1 : 0;
+                    int n5;
+                    if (n4 == 0) {
+                        n5 = -1;
+                    }
+                    else {
+                        if (t == null) {
+                            int n6 = n;
+                            if (this.displaySections) {
+                                n6 = 1;
+                            }
+                            return n2 - n6;
+                        }
+                        final Iterator<T> iterator2 = this.graphObjectsBySection.get(s).iterator();
+                        while (iterator2.hasNext()) {
+                            n5 = n2;
+                            if (GraphObject$Factory.hasSameId(iterator2.next(), t)) {
+                                return n5;
+                            }
+                            ++n2;
+                        }
+                        return -1;
+                    }
+                    return n5;
+                }
+                n2 = this.graphObjectsBySection.get(s2).size() + n3;
             }
-            final String s2 = iterator.next();
-            n2 = n;
-            if (this.displaySections) {
-                n2 = n + 1;
-            }
-            if (s2.equals(s)) {
-                b2 = true;
-                break;
-            }
-            n = n2 + this.graphObjectsBySection.get(s2).size();
+            final int n4 = 0;
+            continue;
         }
-        if (!b2) {
-            return -1;
-        }
-        if (t == null) {
-            int n3;
-            if (this.displaySections) {
-                n3 = 1;
-            }
-            else {
-                n3 = 0;
-            }
-            return n2 - n3;
-        }
-        final Iterator<T> iterator2 = this.graphObjectsBySection.get(s).iterator();
-        while (iterator2.hasNext()) {
-            if (GraphObject.Factory.hasSameId(iterator2.next(), t)) {
-                return n2;
-            }
-            ++n2;
-        }
-        return -1;
     }
     
     public int getPositionForSection(int max) {
@@ -475,67 +470,58 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         return position;
     }
     
-    SectionAndItem<T> getSectionAndItem(int n) {
+    GraphObjectAdapter$SectionAndItem<T> getSectionAndItem(int n) {
+        String s = null;
         if (this.sectionKeys.size() == 0) {
             return null;
         }
-        final String s = null;
-        final GraphObject graphObject = null;
-        String s2 = null;
-        GraphObject graphObject2 = null;
-        Label_0093: {
+        GraphObject graphObject = null;
+        Label_0090: {
             if (!this.displaySections) {
-                s2 = this.sectionKeys.get(0);
-                final ArrayList<T> list = this.graphObjectsBySection.get(s2);
+                s = this.sectionKeys.get(0);
+                final ArrayList<T> list = this.graphObjectsBySection.get(s);
                 if (n >= 0 && n < list.size()) {
-                    graphObject2 = this.graphObjectsBySection.get(s2).get(n);
+                    graphObject = this.graphObjectsBySection.get(s).get(n);
                 }
                 else {
                     assert this.dataNeededListener != null && this.cursor.areMoreObjectsAvailable();
-                    return new SectionAndItem<T>(null, null);
+                    return new GraphObjectAdapter$SectionAndItem<T>(null, null);
                 }
             }
             else {
-                final Iterator<String> iterator = this.sectionKeys.iterator();
-                int n2 = 0;
-                ArrayList<T> list2 = null;
-                Block_10: {
-                    while (true) {
-                        graphObject2 = graphObject;
-                        s2 = s;
-                        if (!iterator.hasNext()) {
-                            break Label_0093;
-                        }
-                        s2 = iterator.next();
-                        n2 = n - 1;
-                        if (n == 0) {
-                            break;
-                        }
-                        list2 = this.graphObjectsBySection.get(s2);
-                        if (n2 < list2.size()) {
-                            break Block_10;
-                        }
-                        n = n2 - list2.size();
+                for (final String s2 : this.sectionKeys) {
+                    final int n2 = n - 1;
+                    if (n == 0) {
+                        final GraphObject graphObject2 = null;
+                        s = s2;
+                        graphObject = graphObject2;
+                        break Label_0090;
                     }
-                    graphObject2 = graphObject;
-                    break Label_0093;
+                    final ArrayList<T> list2 = this.graphObjectsBySection.get(s2);
+                    if (n2 < list2.size()) {
+                        final GraphObject graphObject3 = list2.get(n2);
+                        s = s2;
+                        graphObject = graphObject3;
+                        break Label_0090;
+                    }
+                    n = n2 - list2.size();
                 }
-                graphObject2 = (T)list2.get(n2);
+                graphObject = null;
             }
         }
-        if (s2 != null) {
-            return new SectionAndItem<T>(s2, graphObject2);
+        if (s != null) {
+            return new GraphObjectAdapter$SectionAndItem<T>(s, graphObject);
         }
         throw new IndexOutOfBoundsException("position");
     }
     
     public int getSectionForPosition(int max) {
         final int n = 0;
-        final SectionAndItem<T> sectionAndItem = this.getSectionAndItem(max);
+        final GraphObjectAdapter$SectionAndItem<T> sectionAndItem = this.getSectionAndItem(max);
         max = n;
         if (sectionAndItem != null) {
             max = n;
-            if (sectionAndItem.getType() != Type.ACTIVITY_CIRCLE) {
+            if (sectionAndItem.getType() != GraphObjectAdapter$SectionAndItem$Type.ACTIVITY_CIRCLE) {
                 max = Math.max(0, Math.min(this.sectionKeys.indexOf(sectionAndItem.sectionKey), this.sectionKeys.size() - 1));
             }
         }
@@ -543,9 +529,9 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     protected View getSectionHeaderView(final String text, final View view, final ViewGroup viewGroup) {
-        TextView textView;
-        if ((textView = (TextView)view) == null) {
-            textView = (TextView)this.inflater.inflate(R.layout.com_facebook_picker_list_section_header, (ViewGroup)null);
+        TextView textView = (TextView)view;
+        if (textView == null) {
+            textView = (TextView)this.inflater.inflate(R$layout.com_facebook_picker_list_section_header, (ViewGroup)null);
         }
         textView.setText((CharSequence)text);
         return (View)textView;
@@ -596,18 +582,18 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
-        final SectionAndItem<T> sectionAndItem = this.getSectionAndItem(n);
-        switch (sectionAndItem.getType()) {
+        final GraphObjectAdapter$SectionAndItem<T> sectionAndItem = this.getSectionAndItem(n);
+        switch (GraphObjectAdapter$3.$SwitchMap$com$facebook$widget$GraphObjectAdapter$SectionAndItem$Type[sectionAndItem.getType().ordinal()]) {
             default: {
                 throw new FacebookException("Unexpected type of section and item.");
             }
-            case SECTION_HEADER: {
+            case 1: {
                 return this.getSectionHeaderView(sectionAndItem.sectionKey, view, viewGroup);
             }
-            case GRAPH_OBJECT: {
+            case 2: {
                 return this.getGraphObjectView((T)sectionAndItem.graphObject, view, viewGroup);
             }
-            case ACTIVITY_CIRCLE: {
+            case 3: {
                 assert this.cursor.areMoreObjectsAvailable() && this.dataNeededListener != null;
                 this.dataNeededListener.onDataNeeded();
                 return this.getActivityCircleView(view, viewGroup);
@@ -628,7 +614,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     public boolean isEnabled(final int n) {
-        return this.getSectionAndItem(n).getType() == Type.GRAPH_OBJECT;
+        return this.getSectionAndItem(n).getType() == GraphObjectAdapter$SectionAndItem$Type.GRAPH_OBJECT;
     }
     
     boolean isGraphObjectSelected(final String s) {
@@ -639,12 +625,12 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         final String idOfGraphObject = this.getIdOfGraphObject(t);
         view.setTag((Object)idOfGraphObject);
         final CharSequence titleOfGraphObject = this.getTitleOfGraphObject(t);
-        final TextView textView = (TextView)view.findViewById(R.id.com_facebook_picker_title);
+        final TextView textView = (TextView)view.findViewById(R$id.com_facebook_picker_title);
         if (textView != null) {
             textView.setText(titleOfGraphObject, TextView$BufferType.SPANNABLE);
         }
         final CharSequence subTitleOfGraphObject = this.getSubTitleOfGraphObject(t);
-        final TextView textView2 = (TextView)view.findViewById(R.id.picker_subtitle);
+        final TextView textView2 = (TextView)view.findViewById(R$id.picker_subtitle);
         if (textView2 != null) {
             if (subTitleOfGraphObject != null) {
                 textView2.setText(subTitleOfGraphObject, TextView$BufferType.SPANNABLE);
@@ -655,12 +641,12 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
             }
         }
         if (this.getShowCheckbox()) {
-            this.updateCheckboxState((CheckBox)view.findViewById(R.id.com_facebook_picker_checkbox), this.isGraphObjectSelected(idOfGraphObject));
+            this.updateCheckboxState((CheckBox)view.findViewById(R$id.com_facebook_picker_checkbox), this.isGraphObjectSelected(idOfGraphObject));
         }
         if (this.getShowPicture()) {
             final URL pictureUrlOfGraphObject = this.getPictureUrlOfGraphObject(t);
             if (pictureUrlOfGraphObject != null) {
-                final ImageView imageView = (ImageView)view.findViewById(R.id.com_facebook_picker_image);
+                final ImageView imageView = (ImageView)view.findViewById(R$id.com_facebook_picker_image);
                 if (!this.prefetchedPictureCache.containsKey(idOfGraphObject)) {
                     this.downloadProfilePicture(idOfGraphObject, pictureUrlOfGraphObject, imageView);
                     return;
@@ -675,7 +661,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     public void prioritizeViewRange(int i, final int n, int j) {
         if (n >= i) {
             for (int k = n; k >= 0; --k) {
-                final SectionAndItem<T> sectionAndItem = this.getSectionAndItem(k);
+                final GraphObjectAdapter$SectionAndItem<T> sectionAndItem = this.getSectionAndItem(k);
                 if (sectionAndItem.graphObject != null) {
                     final ImageRequest imageRequest = this.pendingRequests.get(this.getIdOfGraphObject((T)sectionAndItem.graphObject));
                     if (imageRequest != null) {
@@ -686,14 +672,14 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
             final int max = Math.max(0, i - j);
             final int min = Math.min(n + j, this.getCount() - 1);
             final ArrayList<GraphObject> list = (ArrayList<GraphObject>)new ArrayList<T>();
-            SectionAndItem<T> sectionAndItem2;
+            GraphObjectAdapter$SectionAndItem<T> sectionAndItem2;
             for (j = max; j < i; ++j) {
                 sectionAndItem2 = this.getSectionAndItem(j);
                 if (sectionAndItem2.graphObject != null) {
                     list.add(sectionAndItem2.graphObject);
                 }
             }
-            SectionAndItem<T> sectionAndItem3;
+            GraphObjectAdapter$SectionAndItem<T> sectionAndItem3;
             for (i = n + 1; i <= min; ++i) {
                 sectionAndItem3 = this.getSectionAndItem(i);
                 if (sectionAndItem3.graphObject != null) {
@@ -717,11 +703,11 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         this.notifyDataSetChanged();
     }
     
-    public void setDataNeededListener(final DataNeededListener dataNeededListener) {
+    public void setDataNeededListener(final GraphObjectAdapter$DataNeededListener dataNeededListener) {
         this.dataNeededListener = dataNeededListener;
     }
     
-    void setFilter(final Filter<T> filter) {
+    void setFilter(final GraphObjectAdapter$Filter<T> filter) {
         this.filter = filter;
     }
     
@@ -729,7 +715,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         this.groupByField = groupByField;
     }
     
-    public void setOnErrorListener(final OnErrorListener onErrorListener) {
+    public void setOnErrorListener(final GraphObjectAdapter$OnErrorListener onErrorListener) {
         this.onErrorListener = onErrorListener;
     }
     
@@ -746,58 +732,5 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     void updateCheckboxState(final CheckBox checkBox, final boolean b) {
-    }
-    
-    public interface DataNeededListener
-    {
-        void onDataNeeded();
-    }
-    
-    interface Filter<T>
-    {
-        boolean includeItem(final T p0);
-    }
-    
-    private interface ItemPicture extends GraphObject
-    {
-        ItemPictureData getData();
-    }
-    
-    private interface ItemPictureData extends GraphObject
-    {
-        String getUrl();
-    }
-    
-    public interface OnErrorListener
-    {
-        void onError(final GraphObjectAdapter<?> p0, final FacebookException p1);
-    }
-    
-    public static class SectionAndItem<T extends GraphObject>
-    {
-        public T graphObject;
-        public String sectionKey;
-        
-        public SectionAndItem(final String sectionKey, final T graphObject) {
-            this.sectionKey = sectionKey;
-            this.graphObject = graphObject;
-        }
-        
-        public Type getType() {
-            if (this.sectionKey == null) {
-                return Type.ACTIVITY_CIRCLE;
-            }
-            if (this.graphObject == null) {
-                return Type.SECTION_HEADER;
-            }
-            return Type.GRAPH_OBJECT;
-        }
-        
-        public enum Type
-        {
-            ACTIVITY_CIRCLE, 
-            GRAPH_OBJECT, 
-            SECTION_HEADER;
-        }
     }
 }

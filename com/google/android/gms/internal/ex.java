@@ -9,7 +9,7 @@ import com.google.android.gms.ads.doubleclick.c;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 
 @ez
-public final class ex extends eu.a
+public final class ex extends eu$a
 {
     private final PublisherInterstitialAd oF;
     private final c oG;

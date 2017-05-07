@@ -31,10 +31,10 @@ public class DataTypeCreateRequest implements SafeParcelable
         this.SN = Collections.unmodifiableList((List<? extends Field>)list);
     }
     
-    private DataTypeCreateRequest(final Builder builder) {
+    private DataTypeCreateRequest(final DataTypeCreateRequest$Builder dataTypeCreateRequest$Builder) {
         this.BR = 1;
-        this.mName = builder.mName;
-        this.SN = Collections.unmodifiableList((List<? extends Field>)builder.SN);
+        this.mName = dataTypeCreateRequest$Builder.mName;
+        this.SN = Collections.unmodifiableList((List<? extends Field>)dataTypeCreateRequest$Builder.SN);
     }
     
     private boolean a(final DataTypeCreateRequest dataTypeCreateRequest) {
@@ -74,39 +74,5 @@ public class DataTypeCreateRequest implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         h.a(this, parcel, n);
-    }
-    
-    public static class Builder
-    {
-        private List<Field> SN;
-        private String mName;
-        
-        public Builder() {
-            this.SN = new ArrayList<Field>();
-        }
-        
-        public Builder addField(final Field field) {
-            if (!this.SN.contains(field)) {
-                this.SN.add(field);
-            }
-            return this;
-        }
-        
-        public Builder addField(final String s, final int n) {
-            n.b(s != null || !s.isEmpty(), (Object)"Invalid name specified");
-            return this.addField(new Field(s, n));
-        }
-        
-        public DataTypeCreateRequest build() {
-            final boolean b = true;
-            n.a(this.mName != null, (Object)"Must set the name");
-            n.a(!this.SN.isEmpty() && b, (Object)"Must specify the data fields");
-            return new DataTypeCreateRequest(this, null);
-        }
-        
-        public Builder setName(final String mName) {
-            this.mName = mName;
-            return this;
-        }
     }
 }

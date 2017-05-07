@@ -9,34 +9,34 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.common.data.DataHolder;
 import android.content.IntentFilter;
-import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.NodeApi$NodeListener;
+import com.google.android.gms.wearable.MessageApi$MessageListener;
+import com.google.android.gms.wearable.DataApi$DataListener;
 
-public class ax extends ae.a
+public class ax extends ae$a
 {
-    private final DataApi.DataListener avM;
-    private final MessageApi.MessageListener avN;
-    private final NodeApi.NodeListener avO;
+    private final DataApi$DataListener avM;
+    private final MessageApi$MessageListener avN;
+    private final NodeApi$NodeListener avO;
     private final IntentFilter[] avP;
     
-    public ax(final DataApi.DataListener avM, final MessageApi.MessageListener avN, final NodeApi.NodeListener avO, final IntentFilter[] avP) {
+    public ax(final DataApi$DataListener avM, final MessageApi$MessageListener avN, final NodeApi$NodeListener avO, final IntentFilter[] avP) {
         this.avM = avM;
         this.avN = avN;
         this.avO = avO;
         this.avP = avP;
     }
     
-    public static ax a(final DataApi.DataListener dataListener, final IntentFilter[] array) {
-        return new ax(dataListener, null, null, array);
+    public static ax a(final DataApi$DataListener dataApi$DataListener, final IntentFilter[] array) {
+        return new ax(dataApi$DataListener, null, null, array);
     }
     
-    public static ax a(final MessageApi.MessageListener messageListener, final IntentFilter[] array) {
-        return new ax(null, messageListener, null, array);
+    public static ax a(final MessageApi$MessageListener messageApi$MessageListener, final IntentFilter[] array) {
+        return new ax(null, messageApi$MessageListener, null, array);
     }
     
-    public static ax a(final NodeApi.NodeListener nodeListener) {
-        return new ax(null, null, nodeListener, null);
+    public static ax a(final NodeApi$NodeListener nodeApi$NodeListener) {
+        return new ax(null, null, nodeApi$NodeListener, null);
     }
     
     public void Z(final DataHolder dataHolder) {

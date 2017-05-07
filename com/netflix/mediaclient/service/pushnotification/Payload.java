@@ -6,7 +6,6 @@ package com.netflix.mediaclient.service.pushnotification;
 
 import java.net.URLEncoder;
 import java.util.Locale;
-import java.io.UnsupportedEncodingException;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -53,7 +52,7 @@ public class Payload
     private static final String TAG = "nf_push";
     private static final String TARGET_URL = "target_url=";
     public String actionInfoType;
-    protected List<Action> actions;
+    protected List<Payload$Action> actions;
     public String bigViewPicture;
     public String bigViewSummary;
     public String bigViewText;
@@ -77,7 +76,7 @@ public class Payload
     private long when;
     
     public Payload(final Intent intent) {
-        this.actions = new ArrayList<Action>();
+        this.actions = new ArrayList<Payload$Action>();
         if (intent.hasExtra("bigViewPicture")) {
             this.bigViewPicture = intent.getStringExtra("bigViewPicture");
         }
@@ -162,26 +161,26 @@ public class Payload
         while (i > -1) {
             final String string = "actionKey." + i;
             if (intent.hasExtra(string)) {
-                final Action action = new Action(this.guid);
-                action.key = intent.getStringExtra(string);
+                final Payload$Action payload$Action = new Payload$Action(this.guid);
+                payload$Action.key = intent.getStringExtra(string);
                 final String string2 = "actionIcon." + i;
                 if (intent.hasExtra(string2)) {
-                    action.icon = intent.getStringExtra(string2);
+                    payload$Action.icon = intent.getStringExtra(string2);
                 }
                 final String string3 = "actionPayload." + i;
                 if (intent.hasExtra(string3)) {
-                    action.payload = intent.getStringExtra(string3);
+                    payload$Action.payload = intent.getStringExtra(string3);
                 }
                 final String string4 = "actionText." + i;
                 if (intent.hasExtra(string4)) {
-                    action.text = intent.getStringExtra(string4);
+                    payload$Action.text = intent.getStringExtra(string4);
                 }
                 ++i;
-                if (action.payload == null || action.text == null || !Action.isSupportedActionKey(action.key)) {
-                    Log.e("nf_push", "Invalid action: " + action);
+                if (payload$Action.payload == null || payload$Action.text == null || !Payload$Action.isSupportedActionKey(payload$Action.key)) {
+                    Log.e("nf_push", "Invalid action: " + payload$Action);
                 }
                 else {
-                    this.actions.add(action);
+                    this.actions.add(payload$Action);
                 }
             }
             else {
@@ -241,7 +240,7 @@ public class Payload
         return s;
     }
     
-    private static Uri parsePayload(String s, final String s2) throws UnsupportedEncodingException {
+    private static Uri parsePayload(String s, final String s2) {
         if (StringUtils.isEmpty(s)) {
             Log.d("nf_push", "Empty payload, return URI that will launch our application to HOME page");
             s = "nflx://www.netflix.com/Browse?q=" + URLEncoder.encode("action=home&source=pn", "UTF-8");
@@ -291,8 +290,8 @@ public class Payload
         return Uri.parse(s);
     }
     
-    public Action[] getActions() {
-        return this.actions.toArray(new Action[this.actions.size()]);
+    public Payload$Action[] getActions() {
+        return this.actions.toArray(new Payload$Action[this.actions.size()]);
     }
     
     public Uri getDefaultActionPayload() {
@@ -335,96 +334,5 @@ public class Payload
     @Override
     public String toString() {
         return "Payload [title=" + this.title + ", text=" + this.text + ", subtext=" + this.subtext + ", info=" + this.info + ", ticker=" + this.ticker + ", ledColor=" + this.ledColor + ", sound=" + this.sound + ", vibrate=" + this.vibrate + ", when=" + this.when + ", smallIcon=" + this.smallIcon + ", largeIcon=" + this.largeIcon + ", bigViewText=" + this.bigViewText + ", bigViewPicture=" + this.bigViewPicture + ", bigViewTitle=" + this.bigViewTitle + ", bigViewSummary=" + this.bigViewSummary + ", defaultActionKey=" + this.defaultActionKey + ", defaultActionPayload=" + this.defaultActionPayload + ", actions=" + this.actions + ", guid=" + this.guid + ", messageGuid=" + this.messageGuid + "]";
-    }
-    
-    public static class Action
-    {
-        public static final String ADD2QUEUE = "ADD2QUEUE";
-        public static final String CUSTOM = "CUSTOM";
-        public static final String MDP = "MDP";
-        public static final String PLAY = "PLAY";
-        public String guid;
-        public String icon;
-        public String key;
-        public String payload;
-        public String text;
-        
-        public Action(final String guid) {
-            this.guid = guid;
-        }
-        
-        public static boolean isSupportedActionKey(final String s) {
-            return s != null && ("MDP".equals(s) || "PLAY".equals(s) || "ADD2QUEUE".equals(s) || "CUSTOM".equals(s));
-        }
-        
-        public int getIcon() {
-            return 2130837700;
-        }
-        
-        public Uri getPayload() {
-            try {
-                return parsePayload(this.payload, this.key);
-            }
-            catch (Throwable t) {
-                Log.e("nf_push", "Action.Payload URI is wrong: " + this.payload, t);
-                return null;
-            }
-        }
-        
-        @Override
-        public String toString() {
-            return "Action [key=" + this.key + ", text=" + this.text + ", payload=" + this.payload + ", icon=" + this.icon + "]";
-        }
-    }
-    
-    public enum ActionInfoType
-    {
-        EVENT_LOLOMO_REFRESH("NLL"), 
-        EVENT_MYLIST_CHANGED("M"), 
-        EVENT_NOTIFICATION_LIST_CHANGED("N"), 
-        EVENT_NOTIFICATION_READ("NR"), 
-        EVENT_PLAYBACK_ENDED("P"), 
-        UNKNOWN("");
-        
-        private String value;
-        
-        private ActionInfoType(final String value) {
-            this.value = value;
-        }
-        
-        public static ActionInfoType create(final String s) {
-            final ActionInfoType[] values = values();
-            for (int length = values.length, i = 0; i < length; ++i) {
-                final ActionInfoType actionInfoType = values[i];
-                if (actionInfoType.value.equalsIgnoreCase(s)) {
-                    return actionInfoType;
-                }
-            }
-            return ActionInfoType.UNKNOWN;
-        }
-        
-        public static boolean isLolomoRefreshEvent(final String s) {
-            return StringUtils.safeEquals(s, ActionInfoType.EVENT_LOLOMO_REFRESH.getValue());
-        }
-        
-        public static boolean isMylistChangedEvent(final String s) {
-            return StringUtils.safeEquals(s, ActionInfoType.EVENT_MYLIST_CHANGED.getValue());
-        }
-        
-        public static boolean isNotificationListChangedEvent(final String s) {
-            return StringUtils.safeEquals(s, ActionInfoType.EVENT_NOTIFICATION_LIST_CHANGED.getValue());
-        }
-        
-        public static boolean isNotificationReadEvent(final String s) {
-            return StringUtils.safeEquals(s, ActionInfoType.EVENT_NOTIFICATION_READ.getValue());
-        }
-        
-        public static boolean isPlayEndEvent(final String s) {
-            return StringUtils.safeEquals(s, ActionInfoType.EVENT_PLAYBACK_ENDED.getValue());
-        }
-        
-        public String getValue() {
-            return this.value;
-        }
     }
 }

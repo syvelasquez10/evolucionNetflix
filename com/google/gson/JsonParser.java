@@ -14,7 +14,7 @@ import com.google.gson.stream.JsonReader;
 
 public final class JsonParser
 {
-    public JsonElement parse(final JsonReader jsonReader) throws JsonIOException, JsonSyntaxException {
+    public JsonElement parse(final JsonReader jsonReader) {
         final boolean lenient = jsonReader.isLenient();
         jsonReader.setLenient(true);
         try {
@@ -31,7 +31,7 @@ public final class JsonParser
         }
     }
     
-    public JsonElement parse(final Reader reader) throws JsonIOException, JsonSyntaxException {
+    public JsonElement parse(final Reader reader) {
         JsonElement parse;
         try {
             final JsonReader jsonReader = new JsonReader(reader);
@@ -52,7 +52,7 @@ public final class JsonParser
         return parse;
     }
     
-    public JsonElement parse(final String s) throws JsonSyntaxException {
+    public JsonElement parse(final String s) {
         return this.parse(new StringReader(s));
     }
 }

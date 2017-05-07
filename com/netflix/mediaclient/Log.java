@@ -106,7 +106,7 @@ public final class Log
     }
     
     public static void handleException(final String s, final Exception ex) {
-        e(s, ex.getMessage(), ex);
+        e(s, "Exception msg: " + ex.getMessage(), ex);
     }
     
     public static int i(final String s, final String s2) {
@@ -151,7 +151,7 @@ public final class Log
     }
     
     public static void printStackTrace(final String s) {
-        v(s, android.util.Log.getStackTraceString((Throwable)new PrintStackTrace()));
+        v(s, android.util.Log.getStackTraceString((Throwable)new Log$PrintStackTrace((Log$1)null)));
     }
     
     public static void printStackTrace(final String s, final Throwable t) {
@@ -254,9 +254,5 @@ public final class Log
     
     public static int wtf(final String s, final Throwable t) {
         return wtf(s, t.getMessage(), t);
-    }
-    
-    private static class PrintStackTrace extends Throwable
-    {
     }
 }

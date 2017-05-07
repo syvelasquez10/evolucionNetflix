@@ -4,8 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import android.app.Activity;
-import android.content.MutableContextWrapper;
 import android.view.MotionEvent;
 import android.view.View$MeasureSpec;
 import android.content.ActivityNotFoundException;
@@ -39,14 +37,14 @@ public class gv extends WebView implements DownloadListener
     private final gt qs;
     private final k sX;
     private final gw wH;
-    private final a wI;
+    private final gv$a wI;
     private dk wJ;
     private boolean wK;
     private boolean wL;
     private boolean wM;
     private boolean wN;
     
-    private gv(final a wi, final ay qr, final boolean wk, final boolean b, final k sx, final gt qs) {
+    private gv(final gv$a wi, final ay qr, final boolean wk, final boolean b, final k sx, final gt qs) {
         super((Context)wi);
         this.mw = new Object();
         this.wI = wi;
@@ -86,7 +84,7 @@ public class gv extends WebView implements DownloadListener
     }
     
     public static gv a(final Context context, final ay ay, final boolean b, final boolean b2, final k k, final gt gt) {
-        return new gv(new a(context), ay, b, b2, k, gt);
+        return new gv(new gv$a(context), ay, b, b2, k, gt);
     }
     
     private void dB() {
@@ -351,19 +349,20 @@ public class gv extends WebView implements DownloadListener
                                     break Label_0273;
                                 }
                                 break Label_0280;
-                                // iftrue(Label_0220:, this.getVisibility() == 8)
-                                // iftrue(Label_0238:, this.qr.widthPixels <= n && this.qr.heightPixels <= n2)
-                            Label_0220:
                                 while (true) {
+                                    this.setVisibility(4);
+                                    Label_0220: {
+                                        break Label_0220;
+                                    }
+                                    this.setMeasuredDimension(0, 0);
+                                    return;
                                     final float density = this.wI.getResources().getDisplayMetrics().density;
                                     gs.W("Not enough space to show ad. Needs " + (int)(this.qr.widthPixels / density) + "x" + (int)(this.qr.heightPixels / density) + " dp, but only has " + (int)(size / density) + "x" + (int)(size2 / density) + " dp.");
-                                    this.setVisibility(4);
-                                    break Label_0220;
                                     continue Label_0081_Outer;
                                 }
-                                this.setMeasuredDimension(0, 0);
-                                return;
                             }
+                            // iftrue(Label_0238:, this.qr.widthPixels <= n && this.qr.heightPixels <= n2)
+                            // iftrue(Label_0220:, this.getVisibility() == 8)
                             Label_0238: {
                                 if (this.getVisibility() != 8) {
                                     this.setVisibility(0);
@@ -404,44 +403,6 @@ public class gv extends WebView implements DownloadListener
         synchronized (this.mw) {
             this.wK = wk;
             this.dB();
-        }
-    }
-    
-    @ez
-    private static class a extends MutableContextWrapper
-    {
-        private Context mD;
-        private Activity wO;
-        
-        public a(final Context baseContext) {
-            super(baseContext);
-            this.setBaseContext(baseContext);
-        }
-        
-        public Context dA() {
-            return (Context)this.wO;
-        }
-        
-        public void setBaseContext(final Context context) {
-            this.mD = context.getApplicationContext();
-            Activity wo;
-            if (context instanceof Activity) {
-                wo = (Activity)context;
-            }
-            else {
-                wo = null;
-            }
-            this.wO = wo;
-            super.setBaseContext(this.mD);
-        }
-        
-        public void startActivity(final Intent intent) {
-            if (this.wO != null) {
-                this.wO.startActivity(intent);
-                return;
-            }
-            intent.setFlags(268435456);
-            this.mD.startActivity(intent);
         }
     }
 }

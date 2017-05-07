@@ -4,29 +4,29 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.a;
-import android.util.Log;
-import com.google.android.gms.location.LocationStatusCodes;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationClient$OnRemoveGeofencesResultListener;
 import android.os.IInterface;
 import android.location.Location;
 import com.google.android.gms.common.internal.n;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationClient$OnAddGeofencesResultListener;
 import android.app.PendingIntent;
 import java.util.List;
 import android.os.IBinder;
 import com.google.android.gms.location.LocationListener;
-import android.os.RemoteException;
 import com.google.android.gms.common.internal.j;
 import android.os.Bundle;
+import com.google.android.gms.common.internal.d$e;
 import com.google.android.gms.common.internal.k;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import android.os.Looper;
 import android.content.Context;
 import com.google.android.gms.common.internal.d;
 
-public class ly extends com.google.android.gms.common.internal.d<lw>
+public class ly extends d<lw>
 {
     private final md<lw> Dh;
     private final lx aeL;
@@ -35,17 +35,17 @@ public class ly extends com.google.android.gms.common.internal.d<lw>
     private final ie aeO;
     private final String aeP;
     
-    public ly(final Context context, final Looper looper, final String s, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String s2) {
-        this(context, looper, s, connectionCallbacks, onConnectionFailedListener, s2, null);
+    public ly(final Context context, final Looper looper, final String s, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final String s2) {
+        this(context, looper, s, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, s2, null);
     }
     
-    public ly(final Context context, final Looper looper, final String s, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String s2, final String s3) {
-        this(context, looper, s, connectionCallbacks, onConnectionFailedListener, s2, s3, null);
+    public ly(final Context context, final Looper looper, final String s, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final String s2, final String s3) {
+        this(context, looper, s, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, s2, s3, null);
     }
     
-    public ly(final Context context, final Looper looper, final String s, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String aeP, final String s2, final String s3) {
-        super(context, looper, connectionCallbacks, onConnectionFailedListener, new String[0]);
-        this.Dh = new c();
+    public ly(final Context context, final Looper looper, final String s, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener, final String aeP, final String s2, final String s3) {
+        super(context, looper, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener, new String[0]);
+        this.Dh = new ly$c(this, null);
         this.aeL = new lx(context, this.Dh);
         this.aeP = aeP;
         this.aeM = new mv(s, this.Dh, s2);
@@ -53,9 +53,9 @@ public class ly extends com.google.android.gms.common.internal.d<lw>
         this.aeO = ie.a(context, this.Dh);
     }
     
-    public ly(final Context context, final GooglePlayServicesClient.ConnectionCallbacks connectionCallbacks, final GooglePlayServicesClient.OnConnectionFailedListener onConnectionFailedListener, final String aeP) {
-        super(context, connectionCallbacks, onConnectionFailedListener, new String[0]);
-        this.Dh = new c();
+    public ly(final Context context, final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks, final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener, final String aeP) {
+        super(context, googlePlayServicesClient$ConnectionCallbacks, googlePlayServicesClient$OnConnectionFailedListener, new String[0]);
+        this.Dh = new ly$c(this, null);
         this.aeL = new lx(context, this.Dh);
         this.aeP = aeP;
         this.aeM = new mv(context.getPackageName(), this.Dh, null);
@@ -64,42 +64,42 @@ public class ly extends com.google.android.gms.common.internal.d<lw>
     }
     
     @Override
-    protected void a(final k k, final e e) throws RemoteException {
+    protected void a(final k k, final d$e d$e) {
         final Bundle bundle = new Bundle();
         bundle.putString("client_name", this.aeP);
-        k.e(e, 6111000, this.getContext().getPackageName(), bundle);
+        k.e(d$e, 6111000, this.getContext().getPackageName(), bundle);
     }
     
-    public void a(final lz lz, final LocationListener locationListener) throws RemoteException {
+    public void a(final lz lz, final LocationListener locationListener) {
         this.a(lz, locationListener, null);
     }
     
-    public void a(final lz lz, final LocationListener locationListener, final Looper looper) throws RemoteException {
+    public void a(final lz lz, final LocationListener locationListener, final Looper looper) {
         synchronized (this.aeL) {
             this.aeL.a(lz, locationListener, looper);
         }
     }
     
     protected lw aL(final IBinder binder) {
-        return lw.a.aK(binder);
+        return lw$a.aK(binder);
     }
     
-    public void addGeofences(final List<mb> list, final PendingIntent pendingIntent, final LocationClient.OnAddGeofencesResultListener onAddGeofencesResultListener) throws RemoteException {
+    public void addGeofences(final List<mb> list, final PendingIntent pendingIntent, final LocationClient$OnAddGeofencesResultListener locationClient$OnAddGeofencesResultListener) {
         this.dK();
         n.b(list != null && list.size() > 0, (Object)"At least one geofence must be specified.");
         n.b(pendingIntent, "PendingIntent must be specified.");
-        n.b(onAddGeofencesResultListener, "OnAddGeofencesResultListener not provided.");
+        n.b(locationClient$OnAddGeofencesResultListener, "OnAddGeofencesResultListener not provided.");
         lv lv;
-        if (onAddGeofencesResultListener == null) {
+        if (locationClient$OnAddGeofencesResultListener == null) {
             lv = null;
         }
         else {
-            lv = new b(onAddGeofencesResultListener, this);
+            lv = new ly$b(locationClient$OnAddGeofencesResultListener, this);
         }
         this.gS().a(list, pendingIntent, lv, this.getContext().getPackageName());
     }
     
-    public void b(final lz lz, final PendingIntent pendingIntent) throws RemoteException {
+    public void b(final lz lz, final PendingIntent pendingIntent) {
         this.aeL.b(lz, pendingIntent);
     }
     
@@ -128,217 +128,71 @@ public class ly extends com.google.android.gms.common.internal.d<lw>
         return "com.google.android.location.internal.GoogleLocationManagerService.START";
     }
     
-    public void removeActivityUpdates(final PendingIntent pendingIntent) throws RemoteException {
+    public void removeActivityUpdates(final PendingIntent pendingIntent) {
         this.dK();
         n.i(pendingIntent);
         this.gS().removeActivityUpdates(pendingIntent);
     }
     
-    public void removeGeofences(final PendingIntent pendingIntent, final LocationClient.OnRemoveGeofencesResultListener onRemoveGeofencesResultListener) throws RemoteException {
+    public void removeGeofences(final PendingIntent pendingIntent, final LocationClient$OnRemoveGeofencesResultListener locationClient$OnRemoveGeofencesResultListener) {
         this.dK();
         n.b(pendingIntent, "PendingIntent must be specified.");
-        n.b(onRemoveGeofencesResultListener, "OnRemoveGeofencesResultListener not provided.");
+        n.b(locationClient$OnRemoveGeofencesResultListener, "OnRemoveGeofencesResultListener not provided.");
         lv lv;
-        if (onRemoveGeofencesResultListener == null) {
+        if (locationClient$OnRemoveGeofencesResultListener == null) {
             lv = null;
         }
         else {
-            lv = new b(onRemoveGeofencesResultListener, this);
+            lv = new ly$b(locationClient$OnRemoveGeofencesResultListener, this);
         }
         this.gS().a(pendingIntent, lv, this.getContext().getPackageName());
     }
     
-    public void removeGeofences(final List<String> list, final LocationClient.OnRemoveGeofencesResultListener onRemoveGeofencesResultListener) throws RemoteException {
+    public void removeGeofences(final List<String> list, final LocationClient$OnRemoveGeofencesResultListener locationClient$OnRemoveGeofencesResultListener) {
         this.dK();
         n.b(list != null && list.size() > 0, (Object)"geofenceRequestIds can't be null nor empty.");
-        n.b(onRemoveGeofencesResultListener, "OnRemoveGeofencesResultListener not provided.");
+        n.b(locationClient$OnRemoveGeofencesResultListener, "OnRemoveGeofencesResultListener not provided.");
         final String[] array = list.toArray(new String[0]);
         lv lv;
-        if (onRemoveGeofencesResultListener == null) {
+        if (locationClient$OnRemoveGeofencesResultListener == null) {
             lv = null;
         }
         else {
-            lv = new b(onRemoveGeofencesResultListener, this);
+            lv = new ly$b(locationClient$OnRemoveGeofencesResultListener, this);
         }
         this.gS().a(array, lv, this.getContext().getPackageName());
     }
     
-    public void removeLocationUpdates(final PendingIntent pendingIntent) throws RemoteException {
+    public void removeLocationUpdates(final PendingIntent pendingIntent) {
         this.aeL.removeLocationUpdates(pendingIntent);
     }
     
-    public void removeLocationUpdates(final LocationListener locationListener) throws RemoteException {
+    public void removeLocationUpdates(final LocationListener locationListener) {
         this.aeL.removeLocationUpdates(locationListener);
     }
     
-    public void requestActivityUpdates(final long n, final PendingIntent pendingIntent) throws RemoteException {
+    public void requestActivityUpdates(final long n, final PendingIntent pendingIntent) {
         this.dK();
         n.i(pendingIntent);
         n.b(n >= 0L, (Object)"detectionIntervalMillis must be >= 0");
         this.gS().a(n, true, pendingIntent);
     }
     
-    public void requestLocationUpdates(final LocationRequest locationRequest, final PendingIntent pendingIntent) throws RemoteException {
+    public void requestLocationUpdates(final LocationRequest locationRequest, final PendingIntent pendingIntent) {
         this.aeL.requestLocationUpdates(locationRequest, pendingIntent);
     }
     
-    public void requestLocationUpdates(final LocationRequest locationRequest, final LocationListener locationListener, final Looper looper) throws RemoteException {
+    public void requestLocationUpdates(final LocationRequest locationRequest, final LocationListener locationListener, final Looper looper) {
         synchronized (this.aeL) {
             this.aeL.requestLocationUpdates(locationRequest, locationListener, looper);
         }
     }
     
-    public void setMockLocation(final Location mockLocation) throws RemoteException {
+    public void setMockLocation(final Location mockLocation) {
         this.aeL.setMockLocation(mockLocation);
     }
     
-    public void setMockMode(final boolean mockMode) throws RemoteException {
+    public void setMockMode(final boolean mockMode) {
         this.aeL.setMockMode(mockMode);
-    }
-    
-    private final class a extends b<LocationClient.OnAddGeofencesResultListener>
-    {
-        private final int HF;
-        private final String[] aeQ;
-        
-        public a(final LocationClient.OnAddGeofencesResultListener onAddGeofencesResultListener, final int n, final String[] aeQ) {
-            super(onAddGeofencesResultListener);
-            this.HF = LocationStatusCodes.ee(n);
-            this.aeQ = aeQ;
-        }
-        
-        protected void a(final LocationClient.OnAddGeofencesResultListener onAddGeofencesResultListener) {
-            if (onAddGeofencesResultListener != null) {
-                onAddGeofencesResultListener.onAddGeofencesResult(this.HF, this.aeQ);
-            }
-        }
-        
-        @Override
-        protected void gT() {
-        }
-    }
-    
-    private static final class b extends lv.a
-    {
-        private LocationClient.OnAddGeofencesResultListener aeS;
-        private LocationClient.OnRemoveGeofencesResultListener aeT;
-        private ly aeU;
-        
-        public b(final LocationClient.OnAddGeofencesResultListener aeS, final ly aeU) {
-            this.aeS = aeS;
-            this.aeT = null;
-            this.aeU = aeU;
-        }
-        
-        public b(final LocationClient.OnRemoveGeofencesResultListener aeT, final ly aeU) {
-            this.aeT = aeT;
-            this.aeS = null;
-            this.aeU = aeU;
-        }
-        
-        public void onAddGeofencesResult(final int n, final String[] array) throws RemoteException {
-            if (this.aeU == null) {
-                Log.wtf("LocationClientImpl", "onAddGeofenceResult called multiple times");
-                return;
-            }
-            final ly aeU = this.aeU;
-            final ly aeU2 = this.aeU;
-            aeU2.getClass();
-            aeU.a((com.google.android.gms.common.internal.d.b<?>)aeU2.new a(this.aeS, n, array));
-            this.aeU = null;
-            this.aeS = null;
-            this.aeT = null;
-        }
-        
-        public void onRemoveGeofencesByPendingIntentResult(final int n, final PendingIntent pendingIntent) {
-            if (this.aeU == null) {
-                Log.wtf("LocationClientImpl", "onRemoveGeofencesByPendingIntentResult called multiple times");
-                return;
-            }
-            final ly aeU = this.aeU;
-            final ly aeU2 = this.aeU;
-            aeU2.getClass();
-            aeU.a((com.google.android.gms.common.internal.d.b<?>)aeU2.new d(1, this.aeT, n, pendingIntent));
-            this.aeU = null;
-            this.aeS = null;
-            this.aeT = null;
-        }
-        
-        public void onRemoveGeofencesByRequestIdsResult(final int n, final String[] array) {
-            if (this.aeU == null) {
-                Log.wtf("LocationClientImpl", "onRemoveGeofencesByRequestIdsResult called multiple times");
-                return;
-            }
-            final ly aeU = this.aeU;
-            final ly aeU2 = this.aeU;
-            aeU2.getClass();
-            aeU.a((com.google.android.gms.common.internal.d.b<?>)aeU2.new d(2, this.aeT, n, array));
-            this.aeU = null;
-            this.aeS = null;
-            this.aeT = null;
-        }
-    }
-    
-    private final class c implements md<lw>
-    {
-        @Override
-        public void dK() {
-            ly.this.dK();
-        }
-        
-        public lw lX() {
-            return ly.this.gS();
-        }
-    }
-    
-    private final class d extends com.google.android.gms.common.internal.d.b<LocationClient.OnRemoveGeofencesResultListener>
-    {
-        private final int HF;
-        private final String[] aeQ;
-        private final int aeV;
-        private final PendingIntent mPendingIntent;
-        
-        public d(final int aeV, final LocationClient.OnRemoveGeofencesResultListener onRemoveGeofencesResultListener, final int n, final PendingIntent mPendingIntent) {
-            boolean b = true;
-            super(onRemoveGeofencesResultListener);
-            if (aeV != 1) {
-                b = false;
-            }
-            a.I(b);
-            this.aeV = aeV;
-            this.HF = LocationStatusCodes.ee(n);
-            this.mPendingIntent = mPendingIntent;
-            this.aeQ = null;
-        }
-        
-        public d(final int aeV, final LocationClient.OnRemoveGeofencesResultListener onRemoveGeofencesResultListener, final int n, final String[] aeQ) {
-            super(onRemoveGeofencesResultListener);
-            a.I(aeV == 2);
-            this.aeV = aeV;
-            this.HF = LocationStatusCodes.ee(n);
-            this.aeQ = aeQ;
-            this.mPendingIntent = null;
-        }
-        
-        protected void a(final LocationClient.OnRemoveGeofencesResultListener onRemoveGeofencesResultListener) {
-            if (onRemoveGeofencesResultListener != null) {
-                switch (this.aeV) {
-                    default: {
-                        Log.wtf("LocationClientImpl", "Unsupported action: " + this.aeV);
-                        break;
-                    }
-                    case 1: {
-                        onRemoveGeofencesResultListener.onRemoveGeofencesByPendingIntentResult(this.HF, this.mPendingIntent);
-                    }
-                    case 2: {
-                        onRemoveGeofencesResultListener.onRemoveGeofencesByRequestIdsResult(this.HF, this.aeQ);
-                    }
-                }
-            }
-        }
-        
-        @Override
-        protected void gT() {
-        }
     }
 }

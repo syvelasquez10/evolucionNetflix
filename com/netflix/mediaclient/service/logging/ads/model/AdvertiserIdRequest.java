@@ -9,7 +9,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.os.Build$VERSION;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging$EventType;
 
 public final class AdvertiserIdRequest
 {
@@ -32,10 +32,10 @@ public final class AdvertiserIdRequest
     protected static final String VALUE_OPT_OUT = "opt-out";
     private String mAdvertiserId;
     private String mDeviceModel;
-    private AdvertiserIdLogging.EventType mEventType;
+    private AdvertiserIdLogging$EventType mEventType;
     private boolean mOptedIn;
     
-    public AdvertiserIdRequest(final String mAdvertiserId, final boolean mOptedIn, final AdvertiserIdLogging.EventType mEventType, final String mDeviceModel) {
+    public AdvertiserIdRequest(final String mAdvertiserId, final boolean mOptedIn, final AdvertiserIdLogging$EventType mEventType, final String mDeviceModel) {
         this.mAdvertiserId = mAdvertiserId;
         this.mOptedIn = mOptedIn;
         this.mEventType = mEventType;
@@ -45,7 +45,7 @@ public final class AdvertiserIdRequest
         }
     }
     
-    private JSONObject getEvent() throws JSONException {
+    private JSONObject getEvent() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("appName", (Object)"android");
         jsonObject.put("time", (Object)("" + System.currentTimeMillis()));

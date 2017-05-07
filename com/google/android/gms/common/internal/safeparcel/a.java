@@ -51,11 +51,11 @@ public class a
         final int a = a(parcel, b);
         final int dataPosition = parcel.dataPosition();
         if (aD(b) != 20293) {
-            throw new a("Expected object header. Got 0x" + Integer.toHexString(b), parcel);
+            throw new a$a("Expected object header. Got 0x" + Integer.toHexString(b), parcel);
         }
         final int n = dataPosition + a;
         if (n < dataPosition || n > parcel.dataSize()) {
-            throw new a("Size read is invalid start=" + dataPosition + " end=" + n, parcel);
+            throw new a$a("Size read is invalid start=" + dataPosition + " end=" + n, parcel);
         }
         return n;
     }
@@ -132,13 +132,13 @@ public class a
     private static void a(final Parcel parcel, int a, final int n) {
         a = a(parcel, a);
         if (a != n) {
-            throw new a("Expected size " + n + " got " + a + " (0x" + Integer.toHexString(a) + ")", parcel);
+            throw new a$a("Expected size " + n + " got " + a + " (0x" + Integer.toHexString(a) + ")", parcel);
         }
     }
     
     private static void a(final Parcel parcel, final int n, final int n2, final int n3) {
         if (n2 != n3) {
-            throw new a("Expected size " + n3 + " got " + n2 + " (0x" + Integer.toHexString(n2) + ")", parcel);
+            throw new a$a("Expected size " + n3 + " got " + n2 + " (0x" + Integer.toHexString(n2) + ")", parcel);
         }
     }
     
@@ -409,12 +409,5 @@ public class a
         }
         parcel.setDataPosition(dataPosition + a);
         return array;
-    }
-    
-    public static class a extends RuntimeException
-    {
-        public a(final String s, final Parcel parcel) {
-            super(s + " Parcel: pos=" + parcel.dataPosition() + " size=" + parcel.dataSize());
-        }
     }
 }

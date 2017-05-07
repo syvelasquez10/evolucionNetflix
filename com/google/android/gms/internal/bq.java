@@ -38,9 +38,4 @@ public class bq
             gs.b("Unable to create click JSON.", (Throwable)ex);
         }
     }
-    
-    public interface a
-    {
-        void a(final bq p0);
-    }
 }

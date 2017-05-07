@@ -7,7 +7,6 @@ package com.google.android.gms.internal;
 import com.google.android.gms.cast.TextTrackStyle;
 import org.json.JSONArray;
 import com.google.android.gms.cast.MediaInfo;
-import java.io.IOException;
 import org.json.JSONException;
 import java.util.Iterator;
 import android.os.SystemClock;
@@ -58,7 +57,7 @@ public class iq extends ii
     public iq(final String s) {
         super(iq.NAMESPACE, "MediaControlChannel", s);
         this.mHandler = new Handler(Looper.getMainLooper());
-        this.Hs = new a();
+        this.Hs = new iq$a(this, null);
         this.Hr = new ArrayList<it>();
         this.Hh = new it(iq.Hc);
         this.Hr.add(this.Hh);
@@ -94,7 +93,7 @@ public class iq extends ii
         }
     }
     
-    private void a(final long n, final JSONObject jsonObject) throws JSONException {
+    private void a(final long n, final JSONObject jsonObject) {
         final boolean b = true;
         final boolean p2 = this.Hh.p(n);
         int n2;
@@ -160,7 +159,7 @@ public class iq extends ii
         this.Hm.clear();
     }
     
-    public long a(final is is) throws IOException {
+    public long a(final is is) {
         final JSONObject jsonObject = new JSONObject();
         final long fa = this.fA();
         this.Ho.a(fa, is);
@@ -182,7 +181,7 @@ public class iq extends ii
         }
     }
     
-    public long a(final is is, final double n, final JSONObject jsonObject) throws IOException, IllegalStateException, IllegalArgumentException {
+    public long a(final is is, final double n, final JSONObject jsonObject) {
         if (Double.isInfinite(n) || Double.isNaN(n)) {
             throw new IllegalArgumentException("Volume cannot be " + n);
         }
@@ -211,7 +210,7 @@ public class iq extends ii
         }
     }
     
-    public long a(final is is, final long n, final int n2, final JSONObject jsonObject) throws IOException, IllegalStateException {
+    public long a(final is is, final long n, final int n2, final JSONObject jsonObject) {
         final JSONObject jsonObject2 = new JSONObject();
         final long fa = this.fA();
         this.Hl.a(fa, is);
@@ -241,7 +240,7 @@ public class iq extends ii
         }
     }
     
-    public long a(final is is, final MediaInfo mediaInfo, final boolean b, final long n, final long[] array, final JSONObject jsonObject) throws IOException {
+    public long a(final is is, final MediaInfo mediaInfo, final boolean b, final long n, final long[] array, final JSONObject jsonObject) {
         final JSONObject jsonObject2 = new JSONObject();
         final long fa = this.fA();
         this.Hh.a(fa, is);
@@ -273,7 +272,7 @@ public class iq extends ii
         }
     }
     
-    public long a(final is is, final TextTrackStyle textTrackStyle) throws IOException {
+    public long a(final is is, final TextTrackStyle textTrackStyle) {
         final JSONObject jsonObject = new JSONObject();
         final long fa = this.fA();
         this.Hq.a(fa, is);
@@ -296,7 +295,7 @@ public class iq extends ii
         }
     }
     
-    public long a(final is is, final JSONObject jsonObject) throws IOException {
+    public long a(final is is, final JSONObject jsonObject) {
         final JSONObject jsonObject2 = new JSONObject();
         final long fa = this.fA();
         this.Hi.a(fa, is);
@@ -319,7 +318,7 @@ public class iq extends ii
         }
     }
     
-    public long a(final is is, final boolean b, final JSONObject jsonObject) throws IOException, IllegalStateException {
+    public long a(final is is, final boolean b, final JSONObject jsonObject) {
         final JSONObject jsonObject2 = new JSONObject();
         final long fa = this.fA();
         this.Hn.a(fa, is);
@@ -345,7 +344,7 @@ public class iq extends ii
         }
     }
     
-    public long a(final is is, final long[] array) throws IOException {
+    public long a(final is is, final long[] array) {
         final JSONObject jsonObject = new JSONObject();
         final long fa = this.fA();
         this.Hp.a(fa, is);
@@ -425,7 +424,7 @@ public class iq extends ii
         }
     }
     
-    public long b(final is is, final JSONObject jsonObject) throws IOException {
+    public long b(final is is, final JSONObject jsonObject) {
         final JSONObject jsonObject2 = new JSONObject();
         final long fa = this.fA();
         this.Hk.a(fa, is);
@@ -456,7 +455,7 @@ public class iq extends ii
         }
     }
     
-    public long c(final is is, final JSONObject jsonObject) throws IOException, IllegalStateException {
+    public long c(final is is, final JSONObject jsonObject) {
         final JSONObject jsonObject2 = new JSONObject();
         final long fa = this.fA();
         this.Hj.a(fa, is);
@@ -484,7 +483,7 @@ public class iq extends ii
         this.fU();
     }
     
-    public long fx() throws IllegalStateException {
+    public long fx() {
         if (this.Hg == null) {
             throw new IllegalStateException("No current media session");
         }
@@ -543,39 +542,5 @@ public class iq extends ii
     }
     
     protected void onStatusUpdated() {
-    }
-    
-    private class a implements Runnable
-    {
-        @Override
-        public void run() {
-            boolean b = false;
-            iq.this.Ht = false;
-            final long elapsedRealtime = SystemClock.elapsedRealtime();
-            final Iterator<it> iterator = (Iterator<it>)iq.this.Hr.iterator();
-            while (iterator.hasNext()) {
-                iterator.next().e(elapsedRealtime, 2102);
-            }
-            while (true) {
-                while (true) {
-                    Label_0133: {
-                        synchronized (it.Hz) {
-                            final Iterator iterator2 = iq.this.Hr.iterator();
-                            if (!iterator2.hasNext()) {
-                                // monitorexit(it.Hz)
-                                iq.this.H(b);
-                                return;
-                            }
-                            if (iterator2.next().fW()) {
-                                b = true;
-                                break Label_0133;
-                            }
-                            break Label_0133;
-                        }
-                    }
-                    continue;
-                }
-            }
-        }
     }
 }

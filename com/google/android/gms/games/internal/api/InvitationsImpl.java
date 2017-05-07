@@ -4,15 +4,8 @@
 
 package com.google.android.gms.games.internal.api;
 
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.games.multiplayer.InvitationBuffer;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
-import com.google.android.gms.common.api.BaseImplementation;
-import android.os.RemoteException;
-import com.google.android.gms.games.internal.GamesClientImpl;
-import com.google.android.gms.common.api.Api;
+import com.google.android.gms.games.multiplayer.Invitations$LoadInvitationsResult;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.Games;
 import android.content.Intent;
@@ -27,17 +20,13 @@ public final class InvitationsImpl implements Invitations
     }
     
     @Override
-    public PendingResult<LoadInvitationsResult> loadInvitations(final GoogleApiClient googleApiClient) {
+    public PendingResult<Invitations$LoadInvitationsResult> loadInvitations(final GoogleApiClient googleApiClient) {
         return this.loadInvitations(googleApiClient, 0);
     }
     
     @Override
-    public PendingResult<LoadInvitationsResult> loadInvitations(final GoogleApiClient googleApiClient, final int n) {
-        return googleApiClient.a((PendingResult<LoadInvitationsResult>)new LoadInvitationsImpl() {
-            protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.c((BaseImplementation.b<LoadInvitationsResult>)this, n);
-            }
-        });
+    public PendingResult<Invitations$LoadInvitationsResult> loadInvitations(final GoogleApiClient googleApiClient, final int n) {
+        return googleApiClient.a((PendingResult<Invitations$LoadInvitationsResult>)new InvitationsImpl$1(this, n));
     }
     
     @Override
@@ -48,26 +37,5 @@ public final class InvitationsImpl implements Invitations
     @Override
     public void unregisterInvitationListener(final GoogleApiClient googleApiClient) {
         Games.c(googleApiClient).kf();
-    }
-    
-    private abstract static class LoadInvitationsImpl extends BaseGamesApiMethodImpl<LoadInvitationsResult>
-    {
-        public LoadInvitationsResult T(final Status status) {
-            return new LoadInvitationsResult() {
-                @Override
-                public InvitationBuffer getInvitations() {
-                    return new InvitationBuffer(DataHolder.as(14));
-                }
-                
-                @Override
-                public Status getStatus() {
-                    return status;
-                }
-                
-                @Override
-                public void release() {
-                }
-            };
-        }
     }
 }

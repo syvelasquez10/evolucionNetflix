@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.media;
 
-import org.json.JSONException;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
@@ -18,7 +17,8 @@ public final class TrickplayUrl implements Comparable<TrickplayUrl>
     private String[] url;
     private int width;
     
-    public TrickplayUrl(final JSONObject jsonObject) throws JSONException {
+    public TrickplayUrl(final JSONObject jsonObject) {
+        int i = 0;
         this.width = JsonUtils.getInt(jsonObject, "width", 0);
         this.height = JsonUtils.getInt(jsonObject, "height", 0);
         this.aspectX = JsonUtils.getInt(jsonObject, "aspectX", 0);
@@ -26,8 +26,9 @@ public final class TrickplayUrl implements Comparable<TrickplayUrl>
         final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "urls");
         if (jsonArray != null) {
             this.url = new String[jsonArray.length()];
-            for (int i = 0; i < jsonArray.length(); ++i) {
+            while (i < jsonArray.length()) {
                 this.url[i] = jsonArray.getString(i);
+                ++i;
             }
         }
     }

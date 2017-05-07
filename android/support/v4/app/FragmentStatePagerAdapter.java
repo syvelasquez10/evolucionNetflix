@@ -21,11 +21,11 @@ public abstract class FragmentStatePagerAdapter extends PagerAdapter
     private Fragment mCurrentPrimaryItem;
     private final FragmentManager mFragmentManager;
     private ArrayList<Fragment> mFragments;
-    private ArrayList<Fragment.SavedState> mSavedState;
+    private ArrayList<Fragment$SavedState> mSavedState;
     
     public FragmentStatePagerAdapter(final FragmentManager mFragmentManager) {
         this.mCurTransaction = null;
-        this.mSavedState = new ArrayList<Fragment.SavedState>();
+        this.mSavedState = new ArrayList<Fragment$SavedState>();
         this.mFragments = new ArrayList<Fragment>();
         this.mCurrentPrimaryItem = null;
         this.mFragmentManager = mFragmentManager;
@@ -69,7 +69,7 @@ public abstract class FragmentStatePagerAdapter extends PagerAdapter
         }
         final Fragment item = this.getItem(n);
         if (this.mSavedState.size() > n) {
-            final Fragment.SavedState initialSavedState = this.mSavedState.get(n);
+            final Fragment$SavedState initialSavedState = this.mSavedState.get(n);
             if (initialSavedState != null) {
                 item.setInitialSavedState(initialSavedState);
             }
@@ -99,7 +99,7 @@ public abstract class FragmentStatePagerAdapter extends PagerAdapter
             this.mFragments.clear();
             if (parcelableArray != null) {
                 for (int i = 0; i < parcelableArray.length; ++i) {
-                    this.mSavedState.add((Fragment.SavedState)parcelableArray[i]);
+                    this.mSavedState.add((Fragment$SavedState)parcelableArray[i]);
                 }
             }
             for (final String s : bundle.keySet()) {
@@ -126,7 +126,7 @@ public abstract class FragmentStatePagerAdapter extends PagerAdapter
         Bundle bundle = null;
         if (this.mSavedState.size() > 0) {
             bundle = new Bundle();
-            final Fragment.SavedState[] array = new Fragment.SavedState[this.mSavedState.size()];
+            final Fragment$SavedState[] array = new Fragment$SavedState[this.mSavedState.size()];
             this.mSavedState.toArray(array);
             bundle.putParcelableArray("states", (Parcelable[])array);
         }

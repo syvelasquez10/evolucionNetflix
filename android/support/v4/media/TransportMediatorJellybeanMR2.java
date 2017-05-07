@@ -4,8 +4,6 @@
 
 package android.support.v4.media;
 
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.ViewTreeObserver$OnWindowFocusChangeListener;
 import android.view.ViewTreeObserver$OnWindowAttachListener;
 import android.view.View;
@@ -40,39 +38,10 @@ class TransportMediatorJellybeanMR2 implements RemoteControlClient$OnGetPlayback
     final ViewTreeObserver$OnWindowFocusChangeListener mWindowFocusListener;
     
     public TransportMediatorJellybeanMR2(final Context mContext, final AudioManager mAudioManager, final View mTargetView, final TransportMediatorCallback mTransportCallback) {
-        this.mWindowAttachListener = (ViewTreeObserver$OnWindowAttachListener)new ViewTreeObserver$OnWindowAttachListener() {
-            public void onWindowAttached() {
-                TransportMediatorJellybeanMR2.this.windowAttached();
-            }
-            
-            public void onWindowDetached() {
-                TransportMediatorJellybeanMR2.this.windowDetached();
-            }
-        };
-        this.mWindowFocusListener = (ViewTreeObserver$OnWindowFocusChangeListener)new ViewTreeObserver$OnWindowFocusChangeListener() {
-            public void onWindowFocusChanged(final boolean b) {
-                if (b) {
-                    TransportMediatorJellybeanMR2.this.gainFocus();
-                    return;
-                }
-                TransportMediatorJellybeanMR2.this.loseFocus();
-            }
-        };
-        this.mMediaButtonReceiver = new BroadcastReceiver() {
-            public void onReceive(final Context context, final Intent intent) {
-                try {
-                    TransportMediatorJellybeanMR2.this.mTransportCallback.handleKey((KeyEvent)intent.getParcelableExtra("android.intent.extra.KEY_EVENT"));
-                }
-                catch (ClassCastException ex) {
-                    Log.w("TransportController", (Throwable)ex);
-                }
-            }
-        };
-        this.mAudioFocusChangeListener = (AudioManager$OnAudioFocusChangeListener)new AudioManager$OnAudioFocusChangeListener() {
-            public void onAudioFocusChange(final int n) {
-                TransportMediatorJellybeanMR2.this.mTransportCallback.handleAudioFocusChange(n);
-            }
-        };
+        this.mWindowAttachListener = (ViewTreeObserver$OnWindowAttachListener)new TransportMediatorJellybeanMR2$1(this);
+        this.mWindowFocusListener = (ViewTreeObserver$OnWindowFocusChangeListener)new TransportMediatorJellybeanMR2$2(this);
+        this.mMediaButtonReceiver = new TransportMediatorJellybeanMR2$3(this);
+        this.mAudioFocusChangeListener = (AudioManager$OnAudioFocusChangeListener)new TransportMediatorJellybeanMR2$4(this);
         this.mPlayState = 0;
         this.mContext = mContext;
         this.mAudioManager = mAudioManager;

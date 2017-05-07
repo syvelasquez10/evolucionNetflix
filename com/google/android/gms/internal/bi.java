@@ -43,7 +43,7 @@ public class bi
         this.oF = of;
     }
     
-    private void v(final String s) throws RemoteException {
+    private void v(final String s) {
         if (this.ok == null) {
             this.w(s);
         }

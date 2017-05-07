@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.partner.reference;
 
+import com.netflix.mediaclient.partner.Partner$SSO;
+import com.netflix.mediaclient.partner.Partner$Signup;
 import android.content.ComponentName;
 import com.netflix.mediaclient.partner.PartnerCommunicationHandler;
 import com.netflix.mediaclient.partner.Partner;
@@ -12,8 +14,8 @@ public class NetflixPartner implements Partner
 {
     private PartnerCommunicationHandler comHandler;
     private ComponentName componentName;
-    private Signup signup;
-    private SSO sso;
+    private Partner$Signup signup;
+    private Partner$SSO sso;
     
     public NetflixPartner(final String s, final PartnerCommunicationHandler comHandler) {
         this.sso = new NetflixSSO(this, s);
@@ -32,12 +34,12 @@ public class NetflixPartner implements Partner
     }
     
     @Override
-    public SSO getSSO() {
+    public Partner$SSO getSSO() {
         return this.sso;
     }
     
     @Override
-    public Signup getSignup() {
+    public Partner$Signup getSignup() {
         return this.signup;
     }
     

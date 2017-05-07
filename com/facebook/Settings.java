@@ -6,12 +6,11 @@ package com.facebook;
 
 import android.content.SharedPreferences$Editor;
 import com.facebook.internal.Validate;
-import android.os.Handler;
-import android.os.Looper;
+import com.facebook.model.GraphObject;
 import android.content.SharedPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.facebook.model.GraphObject;
+import com.facebook.model.GraphObject$Factory;
 import java.net.HttpURLConnection;
 import com.facebook.internal.Utility;
 import android.content.Context;
@@ -23,7 +22,6 @@ import android.database.Cursor;
 import android.content.ContentResolver;
 import java.lang.reflect.Field;
 import android.os.AsyncTask;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.Collection;
 import java.util.Arrays;
@@ -57,14 +55,7 @@ public final class Settings
         LOCK = new Object();
         ATTRIBUTION_ID_CONTENT_URI = Uri.parse("content://com.facebook.katana.provider.AttributionIdProvider");
         DEFAULT_WORK_QUEUE = new LinkedBlockingQueue<Runnable>(10);
-        DEFAULT_THREAD_FACTORY = new ThreadFactory() {
-            private final AtomicInteger counter = new AtomicInteger(0);
-            
-            @Override
-            public Thread newThread(final Runnable runnable) {
-                return new Thread(runnable, "FacebookSdk #" + this.counter.incrementAndGet());
-            }
-        };
+        DEFAULT_THREAD_FACTORY = new Settings$1();
     }
     
     public static final void addLoggingBehavior(final LoggingBehavior loggingBehavior) {
@@ -159,10 +150,10 @@ public final class Settings
         return publishInstallAndWaitForResponse != null && publishInstallAndWaitForResponse.getError() == null;
     }
     
-    public static Response publishInstallAndWaitForResponse(final Context context, String executeAndWait) {
+    public static Response publishInstallAndWaitForResponse(final Context context, final String s) {
         Label_0044: {
             if (context != null) {
-                if (executeAndWait != null) {
+                if (s != null) {
                     break Label_0044;
                 }
             }
@@ -176,57 +167,64 @@ public final class Settings
         }
         final String attributionId = getAttributionId(context.getContentResolver());
         final SharedPreferences sharedPreferences = context.getSharedPreferences("com.facebook.sdk.attributionTracking", 0);
-        final String string = executeAndWait + "ping";
-        final String string2 = executeAndWait + "json";
+        final String string = s + "ping";
+        final String string2 = s + "json";
         final long long1 = sharedPreferences.getLong(string, 0L);
         final String string3 = sharedPreferences.getString(string2, (String)null);
-        final GraphObject create = GraphObject.Factory.create();
+        final GraphObject create = GraphObject$Factory.create();
         create.setProperty("event", "MOBILE_APP_INSTALL");
         create.setProperty("attribution", attributionId);
-        Object o = Request.newPostRequest(null, String.format("%s/activities", executeAndWait), create, null);
-        Label_0254: {
+        Object o = Request.newPostRequest(null, String.format("%s/activities", s), create, null);
+        Label_0249: {
             if (long1 == 0L) {
-                break Label_0254;
+                break Label_0249;
             }
-            Object create2;
-            executeAndWait = (String)(create2 = null);
-        Block_11_Outer:
-            while (true) {
+            Label_0361: {
                 if (string3 == null) {
-                    break Label_0204;
+                    break Label_0361;
                 }
-                try {
-                    create2 = GraphObject.Factory.create(new JSONObject(string3));
-                    if (create2 == null) {
-                        return Response.createResponsesFromString("true", null, new RequestBatch(new Request[] { o }), true).get(0);
-                    }
-                    return new Response(null, null, (GraphObject)create2, true);
-                    // iftrue(Label_0270:, attributionId != null)
+                while (true) {
+                    GraphObject create2;
+                    Response executeAndWait;
+                    Label_0351_Outer:Block_11_Outer:
                     while (true) {
-                        while (true) {
-                            ((SharedPreferences$Editor)o).commit();
-                            return (Response)executeAndWait;
+                        try {
+                            create2 = GraphObject$Factory.create(new JSONObject(string3));
+                            if (create2 == null) {
+                                return Response.createResponsesFromString("true", null, new RequestBatch(new Request[] { o }), true).get(0);
+                            }
+                            return new Response(null, null, create2, true);
+                            // iftrue(Label_0265:, attributionId != null)
                             throw new FacebookException("No attribution id returned from the Facebook application");
-                            ((SharedPreferences$Editor)o).putString(string2, ((Response)executeAndWait).getGraphObject().getInnerJSONObject().toString());
-                            continue Block_11_Outer;
+                            Label_0265: {
+                                throw new FacebookException("Install attribution has been disabled on the server.");
+                            }
+                            // iftrue(Label_0283:, Utility.queryAppAttributionSupportAndWait(s))
+                            while (true) {
+                                while (true) {
+                                    ((SharedPreferences$Editor)o).commit();
+                                    return executeAndWait;
+                                    ((SharedPreferences$Editor)o).putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
+                                    continue Block_11_Outer;
+                                }
+                                create2 = null;
+                                continue Label_0351_Outer;
+                                Label_0283: {
+                                    executeAndWait = ((Request)o).executeAndWait();
+                                }
+                                o = sharedPreferences.edit();
+                                ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
+                                continue;
+                            }
                         }
-                        Label_0270: {
-                            throw new FacebookException("Install attribution has been disabled on the server.");
+                        // iftrue(Label_0351:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
+                        catch (JSONException ex2) {
+                            create2 = null;
+                            continue;
                         }
-                        Label_0288:
-                        executeAndWait = (String)((Request)o).executeAndWait();
-                        o = sharedPreferences.edit();
-                        ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
                         continue;
                     }
                 }
-                // iftrue(Label_0288:, Utility.queryAppAttributionSupportAndWait(executeAndWait))
-                // iftrue(Label_0356:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
-                catch (JSONException ex2) {
-                    create2 = executeAndWait;
-                    continue;
-                }
-                break;
             }
         }
     }
@@ -235,22 +233,9 @@ public final class Settings
         publishInstallAsync(context, s, null);
     }
     
-    public static void publishInstallAsync(Context applicationContext, final String s, final Request.Callback callback) {
+    public static void publishInstallAsync(Context applicationContext, final String s, final Request$Callback request$Callback) {
         applicationContext = applicationContext.getApplicationContext();
-        getExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                final Response publishInstallAndWaitForResponse = Settings.publishInstallAndWaitForResponse(applicationContext, s);
-                if (callback != null) {
-                    new Handler(Looper.getMainLooper()).post((Runnable)new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onCompleted(publishInstallAndWaitForResponse);
-                        }
-                    });
-                }
-            }
-        });
+        getExecutor().execute(new Settings$2(applicationContext, s, request$Callback));
     }
     
     public static final void removeLoggingBehavior(final LoggingBehavior loggingBehavior) {

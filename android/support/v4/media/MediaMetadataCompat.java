@@ -80,15 +80,7 @@ public final class MediaMetadataCompat implements Parcelable
         MediaMetadataCompat.METADATA_KEYS_TYPE.put("android.media.metadata.DISPLAY_DESCRIPTION", 1);
         MediaMetadataCompat.METADATA_KEYS_TYPE.put("android.media.metadata.DISPLAY_ICON", 2);
         MediaMetadataCompat.METADATA_KEYS_TYPE.put("android.media.metadata.DISPLAY_ICON_URI", 1);
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<MediaMetadataCompat>() {
-            public MediaMetadataCompat createFromParcel(final Parcel parcel) {
-                return new MediaMetadataCompat(parcel, null);
-            }
-            
-            public MediaMetadataCompat[] newArray(final int n) {
-                return new MediaMetadataCompat[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new MediaMetadataCompat$1();
     }
     
     private MediaMetadataCompat(final Bundle bundle) {
@@ -103,7 +95,7 @@ public final class MediaMetadataCompat implements Parcelable
         if (mMetadataObj == null || Build$VERSION.SDK_INT < 21) {
             return null;
         }
-        final Builder builder = new Builder();
+        final MediaMetadataCompat$Builder mediaMetadataCompat$Builder = new MediaMetadataCompat$Builder();
         for (final String s : MediaMetadataCompatApi21.keySet(mMetadataObj)) {
             final Integer n = MediaMetadataCompat.METADATA_KEYS_TYPE.get(s);
             if (n != null) {
@@ -112,25 +104,25 @@ public final class MediaMetadataCompat implements Parcelable
                         continue;
                     }
                     case 0: {
-                        builder.putLong(s, MediaMetadataCompatApi21.getLong(mMetadataObj, s));
+                        mediaMetadataCompat$Builder.putLong(s, MediaMetadataCompatApi21.getLong(mMetadataObj, s));
                         continue;
                     }
                     case 2: {
-                        builder.putBitmap(s, MediaMetadataCompatApi21.getBitmap(mMetadataObj, s));
+                        mediaMetadataCompat$Builder.putBitmap(s, MediaMetadataCompatApi21.getBitmap(mMetadataObj, s));
                         continue;
                     }
                     case 3: {
-                        builder.putRating(s, RatingCompat.fromRating(MediaMetadataCompatApi21.getRating(mMetadataObj, s)));
+                        mediaMetadataCompat$Builder.putRating(s, RatingCompat.fromRating(MediaMetadataCompatApi21.getRating(mMetadataObj, s)));
                         continue;
                     }
                     case 1: {
-                        builder.putText(s, MediaMetadataCompatApi21.getText(mMetadataObj, s));
+                        mediaMetadataCompat$Builder.putText(s, MediaMetadataCompatApi21.getText(mMetadataObj, s));
                         continue;
                     }
                 }
             }
         }
-        final MediaMetadataCompat build = builder.build();
+        final MediaMetadataCompat build = mediaMetadataCompat$Builder.build();
         build.mMetadataObj = mMetadataObj;
         return build;
     }
@@ -161,7 +153,7 @@ public final class MediaMetadataCompat implements Parcelable
         if (this.mMetadataObj != null || Build$VERSION.SDK_INT < 21) {
             return this.mMetadataObj;
         }
-        final Object instance = MediaMetadataCompatApi21.Builder.newInstance();
+        final Object instance = MediaMetadataCompatApi21$Builder.newInstance();
         for (final String s : this.keySet()) {
             final Integer n = MediaMetadataCompat.METADATA_KEYS_TYPE.get(s);
             if (n != null) {
@@ -170,25 +162,25 @@ public final class MediaMetadataCompat implements Parcelable
                         continue;
                     }
                     case 0: {
-                        MediaMetadataCompatApi21.Builder.putLong(instance, s, this.getLong(s));
+                        MediaMetadataCompatApi21$Builder.putLong(instance, s, this.getLong(s));
                         continue;
                     }
                     case 2: {
-                        MediaMetadataCompatApi21.Builder.putBitmap(instance, s, this.getBitmap(s));
+                        MediaMetadataCompatApi21$Builder.putBitmap(instance, s, this.getBitmap(s));
                         continue;
                     }
                     case 3: {
-                        MediaMetadataCompatApi21.Builder.putRating(instance, s, this.getRating(s).getRating());
+                        MediaMetadataCompatApi21$Builder.putRating(instance, s, this.getRating(s).getRating());
                         continue;
                     }
                     case 1: {
-                        MediaMetadataCompatApi21.Builder.putText(instance, s, this.getText(s));
+                        MediaMetadataCompatApi21$Builder.putText(instance, s, this.getText(s));
                         continue;
                     }
                 }
             }
         }
-        return this.mMetadataObj = MediaMetadataCompatApi21.Builder.build(instance);
+        return this.mMetadataObj = MediaMetadataCompatApi21$Builder.build(instance);
     }
     
     public RatingCompat getRating(final String s) {
@@ -223,62 +215,5 @@ public final class MediaMetadataCompat implements Parcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         parcel.writeBundle(this.mBundle);
-    }
-    
-    public static final class Builder
-    {
-        private final Bundle mBundle;
-        
-        public Builder() {
-            this.mBundle = new Bundle();
-        }
-        
-        public Builder(final MediaMetadataCompat mediaMetadataCompat) {
-            this.mBundle = new Bundle(mediaMetadataCompat.mBundle);
-        }
-        
-        public MediaMetadataCompat build() {
-            return new MediaMetadataCompat(this.mBundle, null);
-        }
-        
-        public Builder putBitmap(final String s, final Bitmap bitmap) {
-            if (MediaMetadataCompat.METADATA_KEYS_TYPE.containsKey(s) && (int)MediaMetadataCompat.METADATA_KEYS_TYPE.get(s) != 2) {
-                throw new IllegalArgumentException("The " + s + " key cannot be used to put a Bitmap");
-            }
-            this.mBundle.putParcelable(s, (Parcelable)bitmap);
-            return this;
-        }
-        
-        public Builder putLong(final String s, final long n) {
-            if (MediaMetadataCompat.METADATA_KEYS_TYPE.containsKey(s) && (int)MediaMetadataCompat.METADATA_KEYS_TYPE.get(s) != 0) {
-                throw new IllegalArgumentException("The " + s + " key cannot be used to put a long");
-            }
-            this.mBundle.putLong(s, n);
-            return this;
-        }
-        
-        public Builder putRating(final String s, final RatingCompat ratingCompat) {
-            if (MediaMetadataCompat.METADATA_KEYS_TYPE.containsKey(s) && (int)MediaMetadataCompat.METADATA_KEYS_TYPE.get(s) != 3) {
-                throw new IllegalArgumentException("The " + s + " key cannot be used to put a Rating");
-            }
-            this.mBundle.putParcelable(s, (Parcelable)ratingCompat);
-            return this;
-        }
-        
-        public Builder putString(final String s, final String s2) {
-            if (MediaMetadataCompat.METADATA_KEYS_TYPE.containsKey(s) && (int)MediaMetadataCompat.METADATA_KEYS_TYPE.get(s) != 1) {
-                throw new IllegalArgumentException("The " + s + " key cannot be used to put a String");
-            }
-            this.mBundle.putCharSequence(s, (CharSequence)s2);
-            return this;
-        }
-        
-        public Builder putText(final String s, final CharSequence charSequence) {
-            if (MediaMetadataCompat.METADATA_KEYS_TYPE.containsKey(s) && (int)MediaMetadataCompat.METADATA_KEYS_TYPE.get(s) != 1) {
-                throw new IllegalArgumentException("The " + s + " key cannot be used to put a CharSequence");
-            }
-            this.mBundle.putCharSequence(s, charSequence);
-            return this;
-        }
     }
 }

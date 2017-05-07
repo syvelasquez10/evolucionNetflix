@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.presentation;
 
-import org.json.JSONException;
 import java.util.Iterator;
 import org.json.JSONArray;
 import com.netflix.mediaclient.Log;
@@ -93,7 +92,7 @@ public class PresentationEvent
         return this.videoIds.toString();
     }
     
-    public JSONArray toJSONArray() throws JSONException {
+    public JSONArray toJSONArray() {
         final JSONArray jsonArray = new JSONArray();
         int rank = this.rank;
         for (final String s : this.videoIds) {
@@ -105,13 +104,13 @@ public class PresentationEvent
             jsonObject.putOpt("rank", (Object)rank);
             jsonObject.putOpt("location", (Object)this.location);
             jsonObject.putOpt("time", (Object)this.time);
-            ++rank;
             jsonArray.put((Object)jsonObject);
+            ++rank;
         }
         return jsonArray;
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONArray jsonArray = new JSONArray();
         final Iterator<String> iterator = this.videoIds.iterator();
         while (iterator.hasNext()) {

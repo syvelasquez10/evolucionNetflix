@@ -20,11 +20,11 @@ public abstract class Request<T> implements Comparable<Request<T>>
 {
     private static final String DEFAULT_PARAMS_ENCODING = "UTF-8";
     private static final long SLOW_REQUEST_THRESHOLD_MS = 3000L;
-    private Cache.Entry mCacheEntry;
+    private Cache$Entry mCacheEntry;
     private boolean mCanceled;
     private int mDefaultTrafficStatsTag;
-    private final Response.ErrorListener mErrorListener;
-    private final VolleyLog.MarkerLog mEventLog;
+    private final Response$ErrorListener mErrorListener;
+    private final VolleyLog$MarkerLog mEventLog;
     private final int mMethod;
     private long mRequestBirthTime;
     private RequestQueue mRequestQueue;
@@ -35,10 +35,10 @@ public abstract class Request<T> implements Comparable<Request<T>>
     private Object mTag;
     private String mUrl;
     
-    public Request(int hashCode, final String mUrl, final Response.ErrorListener mErrorListener) {
-        VolleyLog.MarkerLog mEventLog;
-        if (VolleyLog.MarkerLog.ENABLED) {
-            mEventLog = new VolleyLog.MarkerLog();
+    public Request(int hashCode, final String mUrl, final Response$ErrorListener mErrorListener) {
+        VolleyLog$MarkerLog mEventLog;
+        if (VolleyLog$MarkerLog.ENABLED) {
+            mEventLog = new VolleyLog$MarkerLog();
         }
         else {
             mEventLog = null;
@@ -62,8 +62,8 @@ public abstract class Request<T> implements Comparable<Request<T>>
         this.mDefaultTrafficStatsTag = hashCode;
     }
     
-    public Request(final String s, final Response.ErrorListener errorListener) {
-        this(-1, s, errorListener);
+    public Request(final String s, final Response$ErrorListener response$ErrorListener) {
+        this(-1, s, response$ErrorListener);
     }
     
     public static String buildNewUrlString(final String s, final String s2) {
@@ -113,7 +113,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
     }
     
     public void addMarker(final String s) {
-        if (VolleyLog.MarkerLog.ENABLED) {
+        if (VolleyLog$MarkerLog.ENABLED) {
             this.mEventLog.add(s, Thread.currentThread().getId());
         }
         else if (this.mRequestBirthTime == 0L) {
@@ -136,8 +136,8 @@ public abstract class Request<T> implements Comparable<Request<T>>
     
     @Override
     public int compareTo(final Request<T> request) {
-        final Priority priority = this.getPriority();
-        final Priority priority2 = request.getPriority();
+        final Request$Priority priority = this.getPriority();
+        final Request$Priority priority2 = request.getPriority();
         if (priority == priority2) {
             return this.mSequence - request.mSequence;
         }
@@ -156,20 +156,14 @@ public abstract class Request<T> implements Comparable<Request<T>>
         if (this.mRequestQueue != null) {
             this.mRequestQueue.finish(this);
         }
-        if (VolleyLog.MarkerLog.ENABLED) {
+        if (VolleyLog$MarkerLog.ENABLED) {
             final long id = Thread.currentThread().getId();
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 this.mEventLog.add(s, id);
                 this.mEventLog.finish(this.toString());
                 return;
             }
-            new Handler(Looper.getMainLooper()).post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    Request.this.mEventLog.add(s, id);
-                    Request.this.mEventLog.finish(this.toString());
-                }
-            });
+            new Handler(Looper.getMainLooper()).post((Runnable)new Request$1(this, s, id));
         }
         else {
             final long n = SystemClock.elapsedRealtime() - this.mRequestBirthTime;
@@ -179,7 +173,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
         }
     }
     
-    public byte[] getBody() throws AuthFailureError {
+    public byte[] getBody() {
         final Map<String, String> params = this.getParams();
         if (params != null && params.size() > 0) {
             return this.encodeParameters(params, this.getParamsEncoding());
@@ -191,7 +185,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
         return "application/x-www-form-urlencoded; charset=" + this.getParamsEncoding();
     }
     
-    public Cache.Entry getCacheEntry() {
+    public Cache$Entry getCacheEntry() {
         return this.mCacheEntry;
     }
     
@@ -199,7 +193,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
         return this.getUrl();
     }
     
-    public Map<String, String> getHeaders() throws AuthFailureError {
+    public Map<String, String> getHeaders() {
         return Collections.emptyMap();
     }
     
@@ -207,7 +201,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
         return this.mMethod;
     }
     
-    protected Map<String, String> getParams() throws AuthFailureError {
+    protected Map<String, String> getParams() {
         return null;
     }
     
@@ -215,7 +209,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
         return "UTF-8";
     }
     
-    public byte[] getPostBody() throws AuthFailureError {
+    public byte[] getPostBody() {
         final Map<String, String> postParams = this.getPostParams();
         if (postParams != null && postParams.size() > 0) {
             return this.encodeParameters(postParams, this.getPostParamsEncoding());
@@ -227,7 +221,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
         return this.getBodyContentType();
     }
     
-    protected Map<String, String> getPostParams() throws AuthFailureError {
+    protected Map<String, String> getPostParams() {
         return this.getParams();
     }
     
@@ -235,8 +229,8 @@ public abstract class Request<T> implements Comparable<Request<T>>
         return this.getParamsEncoding();
     }
     
-    public Priority getPriority() {
-        return Priority.NORMAL;
+    public Request$Priority getPriority() {
+        return Request$Priority.NORMAL;
     }
     
     public RetryPolicy getRetryPolicy() {
@@ -284,7 +278,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
     
     protected abstract Response<T> parseNetworkResponse(final NetworkResponse p0);
     
-    public void setCacheEntry(final Cache.Entry mCacheEntry) {
+    public void setCacheEntry(final Cache$Entry mCacheEntry) {
         this.mCacheEntry = mCacheEntry;
     }
     
@@ -324,22 +318,5 @@ public abstract class Request<T> implements Comparable<Request<T>>
             s = "[ ] ";
         }
         return sb.append(s).append(this.getUrl()).append(" ").append(string).append(" ").append(this.getPriority()).append(" ").append(this.mSequence).toString();
-    }
-    
-    public interface Method
-    {
-        public static final int DELETE = 3;
-        public static final int DEPRECATED_GET_OR_POST = -1;
-        public static final int GET = 0;
-        public static final int POST = 1;
-        public static final int PUT = 2;
-    }
-    
-    public enum Priority
-    {
-        HIGH, 
-        IMMEDIATE, 
-        LOW, 
-        NORMAL;
     }
 }

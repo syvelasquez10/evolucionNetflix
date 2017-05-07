@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.logging.client.model;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.google.gson.annotations.Since;
@@ -35,7 +34,7 @@ public class SessionKey
         this.name = name;
     }
     
-    public static SessionKey createInstance(final JSONObject jsonObject) throws JSONException {
+    public static SessionKey createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -61,7 +60,7 @@ public class SessionKey
         return this.name;
     }
     
-    public JSONArray toJSONArray() throws JSONException {
+    public JSONArray toJSONArray() {
         final JSONArray jsonArray = new JSONArray();
         if (this.id != null) {
             jsonArray.put((Object)("" + this.id.getValue()));
@@ -75,7 +74,7 @@ public class SessionKey
         return jsonArray;
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.id != null) {
             jsonObject.put("sessionId", (Object)("" + this.id.getValue()));

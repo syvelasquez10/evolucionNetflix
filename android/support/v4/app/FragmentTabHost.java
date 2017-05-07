@@ -4,9 +4,6 @@
 
 package android.support.v4.app;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.view.View$BaseSavedState;
 import android.os.Parcelable;
 import android.widget.TabHost$TabContentFactory;
 import android.os.Bundle;
@@ -31,29 +28,29 @@ public class FragmentTabHost extends TabHost implements TabHost$OnTabChangeListe
     private int mContainerId;
     private Context mContext;
     private FragmentManager mFragmentManager;
-    private TabInfo mLastTab;
+    private FragmentTabHost$TabInfo mLastTab;
     private TabHost$OnTabChangeListener mOnTabChangeListener;
     private FrameLayout mRealTabContent;
-    private final ArrayList<TabInfo> mTabs;
+    private final ArrayList<FragmentTabHost$TabInfo> mTabs;
     
     public FragmentTabHost(final Context context) {
         super(context, (AttributeSet)null);
-        this.mTabs = new ArrayList<TabInfo>();
+        this.mTabs = new ArrayList<FragmentTabHost$TabInfo>();
         this.initFragmentTabHost(context, null);
     }
     
     public FragmentTabHost(final Context context, final AttributeSet set) {
         super(context, set);
-        this.mTabs = new ArrayList<TabInfo>();
+        this.mTabs = new ArrayList<FragmentTabHost$TabInfo>();
         this.initFragmentTabHost(context, set);
     }
     
     private FragmentTransaction doTabChanged(final String s, final FragmentTransaction fragmentTransaction) {
-        TabInfo mLastTab = null;
+        FragmentTabHost$TabInfo mLastTab = null;
         for (int i = 0; i < this.mTabs.size(); ++i) {
-            final TabInfo tabInfo = this.mTabs.get(i);
-            if (tabInfo.tag.equals(s)) {
-                mLastTab = tabInfo;
+            final FragmentTabHost$TabInfo fragmentTabHost$TabInfo = this.mTabs.get(i);
+            if (fragmentTabHost$TabInfo.tag.equals(s)) {
+                mLastTab = fragmentTabHost$TabInfo;
             }
         }
         if (mLastTab == null) {
@@ -116,18 +113,18 @@ public class FragmentTabHost extends TabHost implements TabHost$OnTabChangeListe
     }
     
     public void addTab(final TabHost$TabSpec tabHost$TabSpec, final Class<?> clazz, final Bundle bundle) {
-        tabHost$TabSpec.setContent((TabHost$TabContentFactory)new DummyTabFactory(this.mContext));
+        tabHost$TabSpec.setContent((TabHost$TabContentFactory)new FragmentTabHost$DummyTabFactory(this.mContext));
         final String tag = tabHost$TabSpec.getTag();
-        final TabInfo tabInfo = new TabInfo(tag, clazz, bundle);
+        final FragmentTabHost$TabInfo fragmentTabHost$TabInfo = new FragmentTabHost$TabInfo(tag, clazz, bundle);
         if (this.mAttached) {
-            tabInfo.fragment = this.mFragmentManager.findFragmentByTag(tag);
-            if (tabInfo.fragment != null && !tabInfo.fragment.isDetached()) {
+            fragmentTabHost$TabInfo.fragment = this.mFragmentManager.findFragmentByTag(tag);
+            if (fragmentTabHost$TabInfo.fragment != null && !fragmentTabHost$TabInfo.fragment.isDetached()) {
                 final FragmentTransaction beginTransaction = this.mFragmentManager.beginTransaction();
-                beginTransaction.detach(tabInfo.fragment);
+                beginTransaction.detach(fragmentTabHost$TabInfo.fragment);
                 beginTransaction.commit();
             }
         }
-        this.mTabs.add(tabInfo);
+        this.mTabs.add(fragmentTabHost$TabInfo);
         this.addTab(tabHost$TabSpec);
     }
     
@@ -137,7 +134,7 @@ public class FragmentTabHost extends TabHost implements TabHost$OnTabChangeListe
         FragmentTransaction fragmentTransaction = null;
         FragmentTransaction beginTransaction;
         for (int i = 0; i < this.mTabs.size(); ++i, fragmentTransaction = beginTransaction) {
-            final TabInfo mLastTab = this.mTabs.get(i);
+            final FragmentTabHost$TabInfo mLastTab = this.mTabs.get(i);
             mLastTab.fragment = this.mFragmentManager.findFragmentByTag(mLastTab.tag);
             beginTransaction = fragmentTransaction;
             if (mLastTab.fragment != null) {
@@ -170,15 +167,15 @@ public class FragmentTabHost extends TabHost implements TabHost$OnTabChangeListe
     }
     
     protected void onRestoreInstanceState(final Parcelable parcelable) {
-        final SavedState savedState = (SavedState)parcelable;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        this.setCurrentTabByTag(savedState.curTab);
+        final FragmentTabHost$SavedState fragmentTabHost$SavedState = (FragmentTabHost$SavedState)parcelable;
+        super.onRestoreInstanceState(fragmentTabHost$SavedState.getSuperState());
+        this.setCurrentTabByTag(fragmentTabHost$SavedState.curTab);
     }
     
     protected Parcelable onSaveInstanceState() {
-        final SavedState savedState = new SavedState(super.onSaveInstanceState());
-        savedState.curTab = this.getCurrentTabTag();
-        return (Parcelable)savedState;
+        final FragmentTabHost$SavedState fragmentTabHost$SavedState = new FragmentTabHost$SavedState(super.onSaveInstanceState());
+        fragmentTabHost$SavedState.curTab = this.getCurrentTabTag();
+        return (Parcelable)fragmentTabHost$SavedState;
     }
     
     public void onTabChanged(final String s) {
@@ -220,72 +217,6 @@ public class FragmentTabHost extends TabHost implements TabHost$OnTabChangeListe
         this.mRealTabContent.setId(n);
         if (this.getId() == -1) {
             this.setId(16908306);
-        }
-    }
-    
-    static class DummyTabFactory implements TabHost$TabContentFactory
-    {
-        private final Context mContext;
-        
-        public DummyTabFactory(final Context mContext) {
-            this.mContext = mContext;
-        }
-        
-        public View createTabContent(final String s) {
-            final View view = new View(this.mContext);
-            view.setMinimumWidth(0);
-            view.setMinimumHeight(0);
-            return view;
-        }
-    }
-    
-    static class SavedState extends View$BaseSavedState
-    {
-        public static final Parcelable$Creator<SavedState> CREATOR;
-        String curTab;
-        
-        static {
-            CREATOR = (Parcelable$Creator)new Parcelable$Creator<SavedState>() {
-                public SavedState createFromParcel(final Parcel parcel) {
-                    return new SavedState(parcel);
-                }
-                
-                public SavedState[] newArray(final int n) {
-                    return new SavedState[n];
-                }
-            };
-        }
-        
-        private SavedState(final Parcel parcel) {
-            super(parcel);
-            this.curTab = parcel.readString();
-        }
-        
-        SavedState(final Parcelable parcelable) {
-            super(parcelable);
-        }
-        
-        public String toString() {
-            return "FragmentTabHost.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " curTab=" + this.curTab + "}";
-        }
-        
-        public void writeToParcel(final Parcel parcel, final int n) {
-            super.writeToParcel(parcel, n);
-            parcel.writeString(this.curTab);
-        }
-    }
-    
-    static final class TabInfo
-    {
-        private final Bundle args;
-        private final Class<?> clss;
-        private Fragment fragment;
-        private final String tag;
-        
-        TabInfo(final String tag, final Class<?> clss, final Bundle args) {
-            this.tag = tag;
-            this.clss = clss;
-            this.args = args;
         }
     }
 }

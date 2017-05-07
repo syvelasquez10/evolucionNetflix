@@ -8,7 +8,7 @@ import com.google.android.gms.ads.purchase.InAppPurchase;
 import com.google.android.gms.ads.purchase.InAppPurchaseListener;
 
 @ez
-public final class em extends eh.a
+public final class em extends eh$a
 {
     private final InAppPurchaseListener oC;
     

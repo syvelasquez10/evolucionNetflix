@@ -5,7 +5,7 @@
 package com.google.android.gms.internal;
 
 import java.util.List;
-import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.HashSet;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.Set;
@@ -102,28 +102,28 @@ public class nz implements Parcelable$Creator<ny>
         final HashSet<Integer> set = new HashSet<Integer>();
         int g = 0;
         String o = null;
-        Person.AgeRange ageRange = null;
+        ny$a ny$a = null;
         String o2 = null;
         String o3 = null;
         int g2 = 0;
-        Person.Cover cover = null;
+        ny$b ny$b = null;
         String o4 = null;
         String o5 = null;
         int g3 = 0;
         String o6 = null;
-        Person.Image image = null;
+        ny$c ny$c = null;
         boolean c2 = false;
         String o7 = null;
-        Person.Name name = null;
+        ny$d ny$d = null;
         String o8 = null;
         int g4 = 0;
-        List<ny.f> c3 = null;
-        List<ny.g> c4 = null;
+        List<ny$f> c3 = null;
+        List<ny$g> c4 = null;
         int g5 = 0;
         int g6 = 0;
         String o9 = null;
         String o10 = null;
-        List<ny.h> c5 = null;
+        List<ny$h> c5 = null;
         boolean c6 = false;
         while (parcel.dataPosition() < c) {
             final int b = a.B(parcel);
@@ -143,7 +143,7 @@ public class nz implements Parcelable$Creator<ny>
                     continue;
                 }
                 case 3: {
-                    ageRange = a.a(parcel, b, (android.os.Parcelable$Creator<ny.a>)ny.a.CREATOR);
+                    ny$a = a.a(parcel, b, (android.os.Parcelable$Creator<ny$a>)com.google.android.gms.internal.ny$a.CREATOR);
                     set.add(3);
                     continue;
                 }
@@ -163,7 +163,7 @@ public class nz implements Parcelable$Creator<ny>
                     continue;
                 }
                 case 7: {
-                    cover = a.a(parcel, b, (android.os.Parcelable$Creator<ny.b>)ny.b.CREATOR);
+                    ny$b = a.a(parcel, b, (android.os.Parcelable$Creator<ny$b>)com.google.android.gms.internal.ny$b.CREATOR);
                     set.add(7);
                     continue;
                 }
@@ -188,7 +188,7 @@ public class nz implements Parcelable$Creator<ny>
                     continue;
                 }
                 case 15: {
-                    image = a.a(parcel, b, (android.os.Parcelable$Creator<ny.c>)ny.c.CREATOR);
+                    ny$c = a.a(parcel, b, (android.os.Parcelable$Creator<ny$c>)com.google.android.gms.internal.ny$c.CREATOR);
                     set.add(15);
                     continue;
                 }
@@ -198,7 +198,7 @@ public class nz implements Parcelable$Creator<ny>
                     continue;
                 }
                 case 19: {
-                    name = a.a(parcel, b, (android.os.Parcelable$Creator<ny.d>)ny.d.CREATOR);
+                    ny$d = a.a(parcel, b, (android.os.Parcelable$Creator<ny$d>)com.google.android.gms.internal.ny$d.CREATOR);
                     set.add(19);
                     continue;
                 }
@@ -218,12 +218,12 @@ public class nz implements Parcelable$Creator<ny>
                     continue;
                 }
                 case 23: {
-                    c4 = a.c(parcel, b, (android.os.Parcelable$Creator<ny.g>)ny.g.CREATOR);
+                    c4 = a.c(parcel, b, (android.os.Parcelable$Creator<ny$g>)ny$g.CREATOR);
                     set.add(23);
                     continue;
                 }
                 case 22: {
-                    c3 = a.c(parcel, b, (android.os.Parcelable$Creator<ny.f>)ny.f.CREATOR);
+                    c3 = a.c(parcel, b, (android.os.Parcelable$Creator<ny$f>)ny$f.CREATOR);
                     set.add(22);
                     continue;
                 }
@@ -253,16 +253,16 @@ public class nz implements Parcelable$Creator<ny>
                     continue;
                 }
                 case 28: {
-                    c5 = a.c(parcel, b, (android.os.Parcelable$Creator<ny.h>)ny.h.CREATOR);
+                    c5 = a.c(parcel, b, (android.os.Parcelable$Creator<ny$h>)ny$h.CREATOR);
                     set.add(28);
                     continue;
                 }
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
-        return new ny(set, g, o, (ny.a)ageRange, o2, o3, g2, (ny.b)cover, o4, o5, g3, o6, (ny.c)image, c2, o7, (ny.d)name, o8, g4, c3, c4, g5, g6, o9, o10, c5, c6);
+        return new ny(set, g, o, ny$a, o2, o3, g2, ny$b, o4, o5, g3, o6, ny$c, c2, o7, ny$d, o8, g4, c3, c4, g5, g6, o9, o10, c5, c6);
     }
     
     public ny[] eU(final int n) {

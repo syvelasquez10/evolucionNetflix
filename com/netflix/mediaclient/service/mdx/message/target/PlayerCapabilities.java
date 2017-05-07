@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.message.target;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
@@ -24,7 +23,7 @@ public final class PlayerCapabilities extends MdxMessage
     private boolean mVolumeControl;
     private int mVolumeStep;
     
-    public PlayerCapabilities(final JSONObject mJson) throws JSONException {
+    public PlayerCapabilities(final JSONObject mJson) {
         final boolean b = true;
         super("PLAYER_CAPABILITIES");
         this.mJson = mJson;

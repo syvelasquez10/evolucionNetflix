@@ -5,6 +5,7 @@
 package com.google.android.gms.games.internal.game;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.games.snapshot.SnapshotMetadataEntity;
 import com.google.android.gms.games.GameEntity;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -105,7 +106,7 @@ public class ExtendedGameEntityCreator implements Parcelable$Creator<ExtendedGam
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new ExtendedGameEntity(g, gameEntity, g2, c2, g3, i, j, o, k, o2, c3, snapshotMetadataEntity);
     }

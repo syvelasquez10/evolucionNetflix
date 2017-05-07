@@ -24,9 +24,4 @@ public final class cq
         this.qB = qb;
         this.qx = qx;
     }
-    
-    public interface a
-    {
-        void j(final int p0);
-    }
 }

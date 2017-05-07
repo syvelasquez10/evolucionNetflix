@@ -5,9 +5,10 @@
 package com.netflix.mediaclient.service.logging.apm;
 
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionStartedEvent;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$EndReason;
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionEndedEvent;
 
 public final class UserSession extends BaseApmSession
@@ -16,8 +17,8 @@ public final class UserSession extends BaseApmSession
     private UserSessionEndedEvent mPendingEndEvent;
     private boolean waitingOnSessionId;
     
-    public UserSessionEndedEvent createEndedEvent(final ApplicationPerformanceMetricsLogging.EndReason endReason, final long n, final DataContext dataContext, final IClientLogging.ModalView modalView) {
-        final UserSessionEndedEvent mPendingEndEvent = new UserSessionEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, endReason, n);
+    public UserSessionEndedEvent createEndedEvent(final ApplicationPerformanceMetricsLogging$EndReason applicationPerformanceMetricsLogging$EndReason, final long n, final DataContext dataContext, final IClientLogging$ModalView modalView) {
+        final UserSessionEndedEvent mPendingEndEvent = new UserSessionEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, applicationPerformanceMetricsLogging$EndReason, n);
         mPendingEndEvent.setCategory(this.getCategory());
         mPendingEndEvent.setModalView(modalView);
         mPendingEndEvent.setDataContext(dataContext);
@@ -29,8 +30,8 @@ public final class UserSession extends BaseApmSession
         return userSessionEndedEvent;
     }
     
-    public UserSessionStartedEvent createStartEvent(final ApplicationPerformanceMetricsLogging.Trigger trigger, final long n) {
-        final UserSessionStartedEvent userSessionStartedEvent = new UserSessionStartedEvent(trigger, n);
+    public UserSessionStartedEvent createStartEvent(final ApplicationPerformanceMetricsLogging$Trigger applicationPerformanceMetricsLogging$Trigger, final long n) {
+        final UserSessionStartedEvent userSessionStartedEvent = new UserSessionStartedEvent(applicationPerformanceMetricsLogging$Trigger, n);
         userSessionStartedEvent.setCategory(this.getCategory());
         return userSessionStartedEvent;
     }

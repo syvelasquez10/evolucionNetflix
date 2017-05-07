@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.util;
 
-import android.os.SystemClock;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import java.util.Collection;
@@ -19,7 +18,7 @@ public abstract class EventQueue<T>
     public static final int MIN_NUMBER_OF_EVENTS_TO_POST = 100;
     private String TAG;
     private List<T> mEventQueue;
-    private List<FlushCriterion> mFlushCriteria;
+    private List<EventQueue$FlushCriterion> mFlushCriteria;
     private long mLastTimeEventAddedInMs;
     private int mMaxNumberOfEvents;
     private long mMaxTimeToStayInQueueInMs;
@@ -34,7 +33,7 @@ public abstract class EventQueue<T>
         this.mMaxNumberOfEvents = 100;
         this.mMaxTimeToStayInQueueInMs = 300000L;
         this.mEventQueue = Collections.synchronizedList(new ArrayList<T>());
-        this.mFlushCriteria = Collections.synchronizedList(new ArrayList<FlushCriterion>());
+        this.mFlushCriteria = Collections.synchronizedList(new ArrayList<EventQueue$FlushCriterion>());
         this.mPaused = new AtomicBoolean(false);
         if (StringUtils.isNotEmpty(tag)) {
             this.TAG = tag;
@@ -48,10 +47,10 @@ public abstract class EventQueue<T>
         this.mMaxNumberOfEvents = mMaxNumberOfEvents;
         this.mMaxTimeToStayInQueueInMs = mMaxTimeToStayInQueueInMs;
         if (b) {
-            this.mFlushCriteria.add((FlushCriterion)new QueueSizeFlushCriterion());
+            this.mFlushCriteria.add(new EventQueue$QueueSizeFlushCriterion(this, null));
         }
         if (b2) {
-            this.mFlushCriteria.add((FlushCriterion)new TimeInQueueFlushCriterion());
+            this.mFlushCriteria.add(new EventQueue$TimeInQueueFlushCriterion(this, null));
         }
     }
     
@@ -60,24 +59,24 @@ public abstract class EventQueue<T>
         this.mMaxNumberOfEvents = 100;
         this.mMaxTimeToStayInQueueInMs = 300000L;
         this.mEventQueue = Collections.synchronizedList(new ArrayList<T>());
-        this.mFlushCriteria = Collections.synchronizedList(new ArrayList<FlushCriterion>());
+        this.mFlushCriteria = Collections.synchronizedList(new ArrayList<EventQueue$FlushCriterion>());
         this.mPaused = new AtomicBoolean(false);
         if (StringUtils.isNotEmpty(tag)) {
             this.TAG = tag;
         }
         if (b) {
-            this.mFlushCriteria.add((FlushCriterion)new QueueSizeFlushCriterion());
+            this.mFlushCriteria.add(new EventQueue$QueueSizeFlushCriterion(this, null));
         }
         if (b2) {
-            this.mFlushCriteria.add((FlushCriterion)new TimeInQueueFlushCriterion());
+            this.mFlushCriteria.add(new EventQueue$TimeInQueueFlushCriterion(this, null));
         }
     }
     
-    public void addFlushCriterion(final FlushCriterion flushCriterion) {
-        if (flushCriterion == null) {
+    public void addFlushCriterion(final EventQueue$FlushCriterion eventQueue$FlushCriterion) {
+        if (eventQueue$FlushCriterion == null) {
             return;
         }
-        this.mFlushCriteria.add(flushCriterion);
+        this.mFlushCriteria.add(eventQueue$FlushCriterion);
     }
     
     protected abstract void doFlush(final List<T> p0);
@@ -194,8 +193,8 @@ public abstract class EventQueue<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public boolean removeFlushCriterion(final FlushCriterion flushCriterion) {
-        return flushCriterion != null && this.mFlushCriteria.remove(flushCriterion);
+    public boolean removeFlushCriterion(final EventQueue$FlushCriterion eventQueue$FlushCriterion) {
+        return eventQueue$FlushCriterion != null && this.mFlushCriteria.remove(eventQueue$FlushCriterion);
     }
     
     public void resumeDelivery(final boolean b) {
@@ -208,62 +207,21 @@ public abstract class EventQueue<T>
     public boolean shouldFlushQueue() {
         if (this.mPaused.get()) {
             Log.d(this.TAG, "Paused state:: we can not flash events");
+            return false;
         }
-        else {
-            if (this.mFlushCriteria.size() <= 0) {
-                Log.d(this.TAG, "No rules to flush queue, go and flush queue");
-                return true;
-            }
+        if (this.mFlushCriteria.size() > 0) {
             if (Log.isLoggable(this.TAG, 3)) {
                 Log.d(this.TAG, "Custom rules to flush queue found: " + this.mFlushCriteria.size());
             }
-            final Iterator<FlushCriterion> iterator = this.mFlushCriteria.iterator();
+            final Iterator<EventQueue$FlushCriterion> iterator = this.mFlushCriteria.iterator();
             while (iterator.hasNext()) {
                 if (iterator.next().shouldFlushQueue(this.mEventQueue.size(), this.mLastTimeEventAddedInMs)) {
                     return true;
                 }
             }
-        }
-        return false;
-    }
-    
-    public interface FlushCriterion
-    {
-        boolean shouldFlushQueue(final int p0, final long p1);
-    }
-    
-    private class QueueSizeFlushCriterion implements FlushCriterion
-    {
-        @Override
-        public boolean shouldFlushQueue(final int n, final long n2) {
-            if (EventQueue.this.mEventQueue.size() >= EventQueue.this.mMaxNumberOfEvents) {
-                if (Log.isLoggable(EventQueue.this.TAG, 3)) {
-                    Log.d(EventQueue.this.TAG, "Posting events: Current number of events in outgoing queue is " + EventQueue.this.mEventQueue.size() + " and it is equal or higher than treshold of " + EventQueue.this.mMaxNumberOfEvents);
-                }
-                return true;
-            }
-            if (Log.isLoggable(EventQueue.this.TAG, 3)) {
-                Log.d(EventQueue.this.TAG, "Current number of events in outgoing queue is " + EventQueue.this.mEventQueue.size() + " and it is less than treshold of " + EventQueue.this.mMaxNumberOfEvents);
-            }
             return false;
         }
-    }
-    
-    private class TimeInQueueFlushCriterion implements FlushCriterion
-    {
-        @Override
-        public boolean shouldFlushQueue(final int n, final long n2) {
-            final long n3 = SystemClock.elapsedRealtime() - n2;
-            if (n2 > 0L && n3 > EventQueue.this.mMaxTimeToStayInQueueInMs) {
-                if (Log.isLoggable(EventQueue.this.TAG, 3)) {
-                    Log.d(EventQueue.this.TAG, "Posting events: older event in queue was posted [ms] " + n3 + " and that triggers time of stay in queue criteria of " + EventQueue.this.mMaxTimeToStayInQueueInMs);
-                }
-                return true;
-            }
-            if (Log.isLoggable(EventQueue.this.TAG, 3)) {
-                Log.d(EventQueue.this.TAG, "Posting events: older event in queue was posted [ms] " + n3 + " and that does NOT triggers time of stay in queue criteria of " + EventQueue.this.mMaxTimeToStayInQueueInMs);
-            }
-            return false;
-        }
+        Log.d(this.TAG, "No rules to flush queue, go and flush queue");
+        return true;
     }
 }

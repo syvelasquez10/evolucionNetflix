@@ -6,14 +6,14 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.StatusCode;
-import com.google.gson.JsonParser;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.google.gson.JsonParser;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
@@ -67,7 +67,7 @@ public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
@@ -75,9 +75,9 @@ public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
         final String format = String.format("[{'from':%d,'to':%d}, 'summary']", this.fromVideo, this.toVideo);
         final String format2 = String.format("'%s'", this.iqLoMoId);
         final StringBuilder sb = new StringBuilder();
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), format2));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), this.iqLoMoIndex));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), "'queue'"));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", format2));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", this.iqLoMoIndex));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "'queue'"));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", format));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
         Log.d("nf_service_browse_refreshcwrequest", " getOptionalParams: " + sb.toString());
@@ -106,7 +106,7 @@ public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_refreshcwrequest", 2)) {
             Log.v("nf_service_browse_refreshcwrequest", "String response to parse = " + s.substring(0, Math.min(s.length(), 1500)));
         }

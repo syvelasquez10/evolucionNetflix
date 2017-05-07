@@ -53,7 +53,7 @@ public class JsonWriter implements Closeable, Flushable
         this.out = out;
     }
     
-    private void beforeName() throws IOException {
+    private void beforeName() {
         final JsonScope peek = this.peek();
         if (peek == JsonScope.NONEMPTY_OBJECT) {
             this.out.write(44);
@@ -65,38 +65,38 @@ public class JsonWriter implements Closeable, Flushable
         this.replaceTop(JsonScope.DANGLING_NAME);
     }
     
-    private void beforeValue(final boolean b) throws IOException {
-        switch (this.peek()) {
+    private void beforeValue(final boolean b) {
+        switch (JsonWriter$1.$SwitchMap$com$google$gson$stream$JsonScope[this.peek().ordinal()]) {
             default: {
                 throw new IllegalStateException("Nesting problem: " + this.stack);
             }
-            case NONEMPTY_DOCUMENT: {
+            case 1: {
                 if (!this.lenient) {
                     throw new IllegalStateException("JSON must have only one top-level value.");
                 }
             }
-            case EMPTY_DOCUMENT: {
+            case 2: {
                 if (!this.lenient && !b) {
                     throw new IllegalStateException("JSON must start with an array or an object.");
                 }
                 this.replaceTop(JsonScope.NONEMPTY_DOCUMENT);
             }
-            case EMPTY_ARRAY: {
+            case 3: {
                 this.replaceTop(JsonScope.NONEMPTY_ARRAY);
                 this.newline();
             }
-            case NONEMPTY_ARRAY: {
+            case 4: {
                 this.out.append(',');
                 this.newline();
             }
-            case DANGLING_NAME: {
+            case 5: {
                 this.out.append((CharSequence)this.separator);
                 this.replaceTop(JsonScope.NONEMPTY_OBJECT);
             }
         }
     }
     
-    private JsonWriter close(final JsonScope jsonScope, final JsonScope jsonScope2, final String s) throws IOException {
+    private JsonWriter close(final JsonScope jsonScope, final JsonScope jsonScope2, final String s) {
         final JsonScope peek = this.peek();
         if (peek != jsonScope2 && peek != jsonScope) {
             throw new IllegalStateException("Nesting problem: " + this.stack);
@@ -112,7 +112,7 @@ public class JsonWriter implements Closeable, Flushable
         return this;
     }
     
-    private void newline() throws IOException {
+    private void newline() {
         if (this.indent != null) {
             this.out.write("\n");
             for (int i = 1; i < this.stack.size(); ++i) {
@@ -121,7 +121,7 @@ public class JsonWriter implements Closeable, Flushable
         }
     }
     
-    private JsonWriter open(final JsonScope jsonScope, final String s) throws IOException {
+    private JsonWriter open(final JsonScope jsonScope, final String s) {
         this.beforeValue(true);
         this.stack.add(jsonScope);
         this.out.write(s);
@@ -140,7 +140,7 @@ public class JsonWriter implements Closeable, Flushable
         this.stack.set(this.stack.size() - 1, jsonScope);
     }
     
-    private void string(final String s) throws IOException {
+    private void string(final String s) {
         int n = 0;
         String[] array;
         if (this.htmlSafe) {
@@ -194,7 +194,7 @@ public class JsonWriter implements Closeable, Flushable
         this.out.write("\"");
     }
     
-    private void writeDeferredName() throws IOException {
+    private void writeDeferredName() {
         if (this.deferredName != null) {
             this.beforeName();
             this.string(this.deferredName);
@@ -202,18 +202,18 @@ public class JsonWriter implements Closeable, Flushable
         }
     }
     
-    public JsonWriter beginArray() throws IOException {
+    public JsonWriter beginArray() {
         this.writeDeferredName();
         return this.open(JsonScope.EMPTY_ARRAY, "[");
     }
     
-    public JsonWriter beginObject() throws IOException {
+    public JsonWriter beginObject() {
         this.writeDeferredName();
         return this.open(JsonScope.EMPTY_OBJECT, "{");
     }
     
     @Override
-    public void close() throws IOException {
+    public void close() {
         this.out.close();
         final int size = this.stack.size();
         if (size > 1 || (size == 1 && this.stack.get(size - 1) != JsonScope.NONEMPTY_DOCUMENT)) {
@@ -222,16 +222,16 @@ public class JsonWriter implements Closeable, Flushable
         this.stack.clear();
     }
     
-    public JsonWriter endArray() throws IOException {
+    public JsonWriter endArray() {
         return this.close(JsonScope.EMPTY_ARRAY, JsonScope.NONEMPTY_ARRAY, "]");
     }
     
-    public JsonWriter endObject() throws IOException {
+    public JsonWriter endObject() {
         return this.close(JsonScope.EMPTY_OBJECT, JsonScope.NONEMPTY_OBJECT, "}");
     }
     
     @Override
-    public void flush() throws IOException {
+    public void flush() {
         if (this.stack.isEmpty()) {
             throw new IllegalStateException("JsonWriter is closed.");
         }
@@ -250,7 +250,7 @@ public class JsonWriter implements Closeable, Flushable
         return this.lenient;
     }
     
-    public JsonWriter name(final String deferredName) throws IOException {
+    public JsonWriter name(final String deferredName) {
         if (deferredName == null) {
             throw new NullPointerException("name == null");
         }
@@ -264,7 +264,7 @@ public class JsonWriter implements Closeable, Flushable
         return this;
     }
     
-    public JsonWriter nullValue() throws IOException {
+    public JsonWriter nullValue() {
         if (this.deferredName != null) {
             if (!this.serializeNulls) {
                 this.deferredName = null;
@@ -299,7 +299,7 @@ public class JsonWriter implements Closeable, Flushable
         this.serializeNulls = serializeNulls;
     }
     
-    public JsonWriter value(final double n) throws IOException {
+    public JsonWriter value(final double n) {
         if (Double.isNaN(n) || Double.isInfinite(n)) {
             throw new IllegalArgumentException("Numeric values must be finite, but was " + n);
         }
@@ -309,14 +309,14 @@ public class JsonWriter implements Closeable, Flushable
         return this;
     }
     
-    public JsonWriter value(final long n) throws IOException {
+    public JsonWriter value(final long n) {
         this.writeDeferredName();
         this.beforeValue(false);
         this.out.write(Long.toString(n));
         return this;
     }
     
-    public JsonWriter value(final Number n) throws IOException {
+    public JsonWriter value(final Number n) {
         if (n == null) {
             return this.nullValue();
         }
@@ -330,7 +330,7 @@ public class JsonWriter implements Closeable, Flushable
         return this;
     }
     
-    public JsonWriter value(final String s) throws IOException {
+    public JsonWriter value(final String s) {
         if (s == null) {
             return this.nullValue();
         }
@@ -340,7 +340,7 @@ public class JsonWriter implements Closeable, Flushable
         return this;
     }
     
-    public JsonWriter value(final boolean b) throws IOException {
+    public JsonWriter value(final boolean b) {
         this.writeDeferredName();
         this.beforeValue(false);
         final Writer out = this.out;

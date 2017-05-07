@@ -4,13 +4,10 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
-import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -62,38 +59,8 @@ public abstract class PostPlay
         this.mPanAnimationInterpolator = new DecelerateInterpolator();
         this.mOffset = 10000;
         this.mInterrputerTimeoutOffset = 3600000;
-        this.onInterrupterStart = new Runnable() {
-            @Override
-            public void run() {
-                if (!PostPlay.this.mContext.getState().noUserInteraction()) {
-                    Log.d("nf_postplay", "Interrupter process, there was user interaction in meantime. Do nothing");
-                    return;
-                }
-                if (PostPlay.this.mContext.getScreen().getState() == PlayerUiState.Loading) {
-                    Log.d("nf_postplay", "This is 3rd consecutive auto play with no user interaction, but after 2 minutes we are still loading, postpone for 2 more minutes");
-                    PostPlay.this.mContext.getHandler().postDelayed((Runnable)this, 120000L);
-                    return;
-                }
-                if (PostPlay.this.mInterrupter != null) {
-                    Log.d("nf_postplay", "This is 3rd consecutive auto play with no user interaction, after 2 minutes start interrupter mode");
-                    PostPlay.this.mContext.doPause();
-                    PostPlay.this.mInterrupter.setVisibility(0);
-                    PostPlay.this.mContext.getScreen().moveToState(PlayerUiState.Interrupter);
-                    PostPlay.this.mContext.getHandler().postDelayed(PostPlay.this.onInterrupterDismiss, (long)PostPlay.this.mInterrputerTimeoutOffset);
-                    return;
-                }
-                Log.w("nf_postplay", "Interrupter UI NOT found, this should not happen!");
-            }
-        };
-        this.onInterrupterDismiss = new Runnable() {
-            @Override
-            public void run() {
-                Log.d("nf_postplay", "After 60 minutes of waiting for user input, stop player ui");
-                if (!PostPlay.this.mContext.destroyed()) {
-                    PostPlay.this.mContext.finish();
-                }
-            }
-        };
+        this.onInterrupterStart = new PostPlay$6(this);
+        this.onInterrupterDismiss = new PostPlay$7(this);
         this.mContext = mContext;
         this.findViewsCommon();
         this.findViews();
@@ -104,7 +71,9 @@ public abstract class PostPlay
         }
     }
     
-    public static PostPlayFactory.PostPlayType getPostPlayType(final PlayerActivity playerActivity) {
+    public static PostPlayFactory$PostPlayType getPostPlayType(final PlayerActivity playerActivity) {
+        boolean b = true;
+        boolean nextPlayableEpisode = false;
         final DeviceCategory deviceCategory = playerActivity.getServiceManager().getDeviceCategory();
         int n;
         if (deviceCategory == null || deviceCategory == DeviceCategory.UNKNOWN || deviceCategory == DeviceCategory.PHONE) {
@@ -113,41 +82,39 @@ public abstract class PostPlay
         else {
             n = 1;
         }
-        boolean b = false;
-        boolean nextPlayableEpisode = false;
         final Asset currentAsset = playerActivity.getCurrentAsset();
         if (currentAsset != null) {
             nextPlayableEpisode = currentAsset.isNextPlayableEpisode();
-            if (!currentAsset.isEpisode()) {
-                b = true;
-            }
-            else {
+            if (currentAsset.isEpisode()) {
                 b = false;
             }
+        }
+        else {
+            b = false;
         }
         if (n != 0) {
             if (b) {
                 Log.d("nf_postplay", "RecommendationForTablet postplay layout");
-                return PostPlayFactory.PostPlayType.RecommendationForTablet;
+                return PostPlayFactory$PostPlayType.RecommendationForTablet;
             }
             if (nextPlayableEpisode) {
                 Log.d("nf_postplay", "EpisodesForTablet postplay layout");
-                return PostPlayFactory.PostPlayType.EpisodesForTablet;
+                return PostPlayFactory$PostPlayType.EpisodesForTablet;
             }
             Log.d("nf_postplay", "RecommendationForTablet postplay layout");
-            return PostPlayFactory.PostPlayType.RecommendationForTablet;
+            return PostPlayFactory$PostPlayType.RecommendationForTablet;
         }
         else {
             if (b) {
                 Log.d("nf_postplay", "Phone recommendation (no) postplay layout");
-                return PostPlayFactory.PostPlayType.RecommendationForPhone;
+                return PostPlayFactory$PostPlayType.RecommendationForPhone;
             }
             if (nextPlayableEpisode) {
                 Log.d("nf_postplay", "Phone episodes postplay layout");
-                return PostPlayFactory.PostPlayType.EpisodesForPhone;
+                return PostPlayFactory$PostPlayType.EpisodesForPhone;
             }
             Log.d("nf_postplay", "There will be no next episode, use phone recommendation (no) postplay layout");
-            return PostPlayFactory.PostPlayType.RecommendationForPhone;
+            return PostPlayFactory$PostPlayType.RecommendationForPhone;
         }
     }
     
@@ -221,7 +188,7 @@ public abstract class PostPlay
     }
     
     public void init(final String s) {
-        this.mContext.getServiceManager().getBrowse().fetchPostPlayVideos(s, new FetchPostPlayForPlaybackCallback());
+        this.mContext.getServiceManager().getBrowse().fetchPostPlayVideos(s, new PostPlay$FetchPostPlayForPlaybackCallback(this));
         this.mOffset = this.mContext.getResources().getInteger(2131427335) * 1000;
     }
     
@@ -315,42 +282,19 @@ public abstract class PostPlay
     
     protected void setClickListeners() {
         if (this.mPostPlayIgnoreTap != null) {
-            this.mPostPlayIgnoreTap.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
-                public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                    Log.d("nf_postplay", "Hijacking tap, do nothing");
-                    return true;
-                }
-            });
+            this.mPostPlayIgnoreTap.setOnTouchListener((View$OnTouchListener)new PostPlay$1(this));
         }
         if (this.mPlayButton != null) {
-            this.mPlayButton.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    PostPlay.this.handlePlayNow(false);
-                }
-            });
+            this.mPlayButton.setOnClickListener((View$OnClickListener)new PostPlay$2(this));
         }
         if (this.mInterrupterContinue != null) {
-            this.mInterrupterContinue.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    Log.d("nf_postplay", "Interrupter mode, continue");
-                    PostPlay.this.moveFromInterruptedToPlaying();
-                }
-            });
+            this.mInterrupterContinue.setOnClickListener((View$OnClickListener)new PostPlay$3(this));
         }
         if (this.mInterrupterStop != null) {
-            this.mInterrupterStop.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    Log.d("nf_postplay", "Interrupter mode, stop");
-                    PostPlay.this.mContext.finish();
-                }
-            });
+            this.mInterrupterStop.setOnClickListener((View$OnClickListener)new PostPlay$4(this));
         }
         if (this.mInterrupterPlayFromStart != null) {
-            this.mInterrupterPlayFromStart.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                public void onClick(final View view) {
-                    PostPlay.this.moveFromInterruptedToPlayingFromStart();
-                }
-            });
+            this.mInterrupterPlayFromStart.setOnClickListener((View$OnClickListener)new PostPlay$5(this));
         }
     }
     
@@ -415,40 +359,5 @@ public abstract class PostPlay
     
     public boolean wasPostPlayDismissed() {
         return this.mPostPlayDismissed;
-    }
-    
-    private class FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
-    {
-        public FetchPostPlayForPlaybackCallback() {
-            super("nf_postplay");
-        }
-        
-        @Override
-        public void onPostPlayVideosFetched(final List<PostPlayVideo> mPostPlayVideos, final Status status) {
-            final boolean b = false;
-            super.onPostPlayVideosFetched(mPostPlayVideos, status);
-            if (PostPlay.this.mContext.destroyed()) {
-                return;
-            }
-            if (status.isError() || mPostPlayVideos == null) {
-                Log.w("nf_postplay", "Error loading post play data");
-                PostPlay.this.mPostPlayDataExist = false;
-                return;
-            }
-            if (Log.isLoggable("nf_postplay", 3) && mPostPlayVideos != null) {
-                Log.d("nf_postplay", "Postplay data retrieved " + mPostPlayVideos.size());
-            }
-            PostPlay.this.mPostPlayVideos = mPostPlayVideos;
-            final PostPlay this$0 = PostPlay.this;
-            boolean mPostPlayDataExist = b;
-            if (mPostPlayVideos != null) {
-                mPostPlayDataExist = b;
-                if (mPostPlayVideos.size() > 0) {
-                    mPostPlayDataExist = true;
-                }
-            }
-            this$0.mPostPlayDataExist = mPostPlayDataExist;
-            PostPlay.this.updateOnPostPlayVideosFetched(mPostPlayVideos);
-        }
     }
 }

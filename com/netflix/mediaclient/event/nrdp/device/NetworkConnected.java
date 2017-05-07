@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.nrdp.device;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class NetworkConnected extends BaseDeviceEvent
@@ -16,7 +15,7 @@ public class NetworkConnected extends BaseDeviceEvent
     }
     
     @Override
-    public JSONObject getData() throws JSONException {
+    public JSONObject getData() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", (Object)this.getType());
         return jsonObject;

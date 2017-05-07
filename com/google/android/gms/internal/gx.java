@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.webkit.JsPromptResult;
 import android.content.Context;
 import android.content.DialogInterface$OnCancelListener;
-import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 import android.webkit.JsResult;
 import android.app.AlertDialog$Builder;
@@ -35,19 +34,7 @@ public class gx extends WebChromeClient
     }
     
     private static void a(final AlertDialog$Builder alertDialog$Builder, final String message, final JsResult jsResult) {
-        alertDialog$Builder.setMessage((CharSequence)message).setPositiveButton(17039370, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                jsResult.confirm();
-            }
-        }).setNegativeButton(17039360, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                jsResult.cancel();
-            }
-        }).setOnCancelListener((DialogInterface$OnCancelListener)new DialogInterface$OnCancelListener() {
-            public void onCancel(final DialogInterface dialogInterface) {
-                jsResult.cancel();
-            }
-        }).create().show();
+        alertDialog$Builder.setMessage((CharSequence)message).setPositiveButton(17039370, (DialogInterface$OnClickListener)new gx$3(jsResult)).setNegativeButton(17039360, (DialogInterface$OnClickListener)new gx$2(jsResult)).setOnCancelListener((DialogInterface$OnCancelListener)new gx$1(jsResult)).create().show();
     }
     
     private static void a(final Context context, final AlertDialog$Builder alertDialog$Builder, final String text, final String text2, final JsPromptResult jsPromptResult) {
@@ -59,19 +46,7 @@ public class gx extends WebChromeClient
         editText.setText((CharSequence)text2);
         view.addView((View)textView);
         view.addView((View)editText);
-        alertDialog$Builder.setView((View)view).setPositiveButton(17039370, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                jsPromptResult.confirm(editText.getText().toString());
-            }
-        }).setNegativeButton(17039360, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                jsPromptResult.cancel();
-            }
-        }).setOnCancelListener((DialogInterface$OnCancelListener)new DialogInterface$OnCancelListener() {
-            public void onCancel(final DialogInterface dialogInterface) {
-                jsPromptResult.cancel();
-            }
-        }).create().show();
+        alertDialog$Builder.setView((View)view).setPositiveButton(17039370, (DialogInterface$OnClickListener)new gx$6(jsPromptResult, editText)).setNegativeButton(17039360, (DialogInterface$OnClickListener)new gx$5(jsPromptResult)).setOnCancelListener((DialogInterface$OnCancelListener)new gx$4(jsPromptResult)).create().show();
     }
     
     protected final void a(final View view, final int requestedOrientation, final WebChromeClient$CustomViewCallback webChromeClient$CustomViewCallback) {

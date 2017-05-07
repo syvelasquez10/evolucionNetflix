@@ -5,7 +5,6 @@
 package com.google.android.gms.internal;
 
 import java.util.Iterator;
-import org.json.JSONException;
 import org.json.JSONArray;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public final class cm
     public int qk;
     public int ql;
     
-    public cm(final String s) throws JSONException {
+    public cm(final String s) {
         final JSONObject jsonObject = new JSONObject(s);
         if (gs.u(2)) {
             gs.V("Mediation Response JSON: " + jsonObject.toString(2));

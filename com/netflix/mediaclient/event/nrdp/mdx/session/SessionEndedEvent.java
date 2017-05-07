@@ -5,22 +5,21 @@
 package com.netflix.mediaclient.event.nrdp.mdx.session;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.javabridge.ui.Mdx;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
 public class SessionEndedEvent extends JsonBaseNccpEvent
 {
     private static final String ATTR_sid = "sid";
-    public static final Mdx.Events TYPE;
+    public static final Mdx$Events TYPE;
     private int sid;
     
     static {
-        TYPE = Mdx.Events.mdx_session_sessionended;
+        TYPE = Mdx$Events.mdx_session_sessionended;
     }
     
-    public SessionEndedEvent(final JSONObject jsonObject) throws JSONException {
+    public SessionEndedEvent(final JSONObject jsonObject) {
         super(SessionEndedEvent.TYPE.getName(), jsonObject);
     }
     
@@ -34,7 +33,7 @@ public class SessionEndedEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.sid = BaseNccpEvent.getInt(jsonObject, "sid", -1);
     }
 }

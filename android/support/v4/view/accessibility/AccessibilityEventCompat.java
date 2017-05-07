@@ -9,7 +9,7 @@ import android.os.Build$VERSION;
 
 public class AccessibilityEventCompat
 {
-    private static final AccessibilityEventVersionImpl IMPL;
+    private static final AccessibilityEventCompat$AccessibilityEventVersionImpl IMPL;
     public static final int TYPES_ALL_MASK = -1;
     public static final int TYPE_ANNOUNCEMENT = 16384;
     public static final int TYPE_GESTURE_DETECTION_END = 524288;
@@ -29,10 +29,10 @@ public class AccessibilityEventCompat
     
     static {
         if (Build$VERSION.SDK_INT >= 14) {
-            IMPL = (AccessibilityEventVersionImpl)new AccessibilityEventIcsImpl();
+            IMPL = new AccessibilityEventCompat$AccessibilityEventIcsImpl();
             return;
         }
-        IMPL = (AccessibilityEventVersionImpl)new AccessibilityEventStubImpl();
+        IMPL = new AccessibilityEventCompat$AccessibilityEventStubImpl();
     }
     
     public static void appendRecord(final AccessibilityEvent accessibilityEvent, final AccessibilityRecordCompat accessibilityRecordCompat) {
@@ -49,49 +49,5 @@ public class AccessibilityEventCompat
     
     public static int getRecordCount(final AccessibilityEvent accessibilityEvent) {
         return AccessibilityEventCompat.IMPL.getRecordCount(accessibilityEvent);
-    }
-    
-    static class AccessibilityEventIcsImpl extends AccessibilityEventStubImpl
-    {
-        @Override
-        public void appendRecord(final AccessibilityEvent accessibilityEvent, final Object o) {
-            AccessibilityEventCompatIcs.appendRecord(accessibilityEvent, o);
-        }
-        
-        @Override
-        public Object getRecord(final AccessibilityEvent accessibilityEvent, final int n) {
-            return AccessibilityEventCompatIcs.getRecord(accessibilityEvent, n);
-        }
-        
-        @Override
-        public int getRecordCount(final AccessibilityEvent accessibilityEvent) {
-            return AccessibilityEventCompatIcs.getRecordCount(accessibilityEvent);
-        }
-    }
-    
-    static class AccessibilityEventStubImpl implements AccessibilityEventVersionImpl
-    {
-        @Override
-        public void appendRecord(final AccessibilityEvent accessibilityEvent, final Object o) {
-        }
-        
-        @Override
-        public Object getRecord(final AccessibilityEvent accessibilityEvent, final int n) {
-            return null;
-        }
-        
-        @Override
-        public int getRecordCount(final AccessibilityEvent accessibilityEvent) {
-            return 0;
-        }
-    }
-    
-    interface AccessibilityEventVersionImpl
-    {
-        void appendRecord(final AccessibilityEvent p0, final Object p1);
-        
-        Object getRecord(final AccessibilityEvent p0, final int p1);
-        
-        int getRecordCount(final AccessibilityEvent p0);
     }
 }

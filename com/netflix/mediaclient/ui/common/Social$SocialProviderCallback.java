@@ -1,0 +1,12 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.ui.common;
+
+public interface Social$SocialProviderCallback
+{
+    void doNotShare();
+    
+    void extendTimeoutTimer();
+}

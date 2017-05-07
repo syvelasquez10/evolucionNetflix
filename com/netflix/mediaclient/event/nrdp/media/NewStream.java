@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.proxy.nrdp.media.StreamInfo;
 
@@ -17,7 +16,7 @@ public class NewStream extends BaseMediaEvent
     private int startPts;
     private StreamInfo streamInfo;
     
-    public NewStream(final JSONObject jsonObject) throws JSONException {
+    public NewStream(final JSONObject jsonObject) {
         super("newStream", jsonObject);
     }
     
@@ -30,7 +29,7 @@ public class NewStream extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.startPts = BaseNccpEvent.getInt(jsonObject, "startPts", 0);
         if (jsonObject.has("streamInfo")) {
             this.streamInfo = new StreamInfo(jsonObject.getJSONObject("streamInfo"));

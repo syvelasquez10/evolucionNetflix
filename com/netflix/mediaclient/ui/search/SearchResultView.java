@@ -5,13 +5,13 @@
 package com.netflix.mediaclient.ui.search;
 
 import android.text.Spannable;
-import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
 import android.graphics.Typeface;
 import com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion;
 import android.view.View$OnClickListener;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.model.search.SearchPerson;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -22,7 +22,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
@@ -43,12 +43,12 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     private int resId;
     private String searchReferenceId;
     protected TextView title;
-    private IClientLogging.ModalView trackModalview;
+    private IClientLogging$ModalView trackModalview;
     private VideoDetailsClickListener videoClickListener;
     
     public SearchResultView(final Context context, final int resId) {
         super(context);
-        this.resId = 2130903171;
+        this.resId = 2130903172;
         this.ignoreClicks = false;
         this.resId = resId;
         this.init();
@@ -56,7 +56,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.resId = 2130903171;
+        this.resId = 2130903172;
         this.ignoreClicks = false;
         this.init();
     }
@@ -73,7 +73,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final SpannableString spannableString = new SpannableString((CharSequence)String.format("%s  (%s)", s, s2));
         final int length = spannableString.length();
         final int n = length - s2.length() - 4;
-        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131361863)), n, length, 0);
+        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131361864)), n, length, 0);
         spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(this.getYearColorResId())), n, length, 0);
         return (CharSequence)spannableString;
     }
@@ -98,11 +98,11 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             return;
         }
         int n;
-        if ((n = index + s.length()) > text.length() - 1) {
+        if ((n = s.length() + index) > text.length() - 1) {
             n = text.length() - 1;
         }
         final SpannableString text2 = new SpannableString((CharSequence)text);
-        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131296436)), index, n, 33);
+        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131296439)), index, n, 33);
         this.title.setText((CharSequence)text2);
     }
     
@@ -119,7 +119,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final String name = searchPerson.getName();
         this.setContentDescription((CharSequence)name);
         this.setTag((Object)"People");
-        this.trackModalview = IClientLogging.ModalView.peopleTitleResults;
+        this.trackModalview = IClientLogging$ModalView.peopleTitleResults;
         if (name != null) {
             this.setTitleTextWithSubtextHighlighting(name, s);
         }
@@ -127,7 +127,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             this.img.setVisibility(0);
             final String imgUrl = searchPerson.getImgUrl();
             if (StringUtils.isNotEmpty(imgUrl)) {
-                NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging.AssetType.heroImage, name, false, false);
+                NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging$AssetType.heroImage, name, false, false);
             }
             else {
                 this.img.setImageResource(2130837565);
@@ -135,7 +135,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         }
         if (!this.ignoreClicks) {
             this.videoClickListener.remove((View)this);
-            this.setOnClickListener((View$OnClickListener)new PersonClickListener(searchPerson.getId(), searchPerson.getName(), s));
+            this.setOnClickListener((View$OnClickListener)new SearchResultView$PersonClickListener(this, searchPerson.getId(), searchPerson.getName(), s));
         }
     }
     
@@ -143,7 +143,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final String title = searchSuggestion.getTitle();
         this.setContentDescription((CharSequence)title);
         this.setTag((Object)"Suggestion");
-        this.trackModalview = IClientLogging.ModalView.suggestionTitleResults;
+        this.trackModalview = IClientLogging$ModalView.suggestionTitleResults;
         if (title != null) {
             this.setTitleTextWithSubtextHighlighting(title, s);
         }
@@ -152,7 +152,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         }
         if (!this.ignoreClicks) {
             this.videoClickListener.remove((View)this);
-            this.setOnClickListener((View$OnClickListener)new SuggestionClickListener(searchSuggestion.getTitle(), searchSuggestion.getTitle(), s));
+            this.setOnClickListener((View$OnClickListener)new SearchResultView$SuggestionClickListener(this, searchSuggestion.getTitle(), searchSuggestion.getTitle(), s));
         }
     }
     
@@ -180,7 +180,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     }
     
     protected int getYearColorResId() {
-        return 2131296362;
+        return 2131296365;
     }
     
     public void setIgnoreClicks() {
@@ -224,7 +224,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     protected void updateForVideo(final SearchVideo searchVideo, final int n, String s) {
         this.setContentDescription((CharSequence)searchVideo.getTitle());
         this.setTag((Object)"Video");
-        this.trackModalview = IClientLogging.ModalView.titleResults;
+        this.trackModalview = IClientLogging$ModalView.titleResults;
         if (this.title != null) {
             this.title.setVisibility(8);
         }
@@ -236,42 +236,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             else {
                 s = searchVideo.getHorzDispUrl();
             }
-            NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, s, IClientLogging.AssetType.boxArt, searchVideo.getTitle(), true, true);
+            NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, s, IClientLogging$AssetType.boxArt, searchVideo.getTitle(), true, true);
         }
         this.videoClickListener.update((View)this, searchVideo);
-    }
-    
-    private class PersonClickListener implements View$OnClickListener
-    {
-        private final String id;
-        private final String name;
-        private final String query;
-        
-        public PersonClickListener(final String id, final String name, final String query) {
-            this.id = id;
-            this.name = name;
-            this.query = query;
-        }
-        
-        public void onClick(final View view) {
-            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.PERSON, this.id, this.name, this.query, SearchResultView.this.searchReferenceId, SearchResultView.this.trackModalview);
-        }
-    }
-    
-    private class SuggestionClickListener implements View$OnClickListener
-    {
-        private final String id;
-        private final String query;
-        private final String title;
-        
-        public SuggestionClickListener(final String id, final String title, final String query) {
-            this.id = id;
-            this.title = title;
-            this.query = query;
-        }
-        
-        public void onClick(final View view) {
-            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.SEARCH_SUGGESTION, this.id, this.title, this.query, SearchResultView.this.searchReferenceId, SearchResultView.this.trackModalview);
-        }
     }
 }

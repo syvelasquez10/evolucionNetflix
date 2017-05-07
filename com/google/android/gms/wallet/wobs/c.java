@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wallet.wobs;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
@@ -45,7 +46,7 @@ public class c implements Parcelable$Creator<b>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new b(g, o2, o);
     }

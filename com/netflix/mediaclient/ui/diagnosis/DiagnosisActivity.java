@@ -4,20 +4,9 @@
 
 package com.netflix.mediaclient.ui.diagnosis;
 
-import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.annotation.SuppressLint;
-import android.widget.ArrayAdapter;
-import java.util.Iterator;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import android.view.View;
-import android.view.View$OnClickListener;
-import android.widget.ListAdapter;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.util.Log;
 import android.content.Intent;
@@ -30,12 +19,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.IDiagnosis;
+import com.netflix.mediaclient.servicemgr.IDiagnosis$DiagnosisListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
-public class DiagnosisActivity extends NetflixActivity implements DiagnosisListener
+public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$DiagnosisListener
 {
     private static final String TAG = "DiagnosisActivity";
-    private ResultsAdapter mAdapter;
+    private DiagnosisActivity$ResultsAdapter mAdapter;
     private IDiagnosis mDiagnosis;
     private TextView mNetworkStatus;
     private ProgressBar mProgressBar;
@@ -52,79 +42,52 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
     private void startDiagnosis() {
         Log.d("DiagnosisActivity", "Diagnosis being attempted");
         this.mDiagnosis.startNetworkDiagnosis();
-        this.updateInfoGroup(InfoGroupState.TEST_ONGOING);
+        this.updateInfoGroup(DiagnosisActivity$InfoGroupState.TEST_ONGOING);
         this.mAdapter.notifyDataSetChanged();
     }
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                DiagnosisActivity.this.getNetflixActionBar().setDisplayHomeAsUpEnabled(serviceManager.isUserLoggedIn());
-                DiagnosisActivity.this.mDiagnosis = DiagnosisActivity.this.getServiceManager().getDiagnosis();
-                DiagnosisActivity.this.mDiagnosis.addListener((IDiagnosis.DiagnosisListener)DiagnosisActivity.this);
-                DiagnosisActivity.this.mUrlList = DiagnosisActivity.this.mDiagnosis.getNetworkStateList();
-                DiagnosisActivity.this.mStatutListView = (ListView)DiagnosisActivity.this.findViewById(2131165348);
-                DiagnosisActivity.this.mAdapter = new ResultsAdapter((Context)DiagnosisActivity.this);
-                DiagnosisActivity.this.mStatutListView.setAdapter((ListAdapter)DiagnosisActivity.this.mAdapter);
-                DiagnosisActivity.this.mNetworkStatus = (TextView)DiagnosisActivity.this.findViewById(2131165341);
-                DiagnosisActivity.this.mTestInfo = (TextView)DiagnosisActivity.this.findViewById(2131165342);
-                DiagnosisActivity.this.mTestButton = (Button)DiagnosisActivity.this.findViewById(2131165344);
-                DiagnosisActivity.this.mRadioLogo = (ImageView)DiagnosisActivity.this.findViewById(2131165347);
-                DiagnosisActivity.this.mProgressBar = (ProgressBar)DiagnosisActivity.this.findViewById(2131165343);
-                DiagnosisActivity.this.updateInfoGroup(InfoGroupState.INITIAL);
-                DiagnosisActivity.this.findViewById(2131165344).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-                    public void onClick(final View view) {
-                        DiagnosisActivity.this.startDiagnosis();
-                    }
-                });
-                if (Log.isLoggable("DiagnosisActivity", 3)) {
-                    Log.d("DiagnosisActivity", "onManagaerReady complete");
-                }
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-            }
-        };
+        return new DiagnosisActivity$3(this);
     }
     
     protected String getStringForFailure() {
+        int i = 0;
         int n = 0;
         int n2 = 0;
-        int n3;
-        int n4;
-        for (int i = 0; i < this.mUrlList.size(); ++i, n2 = n3, n = n4) {
+        while (i < this.mUrlList.size()) {
             final UrlNetworkState urlNetworkState = this.mUrlList.get(i);
-            n3 = n2;
-            n4 = n;
+            int n3 = n;
+            int n4 = n2;
             if (urlNetworkState.getResult() != 0) {
                 if (urlNetworkState.containsNetflix()) {
                     n4 = 1;
-                    n3 = n2;
+                    n3 = n;
                 }
                 else {
                     n3 = 1;
-                    n4 = n;
+                    n4 = n2;
                 }
             }
+            ++i;
+            n = n3;
+            n2 = n4;
         }
-        if (n != 0 && n2 != 0) {
-            return this.getString(2131493375);
-        }
-        if (n2 != 0) {
-            return this.getString(2131493377);
+        if (n2 != 0 && n != 0) {
+            return this.getString(2131493317);
         }
         if (n != 0) {
-            return this.getString(2131493376);
+            return this.getString(2131493319);
         }
-        return this.getString(2131493372);
+        if (n2 != 0) {
+            return this.getString(2131493318);
+        }
+        return this.getString(2131493314);
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.customerService;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.customerService;
     }
     
     @Override
@@ -132,6 +95,7 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
         return false;
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }
@@ -141,14 +105,14 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
         super.onCreate(bundle);
         if (DeviceUtils.isTabletByContext((Context)this)) {
             this.setRequestedOrientation(6);
-            this.setContentView(2130903085);
+            this.setContentView(2130903086);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "Setting orientation to landscape");
             }
         }
         else {
             this.setRequestedOrientation(1);
-            this.setContentView(2130903086);
+            this.setContentView(2130903087);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "setting orientation to potrait");
             }
@@ -170,43 +134,12 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
     
     @Override
     public void onDiagnosisComplete() {
-        this.runOnUiThread((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                Log.d("DiagnosisActivity", "DiagnosisUpdated ");
-                final boolean b = true;
-                final Iterator<UrlNetworkState> iterator = DiagnosisActivity.this.mUrlList.iterator();
-                while (true) {
-                    do {
-                        final boolean b2 = b;
-                        if (iterator.hasNext()) {
-                            continue;
-                        }
-                        if (b2) {
-                            DiagnosisActivity.this.updateInfoGroup(InfoGroupState.SUCCESS);
-                        }
-                        else {
-                            DiagnosisActivity.this.updateInfoGroup(InfoGroupState.FAILED);
-                        }
-                        DiagnosisActivity.this.mAdapter.notifyDataSetChanged();
-                        return;
-                    } while (iterator.next().getResult() == 0);
-                    final boolean b2 = false;
-                    continue;
-                }
-            }
-        });
+        this.runOnUiThread((Runnable)new DiagnosisActivity$2(this));
     }
     
     @Override
     public void onDiagnosisListUpdated() {
-        this.runOnUiThread((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                Log.d("DiagnosisActivity", "DiagnosisListUpdated");
-                DiagnosisActivity.this.mAdapter.notifyDataSetChanged();
-            }
-        });
+        this.runOnUiThread((Runnable)new DiagnosisActivity$1(this));
     }
     
     @Override
@@ -228,113 +161,38 @@ public class DiagnosisActivity extends NetflixActivity implements DiagnosisListe
         return false;
     }
     
-    protected void updateInfoGroup(final InfoGroupState infoGroupState) {
-        switch (infoGroupState) {
+    protected void updateInfoGroup(final DiagnosisActivity$InfoGroupState diagnosisActivity$InfoGroupState) {
+        switch (DiagnosisActivity$4.$SwitchMap$com$netflix$mediaclient$ui$diagnosis$DiagnosisActivity$InfoGroupState[diagnosisActivity$InfoGroupState.ordinal()]) {
             default: {}
-            case INITIAL: {
-                this.mNetworkStatus.setText(2131493366);
-                this.mTestInfo.setText(2131493367);
-                this.mTestButton.setText(2131493368);
+            case 1: {
+                this.mNetworkStatus.setText(2131493308);
+                this.mTestInfo.setText(2131493309);
+                this.mTestButton.setText(2131493310);
                 this.mTestButton.setVisibility(0);
                 this.mProgressBar.setVisibility(4);
             }
-            case FAILED: {
-                this.mNetworkStatus.setText(2131493370);
+            case 2: {
+                this.mNetworkStatus.setText(2131493312);
                 this.mTestInfo.setVisibility(0);
                 this.mTestInfo.setText((CharSequence)this.getStringForFailure());
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131493371);
+                this.mTestButton.setText(2131493313);
                 this.mProgressBar.setVisibility(4);
             }
-            case SUCCESS: {
-                this.mNetworkStatus.setText(2131493372);
+            case 3: {
+                this.mNetworkStatus.setText(2131493314);
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131493371);
+                this.mTestButton.setText(2131493313);
                 this.mProgressBar.setVisibility(4);
             }
-            case TEST_ONGOING: {
+            case 4: {
                 this.mRadioLogo.setVisibility(8);
                 this.mStatutListView.setVisibility(0);
                 this.mTestButton.setVisibility(4);
                 this.mProgressBar.setVisibility(0);
-                this.mNetworkStatus.setText(2131493369);
+                this.mNetworkStatus.setText(2131493311);
                 this.mTestInfo.setVisibility(4);
             }
-        }
-    }
-    
-    public enum InfoGroupState
-    {
-        FAILED, 
-        INITIAL, 
-        SUCCESS, 
-        TEST_ONGOING;
-    }
-    
-    @SuppressLint({ "ViewHolder" })
-    public class ResultsAdapter extends ArrayAdapter<String>
-    {
-        Context context;
-        
-        public ResultsAdapter(final Context context) {
-            super(context, 2130903087, 2131165348);
-            this.context = context;
-        }
-        
-        public boolean areAllItemsEnabled() {
-            return false;
-        }
-        
-        public int getCount() {
-            if (DiagnosisActivity.this.mUrlList == null) {
-                Log.d("DiagnosisActivity", "urlList is null");
-                return 0;
-            }
-            if (Log.isLoggable("DiagnosisActivity", 3)) {
-                Log.d("DiagnosisActivity", "urlList size: " + DiagnosisActivity.this.mUrlList.size());
-            }
-            return DiagnosisActivity.this.mUrlList.size();
-        }
-        
-        public View getView(final int n, View inflate, final ViewGroup viewGroup) {
-            inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903087, viewGroup, false);
-            final TextView textView = (TextView)inflate.findViewById(2131165350);
-            final TextView textView2 = (TextView)inflate.findViewById(2131165351);
-            final ImageView imageView = (ImageView)inflate.findViewById(2131165349);
-            imageView.setImageResource(2130837698);
-            final UrlNetworkState urlNetworkState = DiagnosisActivity.this.mUrlList.get(n);
-            this.setTitleText(textView, urlNetworkState.getUrl(), n);
-            if (urlNetworkState.getStatus().equals(DiagnosisAgent.UrlStatus.COMPLETED)) {
-                if (urlNetworkState.getResult() != 0) {
-                    textView2.setText((CharSequence)("nw-" + urlNetworkState.getErrorGroup() + "-" + urlNetworkState.getErrorCode()));
-                    imageView.setImageResource(2130837697);
-                    return inflate;
-                }
-                imageView.setImageResource(2130837698);
-                textView2.setVisibility(4);
-            }
-            else {
-                if (urlNetworkState.getStatus().equals(DiagnosisAgent.UrlStatus.TEST_ONGOING)) {
-                    imageView.setVisibility(4);
-                    textView2.setVisibility(4);
-                    return inflate;
-                }
-                if (urlNetworkState.getStatus().equals(DiagnosisAgent.UrlStatus.NOT_TESTED)) {
-                    imageView.setVisibility(4);
-                    textView2.setVisibility(4);
-                    textView.setVisibility(4);
-                    return inflate;
-                }
-            }
-            return inflate;
-        }
-        
-        public void setTitleText(final TextView textView, final String s, final int n) {
-            if (s != null && s.contains("netflix")) {
-                textView.setText((CharSequence)this.context.getString(2131493373, new Object[] { n + 1 }));
-                return;
-            }
-            textView.setText(2131493374);
         }
     }
 }

@@ -12,9 +12,9 @@ class WorkQueue
     public static final int DEFAULT_MAX_CONCURRENT = 8;
     private final Executor executor;
     private final int maxConcurrent;
-    private WorkNode pendingJobs;
+    private WorkQueue$WorkNode pendingJobs;
     private int runningCount;
-    private WorkNode runningJobs;
+    private WorkQueue$WorkNode runningJobs;
     private final Object workLock;
     
     WorkQueue() {
@@ -33,45 +33,35 @@ class WorkQueue
         this.executor = executor;
     }
     
-    private void execute(final WorkNode workNode) {
-        this.executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    workNode.getCallback().run();
-                }
-                finally {
-                    WorkQueue.this.finishItemAndStartNew(workNode);
-                }
-            }
-        });
+    private void execute(final WorkQueue$WorkNode workQueue$WorkNode) {
+        this.executor.execute(new WorkQueue$1(this, workQueue$WorkNode));
     }
     
-    private void finishItemAndStartNew(WorkNode workNode) {
-        final WorkNode workNode2 = null;
+    private void finishItemAndStartNew(WorkQueue$WorkNode workQueue$WorkNode) {
+        final WorkQueue$WorkNode workQueue$WorkNode2 = null;
         final Object workLock = this.workLock;
         // monitorenter(workLock)
         Label_0035: {
-            if (workNode == null) {
+            if (workQueue$WorkNode == null) {
                 break Label_0035;
             }
             try {
-                this.runningJobs = workNode.removeFromList(this.runningJobs);
+                this.runningJobs = workQueue$WorkNode.removeFromList(this.runningJobs);
                 --this.runningCount;
-                workNode = workNode2;
+                workQueue$WorkNode = workQueue$WorkNode2;
                 if (this.runningCount < this.maxConcurrent) {
-                    final WorkNode pendingJobs = this.pendingJobs;
-                    if ((workNode = pendingJobs) != null) {
+                    final WorkQueue$WorkNode pendingJobs = this.pendingJobs;
+                    if ((workQueue$WorkNode = pendingJobs) != null) {
                         this.pendingJobs = pendingJobs.removeFromList(this.pendingJobs);
                         this.runningJobs = pendingJobs.addToList(this.runningJobs, false);
                         ++this.runningCount;
                         pendingJobs.setIsRunning(true);
-                        workNode = pendingJobs;
+                        workQueue$WorkNode = pendingJobs;
                     }
                 }
                 // monitorexit(workLock)
-                if (workNode != null) {
-                    this.execute(workNode);
+                if (workQueue$WorkNode != null) {
+                    this.execute(workQueue$WorkNode);
                 }
             }
             finally {
@@ -84,17 +74,17 @@ class WorkQueue
         this.finishItemAndStartNew(null);
     }
     
-    WorkItem addActiveWorkItem(final Runnable runnable) {
+    WorkQueue$WorkItem addActiveWorkItem(final Runnable runnable) {
         return this.addActiveWorkItem(runnable, true);
     }
     
-    WorkItem addActiveWorkItem(final Runnable runnable, final boolean b) {
-        final WorkNode workNode = new WorkNode(runnable);
+    WorkQueue$WorkItem addActiveWorkItem(final Runnable runnable, final boolean b) {
+        final WorkQueue$WorkNode workQueue$WorkNode = new WorkQueue$WorkNode(this, runnable);
         synchronized (this.workLock) {
-            this.pendingJobs = workNode.addToList(this.pendingJobs, b);
+            this.pendingJobs = workQueue$WorkNode.addToList(this.pendingJobs, b);
             // monitorexit(this.workLock)
             this.startItem();
-            return (WorkItem)workNode;
+            return workQueue$WorkNode;
         }
     }
     
@@ -105,8 +95,8 @@ class WorkQueue
         int n2 = 0;
         try {
             if (this.runningJobs != null) {
-                WorkNode runningJobs = this.runningJobs;
-                WorkNode next;
+                WorkQueue$WorkNode runningJobs = this.runningJobs;
+                WorkQueue$WorkNode next;
                 do {
                     runningJobs.verify(true);
                     n = n2 + 1;
@@ -121,109 +111,4 @@ class WorkQueue
         // monitorexit(workLock)
     }
     // monitorexit(workLock)
-    
-    interface WorkItem
-    {
-        boolean cancel();
-        
-        boolean isRunning();
-        
-        void moveToFront();
-    }
-    
-    private class WorkNode implements WorkItem
-    {
-        private final Runnable callback;
-        private boolean isRunning;
-        private WorkNode next;
-        private WorkNode prev;
-        
-        WorkNode(final Runnable callback) {
-            this.callback = callback;
-        }
-        
-        WorkNode addToList(WorkNode next, final boolean b) {
-            assert this.next == null;
-            assert this.prev == null;
-            if (next == null) {
-                this.prev = this;
-                this.next = this;
-                next = this;
-            }
-            else {
-                this.next = next;
-                this.prev = next.prev;
-                final WorkNode next2 = this.next;
-                this.prev.next = this;
-                next2.prev = this;
-            }
-            if (b) {
-                return this;
-            }
-            return next;
-        }
-        
-        @Override
-        public boolean cancel() {
-            synchronized (WorkQueue.this.workLock) {
-                if (!this.isRunning()) {
-                    WorkQueue.this.pendingJobs = this.removeFromList(WorkQueue.this.pendingJobs);
-                    return true;
-                }
-                return false;
-            }
-        }
-        
-        Runnable getCallback() {
-            return this.callback;
-        }
-        
-        WorkNode getNext() {
-            return this.next;
-        }
-        
-        @Override
-        public boolean isRunning() {
-            return this.isRunning;
-        }
-        
-        @Override
-        public void moveToFront() {
-            synchronized (WorkQueue.this.workLock) {
-                if (!this.isRunning()) {
-                    WorkQueue.this.pendingJobs = this.removeFromList(WorkQueue.this.pendingJobs);
-                    WorkQueue.this.pendingJobs = this.addToList(WorkQueue.this.pendingJobs, true);
-                }
-            }
-        }
-        
-        WorkNode removeFromList(final WorkNode workNode) {
-            assert this.next != null;
-            assert this.prev != null;
-            WorkNode next;
-            if ((next = workNode) == this) {
-                if (this.next == this) {
-                    next = null;
-                }
-                else {
-                    next = this.next;
-                }
-            }
-            this.next.prev = this.prev;
-            this.prev.next = this.next;
-            this.prev = null;
-            this.next = null;
-            return next;
-        }
-        
-        void setIsRunning(final boolean isRunning) {
-            this.isRunning = isRunning;
-        }
-        
-        void verify(final boolean b) {
-            assert this.prev.next == this;
-            assert this.next.prev == this;
-            assert this.isRunning() == b;
-        }
-    }
 }

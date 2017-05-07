@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.nrdp.media;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GenericMediaEvent extends BaseMediaEvent
@@ -24,6 +23,6 @@ public class GenericMediaEvent extends BaseMediaEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
     }
 }

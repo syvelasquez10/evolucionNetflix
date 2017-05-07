@@ -4,7 +4,6 @@
 
 package com.android.volley.toolbox;
 
-import com.android.volley.VolleyError;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -15,7 +14,7 @@ public class NetworkImageView extends ImageView
 {
     private int mDefaultImageId;
     private int mErrorImageId;
-    private ImageLoader.ImageContainer mImageContainer;
+    private ImageLoader$ImageContainer mImageContainer;
     private ImageLoader mImageLoader;
     private String mUrl;
     
@@ -57,35 +56,7 @@ public class NetworkImageView extends ImageView
                 this.mImageContainer.cancelRequest();
                 this.setImageBitmap((Bitmap)null);
             }
-            this.mImageContainer = this.mImageLoader.get(this.mUrl, (ImageLoader.ImageListener)new ImageLoader.ImageListener() {
-                @Override
-                public void onErrorResponse(final VolleyError volleyError) {
-                    if (NetworkImageView.this.mErrorImageId != 0) {
-                        NetworkImageView.this.setImageResource(NetworkImageView.this.mErrorImageId);
-                    }
-                }
-                
-                @Override
-                public void onResponse(final ImageContainer imageContainer, final boolean b) {
-                    if (b && b) {
-                        NetworkImageView.this.post((Runnable)new Runnable() {
-                            @Override
-                            public void run() {
-                                ImageListener.this.onResponse(imageContainer, false);
-                            }
-                        });
-                    }
-                    else {
-                        if (imageContainer.getBitmap() != null) {
-                            NetworkImageView.this.setImageBitmap(imageContainer.getBitmap());
-                            return;
-                        }
-                        if (NetworkImageView.this.mDefaultImageId != 0) {
-                            NetworkImageView.this.setImageResource(NetworkImageView.this.mDefaultImageId);
-                        }
-                    }
-                }
-            });
+            this.mImageContainer = this.mImageLoader.get(this.mUrl, new NetworkImageView$1(this, b));
         }
     }
     

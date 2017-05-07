@@ -5,7 +5,6 @@
 package com.google.android.gms.common.api;
 
 import android.os.Parcel;
-import android.content.IntentSender$SendIntentException;
 import android.content.Intent;
 import android.app.Activity;
 import com.google.android.gms.common.ConnectionResult;
@@ -123,7 +122,7 @@ public final class Status implements Result, SafeParcelable
         return this.HF <= 0;
     }
     
-    public void startResolutionForResult(final Activity activity, final int n) throws IntentSender$SendIntentException {
+    public void startResolutionForResult(final Activity activity, final int n) {
         if (!this.hasResolution()) {
             return;
         }

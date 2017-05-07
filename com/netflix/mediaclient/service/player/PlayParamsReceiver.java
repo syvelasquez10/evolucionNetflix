@@ -22,21 +22,11 @@ class PlayParamsReceiver extends BroadcastReceiver
     }
     
     private Runnable getHandlerForBufferSize(final Context context, final Intent intent) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                PlayParamsReceiver.this.handleBufferSize(context, intent);
-            }
-        };
+        return new PlayParamsReceiver$2(this, context, intent);
     }
     
     private Runnable getHandlerForTweakBandwith(final Context context, final Intent intent) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                PlayParamsReceiver.this.handleTweakBandwith(context, intent);
-            }
-        };
+        return new PlayParamsReceiver$1(this, context, intent);
     }
     
     private void handleBufferSize(final Context context, final Intent intent) {
@@ -57,33 +47,36 @@ class PlayParamsReceiver extends BroadcastReceiver
     }
     
     private void handleTweakBandwith(final Context context, final Intent intent) {
+    Label_0050_Outer:
         while (true) {
             while (true) {
-                Label_0112: {
-                    try {
-                        final Bundle extras = intent.getExtras();
-                        if (extras != null) {
-                            int int1;
-                            if ((int1 = extras.getInt("maxbw")) <= 0) {
+            Label_0110:
+                while (true) {
+                    Label_0107: {
+                        try {
+                            final Bundle extras = intent.getExtras();
+                            if (extras != null) {
+                                int int1 = extras.getInt("maxbw");
+                                if (int1 > 0) {
+                                    break Label_0107;
+                                }
                                 int1 = 4800;
+                                final int int2 = extras.getInt("minbw");
+                                final int n;
+                                if (int2 < 0 || (n = int2) > int1) {
+                                    break Label_0110;
+                                }
+                                this.mPlayController.setVideoBitrateRange(n, int1);
+                                Log.d("Bandwidth_Rcvr", "MaxBw set: " + int1 + "MinBw set: " + n);
                             }
-                            final int int2 = extras.getInt("minbw");
-                            if (int2 < 0) {
-                                break Label_0112;
-                            }
-                            final int n;
-                            if ((n = int2) > int1) {
-                                break Label_0112;
-                            }
-                            this.mPlayController.setVideoBitrateRange(n, int1);
-                            Log.d("Bandwidth_Rcvr", "MaxBw set: " + int1 + "MinBw set: " + n);
+                            return;
                         }
-                        return;
+                        catch (Exception ex) {
+                            Log.e("Bandwidth_Rcvr", "Unintented Exception thrown ", ex);
+                            return;
+                        }
                     }
-                    catch (Exception ex) {
-                        Log.e("Bandwidth_Rcvr", "Unintented Exception thrown ", ex);
-                        return;
-                    }
+                    continue Label_0050_Outer;
                 }
                 int n = 0;
                 continue;

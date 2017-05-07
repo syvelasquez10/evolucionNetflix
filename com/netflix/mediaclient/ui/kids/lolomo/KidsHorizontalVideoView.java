@@ -8,7 +8,7 @@ import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.ViewGroup;
 import android.view.ViewGroup$LayoutParams;
@@ -20,11 +20,11 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
+import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import android.widget.RelativeLayout;
 
 @SuppressLint({ "ViewConstructor" })
-public class KidsHorizontalVideoView extends RelativeLayout implements IVideoView<Video>
+public class KidsHorizontalVideoView extends RelativeLayout implements VideoViewGroup$IVideoView<Video>
 {
     private VideoDetailsClickListener clicker;
     private AdvancedImageView img;
@@ -35,8 +35,8 @@ public class KidsHorizontalVideoView extends RelativeLayout implements IVideoVie
         this.setFocusable(true);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        netflixActivity.getLayoutInflater().inflate(2130903103, (ViewGroup)this);
-        (this.img = (AdvancedImageView)this.findViewById(2131165418)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361962));
+        netflixActivity.getLayoutInflater().inflate(2130903104, (ViewGroup)this);
+        (this.img = (AdvancedImageView)this.findViewById(2131165417)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361964));
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     
@@ -45,7 +45,7 @@ public class KidsHorizontalVideoView extends RelativeLayout implements IVideoVie
     }
     
     public void hide() {
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, null, IClientLogging.AssetType.bif, null, false, false);
+        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, null, IClientLogging$AssetType.bif, null, false, false);
         this.setVisibility(4);
         this.clicker.remove((View)this);
     }
@@ -64,7 +64,7 @@ public class KidsHorizontalVideoView extends RelativeLayout implements IVideoVie
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
         final String horzDispUrl = video.getHorzDispUrl();
-        final IClientLogging.AssetType boxArt = IClientLogging.AssetType.boxArt;
+        final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final String title = video.getTitle();
         if (b) {
             visibility = 1;

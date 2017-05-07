@@ -4,7 +4,6 @@
 
 package com.google.android.gms.tagmanager;
 
-import android.os.Message;
 import android.os.Handler$Callback;
 import android.os.Handler;
 import android.content.Context;
@@ -36,12 +35,7 @@ class cy extends cx
         this.ark = false;
         this.connected = true;
         this.arl = true;
-        this.arm = new au() {
-            @Override
-            public void z(final boolean b) {
-                cy.this.a(b, cy.this.connected);
-            }
-        };
+        this.arm = new cy$1(this);
         this.aro = false;
     }
     
@@ -50,17 +44,7 @@ class cy extends cx
     }
     
     private void ec() {
-        this.handler = new Handler(this.arf.getMainLooper(), (Handler$Callback)new Handler$Callback() {
-            public boolean handleMessage(final Message message) {
-                if (1 == message.what && cy.yc.equals(message.obj)) {
-                    cy.this.dispatch();
-                    if (cy.this.ari > 0 && !cy.this.aro) {
-                        cy.this.handler.sendMessageDelayed(cy.this.handler.obtainMessage(1, cy.yc), (long)cy.this.ari);
-                    }
-                }
-                return true;
-            }
-        });
+        this.handler = new Handler(this.arf.getMainLooper(), (Handler$Callback)new cy$2(this));
         if (this.ari > 0) {
             this.handler.sendMessageDelayed(this.handler.obtainMessage(1, cy.yc), (long)this.ari);
         }
@@ -135,12 +119,7 @@ class cy extends cx
                 this.arj = true;
             }
             else {
-                this.arh.b(new Runnable() {
-                    @Override
-                    public void run() {
-                        cy.this.arg.dispatch();
-                    }
-                });
+                this.arh.b(new cy$3(this));
             }
         }
     }

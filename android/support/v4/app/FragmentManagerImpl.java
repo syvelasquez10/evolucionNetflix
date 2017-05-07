@@ -66,7 +66,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     ArrayList<Integer> mAvailBackStackIndices;
     ArrayList<Integer> mAvailIndices;
     ArrayList<BackStackRecord> mBackStack;
-    ArrayList<OnBackStackChangedListener> mBackStackChangeListeners;
+    ArrayList<FragmentManager$OnBackStackChangedListener> mBackStackChangeListeners;
     ArrayList<BackStackRecord> mBackStackIndices;
     FragmentContainer mContainer;
     ArrayList<Fragment> mCreatedMenus;
@@ -101,12 +101,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         this.mCurState = 0;
         this.mStateBundle = null;
         this.mStateArray = null;
-        this.mExecCommit = new Runnable() {
-            @Override
-            public void run() {
-                FragmentManagerImpl.this.execPendingActions();
-            }
-        };
+        this.mExecCommit = new FragmentManagerImpl$1(this);
     }
     
     private void checkStateLoss() {
@@ -244,11 +239,11 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     @Override
-    public void addOnBackStackChangedListener(final OnBackStackChangedListener onBackStackChangedListener) {
+    public void addOnBackStackChangedListener(final FragmentManager$OnBackStackChangedListener fragmentManager$OnBackStackChangedListener) {
         if (this.mBackStackChangeListeners == null) {
-            this.mBackStackChangeListeners = new ArrayList<OnBackStackChangedListener>();
+            this.mBackStackChangeListeners = new ArrayList<FragmentManager$OnBackStackChangedListener>();
         }
-        this.mBackStackChangeListeners.add(onBackStackChangedListener);
+        this.mBackStackChangeListeners.add(fragmentManager$OnBackStackChangedListener);
     }
     
     public int allocBackStackIndex(final BackStackRecord backStackRecord) {
@@ -350,15 +345,23 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     public boolean dispatchContextItemSelected(final MenuItem menuItem) {
+        boolean b = false;
         if (this.mAdded != null) {
-            for (int i = 0; i < this.mAdded.size(); ++i) {
-                final Fragment fragment = this.mAdded.get(i);
-                if (fragment != null && fragment.performContextItemSelected(menuItem)) {
-                    return true;
+            int n = 0;
+            while (true) {
+                b = b;
+                if (n >= this.mAdded.size()) {
+                    break;
                 }
+                final Fragment fragment = this.mAdded.get(n);
+                if (fragment != null && fragment.performContextItemSelected(menuItem)) {
+                    b = true;
+                    break;
+                }
+                ++n;
             }
         }
-        return false;
+        return b;
     }
     
     public void dispatchCreate() {
@@ -366,24 +369,25 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     public boolean dispatchCreateOptionsMenu(final Menu menu, final MenuInflater menuInflater) {
-        boolean b = false;
-        boolean b2 = false;
+        final int n = 0;
         ArrayList<Fragment> mCreatedMenus = null;
         ArrayList<Fragment> list = null;
+        boolean b2;
         if (this.mAdded != null) {
-            int n = 0;
+            int n2 = 0;
+            boolean b = false;
             while (true) {
                 mCreatedMenus = list;
-                b = b2;
-                if (n >= this.mAdded.size()) {
+                b2 = b;
+                if (n2 >= this.mAdded.size()) {
                     break;
                 }
-                final Fragment fragment = this.mAdded.get(n);
+                final Fragment fragment = this.mAdded.get(n2);
                 ArrayList<Fragment> list2 = list;
-                boolean b3 = b2;
+                boolean b3 = b;
                 if (fragment != null) {
                     list2 = list;
-                    b3 = b2;
+                    b3 = b;
                     if (fragment.performCreateOptionsMenu(menu, menuInflater)) {
                         b3 = true;
                         if ((list2 = list) == null) {
@@ -392,13 +396,16 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                         list2.add(fragment);
                     }
                 }
-                ++n;
+                ++n2;
+                b = b3;
                 list = list2;
-                b2 = b3;
             }
         }
+        else {
+            b2 = false;
+        }
         if (this.mCreatedMenus != null) {
-            for (int i = 0; i < this.mCreatedMenus.size(); ++i) {
+            for (int i = n; i < this.mCreatedMenus.size(); ++i) {
                 final Fragment fragment2 = this.mCreatedMenus.get(i);
                 if (mCreatedMenus == null || !mCreatedMenus.contains(fragment2)) {
                     fragment2.onDestroyOptionsMenu();
@@ -406,7 +413,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
             }
         }
         this.mCreatedMenus = mCreatedMenus;
-        return b;
+        return b2;
     }
     
     public void dispatchDestroy() {
@@ -434,15 +441,23 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     public boolean dispatchOptionsItemSelected(final MenuItem menuItem) {
+        boolean b = false;
         if (this.mAdded != null) {
-            for (int i = 0; i < this.mAdded.size(); ++i) {
-                final Fragment fragment = this.mAdded.get(i);
-                if (fragment != null && fragment.performOptionsItemSelected(menuItem)) {
-                    return true;
+            int n = 0;
+            while (true) {
+                b = b;
+                if (n >= this.mAdded.size()) {
+                    break;
                 }
+                final Fragment fragment = this.mAdded.get(n);
+                if (fragment != null && fragment.performOptionsItemSelected(menuItem)) {
+                    b = true;
+                    break;
+                }
+                ++n;
             }
         }
-        return false;
+        return b;
     }
     
     public void dispatchOptionsMenuClosed(final Menu menu) {
@@ -461,28 +476,31 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     public boolean dispatchPrepareOptionsMenu(final Menu menu) {
-        boolean b = false;
-        boolean b2 = false;
+        boolean b2;
         if (this.mAdded != null) {
             int n = 0;
+            boolean b = false;
             while (true) {
-                b = b2;
+                b2 = b;
                 if (n >= this.mAdded.size()) {
                     break;
                 }
                 final Fragment fragment = this.mAdded.get(n);
-                boolean b3 = b2;
+                boolean b3 = b;
                 if (fragment != null) {
-                    b3 = b2;
+                    b3 = b;
                     if (fragment.performPrepareOptionsMenu(menu)) {
                         b3 = true;
                     }
                 }
                 ++n;
-                b2 = b3;
+                b = b3;
             }
         }
-        return b;
+        else {
+            b2 = false;
+        }
+        return b2;
     }
     
     public void dispatchReallyStop() {
@@ -504,6 +522,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     
     @Override
     public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
+        final int n = 0;
         final String string = s + "    ";
         if (this.mActive != null) {
             final int size = this.mActive.size();
@@ -577,11 +596,11 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                 if (size5 > 0) {
                     printWriter.print(s);
                     printWriter.println("Back Stack Indices:");
-                    for (int n = 0; n < size5; ++n) {
-                        final BackStackRecord backStackRecord2 = this.mBackStackIndices.get(n);
+                    for (int n2 = 0; n2 < size5; ++n2) {
+                        final BackStackRecord backStackRecord2 = this.mBackStackIndices.get(n2);
                         printWriter.print(s);
                         printWriter.print("  #");
-                        printWriter.print(n);
+                        printWriter.print(n2);
                         printWriter.print(": ");
                         printWriter.println(backStackRecord2);
                     }
@@ -598,11 +617,11 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                 if (size6 > 0) {
                     printWriter.print(s);
                     printWriter.println("Pending Actions:");
-                    for (int n2 = 0; n2 < size6; ++n2) {
-                        final Runnable runnable = this.mPendingActions.get(n2);
+                    for (int n3 = n; n3 < size6; ++n3) {
+                        final Runnable runnable = this.mPendingActions.get(n3);
                         printWriter.print(s);
                         printWriter.print("  #");
-                        printWriter.print(n2);
+                        printWriter.print(n3);
                         printWriter.print(": ");
                         printWriter.println(runnable);
                     }
@@ -683,17 +702,19 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                     if (this.mPendingActions == null || this.mPendingActions.size() == 0) {
                         // monitorexit(this)
                         if (this.mHavePendingDeferredStart) {
+                            int i = 0;
                             size = 0;
-                            int n;
-                            for (int i = 0; i < this.mActive.size(); ++i, size = n) {
+                            while (i < this.mActive.size()) {
                                 final Fragment fragment = this.mActive.get(i);
-                                n = size;
+                                int n = size;
                                 if (fragment != null) {
                                     n = size;
                                     if (fragment.mLoaderManager != null) {
                                         n = (size | (fragment.mLoaderManager.hasRunningLoaders() ? 1 : 0));
                                     }
                                 }
+                                ++i;
+                                size = n;
                             }
                             break Label_0263;
                         }
@@ -817,7 +838,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     @Override
-    public BackStackEntry getBackStackEntryAt(final int n) {
+    public FragmentManager$BackStackEntry getBackStackEntryAt(final int n) {
         return this.mBackStack.get(n);
     }
     
@@ -885,55 +906,53 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     
     Animation loadAnimation(final Fragment fragment, int n, final boolean b, final int n2) {
         final Animation onCreateAnimation = fragment.onCreateAnimation(n, b, fragment.mNextAnim);
+        Animation loadAnimation;
         if (onCreateAnimation != null) {
-            return onCreateAnimation;
+            loadAnimation = onCreateAnimation;
         }
-        if (fragment.mNextAnim != 0) {
-            final Animation loadAnimation = AnimationUtils.loadAnimation((Context)this.mActivity, fragment.mNextAnim);
-            if (loadAnimation != null) {
-                return loadAnimation;
-            }
-        }
-        if (n == 0) {
-            return null;
-        }
-        n = transitToStyleIndex(n, b);
-        if (n < 0) {
-            return null;
-        }
-        switch (n) {
-            default: {
-                n = n2;
-                if (n2 == 0) {
-                    n = n2;
-                    if (this.mActivity.getWindow() != null) {
-                        n = this.mActivity.getWindow().getAttributes().windowAnimations;
-                    }
-                }
-                if (n == 0) {
-                    return null;
-                }
+        else if (fragment.mNextAnim == 0 || (loadAnimation = AnimationUtils.loadAnimation((Context)this.mActivity, fragment.mNextAnim)) == null) {
+            if (n == 0) {
                 return null;
             }
-            case 1: {
-                return makeOpenCloseAnimation((Context)this.mActivity, 1.125f, 1.0f, 0.0f, 1.0f);
+            n = transitToStyleIndex(n, b);
+            if (n < 0) {
+                return null;
             }
-            case 2: {
-                return makeOpenCloseAnimation((Context)this.mActivity, 1.0f, 0.975f, 1.0f, 0.0f);
-            }
-            case 3: {
-                return makeOpenCloseAnimation((Context)this.mActivity, 0.975f, 1.0f, 0.0f, 1.0f);
-            }
-            case 4: {
-                return makeOpenCloseAnimation((Context)this.mActivity, 1.0f, 1.075f, 1.0f, 0.0f);
-            }
-            case 5: {
-                return makeFadeAnimation((Context)this.mActivity, 0.0f, 1.0f);
-            }
-            case 6: {
-                return makeFadeAnimation((Context)this.mActivity, 1.0f, 0.0f);
+            switch (n) {
+                default: {
+                    n = n2;
+                    if (n2 == 0) {
+                        n = n2;
+                        if (this.mActivity.getWindow() != null) {
+                            n = this.mActivity.getWindow().getAttributes().windowAnimations;
+                        }
+                    }
+                    if (n == 0) {
+                        return null;
+                    }
+                    return null;
+                }
+                case 1: {
+                    return makeOpenCloseAnimation((Context)this.mActivity, 1.125f, 1.0f, 0.0f, 1.0f);
+                }
+                case 2: {
+                    return makeOpenCloseAnimation((Context)this.mActivity, 1.0f, 0.975f, 1.0f, 0.0f);
+                }
+                case 3: {
+                    return makeOpenCloseAnimation((Context)this.mActivity, 0.975f, 1.0f, 0.0f, 1.0f);
+                }
+                case 4: {
+                    return makeOpenCloseAnimation((Context)this.mActivity, 1.0f, 1.075f, 1.0f, 0.0f);
+                }
+                case 5: {
+                    return makeFadeAnimation((Context)this.mActivity, 0.0f, 1.0f);
+                }
+                case 6: {
+                    return makeFadeAnimation((Context)this.mActivity, 1.0f, 0.0f);
+                }
             }
         }
+        return loadAnimation;
     }
     
     void makeActive(final Fragment fragment) {
@@ -978,17 +997,21 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         if (b || this.mCurState != mCurState) {
             this.mCurState = mCurState;
             if (this.mActive != null) {
+                int i = 0;
                 boolean b2 = false;
-                boolean b3;
-                for (int i = 0; i < this.mActive.size(); ++i, b2 = b3) {
+            Label_0116_Outer:
+                while (i < this.mActive.size()) {
                     final Fragment fragment = this.mActive.get(i);
-                    b3 = b2;
                     if (fragment != null) {
                         this.moveToState(fragment, mCurState, n, n2, false);
-                        b3 = b2;
                         if (fragment.mLoaderManager != null) {
-                            b3 = (b2 | fragment.mLoaderManager.hasRunningLoaders());
+                            b2 |= fragment.mLoaderManager.hasRunningLoaders();
                         }
+                    }
+                    while (true) {
+                        ++i;
+                        continue Label_0116_Outer;
+                        continue;
                     }
                 }
                 if (!b2) {
@@ -1120,7 +1143,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                 Log.v("FragmentManager", "moveto ACTIVITY_CREATED: " + fragment);
                             }
                             if (!fragment.mFromLayout) {
-                                ViewGroup mContainer = null;
+                                ViewGroup mContainer;
                                 if (fragment.mContainerId != 0) {
                                     final ViewGroup viewGroup = (ViewGroup)this.mContainer.findViewById(fragment.mContainerId);
                                     if ((mContainer = viewGroup) == null) {
@@ -1130,6 +1153,9 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                             mContainer = viewGroup;
                                         }
                                     }
+                                }
+                                else {
+                                    mContainer = null;
                                 }
                                 fragment.mContainer = mContainer;
                                 fragment.mView = fragment.performCreateView(fragment.getLayoutInflater(fragment.mSavedFragmentState), mContainer, fragment.mSavedFragmentState);
@@ -1212,30 +1238,16 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                         fragment.performDestroyView();
                         if (fragment.mView != null && fragment.mContainer != null) {
                             Animation loadAnimation2;
-                            final Animation animation = loadAnimation2 = null;
-                            if (this.mCurState > 0) {
-                                loadAnimation2 = animation;
-                                if (!this.mDestroyed) {
-                                    loadAnimation2 = this.loadAnimation(fragment, n2, false, n3);
-                                }
+                            if (this.mCurState > 0 && !this.mDestroyed) {
+                                loadAnimation2 = this.loadAnimation(fragment, n2, false, n3);
+                            }
+                            else {
+                                loadAnimation2 = null;
                             }
                             if (loadAnimation2 != null) {
                                 fragment.mAnimatingAway = fragment.mView;
                                 fragment.mStateAfterAnimating = n;
-                                loadAnimation2.setAnimationListener((Animation$AnimationListener)new Animation$AnimationListener() {
-                                    public void onAnimationEnd(final Animation animation) {
-                                        if (fragment.mAnimatingAway != null) {
-                                            fragment.mAnimatingAway = null;
-                                            FragmentManagerImpl.this.moveToState(fragment, fragment.mStateAfterAnimating, 0, 0, false);
-                                        }
-                                    }
-                                    
-                                    public void onAnimationRepeat(final Animation animation) {
-                                    }
-                                    
-                                    public void onAnimationStart(final Animation animation) {
-                                    }
-                                });
+                                loadAnimation2.setAnimationListener((Animation$AnimationListener)new FragmentManagerImpl$5(this, fragment));
                                 fragment.mView.startAnimation(loadAnimation2);
                             }
                             fragment.mContainer.removeView(fragment.mView);
@@ -1312,97 +1324,96 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         this.mStateSaved = false;
     }
     
-    public View onCreateView(String attributeValue, final Context context, final AttributeSet set) {
-        if ("fragment".equals(attributeValue)) {
-            attributeValue = set.getAttributeValue((String)null, "class");
-            final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, FragmentTag.Fragment);
-            String string;
-            if ((string = attributeValue) == null) {
-                string = obtainStyledAttributes.getString(0);
-            }
-            final int resourceId = obtainStyledAttributes.getResourceId(1, -1);
-            final String string2 = obtainStyledAttributes.getString(2);
-            obtainStyledAttributes.recycle();
-            if (Fragment.isSupportFragmentClass((Context)this.mActivity, string)) {
-                if (false) {
-                    throw new NullPointerException();
-                }
-                if (-1 == 0 && resourceId == -1 && string2 == null) {
-                    throw new IllegalArgumentException(set.getPositionDescription() + ": Must specify unique android:id, android:tag, or have a parent with an id for " + string);
-                }
-                Fragment fragmentById;
-                if (resourceId != -1) {
-                    fragmentById = this.findFragmentById(resourceId);
-                }
-                else {
-                    fragmentById = null;
-                }
-                Fragment fragmentByTag = fragmentById;
-                if (fragmentById == null) {
-                    fragmentByTag = fragmentById;
-                    if (string2 != null) {
-                        fragmentByTag = this.findFragmentByTag(string2);
-                    }
-                }
-                Fragment fragmentById2;
-                if ((fragmentById2 = fragmentByTag) == null) {
-                    fragmentById2 = fragmentByTag;
-                    if (-1 != 0) {
-                        fragmentById2 = this.findFragmentById(0);
-                    }
-                }
-                if (FragmentManagerImpl.DEBUG) {
-                    Log.v("FragmentManager", "onCreateView: id=0x" + Integer.toHexString(resourceId) + " fname=" + string + " existing=" + fragmentById2);
-                }
-                Fragment instantiate;
-                if (fragmentById2 == null) {
-                    instantiate = Fragment.instantiate(context, string);
-                    instantiate.mFromLayout = true;
-                    int mFragmentId;
-                    if (resourceId != 0) {
-                        mFragmentId = resourceId;
-                    }
-                    else {
-                        mFragmentId = 0;
-                    }
-                    instantiate.mFragmentId = mFragmentId;
-                    instantiate.mContainerId = 0;
-                    instantiate.mTag = string2;
-                    instantiate.mInLayout = true;
-                    instantiate.mFragmentManager = this;
-                    instantiate.onInflate(this.mActivity, set, instantiate.mSavedFragmentState);
-                    this.addFragment(instantiate, true);
-                }
-                else {
-                    if (fragmentById2.mInLayout) {
-                        throw new IllegalArgumentException(set.getPositionDescription() + ": Duplicate id 0x" + Integer.toHexString(resourceId) + ", tag " + string2 + ", or parent id 0x" + Integer.toHexString(0) + " with another fragment for " + string);
-                    }
-                    fragmentById2.mInLayout = true;
-                    instantiate = fragmentById2;
-                    if (!fragmentById2.mRetaining) {
-                        fragmentById2.onInflate(this.mActivity, set, fragmentById2.mSavedFragmentState);
-                        instantiate = fragmentById2;
-                    }
-                }
-                if (this.mCurState < 1 && instantiate.mFromLayout) {
-                    this.moveToState(instantiate, 1, 0, 0, false);
-                }
-                else {
-                    this.moveToState(instantiate);
-                }
-                if (instantiate.mView == null) {
-                    throw new IllegalStateException("Fragment " + string + " did not create a view.");
-                }
-                if (resourceId != 0) {
-                    instantiate.mView.setId(resourceId);
-                }
-                if (instantiate.mView.getTag() == null) {
-                    instantiate.mView.setTag((Object)string2);
-                }
-                return instantiate.mView;
+    public View onCreateView(final String s, final Context context, final AttributeSet set) {
+        if (!"fragment".equals(s)) {
+            return null;
+        }
+        String s2 = set.getAttributeValue((String)null, "class");
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, FragmentManagerImpl$FragmentTag.Fragment);
+        if (s2 == null) {
+            s2 = obtainStyledAttributes.getString(0);
+        }
+        final int resourceId = obtainStyledAttributes.getResourceId(1, -1);
+        final String string = obtainStyledAttributes.getString(2);
+        obtainStyledAttributes.recycle();
+        if (!Fragment.isSupportFragmentClass((Context)this.mActivity, s2)) {
+            return null;
+        }
+        if (false) {
+            throw new NullPointerException();
+        }
+        if (-1 == 0 && resourceId == -1 && string == null) {
+            throw new IllegalArgumentException(set.getPositionDescription() + ": Must specify unique android:id, android:tag, or have a parent with an id for " + s2);
+        }
+        Fragment fragmentById;
+        if (resourceId != -1) {
+            fragmentById = this.findFragmentById(resourceId);
+        }
+        else {
+            fragmentById = null;
+        }
+        Fragment fragmentByTag = fragmentById;
+        if (fragmentById == null) {
+            fragmentByTag = fragmentById;
+            if (string != null) {
+                fragmentByTag = this.findFragmentByTag(string);
             }
         }
-        return null;
+        Fragment fragmentById2;
+        if ((fragmentById2 = fragmentByTag) == null) {
+            fragmentById2 = fragmentByTag;
+            if (-1 != 0) {
+                fragmentById2 = this.findFragmentById(0);
+            }
+        }
+        if (FragmentManagerImpl.DEBUG) {
+            Log.v("FragmentManager", "onCreateView: id=0x" + Integer.toHexString(resourceId) + " fname=" + s2 + " existing=" + fragmentById2);
+        }
+        Fragment instantiate;
+        if (fragmentById2 == null) {
+            instantiate = Fragment.instantiate(context, s2);
+            instantiate.mFromLayout = true;
+            int mFragmentId;
+            if (resourceId != 0) {
+                mFragmentId = resourceId;
+            }
+            else {
+                mFragmentId = 0;
+            }
+            instantiate.mFragmentId = mFragmentId;
+            instantiate.mContainerId = 0;
+            instantiate.mTag = string;
+            instantiate.mInLayout = true;
+            instantiate.mFragmentManager = this;
+            instantiate.onInflate(this.mActivity, set, instantiate.mSavedFragmentState);
+            this.addFragment(instantiate, true);
+        }
+        else {
+            if (fragmentById2.mInLayout) {
+                throw new IllegalArgumentException(set.getPositionDescription() + ": Duplicate id 0x" + Integer.toHexString(resourceId) + ", tag " + string + ", or parent id 0x" + Integer.toHexString(0) + " with another fragment for " + s2);
+            }
+            fragmentById2.mInLayout = true;
+            if (!fragmentById2.mRetaining) {
+                fragmentById2.onInflate(this.mActivity, set, fragmentById2.mSavedFragmentState);
+            }
+            instantiate = fragmentById2;
+        }
+        if (this.mCurState < 1 && instantiate.mFromLayout) {
+            this.moveToState(instantiate, 1, 0, 0, false);
+        }
+        else {
+            this.moveToState(instantiate);
+        }
+        if (instantiate.mView == null) {
+            throw new IllegalStateException("Fragment " + s2 + " did not create a view.");
+        }
+        if (resourceId != 0) {
+            instantiate.mView.setId(resourceId);
+        }
+        if (instantiate.mView.getTag() == null) {
+            instantiate.mView.setTag((Object)string);
+        }
+        return instantiate.mView;
     }
     
     public void performPendingDeferredStart(final Fragment fragment) {
@@ -1418,12 +1429,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     
     @Override
     public void popBackStack() {
-        this.enqueueAction(new Runnable() {
-            @Override
-            public void run() {
-                FragmentManagerImpl.this.popBackStackState(FragmentManagerImpl.this.mActivity.mHandler, null, -1, 0);
-            }
-        }, false);
+        this.enqueueAction(new FragmentManagerImpl$2(this), false);
     }
     
     @Override
@@ -1431,22 +1437,12 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         if (n < 0) {
             throw new IllegalArgumentException("Bad id: " + n);
         }
-        this.enqueueAction(new Runnable() {
-            @Override
-            public void run() {
-                FragmentManagerImpl.this.popBackStackState(FragmentManagerImpl.this.mActivity.mHandler, null, n, n2);
-            }
-        }, false);
+        this.enqueueAction(new FragmentManagerImpl$4(this, n, n2), false);
     }
     
     @Override
     public void popBackStack(final String s, final int n) {
-        this.enqueueAction(new Runnable() {
-            @Override
-            public void run() {
-                FragmentManagerImpl.this.popBackStackState(FragmentManagerImpl.this.mActivity.mHandler, s, -1, n);
-            }
-        }, false);
+        this.enqueueAction(new FragmentManagerImpl$3(this, s, n), false);
     }
     
     @Override
@@ -1474,89 +1470,89 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     boolean popBackStackState(final Handler handler, final String s, int i, int n) {
-        if (this.mBackStack == null) {
-            return false;
-        }
-        if (s == null && i < 0 && (n & 0x1) == 0x0) {
-            i = this.mBackStack.size() - 1;
-            if (i < 0) {
-                return false;
-            }
-            final BackStackRecord backStackRecord = this.mBackStack.remove(i);
-            final SparseArray sparseArray = new SparseArray();
-            final SparseArray sparseArray2 = new SparseArray();
-            backStackRecord.calculateBackFragments((SparseArray<Fragment>)sparseArray, (SparseArray<Fragment>)sparseArray2);
-            backStackRecord.popFromBackStack(true, null, (SparseArray<Fragment>)sparseArray, (SparseArray<Fragment>)sparseArray2);
-            this.reportBackStackChanged();
-        }
-        else {
-            int n2 = -1;
-            if (s != null || i >= 0) {
-                int j;
-                for (j = this.mBackStack.size() - 1; j >= 0; --j) {
-                    final BackStackRecord backStackRecord2 = this.mBackStack.get(j);
-                    if ((s != null && s.equals(backStackRecord2.getName())) || (i >= 0 && i == backStackRecord2.mIndex)) {
-                        break;
-                    }
-                }
-                if (j < 0) {
+        if (this.mBackStack != null) {
+            if (s == null && i < 0 && (n & 0x1) == 0x0) {
+                i = this.mBackStack.size() - 1;
+                if (i < 0) {
                     return false;
                 }
-                n2 = j;
-                if ((n & 0x1) != 0x0) {
-                    n = j - 1;
-                    while (true) {
-                        n2 = n;
-                        if (n < 0) {
+                final BackStackRecord backStackRecord = this.mBackStack.remove(i);
+                final SparseArray sparseArray = new SparseArray();
+                final SparseArray sparseArray2 = new SparseArray();
+                backStackRecord.calculateBackFragments((SparseArray<Fragment>)sparseArray, (SparseArray<Fragment>)sparseArray2);
+                backStackRecord.popFromBackStack(true, null, (SparseArray<Fragment>)sparseArray, (SparseArray<Fragment>)sparseArray2);
+                this.reportBackStackChanged();
+            }
+            else {
+                int n2 = -1;
+                if (s != null || i >= 0) {
+                    int j;
+                    for (j = this.mBackStack.size() - 1; j >= 0; --j) {
+                        final BackStackRecord backStackRecord2 = this.mBackStack.get(j);
+                        if ((s != null && s.equals(backStackRecord2.getName())) || (i >= 0 && i == backStackRecord2.mIndex)) {
                             break;
                         }
-                        final BackStackRecord backStackRecord3 = this.mBackStack.get(n);
-                        if (s == null || !s.equals(backStackRecord3.getName())) {
+                    }
+                    if (j < 0) {
+                        return false;
+                    }
+                    n2 = j;
+                    if ((n & 0x1) != 0x0) {
+                        n = j - 1;
+                        while (true) {
                             n2 = n;
-                            if (i < 0) {
+                            if (n < 0) {
                                 break;
                             }
-                            n2 = n;
-                            if (i != backStackRecord3.mIndex) {
-                                break;
+                            final BackStackRecord backStackRecord3 = this.mBackStack.get(n);
+                            if (s == null || !s.equals(backStackRecord3.getName())) {
+                                n2 = n;
+                                if (i < 0) {
+                                    break;
+                                }
+                                n2 = n;
+                                if (i != backStackRecord3.mIndex) {
+                                    break;
+                                }
                             }
+                            --n;
                         }
-                        --n;
                     }
                 }
-            }
-            if (n2 == this.mBackStack.size() - 1) {
-                return false;
-            }
-            final ArrayList<BackStackRecord> list = new ArrayList<BackStackRecord>();
-            for (i = this.mBackStack.size() - 1; i > n2; --i) {
-                list.add(this.mBackStack.remove(i));
-            }
-            n = list.size() - 1;
-            final SparseArray sparseArray3 = new SparseArray();
-            final SparseArray sparseArray4 = new SparseArray();
-            for (i = 0; i <= n; ++i) {
-                list.get(i).calculateBackFragments((SparseArray<Fragment>)sparseArray3, (SparseArray<Fragment>)sparseArray4);
-            }
-            BackStackRecord.TransitionState popFromBackStack = null;
-            BackStackRecord backStackRecord4;
-            boolean b;
-            for (i = 0; i <= n; ++i) {
-                if (FragmentManagerImpl.DEBUG) {
-                    Log.v("FragmentManager", "Popping back stack state: " + list.get(i));
+                if (n2 == this.mBackStack.size() - 1) {
+                    return false;
                 }
-                backStackRecord4 = list.get(i);
-                if (i == n) {
-                    b = true;
+                final ArrayList<BackStackRecord> list = new ArrayList<BackStackRecord>();
+                for (i = this.mBackStack.size() - 1; i > n2; --i) {
+                    list.add(this.mBackStack.remove(i));
                 }
-                else {
-                    b = false;
+                n = list.size() - 1;
+                final SparseArray sparseArray3 = new SparseArray();
+                final SparseArray sparseArray4 = new SparseArray();
+                for (i = 0; i <= n; ++i) {
+                    list.get(i).calculateBackFragments((SparseArray<Fragment>)sparseArray3, (SparseArray<Fragment>)sparseArray4);
                 }
-                popFromBackStack = backStackRecord4.popFromBackStack(b, popFromBackStack, (SparseArray<Fragment>)sparseArray3, (SparseArray<Fragment>)sparseArray4);
+                BackStackRecord$TransitionState popFromBackStack = null;
+                BackStackRecord backStackRecord4;
+                boolean b;
+                for (i = 0; i <= n; ++i) {
+                    if (FragmentManagerImpl.DEBUG) {
+                        Log.v("FragmentManager", "Popping back stack state: " + list.get(i));
+                    }
+                    backStackRecord4 = list.get(i);
+                    if (i == n) {
+                        b = true;
+                    }
+                    else {
+                        b = false;
+                    }
+                    popFromBackStack = backStackRecord4.popFromBackStack(b, popFromBackStack, (SparseArray<Fragment>)sparseArray3, (SparseArray<Fragment>)sparseArray4);
+                }
+                this.reportBackStackChanged();
             }
-            this.reportBackStackChanged();
+            return true;
         }
-        return true;
+        return false;
     }
     
     @Override
@@ -1599,9 +1595,9 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     @Override
-    public void removeOnBackStackChangedListener(final OnBackStackChangedListener onBackStackChangedListener) {
+    public void removeOnBackStackChangedListener(final FragmentManager$OnBackStackChangedListener fragmentManager$OnBackStackChangedListener) {
         if (this.mBackStackChangeListeners != null) {
-            this.mBackStackChangeListeners.remove(onBackStackChangedListener);
+            this.mBackStackChangeListeners.remove(fragmentManager$OnBackStackChangedListener);
         }
     }
     
@@ -1760,6 +1756,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     Parcelable saveAllState() {
+        final BackStackState[] array = null;
         this.execPendingActions();
         if (FragmentManagerImpl.HONEYCOMB) {
             this.mStateSaved = true;
@@ -1767,14 +1764,14 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         if (this.mActive != null && this.mActive.size() > 0) {
             final int size = this.mActive.size();
             final FragmentState[] mActive = new FragmentState[size];
+            int i = 0;
             boolean b = false;
-            for (int i = 0; i < size; ++i) {
+            while (i < size) {
                 final Fragment fragment = this.mActive.get(i);
                 if (fragment != null) {
                     if (fragment.mIndex < 0) {
                         this.throwException(new IllegalStateException("Failure saving state: active " + fragment + " has cleared index: " + fragment.mIndex));
                     }
-                    final boolean b2 = true;
                     final FragmentState fragmentState = new FragmentState(fragment);
                     mActive[i] = fragmentState;
                     if (fragment.mState > 0 && fragmentState.mSavedFragmentState == null) {
@@ -1795,52 +1792,52 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                     else {
                         fragmentState.mSavedFragmentState = fragment.mSavedFragmentState;
                     }
-                    b = b2;
                     if (FragmentManagerImpl.DEBUG) {
                         Log.v("FragmentManager", "Saved state of " + fragment + ": " + fragmentState.mSavedFragmentState);
-                        b = b2;
                     }
+                    b = true;
                 }
+                ++i;
             }
             if (b) {
-                final int[] array = null;
-                final BackStackState[] array2 = null;
-                int[] mAdded = array;
-                if (this.mAdded != null) {
-                    final int size2 = this.mAdded.size();
-                    mAdded = array;
-                    if (size2 > 0) {
-                        final int[] array3 = new int[size2];
-                        int n = 0;
-                        while (true) {
-                            mAdded = array3;
-                            if (n >= size2) {
-                                break;
+                int[] mAdded = null;
+                Label_0561: {
+                    if (this.mAdded != null) {
+                        final int size2 = this.mAdded.size();
+                        if (size2 > 0) {
+                            final int[] array2 = new int[size2];
+                            int n = 0;
+                            while (true) {
+                                mAdded = array2;
+                                if (n >= size2) {
+                                    break Label_0561;
+                                }
+                                array2[n] = this.mAdded.get(n).mIndex;
+                                if (array2[n] < 0) {
+                                    this.throwException(new IllegalStateException("Failure saving state: active " + this.mAdded.get(n) + " has cleared index: " + array2[n]));
+                                }
+                                if (FragmentManagerImpl.DEBUG) {
+                                    Log.v("FragmentManager", "saveAllState: adding fragment #" + n + ": " + this.mAdded.get(n));
+                                }
+                                ++n;
                             }
-                            array3[n] = this.mAdded.get(n).mIndex;
-                            if (array3[n] < 0) {
-                                this.throwException(new IllegalStateException("Failure saving state: active " + this.mAdded.get(n) + " has cleared index: " + array3[n]));
-                            }
-                            if (FragmentManagerImpl.DEBUG) {
-                                Log.v("FragmentManager", "saveAllState: adding fragment #" + n + ": " + this.mAdded.get(n));
-                            }
-                            ++n;
                         }
                     }
+                    mAdded = null;
                 }
-                BackStackState[] mBackStack = array2;
+                BackStackState[] mBackStack = array;
                 if (this.mBackStack != null) {
                     final int size3 = this.mBackStack.size();
-                    mBackStack = array2;
+                    mBackStack = array;
                     if (size3 > 0) {
-                        final BackStackState[] array4 = new BackStackState[size3];
+                        final BackStackState[] array3 = new BackStackState[size3];
                         int n2 = 0;
                         while (true) {
-                            mBackStack = array4;
+                            mBackStack = array3;
                             if (n2 >= size3) {
                                 break;
                             }
-                            array4[n2] = new BackStackState(this, this.mBackStack.get(n2));
+                            array3[n2] = new BackStackState(this, this.mBackStack.get(n2));
                             if (FragmentManagerImpl.DEBUG) {
                                 Log.v("FragmentManager", "saveAllState: adding back stack #" + n2 + ": " + this.mBackStack.get(n2));
                             }
@@ -1863,14 +1860,17 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     Bundle saveFragmentBasicState(final Fragment fragment) {
-        Bundle mStateBundle = null;
         if (this.mStateBundle == null) {
             this.mStateBundle = new Bundle();
         }
         fragment.performSaveInstanceState(this.mStateBundle);
+        Bundle mStateBundle;
         if (!this.mStateBundle.isEmpty()) {
             mStateBundle = this.mStateBundle;
             this.mStateBundle = null;
+        }
+        else {
+            mStateBundle = null;
         }
         if (fragment.mView != null) {
             this.saveFragmentViewState(fragment);
@@ -1893,20 +1893,20 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     @Override
-    public Fragment.SavedState saveFragmentInstanceState(final Fragment fragment) {
-        final Fragment.SavedState savedState = null;
+    public Fragment$SavedState saveFragmentInstanceState(final Fragment fragment) {
+        final Fragment$SavedState fragment$SavedState = null;
         if (fragment.mIndex < 0) {
             this.throwException(new IllegalStateException("Fragment " + fragment + " is not currently in the FragmentManager"));
         }
-        Fragment.SavedState savedState2 = savedState;
+        Fragment$SavedState fragment$SavedState2 = fragment$SavedState;
         if (fragment.mState > 0) {
             final Bundle saveFragmentBasicState = this.saveFragmentBasicState(fragment);
-            savedState2 = savedState;
+            fragment$SavedState2 = fragment$SavedState;
             if (saveFragmentBasicState != null) {
-                savedState2 = new Fragment.SavedState(saveFragmentBasicState);
+                fragment$SavedState2 = new Fragment$SavedState(saveFragmentBasicState);
             }
         }
-        return savedState2;
+        return fragment$SavedState2;
     }
     
     void saveFragmentViewState(final Fragment fragment) {
@@ -2001,17 +2001,5 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         }
         sb.append("}}");
         return sb.toString();
-    }
-    
-    static class FragmentTag
-    {
-        public static final int[] Fragment;
-        public static final int Fragment_id = 1;
-        public static final int Fragment_name = 0;
-        public static final int Fragment_tag = 2;
-        
-        static {
-            Fragment = new int[] { 16842755, 16842960, 16842961 };
-        }
     }
 }

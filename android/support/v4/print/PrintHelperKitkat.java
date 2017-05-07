@@ -4,19 +4,8 @@
 
 package android.support.v4.print;
 
-import android.os.CancellationSignal$OnCancelListener;
-import android.os.AsyncTask;
-import android.print.PrintAttributes$Builder;
-import android.print.PrintDocumentAdapter$WriteResultCallback;
-import android.os.ParcelFileDescriptor;
-import android.print.PageRange;
-import android.print.PrintDocumentInfo;
-import android.print.PrintDocumentInfo$Builder;
-import android.os.Bundle;
-import android.print.PrintDocumentAdapter$LayoutResultCallback;
-import android.os.CancellationSignal;
-import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
+import android.print.PrintAttributes$Builder;
 import android.print.PrintAttributes$MediaSize;
 import android.print.PrintManager;
 import java.io.InputStream;
@@ -24,7 +13,6 @@ import java.io.IOException;
 import android.util.Log;
 import android.graphics.Rect;
 import android.graphics.BitmapFactory;
-import java.io.FileNotFoundException;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.graphics.Matrix;
@@ -69,15 +57,15 @@ class PrintHelperKitkat
             n5 = Math.min(n4, rectF.height() / n2);
         }
         matrix.postScale(n5, n5);
-        matrix.postTranslate((rectF.width() - n * n5) / 2.0f, (rectF.height() - n2 * n5) / 2.0f);
+        matrix.postTranslate((rectF.width() - n * n5) / 2.0f, (rectF.height() - n5 * n2) / 2.0f);
         return matrix;
     }
     
-    private Bitmap loadBitmap(final Uri uri, BitmapFactory$Options decodeStream) throws FileNotFoundException {
+    private Bitmap loadBitmap(final Uri uri, BitmapFactory$Options decodeStream) {
+        InputStream openInputStream = null;
         if (uri == null || this.mContext == null) {
             throw new IllegalArgumentException("bad argument to loadBitmap");
         }
-        InputStream openInputStream = null;
         try {
             final InputStream inputStream = openInputStream = this.mContext.getContentResolver().openInputStream(uri);
             decodeStream = (BitmapFactory$Options)BitmapFactory.decodeStream(inputStream, (Rect)null, decodeStream);
@@ -108,7 +96,8 @@ class PrintHelperKitkat
         }
     }
     
-    private Bitmap loadConstrainedBitmap(Uri uri, final int n) throws FileNotFoundException {
+    private Bitmap loadConstrainedBitmap(Uri uri, final int n) {
+        int inSampleSize = 1;
         if (n <= 0 || uri == null || this.mContext == null) {
             throw new IllegalArgumentException("bad argument to getScaledBitmap");
         }
@@ -118,9 +107,7 @@ class PrintHelperKitkat
         final int outWidth = bitmapFactory$Options.outWidth;
         final int outHeight = bitmapFactory$Options.outHeight;
         if (outWidth > 0 && outHeight > 0) {
-            int i;
-            int inSampleSize;
-            for (i = Math.max(outWidth, outHeight), inSampleSize = 1; i > n; i >>>= 1, inSampleSize <<= 1) {}
+            for (int i = Math.max(outWidth, outHeight); i > n; i >>>= 1, inSampleSize <<= 1) {}
             if (inSampleSize > 0 && Math.min(outWidth, outHeight) / inSampleSize > 0) {
                 final Object mLock = this.mLock;
                 final BitmapFactory$Options mDecodeOptions;
@@ -183,7 +170,7 @@ class PrintHelperKitkat
         return this.mScaleMode;
     }
     
-    public void printBitmap(final String s, final Bitmap bitmap, final OnPrintFinishCallback onPrintFinishCallback) {
+    public void printBitmap(final String s, final Bitmap bitmap, final PrintHelperKitkat$OnPrintFinishCallback printHelperKitkat$OnPrintFinishCallback) {
         if (bitmap == null) {
             return;
         }
@@ -193,406 +180,11 @@ class PrintHelperKitkat
         if (bitmap.getWidth() > bitmap.getHeight()) {
             mediaSize = PrintAttributes$MediaSize.UNKNOWN_LANDSCAPE;
         }
-        printManager.print(s, (PrintDocumentAdapter)new PrintDocumentAdapter() {
-            private PrintAttributes mAttributes;
-            
-            public void onFinish() {
-                if (onPrintFinishCallback != null) {
-                    onPrintFinishCallback.onFinish();
-                }
-            }
-            
-            public void onLayout(final PrintAttributes printAttributes, final PrintAttributes mAttributes, final CancellationSignal cancellationSignal, final PrintDocumentAdapter$LayoutResultCallback printDocumentAdapter$LayoutResultCallback, final Bundle bundle) {
-                boolean b = true;
-                this.mAttributes = mAttributes;
-                final PrintDocumentInfo build = new PrintDocumentInfo$Builder(s).setContentType(1).setPageCount(1).build();
-                if (mAttributes.equals((Object)printAttributes)) {
-                    b = false;
-                }
-                printDocumentAdapter$LayoutResultCallback.onLayoutFinished(build, b);
-            }
-            
-            public void onWrite(final PageRange[] p0, final ParcelFileDescriptor p1, final CancellationSignal p2, final PrintDocumentAdapter$WriteResultCallback p3) {
-                // 
-                // This method could not be decompiled.
-                // 
-                // Original Bytecode:
-                // 
-                //     0: new             Landroid/print/pdf/PrintedPdfDocument;
-                //     3: dup            
-                //     4: aload_0        
-                //     5: getfield        android/support/v4/print/PrintHelperKitkat$1.this$0:Landroid/support/v4/print/PrintHelperKitkat;
-                //     8: getfield        android/support/v4/print/PrintHelperKitkat.mContext:Landroid/content/Context;
-                //    11: aload_0        
-                //    12: getfield        android/support/v4/print/PrintHelperKitkat$1.mAttributes:Landroid/print/PrintAttributes;
-                //    15: invokespecial   android/print/pdf/PrintedPdfDocument.<init>:(Landroid/content/Context;Landroid/print/PrintAttributes;)V
-                //    18: astore_1       
-                //    19: aload_1        
-                //    20: iconst_1       
-                //    21: invokevirtual   android/print/pdf/PrintedPdfDocument.startPage:(I)Landroid/graphics/pdf/PdfDocument$Page;
-                //    24: astore_3       
-                //    25: new             Landroid/graphics/RectF;
-                //    28: dup            
-                //    29: aload_3        
-                //    30: invokevirtual   android/graphics/pdf/PdfDocument$Page.getInfo:()Landroid/graphics/pdf/PdfDocument$PageInfo;
-                //    33: invokevirtual   android/graphics/pdf/PdfDocument$PageInfo.getContentRect:()Landroid/graphics/Rect;
-                //    36: invokespecial   android/graphics/RectF.<init>:(Landroid/graphics/Rect;)V
-                //    39: astore          5
-                //    41: aload_0        
-                //    42: getfield        android/support/v4/print/PrintHelperKitkat$1.this$0:Landroid/support/v4/print/PrintHelperKitkat;
-                //    45: aload_0        
-                //    46: getfield        android/support/v4/print/PrintHelperKitkat$1.val$bitmap:Landroid/graphics/Bitmap;
-                //    49: invokevirtual   android/graphics/Bitmap.getWidth:()I
-                //    52: aload_0        
-                //    53: getfield        android/support/v4/print/PrintHelperKitkat$1.val$bitmap:Landroid/graphics/Bitmap;
-                //    56: invokevirtual   android/graphics/Bitmap.getHeight:()I
-                //    59: aload           5
-                //    61: aload_0        
-                //    62: getfield        android/support/v4/print/PrintHelperKitkat$1.val$fittingMode:I
-                //    65: invokestatic    android/support/v4/print/PrintHelperKitkat.access$000:(Landroid/support/v4/print/PrintHelperKitkat;IILandroid/graphics/RectF;I)Landroid/graphics/Matrix;
-                //    68: astore          5
-                //    70: aload_3        
-                //    71: invokevirtual   android/graphics/pdf/PdfDocument$Page.getCanvas:()Landroid/graphics/Canvas;
-                //    74: aload_0        
-                //    75: getfield        android/support/v4/print/PrintHelperKitkat$1.val$bitmap:Landroid/graphics/Bitmap;
-                //    78: aload           5
-                //    80: aconst_null    
-                //    81: invokevirtual   android/graphics/Canvas.drawBitmap:(Landroid/graphics/Bitmap;Landroid/graphics/Matrix;Landroid/graphics/Paint;)V
-                //    84: aload_1        
-                //    85: aload_3        
-                //    86: invokevirtual   android/print/pdf/PrintedPdfDocument.finishPage:(Landroid/graphics/pdf/PdfDocument$Page;)V
-                //    89: aload_1        
-                //    90: new             Ljava/io/FileOutputStream;
-                //    93: dup            
-                //    94: aload_2        
-                //    95: invokevirtual   android/os/ParcelFileDescriptor.getFileDescriptor:()Ljava/io/FileDescriptor;
-                //    98: invokespecial   java/io/FileOutputStream.<init>:(Ljava/io/FileDescriptor;)V
-                //   101: invokevirtual   android/print/pdf/PrintedPdfDocument.writeTo:(Ljava/io/OutputStream;)V
-                //   104: aload           4
-                //   106: iconst_1       
-                //   107: anewarray       Landroid/print/PageRange;
-                //   110: dup            
-                //   111: iconst_0       
-                //   112: getstatic       android/print/PageRange.ALL_PAGES:Landroid/print/PageRange;
-                //   115: aastore        
-                //   116: invokevirtual   android/print/PrintDocumentAdapter$WriteResultCallback.onWriteFinished:([Landroid/print/PageRange;)V
-                //   119: aload_1        
-                //   120: ifnull          127
-                //   123: aload_1        
-                //   124: invokevirtual   android/print/pdf/PrintedPdfDocument.close:()V
-                //   127: aload_2        
-                //   128: ifnull          135
-                //   131: aload_2        
-                //   132: invokevirtual   android/os/ParcelFileDescriptor.close:()V
-                //   135: return         
-                //   136: astore_3       
-                //   137: ldc             "PrintHelperKitkat"
-                //   139: ldc             "Error writing printed content"
-                //   141: aload_3        
-                //   142: invokestatic    android/util/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-                //   145: pop            
-                //   146: aload           4
-                //   148: aconst_null    
-                //   149: invokevirtual   android/print/PrintDocumentAdapter$WriteResultCallback.onWriteFailed:(Ljava/lang/CharSequence;)V
-                //   152: goto            119
-                //   155: astore_3       
-                //   156: aload_1        
-                //   157: ifnull          164
-                //   160: aload_1        
-                //   161: invokevirtual   android/print/pdf/PrintedPdfDocument.close:()V
-                //   164: aload_2        
-                //   165: ifnull          172
-                //   168: aload_2        
-                //   169: invokevirtual   android/os/ParcelFileDescriptor.close:()V
-                //   172: aload_3        
-                //   173: athrow         
-                //   174: astore_1       
-                //   175: return         
-                //   176: astore_1       
-                //   177: goto            172
-                //    Exceptions:
-                //  Try           Handler
-                //  Start  End    Start  End    Type                 
-                //  -----  -----  -----  -----  ---------------------
-                //  19     89     155    174    Any
-                //  89     119    136    155    Ljava/io/IOException;
-                //  89     119    155    174    Any
-                //  131    135    174    176    Ljava/io/IOException;
-                //  137    152    155    174    Any
-                //  168    172    176    180    Ljava/io/IOException;
-                // 
-                // The error that occurred was:
-                // 
-                // java.lang.IndexOutOfBoundsException: Index: 92, Size: 92
-                //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
-                //     at java.util.ArrayList.get(ArrayList.java:429)
-                //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
-                //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:113)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformCall(AstMethodBodyBuilder.java:1163)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformByteCode(AstMethodBodyBuilder.java:1010)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformExpression(AstMethodBodyBuilder.java:540)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformByteCode(AstMethodBodyBuilder.java:554)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformExpression(AstMethodBodyBuilder.java:540)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformNode(AstMethodBodyBuilder.java:392)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformBlock(AstMethodBodyBuilder.java:333)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:294)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-                //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-                //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-                //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-                //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-                //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-                // 
-                throw new IllegalStateException("An error occurred while decompiling this method.");
-            }
-        }, new PrintAttributes$Builder().setMediaSize(mediaSize).setColorMode(this.mColorMode).build());
+        printManager.print(s, (PrintDocumentAdapter)new PrintHelperKitkat$1(this, s, bitmap, mScaleMode, printHelperKitkat$OnPrintFinishCallback), new PrintAttributes$Builder().setMediaSize(mediaSize).setColorMode(this.mColorMode).build());
     }
     
-    public void printBitmap(final String s, final Uri uri, final OnPrintFinishCallback onPrintFinishCallback) throws FileNotFoundException {
-        final PrintDocumentAdapter printDocumentAdapter = new PrintDocumentAdapter() {
-            AsyncTask<Uri, Boolean, Bitmap> loadBitmap;
-            private PrintAttributes mAttributes;
-            Bitmap mBitmap = null;
-            final /* synthetic */ int val$fittingMode = PrintHelperKitkat.this.mScaleMode;
-            
-            private void cancelLoad() {
-                synchronized (PrintHelperKitkat.this.mLock) {
-                    if (PrintHelperKitkat.this.mDecodeOptions != null) {
-                        PrintHelperKitkat.this.mDecodeOptions.requestCancelDecode();
-                        PrintHelperKitkat.this.mDecodeOptions = null;
-                    }
-                }
-            }
-            
-            public void onFinish() {
-                super.onFinish();
-                this.cancelLoad();
-                this.loadBitmap.cancel(true);
-                if (onPrintFinishCallback != null) {
-                    onPrintFinishCallback.onFinish();
-                }
-            }
-            
-            public void onLayout(final PrintAttributes printAttributes, final PrintAttributes printAttributes2, final CancellationSignal cancellationSignal, final PrintDocumentAdapter$LayoutResultCallback printDocumentAdapter$LayoutResultCallback, final Bundle bundle) {
-                boolean b = true;
-                if (cancellationSignal.isCanceled()) {
-                    printDocumentAdapter$LayoutResultCallback.onLayoutCancelled();
-                    this.mAttributes = printAttributes2;
-                    return;
-                }
-                if (this.mBitmap != null) {
-                    final PrintDocumentInfo build = new PrintDocumentInfo$Builder(s).setContentType(1).setPageCount(1).build();
-                    if (printAttributes2.equals((Object)printAttributes)) {
-                        b = false;
-                    }
-                    printDocumentAdapter$LayoutResultCallback.onLayoutFinished(build, b);
-                    return;
-                }
-                (this.loadBitmap = new AsyncTask<Uri, Boolean, Bitmap>() {
-                    protected Bitmap doInBackground(final Uri... array) {
-                        try {
-                            return PrintHelperKitkat.this.loadConstrainedBitmap(uri, 3500);
-                        }
-                        catch (FileNotFoundException ex) {
-                            return null;
-                        }
-                    }
-                    
-                    protected void onCancelled(final Bitmap bitmap) {
-                        printDocumentAdapter$LayoutResultCallback.onLayoutCancelled();
-                    }
-                    
-                    protected void onPostExecute(final Bitmap mBitmap) {
-                        boolean b = true;
-                        super.onPostExecute((Object)mBitmap);
-                        PrintDocumentAdapter.this.mBitmap = mBitmap;
-                        if (mBitmap != null) {
-                            final PrintDocumentInfo build = new PrintDocumentInfo$Builder(s).setContentType(1).setPageCount(1).build();
-                            if (printAttributes2.equals((Object)printAttributes)) {
-                                b = false;
-                            }
-                            printDocumentAdapter$LayoutResultCallback.onLayoutFinished(build, b);
-                            return;
-                        }
-                        printDocumentAdapter$LayoutResultCallback.onLayoutFailed((CharSequence)null);
-                    }
-                    
-                    protected void onPreExecute() {
-                        cancellationSignal.setOnCancelListener((CancellationSignal$OnCancelListener)new CancellationSignal$OnCancelListener() {
-                            public void onCancel() {
-                                PrintDocumentAdapter.this.cancelLoad();
-                                AsyncTask.this.cancel(false);
-                            }
-                        });
-                    }
-                }).execute((Object[])new Uri[0]);
-                this.mAttributes = printAttributes2;
-            }
-            
-            public void onWrite(final PageRange[] p0, final ParcelFileDescriptor p1, final CancellationSignal p2, final PrintDocumentAdapter$WriteResultCallback p3) {
-                // 
-                // This method could not be decompiled.
-                // 
-                // Original Bytecode:
-                // 
-                //     0: new             Landroid/print/pdf/PrintedPdfDocument;
-                //     3: dup            
-                //     4: aload_0        
-                //     5: getfield        android/support/v4/print/PrintHelperKitkat$2.this$0:Landroid/support/v4/print/PrintHelperKitkat;
-                //     8: getfield        android/support/v4/print/PrintHelperKitkat.mContext:Landroid/content/Context;
-                //    11: aload_0        
-                //    12: getfield        android/support/v4/print/PrintHelperKitkat$2.mAttributes:Landroid/print/PrintAttributes;
-                //    15: invokespecial   android/print/pdf/PrintedPdfDocument.<init>:(Landroid/content/Context;Landroid/print/PrintAttributes;)V
-                //    18: astore_1       
-                //    19: aload_1        
-                //    20: iconst_1       
-                //    21: invokevirtual   android/print/pdf/PrintedPdfDocument.startPage:(I)Landroid/graphics/pdf/PdfDocument$Page;
-                //    24: astore_3       
-                //    25: new             Landroid/graphics/RectF;
-                //    28: dup            
-                //    29: aload_3        
-                //    30: invokevirtual   android/graphics/pdf/PdfDocument$Page.getInfo:()Landroid/graphics/pdf/PdfDocument$PageInfo;
-                //    33: invokevirtual   android/graphics/pdf/PdfDocument$PageInfo.getContentRect:()Landroid/graphics/Rect;
-                //    36: invokespecial   android/graphics/RectF.<init>:(Landroid/graphics/Rect;)V
-                //    39: astore          5
-                //    41: aload_0        
-                //    42: getfield        android/support/v4/print/PrintHelperKitkat$2.this$0:Landroid/support/v4/print/PrintHelperKitkat;
-                //    45: aload_0        
-                //    46: getfield        android/support/v4/print/PrintHelperKitkat$2.mBitmap:Landroid/graphics/Bitmap;
-                //    49: invokevirtual   android/graphics/Bitmap.getWidth:()I
-                //    52: aload_0        
-                //    53: getfield        android/support/v4/print/PrintHelperKitkat$2.mBitmap:Landroid/graphics/Bitmap;
-                //    56: invokevirtual   android/graphics/Bitmap.getHeight:()I
-                //    59: aload           5
-                //    61: aload_0        
-                //    62: getfield        android/support/v4/print/PrintHelperKitkat$2.val$fittingMode:I
-                //    65: invokestatic    android/support/v4/print/PrintHelperKitkat.access$000:(Landroid/support/v4/print/PrintHelperKitkat;IILandroid/graphics/RectF;I)Landroid/graphics/Matrix;
-                //    68: astore          5
-                //    70: aload_3        
-                //    71: invokevirtual   android/graphics/pdf/PdfDocument$Page.getCanvas:()Landroid/graphics/Canvas;
-                //    74: aload_0        
-                //    75: getfield        android/support/v4/print/PrintHelperKitkat$2.mBitmap:Landroid/graphics/Bitmap;
-                //    78: aload           5
-                //    80: aconst_null    
-                //    81: invokevirtual   android/graphics/Canvas.drawBitmap:(Landroid/graphics/Bitmap;Landroid/graphics/Matrix;Landroid/graphics/Paint;)V
-                //    84: aload_1        
-                //    85: aload_3        
-                //    86: invokevirtual   android/print/pdf/PrintedPdfDocument.finishPage:(Landroid/graphics/pdf/PdfDocument$Page;)V
-                //    89: aload_1        
-                //    90: new             Ljava/io/FileOutputStream;
-                //    93: dup            
-                //    94: aload_2        
-                //    95: invokevirtual   android/os/ParcelFileDescriptor.getFileDescriptor:()Ljava/io/FileDescriptor;
-                //    98: invokespecial   java/io/FileOutputStream.<init>:(Ljava/io/FileDescriptor;)V
-                //   101: invokevirtual   android/print/pdf/PrintedPdfDocument.writeTo:(Ljava/io/OutputStream;)V
-                //   104: aload           4
-                //   106: iconst_1       
-                //   107: anewarray       Landroid/print/PageRange;
-                //   110: dup            
-                //   111: iconst_0       
-                //   112: getstatic       android/print/PageRange.ALL_PAGES:Landroid/print/PageRange;
-                //   115: aastore        
-                //   116: invokevirtual   android/print/PrintDocumentAdapter$WriteResultCallback.onWriteFinished:([Landroid/print/PageRange;)V
-                //   119: aload_1        
-                //   120: ifnull          127
-                //   123: aload_1        
-                //   124: invokevirtual   android/print/pdf/PrintedPdfDocument.close:()V
-                //   127: aload_2        
-                //   128: ifnull          135
-                //   131: aload_2        
-                //   132: invokevirtual   android/os/ParcelFileDescriptor.close:()V
-                //   135: return         
-                //   136: astore_3       
-                //   137: ldc             "PrintHelperKitkat"
-                //   139: ldc             "Error writing printed content"
-                //   141: aload_3        
-                //   142: invokestatic    android/util/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-                //   145: pop            
-                //   146: aload           4
-                //   148: aconst_null    
-                //   149: invokevirtual   android/print/PrintDocumentAdapter$WriteResultCallback.onWriteFailed:(Ljava/lang/CharSequence;)V
-                //   152: goto            119
-                //   155: astore_3       
-                //   156: aload_1        
-                //   157: ifnull          164
-                //   160: aload_1        
-                //   161: invokevirtual   android/print/pdf/PrintedPdfDocument.close:()V
-                //   164: aload_2        
-                //   165: ifnull          172
-                //   168: aload_2        
-                //   169: invokevirtual   android/os/ParcelFileDescriptor.close:()V
-                //   172: aload_3        
-                //   173: athrow         
-                //   174: astore_1       
-                //   175: return         
-                //   176: astore_1       
-                //   177: goto            172
-                //    Exceptions:
-                //  Try           Handler
-                //  Start  End    Start  End    Type                 
-                //  -----  -----  -----  -----  ---------------------
-                //  19     89     155    174    Any
-                //  89     119    136    155    Ljava/io/IOException;
-                //  89     119    155    174    Any
-                //  131    135    174    176    Ljava/io/IOException;
-                //  137    152    155    174    Any
-                //  168    172    176    180    Ljava/io/IOException;
-                // 
-                // The error that occurred was:
-                // 
-                // java.lang.IndexOutOfBoundsException: Index: 92, Size: 92
-                //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
-                //     at java.util.ArrayList.get(ArrayList.java:429)
-                //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
-                //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:113)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformCall(AstMethodBodyBuilder.java:1163)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformByteCode(AstMethodBodyBuilder.java:1010)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformExpression(AstMethodBodyBuilder.java:540)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformByteCode(AstMethodBodyBuilder.java:554)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformExpression(AstMethodBodyBuilder.java:540)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformNode(AstMethodBodyBuilder.java:392)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.transformBlock(AstMethodBodyBuilder.java:333)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:294)
-                //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-                //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-                //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-                //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-                //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-                //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-                //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-                // 
-                throw new IllegalStateException("An error occurred while decompiling this method.");
-            }
-        };
+    public void printBitmap(final String s, final Uri uri, final PrintHelperKitkat$OnPrintFinishCallback printHelperKitkat$OnPrintFinishCallback) {
+        final PrintHelperKitkat$2 printHelperKitkat$2 = new PrintHelperKitkat$2(this, s, uri, printHelperKitkat$OnPrintFinishCallback, this.mScaleMode);
         final PrintManager printManager = (PrintManager)this.mContext.getSystemService("print");
         final PrintAttributes$Builder printAttributes$Builder = new PrintAttributes$Builder();
         printAttributes$Builder.setColorMode(this.mColorMode);
@@ -602,7 +194,7 @@ class PrintHelperKitkat
         else if (this.mOrientation == 2) {
             printAttributes$Builder.setMediaSize(PrintAttributes$MediaSize.UNKNOWN_PORTRAIT);
         }
-        printManager.print(s, (PrintDocumentAdapter)printDocumentAdapter, printAttributes$Builder.build());
+        printManager.print(s, (PrintDocumentAdapter)printHelperKitkat$2, printAttributes$Builder.build());
     }
     
     public void setColorMode(final int mColorMode) {
@@ -615,10 +207,5 @@ class PrintHelperKitkat
     
     public void setScaleMode(final int mScaleMode) {
         this.mScaleMode = mScaleMode;
-    }
-    
-    public interface OnPrintFinishCallback
-    {
-        void onFinish();
     }
 }

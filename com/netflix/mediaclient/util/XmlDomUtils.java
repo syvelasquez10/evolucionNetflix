@@ -9,9 +9,6 @@ import org.w3c.dom.Node;
 import java.util.ArrayList;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import java.io.Reader;
 import java.io.StringReader;
@@ -21,7 +18,7 @@ import org.w3c.dom.Document;
 
 public final class XmlDomUtils
 {
-    public static Document createDocument(final String s) throws IOException, ParserConfigurationException, SAXException {
+    public static Document createDocument(final String s) {
         final DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         final InputSource inputSource = new InputSource();
         inputSource.setCharacterStream(new StringReader(s));
@@ -44,11 +41,10 @@ public final class XmlDomUtils
     }
     
     public static int getChildElementCountByTagName(final Element element, final String s) {
-        final NodeList childNodes = element.getChildNodes();
-        final int length = childNodes.getLength();
         int n = 0;
+        final NodeList childNodes = element.getChildNodes();
         int n2;
-        for (int i = 0; i < length; ++i, n = n2) {
+        for (int length = childNodes.getLength(), i = 0; i < length; ++i, n = n2) {
             n2 = n;
             if (childNodes.item(i).getNodeType() == 1) {
                 n2 = n;

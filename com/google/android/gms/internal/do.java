@@ -4,7 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import java.lang.ref.WeakReference;
 import android.media.MediaPlayer;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -26,7 +25,7 @@ public final class do extends FrameLayout implements MediaPlayer$OnCompletionLis
 {
     private final gv md;
     private final MediaController rX;
-    private final a rY;
+    private final do$a rY;
     private final VideoView rZ;
     private long sa;
     private String sb;
@@ -36,7 +35,7 @@ public final class do extends FrameLayout implements MediaPlayer$OnCompletionLis
         this.md = md;
         this.addView((View)(this.rZ = new VideoView(context)), (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1, 17));
         this.rX = new MediaController(context);
-        (this.rY = new a(this)).ck();
+        (this.rY = new do$a(this)).ck();
         this.rZ.setOnCompletionListener((MediaPlayer$OnCompletionListener)this);
         this.rZ.setOnPreparedListener((MediaPlayer$OnPreparedListener)this);
         this.rZ.setOnErrorListener((MediaPlayer$OnErrorListener)this);
@@ -141,36 +140,5 @@ public final class do extends FrameLayout implements MediaPlayer$OnCompletionLis
     
     public void seekTo(final int n) {
         this.rZ.seekTo(n);
-    }
-    
-    private static final class a
-    {
-        private final Runnable mk;
-        private volatile boolean sc;
-        
-        public a(final do do1) {
-            this.sc = false;
-            this.mk = new Runnable() {
-                private final WeakReference<do> sd = new WeakReference<do>(do1);
-                
-                @Override
-                public void run() {
-                    final do do1 = this.sd.get();
-                    if (!a.this.sc && do1 != null) {
-                        do1.cj();
-                        a.this.ck();
-                    }
-                }
-            };
-        }
-        
-        public void cancel() {
-            this.sc = true;
-            gr.wC.removeCallbacks(this.mk);
-        }
-        
-        public void ck() {
-            gr.wC.postDelayed(this.mk, 250L);
-        }
     }
 }

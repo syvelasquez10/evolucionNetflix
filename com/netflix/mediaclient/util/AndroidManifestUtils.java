@@ -14,15 +14,18 @@ public final class AndroidManifestUtils
     
     public static String getVersion(final Context context) {
         final String versionName = getVersionName(context);
+        String s;
         if (versionName == null) {
-            return "";
+            s = "";
         }
-        final int index = versionName.indexOf(" ");
-        String substring = versionName;
-        if (index > 0) {
-            substring = versionName.substring(0, index);
+        else {
+            final int index = versionName.indexOf(" ");
+            s = versionName;
+            if (index > 0) {
+                return versionName.substring(0, index);
+            }
         }
-        return substring;
+        return s;
     }
     
     public static int getVersionCode(final Context context) {

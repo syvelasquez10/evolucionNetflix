@@ -8,10 +8,8 @@ import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
-import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
@@ -54,18 +52,18 @@ public class KidsDetailsViewGroup extends LinearLayout
     }
     
     private void init() {
-        LayoutInflater.from(this.getContext()).inflate(2130903099, (ViewGroup)this, true);
+        LayoutInflater.from(this.getContext()).inflate(2130903100, (ViewGroup)this, true);
         this.setOrientation(1);
-        this.setBackgroundColor(this.getContext().getResources().getColor(2131296423));
-        this.imgGroup = (ViewGroup)this.findViewById(2131165403);
+        this.setBackgroundColor(this.getContext().getResources().getColor(2131296426));
+        this.imgGroup = (ViewGroup)this.findViewById(2131165402);
         this.imgGroup.getLayoutParams().height = DeviceUtils.getScreenWidthInPixels(this.getContext());
-        (this.img = (AdvancedImageView)this.findViewById(2131165405)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361962));
-        this.imgOverlay = this.findViewById(2131165406);
-        this.imgTitle = (TextView)this.findViewById(2131165407);
-        this.infoGroup = (ViewGroup)this.findViewById(2131165408);
-        this.rating = (TextView)this.findViewById(2131165409);
-        this.info = (TextView)this.findViewById(2131165410);
-        this.synopsis = (TextView)this.findViewById(2131165411);
+        (this.img = (AdvancedImageView)this.findViewById(2131165404)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361964));
+        this.imgOverlay = this.findViewById(2131165405);
+        this.imgTitle = (TextView)this.findViewById(2131165406);
+        this.infoGroup = (ViewGroup)this.findViewById(2131165407);
+        this.rating = (TextView)this.findViewById(2131165408);
+        this.info = (TextView)this.findViewById(2131165409);
+        this.synopsis = (TextView)this.findViewById(2131165410);
     }
     
     private static void setTextAndVisibility(final TextView textView, final String text) {
@@ -87,13 +85,8 @@ public class KidsDetailsViewGroup extends LinearLayout
         this.imgTitle.setVisibility(8);
         this.rating.setText((CharSequence)videoDetails.getCertification());
         setTextAndVisibility(this.synopsis, videoDetails.getSynopsis());
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, videoDetails.getSquareUrl(), IClientLogging.AssetType.boxArt, videoDetails.getTitle(), false, true);
-        this.img.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                final NetflixActivity netflixActivity = (NetflixActivity)KidsDetailsViewGroup.this.getContext();
-                PlaybackLauncher.startPlaybackAfterPIN(netflixActivity, videoDetails.getPlayable(), ((PlayContextProvider)netflixActivity).getPlayContext());
-            }
-        });
+        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, videoDetails.getSquareUrl(), IClientLogging$AssetType.boxArt, videoDetails.getTitle(), false, true);
+        this.img.setOnClickListener((View$OnClickListener)new KidsDetailsViewGroup$1(this, videoDetails));
     }
     
     public void updateDetails(final KidsCharacterDetails kidsCharacterDetails) {
@@ -103,13 +96,8 @@ public class KidsDetailsViewGroup extends LinearLayout
         this.imgTitle.setVisibility(0);
         this.imgTitle.setText((CharSequence)kidsCharacterDetails.getPlayable().getPlayableTitle());
         setTextAndVisibility(this.synopsis, kidsCharacterDetails.getCharacterSynopsis());
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, kidsCharacterDetails.getWatchNextDispUrl(), IClientLogging.AssetType.boxArt, kidsCharacterDetails.getTitle(), false, true);
-        this.img.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                final NetflixActivity netflixActivity = (NetflixActivity)KidsDetailsViewGroup.this.getContext();
-                PlaybackLauncher.startPlaybackAfterPIN(netflixActivity, kidsCharacterDetails.getPlayable(), ((PlayContextProvider)netflixActivity).getPlayContext());
-            }
-        });
+        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, kidsCharacterDetails.getWatchNextDispUrl(), IClientLogging$AssetType.boxArt, kidsCharacterDetails.getTitle(), false, true);
+        this.img.setOnClickListener((View$OnClickListener)new KidsDetailsViewGroup$2(this, kidsCharacterDetails));
     }
     
     public void updateDetails(final MovieDetails movieDetails) {

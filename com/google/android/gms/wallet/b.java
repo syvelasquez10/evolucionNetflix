@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wallet;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import java.util.ArrayList;
 import com.google.android.gms.common.internal.safeparcel.a;
 import java.util.List;
@@ -53,7 +54,7 @@ public class b implements Parcelable$Creator<Cart>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new Cart(g, o2, o, c2);
     }

@@ -4,38 +4,35 @@
 
 package com.netflix.mediaclient.ui.profiles;
 
-import java.util.List;
 import android.os.Parcelable;
 import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import android.content.DialogInterface;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.util.DeviceUtils;
-import android.widget.TextView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import com.netflix.mediaclient.util.StringUtils;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.android.widget.AlertDialogFactory;
-import com.netflix.mediaclient.android.app.CommonStatus;
+import android.widget.TextView;
+import android.text.TextWatcher;
 import android.view.View$OnClickListener;
 import android.content.Intent;
 import java.util.Iterator;
+import com.netflix.mediaclient.Log;
 import android.widget.Toast;
-import android.os.Handler;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
-import android.app.Activity;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import android.os.Handler;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
+import android.app.Activity;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.EditText;
@@ -45,7 +42,7 @@ import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import android.view.View;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
@@ -60,7 +57,7 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     private static final String SAVE_BUNDLE_NAME = "bundle_name";
     private static final int SELECT_AVATAR_ACTIVITY_RESULT = 1;
     private static final String TAG = "ProfileDetailsActivity";
-    private final ErrorWrapper.Callback errorCallback;
+    private final ErrorWrapper$Callback errorCallback;
     private View mCancelButton;
     private View mContentView;
     private AvatarInfo mCurrentAvatar;
@@ -86,56 +83,24 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     private ServiceManager mServiceManager;
     
     public ProfileDetailsActivity() {
-        this.errorCallback = new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-            }
-        };
-        this.mErrorHandlerCallback = new SimpleManagerCallback() {
-            @Override
-            public void onProfileListUpdateStatus(final Status status) {
-                if (status.isSucces()) {
-                    Log.v("ProfileDetailsActivity", "Operation successful!");
-                    if (ProfileDetailsActivity.this.mProfileDeletionWasTriggered) {
-                        UserActionLogUtils.reportDeleteProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.success, IClientLogging.ModalView.profilesGate, null);
-                        return;
-                    }
-                    if (ProfileDetailsActivity.this.mNewProfileCreation) {
-                        UserActionLogUtils.reportAddProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.success, IClientLogging.ModalView.profilesGate, null, ProfileDetailsActivity.this.getProfileForLogging());
-                        return;
-                    }
-                    UserActionLogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.success, IClientLogging.ModalView.profilesGate, null, ProfileDetailsActivity.this.getProfileForLogging());
-                }
-                else {
-                    final String access$1100 = ProfileDetailsActivity.this.handleUserAgentErrors(ProfileDetailsActivity.this, status);
-                    if (ProfileDetailsActivity.this.mProfileDeletionWasTriggered) {
-                        UserActionLogUtils.reportDeleteProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, IClientLogging.ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, access$1100, ActionOnUIError.displayedError));
-                        return;
-                    }
-                    if (ProfileDetailsActivity.this.mNewProfileCreation) {
-                        UserActionLogUtils.reportAddProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, IClientLogging.ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, access$1100, ActionOnUIError.displayedError), ProfileDetailsActivity.this.getProfileForLogging());
-                        return;
-                    }
-                    UserActionLogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, IClientLogging.ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, access$1100, ActionOnUIError.displayedError), ProfileDetailsActivity.this.getProfileForLogging());
-                }
-            }
-        };
+        this.errorCallback = new ProfileDetailsActivity$2(this);
+        this.mErrorHandlerCallback = new ProfileDetailsActivity$3(this);
     }
     
     private void cancel() {
         if (this.mNewProfileCreation) {
-            UserActionLogUtils.reportAddProfileActionEnded((Context)this, IClientLogging.CompletionReason.canceled, IClientLogging.ModalView.profilesGate, null, this.getProfileForLogging());
+            UserActionLogUtils.reportAddProfileActionEnded((Context)this, IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.profilesGate, null, this.getProfileForLogging());
         }
         else {
-            UserActionLogUtils.reportEditProfileActionEnded((Context)this, IClientLogging.CompletionReason.canceled, IClientLogging.ModalView.profilesGate, null, this.getProfileForLogging());
+            UserActionLogUtils.reportEditProfileActionEnded((Context)this, IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.profilesGate, null, this.getProfileForLogging());
         }
         if (!this.mProfileChangeRequestWasSent) {
             int n;
             if (this.mNewProfileCreation) {
-                n = 2131493351;
+                n = 2131493294;
             }
             else {
-                n = 2131493352;
+                n = 2131493295;
             }
             Toast.makeText((Context)this, n, 1).show();
         }
@@ -154,20 +119,20 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         }
         final String string = this.mName.getText().toString();
         if (string.contains("\"") || string.contains("<") || string.contains(">")) {
-            this.mName.setError((CharSequence)this.getString(2131493361));
+            this.mName.setError((CharSequence)this.getString(2131493303));
             return true;
         }
         for (final UserProfile userProfile : this.mServiceManager.getAllProfiles()) {
-            if (userProfile.getProfileName().equalsIgnoreCase(string) && !userProfile.getProfileGuid().equals(this.mInputProfileId)) {
-                this.mName.setError((CharSequence)this.getString(2131493358));
+            if (string.equalsIgnoreCase(userProfile.getProfileName()) && !userProfile.getProfileGuid().equals(this.mInputProfileId)) {
+                this.mName.setError((CharSequence)this.getString(2131493300));
                 return true;
             }
         }
         return false;
     }
     
-    private UserActionLogging.Profile getProfileForLogging() {
-        return new UserActionLogging.Profile(this.mInputProfileId, this.mName.getText().toString(), null, this.mKidsCheckBox.isChecked());
+    private UserActionLogging$Profile getProfileForLogging() {
+        return new UserActionLogging$Profile(this.mInputProfileId, this.mName.getText().toString(), null, this.mKidsCheckBox.isChecked());
     }
     
     public static Intent getStartIntent(final Context context, final String s) {
@@ -179,110 +144,22 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     }
     
     private void initUI() {
-        this.setContentView(2130903163);
+        this.setContentView(2130903164);
+        this.getSupportActionBar().hide();
         this.mContentView = this.findViewById(2131165598);
         this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165597), this.errorCallback);
-        (this.mCancelButton = this.findViewById(2131165606)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                ProfileDetailsActivity.this.cancel();
-            }
-        });
+        (this.mCancelButton = this.findViewById(2131165606)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
         this.mDeleteSection = this.findViewById(2131165604);
-        (this.mDeleteButton = this.findViewById(2131165605)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (ProfileDetailsActivity.this.mInputProfile == null) {
-                    UserActionLogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, ProfileDetailsActivity.this.getUiScreen(), ConsolidatedLoggingUtils.createUIError(CommonStatus.INTERNAL_ERROR, "", ActionOnUIError.handledSilently), ProfileDetailsActivity.this.getProfileForLogging());
-                    Log.e("ProfileDetailsActivity", "Weird use case: profile edit was started, but input profile is null");
-                    ProfileDetailsActivity.this.finish();
-                    return;
-                }
-                if (ProfileDetailsActivity.this.mServiceManager.getCurrentProfile() != null && ProfileDetailsActivity.this.mInputProfile.getProfileGuid().equals(ProfileDetailsActivity.this.mServiceManager.getCurrentProfile().getProfileGuid())) {
-                    ProfileDetailsActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)ProfileDetailsActivity.this, ProfileDetailsActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, ProfileDetailsActivity.this.getString(2131493357), ProfileDetailsActivity.this.getString(17039370), null)));
-                    return;
-                }
-                UserActionLogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.canceled, ProfileDetailsActivity.this.getUiScreen(), null, ProfileDetailsActivity.this.getProfileForLogging());
-                UserActionLogUtils.reportDeleteProfileActionStarted((Context)ProfileDetailsActivity.this, null, ProfileDetailsActivity.this.getUiScreen(), ProfileDetailsActivity.this.mInputProfile.getProfileGuid());
-                ProfileDetailsActivity.this.removeFocusAndHideKeyboard();
-                ProfileDetailsActivity.this.showDialog(DeleteProfileAlertDlg.createDeleteProfileDialog(ProfileDetailsActivity.this, ProfileDetailsActivity.this.mInputProfile.getAvatarUrl(), ProfileDetailsActivity.this.mInputProfile.getFirstName()));
-            }
-        });
-        (this.mKidsSection = this.findViewById(2131165600)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                ProfileDetailsActivity.this.mKidsCheckBox.setChecked(!ProfileDetailsActivity.this.mKidsCheckBox.isChecked());
-            }
-        });
+        (this.mDeleteButton = this.findViewById(2131165605)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
+        (this.mKidsSection = this.findViewById(2131165600)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
         this.mKidsCheckBox = (CheckBox)this.findViewById(2131165601);
         this.mSaveButtonText = this.findViewById(2131165608);
-        (this.mSaveButton = this.findViewById(2131165607)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                String name = null;
-                Log.d("ProfileDetailsActivity", "Save button was triggered");
-                if (!ProfileDetailsActivity.this.findErrorsBeforeSubmit()) {
-                    ProfileDetailsActivity.this.removeFocusAndHideKeyboard();
-                    final String escapeJsonChars = StringUtils.escapeJsonChars(ProfileDetailsActivity.this.mName.getText().toString());
-                    if (ProfileDetailsActivity.this.mNewProfileCreation) {
-                        ProfileDetailsActivity.this.mServiceManager.addProfile(escapeJsonChars, ProfileDetailsActivity.this.mKidsCheckBox.isChecked(), ProfileDetailsActivity.this.mCurrentAvatar.getName(), ProfileDetailsActivity.this.mErrorHandlerCallback);
-                        ProfileDetailsActivity.this.mProfileChangeRequestWasSent = true;
-                    }
-                    else if (ProfileDetailsActivity.this.mInputProfile != null) {
-                        if (!ProfileDetailsActivity.this.mInputProfile.getFirstName().equals(ProfileDetailsActivity.this.mCurrentAvatar.getName())) {
-                            name = ProfileDetailsActivity.this.mCurrentAvatar.getName();
-                        }
-                        ProfileDetailsActivity.this.mServiceManager.editProfile(ProfileDetailsActivity.this.mInputProfile.getProfileGuid(), escapeJsonChars, ProfileDetailsActivity.this.mKidsCheckBox.isChecked(), name, ProfileDetailsActivity.this.mErrorHandlerCallback);
-                        ProfileDetailsActivity.this.mProfileChangeRequestWasSent = true;
-                    }
-                    else {
-                        Log.e("ProfileDetailsActivity", "Weird use case: profile edit was started, but input profile is null");
-                        final UIError uiError = ConsolidatedLoggingUtils.createUIError(CommonStatus.INTERNAL_ERROR, "", ActionOnUIError.displayedError);
-                        if (ProfileDetailsActivity.this.mNewProfileCreation) {
-                            UserActionLogUtils.reportAddProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, ProfileDetailsActivity.this.getUiScreen(), uiError, ProfileDetailsActivity.this.getProfileForLogging());
-                        }
-                        else {
-                            UserActionLogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, ProfileDetailsActivity.this.getUiScreen(), uiError, ProfileDetailsActivity.this.getProfileForLogging());
-                        }
-                        ProfileDetailsActivity.this.finish();
-                    }
-                    ProfileDetailsActivity.this.showLoading(true, true);
-                    return;
-                }
-                final UIError uiError2 = ConsolidatedLoggingUtils.createUIError(CommonStatus.INTERNAL_ERROR, "", ActionOnUIError.displayedError);
-                if (ProfileDetailsActivity.this.mNewProfileCreation) {
-                    UserActionLogUtils.reportAddProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, ProfileDetailsActivity.this.getUiScreen(), uiError2, ProfileDetailsActivity.this.getProfileForLogging());
-                    UserActionLogUtils.reportAddProfileActionStarted((Context)ProfileDetailsActivity.this, null, ProfileDetailsActivity.this.getUiScreen());
-                    return;
-                }
-                UserActionLogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, ProfileDetailsActivity.this.getUiScreen(), uiError2, ProfileDetailsActivity.this.getProfileForLogging());
-                UserActionLogUtils.reportEditProfileActionStarted((Context)ProfileDetailsActivity.this, null, ProfileDetailsActivity.this.getUiScreen());
-            }
-        });
-        (this.mName = (EditText)this.findViewById(2131165599)).addTextChangedListener((TextWatcher)new TextWatcher() {
-            public void afterTextChanged(final Editable editable) {
-                ProfileDetailsActivity.this.updateSaveButton(true);
-            }
-            
-            public void beforeTextChanged(final CharSequence charSequence, final int n, final int n2, final int n3) {
-                ProfileDetailsActivity.this.mName.setError((CharSequence)null);
-            }
-            
-            public void onTextChanged(final CharSequence charSequence, final int n, final int n2, final int n3) {
-            }
-        });
-        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131165299);
-        final View$OnClickListener view$OnClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (!ProfileDetailsActivity.this.isCurrentAvatarDataValid()) {
-                    Log.e("ProfileDetailsActivity", "Profile avatar was touched when current avatar data is not ready...ignoring...");
-                }
-                else {
-                    ProfileDetailsActivity.this.startActivityForResult(AvatarsGridActivity.getStartIntent((Context)ProfileDetailsActivity.this, ProfileDetailsActivity.this.mDefaultAvatar, ProfileDetailsActivity.this.mCurrentAvatar), 1);
-                    if (Log.isLoggable("ProfileDetailsActivity", 4)) {
-                        Log.i("ProfileDetailsActivity", "Started with defaultAvatar: " + ProfileDetailsActivity.this.mDefaultAvatar + "; currentAvatar: " + ProfileDetailsActivity.this.mCurrentAvatar);
-                    }
-                }
-            }
-        };
-        this.mProfilePictureView.setOnClickListener((View$OnClickListener)view$OnClickListener);
-        (this.mProfilePictureSection = this.findViewById(2131165602)).setOnClickListener((View$OnClickListener)view$OnClickListener);
+        (this.mSaveButton = this.findViewById(2131165607)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
+        (this.mName = (EditText)this.findViewById(2131165599)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
+        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131165296);
+        final ProfileDetailsActivity$9 profileDetailsActivity$9 = new ProfileDetailsActivity$9(this);
+        this.mProfilePictureView.setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
+        (this.mProfilePictureSection = this.findViewById(2131165602)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
         this.mPictureSelectorHint = this.findViewById(2131165603);
         if (this.mNewProfileCreation) {
             this.mName.requestFocus();
@@ -291,10 +168,10 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         if (textView != null) {
             int text;
             if (this.mNewProfileCreation) {
-                text = 2131493340;
+                text = 2131493283;
             }
             else {
-                text = 2131493341;
+                text = 2131493284;
             }
             textView.setText(text);
         }
@@ -425,43 +302,19 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         else {
             this.showLoading(false, true);
             if (this.isCurrentAvatarDataValid()) {
-                NetflixActivity.getImageLoader((Context)this).showImg(this.mProfilePictureView, this.mCurrentAvatar.getUrl(), IClientLogging.AssetType.profileAvatar, this.mCurrentAvatar.getName(), true, true);
+                NetflixActivity.getImageLoader((Context)this).showImg(this.mProfilePictureView, this.mCurrentAvatar.getUrl(), IClientLogging$AssetType.profileAvatar, this.mCurrentAvatar.getName(), true, true);
             }
         }
     }
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                Log.d("ProfileDetailsActivity", "Manager is here!");
-                ProfileDetailsActivity.this.mServiceManager = serviceManager;
-                ProfileDetailsActivity.this.updateInputProfile();
-                if (!ProfileDetailsActivity.this.mDataWasInitialized) {
-                    if (ProfileDetailsActivity.this.mNewProfileCreation) {
-                        ProfileDetailsActivity.this.mServiceManager.fetchAvailableAvatarsList(new AvatarsFetchedCallback());
-                    }
-                    else {
-                        ProfileDetailsActivity.this.mDefaultAvatar = new AvatarInfo(ProfileDetailsActivity.this.mInputProfile.getProfileName(), ProfileDetailsActivity.this.mInputProfile.getAvatarUrl());
-                        ProfileDetailsActivity.this.mCurrentAvatar = ProfileDetailsActivity.this.mDefaultAvatar;
-                    }
-                }
-                ProfileDetailsActivity.this.updateUI();
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-                Log.e("ProfileDetailsActivity", "Manager isn't available!");
-                ProfileDetailsActivity.this.mServiceManager = null;
-                ProfileDetailsActivity.this.updateUI();
-            }
-        };
+        return new ProfileDetailsActivity$1(this);
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.profileDetails;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.profileDetails;
     }
     
     public boolean handleBackPressed() {
@@ -504,12 +357,12 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
             if (handleUserAgentErrors == null) {
                 actionOnUIError = ActionOnUIError.handledSilently;
             }
-            UserActionLogUtils.reportDeleteProfileActionEnded((Context)this, IClientLogging.CompletionReason.failed, IClientLogging.ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(netflixStatus, handleUserAgentErrors, actionOnUIError));
+            UserActionLogUtils.reportDeleteProfileActionEnded((Context)this, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(netflixStatus, handleUserAgentErrors, actionOnUIError));
         }
         else {
             if (n == -2) {
                 Log.i("ProfileDetailsActivity", "Negative dialog button was clicked");
-                UserActionLogUtils.reportDeleteProfileActionEnded((Context)this, IClientLogging.CompletionReason.canceled, this.getUiScreen(), null);
+                UserActionLogUtils.reportDeleteProfileActionEnded((Context)this, IClientLogging$CompletionReason.canceled, this.getUiScreen(), null);
                 UserActionLogUtils.reportEditProfileActionStarted((Context)this, null, this.getUiScreen());
                 return;
             }
@@ -545,33 +398,5 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         bundle.putBoolean("bundle_kids", this.mKidsCheckBox.isChecked());
         bundle.putParcelable("bundle_default_avatar", (Parcelable)this.mDefaultAvatar);
         bundle.putParcelable("bundle_current_avatar", (Parcelable)this.mCurrentAvatar);
-    }
-    
-    private class AvatarsFetchedCallback extends SimpleManagerCallback
-    {
-        @Override
-        public void onAvailableAvatarsListFetched(final List<AvatarInfo> list, final Status status) {
-            if (Log.isLoggable("ProfileDetailsActivity", 4)) {
-                Log.i("ProfileDetailsActivity", "onAvailableAvatarsListFetched: " + list);
-            }
-            if (status.isSucces() && list != null) {
-                if (!ProfileDetailsActivity.this.mDataWasInitialized || !list.contains(ProfileDetailsActivity.this.mCurrentAvatar)) {
-                    ProfileDetailsActivity.this.mDefaultAvatar = list.get(list.size() - 1);
-                    ProfileDetailsActivity.this.mCurrentAvatar = ProfileDetailsActivity.this.mDefaultAvatar;
-                }
-                ProfileDetailsActivity.this.updateUI();
-                return;
-            }
-            final UIError uiError = ConsolidatedLoggingUtils.createUIError(status, ProfileDetailsActivity.this.handleUserAgentErrors(ProfileDetailsActivity.this, status), ActionOnUIError.displayedError);
-            if (ProfileDetailsActivity.this.mProfileDeletionWasTriggered) {
-                UserActionLogUtils.reportDeleteProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, IClientLogging.ModalView.profilesGate, uiError);
-                return;
-            }
-            if (ProfileDetailsActivity.this.mNewProfileCreation) {
-                UserActionLogUtils.reportAddProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, IClientLogging.ModalView.profilesGate, uiError, ProfileDetailsActivity.this.getProfileForLogging());
-                return;
-            }
-            UserActionLogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, IClientLogging.ModalView.profilesGate, uiError, ProfileDetailsActivity.this.getProfileForLogging());
-        }
     }
 }

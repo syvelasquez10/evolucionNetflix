@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.event.service;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AuthorizationFailed extends BaseServiceEvent
@@ -21,7 +20,7 @@ public class AuthorizationFailed extends BaseServiceEvent
     }
     
     @Override
-    public JSONObject getData() throws JSONException {
+    public JSONObject getData() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("service", (Object)this.service.getName());
         jsonObject.put("nrdp-service-authorize-didfailauthorize", (Object)this.getName());

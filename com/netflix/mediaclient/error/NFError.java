@@ -112,371 +112,371 @@ public abstract class NFError
         NFERRS_labels = new String[] { "NFErr_Category_Success", "NFErr_OK", "NFErr_Category_GenericError", "NFErr_Bad", "NFErr_NoMemory", "NFErr_NotImplemented", "NFErr_NotFound", "NFErr_BadParameter", "NFErr_FileNotOpened", "NFErr_DeadLock", "NFErr_Uninitialized_Mutex", "NFErr_InvalidAccess", "NFErr_Thread_NotStarted", "NFErr_Thread_NotFound", "NFErr_ArrayOutofBoundary", "NFErr_Interrupted", "NFErr_TimedOut", "NFErr_WaitingSelf", "NFErr_EmptyList", "NFErr_EndOfFile", "NFErr_IOError", "NFErr_MessageQueueFull", "NFErr_MessageQueueEmpty", "NFErr_NoReplyPort", "NFErr_EndOfStream", "NFErr_ASFDataError", "NFErr_ASFSkipData", "NFErr_CMDWhileWaitingEOS", "NFErr_OtherFilmInProgress", "NFErr_NoFilmInProgress", "NFErr_DRMFailed", "NFErr_InvalidStateTransition", "NFErr_MalformedData", "NFErr_Repeat", "NFErr_NCCPResponseFailed", "NFErr_Stop", "NFErr_NotAllowed", "NFErr_Skip", "NFErr_DuplicateEntry", "NFErr_Pending", "NFErr_InvalidBookmark", "NFErr_SkipToNextKeyFrame", "NFErr_NotActive", "NFErr_NetworkError", "NFErr_DNSTimedOut", "NFErr_ConnRefused", "NFErr_ConnReset", "NFErr_Internal", "NFErr_SSLFailure", "NFErr_SSLUntrusted", "NFErr_SSLExpired", "NFErr_SSLNoCipher", "NFErr_SSLNoCipher", "NFErr_SSLCrlOcsp", "NFErr_Uninitialized", "NFErr_NotReady", "NFErr_Category_McError", "NFErr_MC_AuthFailure", "NFErr_MC_AuthFailureNCCP", "NFErr_MC_InitStreamFailure", "NFErr_MC_StreamSetIncomplete", "NFErr_MC_OpenDeviceFailure", "NFErr_MC_AcquireLicenseFailure", "NFErr_MC_AcquireLicenseFailureNCCP", "NFErr_MC_RefuseToPlayNonDrmed", "NFErr_MC_DevicePlaybackError", "NFErr_MC_DeviceDecryptionError", "NFErr_MC_ConnectionFailure", "NFErr_MC_HttpServerError", "NFErr_MC_HttpClientError", "NFErr_MC_ContentNotAvailable", "NFErr_MC_SubtitleFailure", "NFErr_MC_HeartbeatFailure", "NFErr_MC_HeartbeatFailure", "NFErr_Category_NccpError", "NFErr_MC_NCCP_NonRecoverableError", "NFErr_MC_NCCP_PotentiallyRecoverableError", "NFErr_MC_NCCP_CustomError", "NFErr_MC_NCCP_RegistrationRequired", "NFErr_MC_NCCP_CTicketRenewalRequired", "NFErr_MC_NCCP_MTicketRenewalRequired", "NFErr_MC_NCCP_ImpossibleImpossibility", "NFErr_MC_NCCP_GetNewCredentials", "NFErr_MC_NCCP_UnsupportedVersion", "NFErr_MC_NCCP_SecondaryCredentialsRenewalRequired", "NFErr_MC_NCCP_CannotObtainNpTicket", "NFErr_MC_NCCP_Exception", "NFErr_DeviceAccount_InvalidKey", "NFErr_DeviceAccount_NoCurrentKey", "NFErr_DeviceAccount_TooManyAccounts", "NFErr_NCCPInvalidRedirect" };
     }
     
-    public static Response getErrorResponse(final long n) {
-        final Response response = new Response();
+    public static NFError$Response getErrorResponse(final long n) {
+        final NFError$Response nfError$Response = new NFError$Response();
         if (n == 4026531852L) {
-            response.labelId = 2131493036;
-            return response;
+            nfError$Response.labelId = 2131493015;
+            return nfError$Response;
         }
         if (n == 4026531863L) {
-            response.labelId = 2131493047;
-            return response;
+            nfError$Response.labelId = 2131493026;
+            return nfError$Response;
         }
         if (n == 4026531864L) {
-            response.labelId = 2131493048;
-            return response;
+            nfError$Response.labelId = 2131493027;
+            return nfError$Response;
         }
         if (n == 4026531841L) {
-            response.labelId = 2131493025;
-            return response;
+            nfError$Response.labelId = 2131493004;
+            return nfError$Response;
         }
         if (n == 4026531845L) {
-            response.labelId = 2131493029;
-            return response;
+            nfError$Response.labelId = 2131493008;
+            return nfError$Response;
         }
         if (n == 4026531840L) {
-            response.labelId = 2131493024;
-            return response;
+            nfError$Response.labelId = 2131493003;
+            return nfError$Response;
         }
         if (n == 4026597376L) {
-            response.labelId = 2131493024;
-            return response;
+            nfError$Response.labelId = 2131493003;
+            return nfError$Response;
         }
         if (n == 4026662912L) {
-            response.labelId = 2131493095;
-            return response;
+            nfError$Response.labelId = 2131493073;
+            return nfError$Response;
         }
         if (n == 0L) {
-            response.labelId = 2131493022;
-            response.action = 2;
-            return response;
+            nfError$Response.labelId = 2131493001;
+            nfError$Response.action = 2;
+            return nfError$Response;
         }
         if (n == 4026531865L) {
-            response.labelId = 2131493049;
-            return response;
+            nfError$Response.labelId = 2131493028;
+            return nfError$Response;
         }
         if (n == 4026531883L) {
-            response.labelId = 2131493067;
-            return response;
+            nfError$Response.labelId = 2131493046;
+            return nfError$Response;
         }
         if (n == 4026531884L) {
-            response.labelId = 2131493068;
-            return response;
+            nfError$Response.labelId = 2131493047;
+            return nfError$Response;
         }
         if (n == 4026531847L) {
-            response.labelId = 2131493031;
-            return response;
+            nfError$Response.labelId = 2131493010;
+            return nfError$Response;
         }
         if (n == 4026531882L) {
-            response.labelId = 2131493066;
-            return response;
+            nfError$Response.labelId = 2131493045;
+            return nfError$Response;
         }
         if (n == 4026531868L) {
-            response.labelId = 2131493052;
-            return response;
+            nfError$Response.labelId = 2131493031;
+            return nfError$Response;
         }
         if (n == 4026531876L) {
-            response.labelId = 2131493060;
-            return response;
+            nfError$Response.labelId = 2131493039;
+            return nfError$Response;
         }
         if (n == 4026531856L) {
-            response.labelId = 2131493040;
-            return response;
+            nfError$Response.labelId = 2131493019;
+            return nfError$Response;
         }
         if (n == 4026531857L) {
-            response.labelId = 2131493041;
-            return response;
+            nfError$Response.labelId = 2131493020;
+            return nfError$Response;
         }
         if (n == 4026531862L) {
-            response.labelId = 2131493046;
-            return response;
+            nfError$Response.labelId = 2131493025;
+            return nfError$Response;
         }
         if (n == 4026531846L) {
-            response.labelId = 2131493030;
-            return response;
+            nfError$Response.labelId = 2131493009;
+            return nfError$Response;
         }
         if (n == 4026531885L) {
-            response.labelId = 2131493069;
-            return response;
+            nfError$Response.labelId = 2131493048;
+            return nfError$Response;
         }
         if (n == 4026531853L) {
-            response.labelId = 2131493037;
-            return response;
+            nfError$Response.labelId = 2131493016;
+            return nfError$Response;
         }
         if (n == 4026531849L) {
-            response.labelId = 2131493033;
-            return response;
+            nfError$Response.labelId = 2131493012;
+            return nfError$Response;
         }
         if (n == 4026531878L) {
-            response.labelId = 2131493062;
-            return response;
+            nfError$Response.labelId = 2131493041;
+            return nfError$Response;
         }
         if (n == 4026531869L) {
-            response.labelId = 2131493053;
-            return response;
+            nfError$Response.labelId = 2131493032;
+            return nfError$Response;
         }
         if (n == 4026531858L) {
-            response.labelId = 2131493042;
-            return response;
+            nfError$Response.labelId = 2131493021;
+            return nfError$Response;
         }
         if (n == 4026531870L) {
-            response.labelId = 2131493054;
-            return response;
+            nfError$Response.labelId = 2131493033;
+            return nfError$Response;
         }
         if (n == 4026597382L) {
-            response.labelId = 2131493082;
-            return response;
+            nfError$Response.labelId = 2131493061;
+            return nfError$Response;
         }
         if (n == 4026597383L) {
-            response.labelId = 2131493083;
-            return response;
+            nfError$Response.labelId = 2131493062;
+            return nfError$Response;
         }
         if (n == 4026597377L) {
-            response.labelId = 2131493077;
-            return response;
+            nfError$Response.labelId = 2131493056;
+            return nfError$Response;
         }
         if (n == 4026597378L) {
-            response.labelId = 2131493078;
-            return response;
+            nfError$Response.labelId = 2131493057;
+            return nfError$Response;
         }
         if (n == 4026597387L) {
-            response.labelId = 2131493087;
-            return response;
+            nfError$Response.labelId = 2131493066;
+            return nfError$Response;
         }
         if (n == 4026597390L) {
-            response.labelId = 2131493090;
-            return response;
+            nfError$Response.labelId = 2131493069;
+            return nfError$Response;
         }
         if (n == 4026597386L) {
-            response.labelId = 2131493086;
-            return response;
+            nfError$Response.labelId = 2131493065;
+            return nfError$Response;
         }
         if (n == 4026597385L) {
-            response.labelId = 2131493085;
-            return response;
+            nfError$Response.labelId = 2131493064;
+            return nfError$Response;
         }
         if (n == 4026597389L) {
-            response.labelId = 2131493089;
-            return response;
+            nfError$Response.labelId = 2131493068;
+            return nfError$Response;
         }
         if (n == 4026597388L) {
-            response.labelId = 2131493088;
-            return response;
+            nfError$Response.labelId = 2131493067;
+            return nfError$Response;
         }
         if (n == 4026597379L) {
-            response.labelId = 2131493079;
-            return response;
+            nfError$Response.labelId = 2131493058;
+            return nfError$Response;
         }
         if (n == 4026728449L) {
-            response.labelId = 2131493109;
-            return response;
+            nfError$Response.labelId = 2131493087;
+            return nfError$Response;
         }
         if (n == 4026728450L) {
-            response.labelId = 2131493110;
-            return response;
+            nfError$Response.labelId = 2131493088;
+            return nfError$Response;
         }
         if (n == 4026728451L) {
-            response.labelId = 2131493111;
-            return response;
+            nfError$Response.labelId = 2131493089;
+            return nfError$Response;
         }
         if (n == 4026728451L) {
-            response.labelId = 2131493112;
-            return response;
+            nfError$Response.labelId = 2131493090;
+            return nfError$Response;
         }
         if (n == 4026662917L) {
-            response.labelId = 2131493100;
-            return response;
+            nfError$Response.labelId = 2131493078;
+            return nfError$Response;
         }
         if (n == 4026662922L) {
-            response.labelId = 2131493105;
-            return response;
+            nfError$Response.labelId = 2131493083;
+            return nfError$Response;
         }
         if (n == 4026662923L) {
-            response.labelId = 2131493106;
-            return response;
+            nfError$Response.labelId = 2131493084;
+            return nfError$Response;
         }
         if (n == 4026662924L) {
-            response.labelId = 2131493107;
-            return response;
+            nfError$Response.labelId = 2131493085;
+            return nfError$Response;
         }
         if (n == 4026662915L) {
-            response.labelId = 2131493098;
-            return response;
+            nfError$Response.labelId = 2131493076;
+            return nfError$Response;
         }
         if (n == 4026662925L) {
-            response.labelId = 2131493108;
-            return response;
+            nfError$Response.labelId = 2131493086;
+            return nfError$Response;
         }
         if (n == 4026662920L) {
-            response.labelId = 2131493103;
-            return response;
+            nfError$Response.labelId = 2131493081;
+            return nfError$Response;
         }
         if (n == 4026662919L) {
-            response.labelId = 2131493102;
-            return response;
+            nfError$Response.labelId = 2131493080;
+            return nfError$Response;
         }
         if (n == 4026662918L) {
-            response.labelId = 2131493101;
-            return response;
+            nfError$Response.labelId = 2131493079;
+            return nfError$Response;
         }
         if (n == 4026662913L) {
-            response.labelId = 2131493096;
-            return response;
+            nfError$Response.labelId = 2131493074;
+            return nfError$Response;
         }
         if (n == 4026662914L) {
-            response.labelId = 2131493097;
-            return response;
+            nfError$Response.labelId = 2131493075;
+            return nfError$Response;
         }
         if (n == 4026662916L) {
-            response.labelId = 2131493099;
-            return response;
+            nfError$Response.labelId = 2131493077;
+            return nfError$Response;
         }
         if (n == 4026662921L) {
-            response.labelId = 2131493104;
-            return response;
+            nfError$Response.labelId = 2131493082;
+            return nfError$Response;
         }
         if (n == 4026597381L) {
-            response.labelId = 2131493081;
-            return response;
+            nfError$Response.labelId = 2131493060;
+            return nfError$Response;
         }
         if (n == 4026597384L) {
-            response.labelId = 2131493084;
-            return response;
+            nfError$Response.labelId = 2131493063;
+            return nfError$Response;
         }
         if (n == 4026597380L) {
-            response.labelId = 2131493080;
-            return response;
+            nfError$Response.labelId = 2131493059;
+            return nfError$Response;
         }
         if (n == 4026597391L) {
-            response.labelId = 2131493091;
-            response.action = 1;
-            return response;
+            nfError$Response.labelId = 2131493070;
+            nfError$Response.action = 1;
+            return nfError$Response;
         }
         if (n == 4026597392L) {
-            response.labelId = 2131493092;
-            response.action = 1;
-            return response;
+            nfError$Response.labelId = 2131493071;
+            nfError$Response.action = 1;
+            return nfError$Response;
         }
         if (n == 4026531860L) {
-            response.labelId = 2131493044;
-            return response;
+            nfError$Response.labelId = 2131493023;
+            return nfError$Response;
         }
         if (n == 4026531859L) {
-            response.labelId = 2131493043;
-            return response;
+            nfError$Response.labelId = 2131493022;
+            return nfError$Response;
         }
         if (n == 4026531872L) {
-            response.labelId = 2131493056;
-            return response;
+            nfError$Response.labelId = 2131493035;
+            return nfError$Response;
         }
         if (n == 4026531881L) {
-            response.labelId = 2131493065;
-            return response;
+            nfError$Response.labelId = 2131493044;
+            return nfError$Response;
         }
         if (n == 4026531867L) {
-            response.labelId = 2131493051;
-            return response;
+            nfError$Response.labelId = 2131493030;
+            return nfError$Response;
         }
         if (n == 4026531842L) {
-            response.labelId = 2131493026;
-            return response;
+            nfError$Response.labelId = 2131493005;
+            return nfError$Response;
         }
         if (n == 4026531861L) {
-            response.labelId = 2131493045;
-            return response;
+            nfError$Response.labelId = 2131493024;
+            return nfError$Response;
         }
         if (n == 4026531880L) {
-            response.labelId = 2131493064;
-            return response;
+            nfError$Response.labelId = 2131493043;
+            return nfError$Response;
         }
         if (n == 4026531874L) {
-            response.labelId = 2131493058;
-            return response;
+            nfError$Response.labelId = 2131493037;
+            return nfError$Response;
         }
         if (n == 4026531844L) {
-            response.labelId = 2131493028;
-            return response;
+            nfError$Response.labelId = 2131493007;
+            return nfError$Response;
         }
         if (n == 4026531843L) {
-            response.labelId = 2131493027;
-            return response;
+            nfError$Response.labelId = 2131493006;
+            return nfError$Response;
         }
         if (n == 4026531892L) {
-            response.labelId = 2131493076;
-            return response;
+            nfError$Response.labelId = 2131493055;
+            return nfError$Response;
         }
         if (n == 1L) {
-            response.labelId = 2131493023;
-            response.action = 2;
-            return response;
+            nfError$Response.labelId = 2131493002;
+            nfError$Response.action = 2;
+            return nfError$Response;
         }
         if (n == 4026531866L) {
-            response.labelId = 2131493050;
-            return response;
+            nfError$Response.labelId = 2131493029;
+            return nfError$Response;
         }
         if (n == 4026531877L) {
-            response.labelId = 2131493061;
-            return response;
+            nfError$Response.labelId = 2131493040;
+            return nfError$Response;
         }
         if (n == 4026531871L) {
-            response.labelId = 2131493055;
-            return response;
+            nfError$Response.labelId = 2131493034;
+            return nfError$Response;
         }
         if (n == 4026531875L) {
-            response.labelId = 2131493059;
-            return response;
+            nfError$Response.labelId = 2131493038;
+            return nfError$Response;
         }
         if (n == 4026531879L) {
-            response.labelId = 2131493063;
-            return response;
+            nfError$Response.labelId = 2131493042;
+            return nfError$Response;
         }
         if (n == 4026531888L) {
-            response.labelId = 2131493072;
-            return response;
+            nfError$Response.labelId = 2131493051;
+            return nfError$Response;
         }
         if (n == 4026531886L) {
-            response.labelId = 2131493070;
-            return response;
+            nfError$Response.labelId = 2131493049;
+            return nfError$Response;
         }
         if (n == 4026531889L) {
-            response.labelId = 2131493073;
-            return response;
+            nfError$Response.labelId = 2131493052;
+            return nfError$Response;
         }
         if (n == 4026531890L) {
-            response.labelId = 2131493074;
-            return response;
+            nfError$Response.labelId = 2131493053;
+            return nfError$Response;
         }
         if (n == 4026531887L) {
-            response.labelId = 2131493071;
-            return response;
+            nfError$Response.labelId = 2131493050;
+            return nfError$Response;
         }
         if (n == 4026531873L) {
-            response.labelId = 2131493057;
-            return response;
+            nfError$Response.labelId = 2131493036;
+            return nfError$Response;
         }
         if (n == 4026531851L) {
-            response.labelId = 2131493035;
-            return response;
+            nfError$Response.labelId = 2131493014;
+            return nfError$Response;
         }
         if (n == 4026531850L) {
-            response.labelId = 2131493034;
-            return response;
+            nfError$Response.labelId = 2131493013;
+            return nfError$Response;
         }
         if (n == 4026531854L) {
-            response.labelId = 2131493038;
-            return response;
+            nfError$Response.labelId = 2131493017;
+            return nfError$Response;
         }
         if (n == 4026531891L) {
-            response.labelId = 2131493075;
-            return response;
+            nfError$Response.labelId = 2131493054;
+            return nfError$Response;
         }
         if (n == 4026531848L) {
-            response.labelId = 2131493032;
-            return response;
+            nfError$Response.labelId = 2131493011;
+            return nfError$Response;
         }
         if (n == 4026531855L) {
-            response.labelId = 2131493039;
-            return response;
+            nfError$Response.labelId = 2131493018;
+            return nfError$Response;
         }
         return null;
     }
@@ -495,12 +495,21 @@ public abstract class NFError
     }
     
     public static boolean isKnown(final long n) {
-        for (int i = 0; i < NFError.NFERRS.length; ++i) {
-            if (n == NFError.NFERRS[i]) {
-                return true;
+        final boolean b = false;
+        int n2 = 0;
+        boolean b2;
+        while (true) {
+            b2 = b;
+            if (n2 >= NFError.NFERRS.length) {
+                break;
             }
+            if (n == NFError.NFERRS[n2]) {
+                b2 = true;
+                break;
+            }
+            ++n2;
         }
-        return false;
+        return b2;
     }
     
     public static boolean isMediaControlError(final int n) {
@@ -513,19 +522,5 @@ public abstract class NFError
     
     public static boolean isSuccessful(final long n) {
         return (0xFFFF0000L & n) == 0x0L;
-    }
-    
-    public static class Response
-    {
-        public static final int CONTINUE_PLAY = 1;
-        public static final int IGNORE = 2;
-        public static final int TERMINATE_PLAY = 0;
-        public int action;
-        public int labelId;
-        
-        public Response() {
-            this.labelId = 2131492997;
-            this.action = 0;
-        }
     }
 }

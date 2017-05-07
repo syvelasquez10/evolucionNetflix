@@ -4,20 +4,19 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View$OnClickListener;
 import android.view.View;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
+import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class SharingDialogFrag extends NetflixDialogFrag implements MdxMiniPlayerDialog
+public class SharingDialogFrag extends NetflixDialogFrag implements MdxMiniPlayerFrag$MdxMiniPlayerDialog
 {
     public static SharingDialogFrag newInstance() {
         final SharingDialogFrag sharingDialogFrag = new SharingDialogFrag();
-        sharingDialogFrag.setStyle(1, 2131558710);
+        sharingDialogFrag.setStyle(1, 2131558713);
         return sharingDialogFrag;
     }
     
@@ -27,13 +26,8 @@ public class SharingDialogFrag extends NetflixDialogFrag implements MdxMiniPlaye
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903181, viewGroup, false);
-        inflate.findViewById(2131165653).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                ((NetflixActivity)SharingDialogFrag.this.getActivity()).getMdxMiniPlayerFrag().unshareVideo();
-                SharingDialogFrag.this.dismiss();
-            }
-        });
+        final View inflate = layoutInflater.inflate(2130903182, viewGroup, false);
+        inflate.findViewById(2131165653).setOnClickListener((View$OnClickListener)new SharingDialogFrag$1(this));
         return inflate;
     }
 }

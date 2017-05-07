@@ -45,7 +45,7 @@ public abstract class Subtitle implements Comparable<Subtitle>
         }
     }
     
-    static Subtitle restore(final JSONObject jsonObject) throws JSONException {
+    static Subtitle restore(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -125,7 +125,7 @@ public abstract class Subtitle implements Comparable<Subtitle>
         return this.trackType == 1;
     }
     
-    public abstract JSONObject toJson() throws JSONException;
+    public abstract JSONObject toJson();
     
     @Override
     public String toString() {

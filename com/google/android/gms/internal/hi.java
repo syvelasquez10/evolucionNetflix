@@ -22,7 +22,7 @@ public class hi implements SafeParcelable
     static {
         Cc = Integer.parseInt("-1");
         CREATOR = new hj();
-        Cd = new hq.a("SsbContext").E(true).at("blob").fn();
+        Cd = new hq$a("SsbContext").E(true).at("blob").fn();
     }
     
     hi(final int br, String fl, final hq cf, final int cg, final byte[] ch) {

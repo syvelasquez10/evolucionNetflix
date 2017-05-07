@@ -5,6 +5,7 @@
 package com.google.android.gms.maps.model;
 
 import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -102,7 +103,7 @@ public class e implements Parcelable$Creator<GroundOverlayOptions>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new GroundOverlayOptions(g, p, latLng, l, i, latLngBounds, j, k, c2, m, l2, l3);
     }

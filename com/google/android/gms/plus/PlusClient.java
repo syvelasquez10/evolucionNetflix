@@ -4,16 +4,13 @@
 
 package com.google.android.gms.plus;
 
-import com.google.android.gms.plus.model.people.PersonBuffer;
-import com.google.android.gms.plus.model.moments.MomentBuffer;
-import com.google.android.gms.common.ConnectionResult;
-import android.content.Context;
-import com.google.android.gms.plus.internal.i;
 import com.google.android.gms.plus.model.moments.Moment;
 import com.google.android.gms.common.api.Status;
 import java.util.Collection;
 import android.net.Uri;
-import com.google.android.gms.common.api.BaseImplementation;
+import com.google.android.gms.common.api.BaseImplementation$b;
+import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.internal.e;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -68,68 +65,44 @@ public class PlusClient implements GooglePlayServicesClient
     
     @Deprecated
     @Override
-    public boolean isConnectionCallbacksRegistered(final ConnectionCallbacks connectionCallbacks) {
-        return this.akS.isConnectionCallbacksRegistered(connectionCallbacks);
+    public boolean isConnectionCallbacksRegistered(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
+        return this.akS.isConnectionCallbacksRegistered(googlePlayServicesClient$ConnectionCallbacks);
     }
     
     @Deprecated
     @Override
-    public boolean isConnectionFailedListenerRegistered(final OnConnectionFailedListener onConnectionFailedListener) {
-        return this.akS.isConnectionFailedListenerRegistered(onConnectionFailedListener);
+    public boolean isConnectionFailedListenerRegistered(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
+        return this.akS.isConnectionFailedListenerRegistered(googlePlayServicesClient$OnConnectionFailedListener);
     }
     
     @Deprecated
-    public void loadMoments(final OnMomentsLoadedListener onMomentsLoadedListener) {
-        this.akS.k(new BaseImplementation.b<Moments.LoadMomentsResult>() {
-            public void a(final Moments.LoadMomentsResult loadMomentsResult) {
-                onMomentsLoadedListener.onMomentsLoaded(loadMomentsResult.getStatus().gu(), loadMomentsResult.getMomentBuffer(), loadMomentsResult.getNextPageToken(), loadMomentsResult.getUpdated());
-            }
-        });
+    public void loadMoments(final PlusClient$OnMomentsLoadedListener plusClient$OnMomentsLoadedListener) {
+        this.akS.k(new PlusClient$1(this, plusClient$OnMomentsLoadedListener));
     }
     
     @Deprecated
-    public void loadMoments(final OnMomentsLoadedListener onMomentsLoadedListener, final int n, final String s, final Uri uri, final String s2, final String s3) {
-        this.akS.a(new BaseImplementation.b<Moments.LoadMomentsResult>() {
-            public void a(final Moments.LoadMomentsResult loadMomentsResult) {
-                onMomentsLoadedListener.onMomentsLoaded(loadMomentsResult.getStatus().gu(), loadMomentsResult.getMomentBuffer(), loadMomentsResult.getNextPageToken(), loadMomentsResult.getUpdated());
-            }
-        }, n, s, uri, s2, s3);
+    public void loadMoments(final PlusClient$OnMomentsLoadedListener plusClient$OnMomentsLoadedListener, final int n, final String s, final Uri uri, final String s2, final String s3) {
+        this.akS.a(new PlusClient$2(this, plusClient$OnMomentsLoadedListener), n, s, uri, s2, s3);
     }
     
     @Deprecated
-    public void loadPeople(final OnPeopleLoadedListener onPeopleLoadedListener, final Collection<String> collection) {
-        this.akS.a(new BaseImplementation.b<People.LoadPeopleResult>() {
-            public void a(final People.LoadPeopleResult loadPeopleResult) {
-                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().gu(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
-            }
-        }, collection);
+    public void loadPeople(final PlusClient$OnPeopleLoadedListener plusClient$OnPeopleLoadedListener, final Collection<String> collection) {
+        this.akS.a(new PlusClient$5(this, plusClient$OnPeopleLoadedListener), collection);
     }
     
     @Deprecated
-    public void loadPeople(final OnPeopleLoadedListener onPeopleLoadedListener, final String... array) {
-        this.akS.d(new BaseImplementation.b<People.LoadPeopleResult>() {
-            public void a(final People.LoadPeopleResult loadPeopleResult) {
-                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().gu(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
-            }
-        }, array);
+    public void loadPeople(final PlusClient$OnPeopleLoadedListener plusClient$OnPeopleLoadedListener, final String... array) {
+        this.akS.d(new PlusClient$6(this, plusClient$OnPeopleLoadedListener), array);
     }
     
     @Deprecated
-    public void loadVisiblePeople(final OnPeopleLoadedListener onPeopleLoadedListener, final int n, final String s) {
-        this.akS.a(new BaseImplementation.b<People.LoadPeopleResult>() {
-            public void a(final People.LoadPeopleResult loadPeopleResult) {
-                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().gu(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
-            }
-        }, n, s);
+    public void loadVisiblePeople(final PlusClient$OnPeopleLoadedListener plusClient$OnPeopleLoadedListener, final int n, final String s) {
+        this.akS.a(new PlusClient$3(this, plusClient$OnPeopleLoadedListener), n, s);
     }
     
     @Deprecated
-    public void loadVisiblePeople(final OnPeopleLoadedListener onPeopleLoadedListener, final String s) {
-        this.akS.r(new BaseImplementation.b<People.LoadPeopleResult>() {
-            public void a(final People.LoadPeopleResult loadPeopleResult) {
-                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().gu(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
-            }
-        }, s);
+    public void loadVisiblePeople(final PlusClient$OnPeopleLoadedListener plusClient$OnPeopleLoadedListener, final String s) {
+        this.akS.r(new PlusClient$4(this, plusClient$OnPeopleLoadedListener), s);
     }
     
     e mX() {
@@ -138,14 +111,14 @@ public class PlusClient implements GooglePlayServicesClient
     
     @Deprecated
     @Override
-    public void registerConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.akS.registerConnectionCallbacks(connectionCallbacks);
+    public void registerConnectionCallbacks(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
+        this.akS.registerConnectionCallbacks(googlePlayServicesClient$ConnectionCallbacks);
     }
     
     @Deprecated
     @Override
-    public void registerConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.akS.registerConnectionFailedListener(onConnectionFailedListener);
+    public void registerConnectionFailedListener(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
+        this.akS.registerConnectionFailedListener(googlePlayServicesClient$OnConnectionFailedListener);
     }
     
     @Deprecated
@@ -154,96 +127,24 @@ public class PlusClient implements GooglePlayServicesClient
     }
     
     @Deprecated
-    public void revokeAccessAndDisconnect(final OnAccessRevokedListener onAccessRevokedListener) {
-        this.akS.m(new BaseImplementation.b<Status>() {
-            public void aA(final Status status) {
-                onAccessRevokedListener.onAccessRevoked(status.getStatus().gu());
-            }
-        });
+    public void revokeAccessAndDisconnect(final PlusClient$OnAccessRevokedListener plusClient$OnAccessRevokedListener) {
+        this.akS.m(new PlusClient$7(this, plusClient$OnAccessRevokedListener));
     }
     
     @Deprecated
     @Override
-    public void unregisterConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.akS.unregisterConnectionCallbacks(connectionCallbacks);
+    public void unregisterConnectionCallbacks(final GooglePlayServicesClient$ConnectionCallbacks googlePlayServicesClient$ConnectionCallbacks) {
+        this.akS.unregisterConnectionCallbacks(googlePlayServicesClient$ConnectionCallbacks);
     }
     
     @Deprecated
     @Override
-    public void unregisterConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.akS.unregisterConnectionFailedListener(onConnectionFailedListener);
+    public void unregisterConnectionFailedListener(final GooglePlayServicesClient$OnConnectionFailedListener googlePlayServicesClient$OnConnectionFailedListener) {
+        this.akS.unregisterConnectionFailedListener(googlePlayServicesClient$OnConnectionFailedListener);
     }
     
     @Deprecated
     public void writeMoment(final Moment moment) {
         this.akS.a(null, moment);
-    }
-    
-    @Deprecated
-    public static class Builder
-    {
-        private final ConnectionCallbacks akX;
-        private final OnConnectionFailedListener akY;
-        private final i akZ;
-        private final Context mContext;
-        
-        public Builder(final Context mContext, final ConnectionCallbacks akX, final OnConnectionFailedListener akY) {
-            this.mContext = mContext;
-            this.akX = akX;
-            this.akY = akY;
-            this.akZ = new i(this.mContext);
-        }
-        
-        public PlusClient build() {
-            return new PlusClient(new e(this.mContext, this.akX, this.akY, this.akZ.no()));
-        }
-        
-        public Builder clearScopes() {
-            this.akZ.nn();
-            return this;
-        }
-        
-        public Builder setAccountName(final String s) {
-            this.akZ.ce(s);
-            return this;
-        }
-        
-        public Builder setActions(final String... array) {
-            this.akZ.h(array);
-            return this;
-        }
-        
-        public Builder setScopes(final String... array) {
-            this.akZ.g(array);
-            return this;
-        }
-    }
-    
-    @Deprecated
-    public interface OnAccessRevokedListener
-    {
-        void onAccessRevoked(final ConnectionResult p0);
-    }
-    
-    @Deprecated
-    public interface OnMomentsLoadedListener
-    {
-        @Deprecated
-        void onMomentsLoaded(final ConnectionResult p0, final MomentBuffer p1, final String p2, final String p3);
-    }
-    
-    @Deprecated
-    public interface OnPeopleLoadedListener
-    {
-        void onPeopleLoaded(final ConnectionResult p0, final PersonBuffer p1, final String p2);
-    }
-    
-    @Deprecated
-    public interface OrderBy
-    {
-        @Deprecated
-        public static final int ALPHABETICAL = 0;
-        @Deprecated
-        public static final int BEST = 1;
     }
 }

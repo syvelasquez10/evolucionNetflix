@@ -5,12 +5,15 @@
 package com.netflix.mediaclient.util;
 
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
+import android.app.NotificationManager;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.ui.details.RecommendToFriendsFrag;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Context;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
+import java.util.Set;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -23,10 +26,16 @@ public class SocialNotificationsUtils
     public static MenuItem addSocialNotificationsIconIfNeeded(final NetflixActivity netflixActivity, final Menu menu) {
         MenuItem add = null;
         if (isSocialNotificationsFeatureSupported(netflixActivity)) {
-            add = menu.add(0, 2131165248, 0, 2131493213);
+            add = menu.add(0, 2131165248, 0, 2131493178);
             add.setIcon(2130837663).setShowAsAction(1);
         }
         return add;
+    }
+    
+    public static <T> void castArrayToSet(final Parcelable[] array, final Set<T> set) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            set.add((T)array[i]);
+        }
     }
     
     public static void handleNotificationsUpdateReceiver(final Intent intent, final MenuItem menuItem, final String s) {
@@ -68,6 +77,10 @@ public class SocialNotificationsUtils
     
     public static boolean isSocialNotificationsFeatureSupported(final UserProfile userProfile, final Context context) {
         return RecommendToFriendsFrag.isSocialRecommendationsFeatureSupported(userProfile, context) && userProfile.isSocialConnected();
+    }
+    
+    public static void removeSocialNotificationsFromStatusBar(final Context context) {
+        ((NotificationManager)context.getSystemService("notification")).cancel(1000);
     }
     
     public static boolean tryHandleMenuItemClick(final MenuItem menuItem, final Context context) {

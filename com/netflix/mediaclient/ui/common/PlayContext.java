@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.os.Parcelable;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import android.os.Parcelable;
 
-public interface PlayContext extends Trackable, Parcelable
+public interface PlayContext extends Parcelable, Trackable
 {
     public static final int DEFAULT_MDX_TRACKID = 13804431;
     public static final PlayContext DFLT_MDX_CONTEXT = new PlayContextImp(null, 13804431, 0, 0);

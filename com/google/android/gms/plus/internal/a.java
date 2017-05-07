@@ -9,15 +9,14 @@ import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.internal.ny;
 import com.google.android.gms.internal.jp;
 import android.os.ParcelFileDescriptor;
-import android.os.RemoteException;
 import android.os.Bundle;
 
-public abstract class a extends b.a
+public abstract class a extends b$a
 {
-    public void a(final int n, final Bundle bundle, final Bundle bundle2) throws RemoteException {
+    public void a(final int n, final Bundle bundle, final Bundle bundle2) {
     }
     
-    public void a(final int n, final Bundle bundle, final ParcelFileDescriptor parcelFileDescriptor) throws RemoteException {
+    public void a(final int n, final Bundle bundle, final ParcelFileDescriptor parcelFileDescriptor) {
     }
     
     public final void a(final int n, final Bundle bundle, final jp jp) {
@@ -35,7 +34,7 @@ public abstract class a extends b.a
     public void aB(final Status status) {
     }
     
-    public void cb(final String s) throws RemoteException {
+    public void cb(final String s) {
     }
     
     public void cc(final String s) {

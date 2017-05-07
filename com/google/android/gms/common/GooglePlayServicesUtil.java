@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.app.Notification;
 import android.app.Notification$Style;
 import android.app.Notification$BigTextStyle;
+import com.google.android.gms.R$drawable;
 import android.app.Notification$Builder;
 import com.google.android.gms.common.internal.n;
 import android.support.v4.app.FragmentManager;
@@ -27,7 +28,7 @@ import android.util.Base64;
 import android.content.res.Resources;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import com.google.android.gms.R;
+import com.google.android.gms.R$string;
 import android.content.DialogInterface$OnClickListener;
 import com.google.android.gms.common.internal.b;
 import android.app.AlertDialog$Builder;
@@ -64,7 +65,7 @@ public final class GooglePlayServicesUtil
         Ig = new Object();
     }
     
-    public static void D(final Context context) throws GooglePlayServicesRepairableException, GooglePlayServicesNotAvailableException {
+    public static void D(final Context context) {
         final int googlePlayServicesAvailable = isGooglePlayServicesAvailable(context);
         if (googlePlayServicesAvailable == 0) {
             return;
@@ -175,24 +176,24 @@ public final class GooglePlayServicesUtil
                         return (Dialog)alertDialog$Builder2.create();
                     }
                     case 1: {
-                        return (Dialog)alertDialog$Builder2.setTitle(R.string.common_google_play_services_install_title).create();
+                        return (Dialog)alertDialog$Builder2.setTitle(R$string.common_google_play_services_install_title).create();
                     }
                     case 3: {
-                        return (Dialog)alertDialog$Builder2.setTitle(R.string.common_google_play_services_enable_title).create();
+                        return (Dialog)alertDialog$Builder2.setTitle(R$string.common_google_play_services_enable_title).create();
                     }
                     case 2: {
-                        return (Dialog)alertDialog$Builder2.setTitle(R.string.common_google_play_services_update_title).create();
+                        return (Dialog)alertDialog$Builder2.setTitle(R$string.common_google_play_services_update_title).create();
                     }
                     case 42: {
-                        return (Dialog)alertDialog$Builder2.setTitle(R.string.common_android_wear_update_title).create();
+                        return (Dialog)alertDialog$Builder2.setTitle(R$string.common_android_wear_update_title).create();
                     }
                     case 9: {
                         Log.e("GooglePlayServicesUtil", "Google Play services is invalid. Cannot recover.");
-                        return (Dialog)alertDialog$Builder2.setTitle(R.string.common_google_play_services_unsupported_title).create();
+                        return (Dialog)alertDialog$Builder2.setTitle(R$string.common_google_play_services_unsupported_title).create();
                     }
                     case 7: {
                         Log.e("GooglePlayServicesUtil", "Network error occurred. Please retry request later.");
-                        return (Dialog)alertDialog$Builder2.setTitle(R.string.common_google_play_services_network_error_title).create();
+                        return (Dialog)alertDialog$Builder2.setTitle(R$string.common_google_play_services_network_error_title).create();
                     }
                     case 8: {
                         Log.e("GooglePlayServicesUtil", "Internal error occurred. Please see logs for detailed information");
@@ -204,7 +205,7 @@ public final class GooglePlayServicesUtil
                     }
                     case 5: {
                         Log.e("GooglePlayServicesUtil", "An invalid account was specified when connecting. Please provide a valid account.");
-                        return (Dialog)alertDialog$Builder2.setTitle(R.string.common_google_play_services_invalid_account_title).create();
+                        return (Dialog)alertDialog$Builder2.setTitle(R$string.common_google_play_services_invalid_account_title).create();
                     }
                     case 11: {
                         Log.e("GooglePlayServicesUtil", "The application is not licensed to the user.");
@@ -392,31 +393,31 @@ public final class GooglePlayServicesUtil
         final Resources resources = context.getResources();
         switch (n) {
             default: {
-                return resources.getString(R.string.common_google_play_services_unknown_issue);
+                return resources.getString(R$string.common_google_play_services_unknown_issue);
             }
             case 1: {
                 if (a(context.getResources())) {
-                    return resources.getString(R.string.common_google_play_services_install_text_tablet);
+                    return resources.getString(R$string.common_google_play_services_install_text_tablet);
                 }
-                return resources.getString(R.string.common_google_play_services_install_text_phone);
+                return resources.getString(R$string.common_google_play_services_install_text_phone);
             }
             case 3: {
-                return resources.getString(R.string.common_google_play_services_enable_text);
+                return resources.getString(R$string.common_google_play_services_enable_text);
             }
             case 2: {
-                return resources.getString(R.string.common_google_play_services_update_text);
+                return resources.getString(R$string.common_google_play_services_update_text);
             }
             case 42: {
-                return resources.getString(R.string.common_android_wear_update_text);
+                return resources.getString(R$string.common_android_wear_update_text);
             }
             case 9: {
-                return resources.getString(R.string.common_google_play_services_unsupported_text);
+                return resources.getString(R$string.common_google_play_services_unsupported_text);
             }
             case 7: {
-                return resources.getString(R.string.common_google_play_services_network_error_text);
+                return resources.getString(R$string.common_google_play_services_network_error_text);
             }
             case 5: {
-                return resources.getString(R.string.common_google_play_services_invalid_account_text);
+                return resources.getString(R$string.common_google_play_services_invalid_account_text);
             }
         }
     }
@@ -428,14 +429,14 @@ public final class GooglePlayServicesUtil
                 return resources.getString(17039370);
             }
             case 1: {
-                return resources.getString(R.string.common_google_play_services_install_button);
+                return resources.getString(R$string.common_google_play_services_install_button);
             }
             case 3: {
-                return resources.getString(R.string.common_google_play_services_enable_button);
+                return resources.getString(R$string.common_google_play_services_enable_button);
             }
             case 2:
             case 42: {
-                return resources.getString(R.string.common_google_play_services_update_button);
+                return resources.getString(R$string.common_google_play_services_update_button);
             }
         }
     }
@@ -444,28 +445,28 @@ public final class GooglePlayServicesUtil
         final Resources resources = context.getResources();
         switch (n) {
             default: {
-                return resources.getString(R.string.common_google_play_services_unknown_issue);
+                return resources.getString(R$string.common_google_play_services_unknown_issue);
             }
             case 1: {
-                return resources.getString(R.string.common_google_play_services_notification_needs_installation_title);
+                return resources.getString(R$string.common_google_play_services_notification_needs_installation_title);
             }
             case 2: {
-                return resources.getString(R.string.common_google_play_services_notification_needs_update_title);
+                return resources.getString(R$string.common_google_play_services_notification_needs_update_title);
             }
             case 42: {
-                return resources.getString(R.string.common_android_wear_notification_needs_update_text);
+                return resources.getString(R$string.common_android_wear_notification_needs_update_text);
             }
             case 3: {
-                return resources.getString(R.string.common_google_play_services_needs_enabling_title);
+                return resources.getString(R$string.common_google_play_services_needs_enabling_title);
             }
             case 9: {
-                return resources.getString(R.string.common_google_play_services_unsupported_text);
+                return resources.getString(R$string.common_google_play_services_unsupported_text);
             }
             case 7: {
-                return resources.getString(R.string.common_google_play_services_network_error_text);
+                return resources.getString(R$string.common_google_play_services_network_error_text);
             }
             case 5: {
-                return resources.getString(R.string.common_google_play_services_invalid_account_text);
+                return resources.getString(R$string.common_google_play_services_invalid_account_text);
             }
         }
     }
@@ -886,15 +887,15 @@ public final class GooglePlayServicesUtil
         }
         final Resources resources = context.getResources();
         final String f = f(context, n2);
-        final String string = resources.getString(R.string.common_google_play_services_error_notification_requested_by_msg, new Object[] { F(context) });
+        final String string = resources.getString(R$string.common_google_play_services_error_notification_requested_by_msg, new Object[] { F(context) });
         final PendingIntent errorPendingIntent = getErrorPendingIntent(n2, context, 0);
         Notification build;
         if (k) {
             n.I(kc.hF());
-            build = new Notification$Builder(context).setSmallIcon(R.drawable.common_ic_googleplayservices).setPriority(2).setAutoCancel(true).setStyle((Notification$Style)new Notification$BigTextStyle().bigText((CharSequence)(f + " " + string))).addAction(R.drawable.common_full_open_on_phone, (CharSequence)resources.getString(R.string.common_open_on_phone), errorPendingIntent).build();
+            build = new Notification$Builder(context).setSmallIcon(R$drawable.common_ic_googleplayservices).setPriority(2).setAutoCancel(true).setStyle((Notification$Style)new Notification$BigTextStyle().bigText((CharSequence)(f + " " + string))).addAction(R$drawable.common_full_open_on_phone, (CharSequence)resources.getString(R$string.common_open_on_phone), errorPendingIntent).build();
         }
         else {
-            build = new Notification(17301642, (CharSequence)resources.getString(R.string.common_google_play_services_notification_ticker), System.currentTimeMillis());
+            build = new Notification(17301642, (CharSequence)resources.getString(R$string.common_google_play_services_notification_ticker), System.currentTimeMillis());
             build.flags |= 0x10;
             build.setLatestEventInfo(context, (CharSequence)f, (CharSequence)string, errorPendingIntent);
         }

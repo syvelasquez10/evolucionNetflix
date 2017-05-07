@@ -9,7 +9,7 @@ import com.google.android.gms.ads.doubleclick.PublisherAdView;
 import com.google.android.gms.ads.doubleclick.b;
 
 @ez
-public final class ew extends et.a
+public final class ew extends et$a
 {
     private final b oE;
     private final PublisherAdView sQ;

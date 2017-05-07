@@ -7,7 +7,6 @@ package com.netflix.mediaclient.service.logging.client.model;
 import java.util.Iterator;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.JsonUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Collection;
@@ -45,40 +44,32 @@ public class FalcorPathResult implements JsonSerializer
         }
     }
     
-    public static FalcorPathResult createInstance(final String s) throws JSONException {
+    public static FalcorPathResult createInstance(final String s) {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
         return createInstance(new JSONObject(s));
     }
     
-    public static FalcorPathResult createInstance(final JSONObject jsonObject) throws JSONException {
-        FalcorPathResult falcorPathResult;
+    public static FalcorPathResult createInstance(final JSONObject jsonObject) {
+        int i = 0;
         if (jsonObject == null) {
-            falcorPathResult = null;
+            return null;
         }
-        else {
-            final FalcorPathResult falcorPathResult2 = new FalcorPathResult();
-            falcorPathResult2.success = JsonUtils.getBoolean(jsonObject, "success", false);
-            falcorPathResult2.path = JsonUtils.getString(jsonObject, "path", null);
-            final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "pathError");
-            falcorPathResult = falcorPathResult2;
-            if (jsonArray != null) {
-                int n = 0;
-                while (true) {
-                    falcorPathResult = falcorPathResult2;
-                    if (n >= jsonArray.length()) {
-                        break;
-                    }
-                    falcorPathResult2.pathError.add(DeepErrorElement.createInstance(jsonArray.getJSONObject(n)));
-                    ++n;
-                }
+        final FalcorPathResult falcorPathResult = new FalcorPathResult();
+        falcorPathResult.success = JsonUtils.getBoolean(jsonObject, "success", false);
+        falcorPathResult.path = JsonUtils.getString(jsonObject, "path", null);
+        final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "pathError");
+        if (jsonArray != null) {
+            while (i < jsonArray.length()) {
+                falcorPathResult.pathError.add(DeepErrorElement.createInstance(jsonArray.getJSONObject(i)));
+                ++i;
             }
         }
         return falcorPathResult;
     }
     
-    public static String createJSONArray(final List<FalcorPathResult> list) throws JSONException {
+    public static String createJSONArray(final List<FalcorPathResult> list) {
         if (list == null || list.size() < 1) {
             return null;
         }
@@ -89,23 +80,14 @@ public class FalcorPathResult implements JsonSerializer
         return jsonArray.toString();
     }
     
-    public static List<FalcorPathResult> createList(final String s) throws JSONException {
-        List<FalcorPathResult> list;
+    public static List<FalcorPathResult> createList(final String s) {
         if (StringUtils.isEmpty(s)) {
-            list = null;
+            return null;
         }
-        else {
-            final JSONArray jsonArray = new JSONArray(s);
-            final ArrayList<FalcorPathResult> list2 = new ArrayList<FalcorPathResult>();
-            int n = 0;
-            while (true) {
-                list = list2;
-                if (n >= jsonArray.length()) {
-                    break;
-                }
-                list2.add(createInstance(jsonArray.getJSONObject(n)));
-                ++n;
-            }
+        final JSONArray jsonArray = new JSONArray(s);
+        final ArrayList<FalcorPathResult> list = new ArrayList<FalcorPathResult>();
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            list.add(createInstance(jsonArray.getJSONObject(i)));
         }
         return list;
     }
@@ -123,7 +105,7 @@ public class FalcorPathResult implements JsonSerializer
     }
     
     @Override
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.path != null) {
             jsonObject.put("path", (Object)this.path);

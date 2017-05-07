@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.util.log;
 
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.service.logging.JsonSerializer;
 import android.content.Intent;
@@ -13,20 +14,21 @@ import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 
 public final class ApmLogUtils extends ConsolidatedLoggingUtils
 {
-    public static void reportAssetRequest(final String s, final IClientLogging.AssetType assetType, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
+    public static void reportAssetRequest(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
         if (applicationPerformanceMetricsLogging == null) {
             Log.e("nf_log", "APM is unavailable, can not report asset request result");
         }
         else if (!StringUtils.isEmpty(s)) {
-            applicationPerformanceMetricsLogging.startAssetRequestSession(s, assetType);
+            applicationPerformanceMetricsLogging.startAssetRequestSession(s, clientLogging$AssetType);
         }
     }
     
@@ -35,7 +37,7 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
             Log.e("nf_log", "APM is unavailable, can not report asset request result");
         }
         else if (!StringUtils.isEmpty(s)) {
-            applicationPerformanceMetricsLogging.endAssetRequestSession(s, IClientLogging.CompletionReason.failed, null, ConsolidatedLoggingUtils.toError(volleyError, s));
+            applicationPerformanceMetricsLogging.endAssetRequestSession(s, IClientLogging$CompletionReason.failed, null, ConsolidatedLoggingUtils.toError(volleyError, s));
         }
     }
     
@@ -44,24 +46,24 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
             Log.e("nf_log", "APM is unavailable, can not report asset request result");
         }
         else if (!StringUtils.isEmpty(s)) {
-            final IClientLogging.CompletionReason failed = IClientLogging.CompletionReason.failed;
+            final IClientLogging$CompletionReason failed = IClientLogging$CompletionReason.failed;
             final Error error = ConsolidatedLoggingUtils.toError(statusCode, s);
-            Enum<IClientLogging.CompletionReason> success = failed;
+            IClientLogging$CompletionReason success = failed;
             if (error == null) {
-                success = IClientLogging.CompletionReason.success;
+                success = IClientLogging$CompletionReason.success;
             }
-            applicationPerformanceMetricsLogging.endAssetRequestSession(s, (IClientLogging.CompletionReason)success, null, error);
+            applicationPerformanceMetricsLogging.endAssetRequestSession(s, success, null, error);
         }
     }
     
-    public static void reportDataRequestEnded(final Context context, final String s, final IClientLogging.CompletionReason completionReason, final List<FalcorPathResult> list, final Error error, final HttpResponse httpResponse) {
+    public static void reportDataRequestEnded(final Context context, final String s, final IClientLogging$CompletionReason clientLogging$CompletionReason, final List<FalcorPathResult> list, final Error error, final HttpResponse httpResponse) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         ConsolidatedLoggingUtils.validateArgument(s, "Request ID can not be null!");
-        ConsolidatedLoggingUtils.validateArgument(completionReason, "Completion reason can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Completion reason can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intent.putExtra("request_id", s);
-        intent.putExtra("reason", completionReason.name());
+        intent.putExtra("reason", clientLogging$CompletionReason.name());
         ConsolidatedLoggingUtils.addToIntent(intent, "error", error);
         ConsolidatedLoggingUtils.addToIntent(intent, "http_response", httpResponse);
         ConsolidatedLoggingUtils.addToIntent(intent, "falcorPathResults", list);
@@ -79,12 +81,28 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportUiModalViewChanged(final Context context, final IClientLogging.ModalView modalView) {
+    public static void reportEndSharedContext(final Context context) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
-        ConsolidatedLoggingUtils.validateArgument(modalView, "View can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportStartSharedContext(final Context context, final String s) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(s, "UUID can not be null");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("uuid", s);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportUiModalViewChanged(final Context context, final IClientLogging$ModalView clientLogging$ModalView) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(clientLogging$ModalView, "View can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
-        intent.putExtra("view", modalView.name());
+        intent.putExtra("view", clientLogging$ModalView.name());
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

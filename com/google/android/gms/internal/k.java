@@ -24,7 +24,7 @@ public class k
         this.kV = kv;
     }
     
-    private Uri a(Uri a, final Context context, final String s, final boolean b) throws l {
+    private Uri a(Uri a, final Context context, final String s, final boolean b) {
         boolean a2 = false;
         Label_0064: {
             try {
@@ -57,7 +57,7 @@ public class k
         return a;
     }
     
-    private Uri a(final Uri uri, final String s, final String s2) throws UnsupportedOperationException {
+    private Uri a(final Uri uri, final String s, final String s2) {
         final String string = uri.toString();
         int n;
         if ((n = string.indexOf("&adurl")) == -1) {
@@ -80,7 +80,7 @@ public class k
         return Uri.parse(string.substring(0, encodedPath.length() + index2) + ";" + s + "=" + s2 + ";" + string.substring(encodedPath.length() + index2));
     }
     
-    public Uri a(Uri a, final Context context) throws l {
+    public Uri a(Uri a, final Context context) {
         try {
             a = this.a(a, context, a.getQueryParameter("ai"), true);
             return a;

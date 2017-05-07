@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.service.logging.client.model.Event;
-import com.netflix.mediaclient.javabridge.ui.Log;
+import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 
 public interface EventHandler
@@ -14,7 +14,7 @@ public interface EventHandler
     
     boolean canSendEvent(final String p0, final String p1);
     
-    void createUserSession(final Log.ResetSessionIdCallback p0);
+    void createUserSession(final Log$ResetSessionIdCallback p0);
     
     void executeInBackground(final Runnable p0);
     

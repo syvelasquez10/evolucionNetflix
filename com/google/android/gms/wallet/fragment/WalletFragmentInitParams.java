@@ -4,7 +4,6 @@
 
 package com.google.android.gms.wallet.fragment;
 
-import com.google.android.gms.common.internal.n;
 import android.os.Parcel;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.MaskedWalletRequest;
@@ -37,10 +36,10 @@ public final class WalletFragmentInitParams implements SafeParcelable
         this.atM = atM;
     }
     
-    public static Builder newBuilder() {
+    public static WalletFragmentInitParams$Builder newBuilder() {
         final WalletFragmentInitParams walletFragmentInitParams = new WalletFragmentInitParams();
         walletFragmentInitParams.getClass();
-        return new Builder();
+        return new WalletFragmentInitParams$Builder(walletFragmentInitParams, null);
     }
     
     public int describeContents() {
@@ -65,35 +64,5 @@ public final class WalletFragmentInitParams implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         a.a(this, parcel, n);
-    }
-    
-    public final class Builder
-    {
-        public WalletFragmentInitParams build() {
-            final boolean b = true;
-            n.a((WalletFragmentInitParams.this.atM != null && WalletFragmentInitParams.this.atL == null) || (WalletFragmentInitParams.this.atM == null && WalletFragmentInitParams.this.atL != null), (Object)"Exactly one of MaskedWallet or MaskedWalletRequest is required");
-            n.a(WalletFragmentInitParams.this.atZ >= 0 && b, (Object)"masked wallet request code is required and must be non-negative");
-            return WalletFragmentInitParams.this;
-        }
-        
-        public Builder setAccountName(final String s) {
-            WalletFragmentInitParams.this.Dd = s;
-            return this;
-        }
-        
-        public Builder setMaskedWallet(final MaskedWallet maskedWallet) {
-            WalletFragmentInitParams.this.atM = maskedWallet;
-            return this;
-        }
-        
-        public Builder setMaskedWalletRequest(final MaskedWalletRequest maskedWalletRequest) {
-            WalletFragmentInitParams.this.atL = maskedWalletRequest;
-            return this;
-        }
-        
-        public Builder setMaskedWalletRequestCode(final int n) {
-            WalletFragmentInitParams.this.atZ = n;
-            return this;
-        }
     }
 }

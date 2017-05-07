@@ -13,10 +13,10 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.os.Parcel;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import android.os.Parcelable$Creator;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 
-public class ListOfGenreSummary extends TrackableListSummary implements GenreList, JsonPopulator
+public class ListOfGenreSummary extends TrackableListSummary implements JsonPopulator, GenreList
 {
     public static final Parcelable$Creator<ListOfGenreSummary> CREATOR;
     private static final String TAG = "ListOfGenreSummary";
@@ -27,15 +27,7 @@ public class ListOfGenreSummary extends TrackableListSummary implements GenreLis
     private boolean isKidsGenre;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<ListOfGenreSummary>() {
-            public ListOfGenreSummary createFromParcel(final Parcel parcel) {
-                return new ListOfGenreSummary(parcel);
-            }
-            
-            public ListOfGenreSummary[] newArray(final int n) {
-                return new ListOfGenreSummary[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new ListOfGenreSummary$1();
     }
     
     public ListOfGenreSummary() {

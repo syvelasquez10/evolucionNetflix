@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.app.Fragment;
 
-public final class b extends c.a
+public final class b extends c$a
 {
     private Fragment Sb;
     

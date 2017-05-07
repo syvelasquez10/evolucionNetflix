@@ -4,15 +4,16 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import android.view.View;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.Log;
-import android.view.View;
 import java.util.ArrayList;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.PressedStateHandler;
@@ -39,24 +40,16 @@ public class SkidmarkMoreButton extends FrameLayout
     public SkidmarkMoreButton(final NetflixActivity activity) {
         super((Context)activity);
         this.imgViews = new ArrayList<AdvancedImageView>(3);
-        this.launchLomoDetailsClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                if (SkidmarkMoreButton.this.lomo == null) {
-                    Log.w("SkidmarkMoreButton", "No lomo available!");
-                    return;
-                }
-                SkidmarkMoreButton.this.launchAndLogKidsDetailsActivity();
-            }
-        };
+        this.launchLomoDetailsClickListener = (View$OnClickListener)new SkidmarkMoreButton$1(this);
         this.activity = activity;
         Log.v("SkidmarkMoreButton", "Creating more button");
-        activity.getLayoutInflater().inflate(2130903109, (ViewGroup)this);
+        activity.getLayoutInflater().inflate(2130903110, (ViewGroup)this);
         this.setOnClickListener(this.launchLomoDetailsClickListener);
+        this.imgViews.add(this.findAndConfigureView(2131165429));
         this.imgViews.add(this.findAndConfigureView(2131165430));
         this.imgViews.add(this.findAndConfigureView(2131165431));
-        this.imgViews.add(this.findAndConfigureView(2131165432));
-        this.lomoTitle = (TextView)this.findViewById(2131165434);
-        final int dimensionPixelSize = activity.getResources().getDimensionPixelSize(2131361971);
+        this.lomoTitle = (TextView)this.findViewById(2131165433);
+        final int dimensionPixelSize = activity.getResources().getDimensionPixelSize(2131361973);
         this.setPadding(dimensionPixelSize, 0, dimensionPixelSize, AndroidUtils.dipToPixels((Context)activity, 50));
         this.pressedStateHandler = new PressedStateHandler((View)this);
     }
@@ -68,7 +61,7 @@ public class SkidmarkMoreButton extends FrameLayout
     }
     
     private void launchAndLogKidsDetailsActivity() {
-        UIViewLogUtils.reportUIViewCommandStarted((Context)this.activity, UIViewLogging.UIViewCommandName.moreButton, IClientLogging.ModalView.homeScreen, new DataContext(this.lomo));
+        UIViewLogUtils.reportUIViewCommandStarted((Context)this.activity, UIViewLogging$UIViewCommandName.moreButton, IClientLogging$ModalView.homeScreen, new DataContext(this.lomo));
         KidsLomoDetailActivity.show(this.activity, this.lomo);
         UIViewLogUtils.reportUIViewCommandEnded((Context)this.activity);
     }

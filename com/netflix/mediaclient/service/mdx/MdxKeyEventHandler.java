@@ -16,10 +16,10 @@ public class MdxKeyEventHandler
 {
     private static final String TAG = "nf_key";
     private static final int VOLUME_DELTA = 10;
-    private final MdxKeyEventCallbacks callbacks;
+    private final MdxKeyEventHandler$MdxKeyEventCallbacks callbacks;
     private final LastKeyEvent lastKey;
     
-    public MdxKeyEventHandler(final MdxKeyEventCallbacks callbacks) {
+    public MdxKeyEventHandler(final MdxKeyEventHandler$MdxKeyEventCallbacks callbacks) {
         this.lastKey = new LastKeyEvent();
         this.callbacks = callbacks;
     }
@@ -54,13 +54,7 @@ public class MdxKeyEventHandler
                             }
                             else {
                                 Log.d("nf_key", "Volume key up is pressed, sending...");
-                                new BackgroundTask().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        remotePlayer.setVolume(MdxKeyEventHandler.this.callbacks.getVolumeAsPercent() + 10);
-                                        MdxKeyEventHandler.this.callbacks.onVolumeSet(remotePlayer.getVolume());
-                                    }
-                                });
+                                new BackgroundTask().execute(new MdxKeyEventHandler$2(this, remotePlayer));
                             }
                             return true;
                         }
@@ -74,13 +68,7 @@ public class MdxKeyEventHandler
                             }
                             else {
                                 Log.d("nf_key", "Volume key down is pressed, sending...");
-                                new BackgroundTask().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        remotePlayer.setVolume(MdxKeyEventHandler.this.callbacks.getVolumeAsPercent() - 10);
-                                        MdxKeyEventHandler.this.callbacks.onVolumeSet(remotePlayer.getVolume());
-                                    }
-                                });
+                                new BackgroundTask().execute(new MdxKeyEventHandler$1(this, remotePlayer));
                             }
                             return true;
                         }
@@ -91,12 +79,5 @@ public class MdxKeyEventHandler
             }
         }
         return false;
-    }
-    
-    public interface MdxKeyEventCallbacks
-    {
-        int getVolumeAsPercent();
-        
-        void onVolumeSet(final int p0);
     }
 }

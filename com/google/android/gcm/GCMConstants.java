@@ -15,6 +15,7 @@ public final class GCMConstants
     public static final String ERROR_SERVICE_NOT_AVAILABLE = "SERVICE_NOT_AVAILABLE";
     public static final String EXTRA_APPLICATION_PENDING_INTENT = "app";
     public static final String EXTRA_ERROR = "error";
+    public static final String EXTRA_FROM = "from";
     public static final String EXTRA_REGISTRATION_ID = "registration_id";
     public static final String EXTRA_SENDER = "sender";
     public static final String EXTRA_SPECIAL_MESSAGE = "message_type";

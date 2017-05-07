@@ -8,7 +8,7 @@ import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
 import com.google.android.gms.common.internal.m;
 import android.content.res.TypedArray;
-import com.google.android.gms.R;
+import com.google.android.gms.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.google.android.gms.common.internal.n;
@@ -45,44 +45,44 @@ public final class CameraPosition implements SafeParcelable
         this(1, latLng, n, n2, n3);
     }
     
-    public static Builder builder() {
-        return new Builder();
+    public static CameraPosition$Builder builder() {
+        return new CameraPosition$Builder();
     }
     
-    public static Builder builder(final CameraPosition cameraPosition) {
-        return new Builder(cameraPosition);
+    public static CameraPosition$Builder builder(final CameraPosition cameraPosition) {
+        return new CameraPosition$Builder(cameraPosition);
     }
     
     public static CameraPosition createFromAttributes(final Context context, final AttributeSet set) {
         if (set == null) {
             return null;
         }
-        final TypedArray obtainAttributes = context.getResources().obtainAttributes(set, R.styleable.MapAttrs);
+        final TypedArray obtainAttributes = context.getResources().obtainAttributes(set, R$styleable.MapAttrs);
         float float1;
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraTargetLat)) {
-            float1 = obtainAttributes.getFloat(R.styleable.MapAttrs_cameraTargetLat, 0.0f);
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_cameraTargetLat)) {
+            float1 = obtainAttributes.getFloat(R$styleable.MapAttrs_cameraTargetLat, 0.0f);
         }
         else {
             float1 = 0.0f;
         }
         float float2;
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraTargetLng)) {
-            float2 = obtainAttributes.getFloat(R.styleable.MapAttrs_cameraTargetLng, 0.0f);
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_cameraTargetLng)) {
+            float2 = obtainAttributes.getFloat(R$styleable.MapAttrs_cameraTargetLng, 0.0f);
         }
         else {
             float2 = 0.0f;
         }
         final LatLng latLng = new LatLng(float1, float2);
-        final Builder builder = builder();
+        final CameraPosition$Builder builder = builder();
         builder.target(latLng);
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraZoom)) {
-            builder.zoom(obtainAttributes.getFloat(R.styleable.MapAttrs_cameraZoom, 0.0f));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_cameraZoom)) {
+            builder.zoom(obtainAttributes.getFloat(R$styleable.MapAttrs_cameraZoom, 0.0f));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraBearing)) {
-            builder.bearing(obtainAttributes.getFloat(R.styleable.MapAttrs_cameraBearing, 0.0f));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_cameraBearing)) {
+            builder.bearing(obtainAttributes.getFloat(R$styleable.MapAttrs_cameraBearing, 0.0f));
         }
-        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraTilt)) {
-            builder.tilt(obtainAttributes.getFloat(R.styleable.MapAttrs_cameraTilt, 0.0f));
+        if (obtainAttributes.hasValue(R$styleable.MapAttrs_cameraTilt)) {
+            builder.tilt(obtainAttributes.getFloat(R$styleable.MapAttrs_cameraTilt, 0.0f));
         }
         return builder.build();
     }
@@ -129,47 +129,5 @@ public final class CameraPosition implements SafeParcelable
             return;
         }
         a.a(this, parcel, n);
-    }
-    
-    public static final class Builder
-    {
-        private LatLng ajq;
-        private float ajr;
-        private float ajs;
-        private float ajt;
-        
-        public Builder() {
-        }
-        
-        public Builder(final CameraPosition cameraPosition) {
-            this.ajq = cameraPosition.target;
-            this.ajr = cameraPosition.zoom;
-            this.ajs = cameraPosition.tilt;
-            this.ajt = cameraPosition.bearing;
-        }
-        
-        public Builder bearing(final float ajt) {
-            this.ajt = ajt;
-            return this;
-        }
-        
-        public CameraPosition build() {
-            return new CameraPosition(this.ajq, this.ajr, this.ajs, this.ajt);
-        }
-        
-        public Builder target(final LatLng ajq) {
-            this.ajq = ajq;
-            return this;
-        }
-        
-        public Builder tilt(final float ajs) {
-            this.ajs = ajs;
-            return this;
-        }
-        
-        public Builder zoom(final float ajr) {
-            this.ajr = ajr;
-            return this;
-        }
     }
 }

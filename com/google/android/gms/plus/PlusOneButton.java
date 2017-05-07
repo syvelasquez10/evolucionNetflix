@@ -4,7 +4,6 @@
 
 package com.google.android.gms.plus;
 
-import android.content.Intent;
 import android.view.View$OnClickListener;
 import com.google.android.gms.common.internal.n;
 import android.app.Activity;
@@ -28,7 +27,7 @@ public final class PlusOneButton extends FrameLayout
     private View ala;
     private int alb;
     private int alc;
-    private OnPlusOneClickListener ald;
+    private PlusOneButton$OnPlusOneClickListener ald;
     private int mSize;
     private String uR;
     
@@ -87,7 +86,7 @@ public final class PlusOneButton extends FrameLayout
         this.G(this.getContext());
     }
     
-    public void initialize(final String ur, final OnPlusOneClickListener onPlusOneClickListener) {
+    public void initialize(final String ur, final PlusOneButton$OnPlusOneClickListener onPlusOneClickListener) {
         this.uR = ur;
         this.alc = 0;
         this.G(this.getContext());
@@ -109,43 +108,13 @@ public final class PlusOneButton extends FrameLayout
         this.G(this.getContext());
     }
     
-    public void setOnPlusOneClickListener(final OnPlusOneClickListener ald) {
+    public void setOnPlusOneClickListener(final PlusOneButton$OnPlusOneClickListener ald) {
         this.ald = ald;
-        this.ala.setOnClickListener((View$OnClickListener)new DefaultOnPlusOneClickListener(ald));
+        this.ala.setOnClickListener((View$OnClickListener)new PlusOneButton$DefaultOnPlusOneClickListener(this, ald));
     }
     
     public void setSize(final int mSize) {
         this.mSize = mSize;
         this.G(this.getContext());
-    }
-    
-    protected class DefaultOnPlusOneClickListener implements View$OnClickListener, OnPlusOneClickListener
-    {
-        private final OnPlusOneClickListener ale;
-        
-        public DefaultOnPlusOneClickListener(final OnPlusOneClickListener ale) {
-            this.ale = ale;
-        }
-        
-        public void onClick(final View view) {
-            final Intent intent = (Intent)PlusOneButton.this.ala.getTag();
-            if (this.ale != null) {
-                this.ale.onPlusOneClick(intent);
-                return;
-            }
-            this.onPlusOneClick(intent);
-        }
-        
-        public void onPlusOneClick(final Intent intent) {
-            final Context context = PlusOneButton.this.getContext();
-            if (context instanceof Activity && intent != null) {
-                ((Activity)context).startActivityForResult(intent, PlusOneButton.this.alc);
-            }
-        }
-    }
-    
-    public interface OnPlusOneClickListener
-    {
-        void onPlusOneClick(final Intent p0);
     }
 }

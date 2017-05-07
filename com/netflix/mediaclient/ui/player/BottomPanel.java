@@ -4,9 +4,8 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.util.ViewUtils;
-import android.widget.SeekBar;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.widget.SeekBar;
 import android.app.Dialog;
 import android.view.View$OnTouchListener;
 import android.widget.SeekBar$OnSeekBarChangeListener;
@@ -14,18 +13,12 @@ import android.view.View$OnClickListener;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import com.netflix.mediaclient.servicemgr.IPlayer;
-import com.netflix.mediaclient.ui.Asset;
-import com.netflix.mediaclient.ui.mdx.MdxTarget;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
-import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.Log;
-import android.widget.AdapterView;
+import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.widget.AdapterView$OnItemClickListener;
 import android.content.Context;
 import android.app.Activity;
-import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog;
+import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
 import android.app.AlertDialog;
 import com.netflix.mediaclient.android.widget.NetflixSeekBar;
 import com.netflix.mediaclient.android.widget.IconFontTextView;
@@ -54,11 +47,11 @@ public final class BottomPanel extends PlayerSection
     protected ImageButton zoom;
     protected View zoomDivider;
     
-    public BottomPanel(final PlayerActivity playerActivity, final PlayScreen.Listeners listeners) {
+    public BottomPanel(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners) {
         super(playerActivity);
         this.mZoomEnabled = true;
         this.formatter = new TimeFormatterHelper();
-        this.init(listeners);
+        this.init(playScreen$Listeners);
     }
     
     private AlertDialog createMdxTargetSelectionDialog(final PlayerActivity playerActivity) {
@@ -66,55 +59,13 @@ public final class BottomPanel extends PlayerSection
         final boolean b = player != null && player.isPlaying();
         final int localDevicePosition = this.mdxTargetSelector.getLocalDevicePosition();
         this.mdxTargetSelector.setTarget(localDevicePosition);
-        final MdxTargetSelectionDialog.Builder builder = new MdxTargetSelectionDialog.Builder(playerActivity);
-        builder.setCancelable(false);
-        builder.setTitle(2131493156);
-        builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
-        builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493252), playerActivity.getCurrentTitle()));
-        builder.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> adapterView, final View view, final int target, final long n) {
-                Log.d("screen", "Mdx target clicked: item with id " + n + ", on position " + target);
-                playerActivity.removeVisibleDialog();
-                if (BottomPanel.this.mdxTargetSelector != null) {
-                    BottomPanel.this.mdxTargetSelector.setTarget(target);
-                    final MdxTarget selectedTarget = BottomPanel.this.mdxTargetSelector.getSelectedTarget();
-                    if (selectedTarget == null) {
-                        Log.e("screen", "Target is NULL, this should NOT happen!");
-                        if (b) {
-                            playerActivity.doUnpause();
-                        }
-                    }
-                    else if (selectedTarget.isLocal()) {
-                        Log.d("screen", "Target is local, same as cancel. Do nothing");
-                        if (b) {
-                            playerActivity.doUnpause();
-                        }
-                    }
-                    else {
-                        if (Log.isLoggable("screen", 3)) {
-                            Log.d("screen", "Remote target is selected " + selectedTarget);
-                        }
-                        if (MdxUtils.isMdxTargetAvailable(playerActivity.getServiceManager(), selectedTarget.getUUID())) {
-                            Log.d("screen", "Remote target is available, start MDX playback, use local bookmark!");
-                            playerActivity.getServiceManager().getMdx().setCurrentTarget(selectedTarget.getUUID());
-                            final Asset currentAsset = playerActivity.getCurrentAsset();
-                            currentAsset.setPlaybackBookmark(playerActivity.getPlayer().getCurrentPositionMs() / 1000);
-                            PlaybackLauncher.startPlaybackAfterPIN(playerActivity, currentAsset);
-                            if (PlaybackLauncher.shouldPlayOnRemoteTarget(playerActivity.getServiceManager())) {
-                                playerActivity.finish();
-                            }
-                        }
-                        else {
-                            Log.w("screen", "Remote target is NOT available anymore, continue local plaback");
-                            if (b) {
-                                playerActivity.doUnpause();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        return builder.create();
+        final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerActivity);
+        mdxTargetSelectionDialog$Builder.setCancelable(false);
+        mdxTargetSelectionDialog$Builder.setTitle(2131493129);
+        mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493213), playerActivity.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new BottomPanel$2(this, playerActivity, b));
+        return mdxTargetSelectionDialog$Builder.create();
     }
     
     private int getThumbMiddleX() {
@@ -137,7 +88,7 @@ public final class BottomPanel extends PlayerSection
         return netflixThumb.getBounds().centerX();
     }
     
-    private void init(final PlayScreen.Listeners listeners) {
+    private void init(final PlayScreen$Listeners playScreen$Listeners) {
         this.durationLabel = (TextView)this.context.findViewById(2131165558);
         this.bottomPanel = this.context.findViewById(2131165554);
         if (this.bottomPanel == null) {
@@ -145,7 +96,7 @@ public final class BottomPanel extends PlayerSection
         }
         this.timeline = (NetflixSeekBar)this.context.findViewById(2131165557);
         if (this.timeline != null) {
-            this.timeline.setOnSeekBarChangeListener(listeners.videoPositionListener);
+            this.timeline.setOnSeekBarChangeListener(playScreen$Listeners.videoPositionListener);
             this.timeline.setDentVisible(false);
             this.timeline.setScrubberDent(BitmapFactory.decodeResource(this.context.getResources(), this.context.getUiResources().timelineDent));
             this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
@@ -153,23 +104,15 @@ public final class BottomPanel extends PlayerSection
         }
         this.media = (ImageButton)this.context.findViewById(2131165555);
         if (this.media != null) {
-            this.media.setOnClickListener(listeners.playPauseListener);
+            this.media.setOnClickListener(playScreen$Listeners.playPauseListener);
             this.media.setBackgroundColor(this.transpColor);
         }
         this.skipBack = (IconFontTextView)this.context.findViewById(2131165556);
         if (this.skipBack != null) {
-            this.skipBack.setOnClickListener(listeners.skipBackListener);
+            this.skipBack.setOnClickListener(playScreen$Listeners.skipBackListener);
             this.skipBack.setBackgroundColor(this.transpColor);
         }
-        final View$OnClickListener onClickListener = (View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                final PlayerActivity context = BottomPanel.this.context;
-                if (context != null) {
-                    context.extendTimeoutTimer();
-                }
-                BottomPanel.this.displayMdxTargets();
-            }
-        };
+        final BottomPanel$1 onClickListener = new BottomPanel$1(this);
         this.mdxTarget = (ImageButton)this.context.findViewById(2131165549);
         if (this.mdxTarget != null) {
             this.mdxTarget.setOnClickListener((View$OnClickListener)onClickListener);
@@ -178,7 +121,7 @@ public final class BottomPanel extends PlayerSection
         this.zoomDivider = this.context.findViewById(2131165559);
         this.zoom = (ImageButton)this.context.findViewById(2131165560);
         if (this.zoom != null) {
-            this.zoom.setOnClickListener(listeners.zoomListener);
+            this.zoom.setOnClickListener(playScreen$Listeners.zoomListener);
             this.zoom.setBackgroundColor(this.transpColor);
         }
         this.currentTime = CurrentTime.newInstance(this.context);
@@ -419,17 +362,7 @@ public final class BottomPanel extends PlayerSection
             }
             Log.d("screen", "Timeline was NOT visible before, its location is NOT known, delay until is rendered first time");
             final NetflixSeekBar timeline = this.timeline;
-            timeline.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-                public void onGlobalLayout() {
-                    Log.d("screen", "Timeline is visible now, its location is known, render current time now!!! <==");
-                    if (BottomPanel.this.timelineWasPreviouslyRendered > 1) {
-                        ViewUtils.removeGlobalLayoutListener((View)timeline, (ViewTreeObserver$OnGlobalLayoutListener)this);
-                    }
-                    final BottomPanel this$0 = BottomPanel.this;
-                    ++this$0.timelineWasPreviouslyRendered;
-                    BottomPanel.this.currentTime.move(true, true);
-                }
-            });
+            timeline.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new BottomPanel$3(this, timeline));
         }
     }
     

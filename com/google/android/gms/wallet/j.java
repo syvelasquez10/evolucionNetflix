@@ -5,6 +5,7 @@
 package com.google.android.gms.wallet;
 
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.wallet.wobs.f;
 import com.google.android.gms.wallet.wobs.l;
 import com.google.android.gms.internal.jr;
@@ -176,7 +177,7 @@ public class j implements Parcelable$Creator<LoyaltyWalletObject>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new LoyaltyWalletObject(g, o, o2, o3, o4, o5, o6, o7, o8, o9, o10, g2, list, l, list2, o11, o12, list3, c2, list4, list5, list6, f);
     }

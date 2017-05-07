@@ -4,20 +4,19 @@
 
 package com.netflix.mediaclient.event.nrdp.mdx;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.javabridge.ui.Mdx;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
 public class InitEvent extends JsonBaseNccpEvent
 {
-    public static final Mdx.Events TYPE;
+    public static final Mdx$Events TYPE;
     
     static {
-        TYPE = Mdx.Events.mdx_init;
+        TYPE = Mdx$Events.mdx_init;
     }
     
-    public InitEvent(final JSONObject jsonObject) throws JSONException {
+    public InitEvent(final JSONObject jsonObject) {
         super(InitEvent.TYPE.getName(), jsonObject);
     }
     
@@ -27,6 +26,6 @@ public class InitEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
     }
 }

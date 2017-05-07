@@ -26,18 +26,18 @@ public class AccessibilityServiceInfoCompat
     public static final int FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY = 8;
     public static final int FLAG_REQUEST_FILTER_KEY_EVENTS = 32;
     public static final int FLAG_REQUEST_TOUCH_EXPLORATION_MODE = 4;
-    private static final AccessibilityServiceInfoVersionImpl IMPL;
+    private static final AccessibilityServiceInfoCompat$AccessibilityServiceInfoVersionImpl IMPL;
     
     static {
         if (Build$VERSION.SDK_INT >= 18) {
-            IMPL = (AccessibilityServiceInfoVersionImpl)new AccessibilityServiceInfoJellyBeanMr2();
+            IMPL = new AccessibilityServiceInfoCompat$AccessibilityServiceInfoJellyBeanMr2();
             return;
         }
         if (Build$VERSION.SDK_INT >= 14) {
-            IMPL = (AccessibilityServiceInfoVersionImpl)new AccessibilityServiceInfoIcsImpl();
+            IMPL = new AccessibilityServiceInfoCompat$AccessibilityServiceInfoIcsImpl();
             return;
         }
-        IMPL = (AccessibilityServiceInfoVersionImpl)new AccessibilityServiceInfoStubImpl();
+        IMPL = new AccessibilityServiceInfoCompat$AccessibilityServiceInfoStubImpl();
     }
     
     public static String capabilityToString(final int n) {
@@ -147,97 +147,5 @@ public class AccessibilityServiceInfoCompat
     
     public static String getSettingsActivityName(final AccessibilityServiceInfo accessibilityServiceInfo) {
         return AccessibilityServiceInfoCompat.IMPL.getSettingsActivityName(accessibilityServiceInfo);
-    }
-    
-    static class AccessibilityServiceInfoIcsImpl extends AccessibilityServiceInfoStubImpl
-    {
-        @Override
-        public boolean getCanRetrieveWindowContent(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return AccessibilityServiceInfoCompatIcs.getCanRetrieveWindowContent(accessibilityServiceInfo);
-        }
-        
-        @Override
-        public int getCapabilities(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            if (this.getCanRetrieveWindowContent(accessibilityServiceInfo)) {
-                return 1;
-            }
-            return 0;
-        }
-        
-        @Override
-        public String getDescription(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return AccessibilityServiceInfoCompatIcs.getDescription(accessibilityServiceInfo);
-        }
-        
-        @Override
-        public String getId(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return AccessibilityServiceInfoCompatIcs.getId(accessibilityServiceInfo);
-        }
-        
-        @Override
-        public ResolveInfo getResolveInfo(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return AccessibilityServiceInfoCompatIcs.getResolveInfo(accessibilityServiceInfo);
-        }
-        
-        @Override
-        public String getSettingsActivityName(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return AccessibilityServiceInfoCompatIcs.getSettingsActivityName(accessibilityServiceInfo);
-        }
-    }
-    
-    static class AccessibilityServiceInfoJellyBeanMr2 extends AccessibilityServiceInfoIcsImpl
-    {
-        @Override
-        public int getCapabilities(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return AccessibilityServiceInfoCompatJellyBeanMr2.getCapabilities(accessibilityServiceInfo);
-        }
-    }
-    
-    static class AccessibilityServiceInfoStubImpl implements AccessibilityServiceInfoVersionImpl
-    {
-        @Override
-        public boolean getCanRetrieveWindowContent(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return false;
-        }
-        
-        @Override
-        public int getCapabilities(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return 0;
-        }
-        
-        @Override
-        public String getDescription(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return null;
-        }
-        
-        @Override
-        public String getId(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return null;
-        }
-        
-        @Override
-        public ResolveInfo getResolveInfo(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return null;
-        }
-        
-        @Override
-        public String getSettingsActivityName(final AccessibilityServiceInfo accessibilityServiceInfo) {
-            return null;
-        }
-    }
-    
-    interface AccessibilityServiceInfoVersionImpl
-    {
-        boolean getCanRetrieveWindowContent(final AccessibilityServiceInfo p0);
-        
-        int getCapabilities(final AccessibilityServiceInfo p0);
-        
-        String getDescription(final AccessibilityServiceInfo p0);
-        
-        String getId(final AccessibilityServiceInfo p0);
-        
-        ResolveInfo getResolveInfo(final AccessibilityServiceInfo p0);
-        
-        String getSettingsActivityName(final AccessibilityServiceInfo p0);
     }
 }

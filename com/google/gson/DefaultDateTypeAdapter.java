@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.text.DateFormat;
 import java.util.Date;
 
-final class DefaultDateTypeAdapter implements JsonSerializer<Date>, JsonDeserializer<Date>
+final class DefaultDateTypeAdapter implements JsonDeserializer<Date>, JsonSerializer<Date>
 {
     private final DateFormat enUsFormat;
     private final DateFormat iso8601Format;
@@ -81,7 +81,7 @@ final class DefaultDateTypeAdapter implements JsonSerializer<Date>, JsonDeserial
     }
     
     @Override
-    public Date deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+    public Date deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
         if (!(jsonElement instanceof JsonPrimitive)) {
             throw new JsonParseException("The date should be a string value");
         }

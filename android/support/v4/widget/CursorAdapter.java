@@ -4,7 +4,6 @@
 
 package android.support.v4.widget;
 
-import android.os.Handler;
 import android.database.ContentObserver;
 import android.widget.Filter;
 import android.view.ViewGroup;
@@ -16,13 +15,13 @@ import android.content.Context;
 import android.widget.Filterable;
 import android.widget.BaseAdapter;
 
-public abstract class CursorAdapter extends BaseAdapter implements Filterable, CursorFilterClient
+public abstract class CursorAdapter extends BaseAdapter implements CursorFilter$CursorFilterClient, Filterable
 {
     @Deprecated
     public static final int FLAG_AUTO_REQUERY = 1;
     public static final int FLAG_REGISTER_CONTENT_OBSERVER = 2;
     protected boolean mAutoRequery;
-    protected ChangeObserver mChangeObserver;
+    protected CursorAdapter$ChangeObserver mChangeObserver;
     protected Context mContext;
     protected Cursor mCursor;
     protected CursorFilter mCursorFilter;
@@ -77,10 +76,11 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
         return this.mCursor;
     }
     
-    public View getDropDownView(final int n, View dropDownView, final ViewGroup viewGroup) {
+    public View getDropDownView(final int n, final View view, final ViewGroup viewGroup) {
         if (this.mDataValid) {
             this.mCursor.moveToPosition(n);
-            if (dropDownView == null) {
+            View dropDownView;
+            if ((dropDownView = view) == null) {
                 dropDownView = this.newDropDownView(this.mContext, this.mCursor, viewGroup);
             }
             this.bindView(dropDownView, this.mContext, this.mCursor);
@@ -91,7 +91,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
     
     public Filter getFilter() {
         if (this.mCursorFilter == null) {
-            this.mCursorFilter = new CursorFilter((CursorFilter.CursorFilterClient)this);
+            this.mCursorFilter = new CursorFilter(this);
         }
         return this.mCursorFilter;
     }
@@ -123,18 +123,19 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
         return long1;
     }
     
-    public View getView(final int n, View view, final ViewGroup viewGroup) {
+    public View getView(final int n, final View view, final ViewGroup viewGroup) {
         if (!this.mDataValid) {
             throw new IllegalStateException("this should only be called when the cursor is valid");
         }
         if (!this.mCursor.moveToPosition(n)) {
             throw new IllegalStateException("couldn't move cursor to position " + n);
         }
-        if (view == null) {
-            view = this.newView(this.mContext, this.mCursor, viewGroup);
+        View view2;
+        if ((view2 = view) == null) {
+            view2 = this.newView(this.mContext, this.mCursor, viewGroup);
         }
-        this.bindView(view, this.mContext, this.mCursor);
-        return view;
+        this.bindView(view2, this.mContext, this.mCursor);
+        return view2;
     }
     
     public boolean hasStableIds() {
@@ -165,8 +166,8 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
         }
         this.mRowIDColumn = columnIndexOrThrow;
         if ((n & 0x2) == 0x2) {
-            this.mChangeObserver = new ChangeObserver();
-            this.mDataSetObserver = new MyDataSetObserver();
+            this.mChangeObserver = new CursorAdapter$ChangeObserver(this);
+            this.mDataSetObserver = new CursorAdapter$MyDataSetObserver(this, null);
         }
         else {
             this.mChangeObserver = null;
@@ -246,33 +247,5 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
         this.mDataValid = false;
         this.notifyDataSetInvalidated();
         return mCursor2;
-    }
-    
-    private class ChangeObserver extends ContentObserver
-    {
-        public ChangeObserver() {
-            super(new Handler());
-        }
-        
-        public boolean deliverSelfNotifications() {
-            return true;
-        }
-        
-        public void onChange(final boolean b) {
-            CursorAdapter.this.onContentChanged();
-        }
-    }
-    
-    private class MyDataSetObserver extends DataSetObserver
-    {
-        public void onChanged() {
-            CursorAdapter.this.mDataValid = true;
-            CursorAdapter.this.notifyDataSetChanged();
-        }
-        
-        public void onInvalidated() {
-            CursorAdapter.this.mDataValid = false;
-            CursorAdapter.this.notifyDataSetInvalidated();
-        }
     }
 }

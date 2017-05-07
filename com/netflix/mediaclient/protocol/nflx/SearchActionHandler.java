@@ -18,13 +18,13 @@ class SearchActionHandler extends BaseNflxHandlerWithoutDelayedActionSupport
     }
     
     @Override
-    public Response handle() {
+    public NflxHandler$Response handle() {
         final String s = this.mParamsMap.get("query");
         if (StringUtils.isEmpty(s)) {
             Log.v("NflxHandler", "Could not find query param");
-            return Response.NOT_HANDLING;
+            return NflxHandler$Response.NOT_HANDLING;
         }
         SearchActivity.search(this.mActivity, s);
-        return Response.HANDLING;
+        return NflxHandler$Response.HANDLING;
     }
 }

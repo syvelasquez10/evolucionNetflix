@@ -15,15 +15,7 @@ public class AvatarInfo implements Parcelable
     private String url;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<AvatarInfo>() {
-            public AvatarInfo createFromParcel(final Parcel parcel) {
-                return new AvatarInfo(parcel);
-            }
-            
-            public AvatarInfo[] newArray(final int n) {
-                return new AvatarInfo[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new AvatarInfo$1();
     }
     
     protected AvatarInfo(final Parcel parcel) {

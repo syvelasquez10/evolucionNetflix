@@ -4,10 +4,12 @@
 
 package com.android.volley.toolbox;
 
+import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
 import android.os.Handler;
 import android.os.Looper;
-import com.android.volley.Response;
+import com.android.volley.Request$Priority;
+import com.android.volley.Response$ErrorListener;
 import com.android.volley.Cache;
 import com.android.volley.Request;
 
@@ -27,8 +29,8 @@ public class ClearCacheRequest extends Request<Object>
     }
     
     @Override
-    public Priority getPriority() {
-        return Priority.IMMEDIATE;
+    public Request$Priority getPriority() {
+        return Request$Priority.IMMEDIATE;
     }
     
     @Override

@@ -6,25 +6,25 @@ package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.WebApiUtils;
+import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 
 public final class SwitchTarget
 {
     private static final String TAG = "nf_mdxSwitchTarget";
     private boolean mBeginSwitchTarget;
-    SwitchTargetInterface mCallback;
+    SwitchTarget$SwitchTargetInterface mCallback;
     private String mNewUuid;
     private int mStartTime;
     private TargetManager mTargeManger;
     private int mTrackId;
-    private WebApiUtils.VideoIds mVideoIds;
+    private WebApiUtils$VideoIds mVideoIds;
     
-    public SwitchTarget(final TargetManager mTargeManger, final SwitchTargetInterface mCallback) {
+    public SwitchTarget(final TargetManager mTargeManger, final SwitchTarget$SwitchTargetInterface mCallback) {
         this.mTargeManger = mTargeManger;
         this.mCallback = mCallback;
     }
     
-    public void startSwitch(final String s, final String mNewUuid, final WebApiUtils.VideoIds mVideoIds, final int mStartTime, final int mTrackId) {
+    public void startSwitch(final String s, final String mNewUuid, final WebApiUtils$VideoIds mVideoIds, final int mStartTime, final int mTrackId) {
         if (this.mBeginSwitchTarget) {
             Log.e("nf_mdxSwitchTarget", "switching already undergoing");
         }
@@ -52,10 +52,5 @@ public final class SwitchTarget
             this.mTargeManger.playerPlay(this.mNewUuid, this.mVideoIds.catalogIdUrl, this.mTrackId, this.mVideoIds.episodeIdUrl, this.mStartTime);
         }
         this.mBeginSwitchTarget = false;
-    }
-    
-    public interface SwitchTargetInterface
-    {
-        void onSetToNewTarget(final String p0);
     }
 }

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import android.annotation.SuppressLint;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
@@ -24,8 +25,8 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
     private final int END_MARGIN_TOP_DP;
     private final int END_WIDTH_DP;
     protected PlayerActivity mContext;
-    protected SurfaceState mOriginalSurfaceState;
-    protected VideoWindowForPostplayWithAnimation.ScaleAnimationParameters mParams;
+    protected VideoWindowForPostplayWithScaling$SurfaceState mOriginalSurfaceState;
+    protected VideoWindowForPostplayWithAnimation$ScaleAnimationParameters mParams;
     protected RelativeLayout mParent;
     protected TappableSurfaceView mSurface;
     protected TextureView mSurface2;
@@ -51,7 +52,7 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
         if (this.mParent == null) {
             Log.w(VideoWindowForPostplayWithScaling.TAG, "PostPlayWithScaling:: rootFrame not found");
         }
-        this.mParams = new VideoWindowForPostplayWithAnimation.ScaleAnimationParameters(0, 0, 0, 1.0f, AndroidUtils.dipToPixels((Context)this.mContext, 12), AndroidUtils.dipToPixels((Context)this.mContext, 12), AndroidUtils.dipToPixels((Context)this.mContext, 300) / DeviceUtils.getScreenWidthInPixels((Context)this.mContext));
+        this.mParams = new VideoWindowForPostplayWithAnimation$ScaleAnimationParameters(0, 0, 0, 1.0f, AndroidUtils.dipToPixels((Context)this.mContext, 12), AndroidUtils.dipToPixels((Context)this.mContext, 12), AndroidUtils.dipToPixels((Context)this.mContext, 300) / DeviceUtils.getScreenWidthInPixels((Context)this.mContext));
     }
     
     protected void addCenterInParent(final View view) {
@@ -86,7 +87,7 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.mSurface.getLayoutParams();
         if (this.mOriginalSurfaceState == null) {
             Log.e(VideoWindowForPostplayWithScaling.TAG, "Previos state unknown");
-            this.mOriginalSurfaceState = new SurfaceState(0, 0, 0, 0, 0);
+            this.mOriginalSurfaceState = new VideoWindowForPostplayWithScaling$SurfaceState(0, 0, 0, 0, 0);
         }
         layoutParams.addRule(13, -1);
         layoutParams.setMargins(this.mOriginalSurfaceState.leftMargin, this.mOriginalSurfaceState.topMargin, this.mOriginalSurfaceState.rightMargin, this.mOriginalSurfaceState.bottomMargin);
@@ -108,12 +109,12 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
         return true;
     }
     
-    protected SurfaceState getCurrentSurfaceState() {
+    protected VideoWindowForPostplayWithScaling$SurfaceState getCurrentSurfaceState() {
         final RelativeLayout$LayoutParams relativeLayout$LayoutParams = (RelativeLayout$LayoutParams)this.mSurface.getLayoutParams();
-        return new SurfaceState(relativeLayout$LayoutParams.bottomMargin, relativeLayout$LayoutParams.topMargin, relativeLayout$LayoutParams.leftMargin, relativeLayout$LayoutParams.rightMargin, this.mSurface.getMode());
+        return new VideoWindowForPostplayWithScaling$SurfaceState(relativeLayout$LayoutParams.bottomMargin, relativeLayout$LayoutParams.topMargin, relativeLayout$LayoutParams.leftMargin, relativeLayout$LayoutParams.rightMargin, this.mSurface.getMode());
     }
     
-    protected VideoWindowForPostplayWithAnimation.ScaleAnimationParameters getTransitionToPostPlayAnimationParameters() {
+    protected VideoWindowForPostplayWithAnimation$ScaleAnimationParameters getTransitionToPostPlayAnimationParameters() {
         return this.mParams;
     }
     
@@ -150,40 +151,17 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
     }
     
     protected void resizeVideo(final int n, final int n2, final float n3) {
-        this.mContext.runInUiThread(new Runnable() {
-            @Override
-            public void run() {
-                VideoWindowForPostplayWithScaling.this.resizeSurfaceView(n, n2, n3);
-                VideoWindowForPostplayWithScaling.this.resizeTextureView(n, n2);
-            }
-        });
+        this.mContext.runInUiThread(new VideoWindowForPostplayWithScaling$1(this, n, n2, n3));
     }
     
     @Override
     public void setVisible(final boolean b) {
         if (b) {
-            ViewUtils.setVisibility((View)this.mSurface, ViewUtils.Visibility.VISIBLE);
-            ViewUtils.setVisibility((View)this.mSurface2, ViewUtils.Visibility.VISIBLE);
+            ViewUtils.setVisibility((View)this.mSurface, ViewUtils$Visibility.VISIBLE);
+            ViewUtils.setVisibility((View)this.mSurface2, ViewUtils$Visibility.VISIBLE);
             return;
         }
-        ViewUtils.setVisibility((View)this.mSurface, ViewUtils.Visibility.INVISIBLE);
-        ViewUtils.setVisibility((View)this.mSurface2, ViewUtils.Visibility.INVISIBLE);
-    }
-    
-    protected static class SurfaceState
-    {
-        int bottomMargin;
-        int leftMargin;
-        int rightMargin;
-        int surfaceMode;
-        int topMargin;
-        
-        SurfaceState(final int bottomMargin, final int topMargin, final int leftMargin, final int rightMargin, final int surfaceMode) {
-            this.bottomMargin = bottomMargin;
-            this.topMargin = topMargin;
-            this.leftMargin = leftMargin;
-            this.rightMargin = rightMargin;
-            this.surfaceMode = surfaceMode;
-        }
+        ViewUtils.setVisibility((View)this.mSurface, ViewUtils$Visibility.INVISIBLE);
+        ViewUtils.setVisibility((View)this.mSurface2, ViewUtils$Visibility.INVISIBLE);
     }
 }

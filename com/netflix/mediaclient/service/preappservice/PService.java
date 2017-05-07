@@ -11,7 +11,6 @@ import android.content.Context;
 import android.appwidget.AppWidgetManager;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
@@ -26,9 +25,9 @@ public class PService extends Service
     public static final String PREAPP_AGENT_FROM_IQ_UPDATED = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_IQ_UPDATED";
     private static final String TAG = "nf_preapp_service";
     public static final Boolean WIDGET_ENABLED_FOR_TEST;
-    private final PServiceAgent.AgentContext agentContext;
+    private final PServiceAgent$AgentContext agentContext;
     private PServiceFetchAgent mFetchAgent;
-    private final ArrayList<InitCallback> mInitCallbacks;
+    private final ArrayList<PService$InitCallback> mInitCallbacks;
     private volatile boolean mInitComplete;
     
     static {
@@ -37,13 +36,8 @@ public class PService extends Service
     
     public PService() {
         this.mInitComplete = false;
-        this.mInitCallbacks = new ArrayList<InitCallback>();
-        this.agentContext = new PServiceAgent.AgentContext() {
-            @Override
-            public PService getService() {
-                return PService.this;
-            }
-        };
+        this.mInitCallbacks = new ArrayList<PService$InitCallback>();
+        this.agentContext = new PService$2(this);
     }
     
     private void doStartCommand(final Intent intent, final int n, final int n2) {
@@ -57,35 +51,15 @@ public class PService extends Service
     }
     
     private void init() {
-        final PServiceAgent.InitCallback initCallback = new PServiceAgent.InitCallback() {
-            @Override
-            public void onInitComplete(final PServiceAgent pServiceAgent, final Status status) {
-                ThreadUtils.assertOnMain();
-                if (status.isError()) {
-                    if (Log.isLoggable("nf_preapp_service", 6)) {
-                        Log.e("nf_preapp_service", String.format("PService init failed with PServiceAgent: %s, statusCode=%s", pServiceAgent.getClass().getSimpleName(), status.getStatusCode()));
-                    }
-                    PService.this.initCompleted();
-                    PService.this.stopSelf();
-                }
-                else {
-                    if (Log.isLoggable("nf_preapp_service", 6)) {
-                        Log.i("nf_preapp_service", String.format("PService successfully inited PServiceAgent: %s", pServiceAgent.getClass().getSimpleName()));
-                    }
-                    if (pServiceAgent == PService.this.mFetchAgent) {
-                        PService.this.initCompleted();
-                    }
-                }
-            }
-        };
+        final PService$1 pService$1 = new PService$1(this);
         Log.i("nf_preapp_service", "PService initing...");
-        this.mFetchAgent.init(this.agentContext, (PServiceAgent.InitCallback)initCallback);
+        this.mFetchAgent.init(this.agentContext, pService$1);
     }
     
     private void initCompleted() {
         ThreadUtils.assertOnMain();
         Log.d("nf_preapp_service", "Invoking InitCallbacks...");
-        final Iterator<InitCallback> iterator = this.mInitCallbacks.iterator();
+        final Iterator<PService$InitCallback> iterator = this.mInitCallbacks.iterator();
         while (iterator.hasNext()) {
             iterator.next().onInitComplete();
         }
@@ -132,32 +106,9 @@ public class PService extends Service
                 this.doStartCommand(intent, n, n2);
             }
             else {
-                this.mInitCallbacks.add((InitCallback)new StartCommandInitCallback(intent, n, n2));
+                this.mInitCallbacks.add(new PService$StartCommandInitCallback(this, intent, n, n2));
             }
         }
         return 2;
-    }
-    
-    private interface InitCallback
-    {
-        void onInitComplete();
-    }
-    
-    private final class StartCommandInitCallback implements InitCallback
-    {
-        private final int flags;
-        private final Intent intent;
-        private final int startId;
-        
-        public StartCommandInitCallback(final Intent intent, final int flags, final int startId) {
-            this.intent = intent;
-            this.flags = flags;
-            this.startId = startId;
-        }
-        
-        @Override
-        public void onInitComplete() {
-            PService.this.doStartCommand(this.intent, this.flags, this.startId);
-        }
     }
 }

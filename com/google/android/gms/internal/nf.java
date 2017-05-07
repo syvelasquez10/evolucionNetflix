@@ -4,7 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import android.app.PendingIntent;
 import android.content.pm.PackageManager$NameNotFoundException;
 import android.util.Log;
 import android.content.Context;
@@ -14,14 +13,14 @@ public class nf
     private final nn aku;
     private nl akv;
     
-    public nf(final Context context, final int n, final String s, final String s2, final a a, final boolean b) {
+    public nf(final Context context, final int n, final String s, final String s2, final nf$a nf$a, final boolean b) {
         int versionCode = 0;
         final String packageName = context.getPackageName();
         while (true) {
             try {
                 versionCode = context.getPackageManager().getPackageInfo(packageName, 0).versionCode;
                 this.akv = new nl(packageName, versionCode, n, s, s2, b);
-                this.aku = new nn(context, new nk(a));
+                this.aku = new nn(context, new nk(nf$a));
             }
             catch (PackageManager$NameNotFoundException ex) {
                 Log.wtf("PlayLogger", "This can't happen.");
@@ -45,14 +44,5 @@ public class nf
     
     public void stop() {
         this.aku.stop();
-    }
-    
-    public interface a
-    {
-        void b(final PendingIntent p0);
-        
-        void mS();
-        
-        void mT();
     }
 }

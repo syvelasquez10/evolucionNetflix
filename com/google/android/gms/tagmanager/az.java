@@ -5,7 +5,7 @@
 package com.google.android.gms.tagmanager;
 
 import java.util.HashSet;
-import com.google.android.gms.internal.d;
+import com.google.android.gms.internal.d$a;
 import java.util.Map;
 import java.util.Iterator;
 import java.io.UnsupportedEncodingException;
@@ -22,7 +22,7 @@ class az extends aj
     private static final String apr;
     
     static {
-        ID = com.google.android.gms.internal.a.ae.toString();
+        ID = a.ae.toString();
         aoU = b.bw.toString();
         app = b.di.toString();
         apq = b.dm.toString();
@@ -33,8 +33,8 @@ class az extends aj
         super(az.ID, new String[] { az.aoU });
     }
     
-    private String a(String s, final a a, final Set<Character> set) {
-        switch (az$1.aps[a.ordinal()]) {
+    private String a(String s, final az$a az$a, final Set<Character> set) {
+        switch (az$1.aps[az$a.ordinal()]) {
             default: {
                 return s;
             }
@@ -59,8 +59,8 @@ class az extends aj
         }
     }
     
-    private void a(final StringBuilder sb, final String s, final a a, final Set<Character> set) {
-        sb.append(this.a(s, a, set));
+    private void a(final StringBuilder sb, final String s, final az$a az$a, final Set<Character> set) {
+        sb.append(this.a(s, az$a, set));
     }
     
     private void a(final Set<Character> set, final String s) {
@@ -70,34 +70,34 @@ class az extends aj
     }
     
     @Override
-    public d.a C(final Map<String, d.a> map) {
-        final d.a a = map.get(az.aoU);
-        if (a == null) {
+    public d$a C(final Map<String, d$a> map) {
+        final d$a d$a = map.get(az.aoU);
+        if (d$a == null) {
             return di.pI();
         }
-        final d.a a2 = map.get(az.app);
+        final d$a d$a2 = map.get(az.app);
         String j;
-        if (a2 != null) {
-            j = di.j(a2);
+        if (d$a2 != null) {
+            j = di.j(d$a2);
         }
         else {
             j = "";
         }
-        final d.a a3 = map.get(az.apq);
+        final d$a d$a3 = map.get(az.apq);
         String i;
-        if (a3 != null) {
-            i = di.j(a3);
+        if (d$a3 != null) {
+            i = di.j(d$a3);
         }
         else {
             i = "=";
         }
-        a a4 = az.a.apt;
-        final d.a a5 = map.get(az.apr);
+        az$a az$a = com.google.android.gms.tagmanager.az$a.apt;
+        final d$a d$a4 = map.get(az.apr);
         Set<Character> set;
-        if (a5 != null) {
-            final String k = di.j(a5);
+        if (d$a4 != null) {
+            final String k = di.j(d$a4);
             if ("url".equals(k)) {
-                a4 = az.a.apu;
+                az$a = com.google.android.gms.tagmanager.az$a.apu;
                 set = null;
             }
             else {
@@ -105,7 +105,7 @@ class az extends aj
                     bh.T("Joiner: unsupported escape type: " + k);
                     return di.pI();
                 }
-                a4 = az.a.apv;
+                az$a = com.google.android.gms.tagmanager.az$a.apv;
                 set = new HashSet<Character>();
                 this.a(set, j);
                 this.a(set, i);
@@ -116,33 +116,33 @@ class az extends aj
             set = null;
         }
         final StringBuilder sb = new StringBuilder();
-        switch (a.type) {
+        switch (d$a.type) {
             default: {
-                this.a(sb, di.j(a), a4, set);
+                this.a(sb, di.j(d$a), az$a, set);
                 break;
             }
             case 2: {
                 int n = 1;
-                final d.a[] gw = a.gw;
+                final d$a[] gw = d$a.gw;
                 for (int length = gw.length, l = 0; l < length; ++l, n = 0) {
-                    final d.a a6 = gw[l];
+                    final d$a d$a5 = gw[l];
                     if (n == 0) {
                         sb.append(j);
                     }
-                    this.a(sb, di.j(a6), a4, set);
+                    this.a(sb, di.j(d$a5), az$a, set);
                 }
                 break;
             }
             case 3: {
-                for (int n2 = 0; n2 < a.gx.length; ++n2) {
+                for (int n2 = 0; n2 < d$a.gx.length; ++n2) {
                     if (n2 > 0) {
                         sb.append(j);
                     }
-                    final String m = di.j(a.gx[n2]);
-                    final String j2 = di.j(a.gy[n2]);
-                    this.a(sb, m, a4, set);
+                    final String m = di.j(d$a.gx[n2]);
+                    final String j2 = di.j(d$a.gy[n2]);
+                    this.a(sb, m, az$a, set);
                     sb.append(i);
-                    this.a(sb, j2, a4, set);
+                    this.a(sb, j2, az$a, set);
                 }
                 break;
             }
@@ -153,12 +153,5 @@ class az extends aj
     @Override
     public boolean nL() {
         return true;
-    }
-    
-    private enum a
-    {
-        apt, 
-        apu, 
-        apv;
     }
 }

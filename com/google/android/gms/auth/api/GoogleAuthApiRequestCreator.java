@@ -6,6 +6,7 @@ package com.google.android.gms.auth.api;
 
 import java.util.List;
 import android.os.Bundle;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -110,7 +111,7 @@ public class GoogleAuthApiRequestCreator implements Parcelable$Creator<GoogleAut
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new GoogleAuthApiRequest(g, o, o2, o3, o4, q, o5, c2, o6, g2, q2, r, i);
     }

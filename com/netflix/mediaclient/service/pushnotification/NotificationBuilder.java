@@ -109,19 +109,19 @@ abstract class NotificationBuilder
     }
     
     protected static boolean isSoundEnabled(final Context context) {
-        boolean b = false;
         switch (((AudioManager)context.getSystemService("audio")).getRingerMode()) {
-            case 0:
+            case 0: {
+                return false;
+            }
             case 1: {
-                return b;
+                return false;
             }
             case 2: {
                 Log.i("nf_push", "Normal mode");
                 break;
             }
         }
-        b = true;
-        return b;
+        return true;
     }
     
     protected static void sendNotification(final Context context, final Notification notification, final int n, final ErrorLogging errorLogging) {

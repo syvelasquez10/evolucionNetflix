@@ -9,7 +9,6 @@ import com.netflix.mediaclient.repository.UserLocale;
 import java.util.Locale;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.javabridge.ui.Callback;
-import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.CallbackEvent;
 import com.netflix.mediaclient.javabridge.ui.android.device.FactoryResetCompleteCommand;
@@ -31,7 +30,7 @@ public final class NativeDevice extends NativeNrdObject implements Device
         super(bridge);
     }
     
-    private int handleEvent(final JSONObject jsonObject) throws Exception {
+    private int handleEvent(final JSONObject jsonObject) {
         final JSONObject jsonObject2 = this.getJSONObject(jsonObject, "data", null);
         final String string = this.getString(jsonObject, "name", null);
         if (jsonObject2 != null && jsonObject2.has("idx") && "factoryReset".equalsIgnoreCase(string)) {
@@ -40,7 +39,7 @@ public final class NativeDevice extends NativeNrdObject implements Device
         return 1;
     }
     
-    private int handlePropertyUpdate(final JSONObject jsonObject) throws JSONException {
+    private int handlePropertyUpdate(final JSONObject jsonObject) {
         if (this.getJSONObject(jsonObject, "properties", null) == null) {
             Log.w("nf-bridge", "handlePropertyUpdate:: properties does not exist");
             return 0;

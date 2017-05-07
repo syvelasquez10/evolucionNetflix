@@ -5,6 +5,7 @@
 package com.google.android.gms.internal;
 
 import android.os.IBinder;
+import com.google.android.gms.dynamic.g$a;
 import android.os.RemoteException;
 import com.google.android.gms.dynamic.e;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -23,7 +24,7 @@ public class oy extends g<ot>
         super("com.google.android.gms.wallet.dynamite.WalletDynamiteCreatorImpl");
     }
     
-    public static oq a(final Activity activity, final c c, final WalletFragmentOptions walletFragmentOptions, final or or) throws GooglePlayServicesNotAvailableException {
+    public static oq a(final Activity activity, final c c, final WalletFragmentOptions walletFragmentOptions, final or or) {
         final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable((Context)activity);
         if (googlePlayServicesAvailable != 0) {
             throw new GooglePlayServicesNotAvailableException(googlePlayServicesAvailable);
@@ -34,8 +35,8 @@ public class oy extends g<ot>
         catch (RemoteException ex) {
             throw new RuntimeException((Throwable)ex);
         }
-        catch (a a) {
-            throw new RuntimeException(a);
+        catch (g$a g$a) {
+            throw new RuntimeException(g$a);
         }
     }
     
@@ -47,6 +48,6 @@ public class oy extends g<ot>
     }
     
     protected ot bQ(final IBinder binder) {
-        return ot.a.bM(binder);
+        return ot$a.bM(binder);
     }
 }

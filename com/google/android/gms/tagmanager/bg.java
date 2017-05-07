@@ -6,16 +6,9 @@ package com.google.android.gms.tagmanager;
 
 interface bg<T>
 {
-    void a(final a p0);
+    void a(final bg$a p0);
     
     void l(final T p0);
     
     void nZ();
-    
-    public enum a
-    {
-        apB, 
-        apC, 
-        apD;
-    }
 }

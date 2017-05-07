@@ -5,17 +5,17 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.StatusCode;
-import com.google.gson.JsonParser;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.google.gson.JsonParser;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -62,18 +62,18 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @SuppressLint({ "DefaultLocale" })
     @Override
     protected String getOptionalParams() {
-        final String string = "&" + FalcorParseUtils.getParamNameParam() + "=";
+        final String string = "&" + "param" + "=";
         final String format = String.format("['videos','%s']", this.mVideoId);
         final String format2 = String.format("[{'from':%d,'to':%d},'summary']", this.fromVideo, this.toVideo);
         final StringBuilder sb = new StringBuilder();
         sb.append(string).append(this.iqLoMoIndex);
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), format));
+        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", format));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", format2));
         sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
         if (StringUtils.isNotEmpty(this.messageToken)) {
@@ -107,7 +107,7 @@ public class RemoveFromQueueRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected String parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_removefromqueuerequest", 2)) {
             Log.v("nf_service_browse_removefromqueuerequest", "String response to parse = " + s);
         }

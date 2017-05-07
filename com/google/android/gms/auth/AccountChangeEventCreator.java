@@ -4,6 +4,7 @@
 
 package com.google.android.gms.auth;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -66,7 +67,7 @@ public class AccountChangeEventCreator implements Parcelable$Creator<AccountChan
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new AccountChangeEvent(g3, i, o2, g2, g, o);
     }

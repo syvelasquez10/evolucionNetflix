@@ -4,12 +4,8 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.Intent;
-import com.netflix.mediaclient.Log;
-import android.content.Context;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -68,36 +64,36 @@ public class NetflixAlertDialog extends NetflixDialogFrag
     }
     
     @SuppressLint({ "InlinedApi" })
-    public static NetflixAlertDialog newInstance(final AlertDialogDescriptor alertDialogDescriptor) {
+    public static NetflixAlertDialog newInstance(final NetflixAlertDialog$AlertDialogDescriptor netflixAlertDialog$AlertDialogDescriptor) {
         final boolean b = true;
-        if (alertDialogDescriptor == null) {
+        if (netflixAlertDialog$AlertDialogDescriptor == null) {
             throw new IllegalArgumentException("Dialog metadata can not be null!");
         }
         final NetflixAlertDialog netflixAlertDialog = new NetflixAlertDialog();
-        netflixAlertDialog.setStyle(1, 2131558710);
-        netflixAlertDialog.setCancelable(alertDialogDescriptor.isCancelOnBack());
+        netflixAlertDialog.setStyle(1, 2131558713);
+        netflixAlertDialog.setCancelable(netflixAlertDialog$AlertDialogDescriptor.isCancelOnBack());
         final Bundle arguments = new Bundle();
         netflixAlertDialog.setArguments(arguments);
-        arguments.putString("nflx_Message", alertDialogDescriptor.getMessage());
-        arguments.putBoolean("nflx_CancelableOnTouchOutside", alertDialogDescriptor.isCancelOnTouchOutside());
-        arguments.putString("nflx_DialogId", alertDialogDescriptor.getMessage());
-        if (alertDialogDescriptor.getPositiveButton() == null && alertDialogDescriptor.getNegativeButton() == null && alertDialogDescriptor.getNeutralButton() == null) {
-            alertDialogDescriptor.setPositiveButton();
+        arguments.putString("nflx_Message", netflixAlertDialog$AlertDialogDescriptor.getMessage());
+        arguments.putBoolean("nflx_CancelableOnTouchOutside", netflixAlertDialog$AlertDialogDescriptor.isCancelOnTouchOutside());
+        arguments.putString("nflx_DialogId", netflixAlertDialog$AlertDialogDescriptor.getMessage());
+        if (netflixAlertDialog$AlertDialogDescriptor.getPositiveButton() == null && netflixAlertDialog$AlertDialogDescriptor.getNegativeButton() == null && netflixAlertDialog$AlertDialogDescriptor.getNeutralButton() == null) {
+            netflixAlertDialog$AlertDialogDescriptor.setPositiveButton();
         }
-        arguments.putBoolean("nflx_PositiveButtonUsed", alertDialogDescriptor.getPositiveButton() != null);
-        if (alertDialogDescriptor.getPositiveButton() != null) {
-            arguments.putString("nflx_PositiveButtonLabel", alertDialogDescriptor.getPositiveButton().getLabel());
-            arguments.putString("nflx_PositiveButtonId", alertDialogDescriptor.getPositiveButton().getButtonId());
+        arguments.putBoolean("nflx_PositiveButtonUsed", netflixAlertDialog$AlertDialogDescriptor.getPositiveButton() != null);
+        if (netflixAlertDialog$AlertDialogDescriptor.getPositiveButton() != null) {
+            arguments.putString("nflx_PositiveButtonLabel", netflixAlertDialog$AlertDialogDescriptor.getPositiveButton().getLabel());
+            arguments.putString("nflx_PositiveButtonId", netflixAlertDialog$AlertDialogDescriptor.getPositiveButton().getButtonId());
         }
-        arguments.putBoolean("nflx_NegativeButtonUsed", alertDialogDescriptor.getNegativeButton() != null);
-        if (alertDialogDescriptor.getNegativeButton() != null) {
-            arguments.putString("nflx_NegativeButtonLabel", alertDialogDescriptor.getNegativeButton().getLabel());
-            arguments.putString("nflx_NegativeButtonId", alertDialogDescriptor.getNegativeButton().getButtonId());
+        arguments.putBoolean("nflx_NegativeButtonUsed", netflixAlertDialog$AlertDialogDescriptor.getNegativeButton() != null);
+        if (netflixAlertDialog$AlertDialogDescriptor.getNegativeButton() != null) {
+            arguments.putString("nflx_NegativeButtonLabel", netflixAlertDialog$AlertDialogDescriptor.getNegativeButton().getLabel());
+            arguments.putString("nflx_NegativeButtonId", netflixAlertDialog$AlertDialogDescriptor.getNegativeButton().getButtonId());
         }
-        arguments.putBoolean("nflx_NeutralButtonUsed", alertDialogDescriptor.getNeutralButton() != null && b);
-        if (alertDialogDescriptor.getNeutralButton() != null) {
-            arguments.putString("nflx_NeutralButtonLabel", alertDialogDescriptor.getNeutralButton().getLabel());
-            arguments.putString("nflx_NeutralButtonId", alertDialogDescriptor.getNeutralButton().getButtonId());
+        arguments.putBoolean("nflx_NeutralButtonUsed", netflixAlertDialog$AlertDialogDescriptor.getNeutralButton() != null && b);
+        if (netflixAlertDialog$AlertDialogDescriptor.getNeutralButton() != null) {
+            arguments.putString("nflx_NeutralButtonLabel", netflixAlertDialog$AlertDialogDescriptor.getNeutralButton().getLabel());
+            arguments.putString("nflx_NeutralButtonId", netflixAlertDialog$AlertDialogDescriptor.getNeutralButton().getButtonId());
         }
         return netflixAlertDialog;
     }
@@ -128,190 +124,36 @@ public class NetflixAlertDialog extends NetflixDialogFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903065, viewGroup, false);
-        this.mMessageView = (TextView)inflate.findViewById(2131165290);
-        this.mPositiveButton = (Button)inflate.findViewById(2131165295);
-        this.mNegativeButton = (Button)inflate.findViewById(2131165291);
-        this.mNeutralButton = (Button)inflate.findViewById(2131165293);
-        this.mNegativeDivider = inflate.findViewById(2131165292);
-        this.mNeutralDivider = inflate.findViewById(2131165294);
+        final View inflate = layoutInflater.inflate(2130903067, viewGroup, false);
+        this.mMessageView = (TextView)inflate.findViewById(2131165287);
+        this.mPositiveButton = (Button)inflate.findViewById(2131165292);
+        this.mNegativeButton = (Button)inflate.findViewById(2131165288);
+        this.mNeutralButton = (Button)inflate.findViewById(2131165290);
+        this.mNegativeDivider = inflate.findViewById(2131165289);
+        this.mNeutralDivider = inflate.findViewById(2131165291);
         this.mMessageView.setText((CharSequence)this.mMessage);
         if (this.mNeutralButtonUsed) {
             this.mNeutralButton.setText((CharSequence)this.mNeutralButtonLabel);
-            this.mNeutralButton.setOnClickListener((View$OnClickListener)new AlertDialogOnClickListener(this.mNeutralButtonId));
+            this.mNeutralButton.setOnClickListener((View$OnClickListener)new NetflixAlertDialog$AlertDialogOnClickListener(this, this.mNeutralButtonId));
         }
         else {
-            ViewUtils.setVisibility((View)this.mNeutralButton, ViewUtils.Visibility.GONE);
-            ViewUtils.setVisibility(this.mNeutralDivider, ViewUtils.Visibility.GONE);
+            ViewUtils.setVisibility((View)this.mNeutralButton, ViewUtils$Visibility.GONE);
+            ViewUtils.setVisibility(this.mNeutralDivider, ViewUtils$Visibility.GONE);
         }
         if (this.mNegativeButtonUsed) {
             this.mNegativeButton.setText((CharSequence)this.mNegativeButtonLabel);
-            this.mNegativeButton.setOnClickListener((View$OnClickListener)new AlertDialogOnClickListener(this.mNegativeButtonId));
+            this.mNegativeButton.setOnClickListener((View$OnClickListener)new NetflixAlertDialog$AlertDialogOnClickListener(this, this.mNegativeButtonId));
         }
         else {
-            ViewUtils.setVisibility((View)this.mNegativeButton, ViewUtils.Visibility.GONE);
-            ViewUtils.setVisibility(this.mNegativeDivider, ViewUtils.Visibility.GONE);
+            ViewUtils.setVisibility((View)this.mNegativeButton, ViewUtils$Visibility.GONE);
+            ViewUtils.setVisibility(this.mNegativeDivider, ViewUtils$Visibility.GONE);
         }
         if (this.mPositiveButtonUsed) {
             this.mPositiveButton.setText((CharSequence)this.mPositiveButtonLabel);
-            this.mPositiveButton.setOnClickListener((View$OnClickListener)new AlertDialogOnClickListener(this.mPositiveButtonId));
+            this.mPositiveButton.setOnClickListener((View$OnClickListener)new NetflixAlertDialog$AlertDialogOnClickListener(this, this.mPositiveButtonId));
             return inflate;
         }
-        ViewUtils.setVisibility((View)this.mPositiveButton, ViewUtils.Visibility.GONE);
+        ViewUtils.setVisibility((View)this.mPositiveButton, ViewUtils$Visibility.GONE);
         return inflate;
-    }
-    
-    private static class ActionButtonDescriptor
-    {
-        private final String buttonId;
-        private final String label;
-        
-        public ActionButtonDescriptor(final String label, final String buttonId) {
-            if (buttonId == null || label == null) {
-                throw new IllegalArgumentException("Button ID and label can not be null!");
-            }
-            this.label = label;
-            this.buttonId = buttonId;
-        }
-        
-        public String getButtonId() {
-            return this.buttonId;
-        }
-        
-        public String getLabel() {
-            return this.label;
-        }
-        
-        @Override
-        public String toString() {
-            return "ActionButtonDescriptor [labelResourceId=" + this.label + ", buttonId=" + this.buttonId + "]";
-        }
-    }
-    
-    public static class AlertDialogDescriptor
-    {
-        public static final String ACTION_ID_NEGATIVE_BUTTON_CLICKED = "nflx_negative_button_clicked";
-        public static final String ACTION_ID_NEUTRAL_BUTTON_CLICKED = "nflx_neutral_button_clicked";
-        public static final String ACTION_ID_POSITIVE_BUTTON_CLICKED = "nflx_positive_button_clicked";
-        private final boolean mCancelOnBack;
-        private final boolean mCancelOnTouchOutside;
-        private final Context mContext;
-        private final String mDialogId;
-        private final String mMessage;
-        private ActionButtonDescriptor mNegativeButton;
-        private ActionButtonDescriptor mNeutralButton;
-        private ActionButtonDescriptor mPositiveButton;
-        
-        public AlertDialogDescriptor(final Context mContext, final String mDialogId, final String mMessage, final boolean mCancelOnTouchOutside, final boolean mCancelOnBack) {
-            if (mMessage == null) {
-                throw new IllegalArgumentException("Message can not be null!");
-            }
-            if (mContext == null) {
-                throw new IllegalArgumentException("Context can not be null!");
-            }
-            if (mDialogId == null) {
-                throw new IllegalArgumentException("Dialog id can not be null!");
-            }
-            this.mDialogId = mDialogId;
-            this.mMessage = mMessage;
-            this.mCancelOnTouchOutside = mCancelOnTouchOutside;
-            this.mCancelOnBack = mCancelOnBack;
-            this.mContext = mContext;
-        }
-        
-        public String getDialogId() {
-            return this.mDialogId;
-        }
-        
-        public String getMessage() {
-            return this.mMessage;
-        }
-        
-        public ActionButtonDescriptor getNegativeButton() {
-            return this.mNegativeButton;
-        }
-        
-        public ActionButtonDescriptor getNeutralButton() {
-            return this.mNeutralButton;
-        }
-        
-        public ActionButtonDescriptor getPositiveButton() {
-            return this.mPositiveButton;
-        }
-        
-        public boolean isCancelOnBack() {
-            return this.mCancelOnBack;
-        }
-        
-        public boolean isCancelOnTouchOutside() {
-            return this.mCancelOnTouchOutside;
-        }
-        
-        public void setNegativeButton() {
-            this.mNegativeButton = new ActionButtonDescriptor(this.mContext.getString(2131493127), "nflx_negative_button_clicked");
-        }
-        
-        public void setNegativeButton(final String s) {
-            this.mNegativeButton = new ActionButtonDescriptor(this.mContext.getString(2131493127), s);
-        }
-        
-        public void setNegativeButton(final String s, final String s2) {
-            this.mNegativeButton = new ActionButtonDescriptor(s, s2);
-        }
-        
-        public void setNeutralButton(final String s) {
-            this.mNeutralButton = new ActionButtonDescriptor(s, "nflx_neutral_button_clicked");
-        }
-        
-        public void setNeutralButton(final String s, final String s2) {
-            this.mNeutralButton = new ActionButtonDescriptor(s, s2);
-        }
-        
-        public void setPositiveButton() {
-            this.mPositiveButton = new ActionButtonDescriptor(this.mContext.getString(2131492983), "nflx_positive_button_clicked");
-        }
-        
-        public void setPositiveButton(final String s) {
-            this.mPositiveButton = new ActionButtonDescriptor(this.mContext.getString(2131492983), s);
-        }
-        
-        public void setPositiveButton(final String s, final String s2) {
-            this.mPositiveButton = new ActionButtonDescriptor(s, s2);
-        }
-    }
-    
-    private class AlertDialogOnClickListener implements View$OnClickListener
-    {
-        private final String mActionId;
-        
-        public AlertDialogOnClickListener(final String mActionId) {
-            this.mActionId = mActionId;
-        }
-        
-        public void onClick(final View view) {
-            if (Log.isLoggable("dialog", 3)) {
-                Log.d("dialog", "Clicked on " + this.mActionId);
-            }
-            if (NetflixAlertDialog.this.getActivity() == null) {
-                Log.e("dialog", "Activity is NULL, we can update rating!");
-                return;
-            }
-            synchronized (NetflixAlertDialog.this.mClicked) {
-                if (NetflixAlertDialog.this.mClicked.get()) {
-                    Log.w("dialog", "Already clicked!");
-                    return;
-                }
-            }
-            NetflixAlertDialog.this.mClicked.set(true);
-            // monitorexit(atomicBoolean)
-            final Intent intent = new Intent("nflx_button_selected");
-            intent.putExtra("nflx_action_selected", this.mActionId);
-            intent.putExtra("nflx_dialog_id", NetflixAlertDialog.this.mDialogId);
-            intent.addCategory("LocalIntentNflxUi");
-            final Context context;
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-            NetflixAlertDialog.this.dismissAllowingStateLoss();
-            NetflixAlertDialog.this.getFragmentManager().beginTransaction().remove((Fragment)NetflixAlertDialog.this).commit();
-        }
     }
 }

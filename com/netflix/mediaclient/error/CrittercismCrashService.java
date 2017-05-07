@@ -12,14 +12,13 @@ import com.netflix.mediaclient.repository.SecurityRepository;
 import com.crittercism.app.CrittercismConfig;
 import com.netflix.mediaclient.Log;
 import android.app.Application;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CrittercismCrashService implements CrashReportingService
 {
     private static final String TAG = "nf_crash";
     
-    private void storeNotNull(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
+    private void storeNotNull(final JSONObject jsonObject, final String s, final String s2) {
         if (s2 != null) {
             jsonObject.put(s, (Object)s2);
             return;

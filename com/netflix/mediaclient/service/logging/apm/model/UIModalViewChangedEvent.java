@@ -4,8 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import org.json.JSONException;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
@@ -17,7 +16,7 @@ public final class UIModalViewChangedEvent extends DiscreteEvent
     public static final String ORIENTATION = "orientation";
     private Orientation orientation;
     
-    public UIModalViewChangedEvent(JSONObject jsonObject) throws JSONException {
+    public UIModalViewChangedEvent(JSONObject jsonObject) {
         super(jsonObject);
         jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null) {
@@ -30,7 +29,7 @@ public final class UIModalViewChangedEvent extends DiscreteEvent
         }
     }
     
-    public UIModalViewChangedEvent(final boolean b, final IClientLogging.ModalView modalView) {
+    public UIModalViewChangedEvent(final boolean b, final IClientLogging$ModalView modalView) {
         Orientation orientation;
         if (b) {
             orientation = Orientation.portrait;
@@ -45,7 +44,7 @@ public final class UIModalViewChangedEvent extends DiscreteEvent
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();

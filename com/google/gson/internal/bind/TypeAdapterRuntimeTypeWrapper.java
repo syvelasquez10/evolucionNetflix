@@ -6,7 +6,6 @@ package com.google.gson.internal.bind;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
 import com.google.gson.stream.JsonReader;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.Type;
@@ -40,17 +39,17 @@ final class TypeAdapterRuntimeTypeWrapper<T> extends TypeAdapter<T>
     }
     
     @Override
-    public T read(final JsonReader jsonReader) throws IOException {
+    public T read(final JsonReader jsonReader) {
         return this.delegate.read(jsonReader);
     }
     
     @Override
-    public void write(final JsonWriter jsonWriter, final T t) throws IOException {
+    public void write(final JsonWriter jsonWriter, final T t) {
         TypeAdapter<?> typeAdapter = this.delegate;
         final Type runtimeTypeIfMoreSpecific = this.getRuntimeTypeIfMoreSpecific(this.type, t);
         if (runtimeTypeIfMoreSpecific != this.type) {
             typeAdapter = this.context.getAdapter(TypeToken.get(runtimeTypeIfMoreSpecific));
-            if (typeAdapter instanceof ReflectiveTypeAdapterFactory.Adapter && !(this.delegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {
+            if (typeAdapter instanceof ReflectiveTypeAdapterFactory$Adapter && !(this.delegate instanceof ReflectiveTypeAdapterFactory$Adapter)) {
                 typeAdapter = this.delegate;
             }
         }

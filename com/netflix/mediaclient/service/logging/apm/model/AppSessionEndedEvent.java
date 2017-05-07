@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
@@ -17,7 +16,7 @@ public final class AppSessionEndedEvent extends SessionEndedEvent
         super("appSession", new DeviceUniqueId(), n);
     }
     
-    public AppSessionEndedEvent(final JSONObject jsonObject) throws JSONException {
+    public AppSessionEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
     }
 }

@@ -16,21 +16,21 @@ public final class ActivationTokens
     public String netflixId;
     public String secureNetflixId;
     
-    public ActivationTokens(final String s) throws JSONException {
+    public ActivationTokens(final String s) {
         this.parseTokens(s);
     }
     
-    public ActivationTokens(final String netflixId, final String secureNetflixId) throws JSONException {
+    public ActivationTokens(final String netflixId, final String secureNetflixId) {
         this.netflixId = netflixId;
         this.secureNetflixId = secureNetflixId;
         this.createJson();
     }
     
-    public ActivationTokens(final JSONObject jsonObject) throws JSONException {
+    public ActivationTokens(final JSONObject jsonObject) {
         this.parseTokens(jsonObject);
     }
     
-    private void createJson() throws JSONException {
+    private void createJson() {
         if (this.netflixId != null && this.secureNetflixId != null) {
             (this.json = new JSONObject()).put("NetflixId", (Object)this.netflixId);
             this.json.put("SecureNetflixId", (Object)this.secureNetflixId);
@@ -39,7 +39,7 @@ public final class ActivationTokens
         throw new JSONException("Tokens cannot be null");
     }
     
-    private void parseTokens(final String s) throws JSONException {
+    private void parseTokens(final String s) {
         if (s == null) {
             Log.e("nf_reg", "Tokens are null");
             return;
@@ -51,7 +51,7 @@ public final class ActivationTokens
         this.parseTokens(this.json = new JSONObject(s));
     }
     
-    private void parseTokens(final JSONObject json) throws JSONException {
+    private void parseTokens(final JSONObject json) {
         this.json = json;
         if (json == null) {
             Log.e("nf_reg", "Tokens are null");

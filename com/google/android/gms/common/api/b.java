@@ -4,15 +4,14 @@
 
 package com.google.android.gms.common.api;
 
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import java.util.concurrent.TimeUnit;
 import android.app.PendingIntent;
-import android.util.Log;
 import android.os.DeadObjectException;
+import android.util.Log;
 import com.google.android.gms.common.internal.n;
 import java.util.Iterator;
-import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Collections;
 import java.util.WeakHashMap;
@@ -21,6 +20,7 @@ import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 import com.google.android.gms.common.internal.ClientSettings;
 import android.content.Context;
+import com.google.android.gms.common.internal.e$b;
 import java.util.Set;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,7 @@ final class b implements GoogleApiClient
     private final Condition IP;
     private final e IQ;
     private final int IR;
-    final Queue<c<?>> IS;
+    final Queue<b$c<?>> IS;
     private ConnectionResult IT;
     private int IU;
     private volatile int IV;
@@ -48,148 +48,65 @@ final class b implements GoogleApiClient
     private boolean IX;
     private int IY;
     private long IZ;
-    private final a Iu;
+    private final b$a Iu;
     final Handler Ja;
     private final Bundle Jb;
-    private final Map<Api.c<?>, Api.a> Jc;
+    private final Map<Api$c<?>, Api$a> Jc;
     private final List<String> Jd;
     private boolean Je;
-    private final Set<com.google.android.gms.common.api.c<?>> Jf;
-    final Set<c<?>> Jg;
-    private final ConnectionCallbacks Jh;
-    private final e.b Ji;
+    private final Set<c<?>> Jf;
+    final Set<b$c<?>> Jg;
+    private final GoogleApiClient$ConnectionCallbacks Jh;
+    private final e$b Ji;
     
-    public b(final Context context, final Looper ib, final ClientSettings clientSettings, final Map<Api<?>, Api.ApiOptions> map, final Set<ConnectionCallbacks> set, final Set<OnConnectionFailedListener> set2, final int ir) {
+    public b(final Context context, final Looper ib, final ClientSettings clientSettings, final Map<Api<?>, Api$ApiOptions> map, final Set<GoogleApiClient$ConnectionCallbacks> set, final Set<GoogleApiClient$OnConnectionFailedListener> set2, final int ir) {
         this.IO = new ReentrantLock();
         this.IP = this.IO.newCondition();
-        this.IS = new LinkedList<c<?>>();
+        this.IS = new LinkedList<b$c<?>>();
         this.IV = 4;
         this.IX = false;
         this.IZ = 5000L;
         this.Jb = new Bundle();
-        this.Jc = new HashMap<Api.c<?>, Api.a>();
-        this.Jf = Collections.newSetFromMap(new WeakHashMap<com.google.android.gms.common.api.c<?>, Boolean>());
-        this.Jg = Collections.newSetFromMap(new ConcurrentHashMap<c<?>, Boolean>());
-        this.Iu = (a)new a() {
-            @Override
-            public void b(final c<?> c) {
-                b.this.Jg.remove(c);
-            }
-        };
-        this.Jh = new ConnectionCallbacks() {
-            @Override
-            public void onConnected(final Bundle bundle) {
-                b.this.IO.lock();
-                try {
-                    if (b.this.IV == 1) {
-                        if (bundle != null) {
-                            b.this.Jb.putAll(bundle);
-                        }
-                        b.this.gn();
-                    }
-                }
-                finally {
-                    b.this.IO.unlock();
-                }
-            }
-            
-            @Override
-            public void onConnectionSuspended(final int n) {
-                while (true) {
-                    b.this.IO.lock();
-                    Label_0082: {
-                        try {
-                            b.this.aj(n);
-                            switch (n) {
-                                case 2: {
-                                    b.this.connect();
-                                    break;
-                                }
-                                case 1: {
-                                    break Label_0082;
-                                }
-                            }
-                            return;
-                        }
-                        finally {
-                            b.this.IO.unlock();
-                        }
-                    }
-                    if (b.this.gp()) {
-                        break;
-                    }
-                    b.this.IW = 2;
-                    b.this.Ja.sendMessageDelayed(b.this.Ja.obtainMessage(1), b.this.IZ);
-                    return;
-                }
-                b.this.IO.unlock();
-            }
-        };
-        this.Ji = new e.b() {
-            @Override
-            public Bundle fD() {
-                return null;
-            }
-            
-            @Override
-            public boolean gr() {
-                return b.this.Je;
-            }
-            
-            @Override
-            public boolean isConnected() {
-                return b.this.isConnected();
-            }
-        };
+        this.Jc = new HashMap<Api$c<?>, Api$a>();
+        this.Jf = Collections.newSetFromMap(new WeakHashMap<c<?>, Boolean>());
+        this.Jg = Collections.newSetFromMap(new ConcurrentHashMap<b$c<?>, Boolean>());
+        this.Iu = new b$1(this);
+        this.Jh = new b$2(this);
+        this.Ji = new b$3(this);
         this.IQ = new e(context, ib, this.Ji);
         this.IB = ib;
-        this.Ja = new b(ib);
+        this.Ja = new b$b(this, ib);
         this.IR = ir;
-        final Iterator<ConnectionCallbacks> iterator = set.iterator();
+        final Iterator<GoogleApiClient$ConnectionCallbacks> iterator = set.iterator();
         while (iterator.hasNext()) {
             this.IQ.registerConnectionCallbacks(iterator.next());
         }
-        final Iterator<OnConnectionFailedListener> iterator2 = set2.iterator();
+        final Iterator<GoogleApiClient$OnConnectionFailedListener> iterator2 = set2.iterator();
         while (iterator2.hasNext()) {
             this.IQ.registerConnectionFailedListener(iterator2.next());
         }
         for (final Api<O> api : map.keySet()) {
-            final Api.b<?, O> gd = api.gd();
-            this.Jc.put(api.gf(), a((Api.b<Api.a, Object>)gd, map.get(api), context, ib, clientSettings, this.Jh, new OnConnectionFailedListener() {
-                @Override
-                public void onConnectionFailed(final ConnectionResult connectionResult) {
-                    b.this.IO.lock();
-                    try {
-                        if (b.this.IT == null || gd.getPriority() < b.this.IU) {
-                            b.this.IT = connectionResult;
-                            b.this.IU = gd.getPriority();
-                        }
-                        b.this.gn();
-                    }
-                    finally {
-                        b.this.IO.unlock();
-                    }
-                }
-            }));
+            final Api$b<?, O> gd = api.gd();
+            this.Jc.put(api.gf(), a((Api$b<Api$a, Object>)gd, map.get(api), context, ib, clientSettings, this.Jh, new b$4(this, gd)));
         }
         this.Jd = Collections.unmodifiableList((List<? extends String>)clientSettings.getScopes());
     }
     
-    private static <C extends Api.a, O> C a(final Api.b<C, O> b, final Object o, final Context context, final Looper looper, final ClientSettings clientSettings, final ConnectionCallbacks connectionCallbacks, final OnConnectionFailedListener onConnectionFailedListener) {
-        return b.a(context, looper, clientSettings, (O)o, connectionCallbacks, onConnectionFailedListener);
+    private static <C extends Api$a, O> C a(final Api$b<C, O> api$b, final Object o, final Context context, final Looper looper, final ClientSettings clientSettings, final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks, final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        return api$b.a(context, looper, clientSettings, (O)o, googleApiClient$ConnectionCallbacks, googleApiClient$OnConnectionFailedListener);
     }
     
-    private <A extends Api.a> void a(final c<A> c) throws DeadObjectException {
+    private <A extends Api$a> void a(final b$c<A> b$c) {
         this.IO.lock();
         try {
-            n.b(c.gf() != null, (Object)"This task can not be executed or enqueued (it's probably a Batch or malformed)");
-            this.Jg.add(c);
-            c.a(this.Iu);
+            n.b(b$c.gf() != null, (Object)"This task can not be executed or enqueued (it's probably a Batch or malformed)");
+            this.Jg.add(b$c);
+            b$c.a(this.Iu);
             if (this.gp()) {
-                c.m(new Status(8));
+                b$c.m(new Status(8));
                 return;
             }
-            c.b(this.a(c.gf()));
+            b$c.b(this.a(b$c.gf()));
         }
         finally {
             this.IO.unlock();
@@ -209,11 +126,11 @@ final class b implements GoogleApiClient
                             break Label_0241;
                         }
                         if (this.isConnecting()) {
-                            final Iterator<c> iterator = (Iterator<c>)this.IS.iterator();
+                            final Iterator<b$c> iterator = (Iterator<b$c>)this.IS.iterator();
                             while (iterator.hasNext()) {
-                                final c c = iterator.next();
-                                if (c.gk() != 1) {
-                                    c.cancel();
+                                final b$c b$c = iterator.next();
+                                if (b$c.gk() != 1) {
+                                    b$c.cancel();
                                     iterator.remove();
                                 }
                             }
@@ -225,12 +142,12 @@ final class b implements GoogleApiClient
                     }
                     this.IS.clear();
                 }
-                final Iterator<c<?>> iterator2 = this.Jg.iterator();
+                final Iterator<b$c<?>> iterator2 = this.Jg.iterator();
                 while (iterator2.hasNext()) {
                     iterator2.next().cancel();
                 }
                 this.Jg.clear();
-                final Iterator<com.google.android.gms.common.api.c<?>> iterator3 = this.Jf.iterator();
+                final Iterator<c<?>> iterator3 = this.Jf.iterator();
                 while (iterator3.hasNext()) {
                     iterator3.next().clear();
                 }
@@ -251,9 +168,9 @@ final class b implements GoogleApiClient
                 this.IP.signalAll();
             }
             this.Je = false;
-            for (final Api.a a : this.Jc.values()) {
-                if (a.isConnected()) {
-                    a.disconnect();
+            for (final Api$a api$a : this.Jc.values()) {
+                if (api$a.isConnected()) {
+                    api$a.disconnect();
                 }
             }
             this.Je = true;
@@ -305,7 +222,8 @@ final class b implements GoogleApiClient
     }
     
     private void go() {
-    Label_0026_Outer:
+        boolean b;
+        Label_0033_Outer:Label_0026_Outer:
         while (true) {
             this.IO.lock();
             while (true) {
@@ -316,28 +234,29 @@ final class b implements GoogleApiClient
                                 break Label_0093;
                             }
                             break Label_0108;
+                            // iftrue(Label_0098:, this.IS.isEmpty())
                             while (true) {
-                                try {
-                                    this.a((c<?>)this.IS.remove());
+                                while (true) {
+                                    try {
+                                        this.a((b$c<?>)this.IS.remove());
+                                    }
+                                    catch (DeadObjectException ex) {
+                                        Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
+                                    }
+                                    continue Label_0033_Outer;
                                 }
-                                catch (DeadObjectException ex) {
-                                    Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
-                                }
-                                continue Label_0026_Outer;
-                                final boolean b;
                                 n.a(b, (Object)"GoogleApiClient is not connected yet.");
                                 continue Label_0026_Outer;
                             }
                         }
-                        // iftrue(Label_0098:, this.IS.isEmpty())
                         finally {
                             this.IO.unlock();
                         }
                     }
-                    final boolean b = false;
+                    b = false;
                     continue;
                 }
-                final boolean b = true;
+                b = true;
                 continue;
             }
         }
@@ -362,22 +281,22 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public <C extends Api.a> C a(final Api.c<C> c) {
-        final Api.a a = this.Jc.get(c);
-        n.b(a, "Appropriate Api was not requested.");
-        return (C)a;
+    public <C extends Api$a> C a(final Api$c<C> api$c) {
+        final Api$a api$a = this.Jc.get(api$c);
+        n.b(api$a, "Appropriate Api was not requested.");
+        return (C)api$a;
     }
     
     @Override
-    public <A extends Api.a, R extends Result, T extends BaseImplementation.a<R, A>> T a(final T t) {
+    public <A extends Api$a, R extends Result, T extends BaseImplementation$a<R, A>> T a(final T t) {
         this.IO.lock();
         try {
-            ((BaseImplementation.AbstractPendingResult<R>)t).a((BaseImplementation.CallbackHandler<R>)new BaseImplementation.CallbackHandler(this.getLooper()));
+            t.a((BaseImplementation$CallbackHandler<R>)new BaseImplementation$CallbackHandler<Result>(this.getLooper()));
             if (this.isConnected()) {
                 this.b(t);
             }
             else {
-                this.IS.add((c<?>)t);
+                this.IS.add(t);
             }
             return t;
         }
@@ -392,7 +311,7 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public <A extends Api.a, T extends BaseImplementation.a<? extends Result, A>> T b(final T t) {
+    public <A extends Api$a, T extends BaseImplementation$a<? extends Result, A>> T b(final T t) {
         Label_0034: {
             if (!this.isConnected() && !this.gp()) {
                 break Label_0034;
@@ -402,7 +321,7 @@ final class b implements GoogleApiClient
                 n.a(b, (Object)"GoogleApiClient is not connected yet.");
                 this.go();
                 try {
-                    this.a((c<Api.a>)t);
+                    this.a((b$c<Api$a>)t);
                     return t;
                     b = false;
                 }
@@ -505,13 +424,13 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public <L> com.google.android.gms.common.api.c<L> c(final L l) {
+    public <L> c<L> c(final L l) {
         n.b(l, "Listener must not be null");
         this.IO.lock();
         try {
-            final com.google.android.gms.common.api.c<Object> c = new com.google.android.gms.common.api.c<Object>(this.IB, l);
+            final c<Object> c = new c<Object>(this.IB, l);
             this.Jf.add(c);
-            return (com.google.android.gms.common.api.c<L>)c;
+            return (c<L>)c;
         }
         finally {
             this.IO.unlock();
@@ -531,7 +450,7 @@ final class b implements GoogleApiClient
             this.IV = 1;
             this.Jb.clear();
             this.IY = this.Jc.size();
-            final Iterator<Api.a> iterator = this.Jc.values().iterator();
+            final Iterator<Api$a> iterator = this.Jc.values().iterator();
             while (iterator.hasNext()) {
                 iterator.next().connect();
             }
@@ -564,13 +483,13 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public boolean isConnectionCallbacksRegistered(final ConnectionCallbacks connectionCallbacks) {
-        return this.IQ.isConnectionCallbacksRegistered(connectionCallbacks);
+    public boolean isConnectionCallbacksRegistered(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
+        return this.IQ.isConnectionCallbacksRegistered(googleApiClient$ConnectionCallbacks);
     }
     
     @Override
-    public boolean isConnectionFailedListenerRegistered(final OnConnectionFailedListener onConnectionFailedListener) {
-        return this.IQ.isConnectionFailedListenerRegistered(onConnectionFailedListener);
+    public boolean isConnectionFailedListenerRegistered(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        return this.IQ.isConnectionFailedListenerRegistered(googleApiClient$OnConnectionFailedListener);
     }
     
     @Override
@@ -580,13 +499,13 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public void registerConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.IQ.registerConnectionCallbacks(connectionCallbacks);
+    public void registerConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
+        this.IQ.registerConnectionCallbacks(googleApiClient$ConnectionCallbacks);
     }
     
     @Override
-    public void registerConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.IQ.registerConnectionFailedListener(onConnectionFailedListener);
+    public void registerConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        this.IQ.registerConnectionFailedListener(googleApiClient$OnConnectionFailedListener);
     }
     
     @Override
@@ -596,57 +515,12 @@ final class b implements GoogleApiClient
     }
     
     @Override
-    public void unregisterConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.IQ.unregisterConnectionCallbacks(connectionCallbacks);
+    public void unregisterConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks googleApiClient$ConnectionCallbacks) {
+        this.IQ.unregisterConnectionCallbacks(googleApiClient$ConnectionCallbacks);
     }
     
     @Override
-    public void unregisterConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.IQ.unregisterConnectionFailedListener(onConnectionFailedListener);
-    }
-    
-    interface a
-    {
-        void b(final c<?> p0);
-    }
-    
-    class b extends Handler
-    {
-        b(final Looper looper) {
-            super(looper);
-        }
-        
-        public void handleMessage(final Message message) {
-            if (message.what == 1) {
-                com.google.android.gms.common.api.b.this.IO.lock();
-                try {
-                    if (com.google.android.gms.common.api.b.this.isConnected() || com.google.android.gms.common.api.b.this.isConnecting() || !com.google.android.gms.common.api.b.this.gp()) {
-                        return;
-                    }
-                    com.google.android.gms.common.api.b.this.IW--;
-                    com.google.android.gms.common.api.b.this.connect();
-                    return;
-                }
-                finally {
-                    com.google.android.gms.common.api.b.this.IO.unlock();
-                }
-            }
-            Log.wtf("GoogleApiClientImpl", "Don't know how to handle this message.");
-        }
-    }
-    
-    interface c<A extends Api.a>
-    {
-        void a(final a p0);
-        
-        void b(final A p0) throws DeadObjectException;
-        
-        void cancel();
-        
-        Api.c<A> gf();
-        
-        int gk();
-        
-        void m(final Status p0);
+    public void unregisterConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener googleApiClient$OnConnectionFailedListener) {
+        this.IQ.unregisterConnectionFailedListener(googleApiClient$OnConnectionFailedListener);
     }
 }

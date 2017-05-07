@@ -5,6 +5,7 @@
 package com.google.android.gms.internal;
 
 import android.os.Bundle;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
@@ -59,7 +60,7 @@ public class nj implements Parcelable$Creator<nh>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new nh(g, i, o, r, q);
     }

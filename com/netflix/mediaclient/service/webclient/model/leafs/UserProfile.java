@@ -32,19 +32,20 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
     private static final String FIELD_PROFILE_TOKEN = "userId";
     private static final String FIELD_SOCIAL_STATUS = "socialStatus";
     private static final String TAG = "UserProfile";
-    public Operation operation;
+    public UserProfile$Operation operation;
     public SubtitlePreference subtitlePreference;
-    public Summary summary;
+    public UserProfile$Summary summary;
     
     public UserProfile() {
     }
     
     public UserProfile(final String s) {
+        int i = 0;
         final SubtitlePreference subtitlePreference = null;
-        this.summary = new Summary();
-        this.summary.languages = new ArrayList<Language>();
-        this.summary.social = new Social();
-        this.operation = new Operation();
+        this.summary = new UserProfile$Summary(this);
+        this.summary.languages = new ArrayList<UserProfile$Language>();
+        this.summary.social = new UserProfile$Social(this);
+        this.operation = new UserProfile$Operation(this);
         JSONObject jsonObject;
         try {
             if (StringUtils.isEmpty(s)) {
@@ -67,9 +68,8 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
             this.summary.avatarUrl = JsonUtils.getString(jsonObject, "avatarUrl", null);
             final String string = JsonUtils.getString(jsonObject, "languages", null);
             if (StringUtils.isNotEmpty(string)) {
-                final String[] split = TextUtils.split(string, ",");
-                for (int length = split.length, i = 0; i < length; ++i) {
-                    this.summary.languages.add(new Language(split[i]));
+                for (String[] split = TextUtils.split(string, ","); i < split.length; ++i) {
+                    this.summary.languages.add(new UserProfile$Language(this, split[i]));
                 }
             }
         }
@@ -129,22 +129,15 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
     
     @Override
     public String[] getLanguages() {
-        String[] array;
         if (this.summary == null) {
-            array = null;
+            return null;
         }
-        else {
-            final String[] array2 = new String[this.summary.languages.size()];
-            int n = 0;
-            final Iterator<Language> iterator = this.summary.languages.iterator();
-            while (true) {
-                array = array2;
-                if (!iterator.hasNext()) {
-                    break;
-                }
-                array2[n] = iterator.next().code;
-                ++n;
-            }
+        final String[] array = new String[this.summary.languages.size()];
+        final Iterator<UserProfile$Language> iterator = this.summary.languages.iterator();
+        int n = 0;
+        while (iterator.hasNext()) {
+            array[n] = iterator.next().code;
+            ++n;
         }
         return array;
     }
@@ -159,20 +152,13 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
     
     @Override
     public List<String> getLanguagesList() {
-        List<String> list;
         if (this.summary == null) {
-            list = null;
+            return null;
         }
-        else {
-            final ArrayList<String> list2 = new ArrayList<String>();
-            final Iterator<Language> iterator = this.summary.languages.iterator();
-            while (true) {
-                list = list2;
-                if (!iterator.hasNext()) {
-                    break;
-                }
-                list2.add(iterator.next().code);
-            }
+        final ArrayList<String> list = new ArrayList<String>();
+        final Iterator<UserProfile$Language> iterator = this.summary.languages.iterator();
+        while (iterator.hasNext()) {
+            list.add(iterator.next().code);
         }
         return list;
     }
@@ -291,47 +277,5 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.model.use
             }
             break;
         }
-    }
-    
-    public class Language
-    {
-        public String code;
-        
-        public Language(final String code) {
-            this.code = code;
-        }
-    }
-    
-    public class Operation
-    {
-        public String msg;
-        public String status;
-    }
-    
-    public class Social
-    {
-        public boolean isConnected;
-    }
-    
-    public class Summary
-    {
-        private String avatarUrl;
-        private String email;
-        public ProfileType enumType;
-        private String experienceType;
-        private String firstName;
-        private String geoCountry;
-        private boolean isAutoPlayEnabled;
-        private boolean isIqEnabled;
-        private boolean isPrimaryProfile;
-        public List<Language> languages;
-        private String lastName;
-        @SerializedName("profileId")
-        private String profileGuid;
-        private String profileName;
-        @SerializedName("userId")
-        private String profileToken;
-        private String reqCountry;
-        private Social social;
     }
 }

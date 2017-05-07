@@ -4,10 +4,8 @@
 
 package com.netflix.mediaclient.ui.kids.details;
 
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
-import android.view.View;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import android.view.ViewGroup;
@@ -39,20 +37,15 @@ public class KidsEpisodeViewGroup extends RelativeLayout
     }
     
     private void init() {
-        LayoutInflater.from(this.getContext()).inflate(2130903100, (ViewGroup)this, true);
-        (this.img = (AdvancedImageView)this.findViewById(2131165412)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361962));
-        this.title = (TextView)this.findViewById(2131165413);
+        LayoutInflater.from(this.getContext()).inflate(2130903101, (ViewGroup)this, true);
+        (this.img = (AdvancedImageView)this.findViewById(2131165411)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361964));
+        this.title = (TextView)this.findViewById(2131165412);
     }
     
     public void update(final EpisodeDetails episodeDetails) {
-        final String string = this.getResources().getString(2131493259, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        final String string = this.getResources().getString(2131493218, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         this.title.setText((CharSequence)string);
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, episodeDetails.getHorzDispUrl(), IClientLogging.AssetType.boxArt, string, false, true);
-        this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
-            public void onClick(final View view) {
-                final KidsDetailsActivity kidsDetailsActivity = (KidsDetailsActivity)KidsEpisodeViewGroup.this.getContext();
-                PlaybackLauncher.startPlaybackAfterPIN(kidsDetailsActivity, episodeDetails.getPlayable(), kidsDetailsActivity.getPlayContext());
-            }
-        });
+        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, episodeDetails.getHorzDispUrl(), IClientLogging$AssetType.boxArt, string, false, true);
+        this.setOnClickListener((View$OnClickListener)new KidsEpisodeViewGroup$1(this, episodeDetails));
     }
 }

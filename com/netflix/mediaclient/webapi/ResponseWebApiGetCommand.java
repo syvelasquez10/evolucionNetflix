@@ -4,17 +4,13 @@
 
 package com.netflix.mediaclient.webapi;
 
-import org.json.JSONException;
-import org.apache.http.HttpException;
-import java.io.IOException;
-
 public abstract class ResponseWebApiGetCommand extends WebApiGetCommand
 {
     public ResponseWebApiGetCommand(final String s, final AuthorizationCredentials authorizationCredentials, final CommonRequestParameters commonRequestParameters) {
         super(s, authorizationCredentials, commonRequestParameters);
     }
     
-    public String execute() throws IOException, HttpException, JSONException {
+    public String execute() {
         return this.doExecute();
     }
 }

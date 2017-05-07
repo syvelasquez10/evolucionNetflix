@@ -4,14 +4,11 @@
 
 package com.netflix.mediaclient.service.logging.customerevents.legacy;
 
-import java.io.UnsupportedEncodingException;
-import org.apache.http.client.methods.HttpUriRequest;
-import java.io.IOException;
-import org.apache.http.StatusLine;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.StatusLine;
 import com.android.volley.toolbox.InputStreamUtil;
 import com.netflix.mediaclient.webapi.HttpClientFactory;
-import org.json.JSONException;
 import org.apache.http.HttpException;
 import org.json.JSONObject;
 import org.apache.http.HttpEntity;
@@ -92,9 +89,9 @@ public abstract class MdxCeWebApiCommand
     }
     
     private void dumpCookies(final HttpResponse httpResponse) {
+        int n = 0;
+        int n2 = 0;
         if (Log.isLoggable("nf_mdxMdxCustomerEventrest", 3)) {
-            int n = 0;
-            int n2 = 0;
             final Header[] allHeaders = httpResponse.getAllHeaders();
             if (allHeaders != null && allHeaders.length > 0) {
                 Log.d("nf_mdxMdxCustomerEventrest", "We got headers: " + allHeaders.length);
@@ -140,7 +137,7 @@ public abstract class MdxCeWebApiCommand
         return value;
     }
     
-    protected boolean checkStatus(final int n, final String s) throws JSONException, HttpException {
+    protected boolean checkStatus(final int n, final String s) {
         if (n == 410) {
             Log.w("nf_mdxMdxCustomerEventrest", "Received 410: Redirecting... ");
             MdxCeWebApiCommand.mCustomerEventEndPoint = new JSONObject(s).getString("host");
@@ -161,49 +158,53 @@ public abstract class MdxCeWebApiCommand
         throw new HttpException("Failed with response code " + n);
     }
     
-    protected String doExecute() throws IOException, JSONException, HttpException {
+    protected String doExecute() {
+        Object entity = null;
+        String convertStreamToString = null;
+    Label_0050:
         while (true) {
-            DefaultHttpClient defaultHttpClient = null;
-            DefaultHttpClient httpClient = null;
-        Label_0223:
-            while (true) {
-                try {
-                    httpClient = HttpClientFactory.getHttpClient(this.credentials.netflixId, this.credentials.secureNetflixId);
-                    final boolean checkStatus = true;
-                    if (!checkStatus) {
-                        break Label_0223;
+            try {
+                final Object httpClient = HttpClientFactory.getHttpClient(this.credentials.netflixId, this.credentials.secureNetflixId);
+                boolean checkStatus = true;
+                while (checkStatus) {
+                    Label_0062: {
+                        try {
+                            if (this.count > 5) {
+                                throw new HttpException("Too many retries!");
+                            }
+                            break Label_0062;
+                        }
+                        finally {}
+                        break Label_0050;
                     }
-                    defaultHttpClient = httpClient;
-                    if (this.count > 5) {
-                        defaultHttpClient = httpClient;
-                        throw new HttpException("Too many retries!");
+                    ++this.count;
+                    final HttpResponse execute = ((DefaultHttpClient)httpClient).execute(this.getHttpMethod());
+                    entity = execute.getEntity();
+                    final StatusLine statusLine = execute.getStatusLine();
+                    if (statusLine == null) {
+                        Log.e("nf_mdxMdxCustomerEventrest", "Status is NULL. It should NOT happen!");
+                        throw new NullPointerException("Status is NULL. It should NOT happen!");
                     }
-                }
-                finally {
-                    defaultHttpClient.getConnectionManager().shutdown();
-                }
-                ++this.count;
-                final HttpResponse execute = httpClient.execute(this.getHttpMethod());
-                final HttpEntity entity = execute.getEntity();
-                final StatusLine statusLine = execute.getStatusLine();
-                if (statusLine == null) {
-                    Log.e("nf_mdxMdxCustomerEventrest", "Status is NULL. It should NOT happen!");
-                    throw new NullPointerException("Status is NULL. It should NOT happen!");
-                }
-                final int statusCode = statusLine.getStatusCode();
-                defaultHttpClient = httpClient;
-                this.checkForCredentialUpdate(httpClient.getCookieStore().getCookies());
-                if (entity != null) {
-                    final String convertStreamToString = InputStreamUtil.convertStreamToString(entity.getContent());
-                    entity.consumeContent();
-                    defaultHttpClient = httpClient;
-                    final boolean checkStatus = this.checkStatus(statusCode, convertStreamToString);
+                    final int statusCode = statusLine.getStatusCode();
+                    this.checkForCredentialUpdate(((DefaultHttpClient)httpClient).getCookieStore().getCookies());
+                    if (entity != null) {
+                        convertStreamToString = InputStreamUtil.convertStreamToString(((HttpEntity)entity).getContent());
+                        ((HttpEntity)entity).consumeContent();
+                        checkStatus = this.checkStatus(statusCode, convertStreamToString);
+                        continue;
+                    }
                     continue;
+                    ((DefaultHttpClient)httpClient).getConnectionManager().shutdown();
+                    throw convertStreamToString;
                 }
-                continue;
+                ((DefaultHttpClient)httpClient).getConnectionManager().shutdown();
+                return convertStreamToString;
             }
-            httpClient.getConnectionManager().shutdown();
-            return;
+            finally {
+                final Object httpClient = entity;
+                continue Label_0050;
+            }
+            break;
         }
     }
     
@@ -239,7 +240,7 @@ public abstract class MdxCeWebApiCommand
         return this.credentials;
     }
     
-    protected abstract HttpUriRequest getHttpMethod() throws UnsupportedEncodingException;
+    protected abstract HttpUriRequest getHttpMethod();
     
     public String getOuput() {
         return "json";

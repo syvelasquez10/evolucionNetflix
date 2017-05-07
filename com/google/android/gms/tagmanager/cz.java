@@ -21,11 +21,6 @@ class cz
             sharedPreferences$Editor.apply();
             return;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                sharedPreferences$Editor.commit();
-            }
-        }).start();
+        new Thread(new cz$1(sharedPreferences$Editor)).start();
     }
 }

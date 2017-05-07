@@ -6,6 +6,7 @@ package com.google.android.gms.games.multiplayer.realtime;
 
 import android.os.Bundle;
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.games.multiplayer.ParticipantEntity;
 import com.google.android.gms.common.internal.safeparcel.a;
 import com.google.android.gms.games.multiplayer.Participant;
@@ -93,7 +94,7 @@ public class RoomEntityCreator implements Parcelable$Creator<RoomEntity>
             }
         }
         if (parcel.dataPosition() != c2) {
-            throw new a.a("Overread allowed size end=" + c2, parcel);
+            throw new a$a("Overread allowed size end=" + c2, parcel);
         }
         return new RoomEntity(g4, o3, o2, i, g3, o, g2, q, c, g);
     }

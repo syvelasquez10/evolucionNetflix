@@ -4,7 +4,7 @@
 
 package android.support.v7.app;
 
-import java.lang.ref.WeakReference;
+import android.support.v7.media.MediaRouter$Callback;
 import android.view.ViewGroup$LayoutParams;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +19,7 @@ public class MediaRouteActionProvider extends ActionProvider
 {
     private static final String TAG = "MediaRouteActionProvider";
     private MediaRouteButton mButton;
-    private final MediaRouterCallback mCallback;
+    private final MediaRouteActionProvider$MediaRouterCallback mCallback;
     private MediaRouteDialogFactory mDialogFactory;
     private final MediaRouter mRouter;
     private MediaRouteSelector mSelector;
@@ -29,7 +29,7 @@ public class MediaRouteActionProvider extends ActionProvider
         this.mSelector = MediaRouteSelector.EMPTY;
         this.mDialogFactory = MediaRouteDialogFactory.getDefault();
         this.mRouter = MediaRouter.getInstance(context);
-        this.mCallback = new MediaRouterCallback(this);
+        this.mCallback = new MediaRouteActionProvider$MediaRouterCallback(this);
     }
     
     private void refreshRoute() {
@@ -100,64 +100,16 @@ public class MediaRouteActionProvider extends ActionProvider
         }
         if (!this.mSelector.equals(mediaRouteSelector)) {
             if (!this.mSelector.isEmpty()) {
-                this.mRouter.removeCallback((MediaRouter.Callback)this.mCallback);
+                this.mRouter.removeCallback(this.mCallback);
             }
             if (!mediaRouteSelector.isEmpty()) {
-                this.mRouter.addCallback(mediaRouteSelector, (MediaRouter.Callback)this.mCallback);
+                this.mRouter.addCallback(mediaRouteSelector, this.mCallback);
             }
             this.mSelector = mediaRouteSelector;
             this.refreshRoute();
             if (this.mButton != null) {
                 this.mButton.setRouteSelector(mediaRouteSelector);
             }
-        }
-    }
-    
-    private static final class MediaRouterCallback extends Callback
-    {
-        private final WeakReference<MediaRouteActionProvider> mProviderWeak;
-        
-        public MediaRouterCallback(final MediaRouteActionProvider mediaRouteActionProvider) {
-            this.mProviderWeak = new WeakReference<MediaRouteActionProvider>(mediaRouteActionProvider);
-        }
-        
-        private void refreshRoute(final MediaRouter mediaRouter) {
-            final MediaRouteActionProvider mediaRouteActionProvider = this.mProviderWeak.get();
-            if (mediaRouteActionProvider != null) {
-                mediaRouteActionProvider.refreshRoute();
-                return;
-            }
-            mediaRouter.removeCallback((MediaRouter.Callback)this);
-        }
-        
-        @Override
-        public void onProviderAdded(final MediaRouter mediaRouter, final ProviderInfo providerInfo) {
-            this.refreshRoute(mediaRouter);
-        }
-        
-        @Override
-        public void onProviderChanged(final MediaRouter mediaRouter, final ProviderInfo providerInfo) {
-            this.refreshRoute(mediaRouter);
-        }
-        
-        @Override
-        public void onProviderRemoved(final MediaRouter mediaRouter, final ProviderInfo providerInfo) {
-            this.refreshRoute(mediaRouter);
-        }
-        
-        @Override
-        public void onRouteAdded(final MediaRouter mediaRouter, final RouteInfo routeInfo) {
-            this.refreshRoute(mediaRouter);
-        }
-        
-        @Override
-        public void onRouteChanged(final MediaRouter mediaRouter, final RouteInfo routeInfo) {
-            this.refreshRoute(mediaRouter);
-        }
-        
-        @Override
-        public void onRouteRemoved(final MediaRouter mediaRouter, final RouteInfo routeInfo) {
-            this.refreshRoute(mediaRouter);
         }
     }
 }

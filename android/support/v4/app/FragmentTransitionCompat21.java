@@ -6,10 +6,9 @@ package android.support.v4.app;
 
 import android.transition.Transition$EpicenterCallback;
 import android.transition.TransitionSet;
+import java.util.Collection;
 import android.transition.TransitionManager;
 import android.view.ViewGroup;
-import java.util.Iterator;
-import java.util.Collection;
 import android.view.ViewTreeObserver$OnPreDrawListener;
 import java.util.Map;
 import android.transition.Transition;
@@ -26,7 +25,7 @@ class FragmentTransitionCompat21
         }
     }
     
-    public static void addTransitionTargets(final Object o, final Object o2, final View view, final ViewRetriever viewRetriever, final View view2, final EpicenterView epicenterView, final Map<String, String> map, final ArrayList<View> list, final Map<String, View> map2, final ArrayList<View> list2) {
+    public static void addTransitionTargets(final Object o, final Object o2, final View view, final FragmentTransitionCompat21$ViewRetriever fragmentTransitionCompat21$ViewRetriever, final View view2, final FragmentTransitionCompat21$EpicenterView fragmentTransitionCompat21$EpicenterView, final Map<String, String> map, final ArrayList<View> list, final Map<String, View> map2, final ArrayList<View> list2) {
         if (o != null || o2 != null) {
             final Transition transition = (Transition)o;
             if (transition != null) {
@@ -35,33 +34,10 @@ class FragmentTransitionCompat21
             if (o2 != null) {
                 addTargets(o2, list2);
             }
-            if (viewRetriever != null) {
-                view.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new ViewTreeObserver$OnPreDrawListener() {
-                    public boolean onPreDraw() {
-                        view.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);
-                        final View view = viewRetriever.getView();
-                        if (view != null) {
-                            if (!map.isEmpty()) {
-                                FragmentTransitionCompat21.findNamedViews(map2, view);
-                                map2.keySet().retainAll(map.values());
-                                for (final Map.Entry<K, String> entry : map.entrySet()) {
-                                    final View view2 = map2.get(entry.getValue());
-                                    if (view2 != null) {
-                                        view2.setTransitionName((String)entry.getKey());
-                                    }
-                                }
-                            }
-                            if (transition != null) {
-                                captureTransitioningViews(list, view);
-                                list.removeAll(map2.values());
-                                FragmentTransitionCompat21.addTargets(transition, list);
-                            }
-                        }
-                        return true;
-                    }
-                });
+            if (fragmentTransitionCompat21$ViewRetriever != null) {
+                view.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransitionCompat21$2(view, fragmentTransitionCompat21$ViewRetriever, map, map2, transition, list));
             }
-            setSharedElementEpicenter(transition, epicenterView);
+            setSharedElementEpicenter(transition, fragmentTransitionCompat21$EpicenterView);
         }
     }
     
@@ -109,29 +85,7 @@ class FragmentTransitionCompat21
         final Transition transition3 = (Transition)o3;
         final Transition transition4 = (Transition)o4;
         if (transition4 != null) {
-            view.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new ViewTreeObserver$OnPreDrawListener() {
-                public boolean onPreDraw() {
-                    view.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);
-                    if (transition != null) {
-                        transition.removeTarget(view2);
-                        FragmentTransitionCompat21.removeTargets(transition, list);
-                    }
-                    if (transition2 != null) {
-                        FragmentTransitionCompat21.removeTargets(transition2, list2);
-                    }
-                    if (transition3 != null) {
-                        FragmentTransitionCompat21.removeTargets(transition3, list3);
-                    }
-                    for (final Map.Entry<K, View> entry : map.entrySet()) {
-                        entry.getValue().setTransitionName((String)entry.getKey());
-                    }
-                    for (int size = list4.size(), i = 0; i < size; ++i) {
-                        transition4.excludeTarget((View)list4.get(i), false);
-                    }
-                    transition4.excludeTarget(view2, false);
-                    return true;
-                }
-            });
+            view.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransitionCompat21$4(view, transition, view2, list, transition2, list2, transition3, list3, map, list4, transition4));
         }
     }
     
@@ -174,19 +128,14 @@ class FragmentTransitionCompat21
         return view.getTransitionName();
     }
     
-    public static Object mergeTransitions(final Object o, Object o2, final Object o3, final boolean b) {
-        final boolean b2 = true;
+    public static Object mergeTransitions(final Object o, Object o2, final Object o3, boolean b) {
         final Transition transition = (Transition)o;
         Object setOrdering = o2;
         final Transition transition2 = (Transition)o3;
-        boolean b3 = b2;
-        if (transition != null) {
-            b3 = b2;
-            if (setOrdering != null) {
-                b3 = b;
-            }
+        if (transition == null || setOrdering == null) {
+            b = true;
         }
-        if (b3) {
+        if (b) {
             o2 = new TransitionSet();
             if (transition != null) {
                 ((TransitionSet)o2).addTransition(transition);
@@ -228,37 +177,12 @@ class FragmentTransitionCompat21
     }
     
     public static void setEpicenter(final Object o, final View view) {
-        ((Transition)o).setEpicenterCallback((Transition$EpicenterCallback)new Transition$EpicenterCallback() {
-            final /* synthetic */ Rect val$epicenter = getBoundsOnScreen(view);
-            
-            public Rect onGetEpicenter(final Transition transition) {
-                return this.val$epicenter;
-            }
-        });
+        ((Transition)o).setEpicenterCallback((Transition$EpicenterCallback)new FragmentTransitionCompat21$1(getBoundsOnScreen(view)));
     }
     
-    private static void setSharedElementEpicenter(final Transition transition, final EpicenterView epicenterView) {
+    private static void setSharedElementEpicenter(final Transition transition, final FragmentTransitionCompat21$EpicenterView fragmentTransitionCompat21$EpicenterView) {
         if (transition != null) {
-            transition.setEpicenterCallback((Transition$EpicenterCallback)new Transition$EpicenterCallback() {
-                private Rect mEpicenter;
-                
-                public Rect onGetEpicenter(final Transition transition) {
-                    if (this.mEpicenter == null && epicenterView.epicenter != null) {
-                        this.mEpicenter = getBoundsOnScreen(epicenterView.epicenter);
-                    }
-                    return this.mEpicenter;
-                }
-            });
+            transition.setEpicenterCallback((Transition$EpicenterCallback)new FragmentTransitionCompat21$3(fragmentTransitionCompat21$EpicenterView));
         }
-    }
-    
-    public static class EpicenterView
-    {
-        public View epicenter;
-    }
-    
-    public interface ViewRetriever
-    {
-        View getView();
     }
 }

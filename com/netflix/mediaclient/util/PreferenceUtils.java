@@ -15,6 +15,19 @@ public final class PreferenceUtils
 {
     private static final String PREFS_NAME = "nfxpref";
     
+    public static boolean containsPref(final Context context, final String s) {
+        if (!validate(context, s)) {
+            return false;
+        }
+        try {
+            return context.getSharedPreferences("nfxpref", 0).contains(s);
+        }
+        catch (Throwable t) {
+            Log.e("nfxpref", "Failed to get preferences!", t);
+            return false;
+        }
+    }
+    
     public static boolean getBooleanPref(final Context context, final String s, final boolean b) {
         if (!validate(context, s)) {
             return b;
@@ -28,7 +41,7 @@ public final class PreferenceUtils
         }
     }
     
-    public static CrashReport getCrashReport(final Context context) throws IllegalArgumentException {
+    public static CrashReport getCrashReport(final Context context) {
         final SharedPreferences sharedPreferences = context.getSharedPreferences("nfxpref", 0);
         final int int1 = sharedPreferences.getInt("NF_CrashReport.signal", -1);
         final long long1 = sharedPreferences.getLong("NF_CrashReport.sigNumber", -1L);
@@ -104,7 +117,6 @@ public final class PreferenceUtils
     }
     
     public static boolean putBooleanPref(final Context context, final String s, final boolean b) {
-        final boolean b2 = false;
         if (!validate(context, s)) {
             return false;
         }
@@ -116,12 +128,11 @@ public final class PreferenceUtils
         }
         catch (Throwable t) {
             Log.e("nfxpref", "Failed to save to preferences!", t);
-            return b2;
+            return false;
         }
     }
     
     public static boolean putIntPref(final Context context, final String s, final int n) {
-        boolean b = false;
         if (!validate(context, s)) {
             return false;
         }
@@ -129,12 +140,11 @@ public final class PreferenceUtils
             final SharedPreferences$Editor edit = context.getSharedPreferences("nfxpref", 0).edit();
             edit.putInt(s, n);
             edit.commit();
-            b = true;
-            return b;
+            return true;
         }
         catch (Throwable t) {
             Log.e("nfxpref", "Failed to save to preferences!", t);
-            return b;
+            return false;
         }
     }
     
@@ -148,7 +158,6 @@ public final class PreferenceUtils
     }
     
     public static boolean putLongPref(final Context context, final String s, final long n) {
-        boolean b = false;
         if (!validate(context, s)) {
             return false;
         }
@@ -156,17 +165,15 @@ public final class PreferenceUtils
             final SharedPreferences$Editor edit = context.getSharedPreferences("nfxpref", 0).edit();
             edit.putLong(s, n);
             edit.commit();
-            b = true;
-            return b;
+            return true;
         }
         catch (Throwable t) {
             Log.e("nfxpref", "Failed to save to preferences!", t);
-            return b;
+            return false;
         }
     }
     
     public static boolean putStringPref(final Context context, final String s, final String s2) {
-        boolean b = false;
         if (!validate(context, s)) {
             return false;
         }
@@ -174,12 +181,11 @@ public final class PreferenceUtils
             final SharedPreferences$Editor edit = context.getSharedPreferences("nfxpref", 0).edit();
             edit.putString(s, s2);
             edit.commit();
-            b = true;
-            return b;
+            return true;
         }
         catch (Throwable t) {
             Log.e("nfxpref", "Failed to save to preferences!", t);
-            return b;
+            return false;
         }
     }
     
@@ -209,28 +215,20 @@ public final class PreferenceUtils
     }
     
     public static boolean removePref(final Context context, final String s) {
-        boolean b = false;
         if (!validate(context, s)) {
             return false;
         }
-        if (s == null) {
-            Log.w("nfxpref", "Name is null!");
-            return false;
+        SharedPreferences sharedPreferences;
+        try {
+            sharedPreferences = context.getSharedPreferences("nfxpref", 0);
+            if (sharedPreferences == null) {
+                Log.e("nfxpref", "Prefs null, not expected!");
+                return false;
+            }
         }
-        SharedPreferences sharedPreferences = null;
-        Label_0060: {
-            try {
-                sharedPreferences = context.getSharedPreferences("nfxpref", 0);
-                if (sharedPreferences == null) {
-                    Log.e("nfxpref", "Prefs null, not expected!");
-                    return false;
-                }
-                break Label_0060;
-            }
-            catch (Throwable t) {
-                Log.e("nfxpref", "Failed to save to preferences!", t);
-            }
-            return b;
+        catch (Throwable t) {
+            Log.e("nfxpref", "Failed to save to preferences!", t);
+            return false;
         }
         final SharedPreferences$Editor edit = sharedPreferences.edit();
         if (edit == null) {
@@ -239,8 +237,7 @@ public final class PreferenceUtils
         }
         edit.remove(s);
         edit.commit();
-        b = true;
-        return b;
+        return true;
     }
     
     public static boolean saveCrashReport(final Context context, final CrashReport crashReport) {

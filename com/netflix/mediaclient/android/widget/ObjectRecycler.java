@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.view.View;
 import com.netflix.mediaclient.util.ThreadUtils;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -55,15 +54,5 @@ public class ObjectRecycler<T>
         }
         list.add(t);
         this.logVerbose("+ Added object to scrap heap with tag: " + canonicalName + ", scrapHeap size:" + list.size());
-    }
-    
-    public static class ViewRecycler extends ObjectRecycler<View>
-    {
-        protected static final String TAG = "ViewRecycler";
-    }
-    
-    public interface ViewRecyclerProvider
-    {
-        ViewRecycler getViewRecycler();
     }
 }

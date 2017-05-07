@@ -4,14 +4,13 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
@@ -38,14 +37,16 @@ public class SwitchUserProfileRequest extends FalcorVolleyWebClientRequest<UserB
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
     protected String getOptionalParams() {
-        final StringBuilder append = new StringBuilder().append(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), "'" + this.guid + "'"));
-        Log.d("nf_service_user_switchuserprofilerequest", " getOptionalParams: " + append.toString());
-        return append.toString();
+        final String urlEncodPQLParam = FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "'" + this.guid + "'");
+        if (Log.isLoggable("nf_service_user_switchuserprofilerequest", 3)) {
+            Log.d("nf_service_user_switchuserprofilerequest", "getOptionalParams: " + urlEncodPQLParam);
+        }
+        return urlEncodPQLParam;
     }
     
     @Override
@@ -68,7 +69,7 @@ public class SwitchUserProfileRequest extends FalcorVolleyWebClientRequest<UserB
     }
     
     @Override
-    protected UserBoundCookies parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected UserBoundCookies parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_switchuserprofilerequest", 2)) {
             Log.v("nf_service_user_switchuserprofilerequest", "String response to parse = " + s);
         }

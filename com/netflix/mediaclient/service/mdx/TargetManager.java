@@ -32,7 +32,7 @@ import com.netflix.mediaclient.service.mdx.message.controller.PlayerChangeMetaDa
 import com.netflix.mediaclient.service.mdx.message.controller.PlayerSetAutoAdvance;
 import com.netflix.mediaclient.service.mdx.message.controller.PinConfirmed;
 import com.netflix.mediaclient.service.mdx.message.controller.PinCancelled;
-import com.netflix.mediaclient.util.WebApiUtils;
+import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import java.util.concurrent.atomic.AtomicLong;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
@@ -62,7 +62,7 @@ public class TargetManager implements EventListener, CommandInterface
         return this.mRecentMessageTime.get();
     }
     
-    public WebApiUtils.VideoIds getVideoIds() {
+    public WebApiUtils$VideoIds getVideoIds() {
         if (this.mTarget != null) {
             return this.mTarget.getVideoIds();
         }

@@ -26,17 +26,17 @@ import java.util.Map;
 public class TestSession extends Session
 {
     private static final String LOG_TAG = "FacebookSDK.TestSession";
-    private static Map<String, TestAccount> appTestAccounts;
+    private static Map<String, TestSession$TestAccount> appTestAccounts;
     private static final long serialVersionUID = 1L;
     private static String testApplicationId;
     private static String testApplicationSecret;
-    private final Mode mode;
+    private final TestSession$Mode mode;
     private final List<String> requestedPermissions;
     private final String sessionUniqueUserTag;
     private String testAccountId;
     private boolean wasAskedToExtendAccessToken;
     
-    TestSession(final Activity activity, final List<String> requestedPermissions, final TokenCachingStrategy tokenCachingStrategy, final String sessionUniqueUserTag, final Mode mode) {
+    TestSession(final Activity activity, final List<String> requestedPermissions, final TokenCachingStrategy tokenCachingStrategy, final String sessionUniqueUserTag, final TestSession$Mode mode) {
         super((Context)activity, TestSession.testApplicationId, tokenCachingStrategy);
         Validate.notNull(requestedPermissions, "permissions");
         Validate.notNullOrEmpty(TestSession.testApplicationId, "testApplicationId");
@@ -47,7 +47,7 @@ public class TestSession extends Session
     }
     
     public static TestSession createSessionWithPrivateUser(final Activity activity, final List<String> list) {
-        return createTestSession(activity, list, Mode.PRIVATE, null);
+        return createTestSession(activity, list, TestSession$Mode.PRIVATE, null);
     }
     
     public static TestSession createSessionWithSharedUser(final Activity activity, final List<String> list) {
@@ -55,46 +55,45 @@ public class TestSession extends Session
     }
     
     public static TestSession createSessionWithSharedUser(final Activity activity, final List<String> list, final String s) {
-        return createTestSession(activity, list, Mode.SHARED, s);
+        return createTestSession(activity, list, TestSession$Mode.SHARED, s);
     }
     
-    private TestAccount createTestAccountAndFinishAuth() {
+    private TestSession$TestAccount createTestAccountAndFinishAuth() {
         final Bundle bundle = new Bundle();
         bundle.putString("installed", "true");
         bundle.putString("permissions", this.getPermissionsString());
         bundle.putString("access_token", getAppAccessToken());
-        if (this.mode == Mode.SHARED) {
+        if (this.mode == TestSession$Mode.SHARED) {
             bundle.putString("name", String.format("Shared %s Testuser", this.getSharedTestAccountIdentifier()));
         }
         final Response executeAndWait = new Request(null, String.format("%s/accounts/test-users", TestSession.testApplicationId), bundle, HttpMethod.POST).executeAndWait();
         final FacebookRequestError error = executeAndWait.getError();
-        final TestAccount testAccount = executeAndWait.getGraphObjectAs(TestAccount.class);
+        final TestSession$TestAccount testSession$TestAccount = executeAndWait.getGraphObjectAs(TestSession$TestAccount.class);
         if (error != null) {
             this.finishAuthOrReauth(null, error.getException());
             return null;
         }
-        assert testAccount != null;
-        if (this.mode == Mode.SHARED) {
-            testAccount.setName(bundle.getString("name"));
-            storeTestAccount(testAccount);
+        assert testSession$TestAccount != null;
+        if (this.mode == TestSession$Mode.SHARED) {
+            testSession$TestAccount.setName(bundle.getString("name"));
+            storeTestAccount(testSession$TestAccount);
         }
-        this.finishAuthWithTestAccount(testAccount);
-        return testAccount;
+        this.finishAuthWithTestAccount(testSession$TestAccount);
+        return testSession$TestAccount;
     }
     
-    private static TestSession createTestSession(final Activity activity, final List<String> list, final Mode mode, final String s) {
+    private static TestSession createTestSession(final Activity activity, List<String> list, final TestSession$Mode testSession$Mode, final String s) {
         synchronized (TestSession.class) {
             if (Utility.isNullOrEmpty(TestSession.testApplicationId) || Utility.isNullOrEmpty(TestSession.testApplicationSecret)) {
                 throw new FacebookException("Must provide app ID and secret");
             }
         }
-        List<String> list2 = list;
         if (Utility.isNullOrEmpty((Collection<Object>)list)) {
-            list2 = Arrays.asList("email", "publish_actions");
+            list = Arrays.asList("email", "publish_actions");
         }
         final Activity activity2;
         // monitorexit(TestSession.class)
-        return new TestSession(activity2, list2, new TestTokenCachingStrategy(), s, mode);
+        return new TestSession(activity2, list, new TestSession$TestTokenCachingStrategy(null), s, testSession$Mode);
     }
     
     private void deleteTestAccount(final String s, final String s2) {
@@ -112,7 +111,7 @@ public class TestSession extends Session
     }
     
     private void findOrCreateSharedTestAccount() {
-        final TestAccount testAccountMatchingIdentifier = findTestAccountMatchingIdentifier(this.getSharedTestAccountIdentifier());
+        final TestSession$TestAccount testAccountMatchingIdentifier = findTestAccountMatchingIdentifier(this.getSharedTestAccountIdentifier());
         if (testAccountMatchingIdentifier != null) {
             this.finishAuthWithTestAccount(testAccountMatchingIdentifier);
             return;
@@ -120,21 +119,21 @@ public class TestSession extends Session
         this.createTestAccountAndFinishAuth();
     }
     
-    private static TestAccount findTestAccountMatchingIdentifier(final String s) {
+    private static TestSession$TestAccount findTestAccountMatchingIdentifier(final String s) {
         synchronized (TestSession.class) {
             retrieveTestAccountsForAppIfNeeded();
-            for (final TestAccount testAccount : TestSession.appTestAccounts.values()) {
-                if (testAccount.getName().contains(s)) {
-                    return testAccount;
+            for (final TestSession$TestAccount testSession$TestAccount : TestSession.appTestAccounts.values()) {
+                if (testSession$TestAccount.getName().contains(s)) {
+                    return testSession$TestAccount;
                 }
             }
             return null;
         }
     }
     
-    private void finishAuthWithTestAccount(final TestAccount testAccount) {
-        this.testAccountId = testAccount.getId();
-        this.finishAuthOrReauth(AccessToken.createFromString(testAccount.getAccessToken(), this.requestedPermissions, AccessTokenSource.TEST_USER), null);
+    private void finishAuthWithTestAccount(final TestSession$TestAccount testSession$TestAccount) {
+        this.testAccountId = testSession$TestAccount.getId();
+        this.finishAuthOrReauth(AccessToken.createFromString(testSession$TestAccount.getAccessToken(), this.requestedPermissions, AccessTokenSource.TEST_USER), null);
     }
     
     static final String getAppAccessToken() {
@@ -154,7 +153,7 @@ public class TestSession extends Session
         else {
             n2 = 0L;
         }
-        return this.validNameStringFromInteger((n & 0xFFFFFFFFL) ^ n2);
+        return this.validNameStringFromInteger(n2 ^ (n & 0xFFFFFFFFL));
     }
     
     public static String getTestApplicationId() {
@@ -169,17 +168,17 @@ public class TestSession extends Session
         }
     }
     
-    private static void populateTestAccounts(final Collection<TestAccount> collection, final Collection<UserAccount> collection2) {
+    private static void populateTestAccounts(final Collection<TestSession$TestAccount> collection, final Collection<TestSession$UserAccount> collection2) {
         synchronized (TestSession.class) {
-            final Iterator<TestAccount> iterator = collection.iterator();
+            final Iterator<TestSession$TestAccount> iterator = collection.iterator();
             while (iterator.hasNext()) {
                 storeTestAccount(iterator.next());
             }
         }
-        for (final UserAccount userAccount : collection2) {
-            final TestAccount testAccount = TestSession.appTestAccounts.get(userAccount.getUid());
-            if (testAccount != null) {
-                testAccount.setName(userAccount.getName());
+        for (final TestSession$UserAccount testSession$UserAccount : collection2) {
+            final TestSession$TestAccount testSession$TestAccount = TestSession.appTestAccounts.get(testSession$UserAccount.getUid());
+            if (testSession$TestAccount != null) {
+                testSession$TestAccount.setName(testSession$UserAccount.getName());
             }
         }
     }
@@ -196,7 +195,7 @@ public class TestSession extends Session
                     if (TestSession.appTestAccounts != null) {
                         return;
                     }
-                    TestSession.appTestAccounts = new HashMap<String, TestAccount>();
+                    TestSession.appTestAccounts = new HashMap<String, TestSession$TestAccount>();
                     format = String.format("SELECT id,access_token FROM test_account WHERE app_id = %s", TestSession.testApplicationId);
                     bundle = new Bundle();
                     final JSONObject jsonObject = new JSONObject();
@@ -278,11 +277,11 @@ public class TestSession extends Session
                     throw new FacebookException((Throwable)ex2);
                 }
             }
-            final GraphObjectList<FqlResult> data = response5.getGraphObjectAs(FqlResponse.class).getData();
+            final GraphObjectList<TestSession$FqlResult> data = response5.getGraphObjectAs(TestSession$FqlResponse.class).getData();
             if (data == null || data.size() != 2) {
                 break;
             }
-            populateTestAccounts(((FqlResult)data.get(0)).getFqlResultSet().castToListOf(TestAccount.class), ((FqlResult)data.get(1)).getFqlResultSet().castToListOf(UserAccount.class));
+            populateTestAccounts(((TestSession$FqlResult)data.get(0)).getFqlResultSet().castToListOf(TestSession$TestAccount.class), ((TestSession$FqlResult)data.get(1)).getFqlResultSet().castToListOf(TestSession$UserAccount.class));
             return;
         }
         throw new FacebookException("Unexpected number of results from FQL query");
@@ -310,31 +309,35 @@ public class TestSession extends Session
     }
     // monitorexit(TestSession.class)
     
-    private static void storeTestAccount(final TestAccount testAccount) {
+    private static void storeTestAccount(final TestSession$TestAccount testSession$TestAccount) {
         synchronized (TestSession.class) {
-            TestSession.appTestAccounts.put(testAccount.getId(), testAccount);
+            TestSession.appTestAccounts.put(testSession$TestAccount.getId(), testSession$TestAccount);
         }
     }
     
     private String validNameStringFromInteger(final long n) {
         final String string = Long.toString(n);
         final StringBuilder sb = new StringBuilder("Perm");
-        char c = '\0';
         final char[] charArray = string.toCharArray();
-        char c3;
-        for (int length = charArray.length, i = 0; i < length; ++i, c = c3) {
+        final int length = charArray.length;
+        int i = 0;
+        char c = '\0';
+        while (i < length) {
             final char c2 = charArray[i];
+            char c3;
             if ((c3 = c2) == c) {
                 c3 = (char)(c2 + '\n');
             }
             sb.append((char)(c3 + 'a' - '0'));
+            ++i;
+            c = c3;
         }
         return sb.toString();
     }
     
     @Override
-    void authorize(final AuthorizationRequest authorizationRequest) {
-        if (this.mode == Mode.PRIVATE) {
+    void authorize(final Session$AuthorizationRequest session$AuthorizationRequest) {
+        if (this.mode == TestSession$Mode.PRIVATE) {
             this.createTestAccountAndFinishAuth();
             return;
         }
@@ -348,7 +351,7 @@ public class TestSession extends Session
     }
     
     void fakeTokenRefreshAttempt() {
-        this.setCurrentTokenRefreshRequest(new TokenRefreshRequest(this));
+        this.setCurrentTokenRefreshRequest(new Session$TokenRefreshRequest(this));
     }
     
     void forceExtendAccessToken(final boolean b) {
@@ -369,7 +372,7 @@ public class TestSession extends Session
     void postStateChange(final SessionState sessionState, final SessionState sessionState2, final Exception ex) {
         final String testAccountId = this.testAccountId;
         super.postStateChange(sessionState, sessionState2, ex);
-        if (sessionState2.isClosed() && testAccountId != null && this.mode == Mode.PRIVATE) {
+        if (sessionState2.isClosed() && testAccountId != null && this.mode == TestSession$Mode.PRIVATE) {
             this.deleteTestAccount(testAccountId, getAppAccessToken());
         }
     }
@@ -384,61 +387,5 @@ public class TestSession extends Session
     @Override
     public final String toString() {
         return "{TestSession" + " testUserId:" + this.testAccountId + " " + super.toString() + "}";
-    }
-    
-    private interface FqlResponse extends GraphObject
-    {
-        GraphObjectList<FqlResult> getData();
-    }
-    
-    private interface FqlResult extends GraphObject
-    {
-        GraphObjectList<GraphObject> getFqlResultSet();
-    }
-    
-    private enum Mode
-    {
-        PRIVATE, 
-        SHARED;
-    }
-    
-    private interface TestAccount extends GraphObject
-    {
-        String getAccessToken();
-        
-        String getId();
-        
-        String getName();
-        
-        void setName(final String p0);
-    }
-    
-    private static final class TestTokenCachingStrategy extends TokenCachingStrategy
-    {
-        private Bundle bundle;
-        
-        @Override
-        public void clear() {
-            this.bundle = null;
-        }
-        
-        @Override
-        public Bundle load() {
-            return this.bundle;
-        }
-        
-        @Override
-        public void save(final Bundle bundle) {
-            this.bundle = bundle;
-        }
-    }
-    
-    private interface UserAccount extends GraphObject
-    {
-        String getName();
-        
-        String getUid();
-        
-        void setName(final String p0);
     }
 }

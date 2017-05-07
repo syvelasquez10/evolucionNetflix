@@ -4,7 +4,6 @@
 
 package com.google.android.gms.internal;
 
-import android.view.MotionEvent;
 import android.view.ViewParent;
 import android.view.Window;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import android.widget.FrameLayout;
 import android.app.Activity;
 
 @ez
-public class dk extends ds.a
+public class dk extends ds$a
 {
     private static final int ru;
     private gv md;
@@ -37,7 +36,7 @@ public class dk extends ds.a
     private RelativeLayout rG;
     private dm rv;
     private do rw;
-    private c rx;
+    private dk$c rx;
     private dp ry;
     private boolean rz;
     
@@ -196,12 +195,12 @@ public class dk extends ds.a
             try {
                 this.rv = dm.b(this.nr.getIntent());
                 if (this.rv == null) {
-                    throw new a("Could not get info for ad overlay.");
+                    throw new dk$a("Could not get info for ad overlay.");
                 }
                 break Label_0068;
             }
-            catch (a a) {
-                gs.W(a.getMessage());
+            catch (dk$a dk$a) {
+                gs.W(dk$a.getMessage());
                 this.nr.finish();
             }
             return;
@@ -225,7 +224,7 @@ public class dk extends ds.a
                 this.p(false);
             }
             case 2: {
-                this.rx = new c(this.rv.rN);
+                this.rx = new dk$c(this.rv.rN);
                 this.p(false);
             }
             case 3: {
@@ -241,7 +240,7 @@ public class dk extends ds.a
                 }
             }
             default: {
-                throw new a("Could not determine ad overlay type.");
+                throw new dk$a("Could not determine ad overlay type.");
             }
         }
     }
@@ -295,7 +294,7 @@ public class dk extends ds.a
         this.bZ();
     }
     
-    void p(final boolean b) throws a {
+    void p(final boolean b) {
         if (!this.rz) {
             this.nr.requestWindowFeature(1);
         }
@@ -308,7 +307,7 @@ public class dk extends ds.a
             gs.S("Enabling hardware acceleration on the AdActivity window.");
             gn.a(window);
         }
-        this.rG = new b((Context)this.nr, this.rv.rV);
+        this.rG = new dk$b((Context)this.nr, this.rv.rV);
         if (!this.rF) {
             this.rG.setBackgroundColor(-16777216);
         }
@@ -321,18 +320,13 @@ public class dk extends ds.a
         if (b) {
             this.md = gv.a((Context)this.nr, this.rv.rN.Y(), true, df, null, this.rv.lD);
             this.md.dv().a(null, null, this.rv.rO, this.rv.rS, true, this.rv.rU, this.rv.rN.dv().dE());
-            this.md.dv().a((gw.a)new gw.a() {
-                @Override
-                public void a(final gv gv) {
-                    gv.ca();
-                }
-            });
+            this.md.dv().a(new dk$1(this));
             if (this.rv.rq != null) {
                 this.md.loadUrl(this.rv.rq);
             }
             else {
                 if (this.rv.rR == null) {
-                    throw new a("No URL or HTML to display in ad overlay.");
+                    throw new dk$a("No URL or HTML to display in ad overlay.");
                 }
                 this.md.loadDataWithBaseURL(this.rv.rP, this.rv.rR, "text/html", "UTF-8", (String)null);
             }
@@ -360,50 +354,5 @@ public class dk extends ds.a
     
     public void setRequestedOrientation(final int requestedOrientation) {
         this.nr.setRequestedOrientation(requestedOrientation);
-    }
-    
-    @ez
-    private static final class a extends Exception
-    {
-        public a(final String s) {
-            super(s);
-        }
-    }
-    
-    @ez
-    private static final class b extends RelativeLayout
-    {
-        private final gm ly;
-        
-        public b(final Context context, final String s) {
-            super(context);
-            this.ly = new gm(context, s);
-        }
-        
-        public boolean onInterceptTouchEvent(final MotionEvent motionEvent) {
-            this.ly.c(motionEvent);
-            return false;
-        }
-    }
-    
-    @ez
-    private static final class c
-    {
-        public final int index;
-        public final ViewGroup$LayoutParams rI;
-        public final ViewGroup rJ;
-        
-        public c(final gv gv) throws a {
-            this.rI = gv.getLayoutParams();
-            final ViewParent parent = gv.getParent();
-            if (parent instanceof ViewGroup) {
-                this.rJ = (ViewGroup)parent;
-                this.index = this.rJ.indexOfChild((View)gv);
-                this.rJ.removeView((View)gv);
-                gv.x(true);
-                return;
-            }
-            throw new a("Could not get the parent of the WebView for an overlay.");
-        }
     }
 }

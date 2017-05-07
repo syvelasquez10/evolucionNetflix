@@ -4,6 +4,7 @@
 
 package com.google.android.gms.games;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
@@ -61,7 +62,7 @@ public class PlayerLevelInfoCreator implements Parcelable$Creator<PlayerLevelInf
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new PlayerLevelInfo(g, j, i, playerLevel2, playerLevel);
     }

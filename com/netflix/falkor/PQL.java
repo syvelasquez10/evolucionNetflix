@@ -11,8 +11,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.Arrays;
 import com.netflix.mediaclient.NetflixApplication;
 import java.util.ArrayList;
@@ -38,81 +38,64 @@ public class PQL implements Cloneable
         return Arrays.asList(array);
     }
     
-    public static List<PQL> collapse(final List<PQL> list) {
+    public static void collapse(final List<PQL> list) {
         int size = list.size();
         PQL pql = null;
         PQL pql2 = null;
         int i = 1;
         boolean b = false;
         if (list.size() >= 2) {
-            Collections.sort((List<Object>)list, (Comparator<? super Object>)new Comparator<PQL>() {
-                @Override
-                public int compare(final PQL pql, final PQL pql2) {
-                    return comparePaths(pql, pql2);
-                }
-            });
+            Collections.sort((List<Object>)list, (Comparator<? super Object>)new PQL$1());
             while (i != 0) {
-                i = 0;
+                boolean b2 = false;
                 int n = 0;
                 int n2 = 0;
                 int j = 1;
                 int n3 = -1;
                 while (j < size) {
-                    final PQL pql3 = list.get(n2);
-                    final List keySegments = pql3.keySegments;
-                    final PQL pql4 = list.get(j);
-                    final List keySegments2 = pql4.keySegments;
-                    final Integer value = 100;
-                    int n4 = n3;
-                    Integer n5 = value;
-                    if (keySegments.size() == keySegments2.size()) {
-                        n4 = n3;
-                        n5 = value;
-                        if (keySegments.size() > 1) {
-                            Integer value2 = 0;
-                            int n6 = keySegments.size() - 1;
-                            while (true) {
-                                n4 = n3;
-                                n5 = value2;
-                                if (n6 < 0) {
-                                    break;
-                                }
-                                n4 = n3;
-                                n5 = value2;
-                                if (value2 > 1) {
-                                    break;
-                                }
-                                Integer value3 = value2;
-                                if (!segmentsEqual(keySegments.get(n6), keySegments2.get(n6))) {
-                                    value3 = value2 + 1;
-                                    n3 = n6;
-                                }
-                                --n6;
-                                value2 = value3;
+                    pql = list.get(n2);
+                    final List keySegments = pql.keySegments;
+                    pql2 = list.get(j);
+                    final List keySegments2 = pql2.keySegments;
+                    Integer n4;
+                    if (keySegments.size() == keySegments2.size() && keySegments.size() > 1) {
+                        n4 = 0;
+                        final int n5 = keySegments.size() - 1;
+                        int n6 = n3;
+                        Integer value;
+                        for (int n7 = n5; n7 >= 0 && n4 <= 1; --n7, n4 = value) {
+                            value = n4;
+                            if (!segmentsEqual(keySegments.get(n7), keySegments2.get(n7))) {
+                                value = n4 + 1;
+                                n6 = n7;
                             }
                         }
+                        n3 = n6;
                     }
-                    if (n5 == 1) {
-                        final List<Object> value4 = keySegments.get(n4);
+                    else {
+                        n4 = 100;
+                    }
+                    if (n4 == 1) {
+                        final List<Object> value2 = keySegments.get(n3);
                         List<Object> list2;
-                        if (!(value4 instanceof List)) {
+                        if (!(value2 instanceof List)) {
                             list2 = (List<Object>)new ArrayList<HashMap<String, Integer>>();
-                            list2.add(value4);
-                            keySegments.set(n4, list2);
+                            list2.add(value2);
+                            keySegments.set(n3, list2);
                         }
                         else {
-                            list2 = value4;
+                            list2 = value2;
                         }
-                        final Map<String, Integer> value5 = list2.get(list2.size() - 1);
+                        final Map<String, Integer> value3 = list2.get(list2.size() - 1);
                         Object o;
-                        if (value5 instanceof Map) {
-                            o = value5;
+                        if (value3 instanceof Map) {
+                            o = value3;
                         }
                         else {
                             o = null;
                         }
-                        final Integer integer = parseInteger(value5);
-                        final Integer integer2 = parseInteger(keySegments2.get(n4));
+                        final Integer integer = parseInteger(value3);
+                        final Integer integer2 = parseInteger(keySegments2.get(n3));
                         if (o != null && ((Map<K, Integer>)o).get("to") != null && integer2 != null && ((Map<K, Integer>)o).get("to").equals(integer2 - 1)) {
                             ((Map<K, Integer>)o).put((K)"to", ((Map<K, Integer>)o).get("to") + 1);
                         }
@@ -123,41 +106,34 @@ public class PQL implements Cloneable
                             list2.set(list2.size() - 1, hashMap);
                         }
                         else {
-                            list2.add(keySegments2.get(n4));
+                            list2.add(keySegments2.get(n3));
                         }
-                        i = 1;
+                        b2 = true;
                         b = true;
                         ++j;
-                        n3 = n4;
-                        pql = pql3;
-                        pql2 = pql4;
                     }
-                    else if (n5 == 0) {
-                        i = 1;
+                    else if (n4 == 0) {
+                        b2 = true;
                         b = true;
                         ++j;
-                        n3 = n4;
-                        pql = pql3;
-                        pql2 = pql4;
                     }
                     else {
                         b = false;
-                        n3 = -1;
+                        list.set(n, pql);
+                        ++n;
                         n2 = j;
                         ++j;
-                        list.set(n, pql3);
-                        ++n;
-                        pql = pql3;
-                        pql2 = pql4;
+                        n3 = -1;
                     }
                 }
                 if (!b) {
                     list.set(n, pql2);
                 }
-                else if (i != 0) {
+                else if (b2) {
                     list.set(n, pql);
                 }
                 size = n + 1;
+                i = (b2 ? 1 : 0);
             }
             for (int k = list.size() - 1; k >= size; --k) {
                 list.remove(k);
@@ -167,7 +143,6 @@ public class PQL implements Cloneable
                 sanitize(iterator.next().getKeySegments());
             }
         }
-        return list;
     }
     
     private static int comparePaths(final PQL pql, final PQL pql2) {
@@ -207,63 +182,53 @@ public class PQL implements Cloneable
                 else {
                     o2 = null;
                 }
-                Object o3 = value;
-                List<Map<K, Object>> list3 = (List<Map<K, Object>>)o;
-                if (o != null) {
-                    o3 = value;
-                    list3 = (List<Map<K, Object>>)o;
-                    if (((List)o).size() != 0) {
-                        o3 = value;
-                        list3 = (List<Map<K, Object>>)o;
-                        if (o2 == null) {
-                            o3 = ((List<Map<K, Object>>)o).get(0);
-                            list3 = null;
-                        }
-                    }
+                Object o3;
+                List<Map<K, Object>> list3;
+                if (o != null && ((List)o).size() == 1 && o2 == null) {
+                    o3 = ((List<Map<K, Object>>)o).get(0);
+                    list3 = null;
                 }
-                Object o4 = value2;
+                else {
+                    list3 = (List<Map<K, Object>>)o;
+                    o3 = value;
+                }
+                Object o4;
                 List<Map<K, Object>> list4;
-                if ((list4 = (List<Map<K, Object>>)o2) != null) {
-                    o4 = value2;
+                if (o2 != null && ((List)o2).size() == 1 && list3 == null) {
+                    o4 = ((List<Map<K, Object>>)o2).get(0);
+                    list4 = null;
+                }
+                else {
                     list4 = (List<Map<K, Object>>)o2;
-                    if (((List)o2).size() == 1) {
-                        o4 = value2;
-                        list4 = (List<Map<K, Object>>)o2;
-                        if (list3 == null) {
-                            o4 = ((List<Map<K, Object>>)o2).get(0);
-                            list4 = null;
-                        }
-                    }
+                    o4 = value2;
                 }
                 if (list3 != null && list4 != null) {
-                    final int n2 = list4.size() - list4.size();
-                    if (n2 != 0) {
-                        return n2;
-                    }
-                    for (int k = 0; k < list3.size(); ++k) {
-                        final Map<K, Object> value3 = list3.get(k);
-                        final Map<K, Object> value4 = list4.get(k);
-                        Object value5 = value3;
-                        if (value3 instanceof Map) {
-                            value5 = value3.get("from");
-                        }
-                        Object value6 = value4;
-                        if (value4 instanceof Map) {
-                            value6 = value4.get("from");
-                        }
-                        final Double double1 = parseDouble(value5);
-                        final Double double2 = parseDouble(value6);
-                        if (double2 != null && double2 != null && !double1.equals(double2)) {
-                            final double n3 = double1 - double2;
-                            if (n3 != 0.0) {
-                                return (int)n3;
+                    if ((n = list4.size() - list4.size()) == 0) {
+                        for (int k = 0; k < list3.size(); ++k) {
+                            Object o5 = list3.get(k);
+                            final Map<K, Object> value3 = list4.get(k);
+                            if (o5 instanceof Map) {
+                                o5 = ((Map<K, Object>)o5).get("from");
+                            }
+                            Object value4 = value3;
+                            if (value3 instanceof Map) {
+                                value4 = value3.get("from");
+                            }
+                            final Double double1 = parseDouble(o5);
+                            final Double double2 = parseDouble(value4);
+                            if (double2 != null && double2 != null && !double1.equals(double2)) {
+                                final double n2 = double1 - double2;
+                                if (n2 != 0.0) {
+                                    return (int)n2;
+                                }
+                            }
+                            else if ((n = o5.toString().compareTo(value4.toString())) != 0) {
+                                return n;
                             }
                         }
-                        else if ((n = value5.toString().compareTo(value6.toString())) != 0) {
-                            return n;
-                        }
+                        return 0;
                     }
-                    return 0;
+                    return n;
                 }
                 else {
                     Map<K, Map<K, Map>> map;
@@ -403,36 +368,34 @@ public class PQL implements Cloneable
         return list;
     }
     
-    private static Object sanitizeKey(final Object o) {
-        Object value = o;
-        if (o instanceof List) {
-            final List list = (List)o;
-            value = o;
-            if (list != null) {
-                value = o;
-                if (list.size() == 1) {
-                    value = list.get(0);
+    private static Object sanitizeKey(Object value) {
+        if (value instanceof List) {
+            final List list = (List)value;
+            if (list != null && list.size() == 1) {
+                value = list.get(0);
+            }
+        }
+        while (true) {
+            if (value instanceof Map) {
+                final Map map = (Map)value;
+                final Long value2 = map.get("from");
+                if (value2 == null) {
+                    map.put("from", 0);
+                }
+                else if (value2 instanceof Long) {
+                    map.put("from", (int)(Object)value2);
+                }
+                final Long value3 = map.get("to");
+                if (value3 instanceof Long) {
+                    map.put("to", (int)(Object)value3);
                 }
             }
-        }
-        if (value instanceof Map) {
-            final Map<K, Object> map = (Map<K, Object>)value;
-            final Object value2 = map.get("from");
-            if (value2 == null) {
-                map.put((K)"from", 0);
+            else if (!(value instanceof String)) {
+                return value.toString();
             }
-            else if (value2 instanceof Long) {
-                map.put((K)"from", (int)value2);
-            }
-            final Object value3 = map.get("to");
-            if (value3 instanceof Long) {
-                map.put((K)"to", (int)value3);
-            }
+            return value;
+            continue;
         }
-        else if (!(value instanceof String)) {
-            return value.toString();
-        }
-        return value;
     }
     
     private static boolean segmentsEqual(final Object o, final Object o2) {
@@ -527,143 +490,130 @@ public class PQL implements Cloneable
     public LinkedHashSet<PQL> explode() {
         final List keySegments = this.keySegments;
         final LinkedHashSet<PQL> set = new LinkedHashSet<PQL>();
-        final Map<K, Integer> map = null;
         final Object[] array = new Object[this.keySegments.size()];
         final Integer[] array2 = new Integer[this.keySegments.size()];
         final Integer[] array3 = new Integer[this.keySegments.size()];
         final Integer[] array4 = new Integer[this.keySegments.size()];
-        final int n = 0;
         if (keySegments.size() == 0) {
             set.add(new PQL(keySegments));
+            return set;
         }
-        else {
-            final int n2 = keySegments.size() - 1;
-            int n3 = 0;
-            int i;
-            Object o;
+        final int n = keySegments.size() - 1;
+        for (int i = 0; i <= n; ++i) {
+            final List<Object> value = keySegments.get(i);
+            array2[i] = 0;
+            array3[i] = null;
+            int n2;
+            if (value instanceof List) {
+                n2 = value.size() - 1;
+            }
+            else {
+                n2 = 0;
+            }
+            array4[i] = n2;
+        }
+        int j = 0;
+        Object o = null;
+        while (j >= 0) {
             while (true) {
-                i = n;
-                o = map;
-                if (n3 > n2) {
-                    break;
-                }
-                final List<Object> value = keySegments.get(n3);
-                array2[n3] = 0;
-                array3[n3] = null;
-                int n4;
-                if (value instanceof List) {
-                    n4 = value.size() - 1;
+                if (j <= n) {
+                    Object o2 = keySegments.get(j);
+                    if (o2 instanceof List) {
+                        o2 = ((List<Object>)o2).get(array2[j]);
+                    }
+                    if (o2 instanceof Map) {
+                        o = o2;
+                    }
+                    else {
+                        o = null;
+                    }
+                    Integer n3;
+                    if (o != null) {
+                        n3 = ((Map<K, Integer>)o).get("to");
+                    }
+                    else {
+                        n3 = null;
+                    }
+                    if (n3 != null) {
+                        int intValue;
+                        if (((Map<K, Integer>)o).get("from") != null) {
+                            intValue = ((Map<K, Integer>)o).get("from");
+                        }
+                        else {
+                            intValue = 0;
+                        }
+                        final Integer value2 = intValue;
+                        if (n3 < value2) {
+                            throw new RuntimeException("Invalid range in path.  Range to value is smaller than from value (" + value2 + " > " + n3 + ")");
+                        }
+                        if (array3[j] == null) {
+                            array3[j] = value2;
+                        }
+                        array[j] = array3[j].toString();
+                    }
+                    else {
+                        array[j] = o2.toString();
+                    }
+                    ++j;
                 }
                 else {
-                    n4 = 0;
-                }
-                array4[n3] = n4;
-                ++n3;
-            }
-            while (i >= 0) {
-                while (true) {
-                    int j = i;
-                    Object o2 = o;
-                    while (j <= n2) {
-                        Object o3;
-                        final List<Object> list = (List<Object>)(o3 = keySegments.get(j));
-                        if (list instanceof List) {
-                            o3 = list.get(array2[j]);
-                        }
-                        if (o3 instanceof Map) {
-                            o2 = o3;
-                        }
-                        else {
-                            o2 = null;
-                        }
-                        Integer n5;
-                        if (o2 != null) {
-                            n5 = ((Map<K, Integer>)o2).get("to");
-                        }
-                        else {
-                            n5 = null;
-                        }
-                        if (n5 != null) {
-                            int intValue;
-                            if (((Map<K, Integer>)o2).get("from") != null) {
-                                intValue = ((Map<K, Integer>)o2).get("from");
-                            }
-                            else {
-                                intValue = 0;
-                            }
-                            final Integer value2 = intValue;
-                            if (n5 < value2) {
-                                throw new RuntimeException("Invalid range in path.  Range to value is smaller than from value (" + value2 + " > " + n5 + ")");
-                            }
-                            if (array3[j] == null) {
-                                array3[j] = value2;
-                            }
-                            array[j] = array3[j].toString();
-                        }
-                        else {
-                            array[j] = o3.toString();
-                        }
-                        ++j;
-                    }
                     set.add(new PQL(Arrays.asList((Object[])array.clone())));
-                    int k = n2;
-                    if (array3[k] != null) {
-                        final Integer n6 = array3[k];
-                        ++array3[k];
-                        if (o2 != null && array3[k] > ((Map<K, Integer>)o2).get("to")) {
-                            array3[k] = null;
-                            final Integer n7 = array2[k];
-                            ++array2[k];
+                    if (array3[n] != null) {
+                        final Integer n4 = array3[n];
+                        ++array3[n];
+                        if (o != null && array3[n] > ((Map<K, Integer>)o).get("to")) {
+                            array3[n] = null;
+                            final Integer n5 = array2[n];
+                            ++array2[n];
                         }
                     }
                     else {
-                        final Integer n8 = array2[k];
-                        ++array2[k];
+                        final Integer n6 = array2[n];
+                        ++array2[n];
                     }
-                    i = k;
-                    o = o2;
-                    if (array2[k] > array4[k]) {
-                        array2[k] = array4[k];
-                        while (k >= 0) {
-                            final int intValue2 = array2[k];
-                            Object o4 = keySegments.get(k);
-                            if (o4 instanceof List) {
-                                o4 = ((List<Object>)o4).get(array2[k]);
+                    if (array2[n] > array4[n]) {
+                        array2[n] = array4[n];
+                        for (j = n; j >= 0; --j) {
+                            final int intValue2 = array2[j];
+                            Object o3;
+                            final List<Object> list = (List<Object>)(o3 = keySegments.get(j));
+                            if (list instanceof List) {
+                                o3 = list.get(array2[j]);
                             }
-                            Object o5;
-                            if (o4 instanceof Map) {
-                                o5 = o4;
-                            }
-                            else {
-                                o5 = null;
-                            }
-                            Integer n9;
-                            if (o5 != null) {
-                                n9 = ((Map<K, Integer>)o5).get("to");
+                            Object o4;
+                            if (o3 instanceof Map) {
+                                o4 = o3;
                             }
                             else {
-                                n9 = null;
+                                o4 = null;
                             }
-                            Integer n10;
-                            if (o5 != null) {
-                                n10 = ((Map<K, Integer>)o5).get("from");
+                            Integer n7;
+                            if (o4 != null) {
+                                n7 = ((Map<K, Integer>)o4).get("to");
                             }
                             else {
-                                n10 = null;
+                                n7 = null;
                             }
-                            if (intValue2 != array4[k] || (array3[k] != null && !array3[k].equals(n9))) {
+                            Integer n8;
+                            if (o4 != null) {
+                                n8 = ((Map<K, Integer>)o4).get("from");
+                            }
+                            else {
+                                n8 = null;
+                            }
+                            if (intValue2 != array4[j] || (array3[j] != null && !array3[j].equals(n7))) {
                                 break;
                             }
-                            array2[k] = 0;
-                            final List<Object> value3 = keySegments.get(k);
+                            array2[j] = 0;
+                            final List<Object> value3 = keySegments.get(j);
                             if (value3 instanceof List) {
-                                value3.get(array2[k]);
+                                value3.get(array2[j]);
                             }
                             Integer value4;
-                            if (n9 != null) {
+                            if (n7 != null) {
                                 int intValue3;
-                                if (n10 != null) {
-                                    intValue3 = n10;
+                                if (n8 != null) {
+                                    intValue3 = n8;
                                 }
                                 else {
                                     intValue3 = 0;
@@ -673,67 +623,63 @@ public class PQL implements Cloneable
                             else {
                                 value4 = null;
                             }
-                            array3[k] = value4;
-                            --k;
+                            array3[j] = value4;
                         }
-                        i = k;
-                        o = o2;
-                        if (k < 0) {
+                        if (j < 0) {
                             break;
                         }
-                        Object o6 = keySegments.get(k);
-                        if (o6 instanceof List) {
-                            o6 = ((List<Object>)o6).get(array2[k]);
+                        Object o5 = keySegments.get(j);
+                        if (o5 instanceof List) {
+                            o5 = ((List<Object>)o5).get(array2[j]);
                         }
-                        Object o7;
-                        if (o6 instanceof Map) {
-                            o7 = o6;
-                        }
-                        else {
-                            o7 = null;
-                        }
-                        Integer n11;
-                        if (o7 != null) {
-                            n11 = ((Map<K, Integer>)o7).get("to");
+                        Object o6;
+                        if (o5 instanceof Map) {
+                            o6 = o5;
                         }
                         else {
-                            n11 = null;
+                            o6 = null;
                         }
-                        Integer n12;
-                        if (o6 instanceof Map) {
-                            n12 = ((Map<K, Integer>)o7).get("from");
+                        Integer n9;
+                        if (o6 != null) {
+                            n9 = ((Map<K, Integer>)o6).get("to");
                         }
                         else {
-                            n12 = null;
+                            n9 = null;
                         }
-                        if (n11 != null) {
-                            int n13;
-                            if (array3[k] == null) {
-                                if (n12 != null) {
-                                    n13 = n12;
+                        Integer n10;
+                        if (o5 instanceof Map) {
+                            n10 = ((Map<K, Integer>)o6).get("from");
+                        }
+                        else {
+                            n10 = null;
+                        }
+                        if (n9 != null) {
+                            int n11;
+                            if (array3[j] == null) {
+                                if (n10 != null) {
+                                    n11 = n10;
                                 }
                                 else {
-                                    n13 = 0;
+                                    n11 = 0;
                                 }
                             }
                             else {
-                                n13 = array3[k];
+                                n11 = array3[j];
                             }
-                            array3[k] = n13;
+                            array3[j] = n11;
                         }
-                        if (array3[k] != null && !array3[k].equals(n11)) {
-                            final Integer n14 = array3[k];
-                            ++array3[k];
-                            o = o2;
-                            i = k;
+                        if (array3[j] != null && !array3[j].equals(n9)) {
+                            final Integer n12 = array3[j];
+                            ++array3[j];
                             break;
                         }
-                        array3[k] = null;
-                        final Integer n15 = array2[k];
-                        ++array2[k];
-                        i = k;
-                        o = o2;
+                        array3[j] = null;
+                        final Integer n13 = array2[j];
+                        ++array2[j];
                         break;
+                    }
+                    else {
+                        j = n;
                     }
                 }
             }

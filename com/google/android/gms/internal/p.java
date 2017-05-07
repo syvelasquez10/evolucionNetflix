@@ -18,7 +18,7 @@ class p implements n
     }
     
     @Override
-    public byte[] A() throws IOException {
+    public byte[] A() {
         final int qv = this.kY.qv();
         if (qv < 0) {
             throw new IOException();
@@ -32,12 +32,12 @@ class p implements n
     }
     
     @Override
-    public void b(final int n, final long n2) throws IOException {
+    public void b(final int n, final long n2) {
         this.kY.b(n, n2);
     }
     
     @Override
-    public void b(final int n, final String s) throws IOException {
+    public void b(final int n, final String s) {
         this.kY.b(n, s);
     }
     

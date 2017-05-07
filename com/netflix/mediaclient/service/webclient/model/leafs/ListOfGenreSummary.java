@@ -20,15 +20,7 @@ public class ListOfGenreSummary extends TrackableListSummary implements GenreLis
     private boolean isKidsGenre;
     
     static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<ListOfGenreSummary>() {
-            public ListOfGenreSummary createFromParcel(final Parcel parcel) {
-                return new ListOfGenreSummary(parcel);
-            }
-            
-            public ListOfGenreSummary[] newArray(final int n) {
-                return new ListOfGenreSummary[n];
-            }
-        };
+        CREATOR = (Parcelable$Creator)new ListOfGenreSummary$1();
     }
     
     public ListOfGenreSummary(final int n, final int n2, final int n3, final String s, final String genreName, final String genreId, final boolean isKidsGenre, final String genreExperience) {

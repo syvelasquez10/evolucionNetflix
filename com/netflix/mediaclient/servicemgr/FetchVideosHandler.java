@@ -13,13 +13,13 @@ import java.util.List;
 
 public class FetchVideosHandler<T> extends LoggingManagerCallback
 {
-    private final FetchCallback<T> callback;
+    private final FetchVideosHandler$FetchCallback<T> callback;
     private final int end;
     private final long requestId;
     private final int start;
     private final String title;
     
-    public FetchVideosHandler(final String s, final FetchCallback<T> callback, final String title, final int start, final int end) {
+    public FetchVideosHandler(final String s, final FetchVideosHandler$FetchCallback<T> callback, final String title, final int start, final int end) {
         super(s);
         this.callback = callback;
         this.requestId = callback.getRequestId();
@@ -62,16 +62,5 @@ public class FetchVideosHandler<T> extends LoggingManagerCallback
     public void onVideosFetched(final List<Video> list, final Status status) {
         super.onVideosFetched(list, status);
         this.handleResponse(list, status);
-    }
-    
-    public interface FetchCallback<T>
-    {
-        long getRequestId();
-        
-        void onErrorResponse();
-        
-        void onNoVideosInResponse();
-        
-        void updateDataSet(final List<T> p0, final String p1, final int p2, final int p3);
     }
 }

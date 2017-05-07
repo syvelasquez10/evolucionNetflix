@@ -14,7 +14,7 @@ public abstract class pm
         this.awJ = -1;
     }
     
-    public static final <T extends pm> T a(final T t, final byte[] array) throws pl {
+    public static final <T extends pm> T a(final T t, final byte[] array) {
         return b(t, array, 0, array.length);
     }
     
@@ -29,7 +29,7 @@ public abstract class pm
         }
     }
     
-    public static final <T extends pm> T b(final T t, final byte[] array, final int n, final int n2) throws pl {
+    public static final <T extends pm> T b(final T t, final byte[] array, final int n, final int n2) {
         try {
             final pe a = pe.a(array, n, n2);
             t.b(a);
@@ -50,10 +50,10 @@ public abstract class pm
         return array;
     }
     
-    public void a(final pf pf) throws IOException {
+    public void a(final pf pf) {
     }
     
-    public abstract pm b(final pe p0) throws IOException;
+    public abstract pm b(final pe p0);
     
     protected int c() {
         return 0;

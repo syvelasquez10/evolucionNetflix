@@ -111,8 +111,4 @@ public final class b implements o
     public final String toString() {
         return "" + "Response time  : " + this.c() + "\n" + "Start time     : " + this.b + "\n" + "End time       : " + this.c + "\n" + "\n" + "Bytes out    : " + this.h + "\n" + "Bytes in     : " + this.g + "\n" + "\n" + "Response code  : " + this.k + "\n" + "Request method : " + this.l + "\n";
     }
-    
-    public static final class a implements p
-    {
-    }
 }

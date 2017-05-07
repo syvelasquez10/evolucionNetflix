@@ -30,22 +30,22 @@ public final class LibjingleNativeSocket implements RealTimeSocket
     }
     
     @Override
-    public void close() throws IOException {
+    public void close() {
         this.Kx.close();
     }
     
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() {
         return this.XM;
     }
     
     @Override
-    public OutputStream getOutputStream() throws IOException {
+    public OutputStream getOutputStream() {
         return this.XN;
     }
     
     @Override
-    public ParcelFileDescriptor getParcelFileDescriptor() throws IOException {
+    public ParcelFileDescriptor getParcelFileDescriptor() {
         return this.Kx;
     }
     

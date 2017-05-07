@@ -10,6 +10,7 @@ import com.netflix.mediaclient.android.app.Status;
 import android.content.DialogInterface;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.app.DialogFragment;
@@ -18,7 +19,7 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
 {
     private static final String TAG = "NetflixDialogFrag";
     private boolean isDestroyed;
-    protected LoadingStatusCallback mLoadingStatusCallback;
+    protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
     
     protected boolean isDestroyed() {
         return this.isDestroyed;
@@ -70,21 +71,11 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
     }
     
-    public void setLoadingStatusCallback(final LoadingStatusCallback mLoadingStatusCallback) {
+    public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback mLoadingStatusCallback) {
         if (!this.isLoadingData() && mLoadingStatusCallback != null) {
             mLoadingStatusCallback.onDataLoaded(CommonStatus.OK);
             return;
         }
         this.mLoadingStatusCallback = mLoadingStatusCallback;
-    }
-    
-    public interface DialogCanceledListener
-    {
-        void onDialogCanceled(final NetflixDialogFrag p0);
-    }
-    
-    public interface DialogCanceledListenerProvider
-    {
-        DialogCanceledListener getDialogCanceledListener();
     }
 }

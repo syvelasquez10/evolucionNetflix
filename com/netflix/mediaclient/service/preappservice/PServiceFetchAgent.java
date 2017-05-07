@@ -27,31 +27,9 @@ public class PServiceFetchAgent extends PServiceAgent
     }
     
     private void refreshDataAndNotify(final Intent intent) {
-        final PDiskDataRepository.LoadCallback loadCallback = new PDiskDataRepository.LoadCallback() {
-            @Override
-            public void onDataLoaded(final PDiskData pDiskData) {
-                if (pDiskData == null) {
-                    PServiceFetchAgent.this.loadDefaultData();
-                }
-                else {
-                    PServiceFetchAgent.this.mDiskData = pDiskData;
-                }
-                PServiceFetchAgent.this.getMainHandler().post((Runnable)new Runnable() {
-                    @Override
-                    public void run() {
-                        PServiceFetchAgent.this.mLoadFromDiskInProgress = false;
-                        PServiceFetchAgent.this.notifyOthers(intent);
-                    }
-                });
-            }
-        };
+        final PServiceFetchAgent$1 pServiceFetchAgent$1 = new PServiceFetchAgent$1(this, intent);
         this.mLoadFromDiskInProgress = true;
-        new BackgroundTask().execute(new Runnable() {
-            @Override
-            public void run() {
-                PDiskDataRepository.startLoadFromDisk(PServiceFetchAgent.this.getContext(), loadCallback);
-            }
-        });
+        new BackgroundTask().execute(new PServiceFetchAgent$2(this, pServiceFetchAgent$1));
     }
     
     void completeInit() {

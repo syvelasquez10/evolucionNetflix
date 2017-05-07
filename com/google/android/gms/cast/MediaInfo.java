@@ -30,7 +30,7 @@ public final class MediaInfo
     private TextTrackStyle Fk;
     private JSONObject Fl;
     
-    MediaInfo(final String fe) throws IllegalArgumentException {
+    MediaInfo(final String fe) {
         if (TextUtils.isEmpty((CharSequence)fe)) {
             throw new IllegalArgumentException("content ID cannot be null or empty");
         }
@@ -38,7 +38,7 @@ public final class MediaInfo
         this.Ff = -1;
     }
     
-    MediaInfo(final JSONObject jsonObject) throws JSONException {
+    MediaInfo(final JSONObject jsonObject) {
         int i = 0;
         this.Fe = jsonObject.getString("contentId");
         final String string = jsonObject.getString("streamType");
@@ -188,7 +188,7 @@ public final class MediaInfo
         return b3;
     }
     
-    void fw() throws IllegalArgumentException {
+    void fw() {
         if (TextUtils.isEmpty((CharSequence)this.Fe)) {
             throw new IllegalArgumentException("content ID cannot be null or empty");
         }
@@ -237,14 +237,14 @@ public final class MediaInfo
         return m.hashCode(this.Fe, this.Ff, this.Fg, this.Fh, this.Fi, String.valueOf(this.Fl));
     }
     
-    void m(final long fi) throws IllegalArgumentException {
+    void m(final long fi) {
         if (fi < 0L) {
             throw new IllegalArgumentException("Stream duration cannot be negative");
         }
         this.Fi = fi;
     }
     
-    void setContentType(final String fg) throws IllegalArgumentException {
+    void setContentType(final String fg) {
         if (TextUtils.isEmpty((CharSequence)fg)) {
             throw new IllegalArgumentException("content type cannot be null or empty");
         }
@@ -255,7 +255,7 @@ public final class MediaInfo
         this.Fl = fl;
     }
     
-    void setStreamType(final int ff) throws IllegalArgumentException {
+    void setStreamType(final int ff) {
         if (ff < -1 || ff > 2) {
             throw new IllegalArgumentException("invalid stream type");
         }
@@ -264,57 +264,5 @@ public final class MediaInfo
     
     public void setTextTrackStyle(final TextTrackStyle fk) {
         this.Fk = fk;
-    }
-    
-    public static class Builder
-    {
-        private final MediaInfo Fm;
-        
-        public Builder(final String s) throws IllegalArgumentException {
-            if (TextUtils.isEmpty((CharSequence)s)) {
-                throw new IllegalArgumentException("Content ID cannot be empty");
-            }
-            this.Fm = new MediaInfo(s);
-        }
-        
-        public MediaInfo build() throws IllegalArgumentException {
-            this.Fm.fw();
-            return this.Fm;
-        }
-        
-        public Builder setContentType(final String contentType) throws IllegalArgumentException {
-            this.Fm.setContentType(contentType);
-            return this;
-        }
-        
-        public Builder setCustomData(final JSONObject customData) {
-            this.Fm.setCustomData(customData);
-            return this;
-        }
-        
-        public Builder setMediaTracks(final List<MediaTrack> list) {
-            this.Fm.c(list);
-            return this;
-        }
-        
-        public Builder setMetadata(final MediaMetadata mediaMetadata) {
-            this.Fm.a(mediaMetadata);
-            return this;
-        }
-        
-        public Builder setStreamDuration(final long n) throws IllegalArgumentException {
-            this.Fm.m(n);
-            return this;
-        }
-        
-        public Builder setStreamType(final int streamType) throws IllegalArgumentException {
-            this.Fm.setStreamType(streamType);
-            return this;
-        }
-        
-        public Builder setTextTrackStyle(final TextTrackStyle textTrackStyle) {
-            this.Fm.setTextTrackStyle(textTrackStyle);
-            return this;
-        }
     }
 }

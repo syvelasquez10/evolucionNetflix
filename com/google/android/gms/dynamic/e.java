@@ -7,7 +7,7 @@ package com.google.android.gms.dynamic;
 import java.lang.reflect.Field;
 import android.os.IBinder;
 
-public final class e<T> extends d.a
+public final class e<T> extends d$a
 {
     private final T Sc;
     

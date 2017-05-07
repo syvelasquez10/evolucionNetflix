@@ -9,16 +9,18 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View$MeasureSpec;
 import android.graphics.BitmapFactory;
+import com.facebook.android.R$drawable;
 import java.net.MalformedURLException;
 import com.facebook.FacebookException;
 import com.facebook.internal.Logger;
 import com.facebook.LoggingBehavior;
 import android.content.res.TypedArray;
+import com.facebook.android.R$styleable;
 import android.view.View;
 import android.widget.ImageView$ScaleType;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.FrameLayout$LayoutParams;
-import com.facebook.android.R;
+import com.facebook.android.R$dimen;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -46,7 +48,7 @@ public class ProfilePictureView extends FrameLayout
     private Bitmap imageContents;
     private boolean isCropped;
     private ImageRequest lastRequest;
-    private OnErrorListener onErrorListener;
+    private ProfilePictureView$OnErrorListener onErrorListener;
     private int presetSizeType;
     private String profileId;
     private int queryHeight;
@@ -88,20 +90,20 @@ public class ProfilePictureView extends FrameLayout
     private int getPresetSizeInPixels(final boolean b) {
         switch (this.presetSizeType) {
             case -2: {
-                final int n = R.dimen.com_facebook_profilepictureview_preset_size_small;
+                final int n = R$dimen.com_facebook_profilepictureview_preset_size_small;
                 return this.getResources().getDimensionPixelSize(n);
             }
             case -3: {
-                final int n = R.dimen.com_facebook_profilepictureview_preset_size_normal;
+                final int n = R$dimen.com_facebook_profilepictureview_preset_size_normal;
                 return this.getResources().getDimensionPixelSize(n);
             }
             case -4: {
-                final int n = R.dimen.com_facebook_profilepictureview_preset_size_large;
+                final int n = R$dimen.com_facebook_profilepictureview_preset_size_large;
                 return this.getResources().getDimensionPixelSize(n);
             }
             case -1: {
                 if (b) {
-                    final int n = R.dimen.com_facebook_profilepictureview_preset_size_normal;
+                    final int n = R$dimen.com_facebook_profilepictureview_preset_size_normal;
                     return this.getResources().getDimensionPixelSize(n);
                 }
                 break;
@@ -118,7 +120,7 @@ public class ProfilePictureView extends FrameLayout
     }
     
     private void parseAttributes(final AttributeSet set) {
-        final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R.styleable.com_facebook_profile_picture_view);
+        final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R$styleable.com_facebook_profile_picture_view);
         this.setPresetSize(obtainStyledAttributes.getInt(0, -1));
         this.isCropped = obtainStyledAttributes.getBoolean(1, true);
         obtainStyledAttributes.recycle();
@@ -130,7 +132,7 @@ public class ProfilePictureView extends FrameLayout
             final Bitmap bitmap = imageResponse.getBitmap();
             final Exception error = imageResponse.getError();
             if (error != null) {
-                final OnErrorListener onErrorListener = this.onErrorListener;
+                final ProfilePictureView$OnErrorListener onErrorListener = this.onErrorListener;
                 if (onErrorListener == null) {
                     Logger.log(LoggingBehavior.REQUESTS, 6, ProfilePictureView.TAG, error.toString());
                     return;
@@ -158,12 +160,7 @@ public class ProfilePictureView extends FrameLayout
     
     private void sendImageRequest(final boolean allowCachedRedirects) {
         try {
-            final ImageRequest build = new ImageRequest.Builder(this.getContext(), ImageRequest.getProfilePictureUrl(this.profileId, this.queryWidth, this.queryHeight)).setAllowCachedRedirects(allowCachedRedirects).setCallerTag(this).setCallback(new ImageRequest.Callback() {
-                @Override
-                public void onCompleted(final ImageResponse imageResponse) {
-                    ProfilePictureView.this.processResponse(imageResponse);
-                }
-            }).build();
+            final ImageRequest build = new ImageRequest$Builder(this.getContext(), ImageRequest.getProfilePictureUrl(this.profileId, this.queryWidth, this.queryHeight)).setAllowCachedRedirects(allowCachedRedirects).setCallerTag(this).setCallback(new ProfilePictureView$1(this)).build();
             if (this.lastRequest != null) {
                 ImageDownloader.cancelRequest(this.lastRequest);
             }
@@ -177,10 +174,10 @@ public class ProfilePictureView extends FrameLayout
     private void setBlankProfilePicture() {
         int n;
         if (this.isCropped()) {
-            n = R.drawable.com_facebook_profile_picture_blank_square;
+            n = R$drawable.com_facebook_profile_picture_blank_square;
         }
         else {
-            n = R.drawable.com_facebook_profile_picture_blank_portrait;
+            n = R$drawable.com_facebook_profile_picture_blank_portrait;
         }
         this.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), n));
     }
@@ -193,41 +190,42 @@ public class ProfilePictureView extends FrameLayout
     }
     
     private boolean updateImageQueryParameters() {
-        final boolean b = true;
+        boolean b = false;
         int height = this.getHeight();
-        int width = this.getWidth();
+        final int width = this.getWidth();
         if (width < 1 || height < 1) {
             return false;
         }
-        final int presetSizeInPixels = this.getPresetSizeInPixels(false);
+        int presetSizeInPixels = this.getPresetSizeInPixels(false);
         if (presetSizeInPixels != 0) {
-            width = presetSizeInPixels;
             height = presetSizeInPixels;
         }
-        if (width <= height) {
+        else {
+            presetSizeInPixels = width;
+        }
+        if (presetSizeInPixels <= height) {
             if (this.isCropped()) {
-                height = width;
+                height = presetSizeInPixels;
             }
             else {
                 height = 0;
             }
         }
         else if (this.isCropped()) {
-            width = height;
+            presetSizeInPixels = height;
         }
         else {
-            width = 0;
+            presetSizeInPixels = 0;
         }
-        boolean b2 = b;
-        if (width == this.queryWidth) {
-            b2 = (height != this.queryHeight && b);
+        if (presetSizeInPixels != this.queryWidth || height != this.queryHeight) {
+            b = true;
         }
-        this.queryWidth = width;
+        this.queryWidth = presetSizeInPixels;
         this.queryHeight = height;
-        return b2;
+        return b;
     }
     
-    public final OnErrorListener getOnErrorListener() {
+    public final ProfilePictureView$OnErrorListener getOnErrorListener() {
         return this.onErrorListener;
     }
     
@@ -253,39 +251,35 @@ public class ProfilePictureView extends FrameLayout
         this.refreshImage(false);
     }
     
-    protected void onMeasure(final int n, int measureSpec) {
+    protected void onMeasure(int measureSpec, int presetSizeInPixels) {
+        final boolean b = true;
         final ViewGroup$LayoutParams layoutParams = this.getLayoutParams();
-        final boolean b = false;
-        final int size = View$MeasureSpec.getSize(measureSpec);
-        final int size2 = View$MeasureSpec.getSize(n);
-        boolean b2 = b;
-        int presetSizeInPixels = size;
-        int measureSpec2 = measureSpec;
-        if (View$MeasureSpec.getMode(measureSpec) != 1073741824) {
-            b2 = b;
-            presetSizeInPixels = size;
-            measureSpec2 = measureSpec;
-            if (layoutParams.height == -2) {
-                presetSizeInPixels = this.getPresetSizeInPixels(true);
-                measureSpec2 = View$MeasureSpec.makeMeasureSpec(presetSizeInPixels, 1073741824);
-                b2 = true;
-            }
-        }
+        final boolean b2 = false;
+        final int size = View$MeasureSpec.getSize(presetSizeInPixels);
+        final int size2 = View$MeasureSpec.getSize(measureSpec);
+        int presetSizeInPixels2 = size;
         boolean b3 = b2;
-        int presetSizeInPixels2 = size2;
-        measureSpec = n;
-        if (View$MeasureSpec.getMode(n) != 1073741824) {
+        int measureSpec2 = presetSizeInPixels;
+        if (View$MeasureSpec.getMode(presetSizeInPixels) != 1073741824) {
+            presetSizeInPixels2 = size;
             b3 = b2;
-            presetSizeInPixels2 = size2;
-            measureSpec = n;
-            if (layoutParams.width == -2) {
+            measureSpec2 = presetSizeInPixels;
+            if (layoutParams.height == -2) {
                 presetSizeInPixels2 = this.getPresetSizeInPixels(true);
-                measureSpec = View$MeasureSpec.makeMeasureSpec(presetSizeInPixels2, 1073741824);
+                measureSpec2 = View$MeasureSpec.makeMeasureSpec(presetSizeInPixels2, 1073741824);
                 b3 = true;
             }
         }
+        if (View$MeasureSpec.getMode(measureSpec) != 1073741824 && layoutParams.width == -2) {
+            presetSizeInPixels = this.getPresetSizeInPixels(true);
+            measureSpec = View$MeasureSpec.makeMeasureSpec(presetSizeInPixels, 1073741824);
+            b3 = b;
+        }
+        else {
+            presetSizeInPixels = size2;
+        }
         if (b3) {
-            this.setMeasuredDimension(presetSizeInPixels2, presetSizeInPixels);
+            this.setMeasuredDimension(presetSizeInPixels, presetSizeInPixels2);
             this.measureChildren(measureSpec, measureSpec2);
             return;
         }
@@ -330,7 +324,7 @@ public class ProfilePictureView extends FrameLayout
         this.refreshImage(false);
     }
     
-    public final void setOnErrorListener(final OnErrorListener onErrorListener) {
+    public final void setOnErrorListener(final ProfilePictureView$OnErrorListener onErrorListener) {
         this.onErrorListener = onErrorListener;
     }
     
@@ -357,10 +351,5 @@ public class ProfilePictureView extends FrameLayout
         }
         this.profileId = profileId;
         this.refreshImage(b);
-    }
-    
-    public interface OnErrorListener
-    {
-        void onError(final FacebookException p0);
     }
 }

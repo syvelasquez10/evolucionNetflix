@@ -6,9 +6,9 @@ package com.netflix.mediaclient.javabridge.ui.android;
 
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
+import org.json.JSONException;
 import com.netflix.mediaclient.javabridge.ui.Callback;
 import org.json.JSONArray;
-import org.json.JSONException;
 import com.netflix.mediaclient.event.nrdp.registration.DeactivatedEvent;
 import com.netflix.mediaclient.event.nrdp.registration.ActivateEvent;
 import com.netflix.mediaclient.event.UIEvent;
@@ -57,7 +57,7 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
         this.accounts = new ArrayList<DeviceAccount>();
     }
     
-    private int handleEvent(final JSONObject jsonObject) throws Exception {
+    private int handleEvent(final JSONObject jsonObject) {
         final JSONObject jsonObject2 = this.getJSONObject(jsonObject, "data", null);
         final String string = this.getString(jsonObject, "name", null);
         if (jsonObject2 != null && jsonObject2.has("idx")) {
@@ -79,7 +79,7 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
         return 1;
     }
     
-    private int handleEventByName(final JSONObject jsonObject) throws JSONException {
+    private int handleEventByName(final JSONObject jsonObject) {
         final JSONObject jsonObject2 = this.getJSONObject(jsonObject, "data", null);
         final String string = this.getString(jsonObject, "name", null);
         if ((!"bind".equals(string) && !"activate".endsWith(string)) || 1 != this.handleNccpEvent(string, jsonObject2)) {
@@ -101,7 +101,8 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
         return 1;
     }
     
-    private int handlePropertyUpdate(final JSONObject jsonObject) throws JSONException {
+    private int handlePropertyUpdate(final JSONObject jsonObject) {
+        int i = 0;
         final JSONObject jsonObject2 = this.getJSONObject(jsonObject, "properties", null);
         if (jsonObject2 == null) {
             Log.w("nf_reg", "handlePropertyUpdate:: properties does not exist");
@@ -119,8 +120,7 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
         synchronized (this.accounts) {
             if (jsonObject2.has("deviceAccounts")) {
                 this.accounts.clear();
-                final JSONArray jsonArray = this.getJSONArray(jsonObject2, "deviceAccounts");
-                for (int i = 0; i < jsonArray.length(); ++i) {
+                for (JSONArray jsonArray = this.getJSONArray(jsonObject2, "deviceAccounts"); i < jsonArray.length(); ++i) {
                     final DeviceAccount deviceAccount = new DeviceAccount(jsonArray.getJSONObject(i));
                     if (Log.isLoggable("nf_reg", 3)) {
                         Log.d("nf_reg", "Account " + i + ": " + deviceAccount);
@@ -244,7 +244,7 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
     }
     
     @Override
-    protected int handleNccpEvent(final String s, final JSONObject jsonObject) throws JSONException {
+    protected int handleNccpEvent(final String s, final JSONObject jsonObject) {
         if (Log.isLoggable("nf_reg", 3)) {
             Log.d("nf_reg", "NCCP event " + s);
         }

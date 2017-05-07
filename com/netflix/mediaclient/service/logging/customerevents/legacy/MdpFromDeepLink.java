@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.logging.customerevents.legacy;
 
 import com.netflix.mediaclient.Log;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.netflix.mediaclient.webapi.AuthorizationCredentials;
@@ -25,7 +24,7 @@ public class MdpFromDeepLink extends BaseCustomerEvent implements Runnable
         this.mDepplinkParams = mDepplinkParams;
     }
     
-    private JSONArray getEvents(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials, final String s2) throws JSONException {
+    private JSONArray getEvents(final String s, final CommonRequestParameters commonRequestParameters, final AuthorizationCredentials authorizationCredentials, final String s2) {
         final JSONArray jsonArray = new JSONArray();
         final JSONObject jsonObject = new JSONObject();
         jsonArray.put((Object)jsonObject);

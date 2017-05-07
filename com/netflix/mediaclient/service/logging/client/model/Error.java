@@ -6,7 +6,6 @@ package com.netflix.mediaclient.service.logging.client.model;
 
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
-import org.json.JSONException;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
@@ -40,7 +39,7 @@ public class Error implements JsonSerializer
         }
     }
     
-    public Error(final JSONObject jsonObject) throws JSONException {
+    public Error(final JSONObject jsonObject) {
         this.deepError = new ArrayList<DeepErrorElement>();
         final String string = JsonUtils.getString(jsonObject, "rootCause", null);
         if (string != null) {
@@ -54,14 +53,14 @@ public class Error implements JsonSerializer
         }
     }
     
-    public static Error createInstance(final JSONObject jsonObject) throws JSONException {
+    public static Error createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
         return new Error(jsonObject);
     }
     
-    public static UIError createInstance(final String s) throws JSONException {
+    public static UIError createInstance(final String s) {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
@@ -89,7 +88,7 @@ public class Error implements JsonSerializer
     }
     
     @Override
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject() {
         final JSONObject jsonObject = new JSONObject();
         if (this.rootCause != null) {
             jsonObject.put("rootCause", (Object)this.rootCause.name());

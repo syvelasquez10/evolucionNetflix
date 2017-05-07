@@ -6,6 +6,7 @@ package com.google.android.gms.games.request;
 
 import android.os.Bundle;
 import java.util.ArrayList;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.games.PlayerEntity;
 import com.google.android.gms.games.GameEntity;
 import com.google.android.gms.common.internal.safeparcel.a;
@@ -101,7 +102,7 @@ public class GameRequestEntityCreator implements Parcelable$Creator<GameRequestE
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new GameRequestEntity(g, gameEntity, playerEntity, r, o, c2, g2, i, j, q, g3);
     }

@@ -43,15 +43,15 @@ public class DataSource implements SafeParcelable
         this.SM = this.iI();
     }
     
-    private DataSource(final Builder builder) {
+    private DataSource(final DataSource$Builder dataSource$Builder) {
         this.BR = 3;
-        this.SF = builder.SF;
-        this.FD = builder.FD;
-        this.mName = builder.mName;
-        this.SI = builder.SI;
-        this.SJ = builder.SJ;
-        this.SK = builder.SK;
-        this.SL = builder.SL;
+        this.SF = dataSource$Builder.SF;
+        this.FD = dataSource$Builder.FD;
+        this.mName = dataSource$Builder.mName;
+        this.SI = dataSource$Builder.SI;
+        this.SJ = dataSource$Builder.SJ;
+        this.SK = dataSource$Builder.SK;
+        this.SL = dataSource$Builder.SL;
         this.SM = this.iI();
     }
     
@@ -225,69 +225,5 @@ public class DataSource implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         g.a(kv.c(this), parcel, n);
-    }
-    
-    public static final class Builder
-    {
-        private int FD;
-        private DataType SF;
-        private Device SI;
-        private a SJ;
-        private String SK;
-        private boolean SL;
-        private String mName;
-        
-        public Builder() {
-            this.FD = -1;
-            this.SK = "";
-            this.SL = false;
-        }
-        
-        public DataSource build() {
-            final boolean b = true;
-            n.a(this.SF != null, (Object)"Must set data type");
-            n.a(this.FD >= 0 && b, (Object)"Must set data source type");
-            return new DataSource(this, null);
-        }
-        
-        public Builder setAppPackageName(final Context context) {
-            return this.setAppPackageName(context.getPackageName());
-        }
-        
-        public Builder setAppPackageName(final String s) {
-            this.SJ = new a(s, null, null);
-            return this;
-        }
-        
-        public Builder setDataType(final DataType sf) {
-            this.SF = sf;
-            return this;
-        }
-        
-        public Builder setDevice(final Device si) {
-            this.SI = si;
-            return this;
-        }
-        
-        public Builder setName(final String mName) {
-            this.mName = mName;
-            return this;
-        }
-        
-        public Builder setObfuscated(final boolean sl) {
-            this.SL = sl;
-            return this;
-        }
-        
-        public Builder setStreamName(final String sk) {
-            n.b(sk != null, (Object)"Must specify a valid stream name");
-            this.SK = sk;
-            return this;
-        }
-        
-        public Builder setType(final int fd) {
-            this.FD = fd;
-            return this;
-        }
     }
 }

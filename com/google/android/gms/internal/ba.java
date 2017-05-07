@@ -7,7 +7,7 @@ package com.google.android.gms.internal;
 import com.google.android.gms.ads.doubleclick.AppEventListener;
 
 @ez
-public final class ba extends bf.a
+public final class ba extends bf$a
 {
     private final AppEventListener oi;
     

@@ -12,9 +12,9 @@ import android.content.BroadcastReceiver;
 public class DialogMessageReceiver extends BroadcastReceiver
 {
     private static final String TAG = "DialogMessageReceiver";
-    private final Callback callback;
+    private final DialogMessageReceiver$Callback callback;
     
-    public DialogMessageReceiver(final Callback callback) {
+    public DialogMessageReceiver(final DialogMessageReceiver$Callback callback) {
         this.callback = callback;
     }
     
@@ -39,14 +39,5 @@ public class DialogMessageReceiver extends BroadcastReceiver
                 Log.d("DialogMessageReceiver", "We do not support action " + action);
             }
         }
-    }
-    
-    public interface Callback
-    {
-        void handleDialogButton(final String p0, final String p1);
-        
-        void handleDialogCancel(final String p0);
-        
-        void handleUserRatingChange(final String p0, final float p1);
     }
 }

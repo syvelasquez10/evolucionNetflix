@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.partner;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import android.content.ComponentName;
 
@@ -16,5 +15,5 @@ public interface Response
     
     String getService();
     
-    JSONObject toJson() throws JSONException;
+    JSONObject toJson();
 }

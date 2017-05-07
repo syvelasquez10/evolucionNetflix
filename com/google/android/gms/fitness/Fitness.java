@@ -14,21 +14,19 @@ import com.google.android.gms.internal.lc;
 import com.google.android.gms.internal.la;
 import com.google.android.gms.internal.lb;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.internal.kk;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.internal.ClientSettings;
-import android.os.Looper;
-import android.content.Context;
 import com.google.android.gms.internal.ku;
+import com.google.android.gms.common.api.Api$b;
 import com.google.android.gms.internal.kj;
+import com.google.android.gms.common.api.Api$c;
+import com.google.android.gms.common.api.Api$ApiOptions$NoOptions;
 import com.google.android.gms.common.api.Api;
 
 public class Fitness
 {
-    public static final Api<Api.ApiOptions.NoOptions> API;
+    public static final Api<Api$ApiOptions$NoOptions> API;
     public static final BleApi BleApi;
-    public static final Api.c<kj> CU;
-    private static final Api.b<kj, Api.ApiOptions.NoOptions> CV;
+    public static final Api$c<kj> CU;
+    private static final Api$b<kj, Api$ApiOptions$NoOptions> CV;
     public static final ConfigApi ConfigApi;
     public static final HistoryApi HistoryApi;
     public static final RecordingApi RecordingApi;
@@ -37,18 +35,9 @@ public class Fitness
     public static final ku Sf;
     
     static {
-        CU = new Api.c();
-        CV = new Api.b<kj, Api.ApiOptions.NoOptions>() {
-            public kj c(final Context context, final Looper looper, final ClientSettings clientSettings, final NoOptions noOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
-                return new kk(context, looper, connectionCallbacks, onConnectionFailedListener, clientSettings.getAccountNameOrDefault(), FitnessScopes.d(clientSettings.getScopes()));
-            }
-            
-            @Override
-            public int getPriority() {
-                return Integer.MAX_VALUE;
-            }
-        };
-        API = new Api<Api.ApiOptions.NoOptions>((Api.b<C, Api.ApiOptions.NoOptions>)Fitness.CV, (Api.c<C>)Fitness.CU, new Scope[0]);
+        CU = new Api$c<kj>();
+        CV = new Fitness$1();
+        API = new Api<Api$ApiOptions$NoOptions>((Api$b<C, Api$ApiOptions$NoOptions>)Fitness.CV, (Api$c<C>)Fitness.CU, new Scope[0]);
         SensorsApi = new lb();
         RecordingApi = new la();
         SessionsApi = new lc();

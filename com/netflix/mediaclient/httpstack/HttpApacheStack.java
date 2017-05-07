@@ -8,10 +8,10 @@ import java.net.URISyntaxException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.HttpGet;
 import java.net.URI;
+import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import java.util.List;
-import java.io.IOException;
 import org.apache.http.params.HttpParams;
 import org.apache.http.HttpVersion;
 import org.apache.http.params.BasicHttpParams;
@@ -36,7 +36,7 @@ public class HttpApacheStack implements HttpStack
     }
     
     @Override
-    public HttpStackConnection getConnection(final String s) throws IOException {
+    public HttpStackConnection getConnection(final String s) {
         final BasicHttpParams basicHttpParams = new BasicHttpParams();
         ((HttpParams)basicHttpParams).setParameter("http.protocol.version", (Object)HttpVersion.HTTP_1_1);
         ((HttpParams)basicHttpParams).setParameter("http.connection.timeout", (Object)15000);
@@ -54,7 +54,7 @@ public class HttpApacheStack implements HttpStack
     }
     
     @Override
-    public HttpResponse performGet(final HttpStackConnection httpStackConnection) throws IOException {
+    public HttpResponse performGet(final HttpStackConnection httpStackConnection) {
         if (!(httpStackConnection instanceof HttpApacheStackConnection)) {
             throw new IOException("defaultConnection null - wrong HttpStackConnection object?");
         }

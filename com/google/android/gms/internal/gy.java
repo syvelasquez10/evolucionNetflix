@@ -5,9 +5,9 @@
 package com.google.android.gms.internal;
 
 import java.net.URLConnection;
+import java.io.IOException;
 import java.io.File;
 import android.webkit.WebView;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
@@ -23,7 +23,7 @@ public class gy extends gw
         super(gv, b);
     }
     
-    protected WebResourceResponse d(final Context context, final String s, String s2) throws IOException {
+    protected WebResourceResponse d(final Context context, final String s, String s2) {
         s2 = (String)new URL(s2).openConnection();
         try {
             gj.a(context, s, true, (HttpURLConnection)s2, true);

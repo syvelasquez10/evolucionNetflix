@@ -5,7 +5,6 @@
 package com.google.android.gms.internal;
 
 import java.util.Arrays;
-import java.io.IOException;
 
 final class po
 {
@@ -17,7 +16,7 @@ final class po
         this.awK = awK;
     }
     
-    void a(final pf pf) throws IOException {
+    void a(final pf pf) {
         pf.gz(this.tag);
         pf.t(this.awK);
     }

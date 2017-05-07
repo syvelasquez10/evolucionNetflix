@@ -4,11 +4,9 @@
 
 package com.netflix.mediaclient.service.logging.social.model;
 
-import org.json.JSONException;
-import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
 
@@ -22,12 +20,13 @@ public final class SocialImpressionSessionEndedEvent extends SessionEndedEvent
     protected static final String TRACK_ID = "trackId";
     protected static final String VIEW = "view";
     private Error mError;
+    private String mOriginatingRequestGuid;
     private String mStoryId;
     private boolean mSuccess;
     private int mTrackId;
-    private IClientLogging.ModalView mView;
+    private IClientLogging$ModalView mView;
     
-    public SocialImpressionSessionEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging.ModalView mView, final String mStoryId, final int mTrackId, final boolean mSuccess, final Error mError) {
+    public SocialImpressionSessionEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging$ModalView mView, final String mStoryId, final String s, final int mTrackId, final boolean mSuccess, final Error mError) {
         super("impression", deviceUniqueId, n);
         this.mView = mView;
         this.mError = mError;
@@ -37,7 +36,7 @@ public final class SocialImpressionSessionEndedEvent extends SessionEndedEvent
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();
@@ -51,7 +50,9 @@ public final class SocialImpressionSessionEndedEvent extends SessionEndedEvent
         if (this.mError != null) {
             data.put("error", (Object)this.mError.toJSONObject());
         }
-        data.put("originatingRequestGuid", (Object)ConsolidatedLoggingUtils.createGUID());
+        if (this.mOriginatingRequestGuid != null) {
+            data.put("originatingRequestGuid", (Object)this.mOriginatingRequestGuid);
+        }
         data.put("success", this.mSuccess);
         data.put("trackId", this.mTrackId);
         return data;

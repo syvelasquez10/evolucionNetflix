@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.Context;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListView;
@@ -42,17 +41,8 @@ public class ListFragment extends Fragment
     
     public ListFragment() {
         this.mHandler = new Handler();
-        this.mRequestFocus = new Runnable() {
-            @Override
-            public void run() {
-                ListFragment.this.mList.focusableViewAvailable((View)ListFragment.this.mList);
-            }
-        };
-        this.mOnClickListener = (AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                ListFragment.this.onListItemClick((ListView)adapterView, view, n, n2);
-            }
-        };
+        this.mRequestFocus = new ListFragment$1(this);
+        this.mOnClickListener = (AdapterView$OnItemClickListener)new ListFragment$2(this);
     }
     
     private void ensureList() {

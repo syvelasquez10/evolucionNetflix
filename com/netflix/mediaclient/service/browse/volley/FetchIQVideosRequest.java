@@ -6,10 +6,10 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
-import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
+import java.util.ArrayList;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
@@ -86,66 +86,63 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
     }
     
     @Override
-    protected List<Video> parseFalcorResponse(String asJsonObject) throws FalcorParseException, FalcorServerException {
+    protected List<Video> parseFalcorResponse(String asJsonObject) {
         if (Log.isLoggable("nf_service_browse_fetchiqvideosrequest", 2)) {}
-        final ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary> list = (ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary>)new ArrayList<Video>();
+        final ArrayList<Video$Summary> list = new ArrayList<Video$Summary>();
         final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchiqvideosrequest", (String)asJsonObject);
-        if (!FalcorParseUtils.isEmpty(dataObj)) {
-        Label_0137_Outer:
+        if (FalcorParseUtils.isEmpty(dataObj)) {
+            return (List<Video>)list;
+        }
+        while (true) {
             while (true) {
-                while (true) {
-                    int n = 0;
-                    String string = null;
-                Label_0289:
-                    while (true) {
-                        Label_0238: {
-                            try {
-                                if (this.iqInCache) {
-                                    asJsonObject = dataObj.getAsJsonObject("lists").getAsJsonObject(this.iqId);
-                                }
-                                else {
-                                    if (!this.lolomoIdInCache) {
-                                        break Label_0238;
-                                    }
-                                    final JsonObject asJsonObject2 = dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId).getAsJsonObject("queue");
-                                    this.browseCache.putIQLoMoId(FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject2));
-                                    asJsonObject = asJsonObject2;
-                                }
-                                n = 0;
-                                int n2;
-                                for (int i = this.toVideo; i >= this.fromVideo; --i, n = n2) {
-                                    string = Integer.toString(i);
-                                    if (!((JsonObject)asJsonObject).has(string)) {
-                                        break Label_0289;
-                                    }
-                                    n2 = 1;
-                                    final com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary = FalcorParseUtils.getPropertyObject(((JsonObject)asJsonObject).getAsJsonObject(string), "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
-                                    this.browseCache.updateInQueueCacheRecord(summary.getId(), true);
-                                    list.add(0, summary);
-                                }
-                                break;
-                            }
-                            catch (Exception ex) {
-                                Log.v("nf_service_browse_fetchiqvideosrequest", "String response to parse = " + (String)asJsonObject);
-                                throw new FalcorParseException("response missing expected json objects", ex);
-                            }
+                boolean b = false;
+                String string = null;
+                Label_0285: {
+                    try {
+                        if (this.iqInCache) {
+                            asJsonObject = dataObj.getAsJsonObject("lists").getAsJsonObject(this.iqId);
                         }
-                        final JsonObject asJsonObject3 = dataObj.getAsJsonObject("lolomo");
-                        final JsonObject asJsonObject4 = asJsonObject3.getAsJsonObject("queue");
-                        this.browseCache.putIQLoMoId(FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject4));
-                        PrefetchHomeLoLoMoRequest.putLoLoMoIdInBrowseCache(this.browseCache, asJsonObject3);
-                        asJsonObject = asJsonObject4;
-                        continue Label_0137_Outer;
+                        else if (this.lolomoIdInCache) {
+                            final JsonObject asJsonObject2 = dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId).getAsJsonObject("queue");
+                            this.browseCache.putIQLoMoId(FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject2));
+                            asJsonObject = asJsonObject2;
+                        }
+                        else {
+                            final JsonObject asJsonObject3 = dataObj.getAsJsonObject("lolomo");
+                            final JsonObject asJsonObject4 = asJsonObject3.getAsJsonObject("queue");
+                            this.browseCache.putIQLoMoId(FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject4));
+                            PrefetchHomeLoLoMoRequest.putLoLoMoIdInBrowseCache(this.browseCache, asJsonObject3);
+                            asJsonObject = asJsonObject4;
+                        }
+                        int i = this.toVideo;
+                        b = false;
+                        while (i >= this.fromVideo) {
+                            string = Integer.toString(i);
+                            if (!((JsonObject)asJsonObject).has(string)) {
+                                break Label_0285;
+                            }
+                            final Video$Summary video$Summary = FalcorParseUtils.getPropertyObject(((JsonObject)asJsonObject).getAsJsonObject(string), "summary", Video$Summary.class);
+                            this.browseCache.updateInQueueCacheRecord(video$Summary.getId(), true);
+                            list.add(0, video$Summary);
+                            b = true;
+                            --i;
+                        }
+                        break;
                     }
-                    int n2;
-                    if ((n2 = n) != 0) {
+                    catch (Exception ex) {
+                        Log.v("nf_service_browse_fetchiqvideosrequest", "String response to parse = " + (String)asJsonObject);
+                        throw new FalcorParseException("response missing expected json objects", ex);
+                    }
+                }
+                Label_0320: {
+                    if (b) {
                         Log.d("nf_service_browse_fetchiqvideosrequest", String.format("Adding sentinel at index %s", string));
                         list.add(0, BrowseVideoSentinels.getUnavailableVideoSummary());
-                        n2 = n;
-                        continue;
+                        break Label_0320;
                     }
-                    continue;
+                    break Label_0320;
                 }
+                continue;
             }
         }
         return (List<Video>)list;

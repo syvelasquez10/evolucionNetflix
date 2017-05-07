@@ -43,14 +43,14 @@ public class as
         return sb.toString();
     }
     
-    private static void a(final int n, final long n2, final int n3, final String[] array, final int n4, final PriorityQueue<a> priorityQueue) {
-        priorityQueue.add(new a(n2, a(array, n3, n4)));
+    private static void a(final int n, final long n2, final int n3, final String[] array, final int n4, final PriorityQueue<as$a> priorityQueue) {
+        priorityQueue.add(new as$a(n2, a(array, n3, n4)));
         if (priorityQueue.size() > n) {
             priorityQueue.poll();
         }
     }
     
-    public static void a(final String[] array, final int n, final int n2, final PriorityQueue<a> priorityQueue) {
+    public static void a(final String[] array, final int n, final int n2, final PriorityQueue<as$a> priorityQueue) {
         long n3 = b(array, 0, n2);
         a(n, n3, 0, array, n2, priorityQueue);
         final long a = a(16785407L, n2 - 1);
@@ -66,16 +66,5 @@ public class as
             n3 = (n3 * 16785407L % 1073807359L + (aq.o(array[i]) + 2147483647L) % 1073807359L) % 1073807359L;
         }
         return n3;
-    }
-    
-    public static class a
-    {
-        final String nQ;
-        final long value;
-        
-        a(final long value, final String nq) {
-            this.value = value;
-            this.nQ = nq;
-        }
     }
 }

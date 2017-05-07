@@ -4,6 +4,7 @@
 
 package com.google.android.gms.wallet;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -102,7 +103,7 @@ public class k implements Parcelable$Creator<MaskedWallet>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new MaskedWallet(g, o, o2, a, o3, address, address2, array, array2, userAddress, userAddress2, array3);
     }

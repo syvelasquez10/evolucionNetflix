@@ -13,7 +13,7 @@ public interface IDiagnosis
     
     void abortDiagnosis();
     
-    void addListener(final DiagnosisListener p0);
+    void addListener(final IDiagnosis$DiagnosisListener p0);
     
     List<UrlNetworkState> getNetworkStateList();
     
@@ -22,11 +22,4 @@ public interface IDiagnosis
     void removeListener();
     
     void startNetworkDiagnosis();
-    
-    public interface DiagnosisListener
-    {
-        void onDiagnosisComplete();
-        
-        void onDiagnosisListUpdated();
-    }
 }

@@ -5,13 +5,13 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.browse.volley.AddToQueueRequest;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -30,11 +30,12 @@ public class SendRecommendationRequest extends FalcorVolleyWebClientRequest<Set<
     private static final String WAS_RECOMMENDED_FIELD = "wasRecommended";
     private final String mBodyText;
     private final Set<FriendForRecommendation> mFriends;
+    private final String mGUID;
     private final String mVideoId;
     private final String pqlQuery;
     private final UserAgentWebCallback responseCallback;
     
-    public SendRecommendationRequest(final Context context, final String mVideoId, final Set<FriendForRecommendation> mFriends, final String s, final UserAgentWebCallback responseCallback) {
+    public SendRecommendationRequest(final Context context, final String mVideoId, final Set<FriendForRecommendation> mFriends, final String s, final String mguid, final UserAgentWebCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
         this.mVideoId = mVideoId;
@@ -47,9 +48,12 @@ public class SendRecommendationRequest extends FalcorVolleyWebClientRequest<Set<
             escapeJsonChars = StringUtils.escapeJsonChars(s);
         }
         this.mBodyText = escapeJsonChars;
+        this.mGUID = mguid;
         final StringBuilder sb = new StringBuilder("[");
+        final Iterator<FriendForRecommendation> iterator = mFriends.iterator();
         int n = 0;
-        for (final FriendForRecommendation friendForRecommendation : mFriends) {
+        while (iterator.hasNext()) {
+            final FriendForRecommendation friendForRecommendation = iterator.next();
             if (n > 0) {
                 sb.append(", ");
             }
@@ -65,12 +69,14 @@ public class SendRecommendationRequest extends FalcorVolleyWebClientRequest<Set<
     
     @Override
     protected String getMethodType() {
-        return FalcorParseUtils.getMethodNameCall();
+        return "call";
     }
     
     @Override
     protected String getOptionalParams() {
-        return new StringBuilder(FalcorVolleyWebClientRequest.urlEncodPQLParam(FalcorParseUtils.getParamNameParam(), "\"" + this.mBodyText + "\"")).toString();
+        final StringBuilder sb = new StringBuilder(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "\"" + this.mBodyText + "\""));
+        sb.append(AddToQueueRequest.optionalParam).append("\"").append(this.mGUID).append("\"");
+        return sb.toString();
     }
     
     @Override
@@ -93,7 +99,7 @@ public class SendRecommendationRequest extends FalcorVolleyWebClientRequest<Set<
     }
     
     @Override
-    protected Set<FriendForRecommendation> parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
+    protected Set<FriendForRecommendation> parseFalcorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 4)) {
             Log.i("nf_service_user_fetchfriendsforrecommendationrequest", "Got result: " + s);
         }

@@ -11,27 +11,18 @@ import android.content.Intent;
 
 class RemoteInputCompatApi20
 {
-    static void addResultsToIntent(final RemoteInputCompatBase.RemoteInput[] array, final Intent intent, final Bundle bundle) {
+    static void addResultsToIntent(final RemoteInputCompatBase$RemoteInput[] array, final Intent intent, final Bundle bundle) {
         RemoteInput.addResultsToIntent(fromCompat(array), intent, bundle);
     }
     
-    static RemoteInput[] fromCompat(final RemoteInputCompatBase.RemoteInput[] array) {
-        RemoteInput[] array2;
+    static RemoteInput[] fromCompat(final RemoteInputCompatBase$RemoteInput[] array) {
         if (array == null) {
-            array2 = null;
+            return null;
         }
-        else {
-            final RemoteInput[] array3 = new RemoteInput[array.length];
-            int n = 0;
-            while (true) {
-                array2 = array3;
-                if (n >= array.length) {
-                    break;
-                }
-                final RemoteInputCompatBase.RemoteInput remoteInput = array[n];
-                array3[n] = new RemoteInput$Builder(remoteInput.getResultKey()).setLabel(remoteInput.getLabel()).setChoices(remoteInput.getChoices()).setAllowFreeFormInput(remoteInput.getAllowFreeFormInput()).addExtras(remoteInput.getExtras()).build();
-                ++n;
-            }
+        final RemoteInput[] array2 = new RemoteInput[array.length];
+        for (int i = 0; i < array.length; ++i) {
+            final RemoteInputCompatBase$RemoteInput remoteInputCompatBase$RemoteInput = array[i];
+            array2[i] = new RemoteInput$Builder(remoteInputCompatBase$RemoteInput.getResultKey()).setLabel(remoteInputCompatBase$RemoteInput.getLabel()).setChoices(remoteInputCompatBase$RemoteInput.getChoices()).setAllowFreeFormInput(remoteInputCompatBase$RemoteInput.getAllowFreeFormInput()).addExtras(remoteInputCompatBase$RemoteInput.getExtras()).build();
         }
         return array2;
     }
@@ -40,23 +31,14 @@ class RemoteInputCompatApi20
         return RemoteInput.getResultsFromIntent(intent);
     }
     
-    static RemoteInputCompatBase.RemoteInput[] toCompat(final RemoteInput[] array, final RemoteInputCompatBase.RemoteInput.Factory factory) {
-        RemoteInputCompatBase.RemoteInput[] array2;
+    static RemoteInputCompatBase$RemoteInput[] toCompat(final RemoteInput[] array, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
         if (array == null) {
-            array2 = null;
+            return null;
         }
-        else {
-            final RemoteInputCompatBase.RemoteInput[] array3 = factory.newArray(array.length);
-            int n = 0;
-            while (true) {
-                array2 = array3;
-                if (n >= array.length) {
-                    break;
-                }
-                final RemoteInput remoteInput = array[n];
-                array3[n] = factory.build(remoteInput.getResultKey(), remoteInput.getLabel(), remoteInput.getChoices(), remoteInput.getAllowFreeFormInput(), remoteInput.getExtras());
-                ++n;
-            }
+        final RemoteInputCompatBase$RemoteInput[] array2 = remoteInputCompatBase$RemoteInput$Factory.newArray(array.length);
+        for (int i = 0; i < array.length; ++i) {
+            final RemoteInput remoteInput = array[i];
+            array2[i] = remoteInputCompatBase$RemoteInput$Factory.build(remoteInput.getResultKey(), remoteInput.getLabel(), remoteInput.getChoices(), remoteInput.getAllowFreeFormInput(), remoteInput.getExtras());
         }
         return array2;
     }

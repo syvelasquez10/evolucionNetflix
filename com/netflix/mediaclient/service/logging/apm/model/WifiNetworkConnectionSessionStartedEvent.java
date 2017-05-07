@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 
@@ -16,7 +15,7 @@ public class WifiNetworkConnectionSessionStartedEvent extends SessionStartedEven
         super("wifiNetworkConnection");
     }
     
-    public WifiNetworkConnectionSessionStartedEvent(final JSONObject jsonObject) throws JSONException {
+    public WifiNetworkConnectionSessionStartedEvent(final JSONObject jsonObject) {
         super(jsonObject);
     }
 }

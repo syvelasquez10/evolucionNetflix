@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.partner;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import android.content.ComponentName;
@@ -49,16 +48,18 @@ public abstract class BaseResponse implements Response
         return s2;
     }
     
-    public static JSONObject toJSon(final String s) {
-        if (s == null) {
+    public static JSONObject toJSon(String o) {
+        if (o == null) {
             return null;
         }
         try {
-            return new JSONObject(s);
+            o = new JSONObject((String)o);
+            return (JSONObject)o;
         }
         catch (Exception ex) {
-            Log.e("", "Failed to convert " + s + " to JSON!", ex);
-            return null;
+            Log.e("", "Failed to convert " + (String)o + " to JSON!", ex);
+            o = null;
+            return (JSONObject)o;
         }
     }
     
@@ -67,7 +68,7 @@ public abstract class BaseResponse implements Response
         return this.id;
     }
     
-    protected JSONObject getJson() throws JSONException {
+    protected JSONObject getJson() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("idx", (Object)this.id);
         jsonObject.put("service", (Object)this.service);

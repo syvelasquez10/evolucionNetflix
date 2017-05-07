@@ -5,9 +5,10 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.UserRating;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
@@ -20,7 +21,6 @@ import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
-import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
 import java.util.List;
@@ -38,296 +38,141 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onBBVideosFetched(final List<Billboard> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onBBVideosFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$5(this, list, status));
     }
     
     @Override
     public void onCWListRefresh(final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onCWListRefresh(status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$22(this, status));
     }
     
     @Override
     public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onCWVideosFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$4(this, list, status));
     }
     
     @Override
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onEpisodeDetailsFetched(episodeDetails, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$12(this, episodeDetails, status));
     }
     
     @Override
     public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onEpisodesFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$7(this, list, status));
     }
     
     @Override
     public void onGenreListsFetched(final List<GenreList> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onGenreListsFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$15(this, list, status));
     }
     
     @Override
     public void onGenreLoLoMoPrefetched(final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onGenreLoLoMoPrefetched(status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$2(this, status));
     }
     
     @Override
     public void onGenresFetched(final List<Genre> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onGenresFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$16(this, list, status));
     }
     
     @Override
     public void onIQListRefresh(final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onIQListRefresh(status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$21(this, status));
     }
     
     @Override
     public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$11(this, kidsCharacterDetails, b, status));
     }
     
     @Override
     public void onLoLoMoPrefetched(final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onLoLoMoPrefetched(status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$1(this, status));
     }
     
     @Override
     public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onLoLoMoSummaryFetched(loLoMo, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$9(this, loLoMo, status));
     }
     
     @Override
     public void onLoMosFetched(final List<LoMo> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onLoMosFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$3(this, list, status));
     }
     
     @Override
     public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onMovieDetailsFetched(movieDetails, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$10(this, movieDetails, status));
     }
     
     @Override
     public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onPostPlayVideosFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$25(this, list, status));
     }
     
     @Override
     public void onQueueAdd(final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onQueueAdd(status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$18(this, status));
     }
     
     @Override
     public void onQueueRemove(final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onQueueRemove(status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$19(this, status));
     }
     
     @Override
     public void onSearchResultsFetched(final ISearchResults searchResults, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onSearchResultsFetched(searchResults, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$23(this, searchResults, status));
     }
     
     @Override
     public void onSeasonDetailsFetched(final SeasonDetails seasonDetails, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onSeasonDetailsFetched(seasonDetails, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$13(this, seasonDetails, status));
     }
     
     @Override
     public void onSeasonsFetched(final List<SeasonDetails> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onSeasonsFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$8(this, list, status));
     }
     
     @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onShowDetailsFetched(showDetails, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$14(this, showDetails, status));
     }
     
     @Override
-    public void onSimilarVideosFetched(final SearchVideoList list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onSimilarVideosFetched(list, status);
-            }
-        });
+    public void onSimilarVideosFetched(final SearchVideoListProvider searchVideoListProvider, final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$24(this, searchVideoListProvider, status));
     }
     
     @Override
     public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onSocialNotificationWasThanked(socialNotificationSummary, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$28(this, socialNotificationSummary, status));
     }
     
     @Override
     public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onSocialNotificationsListFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$26(this, list, status));
     }
     
     @Override
     public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onSocialNotificationsMarkedAsRead(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$27(this, list, status));
     }
     
     @Override
     public void onVideoHide(final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                PostToHandlerCallbackWrapper.this.callback.onVideoHide(status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$20(this, status));
     }
     
     @Override
-    public void onVideoRatingSet(final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onVideoRatingSet(status);
-            }
-        });
+    public void onVideoRatingSet(final UserRating userRating, final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$17(this, userRating, status));
     }
     
     @Override
     public void onVideosFetched(final List<Video> list, final Status status) {
-        this.handler.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                ThreadUtils.assertOnMain();
-                PostToHandlerCallbackWrapper.this.callback.onVideosFetched(list, status);
-            }
-        });
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$6(this, list, status));
     }
 }

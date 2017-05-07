@@ -5,7 +5,7 @@
 package com.google.android.gms.maps.model;
 
 import java.util.Iterator;
-import com.google.android.gms.maps.model.internal.e;
+import com.google.android.gms.maps.model.internal.e$a;
 import android.os.IBinder;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public final class IndoorBuilding
             list = new ArrayList<IndoorLevel>(levels.size());
             final Iterator<IBinder> iterator = levels.iterator();
             while (iterator.hasNext()) {
-                list.add(new IndoorLevel(e.a.bt(iterator.next())));
+                list.add(new IndoorLevel(e$a.bt(iterator.next())));
             }
         }
         catch (RemoteException ex) {

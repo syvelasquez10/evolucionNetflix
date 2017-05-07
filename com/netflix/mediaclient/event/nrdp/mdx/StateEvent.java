@@ -5,24 +5,23 @@
 package com.netflix.mediaclient.event.nrdp.mdx;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.javabridge.ui.Mdx;
+import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
 import com.netflix.mediaclient.event.nrdp.JsonBaseNccpEvent;
 
 public class StateEvent extends JsonBaseNccpEvent
 {
     private static final String ATTR_status = "status";
-    public static final Mdx.Events TYPE;
+    public static final Mdx$Events TYPE;
     private static final String VALUE_status_NOT_READY = "NOT_READY";
     private static final String VALUE_status_READY = "READY";
     private boolean ready;
     
     static {
-        TYPE = Mdx.Events.mdx_mdxstate;
+        TYPE = Mdx$Events.mdx_mdxstate;
     }
     
-    public StateEvent(final JSONObject jsonObject) throws JSONException {
+    public StateEvent(final JSONObject jsonObject) {
         super(StateEvent.TYPE.getName(), jsonObject);
     }
     
@@ -36,7 +35,7 @@ public class StateEvent extends JsonBaseNccpEvent
     }
     
     @Override
-    protected void populate(final JSONObject jsonObject) throws JSONException {
+    protected void populate(final JSONObject jsonObject) {
         this.ready = "READY".equalsIgnoreCase(BaseNccpEvent.getString(jsonObject, "status", "NOT_READY"));
     }
 }

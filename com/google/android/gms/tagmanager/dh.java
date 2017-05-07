@@ -24,7 +24,7 @@ class dh extends Number implements Comparable<dh>
         return new dh(n);
     }
     
-    public static dh cT(final String s) throws NumberFormatException {
+    public static dh cT(final String s) {
         try {
             return new dh(Long.parseLong(s));
         }

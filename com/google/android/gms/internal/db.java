@@ -4,6 +4,7 @@
 
 package com.google.android.gms.internal;
 
+import com.google.ads.AdRequest$Gender;
 import java.util.Set;
 import java.util.Date;
 import java.util.Collection;
@@ -11,13 +12,13 @@ import java.util.HashSet;
 import com.google.ads.mediation.MediationAdRequest;
 import com.google.android.gms.ads.a;
 import com.google.ads.AdSize;
-import com.google.ads.AdRequest;
+import com.google.ads.AdRequest$ErrorCode;
 
 @ez
 public final class db
 {
-    public static int a(final AdRequest.ErrorCode errorCode) {
-        switch (db$1.qL[errorCode.ordinal()]) {
+    public static int a(final AdRequest$ErrorCode adRequest$ErrorCode) {
+        switch (db$1.qL[adRequest$ErrorCode.ordinal()]) {
             default: {
                 return 0;
             }
@@ -54,16 +55,16 @@ public final class db
         return new MediationAdRequest(new Date(av.nT), k(av.nU), set, av.nW, av.ob);
     }
     
-    public static AdRequest.Gender k(final int n) {
+    public static AdRequest$Gender k(final int n) {
         switch (n) {
             default: {
-                return AdRequest.Gender.UNKNOWN;
+                return AdRequest$Gender.UNKNOWN;
             }
             case 2: {
-                return AdRequest.Gender.FEMALE;
+                return AdRequest$Gender.FEMALE;
             }
             case 1: {
-                return AdRequest.Gender.MALE;
+                return AdRequest$Gender.MALE;
             }
         }
     }

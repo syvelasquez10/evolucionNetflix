@@ -4,13 +4,13 @@
 
 package com.netflix.mediaclient.service.logging.uiaction.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
 
 public abstract class BaseUIActionSessionEndedEvent extends SessionEndedEvent
@@ -20,12 +20,12 @@ public abstract class BaseUIActionSessionEndedEvent extends SessionEndedEvent
     public static final String MODAL_VIEW = "modalView";
     public static final String REASON = "reason";
     public static final String STARTED = "started";
-    protected UserActionLogging.CommandName mAction;
-    protected IClientLogging.CompletionReason mCompletionReason;
+    protected UserActionLogging$CommandName mAction;
+    protected IClientLogging$CompletionReason mCompletionReason;
     protected UIError mUIError;
-    protected IClientLogging.ModalView mView;
+    protected IClientLogging$ModalView mView;
     
-    public BaseUIActionSessionEndedEvent(final String s, final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging.ModalView mView, final UserActionLogging.CommandName mAction, final IClientLogging.CompletionReason mCompletionReason, final UIError muiError) {
+    public BaseUIActionSessionEndedEvent(final String s, final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging$ModalView mView, final UserActionLogging$CommandName mAction, final IClientLogging$CompletionReason mCompletionReason, final UIError muiError) {
         super(s, deviceUniqueId, n);
         this.mView = mView;
         this.mAction = mAction;
@@ -33,15 +33,15 @@ public abstract class BaseUIActionSessionEndedEvent extends SessionEndedEvent
         this.mUIError = muiError;
     }
     
-    public BaseUIActionSessionEndedEvent(JSONObject jsonObject) throws JSONException {
+    public BaseUIActionSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
         jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null) {
-            this.mCompletionReason = IClientLogging.CompletionReason.valueOf(JsonUtils.getString(jsonObject, "reason", null));
+            this.mCompletionReason = IClientLogging$CompletionReason.valueOf(JsonUtils.getString(jsonObject, "reason", null));
             jsonObject = JsonUtils.getJSONObject(jsonObject, "started", null);
             if (jsonObject != null) {
-                this.mView = IClientLogging.ModalView.valueOf(JsonUtils.getString(jsonObject, "modalView", null));
-                this.mAction = UserActionLogging.CommandName.valueOf(JsonUtils.getString(jsonObject, "commandName", null));
+                this.mView = IClientLogging$ModalView.valueOf(JsonUtils.getString(jsonObject, "modalView", null));
+                this.mAction = UserActionLogging$CommandName.valueOf(JsonUtils.getString(jsonObject, "commandName", null));
                 jsonObject = JsonUtils.getJSONObject(jsonObject, "error", null);
                 if (jsonObject != null) {
                     this.mUIError = new UIError(jsonObject);
@@ -50,16 +50,16 @@ public abstract class BaseUIActionSessionEndedEvent extends SessionEndedEvent
         }
     }
     
-    public UserActionLogging.CommandName getAction() {
+    public UserActionLogging$CommandName getAction() {
         return this.mAction;
     }
     
-    public IClientLogging.CompletionReason getCompletionReason() {
+    public IClientLogging$CompletionReason getCompletionReason() {
         return this.mCompletionReason;
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();
@@ -85,7 +85,7 @@ public abstract class BaseUIActionSessionEndedEvent extends SessionEndedEvent
         return this.mUIError;
     }
     
-    public IClientLogging.ModalView getView() {
+    public IClientLogging$ModalView getView() {
         return this.mView;
     }
     

@@ -8,10 +8,6 @@ import java.util.Set;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
-import java.util.Collection;
-import java.util.ArrayList;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.cache.SoftCache;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -44,34 +40,12 @@ public class DataDumper
     
     private void dumpGenre(final String s) {
         Log.v("DataDumper", "Taking a dump for genre: " + s);
-        this.mBrowseWebClient.fetchGenres(s, 0, 100, new SimpleBrowseAgentCallback() {
-            @Override
-            public void onGenresFetched(final List<Genre> list, final Status status) {
-                super.onGenresFetched(list, status);
-                Log.v("DataDumper", "genres fetched, count: " + list.size());
-                final ArrayList<LoMo> list2 = new ArrayList<LoMo>(list);
-                for (final Genre genre : list) {
-                    DataDumper.this.lomoVideos.put(genre, null);
-                    DataDumper.this.mBrowseWebClient.fetchGenreVideos(genre, 0, 250, new VideosCallback(genre, list2));
-                }
-            }
-        });
+        this.mBrowseWebClient.fetchGenres(s, 0, 100, new DataDumper$2(this));
     }
     
     private void dumpHomeLoLomo() {
         Log.v("DataDumper", "Taking a dump for home lolomo");
-        this.mBrowseWebClient.fetchLoMos(0, 100, new SimpleBrowseAgentCallback() {
-            @Override
-            public void onLoMosFetched(final List<LoMo> list, final Status status) {
-                super.onLoMosFetched(list, status);
-                Log.v("DataDumper", "lomos fetched, count: " + list.size());
-                final ArrayList<LoMo> list2 = new ArrayList<LoMo>(list);
-                for (final LoMo loMo : list) {
-                    DataDumper.this.lomoVideos.put(loMo, null);
-                    DataDumper.this.mBrowseWebClient.fetchVideos(loMo, 0, 250, new VideosCallback(loMo, list2));
-                }
-            }
-        });
+        this.mBrowseWebClient.fetchLoMos(0, 100, new DataDumper$1(this));
     }
     
     private void dumpVideoList(final HardCache hardCache, final SoftCache softCache, final String s, int n) {
@@ -94,11 +68,11 @@ public class DataDumper
     }
     
     private int getVideoStartIndexFromKey(final String s, final String s2) {
+        final boolean b = false;
         final String[] split = s.substring(s2.length() + 1).split("_");
-        int int1;
-        final int n = int1 = 0;
+        int int1 = b ? 1 : 0;
         if (split.length > 0) {
-            int1 = n;
+            int1 = (b ? 1 : 0);
             if (StringUtils.isNotEmpty(split[0])) {
                 int1 = Integer.parseInt(split[0]);
             }
@@ -148,17 +122,14 @@ public class DataDumper
     }
     
     public void dumpHomeLoLoMosAndVideosToLog() {
-        final List<LoMo> list = null;
         final Set<?> keySet = this.hardCache.getKeySet();
         final Set<?> keySet2 = this.softCache.getKeySet();
-        final Iterator<?> iterator = keySet.iterator();
         while (true) {
-            String s;
-            do {
-                final List<LoMo> list2 = list;
-                if (!iterator.hasNext()) {
-                    if (list2 != null) {
-                        for (final LoMo loMo : list2) {
+            for (final String s : keySet) {
+                if (s.contains(BrowseAgent.CACHE_KEY_PREFIX_LOMO)) {
+                    final List<LoMo> list = (List<LoMo>)this.getFromCache(this.hardCache, this.softCache, s);
+                    if (list != null) {
+                        for (final LoMo loMo : list) {
                             Log.d("DataDumper", String.format("%s, %d, %s", loMo.getId(), loMo.getNumVideos(), loMo.getTitle()));
                             final String string = BrowseAgent.CACHE_KEY_PREFIX_VIDEOS + "_" + loMo.getId();
                             for (final String s2 : keySet) {
@@ -175,66 +146,27 @@ public class DataDumper
                     }
                     return;
                 }
-                s = (String)iterator.next();
-            } while (!s.contains(BrowseAgent.CACHE_KEY_PREFIX_LOMO));
-            final List<LoMo> list2 = (List<LoMo>)this.getFromCache(this.hardCache, this.softCache, s);
+            }
+            final List<LoMo> list = null;
             continue;
         }
     }
     
     public void dumpHomeLoMos() {
-        final List<LoMo> list = null;
-        final Iterator<?> iterator = this.hardCache.getKeySet().iterator();
         while (true) {
-            String s;
-            do {
-                final List<LoMo> list2 = list;
-                if (!iterator.hasNext()) {
-                    if (list2 != null) {
-                        for (final LoMo loMo : list2) {
+            for (final String s : this.hardCache.getKeySet()) {
+                if (s.contains(BrowseAgent.CACHE_KEY_PREFIX_LOMO)) {
+                    final List<LoMo> list = (List<LoMo>)this.getFromCache(this.hardCache, this.softCache, s);
+                    if (list != null) {
+                        for (final LoMo loMo : list) {
                             Log.d("DataDumper", String.format("%s, %d, %s", loMo.getId(), loMo.getNumVideos(), loMo.getTitle()));
                         }
                     }
                     return;
                 }
-                s = (String)iterator.next();
-            } while (!s.contains(BrowseAgent.CACHE_KEY_PREFIX_LOMO));
-            final List<LoMo> list2 = (List<LoMo>)this.getFromCache(this.hardCache, this.softCache, s);
+            }
+            final List<LoMo> list = null;
             continue;
-        }
-    }
-    
-    private class VideosCallback extends SimpleBrowseAgentCallback
-    {
-        private final LoMo lomo;
-        private final List<LoMo> todo;
-        
-        public VideosCallback(final LoMo lomo, final List<LoMo> todo) {
-            this.lomo = lomo;
-            this.todo = todo;
-        }
-        
-        @Override
-        public void onVideosFetched(final List<Video> list, final Status status) {
-            if (DataDumper.this.dumpErrorOccurred) {
-                return;
-            }
-            super.onVideosFetched(list, status);
-            if (status.isError()) {
-                Log.e("DataDumper", "Bummer!  Invalid status code during data dump :(");
-                DataDumper.this.dumpErrorOccurred = true;
-                this.todo.clear();
-            }
-            else {
-                DataDumper.this.lomoVideos.put(this.lomo, list);
-                this.todo.remove(this.lomo);
-            }
-            if (this.todo.size() == 0) {
-                Log.v("DataDumper", "--LoMo data collection complete--");
-                DataDumper.this.handleDataLoadCompleted(DataDumper.this.lomoVideos);
-                return;
-            }
-            Log.v("DataDumper", "Remaining request count: " + this.todo.size());
         }
     }
 }

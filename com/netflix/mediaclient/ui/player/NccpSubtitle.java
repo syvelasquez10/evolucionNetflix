@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.media.Subtitle;
@@ -15,7 +14,7 @@ public class NccpSubtitle extends Subtitle
     private static final String TRACK_TYPE_ASSISTIVE = "ASSISTIVE";
     private static final String TRACK_TYPE_PRIMARY = "PRIMARY";
     
-    protected NccpSubtitle(final JSONObject jsonObject, final int nccpOrderNumber) throws JSONException {
+    protected NccpSubtitle(final JSONObject jsonObject, final int nccpOrderNumber) {
         this.canDeviceRender = JsonUtils.getBoolean(jsonObject, "canDeviceRender", false);
         this.id = JsonUtils.getString(jsonObject, "id", null);
         this.languageCodeIso639_1 = JsonUtils.getString(jsonObject, "language", "en");
@@ -36,12 +35,12 @@ public class NccpSubtitle extends Subtitle
         }
     }
     
-    public static final Subtitle newInstance(final JSONObject jsonObject, final int n) throws JSONException {
+    public static final Subtitle newInstance(final JSONObject jsonObject, final int n) {
         return new NccpSubtitle(jsonObject, n);
     }
     
     @Override
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("impl", 1);
         jsonObject.put("id", (Object)this.id);

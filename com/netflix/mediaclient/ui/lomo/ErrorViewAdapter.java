@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.ErrorView;
 import android.view.View;
 

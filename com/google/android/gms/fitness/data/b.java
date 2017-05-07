@@ -4,6 +4,7 @@
 
 package com.google.android.gms.fitness.data;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
@@ -50,7 +51,7 @@ public class b implements Parcelable$Creator<a>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new a(g, o3, o2, o);
     }

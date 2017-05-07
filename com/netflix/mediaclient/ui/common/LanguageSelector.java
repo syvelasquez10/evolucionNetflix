@@ -4,21 +4,13 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.widget.TextView;
-import android.widget.RadioButton;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
-import android.app.AlertDialog;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.AdapterView;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.Button;
 import android.view.ViewGroup$LayoutParams;
 import android.app.Dialog;
 import android.content.DialogInterface$OnCancelListener;
-import android.content.DialogInterface;
-import android.content.DialogInterface$OnClickListener;
+import android.view.View$OnClickListener;
 import android.content.Context;
 import android.view.View;
 import com.netflix.mediaclient.media.AudioSource;
@@ -33,24 +25,24 @@ public abstract class LanguageSelector
     protected static final String TAG = "nf_language_selector";
     private Language language;
     protected ListView mAudiosListView;
-    protected final LanguageSelectorCallback mCallback;
+    protected final LanguageSelector$LanguageSelectorCallback mCallback;
     protected final NetflixActivity mController;
     protected final int mRowColor;
     protected final int mSelectedRowColor;
     protected ListView mSubtitlesListView;
     
-    LanguageSelector(final NetflixActivity mController, final LanguageSelectorCallback mCallback) {
+    LanguageSelector(final NetflixActivity mController, final LanguageSelector$LanguageSelectorCallback mCallback) {
         this.mController = mController;
         this.mCallback = mCallback;
-        this.mSelectedRowColor = this.mController.getResources().getColor(2131296404);
-        this.mRowColor = this.mController.getResources().getColor(2131296403);
+        this.mSelectedRowColor = this.mController.getResources().getColor(2131296407);
+        this.mRowColor = this.mController.getResources().getColor(2131296406);
     }
     
-    public static LanguageSelector createInstance(final NetflixActivity netflixActivity, final boolean b, final LanguageSelectorCallback languageSelectorCallback) {
+    public static LanguageSelector createInstance(final NetflixActivity netflixActivity, final boolean b, final LanguageSelector$LanguageSelectorCallback languageSelector$LanguageSelectorCallback) {
         if (b) {
-            return new LanguageSelectorTablet(netflixActivity, languageSelectorCallback);
+            return new LanguageSelectorTablet(netflixActivity, languageSelector$LanguageSelectorCallback);
         }
-        return new LanguageSelectorPhone(netflixActivity, languageSelectorCallback);
+        return new LanguageSelectorPhone(netflixActivity, languageSelector$LanguageSelectorCallback);
     }
     
     private boolean shouldForceFirst(final Language language, final int n, final Subtitle selectedSubtitle) {
@@ -73,23 +65,11 @@ public abstract class LanguageSelector
     protected abstract int calculateListViewHeight();
     
     protected void createAndShowDialog(final View view) {
-        final LanguageAlertDialog languageAlertDialog = new LanguageAlertDialog((Context)this.mController);
-        languageAlertDialog.setView(view);
-        languageAlertDialog.setCancelable(true);
-        languageAlertDialog.setButton(-1, (CharSequence)this.mController.getString(2131492983), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
-            final /* synthetic */ boolean val$wasPlaying = LanguageSelector.this.mCallback.wasPlaying();
-            
-            public void onClick(final DialogInterface dialogInterface, final int n) {
-                Log.d("nf_language_selector", "Languages::apply");
-                LanguageSelector.this.mCallback.languageChanged(LanguageSelector.this.language, this.val$wasPlaying);
-            }
-        });
-        languageAlertDialog.setOnCancelListener((DialogInterface$OnCancelListener)new DialogInterface$OnCancelListener() {
-            public void onCancel(final DialogInterface dialogInterface) {
-                Log.d("nf_language_selector", "Languages::cancel");
-                LanguageSelector.this.mCallback.userCanceled();
-            }
-        });
+        final LanguageSelector$LanguageAlertDialog languageSelector$LanguageAlertDialog = new LanguageSelector$LanguageAlertDialog((Context)this.mController, null);
+        languageSelector$LanguageAlertDialog.setView(view);
+        languageSelector$LanguageAlertDialog.setCancelable(true);
+        view.findViewById(2131165438).setOnClickListener((View$OnClickListener)new LanguageSelector$3(this, this.mCallback.wasPlaying(), languageSelector$LanguageAlertDialog));
+        languageSelector$LanguageAlertDialog.setOnCancelListener((DialogInterface$OnCancelListener)new LanguageSelector$4(this));
         final int calculateListViewHeight = this.calculateListViewHeight();
         if (calculateListViewHeight >= 0) {
             Log.d("nf_language_selector", "Sets view height.");
@@ -106,18 +86,18 @@ public abstract class LanguageSelector
             Log.d("nf_language_selector", "Do NOT set view height.");
         }
         Log.d("nf_language_selector", "Languages::open dialog");
-        this.mCallback.updateDialog((Dialog)languageAlertDialog);
-        if (languageAlertDialog != null) {
-            this.mController.displayDialog((Dialog)languageAlertDialog);
-            final Button button = languageAlertDialog.getButton(-1);
+        this.mCallback.updateDialog((Dialog)languageSelector$LanguageAlertDialog);
+        if (languageSelector$LanguageAlertDialog != null) {
+            this.mController.displayDialog((Dialog)languageSelector$LanguageAlertDialog);
+            final Button button = languageSelector$LanguageAlertDialog.getButton(-1);
             if (button == null) {
                 Log.e("nf_language_selector", "Button NOT found!");
                 return;
             }
             Log.d("nf_language_selector", "Button found!");
-            button.setBackgroundColor(this.mController.getResources().getColor(2131296403));
-            button.setTextColor(this.mController.getResources().getColor(2131296359));
-            button.setTextAppearance((Context)this.mController, 2131558700);
+            button.setBackgroundColor(this.mController.getResources().getColor(2131296406));
+            button.setTextColor(this.mController.getResources().getColor(2131296362));
+            button.setTextAppearance((Context)this.mController, 2131558703);
         }
     }
     
@@ -230,187 +210,13 @@ public abstract class LanguageSelector
     }
     
     protected void initLists(final View view, final Language language) {
-        (this.mAudiosListView = (ListView)view.findViewById(2131165437)).setChoiceMode(1);
-        final AudioAdapter adapter = new AudioAdapter(language);
+        (this.mAudiosListView = (ListView)view.findViewById(2131165436)).setChoiceMode(1);
+        final LanguageSelector$AudioAdapter adapter = new LanguageSelector$AudioAdapter(this, language);
         this.mAudiosListView.setAdapter((ListAdapter)adapter);
-        (this.mSubtitlesListView = (ListView)view.findViewById(2131165438)).setChoiceMode(1);
-        final SubtitleAdapter adapter2 = new SubtitleAdapter(language);
+        (this.mSubtitlesListView = (ListView)view.findViewById(2131165437)).setChoiceMode(1);
+        final LanguageSelector$SubtitleAdapter adapter2 = new LanguageSelector$SubtitleAdapter(this, language);
         this.mSubtitlesListView.setAdapter((ListAdapter)adapter2);
-        this.mAudiosListView.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                final AudioSource item = adapter.getItem(n);
-                if (Log.isLoggable("nf_language_selector", 3)) {
-                    Log.d("nf_language_selector", "Audio selected on position " + n + ", audio choosen: " + item);
-                }
-                if (language.getSelectedAudio() != item) {
-                    Log.v("nf_language_selector", "Audio is changed, refresh both views");
-                    language.setSelectedAudio(item);
-                    adapter.notifyDataSetChanged();
-                    adapter2.notifyDataSetChanged();
-                    return;
-                }
-                Log.v("nf_language_selector", "Audio is not changed, do not refresh");
-            }
-        });
-        this.mSubtitlesListView.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                final Subtitle item = adapter2.getItem(n);
-                if (Log.isLoggable("nf_language_selector", 3)) {
-                    Log.d("nf_language_selector", "Subtitle selected on position " + n + ", data: " + item);
-                }
-                if (language.getSelectedSubtitle() != item) {
-                    Log.v("nf_language_selector", "Subtitle is changed, refresh subtitle list view");
-                    language.setSelectedSubtitle(item);
-                    adapter2.notifyDataSetChanged();
-                    return;
-                }
-                Log.v("nf_language_selector", "Subtitle is not changed, do not refresh");
-            }
-        });
-    }
-    
-    public class AudioAdapter extends BaseAdapter
-    {
-        private final Language language;
-        
-        public AudioAdapter(final Language language) {
-            this.language = language;
-        }
-        
-        public int getCount() {
-            return this.language.getAltAudios().length;
-        }
-        
-        public AudioSource getItem(final int n) {
-            return this.language.getAltAudios()[n];
-        }
-        
-        public long getItemId(final int n) {
-            return n;
-        }
-        
-        public View getView(final int n, final View view, final ViewGroup viewGroup) {
-            View inflate = view;
-            if (view == null) {
-                Log.d("nf_language_selector", "Audio create row " + n);
-                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903113, viewGroup, false);
-                inflate.setTag((Object)new RowHolder(inflate));
-            }
-            final RowHolder rowHolder = (RowHolder)inflate.getTag();
-            final AudioSource item = this.getItem(n);
-            final boolean equals = item.equals(this.language.getSelectedAudio());
-            rowHolder.name.setText((CharSequence)item.getLanguageDescription());
-            rowHolder.choice.setChecked(equals);
-            if (equals) {
-                Log.d("nf_language_selector", "Audio is selected " + item);
-                inflate.setBackgroundColor(LanguageSelector.this.mSelectedRowColor);
-                return inflate;
-            }
-            inflate.setBackgroundColor(LanguageSelector.this.mRowColor);
-            return inflate;
-        }
-    }
-    
-    private static class LanguageAlertDialog extends AlertDialog implements MdxMiniPlayerDialog
-    {
-        private LanguageAlertDialog(final Context context) {
-            super(context);
-        }
-        
-        private LanguageAlertDialog(final Context context, final int n) {
-            super(context, n);
-        }
-        
-        private LanguageAlertDialog(final Context context, final boolean b, final DialogInterface$OnCancelListener dialogInterface$OnCancelListener) {
-            super(context, b, dialogInterface$OnCancelListener);
-        }
-    }
-    
-    public interface LanguageSelectorCallback
-    {
-        void languageChanged(final Language p0, final boolean p1);
-        
-        void updateDialog(final Dialog p0);
-        
-        void userCanceled();
-        
-        boolean wasPlaying();
-    }
-    
-    static class RowHolder
-    {
-        RadioButton choice;
-        TextView name;
-        
-        RowHolder(final View view) {
-            this.name = (TextView)view.findViewById(2131165439);
-            this.choice = (RadioButton)view.findViewById(2131165440);
-        }
-    }
-    
-    public class SubtitleAdapter extends BaseAdapter
-    {
-        private final Language language;
-        
-        public SubtitleAdapter(final Language language) {
-            this.language = language;
-        }
-        
-        public int getCount() {
-            return this.language.getUsedSubtitles().size();
-        }
-        
-        public Subtitle getItem(final int n) {
-            return this.language.getUsedSubtitles().get(n);
-        }
-        
-        public long getItemId(final int n) {
-            return n;
-        }
-        
-        public View getView(final int n, final View view, final ViewGroup viewGroup) {
-            boolean equals = false;
-            View inflate = view;
-            if (view == null) {
-                Log.d("nf_language_selector", "Subtitle create row " + n);
-                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903113, viewGroup, false);
-                inflate.setTag((Object)new RowHolder(inflate));
-            }
-            final RowHolder rowHolder = (RowHolder)inflate.getTag();
-            final Subtitle item = this.getItem(n);
-            Subtitle subtitle = this.language.getSelectedSubtitle();
-            if (LanguageSelector.this.shouldForceFirst(this.language, n, item)) {
-                Log.d("nf_language_selector", "Previously selected subtitle is not allowed anymore, reset to first on list, reload seleted subtitle");
-                subtitle = this.language.getSelectedSubtitle();
-            }
-            String text;
-            if (item != null) {
-                final StringBuilder sb = new StringBuilder(item.getLanguageDescription());
-                if (item.isCC()) {
-                    Log.d("nf_language_selector", "Add CC");
-                    sb.append(' ');
-                    sb.append(LanguageSelector.this.mController.getText(2131493138));
-                }
-                final String string = sb.toString();
-                equals = item.equals(subtitle);
-                text = string;
-            }
-            else {
-                final String string2 = LanguageSelector.this.mController.getString(2131493131);
-                if (subtitle == null) {
-                    equals = true;
-                }
-                text = string2;
-            }
-            rowHolder.name.setText((CharSequence)text);
-            rowHolder.choice.setChecked(equals);
-            if (equals) {
-                Log.d("nf_language_selector", "Subtitle is selected " + item);
-                inflate.setBackgroundColor(LanguageSelector.this.mSelectedRowColor);
-                return inflate;
-            }
-            inflate.setBackgroundColor(LanguageSelector.this.mRowColor);
-            return inflate;
-        }
+        this.mAudiosListView.setOnItemClickListener((AdapterView$OnItemClickListener)new LanguageSelector$1(this, adapter, language, adapter2));
+        this.mSubtitlesListView.setOnItemClickListener((AdapterView$OnItemClickListener)new LanguageSelector$2(this, adapter2, language));
     }
 }

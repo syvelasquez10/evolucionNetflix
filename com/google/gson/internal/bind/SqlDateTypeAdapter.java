@@ -8,11 +8,8 @@ import com.google.gson.stream.JsonWriter;
 import java.text.ParseException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonToken;
-import java.io.IOException;
 import com.google.gson.stream.JsonReader;
 import java.text.SimpleDateFormat;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.Gson;
 import java.text.DateFormat;
 import com.google.gson.TypeAdapterFactory;
 import java.sql.Date;
@@ -24,15 +21,7 @@ public final class SqlDateTypeAdapter extends TypeAdapter<Date>
     private final DateFormat format;
     
     static {
-        FACTORY = new TypeAdapterFactory() {
-            @Override
-            public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> typeToken) {
-                if (typeToken.getRawType() == Date.class) {
-                    return (TypeAdapter<T>)new SqlDateTypeAdapter();
-                }
-                return null;
-            }
-        };
+        FACTORY = new SqlDateTypeAdapter$1();
     }
     
     public SqlDateTypeAdapter() {
@@ -40,7 +29,7 @@ public final class SqlDateTypeAdapter extends TypeAdapter<Date>
     }
     
     @Override
-    public Date read(final JsonReader jsonReader) throws IOException {
+    public Date read(final JsonReader jsonReader) {
         synchronized (this) {
             Date date;
             if (jsonReader.peek() == JsonToken.NULL) {
@@ -60,7 +49,7 @@ public final class SqlDateTypeAdapter extends TypeAdapter<Date>
     }
     
     @Override
-    public void write(final JsonWriter jsonWriter, final Date date) throws IOException {
+    public void write(final JsonWriter jsonWriter, final Date date) {
         // monitorenter(this)
         Label_0017: {
             if (date != null) {

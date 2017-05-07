@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import android.os.Parcelable;
 import java.io.IOException;
 import android.os.Bundle;
-import android.os.Message;
 import android.os.Looper;
 import java.util.concurrent.LinkedBlockingQueue;
 import android.content.Context;
@@ -34,15 +33,11 @@ public class GoogleCloudMessaging
     
     public GoogleCloudMessaging() {
         this.adm = new LinkedBlockingQueue<Intent>();
-        this.adn = new Handler(Looper.getMainLooper()) {
-            public void handleMessage(final Message message) {
-                GoogleCloudMessaging.this.adm.add((Intent)message.obj);
-            }
-        };
+        this.adn = new GoogleCloudMessaging$1(this, Looper.getMainLooper());
         this.ado = new Messenger(this.adn);
     }
     
-    private void a(final String s, final String s2, final long n, final int n2, final Bundle bundle) throws IOException {
+    private void a(final String s, final String s2, final long n, final int n2, final Bundle bundle) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             throw new IOException("MAIN_THREAD");
         }
@@ -135,7 +130,7 @@ public class GoogleCloudMessaging
         }
     }
     
-    public String register(final String... array) throws IOException {
+    public String register(final String... array) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             throw new IOException("MAIN_THREAD");
         }
@@ -163,15 +158,15 @@ public class GoogleCloudMessaging
         throw new IOException("SERVICE_NOT_AVAILABLE");
     }
     
-    public void send(final String s, final String s2, final long n, final Bundle bundle) throws IOException {
+    public void send(final String s, final String s2, final long n, final Bundle bundle) {
         this.a(s, s2, n, -1, bundle);
     }
     
-    public void send(final String s, final String s2, final Bundle bundle) throws IOException {
+    public void send(final String s, final String s2, final Bundle bundle) {
         this.send(s, s2, -1L, bundle);
     }
     
-    public void unregister() throws IOException {
+    public void unregister() {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             throw new IOException("MAIN_THREAD");
         }

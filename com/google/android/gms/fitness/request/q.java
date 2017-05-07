@@ -5,6 +5,7 @@
 package com.google.android.gms.fitness.request;
 
 import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import android.app.PendingIntent;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -49,7 +50,7 @@ public class q implements Parcelable$Creator<p>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new p(g, p, pendingIntent);
     }

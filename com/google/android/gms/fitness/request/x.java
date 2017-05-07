@@ -26,10 +26,10 @@ public class x implements SafeParcelable
         this.Tf = tf;
     }
     
-    private x(final a a) {
+    private x(final x$a x$a) {
         this.BR = 1;
-        this.mName = a.mName;
-        this.Tf = a.Tf;
+        this.mName = x$a.mName;
+        this.Tf = x$a.Tf;
     }
     
     private boolean a(final x x) {
@@ -69,25 +69,5 @@ public class x implements SafeParcelable
     
     public void writeToParcel(final Parcel parcel, final int n) {
         y.a(this, parcel, n);
-    }
-    
-    public static class a
-    {
-        private String Tf;
-        private String mName;
-        
-        public a br(final String mName) {
-            this.mName = mName;
-            return this;
-        }
-        
-        public a bs(final String tf) {
-            this.Tf = tf;
-            return this;
-        }
-        
-        public x jy() {
-            return new x(this, null);
-        }
     }
 }

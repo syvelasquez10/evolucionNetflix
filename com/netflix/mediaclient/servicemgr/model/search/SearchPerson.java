@@ -4,7 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr.model.search;
 
-public interface SearchPerson
+import com.netflix.model.branches.FalkorValidator;
+import com.netflix.model.branches.FalkorObject;
+
+public interface SearchPerson extends FalkorObject, FalkorValidator
 {
     String getId();
     

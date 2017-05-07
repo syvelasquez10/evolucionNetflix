@@ -4,9 +4,6 @@
 
 package android.support.v4.media.session;
 
-import android.media.Rating;
-import android.content.Intent;
-import android.os.ResultReceiver;
 import android.media.VolumeProvider;
 import android.media.AudioAttributes$Builder;
 import android.media.session.PlaybackState;
@@ -20,8 +17,8 @@ import android.content.Context;
 
 class MediaSessionCompatApi21
 {
-    public static Object createCallback(final Callback callback) {
-        return new CallbackProxy(callback);
+    public static Object createCallback(final MediaSessionCompatApi21$Callback mediaSessionCompatApi21$Callback) {
+        return new MediaSessionCompatApi21$CallbackProxy(mediaSessionCompatApi21$Callback);
     }
     
     public static Object createSession(final Context context, final String s) {
@@ -79,83 +76,5 @@ class MediaSessionCompatApi21
             return o;
         }
         throw new IllegalArgumentException("mediaSession is not a valid MediaSession object");
-    }
-    
-    public interface Callback
-    {
-        void onCommand(final String p0, final Bundle p1, final ResultReceiver p2);
-        
-        void onFastForward();
-        
-        boolean onMediaButtonEvent(final Intent p0);
-        
-        void onPause();
-        
-        void onPlay();
-        
-        void onRewind();
-        
-        void onSeekTo(final long p0);
-        
-        void onSetRating(final Object p0);
-        
-        void onSkipToNext();
-        
-        void onSkipToPrevious();
-        
-        void onStop();
-    }
-    
-    static class CallbackProxy<T extends Callback> extends MediaSession$Callback
-    {
-        protected final T mCallback;
-        
-        public CallbackProxy(final T mCallback) {
-            this.mCallback = mCallback;
-        }
-        
-        public void onCommand(final String s, final Bundle bundle, final ResultReceiver resultReceiver) {
-            ((Callback)this.mCallback).onCommand(s, bundle, resultReceiver);
-        }
-        
-        public void onFastForward() {
-            ((Callback)this.mCallback).onFastForward();
-        }
-        
-        public boolean onMediaButtonEvent(final Intent intent) {
-            return ((Callback)this.mCallback).onMediaButtonEvent(intent);
-        }
-        
-        public void onPause() {
-            ((Callback)this.mCallback).onPause();
-        }
-        
-        public void onPlay() {
-            ((Callback)this.mCallback).onPlay();
-        }
-        
-        public void onRewind() {
-            ((Callback)this.mCallback).onRewind();
-        }
-        
-        public void onSeekTo(final long n) {
-            ((Callback)this.mCallback).onSeekTo(n);
-        }
-        
-        public void onSetRating(final Rating rating) {
-            ((Callback)this.mCallback).onSetRating(rating);
-        }
-        
-        public void onSkipToNext() {
-            ((Callback)this.mCallback).onSkipToNext();
-        }
-        
-        public void onSkipToPrevious() {
-            ((Callback)this.mCallback).onSkipToPrevious();
-        }
-        
-        public void onStop() {
-            ((Callback)this.mCallback).onStop();
-        }
     }
 }

@@ -66,7 +66,7 @@ public abstract class h implements g
         this.kz.reset();
     }
     
-    private byte[] u() throws IOException {
+    private byte[] u() {
         return this.kz.A();
     }
     
@@ -80,7 +80,7 @@ public abstract class h implements g
         return this.a(context, s, true);
     }
     
-    String a(byte[] array, final String s) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException {
+    String a(byte[] array, final String s) {
         byte[] u = array;
         if (array.length > 239) {
             this.t();
@@ -114,11 +114,11 @@ public abstract class h implements g
         this.kw = MotionEvent.obtain(0L, (long)n3, 1, n * this.kx.density, n2 * this.kx.density, 0.0f, 0.0f, 0, 0.0f, 0.0f, 0, 0);
     }
     
-    protected void a(final int n, final long n2) throws IOException {
+    protected void a(final int n, final long n2) {
         this.kz.b(n, n2);
     }
     
-    protected void a(final int n, final String s) throws IOException {
+    protected void a(final int n, final String s) {
         this.kz.b(n, s);
     }
     
@@ -132,7 +132,7 @@ public abstract class h implements g
         }
     }
     
-    void a(final String s, final byte[] array) throws UnsupportedEncodingException {
+    void a(final String s, final byte[] array) {
         String substring = s;
         if (s.length() > 32) {
             substring = s.substring(0, 32);

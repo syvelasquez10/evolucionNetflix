@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import android.widget.ListAdapter;
-import com.netflix.mediaclient.android.app.LoadingStatus;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import android.app.Activity;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.KeyEvent;
@@ -21,18 +21,18 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import android.database.DataSetObserver;
 import android.os.Parcelable;
 import android.os.Bundle;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.ui.home.HomeActivity;
-import com.netflix.mediaclient.Log;
 import java.util.HashMap;
-import com.netflix.mediaclient.android.widget.ObjectRecycler;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import java.util.Map;
 import android.widget.AbsListView$RecyclerListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
-import com.netflix.mediaclient.android.widget.ErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -44,38 +44,24 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     private static final String EXTRA_GENRE_PARCEL = "genre_parcel";
     private static final String EXTRA_IS_GENRE_LIST = "is_genre_list";
     private static final String TAG = "LoLoMoFrag";
-    private ILoLoMoAdapter adapter;
+    private LoLoMoFrag$ILoLoMoAdapter adapter;
     private LoLoMoFocusHandler focusHandler;
     private GenreList genre;
     private String genreId;
     private boolean isGenreList;
     private View kidsEntryHeader;
-    private final ErrorWrapper.Callback leCallback;
+    private final ErrorWrapper$Callback leCallback;
     private LoadingAndErrorWrapper leWrapper;
     protected StickyListHeadersListView listView;
     private ServiceManager manager;
     private final AbsListView$RecyclerListener recycleListener;
     private final Map<String, Object> stateMap;
-    private ObjectRecycler.ViewRecycler viewRecycler;
+    private ObjectRecycler$ViewRecycler viewRecycler;
     
     public LoLoMoFrag() {
         this.stateMap = new HashMap<String, Object>();
-        this.leCallback = new ErrorWrapper.Callback() {
-            @Override
-            public void onRetryRequested() {
-                LoLoMoFrag.this.refresh();
-            }
-        };
-        this.recycleListener = (AbsListView$RecyclerListener)new AbsListView$RecyclerListener() {
-            public void onMovedToScrapHeap(final View view) {
-                final BaseLoLoMoAdapter.RowHolder rowHolder = (BaseLoLoMoAdapter.RowHolder)view.getTag();
-                if (rowHolder == null) {
-                    return;
-                }
-                Log.v("LoLoMoFrag", "View moved to scrap heap - invalidating request");
-                rowHolder.invalidateRequestId();
-            }
-        };
+        this.leCallback = new LoLoMoFrag$1(this);
+        this.recycleListener = (AbsListView$RecyclerListener)new LoLoMoFrag$2(this);
     }
     
     private void addKidsEntryHeaderIfNecessary(final StickyListHeadersListView stickyListHeadersListView) {
@@ -123,23 +109,23 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         this.adapter.onManagerReady(this.manager, CommonStatus.OK);
     }
     
-    protected ILoLoMoAdapter createAdapter() {
+    protected LoLoMoFrag$ILoLoMoAdapter createAdapter() {
         if (this.getNetflixActivity() == null) {
             Log.w("LoLoMoFrag", "createAdapter(): activity is null - should not happen");
         }
         else if (this.getNetflixActivity().isForKids()) {
             if (this.isGenreList) {
                 KidsUtils.addListViewSpacerIfNoHeaders(this.listView);
-                return (ILoLoMoAdapter)new KidsLomoDetailAdapter(this, this.genre);
+                return new KidsLomoDetailAdapter(this, this.genre);
             }
             if (KidsUtils.isKidsWithUpDownScrolling(this.getNetflixActivity())) {
-                return (ILoLoMoAdapter)new SkidmarkLoLoMoAdapter(this);
+                return new SkidmarkLoLoMoAdapter(this);
             }
         }
         if (this.isGenreList) {
-            return (ILoLoMoAdapter)new GenreLoLoMoAdapter(this, this.genreId);
+            return new GenreLoLoMoAdapter(this, this.genreId);
         }
-        return (ILoLoMoAdapter)new LoLoMoAdapter(this);
+        return new LoLoMoAdapter(this);
     }
     
     public boolean dispatchKeyEvent(final KeyEvent keyEvent) {
@@ -154,7 +140,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         return this.stateMap;
     }
     
-    public ObjectRecycler.ViewRecycler getViewRecycler() {
+    public ObjectRecycler$ViewRecycler getViewRecycler() {
         return this.viewRecycler;
     }
     
@@ -186,7 +172,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         this.genreId = this.getArguments().getString("genre_id");
         this.genre = (GenreList)this.getArguments().getParcelable("genre_parcel");
         this.isGenreList = this.getArguments().getBoolean("is_genre_list");
-        this.viewRecycler = ((ObjectRecycler.ViewRecyclerProvider)this.getActivity()).getViewRecycler();
+        this.viewRecycler = ((ObjectRecycler$ViewRecyclerProvider)this.getActivity()).getViewRecycler();
         if (bundle != null) {
             Log.v("LoLoMoFrag", "Clearing all frag state");
             this.stateMap.clear();
@@ -196,7 +182,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("LoLoMoFrag", "Creating frag view");
-        final View inflate = layoutInflater.inflate(2130903116, (ViewGroup)null);
+        final View inflate = layoutInflater.inflate(2130903117, (ViewGroup)null);
         (this.listView = (StickyListHeadersListView)inflate.findViewById(16908298)).setDivider(null);
         this.listView.setFocusable(false);
         this.listView.setRecyclerListener(this.recycleListener);
@@ -257,7 +243,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     @Override
-    public void setLoadingStatusCallback(final LoadingStatusCallback loadingStatusCallback) {
+    public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback loadingStatusCallback) {
         if (this.adapter != null) {
             this.adapter.setLoadingStatusCallback(loadingStatusCallback);
         }
@@ -279,16 +265,5 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
             this.kidsEntryHeader.setVisibility(4);
         }
         this.leWrapper.showLoadingView(true);
-    }
-    
-    public interface ILoLoMoAdapter extends ManagerStatusListener, LoadingStatus, ListAdapter, StickyListHeadersAdapter
-    {
-        void onDestroyView();
-        
-        void onPause();
-        
-        void onResume();
-        
-        void refreshData();
     }
 }

@@ -11,7 +11,6 @@ import com.netflix.mediaclient.javabridge.ui.IMedia;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
 import com.netflix.mediaclient.javabridge.ui.NetworkDiagnosis;
 import com.netflix.mediaclient.javabridge.ui.Device;
-import org.json.JSONException;
 import com.netflix.mediaclient.event.UIEvent;
 import com.netflix.mediaclient.event.nrdp.InitEvent;
 import com.netflix.mediaclient.Log;
@@ -31,7 +30,7 @@ public final class NativeNrdp extends NativeNrdObject implements Nrdp
         this.ready = false;
     }
     
-    private int handleEvent(JSONObject jsonObject) throws Exception {
+    private int handleEvent(JSONObject jsonObject) {
         final String string = jsonObject.getString("name");
         final String string2 = jsonObject.getString("type");
         if (!"config".equals(string)) {
@@ -80,7 +79,7 @@ public final class NativeNrdp extends NativeNrdObject implements Nrdp
         return 1;
     }
     
-    private int handlePropertyUpdate(final JSONObject jsonObject) throws JSONException {
+    private int handlePropertyUpdate(final JSONObject jsonObject) {
         if (this.getJSONObject(jsonObject, "properties", null) == null) {
             Log.w("nf_nedp", "handlePropertyUpdate:: properties does not exist");
             return 0;

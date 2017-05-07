@@ -84,16 +84,7 @@ class h implements l
     }
     
     private void dV() {
-        new Thread("client_id_fetcher") {
-            @Override
-            public void run() {
-                synchronized (h.this.xT) {
-                    h.this.xR = h.this.dW();
-                    h.this.xS = true;
-                    h.this.xT.notifyAll();
-                }
-            }
-        }.start();
+        new h$1(this, "client_id_fetcher").start();
     }
     
     public static void y(final Context context) {

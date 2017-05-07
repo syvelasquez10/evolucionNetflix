@@ -4,18 +4,13 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import android.text.util.Linkify;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.view.View;
 import android.widget.ListAdapter;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.widget.ListView;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.Intent;
 import android.content.Context;
@@ -28,10 +23,10 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     private static final String APACHE_LICENSE_20 = "\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.";
     private static final String ROUNDED_IMAGE_VIEW_LICENSE = "Copyright (c) 2013, Vincent Mi\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.";
     private static final String STICKY_GRID_HEADERS_LICENSE = "Copyright 2013 Tonic Artos\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.";
-    private static final List<OslInfo> oslInfo;
+    private static final List<OpenSourceLicensesActivity$OslInfo> oslInfo;
     
     static {
-        oslInfo = new ArrayList<OslInfo>();
+        oslInfo = new ArrayList<OpenSourceLicensesActivity$OslInfo>();
     }
     
     public static Intent create(final Context context) {
@@ -39,32 +34,23 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     }
     
     private String createHeaderText(final String s) {
-        return String.format(this.getString(2131493209), s);
+        return String.format(this.getString(2131493174), s);
     }
     
     private void createOslInfo() {
         OpenSourceLicensesActivity.oslInfo.clear();
-        OpenSourceLicensesActivity.oslInfo.add(new OslInfo(this.createHeaderText("StickyGridHeaders"), "Copyright 2013 Tonic Artos\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License."));
-        OpenSourceLicensesActivity.oslInfo.add(new OslInfo(this.createHeaderText("RoundedImageView"), "Copyright (c) 2013, Vincent Mi\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License."));
+        OpenSourceLicensesActivity.oslInfo.add(new OpenSourceLicensesActivity$OslInfo(this.createHeaderText("StickyGridHeaders"), "Copyright 2013 Tonic Artos\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License."));
+        OpenSourceLicensesActivity.oslInfo.add(new OpenSourceLicensesActivity$OslInfo(this.createHeaderText("RoundedImageView"), "Copyright (c) 2013, Vincent Mi\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at:\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License."));
     }
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new ManagerStatusListener() {
-            @Override
-            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-                OpenSourceLicensesActivity.this.getNetflixActionBar().setDisplayHomeAsUpEnabled(serviceManager.isUserLoggedIn());
-            }
-            
-            @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-            }
-        };
+        return new OpenSourceLicensesActivity$1(this);
     }
     
     @Override
-    public IClientLogging.ModalView getUiScreen() {
-        return IClientLogging.ModalView.openSourceLicenses;
+    public IClientLogging$ModalView getUiScreen() {
+        return IClientLogging$ModalView.openSourceLicenses;
     }
     
     @Override
@@ -72,6 +58,7 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         return false;
     }
     
+    @Override
     public boolean isLoadingData() {
         return false;
     }
@@ -82,10 +69,12 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         this.createOslInfo();
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getString(2131493208));
+            netflixActionBar.setTitle(this.getString(2131493173));
         }
         final ListView contentView = new ListView((Context)this);
-        contentView.setAdapter((ListAdapter)new OslAdapter());
+        contentView.setDividerHeight(0);
+        ViewUtils.addActionBarPaddingView(contentView);
+        contentView.setAdapter((ListAdapter)new OpenSourceLicensesActivity$OslAdapter(this, null));
         this.setContentView((View)contentView);
     }
     
@@ -102,56 +91,5 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     @Override
     protected boolean showSignOutInMenu() {
         return false;
-    }
-    
-    private static class Holder
-    {
-        final TextView license;
-        final TextView title;
-        
-        public Holder(final TextView title, final TextView license) {
-            this.title = title;
-            this.license = license;
-        }
-    }
-    
-    private class OslAdapter extends BaseAdapter
-    {
-        public int getCount() {
-            return OpenSourceLicensesActivity.oslInfo.size();
-        }
-        
-        public OslInfo getItem(final int n) {
-            return OpenSourceLicensesActivity.oslInfo.get(n);
-        }
-        
-        public long getItemId(final int n) {
-            return n;
-        }
-        
-        public View getView(final int n, final View view, final ViewGroup viewGroup) {
-            View inflate = view;
-            if (view == null) {
-                inflate = OpenSourceLicensesActivity.this.getLayoutInflater().inflate(2130903144, (ViewGroup)null);
-                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165519), (TextView)inflate.findViewById(2131165520)));
-            }
-            final Holder holder = (Holder)inflate.getTag();
-            final OslInfo item = this.getItem(n);
-            holder.title.setText((CharSequence)item.title);
-            holder.license.setText((CharSequence)item.license);
-            Linkify.addLinks(holder.license, 1);
-            return inflate;
-        }
-    }
-    
-    private static class OslInfo
-    {
-        final String license;
-        final String title;
-        
-        public OslInfo(final String title, final String license) {
-            this.title = title;
-            this.license = license;
-        }
     }
 }

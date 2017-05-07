@@ -7,9 +7,10 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
+import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 
@@ -17,7 +18,7 @@ public final class BrowseManager implements IBrowseManager
 {
     private static final String ERROR_PARAM_WITH_NULL = "Parameter cannot be null";
     private static final String TAG = "ServiceManagerBrowse";
-    private IServiceManagerAccess mgr;
+    private final IServiceManagerAccess mgr;
     
     public BrowseManager(final IServiceManagerAccess mgr) {
         this.mgr = mgr;
@@ -42,6 +43,17 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
+    public boolean dumpCacheToDisk() {
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().dumpCacheToDisk();
+            return true;
+        }
+        Log.w("ServiceManagerBrowse", "dumpCacheToDisk:: service is not available");
+        return false;
+    }
+    
+    @Override
     public boolean dumpHomeLoLoMosAndVideos(final String s, final String s2) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
@@ -49,28 +61,6 @@ public final class BrowseManager implements IBrowseManager
             return true;
         }
         Log.w("ServiceManagerBrowse", "dumpHomeLoLoMosAndVideos:: service is not available");
-        return false;
-    }
-    
-    @Override
-    public boolean dumpHomeLoLoMosAndVideosToLog() {
-        final INetflixService service = this.mgr.getService();
-        if (service != null) {
-            service.getBrowse().dumpHomeLoLoMosAndVideosToLog();
-            return true;
-        }
-        Log.w("ServiceManagerBrowse", "dumpHomeLoLoMosAndVideos:: service is not available");
-        return false;
-    }
-    
-    @Override
-    public boolean dumpHomeLoMos() {
-        final INetflixService service = this.mgr.getService();
-        if (service != null) {
-            service.getBrowse().dumpHomeLoMos();
-            return true;
-        }
-        Log.w("ServiceManagerBrowse", " dumpHomeLoMos:: service is not available");
         return false;
     }
     
@@ -122,7 +112,7 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchEpisodes(final String s, final int n, final int n2, final ManagerCallback managerCallback) {
+    public boolean fetchEpisodes(final String s, final VideoType videoType, final int n, final int n2, final ManagerCallback managerCallback) {
         synchronized (this) {
             if (StringUtils.isEmpty(s)) {
                 throw new IllegalArgumentException("Parameter cannot be null");
@@ -136,7 +126,7 @@ public final class BrowseManager implements IBrowseManager
         final INetflixService service = this.mgr.getService();
         boolean b;
         if (service != null) {
-            service.getBrowse().fetchEpisodes(s2, n, n2, this.mgr.getClientId(), requestId);
+            service.getBrowse().fetchEpisodes(s2, videoType, n, n2, this.mgr.getClientId(), requestId);
             b = true;
         }
         else {
@@ -561,10 +551,10 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void logBillboardActivity(final Video video, final BrowseAgent.BillboardActivityType billboardActivityType) {
+    public void logBillboardActivity(final Video video, final BrowseAgent$BillboardActivityType browseAgent$BillboardActivityType) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().logBillboardActivity(video, billboardActivityType);
+            service.getBrowse().logBillboardActivity(video, browseAgent$BillboardActivityType);
             return;
         }
         Log.w("ServiceManagerBrowse", "selectProfile:: service is not available");
@@ -680,7 +670,7 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean setVideoRating(final String s, final int n, final int n2, final ManagerCallback managerCallback) {
+    public boolean setVideoRating(final String s, final VideoType videoType, final int n, final int n2, final ManagerCallback managerCallback) {
         synchronized (this) {
             if (StringUtils.isEmpty(s)) {
                 throw new IllegalArgumentException("Parameter cannot be null");
@@ -694,7 +684,7 @@ public final class BrowseManager implements IBrowseManager
         final INetflixService service = this.mgr.getService();
         boolean b;
         if (service != null) {
-            service.getBrowse().setVideoRating(s2, n, n2, this.mgr.getClientId(), requestId);
+            service.getBrowse().setVideoRating(s2, videoType, n, n2, this.mgr.getClientId(), requestId);
             b = true;
         }
         else {

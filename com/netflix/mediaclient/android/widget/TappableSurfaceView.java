@@ -23,7 +23,7 @@ public class TappableSurfaceView extends SurfaceView
     public static final int MODE_ZOOM = 1;
     private static final String TAG = "@@@";
     private final NavigationBarListener listener;
-    private final List<TapListener> listeners;
+    private final List<TappableSurfaceView$TapListener> listeners;
     private int mPheight;
     private int mPreviousMeasureHeight;
     private int mPreviousMeasureWidth;
@@ -32,11 +32,11 @@ public class TappableSurfaceView extends SurfaceView
     private int mVideoHeight;
     private int mVideoWidth;
     private int mode;
-    private SurfaceMeasureListener surfaceMeasureListener;
+    private TappableSurfaceView$SurfaceMeasureListener surfaceMeasureListener;
     
     public TappableSurfaceView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.listeners = new ArrayList<TapListener>();
+        this.listeners = new ArrayList<TappableSurfaceView$TapListener>();
         this.mPheight = 0;
         this.mPwidth = 0;
         this.mScale = 1.0f;
@@ -51,9 +51,9 @@ public class TappableSurfaceView extends SurfaceView
         Log.d("@@@", "INIT_SURFACE");
     }
     
-    public void addTapListener(final TapListener tapListener) {
-        if (tapListener != null) {
-            this.listeners.add(tapListener);
+    public void addTapListener(final TappableSurfaceView$TapListener tappableSurfaceView$TapListener) {
+        if (tappableSurfaceView$TapListener != null) {
+            this.listeners.add(tappableSurfaceView$TapListener);
         }
         if (this.listeners.size() > 0) {
             this.listener.startListening();
@@ -231,19 +231,19 @@ public class TappableSurfaceView extends SurfaceView
     }
     
     void processOnTouchEvent(final MotionEvent motionEvent) {
-        final Iterator<TapListener> iterator = this.listeners.iterator();
+        final Iterator<TappableSurfaceView$TapListener> iterator = this.listeners.iterator();
         while (iterator.hasNext()) {
             iterator.next().onTap(motionEvent);
         }
     }
     
-    public boolean removeTapListener(final TapListener tapListener) {
+    public boolean removeTapListener(final TappableSurfaceView$TapListener tappableSurfaceView$TapListener) {
         boolean remove;
-        if (tapListener == null) {
+        if (tappableSurfaceView$TapListener == null) {
             remove = false;
         }
         else {
-            remove = this.listeners.remove(tapListener);
+            remove = this.listeners.remove(tappableSurfaceView$TapListener);
             if (this.listeners.size() <= 0) {
                 this.listener.stopListening();
                 return remove;
@@ -272,7 +272,7 @@ public class TappableSurfaceView extends SurfaceView
         Log.w("@@@", "Invalid mode");
     }
     
-    public void setSurfaceMeasureListener(final SurfaceMeasureListener surfaceMeasureListener) {
+    public void setSurfaceMeasureListener(final TappableSurfaceView$SurfaceMeasureListener surfaceMeasureListener) {
         this.surfaceMeasureListener = surfaceMeasureListener;
     }
     
@@ -284,15 +284,5 @@ public class TappableSurfaceView extends SurfaceView
     public void setVideoWidth(final int n) {
         this.mVideoWidth = n;
         this.mPreviousMeasureWidth = n;
-    }
-    
-    public interface SurfaceMeasureListener
-    {
-        void onSurfaceMeasureChange(final int p0, final int p1);
-    }
-    
-    public interface TapListener
-    {
-        void onTap(final MotionEvent p0);
     }
 }

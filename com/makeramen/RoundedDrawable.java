@@ -95,26 +95,39 @@ public class RoundedDrawable extends Drawable
     }
     
     public static Drawable fromDrawable(final Drawable drawable) {
-        if (drawable == null || drawable instanceof RoundedDrawable) {
-            return drawable;
-        }
-        if (drawable instanceof LayerDrawable) {
-            final LayerDrawable layerDrawable = (LayerDrawable)drawable;
-            for (int numberOfLayers = layerDrawable.getNumberOfLayers(), i = 0; i < numberOfLayers; ++i) {
-                layerDrawable.setDrawableByLayerId(layerDrawable.getId(i), fromDrawable(layerDrawable.getDrawable(i)));
+        Drawable drawable2 = drawable;
+        if (drawable != null) {
+            if (drawable instanceof RoundedDrawable) {
+                drawable2 = drawable;
             }
-            return (Drawable)layerDrawable;
+            else if (drawable instanceof LayerDrawable) {
+                final LayerDrawable layerDrawable = (LayerDrawable)drawable;
+                final int numberOfLayers = layerDrawable.getNumberOfLayers();
+                int n = 0;
+                while (true) {
+                    drawable2 = (Drawable)layerDrawable;
+                    if (n >= numberOfLayers) {
+                        break;
+                    }
+                    layerDrawable.setDrawableByLayerId(layerDrawable.getId(n), fromDrawable(layerDrawable.getDrawable(n)));
+                    ++n;
+                }
+            }
+            else {
+                final Bitmap drawableToBitmap = drawableToBitmap(drawable);
+                if (drawableToBitmap != null) {
+                    return new RoundedDrawable(drawableToBitmap);
+                }
+                Log.w("RoundedDrawable", "Failed to create bitmap from drawable!");
+                return drawable;
+            }
         }
-        final Bitmap drawableToBitmap = drawableToBitmap(drawable);
-        if (drawableToBitmap != null) {
-            return new RoundedDrawable(drawableToBitmap);
-        }
-        Log.w("RoundedDrawable", "Failed to create bitmap from drawable!");
-        return drawable;
+        return drawable2;
     }
     
     private void updateShaderMatrix() {
-        switch (this.mScaleType) {
+        float n = 0.0f;
+        switch (RoundedDrawable$1.$SwitchMap$android$widget$ImageView$ScaleType[this.mScaleType.ordinal()]) {
             default: {
                 this.mBorderRect.set(this.mBitmapRect);
                 this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBounds, Matrix$ScaleToFit.CENTER);
@@ -123,33 +136,35 @@ public class RoundedDrawable extends Drawable
                 this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, Matrix$ScaleToFit.FILL);
                 break;
             }
-            case CENTER: {
+            case 1: {
                 this.mBorderRect.set(this.mBounds);
                 this.mBorderRect.inset(this.mBorderWidth / 2.0f, this.mBorderWidth / 2.0f);
                 this.mShaderMatrix.set((Matrix)null);
                 this.mShaderMatrix.setTranslate((float)(int)((this.mBorderRect.width() - this.mBitmapWidth) * 0.5f + 0.5f), (float)(int)((this.mBorderRect.height() - this.mBitmapHeight) * 0.5f + 0.5f));
                 break;
             }
-            case CENTER_CROP: {
+            case 2: {
                 this.mBorderRect.set(this.mBounds);
                 this.mBorderRect.inset(this.mBorderWidth / 2.0f, this.mBorderWidth / 2.0f);
                 this.mShaderMatrix.set((Matrix)null);
-                float n = 0.0f;
-                float n2 = 0.0f;
+                float n2;
                 float n3;
                 if (this.mBitmapWidth * this.mBorderRect.height() > this.mBorderRect.width() * this.mBitmapHeight) {
-                    n3 = this.mBorderRect.height() / this.mBitmapHeight;
-                    n = (this.mBorderRect.width() - this.mBitmapWidth * n3) * 0.5f;
+                    n2 = this.mBorderRect.height() / this.mBitmapHeight;
+                    n3 = (this.mBorderRect.width() - this.mBitmapWidth * n2) * 0.5f;
                 }
                 else {
-                    n3 = this.mBorderRect.width() / this.mBitmapWidth;
-                    n2 = (this.mBorderRect.height() - this.mBitmapHeight * n3) * 0.5f;
+                    n2 = this.mBorderRect.width() / this.mBitmapWidth;
+                    final float height = this.mBorderRect.height();
+                    final float n4 = this.mBitmapHeight;
+                    n3 = 0.0f;
+                    n = (height - n4 * n2) * 0.5f;
                 }
-                this.mShaderMatrix.setScale(n3, n3);
-                this.mShaderMatrix.postTranslate((int)(n + 0.5f) + this.mBorderWidth, (int)(n2 + 0.5f) + this.mBorderWidth);
+                this.mShaderMatrix.setScale(n2, n2);
+                this.mShaderMatrix.postTranslate((int)(n3 + 0.5f) + this.mBorderWidth, (int)(n + 0.5f) + this.mBorderWidth);
                 break;
             }
-            case CENTER_INSIDE: {
+            case 3: {
                 this.mShaderMatrix.set((Matrix)null);
                 float min;
                 if (this.mBitmapWidth <= this.mBounds.width() && this.mBitmapHeight <= this.mBounds.height()) {
@@ -158,17 +173,17 @@ public class RoundedDrawable extends Drawable
                 else {
                     min = Math.min(this.mBounds.width() / this.mBitmapWidth, this.mBounds.height() / this.mBitmapHeight);
                 }
-                final float n4 = (int)((this.mBounds.width() - this.mBitmapWidth * min) * 0.5f + 0.5f);
-                final float n5 = (int)((this.mBounds.height() - this.mBitmapHeight * min) * 0.5f + 0.5f);
+                final float n5 = (int)((this.mBounds.width() - this.mBitmapWidth * min) * 0.5f + 0.5f);
+                final float n6 = (int)((this.mBounds.height() - this.mBitmapHeight * min) * 0.5f + 0.5f);
                 this.mShaderMatrix.setScale(min, min);
-                this.mShaderMatrix.postTranslate(n4, n5);
+                this.mShaderMatrix.postTranslate(n5, n6);
                 this.mBorderRect.set(this.mBitmapRect);
                 this.mShaderMatrix.mapRect(this.mBorderRect);
                 this.mBorderRect.inset(this.mBorderWidth / 2.0f, this.mBorderWidth / 2.0f);
                 this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, Matrix$ScaleToFit.FILL);
                 break;
             }
-            case FIT_END: {
+            case 5: {
                 this.mBorderRect.set(this.mBitmapRect);
                 this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBounds, Matrix$ScaleToFit.END);
                 this.mShaderMatrix.mapRect(this.mBorderRect);
@@ -176,7 +191,7 @@ public class RoundedDrawable extends Drawable
                 this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, Matrix$ScaleToFit.FILL);
                 break;
             }
-            case FIT_START: {
+            case 6: {
                 this.mBorderRect.set(this.mBitmapRect);
                 this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBounds, Matrix$ScaleToFit.START);
                 this.mShaderMatrix.mapRect(this.mBorderRect);
@@ -184,7 +199,7 @@ public class RoundedDrawable extends Drawable
                 this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, Matrix$ScaleToFit.FILL);
                 break;
             }
-            case FIT_XY: {
+            case 7: {
                 this.mBorderRect.set(this.mBounds);
                 this.mBorderRect.inset(this.mBorderWidth / 2.0f, this.mBorderWidth / 2.0f);
                 this.mShaderMatrix.set((Matrix)null);

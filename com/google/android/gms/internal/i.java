@@ -44,39 +44,39 @@ public abstract class i extends h
         super(context, m, n);
     }
     
-    static String a(final Context context, final m m) throws a {
+    static String a(final Context context, final m m) {
         if (i.kK != null) {
             return i.kK;
         }
         if (i.kD == null) {
-            throw new a();
+            throw new i$a();
         }
         try {
             if (i.kD.invoke(null, context) == null) {
-                throw new a();
+                throw new i$a();
             }
             goto Label_0065;
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
     }
     
-    static ArrayList<Long> a(final MotionEvent motionEvent, final DisplayMetrics displayMetrics) throws a {
+    static ArrayList<Long> a(final MotionEvent motionEvent, final DisplayMetrics displayMetrics) {
         if (i.kE == null || motionEvent == null) {
-            throw new a();
+            throw new i$a();
         }
         try {
             return (ArrayList<Long>)i.kE.invoke(null, motionEvent, displayMetrics);
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
     }
     
@@ -153,122 +153,122 @@ public abstract class i extends h
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    static String b(final Context context, final m m) throws a {
+    static String b(final Context context, final m m) {
         if (i.kL != null) {
             return i.kL;
         }
         if (i.kG == null) {
-            throw new a();
+            throw new i$a();
         }
         try {
             if (i.kG.invoke(null, context) == null) {
-                throw new a();
+                throw new i$a();
             }
             goto Label_0065;
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
     }
     
-    private static String b(final byte[] array, final String s) throws a {
+    private static String b(final byte[] array, final String s) {
         try {
             return new String(i.kM.c(array, s), "UTF-8");
         }
-        catch (o.a a) {
-            throw new a(a);
+        catch (o$a o$a) {
+            throw new i$a(o$a);
         }
         catch (UnsupportedEncodingException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
     }
     
-    static String d(final Context context) throws a {
+    static String d(final Context context) {
         if (i.kF == null) {
-            throw new a();
+            throw new i$a();
         }
         String s;
         try {
             s = (String)i.kF.invoke(null, context);
             if (s == null) {
-                throw new a();
+                throw new i$a();
             }
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
         return s;
     }
     
-    static ArrayList<Long> e(final Context context) throws a {
+    static ArrayList<Long> e(final Context context) {
         if (i.kH == null) {
-            throw new a();
+            throw new i$a();
         }
         ArrayList list;
         try {
             list = (ArrayList)i.kH.invoke(null, context);
             if (list == null || list.size() != 2) {
-                throw new a();
+                throw new i$a();
             }
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
         return (ArrayList<Long>)list;
     }
     
-    static int[] f(final Context context) throws a {
+    static int[] f(final Context context) {
         if (i.kI == null) {
-            throw new a();
+            throw new i$a();
         }
         try {
             return (int[])i.kI.invoke(null, context);
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
     }
     
-    private static void g(final Context context) throws a {
+    private static void g(final Context context) {
         byte[] b;
         File file;
         try {
             b = i.kM.b(q.getKey());
             i.kM.c(b, q.B());
             if ((file = context.getCacheDir()) == null && (file = context.getDir("dex", 0)) == null) {
-                throw new a();
+                throw new i$a();
             }
             goto Label_0065;
         }
         catch (FileNotFoundException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (IOException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
         catch (ClassNotFoundException ex3) {
-            throw new a(ex3);
+            throw new i$a(ex3);
         }
-        catch (o.a a) {
-            throw new a(a);
+        catch (o$a o$a) {
+            throw new i$a(o$a);
         }
         catch (NoSuchMethodException ex4) {
-            throw new a(ex4);
+            throw new i$a(ex4);
         }
         catch (NullPointerException ex5) {
-            throw new a(ex5);
+            throw new i$a(ex5);
         }
         try {
             final File file2;
@@ -295,55 +295,55 @@ public abstract class i extends h
         finally {}
     }
     
-    static String v() throws a {
+    static String v() {
         if (i.kJ == null) {
-            throw new a();
+            throw new i$a();
         }
         return i.kJ;
     }
     
-    static Long w() throws a {
+    static Long w() {
         if (i.kA == null) {
-            throw new a();
+            throw new i$a();
         }
         try {
             return (Long)i.kA.invoke(null, new Object[0]);
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
     }
     
-    static String x() throws a {
+    static String x() {
         if (i.kC == null) {
-            throw new a();
+            throw new i$a();
         }
         try {
             return (String)i.kC.invoke(null, new Object[0]);
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
     }
     
-    static Long y() throws a {
+    static Long y() {
         if (i.kB == null) {
-            throw new a();
+            throw new i$a();
         }
         try {
             return (Long)i.kB.invoke(null, new Object[0]);
         }
         catch (IllegalAccessException ex) {
-            throw new a(ex);
+            throw new i$a(ex);
         }
         catch (InvocationTargetException ex2) {
-            throw new a(ex2);
+            throw new i$a(ex2);
         }
     }
     
@@ -604,15 +604,5 @@ public abstract class i extends h
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
-    }
-    
-    static class a extends Exception
-    {
-        public a() {
-        }
-        
-        public a(final Throwable t) {
-            super(t);
-        }
     }
 }

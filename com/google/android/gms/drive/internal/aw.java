@@ -4,6 +4,7 @@
 
 package com.google.android.gms.drive.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a$a;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
@@ -54,7 +55,7 @@ public class aw implements Parcelable$Creator<OpenFileIntentSenderRequest>
             }
         }
         if (parcel.dataPosition() != c) {
-            throw new a.a("Overread allowed size end=" + c, parcel);
+            throw new a$a("Overread allowed size end=" + c, parcel);
         }
         return new OpenFileIntentSenderRequest(g, o, a, driveId);
     }

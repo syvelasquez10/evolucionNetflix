@@ -61,15 +61,15 @@ public class StickyGridHeadersSimpleArrayAdapter<T> extends BaseAdapter implemen
     }
     
     public View getHeaderView(final int n, View inflate, final ViewGroup viewGroup) {
-        HeaderViewHolder tag;
+        StickyGridHeadersSimpleArrayAdapter$HeaderViewHolder tag;
         if (inflate == null) {
             inflate = this.mInflater.inflate(this.mHeaderResId, viewGroup, false);
-            tag = new HeaderViewHolder();
+            tag = new StickyGridHeadersSimpleArrayAdapter$HeaderViewHolder(this);
             tag.textView = (TextView)inflate.findViewById(16908308);
             inflate.setTag((Object)tag);
         }
         else {
-            tag = (HeaderViewHolder)inflate.getTag();
+            tag = (StickyGridHeadersSimpleArrayAdapter$HeaderViewHolder)inflate.getTag();
         }
         final CharSequence item = this.getItem(n);
         CharSequence string;
@@ -92,15 +92,15 @@ public class StickyGridHeadersSimpleArrayAdapter<T> extends BaseAdapter implemen
     }
     
     public View getView(final int n, View inflate, final ViewGroup viewGroup) {
-        ViewHolder tag;
+        StickyGridHeadersSimpleArrayAdapter$ViewHolder tag;
         if (inflate == null) {
             inflate = this.mInflater.inflate(this.mItemResId, viewGroup, false);
-            tag = new ViewHolder();
+            tag = new StickyGridHeadersSimpleArrayAdapter$ViewHolder(this);
             tag.textView = (TextView)inflate.findViewById(16908308);
             inflate.setTag((Object)tag);
         }
         else {
-            tag = (ViewHolder)inflate.getTag();
+            tag = (StickyGridHeadersSimpleArrayAdapter$ViewHolder)inflate.getTag();
         }
         final CharSequence item = this.getItem(n);
         if (item instanceof CharSequence) {
@@ -109,15 +109,5 @@ public class StickyGridHeadersSimpleArrayAdapter<T> extends BaseAdapter implemen
         }
         tag.textView.setText((CharSequence)item.toString());
         return inflate;
-    }
-    
-    protected class HeaderViewHolder
-    {
-        public TextView textView;
-    }
-    
-    protected class ViewHolder
-    {
-        public TextView textView;
     }
 }

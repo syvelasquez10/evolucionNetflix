@@ -11,7 +11,7 @@ import android.graphics.PorterDuff$Mode;
 import android.graphics.Rect;
 import android.content.res.TypedArray;
 import android.graphics.Paint$Style;
-import com.netflix.mediaclient.R;
+import com.netflix.mediaclient.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Paint;
@@ -53,7 +53,7 @@ public class StrokeTextView extends AutoResizeTextView
     }
     
     private void init(final Context context, final AttributeSet set, int i) {
-        final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R.styleable.StrokeTextView, i, 0);
+        final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R$styleable.StrokeTextView, i, 0);
         if (obtainStyledAttributes == null) {
             return;
         }

@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerWorkflowState
 {
-    PlayerActivity.PlayerActivityState activityState;
+    PlayerActivity$PlayerActivityState activityState;
     boolean audioSeekToInProgress;
     boolean draggingAudioInProgress;
     boolean draggingInProgress;
@@ -32,7 +32,7 @@ public class PlayerWorkflowState
     
     public PlayerWorkflowState() {
         this.playStartInProgress = new AtomicBoolean();
-        this.activityState = PlayerActivity.PlayerActivityState.ACTIVITY_NOTREADY;
+        this.activityState = PlayerActivity$PlayerActivityState.ACTIVITY_NOTREADY;
         this.videoLoaded = false;
         this.videoPrepared = false;
         this.playbackStopped = false;
@@ -46,7 +46,7 @@ public class PlayerWorkflowState
         this.timelineInSnapZone = true;
     }
     
-    public PlayerActivity.PlayerActivityState getActivityState() {
+    public PlayerActivity$PlayerActivityState getActivityState() {
         return this.activityState;
     }
     

@@ -23,7 +23,7 @@ public class EllipsizingTextView extends TextView
 {
     private static final Pattern DEFAULT_END_PUNCTUATION;
     private static final String ELLIPSIS = "\u2026";
-    private final List<EllipsizeListener> ellipsizeListeners;
+    private final List<EllipsizingTextView$EllipsizeListener> ellipsizeListeners;
     private Pattern endPunctuationPattern;
     private String fullText;
     private boolean isEllipsized;
@@ -47,7 +47,7 @@ public class EllipsizingTextView extends TextView
     
     public EllipsizingTextView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.ellipsizeListeners = new ArrayList<EllipsizeListener>();
+        this.ellipsizeListeners = new ArrayList<EllipsizingTextView$EllipsizeListener>();
         this.lineSpacingMultiplier = 1.0f;
         this.lineAdditionalVerticalPadding = 0.0f;
         super.setEllipsize((TextUtils$TruncateAt)null);
@@ -78,28 +78,29 @@ public class EllipsizingTextView extends TextView
     
     private void resetText() {
         String text = this.fullText;
-        boolean isEllipsized = false;
         final Layout workingLayout = this.createWorkingLayout(text);
         final int linesCount = this.getLinesCount();
         while (true) {
-            Label_0221: {
-                Label_0135: {
+            Label_0219: {
+                boolean isEllipsized = false;
+                Label_0133: {
                     if (workingLayout.getLineCount() <= linesCount) {
-                        break Label_0135;
+                        isEllipsized = false;
+                        break Label_0133;
                     }
                     final String trim = this.fullText.substring(0, workingLayout.getLineEnd(linesCount - 1)).trim();
                     if (this.createWorkingLayout(trim + "\u2026").getLineCount() > linesCount) {
                         final int lastIndex = trim.lastIndexOf(32);
                         if (lastIndex != -1) {
-                            break Label_0221;
+                            break Label_0219;
                         }
                     }
                     text = this.endPunctuationPattern.matcher(trim).replaceFirst("") + "\u2026";
                     isEllipsized = true;
                 }
-                Label_0163: {
+                Label_0161: {
                     if (text.equals(this.getText())) {
-                        break Label_0163;
+                        break Label_0161;
                     }
                     this.programmaticChange = true;
                     try {
@@ -108,7 +109,7 @@ public class EllipsizingTextView extends TextView
                         this.isStale = false;
                         if (isEllipsized != this.isEllipsized) {
                             this.isEllipsized = isEllipsized;
-                            final Iterator<EllipsizeListener> iterator = this.ellipsizeListeners.iterator();
+                            final Iterator<EllipsizingTextView$EllipsizeListener> iterator = this.ellipsizeListeners.iterator();
                             while (iterator.hasNext()) {
                                 iterator.next().ellipsizeStateChanged(isEllipsized);
                             }
@@ -129,11 +130,11 @@ public class EllipsizingTextView extends TextView
         }
     }
     
-    public void addEllipsizeListener(final EllipsizeListener ellipsizeListener) {
-        if (ellipsizeListener == null) {
+    public void addEllipsizeListener(final EllipsizingTextView$EllipsizeListener ellipsizingTextView$EllipsizeListener) {
+        if (ellipsizingTextView$EllipsizeListener == null) {
             throw new NullPointerException();
         }
-        this.ellipsizeListeners.add(ellipsizeListener);
+        this.ellipsizeListeners.add(ellipsizingTextView$EllipsizeListener);
     }
     
     public boolean ellipsizingLastFullyVisibleLine() {
@@ -171,8 +172,8 @@ public class EllipsizingTextView extends TextView
         }
     }
     
-    public void removeEllipsizeListener(final EllipsizeListener ellipsizeListener) {
-        this.ellipsizeListeners.remove(ellipsizeListener);
+    public void removeEllipsizeListener(final EllipsizingTextView$EllipsizeListener ellipsizingTextView$EllipsizeListener) {
+        this.ellipsizeListeners.remove(ellipsizingTextView$EllipsizeListener);
     }
     
     public void setEllipsize(final TextUtils$TruncateAt textUtils$TruncateAt) {
@@ -197,10 +198,5 @@ public class EllipsizingTextView extends TextView
         if (this.ellipsizingLastFullyVisibleLine()) {
             this.isStale = true;
         }
-    }
-    
-    public interface EllipsizeListener
-    {
-        void ellipsizeStateChanged(final boolean p0);
     }
 }

@@ -20,14 +20,14 @@ public class fn extends gg
     private final fk sZ;
     private final fo tU;
     private Future<fz> tV;
-    private final fd.a tm;
-    private final fz.a tn;
+    private final fd$a tm;
+    private final fz$a tn;
     
-    public fn(final Context context, final u u, final ai ai, final fz.a a, final fd.a a2) {
-        this(a, a2, new fo(context, u, ai, new go(), a));
+    public fn(final Context context, final u u, final ai ai, final fz$a fz$a, final fd$a fd$a) {
+        this(fz$a, fd$a, new fo(context, u, ai, new go(), fz$a));
     }
     
-    fn(final fz.a tn, final fd.a tm, final fo tu) {
+    fn(final fz$a tn, final fd$a tm, final fo tu) {
         this.mw = new Object();
         this.tn = tn;
         this.sZ = tn.vw;
@@ -54,12 +54,7 @@ public class fn extends gg
                             o = this.tV.get(60000L, TimeUnit.MILLISECONDS);
                             n = -2;
                             if (o != null) {
-                                gr.wC.post((Runnable)new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        fn.this.tm.a(o);
-                                    }
-                                });
+                                gr.wC.post((Runnable)new fn$1(this, (fz)o));
                                 return;
                             }
                         }

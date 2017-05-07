@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.service.logging.uiaction.model;
 
-import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.servicemgr.UserActionLogging;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 
 public final class DeleteProfileEndedEvent extends BaseUIActionSessionEndedEvent
@@ -18,21 +18,21 @@ public final class DeleteProfileEndedEvent extends BaseUIActionSessionEndedEvent
     public static final String UIA_SESSION_NAME = "deleteProfile";
     private String mProfileId;
     
-    public DeleteProfileEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging.ModalView modalView, final UserActionLogging.CommandName commandName, final IClientLogging.CompletionReason completionReason, final UIError uiError, final String mProfileId) {
-        super("deleteProfile", deviceUniqueId, n, modalView, commandName, completionReason, uiError);
+    public DeleteProfileEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging$ModalView clientLogging$ModalView, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final String mProfileId) {
+        super("deleteProfile", deviceUniqueId, n, clientLogging$ModalView, userActionLogging$CommandName, clientLogging$CompletionReason, uiError);
         this.mProfileId = mProfileId;
         if (this.mProfileId == null) {
             throw new IllegalArgumentException("Profile ID can not be null!");
         }
     }
     
-    public DeleteProfileEndedEvent(final JSONObject jsonObject) throws JSONException {
+    public DeleteProfileEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
         this.mProfileId = JsonUtils.getString(jsonObject, "profileId", null);
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         final JSONObject data = super.getData();
         data.put("profileId", (Object)this.mProfileId);
         return data;

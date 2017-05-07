@@ -5,17 +5,20 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
-import com.netflix.mediaclient.service.webclient.model.branches.KidsCharacter;
+import com.netflix.mediaclient.service.webclient.model.branches.KidsCharacter$KidsDetail;
+import com.netflix.mediaclient.service.webclient.model.branches.KidsCharacter$KidsSummary;
+import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.model.branches.Episode;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Detail;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
+import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
@@ -61,30 +64,30 @@ public class FetchKidsCharacterDetailsRequest extends FalcorVolleyWebClientReque
         list3.addAll(list);
     }
     
-    private void insertVideoInGallery(final com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary, final List<Video> list) {
+    private void insertVideoInGallery(final Video$Summary video$Summary, final List<Video> list) {
         int n;
-        for (n = 0; n < list.size() && summary.videoYear < list.get(n).videoYear; ++n) {}
+        for (n = 0; n < list.size() && video$Summary.videoYear < list.get(n).videoYear; ++n) {}
         if (n < list.size()) {
-            list.add(n, summary);
+            list.add(n, video$Summary);
             return;
         }
-        list.add(summary);
+        list.add(video$Summary);
     }
     
-    protected static void insertWatchNext(JsonObject asJsonObject, final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetails) throws FalcorParseException, FalcorServerException {
+    protected static void insertWatchNext(JsonObject asJsonObject, final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetails) {
         if (asJsonObject.has("watchNext")) {
             asJsonObject = asJsonObject.getAsJsonObject("watchNext");
             final VideoType typeFromPath = FalcorParseUtils.getTypeFromPath("nf_kidscharacter", asJsonObject);
             if (VideoType.EPISODE.equals(typeFromPath)) {
-                kidsCharacterDetails.watchNextSummary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
-                kidsCharacterDetails.watchNextEpisodeDetail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Episode.Detail.class);
-                kidsCharacterDetails.watchNextBookmark = FalcorParseUtils.getPropertyObject(asJsonObject, "bookmark", com.netflix.mediaclient.service.webclient.model.branches.Video.Bookmark.class);
+                kidsCharacterDetails.watchNextSummary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", Video$Summary.class);
+                kidsCharacterDetails.watchNextEpisodeDetail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Episode$Detail.class);
+                kidsCharacterDetails.watchNextBookmark = FalcorParseUtils.getPropertyObject(asJsonObject, "bookmark", Video$Bookmark.class);
                 kidsCharacterDetails.watchNextMovieDetail = null;
             }
             if (VideoType.MOVIE.equals(typeFromPath)) {
-                kidsCharacterDetails.watchNextSummary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
-                kidsCharacterDetails.watchNextMovieDetail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", com.netflix.mediaclient.service.webclient.model.branches.Video.Detail.class);
-                kidsCharacterDetails.watchNextBookmark = FalcorParseUtils.getPropertyObject(asJsonObject, "bookmark", com.netflix.mediaclient.service.webclient.model.branches.Video.Bookmark.class);
+                kidsCharacterDetails.watchNextSummary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", Video$Summary.class);
+                kidsCharacterDetails.watchNextMovieDetail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Video$Detail.class);
+                kidsCharacterDetails.watchNextBookmark = FalcorParseUtils.getPropertyObject(asJsonObject, "bookmark", Video$Bookmark.class);
                 kidsCharacterDetails.watchNextEpisodeDetail = null;
             }
         }
@@ -95,7 +98,7 @@ public class FetchKidsCharacterDetailsRequest extends FalcorVolleyWebClientReque
             for (int i = 0; i <= 100; ++i) {
                 final String string = Integer.toString(i);
                 if (jsonObject.has(string)) {
-                    this.insertVideoInGallery(FalcorParseUtils.getPropertyObject(jsonObject.getAsJsonObject(string), "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class), list);
+                    this.insertVideoInGallery(FalcorParseUtils.getPropertyObject(jsonObject.getAsJsonObject(string), "summary", Video$Summary.class), list);
                 }
             }
         }
@@ -121,7 +124,7 @@ public class FetchKidsCharacterDetailsRequest extends FalcorVolleyWebClientReque
     }
     
     @Override
-    protected KidsCharacterDetails parseFalcorResponse(String asJsonObject) throws FalcorParseException, FalcorServerException {
+    protected KidsCharacterDetails parseFalcorResponse(String asJsonObject) {
         final com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails kidsCharacterDetails = new com.netflix.mediaclient.service.webclient.model.KidsCharacterDetails();
         final ArrayList<Video> galleryVideos = new ArrayList<Video>();
         final ArrayList<Video> list = new ArrayList<Video>();
@@ -132,8 +135,8 @@ public class FetchKidsCharacterDetailsRequest extends FalcorVolleyWebClientReque
         }
         try {
             final JsonObject asJsonObject2 = dataObj.getAsJsonObject("characters").getAsJsonObject(this.mCharacterId);
-            kidsCharacterDetails.kidsSummary = FalcorParseUtils.getPropertyObject(asJsonObject2, "summary", KidsCharacter.KidsSummary.class);
-            kidsCharacterDetails.kidsDetail = FalcorParseUtils.getPropertyObject(asJsonObject2, "detail", KidsCharacter.KidsDetail.class);
+            kidsCharacterDetails.kidsSummary = FalcorParseUtils.getPropertyObject(asJsonObject2, "summary", KidsCharacter$KidsSummary.class);
+            kidsCharacterDetails.kidsDetail = FalcorParseUtils.getPropertyObject(asJsonObject2, "detail", KidsCharacter$KidsDetail.class);
             insertWatchNext(asJsonObject2, kidsCharacterDetails);
             if (asJsonObject2.has("gallery")) {
                 asJsonObject = (String)asJsonObject2.getAsJsonObject("gallery");

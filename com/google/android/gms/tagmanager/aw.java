@@ -14,7 +14,7 @@ class aw implements bm
 {
     private HttpURLConnection apk;
     
-    private InputStream a(final HttpURLConnection httpURLConnection) throws IOException {
+    private InputStream a(final HttpURLConnection httpURLConnection) {
         final int responseCode = httpURLConnection.getResponseCode();
         if (responseCode == 200) {
             return httpURLConnection.getInputStream();
@@ -33,12 +33,12 @@ class aw implements bm
     }
     
     @Override
-    public InputStream cA(final String s) throws IOException {
+    public InputStream cA(final String s) {
         this.apk = this.cB(s);
         return this.a(this.apk);
     }
     
-    HttpURLConnection cB(final String s) throws IOException {
+    HttpURLConnection cB(final String s) {
         final HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(s).openConnection();
         httpURLConnection.setReadTimeout(20000);
         httpURLConnection.setConnectTimeout(20000);

@@ -19,12 +19,7 @@ public class ByteArrayPool
     private final int mSizeLimit;
     
     static {
-        BUF_COMPARATOR = new Comparator<byte[]>() {
-            @Override
-            public int compare(final byte[] array, final byte[] array2) {
-                return array.length - array2.length;
-            }
-        };
+        BUF_COMPARATOR = new ByteArrayPool$1();
     }
     
     public ByteArrayPool(final int mSizeLimit) {

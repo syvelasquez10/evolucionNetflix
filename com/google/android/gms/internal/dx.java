@@ -11,7 +11,6 @@ import android.os.Bundle;
 import java.util.Iterator;
 import java.util.HashMap;
 import android.os.SystemClock;
-import android.os.RemoteException;
 import android.content.Intent;
 import java.util.List;
 import android.content.Context;
@@ -46,21 +45,7 @@ public class dx extends gg implements ServiceConnection
         intent.putExtra("RESPONSE_CODE", 0);
         intent.putExtra("INAPP_PURCHASE_DATA", s);
         intent.putExtra("INAPP_DATA_SIGNATURE", s2);
-        gr.wC.post((Runnable)new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (dx.this.sq.a(ea.sB, -1, intent)) {
-                        dx.this.sm.a(new eb(dx.this.mContext, ea.sC, true, -1, intent, ea));
-                        return;
-                    }
-                    dx.this.sm.a(new eb(dx.this.mContext, ea.sC, false, -1, intent, ea));
-                }
-                catch (RemoteException ex) {
-                    gs.W("Fail to verify and dispatch pending transaction");
-                }
-            }
-        });
+        gr.wC.post((Runnable)new dx$1(this, ea, intent));
     }
     
     private void b(final long n) {

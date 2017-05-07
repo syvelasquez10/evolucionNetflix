@@ -8,7 +8,6 @@ import java.util.Currency;
 import java.math.BigDecimal;
 import java.util.List;
 import com.facebook.internal.Logger;
-import com.facebook.model.GraphObject;
 import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,33 +76,7 @@ public class InsightsLogger
     }
     
     private void logEventNow(final String s, final double n, final Bundle bundle) {
-        Settings.getExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                final String access$000 = buildJSONForEvent(s, n, bundle);
-                if (access$000 != null) {
-                    final GraphObject create = GraphObject.Factory.create();
-                    create.setProperty("event", "CUSTOM_APP_EVENTS");
-                    create.setProperty("custom_events", access$000);
-                    if (Utility.queryAppAttributionSupportAndWait(InsightsLogger.this.applicationId)) {
-                        final String attributionId = Settings.getAttributionId(InsightsLogger.this.context.getContentResolver());
-                        if (attributionId != null) {
-                            create.setProperty("attribution", attributionId);
-                        }
-                    }
-                    final String format = String.format("%s/activities", InsightsLogger.this.applicationId);
-                    try {
-                        final Response executeAndWait = Request.newPostRequest(InsightsLogger.this.sessionToLogTo(), format, create, null).executeAndWait();
-                        if (executeAndWait.getError() != null && executeAndWait.getError().getErrorCode() != -1) {
-                            notifyDeveloperError(String.format("Error publishing Insights event '%s'\n  Response: %s\n  Error: %s", access$000, executeAndWait.toString(), executeAndWait.getError().toString()));
-                        }
-                    }
-                    catch (Exception ex) {
-                        Utility.logd("Insights-exception: ", ex);
-                    }
-                }
-            }
-        });
+        Settings.getExecutor().execute(new InsightsLogger$1(this, s, n, bundle));
     }
     
     public static InsightsLogger newLogger(final Context context, final String s) {

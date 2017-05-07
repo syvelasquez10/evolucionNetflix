@@ -4,7 +4,7 @@
 
 package com.google.ads.mediation;
 
-import com.google.ads.AdRequest;
+import com.google.ads.AdRequest$ErrorCode;
 
 @Deprecated
 public interface MediationBannerListener
@@ -13,7 +13,7 @@ public interface MediationBannerListener
     
     void onDismissScreen(final MediationBannerAdapter<?, ?> p0);
     
-    void onFailedToReceiveAd(final MediationBannerAdapter<?, ?> p0, final AdRequest.ErrorCode p1);
+    void onFailedToReceiveAd(final MediationBannerAdapter<?, ?> p0, final AdRequest$ErrorCode p1);
     
     void onLeaveApplication(final MediationBannerAdapter<?, ?> p0);
     

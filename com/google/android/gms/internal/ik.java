@@ -13,7 +13,7 @@ public final class ik
         return (t == null && t2 == null) || (t != null && t2 != null && t.equals(t2));
     }
     
-    public static void aF(final String s) throws IllegalArgumentException {
+    public static void aF(final String s) {
         if (TextUtils.isEmpty((CharSequence)s)) {
             throw new IllegalArgumentException("Namespace cannot be null or empty");
         }

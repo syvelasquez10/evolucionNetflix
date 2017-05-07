@@ -4,9 +4,8 @@
 
 package com.netflix.mediaclient.service.logging.uiview.model;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
 
 public class ImpressionEvent extends DiscreteEvent
@@ -16,9 +15,9 @@ public class ImpressionEvent extends DiscreteEvent
     protected static final String TRACK_ID = "trackId";
     protected static final String VIEW = "view";
     private int mTrackId;
-    private UIViewLogging.UIViewCommandName mView;
+    private UIViewLogging$UIViewCommandName mView;
     
-    public ImpressionEvent(final UIViewLogging.UIViewCommandName mView, final int mTrackId) {
+    public ImpressionEvent(final UIViewLogging$UIViewCommandName mView, final int mTrackId) {
         this.name = "impression";
         this.category = "uiView";
         this.mView = mView;
@@ -26,7 +25,7 @@ public class ImpressionEvent extends DiscreteEvent
     }
     
     @Override
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {
             data = new JSONObject();
