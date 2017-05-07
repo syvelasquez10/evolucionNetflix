@@ -326,7 +326,7 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         viewById.setVisibility(0);
-        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131296429)) / 2.0f);
+        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131296430)) / 2.0f);
         ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131296343));
     }
     
@@ -426,7 +426,7 @@ public class ProfileSelectionActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131296418);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131296419);
         this.setContentView(2130903175);
         this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427777), this.errorCallback);
         this.content = this.findViewById(2131427778);

@@ -45,8 +45,9 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import android.widget.TextView;
+import android.graphics.Bitmap$Config;
 import android.content.Context;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup$DetailsStringProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
@@ -63,33 +64,35 @@ class KubrickShowDetailsFrag$BookmarkedVideoDetails extends KubrickVideoDetailsV
         super(context);
     }
     
+    private void updateWithBookmark() {
+        this.updateImage(this.epDetails.getInterestingUrl(), this.this$0.getNetflixActivity(), this.epDetails.getInterestingUrl(), Bitmap$Config.RGB_565);
+        this.setBookmarkVisibility(0);
+        this.setEvidenceVisibility(8);
+        this.updateBookmarkTitle(this.epDetails);
+        this.updateBookmark(this.epDetails.getPlayable());
+        this.synopsis.setText((CharSequence)this.epDetails.getSynopsis());
+    }
+    
+    private void updateWithNoBookmark() {
+        if (this.this$0.heroSlideshow != null) {
+            this.this$0.heroSlideshow.start();
+        }
+        this.updateImage(this.this$0.showDetails.getStoryUrl(), this.this$0.getNetflixActivity(), this.this$0.showDetails.getStoryUrl(), Bitmap$Config.ARGB_8888);
+        this.setBookmarkVisibility(8);
+        this.synopsis.setText((CharSequence)this.this$0.showDetails.getSynopsis());
+    }
+    
     @Override
     public void updateDetails(final VideoDetails videoDetails, final VideoDetailsViewGroup$DetailsStringProvider provider) {
-        if (videoDetails == null) {
-            String id;
-            if (this.this$0.showDetails != null) {
-                id = this.this$0.showDetails.getId();
-            }
-            else {
-                id = "null";
-            }
-            String currentEpisodeId;
-            if (this.this$0.showDetails == null || this.this$0.showDetails.getCurrentEpisodeId() == null) {
-                currentEpisodeId = "null";
-            }
-            else {
-                currentEpisodeId = this.this$0.showDetails.getCurrentEpisodeId();
-            }
-            this.this$0.getNetflixActivity().getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7979 - VideoDetails empty for show  %s, current episode %s", id, currentEpisodeId));
+        super.updateDetails(videoDetails, provider);
+        this.provider = provider;
+        final String currentEpisodeId = this.this$0.showDetails.getCurrentEpisodeId();
+        if (this.this$0.manager != null && !StringUtils.isEmpty(currentEpisodeId)) {
+            this.this$0.manager.getBrowse().fetchEpisodeDetails(currentEpisodeId, new KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback(this, "KubrickShowDetailsFrag"));
+            return;
         }
-        else {
-            super.updateDetails(videoDetails, provider);
-            this.provider = provider;
-            final String currentEpisodeId2 = this.this$0.showDetails.getCurrentEpisodeId();
-            if (this.this$0.manager != null) {
-                this.this$0.manager.getBrowse().fetchEpisodeDetails(currentEpisodeId2, new KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback(this, "KubrickShowDetailsFrag"));
-            }
-        }
+        this.updateWithNoBookmark();
+        this.this$0.showViews();
     }
     
     @Override

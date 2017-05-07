@@ -116,7 +116,7 @@ public class KubrickLolomoUtils
         }
         int dimensionPixelSize = b ? 1 : 0;
         if (n != 0) {
-            dimensionPixelSize = baseLoLoMoAdapter$RowHolder.contentGroup.getResources().getDimensionPixelSize(2131296448);
+            dimensionPixelSize = baseLoLoMoAdapter$RowHolder.contentGroup.getResources().getDimensionPixelSize(2131296449);
         }
         ViewUtils.setPaddingTop(baseLoLoMoAdapter$RowHolder.contentGroup, dimensionPixelSize);
     }

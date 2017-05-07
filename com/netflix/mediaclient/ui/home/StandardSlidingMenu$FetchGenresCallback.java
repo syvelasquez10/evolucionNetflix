@@ -30,6 +30,7 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.support.v4.widget.DrawerLayout;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.annotation.SuppressLint;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
@@ -53,9 +54,17 @@ class StandardSlidingMenu$FetchGenresCallback extends LoggingManagerCallback
             this.this$0.showGenreErrorView();
             return;
         }
-        if (list == null) {
+        if (list == null || list.size() < 1) {
             Log.v("StandardSlidingMenu", "No genres in response");
             this.this$0.showGenreErrorView();
+            String value;
+            if (list == null) {
+                value = "null";
+            }
+            else {
+                value = String.valueOf(list.size());
+            }
+            ErrorLoggingManager.logHandledException("SPY-7985 - GenresListAdapter got null or empty genres list: " + value);
             return;
         }
         this.this$0.updateGenres(list);

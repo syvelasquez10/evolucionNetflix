@@ -138,10 +138,10 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
         final Resources resources = this.getResources();
         int n4;
         if (n != 0) {
-            n4 = 2131296453;
+            n4 = 2131296454;
         }
         else {
-            n4 = 2131296452;
+            n4 = 2131296453;
         }
         final int dimensionPixelSize = resources.getDimensionPixelSize(n4);
         final FrameLayout$LayoutParams layoutParams = new FrameLayout$LayoutParams(dimensionPixelSize, dimensionPixelSize, 17);

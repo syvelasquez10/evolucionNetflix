@@ -29,7 +29,7 @@ class KubrickMovieDetailsFrag$KubrickSimilarItemsGridViewAdapter$1 implements Re
     }
     
     private int getImageHeight() {
-        return (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131296449) * (this.val$numColumns + 1.0f)) / this.val$numColumns * 0.5625f);
+        return (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131296450) * (this.val$numColumns + 1.0f)) / this.val$numColumns * 0.5625f);
     }
     
     @Override

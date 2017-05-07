@@ -4,10 +4,6 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.widget.ListAdapter;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import com.netflix.mediaclient.ui.home.StandardSlidingMenu$GenresListAdapter;
-import com.netflix.mediaclient.ui.social.notifications.NotificationsFrag$NotificationsListAdapter;
 import android.view.View$MeasureSpec;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -33,33 +29,13 @@ public class StaticListView extends ListView
     }
     
     public void onMeasure(final int n, final int n2) {
-        while (true) {
-            try {
-                if (this.isStatic) {
-                    super.onMeasure(n, View$MeasureSpec.makeMeasureSpec(536870911, Integer.MIN_VALUE));
-                }
-                else {
-                    super.onMeasure(n, n2);
-                }
-                this.getLayoutParams().height = this.getMeasuredHeight();
-            }
-            catch (Exception ex) {
-                final StringBuffer sb = new StringBuffer(String.format("SPY-7985 - exception occured. isStatic: %s ", this.isStatic));
-                final ListAdapter adapter = this.getAdapter();
-                if (adapter instanceof NotificationsFrag$NotificationsListAdapter) {
-                    sb.append("Adapter is NotificationsListAdapter, total: " + adapter.getCount());
-                }
-                else if (adapter instanceof StandardSlidingMenu$GenresListAdapter) {
-                    sb.append("Adapter is GenresListAdapter, total: " + adapter.getCount());
-                }
-                else {
-                    sb.append("Adapter is just: " + adapter);
-                }
-                ErrorLoggingManager.logHandledException(sb.toString());
-                continue;
-            }
-            break;
+        if (this.isStatic) {
+            super.onMeasure(n, View$MeasureSpec.makeMeasureSpec(536870911, Integer.MIN_VALUE));
         }
+        else {
+            super.onMeasure(n, n2);
+        }
+        this.getLayoutParams().height = this.getMeasuredHeight();
     }
     
     public void setAsStatic(final boolean isStatic) {

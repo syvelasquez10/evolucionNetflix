@@ -182,7 +182,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             return;
         }
         if (this.evidence != null && this.evidenceText != null && StringUtils.isNotEmpty(evidenceDetails.getEvidenceText())) {
-            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131296458);
+            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131296459);
             this.evidenceText.setText((CharSequence)evidenceDetails.getEvidenceText());
             this.evidenceGroup.setVisibility(0);
             return;
@@ -248,7 +248,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             n = 0.0f;
         }
         else {
-            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131296458);
+            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131296459);
         }
         final int n2 = (int)n;
         this.alignHeroImage();

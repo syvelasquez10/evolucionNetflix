@@ -17,9 +17,9 @@ class LanguageSelectorTablet extends LanguageSelector
     @Override
     protected int calculateListViewHeight() {
         Log.d("nf_language_selector", "Tablet calculate height");
-        int n = (int)this.mController.getResources().getDimension(2131296371);
-        final int n2 = (int)this.mController.getResources().getDimension(2131296370);
-        final int n3 = (int)this.mController.getResources().getDimension(2131296372);
+        int n = (int)this.mController.getResources().getDimension(2131296372);
+        final int n2 = (int)this.mController.getResources().getDimension(2131296371);
+        final int n3 = (int)this.mController.getResources().getDimension(2131296373);
         final Language language = this.getLanguage();
         int n4;
         if (language == null) {

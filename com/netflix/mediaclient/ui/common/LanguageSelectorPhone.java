@@ -106,9 +106,9 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
     protected int calculateListViewHeight() {
         Log.d("nf_language_selector", "Phone calculate height");
         final Resources resources = this.mController.getResources();
-        final int n = (int)resources.getDimension(2131296371);
-        final int n2 = (int)resources.getDimension(2131296370);
-        final int n3 = (int)resources.getDimension(2131296372);
+        final int n = (int)resources.getDimension(2131296372);
+        final int n2 = (int)resources.getDimension(2131296371);
+        final int n3 = (int)resources.getDimension(2131296373);
         final int n4 = this.calculateMaxNumberOfItems() * n3;
         if (Log.isLoggable()) {
             Log.d("nf_language_selector", "Max height " + n2 + " px, item height " + n3 + " px, proposed list height " + n4 + " px");

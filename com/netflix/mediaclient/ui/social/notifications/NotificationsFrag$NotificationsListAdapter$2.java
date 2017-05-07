@@ -26,6 +26,7 @@ import com.netflix.mediaclient.android.widget.StaticListView;
 import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
@@ -59,8 +60,12 @@ class NotificationsFrag$NotificationsListAdapter$2 implements View$OnClickListen
     }
     
     public void onClick(final View view) {
-        this.this$1.this$0.mServiceManager.getBrowse().markNotificationAsRead(this.val$summary);
-        SocialLoggingUtils.reportRecommendImplicitFeedbackReadEvent((Context)this.this$1.this$0.getActivity(), this.val$summary.getId(), this.val$summary.getVideoId(), this.this$1.this$0.mNotifications.getSocialNotificationsListSummary().getBaseTrackId());
-        DetailsActivityLauncher.show(this.val$activity, this.val$videoType, this.val$videoId, this.val$summary.getVideoTitle(), new PlayContextImp(this.val$requestId, this.val$listSummary.getMDPTrackId(), 0, 0), "SocialNotif");
+        if (this.this$1.this$0.mServiceManager != null && this.this$1.this$0.mServiceManager.getBrowse() != null && this.val$summary != null && this.this$1.this$0.mNotifications != null) {
+            this.this$1.this$0.mServiceManager.getBrowse().markNotificationAsRead(this.val$summary);
+            SocialLoggingUtils.reportRecommendImplicitFeedbackReadEvent((Context)this.this$1.this$0.getActivity(), this.val$summary.getId(), this.val$summary.getVideoId(), this.this$1.this$0.mNotifications.getSocialNotificationsListSummary().getBaseTrackId());
+            DetailsActivityLauncher.show(this.val$activity, this.val$videoType, this.val$videoId, this.val$summary.getVideoTitle(), new PlayContextImp(this.val$requestId, this.val$listSummary.getMDPTrackId(), 0, 0), "SocialNotif");
+            return;
+        }
+        ErrorLoggingManager.logHandledException("SPY-8019: prevented crash inside NotificationsFrag mServiceManager: " + this.this$1.this$0.mServiceManager);
     }
 }

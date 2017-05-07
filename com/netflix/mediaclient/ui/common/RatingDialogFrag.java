@@ -57,7 +57,7 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
             window.setGravity(51);
             final WindowManager$LayoutParams attributes = window.getAttributes();
             attributes.x = this.mParentXLoc;
-            attributes.y = (int)(this.mParentYLoc - this.getResources().getDimension(2131296461));
+            attributes.y = (int)(this.mParentYLoc - this.getResources().getDimension(2131296462));
             window.setAttributes(attributes);
         }
     }

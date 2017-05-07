@@ -136,7 +136,7 @@ public class OldSlidingMenu implements SlidingMenuAdapter
     }
     
     private void updateMenuStubText(final TextView textView) {
-        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296480)));
+        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296481)));
         textView.setBackgroundResource(2130837874);
         if (KidsUtils.isKidsProfile(this.manager.getCurrentProfile())) {
             Log.v("OldSlidingMenu", "Showing 'exit kids' menu item in sliding menu");

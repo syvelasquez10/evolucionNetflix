@@ -31,7 +31,7 @@ public class KidsSlidingMenu extends OldSlidingMenu
         this.selectedTextColor = netflixActivity.getResources().getColor(2131230869);
         this.home.setTextColor(this.itemTextColor);
         ViewUtils.removeShadow(this.home);
-        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131296438)));
+        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131296439)));
         this.content.setBackgroundResource(2131230867);
     }
     
@@ -52,7 +52,7 @@ public class KidsSlidingMenu extends OldSlidingMenu
             textViewToBold.setBackgroundResource(2130837753);
             ViewUtils.setTextViewToBold(textViewToBold);
             ViewUtils.removeShadow(textViewToBold);
-            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296438)));
+            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296439)));
             textViewToBold.setOnClickListener((View$OnClickListener)new KidsSlidingMenu$1(this));
         }
     }
@@ -74,6 +74,6 @@ public class KidsSlidingMenu extends OldSlidingMenu
         super.updateAdapterViews(oldSlidingMenu$Holder, list);
         oldSlidingMenu$Holder.tv.setTextColor(this.itemTextColor);
         ViewUtils.removeShadow(oldSlidingMenu$Holder.tv);
-        oldSlidingMenu$Holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296438)));
+        oldSlidingMenu$Holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296439)));
     }
 }

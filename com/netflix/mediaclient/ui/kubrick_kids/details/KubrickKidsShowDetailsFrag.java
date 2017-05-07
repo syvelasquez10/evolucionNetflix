@@ -57,7 +57,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
         if (detailsPageContentWidth > 0) {
             n = (KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131296476);
+        return n + (int)this.getResources().getDimension(2131296477);
     }
     
     @SuppressLint({ "ResourceAsColor" })
@@ -118,7 +118,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296475), this.numColumns, 3));
+        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296476), this.numColumns, 3));
     }
     
     @SuppressLint({ "ResourceAsColor" })

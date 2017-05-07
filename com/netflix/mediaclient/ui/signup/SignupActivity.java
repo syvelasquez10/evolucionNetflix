@@ -109,25 +109,21 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
             if (googleApiClient != null) {
                 break Label_0017;
             }
-        Block_3_Outer:
             while (true) {
                 try {
                     Log.d("SignupActivity", "GPS client is null, unable to try to save credentials");
                     Label_0014: {
                         return;
                     }
-                    // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
                     while (true) {
-                        while (true) {
-                            Log.w("SignupActivity", "Credential is empty, do not save it.");
-                            return;
-                            Log.d("SignupActivity", "Trying to save credentials to GPS");
-                            this.saveCredentials = false;
-                            continue Block_3_Outer;
-                        }
+                        Log.d("SignupActivity", "Trying to save credentials to GPS");
+                        this.saveCredentials = false;
+                        Log.w("SignupActivity", "Credential is empty, do not save it.");
+                        return;
                         continue;
                     }
                 }
+                // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
                 // iftrue(Label_0014:, !this.saveCredentials)
                 finally {
                 }

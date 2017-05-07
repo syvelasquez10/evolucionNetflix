@@ -33,7 +33,6 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import android.view.View;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.Collection;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
@@ -47,12 +46,7 @@ public class StandardSlidingMenu$GenresListAdapter extends BaseAdapter
     
     public StandardSlidingMenu$GenresListAdapter(final StandardSlidingMenu this$0, final List<GenreList> list) {
         this.this$0 = this$0;
-        this.genres = new ArrayList<GenreList>();
-        if (list != null && list.size() > 0) {
-            this.genres.addAll(list);
-            return;
-        }
-        ErrorLoggingManager.logHandledException("SPY-7985 - GenresListAdapter got null or empty genres list!");
+        (this.genres = new ArrayList<GenreList>()).addAll(list);
     }
     
     public int getCount() {

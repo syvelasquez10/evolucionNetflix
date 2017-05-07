@@ -5,8 +5,9 @@
 package com.netflix.mediaclient.ui.kubrick.details;
 
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import android.widget.TextView;
+import android.graphics.Bitmap$Config;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup$DetailsStringProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
@@ -31,8 +32,8 @@ import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -51,7 +52,6 @@ import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
-import android.graphics.Bitmap$Config;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback extends LoggingManagerCallback
@@ -61,15 +61,6 @@ class KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback extend
     public KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback(final KubrickShowDetailsFrag$BookmarkedVideoDetails this$1, final String s) {
         this.this$1 = this$1;
         super(s);
-    }
-    
-    private void updateWithBookmark() {
-        this.this$1.updateImage(this.this$1.epDetails.getInterestingUrl(), this.this$1.this$0.getNetflixActivity(), this.this$1.epDetails.getInterestingUrl(), Bitmap$Config.RGB_565);
-        this.this$1.setBookmarkVisibility(0);
-        this.this$1.setEvidenceVisibility(8);
-        this.this$1.updateBookmarkTitle(this.this$1.epDetails);
-        this.this$1.updateBookmark(this.this$1.epDetails.getPlayable());
-        this.this$1.synopsis.setText((CharSequence)this.this$1.epDetails.getSynopsis());
     }
     
     @Override
@@ -95,20 +86,11 @@ class KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback extend
         }
         this$0.hasBookmark = b;
         if (this.this$1.this$0.hasBookmark) {
-            this.updateWithBookmark();
+            this.this$1.updateWithBookmark();
         }
         else {
-            this.updateWithNoBookmark();
+            this.this$1.updateWithNoBookmark();
         }
         this.this$1.this$0.showViews();
-    }
-    
-    protected void updateWithNoBookmark() {
-        if (this.this$1.this$0.heroSlideshow != null) {
-            this.this$1.this$0.heroSlideshow.start();
-        }
-        this.this$1.updateImage(this.this$1.this$0.showDetails.getStoryUrl(), this.this$1.this$0.getNetflixActivity(), this.this$1.this$0.showDetails.getStoryUrl(), Bitmap$Config.ARGB_8888);
-        this.this$1.setBookmarkVisibility(8);
-        this.this$1.synopsis.setText((CharSequence)this.this$1.this$0.showDetails.getSynopsis());
     }
 }

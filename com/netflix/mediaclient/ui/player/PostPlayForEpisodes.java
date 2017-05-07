@@ -118,12 +118,17 @@ public class PostPlayForEpisodes extends PostPlay
                     text2 = "null";
                 }
                 this.mContext.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7987 - PostPlayContexts empty for title  %s", text2));
-                return;
             }
             final PostPlayVideo postPlayVideo = this.mPostPlayVideos.get(0);
-            final PostPlayContext postPlayContext = this.mPostPlayContexts.get(0);
+            PlayContext playContext = null;
+            if (this.mPostPlayContexts != null) {
+                playContext = playContext;
+                if (this.mPostPlayContexts.size() > 1) {
+                    playContext = new PlayContextImp(this.mPostPlayContexts.get(0).getRequestId(), this.mPostPlayContexts.get(0).getTrackId(), 0, 0);
+                }
+            }
             if (postPlayVideo != null) {
-                this.mContext.playNextVideo(postPlayVideo.getPlayable(), new PlayContextImp(postPlayContext.getRequestId(), postPlayContext.getTrackId(), 0, 0), b);
+                this.mContext.playNextVideo(postPlayVideo.getPlayable(), playContext, b);
             }
         }
     }

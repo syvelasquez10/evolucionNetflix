@@ -74,7 +74,7 @@ abstract class BaseSubtitleManager implements SubtitleManager
             n = 46;
         }
         this.mBottomPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, n);
-        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131296517);
+        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131296518);
         this.mTopPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
         this.mTopPanel = mActivity.findViewById(2131427714);
     }

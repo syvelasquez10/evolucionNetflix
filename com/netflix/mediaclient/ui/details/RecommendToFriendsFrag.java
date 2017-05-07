@@ -214,7 +214,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
     }
     
     private void launchAnimation(final boolean b) {
-        final int n = (int)this.getResources().getDimension(2131296405);
+        final int n = (int)this.getResources().getDimension(2131296406);
         if (this.mSearchEditTextAnim != null) {
             this.mSearchEditTextAnim.cancel();
         }

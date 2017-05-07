@@ -51,6 +51,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
             textView = (TextView)this.viewCreator.createItemView();
         }
         this.setIdForTest(idForTest);
+        idForTest.setOverScrollMode(2);
         if (this.dropDownBackgroundColor != -1) {
             textView.setBackgroundResource(this.dropDownBackgroundColor);
         }

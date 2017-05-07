@@ -5,15 +5,13 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import java.io.UnsupportedEncodingException;
 import com.netflix.mediaclient.Log;
-import java.net.URLEncoder;
-import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
@@ -29,30 +27,15 @@ public class AutoLoginRequest extends FalkorVolleyWebClientRequest<ActivationTok
     public AutoLoginRequest(final Context context, final String mToken, final UserAgentWebCallback mResponseCallback) {
         super(context);
         this.mResponseCallback = mResponseCallback;
-        Label_0091: {
-            if (!StringUtils.isEmpty(mToken)) {
-                break Label_0091;
-            }
+        if (mToken == null) {
             this.mToken = "";
-            while (true) {
-                try {
-                    while (true) {
-                        this.mPqlQuery = "['autoLogin','" + URLEncoder.encode(this.mToken, "UTF-8") + "']";
-                        if (Log.isLoggable()) {
-                            Log.v("nf_service_user_autologinrequest", "PQL = " + this.mPqlQuery);
-                        }
-                        return;
-                        this.mToken = mToken;
-                        continue;
-                    }
-                }
-                catch (UnsupportedEncodingException ex) {
-                    Log.e("nf_service_user_autologinrequest", "Failing", ex);
-                    this.mPqlQuery = "['autoLogin','" + URLEncoder.encode(this.mToken) + "']";
-                    continue;
-                }
-                break;
-            }
+        }
+        else {
+            this.mToken = mToken;
+        }
+        this.mPqlQuery = "['autoLogin','" + this.mToken + "']";
+        if (Log.isLoggable()) {
+            Log.v("nf_service_user_autologinrequest", "PQL = " + this.mPqlQuery);
         }
     }
     

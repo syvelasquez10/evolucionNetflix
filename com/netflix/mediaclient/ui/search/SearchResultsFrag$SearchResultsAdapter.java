@@ -18,7 +18,6 @@ import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
 import java.util.Locale;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.util.StringUtils;
@@ -40,6 +39,7 @@ import java.util.Stack;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.widget.AdapterView;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.view.ViewGroup;
@@ -162,7 +162,20 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
             view = this.createView();
         }
         final SearchTrackable trackableForPos = this.getTrackableForPos();
-        ((SearchResultView)view).update(this.getItem(n), new PlayContextImp(trackableForPos, n), this.this$0.query, trackableForPos.getReferenceId());
+        final PlayContextImp playContextImp = new PlayContextImp(trackableForPos, n);
+        final Object item = this.getItem(n);
+        if (this.searchCategory == SearchResultsFrag$SearchCategory.SUGGESTIONS && !(item instanceof SearchSuggestion)) {
+            String access$500;
+            if (this.this$0.query != "") {
+                access$500 = this.this$0.query;
+            }
+            else {
+                access$500 = "null";
+            }
+            this.this$0.getNetflixActivity().getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-8015 - bad search query  %s", access$500));
+            return view;
+        }
+        ((SearchResultView)view).update(item, playContextImp, this.this$0.query, trackableForPos.getReferenceId());
         return view;
     }
     
