@@ -6,6 +6,7 @@ package com.netflix.mediaclient.android.widget;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
@@ -63,6 +64,9 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     
     @Override
     public void update(final Video video, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
+        if (trackable != null) {
+            this.playContext = new PlayContextImp(trackable, visibility);
+        }
         String s;
         if (this.isHorizontal) {
             s = video.getHorzDispUrl();

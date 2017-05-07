@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.net.URLEncoder;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.List;
 import com.google.gson.JsonObject;
 import java.util.Map;
-import java.util.List;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import com.google.gson.GsonBuilder;
@@ -74,35 +74,32 @@ public class RemotePathEvaluator extends BasePathEvaluator
                                 break Label_0230;
                                 // iftrue(Label_0204:, !genericReturnType2 instanceof ParameterizedType)
                                 // iftrue(Label_0193:, !returnType instanceof Class)
-                                // iftrue(Label_0154:, !List.class.isAssignableFrom((Class<?>)returnType))
                                 // iftrue(Label_0209:, !Map.class.isAssignableFrom((Class<?>)returnType))
-                                while (true) {
-                                    genericReturnType2 = method.getGenericReturnType();
-                                    while (true) {
-                                        Block_6: {
-                                            Block_9: {
-                                                break Block_9;
-                                                method = rootType.getMethod("get" + string.substring(0, 1).toUpperCase() + string.substring(1), (Class<?>[])new Class[0]);
-                                                returnType = method.getReturnType();
-                                                break Block_6;
-                                                genericReturnType = method.getGenericReturnType();
-                                                type = returnType;
-                                                type2 = null;
-                                                break Label_0219;
+                                // iftrue(Label_0154:, !List.class.isAssignableFrom((Class<?>)returnType))
+                                Block_9: {
+                                    Block_6: {
+                                        while (true) {
+                                            genericReturnType2 = method.getGenericReturnType();
+                                            break Block_9;
+                                            method = rootType.getMethod("get" + string.substring(0, 1).toUpperCase() + string.substring(1), (Class<?>[])new Class[0]);
+                                            returnType = method.getReturnType();
+                                            break Block_6;
+                                            Label_0154: {
+                                                continue Label_0069_Outer;
                                             }
-                                            type3 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
-                                            break Label_0241;
                                         }
-                                        continue;
+                                        Label_0193: {
+                                            clazz = JsonObject.class;
+                                        }
+                                        return clazz;
                                     }
-                                    Label_0154: {
-                                        continue Label_0069_Outer;
-                                    }
+                                    genericReturnType = method.getGenericReturnType();
+                                    type = returnType;
+                                    type2 = null;
+                                    break Label_0219;
                                 }
-                                Label_0193: {
-                                    clazz = JsonObject.class;
-                                }
-                                return clazz;
+                                type3 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
+                                break Label_0241;
                             }
                             catch (Exception ex) {
                                 return JsonObject.class;
