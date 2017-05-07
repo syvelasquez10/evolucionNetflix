@@ -158,7 +158,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             final int runtime = kubrickVideo.getRuntime();
             if (runtime > 0) {
-                this.durationInfo.setText((CharSequence)resources.getString(2131493166, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
+                this.durationInfo.setText((CharSequence)resources.getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
                 this.durationInfo.setVisibility(0);
                 return;
             }
@@ -171,7 +171,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             return;
         }
         if (this.evidence != null && this.evidenceText != null && StringUtils.isNotEmpty(evidenceDetails.getEvidenceText())) {
-            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131362001);
+            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131296465);
             this.evidenceText.setText((CharSequence)evidenceDetails.getEvidenceText());
             this.evidenceGroup.setVisibility(0);
             return;
@@ -229,7 +229,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             n = 0.0f;
         }
         else {
-            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131362001);
+            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131296465);
         }
         final int n2 = (int)n;
         this.alignHeroImage();
@@ -245,28 +245,28 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     @Override
     protected void findViews() {
         super.findViews();
-        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131165464);
-        this.dataSelectorRelated = (RadioButton)this.findViewById(2131165466);
-        this.dataSelectorEpisodesTop = this.findViewById(2131165463);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131165388);
-        this.dataSelectorRelatedTop = this.findViewById(2131165465);
-        this.certification = (TextView)this.findViewById(2131165426);
-        this.evidenceGroup = (ViewGroup)this.findViewById(2131165467);
-        this.evidenceText = (TextView)this.findViewById(2131165469);
-        this.hdIcon = (IconFontTextView)this.findViewById(2131165428);
-        this.durationInfo = (TextView)this.findViewById(2131165427);
-        this.evidence = (IconFontTextView)this.findViewById(2131165468);
-        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131165462);
-        this.myListLabel = (TextView)this.findViewById(2131165458);
-        this.shareLabel = (TextView)this.findViewById(2131165456);
-        this.myList = (TextView)this.findViewById(2131165453);
-        this.genres = (TextView)this.findViewById(2131165461);
-        this.year = (TextView)this.findViewById(2131165425);
-        this.share = (TextView)this.findViewById(2131165455);
-        this.leftGroup = this.findViewById(2131165473);
-        this.shadow = this.findViewById(2131165471);
-        this.credits = this.findViewById(2131165475);
-        this.rate = this.findViewById(2131165454);
+        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131427614);
+        this.dataSelectorRelated = (RadioButton)this.findViewById(2131427616);
+        this.dataSelectorEpisodesTop = this.findViewById(2131427613);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131427538);
+        this.dataSelectorRelatedTop = this.findViewById(2131427615);
+        this.certification = (TextView)this.findViewById(2131427576);
+        this.evidenceGroup = (ViewGroup)this.findViewById(2131427617);
+        this.evidenceText = (TextView)this.findViewById(2131427619);
+        this.hdIcon = (IconFontTextView)this.findViewById(2131427578);
+        this.durationInfo = (TextView)this.findViewById(2131427577);
+        this.evidence = (IconFontTextView)this.findViewById(2131427618);
+        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131427612);
+        this.myListLabel = (TextView)this.findViewById(2131427608);
+        this.shareLabel = (TextView)this.findViewById(2131427606);
+        this.myList = (TextView)this.findViewById(2131427603);
+        this.genres = (TextView)this.findViewById(2131427611);
+        this.year = (TextView)this.findViewById(2131427575);
+        this.share = (TextView)this.findViewById(2131427605);
+        this.leftGroup = this.findViewById(2131427623);
+        this.shadow = this.findViewById(2131427621);
+        this.credits = this.findViewById(2131427625);
+        this.rate = this.findViewById(2131427604);
     }
     
     @Override
@@ -318,22 +318,22 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     
     protected void setEpisodesTextAsSelected() {
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131296361));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131230825));
             this.dataSelectorEpisodesTop.setVisibility(0);
         }
         if (this.dataSelectorRelated != null) {
-            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131296431));
+            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131230895));
             this.dataSelectorRelatedTop.setVisibility(4);
         }
     }
     
     protected void setRelatedTextAsSelected() {
         if (this.dataSelectorRelated != null) {
-            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131296361));
+            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131230825));
             this.dataSelectorRelatedTop.setVisibility(0);
         }
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131296431));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131230895));
             this.dataSelectorEpisodesTop.setVisibility(4);
         }
     }

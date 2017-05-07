@@ -69,19 +69,19 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         final RemoteViews remoteViews = new RemoteViews(packageName, n2);
         int n3;
         if (DeviceUtils.isTabletByContext(context)) {
-            n3 = 2130837852;
+            n3 = 2130837857;
         }
         else {
-            n3 = 2130837849;
+            n3 = 2130837854;
         }
-        remoteViews.setImageViewResource(2131165617, n3);
-        remoteViews.setViewVisibility(2131165619, 8);
-        remoteViews.setViewVisibility(2131165625, 8);
-        remoteViews.setViewVisibility(2131165623, 8);
-        remoteViews.setViewVisibility(2131165624, 8);
-        remoteViews.setOnClickPendingIntent(2131165617, this.getWidgetHomeIntent(n));
-        remoteViews.setOnClickPendingIntent(2131165625, this.getWidgetHomeIntent(n));
-        remoteViews.setOnClickPendingIntent(2131165620, this.getWidgetHomeIntent(n));
+        remoteViews.setImageViewResource(2131427767, n3);
+        remoteViews.setViewVisibility(2131427769, 8);
+        remoteViews.setViewVisibility(2131427775, 8);
+        remoteViews.setViewVisibility(2131427773, 8);
+        remoteViews.setViewVisibility(2131427774, 8);
+        remoteViews.setOnClickPendingIntent(2131427767, this.getWidgetHomeIntent(n));
+        remoteViews.setOnClickPendingIntent(2131427775, this.getWidgetHomeIntent(n));
+        remoteViews.setOnClickPendingIntent(2131427770, this.getWidgetHomeIntent(n));
         return remoteViews;
     }
     
@@ -110,7 +110,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
             n2 = 2130903176;
         }
         final RemoteViews remoteViews = new RemoteViews(packageName, n2);
-        remoteViews.setImageViewBitmap(2131165617, bitmap);
+        remoteViews.setImageViewBitmap(2131427767, bitmap);
         if (pVideo.isPlayable && PDiskData$ListName.CW.equals(pDiskData$ListName)) {
             int n3;
             if (pVideo.playableRuntime > 0) {
@@ -119,14 +119,14 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
             else {
                 n3 = 0;
             }
-            remoteViews.setProgressBar(2131165624, 100, n3, false);
+            remoteViews.setProgressBar(2131427774, 100, n3, false);
             Log.d("nf_preapp_fetchagent", String.format(" progressValue=%d", n3));
-            remoteViews.setViewVisibility(2131165624, 0);
+            remoteViews.setViewVisibility(2131427774, 0);
         }
         else {
-            remoteViews.setViewVisibility(2131165624, 8);
+            remoteViews.setViewVisibility(2131427774, 8);
         }
-        remoteViews.setTextViewText(2131165623, (CharSequence)this.getVideoTitle(context, pVideo));
+        remoteViews.setTextViewText(2131427773, (CharSequence)this.getVideoTitle(context, pVideo));
         int n4;
         if (pVideo.isPlayable) {
             n4 = 0;
@@ -134,13 +134,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         else {
             n4 = 8;
         }
-        remoteViews.setViewVisibility(2131165619, n4);
-        remoteViews.setViewVisibility(2131165625, 0);
-        remoteViews.setViewVisibility(2131165623, 0);
-        remoteViews.setOnClickPendingIntent(2131165619, this.getWidgetDetailsOrPlayIntent(pVideo, pDiskData$ListName, n));
-        remoteViews.setOnClickPendingIntent(2131165617, this.getWidgetDetailsOrPlayIntent(pVideo, pDiskData$ListName, n));
-        remoteViews.setOnClickPendingIntent(2131165625, this.getWidgetRefreshIntent(pVideo, pDiskData$ListName, n));
-        remoteViews.setOnClickPendingIntent(2131165620, this.getWidgetHomeIntent(n));
+        remoteViews.setViewVisibility(2131427769, n4);
+        remoteViews.setViewVisibility(2131427775, 0);
+        remoteViews.setViewVisibility(2131427773, 0);
+        remoteViews.setOnClickPendingIntent(2131427769, this.getWidgetDetailsOrPlayIntent(pVideo, pDiskData$ListName, n));
+        remoteViews.setOnClickPendingIntent(2131427767, this.getWidgetDetailsOrPlayIntent(pVideo, pDiskData$ListName, n));
+        remoteViews.setOnClickPendingIntent(2131427775, this.getWidgetRefreshIntent(pVideo, pDiskData$ListName, n));
+        remoteViews.setOnClickPendingIntent(2131427770, this.getWidgetHomeIntent(n));
         return remoteViews;
     }
     
@@ -369,7 +369,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private String getVideoTitle(final Context context, final PVideo pVideo) {
         if (pVideo.isPlayable && VideoType.SHOW.equals(pVideo.videoType)) {
-            return context.getString(2131493389, new Object[] { pVideo.title, pVideo.playableSeasonNumber, pVideo.playableEpisodeNumber });
+            return context.getString(2131493398, new Object[] { pVideo.title, pVideo.playableSeasonNumber, pVideo.playableEpisodeNumber });
         }
         return pVideo.title;
     }

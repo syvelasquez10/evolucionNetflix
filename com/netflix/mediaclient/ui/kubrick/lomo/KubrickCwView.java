@@ -59,17 +59,17 @@ public class KubrickCwView extends RelativeLayout implements VideoViewGroup$IVid
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837876);
+        this.setBackgroundResource(2130837881);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903115, (ViewGroup)this);
-        this.playViewGroup = this.findViewById(2131165431);
-        this.infoViewGroup = this.findViewById(2131165429);
-        this.title = (TextView)this.findViewById(2131165345);
-        this.subtitle = (TextView)this.findViewById(2131165430);
-        this.img = (AdvancedImageView)this.findViewById(2131165342);
-        this.progress = (ProgressBar)this.findViewById(2131165347);
-        this.infoIcon = this.findViewById(2131165346);
+        this.playViewGroup = this.findViewById(2131427581);
+        this.infoViewGroup = this.findViewById(2131427579);
+        this.title = (TextView)this.findViewById(2131427495);
+        this.subtitle = (TextView)this.findViewById(2131427580);
+        this.img = (AdvancedImageView)this.findViewById(2131427492);
+        this.progress = (ProgressBar)this.findViewById(2131427497);
+        this.infoIcon = this.findViewById(2131427496);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -93,14 +93,14 @@ public class KubrickCwView extends RelativeLayout implements VideoViewGroup$IVid
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493173), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493182), cwVideo.getTitle());
         this.playViewGroup.setContentDescription((CharSequence)format);
         this.title.setText((CharSequence)cwVideo.getTitle());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.subtitle.setText((CharSequence)this.getContext().getString(2131493237, new Object[] { cwVideo.getSeasonNumber(), cwVideo.getEpisodeNumber(), cwVideo.getCurrentEpisodeTitle() }));
+            this.subtitle.setText((CharSequence)this.getContext().getString(2131493246, new Object[] { cwVideo.getSeasonNumber(), cwVideo.getEpisodeNumber(), cwVideo.getCurrentEpisodeTitle() }));
         }
         else {
-            this.subtitle.setText((CharSequence)this.getResources().getString(2131493166, new Object[] { TimeUtils.convertSecondsToMinutes(cwVideo.getRuntime()) }));
+            this.subtitle.setText((CharSequence)this.getResources().getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(cwVideo.getRuntime()) }));
         }
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
@@ -121,7 +121,7 @@ public class KubrickCwView extends RelativeLayout implements VideoViewGroup$IVid
         }
         this.progress.setProgress(progress);
         this.playViewGroup.setOnClickListener((View$OnClickListener)new KubrickCwView$1(this, cwVideo));
-        this.infoViewGroup.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493210), cwVideo.getTitle()));
+        this.infoViewGroup.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493219), cwVideo.getTitle()));
         this.clicker.update(this.infoViewGroup, cwVideo);
     }
 }

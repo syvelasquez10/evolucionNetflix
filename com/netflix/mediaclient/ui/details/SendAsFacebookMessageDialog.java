@@ -119,7 +119,7 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
             final FriendForRecommendation friendForRecommendation = iterator.next();
             final ViewGroup viewGroup = (ViewGroup)this.mLayoutInflater.inflate(2130903196, (ViewGroup)null);
             this.mFriendsAvatarLayout.addView((View)viewGroup, 0);
-            NetflixActivity.getImageLoader((Context)this.getActivity()).showImg((AdvancedImageView)viewGroup.findViewById(2131165654), friendForRecommendation.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, friendForRecommendation.getFriendProfile().getFullName(), true, true);
+            NetflixActivity.getImageLoader((Context)this.getActivity()).showImg((AdvancedImageView)viewGroup.findViewById(2131427804), friendForRecommendation.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, friendForRecommendation.getFriendProfile().getFullName(), true, true);
             ++n;
             if (n == 3) {
                 break;
@@ -154,11 +154,11 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
     public Dialog onCreateDialog(final Bundle bundle) {
         this.mLayoutInflater = this.getActivity().getLayoutInflater();
         final View inflate = this.mLayoutInflater.inflate(2130903195, (ViewGroup)null);
-        this.mFriendsAvatarLayout = (ViewGroup)inflate.findViewById(2131165676);
-        this.mDlgBodyTextView = (TextView)inflate.findViewById(2131165677);
-        (this.mDontaskCheckBox = (CheckBox)inflate.findViewById(2131165678)).setOnCheckedChangeListener((CompoundButton$OnCheckedChangeListener)new SendAsFacebookMessageDialog$1(this));
+        this.mFriendsAvatarLayout = (ViewGroup)inflate.findViewById(2131427826);
+        this.mDlgBodyTextView = (TextView)inflate.findViewById(2131427827);
+        (this.mDontaskCheckBox = (CheckBox)inflate.findViewById(2131427828)).setOnCheckedChangeListener((CompoundButton$OnCheckedChangeListener)new SendAsFacebookMessageDialog$1(this));
         this.tryUpdateUI();
-        return (Dialog)new AlertDialog$Builder((Context)this.getActivity()).setPositiveButton(2131492994, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$3(this)).setNegativeButton(2131493359, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$2(this)).setView(inflate).setCancelable(false).create();
+        return (Dialog)new AlertDialog$Builder((Context)this.getActivity()).setPositiveButton(2131493003, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$3(this)).setNegativeButton(2131493368, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$2(this)).setView(inflate).setCancelable(false).create();
     }
     
     @Override

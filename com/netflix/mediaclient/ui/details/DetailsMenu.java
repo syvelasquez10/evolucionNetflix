@@ -32,11 +32,11 @@ public class DetailsMenu
     }
     
     private void updateShareItemAsUnshared() {
-        this.shareItem.setTitle(2131493122).setEnabled(false).setVisible(true);
+        this.shareItem.setTitle(2131493131).setEnabled(false).setVisible(true);
     }
     
     private void updateShareItemToUnshare(final ServiceManager serviceManager, final String s) {
-        this.shareItem.setTitle(2131493121).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DetailsMenu$UnshareClickHandler(this, serviceManager, s)).setEnabled(true).setVisible(true);
+        this.shareItem.setTitle(2131493130).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DetailsMenu$UnshareClickHandler(this, serviceManager, s)).setEnabled(true).setVisible(true);
     }
     
     public void updateShareItem(final ServiceManager serviceManager, final VideoDetails videoDetails) {

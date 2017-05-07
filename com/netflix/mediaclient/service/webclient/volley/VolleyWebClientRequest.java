@@ -250,14 +250,17 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     return Response.error(new ParseException((String)networkResponse));
                                                 }
                                                 break Label_0382;
-                                                s4 = s2;
-                                                s5 = s3;
-                                                // iftrue(Label_0172:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
-                                                s4 = split2[1];
-                                                s5 = s3;
-                                                continue Label_0266_Outer;
                                                 responseValid = true;
                                                 continue Label_0109_Outer;
+                                                // iftrue(Label_0172:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
+                                                while (true) {
+                                                    s4 = split2[1];
+                                                    s5 = s3;
+                                                    continue Label_0266_Outer;
+                                                    s4 = s2;
+                                                    s5 = s3;
+                                                    continue;
+                                                }
                                                 ++n;
                                                 s2 = s4;
                                                 s3 = s5;

@@ -6,5 +6,5 @@ package android.support.v7.appcompat;
 
 public final class R$color
 {
-    public static final int abc_input_method_navigation_guard = 2131296259;
+    public static final int abc_input_method_navigation_guard = 2131230723;
 }

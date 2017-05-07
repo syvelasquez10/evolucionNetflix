@@ -53,6 +53,7 @@ class SignupActivity$1 implements MenuItem$OnMenuItemClickListener
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
         Log.d("SignupActivity", "User tapped sign-in button");
+        this.this$0.mIsLoginActivityInFocus = true;
         UserActionLogUtils.reportLoginActionStarted((Context)this.this$0, null, this.this$0.getUiScreen());
         this.this$0.startNextActivity(LoginActivity.createStartIntent((Context)this.this$0));
         return true;

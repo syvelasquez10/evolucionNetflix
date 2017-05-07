@@ -17,6 +17,11 @@ public class RelaunchActivity extends LaunchActivity
     }
     
     @Override
+    protected boolean isAutoLoginEnabled() {
+        return false;
+    }
+    
+    @Override
     protected boolean shouldCreateUiSessions() {
         return false;
     }

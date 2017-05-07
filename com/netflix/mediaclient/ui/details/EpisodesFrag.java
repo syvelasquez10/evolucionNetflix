@@ -225,8 +225,8 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.spinner = spinner;
         this.setupSeasonsSpinnerAdapter();
         this.setupSeasonsSpinnerListener();
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131296356);
-        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131361946)));
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131230820);
+        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131296410)));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
         return this.spinnerViewGroup;
     }
@@ -407,7 +407,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), (View)this.detailsViewGroup.getHeroImage(), null, this.recyclerView.getResources().getColor(2131296363), 0, null);
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), (View)this.detailsViewGroup.getHeroImage(), null, this.recyclerView.getResources().getColor(2131230827), 0, null);
                 this.getRecyclerView().setOnScrollListener(onScrollListener);
                 return onScrollListener;
             }
@@ -443,7 +443,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130837874);
+        adapter.setItemBackgroundColor(2130837879);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     

@@ -43,6 +43,6 @@ class KubrickKidsShowDetailsFrag$KubrickKidsEpisodeView extends KubrickShowDetai
             return;
         }
         super.updateTitle(episodeDetails);
-        this.title.setTextColor(this.getResources().getColor(2131296434));
+        this.title.setTextColor(this.getResources().getColor(2131230898));
     }
 }

@@ -269,27 +269,28 @@ public abstract class ConsolidatedLoggingUtils
                                             return error;
                                         }
                                         break Label_0324;
-                                        Label_0258: {
-                                            error.setRootCause(RootCause.serverFailure);
-                                        }
                                         // iftrue(Label_0275:, !volleyError instanceof ServerError)
-                                        break;
                                         // iftrue(Label_0292:, !volleyError instanceof TimeoutError)
-                                        while (true) {
-                                            error.setRootCause(RootCause.tcpConnectionTimeout);
-                                            break;
-                                            Label_0275: {
-                                                continue;
-                                            }
-                                        }
                                         // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                         // iftrue(Label_0258:, !volleyError instanceof FalkorServerException)
                                         Block_10: {
-                                            Block_13: {
-                                                break Block_13;
-                                                break Block_10;
+                                            Block_11: {
+                                                break Block_11;
+                                                while (true) {
+                                                    error.setRootCause(RootCause.tcpConnectionTimeout);
+                                                    break;
+                                                    Label_0275: {
+                                                        continue;
+                                                    }
+                                                }
+                                                Block_13: {
+                                                    break Block_13;
+                                                    break Block_10;
+                                                }
+                                                error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                                break;
                                             }
-                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                            error.setRootCause(RootCause.serverFailure);
                                             break;
                                         }
                                         error.setRootCause(RootCause.serverFailure);

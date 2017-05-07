@@ -392,15 +392,19 @@ public final class az implements au, aw, ax, f
                     Label_0012: {
                         return;
                     }
+                    // iftrue(Label_0067:, !this.t)
                     while (true) {
+                        Block_4: {
+                            break Block_4;
+                            final az$5 az$5;
+                            this.s.execute(az$5);
+                            return;
+                        }
                         final az$5 az$5 = new az$5(this, t, Thread.currentThread().getId());
-                        this.s.execute(az$5);
-                        return;
                         continue;
                     }
                 }
                 // iftrue(Label_0012:, this.q.a((Runnable)az$5))
-                // iftrue(Label_0067:, !this.t)
                 finally {
                 }
                 // monitorexit(this)

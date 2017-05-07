@@ -44,7 +44,7 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     
     private void updateAboutDevice() {
         Serializable s2;
-        final String s = (String)(s2 = this.getString(2131493159));
+        final String s = (String)(s2 = this.getString(2131493168));
         while (true) {
             try {
                 final PackageInfo packageInfo = this.activity.getPackageManager().getPackageInfo(this.activity.getPackageName(), 0);
@@ -73,7 +73,7 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
         super.onCreate(bundle);
         this.activity = this.getActivity();
         this.addPreferencesFromResource(2131034112);
-        this.findPreference((CharSequence)this.getString(2131492966)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.findPreference((CharSequence)this.getString(2131492975)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));

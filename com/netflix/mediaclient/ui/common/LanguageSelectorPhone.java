@@ -83,7 +83,7 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
     
     private View getTabIndicator(final Context context, final TabHost tabHost, final int text, final boolean b) {
         final View inflate = LayoutInflater.from(context).inflate(2130903132, (ViewGroup)null, false);
-        final TextView textView = (TextView)inflate.findViewById(2131165482);
+        final TextView textView = (TextView)inflate.findViewById(2131427632);
         textView.setText(text);
         if (b) {
             Log.d("nf_language_selector", "Set audio tab label");
@@ -106,9 +106,9 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
     protected int calculateListViewHeight() {
         Log.d("nf_language_selector", "Phone calculate height");
         final Resources resources = this.mController.getResources();
-        final int n = (int)resources.getDimension(2131361903);
-        final int n2 = (int)resources.getDimension(2131361902);
-        final int n3 = (int)resources.getDimension(2131361904);
+        final int n = (int)resources.getDimension(2131296367);
+        final int n2 = (int)resources.getDimension(2131296366);
+        final int n3 = (int)resources.getDimension(2131296368);
         final int n4 = this.calculateMaxNumberOfItems() * n3;
         if (Log.isLoggable()) {
             Log.d("nf_language_selector", "Max height " + n2 + " px, item height " + n3 + " px, proposed list height " + n4 + " px");
@@ -138,10 +138,10 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
     protected void init(final View view, final Language language) {
         super.init(view, language);
         Log.d("nf_language_selector", "Add tabhost");
-        (this.mTabHost = (TabHost)view.findViewById(2131165477)).setOnTabChangedListener((TabHost$OnTabChangeListener)this);
+        (this.mTabHost = (TabHost)view.findViewById(2131427627)).setOnTabChangedListener((TabHost$OnTabChangeListener)this);
         this.mTabHost.setup();
-        this.setNewTab((Context)this.mController, this.mTabHost, "ListAudios", 2131493116, 2131165478, true);
-        this.setNewTab((Context)this.mController, this.mTabHost, "ListSubtitles", 2131493115, 2131165479, false);
+        this.setNewTab((Context)this.mController, this.mTabHost, "ListAudios", 2131493125, 2131427628, true);
+        this.setNewTab((Context)this.mController, this.mTabHost, "ListSubtitles", 2131493124, 2131427629, false);
         this.mTabHost.setCurrentTab(0);
         this.mAudioTabLabel.setTypeface(this.mAudioTabLabel.getTypeface(), 1);
         this.mSubtitleTabLabel.setTypeface(this.mSubtitleTabLabel.getTypeface(), 0);

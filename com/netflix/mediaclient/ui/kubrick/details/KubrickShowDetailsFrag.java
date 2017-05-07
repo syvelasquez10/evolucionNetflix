@@ -74,13 +74,13 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
         if (detailsPageContentWidth > 0) {
             n = (DeviceUtils.getScreenWidthInPixels((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131362005);
+        return n + (int)this.getResources().getDimension(2131296469);
     }
     
     @Override
     protected ViewGroup createSeasonsSpinnerGroup() {
         final ViewGroup seasonsSpinnerGroup = super.createSeasonsSpinnerGroup();
-        seasonsSpinnerGroup.setBackgroundResource(2131296356);
+        seasonsSpinnerGroup.setBackgroundResource(2131230820);
         seasonsSpinnerGroup.setPadding(this.calculateSpinnerLeftPosition(), 0, 0, 0);
         return seasonsSpinnerGroup;
     }
@@ -128,7 +128,7 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
     }
     
     protected int retrieveNumColumns() {
-        return this.getActivity().getResources().getInteger(2131427338);
+        return this.getActivity().getResources().getInteger(2131361802);
     }
     
     @Override
@@ -137,7 +137,7 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), (View)this.detailsViewGroup.getHeroImage(), (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131296363), 0, (View)this.detailsViewGroup.getFooterViewGroup());
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), (View)this.detailsViewGroup.getHeroImage(), (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131230827), 0, (View)this.detailsViewGroup.getFooterViewGroup());
                 this.getRecyclerView().setOnScrollListener(onScrollListener);
                 onScrollListener.setOnScrollStateChangedListener(new KubrickShowDetailsFrag$2(this));
                 return onScrollListener;
@@ -155,7 +155,7 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361997), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296461), this.numColumns));
     }
     
     @Override

@@ -44,7 +44,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     private CharSequence createStatusText(final int n, final int n2) {
-        return this.getResources().getString(2131493234, new Object[] { n, this.getResources().getString(n2) });
+        return this.getResources().getString(2131493243, new Object[] { n, this.getResources().getString(n2) });
     }
     
     private void init() {
@@ -67,24 +67,24 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
         if (episodeDetails.isAvailableToStream()) {
-            return this.getResources().getString(2131493234, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+            return this.getResources().getString(2131493243, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         }
         String s;
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            s = this.getResources().getString(2131493160);
+            s = this.getResources().getString(2131493169);
         }
         else {
             s = episodeDetails.getAvailabilityDateMessage();
         }
-        return this.getResources().getString(2131493234, new Object[] { episodeDetails.getEpisodeNumber(), s });
+        return this.getResources().getString(2131493243, new Object[] { episodeDetails.getEpisodeNumber(), s });
     }
     
     protected void findViews() {
-        this.title = (TextView)this.findViewById(2131165363);
-        this.synopsis = (TextView)this.findViewById(2131165365);
-        this.playButton = (ImageView)this.findViewById(2131165361);
-        this.progressBar = (ProgressBar)this.findViewById(2131165364);
-        this.rowHeader = this.findViewById(2131165360);
+        this.title = (TextView)this.findViewById(2131427513);
+        this.synopsis = (TextView)this.findViewById(2131427515);
+        this.playButton = (ImageView)this.findViewById(2131427511);
+        this.progressBar = (ProgressBar)this.findViewById(2131427514);
+        this.rowHeader = this.findViewById(2131427510);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -159,16 +159,16 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             return;
         }
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493179), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493188), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         this.title.setText(this.createTitleText(episodeDetails));
         final TextView title = this.title;
         final Resources resources = this.getResources();
         int n;
         if (episodeDetails.isAvailableToStream()) {
-            n = 2131296371;
+            n = 2131230835;
         }
         else {
-            n = 2131296372;
+            n = 2131230836;
         }
         title.setTextColor(resources.getColor(n));
         this.title.setClickable(false);
@@ -205,8 +205,8 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     
     public void updateToErrorState(int n, final ErrorWrapper$Callback errorWrapper$Callback) {
         ++n;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493178), n));
-        this.title.setText(this.createStatusText(n, 2131492996));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493187), n));
+        this.title.setText(this.createStatusText(n, 2131493005));
         this.title.setClickable(true);
         this.title.setOnClickListener((View$OnClickListener)new AbsEpisodeView$1(this, errorWrapper$Callback));
         this.synopsis.setText((CharSequence)"");
@@ -216,8 +216,8 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     
     public void updateToLoadingState(int n) {
         ++n;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493177), n));
-        this.title.setText(this.createStatusText(n, 2131493165));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493186), n));
+        this.title.setText(this.createStatusText(n, 2131493174));
         this.title.setClickable(false);
         this.synopsis.setText((CharSequence)"");
         this.synopsis.setVisibility(this.getDefaultSynopsisVisibility());

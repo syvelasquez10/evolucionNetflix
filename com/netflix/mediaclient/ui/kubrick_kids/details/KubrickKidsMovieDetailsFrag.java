@@ -34,10 +34,10 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
     @Override
     protected DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener() {
         final DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener = super.setupDetailsPageParallaxScrollListener();
-        final View viewById = this.getActivity().findViewById(2131165294);
+        final View viewById = this.getActivity().findViewById(2131427444);
         if (setupDetailsPageParallaxScrollListener != null) {
-            setupDetailsPageParallaxScrollListener.setInitialBottomColor(this.recyclerView.getResources().getColor(2131296365));
-            setupDetailsPageParallaxScrollListener.setInitialTopColor(this.recyclerView.getResources().getColor(2131296364));
+            setupDetailsPageParallaxScrollListener.setInitialBottomColor(this.recyclerView.getResources().getColor(2131230829));
+            setupDetailsPageParallaxScrollListener.setInitialTopColor(this.recyclerView.getResources().getColor(2131230828));
             setupDetailsPageParallaxScrollListener.setOnScrollStateChangedListener(new KubrickKidsMovieDetailsFrag$1(this, viewById));
         }
         return setupDetailsPageParallaxScrollListener;
@@ -53,6 +53,6 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362011), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296475), this.numColumns));
     }
 }

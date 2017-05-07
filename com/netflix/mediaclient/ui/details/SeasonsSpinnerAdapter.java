@@ -59,7 +59,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         textView.setTag((Object)item.getSeasonNumber());
         textView.setText((CharSequence)item.getSeasonNumberTitle(this.context));
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBackgroundResource = 2131296356;
+            itemBackgroundResource = 2131230820;
         }
         else {
             itemBackgroundResource = this.itemBackgroundResource;

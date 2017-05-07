@@ -5,7 +5,7 @@
 package com.google.android.gms.common.images;
 
 import android.os.Parcel;
-import com.google.android.gms.common.internal.m;
+import com.google.android.gms.common.internal.zzt;
 import android.net.Uri;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -13,20 +13,20 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class WebImage implements SafeParcelable
 {
     public static final Parcelable$Creator<WebImage> CREATOR;
-    private final int BR;
-    private final Uri KJ;
-    private final int lf;
-    private final int lg;
+    private final int zzCY;
+    private final Uri zzZm;
+    private final int zznM;
+    private final int zznN;
     
     static {
-        CREATOR = (Parcelable$Creator)new b();
+        CREATOR = (Parcelable$Creator)new zzb();
     }
     
-    WebImage(final int br, final Uri kj, final int lf, final int lg) {
-        this.BR = br;
-        this.KJ = kj;
-        this.lf = lf;
-        this.lg = lg;
+    WebImage(final int zzCY, final Uri zzZm, final int zznM, final int zznN) {
+        this.zzCY = zzCY;
+        this.zzZm = zzZm;
+        this.zznM = zznM;
+        this.zznN = zznN;
     }
     
     public int describeContents() {
@@ -40,7 +40,7 @@ public final class WebImage implements SafeParcelable
                 return false;
             }
             final WebImage webImage = (WebImage)o;
-            if (!m.equal(this.KJ, webImage.KJ) || this.lf != webImage.lf || this.lg != webImage.lg) {
+            if (!zzt.equal(this.zzZm, webImage.zzZm) || this.zznM != webImage.zznM || this.zznN != webImage.zznN) {
                 return false;
             }
         }
@@ -48,32 +48,32 @@ public final class WebImage implements SafeParcelable
     }
     
     public int getHeight() {
-        return this.lg;
+        return this.zznN;
     }
     
     public Uri getUrl() {
-        return this.KJ;
+        return this.zzZm;
     }
     
     int getVersionCode() {
-        return this.BR;
+        return this.zzCY;
     }
     
     public int getWidth() {
-        return this.lf;
+        return this.zznM;
     }
     
     @Override
     public int hashCode() {
-        return m.hashCode(this.KJ, this.lf, this.lg);
+        return zzt.hashCode(this.zzZm, this.zznM, this.zznN);
     }
     
     @Override
     public String toString() {
-        return String.format("Image %dx%d %s", this.lf, this.lg, this.KJ.toString());
+        return String.format("Image %dx%d %s", this.zznM, this.zznN, this.zzZm.toString());
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        b.a(this, parcel, n);
+        zzb.zza(this, parcel, n);
     }
 }

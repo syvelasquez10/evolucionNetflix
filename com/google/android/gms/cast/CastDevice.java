@@ -7,7 +7,7 @@ package com.google.android.gms.cast;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Collections;
-import com.google.android.gms.internal.ik;
+import com.google.android.gms.cast.internal.zzf;
 import android.os.Bundle;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
@@ -21,49 +21,49 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class CastDevice implements SafeParcelable
 {
     public static final Parcelable$Creator<CastDevice> CREATOR;
-    private final int BR;
-    private String ER;
-    String ES;
-    private Inet4Address ET;
-    private String EU;
-    private String EV;
-    private String EW;
-    private int EX;
-    private List<WebImage> EY;
-    private int EZ;
-    private int Fa;
+    private final int zzCY;
+    private String zzQK;
+    String zzQL;
+    private Inet4Address zzQM;
+    private String zzQN;
+    private String zzQO;
+    private String zzQP;
+    private int zzQQ;
+    private List<WebImage> zzQR;
+    private int zzQS;
+    private int zzwS;
     
     static {
-        CREATOR = (Parcelable$Creator)new b();
+        CREATOR = (Parcelable$Creator)new zzb();
     }
     
     private CastDevice() {
         this(3, null, null, null, null, null, -1, new ArrayList<WebImage>(), 0, -1);
     }
     
-    CastDevice(final int br, final String er, final String es, final String eu, final String ev, final String ew, final int ex, final List<WebImage> ey, final int ez, final int fa) {
-        this.BR = br;
-        this.ER = er;
-        this.ES = es;
+    CastDevice(final int zzCY, final String zzQK, final String zzQL, final String zzQN, final String zzQO, final String zzQP, final int zzQQ, final List<WebImage> zzQR, final int zzQS, final int zzwS) {
+        this.zzCY = zzCY;
+        this.zzQK = zzQK;
+        this.zzQL = zzQL;
         while (true) {
-            if (this.ES == null) {
+            if (this.zzQL == null) {
                 break Label_0049;
             }
             try {
-                final InetAddress byName = InetAddress.getByName(this.ES);
+                final InetAddress byName = InetAddress.getByName(this.zzQL);
                 if (byName instanceof Inet4Address) {
-                    this.ET = (Inet4Address)byName;
+                    this.zzQM = (Inet4Address)byName;
                 }
-                this.EU = eu;
-                this.EV = ev;
-                this.EW = ew;
-                this.EX = ex;
-                this.EY = ey;
-                this.EZ = ez;
-                this.Fa = fa;
+                this.zzQN = zzQN;
+                this.zzQO = zzQO;
+                this.zzQP = zzQP;
+                this.zzQQ = zzQQ;
+                this.zzQR = zzQR;
+                this.zzQS = zzQS;
+                this.zzwS = zzwS;
             }
-            catch (UnknownHostException ex2) {
-                this.ET = null;
+            catch (UnknownHostException ex) {
+                this.zzQM = null;
                 continue;
             }
             break;
@@ -94,7 +94,7 @@ public class CastDevice implements SafeParcelable
                     return false;
                 }
             }
-            else if (!ik.a(this.ER, castDevice.ER) || !ik.a(this.ET, castDevice.ET) || !ik.a(this.EV, castDevice.EV) || !ik.a(this.EU, castDevice.EU) || !ik.a(this.EW, castDevice.EW) || this.EX != castDevice.EX || !ik.a(this.EY, castDevice.EY) || this.EZ != castDevice.EZ || this.Fa != castDevice.Fa) {
+            else if (!zzf.zza(this.zzQK, castDevice.zzQK) || !zzf.zza(this.zzQM, castDevice.zzQM) || !zzf.zza(this.zzQO, castDevice.zzQO) || !zzf.zza(this.zzQN, castDevice.zzQN) || !zzf.zza(this.zzQP, castDevice.zzQP) || this.zzQQ != castDevice.zzQQ || !zzf.zza(this.zzQR, castDevice.zzQR) || this.zzQS != castDevice.zzQS || this.zzwS != castDevice.zzwS) {
                 return false;
             }
         }
@@ -102,51 +102,51 @@ public class CastDevice implements SafeParcelable
     }
     
     public int getCapabilities() {
-        return this.EZ;
+        return this.zzQS;
     }
     
     public String getDeviceId() {
-        return this.ER;
+        return this.zzQK;
     }
     
     public String getDeviceVersion() {
-        return this.EW;
+        return this.zzQP;
     }
     
     public String getFriendlyName() {
-        return this.EU;
+        return this.zzQN;
     }
     
     public List<WebImage> getIcons() {
-        return Collections.unmodifiableList((List<? extends WebImage>)this.EY);
+        return Collections.unmodifiableList((List<? extends WebImage>)this.zzQR);
     }
     
     public Inet4Address getIpAddress() {
-        return this.ET;
+        return this.zzQM;
     }
     
     public String getModelName() {
-        return this.EV;
+        return this.zzQO;
     }
     
     public int getServicePort() {
-        return this.EX;
+        return this.zzQQ;
     }
     
     public int getStatus() {
-        return this.Fa;
+        return this.zzwS;
     }
     
     int getVersionCode() {
-        return this.BR;
+        return this.zzCY;
     }
     
     @Override
     public int hashCode() {
-        if (this.ER == null) {
+        if (this.zzQK == null) {
             return 0;
         }
-        return this.ER.hashCode();
+        return this.zzQK.hashCode();
     }
     
     public void putInBundle(final Bundle bundle) {
@@ -158,10 +158,10 @@ public class CastDevice implements SafeParcelable
     
     @Override
     public String toString() {
-        return String.format("\"%s\" (%s)", this.EU, this.ER);
+        return String.format("\"%s\" (%s)", this.zzQN, this.zzQK);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        b.a(this, parcel, n);
+        zzb.zza(this, parcel, n);
     }
 }

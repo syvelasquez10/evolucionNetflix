@@ -62,11 +62,11 @@ class RecommendToFriendsFrag$FriendsListAdapter$1 implements View$OnClickListene
     
     public void onClick(final View view) {
         if (this.this$1.this$0.mCheckedFriends.contains(this.val$profile)) {
-            this.val$holder.checkMark.setImageResource(2130837859);
+            this.val$holder.checkMark.setImageResource(2130837864);
             this.this$1.this$0.mCheckedFriends.remove(this.val$profile);
         }
         else {
-            this.val$holder.checkMark.setImageResource(2130837860);
+            this.val$holder.checkMark.setImageResource(2130837865);
             this.this$1.this$0.mCheckedFriends.add(this.val$profile);
         }
         this.this$1.this$0.updateTotalSelectedStatus();

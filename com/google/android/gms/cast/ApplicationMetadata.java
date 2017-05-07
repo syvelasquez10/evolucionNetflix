@@ -5,11 +5,11 @@
 package com.google.android.gms.cast;
 
 import android.os.Parcel;
-import com.google.android.gms.common.internal.m;
-import com.google.android.gms.internal.ik;
+import com.google.android.gms.common.internal.zzt;
+import com.google.android.gms.cast.internal.zzf;
 import java.util.ArrayList;
-import android.net.Uri;
 import com.google.android.gms.common.images.WebImage;
+import android.net.Uri;
 import java.util.List;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -17,32 +17,32 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class ApplicationMetadata implements SafeParcelable
 {
     public static final Parcelable$Creator<ApplicationMetadata> CREATOR;
-    private final int BR;
-    List<WebImage> EA;
-    List<String> EB;
-    String EC;
-    Uri ED;
-    String Ez;
     String mName;
+    private final int zzCY;
+    String zzQu;
+    List<String> zzQv;
+    String zzQw;
+    Uri zzQx;
+    List<WebImage> zzvi;
     
     static {
-        CREATOR = (Parcelable$Creator)new a();
+        CREATOR = (Parcelable$Creator)new zza();
     }
     
     private ApplicationMetadata() {
-        this.BR = 1;
-        this.EA = new ArrayList<WebImage>();
-        this.EB = new ArrayList<String>();
+        this.zzCY = 1;
+        this.zzvi = new ArrayList<WebImage>();
+        this.zzQv = new ArrayList<String>();
     }
     
-    ApplicationMetadata(final int br, final String ez, final String mName, final List<WebImage> ea, final List<String> eb, final String ec, final Uri ed) {
-        this.BR = br;
-        this.Ez = ez;
+    ApplicationMetadata(final int zzCY, final String zzQu, final String mName, final List<WebImage> zzvi, final List<String> zzQv, final String zzQw, final Uri zzQx) {
+        this.zzCY = zzCY;
+        this.zzQu = zzQu;
         this.mName = mName;
-        this.EA = ea;
-        this.EB = eb;
-        this.EC = ec;
-        this.ED = ed;
+        this.zzvi = zzvi;
+        this.zzQv = zzQv;
+        this.zzQw = zzQw;
+        this.zzQx = zzQx;
     }
     
     public int describeContents() {
@@ -56,23 +56,19 @@ public final class ApplicationMetadata implements SafeParcelable
                 return false;
             }
             final ApplicationMetadata applicationMetadata = (ApplicationMetadata)o;
-            if (!ik.a(this.Ez, applicationMetadata.Ez) || !ik.a(this.EA, applicationMetadata.EA) || !ik.a(this.mName, applicationMetadata.mName) || !ik.a(this.EB, applicationMetadata.EB) || !ik.a(this.EC, applicationMetadata.EC) || !ik.a(this.ED, applicationMetadata.ED)) {
+            if (!zzf.zza(this.zzQu, applicationMetadata.zzQu) || !zzf.zza(this.zzvi, applicationMetadata.zzvi) || !zzf.zza(this.mName, applicationMetadata.mName) || !zzf.zza(this.zzQv, applicationMetadata.zzQv) || !zzf.zza(this.zzQw, applicationMetadata.zzQw) || !zzf.zza(this.zzQx, applicationMetadata.zzQx)) {
                 return false;
             }
         }
         return true;
     }
     
-    public Uri fv() {
-        return this.ED;
-    }
-    
     public String getApplicationId() {
-        return this.Ez;
+        return this.zzQu;
     }
     
     public List<WebImage> getImages() {
-        return this.EA;
+        return this.zzvi;
     }
     
     public String getName() {
@@ -80,24 +76,45 @@ public final class ApplicationMetadata implements SafeParcelable
     }
     
     public String getSenderAppIdentifier() {
-        return this.EC;
+        return this.zzQw;
     }
     
     int getVersionCode() {
-        return this.BR;
+        return this.zzCY;
     }
     
     @Override
     public int hashCode() {
-        return m.hashCode(this.BR, this.Ez, this.mName, this.EA, this.EB, this.EC, this.ED);
+        return zzt.hashCode(this.zzCY, this.zzQu, this.mName, this.zzvi, this.zzQv, this.zzQw, this.zzQx);
     }
     
     @Override
     public String toString() {
-        return this.mName;
+        final int n = 0;
+        final StringBuilder append = new StringBuilder().append("applicationId: ").append(this.zzQu).append(", name: ").append(this.mName).append(", images.count: ");
+        int size;
+        if (this.zzvi == null) {
+            size = 0;
+        }
+        else {
+            size = this.zzvi.size();
+        }
+        final StringBuilder append2 = append.append(size).append(", namespaces.count: ");
+        int size2;
+        if (this.zzQv == null) {
+            size2 = n;
+        }
+        else {
+            size2 = this.zzQv.size();
+        }
+        return append2.append(size2).append(", senderAppIdentifier: ").append(this.zzQw).append(", senderAppLaunchUrl: ").append(this.zzQx).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        a.a(this, parcel, n);
+        zza.zza(this, parcel, n);
+    }
+    
+    public Uri zzlc() {
+        return this.zzQx;
     }
 }

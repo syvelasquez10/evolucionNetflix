@@ -53,15 +53,15 @@ public final class BottomPanel extends PlayerSection
     }
     
     private void init(final PlayScreen$Listeners playScreen$Listeners) {
-        this.durationLabel = (TextView)this.context.findViewById(2131165582);
-        this.bottomPanel = this.context.findViewById(2131165578);
-        this.bottomGradient = this.context.findViewById(2131165574);
-        (this.timeline = (TimelineSeekBar)this.context.findViewById(2131165581)).setOnSeekBarChangeListener(playScreen$Listeners.videoPositionListener);
+        this.durationLabel = (TextView)this.context.findViewById(2131427732);
+        this.bottomPanel = this.context.findViewById(2131427728);
+        this.bottomGradient = this.context.findViewById(2131427724);
+        (this.timeline = (TimelineSeekBar)this.context.findViewById(2131427731)).setOnSeekBarChangeListener(playScreen$Listeners.videoPositionListener);
         this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
-        (this.media = (ImageButton)this.context.findViewById(2131165579)).setOnClickListener(playScreen$Listeners.playPauseListener);
-        (this.skipBack = (ImageButton)this.context.findViewById(2131165580)).setOnClickListener(playScreen$Listeners.skipBackListener);
-        (this.zoom = (ImageButton)this.context.findViewById(2131165583)).setOnClickListener(playScreen$Listeners.zoomListener);
-        this.extraSeekbarHandler = this.context.findViewById(2131165592);
+        (this.media = (ImageButton)this.context.findViewById(2131427729)).setOnClickListener(playScreen$Listeners.playPauseListener);
+        (this.skipBack = (ImageButton)this.context.findViewById(2131427730)).setOnClickListener(playScreen$Listeners.skipBackListener);
+        (this.zoom = (ImageButton)this.context.findViewById(2131427733)).setOnClickListener(playScreen$Listeners.zoomListener);
+        this.extraSeekbarHandler = this.context.findViewById(2131427742);
         this.currentTime = CurrentTime.newInstance(this.context);
     }
     
@@ -83,10 +83,10 @@ public final class BottomPanel extends PlayerSection
         }
         int n;
         if (enabled) {
-            n = 2131296360;
+            n = 2131230824;
         }
         else {
-            n = 2131296373;
+            n = 2131230837;
         }
         this.durationLabel.setTextColor(this.context.getResources().getColor(n));
     }

@@ -188,22 +188,24 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
             if (mSyncRowId == Long.MIN_VALUE) {
                 return -1;
             }
-            int min = Math.min(mItemCount - 1, Math.max(0, mSyncPosition));
+            final int min = Math.min(mItemCount - 1, Math.max(0, mSyncPosition));
             final long uptimeMillis = SystemClock.uptimeMillis();
+            int n2 = 0;
             final Adapter adapter = this.getAdapter();
             if (adapter == null) {
                 return -1;
             }
-            int n2 = min;
             int n3 = min;
-            int n4 = 0;
+            final int n4 = min;
+            int n5 = min;
+            int n6 = n4;
             while (SystemClock.uptimeMillis() <= uptimeMillis + 100L) {
-                n = min;
-                if (adapter.getItemId(min) == mSyncRowId) {
+                n = n6;
+                if (adapter.getItemId(n6) == mSyncRowId) {
                     return n;
                 }
                 boolean b;
-                if (n2 == mItemCount - 1) {
+                if (n5 == mItemCount - 1) {
                     b = true;
                 }
                 else {
@@ -219,16 +221,18 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
                 if (b && b2) {
                     break;
                 }
-                if (b2 || (n4 != 0 && !b)) {
-                    min = ++n2;
-                    n4 = 0;
+                if (b2 || (n2 != 0 && !b)) {
+                    ++n5;
+                    n2 = 0;
+                    n6 = n5;
                 }
                 else {
-                    if (!b && (n4 != 0 || b2)) {
+                    if (!b && (n2 != 0 || b2)) {
                         continue;
                     }
-                    min = --n3;
-                    n4 = 1;
+                    --n3;
+                    n2 = 1;
+                    n6 = n3;
                 }
             }
             return -1;

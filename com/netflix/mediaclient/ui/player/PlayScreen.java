@@ -61,7 +61,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165566);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131427716);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -70,18 +70,18 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131165370);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131165369);
-        this.mBufferingOverlay = mController.findViewById(2131165588);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131427520);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131427519);
+        this.mBufferingOverlay = mController.findViewById(2131427738);
         int n;
         if (mController.isTablet()) {
-            n = 2131165585;
+            n = 2131427735;
         }
         else {
-            n = 2131165567;
+            n = 2131427717;
         }
         this.mBif = (ImageView)mController.findViewById(n);
-        this.mTabletBifsLayout = mController.findViewById(2131165584);
+        this.mTabletBifsLayout = mController.findViewById(2131427734);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -130,7 +130,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131296356);
+        final int color = this.mController.getResources().getColor(2131230820);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -149,7 +149,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131296356);
+        final int color = this.mController.getResources().getColor(2131230820);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }

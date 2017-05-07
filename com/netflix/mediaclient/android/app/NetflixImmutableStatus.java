@@ -9,6 +9,7 @@ import com.netflix.mediaclient.StatusCode;
 
 public final class NetflixImmutableStatus implements Status
 {
+    private static final long serialVersionUID = -5942279556763023564L;
     private final StatusCode mStatusCode;
     
     NetflixImmutableStatus(final StatusCode mStatusCode) {

@@ -4,19 +4,25 @@
 
 package com.google.android.gms.common.api;
 
+import android.os.Looper;
+import java.io.PrintWriter;
+import java.io.FileDescriptor;
+
 public interface GoogleApiClient
 {
-     <C extends Api$a> C a(final Api$c<C> p0);
-    
-     <A extends Api$a, T extends BaseImplementation$a<? extends Result, A>> T b(final T p0);
-    
     void connect();
     
     void disconnect();
     
+    void dump(final String p0, final FileDescriptor p1, final PrintWriter p2, final String[] p3);
+    
+    Looper getLooper();
+    
     boolean isConnected();
     
     boolean isConnecting();
+    
+    void reconnect();
     
     void registerConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks p0);
     
@@ -25,4 +31,10 @@ public interface GoogleApiClient
     void unregisterConnectionCallbacks(final GoogleApiClient$ConnectionCallbacks p0);
     
     void unregisterConnectionFailedListener(final GoogleApiClient$OnConnectionFailedListener p0);
+    
+     <C extends Api$Client> C zza(final Api$ClientKey<C> p0);
+    
+     <A extends Api$Client, R extends Result, T extends zza$zza<R, A>> T zza(final T p0);
+    
+     <A extends Api$Client, T extends zza$zza<? extends Result, A>> T zzb(final T p0);
 }

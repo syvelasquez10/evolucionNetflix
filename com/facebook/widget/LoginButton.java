@@ -178,10 +178,10 @@ public class LoginButton extends Button
     
     private void parseAttributes(final AttributeSet set) {
         final TypedArray obtainStyledAttributes = this.getContext().obtainStyledAttributes(set, R$styleable.com_facebook_login_view);
-        this.confirmLogout = obtainStyledAttributes.getBoolean(0, true);
-        this.fetchUserInfo = obtainStyledAttributes.getBoolean(1, true);
-        this.loginText = obtainStyledAttributes.getString(2);
-        this.logoutText = obtainStyledAttributes.getString(3);
+        this.confirmLogout = obtainStyledAttributes.getBoolean(R$styleable.com_facebook_login_view_confirm_logout, true);
+        this.fetchUserInfo = obtainStyledAttributes.getBoolean(R$styleable.com_facebook_login_view_fetch_user_info, true);
+        this.loginText = obtainStyledAttributes.getString(R$styleable.com_facebook_login_view_login_text);
+        this.logoutText = obtainStyledAttributes.getString(R$styleable.com_facebook_login_view_logout_text);
         obtainStyledAttributes.recycle();
     }
     

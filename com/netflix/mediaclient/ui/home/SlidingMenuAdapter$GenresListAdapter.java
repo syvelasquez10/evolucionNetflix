@@ -66,7 +66,7 @@ class SlidingMenuAdapter$GenresListAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             inflate = this.this$0.activity.getLayoutInflater().inflate(2130903099, (ViewGroup)null);
-            inflate.setTag((Object)new SlidingMenuAdapter$Holder((TextView)inflate.findViewById(2131165385), inflate.findViewById(2131165386)));
+            inflate.setTag((Object)new SlidingMenuAdapter$Holder((TextView)inflate.findViewById(2131427535), inflate.findViewById(2131427536)));
         }
         final SlidingMenuAdapter$Holder slidingMenuAdapter$Holder = (SlidingMenuAdapter$Holder)inflate.getTag();
         final GenreList item = this.getItem(n);

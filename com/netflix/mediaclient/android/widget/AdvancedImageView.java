@@ -56,7 +56,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public String getUrlTag() {
-        return (String)this.getTag(2131165246);
+        return (String)this.getTag(2131427338);
     }
     
     public void refreshImageIfNecessary() {
@@ -71,7 +71,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public void setUrlTag(final String s) {
-        this.setTag(2131165246, (Object)s);
+        this.setTag(2131427338, (Object)s);
     }
     
     protected boolean shouldDispatchToPressHandler() {

@@ -8,10 +8,10 @@ import android.content.Intent;
 
 public class GooglePlayServicesRepairableException extends UserRecoverableException
 {
-    private final int Dr;
+    private final int zzOD;
     
-    GooglePlayServicesRepairableException(final int dr, final String s, final Intent intent) {
+    GooglePlayServicesRepairableException(final int zzOD, final String s, final Intent intent) {
         super(s, intent);
-        this.Dr = dr;
+        this.zzOD = zzOD;
     }
 }

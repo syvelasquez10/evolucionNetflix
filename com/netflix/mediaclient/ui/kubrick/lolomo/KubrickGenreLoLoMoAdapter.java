@@ -44,10 +44,10 @@ public class KubrickGenreLoLoMoAdapter extends GenreLoLoMoAdapter
     
     @Override
     protected TextView initTitleView(final View view) {
-        final TextView textViewToBold = (TextView)view.findViewById(2131165447);
+        final TextView textViewToBold = (TextView)view.findViewById(2131427597);
         if (BrowseExperience.isKubrickKids()) {
-            textViewToBold.setTextColor(this.activity.getResources().getColor(2131296400));
-            textViewToBold.setTextSize(0, (float)this.activity.getResources().getDimensionPixelSize(2131361885));
+            textViewToBold.setTextColor(this.activity.getResources().getColor(2131230864));
+            textViewToBold.setTextSize(0, (float)this.activity.getResources().getDimensionPixelSize(2131296349));
             ViewUtils.setTextViewToBold(textViewToBold);
         }
         return textViewToBold;

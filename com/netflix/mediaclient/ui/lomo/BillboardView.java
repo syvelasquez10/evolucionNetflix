@@ -99,15 +99,15 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         if (Log.isLoggable()) {
             Log.v("BillboardView", "isTablet: " + this.isTablet + ", showArtworkOnly: " + this.showArtworkOnly);
         }
-        this.infoViewGroup = this.findViewById(2131165306);
-        this.label = (TextView)this.findViewById(2131165307);
-        this.info = (TextView)this.findViewById(2131165309);
-        this.synopsis = (TextView)this.findViewById(2131165310);
-        this.tvCard = (AdvancedImageView)this.findViewById(2131165308);
-        this.friendAvatar = (AdvancedImageView)this.findViewById(2131165312);
-        this.friendRecommendationText = (TextView)this.findViewById(2131165313);
-        this.postcardShadowOverlayGradient = this.findViewById(2131165305);
-        this.storyArt = (AdvancedImageView)this.findViewById(2131165302);
+        this.infoViewGroup = this.findViewById(2131427456);
+        this.label = (TextView)this.findViewById(2131427457);
+        this.info = (TextView)this.findViewById(2131427459);
+        this.synopsis = (TextView)this.findViewById(2131427460);
+        this.tvCard = (AdvancedImageView)this.findViewById(2131427458);
+        this.friendAvatar = (AdvancedImageView)this.findViewById(2131427462);
+        this.friendRecommendationText = (TextView)this.findViewById(2131427463);
+        this.postcardShadowOverlayGradient = this.findViewById(2131427455);
+        this.storyArt = (AdvancedImageView)this.findViewById(2131427452);
         int n;
         if (this.showArtworkOnly) {
             n = 0;
@@ -116,12 +116,12 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             n = DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) / 3;
         }
         this.storyArt.setPadding(n, 0, 0, 0);
-        this.shadowOverlay = this.findViewById(2131165303);
+        this.shadowOverlay = this.findViewById(2131427453);
         ((RelativeLayout$LayoutParams)this.shadowOverlay.getLayoutParams()).width = n;
-        this.shadowOverlayGradient = this.findViewById(2131165304);
+        this.shadowOverlayGradient = this.findViewById(2131427454);
         ((RelativeLayout$LayoutParams)this.shadowOverlayGradient.getLayoutParams()).leftMargin = n;
-        this.playButton = this.findViewById(2131165314);
-        this.infoButton = this.findViewById(2131165315);
+        this.playButton = this.findViewById(2131427464);
+        this.infoButton = this.findViewById(2131427465);
         this.updateViewVisibility();
         this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new BillboardView$1(this));
     }
@@ -236,7 +236,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             Log.v("BillboardView", "updating billboard, title: " + billboard.getTitle() + ", story url: " + billboard.getStoryUrl());
         }
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493173), billboard.getTitle());
+        final String format = String.format(this.getResources().getString(2131493182), billboard.getTitle());
         this.setContentDescription((CharSequence)format);
         if (billboard.getSocialBadge() != null && SocialUtils.isNotificationsFeatureSupported((NetflixActivity)this.getContext()) && StringUtils.isNotEmpty(billboard.getSocialBadge().getFullName())) {
             n = 1;
@@ -258,7 +258,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             this.friendAvatar.setVisibility(0);
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.friendAvatar, billboard.getSocialBadge().getImageUrl(), IClientLogging$AssetType.merchStill, format, true, true, 1);
             this.friendRecommendationText.setVisibility(0);
-            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131493383, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
+            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131493392, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
             this.mStoryId = billboard.getSocialBadge().getStoryId();
         }
         if (this.showArtworkOnly) {

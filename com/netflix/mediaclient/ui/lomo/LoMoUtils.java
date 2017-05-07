@@ -21,7 +21,7 @@ public class LoMoUtils
     }
     
     public static int getLomoFragImageOffsetLeftPx(final NetflixActivity netflixActivity) {
-        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131361913);
+        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131296377);
     }
     
     public static int getLomoFragOffsetLeftPx(final Activity activity) {
@@ -39,15 +39,15 @@ public class LoMoUtils
                 break;
             }
             case 1: {
-                lomoFragOffsetRightDimenId = 2131362009;
+                lomoFragOffsetRightDimenId = 2131296473;
                 break;
             }
             case 2: {
                 if (DeviceUtils.isLandscape((Context)netflixActivity)) {
-                    lomoFragOffsetRightDimenId = 2131362010;
+                    lomoFragOffsetRightDimenId = 2131296474;
                     break;
                 }
-                lomoFragOffsetRightDimenId = 2131361991;
+                lomoFragOffsetRightDimenId = 2131296455;
                 break;
             }
         }

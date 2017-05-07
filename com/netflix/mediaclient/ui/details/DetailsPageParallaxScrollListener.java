@@ -97,8 +97,8 @@ public final class DetailsPageParallaxScrollListener extends RecyclerView$OnScro
         if (this.recyclerView.getChildCount() > 0) {
             final View child = this.recyclerView.getChildAt(0);
             if (!((RecyclerViewHeaderAdapter)this.recyclerView.getAdapter()).isViewHeader(child, this.recyclerView)) {
-                if (this.seasonsSpinner != null && child.getTag(2131165257) != null) {
-                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131165257));
+                if (this.seasonsSpinner != null && child.getTag(2131427349) != null) {
+                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131427349));
                 }
                 if (this.scrollStateChanged != null) {
                     this.scrollStateChanged.onItemsShown();
@@ -167,7 +167,7 @@ public final class DetailsPageParallaxScrollListener extends RecyclerView$OnScro
     }
     
     private void setTrackerViewFinalPositions() {
-        this.trackerViewfinalXPosition = (int)this.recyclerView.getResources().getDimension(2131362006);
+        this.trackerViewfinalXPosition = (int)this.recyclerView.getResources().getDimension(2131296470);
     }
     
     private void setTrackerViewPos() {

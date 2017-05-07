@@ -61,7 +61,7 @@ public final class TopPanel extends PlayerSection
         this.mListeners = mListeners;
         this.mSocial = new Social(playerActivity, playerActivity.getSocialProviderCallback());
         (this.mActionBar = playerActivity.getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerActivity.findViewById(2131165577);
+        this.mTitleLabel = (TextView)playerActivity.findViewById(2131427727);
     }
     
     private void changeControlsVisibility(final boolean b) {
@@ -87,9 +87,9 @@ public final class TopPanel extends PlayerSection
         this.mdxTargetSelector.setTarget(localDevicePosition);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerActivity);
         mdxTargetSelectionDialog$Builder.setCancelable(false);
-        mdxTargetSelectionDialog$Builder.setTitle(2131493142);
+        mdxTargetSelectionDialog$Builder.setTitle(2131493151);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493230), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493239), this.getCurrentTitle()));
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerActivity, b));
         mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerActivity));
         return mdxTargetSelectionDialog$Builder.create();
@@ -107,24 +107,24 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initGeneric(final Menu menu) {
-        (this.mEpisodeSelector = menu.add(2131493227)).setVisible(this.mEpisodeSelectorEnabled);
-        this.mEpisodeSelector.setIcon(2130837683);
+        (this.mEpisodeSelector = menu.add(2131493236)).setVisible(this.mEpisodeSelectorEnabled);
+        this.mEpisodeSelector.setIcon(2130837688);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
-        this.mTopGradient = this.context.findViewById(2131165573);
-        this.mToolBar = (Toolbar)this.context.findViewById(2131165576);
+        this.mTopGradient = this.context.findViewById(2131427723);
+        this.mToolBar = (Toolbar)this.context.findViewById(2131427726);
     }
     
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$3(this));
-        (this.mLanguage = menu.add(2131493150)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837729);
+        (this.mLanguage = menu.add(2131493159)).setVisible(this.showLanguageMenuItem());
+        this.mLanguage.setIcon(2130837734);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131493148)).setIcon(2130837674);
+        (this.mMdxTarget = menu.add(2131493157)).setIcon(2130837679);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
         this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
@@ -134,7 +134,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu, final SeekBar$OnSeekBarChangeListener seekBar$OnSeekBarChangeListener) {
-        (this.mSound = menu.add(2131493181)).setIcon(2130837734);
+        (this.mSound = menu.add(2131493190)).setIcon(2130837739);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }

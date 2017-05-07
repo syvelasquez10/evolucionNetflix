@@ -4,30 +4,41 @@
 
 package com.google.android.gms.common;
 
-import com.google.android.gms.common.internal.m;
+import android.os.Parcel;
 import android.content.Intent;
 import android.app.Activity;
+import com.google.android.gms.common.internal.zzt;
 import android.app.PendingIntent;
+import android.os.Parcelable$Creator;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public final class ConnectionResult
+public final class ConnectionResult implements SafeParcelable
 {
-    public static final ConnectionResult HE;
-    private final int HF;
+    public static final Parcelable$Creator<ConnectionResult> CREATOR;
+    public static final ConnectionResult zzVF;
     private final PendingIntent mPendingIntent;
+    final int zzCY;
+    private final int zzTR;
     
     static {
-        HE = new ConnectionResult(0, null);
+        zzVF = new ConnectionResult(0, null);
+        CREATOR = (Parcelable$Creator)new zzb();
     }
     
-    public ConnectionResult(final int hf, final PendingIntent mPendingIntent) {
-        this.HF = hf;
+    ConnectionResult(final int zzCY, final int zzTR, final PendingIntent mPendingIntent) {
+        this.zzCY = zzCY;
+        this.zzTR = zzTR;
         this.mPendingIntent = mPendingIntent;
     }
     
-    private String fY() {
-        switch (this.HF) {
+    public ConnectionResult(final int n, final PendingIntent pendingIntent) {
+        this(1, n, pendingIntent);
+    }
+    
+    static String getStatusString(final int n) {
+        switch (n) {
             default: {
-                return "unknown status code " + this.HF;
+                return "UNKNOWN_ERROR_CODE(" + n + ")";
             }
             case 0: {
                 return "SUCCESS";
@@ -74,11 +85,38 @@ public final class ConnectionResult
             case 15: {
                 return "INTERRUPTED";
             }
+            case 16: {
+                return "API_UNAVAILABLE";
+            }
+            case 17: {
+                return "SIGN_IN_FAILED";
+            }
+            case 18: {
+                return "SERVICE_UPDATING";
+            }
         }
     }
     
+    public int describeContents() {
+        return 0;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (o != this) {
+            if (!(o instanceof ConnectionResult)) {
+                return false;
+            }
+            final ConnectionResult connectionResult = (ConnectionResult)o;
+            if (this.zzTR != connectionResult.zzTR || !zzt.equal(this.mPendingIntent, connectionResult.mPendingIntent)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public int getErrorCode() {
-        return this.HF;
+        return this.zzTR;
     }
     
     public PendingIntent getResolution() {
@@ -86,11 +124,16 @@ public final class ConnectionResult
     }
     
     public boolean hasResolution() {
-        return this.HF != 0 && this.mPendingIntent != null;
+        return this.zzTR != 0 && this.mPendingIntent != null;
+    }
+    
+    @Override
+    public int hashCode() {
+        return zzt.hashCode(this.zzTR, this.mPendingIntent);
     }
     
     public boolean isSuccess() {
-        return this.HF == 0;
+        return this.zzTR == 0;
     }
     
     public void startResolutionForResult(final Activity activity, final int n) {
@@ -102,6 +145,10 @@ public final class ConnectionResult
     
     @Override
     public String toString() {
-        return m.h(this).a("statusCode", this.fY()).a("resolution", this.mPendingIntent).toString();
+        return zzt.zzt(this).zzg("statusCode", getStatusString(this.zzTR)).zzg("resolution", this.mPendingIntent).toString();
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        zzb.zza(this, parcel, n);
     }
 }

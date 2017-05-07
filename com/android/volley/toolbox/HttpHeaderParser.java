@@ -18,172 +18,172 @@ public class HttpHeaderParser
         // 
         // Original Bytecode:
         // 
-        //     0: invokestatic    java/lang/System.currentTimeMillis:()J
-        //     3: lstore          12
-        //     5: aload_0        
-        //     6: getfield        com/android/volley/NetworkResponse.headers:Ljava/util/Map;
-        //     9: astore          14
-        //    11: lconst_0       
-        //    12: lstore          6
-        //    14: lconst_0       
-        //    15: lstore          10
-        //    17: lconst_0       
-        //    18: lstore          4
-        //    20: iconst_0       
-        //    21: istore_2       
-        //    22: aload           14
-        //    24: ldc             "Date"
-        //    26: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
-        //    31: checkcast       Ljava/lang/String;
-        //    34: astore          15
-        //    36: aload           15
-        //    38: ifnull          48
-        //    41: aload           15
-        //    43: invokestatic    com/android/volley/toolbox/HttpHeaderParser.parseDateAsEpoch:(Ljava/lang/String;)J
-        //    46: lstore          6
-        //    48: aload           14
-        //    50: ldc             "Cache-Control"
-        //    52: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
-        //    57: checkcast       Ljava/lang/String;
-        //    60: astore          15
-        //    62: lload           4
-        //    64: lstore          8
-        //    66: aload           15
-        //    68: ifnull          187
-        //    71: iconst_1       
-        //    72: istore_3       
-        //    73: aload           15
-        //    75: ldc             ","
-        //    77: invokevirtual   java/lang/String.split:(Ljava/lang/String;)[Ljava/lang/String;
-        //    80: astore          15
-        //    82: iconst_0       
-        //    83: istore_1       
-        //    84: lload           4
-        //    86: lstore          8
-        //    88: iload_3        
-        //    89: istore_2       
-        //    90: iload_1        
-        //    91: aload           15
-        //    93: arraylength    
-        //    94: if_icmpge       187
-        //    97: aload           15
-        //    99: iload_1        
-        //   100: aaload         
-        //   101: invokevirtual   java/lang/String.trim:()Ljava/lang/String;
-        //   104: astore          16
-        //   106: aload           16
-        //   108: ldc             "no-cache"
-        //   110: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
-        //   113: ifne            126
-        //   116: aload           16
-        //   118: ldc             "no-store"
-        //   120: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
-        //   123: ifeq            128
-        //   126: aconst_null    
-        //   127: areturn        
-        //   128: aload           16
-        //   130: ldc             "max-age="
-        //   132: invokevirtual   java/lang/String.startsWith:(Ljava/lang/String;)Z
-        //   135: ifeq            161
-        //   138: aload           16
-        //   140: bipush          8
-        //   142: invokevirtual   java/lang/String.substring:(I)Ljava/lang/String;
-        //   145: invokestatic    java/lang/Long.parseLong:(Ljava/lang/String;)J
-        //   148: lstore          8
-        //   150: lload           8
-        //   152: lstore          4
-        //   154: iload_1        
-        //   155: iconst_1       
-        //   156: iadd           
-        //   157: istore_1       
-        //   158: goto            84
-        //   161: aload           16
-        //   163: ldc             "must-revalidate"
-        //   165: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
-        //   168: ifne            181
-        //   171: aload           16
-        //   173: ldc             "proxy-revalidate"
-        //   175: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
-        //   178: ifeq            154
-        //   181: lconst_0       
-        //   182: lstore          4
-        //   184: goto            154
-        //   187: aload           14
-        //   189: ldc             "Expires"
-        //   191: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
-        //   196: checkcast       Ljava/lang/String;
-        //   199: astore          15
-        //   201: lload           10
-        //   203: lstore          4
-        //   205: aload           15
-        //   207: ifnull          217
-        //   210: aload           15
-        //   212: invokestatic    com/android/volley/toolbox/HttpHeaderParser.parseDateAsEpoch:(Ljava/lang/String;)J
-        //   215: lstore          4
-        //   217: aload           14
-        //   219: ldc             "ETag"
-        //   221: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
-        //   226: checkcast       Ljava/lang/String;
-        //   229: astore          15
-        //   231: iload_2        
-        //   232: ifeq            305
-        //   235: lload           8
-        //   237: ldc2_w          1000
-        //   240: lmul           
-        //   241: lload           12
-        //   243: ladd           
-        //   244: lstore          4
-        //   246: new             Lcom/android/volley/Cache$Entry;
-        //   249: dup            
-        //   250: invokespecial   com/android/volley/Cache$Entry.<init>:()V
-        //   253: astore          16
-        //   255: aload           16
-        //   257: aload_0        
-        //   258: getfield        com/android/volley/NetworkResponse.data:[B
-        //   261: putfield        com/android/volley/Cache$Entry.data:[B
-        //   264: aload           16
-        //   266: aload           15
-        //   268: putfield        com/android/volley/Cache$Entry.etag:Ljava/lang/String;
-        //   271: aload           16
-        //   273: lload           4
-        //   275: putfield        com/android/volley/Cache$Entry.softTtl:J
-        //   278: aload           16
-        //   280: aload           16
-        //   282: getfield        com/android/volley/Cache$Entry.softTtl:J
-        //   285: putfield        com/android/volley/Cache$Entry.ttl:J
-        //   288: aload           16
-        //   290: lload           6
-        //   292: putfield        com/android/volley/Cache$Entry.serverDate:J
-        //   295: aload           16
-        //   297: aload           14
-        //   299: putfield        com/android/volley/Cache$Entry.responseHeaders:Ljava/util/Map;
-        //   302: aload           16
-        //   304: areturn        
-        //   305: lload           6
-        //   307: lconst_0       
-        //   308: lcmp           
-        //   309: ifle            338
-        //   312: lload           4
-        //   314: lload           6
-        //   316: lcmp           
-        //   317: iflt            338
-        //   320: lload           4
-        //   322: lload           6
-        //   324: lsub           
-        //   325: lload           12
-        //   327: ladd           
-        //   328: lstore          4
-        //   330: goto            246
-        //   333: astore          16
-        //   335: goto            154
-        //   338: lconst_0       
-        //   339: lstore          4
-        //   341: goto            246
+        //     0: iconst_0       
+        //     1: istore_1       
+        //     2: lconst_0       
+        //     3: lstore          8
+        //     5: invokestatic    java/lang/System.currentTimeMillis:()J
+        //     8: lstore          10
+        //    10: aload_0        
+        //    11: getfield        com/android/volley/NetworkResponse.headers:Ljava/util/Map;
+        //    14: astore          12
+        //    16: aload           12
+        //    18: ldc             "Date"
+        //    20: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //    25: checkcast       Ljava/lang/String;
+        //    28: astore          13
+        //    30: aload           13
+        //    32: ifnull          331
+        //    35: aload           13
+        //    37: invokestatic    com/android/volley/toolbox/HttpHeaderParser.parseDateAsEpoch:(Ljava/lang/String;)J
+        //    40: lstore          4
+        //    42: aload           12
+        //    44: ldc             "Cache-Control"
+        //    46: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //    51: checkcast       Ljava/lang/String;
+        //    54: astore          13
+        //    56: aload           13
+        //    58: ifnull          326
+        //    61: aload           13
+        //    63: ldc             ","
+        //    65: invokevirtual   java/lang/String.split:(Ljava/lang/String;)[Ljava/lang/String;
+        //    68: astore          13
+        //    70: iconst_0       
+        //    71: istore_1       
+        //    72: lconst_0       
+        //    73: lstore_2       
+        //    74: iload_1        
+        //    75: aload           13
+        //    77: arraylength    
+        //    78: if_icmpge       169
+        //    81: aload           13
+        //    83: iload_1        
+        //    84: aaload         
+        //    85: invokevirtual   java/lang/String.trim:()Ljava/lang/String;
+        //    88: astore          14
+        //    90: aload           14
+        //    92: ldc             "no-cache"
+        //    94: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
+        //    97: ifne            110
+        //   100: aload           14
+        //   102: ldc             "no-store"
+        //   104: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
+        //   107: ifeq            112
+        //   110: aconst_null    
+        //   111: areturn        
+        //   112: aload           14
+        //   114: ldc             "max-age="
+        //   116: invokevirtual   java/lang/String.startsWith:(Ljava/lang/String;)Z
+        //   119: ifeq            144
+        //   122: aload           14
+        //   124: bipush          8
+        //   126: invokevirtual   java/lang/String.substring:(I)Ljava/lang/String;
+        //   129: invokestatic    java/lang/Long.parseLong:(Ljava/lang/String;)J
+        //   132: lstore          6
+        //   134: lload           6
+        //   136: lstore_2       
+        //   137: iload_1        
+        //   138: iconst_1       
+        //   139: iadd           
+        //   140: istore_1       
+        //   141: goto            74
+        //   144: aload           14
+        //   146: ldc             "must-revalidate"
+        //   148: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
+        //   151: ifne            164
+        //   154: aload           14
+        //   156: ldc             "proxy-revalidate"
+        //   158: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
+        //   161: ifeq            137
+        //   164: lconst_0       
+        //   165: lstore_2       
+        //   166: goto            137
+        //   169: iconst_1       
+        //   170: istore_1       
+        //   171: aload           12
+        //   173: ldc             "Expires"
+        //   175: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //   180: checkcast       Ljava/lang/String;
+        //   183: astore          13
+        //   185: aload           13
+        //   187: ifnull          320
+        //   190: aload           13
+        //   192: invokestatic    com/android/volley/toolbox/HttpHeaderParser.parseDateAsEpoch:(Ljava/lang/String;)J
+        //   195: lstore          6
+        //   197: aload           12
+        //   199: ldc             "ETag"
+        //   201: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //   206: checkcast       Ljava/lang/String;
+        //   209: astore          13
+        //   211: iload_1        
+        //   212: ifeq            282
+        //   215: ldc2_w          1000
+        //   218: lload_2        
+        //   219: lmul           
+        //   220: lload           10
+        //   222: ladd           
+        //   223: lstore_2       
+        //   224: new             Lcom/android/volley/Cache$Entry;
+        //   227: dup            
+        //   228: invokespecial   com/android/volley/Cache$Entry.<init>:()V
+        //   231: astore          14
+        //   233: aload           14
+        //   235: aload_0        
+        //   236: getfield        com/android/volley/NetworkResponse.data:[B
+        //   239: putfield        com/android/volley/Cache$Entry.data:[B
+        //   242: aload           14
+        //   244: aload           13
+        //   246: putfield        com/android/volley/Cache$Entry.etag:Ljava/lang/String;
+        //   249: aload           14
+        //   251: lload_2        
+        //   252: putfield        com/android/volley/Cache$Entry.softTtl:J
+        //   255: aload           14
+        //   257: aload           14
+        //   259: getfield        com/android/volley/Cache$Entry.softTtl:J
+        //   262: putfield        com/android/volley/Cache$Entry.ttl:J
+        //   265: aload           14
+        //   267: lload           4
+        //   269: putfield        com/android/volley/Cache$Entry.serverDate:J
+        //   272: aload           14
+        //   274: aload           12
+        //   276: putfield        com/android/volley/Cache$Entry.responseHeaders:Ljava/util/Map;
+        //   279: aload           14
+        //   281: areturn        
+        //   282: lload           8
+        //   284: lstore_2       
+        //   285: lload           4
+        //   287: lconst_0       
+        //   288: lcmp           
+        //   289: ifle            224
+        //   292: lload           8
+        //   294: lstore_2       
+        //   295: lload           6
+        //   297: lload           4
+        //   299: lcmp           
+        //   300: iflt            224
+        //   303: lload           6
+        //   305: lload           4
+        //   307: lsub           
+        //   308: lload           10
+        //   310: ladd           
+        //   311: lstore_2       
+        //   312: goto            224
+        //   315: astore          14
+        //   317: goto            137
+        //   320: lconst_0       
+        //   321: lstore          6
+        //   323: goto            197
+        //   326: lconst_0       
+        //   327: lstore_2       
+        //   328: goto            171
+        //   331: lconst_0       
+        //   332: lstore          4
+        //   334: goto            42
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  138    150    333    338    Ljava/lang/Exception;
+        //  122    134    315    320    Ljava/lang/Exception;
         // 
         // The error that occurred was:
         // 

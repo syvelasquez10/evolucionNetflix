@@ -22,8 +22,8 @@ class KubrickLolomoUtils$HeroTitleScroller
     public KubrickLolomoUtils$HeroTitleScroller(final LoLoMoFrag frag) {
         this.frag = frag;
         final Resources resources = frag.getResources();
-        this.titleMarginTopPx = resources.getDimensionPixelSize(2131361993);
-        this.textPadding = resources.getDimensionPixelOffset(2131361877);
+        this.titleMarginTopPx = resources.getDimensionPixelSize(2131296457);
+        this.textPadding = resources.getDimensionPixelOffset(2131296341);
     }
     
     private int computeScrollingThreshPx(final KubrickLolomoUtils$KubrickRowHolder kubrickLolomoUtils$KubrickRowHolder, final View view) {

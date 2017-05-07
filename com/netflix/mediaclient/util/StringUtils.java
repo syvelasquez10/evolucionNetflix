@@ -82,7 +82,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         string = s;
         if (isEmpty(s)) {
-            string = context.getString(2131493159);
+            string = context.getString(2131493168);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string);
@@ -161,7 +161,7 @@ public final class StringUtils
         if (isNotEmpty(s)) {
             sb.append(s).append("   ");
         }
-        sb.append(resources.getString(2131493166, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
+        sb.append(resources.getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
         return sb.toString();
     }
     

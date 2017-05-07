@@ -42,14 +42,14 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
     @Override
     protected DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener() {
         if (this.getActivity() != null && this.getRecyclerView() != null && this.getRecyclerView().getContext() instanceof NetflixActivity) {
-            final View viewById = this.getActivity().findViewById(2131165294);
+            final View viewById = this.getActivity().findViewById(2131427444);
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), (View)this.detailsViewGroup.getBackgroundImage(), (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131296363), 0, null);
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), (View)this.detailsViewGroup.getBackgroundImage(), (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131230827), 0, null);
                 this.getRecyclerView().setOnScrollListener(onScrollListener);
-                onScrollListener.setInitialBottomColor(this.recyclerView.getResources().getColor(2131296365));
-                onScrollListener.setInitialTopColor(this.recyclerView.getResources().getColor(2131296364));
+                onScrollListener.setInitialBottomColor(this.recyclerView.getResources().getColor(2131230829));
+                onScrollListener.setInitialTopColor(this.recyclerView.getResources().getColor(2131230828));
                 onScrollListener.setOnScrollStateChangedListener(new KubrickKidsCharacterDetailsFrag$1(this, viewById));
                 return onScrollListener;
             }

@@ -47,7 +47,7 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837876);
+        this.setBackgroundResource(2130837881);
         this.setScaleType(ImageView$ScaleType.CENTER_CROP);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
         this.showPlaceholderImg = !BrowseExperience.isKubrickKids();

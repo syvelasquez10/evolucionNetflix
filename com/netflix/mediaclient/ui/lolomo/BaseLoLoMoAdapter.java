@@ -99,22 +99,22 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165448);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131427598);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131165446);
+        final TextView textView = (TextView)view.findViewById(2131427596);
         final Resources resources = this.activity.getResources();
         int n;
         if (BrowseExperience.isKubrickKids()) {
-            n = 2131296358;
+            n = 2131230822;
         }
         else {
-            n = 2131296371;
+            n = 2131230835;
         }
         textView.setTextColor(resources.getColor(n));
         final BaseLoLoMoAdapter$LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
         final TextView initTitleView = this.initTitleView(view);
         ((RelativeLayout$LayoutParams)initTitleView.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragImageOffsetLeftPx(this.activity);
-        return this.createHolder(view, linearLayout, initTitleView, rowContent, view.findViewById(2131165495));
+        return this.createHolder(view, linearLayout, initTitleView, rowContent, view.findViewById(2131427645));
     }
     
     private void fetchMoreData() {
@@ -270,14 +270,14 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     protected TextView initTitleView(final View view) {
         if (BrowseExperience.isKubrickKids()) {
-            view.findViewById(2131165447).setVisibility(8);
-            final TextView textView = (TextView)view.findViewById(2131165496);
+            view.findViewById(2131427597).setVisibility(8);
+            final TextView textView = (TextView)view.findViewById(2131427646);
             if (textView != null) {
                 textView.setVisibility(0);
             }
             return textView;
         }
-        return (TextView)view.findViewById(2131165447);
+        return (TextView)view.findViewById(2131427597);
     }
     
     public boolean isEnabled(final int n) {
@@ -378,7 +378,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final TextView title = baseLoLoMoAdapter$RowHolder.title;
         String text;
         if (t.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131493281);
+            text = this.activity.getString(2131493290);
         }
         else {
             text = t.getTitle();
@@ -417,9 +417,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
                 baseLoLoMoAdapter$RowHolder.title.setTextColor(baseLoLoMoAdapter$RowHolder.defaultTitleColors);
                 return;
             }
-            baseLoLoMoAdapter$RowHolder.contentGroup.setBackgroundResource(2130837744);
+            baseLoLoMoAdapter$RowHolder.contentGroup.setBackgroundResource(2130837749);
             baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
-            baseLoLoMoAdapter$RowHolder.title.setTextColor(this.activity.getResources().getColor(2131296360));
+            baseLoLoMoAdapter$RowHolder.title.setTextColor(this.activity.getResources().getColor(2131230824));
         }
     }
 }

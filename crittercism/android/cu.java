@@ -94,6 +94,8 @@ public final class cu extends db
                                                     az.A().a((bh)jsonObject);
                                                 }
                                                 return;
+                                                dy.a = dy$a.c;
+                                                break;
                                                 try {
                                                     if ((n = optJSONObject.getInt("rateAfterLoadNum")) < 0) {
                                                         n = 0;
@@ -111,8 +113,6 @@ public final class cu extends db
                                                     m.a(false);
                                                 }
                                                 break Label_0065;
-                                                dy.a = dy$a.c;
-                                                break;
                                             }
                                             catch (IOException ex) {
                                                 new StringBuilder("IOException in handleResponse(): ").append(ex.getMessage());

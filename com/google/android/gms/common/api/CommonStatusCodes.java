@@ -50,6 +50,18 @@ public class CommonStatusCodes
             case 11: {
                 return "LICENSE_CHECK_FAILED";
             }
+            case 13: {
+                return "ERROR_OPERATION_FAILED";
+            }
+            case 14: {
+                return "INTERRUPTED";
+            }
+            case 15: {
+                return "TIMEOUT";
+            }
+            case 16: {
+                return "CANCELED";
+            }
             case 3000: {
                 return "AUTH_API_INVALID_CREDENTIALS";
             }

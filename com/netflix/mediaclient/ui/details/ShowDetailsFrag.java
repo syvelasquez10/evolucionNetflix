@@ -67,7 +67,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     
     @Override
     protected void initDetailsViewGroup(final View view) {
-        this.detailsViewGroup = (VideoDetailsViewGroup)view.findViewById(2131165702);
+        this.detailsViewGroup = (VideoDetailsViewGroup)view.findViewById(2131427852);
     }
     
     public boolean isLoadingData() {
@@ -84,7 +84,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131165708);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131427858);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {

@@ -32,8 +32,8 @@ public class InvalidCountryAlertDialog extends NetflixDialogFrag
     public Dialog onCreateDialog(final Bundle bundle) {
         super.onCreate(bundle);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setPositiveButton(2131492994, ((HomeActivity)this.getActivity()).invalidCountryDialogListener);
-        alertDialog$Builder.setMessage((CharSequence)this.getString(2131493384));
+        alertDialog$Builder.setPositiveButton(2131493003, ((HomeActivity)this.getActivity()).invalidCountryDialogListener);
+        alertDialog$Builder.setMessage((CharSequence)this.getString(2131493393));
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
         return (Dialog)create;

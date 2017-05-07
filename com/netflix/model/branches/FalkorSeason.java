@@ -99,7 +99,7 @@ public class FalkorSeason extends BaseFalkorObject implements BasicVideo, Season
     
     @Override
     public String getSeasonNumberTitle(final Context context) {
-        return String.format(context.getString(2131493164), this.getSeasonNumber());
+        return String.format(context.getString(2131493173), this.getSeasonNumber());
     }
     
     @Override

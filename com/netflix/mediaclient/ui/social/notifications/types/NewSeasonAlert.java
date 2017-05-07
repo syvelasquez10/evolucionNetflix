@@ -45,10 +45,10 @@ public class NewSeasonAlert extends SocialNotification
         socialNotificationViewHolder.getFriendImage().setVisibility(8);
         int backgroundResource;
         if (socialNotificationSummary.getWasRead()) {
-            backgroundResource = 2130837872;
+            backgroundResource = 2130837877;
         }
         else {
-            backgroundResource = 2131296425;
+            backgroundResource = 2131230889;
         }
         view.setBackgroundResource(backgroundResource);
         socialNotificationViewHolder.getMovieArtImage().setVisibility(8);

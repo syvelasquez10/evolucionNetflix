@@ -50,6 +50,6 @@ class SignupActivity$8 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493126), this.this$0.getString(2131492994), null)));
+        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493135), this.this$0.getString(2131493003), null)));
     }
 }

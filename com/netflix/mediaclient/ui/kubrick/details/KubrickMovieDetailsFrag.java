@@ -79,7 +79,7 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements DialogM
     
     @Override
     protected int retrieveNumColumns() {
-        return this.getActivity().getResources().getInteger(2131427338);
+        return this.getActivity().getResources().getInteger(2131361802);
     }
     
     @Override
@@ -90,6 +90,6 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements DialogM
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361997), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296461), this.numColumns));
     }
 }

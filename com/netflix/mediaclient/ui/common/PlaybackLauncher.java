@@ -91,10 +91,10 @@ public final class PlaybackLauncher
                 verifyPinAndPlay(netflixActivity, asset, true);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131493385);
+                displayErrorDialog(netflixActivity, 2131493394);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131493386);
+                displayErrorDialog(netflixActivity, 2131493395);
             }
         }
     }
@@ -126,7 +126,7 @@ public final class PlaybackLauncher
                 return;
             }
             Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131493385);
+            displayErrorDialog(netflixActivity, 2131493394);
         }
     }
     

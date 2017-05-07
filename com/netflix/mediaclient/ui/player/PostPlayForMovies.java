@@ -94,12 +94,12 @@ public final class PostPlayForMovies extends PostPlay
     
     private void init() {
         this.mVideoWindow = VideoWindowForPostplayFactory.createVideoWindow(this.mContext);
-        this.addBoxArt(2131165610, 0);
-        this.addBoxArt(2131165612, 1);
-        this.addBoxArt(2131165614, 2);
-        this.addPlayButton(2131165611, 0);
-        this.addPlayButton(2131165613, 1);
-        this.addPlayButton(2131165615, 2);
+        this.addBoxArt(2131427760, 0);
+        this.addBoxArt(2131427762, 1);
+        this.addBoxArt(2131427764, 2);
+        this.addPlayButton(2131427761, 0);
+        this.addPlayButton(2131427763, 1);
+        this.addPlayButton(2131427765, 2);
     }
     
     private void updateUi(final PostPlayVideo video, final int n) {
@@ -109,7 +109,7 @@ public final class PostPlayForMovies extends PostPlay
                 title = "";
             }
             final String storyUrl = video.getStoryUrl();
-            final String format = String.format(this.mContext.getResources().getString(2131493292), title);
+            final String format = String.format(this.mContext.getResources().getString(2131493301), title);
             if (!StringUtils.isEmpty(storyUrl)) {
                 NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging$AssetType.merchStill, format, true, true, 1);
             }
@@ -186,10 +186,10 @@ public final class PostPlayForMovies extends PostPlay
     
     @Override
     void findViews() {
-        this.mRatingBar = (NetflixRatingBar)this.mContext.findViewById(2131165424);
-        this.mVideoDetails = (TextView)this.mContext.findViewById(2131165609);
-        this.mBackgroundContainer = this.mContext.findViewById(2131165616);
-        this.mMetadata = this.mContext.findViewById(2131165608);
+        this.mRatingBar = (NetflixRatingBar)this.mContext.findViewById(2131427574);
+        this.mVideoDetails = (TextView)this.mContext.findViewById(2131427759);
+        this.mBackgroundContainer = this.mContext.findViewById(2131427766);
+        this.mMetadata = this.mContext.findViewById(2131427758);
     }
     
     @Override
@@ -253,7 +253,7 @@ public final class PostPlayForMovies extends PostPlay
                         if (postPlayVideo.getStoryUrl() != null) {
                             NetflixActivity.getImageLoader((Context)this.mContext).getImg(postPlayVideo.getStoryUrl(), IClientLogging$AssetType.merchStill, 1920, 1080, this.mImageLoaderListener);
                         }
-                        final String format = String.format(this.mContext.getResources().getString(2131493292), title);
+                        final String format = String.format(this.mContext.getResources().getString(2131493301), title);
                         if (postPlayVideo.getHorzDispUrl() != null) {
                             NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mRecommendationBoxArts.get(i), postPlayVideo.getHorzDispUrl(), IClientLogging$AssetType.merchStill, format, true, true, 1);
                         }

@@ -49,7 +49,7 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlayViewGroup = this.findViewById(2131165600);
+        this.postPlayViewGroup = this.findViewById(2131427750);
         this.postPlayController = PostPlayFactory.create(this, PostPlayFactory$PostPlayType.EpisodesForMDX);
     }
     

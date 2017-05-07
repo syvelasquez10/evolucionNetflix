@@ -75,9 +75,9 @@ public class SearchActionBar extends NetflixActionBar
     private void initViews() {
         final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903066, (ViewGroup)null);
         if (inflate != null) {
-            this.searchView = (SearchView)inflate.findViewById(2131165295);
+            this.searchView = (SearchView)inflate.findViewById(2131427445);
             final ActionBar$LayoutParams actionBar$LayoutParams = new ActionBar$LayoutParams(-1, -2, 8388613);
-            this.progressSpinner = (ProgressBar)inflate.findViewById(2131165296);
+            this.progressSpinner = (ProgressBar)inflate.findViewById(2131427446);
             this.systemActionBar.setCustomView(inflate, actionBar$LayoutParams);
         }
     }
@@ -100,7 +100,7 @@ public class SearchActionBar extends NetflixActionBar
             return;
         }
         this.searchView.setImeOptions(33554435);
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493191));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493200));
         this.searchView.setInputType(8192);
         this.searchView.setQueryRefinementEnabled(true);
         this.searchView.setSubmitButtonEnabled(false);
@@ -136,7 +136,7 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getActiveSearchIconResId() {
-        return 2130837722;
+        return 2130837727;
     }
     
     protected Integer getSearchCloseButtonTint() {
@@ -144,15 +144,15 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130837865;
+        return 2130837870;
     }
     
     protected int getSearchViewRightBgResId() {
-        return 2130837867;
+        return 2130837872;
     }
     
     protected int getSearchViewTextColorResId() {
-        return 2131296371;
+        return 2131230835;
     }
     
     protected Integer getSearchVoiceButtonTint() {

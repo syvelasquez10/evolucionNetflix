@@ -27,7 +27,7 @@ public class SharingDialogFrag extends NetflixDialogFrag implements MdxMiniPlaye
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(2130903197, viewGroup, false);
-        inflate.findViewById(2131165679).setOnClickListener((View$OnClickListener)new SharingDialogFrag$1(this));
+        inflate.findViewById(2131427829).setOnClickListener((View$OnClickListener)new SharingDialogFrag$1(this));
         return inflate;
     }
 }

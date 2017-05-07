@@ -5,8 +5,8 @@
 package com.google.android.gms.cast;
 
 import android.os.Parcel;
-import com.google.android.gms.common.internal.m;
-import com.google.android.gms.internal.ik;
+import com.google.android.gms.common.internal.zzt;
+import com.google.android.gms.cast.internal.zzf;
 import java.util.Locale;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -14,22 +14,22 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class LaunchOptions implements SafeParcelable
 {
     public static final Parcelable$Creator<LaunchOptions> CREATOR;
-    private final int BR;
-    private boolean Fb;
-    private String Fc;
+    private final int zzCY;
+    private boolean zzRy;
+    private String zzRz;
     
     static {
-        CREATOR = (Parcelable$Creator)new c();
+        CREATOR = (Parcelable$Creator)new zzc();
     }
     
     public LaunchOptions() {
-        this(1, false, ik.b(Locale.getDefault()));
+        this(1, false, zzf.zzb(Locale.getDefault()));
     }
     
-    LaunchOptions(final int br, final boolean fb, final String fc) {
-        this.BR = br;
-        this.Fb = fb;
-        this.Fc = fc;
+    LaunchOptions(final int zzCY, final boolean zzRy, final String zzRz) {
+        this.zzCY = zzCY;
+        this.zzRy = zzRy;
+        this.zzRz = zzRz;
     }
     
     public int describeContents() {
@@ -43,7 +43,7 @@ public class LaunchOptions implements SafeParcelable
                 return false;
             }
             final LaunchOptions launchOptions = (LaunchOptions)o;
-            if (this.Fb != launchOptions.Fb || !ik.a(this.Fc, launchOptions.Fc)) {
+            if (this.zzRy != launchOptions.zzRy || !zzf.zza(this.zzRz, launchOptions.zzRz)) {
                 return false;
             }
         }
@@ -51,28 +51,28 @@ public class LaunchOptions implements SafeParcelable
     }
     
     public String getLanguage() {
-        return this.Fc;
+        return this.zzRz;
     }
     
     public boolean getRelaunchIfRunning() {
-        return this.Fb;
+        return this.zzRy;
     }
     
     int getVersionCode() {
-        return this.BR;
+        return this.zzCY;
     }
     
     @Override
     public int hashCode() {
-        return m.hashCode(this.Fb, this.Fc);
+        return zzt.hashCode(this.zzRy, this.zzRz);
     }
     
     @Override
     public String toString() {
-        return String.format("LaunchOptions(relaunchIfRunning=%b, language=%s)", this.Fb, this.Fc);
+        return String.format("LaunchOptions(relaunchIfRunning=%b, language=%s)", this.zzRy, this.zzRz);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        c.a(this, parcel, n);
+        zzc.zza(this, parcel, n);
     }
 }

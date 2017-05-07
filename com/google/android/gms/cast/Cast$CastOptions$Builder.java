@@ -4,20 +4,20 @@
 
 package com.google.android.gms.cast;
 
-import com.google.android.gms.common.internal.n;
+import com.google.android.gms.common.internal.zzu;
 
 public final class Cast$CastOptions$Builder
 {
-    CastDevice EN;
-    Cast$Listener EO;
-    private int EP;
+    CastDevice zzQG;
+    Cast$Listener zzQH;
+    private int zzQI;
     
-    private Cast$CastOptions$Builder(final CastDevice en, final Cast$Listener eo) {
-        n.b(en, "CastDevice parameter cannot be null");
-        n.b(eo, "CastListener parameter cannot be null");
-        this.EN = en;
-        this.EO = eo;
-        this.EP = 0;
+    public Cast$CastOptions$Builder(final CastDevice zzQG, final Cast$Listener zzQH) {
+        zzu.zzb(zzQG, "CastDevice parameter cannot be null");
+        zzu.zzb(zzQH, "CastListener parameter cannot be null");
+        this.zzQG = zzQG;
+        this.zzQH = zzQH;
+        this.zzQI = 0;
     }
     
     public Cast$CastOptions build() {
@@ -26,10 +26,10 @@ public final class Cast$CastOptions$Builder
     
     public Cast$CastOptions$Builder setVerboseLoggingEnabled(final boolean b) {
         if (b) {
-            this.EP |= 0x1;
+            this.zzQI |= 0x1;
             return this;
         }
-        this.EP &= 0xFFFFFFFE;
+        this.zzQI &= 0xFFFFFFFE;
         return this;
     }
 }

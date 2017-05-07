@@ -4,53 +4,46 @@
 
 package com.netflix.mediaclient.ui.launch;
 
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
+import android.view.View;
+import com.netflix.mediaclient.util.ViewUtils;
+import android.content.Context;
+import com.netflix.mediaclient.util.DeviceUtils;
+import android.widget.ImageView$ScaleType;
+import android.widget.RelativeLayout$LayoutParams;
+import com.netflix.mediaclient.Log;
+import android.widget.ProgressBar;
+import android.widget.ImageView;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 
-final class LaunchActivity$1 implements Video
+class LaunchActivity$1 implements ViewTreeObserver$OnGlobalLayoutListener
 {
-    @Override
-    public String getBoxshotUrl() {
-        return null;
+    final /* synthetic */ LaunchActivity this$0;
+    final /* synthetic */ ImageView val$bg;
+    final /* synthetic */ ImageView val$logo;
+    final /* synthetic */ ProgressBar val$progress;
+    
+    LaunchActivity$1(final LaunchActivity this$0, final ImageView val$bg, final ImageView val$logo, final ProgressBar val$progress) {
+        this.this$0 = this$0;
+        this.val$bg = val$bg;
+        this.val$logo = val$logo;
+        this.val$progress = val$progress;
     }
     
-    @Override
-    public VideoType getErrorType() {
-        return null;
-    }
-    
-    @Override
-    public String getHorzDispUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getId() {
-        return "70140457";
-    }
-    
-    @Override
-    public String getSquareUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getStoryDispUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getTitle() {
-        return "Dummy Title";
-    }
-    
-    @Override
-    public String getTvCardUrl() {
-        return null;
-    }
-    
-    @Override
-    public VideoType getType() {
-        return VideoType.SHOW;
+    public void onGlobalLayout() {
+        if (this.val$bg.getWidth() <= 0) {
+            return;
+        }
+        Log.v("LaunchActivity", "Manipulating splash bg, scale factor: " + 2);
+        final RelativeLayout$LayoutParams relativeLayout$LayoutParams = (RelativeLayout$LayoutParams)this.val$bg.getLayoutParams();
+        relativeLayout$LayoutParams.width = this.val$bg.getWidth() * 2;
+        relativeLayout$LayoutParams.height = this.val$bg.getHeight() * 2;
+        this.val$bg.setScaleType(ImageView$ScaleType.FIT_CENTER);
+        final RelativeLayout$LayoutParams relativeLayout$LayoutParams2 = (RelativeLayout$LayoutParams)this.val$logo.getLayoutParams();
+        relativeLayout$LayoutParams2.topMargin *= 2;
+        if (DeviceUtils.isLandscape((Context)this.this$0)) {
+            final RelativeLayout$LayoutParams relativeLayout$LayoutParams3 = (RelativeLayout$LayoutParams)this.val$progress.getLayoutParams();
+            relativeLayout$LayoutParams3.topMargin *= 2;
+        }
+        ViewUtils.removeGlobalLayoutListener((View)this.val$bg, (ViewTreeObserver$OnGlobalLayoutListener)this);
     }
 }

@@ -65,7 +65,7 @@ public class SocialNotificationsActivity extends FragmentHostActivity
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
             netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
-            netflixActionBar.setTitle(this.getResources().getString(2131493371));
+            netflixActionBar.setTitle(this.getResources().getString(2131493380));
         }
         if (bundle != null) {
             this.mNotificationOpenedReportAlreadySent = bundle.getBoolean("notification_beacon_sent");

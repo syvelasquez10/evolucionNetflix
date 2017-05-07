@@ -56,15 +56,15 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
             final int[] array = new int[2];
             this.anchor.getLocationOnScreen(array);
             attributes.x = array[0];
-            attributes.y = (int)(array[1] - this.anchor.getResources().getDimension(2131362004));
+            attributes.y = (int)(array[1] - this.anchor.getResources().getDimension(2131296468));
             window.setAttributes(attributes);
         }
     }
     
     private void findViews(final View view, final int n) {
         this.mRatingBar = (RatingBar)view.findViewById(n);
-        this.mTitle = (TextView)view.findViewById(2131165561);
-        this.mRatingGroup = (ViewGroup)view.findViewById(2131165450);
+        this.mTitle = (TextView)view.findViewById(2131427711);
+        this.mRatingGroup = (ViewGroup)view.findViewById(2131427600);
     }
     
     @SuppressLint({ "InlinedApi" })
@@ -96,7 +96,7 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
     
     private void setupTitle() {
         if (this.mTitle != null) {
-            this.mTitle.setText((CharSequence)this.getString(2131493243, new Object[] { this.mVideoTitle }));
+            this.mTitle.setText((CharSequence)this.getString(2131493252, new Object[] { this.mVideoTitle }));
         }
     }
     
@@ -119,9 +119,9 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(this.resId, viewGroup, false);
-        int n = 2131165451;
+        int n = 2131427601;
         if (this.mIsUserRating) {
-            n = 2131165452;
+            n = 2131427602;
         }
         this.findViews(inflate, n);
         this.setupRatingsBar();

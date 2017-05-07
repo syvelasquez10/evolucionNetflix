@@ -154,8 +154,8 @@ public final class FileLruCache
         //   173: iconst_1       
         //   174: iadd           
         //   175: istore_1       
-        //   176: lload           7
-        //   178: lconst_1       
+        //   176: lconst_1       
+        //   177: lload           7
         //   179: ladd           
         //   180: lstore          7
         //   182: lload           5

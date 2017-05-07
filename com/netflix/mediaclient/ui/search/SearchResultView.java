@@ -63,8 +63,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131165663);
-        this.title = (TextView)this.findViewById(2131165664);
+        this.img = (AdvancedImageView)this.findViewById(2131427813);
+        this.title = (TextView)this.findViewById(2131427814);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -74,8 +74,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final SpannableString spannableString = new SpannableString((CharSequence)String.format("%s  (%s)", s, s2));
         final int length = spannableString.length();
         final int n = length - s2.length() - 4;
-        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131361881)), n, length, 0);
-        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131296372)), n, length, 0);
+        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131296345)), n, length, 0);
+        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131230836)), n, length, 0);
         return (CharSequence)spannableString;
     }
     
@@ -83,7 +83,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837875));
+        this.setForeground(this.getResources().getDrawable(2130837880));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
@@ -104,7 +104,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             n = text.length() - 1;
         }
         final SpannableString text2 = new SpannableString((CharSequence)text);
-        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131296423)), index, n, 33);
+        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131230887)), index, n, 33);
         this.title.setText((CharSequence)text2);
     }
     

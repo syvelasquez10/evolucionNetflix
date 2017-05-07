@@ -171,7 +171,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, (View)this.detailsViewGroup.getHeroImage(), null, this.recyclerView.getResources().getColor(2131296363), 0, null);
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, (View)this.detailsViewGroup.getHeroImage(), null, this.recyclerView.getResources().getColor(2131230827), 0, null);
                 this.recyclerView.setOnScrollListener(onScrollListener);
                 return onScrollListener;
             }
@@ -196,14 +196,14 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361878), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296342), this.numColumns));
     }
     
     @Override
     protected void showDetailsView(final MovieDetails movieDetails) {
         super.showDetailsView(movieDetails);
         if (this.similarShowsTitle != null) {
-            this.similarShowsTitle.setText((CharSequence)this.getString(2131493158, new Object[] { movieDetails.getTitle() }));
+            this.similarShowsTitle.setText((CharSequence)this.getString(2131493167, new Object[] { movieDetails.getTitle() }));
             this.similarShowsTitle.setVisibility(0);
         }
         this.adapter.setTrackable(new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));

@@ -86,7 +86,7 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             inflate = this.this$0.mLayoutInflater.inflate(2130903183, viewGroup, false);
-            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131165654), (TextView)inflate.findViewById(2131165655), (ImageView)inflate.findViewById(2131165658), inflate.findViewById(2131165657), (TextView)inflate.findViewById(2131165656)));
+            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131427804), (TextView)inflate.findViewById(2131427805), (ImageView)inflate.findViewById(2131427808), inflate.findViewById(2131427807), (TextView)inflate.findViewById(2131427806)));
         }
         final RecommendToFriendsFrag$FriendsListAdapter$Holder recommendToFriendsFrag$FriendsListAdapter$Holder = (RecommendToFriendsFrag$FriendsListAdapter$Holder)inflate.getTag();
         final FriendForRecommendation item = this.getItem(imageResource);
@@ -95,13 +95,13 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
         recommendToFriendsFrag$FriendsListAdapter$Holder.fbIcon.setVisibility(8);
         recommendToFriendsFrag$FriendsListAdapter$Holder.friendWatchedStatus.setVisibility(8);
         if (!this.this$0.mLoadMoreAvailable && (this.this$0.mFriends == null || this.this$0.mFriends.size() == 0)) {
-            recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493349);
+            recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493358);
             recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(false);
             recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(17);
         }
         else {
             if (this.this$0.mLoadMoreAvailable && imageResource == this.getCount() - 1) {
-                recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493348);
+                recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493357);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(false);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(17);
                 this.this$0.loadMoreFriends();
@@ -122,10 +122,10 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
                 }
                 final ImageView access$1600 = recommendToFriendsFrag$FriendsListAdapter$Holder.checkMark;
                 if (this.this$0.mCheckedFriends.contains(item)) {
-                    imageResource = 2130837860;
+                    imageResource = 2130837865;
                 }
                 else {
-                    imageResource = 2130837859;
+                    imageResource = 2130837864;
                 }
                 access$1600.setImageResource(imageResource);
                 inflate.setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$FriendsListAdapter$1(this, item, recommendToFriendsFrag$FriendsListAdapter$Holder));

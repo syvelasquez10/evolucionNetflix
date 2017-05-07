@@ -24,7 +24,7 @@ public class KubrickKidsDetailsActivity extends DetailsActivity implements PlayC
     @Override
     protected NetflixActionBar createActionBar() {
         final NetflixActionBar actionBar = super.createActionBar();
-        final View viewById = this.findViewById(2131165294);
+        final View viewById = this.findViewById(2131427444);
         if (viewById != null) {
             viewById.setVisibility(8);
         }

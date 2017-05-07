@@ -45,7 +45,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
         if (detailsPageContentWidth > 0) {
             n = (DeviceUtils.getScreenWidthInPixels((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131362012);
+        return n + (int)this.getResources().getDimension(2131296476);
     }
     
     @Override
@@ -58,9 +58,9 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     protected DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener() {
         final DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener = super.setupDetailsPageParallaxScrollListener();
         if (setupDetailsPageParallaxScrollListener != null) {
-            setupDetailsPageParallaxScrollListener.setInitialBottomColor(this.recyclerView.getResources().getColor(2131296365));
-            setupDetailsPageParallaxScrollListener.setInitialTopColor(this.recyclerView.getResources().getColor(2131296364));
-            setupDetailsPageParallaxScrollListener.setOnScrollStateChangedListener(new KubrickKidsShowDetailsFrag$2(this, this.getActivity().findViewById(2131165294)));
+            setupDetailsPageParallaxScrollListener.setInitialBottomColor(this.recyclerView.getResources().getColor(2131230829));
+            setupDetailsPageParallaxScrollListener.setInitialTopColor(this.recyclerView.getResources().getColor(2131230828));
+            setupDetailsPageParallaxScrollListener.setOnScrollStateChangedListener(new KubrickKidsShowDetailsFrag$2(this, this.getActivity().findViewById(2131427444)));
         }
         return setupDetailsPageParallaxScrollListener;
     }
@@ -80,14 +80,14 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362011), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296475), this.numColumns));
     }
     
     @SuppressLint({ "ResourceAsColor" })
     @Override
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new KubrickKidsShowDetailsFrag$3(this));
-        adapter.setItemBackgroundColor(2130837872);
+        adapter.setItemBackgroundColor(2130837877);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
 }

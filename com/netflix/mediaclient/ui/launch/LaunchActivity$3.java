@@ -4,41 +4,12 @@
 
 package com.netflix.mediaclient.ui.launch;
 
-import android.support.v7.app.ActionBar;
-import android.view.View;
-import com.netflix.mediaclient.android.fragment.LoadingView;
-import android.os.Bundle;
-import com.netflix.mediaclient.util.PreferenceUtils;
-import com.netflix.mediaclient.util.IntentUtils;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import android.widget.ProgressBar;
-import com.netflix.mediaclient.service.logging.apm.model.Display;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import com.netflix.mediaclient.ui.home.HomeActivity;
-import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
-import com.netflix.mediaclient.ui.login.LoginActivity;
-import com.netflix.mediaclient.ui.signup.SignupActivity;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
-import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.util.DeviceUtils;
-import android.widget.ImageView;
-import android.content.Intent;
 import com.netflix.mediaclient.Log;
+import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.protocol.nflx.NflxHandlerFactory;
-import com.netflix.mediaclient.protocol.netflixcom.NetflixComHandlerFactory;
-import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Activity;
-import com.netflix.mediaclient.android.activity.ServiceErrorsHandler;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 
-class LaunchActivity$3 implements ManagerStatusListener
+class LaunchActivity$3 extends BroadcastReceiver
 {
     final /* synthetic */ LaunchActivity this$0;
     
@@ -46,18 +17,17 @@ class LaunchActivity$3 implements ManagerStatusListener
         this.this$0 = this$0;
     }
     
-    @Override
-    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-        this.this$0.isLoading = false;
-        if (ServiceErrorsHandler.handleManagerResponse(this.this$0, status)) {
-            return;
+    public void onReceive(final Context context, final Intent intent) {
+        if (Log.isLoggable()) {
+            Log.v("LaunchActivity", "Received intent " + intent);
         }
-        this.this$0.handleManagerReady(serviceManager);
-    }
-    
-    @Override
-    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-        this.this$0.isLoading = false;
-        ServiceErrorsHandler.handleManagerResponse(this.this$0, status);
+        final String action = intent.getAction();
+        if ("com.netflix.mediaclient.intent.action.HANDLER_RESULT".equals(action)) {
+            Log.d("LaunchActivity", "Delayed nflx action completed, finish activity");
+            this.this$0.finish();
+        }
+        else if (Log.isLoggable()) {
+            Log.d("LaunchActivity", "We do not support action " + action);
+        }
     }
 }

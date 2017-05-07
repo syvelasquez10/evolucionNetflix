@@ -55,9 +55,9 @@ public class KubrickLolomoUtils
     }
     
     public static BaseLoLoMoAdapter$RowHolder createHolder(final NetflixActivity netflixActivity, final View view, final LinearLayout linearLayout, final TextView textView, final BaseLoLoMoAdapter$LoMoRowContent baseLoLoMoAdapter$LoMoRowContent, final View view2) {
-        final TextView textView2 = (TextView)view.findViewById(2131165449);
+        final TextView textView2 = (TextView)view.findViewById(2131427599);
         ((FrameLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragImageOffsetLeftPx(netflixActivity);
-        return new KubrickLolomoUtils$KubrickRowHolder((View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, textView2, view.findViewById(2131165444));
+        return new KubrickLolomoUtils$KubrickRowHolder((View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, textView2, view.findViewById(2131427594));
     }
     
     public static boolean isDuplicateRow(final LoMo loMo) {

@@ -55,6 +55,7 @@ public class SignupActivity extends AccountActivity
     private ViewFlipper mFlipper;
     Runnable mHandleError;
     private Handler mHandler;
+    private boolean mIsLoginActivityInFocus;
     Runnable mJumpToSignInTask;
     private String mSharedContextSessionUuid;
     private SignUpParams mSignUpParams;
@@ -104,11 +105,11 @@ public class SignupActivity extends AccountActivity
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131493202);
+            this.showToast(2131493211);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493258) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493267) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -132,8 +133,8 @@ public class SignupActivity extends AccountActivity
     
     private void setUpSignInView(final ServiceManager serviceManager) {
         this.setContentView(2130903198);
-        this.mWebView = (WebView)this.findViewById(2131165680);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131165370);
+        this.mWebView = (WebView)this.findViewById(2131427830);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131427520);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -205,13 +206,17 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131493259), new SignupActivity$10(this));
+            this.provideTwoButtonDialog(this.getString(2131493268), new SignupActivity$10(this));
         }
         return true;
     }
     
     @Override
     protected void handleProfileReadyToSelect() {
+        if (this.mIsLoginActivityInFocus) {
+            Log.i("SignupActivity", "Login activity is in focus, leave it to finish all account activities when it is ready");
+            return;
+        }
         Log.i("SignupActivity", "New profile requested - starting profile selection activity...");
         this.startActivity(ProfileSelectionActivity.createStartIntent((Context)this));
         AccountActivity.finishAllAccountActivities((Context)this);
@@ -227,12 +232,12 @@ public class SignupActivity extends AccountActivity
         super.onCreateOptionsMenu(menu, menu2);
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493170));
+            menuItem = menu.add((CharSequence)this.getString(2131493179));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$1(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493171));
+            menuItem = menu.add((CharSequence)this.getString(2131493180));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$2(this));
         }
@@ -251,17 +256,23 @@ public class SignupActivity extends AccountActivity
     }
     
     @Override
+    protected void onStart() {
+        super.onStart();
+        this.mIsLoginActivityInFocus = false;
+    }
+    
+    @Override
     protected void onStop() {
         super.onStop();
         this.mHandler.removeCallbacks(this.mJumpToSignInTask);
     }
     
     void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131492994), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131493003), runnable)));
     }
     
     void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131492994), runnable, this.getString(2131493114), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131493003), runnable, this.getString(2131493123), null)));
     }
     
     @Override

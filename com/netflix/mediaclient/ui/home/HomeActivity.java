@@ -159,7 +159,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131493211, 1).show();
+        Toast.makeText((Context)this, 2131493220, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -188,7 +188,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131165375, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131427525, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -331,7 +331,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.viewRecycler = new ObjectRecycler$ViewRecycler();
         super.onCreate(bundle);
         this.showFetchErrorsToast();
-        this.drawerLayout = (DrawerLayout)this.findViewById(2131165377);
+        this.drawerLayout = (DrawerLayout)this.findViewById(2131427527);
         this.unlockSlidingDrawerIfPossible();
         SlidingMenuAdapter slidingMenuAdapter;
         if (BrowseExperience.isKubrickKids()) {
@@ -341,7 +341,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
             slidingMenuAdapter = new SlidingMenuAdapter(this, this.drawerLayout);
         }
         this.slidingMenuAdapter = slidingMenuAdapter;
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2131493175, 2131493175);
+        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2131493184, 2131493184);
         this.drawerLayout.setDrawerListener(this.drawerToggler);
         this.drawerLayout.setFocusable(false);
         this.updateActionBar();

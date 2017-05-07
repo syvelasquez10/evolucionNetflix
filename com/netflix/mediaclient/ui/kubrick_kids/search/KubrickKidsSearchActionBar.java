@@ -15,7 +15,7 @@ public class KubrickKidsSearchActionBar extends SearchActionBar
     
     @Override
     protected int getActiveSearchIconResId() {
-        return 2130837723;
+        return 2130837728;
     }
     
     @Override
@@ -30,17 +30,17 @@ public class KubrickKidsSearchActionBar extends SearchActionBar
     
     @Override
     protected int getSearchViewBgResId() {
-        return 2130837866;
+        return 2130837871;
     }
     
     @Override
     protected int getSearchViewRightBgResId() {
-        return 2130837868;
+        return 2130837873;
     }
     
     @Override
     protected int getSearchViewTextColorResId() {
-        return 2131296357;
+        return 2131230821;
     }
     
     @Override

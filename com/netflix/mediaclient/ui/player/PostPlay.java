@@ -72,7 +72,7 @@ public abstract class PostPlay
         this.findViewsCommon();
         this.findViews();
         this.setClickListeners();
-        this.mOffsetMs = this.mContext.getResources().getInteger(2131427335) * 1000;
+        this.mOffsetMs = this.mContext.getResources().getInteger(2131361799) * 1000;
         this.mFetchPostplayOffsetMs = this.mOffsetMs;
         this.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.notStarted;
         if (this.mContext.getCurrentAsset() != null && this.mContext.getCurrentAsset().getPostPlayVideoPlayed() >= 3 && this.mContext.getState().noUserInteraction()) {
@@ -206,18 +206,18 @@ public abstract class PostPlay
     abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165564);
-        this.mInterrupterContinue = this.mContext.findViewById(2131165563);
-        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165607);
-        this.mSynopsis = (TextView)this.mContext.findViewById(2131165605);
-        this.mInterrupterStop = this.mContext.findViewById(2131165565);
-        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165603);
-        this.mMoreButton = this.mContext.findViewById(2131165595);
-        this.mPlayButton = this.mContext.findViewById(2131165593);
-        this.mStopButton = this.mContext.findViewById(2131165594);
-        this.mTitle = (TextView)this.mContext.findViewById(2131165604);
-        this.mInterrupter = this.mContext.findViewById(2131165562);
-        this.mPostPlay = this.mContext.findViewById(2131165600);
+        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131427714);
+        this.mInterrupterContinue = this.mContext.findViewById(2131427713);
+        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131427757);
+        this.mSynopsis = (TextView)this.mContext.findViewById(2131427755);
+        this.mInterrupterStop = this.mContext.findViewById(2131427715);
+        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131427753);
+        this.mMoreButton = this.mContext.findViewById(2131427745);
+        this.mPlayButton = this.mContext.findViewById(2131427743);
+        this.mStopButton = this.mContext.findViewById(2131427744);
+        this.mTitle = (TextView)this.mContext.findViewById(2131427754);
+        this.mInterrupter = this.mContext.findViewById(2131427712);
+        this.mPostPlay = this.mContext.findViewById(2131427750);
     }
     
     protected abstract VideoType getVideoType();

@@ -93,12 +93,12 @@ class SocialNotificationsFrag$NotificationsListAdapter extends BaseAdapter
         }
         final SocialNotificationViewHolder socialNotificationViewHolder = (SocialNotificationViewHolder)inflate.getTag();
         if (!this.this$0.mLoadMoreAvailable && (this.this$0.mNotifications == null || this.this$0.mNotifications.getSocialNotifications() == null || this.this$0.mNotifications.getSocialNotifications().size() == 0)) {
-            SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493376);
+            SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493385);
             inflate.setOnClickListener((View$OnClickListener)null);
         }
         else {
             if (this.this$0.mLoadMoreAvailable && n == this.getCount() - 1) {
-                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493348);
+                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493357);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 this.this$0.loadMoreNotifications();
                 return inflate;
@@ -107,7 +107,7 @@ class SocialNotificationsFrag$NotificationsListAdapter extends BaseAdapter
                 if (Log.isLoggable()) {
                     Log.e(SocialNotificationsFrag.TAG, "Got null notification for type: " + item.getType());
                 }
-                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493375);
+                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493384);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 return inflate;
             }

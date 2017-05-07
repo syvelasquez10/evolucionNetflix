@@ -84,7 +84,7 @@ public class SocialNotificationsFrag extends NetflixFrag
                 this.mAdapter.notifyDataSetChanged();
             }
             if (this.leWrapper != null) {
-                this.leWrapper.showErrorView(2131493374, true, false);
+                this.leWrapper.showErrorView(2131493383, true, false);
             }
             return true;
         }
@@ -206,7 +206,7 @@ public class SocialNotificationsFrag extends NetflixFrag
         this.mLayoutInflater = mLayoutInflater;
         final View inflate = this.mLayoutInflater.inflate(2130903200, viewGroup, false);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        (this.mNotificationsList = (ListView)inflate.findViewById(2131165682)).setItemsCanFocus(true);
+        (this.mNotificationsList = (ListView)inflate.findViewById(2131427832)).setItemsCanFocus(true);
         this.mAdapter = new SocialNotificationsFrag$NotificationsListAdapter(this, null);
         this.mNotificationsList.setAdapter((ListAdapter)this.mAdapter);
         this.leWrapper.showLoadingView(false);

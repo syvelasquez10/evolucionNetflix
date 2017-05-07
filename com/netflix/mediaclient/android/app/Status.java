@@ -6,8 +6,9 @@ package com.netflix.mediaclient.android.app;
 
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.client.model.Error;
+import java.io.Serializable;
 
-public interface Status
+public interface Status extends Serializable
 {
     public static final int REQUEST_ID_NOT_AVAILABLE = Integer.MAX_VALUE;
     

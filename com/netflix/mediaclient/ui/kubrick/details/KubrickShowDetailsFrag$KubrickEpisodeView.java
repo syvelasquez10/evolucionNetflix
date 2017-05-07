@@ -66,25 +66,25 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     }
     
     private void adjustHeight() {
-        this.img.getLayoutParams().height = (int)((DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361997) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        this.img.getLayoutParams().height = (int)((DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296461) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     private void updateRuntime(final EpisodeDetails episodeDetails) {
         if (this.runtime != null && episodeDetails.getPlayable().getRuntime() > 0) {
-            this.runtime.setText((CharSequence)this.getResources().getString(2131493166, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
+            this.runtime.setText((CharSequence)this.getResources().getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
         }
     }
     
     @Override
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
-        return this.getResources().getString(2131493236, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        return this.getResources().getString(2131493245, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
     }
     
     @Override
     protected void findViews() {
         super.findViews();
-        this.img = (AdvancedImageView)this.findViewById(2131165432);
-        this.runtime = (TextView)this.findViewById(2131165433);
+        this.img = (AdvancedImageView)this.findViewById(2131427582);
+        this.runtime = (TextView)this.findViewById(2131427583);
     }
     
     @Override

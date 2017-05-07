@@ -8,37 +8,37 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.content.DialogInterface;
 import android.content.DialogInterface$OnDismissListener;
-import com.google.android.gms.common.internal.n;
-import android.app.Dialog;
+import com.google.android.gms.common.internal.zzu;
 import android.content.DialogInterface$OnCancelListener;
+import android.app.Dialog;
 import android.support.v4.app.DialogFragment;
 
 public class SupportErrorDialogFragment extends DialogFragment
 {
-    private DialogInterface$OnCancelListener HG;
     private Dialog mDialog;
+    private DialogInterface$OnCancelListener zzVG;
     
     public SupportErrorDialogFragment() {
         this.mDialog = null;
-        this.HG = null;
+        this.zzVG = null;
     }
     
-    public static SupportErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener hg) {
+    public static SupportErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener zzVG) {
         final SupportErrorDialogFragment supportErrorDialogFragment = new SupportErrorDialogFragment();
-        mDialog = n.b(mDialog, "Cannot display null dialog");
+        mDialog = zzu.zzb(mDialog, "Cannot display null dialog");
         mDialog.setOnCancelListener((DialogInterface$OnCancelListener)null);
         mDialog.setOnDismissListener((DialogInterface$OnDismissListener)null);
         supportErrorDialogFragment.mDialog = mDialog;
-        if (hg != null) {
-            supportErrorDialogFragment.HG = hg;
+        if (zzVG != null) {
+            supportErrorDialogFragment.zzVG = zzVG;
         }
         return supportErrorDialogFragment;
     }
     
     @Override
     public void onCancel(final DialogInterface dialogInterface) {
-        if (this.HG != null) {
-            this.HG.onCancel(dialogInterface);
+        if (this.zzVG != null) {
+            this.zzVG.onCancel(dialogInterface);
         }
     }
     

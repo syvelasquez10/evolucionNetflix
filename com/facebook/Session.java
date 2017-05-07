@@ -577,12 +577,13 @@ public class Session implements Serializable
                                                     break Label_0197;
                                                 }
                                             }
+                                            return;
+                                            break;
                                             this.state = SessionState.CLOSED_LOGIN_FAILED;
                                             access$500 = new FacebookException("Log in attempt failed: LoginActivity could not be started, and not legacy request");
                                             this.logAuthorizationComplete(AuthorizationClient$Result$Code.ERROR, null, (Exception)access$500);
                                             this.postStateChange(state, this.state, (Exception)access$500);
                                             return;
-                                            break;
                                         }
                                         break Label_0194;
                                     }

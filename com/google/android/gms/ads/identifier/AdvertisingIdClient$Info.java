@@ -6,24 +6,24 @@ package com.google.android.gms.ads.identifier;
 
 public final class AdvertisingIdClient$Info
 {
-    private final String ln;
-    private final boolean lo;
+    private final String zzoh;
+    private final boolean zzoi;
     
-    public AdvertisingIdClient$Info(final String ln, final boolean lo) {
-        this.ln = ln;
-        this.lo = lo;
+    public AdvertisingIdClient$Info(final String zzoh, final boolean zzoi) {
+        this.zzoh = zzoh;
+        this.zzoi = zzoi;
     }
     
     public String getId() {
-        return this.ln;
+        return this.zzoh;
     }
     
     public boolean isLimitAdTrackingEnabled() {
-        return this.lo;
+        return this.zzoi;
     }
     
     @Override
     public String toString() {
-        return "{" + this.ln + "}" + this.lo;
+        return "{" + this.zzoh + "}" + this.zzoi;
     }
 }

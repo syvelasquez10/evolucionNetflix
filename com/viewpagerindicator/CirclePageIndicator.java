@@ -71,18 +71,18 @@ public class CirclePageIndicator extends View implements PageIndicator
         final boolean boolean1 = resources.getBoolean(R$bool.default_circle_indicator_centered);
         final boolean boolean2 = resources.getBoolean(R$bool.default_circle_indicator_snap);
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.CirclePageIndicator, n, 0);
-        this.mCentered = obtainStyledAttributes.getBoolean(2, boolean1);
-        this.mOrientation = obtainStyledAttributes.getInt(0, integer);
+        this.mCentered = obtainStyledAttributes.getBoolean(R$styleable.CirclePageIndicator_centered, boolean1);
+        this.mOrientation = obtainStyledAttributes.getInt(R$styleable.CirclePageIndicator_android_orientation, integer);
         this.mPaintPageFill.setStyle(Paint$Style.FILL);
-        this.mPaintPageFill.setColor(obtainStyledAttributes.getColor(5, color));
+        this.mPaintPageFill.setColor(obtainStyledAttributes.getColor(R$styleable.CirclePageIndicator_pageColor, color));
         this.mPaintStroke.setStyle(Paint$Style.STROKE);
-        this.mPaintStroke.setColor(obtainStyledAttributes.getColor(8, color3));
-        this.mPaintStroke.setStrokeWidth(obtainStyledAttributes.getDimension(3, dimension));
+        this.mPaintStroke.setColor(obtainStyledAttributes.getColor(R$styleable.CirclePageIndicator_strokeColor, color3));
+        this.mPaintStroke.setStrokeWidth(obtainStyledAttributes.getDimension(R$styleable.CirclePageIndicator_strokeWidth, dimension));
         this.mPaintFill.setStyle(Paint$Style.FILL);
-        this.mPaintFill.setColor(obtainStyledAttributes.getColor(4, color2));
-        this.mRadius = obtainStyledAttributes.getDimension(6, dimension2);
-        this.mSnap = obtainStyledAttributes.getBoolean(7, boolean2);
-        final Drawable drawable = obtainStyledAttributes.getDrawable(1);
+        this.mPaintFill.setColor(obtainStyledAttributes.getColor(R$styleable.CirclePageIndicator_fillColor, color2));
+        this.mRadius = obtainStyledAttributes.getDimension(R$styleable.CirclePageIndicator_radius, dimension2);
+        this.mSnap = obtainStyledAttributes.getBoolean(R$styleable.CirclePageIndicator_snap, boolean2);
+        final Drawable drawable = obtainStyledAttributes.getDrawable(R$styleable.CirclePageIndicator_android_background);
         if (drawable != null) {
             this.setBackgroundDrawable(drawable);
         }

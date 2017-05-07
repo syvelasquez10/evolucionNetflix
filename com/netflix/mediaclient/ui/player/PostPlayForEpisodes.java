@@ -37,7 +37,7 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     private void init() {
-        this.mTimerValue = this.mContext.getResources().getInteger(2131427335);
+        this.mTimerValue = this.mContext.getResources().getInteger(2131361799);
         this.mAutoPlayEnabled = this.isAutoPlayEnabled();
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "PostPlayForEpisodes:: timer max value " + this.mTimerValue);
@@ -75,9 +75,9 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     protected void findViews() {
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165597);
-        this.mAutoPlayView = this.mContext.findViewById(2131165596);
-        this.mTimerView = (TextView)this.mContext.findViewById(2131165598);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427747);
+        this.mAutoPlayView = this.mContext.findViewById(2131427746);
+        this.mTimerView = (TextView)this.mContext.findViewById(2131427748);
     }
     
     @Override
@@ -114,7 +114,7 @@ public class PostPlayForEpisodes extends PostPlay
     
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493288));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493297));
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(0);
@@ -177,7 +177,7 @@ public class PostPlayForEpisodes extends PostPlay
         if (postPlayVideo.getType() != VideoType.EPISODE) {
             s = postPlayVideo.getStoryUrl();
         }
-        final String string = this.mContext.getResources().getString(2131493291, new Object[] { title });
+        final String string = this.mContext.getResources().getString(2131493300, new Object[] { title });
         if (this.mBackground != null) {
             if (!StringUtils.isEmpty(storyUrl) && this.mContext.isTablet()) {
                 NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging$AssetType.merchStill, string, true, true, 1);
@@ -186,7 +186,7 @@ public class PostPlayForEpisodes extends PostPlay
                 NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, s, IClientLogging$AssetType.merchStill, string, true, true, 1);
             }
         }
-        final String string2 = this.mContext.getResources().getString(2131493239, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
+        final String string2 = this.mContext.getResources().getString(2131493248, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "Title: " + string2);
         }

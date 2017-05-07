@@ -44,7 +44,7 @@ public class KubrickPaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     @Override
     public int getRowHeightInPx() {
         final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f);
-        final int n2 = this.activity.getResources().getDimensionPixelSize(2131361987) + n;
+        final int n2 = this.activity.getResources().getDimensionPixelSize(2131296451) + n;
         if (Log.isLoggable()) {
             Log.v("KubrickPaginatedCwAdapter", "Computed view height: " + n + ", height with footer: " + n2 + " (px)");
         }

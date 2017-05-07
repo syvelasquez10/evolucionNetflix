@@ -22,6 +22,17 @@ public class SimpleArrayMap<K, V>
         this.mSize = 0;
     }
     
+    public SimpleArrayMap(final int n) {
+        if (n == 0) {
+            this.mHashes = ContainerHelpers.EMPTY_INTS;
+            this.mArray = ContainerHelpers.EMPTY_OBJECTS;
+        }
+        else {
+            this.allocArrays(n);
+        }
+        this.mSize = 0;
+    }
+    
     private void allocArrays(final int n) {
         while (true) {
             Label_0096: {

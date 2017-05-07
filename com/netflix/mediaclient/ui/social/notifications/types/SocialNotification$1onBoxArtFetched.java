@@ -60,9 +60,9 @@ class SocialNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderList
     @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null) {
-            final int color = this.val$context.getResources().getColor(2131296361);
+            final int color = this.val$context.getResources().getColor(2131230825);
             final NotificationCompat$BigPictureStyle bigPicture = new NotificationCompat$BigPictureStyle().bigPicture(bitmap);
-            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837807).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
+            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837812).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
             setColor.setGroup("social_notifications");
             setColor.setGroupSummary(true);
             setColor.setAutoCancel(true);

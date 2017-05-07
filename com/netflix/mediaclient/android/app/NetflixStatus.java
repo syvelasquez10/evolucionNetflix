@@ -9,8 +9,9 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 
 public class NetflixStatus implements Status
 {
+    private static final long serialVersionUID = 5121797712426793309L;
     protected boolean mDisplayMessage;
-    protected Error mError;
+    protected transient Error mError;
     protected String mMessage;
     private int mRequestId;
     protected StatusCode mStatusCode;

@@ -29,9 +29,9 @@ public class ErrorWrapper
         this.showRetry = true;
         this.retryClickListener = (View$OnClickListener)new ErrorWrapper$1(this);
         this.callback = callback;
-        this.errorGroup = view.findViewById(2131165366);
-        this.errorMsg = (TextView)view.findViewById(2131165367);
-        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165368)).setOnClickListener(this.retryClickListener);
+        this.errorGroup = view.findViewById(2131427516);
+        this.errorMsg = (TextView)view.findViewById(2131427517);
+        (this.retryBtn = (Button)this.errorGroup.findViewById(2131427518)).setOnClickListener(this.retryClickListener);
         if (view.getContext() instanceof NetflixActivity) {
             final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
             if (BrowseExperience.isKubrickKids()) {
@@ -43,15 +43,15 @@ public class ErrorWrapper
     
     private void configureViewsForKidsExperience(final NetflixActivity netflixActivity) {
         final Resources resources = netflixActivity.getResources();
-        this.errorMsg.setTextColor(resources.getColor(2131296358));
-        ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361882);
+        this.errorMsg.setTextColor(resources.getColor(2131230822));
+        ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131296346);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131361974);
-        layoutParams.width = resources.getDimensionPixelSize(2131361973);
-        this.retryBtn.setBackgroundResource(2130837752);
-        this.retryBtn.setTextColor(resources.getColor(2131296360));
-        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361887);
+        layoutParams.height = resources.getDimensionPixelSize(2131296438);
+        layoutParams.width = resources.getDimensionPixelSize(2131296437);
+        this.retryBtn.setBackgroundResource(2130837757);
+        this.retryBtn.setTextColor(resources.getColor(2131230824));
+        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131296351);
         ViewUtils.setTextViewToBold((TextView)this.retryBtn);
     }
     

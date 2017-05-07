@@ -30,7 +30,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     PostPlayForMDX(final PlayerActivity playerActivity) {
         super(playerActivity);
-        this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
+        this.mTimerValue = this.mContext.getResources().getInteger(2131361800);
         this.mOffsetMs = this.mTimerValue * 1000;
     }
     
@@ -86,8 +86,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165599);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165597);
+        this.mTargetNameView = (TextView)this.mContext.findViewById(2131427749);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427747);
     }
     
     public void handleBack() {
@@ -155,7 +155,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493289));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493298));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

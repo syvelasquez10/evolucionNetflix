@@ -90,14 +90,14 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             inflate = this.this$0.getLayoutInflater().inflate(2130903181, viewGroup, false);
-            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131165300), inflate.findViewById(2131165644), (TextView)inflate.findViewById(2131165646), inflate.findViewById(2131165645)));
+            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131427450), inflate.findViewById(2131427794), (TextView)inflate.findViewById(2131427796), inflate.findViewById(2131427795)));
         }
         final ProfileSelectionActivity$Holder profileSelectionActivity$Holder = (ProfileSelectionActivity$Holder)inflate.getTag();
         final UserProfile item = this.getItem(n);
         if (n == this.this$0.profiles.size()) {
-            profileSelectionActivity$Holder.img.setImageResource(2130837856);
+            profileSelectionActivity$Holder.img.setImageResource(2130837861);
             profileSelectionActivity$Holder.kidsBadge.setVisibility(8);
-            profileSelectionActivity$Holder.title.setText(2131493303);
+            profileSelectionActivity$Holder.title.setText(2131493312);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);
             return inflate;
         }

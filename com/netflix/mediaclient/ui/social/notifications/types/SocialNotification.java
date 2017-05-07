@@ -44,7 +44,7 @@ public abstract class SocialNotification
     }
     
     public static final SocialNotificationViewHolder getViewHolder(final View view, final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
-        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131165654), (AdvancedImageView)view.findViewById(2131165688), (TextView)view.findViewById(2131165685), (TextView)view.findViewById(2131165686), (TextView)view.findViewById(2131165687), (TextView)view.findViewById(2131165690), (Button)view.findViewById(2131165691), (Button)view.findViewById(2131165692), view.findViewById(2131165689), view.findViewById(2131165684), (AdvancedImageView)view.findViewById(2131165683));
+        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131427804), (AdvancedImageView)view.findViewById(2131427838), (TextView)view.findViewById(2131427835), (TextView)view.findViewById(2131427836), (TextView)view.findViewById(2131427837), (TextView)view.findViewById(2131427840), (Button)view.findViewById(2131427841), (Button)view.findViewById(2131427842), view.findViewById(2131427839), view.findViewById(2131427834), (AdvancedImageView)view.findViewById(2131427833));
     }
     
     public static void showSingleLineText(final SocialNotificationViewHolder socialNotificationViewHolder, final int text) {
@@ -91,10 +91,10 @@ public abstract class SocialNotification
     public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         int backgroundResource;
         if (socialNotificationSummary.getWasRead()) {
-            backgroundResource = 2130837872;
+            backgroundResource = 2130837877;
         }
         else {
-            backgroundResource = 2131296425;
+            backgroundResource = 2131230889;
         }
         view.setBackgroundResource(backgroundResource);
         socialNotificationViewHolder.getFriendImage().setVisibility(0);

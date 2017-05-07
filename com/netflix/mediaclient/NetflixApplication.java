@@ -45,6 +45,7 @@ public class NetflixApplication extends Application
     private static final String TAG_LOCALE = "nf_locale";
     private static final Gson gson;
     private static boolean sAactivityVisible;
+    private static boolean sEnableSmartLock;
     private final long MAX_ACTIVITY_TRANSITION_TIME_MS;
     private final BroadcastReceiver broadcastReceiver;
     private NetflixActivity currentActivity;
@@ -59,6 +60,7 @@ public class NetflixApplication extends Application
     
     static {
         gson = new Gson();
+        NetflixApplication.sEnableSmartLock = true;
     }
     
     public NetflixApplication() {
@@ -87,6 +89,10 @@ public class NetflixApplication extends Application
     
     public static boolean isActivityVisible() {
         return NetflixApplication.sAactivityVisible;
+    }
+    
+    public static boolean isSmartlockEnabled() {
+        return NetflixApplication.sEnableSmartLock;
     }
     
     private void loadAndVerifyNativeLibraries() {
@@ -139,7 +145,7 @@ public class NetflixApplication extends Application
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837737).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493263, new Object[] { n })).setContentTitle(this.getString(2131493261, new Object[] { n })).setContentText(this.getString(2131493262, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837742).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493272, new Object[] { n })).setContentTitle(this.getString(2131493270, new Object[] { n })).setContentText(this.getString(2131493271, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -150,6 +156,9 @@ public class NetflixApplication extends Application
             return;
         }
         Log.e("NetflixApplication", "Can not send warning, notification manager is null!");
+    }
+    
+    public static void setEnableSmartLock(final boolean b) {
     }
     
     public NetflixActivity getCurrentActivity() {
