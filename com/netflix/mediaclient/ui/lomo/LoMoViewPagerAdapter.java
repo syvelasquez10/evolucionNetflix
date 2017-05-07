@@ -153,7 +153,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     
     private void registerBrowseNotificationReceiver() {
         if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
-            Log.v("LoMoViewPagerAdapter", "  Registering browse notification receiver, " + this.browseReceiver.hashCode());
+            Log.v("LoMoViewPagerAdapter", "Registering browse notification receiver, " + this.browseReceiver.hashCode());
         }
         final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.BA_CW_REFRESH");
@@ -208,6 +208,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     public void destroy() {
+        Log.v("LoMoViewPagerAdapter", "Destroying adapter");
         this.unregisterBrowseNotificationReceiver();
         this.isDestroyed = true;
         this.notifyDataSetChanged();

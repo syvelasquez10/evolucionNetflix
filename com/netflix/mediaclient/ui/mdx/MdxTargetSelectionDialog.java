@@ -37,12 +37,12 @@ public class MdxTargetSelectionDialog
         public Builder(final Activity activity) {
             super((Context)activity);
             this.activity = activity;
-            MdxTargetSelectionDialog.mSelectedRowColor = activity.getResources().getColor(2131296326);
-            MdxTargetSelectionDialog.mRowColor = activity.getResources().getColor(2131296325);
+            MdxTargetSelectionDialog.mSelectedRowColor = activity.getResources().getColor(2131296327);
+            MdxTargetSelectionDialog.mRowColor = activity.getResources().getColor(2131296326);
             final LayoutInflater layoutInflater = activity.getLayoutInflater();
-            this.content = layoutInflater.inflate(2130903129, (ViewGroup)null);
-            this.title = (TextView)this.content.findViewById(2131165471);
-            this.listView = (ListView)this.content.findViewById(2131165472);
+            this.content = layoutInflater.inflate(2130903133, (ViewGroup)null);
+            this.title = (TextView)this.content.findViewById(2131165483);
+            this.listView = (ListView)this.content.findViewById(2131165484);
             this.adapterWrapper = new TargetsAdapter(layoutInflater);
             this.listView.setAdapter((ListAdapter)this.adapterWrapper);
             this.setCancelable(true);
@@ -105,8 +105,8 @@ public class MdxTargetSelectionDialog
             final int n = 0;
             ViewHolder tag;
             if (inflate == null) {
-                inflate = this.inflater.inflate(2130903112, (ViewGroup)null);
-                tag = new ViewHolder((TextView)inflate.findViewById(2131165424), (TextView)inflate.findViewById(2131165425), (CheckBox)inflate.findViewById(2131165423));
+                inflate = this.inflater.inflate(2130903116, (ViewGroup)null);
+                tag = new ViewHolder((TextView)inflate.findViewById(2131165435), (TextView)inflate.findViewById(2131165436), (CheckBox)inflate.findViewById(2131165434));
                 inflate.setTag((Object)tag);
             }
             else {

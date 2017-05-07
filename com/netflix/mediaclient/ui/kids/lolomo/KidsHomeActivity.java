@@ -12,4 +12,9 @@ public class KidsHomeActivity extends HomeActivity
     public boolean isForKids() {
         return true;
     }
+    
+    @Override
+    public boolean shouldApplyPaddingToSlidingPanel() {
+        return true;
+    }
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.View;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.SeasonDetails;
 import java.util.List;
 import android.view.LayoutInflater;
@@ -21,12 +22,21 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
     private static final String TAG = "SeasonsSpinnerAdapter";
     private final Context context;
     private final LayoutInflater inflater;
+    private int itemBgDrawableId;
     private final List<SeasonDetails> seasons;
     
-    public SeasonsSpinnerAdapter(final Context context) {
+    public SeasonsSpinnerAdapter(final NetflixActivity context) {
         this.seasons = new ArrayList<SeasonDetails>();
-        this.context = context;
-        this.inflater = (LayoutInflater)context.getSystemService("layout_inflater");
+        this.context = (Context)context;
+        this.inflater = (LayoutInflater)this.context.getSystemService("layout_inflater");
+        int itemBgDrawableId;
+        if (context.isForKids()) {
+            itemBgDrawableId = 2130837740;
+        }
+        else {
+            itemBgDrawableId = 2130837850;
+        }
+        this.itemBgDrawableId = itemBgDrawableId;
     }
     
     public int getCount() {
@@ -48,25 +58,32 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
     public int getSeasonIndexBySeasonNumber(final int n) {
         for (int i = 0; i < this.getCount(); ++i) {
             if (n == this.getItem(i).getSeasonNumber()) {
+                Log.v("SeasonsSpinnerAdapter", "Found season index: " + i);
                 return i;
             }
         }
         return -1;
     }
     
-    public View getView(int backgroundResource, final View view, final ViewGroup viewGroup) {
+    public int getSeasonNumberForPosition(final int n) {
+        return this.getItem(n).getSeasonNumber();
+    }
+    
+    public View getView(int itemBgDrawableId, final View view, final ViewGroup viewGroup) {
         TextView textView;
         if ((textView = (TextView)view) == null) {
-            textView = (TextView)this.inflater.inflate(2130903156, (ViewGroup)null, false);
+            textView = (TextView)this.inflater.inflate(2130903164, (ViewGroup)null, false);
         }
-        textView.setText((CharSequence)this.getItem(backgroundResource).getSeasonNumberTitle(this.context));
+        final SeasonDetails item = this.getItem(itemBgDrawableId);
+        textView.setTag((Object)item.getSeasonNumber());
+        textView.setText((CharSequence)item.getSeasonNumberTitle(this.context));
         if (viewGroup instanceof SeasonsSpinner) {
-            backgroundResource = 2131296304;
+            itemBgDrawableId = 2131296304;
         }
         else {
-            backgroundResource = 2130837828;
+            itemBgDrawableId = this.itemBgDrawableId;
         }
-        textView.setBackgroundResource(backgroundResource);
+        textView.setBackgroundResource(itemBgDrawableId);
         return (View)textView;
     }
     

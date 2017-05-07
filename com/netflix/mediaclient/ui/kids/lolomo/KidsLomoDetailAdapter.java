@@ -7,10 +7,11 @@ package com.netflix.mediaclient.ui.kids.lolomo;
 import com.netflix.mediaclient.servicemgr.CWVideo;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import com.netflix.mediaclient.android.app.LoadingStatus;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.widget.LinearLayout;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.Trackable;
+import java.util.Collections;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
@@ -18,6 +19,7 @@ import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewGroup;
 import android.content.Context;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.LoMo;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.LoMoType;
 import com.netflix.mediaclient.Log;
@@ -25,7 +27,8 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.Video;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.android.app.LoadingStatus;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import android.widget.BaseAdapter;
@@ -38,13 +41,14 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
     private final LoLoMoFrag frag;
     private boolean hasMoreData;
     private boolean isLoading;
-    private final LoMo lomo;
+    private LoadingStatusCallback loadingStatusCallback;
+    private final BasicLoMo lomo;
     private ServiceManager manager;
     private long requestId;
     private final List<Video> videoData;
     private int videoStartIndex;
     
-    public KidsLomoDetailAdapter(final LoLoMoFrag frag, final LoMo lomo) {
+    public KidsLomoDetailAdapter(final LoLoMoFrag frag, final BasicLoMo lomo) {
         this.isLoading = true;
         this.videoData = new ArrayList<Video>();
         this.frag = frag;
@@ -52,7 +56,7 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
         this.lomo = lomo;
     }
     
-    static /* synthetic */ int access$412(final KidsLomoDetailAdapter kidsLomoDetailAdapter, int videoStartIndex) {
+    static /* synthetic */ int access$512(final KidsLomoDetailAdapter kidsLomoDetailAdapter, int videoStartIndex) {
         videoStartIndex += kidsLomoDetailAdapter.videoStartIndex;
         return kidsLomoDetailAdapter.videoStartIndex = videoStartIndex;
     }
@@ -75,14 +79,20 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
             return;
         }
         if (this.lomo.getType() == LoMoType.FLAT_GENRE) {
-            this.manager.fetchGenreVideos(this.lomo, this.videoStartIndex, n, fetchVideosCallback);
+            this.manager.fetchGenreVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, fetchVideosCallback);
             return;
         }
-        this.manager.fetchVideos(this.lomo, this.videoStartIndex, n, fetchVideosCallback);
+        this.manager.fetchVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, fetchVideosCallback);
     }
     
     private void hideLoadingAndErrorViews() {
         this.frag.hideLoadingAndErrorViews();
+    }
+    
+    private void onDataLoaded(final int n) {
+        if (this.loadingStatusCallback != null) {
+            this.loadingStatusCallback.onDataLoaded(n);
+        }
     }
     
     private boolean shouldLoadMoreData(final int n) {
@@ -132,8 +142,15 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
         Object o;
         if ((o = view) == null) {
             Log.v("KidsLomoDetailAdapter", "Creating Kids video view, type: " + this.lomo.getType());
-            LinearLayout linearLayout;
+            boolean b2;
             if (this.lomo.getType() == LoMoType.CONTINUE_WATCHING) {
+                b2 = true;
+            }
+            else {
+                b2 = false;
+            }
+            LinearLayout linearLayout;
+            if (b2) {
                 linearLayout = new KidsCwViewGroup<Object>((Context)this.activity, false);
             }
             else if (this.lomo.getType() == LoMoType.CHARACTERS) {
@@ -143,26 +160,35 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
                 linearLayout = new KidsLoMoViewGroup<Object>((Context)this.activity, false);
             }
             ((VideoViewGroup)linearLayout).init(1);
-            ((VideoViewGroup)linearLayout).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeRowHeight(this.activity, false)));
+            int n2;
+            if (b2) {
+                n2 = KidsUtils.computeHorizontalRowHeight(this.activity, false);
+            }
+            else {
+                n2 = KidsUtils.computeRowHeight(this.activity, false);
+            }
+            ((VideoViewGroup)linearLayout).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, n2));
             final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361835);
-            ((VideoViewGroup)linearLayout).setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
+            ((VideoViewGroup)linearLayout).setPadding(dimensionPixelSize, dimensionPixelSize / 2, dimensionPixelSize, dimensionPixelSize / 2);
             o = linearLayout;
         }
+        if (Log.isLoggable("KidsLomoDetailAdapter", 2)) {
+            Log.v("KidsLomoDetailAdapter", "Updating view for type: " + this.lomo.getType() + ", position: " + n);
+        }
         final Video item = this.getItem(n);
-        final ArrayList<Video> list = new ArrayList<Video>();
-        list.add(item);
-        ((VideoViewGroup<Video, V>)o).updateDataThenViews(list, 1, 1, n, this.lomo);
-        boolean b2 = b;
+        ((VideoViewGroup<Video, V>)o).updateDataThenViews(Collections.singletonList(item), 1, 1, n, this.lomo);
+        LogUtils.reportPresentationTracking(this.manager, this.lomo, item, n);
+        boolean b3 = b;
         if (this.hasMoreData) {
-            b2 = b;
+            b3 = b;
             if (!this.isLoading) {
-                b2 = b;
+                b3 = b;
                 if (this.shouldLoadMoreData(n)) {
-                    b2 = true;
+                    b3 = true;
                 }
             }
         }
-        if (b2) {
+        if (b3) {
             this.fetchMoreData();
         }
         return (View)o;
@@ -221,6 +247,11 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
     }
     
     public void setLoadingStatusCallback(final LoadingStatusCallback loadingStatusCallback) {
+        if (!this.isLoadingData() && loadingStatusCallback != null) {
+            loadingStatusCallback.onDataLoaded(0);
+            return;
+        }
+        this.loadingStatusCallback = loadingStatusCallback;
     }
     
     private class FetchVideosCallback extends LoggingManagerCallback
@@ -241,6 +272,7 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
                 return;
             }
             KidsLomoDetailAdapter.this.isLoading = false;
+            KidsLomoDetailAdapter.this.onDataLoaded(n);
             if (n != 0) {
                 Log.w("KidsLomoDetailAdapter", "Invalid status code");
                 KidsLomoDetailAdapter.this.hasMoreData = false;
@@ -260,7 +292,7 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
                 Log.v("KidsLomoDetailAdapter", "Got " + list.size() + " items, expected " + this.numItems + ", hasMoreData: " + KidsLomoDetailAdapter.this.hasMoreData);
             }
             KidsLomoDetailAdapter.this.videoData.addAll(list);
-            KidsLomoDetailAdapter.access$412(KidsLomoDetailAdapter.this, list.size());
+            KidsLomoDetailAdapter.access$512(KidsLomoDetailAdapter.this, list.size());
             KidsLomoDetailAdapter.this.notifyDataSetChanged();
         }
         

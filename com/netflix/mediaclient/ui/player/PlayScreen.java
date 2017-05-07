@@ -48,7 +48,7 @@ public class PlayScreen implements Screen
     private boolean mZoomEnabled;
     private final Runnable removeSoundBar;
     
-    PlayScreen(final PlayerActivity mController, final Listeners listeners, final PostPlay.PostPlayType postPlayType) {
+    PlayScreen(final PlayerActivity mController, final Listeners listeners, final PostPlayFactory.PostPlayType postPlayType) {
         this.mState = PlayerUiState.Loading;
         this.mNavigationBarSetVisibleInProgress = false;
         this.mZoomEnabled = true;
@@ -73,7 +73,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165488);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165505);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -82,15 +82,15 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131165490);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131165487);
-        this.mBufferingOverlay = mController.findViewById(2131165519);
-        this.mBif = (ImageView)mController.findViewById(2131165489);
-        this.mPostPlayManager = PostPlay.createPostPlay(mController, postPlayType);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131165507);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131165433);
+        this.mBufferingOverlay = mController.findViewById(2131165536);
+        this.mBif = (ImageView)mController.findViewById(2131165506);
+        this.mPostPlayManager = PostPlayFactory.create(mController, postPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
     
-    static PlayScreen createInstance(final PlayerActivity playerActivity, final Listeners listeners, final PostPlay.PostPlayType postPlayType) {
+    static PlayScreen createInstance(final PlayerActivity playerActivity, final Listeners listeners, final PostPlayFactory.PostPlayType postPlayType) {
         final int androidVersion = AndroidUtils.getAndroidVersion();
         if (androidVersion >= 16) {
             Log.d("screen", "PlayScreen for JB (Android 4.1+");
@@ -127,6 +127,7 @@ public class PlayScreen implements Screen
         this.clearPanel();
         this.mNavigationBarSetVisibleInProgress = true;
         this.showNavigationBar();
+        this.mController.getSubtitleManager().setSubtitleVisibility(false);
         Log.d("screen", "Interrupted");
     }
     
@@ -181,21 +182,21 @@ public class PlayScreen implements Screen
         this.showNavigationBar();
     }
     
-    static int resolveContentView(final PostPlay.PostPlayType postPlayType) {
-        if (postPlayType == PostPlay.PostPlayType.EpisodesForPhone) {
+    static int resolveContentView(final PostPlayFactory.PostPlayType postPlayType) {
+        if (postPlayType == PostPlayFactory.PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903137;
-        }
-        if (postPlayType == PostPlay.PostPlayType.EpisodesForTablet) {
-            Log.d("screen", "playout_tablet_episode");
             return 2130903142;
         }
-        if (postPlayType == PostPlay.PostPlayType.RecommendationForTablet) {
+        if (postPlayType == PostPlayFactory.PostPlayType.EpisodesForTablet) {
+            Log.d("screen", "playout_tablet_episode");
+            return 2130903147;
+        }
+        if (postPlayType == PostPlayFactory.PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903143;
+            return 2130903148;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903138;
+        return 2130903143;
     }
     
     public boolean canExitPlaybackEndOfPlay() {

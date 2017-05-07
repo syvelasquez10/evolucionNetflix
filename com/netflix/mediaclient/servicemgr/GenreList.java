@@ -4,7 +4,9 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-public interface GenreList extends BasicLoMo
+import android.os.Parcelable;
+
+public interface GenreList extends BasicLoMo, Parcelable
 {
     int getNumVideos();
     

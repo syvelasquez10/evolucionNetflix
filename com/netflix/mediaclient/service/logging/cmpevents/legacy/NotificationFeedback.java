@@ -56,7 +56,12 @@ public class NotificationFeedback extends BaseCmpEvent implements Runnable
         if (this.mFeedback != null) {
             jsonObject3.put("action", (Object)this.mFeedback.getValue());
         }
-        jsonObject3.put("senderApp", (Object)"Android");
+        if (this.mMsg.getOriginator() != null) {
+            jsonObject3.put("senderApp", (Object)this.mMsg.getOriginator());
+        }
+        else {
+            jsonObject3.put("senderApp", (Object)"Android");
+        }
         jsonObject3.put("channel", (Object)"PUSH");
         BaseCmpEvent.addIfNotNull(jsonObject3, "esn", s);
         BaseCmpEvent.addIfNotNull(jsonObject3, "device_type", commonRequestParameters.deviceType);

@@ -16,6 +16,7 @@ class TitlePlayable implements Playable
     private int mEpisodeNumber;
     private boolean mIsAutoPlayEnabled;
     private boolean mIsNextPlayableEpisode;
+    private boolean mIsPinProtected;
     private String mParentId;
     private String mParentTitle;
     private String mPlayableId;
@@ -39,6 +40,7 @@ class TitlePlayable implements Playable
         this.mDuration = asset.getDuration();
         this.mIsAutoPlayEnabled = asset.isAutoPlayEnabled();
         this.mIsNextPlayableEpisode = asset.isNextPlayableEpisode();
+        this.mIsPinProtected = asset.isPinProtected();
     }
     
     @Override
@@ -117,6 +119,11 @@ class TitlePlayable implements Playable
     }
     
     @Override
+    public String getSquareUrl() {
+        return null;
+    }
+    
+    @Override
     public String getTitle() {
         return this.mTitle;
     }
@@ -139,6 +146,11 @@ class TitlePlayable implements Playable
     @Override
     public boolean isNextPlayableEpisode() {
         return this.mIsNextPlayableEpisode;
+    }
+    
+    @Override
+    public boolean isPinProtected() {
+        return this.mIsPinProtected;
     }
     
     @Override

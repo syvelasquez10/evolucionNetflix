@@ -12,8 +12,6 @@ public interface KidsOnPhoneConfiguration
     
     ScrollBehavior getScrollBehavior();
     
-    boolean isInKidsOnPhoneTest();
-    
     boolean isKidsOnPhoneEnabled();
     
     boolean shouldShowKidsEntryInActionBar();

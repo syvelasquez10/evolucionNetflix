@@ -27,6 +27,10 @@ public abstract class SimpleUserAgentWebCallback implements UserAgentWebCallback
     }
     
     @Override
+    public void onPinVerified(final boolean b, final int n) {
+    }
+    
+    @Override
     public void onProfileDataFetched(final UserProfile userProfile, final int n) {
     }
     

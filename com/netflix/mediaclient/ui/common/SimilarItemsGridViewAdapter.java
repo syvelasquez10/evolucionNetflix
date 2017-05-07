@@ -36,7 +36,7 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
     private int imgHeight;
     private final int numGridCols;
     private List<Video> similarMovies;
-    private Trackable trackIdProvider;
+    private Trackable trackable;
     
     public SimilarItemsGridViewAdapter(final Activity activity, final GridView gridView, final boolean clipToCompleteRows) {
         this.similarMovies = new ArrayList<Video>();
@@ -92,13 +92,13 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         Object o = view;
         if (view == null) {
             o = new VideoView((Context)this.activity);
-            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361869);
+            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361870);
             ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             ((VideoView)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
             ((VideoView)o).setAdjustViewBounds(true);
             ((RoundedImageView)o).setScaleType(ImageView$ScaleType.CENTER_CROP);
         }
-        ((VideoView)o).update(this.getItem(n), this.trackIdProvider, n, false);
+        ((VideoView)o).update(this.getItem(n), this.trackable, n, false);
         return (View)o;
     }
     
@@ -108,9 +108,9 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         }
     }
     
-    public void setData(final List<Video> similarMovies, final Trackable trackIdProvider) {
+    public void setData(final List<Video> similarMovies, final Trackable trackable) {
         this.similarMovies = similarMovies;
-        this.trackIdProvider = trackIdProvider;
+        this.trackable = trackable;
         this.notifyDataSetChanged();
     }
 }

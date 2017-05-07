@@ -29,6 +29,11 @@ public final class ClientNotifier implements NotifierInterface
     }
     
     @Override
+    public void abortPinVerification(final String s, final boolean b) {
+        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.PIN_VERIFICATION_NOT_REQUIRED").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("isPinVerified", b));
+    }
+    
+    @Override
     public void audiosub(final String s, final String s2) {
         this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_AUDIOSUB").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("stringBlob", s2));
         Log.v("nf_mdx", "Intent MDXUPDATE_AUDIOSUB sent");
@@ -120,9 +125,19 @@ public final class ClientNotifier implements NotifierInterface
     }
     
     @Override
+    public void postplayState(final String s, final String s2) {
+        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("postplayState", s2));
+    }
+    
+    @Override
     public void ready() {
         this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_READY").addCategory("com.netflix.mediaclient.intent.category.MDX"));
         Log.v("nf_mdx", "Intent READY sent");
+    }
+    
+    @Override
+    public void requestPinVerification(final String s, final String s2, final int n, final int n2, final String s3) {
+        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.PIN_VERIFICATION_SHOW").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("title", s2).putExtra("ancestorVideoType", s3).putExtra("videoId", n).putExtra("ancestorVideoId", n2));
     }
     
     @Override

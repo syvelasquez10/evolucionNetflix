@@ -1834,16 +1834,11 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         
         @Override
         public void run() {
-            if (BrowseAgent.this.canRefreshCW(BrowseAgent.this.hardCache)) {
+            if (BrowseAgent.this.canRefreshCW(BrowseAgent.this.hardCache) && BrowseAgent.this.cacheHasLolomoId(BrowseAgent.this.hardCache)) {
                 BrowseAgent.this.mBrowseWebClient.refreshCWList(((FetchTask)this).getFromIndex(), ((FetchTask)this).getToIndex(), this.webClientCallback);
                 return;
             }
-            if (BrowseAgent.this.cacheHasLolomoId(BrowseAgent.this.hardCache)) {
-                Log.d("nf_service_browseagent", "No CW in cache but we have a lolomo id in the cache - refresh home instead");
-                BrowseAgent.this.sendHomeRefreshBrodcast();
-                return;
-            }
-            Log.d("nf_service_browseagent", "Cache has no CW item or lolomo item so doing nothing for CW refresh");
+            Log.d("nf_service_browseagent", "Cache has no CW item so doing nothing for CW refresh");
         }
     }
     

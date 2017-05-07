@@ -822,130 +822,150 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         //     7: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
         //    10: pop            
         //    11: aload_0        
-        //    12: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.stopRenderer:()V
-        //    15: aload_0        
-        //    16: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputHandler:Landroid/os/Handler;
-        //    19: ifnull          38
+        //    12: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
+        //    15: invokevirtual   android/media/MediaCodec.stop:()V
+        //    18: aload_0        
+        //    19: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.stopRenderer:()V
         //    22: aload_0        
         //    23: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputHandler:Landroid/os/Handler;
-        //    26: iconst_1       
-        //    27: invokevirtual   android/os/Handler.removeMessages:(I)V
-        //    30: aload_0        
-        //    31: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputHandler:Landroid/os/Handler;
-        //    34: iconst_2       
-        //    35: invokevirtual   android/os/Handler.removeMessages:(I)V
-        //    38: aload_0        
-        //    39: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputThread:Landroid/os/HandlerThread;
-        //    42: ifnull          53
+        //    26: ifnull          45
+        //    29: aload_0        
+        //    30: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputHandler:Landroid/os/Handler;
+        //    33: iconst_1       
+        //    34: invokevirtual   android/os/Handler.removeMessages:(I)V
+        //    37: aload_0        
+        //    38: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputHandler:Landroid/os/Handler;
+        //    41: iconst_2       
+        //    42: invokevirtual   android/os/Handler.removeMessages:(I)V
         //    45: aload_0        
         //    46: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputThread:Landroid/os/HandlerThread;
-        //    49: invokevirtual   android/os/HandlerThread.quit:()Z
-        //    52: pop            
-        //    53: aload_0        
-        //    54: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //    57: ldc_w           "input thread stopped"
-        //    60: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    63: pop            
-        //    64: aload_0        
-        //    65: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputHandler:Landroid/os/Handler;
-        //    68: ifnull          112
+        //    49: ifnull          60
+        //    52: aload_0        
+        //    53: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputThread:Landroid/os/HandlerThread;
+        //    56: invokevirtual   android/os/HandlerThread.quit:()Z
+        //    59: pop            
+        //    60: aload_0        
+        //    61: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //    64: ldc_w           "input thread stopped"
+        //    67: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    70: pop            
         //    71: aload_0        
         //    72: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputHandler:Landroid/os/Handler;
-        //    75: iconst_1       
-        //    76: invokevirtual   android/os/Handler.removeMessages:(I)V
-        //    79: aload_0        
-        //    80: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputHandler:Landroid/os/Handler;
-        //    83: iconst_2       
-        //    84: invokevirtual   android/os/Handler.removeMessages:(I)V
-        //    87: aload_0        
-        //    88: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputHandler:Landroid/os/Handler;
-        //    91: iconst_4       
-        //    92: invokevirtual   android/os/Handler.sendEmptyMessage:(I)Z
-        //    95: pop            
-        //    96: aload_0        
-        //    97: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputState:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   100: astore_1       
-        //   101: aload_1        
-        //   102: monitorenter   
-        //   103: aload_0        
-        //   104: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputState:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   107: invokevirtual   java/lang/Object.wait:()V
-        //   110: aload_1        
-        //   111: monitorexit    
-        //   112: aload_0        
-        //   113: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputThread:Landroid/os/HandlerThread;
-        //   116: ifnull          127
+        //    75: ifnull          119
+        //    78: aload_0        
+        //    79: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputHandler:Landroid/os/Handler;
+        //    82: iconst_1       
+        //    83: invokevirtual   android/os/Handler.removeMessages:(I)V
+        //    86: aload_0        
+        //    87: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputHandler:Landroid/os/Handler;
+        //    90: iconst_2       
+        //    91: invokevirtual   android/os/Handler.removeMessages:(I)V
+        //    94: aload_0        
+        //    95: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputState:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //    98: astore_1       
+        //    99: aload_1        
+        //   100: monitorenter   
+        //   101: aload_0        
+        //   102: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputHandler:Landroid/os/Handler;
+        //   105: iconst_4       
+        //   106: invokevirtual   android/os/Handler.sendEmptyMessage:(I)Z
+        //   109: pop            
+        //   110: aload_0        
+        //   111: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputState:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   114: invokevirtual   java/lang/Object.wait:()V
+        //   117: aload_1        
+        //   118: monitorexit    
         //   119: aload_0        
         //   120: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputThread:Landroid/os/HandlerThread;
-        //   123: invokevirtual   android/os/HandlerThread.quit:()Z
-        //   126: pop            
-        //   127: aload_0        
-        //   128: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //   131: ldc_w           "output thread stopped"
-        //   134: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   137: pop            
-        //   138: aload_0        
-        //   139: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputThread:Landroid/os/HandlerThread;
-        //   142: ifnull          152
+        //   123: ifnull          134
+        //   126: aload_0        
+        //   127: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputThread:Landroid/os/HandlerThread;
+        //   130: invokevirtual   android/os/HandlerThread.quit:()Z
+        //   133: pop            
+        //   134: aload_0        
+        //   135: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //   138: ldc_w           "output thread stopped"
+        //   141: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   144: pop            
         //   145: aload_0        
         //   146: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputThread:Landroid/os/HandlerThread;
-        //   149: invokevirtual   android/os/HandlerThread.join:()V
+        //   149: ifnull          159
         //   152: aload_0        
-        //   153: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputThread:Landroid/os/HandlerThread;
-        //   156: ifnull          166
+        //   153: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mInputThread:Landroid/os/HandlerThread;
+        //   156: invokevirtual   android/os/HandlerThread.join:()V
         //   159: aload_0        
         //   160: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputThread:Landroid/os/HandlerThread;
-        //   163: invokevirtual   android/os/HandlerThread.join:()V
+        //   163: ifnull          173
         //   166: aload_0        
-        //   167: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //   170: ldc_w           "release()"
-        //   173: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   176: pop            
-        //   177: aload_0        
-        //   178: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
-        //   181: invokevirtual   android/media/MediaCodec.release:()V
-        //   184: return         
-        //   185: astore_2       
-        //   186: ldc             "MediaDecoder2"
-        //   188: ldc_w           "stop output interrupted"
-        //   191: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   194: pop            
-        //   195: goto            110
-        //   198: astore_2       
-        //   199: aload_1        
-        //   200: monitorexit    
-        //   201: aload_2        
-        //   202: athrow         
-        //   203: astore_1       
-        //   204: aload_0        
-        //   205: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //   208: ldc_w           "input/output thread is interrupted"
-        //   211: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   214: pop            
-        //   215: goto            166
-        //   218: astore_1       
-        //   219: aload_0        
-        //   220: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //   223: ldc_w           "get un-documented exception as a result of releas()"
-        //   226: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   229: pop            
-        //   230: return         
+        //   167: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mOutputThread:Landroid/os/HandlerThread;
+        //   170: invokevirtual   android/os/HandlerThread.join:()V
+        //   173: aload_0        
+        //   174: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //   177: ldc_w           "release()"
+        //   180: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   183: pop            
+        //   184: aload_0        
+        //   185: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
+        //   188: invokevirtual   android/media/MediaCodec.release:()V
+        //   191: return         
+        //   192: astore_1       
+        //   193: aload_0        
+        //   194: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //   197: new             Ljava/lang/StringBuilder;
+        //   200: dup            
+        //   201: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   204: ldc_w           "get un-documented exception as a result of stop() "
+        //   207: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   210: aload_1        
+        //   211: invokevirtual   java/lang/Exception.getMessage:()Ljava/lang/String;
+        //   214: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   217: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   220: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   223: pop            
+        //   224: goto            18
+        //   227: astore_2       
+        //   228: ldc             "MediaDecoder2"
+        //   230: ldc_w           "stop output interrupted"
+        //   233: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   236: pop            
+        //   237: goto            117
+        //   240: astore_2       
+        //   241: aload_1        
+        //   242: monitorexit    
+        //   243: aload_2        
+        //   244: athrow         
+        //   245: astore_1       
+        //   246: aload_0        
+        //   247: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //   250: ldc_w           "input/output thread is interrupted"
+        //   253: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   256: pop            
+        //   257: goto            173
+        //   260: astore_1       
+        //   261: aload_0        
+        //   262: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //   265: ldc_w           "get un-documented exception as a result of releas()"
+        //   268: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   271: pop            
+        //   272: return         
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                            
         //  -----  -----  -----  -----  --------------------------------
-        //  103    110    185    198    Ljava/lang/InterruptedException;
-        //  103    110    198    203    Any
-        //  110    112    198    203    Any
-        //  138    152    203    218    Ljava/lang/InterruptedException;
-        //  152    166    203    218    Ljava/lang/InterruptedException;
-        //  177    184    218    231    Ljava/lang/Exception;
-        //  186    195    198    203    Any
-        //  199    201    198    203    Any
+        //  11     18     192    227    Ljava/lang/Exception;
+        //  101    110    240    245    Any
+        //  110    117    227    240    Ljava/lang/InterruptedException;
+        //  110    117    240    245    Any
+        //  117    119    240    245    Any
+        //  145    159    245    260    Ljava/lang/InterruptedException;
+        //  159    173    245    260    Ljava/lang/InterruptedException;
+        //  184    191    260    273    Ljava/lang/Exception;
+        //  228    237    240    245    Any
+        //  241    243    240    245    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 114, Size: 114
+        // java.lang.IndexOutOfBoundsException: Index: 132, Size: 132
         //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
         //     at java.util.ArrayList.get(ArrayList.java:429)
         //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)

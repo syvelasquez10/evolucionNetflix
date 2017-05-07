@@ -10,6 +10,8 @@ import com.netflix.mediaclient.service.mdx.message.controller.PlayerGetCurrentSt
 import com.netflix.mediaclient.service.mdx.message.controller.PlayerGetCapabilities;
 import com.netflix.mediaclient.service.mdx.message.controller.Handshake;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerState;
+import com.netflix.mediaclient.service.mdx.message.target.PinNotRequired;
+import com.netflix.mediaclient.service.mdx.message.target.PinRequired;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerStateChanged;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerCurrentState;
 import org.json.JSONException;
@@ -29,6 +31,7 @@ import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
 
 public class TargetContext implements TargetStateManagerListener
 {
+    private static final long DUPLICATE_MESSAGE_REQUEST_WINDOWS = 2000L;
     private static final int MSG_COMMAND = 2;
     private static final int MSG_EVENT = 1;
     private static final int MSG_PERIODIC = 4;
@@ -48,6 +51,8 @@ public class TargetContext implements TargetStateManagerListener
     private final NotifierInterface mNotifier;
     private String mPairingContext;
     private final PlayerStateManager mPlayerStateManager;
+    private String mPostplayStateBlob;
+    private long mPreviousAudioSubExchangeTime;
     private int mRegistrationAcceptance;
     private String mServiceType;
     private int mSessionId;
@@ -62,6 +67,7 @@ public class TargetContext implements TargetStateManagerListener
     TargetContext(final MdxController mController, final NotifierInterface mNotifier, final RemoteDevice remoteDevice, final boolean b) {
         this.mPlayerStateManager = new PlayerStateManager();
         this.mAudioSubtitleSettingBlobLock = new Object();
+        this.mPreviousAudioSubExchangeTime = 0L;
         if (Log.isLoggable("nf_mdx", 3)) {
             Log.d("nf_mdx", "TargetContext: for device " + remoteDevice);
         }
@@ -128,7 +134,6 @@ public class TargetContext implements TargetStateManagerListener
             if (TargetState.StateHasPair.equals(targetState) || TargetState.StateNeedHandShake.equals(targetState)) {
                 return 105;
             }
-            n2 = n;
             if (TargetState.StateSendingMessage.equals(targetState)) {
                 n2 = n;
                 if (StringUtils.isNotEmpty(s)) {
@@ -136,6 +141,12 @@ public class TargetContext implements TargetStateManagerListener
                     if (MdxMessage.isUserCommand(s)) {
                         return 105;
                     }
+                }
+            }
+            else {
+                n2 = n;
+                if (TargetState.StateNeedLaunched.equals(targetState)) {
+                    return 100;
                 }
             }
         }
@@ -150,9 +161,17 @@ public class TargetContext implements TargetStateManagerListener
         return s2;
     }
     
+    private void handlePostplayState(final String s, final String mPostplayStateBlob) {
+        if (StringUtils.isNotEmpty(mPostplayStateBlob) && !mPostplayStateBlob.equals(this.mPostplayStateBlob)) {
+            this.mNotifier.postplayState(s, mPostplayStateBlob);
+        }
+        this.mPostplayStateBlob = mPostplayStateBlob;
+    }
+    
     private void invalidateCachedLanguageData() {
         synchronized (this.mAudioSubtitleSettingBlobLock) {
             this.mAudioSubtitleSettingBlob = null;
+            this.mPreviousAudioSubExchangeTime = 0L;
         }
     }
     
@@ -308,8 +327,8 @@ public class TargetContext implements TargetStateManagerListener
         this.mTargetContextHandler.sendMessage(message);
     }
     
-    public void messageReceived(final int n, String s, final JSONObject jsonObject) {
-        if (n != this.mSessionId) {
+    public void messageReceived(int videoId, String s, final JSONObject jsonObject) {
+        if (videoId != this.mSessionId) {
             Log.e("nf_mdx", "messageReceived doesn't match sessionId: " + s);
         }
         else {
@@ -344,38 +363,92 @@ public class TargetContext implements TargetStateManagerListener
                 }
             }
             if ("PLAYER_CURRENT_STATE".equals(s)) {
+                PlayerState playerState;
                 try {
-                    final PlayerState playerState = new PlayerCurrentState(jsonObject).getPlayerState();
-                    if (playerState == null) {
-                        return;
+                    playerState = new PlayerCurrentState(jsonObject).getPlayerState();
+                    if (playerState != null) {
+                        this.mTargetPlaybackSessionToken = playerState.getXid();
+                        s = (String)this.mPlayerStateManager;
+                        // monitorenter(s)
+                        final TargetContext targetContext = this;
+                        final PlayerStateManager playerStateManager = targetContext.mPlayerStateManager;
+                        final PlayerState playerState2 = playerState;
+                        playerStateManager.updateState(playerState2);
+                        final String s3 = s;
+                        // monitorexit(s3)
+                        final TargetContext targetContext2 = this;
+                        final String s4 = s2;
+                        final PlayerState playerState3 = playerState;
+                        final String s5 = playerState3.getPostplayState();
+                        targetContext2.handlePostplayState(s4, s5);
                     }
-                    this.mTargetPlaybackSessionToken = playerState.getXid();
-                    synchronized (this.mPlayerStateManager) {
-                        this.mPlayerStateManager.updateState(playerState);
-                        return;
-                    }
+                    return;
                 }
                 catch (JSONException ex2) {
                     Log.e("nf_mdx", "messageReceived failed to parse " + s);
                     return;
                 }
+                try {
+                    final TargetContext targetContext = this;
+                    final PlayerStateManager playerStateManager = targetContext.mPlayerStateManager;
+                    final PlayerState playerState2 = playerState;
+                    playerStateManager.updateState(playerState2);
+                    final String s3 = s;
+                    // monitorexit(s3)
+                    final TargetContext targetContext2 = this;
+                    final String s4 = s2;
+                    final PlayerState playerState3 = playerState;
+                    final String s5 = playerState3.getPostplayState();
+                    targetContext2.handlePostplayState(s4, s5);
+                    return;
+                }
+                finally {
+                }
+                // monitorexit(s)
             }
             if ("PLAYER_STATE_CHANGED".equals(s)) {
+                PlayerState playerState4;
                 try {
-                    final PlayerState playerState2 = new PlayerStateChanged(jsonObject).getPlayerState();
-                    if (playerState2 == null) {
-                        return;
+                    playerState4 = new PlayerStateChanged(jsonObject).getPlayerState();
+                    if (playerState4 != null) {
+                        this.mTargetPlaybackSessionToken = playerState4.getXid();
+                        s = (String)this.mPlayerStateManager;
+                        // monitorenter(s)
+                        final TargetContext targetContext3 = this;
+                        final PlayerStateManager playerStateManager2 = targetContext3.mPlayerStateManager;
+                        final PlayerState playerState5 = playerState4;
+                        playerStateManager2.changeState(playerState5);
+                        final String s6 = s;
+                        // monitorexit(s6)
+                        final TargetContext targetContext4 = this;
+                        final String s7 = s2;
+                        final PlayerState playerState6 = playerState4;
+                        final String s8 = playerState6.getPostplayState();
+                        targetContext4.handlePostplayState(s7, s8);
                     }
-                    this.mTargetPlaybackSessionToken = playerState2.getXid();
-                    synchronized (this.mPlayerStateManager) {
-                        this.mPlayerStateManager.changeState(playerState2);
-                        return;
-                    }
+                    return;
                 }
                 catch (JSONException ex3) {
                     Log.e("nf_mdx", "messageReceived failed to parse " + s);
                     return;
                 }
+                try {
+                    final TargetContext targetContext3 = this;
+                    final PlayerStateManager playerStateManager2 = targetContext3.mPlayerStateManager;
+                    final PlayerState playerState5 = playerState4;
+                    playerStateManager2.changeState(playerState5);
+                    final String s6 = s;
+                    // monitorexit(s6)
+                    final TargetContext targetContext4 = this;
+                    final String s7 = s2;
+                    final PlayerState playerState6 = playerState4;
+                    final String s8 = playerState6.getPostplayState();
+                    targetContext4.handlePostplayState(s7, s8);
+                    return;
+                }
+                finally {
+                }
+                // monitorexit(s)
             }
             if ("PLAYER_CAPABILITIES".equals(s)) {
                 this.mTargetCapability = jsonObject.toString();
@@ -384,6 +457,7 @@ public class TargetContext implements TargetStateManagerListener
             }
             if ("AUDIO_SUBTITLES_CHANGED".equals(s) || "AUDIO_SUBTITLES_SETTINGS".equals(s)) {
                 synchronized (this.mAudioSubtitleSettingBlobLock) {
+                    this.mPreviousAudioSubExchangeTime = System.currentTimeMillis();
                     this.mAudioSubtitleSettingBlob = jsonObject.toString();
                     this.mNotifier.audiosub(s2, this.mAudioSubtitleSettingBlob);
                     return;
@@ -400,6 +474,29 @@ public class TargetContext implements TargetStateManagerListener
             if ("META_DATA_CHANGED".equals(s)) {
                 this.mNotifier.metaData(s2, jsonObject.toString());
                 return;
+            }
+            if ("PIN_VERIFICATION_SHOW".equals(s)) {
+                try {
+                    final PinRequired pinRequired = new PinRequired(jsonObject);
+                    final String title = pinRequired.getTitle();
+                    videoId = pinRequired.getVideoId();
+                    this.mNotifier.requestPinVerification(s2, title, videoId, pinRequired.getAncestorVideoId(), pinRequired.getAncestorVideoType());
+                    return;
+                }
+                catch (JSONException ex4) {
+                    Log.e("nf_mdx", "messageReceived failed to parse " + s);
+                    return;
+                }
+            }
+            if ("PIN_VERIFICATION_NOT_REQUIRED".equals(s)) {
+                try {
+                    this.mNotifier.abortPinVerification(s2, new PinNotRequired(jsonObject).getIsPinVerified());
+                    return;
+                }
+                catch (JSONException ex5) {
+                    Log.e("nf_mdx", "messageReceived failed to parse " + s);
+                    return;
+                }
             }
             Log.d("nf_mdx", "messageReceived not handle ");
         }
@@ -483,17 +580,11 @@ public class TargetContext implements TargetStateManagerListener
         if (Log.isLoggable("nf_mdx", 3)) {
             Log.d("nf_mdx", "TargetContext: sendCommand: " + s + ", msgObj: " + jsonObject);
         }
-        final Message message = new Message();
-        message.what = 2;
-        message.obj = new Runnable() {
-            @Override
-            public void run() {
-                TargetContext.this.mController.getSession().sendMessage(TargetContext.this.mSessionId, s, jsonObject);
-            }
-        };
-        this.mTargetContextHandler.sendMessage(message);
-        if ("PLAYER_GET_CAPABILITIES".equals(s)) {
-            if (StringUtils.isNotEmpty(this.mTargetCapability)) {
+        Label_0234: {
+            if ("PLAYER_GET_CAPABILITIES".equals(s)) {
+                if (!StringUtils.isNotEmpty(this.mTargetCapability)) {
+                    break Label_0234;
+                }
                 Log.d("nf_mdx", "TargetContext: reutrn cached CAPABILITY");
                 if (StringUtils.isNotEmpty(this.mDialUuid)) {
                     s = this.mDialUuid;
@@ -503,48 +594,61 @@ public class TargetContext implements TargetStateManagerListener
                 }
                 this.mNotifier.capability(s, this.mTargetCapability);
             }
-        }
-        else {
-            if ("PLAYER_SET_VOLUME".equals(s)) {
-                final int optInt = jsonObject.optInt("volume", -1);
-                if (optInt < 0) {
-                    return;
-                }
-                synchronized (this.mPlayerStateManager) {
-                    this.mPlayerStateManager.setTargetVolume(optInt);
-                    return;
-                }
-            }
-            if ("GET_AUDIO_SUBTITLES".equals(s)) {
-                while (true) {
-                    while (true) {
-                        Label_0271: {
-                            synchronized (this.mAudioSubtitleSettingBlobLock) {
-                                if (StringUtils.isNotEmpty(this.mAudioSubtitleSettingBlob)) {
-                                    Log.d("nf_mdx", "TargetContext: reutrn cached AUDIO_SUBTITLES_SETTING");
-                                    if (!StringUtils.isNotEmpty(this.mDialUuid)) {
-                                        break Label_0271;
-                                    }
-                                    s = this.mDialUuid;
-                                    this.mNotifier.audiosub(s, this.mAudioSubtitleSettingBlob);
-                                }
-                                return;
-                            }
-                        }
-                        s = this.mUuid;
-                        continue;
-                    }
-                }
-            }
             else {
-                if ("SET_AUDIO_SUBTITLES".equals(s)) {
-                    this.invalidateCachedLanguageData();
-                    return;
+                if ("GET_AUDIO_SUBTITLES".equals(s)) {
+                    while (true) {
+                        while (true) {
+                            synchronized (this.mAudioSubtitleSettingBlobLock) {
+                                if (!StringUtils.isNotEmpty(this.mAudioSubtitleSettingBlob)) {
+                                    break;
+                                }
+                                Log.d("nf_mdx", "TargetContext: reutrn cached AUDIO_SUBTITLES_SETTING");
+                                if (StringUtils.isNotEmpty(this.mDialUuid)) {
+                                    final String s2 = this.mDialUuid;
+                                    this.mNotifier.audiosub(s2, this.mAudioSubtitleSettingBlob);
+                                    if (System.currentTimeMillis() - this.mPreviousAudioSubExchangeTime < 2000L) {
+                                        Log.d("nf_mdx", "TargetContext: no need to get GET_AUDIO_SUBTITLES_SETTING");
+                                        return;
+                                    }
+                                    break;
+                                }
+                            }
+                            final String s2 = this.mUuid;
+                            continue;
+                        }
+                    }
+                    this.mPreviousAudioSubExchangeTime = System.currentTimeMillis();
                 }
-                synchronized (this.mPlayerStateManager) {
-                    this.mPlayerStateManager.receivedCommand(s);
-                }
+                // monitorexit(o)
+                break Label_0234;
             }
+            return;
+        }
+        final Message message = new Message();
+        message.what = 2;
+        message.obj = new Runnable() {
+            @Override
+            public void run() {
+                TargetContext.this.mController.getSession().sendMessage(TargetContext.this.mSessionId, s, jsonObject);
+            }
+        };
+        this.mTargetContextHandler.sendMessage(message);
+        if ("PLAYER_SET_VOLUME".equals(s)) {
+            final int optInt = jsonObject.optInt("volume", -1);
+            if (optInt < 0) {
+                return;
+            }
+            synchronized (this.mPlayerStateManager) {
+                this.mPlayerStateManager.setTargetVolume(optInt);
+                return;
+            }
+        }
+        if ("SET_AUDIO_SUBTITLES".equals(s)) {
+            this.invalidateCachedLanguageData();
+            return;
+        }
+        synchronized (this.mPlayerStateManager) {
+            this.mPlayerStateManager.receivedCommand(s);
         }
     }
     

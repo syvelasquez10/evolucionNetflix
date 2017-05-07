@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.ui.kids.KidsUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Context;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.CWVideo;
@@ -23,10 +21,7 @@ public class KidsCwViewGroup<V extends View> extends VideoViewGroup<CWVideo, V>
     
     @Override
     protected V createChildView(final Context context) {
-        if (KidsUtils.shouldShowHorizontalImages((NetflixActivity)context)) {
-            return (V)new KidsHorizontalCwView(context, this.shouldIncludePeekDimen);
-        }
-        return (V)new KidsOneToOneCwView(context, this.shouldIncludePeekDimen);
+        return (V)new KidsHorizontalCwView(context, this.shouldIncludePeekDimen);
     }
     
     @Override

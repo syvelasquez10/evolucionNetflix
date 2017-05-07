@@ -4,9 +4,12 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
+import android.content.res.ColorStateList;
 import com.netflix.mediaclient.servicemgr.LoMo;
 import com.netflix.mediaclient.servicemgr.Genre;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.ui.lomo.BillboardView;
 import java.util.Collection;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -16,9 +19,9 @@ import android.content.Context;
 import com.netflix.mediaclient.servicemgr.LoMoType;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.content.res.Resources;
+import com.netflix.mediaclient.servicemgr.LoMoUtils;
 import android.widget.RelativeLayout$LayoutParams;
 import android.widget.TextView;
-import com.netflix.mediaclient.android.osp.SimpleStrokedTextView;
 import android.widget.LinearLayout;
 import com.netflix.mediaclient.Log;
 import android.view.View;
@@ -60,22 +63,30 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165418);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165428);
         linearLayout.setFocusable(false);
-        final LoMoRowContent rowContent = this.createRowContent(linearLayout, view.findViewById(2131165420));
-        TextView textView;
+        final TextView textView = (TextView)view.findViewById(2131165430);
+        final Resources resources = this.activity.getResources();
+        int n;
         if (this.activity.isForKids()) {
-            view.findViewById(2131165421).setVisibility(8);
-            textView = (SimpleStrokedTextView)view.findViewById(2131165422);
-            ((SimpleStrokedTextView)textView).setVisibility(0);
-            ((SimpleStrokedTextView)textView).setBoldEnabled(true);
+            n = 2131296306;
         }
         else {
-            textView = (TextView)view.findViewById(2131165421);
+            n = 2131296315;
         }
-        final Resources resources = this.activity.getResources();
-        ((RelativeLayout$LayoutParams)textView.getLayoutParams()).leftMargin = resources.getDimensionPixelOffset(2131361868) + resources.getDimensionPixelOffset(2131361869);
-        return new RowHolder(textView, rowContent, view.findViewById(2131165417));
+        textView.setTextColor(resources.getColor(n));
+        final LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
+        TextView textView2;
+        if (this.activity.isForKids()) {
+            view.findViewById(2131165431).setVisibility(8);
+            textView2 = (TextView)view.findViewById(2131165432);
+            textView2.setVisibility(0);
+        }
+        else {
+            textView2 = (TextView)view.findViewById(2131165431);
+        }
+        ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragOffsetLeftPx(this.activity) + this.activity.getResources().getDimensionPixelOffset(2131361870);
+        return new RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165427));
     }
     
     private void fetchMoreData() {
@@ -173,7 +184,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
         View inflate;
         if ((inflate = view) == null) {
-            inflate = this.activity.getLayoutInflater().inflate(2130903111, (ViewGroup)null);
+            inflate = this.activity.getLayoutInflater().inflate(2130903114, (ViewGroup)null);
             inflate.setTag((Object)this.createViewsAndHolder(inflate));
         }
         this.updateRowViews((RowHolder)inflate.getTag(), n);
@@ -216,7 +227,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
     }
     
-    protected void onLoaded(final int n) {
+    protected void onDataLoaded(final int n) {
         if (this.mLoadingStatusCallback != null) {
             this.mLoadingStatusCallback.onDataLoaded(n);
         }
@@ -263,39 +274,49 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final BasicLoMo item = this.getItem(n);
         if (item == null) {
             Log.w("BaseLoLoMoAdapter", "Trying to show data for null lomo! Position: " + n);
-            return;
-        }
-        if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
-            Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + item.getTitle() + ", type: " + item.getType() + ", pos: " + n);
-        }
-        final TextView title = rowHolder.title;
-        String text;
-        if (item.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131493293);
         }
         else {
-            text = item.getTitle();
+            if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
+                Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + item.getTitle() + ", type: " + item.getType() + ", pos: " + n);
+            }
+            final TextView title = rowHolder.title;
+            String text;
+            if (item.getType() == LoMoType.BILLBOARD) {
+                text = this.activity.getString(2131493301);
+            }
+            else {
+                text = item.getTitle();
+            }
+            title.setText((CharSequence)text);
+            final TextView title2 = rowHolder.title;
+            int visibility;
+            if (item.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(this.activity)) {
+                visibility = 0;
+            }
+            else {
+                visibility = 8;
+            }
+            title2.setVisibility(visibility);
+            final View shelf = rowHolder.shelf;
+            int visibility2;
+            if (this.isRowAfterBillboardOrCwRow(n, item.getType()) && !this.activity.isForKids()) {
+                visibility2 = (b ? 1 : 0);
+            }
+            else {
+                visibility2 = 8;
+            }
+            shelf.setVisibility(visibility2);
+            rowHolder.rowContent.refresh(item, n);
+            if (this.activity.isForKids()) {
+                if (item.getType() == LoMoType.CONTINUE_WATCHING) {
+                    rowHolder.contentGroup.setBackgroundResource(2130837730);
+                    rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296310));
+                    return;
+                }
+                ViewUtils.setBackgroundDrawableCompat(rowHolder.contentGroup, null);
+                rowHolder.title.setTextColor(rowHolder.defaultTitleColors);
+            }
         }
-        title.setText((CharSequence)text);
-        final TextView title2 = rowHolder.title;
-        int visibility;
-        if (item.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(this.activity)) {
-            visibility = 0;
-        }
-        else {
-            visibility = 8;
-        }
-        title2.setVisibility(visibility);
-        final View shelf = rowHolder.shelf;
-        int visibility2;
-        if (this.isRowAfterBillboardOrCwRow(n, item.getType()) && !this.activity.isForKids()) {
-            visibility2 = (b ? 1 : 0);
-        }
-        else {
-            visibility2 = 8;
-        }
-        shelf.setVisibility(visibility2);
-        rowHolder.rowContent.refresh(item, n);
     }
     
     private class LoMoCallbacks extends LoggingManagerCallback
@@ -317,7 +338,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
                 return;
             }
             BaseLoLoMoAdapter.this.isLoading = false;
-            BaseLoLoMoAdapter.this.onLoaded(n);
+            BaseLoLoMoAdapter.this.onDataLoaded(n);
             if (n != 0) {
                 Log.w("BaseLoLoMoAdapter", "Invalid status code");
                 BaseLoLoMoAdapter.this.hasMoreData = false;
@@ -361,14 +382,18 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     static class RowHolder
     {
+        public final View contentGroup;
+        public final ColorStateList defaultTitleColors;
         public final LoMoRowContent rowContent;
         public final View shelf;
         public final TextView title;
         
-        RowHolder(final TextView title, final LoMoRowContent rowContent, final View shelf) {
+        RowHolder(final View contentGroup, final TextView title, final LoMoRowContent rowContent, final View shelf) {
+            this.contentGroup = contentGroup;
             this.title = title;
             this.rowContent = rowContent;
             this.shelf = shelf;
+            this.defaultTitleColors = title.getTextColors();
         }
         
         public void invalidateRequestId() {

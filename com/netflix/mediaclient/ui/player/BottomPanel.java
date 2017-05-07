@@ -68,9 +68,9 @@ public final class BottomPanel extends PlayerSection
         this.mdxTargetSelector.setTarget(localDevicePosition);
         final MdxTargetSelectionDialog.Builder builder = new MdxTargetSelectionDialog.Builder(playerActivity);
         builder.setCancelable(false);
-        builder.setTitle(2131493143);
+        builder.setTitle(2131493149);
         builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
-        builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493234), playerActivity.getCurrentTitle()));
+        builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493241), playerActivity.getCurrentTitle()));
         builder.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
             public void onItemClick(final AdapterView<?> adapterView, final View view, final int target, final long n) {
                 Log.d("screen", "Mdx target clicked: item with id " + n + ", on position " + target);
@@ -99,7 +99,8 @@ public final class BottomPanel extends PlayerSection
                             playerActivity.getServiceManager().getMdx().setCurrentTarget(selectedTarget.getUUID());
                             final Asset currentAsset = playerActivity.getCurrentAsset();
                             currentAsset.setPlaybackBookmark(playerActivity.getPlayer().getCurrentPositionMs() / 1000);
-                            if (PlaybackLauncher.startPlayback(playerActivity, currentAsset)) {
+                            PlaybackLauncher.startPlaybackAfterPIN(playerActivity, currentAsset);
+                            if (PlaybackLauncher.shouldPlayOnRemoteTarget(playerActivity.getServiceManager())) {
                                 playerActivity.finish();
                             }
                         }
@@ -137,12 +138,12 @@ public final class BottomPanel extends PlayerSection
     }
     
     private void init(final PlayScreen.Listeners listeners) {
-        this.durationLabel = (TextView)this.context.findViewById(2131165512);
-        this.bottomPanel = this.context.findViewById(2131165508);
+        this.durationLabel = (TextView)this.context.findViewById(2131165529);
+        this.bottomPanel = this.context.findViewById(2131165525);
         if (this.bottomPanel == null) {
             Log.e("screen", "========>bottom null!");
         }
-        this.timeline = (NetflixSeekBar)this.context.findViewById(2131165511);
+        this.timeline = (NetflixSeekBar)this.context.findViewById(2131165528);
         if (this.timeline != null) {
             this.timeline.setOnSeekBarChangeListener(listeners.videoPositionListener);
             this.timeline.setDentVisible(false);
@@ -150,12 +151,12 @@ public final class BottomPanel extends PlayerSection
             this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
             this.timeline.setProgressBarPadding(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineHeightPaddingInDip));
         }
-        this.media = (ImageButton)this.context.findViewById(2131165509);
+        this.media = (ImageButton)this.context.findViewById(2131165526);
         if (this.media != null) {
             this.media.setOnClickListener(listeners.playPauseListener);
             this.media.setBackgroundColor(this.transpColor);
         }
-        this.skipBack = (IconFontTextView)this.context.findViewById(2131165510);
+        this.skipBack = (IconFontTextView)this.context.findViewById(2131165527);
         if (this.skipBack != null) {
             this.skipBack.setOnClickListener(listeners.skipBackListener);
             this.skipBack.setBackgroundColor(this.transpColor);
@@ -169,13 +170,13 @@ public final class BottomPanel extends PlayerSection
                 BottomPanel.this.displayMdxTargets();
             }
         };
-        this.mdxTarget = (ImageButton)this.context.findViewById(2131165503);
+        this.mdxTarget = (ImageButton)this.context.findViewById(2131165520);
         if (this.mdxTarget != null) {
             this.mdxTarget.setOnClickListener((View$OnClickListener)onClickListener);
             this.mdxTarget.setBackgroundColor(this.transpColor);
         }
-        this.zoomDivider = this.context.findViewById(2131165513);
-        this.zoom = (ImageButton)this.context.findViewById(2131165514);
+        this.zoomDivider = this.context.findViewById(2131165530);
+        this.zoom = (ImageButton)this.context.findViewById(2131165531);
         if (this.zoom != null) {
             this.zoom.setOnClickListener(listeners.zoomListener);
             this.zoom.setBackgroundColor(this.transpColor);

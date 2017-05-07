@@ -15,13 +15,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import android.content.IntentFilter;
-import org.json.JSONException;
-import android.os.Build;
-import android.os.Build$VERSION;
-import org.json.JSONObject;
-import com.crittercism.app.Crittercism;
-import com.netflix.mediaclient.repository.SecurityRepository;
-import com.crittercism.app.CrittercismConfig;
 import com.netflix.mediaclient.service.logging.error.CrittercismErrorLoggingImpl;
 import com.netflix.mediaclient.service.logging.breadcrumb.CrittercismBreadcrumbLoggingImpl;
 import android.content.Intent;
@@ -43,15 +36,12 @@ import com.netflix.mediaclient.service.ServiceAgent;
 
 public final class LoggingAgent extends ServiceAgent implements IClientLogging
 {
-    private static final String CRITTER_VERSION_NAME = "3.6.3";
-    private static final boolean ENABLE_CRITTERCISM = true;
     private static final long EVENT_POST_TIMEOUT_MS = 60000L;
     static final String ICL_REPOSITORY_DIR = "iclevents";
     static final int NEXT_DELIVERY_ATTEMPT_TIMEOUT_IN_MS = 60000;
     static final String PT_REPOSITORY_DIR = "ptevents";
     private static final String TAG = "nf_log";
     private static final ThreadFactory sThreadFactory;
-    private boolean crittercismReady;
     private AdvertiserIdLoggingManager mAdvertiserIdLoggingManager;
     private BreadcrumbLogging mBreadcrumbLogging;
     private CmpEventLogging mCmpEventLogging;
@@ -87,6 +77,7 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
                 Log.d("nf_log", "Running state check...");
                 LoggingAgent.this.mIntegratedClientLoggingManager.checkState();
                 LoggingAgent.this.mPresentationTrackingManager.checkState();
+                LoggingAgent.this.getApplication().getUserInput().checkState();
                 Log.d("nf_log", "Running state check done.");
             }
         };
@@ -99,43 +90,11 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
             }
         };
         Log.d("nf_log", "ClientLoggingAgent::");
-        this.mBreadcrumbLogging = new CrittercismBreadcrumbLoggingImpl(this);
-        this.mErrorLogging = new CrittercismErrorLoggingImpl(this);
+        this.mBreadcrumbLogging = new CrittercismBreadcrumbLoggingImpl();
+        this.mErrorLogging = new CrittercismErrorLoggingImpl();
         (this.mWorkerThread = new HandlerThread("ClientLoggingAgentWorker")).start();
         this.mWorkerHandler = new Handler(this.mWorkerThread.getLooper());
         Log.d("nf_log", "ClientLoggingAgent:: done");
-    }
-    
-    private void initCrittercism() {
-        Log.d("nf_log", "Crittercism init starts...");
-        final CrittercismConfig crittercismConfig = new CrittercismConfig();
-        crittercismConfig.setNdkCrashReportingEnabled(true);
-        crittercismConfig.setCustomVersionName("3.6.3");
-        Crittercism.initialize(this.getService().getApplicationContext(), SecurityRepository.getCrittercismAppId(), crittercismConfig);
-        final JSONObject metadata = new JSONObject();
-        try {
-            metadata.put("android", Build$VERSION.SDK_INT);
-            this.putValueOrNotAvailable(metadata, "oem", Build.MANUFACTURER);
-            this.putValueOrNotAvailable(metadata, "model", Build.MODEL);
-            Crittercism.setMetadata(metadata);
-            this.crittercismReady = true;
-            Log.d("nf_log", "Init Crittercism done.");
-        }
-        catch (Exception ex) {
-            Log.e("nf_log", "Unable to build crittercism's config json object", ex);
-        }
-    }
-    
-    public static boolean isCrittercismEnabled() {
-        return true;
-    }
-    
-    private void putValueOrNotAvailable(final JSONObject jsonObject, final String s, final String s2) throws JSONException {
-        if (s2 != null) {
-            jsonObject.put(s, (Object)s2);
-            return;
-        }
-        jsonObject.put(s, (Object)"N/A");
     }
     
     private void registerReceiver() {
@@ -148,6 +107,10 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         final String[] actions2 = UserActionLogging.ACTIONS;
         for (int length2 = actions2.length, j = 0; j < length2; ++j) {
             intentFilter.addAction(actions2[j]);
+        }
+        final String[] actions3 = UIViewLoggingImpl.ACTIONS;
+        for (int length3 = actions3.length, k = 0; k < length3; ++k) {
+            intentFilter.addAction(actions3[k]);
         }
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intentFilter.setPriority(999);
@@ -185,9 +148,6 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
     @Override
     protected void doInit() {
         Log.d("nf_log", "ClientLoggingAgent::init start ");
-        Log.d("nf_log", "ClientLoggingAgent:: connect to Crittercism start...");
-        this.initCrittercism();
-        Log.d("nf_log", "ClientLoggingAgent:: connect to Crittercism end");
         this.mCustomerEventLogging = new LegacyCustomerEventLoggingImpl(this, this.getContext(), this.mWorkerHandler);
         this.mCmpEventLogging = new LegacyCmpEventLoggingImpl(this, this.getContext());
         this.mIntegratedClientLoggingManager = new IntegratedClientLoggingManager(this.getContext(), this, this.getUser(), this.getService());
@@ -203,6 +163,13 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         this.registerReceiver();
         this.initCompleted(0);
         Log.d("nf_log", "ClientLoggingAgent::init done ");
+    }
+    
+    @Override
+    public void flush() {
+        Log.d("nf_log", "Flush events");
+        this.mIntegratedClientLoggingManager.flush();
+        this.mPresentationTrackingManager.flush();
     }
     
     @Override
@@ -272,15 +239,6 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         return this.getUserAgent();
     }
     
-    @Override
-    public UserActionLogging getUserActionLogging() {
-        final IntegratedClientLoggingManager mIntegratedClientLoggingManager = this.mIntegratedClientLoggingManager;
-        if (mIntegratedClientLoggingManager == null) {
-            return null;
-        }
-        return mIntegratedClientLoggingManager.getActionLogging();
-    }
-    
     public String getUserId() {
         if (this.getService() != null) {
             return this.getService().getUserId();
@@ -297,10 +255,6 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
             return false;
         }
         return false;
-    }
-    
-    public boolean isCrittercismReady() {
-        return isCrittercismEnabled() && this.crittercismReady;
     }
     
     @Override

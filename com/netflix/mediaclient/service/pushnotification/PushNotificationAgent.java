@@ -6,6 +6,8 @@ package com.netflix.mediaclient.service.pushnotification;
 
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
+import android.net.Uri;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -206,40 +208,37 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.d("nf_push", "User was not know from before");
             this.mCurrentUserSettings = this.createNewCurrentUserSettings(userId, currentProfileUserId);
             try {
-                // iftrue(Label_0170:, StringUtils.safeEquals(this.mCurrentUserSettings.currentProfileUserId, currentProfileUserId))
                 // iftrue(Label_0100:, !Log.isLoggable("nf_push", 3))
-            Block_5_Outer:
+                // iftrue(Label_0170:, StringUtils.safeEquals(this.mCurrentUserSettings.currentProfileUserId, currentProfileUserId))
+            Label_0170_Outer:
                 while (true) {
-                    while (true) {
-                        Log.d("nf_push", "Checks if application is updated (only if app was registered before)...");
-                        if (this.isApplicationUpdated()) {
-                            Log.d("nf_push", "Application was updated, execute silent reregistration!");
-                            this.doRegisterForNotifications();
-                        }
-                        else if (!this.validateRegistration()) {
-                            if (b2 || this.isBeaconDeltaExpire()) {
-                                Log.d("nf_push", "Report");
-                                this.report(this.mGcmRegistered);
-                                return;
-                            }
-                            break Label_0130;
-                        }
-                        return;
-                        Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
-                        b2 = b;
-                        continue Block_5_Outer;
+                    Log.d("nf_push", "Checks if application is updated (only if app was registered before)...");
+                    if (this.isApplicationUpdated()) {
+                        Log.d("nf_push", "Application was updated, execute silent reregistration!");
+                        this.doRegisterForNotifications();
                     }
-                Label_0170:
+                    else if (!this.validateRegistration()) {
+                        if (b2 || this.isBeaconDeltaExpire()) {
+                            Log.d("nf_push", "Report");
+                            this.report(this.mGcmRegistered);
+                            return;
+                        }
+                        break Label_0130;
+                    }
+                    return;
+                Block_6:
                     while (true) {
+                        b2 = b;
+                        break Block_6;
+                        this.mCurrentUserSettings.current = true;
                         Log.d("nf_push", "currentProfile change detected");
                         b = true;
                         this.updateCurrentUserSettings(currentProfileUserId);
-                        break Label_0170;
-                        this.mCurrentUserSettings.current = true;
                         continue;
                     }
+                    Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
                     b2 = b;
-                    continue Block_5_Outer;
+                    continue Label_0170_Outer;
                 }
             }
             catch (Throwable t) {
@@ -248,6 +247,37 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             }
         }
         Log.d("nf_push", "No need to report, it was already done inside of last 24 hours or profileDidNotChange");
+    }
+    
+    private void onNotificationBrowserRedirect(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("guid");
+        if (StringUtils.isEmpty(stringExtra)) {
+            Log.e("nf_push", "Received browser redirect notification WITHOUT GUID! Do nothing!");
+            return;
+        }
+        final String stringExtra2 = intent.getStringExtra("messageGuid");
+        if (StringUtils.isEmpty(stringExtra2)) {
+            Log.e("nf_push", "Received browser redirect notification WITHOUT MESSAGE GUID! Do nothing!");
+            return;
+        }
+        final String stringExtra3 = intent.getStringExtra("originator");
+        if (StringUtils.isEmpty(stringExtra3)) {
+            Log.w("nf_push", "Received browser redirect notification WITHOUT ORIGINATOR! Pass default!");
+        }
+        this.getService().getClientLogging().getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(new MessageData(stringExtra, stringExtra2, stringExtra3), UserFeedbackOnReceivedPushNotification.opened);
+        AndroidUtils.logIntent("nf_push", intent);
+        final String stringExtra4 = intent.getStringExtra("target_url");
+        if (Log.isLoggable("nf_push", 3)) {
+            Log.d("nf_push", "URI to be redirected to " + stringExtra4);
+        }
+        if (stringExtra4 != null) {
+            final Intent intent2 = new Intent("android.intent.action.VIEW");
+            intent2.setData(Uri.parse(stringExtra4));
+            intent2.setFlags(872415232);
+            this.getService().startActivity(intent2);
+            return;
+        }
+        Log.e("nf_push", "URI is missing! Can not open to browser!");
     }
     
     private void onNotificationCanceled(final Intent intent) {
@@ -261,7 +291,11 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.e("nf_push", "Received cancel notification WITHOUT MESSAGE GUID! Do nothing!");
             return;
         }
-        this.getService().getClientLogging().getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(new MessageData(stringExtra, stringExtra2), UserFeedbackOnReceivedPushNotification.canceled);
+        final String stringExtra3 = intent.getStringExtra("originator");
+        if (StringUtils.isEmpty(stringExtra3)) {
+            Log.w("nf_push", "Received cancel notification WITHOUT ORIGINATOR! Pass default!");
+        }
+        this.getService().getClientLogging().getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(new MessageData(stringExtra, stringExtra2, stringExtra3), UserFeedbackOnReceivedPushNotification.canceled);
     }
     
     private void registerForPushNotification() {
@@ -491,13 +525,17 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.d("nf_push", "Handle message");
             this.onMessage(intent);
         }
+        else if ("com.netflix.mediaclient.intent.action.NOTIFICATION_CANCELED".equals(intent.getAction())) {
+            Log.d("nf_push", "Handle notification canceled");
+            this.onNotificationCanceled(intent);
+        }
         else {
-            if (!"com.netflix.mediaclient.intent.action.NOTIFICATION_CANCELED".equals(intent.getAction())) {
+            if (!"com.netflix.mediaclient.intent.action.NOTIFICATION_BROWSER_REDIRECT".equals(intent.getAction())) {
                 Log.e("nf_push", "Uknown command!");
                 return false;
             }
-            Log.d("nf_push", "Handle notification canceled");
-            this.onNotificationCanceled(intent);
+            Log.d("nf_push", "Handle notification browser redirect");
+            this.onNotificationBrowserRedirect(intent);
         }
         return true;
     }

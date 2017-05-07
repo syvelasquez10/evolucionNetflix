@@ -222,8 +222,8 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
         }
         if (((List)s).size() > 0) {
             this.putLoMoSummaryInBrowseCache(s);
-            putLoLoMoIdInBrowseCache(this.hardCache, asJsonObject);
         }
+        putLoLoMoIdInBrowseCache(this.hardCache, asJsonObject);
         final long nanoTime2 = System.nanoTime();
         this.rEnd = nanoTime2;
         final long convert = TimeUnit.MILLISECONDS.convert(nanoTime2 - nanoTime, TimeUnit.NANOSECONDS);

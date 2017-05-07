@@ -24,6 +24,7 @@ public class PlayerState
     private static final String PROPERTY_currentState = "currentState";
     private static final String PROPERTY_duration = "duration";
     private static final String PROPERTY_episodeId = "episodeId";
+    private static final String PROPERTY_postplay = "postplayState";
     private static final String PROPERTY_time = "time";
     private static final String PROPERTY_volume = "volume";
     private static final String PROPERTY_xid = "xid";
@@ -32,6 +33,7 @@ public class PlayerState
     private String mCurrentState;
     private int mDuration;
     private String mEpisodeId;
+    private String mPostplayStateBlob;
     private int mTime;
     private int mVolume;
     private String mXid;
@@ -48,6 +50,7 @@ public class PlayerState
         this.mCurrentState = jsonObject.optString("currentState");
         this.mEpisodeId = jsonObject.optString("episodeId");
         this.mAutoAdvanceIncrement = JsonUtils.getString(jsonObject, "autoAdvanceIncrement", "0");
+        this.mPostplayStateBlob = jsonObject.optString("postplayState");
     }
     
     public String getAutoAdvanceIncrement() {
@@ -68,6 +71,10 @@ public class PlayerState
     
     public String getEpisodeId() {
         return this.mEpisodeId;
+    }
+    
+    public String getPostplayState() {
+        return this.mPostplayStateBlob;
     }
     
     public int getTime() {

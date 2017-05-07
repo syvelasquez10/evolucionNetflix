@@ -21,6 +21,7 @@ public class Payload
     public static final String DEFAULT_sound_KEY = "default";
     public static final String PARAM_GUID = "guid";
     public static final String PARAM_MESSAGE_GUID = "messageGuid";
+    public static final String PARAM_ORIGINATOR = "originator";
     private static final String PARAM_actionIcon = "actionIcon.";
     private static final String PARAM_actionKey = "actionKey.";
     private static final String PARAM_actionPayload = "actionPayload.";
@@ -59,6 +60,7 @@ public class Payload
     public String largeIcon;
     public int ledColor;
     public String messageGuid;
+    public String originator;
     public String smallIcon;
     public String sound;
     public String subtext;
@@ -127,6 +129,7 @@ public class Payload
         if (intent.hasExtra("messageGuid")) {
             this.messageGuid = intent.getStringExtra("messageGuid");
         }
+        this.originator = extractOriginator(this.defaultActionPayload);
         int i = 0;
         while (i > -1) {
             final String string = "actionKey." + i;
@@ -158,6 +161,36 @@ public class Payload
             }
         }
         this.validate();
+    }
+    
+    private static String extractOriginator(String substring) {
+        if (substring != null) {
+            final int index = substring.toLowerCase().indexOf("source=");
+            if (index >= 0) {
+                final int n = index + 7;
+                if (n < substring.length()) {
+                    final int n2 = index - 1;
+                    if (n2 >= 0) {
+                        final char char1 = substring.charAt(n2);
+                        if (char1 == '?' || char1 == '&') {
+                            substring = substring.substring(n);
+                            final int index2 = substring.indexOf(38);
+                            if (index2 < 0) {
+                                return substring.trim();
+                            }
+                            return substring.substring(0, index2);
+                        }
+                        else {
+                            final int n3 = index + 7;
+                            if (n3 < substring.length()) {
+                                return extractOriginator(substring.substring(n3));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
     
     private static Uri parsePayload(String s, final String s2) throws UnsupportedEncodingException {
@@ -289,7 +322,7 @@ public class Payload
         }
         
         public int getIcon() {
-            return 2130837718;
+            return 2130837724;
         }
         
         public Uri getPayload() {

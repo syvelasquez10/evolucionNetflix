@@ -16,8 +16,6 @@ public interface KidsCharacterDetails extends Playable
     
     String getCharacterName();
     
-    String getCharacterStoryUrl();
-    
     String getCharacterSynopsis();
     
     List<Video> getGallery();
@@ -30,9 +28,9 @@ public interface KidsCharacterDetails extends Playable
     
     String getHighResolutionPortraitBoxArtUrl();
     
-    String getHorzDispUrl();
-    
     String getStoryUrl();
     
     String getSynopsis();
+    
+    String getWatchNextDispUrl();
 }

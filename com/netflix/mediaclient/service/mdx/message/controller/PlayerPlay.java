@@ -12,9 +12,11 @@ public final class PlayerPlay extends MdxMessage
 {
     private static final String ORIGIN_USER = "USER";
     private static final String PROPERTY_catalogId = "catalogId";
+    private static final String PROPERTY_enablePostPlay = "enablePostPlay";
     private static final String PROPERTY_episodeId = "episodeId";
     private static final String PROPERTY_esn = "esn";
     private static final String PROPERTY_isDial = "isDial";
+    private static final String PROPERTY_isPinVerified = "isPinVerified";
     private static final String PROPERTY_isThirdParty = "isThirdParty";
     private static final String PROPERTY_originator = "originator";
     private static final String PROPERTY_startTime = "startTime";
@@ -67,6 +69,8 @@ public final class PlayerPlay extends MdxMessage
             this.mJson.put("catalogId", (Object)this.mCatalogId);
             this.mJson.put("trackId", this.mTrackId);
             this.mJson.put("esn", (Object)this.mEsn);
+            this.mJson.put("enablePostPlay", true);
+            this.mJson.put("isPinVerified", true);
             if (this.mEpisodeId != null) {
                 this.mJson.put("episodeId", (Object)this.mEpisodeId);
             }

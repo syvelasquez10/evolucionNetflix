@@ -16,7 +16,6 @@ public class Episode extends Video
         public String boxartUrl;
         private int episodeNumber;
         private String id;
-        private String intrUrl;
         private String nextEpisodeId;
         private String nextEpisodeTitle;
         private String seasonId;

@@ -12,8 +12,6 @@ public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
     public static final KidsOnPhoneConfigData DEFAULT_KIDS_CONFIG;
     @SerializedName("imageType")
     private LolomoImageType imageType;
-    @SerializedName("inKopTest")
-    private boolean inKopTest;
     @SerializedName("isEntryInActionBar")
     private boolean isEntryInActionBar;
     @SerializedName("isEntryInGenreLolomo")
@@ -42,11 +40,6 @@ public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
     @Override
     public ScrollBehavior getScrollBehavior() {
         return this.scrollBehavior;
-    }
-    
-    @Override
-    public boolean isInKidsOnPhoneTest() {
-        return this.inKopTest;
     }
     
     @Override

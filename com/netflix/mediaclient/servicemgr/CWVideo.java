@@ -24,6 +24,8 @@ public interface CWVideo extends Playable
     
     List<FriendProfile> getFacebookFriends();
     
+    String getInterestingUrl();
+    
     String getNextEpisodeId();
     
     int getRuntime();

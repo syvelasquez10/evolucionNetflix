@@ -19,6 +19,8 @@ public interface IClientLogging
     public static final String PRESENTATION_TRACKING_LOGGING_REQUEST_DELIVERY_STATUS = "com.netflix.mediaclient.intent.action.PRESENTATION_TRACKING_LOGGING_REQUEST_DELIVERY_STATUS";
     public static final String RESUME_EVENTS_DELIVERY = "com.netflix.mediaclient.intent.action.LOG_RESUME_EVENTS_DELIVERY";
     
+    void flush();
+    
     List<SessionKey> getActiveLoggingSessions();
     
     AdvertiserIdLogging getAdvertiserIdLogging();
@@ -36,8 +38,6 @@ public interface IClientLogging
     long getNextSequence();
     
     PresentationTracking getPresentationTracking();
-    
-    UserActionLogging getUserActionLogging();
     
     void pauseDelivery();
     

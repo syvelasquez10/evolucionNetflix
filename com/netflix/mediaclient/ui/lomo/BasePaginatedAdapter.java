@@ -7,7 +7,6 @@ package com.netflix.mediaclient.ui.lomo;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.Trackable;
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.LoMoUtils;
 import com.netflix.mediaclient.servicemgr.VideoType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.app.Activity;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DataUtil;
+import com.netflix.mediaclient.servicemgr.LoMoUtils;
 import com.netflix.mediaclient.util.MathUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -63,11 +63,11 @@ public abstract class BasePaginatedAdapter<T extends Video>
         return MathUtils.ceiling(this.data.size(), this.numItemsPerPage);
     }
     
-    public static int computeViewPagerWidth(final Context context, final boolean b) {
+    public static int computeViewPagerWidth(final NetflixActivity netflixActivity, final boolean b) {
         if (b) {
-            return DeviceUtils.getScreenWidthInPixels(context) - context.getResources().getDimensionPixelOffset(2131361868) * 2;
+            return DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - (LoMoUtils.getLomoFragOffsetLeftPx(netflixActivity) + LoMoUtils.getLomoFragOffsetRightPx(netflixActivity));
         }
-        return DeviceUtils.getScreenWidthInPixels(context);
+        return DeviceUtils.getScreenWidthInPixels((Context)netflixActivity);
     }
     
     private String printLomo() {
@@ -140,7 +140,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
     }
     
     public int getRowHeightInPx() {
-        final int n = (int)(computeViewPagerWidth((Context)this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 1.43f + 0.5f);
+        final int n = (int)(computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 1.43f + 0.5f);
         Log.v("BasePaginatedAdapter", "Computed view height: " + n);
         return n;
     }
@@ -178,27 +178,33 @@ public abstract class BasePaginatedAdapter<T extends Video>
     }
     
     public void trackPresentation(final ServiceManager serviceManager, final BasicLoMo basicLoMo, int n, final Boolean b) {
-        final ArrayList<String> list = new ArrayList<String>();
-        final List<Video> dataForPage = (List<Video>)this.getDataForPage(n);
-        if (dataForPage != null && dataForPage.size() != 0) {
-            for (final Video video : dataForPage) {
-                if (VideoType.isPresentationTrackingType(video.getType())) {
-                    list.add(video.getId());
-                }
-            }
-            n = n * this.numItemsPerPage + LoMoUtils.getClientInjectedVideoCount(basicLoMo, serviceManager.isCurrentProfileFacebookConnected(), n);
-            UiLocation uiLocation;
-            if (b) {
-                uiLocation = UiLocation.GENRE_LOLOMO;
-            }
-            else {
-                uiLocation = UiLocation.HOME_LOLOMO;
-            }
-            if (list.size() > 0) {
-                serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, list, n, uiLocation);
-                Log.d("nf_presentation", String.format("t %d, row %d, rank %d,  %s", System.currentTimeMillis(), basicLoMo.getListPos(), n, list.toString()));
+        final List<T> dataForPage = this.getDataForPage(n);
+        if (dataForPage == null || dataForPage.size() == 0) {
+            Log.d("nf_presentation", "No videos input videos found in page data");
+            return;
+        }
+        final ArrayList list = new ArrayList<String>(dataForPage.size());
+        for (final Video video : dataForPage) {
+            if (VideoType.isPresentationTrackingType(video.getType())) {
+                list.add(video.getId());
             }
         }
+        if (list.size() == 0) {
+            Log.d("nf_presentation", "No videos found for presentation tracking - row: " + basicLoMo.getTitle());
+            return;
+        }
+        n = n * this.numItemsPerPage + LoMoUtils.getClientInjectedVideoCount(basicLoMo, serviceManager.isCurrentProfileFacebookConnected(), n);
+        UiLocation uiLocation;
+        if (b) {
+            uiLocation = UiLocation.GENRE_LOLOMO;
+        }
+        else {
+            uiLocation = UiLocation.HOME_LOLOMO;
+        }
+        if (Log.isLoggable("BasePaginatedAdapter", 2)) {
+            Log.v("nf_presentation", String.format("%s, %s, offset %d %s", basicLoMo.getTitle(), uiLocation, n, list));
+        }
+        serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, (List<String>)list, n, uiLocation);
     }
     
     static class Memento<T>

@@ -7,7 +7,7 @@ package com.netflix.mediaclient.android.widget;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.widget.ImageView;
+import android.view.View;
 import android.util.AttributeSet;
 import android.content.Context;
 
@@ -32,7 +32,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     private void init() {
-        this.pressedHandler = new PressedStateHandler(this);
+        this.pressedHandler = new PressedStateHandler((View)this);
     }
     
     protected void dispatchSetPressed(final boolean b) {

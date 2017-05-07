@@ -71,6 +71,7 @@ public class SignupActivity extends AccountActivity
     private String mSoftwareVersion;
     private Bootloader mUiBoot;
     private WebView mWebView;
+    private SignUpWebViewClient mWebViewClient;
     private boolean mWebViewVisibility;
     
     public SignupActivity() {
@@ -121,11 +122,11 @@ public class SignupActivity extends AccountActivity
         this.mSignupOngoing = false;
         Log.d("SignupActivity", "Login Complete - Status: " + n + " DisplayMsg: " + string);
         if (n == 0 || n == -41) {
-            this.showToast(2131493209);
+            this.showToast(2131493215);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493266) + " (" + n + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493273) + " (" + n + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 string = "javascript:" + this.mErrHandler + "('" + n + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -139,15 +140,23 @@ public class SignupActivity extends AccountActivity
         this.runOnUiThread((Runnable)new Runnable() {
             @Override
             public void run() {
-                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493127), SignupActivity.this.getString(17039370), null)));
+                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493133), SignupActivity.this.getString(17039370), null)));
             }
         });
     }
     
+    private void reloadSignUp(final boolean b) {
+        if (b) {
+            this.clearCookies();
+        }
+        this.mWebViewClient.clearHistory();
+        this.mWebView.loadUrl(this.mUiBoot.getUrl());
+    }
+    
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903158);
-        this.mWebView = (WebView)this.findViewById(2131165562);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131165490);
+        this.setContentView(2130903166);
+        this.mWebView = (WebView)this.findViewById(2131165587);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131165507);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -162,7 +171,8 @@ public class SignupActivity extends AccountActivity
         this.mAndroidJS = new NFAndroidJS();
         this.mWebView.addJavascriptInterface((Object)this.mAndroidJS, "nfandroid");
         this.mWebView.setWebChromeClient((WebChromeClient)new signUpWebChromeClient());
-        this.mWebView.setWebViewClient((WebViewClient)new SignUpWebViewClient(this));
+        this.mWebViewClient = new SignUpWebViewClient(this);
+        this.mWebView.setWebViewClient((WebViewClient)this.mWebViewClient);
         this.mWebView.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
@@ -248,6 +258,24 @@ public class SignupActivity extends AccountActivity
     }
     
     @Override
+    public void onBackPressed() {
+        if (this.mWebView == null || !this.mWebView.canGoBackOrForward(-1)) {
+            super.onBackPressed();
+            return;
+        }
+        if (!this.mWebView.canGoBackOrForward(-2) && this.mSignupMenuItem) {
+            this.mWebView.goBack();
+            return;
+        }
+        this.provideTwoButtonDialog(this.getString(2131493274), new Runnable() {
+            @Override
+            public void run() {
+                SignupActivity.this.reloadSignUp(false);
+            }
+        });
+    }
+    
+    @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.mHandler = new Handler();
@@ -258,7 +286,7 @@ public class SignupActivity extends AccountActivity
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493177));
+            menuItem = menu.add((CharSequence)this.getString(2131493183));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -270,12 +298,11 @@ public class SignupActivity extends AccountActivity
             });
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493178));
+            menuItem = menu.add((CharSequence)this.getString(2131493184));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
-                    SignupActivity.this.clearCookies();
-                    SignupActivity.this.mWebView.loadUrl(SignupActivity.this.mUiBoot.getUrl());
+                    SignupActivity.this.reloadSignUp(true);
                     return true;
                 }
             });
@@ -297,6 +324,10 @@ public class SignupActivity extends AccountActivity
     
     void provideDialog(final String s, final Runnable runnable) {
         this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, s, this.getString(17039370), runnable)));
+    }
+    
+    void provideTwoButtonDialog(final String s, final Runnable runnable) {
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, (AlertDialogFactory.AlertDialogDescriptor)new AlertDialogFactory.TwoButtonAlertDialogDescriptor(null, s, this.getString(17039370), runnable, this.getString(17039360), null)));
     }
     
     void showToast(final String s) {
@@ -373,6 +404,11 @@ public class SignupActivity extends AccountActivity
         }
         
         @JavascriptInterface
+        public void loginCompleted() {
+            Log.d("SignupActivity", "loginCompleted, noop");
+        }
+        
+        @JavascriptInterface
         public void loginToApp(final String s, final String s2) {
             if (SignupActivity.this.mSignupOngoing) {
                 Log.d("SignupActivity", "loginToApp ongoing, returning NULL operation");
@@ -407,7 +443,7 @@ public class SignupActivity extends AccountActivity
                 Log.e("SignupActivity", "Failed to LoginToApp");
                 ex.printStackTrace();
                 SignupActivity.this.mSignupOngoing = false;
-                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493266), SignupActivity.this.mHandleError);
+                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493273), SignupActivity.this.mHandleError);
                 return;
             }
             Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");
@@ -456,6 +492,12 @@ public class SignupActivity extends AccountActivity
             Log.d("SignupActivity", "Show SignOut");
             SignupActivity.this.mSignupMenuItem = false;
             SignupActivity.this.updateMenuItems();
+        }
+        
+        @JavascriptInterface
+        public void signupCompleted() {
+            Log.d("SignupActivity", "signupCompleted, report");
+            LogUtils.reportSignUpOnDevice((Context)SignupActivity.this);
         }
         
         @JavascriptInterface

@@ -54,4 +54,9 @@ public final class UserVolleyWebClient implements UserWebClient
     public void switchWebUserProfile(final String s, final UserAgentWebCallback userAgentWebCallback) {
         this.webclient.sendRequest(new SwitchUserProfileRequest(this.service.getApplicationContext(), this.service.getConfiguration(), s, userAgentWebCallback));
     }
+    
+    @Override
+    public void verifyPin(final String s, final UserAgentWebCallback userAgentWebCallback) {
+        this.webclient.sendRequest(new VerifyPinRequest(this.service.getApplicationContext(), this.service.getConfiguration(), s, userAgentWebCallback));
+    }
 }

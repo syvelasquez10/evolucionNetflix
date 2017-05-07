@@ -10,14 +10,12 @@ import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.util.NumberUtils;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.app.Activity;
 import android.os.Parcelable;
 import java.io.Serializable;
-import android.content.Intent;
 import android.content.Context;
-import android.widget.Toast;
+import android.content.Intent;
 import com.netflix.mediaclient.ui.kids.details.KidsDetailsActivity;
 import com.netflix.mediaclient.servicemgr.Video;
 import com.netflix.mediaclient.servicemgr.VideoType;
@@ -80,14 +78,11 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         else if (VideoType.SHOW.equals(videoType)) {
             s3 = ShowDetailsActivity.class;
         }
-        else if (VideoType.CHARACTERS.equals(videoType)) {
-            Toast.makeText((Context)netflixActivity, (CharSequence)("CDP char: " + s), 1).show();
+        else if (com.netflix.mediaclient.service.webclient.model.branches.Video.isSocialVideoType(videoType)) {
+            Log.w("DetailsActivity", "Asked to show details for a social video type - shouldn't happen");
         }
         else {
-            if (!com.netflix.mediaclient.service.webclient.model.branches.Video.isSocialVideoType(videoType)) {
-                throw new IllegalStateException("Don't know how to handle type: " + videoType);
-            }
-            Log.w("DetailsActivity", "Asked to show details for a social video type - shouldn't happen");
+            netflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(new IllegalStateException(String.format("Don't know how to handle %s type: %s, playContext:%s", s, videoType, playContext)));
         }
         if (s3 != null) {
             netflixActivity.startActivity(new Intent((Context)netflixActivity, (Class)s3).putExtra("extra_video_id", s).putExtra("extra_video_title", s2).putExtra("extra_video_type", (Serializable)videoType).putExtra("extra_playcontext", (Parcelable)playContext));
@@ -105,15 +100,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     protected DataContext getDataContext() {
-        final DataContext dataContext = new DataContext();
-        dataContext.setVideoId(NumberUtils.toIntegerSafely(this.videoId, null));
-        if (this.mPlayContext != null) {
-            dataContext.setRow(this.mPlayContext.getListPos());
-            dataContext.setRank(this.mPlayContext.getVideoPos());
-            dataContext.setRequestId(this.mPlayContext.getRequestId());
-            dataContext.setTrackId(this.mPlayContext.getTrackId());
-        }
-        return dataContext;
+        return new DataContext(this.mPlayContext, this.videoId);
     }
     
     public String getEpisodeId() {
@@ -202,7 +189,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     @Override
-    protected boolean shouldApplyPaddingToSlidingPanel() {
+    public boolean shouldApplyPaddingToSlidingPanel() {
         return false;
     }
     

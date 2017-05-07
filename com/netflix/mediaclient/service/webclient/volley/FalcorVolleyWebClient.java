@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.webclient.volley;
 
 import com.netflix.mediaclient.service.logging.presentation.volley.PresentationEventRequest;
+import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
+import com.netflix.mediaclient.service.webclient.UserCredentialRegistryWrapper;
 import com.netflix.mediaclient.service.logging.client.volley.ClientLoggingVolleyWebClientRequest;
 import com.netflix.mediaclient.service.webclient.NetflixWebClientInitParameters;
 import com.netflix.mediaclient.service.webclient.WebClientInitParameters;
@@ -51,14 +53,14 @@ public class FalcorVolleyWebClient extends VolleyWebClient
     }
     
     public void sendLoggingRequest(final ClientLoggingVolleyWebClientRequest<?> clientLoggingVolleyWebClientRequest) {
-        clientLoggingVolleyWebClientRequest.setUserCredentialRegistry(this.mUserCredentialRegistry);
+        clientLoggingVolleyWebClientRequest.setUserCredentialRegistry(new UserCredentialRegistryWrapper(this.mUserCredentialRegistry));
         clientLoggingVolleyWebClientRequest.setRetryPolicy(this.createRetryPolicy());
         clientLoggingVolleyWebClientRequest.initUrl(this.mApiEndpointRegistry.getClientLoggingUrlFull());
         FalcorVolleyWebClient.sRequestQueue.add(clientLoggingVolleyWebClientRequest);
     }
     
     public void sendPresentationRequest(final PresentationEventRequest presentationEventRequest) {
-        presentationEventRequest.setUserCredentialRegistry(this.mUserCredentialRegistry);
+        presentationEventRequest.setUserCredentialRegistry(new UserCredentialRegistryWrapper(this.mUserCredentialRegistry));
         presentationEventRequest.setRetryPolicy(this.createRetryPolicy());
         presentationEventRequest.initUrl(this.mApiEndpointRegistry.getPresentationTrackingUrlFull());
         FalcorVolleyWebClient.sRequestQueue.add(presentationEventRequest);

@@ -14,6 +14,8 @@ public interface Video
     
     String getId();
     
+    String getSquareUrl();
+    
     String getTitle();
     
     String getTvCardUrl();

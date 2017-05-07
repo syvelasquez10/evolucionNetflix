@@ -1039,6 +1039,16 @@ public final class ServiceManager
         }
     }
     
+    public boolean verifyPin(final String s, final ManagerCallback managerCallback) {
+        final INetflixService mService = this.mService;
+        if (mService != null) {
+            mService.verifyPin(s, this.mClientId, this.addCallback(managerCallback));
+            return true;
+        }
+        Log.w("ServiceManager", "verifyPin:: service is not available");
+        return false;
+    }
+    
     private class AddToListCallbackWrapper extends SimpleManagerCallback
     {
         private final ManagerCallback cb;
@@ -1187,7 +1197,7 @@ public final class ServiceManager
             }
             final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
             if (access$400 == null) {
-                Log.d("ServiceManager", "No callback for onLoginComplete requestId " + n);
+                Log.d("ServiceManager", "No callback for onConnectWithFacebookComplete requestId " + n);
                 return;
             }
             access$400.onConnectWithFacebookComplete(n2, s);
@@ -1364,6 +1374,19 @@ public final class ServiceManager
                 return;
             }
             access$400.onMovieDetailsFetched(movieDetails, n2);
+        }
+        
+        @Override
+        public void onPinVerified(final int n, final boolean b, final int n2) {
+            if (Log.isLoggable("ServiceManager", 3)) {
+                Log.d("ServiceManager", "onPinVerified requestId=" + n + " statusCode=" + n2);
+            }
+            final ManagerCallback access$400 = ServiceManager.this.getManagerCallback(n);
+            if (access$400 == null) {
+                Log.d("ServiceManager", "No callback for onPinVerified requestId " + n);
+                return;
+            }
+            access$400.onPinVerified(b, n2);
         }
         
         @Override

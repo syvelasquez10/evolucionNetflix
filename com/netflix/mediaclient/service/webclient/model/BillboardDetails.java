@@ -251,6 +251,14 @@ public class BillboardDetails extends Billboard implements ShowDetails, MovieDet
     }
     
     @Override
+    public String getSquareUrl() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.getSquareUrl();
+    }
+    
+    @Override
     public String getStoryUrl() {
         if (this.billboardDetail == null) {
             return null;
@@ -316,6 +324,11 @@ public class BillboardDetails extends Billboard implements ShowDetails, MovieDet
     @Override
     public boolean isNextPlayableEpisode() {
         return this.billboardDetail != null && this.billboardDetail.isAutoPlayEnabled;
+    }
+    
+    @Override
+    public boolean isPinProtected() {
+        throw new IllegalStateException("Not implemented by BillboardDetails");
     }
     
     @Override

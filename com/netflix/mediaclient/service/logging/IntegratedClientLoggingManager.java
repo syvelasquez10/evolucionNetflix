@@ -12,17 +12,17 @@ import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
+import com.netflix.mediaclient.servicemgr.UserProfile;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
-import com.netflix.mediaclient.servicemgr.UserProfile;
-import com.netflix.mediaclient.service.logging.client.model.UIMode;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.Log;
@@ -64,6 +64,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     private final LoggingAgent mOwner;
     private final AtomicLong mSequence;
     private final NetflixService mService;
+    private UIViewLoggingImpl mUIViewLogging;
     private final ServiceAgent.UserAgentInterface mUser;
     private final Map<String, Boolean> mUserSessionEnabledStatusMap;
     
@@ -118,27 +119,6 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         if (this.mEventQueue.flushIfCriteriaIsFulfilled()) {
             Log.d("nf_log", "Events were send recently. We reached timeout, force send");
         }
-    }
-    
-    private UIMode getUiMode() {
-        final ServiceAgent.UserAgentInterface mUser = this.mUser;
-        if (mUser == null) {
-            Log.w("nf_log", "getUiMode:: getUserAgent is null! Return non member");
-            return UIMode.nonmember;
-        }
-        if (!mUser.isUserLoggedIn()) {
-            Log.d("nf_log", "getUiMode:: user is NOT logged in. Return non member");
-            return UIMode.nonmember;
-        }
-        final UserProfile currentProfile = mUser.getCurrentProfile();
-        if (currentProfile == null) {
-            Log.w("nf_log", "getUiMode:: user is logged in, but profile is null. Return member");
-            return UIMode.member;
-        }
-        if (currentProfile.isKidsProfile()) {
-            return UIMode.jfk;
-        }
-        return UIMode.member;
     }
     
     private long getUserSessionDurationInMs() {
@@ -219,6 +199,24 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
             }
         }
         return b2;
+    }
+    
+    private boolean isKids() {
+        final ServiceAgent.UserAgentInterface mUser = this.mUser;
+        if (mUser == null) {
+            Log.w("nf_log", "getUiMode:: getUserAgent is null! Return non member");
+            return false;
+        }
+        if (!mUser.isUserLoggedIn()) {
+            Log.d("nf_log", "getUiMode:: user is NOT logged in. Return non member");
+            return false;
+        }
+        final UserProfile currentProfile = mUser.getCurrentProfile();
+        if (currentProfile == null) {
+            Log.w("nf_log", "getUiMode:: user is logged in, but profile is null. Return member");
+            return false;
+        }
+        return currentProfile.isKidsProfile();
     }
     
     private void loadAndSendEvent(final String s) {
@@ -313,6 +311,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         this.mExecutor.execute(runnable);
     }
     
+    void flush() {
+        this.mEventQueue.flushEvents();
+    }
+    
     public UserActionLogging getActionLogging() {
         return this.mActionLogging;
     }
@@ -343,6 +345,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         return this.mSequence.getAndAdd(1L);
     }
     
+    public UIViewLogging getUiViewLogging() {
+        return this.mUIViewLogging;
+    }
+    
     @Override
     public String getUserSessionId() {
         return this.mOwner.getNrdController().getNrdp().getLog().getSessionId();
@@ -358,6 +364,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
             Log.d("nf_log", "Handled by UI Action logger");
             return;
         }
+        if (this.mUIViewLogging.handleIntent(intent, portrait)) {
+            Log.d("nf_log", "Handled by UI View logger");
+            return;
+        }
         Log.w("nf_log", "Action not handled!");
     }
     
@@ -369,6 +379,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         Log.d("nf_log", "ClientLoggingAgent::init web client done ");
         this.mApmLogging = new ApmLoggingImpl(this, this.mService.getConfiguration());
         this.mActionLogging = new UserActionLoggingImpl(this);
+        this.mUIViewLogging = new UIViewLoggingImpl(this);
         Log.d("nf_log", "Add ICL manager as listener on user input...");
         this.mOwner.getApplication().getUserInput().addListener(this);
         Log.d("nf_log", "Add ICL manager as listener on user input done.");
@@ -470,22 +481,22 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     
     @Override
     public void post(final Event event) {
-        if (Log.isLoggable("nf_log", 3)) {
-            Log.d("nf_log", "Event received " + event);
-        }
         event.addAllActiveSession(this.getActiveSessions());
         event.setSequence(this.getNextSequence());
         event.setUptime(this.mOwner.getUptime());
-        event.setUiMode(this.getUiMode());
+        event.setKids(this.isKids());
         if (event.getModalView() == null) {
             final IClientLogging.ModalView currentUiView = this.mApmLogging.getCurrentUiView();
             if (Log.isLoggable("nf_log", 3)) {
-                Log.d("nf_log", "UI mode is not preset, set it to " + currentUiView);
+                Log.d("nf_log", "UI modalView is not preset, set it to " + currentUiView);
             }
             event.setModalView(currentUiView);
         }
         else if (Log.isLoggable("nf_log", 3)) {
-            Log.d("nf_log", "UI mode is preset to " + event.getModalView());
+            Log.d("nf_log", "UI modalView is preset to " + event.getModalView());
+        }
+        if (Log.isLoggable("nf_log", 3)) {
+            Log.d("nf_log", "Event received " + event);
         }
         this.mEventQueue.post(event);
     }

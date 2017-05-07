@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.View$OnTouchListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView$OnScrollListener;
-import android.widget.ListView;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import android.database.DataSetObserver;
 
 public class LoLoMoFocusHandler extends DataSetObserver
@@ -29,11 +29,11 @@ public class LoLoMoFocusHandler extends DataSetObserver
     private static final int VIEW_ID_ROW_MULTIPLIER = 1000;
     private static boolean viewIdsValidated;
     private int col;
-    private final ListView listView;
+    private final StickyListHeadersListView listView;
     private int row;
     private boolean touchEnabled;
     
-    LoLoMoFocusHandler(final ListView listView) {
+    LoLoMoFocusHandler(final StickyListHeadersListView listView) {
         this.touchEnabled = true;
         this.validateViewIdsIfNecessary();
         (this.listView = listView).setOnScrollListener((AbsListView$OnScrollListener)new AbsListView$OnScrollListener() {
@@ -41,9 +41,10 @@ public class LoLoMoFocusHandler extends DataSetObserver
             }
             
             public void onScrollStateChanged(final AbsListView absListView, final int n) {
-                if (!LoLoMoFocusHandler.this.touchEnabled) {
-                    LoLoMoFocusHandler.this.requestFocusAtCurrPos();
+                if (LoLoMoFocusHandler.this.touchEnabled) {
+                    return;
                 }
+                LoLoMoFocusHandler.this.requestFocusAtCurrPos();
             }
         });
         listView.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
@@ -148,7 +149,7 @@ public class LoLoMoFocusHandler extends DataSetObserver
             this.requestFocusAtCurrPos();
             return;
         }
-        this.scrollVertically(this.listView, this.row);
+        this.scrollVertically(this.row);
         if (n != 20) {
             b = false;
         }
@@ -156,7 +157,7 @@ public class LoLoMoFocusHandler extends DataSetObserver
     }
     
     private void handleVerticalKeyEvent(final boolean b) {
-        final ListView listView = this.listView;
+        final StickyListHeadersListView listView = this.listView;
         int n;
         if (b) {
             n = 130;
@@ -207,8 +208,8 @@ public class LoLoMoFocusHandler extends DataSetObserver
         viewPager.setCurrentItem(n2, true, true);
     }
     
-    private void scrollVertically(final ListView listView, final int n) {
-        listView.smoothScrollToPositionFromTop(n, 16);
+    private void scrollVertically(final int n) {
+        this.listView.smoothScrollToPositionFromTop(n, 16);
     }
     
     private void validateViewIdsIfNecessary() {

@@ -157,6 +157,11 @@ public abstract class SocialPlaceholder implements VideoDetails
     }
     
     @Override
+    public String getSquareUrl() {
+        throw new RuntimeException("Not implemented");
+    }
+    
+    @Override
     public String getStoryUrl() {
         return null;
     }
@@ -203,6 +208,11 @@ public abstract class SocialPlaceholder implements VideoDetails
     
     @Override
     public boolean isNextPlayableEpisode() {
+        throw new RuntimeException("Not implemented");
+    }
+    
+    @Override
+    public boolean isPinProtected() {
         throw new RuntimeException("Not implemented");
     }
     

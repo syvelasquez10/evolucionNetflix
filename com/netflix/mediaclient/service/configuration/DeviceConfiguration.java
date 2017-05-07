@@ -12,6 +12,7 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.List;
 import com.google.gson.reflect.TypeToken;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
+import java.util.Locale;
 import java.io.IOException;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.StringUtils;
@@ -72,20 +73,24 @@ public class DeviceConfiguration
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
     }
     
-    private int fetchDeviceConfigSynchronously(String remoteDataAsString) {
+    private int fetchDeviceConfigSynchronously(String s) {
         Log.d(DeviceConfiguration.TAG, "Need to fetchdeviceConfig synchronously ");
         ConfigData configString;
         try {
-            Log.d(DeviceConfiguration.TAG, String.format("configurationUrl %s", remoteDataAsString));
-            remoteDataAsString = StringUtils.getRemoteDataAsString(remoteDataAsString);
-            Log.d(DeviceConfiguration.TAG, String.format("Device config data=%s", remoteDataAsString));
-            configString = FetchConfigDataRequest.parseConfigString(remoteDataAsString);
+            Log.d(DeviceConfiguration.TAG, String.format("configurationUrl %s", s));
+            s = StringUtils.getRemoteDataAsString(s);
+            Log.d(DeviceConfiguration.TAG, String.format("Device config data=%s", s));
+            configString = FetchConfigDataRequest.parseConfigString(s);
             if (configString.deviceConfig == null) {
                 throw new IOException();
             }
         }
         catch (Exception ex) {
-            Log.e(DeviceConfiguration.TAG, "Could not fetch configuration! ", ex);
+            s = ex.toString().toLowerCase(Locale.US);
+            Log.e(DeviceConfiguration.TAG, "Could not fetch configuration! " + s);
+            if (s.contains("could not validate certificate") || s.contains("sslhandshakeexception")) {
+                return -121;
+            }
             return -12;
         }
         this.persistDeviceConfigOverride(configString.getDeviceConfig());

@@ -32,6 +32,8 @@ public interface Playable extends Video
     
     boolean isNextPlayableEpisode();
     
+    boolean isPinProtected();
+    
     boolean isPlayableEpisode();
     
     boolean isUserConnectedToFacebook();

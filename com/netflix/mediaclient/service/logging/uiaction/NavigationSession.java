@@ -29,7 +29,7 @@ public final class NavigationSession extends BaseUIActionSession
         if (Log.isLoggable("nf_log", 3)) {
             Log.d("nf_log", "We started from " + modalView + " and ended up on " + this.mView);
         }
-        final NavigationEndedEvent navigationEndedEvent = new NavigationEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mAction, completionReason, uiError, this.mView);
+        final NavigationEndedEvent navigationEndedEvent = new NavigationEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mAction, completionReason, uiError, modalView, this.mView);
         navigationEndedEvent.setCategory(this.getCategory());
         navigationEndedEvent.setSessionId(this.mId);
         return navigationEndedEvent;

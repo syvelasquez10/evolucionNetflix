@@ -15,18 +15,24 @@ import com.google.gson.annotations.Since;
 public class Version
 {
     public static final String APP = "app";
+    public static final String MDXJS = "mdxjs";
     public static final String MDXLIB = "mdxlib";
     public static final String NRDAPP = "nrdapp";
     public static final String NRDLIB = "nrdlib";
+    public static final String NRDSDK = "nrdsdk";
     public static final String UI = "ui";
     @Since(1.0)
     private String app;
+    @Since(1.1)
+    private String mdxjs;
     @Since(1.0)
     private String mdxlib;
     @Since(1.0)
     private String nrdapp;
     @Since(1.0)
     private String nrdlib;
+    @Since(1.1)
+    private String nrdsdk;
     @Since(1.0)
     private String ui;
     
@@ -39,6 +45,8 @@ public class Version
         this.nrdapp = SecurityRepository.getNrdAppVersion();
         this.nrdlib = SecurityRepository.getNrdLibVersion();
         this.mdxlib = SecurityRepository.getMdxLibVersion();
+        this.mdxjs = SecurityRepository.getMdxJsVersion();
+        this.nrdsdk = SecurityRepository.getNrdSdkVersion();
     }
     
     public static Version createInstance(final JSONObject jsonObject) throws JSONException {
@@ -51,11 +59,17 @@ public class Version
         version.nrdapp = JsonUtils.getString(jsonObject, "nrdapp", null);
         version.nrdlib = JsonUtils.getString(jsonObject, "nrdlib", null);
         version.mdxlib = JsonUtils.getString(jsonObject, "mdxlib", null);
+        version.mdxjs = JsonUtils.getString(jsonObject, "mdxjs", null);
+        version.nrdsdk = JsonUtils.getString(jsonObject, "nrdsdk", null);
         return version;
     }
     
     public String getApp() {
         return this.app;
+    }
+    
+    public String getMdxjs() {
+        return this.mdxjs;
     }
     
     public String getMdxlib() {
@@ -68,6 +82,10 @@ public class Version
     
     public String getNrdlib() {
         return this.nrdlib;
+    }
+    
+    public String getNrdsdk() {
+        return this.nrdsdk;
     }
     
     public String getUi() {
@@ -91,6 +109,17 @@ public class Version
         if (this.mdxlib != null) {
             jsonObject.put("mdxlib", (Object)this.mdxlib);
         }
+        if (this.mdxjs != null) {
+            jsonObject.put("mdxjs", (Object)this.mdxjs);
+        }
+        if (this.nrdsdk != null) {
+            jsonObject.put("nrdsdk", (Object)this.nrdsdk);
+        }
         return jsonObject;
+    }
+    
+    @Override
+    public String toString() {
+        return "Version [app=" + this.app + ", ui=" + this.ui + ", nrdapp=" + this.nrdapp + ", nrdlib=" + this.nrdlib + ", mdxlib=" + this.mdxlib + ", mdxjs=" + this.mdxjs + ", nrdsdk=" + this.nrdsdk + "]";
     }
 }

@@ -38,25 +38,23 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<SearchResul
     private final String pqlQuery1;
     private final ProfileType profileType;
     private final BrowseAgentCallback responseCallback;
-    private final String searchQuery;
     private final int toIndex;
     
     static {
         VIDEO_TYPES_SET = new HashSet<String>(Arrays.asList("shows", "movies", "seasons", "series", "episodes"));
     }
     
-    public FetchSearchRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String searchQuery, final int fromIndex, final int toIndex, final ProfileType profileType, final BrowseAgentCallback responseCallback) {
+    public FetchSearchRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String s, final int fromIndex, final int toIndex, final ProfileType profileType, final BrowseAgentCallback responseCallback) {
         super(context, configurationAgentInterface);
         this.responseCallback = responseCallback;
-        this.searchQuery = searchQuery;
         this.fromIndex = fromIndex;
         this.toIndex = toIndex;
         this.profileType = profileType;
-        final String escapeJsonChars = StringUtils.escapeJsonChars(searchQuery);
+        final String escapeJsonChars = StringUtils.escapeJsonChars(s);
         this.pqlQuery = String.format("['search', '%s', '%s', '%s', {'from':%d,'to':%d}, ['summary', 'searchTitle']]", "videos,people,suggestions", escapeJsonChars, profileType, fromIndex, toIndex);
         this.pqlQuery1 = String.format("['search', '%s', '%s', '%s', 'summary']", "videos,people,suggestions", escapeJsonChars, profileType);
         if (Log.isLoggable("nf_service_browse_fetchsearchrequest", 2)) {
-            Log.v("nf_service_browse_fetchsearchrequest", "PQL = " + this.pqlQuery + " " + this.pqlQuery1);
+            Log.v("nf_service_browse_fetchsearchrequest", "PQL = " + this.pqlQuery + ", " + this.pqlQuery1);
         }
     }
     

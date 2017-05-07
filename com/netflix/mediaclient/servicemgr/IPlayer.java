@@ -86,6 +86,8 @@ public interface IPlayer
     
     public interface PlayerListener
     {
+        boolean isListening();
+        
         void onAudioChange(final int p0);
         
         void onBandwidthChange(final int p0);

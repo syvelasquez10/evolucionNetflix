@@ -617,7 +617,7 @@ public class FileSystemDataRepositoryImpl implements DataRepository
                 }
                 if (this.mEntries.remove(s) != null) {
                     if (Log.isLoggable("nf_log", 3)) {
-                        Log.w("nf_log", "Entry found, removing " + s);
+                        Log.d("nf_log", "Entry found, removing " + s);
                     }
                     final File fileForName = this.getFileForName(s);
                     if (fileForName != null) {

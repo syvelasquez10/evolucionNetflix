@@ -7,7 +7,9 @@ package com.netflix.mediaclient.android.fragment;
 import android.view.MotionEvent;
 import android.widget.ListView;
 import android.view.ViewParent;
+import com.netflix.mediaclient.servicemgr.LoMoUtils;
 import android.view.View;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -18,7 +20,7 @@ public class CustomViewPager extends ViewPager
     private static final boolean ALLOW_OVERLAPPED_PAGES = true;
     private static final String TAG = "CustomViewPager";
     private final OnPageChangeListener onPageChangeListener;
-    private int pageMarginOffset;
+    private int pageMarginOffsetPx;
     private final boolean shouldOverlapPagesByDefault;
     
     public CustomViewPager(final Context context) {
@@ -63,9 +65,8 @@ public class CustomViewPager extends ViewPager
         this.init();
     }
     
-    public static void applyContentOverlapPadding(final Context context, final View view) {
-        final int dimensionPixelOffset = context.getResources().getDimensionPixelOffset(2131361868);
-        view.setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
+    public static void applyContentOverlapPadding(final NetflixActivity netflixActivity, final View view) {
+        view.setPadding(LoMoUtils.getLomoFragOffsetLeftPx(netflixActivity), 0, LoMoUtils.getLomoFragOffsetRightPx(netflixActivity), 0);
     }
     
     private ViewParent getListViewParent() {
@@ -76,7 +77,7 @@ public class CustomViewPager extends ViewPager
     
     private void init() {
         Log.v("CustomViewPager", "Created view pager");
-        this.pageMarginOffset = this.getResources().getDimensionPixelOffset(2131361868) * -2;
+        this.pageMarginOffsetPx = (LoMoUtils.getLomoFragOffsetRightPx((NetflixActivity)this.getContext()) + LoMoUtils.getLomoFragOffsetLeftPx((NetflixActivity)this.getContext())) * -1;
         this.setPagesToOverlap(true);
     }
     
@@ -100,13 +101,13 @@ public class CustomViewPager extends ViewPager
     }
     
     protected void setPagesToOverlap(final boolean b) {
-        int pageMarginOffset;
+        int pageMarginOffsetPx;
         if (b) {
-            pageMarginOffset = this.pageMarginOffset;
+            pageMarginOffsetPx = this.pageMarginOffsetPx;
         }
         else {
-            pageMarginOffset = 0;
+            pageMarginOffsetPx = 0;
         }
-        this.setPageMargin(pageMarginOffset);
+        this.setPageMargin(pageMarginOffsetPx);
     }
 }

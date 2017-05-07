@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.login;
 
 import android.os.Bundle;
-import com.netflix.mediaclient.android.widget.AccessibilityRunnable;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -19,8 +18,8 @@ public abstract class AccountActivity extends NetflixActivity
     }
     
     @Override
-    public AccessibilityRunnable createUpActionRunnable() {
-        return null;
+    protected boolean hasUpAction() {
+        return false;
     }
     
     public boolean isLoadingData() {
@@ -31,6 +30,10 @@ public abstract class AccountActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.registerFinishReceiverWithAutoUnregister("com.netflix.mediaclient.ui.login.ACTION_FINISH_ACCOUNT_ACTIVITIES");
+    }
+    
+    @Override
+    public void performUpAction() {
     }
     
     public boolean showMdxInMenu() {

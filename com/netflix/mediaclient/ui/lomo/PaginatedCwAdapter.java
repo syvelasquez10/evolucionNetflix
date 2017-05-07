@@ -57,7 +57,7 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     
     @Override
     public int getRowHeightInPx() {
-        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth((Context)this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361878);
+        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361879);
         Log.v("PaginatedCwAdapter", "Computed view height: " + n);
         return n;
     }

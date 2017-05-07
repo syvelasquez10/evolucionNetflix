@@ -24,8 +24,9 @@ import com.netflix.mediaclient.ui.common.RatingDialogFrag;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.ui.mdx.RemotePlayer;
 import com.netflix.mediaclient.ui.mdx.MdxTarget;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +41,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public final class MdxUtils
 {
+    private static final int MDX_EOS_DELTA_INSECOND = 10;
     private static final String TAG = "MdxUtils";
     
     public static AlertDialog createMdxTargetSelectionDialog(final NetflixActivity netflixActivity, final MdxTargetSelectionDialogInterface mdxTargetSelectionDialogInterface) {
@@ -49,13 +51,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog.Builder builder = new MdxTargetSelectionDialog.Builder(netflixActivity);
         builder.setCancelable(true);
-        builder.setTitle(2131493143);
+        builder.setTitle(2131493149);
         builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxTargetSelectionDialogInterface.getVideoDetails() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxTargetSelectionDialogInterface.getVideoDetails().getTitle())) {
-                format = String.format(netflixActivity.getString(2131493234), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
+                format = String.format(netflixActivity.getString(2131493241), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
             }
         }
         builder.setSelection(devicePositionByUUID, format);
@@ -81,9 +83,9 @@ public final class MdxUtils
                     if (mdxTargetSelectionDialogInterface.isPlayingRemotely()) {
                         Log.d("MdxUtils", "We were playing remotely - switching to playback locally");
                         serviceManager.getMdx().switchPlaybackFromTarget(null, 0);
-                        final Asset create = Asset.create(mdxTargetSelectionDialogInterface.getVideoDetails(), mdxTargetSelectionDialogInterface.getPlayContext());
+                        final Asset create = Asset.create(mdxTargetSelectionDialogInterface.getVideoDetails(), mdxTargetSelectionDialogInterface.getPlayContext(), PlayerActivity.PIN_VERIFIED);
                         create.setPlaybackBookmark((int)(mdxTargetSelectionDialogInterface.getCurrentPositionMs() / 1000L));
-                        PlayerActivity.playVideo(netflixActivity, create);
+                        PlaybackLauncher.startPlaybackForceLocal(netflixActivity, create);
                         mdxTargetSelectionDialogInterface.notifyPlayingBackLocal();
                     }
                     else {
@@ -246,7 +248,16 @@ public final class MdxUtils
     
     public static int setProgressByBif(final SeekBar seekBar) {
         final int progress = seekBar.getProgress();
-        final int progress2 = progress / 10 * 10;
+        final int n = progress / 10 * 10;
+        final int max = seekBar.getMax();
+        int progress2 = n;
+        if (n + 10 >= max) {
+            progress2 = n;
+            if (max > 0) {
+                Log.d("MdxUtils", "seek to close to EOS, defaulting to 10 seconss before EOS.");
+                progress2 = max - 10;
+            }
+        }
         if (progress2 == progress) {
             if (Log.isLoggable("MdxUtils", 3)) {
                 Log.d("MdxUtils", "Right on target, no need to ajust seekbar position " + progress + " [sec]");
@@ -309,14 +320,14 @@ public final class MdxUtils
             }
             if (n != 0) {
                 Log.w("MdxUtils", "Invalid status code failed");
-                Toast.makeText((Context)this.activity, 2131493193, 1).show();
+                Toast.makeText((Context)this.activity, 2131493199, 1).show();
                 Log.d("MdxUtils", "Report rate action ended");
                 final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(n, ActionOnUIError.displayedError, "", null);
                 LogUtils.reportRateActionEnded((Context)this.activity, logReportErrorArgs.getReason(), logReportErrorArgs.getError(), null, (int)this.rating);
                 return;
             }
             Log.v("MdxUtils", "Rating has been updated ok");
-            Toast.makeText((Context)this.activity, 2131493194, 1).show();
+            Toast.makeText((Context)this.activity, 2131493200, 1).show();
             LogUtils.reportRateActionEnded((Context)this.activity, IClientLogging.CompletionReason.success, null, null, (int)this.rating);
         }
     }

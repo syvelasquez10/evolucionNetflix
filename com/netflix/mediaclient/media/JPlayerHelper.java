@@ -4,9 +4,7 @@
 
 package com.netflix.mediaclient.media;
 
-import android.view.SurfaceView;
 import org.json.JSONObject;
-import android.view.SurfaceHolder;
 import android.content.Context;
 import android.view.Surface;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
@@ -30,21 +28,7 @@ public class JPlayerHelper implements MediaPlayerHelper
     }
     
     @Override
-    public int getSurfaceHolderPixelFormat() {
-        return -2;
-    }
-    
-    @Override
-    public int getSurfaceHolderType() {
-        return 3;
-    }
-    
-    @Override
     public void prepare(final IMedia media, final Surface surface, final Context context) {
-    }
-    
-    @Override
-    public void prepare(final IMedia media, final SurfaceHolder surfaceHolder, final Context context) {
     }
     
     @Override
@@ -57,10 +41,6 @@ public class JPlayerHelper implements MediaPlayerHelper
         media.setVOapi(0L, this.jp.getNativePlayer());
         this.jp.setJplayerListener(jplayerListener);
         this.jp.setEnablePlatformDrs(enablePlatformDrs);
-    }
-    
-    @Override
-    public void prepareVO(final Context context, final SurfaceView surfaceView) {
     }
     
     @Override

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.signup;
 
 import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
+import com.netflix.mediaclient.util.StringUtils;
 import android.webkit.WebView;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
@@ -19,11 +20,15 @@ import android.webkit.WebViewClient;
 class SignUpWebViewClient extends WebViewClient
 {
     private static final String TAG = "SignupActivity";
+    private boolean mClearHistory;
+    private String mCurrentPageURL;
     private boolean mSecurityFailure;
     private final SignupActivity mUi;
     private final NflxHandler nflxHandler;
     
     SignUpWebViewClient(final SignupActivity mUi) {
+        this.mClearHistory = false;
+        this.mCurrentPageURL = null;
         this.nflxHandler = new NflxHandler();
         this.mUi = mUi;
     }
@@ -73,11 +78,15 @@ class SignUpWebViewClient extends WebViewClient
                     this.mSecurityFailure = true;
                     this.mUi.showToast("Loading insecure resource, ERROR:" + string);
                     Log.e("SignupActivity", "Trying to load from unsecure location in release build. Prevent loading, security breach! URL: " + string);
-                    string = this.mUi.getString(2131493265);
+                    string = this.mUi.getString(2131493272);
                     this.mUi.provideDialog(string, this.mUi.mHandleError);
                 }
             }
         }
+    }
+    
+    public void clearHistory() {
+        this.mClearHistory = true;
     }
     
     public void onLoadResource(final WebView webView, final String s) {
@@ -86,6 +95,16 @@ class SignUpWebViewClient extends WebViewClient
         }
         this.securityCheck(s);
         super.onLoadResource(webView, s);
+    }
+    
+    public void onPageFinished(final WebView webView, final String s) {
+        final String originalUrl = webView.getOriginalUrl();
+        if (this.mClearHistory && !StringUtils.safeEquals(this.mCurrentPageURL, originalUrl)) {
+            webView.clearHistory();
+            this.mClearHistory = false;
+        }
+        this.mCurrentPageURL = originalUrl;
+        super.onPageFinished(webView, s);
     }
     
     public void onReceivedError(final WebView webView, final int n, final String s, final String s2) {

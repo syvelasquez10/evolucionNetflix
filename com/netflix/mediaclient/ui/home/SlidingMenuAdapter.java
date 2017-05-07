@@ -11,6 +11,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.content.Context;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewStub;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -44,7 +47,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     protected final View content;
     private final DrawerLayout drawerLayout;
     private final ErrorWrapper.Callback errorCallback;
-    private final TextView home;
+    protected final TextView home;
     private final LoadingAndErrorWrapper leWrapper;
     private final ListView list;
     private ServiceManager manager;
@@ -83,16 +86,16 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             }
         };
         this.activity = activity;
-        (this.content = drawerLayout.findViewById(2131165366)).setOnClickListener((View$OnClickListener)null);
+        (this.content = drawerLayout.findViewById(2131165370)).setOnClickListener((View$OnClickListener)null);
         this.leWrapper = new LoadingAndErrorWrapper(this.content, this.errorCallback);
-        (this.profilesGroup = this.content.findViewById(2131165367)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131165368);
-        this.profileName = (TextView)this.content.findViewById(2131165370);
-        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131165369)).setPressedStateHandlerEnabled(false);
+        (this.profilesGroup = this.content.findViewById(2131165371)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131165372);
+        this.profileName = (TextView)this.content.findViewById(2131165374);
+        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131165373)).setPressedStateHandlerEnabled(false);
         final View inflate = activity.getLayoutInflater().inflate(2130903089, (ViewGroup)null);
-        (this.home = (TextView)inflate.findViewById(2131165373)).setText(2131493174);
+        (this.home = (TextView)inflate.findViewById(2131165377)).setText(2131493180);
         this.home.setOnClickListener(this.onHomeClickListener);
-        (this.list = (ListView)this.content.findViewById(2131165372)).setFocusable(false);
+        (this.list = (ListView)this.content.findViewById(2131165376)).setFocusable(false);
         this.list.addHeaderView(inflate, (Object)null, false);
         this.drawerLayout = drawerLayout;
         this.fetchGenresDataIfReady();
@@ -123,11 +126,13 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             return;
         }
         Log.v("SlidingMenuAdapter", "Showing 'switch to kids' menu item in sliding menu");
-        final TextView textView = (TextView)((ViewStub)this.content.findViewById(2131165371)).inflate().findViewById(2131165373);
+        final TextView textView = (TextView)((ViewStub)this.content.findViewById(2131165375)).inflate().findViewById(2131165377);
+        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361883)));
+        textView.setBackgroundResource(2130837841);
         textView.setCompoundDrawablePadding(this.activity.getResources().getDimensionPixelSize(2131361835));
-        textView.setCompoundDrawablesWithIntrinsicBounds(2130837722, 0, 0, 0);
+        textView.setCompoundDrawablesWithIntrinsicBounds(2130837743, 0, 0, 0);
         textView.setText(2131492948);
-        textView.setOnClickListener((View$OnClickListener)new KidsUtils.OnSwitchToKidsClickListener(this.activity));
+        textView.setOnClickListener((View$OnClickListener)new KidsUtils.OnSwitchToKidsClickListener(this.activity, UIViewLogging.UIViewCommandName.slidingMenuKidsEntry));
     }
     
     private void showErrorView() {
@@ -163,7 +168,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     
     private void updateProfileViewGroupVisibility() {
         if (this.managerNotReady()) {
-            Log.w("SlidingMenuAdapter", "Manager not ready - can't update profile view visibility");
+            Log.d("SlidingMenuAdapter", "Manager not ready - can't update profile view visibility yet");
             return;
         }
         final View profilesGroup = this.profilesGroup;
@@ -196,7 +201,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             imageResource = 17301535;
         }
         else {
-            imageResource = 2130837687;
+            imageResource = 2130837690;
         }
         switchProfilesIcon.setImageResource(imageResource);
     }
@@ -234,6 +239,10 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             b = false;
         }
         return b;
+    }
+    
+    protected void updateAdapterViews(final Holder holder, final GenreList list) {
+        holder.tv.setText((CharSequence)list.getTitle());
     }
     
     private class FetchGenresCallback extends LoggingManagerCallback
@@ -283,14 +292,14 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             View inflate = view;
             if (view == null) {
                 inflate = SlidingMenuAdapter.this.activity.getLayoutInflater().inflate(2130903089, (ViewGroup)null);
-                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165373)));
+                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165377)));
             }
-            ((Holder)inflate.getTag()).tv.setText((CharSequence)this.getItem(n).getTitle());
+            SlidingMenuAdapter.this.updateAdapterViews((Holder)inflate.getTag(), this.getItem(n));
             return inflate;
         }
     }
     
-    private static class Holder
+    protected static class Holder
     {
         public final TextView tv;
         

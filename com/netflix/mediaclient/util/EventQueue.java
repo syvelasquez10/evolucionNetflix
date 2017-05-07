@@ -73,7 +73,16 @@ public abstract class EventQueue<T>
         }
     }
     
-    private void flushEvents() {
+    public void addFlushCriterion(final FlushCriterion flushCriterion) {
+        if (flushCriterion == null) {
+            return;
+        }
+        this.mFlushCriteria.add(flushCriterion);
+    }
+    
+    protected abstract void doFlush(final List<T> p0);
+    
+    public void flushEvents() {
         synchronized (this) {
             final ArrayList<Object> list = new ArrayList<Object>();
             synchronized (this.mEventQueue) {
@@ -85,15 +94,6 @@ public abstract class EventQueue<T>
             }
         }
     }
-    
-    public void addFlushCriterion(final FlushCriterion flushCriterion) {
-        if (flushCriterion == null) {
-            return;
-        }
-        this.mFlushCriteria.add(flushCriterion);
-    }
-    
-    protected abstract void doFlush(final List<T> p0);
     
     public boolean flushIfCriteriaIsFulfilled() {
         boolean b = false;
@@ -144,7 +144,7 @@ public abstract class EventQueue<T>
         //    49: invokevirtual   com/netflix/mediaclient/util/EventQueue.shouldFlushQueue:()Z
         //    52: ifeq            6
         //    55: aload_0        
-        //    56: invokespecial   com/netflix/mediaclient/util/EventQueue.flushEvents:()V
+        //    56: invokevirtual   com/netflix/mediaclient/util/EventQueue.flushEvents:()V
         //    59: goto            6
         //    62: astore_1       
         //    63: aload_0        

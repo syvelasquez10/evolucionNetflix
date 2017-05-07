@@ -52,6 +52,7 @@ import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.servicemgr.Playable;
+import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.Asset;
@@ -167,7 +168,7 @@ public final class NetflixService extends Service implements INetflixService
             private Asset getMdxAgentVideoAsset() {
                 final VideoDetails videoDetail = NetflixService.this.mMdxAgent.getVideoDetail();
                 if (videoDetail != null && StringUtils.isNotEmpty(videoDetail.getId())) {
-                    return Asset.create(videoDetail, PlayContext.EMPTY_CONTEXT);
+                    return Asset.create(videoDetail, PlayContext.EMPTY_CONTEXT, PlayerActivity.PIN_VERIFIED);
                 }
                 return null;
             }
@@ -190,7 +191,7 @@ public final class NetflixService extends Service implements INetflixService
                     }
                     Log.i("NetflixService", "start mdx notification");
                     NetflixService.this.handler.removeCallbacks(NetflixService.this.stopServiceRunnable);
-                    final Pair<Integer, Notification> mdxNotification = NetflixService.this.mMdxAgent.getMdxNotification();
+                    final Pair<Integer, Notification> mdxNotification = NetflixService.this.mMdxAgent.getMdxNotification(false);
                     NetflixService.this.startForeground((int)mdxNotification.first, (Notification)mdxNotification.second);
                     final Asset mdxAgentVideoAsset = this.getMdxAgentVideoAsset();
                     if (mdxAgentVideoAsset != null) {
@@ -701,6 +702,7 @@ public final class NetflixService extends Service implements INetflixService
         Log.i("NetflixService", "NetflixService.onCreate.");
         super.onCreate();
         this.handler = new Handler();
+        this.mClientLoggingAgent = new LoggingAgent();
         this.mConfigurationAgent = new ConfigurationAgent();
         this.mNrdController = new NrdController();
         this.mUserAgent = new UserAgent();
@@ -708,7 +710,6 @@ public final class NetflixService extends Service implements INetflixService
         this.mResourceFetcher = new ResourceFetcher();
         this.mPlayerAgent = new PlayerAgent();
         this.mPushAgent = new PushNotificationAgent();
-        this.mClientLoggingAgent = new LoggingAgent();
         this.init();
     }
     
@@ -826,6 +827,10 @@ public final class NetflixService extends Service implements INetflixService
             return;
         }
         Log.i("NetflixService", "unregisterCallback, client: " + remove.hashCode());
+    }
+    
+    public void verifyPin(final String s, final int n, final int n2) {
+        this.mUserAgent.verifyPin(s, (UserAgent.UserAgentCallback)new UserAgentClientCallback(n, n2));
     }
     
     private class BrowseAgentClientCallback implements BrowseAgentCallback
@@ -1194,6 +1199,17 @@ public final class NetflixService extends Service implements INetflixService
             }
             Log.d("NetflixService", "Notified onLogoutComplete");
             netflixServiceCallback.onLogoutComplete(this.requestId, n);
+        }
+        
+        @Override
+        public void onPinVerified(final boolean b, final int n) {
+            final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)NetflixService.this.mClientCallbacks.get(this.clientId);
+            if (netflixServiceCallback == null) {
+                Log.w("NetflixService", "No client callback found for onPinVerified");
+                return;
+            }
+            Log.d("NetflixService", "Notified onPinVerified");
+            netflixServiceCallback.onPinVerified(this.requestId, b, n);
         }
     }
 }

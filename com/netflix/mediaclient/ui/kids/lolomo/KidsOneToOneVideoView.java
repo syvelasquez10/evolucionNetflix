@@ -36,11 +36,11 @@ public class KidsOneToOneVideoView extends RelativeLayout implements IVideoView<
     
     public KidsOneToOneVideoView(final Context context, final boolean b) {
         super(context);
-        ((Activity)context).getLayoutInflater().inflate(2130903097, (ViewGroup)this);
+        ((Activity)context).getLayoutInflater().inflate(2130903099, (ViewGroup)this);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeRowHeight((NetflixActivity)this.getContext(), b)));
-        (this.mainImage = (AdvancedImageView)this.findViewById(2131165393)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361904));
+        (this.mainImage = (AdvancedImageView)this.findViewById(2131165399)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361905));
         this.mainImage.setScaleType(ImageView$ScaleType.CENTER_CROP);
-        (this.tvCard = (AdvancedImageView)this.findViewById(2131165394)).setPressedStateHandlerEnabled(false);
+        (this.tvCard = (AdvancedImageView)this.findViewById(2131165401)).setPressedStateHandlerEnabled(false);
         this.mainImage.setFocusable(true);
         this.tvCard.setFocusable(true);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
@@ -64,7 +64,7 @@ public class KidsOneToOneVideoView extends RelativeLayout implements IVideoView<
         this.setContentDescription((CharSequence)video.getTitle());
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView mainImage = this.mainImage;
-        final String boxshotURL = video.getBoxshotURL();
+        final String squareUrl = video.getSquareUrl();
         final IClientLogging.AssetType boxArt = IClientLogging.AssetType.boxArt;
         final String title = video.getTitle();
         if (b) {
@@ -73,7 +73,7 @@ public class KidsOneToOneVideoView extends RelativeLayout implements IVideoView<
         else {
             n = 0;
         }
-        imageLoader.showImg(mainImage, boxshotURL, boxArt, title, true, true, n);
+        imageLoader.showImg(mainImage, squareUrl, boxArt, title, false, true, n);
         final ImageLoader imageLoader2 = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView tvCard = this.tvCard;
         final String tvCardUrl = video.getTvCardUrl();

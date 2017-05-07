@@ -25,8 +25,10 @@ public interface IMdx
     public static final String MDXUPDATE_MOVIEMETADATA = "com.netflix.mediaclient.intent.action.MDXUPDATE_MOVIEMETADA";
     public static final String MDXUPDATE_MOVIEMETADATA_AVAILABLE = "com.netflix.mediaclient.intent.action.MDXUPDATE_MOVIEMETADATA_AVAILABLE";
     public static final String MDXUPDATE_NOTREADY = "com.netflix.mediaclient.intent.action.MDXUPDATE_NOTREADY";
+    public static final String MDXUPDATE_PIN_VERIFICATION_SHOW = "com.netflix.mediaclient.intent.action.PIN_VERIFICATION_SHOW";
     public static final String MDXUPDATE_PLAYBACKEND = "com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND";
     public static final String MDXUPDATE_PLAYBACKSTART = "com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART";
+    public static final String MDXUPDATE_POSTPLAY = "com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY";
     public static final String MDXUPDATE_READY = "com.netflix.mediaclient.intent.action.MDXUPDATE_READY";
     public static final String MDXUPDATE_SIMPLE_PLAYBACKSTATE = "com.netflix.mediaclient.intent.action.MDXUPDATE_SIMPLE_PLAYBACKSTATE";
     public static final String MDXUPDATE_STATE = "com.netflix.mediaclient.intent.action.MDXUPDATE_STATE";
@@ -37,9 +39,9 @@ public interface IMdx
     @SuppressLint({ "UseSparseArrays" })
     public static final Map<Integer, Integer> MDX_ERROR_MAP = new HashMap<Integer, Integer>() {
         {
-            this.put(100, 2131493226);
-            this.put(104, 2131493227);
-            this.put(105, 2131493228);
+            this.put(100, 2131493232);
+            this.put(104, 2131493233);
+            this.put(105, 2131493234);
         }
     };
     public static final int MDX_ERROR_PAIR_ERROR = 104;
@@ -57,7 +59,13 @@ public interface IMdx
     public static final String MDX_EXTRA_ERROR_CODE = "errorCode";
     public static final String MDX_EXTRA_ERROR_DESC = "errorDesc";
     public static final String MDX_EXTRA_PAUSED = "paused";
+    public static final String MDX_EXTRA_PIN_ANCESTOR_VIDEOID = "ancestorVideoId";
+    public static final String MDX_EXTRA_PIN_ANCESTOR_VIDEOTYPE = "ancestorVideoType";
+    public static final String MDX_EXTRA_PIN_ISVERIFIED = "isPinVerified";
+    public static final String MDX_EXTRA_PIN_TITLE = "title";
+    public static final String MDX_EXTRA_PIN_VIDEOID = "videoId";
     public static final String MDX_EXTRA_POSITION_SECONDS = "time";
+    public static final String MDX_EXTRA_POSTPLAYSTATE = "postplayState";
     public static final String MDX_EXTRA_SPEED = "speed";
     public static final String MDX_EXTRA_STRING_BLOB = "stringBlob";
     public static final String MDX_EXTRA_SUBTITLE_TRACK_ID = "subtitleTrackId";
@@ -72,6 +80,8 @@ public interface IMdx
     public static final String MDX_GETSTATE = "com.netflix.mediaclient.intent.action.MDX_GETSTATE";
     public static final String MDX_METADATA = "com.netflix.mediaclient.intent.action.MDX_METADATA";
     public static final String MDX_PAUSE = "com.netflix.mediaclient.intent.action.MDX_PAUSE";
+    public static final String MDX_PINCANCELLED = "com.netflix.mediaclient.intent.action.MDX_PINCANCELLED";
+    public static final String MDX_PINCONFIRMED = "com.netflix.mediaclient.intent.action.MDX_PINCONFIRMED";
     public static final String MDX_PLAY = "com.netflix.mediaclient.intent.action.MDX_PLAY";
     public static final String MDX_PLAY_VIDEOIDS = "com.netflix.mediaclient.intent.action.MDX_PLAY_VIDEOIDS";
     public static final String MDX_RESUME = "com.netflix.mediaclient.intent.action.MDX_RESUME";
@@ -82,6 +92,7 @@ public interface IMdx
     public static final String MDX_SKIP = "com.netflix.mediaclient.intent.action.MDX_SKIP";
     public static final String MDX_STOP = "com.netflix.mediaclient.intent.action.MDX_STOP";
     public static final String MDX_TOGGLE_PAUSE = "com.netflix.mediaclient.intent.action.MDX_TOGGLE_PAUSE";
+    public static final String PIN_VERIFICATION_NOT_REQUIRED = "com.netflix.mediaclient.intent.action.PIN_VERIFICATION_NOT_REQUIRED";
     public static final String PLAYER_STATE_AUTO_ADVANCE = "AUTO_ADVANCE";
     public static final String PLAYER_STATE_END_PLAYBACK = "END_PLAYBACK";
     public static final String PLAYER_STATE_FATAL_ERROR = "FATAL_ERROR";

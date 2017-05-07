@@ -14,7 +14,7 @@ public class PlayScreenKindleHD extends PlayScreen
     private static final int HIDE_FLAGS = 1;
     private static final int SHOW_FLAGS = 0;
     
-    PlayScreenKindleHD(final PlayerActivity playerActivity, final Listeners listeners, final PostPlay.PostPlayType postPlayType) {
+    PlayScreenKindleHD(final PlayerActivity playerActivity, final Listeners listeners, final PostPlayFactory.PostPlayType postPlayType) {
         super(playerActivity, listeners, postPlayType);
     }
     

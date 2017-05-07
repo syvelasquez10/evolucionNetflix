@@ -57,19 +57,19 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final int length = spannableString.length();
         final int n = length - s2.length() - 4;
         spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131361837)), n, length, 0);
-        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131296315)), n, length, 0);
+        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(this.getYearColorResId())), n, length, 0);
         return (CharSequence)spannableString;
     }
     
     private void init() {
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903152, (ViewGroup)this);
+        netflixActivity.getLayoutInflater().inflate(2130903160, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837829));
-        (this.img = (AdvancedImageView)this.findViewById(2131165554)).setPressedStateHandlerEnabled(false);
-        this.title = (TextView)this.findViewById(2131165555);
-        this.verticalDivider = this.findViewById(2131165557);
-        (this.rating = (TextView)this.findViewById(2131165556)).setVisibility(8);
+        this.setForeground(this.getResources().getDrawable(2130837851));
+        (this.img = (AdvancedImageView)this.findViewById(2131165579)).setPressedStateHandlerEnabled(false);
+        this.title = (TextView)this.findViewById(2131165580);
+        this.verticalDivider = this.findViewById(2131165582);
+        (this.rating = (TextView)this.findViewById(2131165581)).setVisibility(8);
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -89,7 +89,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final String imgUrl = searchPerson.getImgUrl();
         NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging.AssetType.heroImage, name, false, false);
         if (StringUtils.isEmpty(imgUrl)) {
-            this.img.setImageResource(2130837850);
+            this.img.setImageResource(2130837872);
         }
         this.videoClickListener.remove((View)this);
         this.setOnClickListener((View$OnClickListener)new PersonClickListener(searchPerson.getId(), searchPerson.getName()));
@@ -108,6 +108,10 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public PlayContext getPlayContext() {
         return this.playContext;
+    }
+    
+    protected int getYearColorResId() {
+        return 2131296316;
     }
     
     public void update(final Object o, final PlayContext playContext) {
@@ -139,8 +143,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     private enum ImgSizeType
     {
-        BOXART(2131361859), 
-        SQUARE(2131361858);
+        BOXART(2131361860), 
+        SQUARE(2131361859);
         
         private final int heightDimenId;
         

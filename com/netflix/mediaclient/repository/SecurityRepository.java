@@ -24,11 +24,13 @@ public final class SecurityRepository
     private static final int CONSTANT_DEVICE_ID_TOKEN = 1;
     private static final int CONSTANT_FACEBOOK_ID = 0;
     private static final String ESN_DELIM = "-";
-    private static final String MDXLIB_VERSION_VALUE = "2013.2";
+    private static final String MDXJS_VERSION_VALUE = "1.1.6-android";
+    private static final String MDXLIB_VERSION_VALUE = "2013.3";
     private static final String MODEL_DELIM = "_";
     public static final String NCCP_VERSION = "NCCP/2.15";
     private static final String NRDAPP_VERSION_VALUE = "2013.2";
     private static final String NRDLIB_VERSION_VALUE = "2013.2";
+    private static final String NRD_SDK_VERSION_VALUE = "4.1";
     public static final String SENDER_ID = "484286080282";
     private static final String TAG = "SEC";
     private static String crittercismAppId;
@@ -101,8 +103,12 @@ public final class SecurityRepository
         return native_getLibraryVersion();
     }
     
+    public static String getMdxJsVersion() {
+        return "1.1.6-android";
+    }
+    
     public static String getMdxLibVersion() {
-        return "2013.2";
+        return "2013.3";
     }
     
     public static String getModelDelim() {
@@ -123,6 +129,10 @@ public final class SecurityRepository
     
     public static String getNrdLibVersion() {
         return "2013.2";
+    }
+    
+    public static String getNrdSdkVersion() {
+        return "4.1";
     }
     
     public static boolean isLoaded() {

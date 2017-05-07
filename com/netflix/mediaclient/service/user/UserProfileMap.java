@@ -177,7 +177,6 @@ class UserProfileMap
         if (this.mProfileMap != null) {
             boolean b = false;
             final Iterator keys = this.mProfileMap.keys();
-        Block_6_Outer:
             while (true) {
                 Label_0090: {
                     if (!keys.hasNext()) {
@@ -190,18 +189,15 @@ class UserProfileMap
                     try {
                         this.mEsnMigrationFlags.putOpt(s, (Object)true);
                         b = true;
-                        continue Block_6_Outer;
-                        while (true) {
-                            Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
-                            Label_0131: {
-                                PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
-                            }
-                            return;
-                            continue;
+                        continue;
+                        // iftrue(Label_0024:, !b)
+                        // iftrue(Label_0131:, !Log.isLoggable("nf_service_useragentproilemap", 3))
+                        Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
+                        Label_0131: {
+                            PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
                         }
+                        return;
                     }
-                    // iftrue(Label_0131:, !Log.isLoggable("nf_service_useragentproilemap", 3))
-                    // iftrue(Label_0024:, !b)
                     catch (JSONException ex) {}
                 }
             }

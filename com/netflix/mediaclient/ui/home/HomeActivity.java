@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.home;
 
+import android.view.View;
 import android.view.MenuItem$OnMenuItemClickListener;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
@@ -15,17 +16,16 @@ import android.os.Bundle;
 import android.content.res.Configuration;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
-import com.netflix.mediaclient.android.widget.AccessibilityRunnable;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
-import com.netflix.mediaclient.servicemgr.GenreList;
+import android.os.Parcelable;
 import android.widget.Toast;
+import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
 import com.netflix.mediaclient.util.StringUtils;
 import java.io.Serializable;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHomeActivity;
-import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.content.Context;
 import android.app.DialogFragment;
@@ -39,6 +39,7 @@ import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.MenuItem;
+import com.netflix.mediaclient.servicemgr.GenreList;
 import com.netflix.mediaclient.android.osp.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
@@ -51,15 +52,14 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     private static final long ACTIVITY_RESUME_TIMEOUT_MS = 28800000L;
     private static final String EXTRA_BACK_STACK_INTENTS = "extra_back_stack_intents";
     private static final String EXTRA_GENRE_ID = "genre_id";
-    private static final String EXTRA_GENRE_IS_KIDS = "genre_is_kids";
-    private static final String EXTRA_GENRE_TITLE = "genre_title";
+    private static final String EXTRA_GENRE_PARCEL = "genre_parcel";
     public static final String REFRESH_HOME_LOLOMO = "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO";
     private static final String TAG = "HomeActivity";
     private final LinkedList<Intent> backStackIntents;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggler;
+    private GenreList genre;
     private String genreId;
-    private boolean isKidsGenre;
     private MenuItem kidsEntryItem;
     private long mStartedTimeMs;
     private ServiceManager manager;
@@ -67,7 +67,6 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     private long pauseTimeMs;
     private final BroadcastReceiver refreshHomeReceiver;
     private SlidingMenuAdapter slidingMenuAdapter;
-    private String title;
     private ViewRecycler viewRecycler;
     
     public HomeActivity() {
@@ -116,44 +115,20 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
                     final String action = intent.getAction();
                     Log.i("HomeActivity", "RefreshHomeReceiver inovoked and received Intent with Action " + action);
                     if ("com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO".equals(action)) {
-                        HomeActivity.this.clearHomeLoLoMoState();
+                        HomeActivity.this.clearAllStateAndRefresh();
                     }
                 }
             }
         };
     }
     
-    private void clearHomeLoLoMoState() {
+    private void clearAllStateAndRefresh() {
         this.getServiceManager().flushCaches();
         this.getPrimaryFrag().refresh();
         this.slidingMenuAdapter.refresh();
     }
     
-    private DrawerLayout.DrawerListener createDrawerListenerWrapper(final DrawerLayout.DrawerListener drawerListener) {
-        return new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerClosed(final View view) {
-                drawerListener.onDrawerClosed(view);
-            }
-            
-            @Override
-            public void onDrawerOpened(final View view) {
-                drawerListener.onDrawerOpened(view);
-            }
-            
-            @Override
-            public void onDrawerSlide(final View view, final float n) {
-                drawerListener.onDrawerSlide(view, n);
-            }
-            
-            @Override
-            public void onDrawerStateChanged(final int n) {
-                drawerListener.onDrawerStateChanged(n);
-            }
-        };
-    }
-    
-    public static Intent createStartIntent(final NetflixActivity netflixActivity) {
+    public static Intent createShowIntent(final NetflixActivity netflixActivity) {
         final boolean shouldShowKidsExperience = KidsUtils.shouldShowKidsExperience(netflixActivity);
         if (Log.isLoggable("HomeActivity", 2)) {
             Log.v("HomeActivity", "Creating home activity, showing kids experience: " + shouldShowKidsExperience);
@@ -165,7 +140,11 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         else {
             s = HomeActivity.class;
         }
-        return new Intent((Context)netflixActivity, (Class)s).addFlags(67108864).putExtra("genre_id", "lolomo");
+        return new Intent((Context)netflixActivity, (Class)s).addFlags(67108864);
+    }
+    
+    public static Intent createStartIntent(final NetflixActivity netflixActivity) {
+        return createShowIntent(netflixActivity).putExtra("genre_id", "lolomo");
     }
     
     private IClientLogging.ModalView getCurrentViewType() {
@@ -181,38 +160,43 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     private boolean handleNewIntent(final Intent intent) {
         final boolean b = true;
         final String stringExtra = intent.getStringExtra("genre_id");
+        if (StringUtils.isEmpty(stringExtra)) {
+            Log.d("HomeActivity", "No new genre ID to show");
+            return false;
+        }
         if (Log.isLoggable("HomeActivity", 2)) {
             Log.v("HomeActivity", "Curr genre: " + this.genreId + ", new genre: " + stringExtra);
         }
-        boolean b2 = b;
-        if (StringUtils.isNotEmpty(this.genreId)) {
-            if (this.genreId.equals(stringExtra)) {
-                Log.i("HomeActivity", "Asked to show genre that we're already showing - skipping: " + this.genreId);
-                b2 = false;
-            }
-            else {
+        boolean b2;
+        if (stringExtra.equals(this.genreId)) {
+            Log.i("HomeActivity", "Asked to show genre that we're already showing - skipping: " + this.genreId);
+            b2 = false;
+        }
+        else {
+            b2 = b;
+            if ("lolomo".equals(this.genreId)) {
+                Log.v("HomeActivity", "Adding genre to back stack: " + this.genreId);
+                this.backStackIntents.add(this.getIntent());
                 b2 = b;
-                if ("lolomo".equals(this.genreId)) {
-                    Log.v("HomeActivity", "Adding genre to back stack: " + this.genreId);
-                    this.backStackIntents.add(this.getIntent());
-                    b2 = b;
-                }
             }
         }
         if ("lolomo".equals(stringExtra)) {
             this.backStackIntents.clear();
         }
         this.genreId = stringExtra;
-        this.title = intent.getStringExtra("genre_title");
-        this.isKidsGenre = intent.getBooleanExtra("genre_is_kids", false);
+        this.genre = (ListOfGenreSummary)intent.getParcelableExtra("genre_parcel");
         this.setIntent(intent);
         this.reportUiViewChanged(this.getCurrentViewType());
         return b2;
     }
     
+    private void lockSlidingDrawer() {
+        this.drawerLayout.setDrawerLockMode(1);
+    }
+    
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131493223, 1).show();
-        this.clearHomeLoLoMoState();
+        Toast.makeText((Context)this, 2131493229, 1).show();
+        this.clearAllStateAndRefresh();
     }
     
     private void registerRefreshHomeReceiver() {
@@ -233,28 +217,24 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     }
     
     public static void showGenreList(final NetflixActivity netflixActivity, final GenreList list) {
-        showGenreList(netflixActivity, list.getId(), list.getTitle(), list.isKidsGenre());
-    }
-    
-    public static void showGenreList(final NetflixActivity netflixActivity, final String s, final String s2, final boolean b) {
         final boolean shouldShowKidsExperience = KidsUtils.shouldShowKidsExperience(netflixActivity);
         if (Log.isLoggable("HomeActivity", 2)) {
             Log.v("HomeActivity", "Showing genres list, kids experience: " + shouldShowKidsExperience);
         }
-        Serializable s3;
+        Serializable s;
         if (shouldShowKidsExperience) {
-            s3 = KidsHomeActivity.class;
+            s = KidsHomeActivity.class;
         }
         else {
-            s3 = HomeActivity.class;
+            s = HomeActivity.class;
         }
-        netflixActivity.startActivity(new Intent((Context)netflixActivity, (Class)s3).addFlags(67108864).putExtra("genre_id", s).putExtra("genre_title", s2).putExtra("genre_is_kids", b));
+        netflixActivity.startActivity(new Intent((Context)netflixActivity, (Class)s).addFlags(67108864).putExtra("genre_id", list.getId()).putExtra("genre_parcel", (Parcelable)list));
     }
     
     private void showNewFrag() {
         this.updateActionBar();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131165363, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131165367, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, 0);
     }
@@ -267,13 +247,28 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         this.drawerLayout.openDrawer(3);
     }
     
+    private void unlockSlidingDrawerIfPossible() {
+        if (this.isForKids()) {
+            this.lockSlidingDrawer();
+            return;
+        }
+        this.drawerLayout.setDrawerLockMode(0);
+    }
+    
     private void updateActionBar() {
-        Log.v("HomeActivity", "Updating action bar, title: " + this.title);
+        String title;
+        if (this.genre == null) {
+            title = null;
+        }
+        else {
+            title = this.genre.getTitle();
+        }
+        Log.v("HomeActivity", "Updating action bar, genre: " + title);
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.title);
+            netflixActionBar.setTitle(title);
             NetflixActionBar.LogoType logoType;
-            if (StringUtils.isEmpty(this.title)) {
+            if (StringUtils.isEmpty(title)) {
                 logoType = NetflixActionBar.LogoType.FULL_SIZE;
             }
             else {
@@ -290,17 +285,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     @Override
     protected NetflixFrag createPrimaryFrag() {
-        return LoLoMoFrag.create(this.genreId);
-    }
-    
-    @Override
-    public AccessibilityRunnable createUpActionRunnable() {
-        return new AccessibilityRunnable(new Runnable() {
-            @Override
-            public void run() {
-                HomeActivity.this.toggleDrawer();
-            }
-        }, this.getString(2131493184));
+        return LoLoMoFrag.create(this.genreId, this.genre);
     }
     
     @Override
@@ -345,7 +330,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     }
     
     public boolean isKidsGenre() {
-        return this.isKidsGenre;
+        return this.genre != null && this.genre.isKidsGenre();
     }
     
     @Override
@@ -375,7 +360,8 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         this.viewRecycler = new ViewRecycler();
         super.onCreate(bundle);
         this.showFetchErrorsToast();
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131165365)).setDrawerLockMode(0);
+        this.drawerLayout = (DrawerLayout)this.findViewById(2131165369);
+        this.unlockSlidingDrawerIfPossible();
         SlidingMenuAdapter slidingMenuAdapter;
         if (this.isForKids()) {
             slidingMenuAdapter = new KidsSlidingMenuAdapter(this, this.drawerLayout);
@@ -384,8 +370,8 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
             slidingMenuAdapter = new SlidingMenuAdapter(this, this.drawerLayout);
         }
         this.slidingMenuAdapter = slidingMenuAdapter;
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837689, 2131493184, 2131493184);
-        this.drawerLayout.setDrawerListener(this.createDrawerListenerWrapper(this.drawerToggler));
+        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837692, 2131493190, 2131493190);
+        this.drawerLayout.setDrawerListener((DrawerLayout.DrawerListener)this.drawerToggler);
         this.drawerLayout.setFocusable(false);
         this.updateActionBar();
         this.pauseTimeMs = SystemClock.elapsedRealtime();
@@ -399,7 +385,16 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         if (menu2 != null) {
             menu2.add((CharSequence)"Dump LoLoMo Data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
-                    HomeActivity.this.manager.dumpHomeLoLoMosAndVideos(HomeActivity.this.genreId, HomeActivity.this.title);
+                    final ServiceManager access$200 = HomeActivity.this.manager;
+                    final String access$201 = HomeActivity.this.genreId;
+                    String title;
+                    if (HomeActivity.this.genre == null) {
+                        title = "lolomo";
+                    }
+                    else {
+                        title = HomeActivity.this.genre.getTitle();
+                    }
+                    access$200.dumpHomeLoLoMosAndVideos(access$201, title);
                     return false;
                 }
             });
@@ -466,16 +461,21 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     @Override
     protected void onSlidingPanelCollapsed(final View view) {
-        this.drawerLayout.setDrawerLockMode(0);
+        this.unlockSlidingDrawerIfPossible();
     }
     
     @Override
     protected void onSlidingPanelExpanded(final View view) {
-        this.drawerLayout.setDrawerLockMode(1);
+        this.lockSlidingDrawer();
     }
     
     @Override
-    protected boolean shouldApplyPaddingToSlidingPanel() {
+    public void performUpAction() {
+        this.toggleDrawer();
+    }
+    
+    @Override
+    public boolean shouldApplyPaddingToSlidingPanel() {
         return false;
     }
     

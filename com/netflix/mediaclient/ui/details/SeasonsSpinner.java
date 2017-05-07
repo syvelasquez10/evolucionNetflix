@@ -8,7 +8,9 @@ import com.netflix.mediaclient.servicemgr.SeasonDetails;
 import java.util.List;
 import android.view.View;
 import android.widget.AdapterView;
+import com.netflix.mediaclient.Log;
 import android.widget.SpinnerAdapter;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.AdapterView$OnItemSelectedListener;
@@ -16,7 +18,8 @@ import android.widget.Spinner;
 
 public class SeasonsSpinner extends Spinner
 {
-    private static final int STANDARD_BG_ID = 2130837837;
+    private static final int STANDARD_BG_RES_ID = 2130837859;
+    private static final String TAG = "SeasonsSpinner";
     private AdapterView$OnItemSelectedListener itemSelectedListener;
     private SeasonsSpinnerAdapter spinnerAdapter;
     
@@ -36,12 +39,16 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.setBackgroundResource(2130837837);
-        this.setAdapter((SpinnerAdapter)(this.spinnerAdapter = new SeasonsSpinnerAdapter(this.getContext())));
+        this.setBackgroundResource(2130837859);
+        this.setAdapter((SpinnerAdapter)(this.spinnerAdapter = new SeasonsSpinnerAdapter((NetflixActivity)this.getContext())));
     }
     
     public int getSeasonIndexBySeasonNumber(final int n) {
         return this.spinnerAdapter.getSeasonIndexBySeasonNumber(n);
+    }
+    
+    public int getSeasonNumberForPosition(final int n) {
+        return this.spinnerAdapter.getSeasonNumberForPosition(n);
     }
     
     public void setOnItemSelectedListener(final AdapterView$OnItemSelectedListener itemSelectedListener) {
@@ -49,10 +56,16 @@ public class SeasonsSpinner extends Spinner
     }
     
     public void setSelection(final int selection) {
+        Log.v("SeasonsSpinner", "Setting selection to position: " + selection);
         super.setSelection(selection);
         if (this.itemSelectedListener != null) {
             this.itemSelectedListener.onItemSelected((AdapterView)this, (View)this, selection, this.getSelectedItemId());
         }
+    }
+    
+    public void setSelectionWithoutCallback(final int selection) {
+        Log.v("SeasonsSpinner", "Setting selection (no callback) to position: " + selection);
+        super.setSelection(selection);
     }
     
     public void updateSeasonData(final List<SeasonDetails> list) {
@@ -64,7 +77,7 @@ public class SeasonsSpinner extends Spinner
         this.setEnabled(enabled);
         int backgroundResource;
         if (enabled) {
-            backgroundResource = 2130837837;
+            backgroundResource = 2130837859;
         }
         else {
             backgroundResource = 2131296304;

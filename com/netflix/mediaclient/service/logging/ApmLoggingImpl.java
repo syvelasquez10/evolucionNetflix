@@ -114,8 +114,8 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
             public void run() {
                 final UIAssetRequestSession uiAssetRequestSession = ApmLoggingImpl.this.mAssetRequests.remove(s);
                 if (uiAssetRequestSession == null) {
-                    if (Log.isLoggable("nf_log", 6)) {
-                        Log.e("nf_log", "UI Asset request session NOT found for URL: " + s + ". Unable to post event!");
+                    if (Log.isLoggable("nf_log", 3)) {
+                        Log.d("nf_log", "UI Asset Request session does not exist (probably due to sampling) - url: " + s);
                     }
                     return;
                 }
@@ -141,8 +141,8 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
             public void run() {
                 final UIDataRequestSession uiDataRequestSession = ApmLoggingImpl.this.mDataRequests.remove(s);
                 if (uiDataRequestSession == null) {
-                    if (Log.isLoggable("nf_log", 6)) {
-                        Log.e("nf_log", "UI data request session NOT found for '" + s + "'. Unable to post event.");
+                    if (Log.isLoggable("nf_log", 3)) {
+                        Log.d("nf_log", "UI data request session does not exist (probably due to sampling) - sessionId: " + s);
                     }
                     return;
                 }

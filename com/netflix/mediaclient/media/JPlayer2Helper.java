@@ -4,10 +4,8 @@
 
 package com.netflix.mediaclient.media;
 
-import android.view.SurfaceView;
 import org.json.JSONObject;
 import com.netflix.mediaclient.media.JPlayer.JPlayer;
-import android.view.SurfaceHolder;
 import com.netflix.mediaclient.service.configuration.BitrateRangeFactory;
 import android.content.Context;
 import android.view.Surface;
@@ -32,16 +30,6 @@ public class JPlayer2Helper implements MediaPlayerHelper
     }
     
     @Override
-    public int getSurfaceHolderPixelFormat() {
-        return -2;
-    }
-    
-    @Override
-    public int getSurfaceHolderType() {
-        return 3;
-    }
-    
-    @Override
     public void prepare(final IMedia media, final Surface surface, final Context context) {
         Log.d("NF_JPlayer2", "Create JPlayer2");
         if (this.jp != null) {
@@ -52,15 +40,7 @@ public class JPlayer2Helper implements MediaPlayerHelper
     }
     
     @Override
-    public void prepare(final IMedia media, final SurfaceHolder surfaceHolder, final Context context) {
-    }
-    
-    @Override
     public void prepareJPlayer(final IMedia media, final Surface surface, final JPlayer.JplayerListener jplayerListener, final boolean b, final JSONObject jsonObject) {
-    }
-    
-    @Override
-    public void prepareVO(final Context context, final SurfaceView surfaceView) {
     }
     
     @Override
@@ -69,5 +49,11 @@ public class JPlayer2Helper implements MediaPlayerHelper
             this.jp.release();
         }
         this.jp = null;
+    }
+    
+    public void updateSurface(final Surface surface) {
+        if (this.jp != null) {
+            this.jp.updateSurface(surface);
+        }
     }
 }

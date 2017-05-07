@@ -127,6 +127,14 @@ public final class CommandHandler
                         this.mTarget.playerGetAudioSubtitle(stringExtra);
                         return;
                     }
+                    if (action.equals("com.netflix.mediaclient.intent.action.MDX_PINCONFIRMED")) {
+                        this.mTarget.pinConfirmed(stringExtra);
+                        return;
+                    }
+                    if (action.equals("com.netflix.mediaclient.intent.action.MDX_PINCANCELLED")) {
+                        this.mTarget.pinCancelled(stringExtra);
+                        return;
+                    }
                     Log.e("nf_mdx", "handleCommandIntent: " + action + ", unknown command");
                 }
             }

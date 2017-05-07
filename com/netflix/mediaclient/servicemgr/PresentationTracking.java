@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface PresentationTracking
 {
+    public static final String TAG = "nf_presentation";
+    
     void reportPresentation(final Trackable p0, final List<String> p1, final int p2, final UiLocation p3);
 }

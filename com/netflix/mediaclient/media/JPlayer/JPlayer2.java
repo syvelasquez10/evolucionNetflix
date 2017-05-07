@@ -58,7 +58,7 @@ public class JPlayer2
     
     private void configureVideoPipe() throws Exception {
         Log.d("NF_JPlayer2", "configureVideoPipe");
-        if (DrmManagerRegistry.isWidevineDrmAllowed()) {
+        if (DrmManagerRegistry.isWidevineDrmAllowed() && this.mCrypto == null) {
             this.mCrypto = DrmManagerRegistry.getWidevineMediaDrmEngine().getMediaCrypto();
         }
         final MediaFormat mediaFormat = new MediaFormat();
@@ -142,6 +142,34 @@ public class JPlayer2
         }
     }
     
+    private void videoToBackground() {
+        if (this.mVideoPipe != null) {
+            this.mVideoPipe.stop();
+        }
+        this.mVideoPipe = null;
+    }
+    
+    private void videoToForeground() {
+        Log.d("NF_JPlayer2", "new surface, reconfigure decoder ");
+        while (true) {
+            try {
+                this.configureVideoPipe();
+                if (this.mVideoPipe.isDecoderCreated()) {
+                    this.mVideoPipe.setReferenceClock(this.mAudioPipe.getClock());
+                    this.mVideoPipe.start();
+                    return;
+                }
+            }
+            catch (Exception ex) {
+                this.nativeNotifyError(-1, android.util.Log.getStackTraceString((Throwable)ex));
+                continue;
+            }
+            break;
+        }
+        Log.e("NF_JPlayer2", "VideoDecoder initialization failed at PAUSED, exiting...");
+        this.mVideoPipe = null;
+    }
+    
     public void Flush() {
         if (this.mVideoPipe != null) {
             this.mVideoPipe.flush();
@@ -171,11 +199,14 @@ public class JPlayer2
                 break;
             }
             case 2: {
-                if (this.mAudioPipe != null) {
-                    this.mAudioPipe.unpause();
-                }
                 if (this.mVideoPipe != null) {
+                    if (this.mAudioPipe != null) {
+                        this.mAudioPipe.unpause();
+                    }
                     this.mVideoPipe.unpause();
+                }
+                else {
+                    this.videoToForeground();
                 }
                 this.mState = 1;
                 break;
@@ -210,6 +241,9 @@ public class JPlayer2
                 }
                 if (this.mVideoPipe != null) {
                     this.mVideoPipe.restart();
+                }
+                else {
+                    this.videoToForeground();
                 }
                 this.mState = 1;
                 break;
@@ -264,6 +298,19 @@ public class JPlayer2
     
     public void setMaxVideoBitrate(final int mMaxVideoBitrate) {
         this.mMaxVideoBitrate = mMaxVideoBitrate;
+    }
+    
+    public void updateSurface(final Surface mSurface) {
+        Log.d("NF_JPlayer2", "updateSurface");
+        if (this.mSurface == mSurface) {
+            return;
+        }
+        this.mSurface = mSurface;
+        if (this.mSurface == null) {
+            this.videoToBackground();
+            Log.d("NF_JPlayer2", "surface becomes null");
+        }
+        Log.d("NF_JPlayer2", "updateSurface done");
     }
     
     public class DecoderListener implements EventListener

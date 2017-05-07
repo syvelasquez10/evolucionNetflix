@@ -4,6 +4,7 @@
 
 package com.sothree.slidinguppanel;
 
+import java.io.Serializable;
 import android.util.Log;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.MotionEventCompat;
@@ -766,16 +767,16 @@ public class SlidingUpPanelLayout extends ViewGroup
     {
         @Override
         public int clampViewPositionVertical(final View view, final int n, int paddingTop) {
-            int access$1000;
+            int access$1100;
             if (SlidingUpPanelLayout.this.mIsSlidingUp) {
-                access$1000 = SlidingUpPanelLayout.this.getSlidingTop();
-                paddingTop = access$1000 + SlidingUpPanelLayout.this.mSlideRange;
+                access$1100 = SlidingUpPanelLayout.this.getSlidingTop();
+                paddingTop = access$1100 + SlidingUpPanelLayout.this.mSlideRange;
             }
             else {
                 paddingTop = SlidingUpPanelLayout.this.getPaddingTop();
-                access$1000 = paddingTop - SlidingUpPanelLayout.this.mSlideRange;
+                access$1100 = paddingTop - SlidingUpPanelLayout.this.mSlideRange;
             }
-            return Math.min(Math.max(n, access$1000), paddingTop);
+            return Math.min(Math.max(n, access$1100), paddingTop);
         }
         
         @Override
@@ -790,9 +791,21 @@ public class SlidingUpPanelLayout extends ViewGroup
         
         @Override
         public void onViewDragStateChanged(int n) {
+            if (Log.isLoggable(SlidingUpPanelLayout.TAG, 2)) {
+                final String access$200 = SlidingUpPanelLayout.TAG;
+                final StringBuilder append = new StringBuilder().append("onViewDragStateChanged - ").append(n).append(", sliding top: ");
+                Serializable value;
+                if (SlidingUpPanelLayout.this.mSlideableView == null) {
+                    value = "null";
+                }
+                else {
+                    value = SlidingUpPanelLayout.this.mSlideableView.getTop();
+                }
+                Log.v(access$200, append.append(value).toString());
+            }
             n = (int)(SlidingUpPanelLayout.this.mAnchorPoint * SlidingUpPanelLayout.this.mSlideRange);
             if (SlidingUpPanelLayout.this.mDragHelper.getViewDragState() == 0) {
-                if (SlidingUpPanelLayout.this.mSlideOffset == 0.0f) {
+                if (SlidingUpPanelLayout.this.mSlideOffset == 0.0f || (SlidingUpPanelLayout.this.mSlideableView != null && SlidingUpPanelLayout.this.mSlideableView.getTop() == 0)) {
                     if (SlidingUpPanelLayout.this.mSlideState != SlideState.EXPANDED) {
                         SlidingUpPanelLayout.this.updateObscuredViewVisibility();
                         SlidingUpPanelLayout.this.dispatchOnPanelExpanded(SlidingUpPanelLayout.this.mSlideableView);
@@ -821,12 +834,12 @@ public class SlidingUpPanelLayout extends ViewGroup
         
         @Override
         public void onViewReleased(final View view, float n, final float n2) {
-            int access$1000;
+            int access$1100;
             if (SlidingUpPanelLayout.this.mIsSlidingUp) {
-                access$1000 = SlidingUpPanelLayout.this.getSlidingTop();
+                access$1100 = SlidingUpPanelLayout.this.getSlidingTop();
             }
             else {
-                access$1000 = SlidingUpPanelLayout.this.getSlidingTop() - SlidingUpPanelLayout.this.mSlideRange;
+                access$1100 = SlidingUpPanelLayout.this.getSlidingTop() - SlidingUpPanelLayout.this.mSlideRange;
             }
             int n3 = 0;
             Label_0109: {
@@ -838,16 +851,16 @@ public class SlidingUpPanelLayout extends ViewGroup
                         n = (SlidingUpPanelLayout.this.mPanelHeight - (SlidingUpPanelLayout.this.mPanelHeight - (int)(SlidingUpPanelLayout.this.mAnchorPoint * SlidingUpPanelLayout.this.mSlideRange))) / SlidingUpPanelLayout.this.mSlideRange;
                     }
                     if (n2 > 0.0f || (n2 == 0.0f && SlidingUpPanelLayout.this.mSlideOffset >= (1.0f + n) / 2.0f)) {
-                        n3 = access$1000 + SlidingUpPanelLayout.this.mSlideRange;
+                        n3 = access$1100 + SlidingUpPanelLayout.this.mSlideRange;
                     }
                     else {
-                        n3 = access$1000;
+                        n3 = access$1100;
                         if (n2 == 0.0f) {
-                            n3 = access$1000;
+                            n3 = access$1100;
                             if (SlidingUpPanelLayout.this.mSlideOffset < (1.0f + n) / 2.0f) {
-                                n3 = access$1000;
+                                n3 = access$1100;
                                 if (SlidingUpPanelLayout.this.mSlideOffset >= n / 2.0f) {
-                                    n3 = (int)(access$1000 + SlidingUpPanelLayout.this.mSlideRange * SlidingUpPanelLayout.this.mAnchorPoint);
+                                    n3 = (int)(access$1100 + SlidingUpPanelLayout.this.mSlideRange * SlidingUpPanelLayout.this.mAnchorPoint);
                                 }
                             }
                         }
@@ -855,16 +868,16 @@ public class SlidingUpPanelLayout extends ViewGroup
                 }
                 else {
                     if (n2 <= 0.0f) {
-                        n3 = access$1000;
+                        n3 = access$1100;
                         if (n2 != 0.0f) {
                             break Label_0109;
                         }
-                        n3 = access$1000;
+                        n3 = access$1100;
                         if (SlidingUpPanelLayout.this.mSlideOffset <= 0.5f) {
                             break Label_0109;
                         }
                     }
-                    n3 = access$1000 + SlidingUpPanelLayout.this.mSlideRange;
+                    n3 = access$1100 + SlidingUpPanelLayout.this.mSlideRange;
                 }
             }
             SlidingUpPanelLayout.this.mDragHelper.settleCapturedViewAt(view.getLeft(), n3);

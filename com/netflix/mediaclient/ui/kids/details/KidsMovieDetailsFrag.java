@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.android.osp.SimpleStrokedTextView;
+import android.widget.TextView;
 import android.view.ViewGroup;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -68,8 +68,8 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     private View createSimilarMoviesHeader() {
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903095, (ViewGroup)null);
-        ((SimpleStrokedTextView)inflate.findViewById(2131165391)).setBoldEnabled(true);
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903097, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131165397)).setText(2131492954);
         return inflate;
     }
     
@@ -125,7 +125,7 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903107, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903110, (ViewGroup)null);
         (this.listView = (ListView)this.content.findViewById(16908298)).setDivider((Drawable)null);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
         this.listView.addHeaderView((View)this.detailsViewGroup, (Object)null, false);

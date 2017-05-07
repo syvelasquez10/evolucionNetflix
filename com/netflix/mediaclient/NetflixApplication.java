@@ -11,6 +11,7 @@ import java.util.Locale;
 import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.res.Configuration;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -291,7 +292,7 @@ public class NetflixApplication extends Application
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat.Builder setAutoCancel = new NotificationCompat.Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837718).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493271, new Object[] { n })).setContentTitle(this.getString(2131493269, new Object[] { n })).setContentText(this.getString(2131493270, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat.Builder setAutoCancel = new NotificationCompat.Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837724).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493279, new Object[] { n })).setContentTitle(this.getString(2131493277, new Object[] { n })).setContentText(this.getString(2131493278, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -337,6 +338,7 @@ public class NetflixApplication extends Application
         Log.d("NetflixApplication", "Application started");
         Log.d("NetflixApplication", "Load native libraries ");
         this.loadAndVerifyNativeLibraries();
+        ErrorLoggingManager.init(this);
         this.registerActivityLifecycleCallbacks((Application$ActivityLifecycleCallbacks)this.mUserInput);
         this.registerReceiver();
     }

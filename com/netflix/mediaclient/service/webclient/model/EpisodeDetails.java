@@ -275,6 +275,11 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     }
     
     @Override
+    public String getSquareUrl() {
+        return null;
+    }
+    
+    @Override
     public String getStoryUrl() {
         if (this.detail == null) {
             return null;
@@ -356,6 +361,11 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     @Override
     public boolean isNextPlayableEpisode() {
         return this.detail != null && this.detail.isNextPlayableEpisode();
+    }
+    
+    @Override
+    public boolean isPinProtected() {
+        return this.detail != null && this.detail.isPinProtected;
     }
     
     @Override

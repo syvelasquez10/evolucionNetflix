@@ -40,13 +40,13 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
     public KidsHorizontalCwView(final Context context, final boolean b) {
         super(context);
         this.setFocusable(true);
-        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeRowHeight((NetflixActivity)this.getContext(), b)));
+        this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeHorizontalRowHeight((NetflixActivity)this.getContext(), b)));
         final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131361836);
         this.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903093, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131165389);
-        (this.img = (AdvancedImageView)this.findViewById(2131165386)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361904));
+        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903094, (ViewGroup)this);
+        this.title = (TextView)this.findViewById(2131165394);
+        (this.img = (AdvancedImageView)this.findViewById(2131165391)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361905));
     }
     
     public PlayContext getPlayContext() {
@@ -59,32 +59,33 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
     }
     
     public void update(final CWVideo cwVideo, final Trackable trackable, int n, final boolean b) {
-        final int n2 = 0;
         if (Log.isLoggable("KidsHorizontalCwView", 2)) {
             Log.v("KidsHorizontalCwView", "Updating for video: " + cwVideo.toString());
         }
         this.playContext = new PlayContextImp(trackable, n);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493180), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493186), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493242, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493249, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());
         }
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
-        final String horzDispUrl = cwVideo.getHorzDispUrl();
+        final String interestingUrl = cwVideo.getInterestingUrl();
         final IClientLogging.AssetType bif = IClientLogging.AssetType.bif;
-        n = n2;
         if (b) {
             n = 1;
         }
-        imageLoader.showImg(img, horzDispUrl, bif, format, true, true, n);
+        else {
+            n = 0;
+        }
+        imageLoader.showImg(img, interestingUrl, bif, format, false, true, n);
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
-                PlaybackLauncher.startPlayback((NetflixActivity)KidsHorizontalCwView.this.getContext(), cwVideo, KidsHorizontalCwView.this.playContext);
+                PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)KidsHorizontalCwView.this.getContext(), cwVideo, KidsHorizontalCwView.this.playContext);
             }
         });
     }

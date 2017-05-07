@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
+import android.content.res.Resources;
 import android.widget.TextView;
 import android.widget.AbsListView$LayoutParams;
 import android.content.Context;
@@ -22,7 +23,6 @@ import com.netflix.mediaclient.servicemgr.SeasonDetails;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -43,7 +43,6 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
     private final List<EpisodeDetails> episodes;
     private final EpisodeDetails errorEpisode;
     private final KidsShowDetailsFrag frag;
-    private final Handler handler;
     private boolean isLoading;
     private final StickyListHeadersListView listView;
     private final EpisodeDetails loadingEpisode;
@@ -58,7 +57,6 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         this.activity = (NetflixActivity)frag.getActivity();
         this.listView = frag.getListView();
         this.manager = this.activity.getServiceManager();
-        this.handler = new Handler();
         this.showDetails = showDetails;
         this.seasons = seasons;
         this.currSeasonNumber = seasons.get(0).getSeasonNumber();
@@ -68,12 +66,14 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         for (int i = 0; i < this.getCount(); ++i) {
             this.episodes.add(this.loadingEpisode);
         }
-        this.params = (ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)(DeviceUtils.getScreenWidthInPixels((Context)this.activity) * 0.5625f));
+        this.params = (ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)(DeviceUtils.getScreenWidthInPixels((Context)this.activity) * 0.75f));
     }
     
     private TextView createStatusTextView() {
+        final Resources resources = this.activity.getResources();
         final TextView textView = new TextView((Context)this.activity);
-        textView.setTextSize(0, (float)this.activity.getResources().getDimensionPixelSize(2131361839));
+        textView.setTextColor(resources.getColor(2131296360));
+        textView.setTextSize(0, (float)resources.getDimensionPixelSize(2131361839));
         textView.setGravity(17);
         textView.setLayoutParams(this.params);
         return textView;
@@ -97,7 +97,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
     
     private void updateSeasonHeaderView(final boolean b) {
         if (this.listView.getHeader() != null) {
-            ((KidsSeasonSelector)this.listView.getHeader()).setSeasonNumber(this.currSeasonNumber, true);
+            Log.v("KidsShowDetailsAdapter", "Updating season header view, useSmoothScroll: " + b);
+            ((KidsSeasonSpinner)this.listView.getHeader()).setSeasonNumber(this.currSeasonNumber);
         }
     }
     
@@ -130,17 +131,9 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         Log.v("KidsShowDetailsAdapter", "Getting header view, convertView: " + view);
         Object o = view;
         if (view == null) {
-            o = new KidsSeasonSelector(this.frag, this);
+            o = new KidsSeasonSpinner(this.frag, this);
         }
-        this.handler.post((Runnable)new Runnable() {
-            final /* synthetic */ KidsSeasonSelector val$kss = (KidsSeasonSelector)o;
-            
-            @Override
-            public void run() {
-                Log.v("KidsShowDetailsAdapter", "running posted setSeasonNumber...");
-                this.val$kss.setSeasonNumber(KidsShowDetailsAdapter.this.currSeasonNumber, false);
-            }
-        });
+        ((KidsSeasonSpinner)o).setSeasonNumber(this.currSeasonNumber);
         return (View)o;
     }
     
@@ -178,7 +171,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                 if (view == null) {
                     statusTextView = this.createStatusTextView();
                 }
-                ((TextView)statusTextView).setText(2131493171);
+                ((TextView)statusTextView).setText(2131493177);
                 return (View)statusTextView;
             }
             case 2: {
@@ -195,7 +188,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                 if (view == null) {
                     statusTextView2 = this.createStatusTextView();
                 }
-                ((TextView)statusTextView2).setText(2131492971);
+                ((TextView)statusTextView2).setText(2131492977);
                 return (View)statusTextView2;
             }
         }
@@ -258,7 +251,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         
         @Override
         public String getTitle() {
-            return this.activity.getString(2131492971);
+            return this.activity.getString(2131492977);
         }
     }
     
@@ -330,7 +323,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         
         @Override
         public String getTitle() {
-            return this.activity.getString(2131493171);
+            return this.activity.getString(2131493177);
         }
     }
 }

@@ -177,6 +177,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public String getSquareUrl() {
+        return null;
+    }
+    
+    @Override
     public String getStoryUrl() {
         return null;
     }
@@ -223,6 +228,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     
     @Override
     public boolean isNextPlayableEpisode() {
+        return false;
+    }
+    
+    @Override
+    public boolean isPinProtected() {
         return false;
     }
     

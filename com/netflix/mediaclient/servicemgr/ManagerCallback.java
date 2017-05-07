@@ -36,6 +36,8 @@ public interface ManagerCallback
     
     void onMovieDetailsFetched(final MovieDetails p0, final int p1);
     
+    void onPinVerified(final boolean p0, final int p1);
+    
     void onPostPlayVideosFetched(final List<PostPlayVideo> p0, final int p1);
     
     void onQueueAdd(final int p0);

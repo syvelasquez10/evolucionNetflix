@@ -134,13 +134,13 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131493216, false, false);
+        this.leWrapper.showErrorView(2131493222, false, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
     
     private void showError() {
-        this.leWrapper.showErrorView(2131493215, true, false);
+        this.leWrapper.showErrorView(2131493221, true, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
@@ -159,7 +159,7 @@ public class SearchActivity extends NetflixActivity
     
     @Override
     protected NetflixActionBar createActionBar(final ActionBar actionBar) {
-        return new SearchActionBar(this, actionBar, this.createUpActionRunnable());
+        return new SearchActionBar(this, true);
     }
     
     @Override
@@ -181,7 +181,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     protected int getInitMessageStringId() {
-        return 2131493198;
+        return 2131493204;
     }
     
     @Override
@@ -199,12 +199,12 @@ public class SearchActivity extends NetflixActivity
         (this.searchBar = (SearchActionBar)this.getNetflixActionBar()).setOnQueryTextListener(this.searchQueryTextListener);
         this.searchBar.hideProgressSpinner();
         this.searchBar.hide();
-        this.setContentView(2130903150);
-        (this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165550), this.errorsCallback)).hide(false);
-        this.fragGroup = (ViewGroup)this.findViewById(2131165551);
+        this.setContentView(2130903158);
+        (this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165575), this.errorsCallback)).hide(false);
+        this.fragGroup = (ViewGroup)this.findViewById(2131165576);
         if (bundle == null) {
             this.resultsFrag = SearchResultsFrag.create();
-            this.getFragmentManager().beginTransaction().add(2131165551, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131165576, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
         }
         else {

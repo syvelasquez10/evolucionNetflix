@@ -37,6 +37,7 @@ import com.netflix.mediaclient.service.ServiceAgent;
 public class ConfigurationAgent extends ServiceAgent implements ConfigurationAgentInterface
 {
     private static final int APM_USER_SESSION_TIMEOUT_SEC = 1800;
+    public static final boolean CAN_SHOW_BACK_BUTTON_IN_ACTION_BAR = false;
     private static final long CONFIG_REFRESH_DELAY_MS = 28800000L;
     private static final int DATA_REQUEST_TIMEOUT_MS = 10000;
     private static final float DISK_CACHE_SIZE_AS_PERCENTAGE_OF_AVLBLMEM = 0.25f;
@@ -87,11 +88,6 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             @Override
             public ScrollBehavior getScrollBehavior() {
                 return ScrollBehavior.UP_DOWN;
-            }
-            
-            @Override
-            public boolean isInKidsOnPhoneTest() {
-                return false;
             }
             
             @Override

@@ -10,6 +10,7 @@ import com.netflix.mediaclient.service.webclient.model.client.SocialFriendPlaceh
 import com.netflix.mediaclient.service.webclient.model.client.SocialGroupPlaceholder;
 import com.netflix.mediaclient.Log;
 import java.util.List;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class LoMoUtils
 {
@@ -27,6 +28,20 @@ public class LoMoUtils
             return LoMoUtils.VIDEO_INJECT_COUNT;
         }
         return 0;
+    }
+    
+    public static int getLomoFragOffsetLeftPx(final NetflixActivity netflixActivity) {
+        if (netflixActivity.isForKids()) {
+            return (int)(0.5f * netflixActivity.getResources().getDimensionPixelOffset(2131361913));
+        }
+        return netflixActivity.getResources().getDimensionPixelOffset(2131361869);
+    }
+    
+    public static int getLomoFragOffsetRightPx(final NetflixActivity netflixActivity) {
+        if (netflixActivity.isForKids()) {
+            return (int)(1.5f * netflixActivity.getResources().getDimensionPixelOffset(2131361913));
+        }
+        return netflixActivity.getResources().getDimensionPixelOffset(2131361869);
     }
     
     public static void injectSocialData(final LoMo loMo, final List<Video> list) {

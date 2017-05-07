@@ -27,6 +27,8 @@ public class Asset implements Parcelable, PlayContext
     public static final String PARAM_IS_AUTOPLAY = "isAutoPlayEnabled";
     public static final String PARAM_IS_EPISODE = "isEpisode";
     public static final String PARAM_IS_NEXT_EPISODE = "isNextPlayableEpisode";
+    public static final String PARAM_IS_PIN_PROTECTED = "isPinProtected";
+    public static final String PARAM_IS_PIN_VERIFIED = "isPinVerified";
     public static final String PARAM_LIST_POS = "listpos";
     public static final String PARAM_ORIGINAL_URL = "nflx";
     public static final String PARAM_PARENT_ID = "parentid";
@@ -44,6 +46,8 @@ public class Asset implements Parcelable, PlayContext
     private boolean mIsAutoPlayEnabled;
     private boolean mIsEpisode;
     private boolean mIsNextPlayableEpisode;
+    private boolean mIsPinProtected;
+    private boolean mIsPinVerified;
     private int mListPos;
     private String mNflx;
     private String mParentId;
@@ -95,9 +99,11 @@ public class Asset implements Parcelable, PlayContext
         this.mIsAutoPlayEnabled = readBoolean(parcel);
         this.mIsNextPlayableEpisode = readBoolean(parcel);
         this.mPostPlayVideoPlayed = readInt(parcel);
+        this.mIsPinProtected = readBoolean(parcel);
+        this.mIsPinVerified = readBoolean(parcel);
     }
     
-    public static Asset create(final Playable playable, final PlayContext playContext) {
+    public static Asset create(final Playable playable, final PlayContext playContext, final boolean mIsPinVerified) {
         if (Log.isLoggable("mdxui", 2)) {
             Log.v("mdxui", "ASSET: create asset from playable " + playable);
         }
@@ -117,6 +123,7 @@ public class Asset implements Parcelable, PlayContext
             asset.mSocialDoNotShareVisible = playable.getFbDntShare();
             asset.mIsAutoPlayEnabled = playable.isAutoPlayEnabled();
             asset.mIsNextPlayableEpisode = playable.isNextPlayableEpisode();
+            asset.mIsPinProtected = playable.isPinProtected();
         }
         if (playContext != null) {
             asset.mTrackId = playContext.getTrackId();
@@ -127,11 +134,12 @@ public class Asset implements Parcelable, PlayContext
         if (Log.isLoggable("mdxui", 2)) {
             Log.v("mdxui", "ASSET: created " + asset);
         }
+        asset.mIsPinVerified = mIsPinVerified;
         return asset;
     }
     
-    public static Asset createForPostPlay(final Playable playable, final PlayContext playContext, final int mPostPlayVideoPlayed) {
-        final Asset create = create(playable, playContext);
+    public static Asset createForPostPlay(final Playable playable, final PlayContext playContext, final int mPostPlayVideoPlayed, final boolean b) {
+        final Asset create = create(playable, playContext, b);
         create.mPostPlayVideoPlayed = mPostPlayVideoPlayed;
         return create;
     }
@@ -158,6 +166,8 @@ public class Asset implements Parcelable, PlayContext
         asset.mListPos = readInt(intent, "listpos");
         asset.mVideoPos = readInt(intent, "videopos");
         asset.mPostPlayVideoPlayed = readInt(intent, "postPlayCount");
+        asset.mIsPinProtected = readBoolean(intent, "isPinProtected");
+        asset.mIsPinVerified = readBoolean(intent, "isPinVerified");
         return asset;
     }
     
@@ -334,6 +344,14 @@ public class Asset implements Parcelable, PlayContext
         return this.mIsNextPlayableEpisode;
     }
     
+    public boolean isPinProtected() {
+        return this.mIsPinProtected;
+    }
+    
+    public boolean isPinVerified() {
+        return this.mIsPinVerified;
+    }
+    
     public boolean isSocialDoNotShareVisible() {
         return this.mSocialDoNotShareVisible;
     }
@@ -366,12 +384,14 @@ public class Asset implements Parcelable, PlayContext
         intent.putExtra("listpos", this.mListPos);
         intent.putExtra("videopos", this.mVideoPos);
         intent.putExtra("postPlayCount", this.mPostPlayVideoPlayed);
+        intent.putExtra("isPinProtected", this.mIsPinProtected);
+        intent.putExtra("isPinVerified", this.mIsPinVerified);
         return intent;
     }
     
     @Override
     public String toString() {
-        return "Asset [mPlayableId=" + this.mPlayableId + ", mParentId=" + this.mParentId + ", mIsEpisode=" + this.mIsEpisode + ", mIsAutoPlayEnabled=" + this.mIsAutoPlayEnabled + ", mIsNextPlayableEpisode=" + this.mIsNextPlayableEpisode + ", mTrackId=" + this.mTrackId + ", mReqId=" + this.mReqId + ", mListPos=" + this.mListPos + ", mVideoPos=" + this.mVideoPos + ", mTitle=" + this.mTitle + ", mParentTitle=" + this.mParentTitle + ", mWatchedDate=" + this.mWatchedDate + ", mPlaybackBookmark=" + this.mPlaybackBookmark + ", mNflx=" + this.mNflx + ", mDuration=" + this.mDuration + ", mEndtime=" + this.mEndtime + ", mSocialDoNotShareVisible=" + this.mSocialDoNotShareVisible + ", mSeasonNumber=" + this.mSeasonNumber + ", mEpisodeNumber=" + this.mEpisodeNumber + ", mPostPlayVideoPlayed=" + this.mPostPlayVideoPlayed + "]";
+        return "Asset [mPlayableId=" + this.mPlayableId + ", mParentId=" + this.mParentId + this.mIsAutoPlayEnabled + ", mIsNextPlayableEpisode=" + this.mIsNextPlayableEpisode + ", mTrackId=" + this.mTrackId + ", mReqId=" + this.mReqId + ", mListPos=" + this.mListPos + ", mVideoPos=" + this.mVideoPos + ", mTitle=" + this.mTitle + ", mParentTitle=" + this.mParentTitle + ", mWatchedDate=" + this.mWatchedDate + ", mPlaybackBookmark=" + this.mPlaybackBookmark + ", mNflx=" + this.mNflx + ", mDuration=" + this.mDuration + ", mEndtime=" + this.mEndtime + ", mIsPinProtected=" + this.mIsPinProtected + ", mIsPinVerified=" + this.mIsPinVerified + ", mSocialDoNotShareVisible=" + this.mSocialDoNotShareVisible + ", mSeasonNumber=" + this.mSeasonNumber + ", mEpisodeNumber=" + this.mEpisodeNumber + ", mPostPlayVideoPlayed=" + this.mPostPlayVideoPlayed + "]";
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -395,5 +415,7 @@ public class Asset implements Parcelable, PlayContext
         writeBoolean(parcel, this.mIsAutoPlayEnabled);
         writeBoolean(parcel, this.mIsNextPlayableEpisode);
         writeInt(parcel, this.mPostPlayVideoPlayed);
+        writeBoolean(parcel, this.mIsPinProtected);
+        writeBoolean(parcel, this.mIsPinVerified);
     }
 }

@@ -26,7 +26,7 @@ public final class MdxMenu
         mdxMiniPlayerFrag.attachMenuItem(this);
         this.activity = (NetflixActivity)mdxMiniPlayerFrag.getActivity();
         this.manager = this.activity.getServiceManager();
-        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493243))).setShowAsAction(1);
+        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493250))).setShowAsAction(1);
         this.mdxItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
             public boolean onMenuItemClick(final MenuItem menuItem) {
                 MdxMenu.this.activity.displayDialog((Dialog)MdxUtils.createMdxTargetSelectionDialog(MdxMenu.this.activity, (MdxUtils.MdxTargetSelectionDialogInterface)MdxMenu.this.activity.getMdxMiniPlayerFrag()));
@@ -43,19 +43,19 @@ public final class MdxMenu
     
     private int getIcon() {
         if (MdxUtils.isCurrentMdxTargetAvailable(this.manager)) {
-            return 2130837693;
+            return 2130837699;
         }
-        return 2130837692;
+        return 2130837698;
     }
     
     private boolean isAnyMdxTargetAvailable() {
         if (!this.manager.getMdx().isReady()) {
-            Log.w("MdxMenu", "MDX service is NOT ready");
+            Log.d("MdxMenu", "MDX service is NOT ready");
             return false;
         }
         final Pair<String, String>[] targetList = this.manager.getMdx().getTargetList();
         if (targetList == null || targetList.length < 1) {
-            Log.w("MdxMenu", "No MDX remote targets found");
+            Log.d("MdxMenu", "No MDX remote targets found");
             return false;
         }
         if (Log.isLoggable("MdxMenu", 3)) {

@@ -4,19 +4,18 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.view.View;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.Log;
-import android.widget.ImageView;
+import android.view.View;
 
 public class PressedStateHandler
 {
     private static final String TAG = "PressedStateHandler";
     private boolean enabled;
     private boolean pressed;
-    private final ImageView view;
+    private final View view;
     
-    public PressedStateHandler(final ImageView view) {
+    public PressedStateHandler(final View view) {
         this.enabled = true;
         this.view = view;
     }
@@ -29,10 +28,10 @@ public class PressedStateHandler
             Log.v("PressedStateHandler", "Prev pressed state: " + this.pressed + ", new pressed state: " + pressed);
         }
         if (this.pressed && !pressed) {
-            AnimationUtils.startAlphaFadeInAnimation((View)this.view);
+            AnimationUtils.startAlphaFadeInAnimation(this.view);
         }
         else {
-            final ImageView view = this.view;
+            final View view = this.view;
             float alpha;
             if (pressed) {
                 alpha = 0.65f;

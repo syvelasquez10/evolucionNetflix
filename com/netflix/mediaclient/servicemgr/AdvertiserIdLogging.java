@@ -6,6 +6,8 @@ package com.netflix.mediaclient.servicemgr;
 
 public interface AdvertiserIdLogging
 {
+    public static final String ONSIGNUP = "com.netflix.mediaclient.intent.action.ONSIGNUP";
+    
     AdverisingATrackingPreference getAdverisingTrackingPreference();
     
     String getAdvertiserId();

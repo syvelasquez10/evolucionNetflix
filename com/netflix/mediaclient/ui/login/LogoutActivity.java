@@ -14,7 +14,7 @@ import android.content.DialogInterface$OnClickListener;
 import android.app.AlertDialog$Builder;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Activity;
-import com.netflix.mediaclient.ui.LaunchActivity;
+import com.netflix.mediaclient.ui.RelaunchActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.Toast;
 import com.netflix.mediaclient.Log;
@@ -31,7 +31,7 @@ public class LogoutActivity extends AccountActivity
     
     private void handleLogoutComplete() {
         Log.i("LogoutActivity", "Handling logout completion...");
-        Toast.makeText(this.getApplicationContext(), 2131493208, 1).show();
+        Toast.makeText(this.getApplicationContext(), 2131493214, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }
     
@@ -41,11 +41,11 @@ public class LogoutActivity extends AccountActivity
             serviceManager.flushCaches();
         }
         NetflixActivity.finishAllActivities((Context)netflixActivity);
-        netflixActivity.startActivity(LaunchActivity.createStartIntent(netflixActivity, s));
+        netflixActivity.startActivity(RelaunchActivity.createStartIntent(netflixActivity, s));
     }
     
     public static void showLogoutDialog(final Activity activity) {
-        new AlertDialog$Builder((Context)activity).setMessage(2131493206).setNegativeButton(2131493114, (DialogInterface$OnClickListener)null).setPositiveButton(2131493178, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)activity).setMessage(2131493212).setNegativeButton(2131493120, (DialogInterface$OnClickListener)null).setPositiveButton(2131493184, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.startActivity(LogoutActivity.create((Context)activity));
                 activity.finish();
@@ -91,7 +91,7 @@ public class LogoutActivity extends AccountActivity
                 return;
             }
             Log.e("LogoutActivity", "Could not log user out - status code: " + n);
-            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493207, 1).show();
+            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493213, 1).show();
             LogoutActivity.this.finish();
         }
     }

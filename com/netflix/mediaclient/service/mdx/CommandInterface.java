@@ -6,6 +6,10 @@ package com.netflix.mediaclient.service.mdx;
 
 public interface CommandInterface
 {
+    void pinCancelled(final String p0);
+    
+    void pinConfirmed(final String p0);
+    
     void playerAutoAdvance(final String p0, final int p1);
     
     void playerChangeMetaData(final String p0, final String p1, final String p2, final String p3);

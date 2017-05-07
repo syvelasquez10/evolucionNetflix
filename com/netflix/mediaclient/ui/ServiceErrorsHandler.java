@@ -34,24 +34,24 @@ public class ServiceErrorsHandler
         final UpdateDialog.Builder builder = new UpdateDialog.Builder((Context)activity);
         builder.setTitle("");
         if (!b) {
-            builder.setMessage(2131492974);
+            builder.setMessage(2131492980);
             builder.setCancelable(false);
-            builder.setNegativeButton(2131493114, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+            builder.setNegativeButton(2131493120, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
                 public void onClick(final DialogInterface dialogInterface, int intPref) {
                     intPref = PreferenceUtils.getIntPref((Context)activity, "config_recommended_version", -1);
                     if (Log.isLoggable("ServiceErrorsHandler", 4)) {
                         Log.i("ServiceErrorsHandler", "User clicked cancel on prompt to update. Saving minRecommendedVersion = " + intPref);
                     }
                     PreferenceUtils.putIntPref((Context)activity, "nflx_update_skipped", intPref);
-                    activity.startActivity(LaunchActivity.createStartIntent(activity, "ServiceErrorsHandler"));
+                    activity.startActivity(RelaunchActivity.createStartIntent(activity, "ServiceErrorsHandler"));
                     activity.finish();
                 }
             });
         }
         else {
-            builder.setMessage(2131492975);
+            builder.setMessage(2131492981);
         }
-        builder.setPositiveButton(2131492970, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        builder.setPositiveButton(2131492976, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 Log.i("ServiceErrorsHandler", "User clicked Ok on prompt to update");
                 final Intent updateSourceIntent = AppStoreHelper.getUpdateSourceIntent((Context)activity);
@@ -79,7 +79,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + n + " [" + activity.getClass().toString() + "]");
         switch (n) {
             default: {
-                provideDialog(activity, activity.getString(2131493263) + " (" + n + ")");
+                provideDialog(activity, activity.getString(2131493270) + " (" + n + ")");
                 b = true;
                 return b;
             }
@@ -93,19 +93,25 @@ public class ServiceErrorsHandler
                 return handleAppUpdateNeeded(activity, true);
             }
             case -11: {
-                provideDialog(activity, activity.getString(2131493127));
+                provideDialog(activity, activity.getString(2131493133));
                 return true;
             }
             case -101:
             case -100: {
-                provideDialog(activity, activity.getString(2131493236));
+                provideDialog(activity, activity.getString(2131493243));
+                return true;
+            }
+            case -122:
+            case -121:
+            case -120: {
+                provideDialog(activity, activity.getString(2131493269) + " (" + n + ")");
                 return true;
             }
         }
     }
     
     private static void provideDialog(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131492970, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131492976, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.finish();
             }

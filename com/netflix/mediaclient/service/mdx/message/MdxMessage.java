@@ -23,6 +23,10 @@ public abstract class MdxMessage
     public static final String TYPE_HANDSHAKE_ACCEPTED = "HANDSHAKE_ACCEPTED";
     public static final String TYPE_MESSAGE_IGNORED = "MESSAGE_IGNORED";
     public static final String TYPE_META_DATA_CHANGED = "META_DATA_CHANGED";
+    public static final String TYPE_PIN_VERIFICATION_CANCEL = "PIN_VERIFICATION_CANCEL";
+    public static final String TYPE_PIN_VERIFICATION_NOT_REQUIRED = "PIN_VERIFICATION_NOT_REQUIRED";
+    public static final String TYPE_PIN_VERIFICATION_RESPONSE = "PIN_VERIFICATION_RESPONSE";
+    public static final String TYPE_PIN_VERIFICATION_SHOW = "PIN_VERIFICATION_SHOW";
     public static final String TYPE_PLAYER_CAPABILITIES = "PLAYER_CAPABILITIES";
     public static final String TYPE_PLAYER_CURRENT_STATE = "PLAYER_CURRENT_STATE";
     public static final String TYPE_PLAYER_GET_CAPABILITIES = "PLAYER_GET_CAPABILITIES";

@@ -9,6 +9,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -55,6 +56,11 @@ public class KidsDetailsActivity extends FragmentHostActivity implements PlayCon
                 return KidsCharacterDetailsFrag.create(this.videoId);
             }
         }
+    }
+    
+    @Override
+    protected DataContext getDataContext() {
+        return new DataContext(this.playContext, this.videoId);
     }
     
     @Override

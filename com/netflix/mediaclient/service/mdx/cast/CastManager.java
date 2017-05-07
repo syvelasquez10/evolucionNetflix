@@ -38,16 +38,18 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     private RouteInfo mSelectedRoute;
     private String mTargetId;
     private JSONArray mWhiteList;
+    private Handler mWorkerHandler;
     
     static {
         TAG = CastManager.class.getSimpleName();
     }
     
-    public CastManager(final Context mContext, final Handler mMainHandler) {
+    public CastManager(final Context mContext, final Handler mMainHandler, final Handler mWorkerHandler) {
         this.mApplicationId = "CA5E8412";
         this.mListOfRoutes = new ArrayList<RouteInfo>();
         this.mContext = mContext;
         this.mMainHandler = mMainHandler;
+        this.mWorkerHandler = mWorkerHandler;
         this.nativeInit();
     }
     
@@ -155,17 +157,62 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     
     private synchronized native void nativeDeviceFound(final String p0, final String p1, final String p2);
     
+    private void nativeDeviceFoundWrapper(final String s, final String s2, final String s3) {
+        this.mWorkerHandler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                CastManager.this.nativeDeviceFound(s, s2, s3);
+            }
+        });
+    }
+    
     private synchronized native void nativeDeviceLost(final String p0);
+    
+    private void nativeDeviceLostWrapper(final String s) {
+        this.mWorkerHandler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                CastManager.this.nativeDeviceLost(s);
+            }
+        });
+    }
     
     private synchronized native void nativeInit();
     
     private synchronized native void nativeLaunchResult(final boolean p0, final String p1);
     
+    private void nativeLaunchResultWrapper(final boolean b, final String s) {
+        this.mWorkerHandler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                CastManager.this.nativeLaunchResult(b, s);
+            }
+        });
+    }
+    
     private synchronized native void nativeMessageReceived(final String p0, final String p1, final String p2);
+    
+    private void nativeMessageReceivedWrapper(final String s, final String s2, final String s3) {
+        this.mWorkerHandler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                CastManager.this.nativeMessageReceived(s, s2, s3);
+            }
+        });
+    }
     
     private synchronized native void nativeRelease();
     
     private synchronized native void nativeSendMessageResult(final boolean p0, final String p1);
+    
+    private void nativeSendMessageResultWrapper(final boolean b, final String s) {
+        this.mWorkerHandler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                CastManager.this.nativeSendMessageResult(b, s);
+            }
+        });
+    }
     
     private void startDiscovery() {
         if (Log.isLoggable(CastManager.TAG, 3)) {
@@ -180,16 +227,13 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     }
     
     private void stopDiscovery() {
-        Log.d(CastManager.TAG, "stop()");
-        if (this.mSelectedMdxCastApp != null) {
-            this.mSelectedMdxCastApp.stop();
-            this.mSelectedMdxCastApp = null;
-        }
+        Log.d(CastManager.TAG, "stopDiscovery");
         this.mSelectedRoute = null;
         this.mListOfRoutes.clear();
         if (this.mMediaRouter != null) {
             this.mMediaRouter.removeCallback((MediaRouter.Callback)this);
         }
+        Log.d(CastManager.TAG, "stopDiscovery done");
     }
     
     public void destroy() {
@@ -226,15 +270,16 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     @Override
     public void onApplicationStopped() {
         if (this.mSelectedRoute != null) {
+            final String uuid = this.getUuid(this.mSelectedRoute.getId());
             final String string = "action=endCastSession\r\nfromuuid=" + this.getUuid(this.mSelectedRoute.getId()) + "\r\n";
             if (Log.isLoggable(CastManager.TAG, 3)) {
                 Log.d(CastManager.TAG, "onMessageReceived @session, body:" + string);
             }
-            this.nativeMessageReceived(string, this.getUuid(this.mSelectedRoute.getId()), "session");
-            this.mMainHandler.postDelayed((Runnable)new Runnable() {
+            this.nativeMessageReceivedWrapper(string, this.getUuid(this.mSelectedRoute.getId()), "session");
+            this.mWorkerHandler.postDelayed((Runnable)new Runnable() {
                 @Override
                 public void run() {
-                    CastManager.this.nativeLaunchResult(false, CastManager.this.getUuid(CastManager.this.mSelectedRoute.getId()));
+                    CastManager.this.nativeLaunchResult(false, uuid);
                 }
             }, 50L);
         }
@@ -243,13 +288,14 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     @Override
     public void onFailToConnect() {
         Log.d(CastManager.TAG, "onFailToConnect");
+        this.onApplicationStopped();
     }
     
     @Override
     public void onFailToLaunch() {
         Log.d(CastManager.TAG, "onFailToLaunch");
         if (this.mSelectedRoute != null) {
-            this.nativeLaunchResult(false, this.getUuid(this.mSelectedRoute.getId()));
+            this.nativeLaunchResultWrapper(false, this.getUuid(this.mSelectedRoute.getId()));
         }
         else if (Log.isLoggable(CastManager.TAG, 3)) {
             Log.d(CastManager.TAG, "onFailToLaunch, no selected route");
@@ -260,7 +306,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     public void onFailToSendMessage() {
         Log.d(CastManager.TAG, "onFailToSendMessage");
         if (this.mSelectedRoute != null) {
-            this.nativeSendMessageResult(false, this.getUuid(this.mSelectedRoute.getId()));
+            this.nativeSendMessageResultWrapper(false, this.getUuid(this.mSelectedRoute.getId()));
             return;
         }
         Log.d(CastManager.TAG, "onFailToSendMessage, no selected route");
@@ -289,7 +335,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
                     s = s.substring(s.lastIndexOf("/"));
                 }
                 if (jsonObject.optString("type").equals("castHandShakeAck")) {
-                    this.nativeLaunchResult(true, this.getUuid(this.mSelectedRoute.getId()));
+                    this.nativeLaunchResultWrapper(true, this.getUuid(this.mSelectedRoute.getId()));
                     return;
                 }
             }
@@ -301,7 +347,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
                 Log.d(CastManager.TAG, "onMessageReceived @" + s + ", body:" + optString);
             }
             if (this.mSelectedRoute != null) {
-                this.nativeMessageReceived(optString, this.getUuid(this.mSelectedRoute.getId()), s);
+                this.nativeMessageReceivedWrapper(optString, this.getUuid(this.mSelectedRoute.getId()), s);
                 return;
             }
             if (Log.isLoggable(CastManager.TAG, 3)) {
@@ -314,7 +360,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     public void onMessageSent() {
         Log.d(CastManager.TAG, "onMessageSent");
         if (this.mSelectedRoute != null) {
-            this.nativeSendMessageResult(true, this.getUuid(this.mSelectedRoute.getId()));
+            this.nativeSendMessageResultWrapper(true, this.getUuid(this.mSelectedRoute.getId()));
             return;
         }
         Log.d(CastManager.TAG, "onMessageSent, no selected route");
@@ -364,7 +410,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
                 this.castLaunchApplication(this.mSelectedRoute = routeInfo);
             }
         }
-        this.nativeDeviceFound(this.getUuid(routeInfo.getId()), this.getIpAddress(routeInfo), "CAST:" + routeInfo.getName());
+        this.nativeDeviceFoundWrapper(this.getUuid(routeInfo.getId()), this.getIpAddress(routeInfo), "CAST:" + routeInfo.getName());
     }
     
     @Override
@@ -381,7 +427,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         }
         this.mListOfRoutes.remove(routeInfo);
         if (routeInfo != null) {
-            this.nativeDeviceLost(this.getUuid(routeInfo.getId()));
+            this.nativeDeviceLostWrapper(this.getUuid(routeInfo.getId()));
         }
     }
     
@@ -462,6 +508,17 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     }
     
     public void stop() {
+        this.mWorkerHandler.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                Log.d(CastManager.TAG, "stop ApiClient");
+                if (CastManager.this.mSelectedMdxCastApp != null) {
+                    CastManager.this.mSelectedMdxCastApp.stop();
+                    CastManager.this.mSelectedMdxCastApp = null;
+                }
+                Log.d(CastManager.TAG, "stop ApiClient done");
+            }
+        });
         this.mMainHandler.post((Runnable)new Runnable() {
             @Override
             public void run() {

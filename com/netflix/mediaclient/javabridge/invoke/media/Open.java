@@ -19,6 +19,7 @@ public class Open extends BaseInvoke
     private static final String PARAM_NET_TYPE_VALUE_MOBILE = "mobile";
     private static final String PARAM_NET_TYPE_VALUE_WIFI = "wifi";
     private static final String PARAM_NET_TYPE_VALUE_WIRED = "wired";
+    private static final String PARAM_PIN_VERIFY_CAPABILITY = "pinCapableClient";
     private static final String PARAM_PLAY_CONTEXT = "uiplaycontext";
     private static final String PARAM_PLAY_CONTEXT_LIST_POS = "row";
     private static final String PARAM_PLAY_CONTEXT_REQ_ID = "request_id";
@@ -44,7 +45,7 @@ public class Open extends BaseInvoke
                         final JSONObject jsonObject = new JSONObject();
                         while (true) {
                             JSONObject jsonObject2 = null;
-                            Label_0283: {
+                            Label_0292: {
                                 try {
                                     jsonObject.put("movieId", n);
                                     jsonObject.put("trackerId", ((Trackable)ex).getTrackId());
@@ -54,10 +55,11 @@ public class Open extends BaseInvoke
                                     }
                                     else {
                                         if (!NetType.wifi.equals(netType)) {
-                                            break Label_0283;
+                                            break Label_0292;
                                         }
                                         jsonObject2.put("nettype", (Object)"wifi");
                                     }
+                                    jsonObject2.put("pinCapableClient", true);
                                     final JSONObject jsonObject3 = new JSONObject();
                                     jsonObject3.put("request_id", (Object)((Trackable)ex).getRequestId());
                                     jsonObject3.put("row", ((Trackable)ex).getListPos());

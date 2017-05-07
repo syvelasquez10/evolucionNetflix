@@ -10,7 +10,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import android.widget.ListAdapter;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import android.app.Fragment;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.widget.ListView;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.view.View;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
@@ -34,7 +34,7 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
     private KidsDetailsViewGroup detailsViewGroup;
     private boolean isLoading;
     private LoadingAndErrorWrapper leWrapper;
-    private ListView listView;
+    private StickyListHeadersListView listView;
     private ServiceManager manager;
     private long refreshRequestId;
     private long requestId;
@@ -120,7 +120,7 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
         Log.v("KidsCharacterDetailsFrag", "Updating character details: " + kidsCharacterDetails.getTitle());
         this.detailsViewGroup.updateDetails(kidsCharacterDetails);
         this.adapter = new KidsCharacterDetailsAdapter(this, kidsCharacterDetails);
-        this.listView.setAdapter((ListAdapter)this.adapter);
+        this.listView.setAdapter(this.adapter);
         this.showStandardViews();
     }
     
@@ -141,10 +141,11 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903107, (ViewGroup)null);
-        (this.listView = (ListView)this.content.findViewById(16908298)).setDivider((Drawable)null);
+        this.content = layoutInflater.inflate(2130903109, (ViewGroup)null);
+        (this.listView = (StickyListHeadersListView)this.content.findViewById(16908298)).setAreHeadersSticky(false);
+        this.listView.setDivider(null);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
-        this.listView.addHeaderView((View)this.detailsViewGroup, (Object)null, false);
+        this.listView.addHeaderView((View)this.detailsViewGroup, null, false);
         this.leWrapper = new LoadingAndErrorWrapper(this.content, new ErrorWrapper.Callback() {
             @Override
             public void onRetryRequested() {

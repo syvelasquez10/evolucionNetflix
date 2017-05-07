@@ -25,7 +25,7 @@ public class AnimationUtils
     public static final float NO_ALPHA = 1.0f;
     public static final float ON_CLICK_ALPHA_VALUE = 0.65f;
     
-    private static void animateAndChangeVisibility(final View view, final int n, final int n2, final Animation$AnimationListener animationListener) {
+    private static void animateView(final View view, final int n, final int n2, final Animation$AnimationListener animationListener) {
         final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(view.getContext(), n);
         loadAnimation.setAnimationListener(animationListener);
         loadAnimation.setDuration((long)n2);
@@ -46,7 +46,7 @@ public class AnimationUtils
         }
         view.clearAnimation();
         if (b) {
-            animateAndChangeVisibility(view, 17432577, 62, (Animation$AnimationListener)new HideViewOnAnimationEnd(view));
+            animateView(view, 17432577, 62, (Animation$AnimationListener)new HideViewOnAnimationEnd(view));
             return;
         }
         view.setVisibility(8);
@@ -79,7 +79,7 @@ public class AnimationUtils
         }
         view.clearAnimation();
         if (b) {
-            animateAndChangeVisibility(view, 17432576, 125, (Animation$AnimationListener)new ShowViewOnAnimationStart(view));
+            animateView(view, 17432576, 125, (Animation$AnimationListener)new ShowViewOnAnimationStart(view));
             return;
         }
         view.setVisibility(0);

@@ -62,7 +62,7 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowLi
     
     @Override
     public void onEpisodeSelectedForPlayback(final EpisodeDetails episodeDetails, final PlayContext playContext) {
-        PlaybackLauncher.startPlayback(this, episodeDetails, playContext);
+        PlaybackLauncher.startPlaybackAfterPIN(this, episodeDetails, playContext);
     }
     
     @Override

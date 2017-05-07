@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.VideoType;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
@@ -14,6 +15,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummar
 
 public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.KidsCharacterDetails
 {
+    private static final String TAG = "nf_kidscharacter";
     public TrackableListSummary galleryListSummary;
     public List<Video> galleryVideos;
     public KidsCharacter.KidsDetail kidsDetail;
@@ -23,6 +25,17 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     public com.netflix.mediaclient.service.webclient.model.branches.Video.Detail watchNextMovieDetail;
     public com.netflix.mediaclient.service.webclient.model.branches.Video.Summary watchNextSummary;
     
+    private String getCharacterSquareUrl() {
+        if (this.kidsSummary == null) {
+            return null;
+        }
+        return ((com.netflix.mediaclient.service.webclient.model.branches.Video.Summary)this.kidsSummary).getSquareUrl();
+    }
+    
+    private boolean getHasWatchedRecently() {
+        return this.kidsDetail != null && this.kidsDetail.hasWatchedRecently;
+    }
+    
     private com.netflix.mediaclient.service.webclient.model.branches.Video.Detail getWatchNextDetails() {
         if (VideoType.MOVIE.equals(this.getType())) {
             return this.watchNextMovieDetail;
@@ -31,6 +44,24 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
             return this.watchNextEpisodeDetail;
         }
         throw new IllegalStateException("Invalid details type for watch next: " + this.getType());
+    }
+    
+    private String getWatchNextSquareUrl() {
+        if (this.watchNextSummary == null) {
+            return null;
+        }
+        return this.watchNextSummary.getSquareUrl();
+    }
+    
+    private Boolean isFirstPlay() {
+        boolean b = true;
+        if (this.kidsDetail == null) {
+            return true;
+        }
+        if (this.getHasWatchedRecently() || (VideoType.EPISODE.equals(this.getType()) && this.getEpisodeNumber() != 1) || this.getPlayableBookmarkPosition() > 0) {
+            b = false;
+        }
+        return b;
     }
     
     @Override
@@ -73,14 +104,6 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
             return null;
         }
         return ((com.netflix.mediaclient.service.webclient.model.branches.Video.Summary)this.kidsSummary).getTitle();
-    }
-    
-    @Override
-    public String getCharacterStoryUrl() {
-        if (this.kidsDetail == null) {
-            return null;
-        }
-        return this.kidsDetail.storyImgUrl;
     }
     
     @Override
@@ -252,6 +275,14 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     }
     
     @Override
+    public String getSquareUrl() {
+        if (this.watchNextSummary == null) {
+            return null;
+        }
+        return this.watchNextSummary.getSquareUrl();
+    }
+    
+    @Override
     public String getStoryUrl() {
         final com.netflix.mediaclient.service.webclient.model.branches.Video.Detail watchNextDetails = this.getWatchNextDetails();
         if (watchNextDetails == null) {
@@ -291,6 +322,15 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     }
     
     @Override
+    public String getWatchNextDispUrl() {
+        Log.d("nf_kidscharacter", String.format("[%s %s], firstPlay:%b (watchedRecently:%b), S%d:E%d, pos:%d", this.getType(), this.getPlayableId(), this.isFirstPlay(), this.getHasWatchedRecently(), this.getSeasonNumber(), this.getEpisodeNumber(), this.getPlayableBookmarkPosition()));
+        if (this.isFirstPlay()) {
+            return this.getCharacterSquareUrl();
+        }
+        return this.getWatchNextSquareUrl();
+    }
+    
+    @Override
     public boolean isAutoPlayEnabled() {
         return false;
     }
@@ -298,6 +338,12 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     @Override
     public boolean isNextPlayableEpisode() {
         return false;
+    }
+    
+    @Override
+    public boolean isPinProtected() {
+        final com.netflix.mediaclient.service.webclient.model.branches.Video.Detail watchNextDetails = this.getWatchNextDetails();
+        return watchNextDetails != null && watchNextDetails.isPinProtected;
     }
     
     @Override

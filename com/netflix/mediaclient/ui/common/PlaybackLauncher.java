@@ -10,14 +10,12 @@ import android.widget.Toast;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.os.Handler;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
-import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.util.StringUtils;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.VideoType;
@@ -25,6 +23,7 @@ import android.content.Context;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
+import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public final class PlaybackLauncher
@@ -90,7 +89,7 @@ public final class PlaybackLauncher
         }
     }
     
-    private static boolean shouldPlayOnRemoteTarget(final ServiceManager serviceManager) {
+    public static boolean shouldPlayOnRemoteTarget(final ServiceManager serviceManager) {
         if (serviceManager == null || !serviceManager.isReady() || serviceManager.getMdx() == null) {
             Log.e("nf_play", "MDX or service manager are null! That should NOT happen. Default to local.");
             return false;
@@ -105,23 +104,31 @@ public final class PlaybackLauncher
         return isExisitingMdxTargetAvailable(mdx, currentTarget);
     }
     
-    public static void startPlayback(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
-        startPlayback(netflixActivity, Asset.create(playable, playContext));
+    public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
+        startPlaybackAfterPIN(netflixActivity, Asset.create(playable, playContext, PlayerActivity.PIN_VERIFIED));
     }
     
-    public static boolean startPlayback(final NetflixActivity netflixActivity, final Asset asset) {
-        return startPlayback(netflixActivity, asset, shouldPlayOnRemoteTarget(netflixActivity.getServiceManager()));
+    public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Asset asset) {
+        verifyPinAndPlay(netflixActivity, asset, shouldPlayOnRemoteTarget(netflixActivity.getServiceManager()));
     }
     
-    private static boolean startPlayback(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
+    public static void startPlaybackForceLocal(final NetflixActivity netflixActivity, final Asset asset) {
+        verifyPinAndPlay(netflixActivity, asset, false);
+    }
+    
+    public static void startPlaybackForceRemote(final NetflixActivity netflixActivity, final Asset asset) {
+        verifyPinAndPlay(netflixActivity, asset, true);
+    }
+    
+    private static void startPlaybackInternal(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
         if (!b) {
             Log.d("nf_play", "Start local playback");
             PlayerActivity.playVideo(netflixActivity, asset);
-            return b;
+            return;
         }
         Log.d("nf_play", "Starting MDX remote playback");
-        if (!MdxAgent.Utils.playVideo(netflixActivity, asset)) {
-            return b;
+        if (!MdxAgent.Utils.playVideo(netflixActivity, asset, false)) {
+            return;
         }
         new Handler(netflixActivity.getMainLooper()).postDelayed((Runnable)new Runnable() {
             final /* synthetic */ Context val$context = netflixActivity.getApplication();
@@ -131,11 +138,25 @@ public final class PlaybackLauncher
                 MdxMiniPlayerFrag.sendShowAndDisableIntent(this.val$context);
             }
         }, 250L);
-        return b;
     }
     
-    public static boolean startPlaybackForceRemote(final NetflixActivity netflixActivity, final Asset asset) {
-        return startPlayback(netflixActivity, asset, true);
+    private static void verifyPinAndPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
+        Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s protected:%b", asset.getPlayableId(), asset.isPinProtected()));
+        PinVerifier.getInstance().verify(netflixActivity, asset.isPinProtected(), (PinVerifier.PinVerificationCallback)new PinVerifier.PinVerificationCallback() {
+            @Override
+            public void onPinCancelled() {
+                Log.d("nf_play", "nf_pin pinVerification skipped - not starting playback");
+            }
+            
+            @Override
+            public void onPinVerification(final boolean b) {
+                if (!b) {
+                    Log.d("nf_play", "nf_pin pinVerification failed - not starting playback");
+                    return;
+                }
+                startPlaybackInternal(netflixActivity, asset, b);
+            }
+        });
     }
     
     private static class FetchVideoDetailsForMdxCallback extends LoggingManagerCallback
@@ -155,11 +176,11 @@ public final class PlaybackLauncher
             }
             if (n != 0 || videoDetails == null) {
                 Log.w("nf_play", "Error loading video details for MDX launch - hiding mini player");
-                Toast.makeText((Context)this.activity, 2131493111, 1).show();
+                Toast.makeText((Context)this.activity, 2131493117, 1).show();
                 this.activity.hideMdxMiniPlayer();
                 return;
             }
-            PlaybackLauncher.startPlayback(this.activity, videoDetails, this.playContext);
+            PlaybackLauncher.startPlaybackAfterPIN(this.activity, videoDetails, this.playContext);
         }
         
         @Override

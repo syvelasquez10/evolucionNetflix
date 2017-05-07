@@ -6,6 +6,8 @@ package com.netflix.mediaclient.protocol.nflx;
 
 import com.netflix.mediaclient.servicemgr.MovieDetails;
 import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.GenreList;
+import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
 import com.netflix.mediaclient.servicemgr.LoLoMo;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 import com.netflix.mediaclient.util.DataUtil;
@@ -39,8 +41,8 @@ import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import com.netflix.mediaclient.Log;
 import java.util.Map;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.Playable;
@@ -81,11 +83,17 @@ public class NflxHandler
     private static final String WEBAPI_EXPAND_SERVICE = "http://api.netflix.com/catalog/tiny/expand/";
     
     private String extractId(final String s) {
-        final int lastIndex = s.lastIndexOf("/");
-        if (lastIndex <= 0) {
-            return null;
+        if (!StringUtils.isEmpty(s)) {
+            final int lastIndex = s.lastIndexOf("/");
+            if (lastIndex > 0) {
+                return s.substring(lastIndex + 1);
+            }
+            Log.d("NflxHandler", "Check if this is simple ID");
+            if (StringUtils.isInteger(s)) {
+                return s.trim();
+            }
         }
-        return s.substring(lastIndex + 1);
+        return null;
     }
     
     private String extractJustUuid(final String s) {
@@ -634,7 +642,7 @@ public class NflxHandler
             Log.d("NflxHandler", "MDX exist, check if target is available");
             if (mdx.setDialUuidAsCurrentTarget(dialUuidAsCurrentTarget)) {
                 this.handleHomeAction(netflixActivity);
-                PlaybackLauncher.startPlaybackForceRemote(netflixActivity, Asset.create(playable, playContext));
+                PlaybackLauncher.startPlaybackForceRemote(netflixActivity, Asset.create(playable, playContext, !PlayerActivity.PIN_VERIFIED));
                 return;
             }
             Log.d("NflxHandler", "MDX does not know target dial UUID, go local playback");
@@ -670,7 +678,12 @@ public class NflxHandler
         }
         final String stringExtra = intent.getStringExtra("guid");
         if (intent.hasExtra("messageGuid")) {
-            final MessageData messageData = new MessageData(stringExtra, intent.getStringExtra("messageGuid"));
+            final String stringExtra2 = intent.getStringExtra("messageGuid");
+            final String stringExtra3 = intent.getStringExtra("originator");
+            if (StringUtils.isEmpty(stringExtra3)) {
+                Log.w("NflxHandler", "Received notification WITHOUT ORIGINATOR! Pass default!");
+            }
+            final MessageData messageData = new MessageData(stringExtra, stringExtra2, stringExtra3);
             if (Log.isLoggable("NflxHandler", 3)) {
                 Log.d("NflxHandler", "User opened notification " + messageData);
             }
@@ -738,7 +751,7 @@ public class NflxHandler
         @Override
         public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final int n) {
             if (n == 0) {
-                HomeActivity.showGenreList(this.activity, this.genreId, loLoMo.getTitle(), false);
+                HomeActivity.showGenreList(this.activity, new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.genreId, false, loLoMo.getType().toString()));
             }
             NflxHandler.this.reportDelayedResponseHandled(this.activity);
         }

@@ -55,9 +55,11 @@ public class Video
         public int episodeCount;
         public String genres;
         public String horzDispUrl;
+        public String intrUrl;
         public boolean isAutoPlayEnabled;
         public boolean isHdAvailable;
         public boolean isNextPlayableEpisode;
+        public boolean isPinProtected;
         public String mdxHorzUrl;
         public String mdxVertUrl;
         public float predictedRating;
@@ -73,7 +75,7 @@ public class Video
         
         @Override
         public String toString() {
-            return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", predictedRating=" + this.predictedRating + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
+            return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", intrUrl=" + this.intrUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", predictedRating=" + this.predictedRating + ", isPinProtected=" + this.isPinProtected + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
         }
     }
     
@@ -117,6 +119,7 @@ public class Video
         public String horzDispUrl;
         protected String id;
         protected boolean isEpisode;
+        public String squareUrl;
         protected String title;
         public String tvCardUrl;
         protected String type;
@@ -140,6 +143,11 @@ public class Video
         @Override
         public String getId() {
             return this.id;
+        }
+        
+        @Override
+        public String getSquareUrl() {
+            return this.squareUrl;
         }
         
         @Override

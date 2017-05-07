@@ -30,6 +30,11 @@ public class KidsSearchResultView extends SearchResultView
     }
     
     @Override
+    protected int getYearColorResId() {
+        return 2131296308;
+    }
+    
+    @Override
     protected void updateForVideo(final SearchVideo searchVideo, int visibility) {
         super.updateForVideo(searchVideo, visibility);
         final String certification = searchVideo.getCertification();

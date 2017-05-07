@@ -8,18 +8,19 @@ import android.os.Parcel;
 import com.netflix.mediaclient.servicemgr.LoMoType;
 import com.netflix.mediaclient.servicemgr.FriendProfile;
 import java.util.List;
+import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.LoMo;
 
-public class KidsGenreWrapper implements LoMo
+public class KidsLomoWrapper implements LoMo
 {
-    private final String genreId;
+    private final BasicLoMo lomo;
     
-    public KidsGenreWrapper(final String genreId) {
-        this.genreId = genreId;
+    public KidsLomoWrapper(final BasicLoMo lomo) {
+        this.lomo = lomo;
     }
     
     public int describeContents() {
-        return -1;
+        throw new UnsupportedOperationException("Can't describe contents");
     }
     
     @Override
@@ -28,11 +29,11 @@ public class KidsGenreWrapper implements LoMo
     }
     
     public String getId() {
-        return this.genreId;
+        return this.lomo.getId();
     }
     
     public int getListPos() {
-        return -1;
+        return this.lomo.getListPos();
     }
     
     @Override
@@ -41,19 +42,19 @@ public class KidsGenreWrapper implements LoMo
     }
     
     public String getRequestId() {
-        return null;
+        return this.lomo.getRequestId();
     }
     
     public String getTitle() {
-        return this.getId();
+        return this.lomo.getTitle();
     }
     
     public int getTrackId() {
-        return -1;
+        return this.lomo.getTrackId();
     }
     
     public LoMoType getType() {
-        return LoMoType.FLAT_GENRE;
+        return this.lomo.getType();
     }
     
     @Override

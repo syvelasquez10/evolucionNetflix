@@ -30,6 +30,8 @@ import com.netflix.mediaclient.service.mdx.message.controller.GetAudioSubtitles;
 import com.netflix.mediaclient.service.mdx.message.controller.DialogResponse;
 import com.netflix.mediaclient.service.mdx.message.controller.PlayerChangeMetaData;
 import com.netflix.mediaclient.service.mdx.message.controller.PlayerSetAutoAdvance;
+import com.netflix.mediaclient.service.mdx.message.controller.PinConfirmed;
+import com.netflix.mediaclient.service.mdx.message.controller.PinCancelled;
 import com.netflix.mediaclient.util.WebApiUtils;
 import java.util.concurrent.atomic.AtomicLong;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
@@ -69,6 +71,22 @@ public class TargetManager implements EventListener, CommandInterface
     
     public boolean isTargetHaveContext(final String s) {
         return this.mTarget != null && this.mTarget.isThisTargetUuid(s);
+    }
+    
+    @Override
+    public void pinCancelled(final String s) {
+        if (this.mTarget != null) {
+            final PinCancelled pinCancelled = new PinCancelled();
+            this.mTarget.sendCommand(pinCancelled.messageName(), pinCancelled.messageObject());
+        }
+    }
+    
+    @Override
+    public void pinConfirmed(final String s) {
+        if (this.mTarget != null) {
+            final PinConfirmed pinConfirmed = new PinConfirmed();
+            this.mTarget.sendCommand(pinConfirmed.messageName(), pinConfirmed.messageObject());
+        }
     }
     
     @Override

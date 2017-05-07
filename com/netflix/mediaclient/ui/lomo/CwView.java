@@ -60,10 +60,10 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903080, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131165322);
-        this.img = (AdvancedImageView)this.findViewById(2131165319);
-        this.progress = (ProgressBar)this.findViewById(2131165324);
-        this.info = (ImageView)this.findViewById(2131165323);
+        this.title = (TextView)this.findViewById(2131165326);
+        this.img = (AdvancedImageView)this.findViewById(2131165323);
+        this.progress = (ProgressBar)this.findViewById(2131165328);
+        this.info = (ImageView)this.findViewById(2131165327);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -87,10 +87,10 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493180), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493186), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493242, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493249, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());
@@ -115,10 +115,10 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
         this.progress.setProgress(progress);
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
-                PlaybackLauncher.startPlayback((NetflixActivity)CwView.this.getContext(), cwVideo, CwView.this.playContext);
+                PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)CwView.this.getContext(), cwVideo, CwView.this.playContext);
             }
         });
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493222), cwVideo.getTitle()));
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493228), cwVideo.getTitle()));
         this.clicker.update((View)this.info, cwVideo);
     }
 }

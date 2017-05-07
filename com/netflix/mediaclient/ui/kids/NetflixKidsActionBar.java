@@ -4,22 +4,25 @@
 
 package com.netflix.mediaclient.ui.kids;
 
+import android.view.View$OnClickListener;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
-import com.netflix.mediaclient.android.widget.AccessibilityRunnable;
-import android.app.ActionBar;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 
 public class NetflixKidsActionBar extends NetflixActionBar
 {
-    public NetflixKidsActionBar(final Activity activity, final ActionBar actionBar, final AccessibilityRunnable accessibilityRunnable) {
-        super(activity, actionBar, accessibilityRunnable);
-        actionBar.setBackgroundDrawable((Drawable)new ColorDrawable(activity.getResources().getColor(2131296356)));
+    public NetflixKidsActionBar(final NetflixActivity netflixActivity, final boolean b) {
+        super(netflixActivity, b);
+        this.systemActionBar.setBackgroundDrawable((Drawable)new ColorDrawable(netflixActivity.getResources().getColor(2131296359)));
+        if (b) {
+            this.title.setOnClickListener((View$OnClickListener)new PerformUpActionOnClickListener(netflixActivity));
+            this.configureBackButtonIfNecessary();
+        }
     }
     
     @Override
     protected int getFullSizeLogoId() {
-        return 2130837723;
+        return 2130837732;
     }
 }

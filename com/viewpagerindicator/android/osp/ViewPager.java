@@ -16,7 +16,6 @@ import android.util.Log;
 import android.database.DataSetObserver;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.AccessibilityDelegateCompat;
-import android.support.v4.view.ViewConfigurationCompat;
 import android.view.ViewConfiguration;
 import android.support.v4.view.KeyEventCompat;
 import android.support.v4.view.VelocityTrackerCompat;
@@ -62,7 +61,7 @@ public class ViewPager extends ViewGroup
     private static final int DRAW_ORDER_REVERSE = 2;
     private static final int INVALID_POINTER = -1;
     private static final int[] LAYOUT_ATTRS;
-    private static final int MAX_SETTLE_DURATION = 400;
+    private static final int MAX_SETTLE_DURATION_MS = 400;
     private static final int MIN_DISTANCE_FOR_FLING = 20;
     private static final int MIN_FLING_VELOCITY = 400;
     public static final int SCROLL_STATE_DRAGGING = 1;
@@ -1202,7 +1201,7 @@ public class ViewPager extends ViewGroup
         this.mScroller = new Scroller(context, ViewPager.sInterpolator);
         final ViewConfiguration value = ViewConfiguration.get(context);
         final float density = context.getResources().getDisplayMetrics().density;
-        this.mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(value);
+        this.mTouchSlop = value.getScaledTouchSlop();
         this.mMinimumVelocity = (int)(400.0f * density);
         this.mMaximumVelocity = value.getScaledMaximumFlingVelocity();
         this.mLeftEdge = new EdgeEffectCompat(context);

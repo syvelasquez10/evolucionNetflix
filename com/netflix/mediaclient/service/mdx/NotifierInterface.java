@@ -6,6 +6,8 @@ package com.netflix.mediaclient.service.mdx;
 
 public interface NotifierInterface
 {
+    void abortPinVerification(final String p0, final boolean p1);
+    
     void audiosub(final String p0, final String p1);
     
     void capability(final String p0, final String p1);
@@ -28,7 +30,11 @@ public interface NotifierInterface
     
     void playbackStart(final String p0);
     
+    void postplayState(final String p0, final String p1);
+    
     void ready();
+    
+    void requestPinVerification(final String p0, final String p1, final int p2, final int p3, final String p4);
     
     void simplePlaybackState(final String p0, final boolean p1, final boolean p2);
     

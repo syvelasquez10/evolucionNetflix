@@ -4,10 +4,8 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-public interface PostPlayVideo extends VideoDetails
+public interface PostPlayVideo extends InterestingVideoDetails
 {
-    String getInterestingUrl();
-    
     String getPostPlayRequestId();
     
     int getPostPlayTrackId();

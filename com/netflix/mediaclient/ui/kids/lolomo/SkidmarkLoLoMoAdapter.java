@@ -5,12 +5,17 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import java.util.Collection;
-import com.netflix.mediaclient.android.app.LoadingStatus;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.util.ThreadUtils;
+import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import android.widget.FrameLayout;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.Trackable;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
+import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
@@ -18,7 +23,7 @@ import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.servicemgr.VideoType;
 import com.netflix.mediaclient.servicemgr.CWVideo;
 import java.util.Map;
-import android.util.Pair;
+import com.netflix.mediaclient.util.Triple;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import java.util.Iterator;
@@ -31,6 +36,7 @@ import com.netflix.mediaclient.servicemgr.Video;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.LoMo;
 import java.util.LinkedHashMap;
+import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
@@ -51,6 +57,7 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
     private final View dummyView;
     protected final LoLoMoFrag frag;
     private boolean isLoading;
+    private LoadingStatusCallback loadingStatusCallback;
     private final LinkedHashMap<LoMo, List<Video>> lomoData;
     private long lomoRequestId;
     protected ServiceManager manager;
@@ -67,7 +74,7 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
     }
     
     private LoMo getLomo(final int n) {
-        return (LoMo)this.getItem(n).first;
+        return this.getItem(n).first;
     }
     
     private void handlePrefetchComplete() {
@@ -98,6 +105,12 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
         this.frag.hideLoadingAndErrorViews();
     }
     
+    private void onDataLoaded(final int n) {
+        if (this.loadingStatusCallback != null) {
+            this.loadingStatusCallback.onDataLoaded(n);
+        }
+    }
+    
     private void showErrorView() {
         this.frag.showErrorView();
     }
@@ -119,18 +132,18 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
         View inflate = view;
         if (view == null) {
             Log.v("SkidmarkLoLoMoAdapter", "Creating header view");
-            inflate = this.activity.getLayoutInflater().inflate(2130903101, (ViewGroup)null);
+            inflate = this.activity.getLayoutInflater().inflate(2130903104, (ViewGroup)null);
         }
         ((TextView)inflate).setText((CharSequence)this.getLomo(n).getTitle());
         return inflate;
     }
     
-    public Pair<LoMo, Video> getItem(final int n) {
+    public Triple<LoMo, Video, Integer> getItem(final int n) {
         int n2 = n;
         for (final Map.Entry<LoMo, List<Video>> entry : this.lomoData.entrySet()) {
             final List<Video> list = entry.getValue();
             if (n2 < list.size()) {
-                return (Pair<LoMo, Video>)new Pair((Object)entry.getKey(), (Object)list.get(n2));
+                return new Triple<LoMo, Video, Integer>(entry.getKey(), list.get(n2), n2);
             }
             n2 -= list.size();
         }
@@ -142,14 +155,14 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
     }
     
     public int getItemViewType(final int n) {
-        final Pair<LoMo, Video> item = this.getItem(n);
+        final Triple<LoMo, Video, Integer> item = this.getItem(n);
         if (item.second instanceof MoreButtonPlaceholderVideo) {
             return 2;
         }
         if (item.second instanceof CWVideo) {
             return 0;
         }
-        if (((Video)item.second).getType() == VideoType.CHARACTERS) {
+        if (item.second.getType() == VideoType.CHARACTERS) {
             return 3;
         }
         return 1;
@@ -160,21 +173,17 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
             Log.d("SkidmarkLoLoMoAdapter", "activity destroyed - can't getView");
             return this.dummyView;
         }
+        final int itemViewType = this.getItemViewType(n);
         Object inflate;
         if ((inflate = view) == null) {
             final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361835);
-            switch (this.getItemViewType(n)) {
+            switch (itemViewType) {
                 default: {
                     throw new IllegalStateException("Unknown view type");
                 }
                 case 0: {
                     Log.v("SkidmarkLoLoMoAdapter", "Creating Kids CW view");
-                    if (KidsUtils.shouldShowHorizontalImages(this.activity)) {
-                        inflate = new KidsHorizontalCwView((Context)this.activity, false);
-                    }
-                    else {
-                        inflate = new KidsOneToOneCwView((Context)this.activity, false);
-                    }
+                    inflate = new KidsHorizontalCwView((Context)this.activity, false);
                     ((View)inflate).setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
                     break;
                 }
@@ -183,20 +192,26 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
                     inflate = new KidsLoMoViewGroup((Context)this.activity, false);
                     ((VideoViewGroup)inflate).init(1);
                     ((VideoViewGroup)inflate).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeRowHeight(this.activity, false)));
-                    ((VideoViewGroup)inflate).setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
+                    ((VideoViewGroup)inflate).setPadding(dimensionPixelSize, dimensionPixelSize / 2, dimensionPixelSize, dimensionPixelSize / 2);
                     break;
                 }
                 case 2: {
                     Log.v("SkidmarkLoLoMoAdapter", "Creating more button view");
-                    inflate = this.activity.getLayoutInflater().inflate(2130903100, (ViewGroup)null);
+                    inflate = this.activity.getLayoutInflater().inflate(2130903103, (ViewGroup)null);
                     ((View)inflate).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+                        private void launchAndLogKidsDetailsActivity(final View view, final NetflixActivity netflixActivity, final LoMo loMo) {
+                            LogUtils.reportUIViewCommandStarted(view.getContext(), UIViewLogging.UIViewCommandName.moreButton, IClientLogging.ModalView.homeScreen, new DataContext(loMo));
+                            KidsLomoDetailActivity.show(netflixActivity, loMo);
+                            LogUtils.reportUIViewCommandEnded(view.getContext());
+                        }
+                        
                         public void onClick(final View view) {
                             final LoMo loMo = (LoMo)view.getTag();
                             if (loMo == null) {
                                 Log.w("SkidmarkLoLoMoAdapter", "Null lomo tag pulled from view: " + view);
                                 return;
                             }
-                            KidsLomoDetailActivity.show(SkidmarkLoLoMoAdapter.this.activity, loMo);
+                            this.launchAndLogKidsDetailsActivity(view, SkidmarkLoLoMoAdapter.this.activity, loMo);
                         }
                     });
                     break;
@@ -209,18 +224,20 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
                 }
             }
         }
+        final Triple<LoMo, Video, Integer> item = this.getItem(n);
         if (inflate instanceof VideoViewGroup.IVideoView) {
-            final Pair<LoMo, Video> item = this.getItem(n);
-            ((VideoViewGroup.IVideoView<Object>)inflate).update(item.second, (Trackable)item.first, n, true);
+            ((VideoViewGroup.IVideoView<U>)inflate).update((U)item.second, item.first, n, true);
         }
         else if (inflate instanceof VideoViewGroup) {
-            final Pair<LoMo, Video> item2 = this.getItem(n);
             final ArrayList<Object> list = new ArrayList<Object>();
-            list.add(item2.second);
-            ((VideoViewGroup<Object, V>)inflate).updateDataThenViews(list, 1, 1, n, (Trackable)item2.first);
+            list.add(item.second);
+            ((VideoViewGroup<U, V>)inflate).updateDataThenViews((List<U>)list, 1, 1, n, item.first);
         }
-        else if (inflate instanceof TextView) {
+        else if (inflate instanceof FrameLayout) {
             ((View)inflate).setTag((Object)this.getLomo(n));
+        }
+        if (itemViewType == 0 || itemViewType == 1) {
+            LogUtils.reportPresentationTracking(this.manager, item.first, item.second, item.third);
         }
         return (View)inflate;
     }
@@ -301,6 +318,11 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
     }
     
     public void setLoadingStatusCallback(final LoadingStatusCallback loadingStatusCallback) {
+        if (!this.isLoadingData() && loadingStatusCallback != null) {
+            loadingStatusCallback.onDataLoaded(0);
+            return;
+        }
+        this.loadingStatusCallback = loadingStatusCallback;
     }
     
     private class FetchLoMoCallbacks extends LoggingManagerCallback
@@ -317,7 +339,6 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
                 Log.v("SkidmarkLoLoMoAdapter", "Ignoring stale onLoMosFetched callback");
             }
             else {
-                SkidmarkLoLoMoAdapter.this.isLoading = false;
                 if (n != 0) {
                     Log.w("SkidmarkLoLoMoAdapter", "Invalid status code");
                     SkidmarkLoLoMoAdapter.this.notifyDataSetChanged();
@@ -385,6 +406,7 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
                 }
                 if (SkidmarkLoLoMoAdapter.this.callbackCount <= 0) {
                     SkidmarkLoLoMoAdapter.this.isLoading = false;
+                    SkidmarkLoLoMoAdapter.this.onDataLoaded(n);
                     SkidmarkLoLoMoAdapter.this.notifyDataSetChanged();
                 }
             }
@@ -423,6 +445,11 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
         @Override
         public String getId() {
             return this.getTitle();
+        }
+        
+        @Override
+        public String getSquareUrl() {
+            return null;
         }
         
         @Override

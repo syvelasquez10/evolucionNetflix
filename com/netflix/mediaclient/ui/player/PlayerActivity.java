@@ -17,13 +17,13 @@ import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import java.io.Serializable;
 import android.widget.Toast;
 import android.os.PowerManager;
 import android.os.Process;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.util.LogUtils;
+import android.app.Activity;
 import android.os.Bundle;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.net.LogMobileType;
@@ -36,6 +36,7 @@ import android.content.IntentFilter;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.VideoType;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.ui.common.PinVerifier;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
@@ -55,7 +56,8 @@ import com.netflix.mediaclient.util.ConnectivityUtils;
 import android.view.KeyEvent;
 import android.os.Parcelable;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
-import android.app.Activity;
+import java.io.Serializable;
+import com.netflix.mediaclient.ui.kids.player.KidsPlayerActivity;
 import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -106,6 +108,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     private static final int INVALID_TRACK_INDEX = -1;
     private static final int PAUSE_LOCK_SCREEN_TIMEOUT = 120000;
     private static final long PAUSE_TIMEOUT = 3600000L;
+    public static final Boolean PIN_VERIFIED;
     private static final int SKIP_DELTA_MS = 30000;
     private static final String TAG = "PlayerActivity";
     public static final String TRACK_ID_PREFIX_TAG = "TRACK_ID: ";
@@ -125,6 +128,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     protected Handler mHandler;
     private int mHeight;
     private boolean mIsAssetReady;
+    private boolean mIsListening;
     private boolean mIsSurfaceReady;
     private boolean mIsZoomedOut;
     private final boolean mKillOnDestroy;
@@ -149,6 +153,10 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     private final TappableSurfaceView.TapListener tapListener;
     private final SeekBar$OnSeekBarChangeListener videoPositionListener;
     private final View$OnClickListener zoomListener;
+    
+    static {
+        PIN_VERIFIED = true;
+    }
     
     public PlayerActivity() {
         this.mWidth = 0;
@@ -481,8 +489,9 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         this.surfaceMeasureListener = new TappableSurfaceView.SurfaceMeasureListener() {
             @Override
             public void onSurfaceMeasureChange(final int n, final int n2) {
-                if (PlayerActivity.this.mSurface2 != null) {
-                    PlayerActivity.this.mSurface2.setSurfaceSize(n, n2);
+                final SecondSurface access$2200 = PlayerActivity.this.mSurface2;
+                if (access$2200 != null) {
+                    access$2200.setSurfaceSize(n, n2);
                 }
             }
         };
@@ -549,7 +558,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                     return;
                 }
                 PlayerActivity.this.cleanupAndExit();
-                PlaybackLauncher.startPlayback(PlayerActivity.this, episodeDetails, playContext);
+                PlaybackLauncher.startPlaybackAfterPIN(PlayerActivity.this, episodeDetails, playContext);
             }
         };
         this.mDialogCancedledListener = new DialogCanceledListener() {
@@ -607,23 +616,37 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     private void completeInitIfReady() {
         if (!this.mIsSurfaceReady) {
             Log.d("PlayerActivity", "Surface not ready - cannot complete init");
+            return;
+        }
+        if (!this.mIsAssetReady) {
+            Log.d("PlayerActivity", "Asset not ready - cannot complete init");
+            return;
+        }
+        if (this.mAsset == null) {
+            Log.d("PlayerActivity", "Asset is null - cannot complete init");
+            return;
+        }
+        verifyPinAndContinue(this, this.mAsset.isPinVerified(), this.mAsset.isPinProtected());
+    }
+    
+    private void continueInitAfterPinVerify() {
+        Log.v("PlayerActivity", "Completing init process...");
+        this.mScreen.setTitles(this.mAsset.getTitle(), this.getParentTitleForScreen(this.mAsset.getParentTitle()));
+        this.mScreen.getTopPanel().getSocial().setSharingDisabled(!this.mAsset.isSocialDoNotShareVisible());
+        if (!this.mState.videoLoaded && this.loadVideo()) {
+            this.mState.activityState = PlayerActivityState.ACTIVITY_PLAYER_READY;
+        }
+    }
+    
+    private static Intent createIntent(final NetflixActivity netflixActivity) {
+        Serializable s;
+        if (netflixActivity.isForKids()) {
+            s = KidsPlayerActivity.class;
         }
         else {
-            if (!this.mIsAssetReady) {
-                Log.d("PlayerActivity", "Asset not ready - cannot complete init");
-                return;
-            }
-            if (this.mAsset == null) {
-                Log.d("PlayerActivity", "Asset is null - cannot complete init");
-                return;
-            }
-            Log.v("PlayerActivity", "Completing init process...");
-            this.mScreen.setTitles(this.mAsset.getTitle(), this.getParentTitleForScreen(this.mAsset.getParentTitle()));
-            this.mScreen.getTopPanel().getSocial().setSharingDisabled(!this.mAsset.isSocialDoNotShareVisible());
-            if (!this.mState.videoLoaded && this.loadVideo()) {
-                this.mState.activityState = PlayerActivityState.ACTIVITY_PLAYER_READY;
-            }
+            s = PlayerActivity.class;
         }
+        return new Intent((Context)netflixActivity, (Class)s);
     }
     
     private PlayScreen.Listeners createListeners() {
@@ -691,17 +714,17 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         return n * 2 / 100;
     }
     
-    public static void getDetailsAndPlayVideo(final Activity activity, final VideoDetails videoDetails, final PlayContext playContext) {
+    public static void getDetailsAndPlayVideo(final NetflixActivity netflixActivity, final VideoDetails videoDetails, final PlayContext playContext) {
         if (Log.isLoggable("PlayerActivity", 3)) {
             Log.d("PlayerActivity", "Starting activity, will get details first for videoId: " + videoDetails.getId());
         }
-        final Intent intent = new Intent((Context)activity, (Class)PlayerActivity.class);
+        final Intent intent = createIntent(netflixActivity);
         intent.addFlags(131072);
         intent.putExtra("extra_get_details_video_id", videoDetails.getId());
         intent.putExtra("extra_get_details_video_type", videoDetails.getType().getValue());
         intent.putExtra("extra_get_details_play_context", (Parcelable)playContext);
         intent.putExtra("extra_get_details_has_next_episode", videoDetails.isNextPlayableEpisode());
-        activity.startActivity(intent);
+        netflixActivity.startActivity(intent);
     }
     
     private String getParentTitleForScreen(final String s) {
@@ -820,18 +843,18 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         }
         catch (Throwable t) {
             Log.e("PlayerActivity", "Exception in video preparation", t);
-            this.errorManager.addError(new NccpActionId(3, "", this.getString(2131493111), "handleActionId", "ACTION_ID", 0, null));
+            this.errorManager.addError(new NccpActionId(3, "", this.getString(2131493117), "handleActionId", "ACTION_ID", 0, null));
             return false;
         }
     }
     
     private void noConnectivityWarning() {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, this.getString(2131493127), this.getString(17039370), this.exitButtonHandler)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, this.getString(2131493133), this.getString(17039370), this.exitButtonHandler)));
     }
     
     private void nonWifiPlayWarning() {
         ThreadUtils.assertOnMain();
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, this.getString(2131493131), this.getString(17039370), this.exitButtonHandler)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, this.getString(2131493137), this.getString(17039370), this.exitButtonHandler)));
     }
     
     private void onSeek() {
@@ -841,18 +864,18 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         this.mScreen.setBufferingOverlayVisibility(true);
     }
     
-    public static void playVideo(final Activity activity, final Playable playable, final PlayContext playContext) {
-        playVideo(activity, Asset.create(playable, playContext));
+    public static void playVideo(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
+        playVideo(netflixActivity, Asset.create(playable, playContext, !PlayerActivity.PIN_VERIFIED));
     }
     
-    public static void playVideo(final Activity activity, final Asset asset) {
+    public static void playVideo(final NetflixActivity netflixActivity, final Asset asset) {
         if (Log.isLoggable("PlayerActivity", 3)) {
             Log.d("PlayerActivity", "Asset to playback: " + asset);
         }
         if (asset == null) {
             return;
         }
-        activity.startActivity(toIntent(activity, asset));
+        netflixActivity.startActivity(toIntent(netflixActivity, asset));
     }
     
     private void releaseLockOnScreen() {
@@ -935,7 +958,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     }
     
     private void slowNetworkWarning() {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, this.getString(2131493004), this.getString(17039370), this.exitButtonHandler)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, this.getString(2131493010), this.getString(17039370), this.exitButtonHandler)));
     }
     
     private void startScreenUpdate() {
@@ -957,6 +980,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         Log.d("PlayerActivity", "stopPlayback");
         if (this.mState.activityState == PlayerActivityState.ACTIVITY_SRVCMNGR_READY || this.mState.activityState == PlayerActivityState.ACTIVITY_PLAYER_READY) {
             this.mPlayer.close();
+            this.mIsListening = false;
             this.mPlayer.removePlayerListener((IPlayer.PlayerListener)this);
             this.mState.activityState = PlayerActivityState.ACTIVITY_NOTREADY;
             final ImageView media = this.mScreen.getMedia();
@@ -988,8 +1012,8 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         return progress2;
     }
     
-    private static Intent toIntent(final Activity activity, final Asset asset) {
-        final Intent intent = new Intent((Context)activity, (Class)PlayerActivity.class);
+    private static Intent toIntent(final NetflixActivity netflixActivity, final Asset asset) {
+        final Intent intent = createIntent(netflixActivity);
         intent.addFlags(131072);
         intent.addFlags(268435456);
         asset.toIntent(intent);
@@ -1043,13 +1067,13 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                     sb.append(playoutMetadata.instantBitRate).append("/");
                     sb.append(playoutMetadata.targetBitRate).append("/");
                     if (playoutMetadata.isSuperHD) {
-                        sb.append(this.getString(2131493238));
+                        sb.append(this.getString(2131493245));
                     }
                     else if (playoutMetadata.isHD) {
-                        sb.append(this.getString(2131493102));
+                        sb.append(this.getString(2131493108));
                     }
                     else {
-                        sb.append(this.getString(2131493101));
+                        sb.append(this.getString(2131493107));
                     }
                     sb2.append(playoutMetadata.language).append("/");
                     sb2.append(playoutMetadata.getAudioChannel()).append("/");
@@ -1075,16 +1099,39 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
             final int n7 = (int)(Debug.getNativeHeapAllocatedSize() / 1048576L);
             String s3 = "N/A";
             if (this.mSubtitleManager instanceof EnhancedSubtitleManager) {
-                s3 = this.getString(2131493285);
+                s3 = this.getString(2131493293);
             }
             else if (this.mSubtitleManager instanceof SimpleSubtitleManager) {
-                s3 = this.getString(2131493287);
+                s3 = this.getString(2131493295);
             }
-            final String string2 = this.getString(2131493100, new Object[] { "Release", AndroidManifestUtils.getVersionCode(this.getBaseContext()), n7, "UI Version", n4, n3, sb.toString(), sb2.toString(), PlayerTypeFactory.getCurrentType(this.getBaseContext()).getDescription(), s2, nccpCode, s3 });
+            final String string2 = this.getString(2131493106, new Object[] { "Release", AndroidManifestUtils.getVersionCode(this.getBaseContext()), n7, "UI Version", n4, n3, sb.toString(), sb2.toString(), PlayerTypeFactory.getCurrentType(this.getBaseContext()).getDescription(), s2, nccpCode, s3 });
             if (this.mScreen != null) {
                 this.mScreen.setDebugData(string2);
             }
         }
+    }
+    
+    private static void verifyPinAndContinue(final PlayerActivity playerActivity, final boolean b, final boolean b2) {
+        if (b) {
+            Log.d("PlayerActivity", String.format("nf_pin PlayerActivity pinVerification skipped - verified:%b, protected:%b", b, b2));
+            playerActivity.continueInitAfterPinVerify();
+            return;
+        }
+        PinVerifier.getInstance().verify(playerActivity, b2, (PinVerifier.PinVerificationCallback)new PinVerifier.PinVerificationCallback() {
+            @Override
+            public void onPinCancelled() {
+                Log.d("PlayerActivity", "nf_pin pinVerification skipped - not starting playback");
+            }
+            
+            @Override
+            public void onPinVerification(final boolean b) {
+                if (!b) {
+                    Log.d("PlayerActivity", "nf_pin pinVerification failed - not starting playback");
+                    return;
+                }
+                playerActivity.continueInitAfterPinVerify();
+            }
+        });
     }
     
     public void changeLanguage(final Language language, final boolean b) {
@@ -1153,7 +1200,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                 ThreadUtils.assertOnMain();
                 PlayerActivity.this.mResources = ResourceHelper.newInstance(PlayerActivity.this.mIsTablet);
                 final boolean b2 = this.handleBillboard(serviceManager) != null;
-                final PostPlay.PostPlayType postPlayType = PostPlay.getPostPlayType(PlayerActivity.this, b2);
+                final PostPlayFactory.PostPlayType postPlayType = PostPlay.getPostPlayType(PlayerActivity.this, b2);
                 PlayerActivity.this.setContentView(PlayScreen.resolveContentView(postPlayType));
                 PlayerActivity.this.mPlayer = serviceManager.getPlayer();
                 PlayerActivity.this.mConfig = serviceManager.getConfiguration();
@@ -1164,6 +1211,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                 }
                 serviceManager.cancelAllImageLoaderRequests();
                 PlayerActivity.this.mPlayer.addPlayerListener((IPlayer.PlayerListener)PlayerActivity.this);
+                PlayerActivity.this.mIsListening = true;
                 PlayerActivity.this.mScreen = PlayScreen.createInstance(PlayerActivity.this, PlayerActivity.this.createListeners(), postPlayType);
                 PlayerActivity.this.mSubtitleManager = SubtitleManagerFactory.createInstance(PlayerActivity.this.mPlayer.getSubtitleConfiguration(), PlayerActivity.this);
                 if (!b2) {
@@ -1187,7 +1235,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                 PlayerActivity.this.errorManager = new ErrorManager(PlayerActivity.this.handler, PlayerActivity.this, PlayerActivity.this.mConfig);
                 PlayerActivity.this.registerReceiverWithAutoUnregister(PlayerActivity.this.mNetworkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
                 if (AndroidUtils.getAndroidVersion() >= 16 && (PlayerTypeFactory.isJPlayerBase(PlayerTypeFactory.getCurrentType((Context)PlayerActivity.this)) || PlayerTypeFactory.isJPlayer(PlayerTypeFactory.getCurrentType((Context)PlayerActivity.this)))) {
-                    PlayerActivity.this.mSurface2 = new SecondSurface((TextureView)PlayerActivity.this.findViewById(2131165493));
+                    PlayerActivity.this.mSurface2 = new SecondSurface((TextureView)PlayerActivity.this.findViewById(2131165510));
                 }
                 PlayerActivity.this.mState.activityState = PlayerActivityState.ACTIVITY_SRVCMNGR_READY;
             }
@@ -1359,15 +1407,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     
     @Override
     protected DataContext getDataContext() {
-        DataContext dataContext = null;
-        if (this.mAsset != null) {
-            dataContext = new DataContext();
-            dataContext.setRow(this.mAsset.getListPos());
-            dataContext.setRank(this.mAsset.getVideoPos());
-            dataContext.setRequestId(this.mAsset.getRequestId());
-            dataContext.setTrackId(this.mAsset.getTrackId());
-        }
-        return dataContext;
+        return new DataContext(this.mAsset, null);
     }
     
     public DialogCanceledListener getDialogCanceledListener() {
@@ -1476,6 +1516,10 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         this.setTargetSelection();
     }
     
+    public boolean isListening() {
+        return this.mIsListening;
+    }
+    
     public boolean isLoadingData() {
         return false;
     }
@@ -1498,6 +1542,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     }
     
     public void notifyOthersOfPlayStop() {
+        PinVerifier.getInstance().registerPlayStopEvent();
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP");
         this.mAsset.setPlaybackBookmark(this.mPlayer.getCurrentPositionMs() / 1000);
         this.sendBroadcast(this.mAsset.toIntent(intent));
@@ -1591,7 +1636,6 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         if (Log.isLoggable("PlayerActivity", 3)) {
             Log.d("PlayerActivity", "onCreate started " + this.hashCode());
         }
-        this.setRequestedOrientation(6);
         AndroidUtils.logDeviceDensity(this);
         this.keepScreenOn();
         this.getWindow().getAttributes().buttonBrightness = 0.0f;
@@ -1629,7 +1673,11 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     }
     
     public Surface onGetTextureSurface() {
-        return this.mSurface2.getSurface();
+        final SecondSurface mSurface2 = this.mSurface2;
+        if (mSurface2 != null) {
+            return mSurface2.getSurface();
+        }
+        return null;
     }
     
     public boolean onKeyDown(final int n, final KeyEvent keyEvent) {
@@ -1709,7 +1757,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     
     public void onNrdFatalError() {
         Log.w("PlayerActivity", "onNrdFatalError");
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.mHandler, new AlertDialogFactory.AlertDialogDescriptor("", this.getString(2131493144), null, new Runnable() {
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.mHandler, new AlertDialogFactory.AlertDialogDescriptor("", this.getString(2131493150), null, new Runnable() {
             @Override
             public void run() {
                 Log.d("PlayerActivity", "===fatal error, shutdown===");
@@ -1845,7 +1893,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                     }
                     if (this.mState.lowBandwidth) {
                         Log.d("PlayerActivity", "Enabled Toast");
-                        Toast.makeText(this.getBaseContext(), 2131493112, 1).show();
+                        Toast.makeText(this.getBaseContext(), 2131493118, 1).show();
                     }
                     this.mScreen.setBufferingOverlayVisibility(true);
                 }
@@ -1980,7 +2028,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
             return;
         }
         Log.d("PlayerActivity", "We failed to change subtitle");
-        Toast.makeText(this.getBaseContext(), 2131493288, 1).show();
+        Toast.makeText(this.getBaseContext(), 2131493296, 1).show();
         if (this.language != null) {
             Log.d("PlayerActivity", "Try to restore previous subtitle");
             this.language.restorePreviousSubtitle();
@@ -2019,7 +2067,10 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
             this.runInUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    PlayerActivity.this.mSurface2.setSurfaceVisible();
+                    final SecondSurface access$2200 = PlayerActivity.this.mSurface2;
+                    if (access$2200 != null) {
+                        access$2200.setSurfaceVisible();
+                    }
                 }
             });
             return;
@@ -2027,7 +2078,10 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         this.runInUiThread(new Runnable() {
             @Override
             public void run() {
-                PlayerActivity.this.mSurface2.setSurfaceInvisible();
+                final SecondSurface access$2200 = PlayerActivity.this.mSurface2;
+                if (access$2200 != null) {
+                    access$2200.setSurfaceInvisible();
+                }
             }
         });
     }
@@ -2093,7 +2147,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
             Log.d("PlayerActivity", "Play next video, count " + n2 + ", from auto play " + b + ", no user interaction " + this.mState.noUserInteraction());
         }
         this.cleanupAndExit();
-        final Asset forPostPlay = Asset.createForPostPlay(playable, playContext, n2);
+        final Asset forPostPlay = Asset.createForPostPlay(playable, playContext, n2, !PlayerActivity.PIN_VERIFIED);
         if (Log.isLoggable("PlayerActivity", 3)) {
             Log.d("PlayerActivity", "Asset to play next: " + forPostPlay);
         }
@@ -2228,6 +2282,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         }
         
         private void handleResponse(final VideoDetails videoDetails, final int n) {
+            boolean b = false;
             PlayerActivity.this.mIsAssetReady = false;
             final PlayerActivity this$0 = PlayerActivity.this;
             if (this$0.destroyed()) {
@@ -2235,10 +2290,15 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
             }
             if (n != 0 || videoDetails == null) {
                 Log.w("PlayerActivity", "Error loading video details for video playback");
-                Toast.makeText((Context)this$0, 2131493111, 1).show();
+                Toast.makeText((Context)this$0, 2131493117, 1).show();
                 return;
             }
-            PlayerActivity.this.mAsset = Asset.create(videoDetails, this.playContext);
+            final PlayerActivity this$2 = PlayerActivity.this;
+            final PlayContext playContext = this.playContext;
+            if (!PlayerActivity.PIN_VERIFIED) {
+                b = true;
+            }
+            this$2.mAsset = Asset.create(videoDetails, playContext, b);
             PlayerActivity.this.mIsAssetReady = true;
             PlayerActivity.this.completeInitIfReady();
             Log.d("PlayerActivity", "Bilboard playback");

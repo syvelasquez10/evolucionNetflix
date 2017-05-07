@@ -258,7 +258,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     }
     
     public void play(final Asset asset) {
-        if (!MdxAgent.Utils.playVideo(this.mActivity, asset)) {
+        if (!MdxAgent.Utils.playVideo(this.mActivity, asset, false)) {
             return;
         }
         this.userDidPlayPause = true;

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.common.PinVerifier;
 import java.util.concurrent.Executors;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -48,6 +49,10 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
         this.mResumed = new AtomicInteger();
         this.mStopped = new AtomicInteger();
         this.mScheduler = Executors.newSingleThreadScheduledExecutor(UserInputManager.sThreadFactory);
+    }
+    
+    private void notifyOthersOfLastUserInteraction() {
+        PinVerifier.lastUserInteractionTime(this.getTimeSinceLastUserInteraction());
     }
     
     private void postOnBackground() {
@@ -122,6 +127,10 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
         }
         Log.e("nf_input", "Listener already exist");
         return false;
+    }
+    
+    public void checkState() {
+        this.notifyOthersOfLastUserInteraction();
     }
     
     public long getTimeSinceLastUserInteraction() {

@@ -305,6 +305,14 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.PostPla
     }
     
     @Override
+    public String getSquareUrl() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.getSquareUrl();
+    }
+    
+    @Override
     public String getStoryUrl() {
         if (VideoType.EPISODE.equals(this.getType())) {
             if (this.episodeDetail != null) {
@@ -406,6 +414,19 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.PostPla
     @Override
     public boolean isNextPlayableEpisode() {
         return !VideoType.MOVIE.equals(this.getType()) && this.episodeDetail != null && this.episodeDetail.isNextPlayableEpisode();
+    }
+    
+    @Override
+    public boolean isPinProtected() {
+        if (VideoType.EPISODE.equals(this.getType())) {
+            if (this.episodeDetail != null) {
+                return this.episodeDetail.isPinProtected;
+            }
+        }
+        else if (this.detail != null) {
+            return this.detail.isPinProtected;
+        }
+        return false;
     }
     
     @Override

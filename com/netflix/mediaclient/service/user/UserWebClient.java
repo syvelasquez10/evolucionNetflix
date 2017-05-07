@@ -19,4 +19,6 @@ public interface UserWebClient
     boolean isSynchronous();
     
     void switchWebUserProfile(final String p0, final UserAgentWebCallback p1);
+    
+    void verifyPin(final String p0, final UserAgentWebCallback p1);
 }

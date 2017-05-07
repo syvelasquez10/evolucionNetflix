@@ -24,14 +24,14 @@ public class KidsLoMoViewGroup<V extends View> extends VideoViewGroup<Video, V>
     @Override
     protected V createChildView(final Context context) {
         if (KidsUtils.shouldShowHorizontalImages((NetflixActivity)context)) {
-            return (V)new KidsHorizontalVideoView(context, this.shouldIncludePeekDimen);
+            return (V)new KidsHorizontalVideoView((NetflixActivity)context, this.shouldIncludePeekDimen);
         }
         return (V)new KidsOneToOneVideoView(context, this.shouldIncludePeekDimen);
     }
     
     @Override
     protected boolean shouldApplyPaddingToChildren() {
-        return this.shouldIncludePeekDimen;
+        return KidsUtils.shouldShowHorizontalImages((NetflixActivity)this.getContext());
     }
     
     @Override

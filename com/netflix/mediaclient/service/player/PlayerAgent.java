@@ -19,14 +19,11 @@ import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.service.configuration.BitrateRangeFactory;
 import android.media.AudioManager;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import java.util.Iterator;
+import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import android.net.NetworkInfo;
-import com.netflix.mediaclient.util.ConnectivityUtils;
-import android.os.Handler;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.Error;
@@ -41,10 +38,10 @@ import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.SimpleUserAgentWebCallback;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
 import com.netflix.mediaclient.Log;
 import java.util.TimerTask;
-import java.util.ArrayList;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.content.BroadcastReceiver;
 import android.os.PowerManager$WakeLock;
@@ -53,7 +50,6 @@ import android.view.Surface;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayerType;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
@@ -113,7 +109,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private PlayContext mPlayContext;
     private PlayParamsReceiver mPlayParamsRecvr;
     private ExecutorService mPlayerExecutor;
-    private final List<PlayerListener> mPlayerListeners;
+    private PlayerListenerManager mPlayerListenerManager;
     private PlayerType mPlayerType;
     private boolean mScreenOnWhilePlaying;
     private StartPlayTimeoutTask mStartPlayTimeoutTask;
@@ -136,6 +132,8 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private int ptsTicker;
     private int seekedToPosition;
     private boolean seeking;
+    private long sessionInitRxBytes;
+    private long sessionInitTxBytes;
     private boolean splashScreenRemoved;
     private boolean toCancelOpen;
     private volatile boolean toOpenAfterClose;
@@ -148,7 +146,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     public PlayerAgent() {
-        this.mPlayerListeners = new ArrayList<PlayerListener>();
+        this.mPlayerListenerManager = new PlayerListenerManager(this);
         this.mWakeLock = null;
         this.mBitrateCap = -1;
         this.seeking = false;
@@ -168,9 +166,9 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             public void run() {
             Label_0494_Outer:
                 while (true) {
-                    Label_0562: {
+                    Label_0584: {
                         while (true) {
-                        Label_0537:
+                        Label_0559:
                             while (true) {
                                 synchronized (PlayerAgent.this) {
                                     PlayerAgent.this.mMedia.reset();
@@ -191,7 +189,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                                         Log.d(PlayerAgent.TAG, "Player state is " + PlayerAgent.this.mState);
                                     }
                                     if (PlayerAgent.this.mState != 4 && PlayerAgent.this.mState != -1) {
-                                        break Label_0562;
+                                        break Label_0584;
                                     }
                                     Log.d(PlayerAgent.TAG, "Player state was CLOSED or CREATED, cancel timeout task!");
                                     PlayerAgent.this.mState = 5;
@@ -217,10 +215,12 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                                         if (Open.NetType.wifi.equals(PlayerAgent.this.getCurrentNetType())) {
                                             Log.i(PlayerAgent.TAG, "Setting WifiApInfo");
                                             PlayerAgent.this.mMedia.setWifiApsInfo(PlayerAgent.this.getContext(), value, true);
+                                            PlayerAgent.this.sessionInitRxBytes = ConnectivityUtils.getApplicationRx();
+                                            PlayerAgent.this.sessionInitTxBytes = ConnectivityUtils.getApplicationTx();
                                             PlayerAgent.this.ptsTicker = -1;
                                             return;
                                         }
-                                        break Label_0537;
+                                        break Label_0559;
                                     }
                                 }
                                 Log.w(PlayerAgent.TAG, "Timer was null!!!");
@@ -310,11 +310,13 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                 PlayerAgent.this.ignoreErrorsWhileActionId12IsProcessed = false;
                 if (n == 0) {
                     Log.d(PlayerAgent.TAG, "Dummy webcall completed with statusCode=" + n);
-                    PlayerAgent.this.notifyPlayerListenersRestart();
+                    final NccpError access$4900 = PlayerAgent.this.mActionId12Error;
+                    PlayerAgent.this.mActionId12Error = null;
+                    PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerRestartPlaybackHandler(), access$4900);
                     return;
                 }
                 Log.e(PlayerAgent.TAG, "Dummy webcall completed  failed (skipping user info update) with statusCode=" + n);
-                PlayerAgent.this.notifyPlayerListeners(PlayerAgent.this.mActionId12Error);
+                PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerOnNccpErrorHandler(), PlayerAgent.this.mActionId12Error);
             }
         };
         this.muted = false;
@@ -346,6 +348,13 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private void close2() {
         synchronized (this) {
             this.mState = 8;
+            final int n = (int)((ConnectivityUtils.getApplicationRx() - this.sessionInitRxBytes) / 1024L);
+            final int n2 = (int)((ConnectivityUtils.getApplicationTx() - this.sessionInitTxBytes) / 1024L);
+            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                Log.d(PlayerAgent.TAG, "Bytes Tx: " + n2);
+                Log.d(PlayerAgent.TAG, "Bytes Rx: " + n);
+            }
+            this.mMedia.setBytesReport(n2, n);
             this.mMedia.close();
             this.mNrdp.getLog().flush();
         }
@@ -384,34 +393,14 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void handleAudioTrackChanged(final AudioTrackChanged audioTrackChanged) {
         Log.d(PlayerAgent.TAG, "MEDIA_AUDIO_CHANGE 53");
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onAudioChange(audioTrackChanged.getTrackIndex());
-                }
-            });
-        }
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnAudioChangeHandler(), audioTrackChanged.getTrackIndex());
     }
     
     private void handleBufferRange(final BufferRange bufferRange) {
         if (Log.isLoggable(PlayerAgent.TAG, 3)) {
             Log.d(PlayerAgent.TAG, "MEDIA_BANDWIDTH_UPDATE :" + bufferRange.getBandwidth());
         }
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onBandwidthChange(bufferRange.getBandwidth());
-                }
-            });
-        }
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnBandwidthChangeHandler(), bufferRange.getBandwidth());
     }
     
     private void handleBufferingComplete() {
@@ -424,32 +413,12 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         if (Log.isLoggable(PlayerAgent.TAG, 3)) {
             Log.d(PlayerAgent.TAG, "MEDIA_BANDWIDTH_UPDATE :" + buffering.getPercentage());
         }
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onBufferingUpdate(buffering.getPercentage());
-                }
-            });
-        }
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnBufferingUpdateHandler(), buffering.getPercentage());
     }
     
     private void handleEndOfPlayback() {
         Log.d(PlayerAgent.TAG, "MEDIA_PLAYBACK_COMPLETE 2");
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onCompletion();
-                }
-            });
-        }
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnCompletionHandler(), new Object[0]);
     }
     
     private void handleError(final NccpError mActionId12Error) {
@@ -462,7 +431,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                 final NccpActionId nccpActionId = (NccpActionId)mActionId12Error;
                 if (nccpActionId.getActionId() == 11) {
                     Log.w(PlayerAgent.TAG, "ActionID 11 NFErr_MC_Abort Playback.");
-                    this.notifyPlayerListeners(mActionId12Error);
+                    this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnNccpErrorHandler(), mActionId12Error);
                     return;
                 }
                 if (this.inPlaybackSession) {
@@ -494,7 +463,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                         if (Log.isLoggable(PlayerAgent.TAG, 3)) {
                             Log.d(PlayerAgent.TAG, "Handling error: " + mActionId12Error);
                         }
-                        this.notifyPlayerListeners(mActionId12Error);
+                        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnNccpErrorHandler(), mActionId12Error);
                     }
                 }
             }
@@ -528,7 +497,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private void handleMediaError(final Error error) {
         Log.d(PlayerAgent.TAG, "Media error receieved");
         if (!this.ignoreErrorsWhileActionId12IsProcessed) {
-            this.notifyPlayerListeners(error);
+            this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnMediaErrorHandler(), error);
         }
     }
     
@@ -536,108 +505,65 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         Log.d(PlayerAgent.TAG, "Media warning receieved");
         if (warning.containsInStack("NFErr_MC_SubtitleFailure")) {
             Log.e(PlayerAgent.TAG, "=====> Subtitle failed!");
-            final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-            while (iterator.hasNext()) {
-                this.getMainHandler().post((Runnable)new Runnable() {
-                    final /* synthetic */ PlayerListener val$listener = iterator.next();
-                    
-                    @Override
-                    public void run() {
-                        this.val$listener.onSubtitleFailed();
-                    }
-                });
-            }
+            this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleFailedHandler(), new Object[0]);
         }
     }
     
     private void handlePlayback() {
-        Label_0147: {
-            synchronized (this) {
-                Log.d(PlayerAgent.TAG, "handlePlayback starts...");
-                if (this.seeking) {
-                    Log.d(PlayerAgent.TAG, "MEDIA_SEEK_COMPLETE 4");
-                    this.seeking = false;
-                    final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-                    while (iterator.hasNext()) {
-                        this.getMainHandler().post((Runnable)new Runnable() {
-                            final /* synthetic */ PlayerListener val$listener = iterator.next();
-                            
-                            @Override
-                            public void run() {
-                                this.val$listener.onSeekComplete();
-                            }
-                        });
-                    }
-                    break Label_0147;
-                }
+        synchronized (this) {
+            Log.d(PlayerAgent.TAG, "handlePlayback starts...");
+            if (this.seeking) {
+                Log.d(PlayerAgent.TAG, "MEDIA_SEEK_COMPLETE 4");
+                this.seeking = false;
+                this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSeekCompleteHandler(), new Object[0]);
             }
-            Log.d(PlayerAgent.TAG, "MEDIA_PLAYBACK_STARTED 6");
-            final Iterator<PlayerListener> iterator2 = this.mPlayerListeners.iterator();
-            while (iterator2.hasNext()) {
-                this.getMainHandler().post((Runnable)new Runnable() {
-                    final /* synthetic */ PlayerListener val$listener = iterator2.next();
-                    
-                    @Override
-                    public void run() {
-                        this.val$listener.onPlaying();
-                    }
-                });
+            else {
+                Log.d(PlayerAgent.TAG, "MEDIA_PLAYBACK_STARTED 6");
+                this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnPlayingHandler(), new Object[0]);
+            }
+            Log.d(PlayerAgent.TAG, "handlePlayback end");
+        }
+    }
+    
+    private void handlePlayerListener(final PlayerListenerManager.PlayerListenerHandler playerListenerHandler, final Object... array) {
+        synchronized (this.mPlayerListenerManager) {
+            for (final PlayerListener playerListener : this.mPlayerListenerManager.getListeners()) {
+                if (playerListener != null && playerListener.isListening()) {
+                    this.getMainHandler().post((Runnable)new Runnable() {
+                        @Override
+                        public void run() {
+                            playerListenerHandler.handle(playerListener, array);
+                        }
+                    });
+                }
             }
         }
-        Log.d(PlayerAgent.TAG, "handlePlayback end");
     }
-    // monitorexit(this)
+    // monitorexit(playerListenerManager)
     
     private void handlePrepare() {
-        while (true) {
-            Label_0108: {
-                synchronized (this) {
-                    if (this.preparedCompleted) {
-                        Log.w(PlayerAgent.TAG, "openComplete already executed");
+        synchronized (this) {
+            if (this.preparedCompleted) {
+                Log.w(PlayerAgent.TAG, "openComplete already executed");
+            }
+            else {
+                Log.d(PlayerAgent.TAG, "handle openComplete starts...");
+                this.preparedCompleted = true;
+                if (!this.toCancelOpen) {
+                    Log.d(PlayerAgent.TAG, "handle openComplete notifying client");
+                    this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerPrepareHandler(), new Object[0]);
+                    if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                        Log.d(PlayerAgent.TAG, "MEDIA_SET_VIDEO_SIZE 5, w " + this.mMedia.getVideoWidth() + ", h " + this.mMedia.getVideoHeight());
                     }
-                    else {
-                        Log.d(PlayerAgent.TAG, "handle openComplete starts...");
-                        this.preparedCompleted = true;
-                        if (!this.toCancelOpen) {
-                            Log.d(PlayerAgent.TAG, "handle openComplete notifying client");
-                            final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-                            while (iterator.hasNext()) {
-                                this.getMainHandler().post((Runnable)new Runnable() {
-                                    final /* synthetic */ PlayerListener val$listener = iterator.next();
-                                    
-                                    @Override
-                                    public void run() {
-                                        this.val$listener.onVideoSizeChanged(PlayerAgent.this.mMedia.getVideoWidth(), PlayerAgent.this.mMedia.getVideoHeight());
-                                        this.val$listener.onPrepared();
-                                    }
-                                });
-                            }
-                            break Label_0108;
-                        }
-                    }
-                    return;
+                    Log.d(PlayerAgent.TAG, "handle openComplete end");
                 }
             }
-            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                Log.d(PlayerAgent.TAG, "MEDIA_SET_VIDEO_SIZE 5, w " + this.mMedia.getVideoWidth() + ", h " + this.mMedia.getVideoHeight());
-            }
-            Log.d(PlayerAgent.TAG, "handle openComplete end");
         }
     }
     
     private void handleRemoveSubtitle(final RemoveSubtitle removeSubtitle) {
         Log.d(PlayerAgent.TAG, "MEDIA_SUBTITLE_REMOVE 52");
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onSubtitleRemove();
-                }
-            });
-        }
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleRemoveHandler(), new Object[0]);
     }
     
     private void handleShowSubtitle(final ShowSubtitle showSubtitle) {
@@ -646,17 +572,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         if ((text = showSubtitle.getText()) == null) {
             text = "";
         }
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onSubtitleShow(text);
-                }
-            });
-        }
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleShowHandler(), text);
     }
     
     private void handleStatechanged(final Statechanged statechanged) {
@@ -796,35 +712,14 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                 Log.d(PlayerAgent.TAG, "Can not update position, do NOT send subtitle screen update");
                 return;
             }
-            final SubtitleScreen subtitlesForPosition = mSubtitles.getSubtitlesForPosition(n);
-            final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-            while (iterator.hasNext()) {
-                this.getMainHandler().post((Runnable)new Runnable() {
-                    final /* synthetic */ PlayerListener val$listener = iterator.next();
-                    
-                    @Override
-                    public void run() {
-                        this.val$listener.onSubtitleChange(subtitlesForPosition);
-                    }
-                });
-            }
+            this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleChangeHandler(), mSubtitles.getSubtitlesForPosition(n));
         }
     }
     
     private void handleUnderflow() {
         Log.w(PlayerAgent.TAG, "MEDIA_PLAYBACK_STALLED 7");
         this.mBufferingCompleted = false;
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onStalled();
-                }
-            });
-        }
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnStalledHandler(), new Object[0]);
     }
     
     private void handleUpdatePts(final int n) {
@@ -833,17 +728,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         if (!this.splashScreenRemoved) {
             this.muteAudio(false);
             this.splashScreenRemoved = true;
-            final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-            while (iterator.hasNext()) {
-                this.getMainHandler().post((Runnable)new Runnable() {
-                    final /* synthetic */ PlayerListener val$listener = iterator.next();
-                    
-                    @Override
-                    public void run() {
-                        this.val$listener.onStarted();
-                    }
-                });
-            }
+            this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnStartedHandler(), new Object[0]);
         }
         if (this.mInPlayback && this.mBifManager == null) {
             final PlayoutMetadata playoutMetadata = this.getPlayoutMetadata();
@@ -860,17 +745,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                 this.ptsTicker = 0;
             }
         }
-        final Iterator<PlayerListener> iterator2 = this.mPlayerListeners.iterator();
-        while (iterator2.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator2.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onUpdatePts(n);
-                }
-            });
-        }
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnUpdatePtsHandler(), n);
     }
     
     private void muteAudio(final boolean muted) {
@@ -888,63 +763,6 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                     }
                 }
             }
-        }
-    }
-    
-    private void notifyPlayerListeners(final Error error) {
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onMediaError(error);
-                }
-            });
-        }
-    }
-    
-    private void notifyPlayerListeners(final NccpError nccpError) {
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.onNccpError(nccpError);
-                }
-            });
-        }
-    }
-    
-    private void notifyPlayerListenersOfClose() {
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.playbackClosed();
-                }
-            });
-        }
-    }
-    
-    private void notifyPlayerListenersRestart() {
-        final Iterator<PlayerListener> iterator = this.mPlayerListeners.iterator();
-        while (iterator.hasNext()) {
-            this.getMainHandler().post((Runnable)new Runnable() {
-                final /* synthetic */ PlayerListener val$listener = iterator.next();
-                
-                @Override
-                public void run() {
-                    this.val$listener.restartPlayback(PlayerAgent.this.mActionId12Error);
-                    PlayerAgent.this.mActionId12Error = null;
-                }
-            });
         }
     }
     
@@ -1023,7 +841,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             return;
         }
         this.release();
-        this.notifyPlayerListenersOfClose();
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerPlaybackClosedHandler(), new Object[0]);
     }
     
     private void transitToOpeningState() {
@@ -1089,12 +907,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     @Override
     public void addPlayerListener(final PlayerListener playerListener) {
-        if (!this.mPlayerListeners.contains(playerListener)) {
-            this.mPlayerListeners.add(playerListener);
-        }
-        if (this.mPlayerListeners.size() > 2) {
-            Log.e(PlayerAgent.TAG, "Listener count should not be generally greater than 2, count:" + this.mPlayerListeners.size());
-        }
+        this.mPlayerListenerManager.addPlayerListener(playerListener);
     }
     
     @Override
@@ -1522,7 +1335,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     @Override
     public void removePlayerListener(final PlayerListener playerListener) {
-        Log.d(PlayerAgent.TAG, "Removed listener: " + this.mPlayerListeners.remove(playerListener));
+        this.mPlayerListenerManager.removePlayerListener(playerListener);
     }
     
     @Override
@@ -1680,15 +1493,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         @Override
         public void run() {
             Log.d(PlayerAgent.TAG, "StartPlayTimeoutTask to handleFatalError()!");
-            PlayerAgent.this.getMainHandler().post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    final Iterator<PlayerListener> iterator = PlayerAgent.this.mPlayerListeners.iterator();
-                    while (iterator.hasNext()) {
-                        iterator.next().onNrdFatalError();
-                    }
-                }
-            });
+            PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerOnNrdFatalErrorHandler(), new Object[0]);
         }
     }
 }

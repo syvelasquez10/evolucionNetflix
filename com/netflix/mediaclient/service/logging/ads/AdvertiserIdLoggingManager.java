@@ -6,8 +6,8 @@ package com.netflix.mediaclient.service.logging.ads;
 
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.logging.ads.model.AdvertiserIdRequest;
 import com.netflix.mediaclient.Log;
@@ -28,6 +28,7 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
     private Context mContext;
     private AdvertiserIdLoggingWebClient mLoggingWebClient;
     private LoggingAgent mOwner;
+    private EventType mPostponedEvent;
     private final BroadcastReceiver mReceiver;
     
     public AdvertiserIdLoggingManager(final Context mContext, final LoggingAgent mOwner) {
@@ -45,6 +46,11 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
                     if ("com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT".equals(action)) {
                         Log.d("nf_adv_id", "onLogout");
                         AdvertiserIdLoggingManager.this.onLogout();
+                        return;
+                    }
+                    if ("com.netflix.mediaclient.intent.action.ONSIGNUP".equals(action)) {
+                        Log.d("nf_adv_id", "onSignUp");
+                        AdvertiserIdLoggingManager.this.sendAdvertiserId(EventType.sign_up);
                         return;
                     }
                     if (Log.isLoggable("nf_adv_id", 3)) {
@@ -80,11 +86,6 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
     }
     
     private void initProvider() {
-        if (!DeviceUtils.isFirstApplicationStartAfterInstallation(this.mContext)) {
-            Log.d("nf_adv_id", "Not first start after installation");
-            return;
-        }
-        Log.d("nf_adv_id", "First start after installation");
         new BackgroundTask().execute(new Runnable() {
             @Override
             public void run() {
@@ -92,7 +93,18 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
                 AdvertiserIdLoggingManager.this.mAdIdReportedTimestamp = PreferenceUtils.getLongPref(AdvertiserIdLoggingManager.this.mContext, "advertisement_id_ts", 0L);
                 AdvertiserIdLoggingManager.this.mAdIdReportedOptedIn = PreferenceUtils.getBooleanPref(AdvertiserIdLoggingManager.this.mContext, "advertisement_id_opted_in", false);
                 AdvertiserIdLoggingManager.this.mAdvertisingIdProvider = AdvertisingIdProviderFactory.getInstance(AdvertiserIdLoggingManager.this.mContext);
-                AdvertiserIdLoggingManager.this.sendAdvertiserId(EventType.install);
+                final EventType access$500 = AdvertiserIdLoggingManager.this.mPostponedEvent;
+                AdvertiserIdLoggingManager.this.mPostponedEvent = null;
+                if (!DeviceUtils.isFirstApplicationStartAfterInstallation(AdvertiserIdLoggingManager.this.mContext)) {
+                    Log.d("nf_adv_id", "Not first start after installation");
+                }
+                else {
+                    Log.d("nf_adv_id", "First start after installation");
+                    AdvertiserIdLoggingManager.this.sendAdvertiserId(EventType.install);
+                }
+                if (access$500 != null) {
+                    AdvertiserIdLoggingManager.this.sendAdvertiserId(access$500);
+                }
             }
         });
     }
@@ -113,7 +125,9 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
         Log.d("nf_adv_id", "Register receiver");
         final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.PUSH_ONLOGIN");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.ONSIGNUP");
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.PUSH");
+        intentFilter.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intentFilter.setPriority(999);
         try {
             LocalBroadcastManager.getInstance(this.mContext).registerReceiver(this.mReceiver, intentFilter);
@@ -169,43 +183,64 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
     }
     
     @Override
-    public void sendAdvertiserId(final EventType eventType) {
-        if (this.mAdvertisingIdProvider == null) {
-            Log.d("nf_adv_id", "User is logged in, but ADV ID provider is not readu, postpone sending ID");
-            return;
-        }
-        Log.d("nf_adv_id", "Ad ID provider is ready and request to send AD ID exist, execute.");
-        final String id = this.mAdvertisingIdProvider.getId();
-        final boolean b = !this.mAdvertisingIdProvider.isLimitAdTrackingEnabled();
-        if (Log.isLoggable("nf_adv_id", 3)) {
-            Log.d("nf_adv_id", "Ad ID provider exist, if we need to send ID " + id + ", opted in " + b);
-        }
-        if (id == null) {
-            Log.e("nf_adv_id", "Ad id can not be null!");
-            return;
-        }
-        if (eventType != EventType.check_in) {
-            Log.d("nf_adv_id", "Not check in, execute");
+    public void sendAdvertiserId(final EventType mPostponedEvent) {
+        while (true) {
+            String id = null;
+            boolean b = false;
+        Label_0133:
+            while (true) {
+                Label_0128: {
+                    synchronized (this) {
+                        if (this.mAdvertisingIdProvider == null) {
+                            Log.d("nf_adv_id", "User is logged in, but ADV ID provider is not readu, postpone sending ID");
+                            this.mPostponedEvent = mPostponedEvent;
+                        }
+                        else {
+                            this.mPostponedEvent = null;
+                            Log.d("nf_adv_id", "Ad ID provider is ready and request to send AD ID exist, execute.");
+                            id = this.mAdvertisingIdProvider.getId();
+                            if (this.mAdvertisingIdProvider.isLimitAdTrackingEnabled()) {
+                                break Label_0128;
+                            }
+                            b = true;
+                            if (Log.isLoggable("nf_adv_id", 3)) {
+                                Log.d("nf_adv_id", "Ad ID provider exist, if we need to send ID " + id + ", opted in " + b);
+                            }
+                            if (id != null) {
+                                break Label_0133;
+                            }
+                            Log.e("nf_adv_id", "Ad id can not be null!");
+                        }
+                        return;
+                    }
+                }
+                b = false;
+                continue;
+            }
+            final EventType eventType;
+            if (eventType != EventType.check_in) {
+                Log.d("nf_adv_id", "Not check in, execute");
+                this.doSendAdvertiserId(id, b, eventType);
+                return;
+            }
+            Log.d("nf_adv_id", "Check in, validate");
+            if (this.mAdIdReported == null || !this.mAdIdReported.equals(this.mAdvertisingIdProvider.getId())) {
+                Log.d("nf_adv_id", "Ad ID changed, execute");
+                this.doSendAdvertiserId(id, b, eventType);
+                return;
+            }
+            if (this.mAdIdReportedOptedIn == null || b != this.mAdIdReportedOptedIn) {
+                Log.d("nf_adv_id", "opt in status changed, execute");
+                this.doSendAdvertiserId(id, b, eventType);
+                return;
+            }
+            Log.d("nf_adv_id", "Adverising ID is not changed, check when it was last time sent.");
+            if (this.isAlreadySentInLastPeriod()) {
+                Log.d("nf_adv_id", "Ad id and opt in status already sent in last 24 hours, do not send again");
+                return;
+            }
+            Log.d("nf_adv_id", "Ad id and opt in status were NOT sent in last 24 hours, execute");
             this.doSendAdvertiserId(id, b, eventType);
-            return;
         }
-        Log.d("nf_adv_id", "Check in, validate");
-        if (this.mAdIdReported == null || !this.mAdIdReported.equals(this.mAdvertisingIdProvider.getId())) {
-            Log.d("nf_adv_id", "Ad ID changed, execute");
-            this.doSendAdvertiserId(id, b, eventType);
-            return;
-        }
-        if (this.mAdIdReportedOptedIn == null || b != this.mAdIdReportedOptedIn) {
-            Log.d("nf_adv_id", "opt in status changed, execute");
-            this.doSendAdvertiserId(id, b, eventType);
-            return;
-        }
-        Log.d("nf_adv_id", "Adverising ID is not changed, check when it was last time sent.");
-        if (this.isAlreadySentInLastPeriod()) {
-            Log.d("nf_adv_id", "Ad id and opt in status already sent in last 24 hours, do not send again");
-            return;
-        }
-        Log.d("nf_adv_id", "Ad id and opt in status were NOT sent in last 24 hours, execute");
-        this.doSendAdvertiserId(id, b, eventType);
     }
 }

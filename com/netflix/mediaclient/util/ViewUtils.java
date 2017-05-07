@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.View$OnLongClickListener;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 import com.netflix.mediaclient.util.api.Api16Util;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import java.util.ArrayList;
@@ -238,12 +237,12 @@ public class ViewUtils
     }
     
     @SuppressLint({ "NewApi" })
-    public static void setBackgroundToImageCompat(final ImageView imageView, final Drawable drawable) {
+    public static void setBackgroundDrawableCompat(final View view, final Drawable drawable) {
         if (AndroidUtils.getAndroidVersion() >= 16) {
-            imageView.setBackground(drawable);
+            view.setBackground(drawable);
             return;
         }
-        imageView.setBackgroundDrawable(drawable);
+        view.setBackgroundDrawable(drawable);
     }
     
     public static void setLongTapListenersRecursivelyToShowContentDescriptionToast(final View view) {
@@ -262,6 +261,14 @@ public class ViewUtils
                 setLongTapListenersRecursivelyToShowContentDescriptionToast(viewGroup.getChildAt(i));
             }
         }
+    }
+    
+    public static void setTextViewSizeByRes(final TextView textView, final int n) {
+        textView.setTextSize(0, (float)textView.getResources().getDimensionPixelOffset(n));
+    }
+    
+    public static void setTextViewToBold(final TextView textView) {
+        textView.setTypeface(textView.getTypeface(), 1);
     }
     
     public static void setVisibility(final View view, final Visibility visibility) {

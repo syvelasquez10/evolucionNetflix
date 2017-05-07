@@ -61,9 +61,9 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903153, (ViewGroup)null);
+        final View inflate = layoutInflater.inflate(2130903161, (ViewGroup)null);
         this.adapter = new SearchResultsAdapter();
-        (this.gridView = (StickyGridHeadersGridView)inflate.findViewById(2131165558)).setAdapter((ListAdapter)this.adapter);
+        (this.gridView = (StickyGridHeadersGridView)inflate.findViewById(2131165583)).setAdapter((ListAdapter)this.adapter);
         this.gridView.setOnItemClickListener((AdapterView$OnItemClickListener)this.adapter);
         this.gridView.setAreHeadersSticky(false);
         this.gridView.setNumColumns(((SparseIntArray)SearchResultsFrag.numColsTable.get(DeviceUtils.getBasicScreenOrientation((Context)this.getActivity()))).get(DeviceUtils.getScreenSizeCategory((Context)this.getActivity())));
@@ -105,9 +105,9 @@ public class SearchResultsFrag extends NetflixFrag
             }
             View inflate;
             if ((inflate = view) == null) {
-                inflate = SearchResultsFrag.this.getActivity().getLayoutInflater().inflate(2130903154, (ViewGroup)null);
+                inflate = SearchResultsFrag.this.getActivity().getLayoutInflater().inflate(2130903162, (ViewGroup)null);
             }
-            ((TextView)inflate.findViewById(2131165559)).setText(SearchResultsFrag.this.results.getSectionTitle((Context)SearchResultsFrag.this.getActivity(), n));
+            ((TextView)inflate.findViewById(2131165584)).setText(SearchResultsFrag.this.results.getSectionTitle((Context)SearchResultsFrag.this.getActivity(), n));
             return inflate;
         }
         
@@ -123,10 +123,10 @@ public class SearchResultsFrag extends NetflixFrag
         }
         
         public int getNumHeaders() {
-            if (SearchResultsFrag.this.results == null) {
-                return 0;
+            if (!SearchResultsFrag.this.getNetflixActivity().isForKids() && SearchResultsFrag.this.results != null) {
+                return SearchResultsFrag.this.results.getNumSections();
             }
-            return SearchResultsFrag.this.results.getNumSections();
+            return 0;
         }
         
         public View getView(final int n, final View view, final ViewGroup viewGroup) {

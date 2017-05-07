@@ -38,7 +38,6 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class LaunchActivity extends NetflixActivity
 {
-    private static final String EXTRA_SOURCE = "extra_source";
     private static final boolean HANG_ON_LOADING_SCREEN = false;
     private static final boolean START_DETAILS_ACTIVITY_ON_LAUNCH = false;
     private static final String TAG = "LaunchActivity";
@@ -69,6 +68,11 @@ public class LaunchActivity extends NetflixActivity
             @Override
             public String getId() {
                 return "70140457";
+            }
+            
+            @Override
+            public String getSquareUrl() {
+                return null;
             }
             
             @Override
@@ -119,14 +123,14 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void createContentView() {
-        this.setContentView(2130903161);
-        final ImageView imageView = (ImageView)this.findViewById(2131165567);
+        this.setContentView(2130903169);
+        final ImageView imageView = (ImageView)this.findViewById(2131165592);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837843;
+            imageResource = 2130837865;
         }
         else {
-            imageResource = 2130837842;
+            imageResource = 2130837864;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -134,29 +138,32 @@ public class LaunchActivity extends NetflixActivity
         }
     }
     
-    public static Intent createStartIntent(final Activity activity, final String s) {
-        return new Intent((Context)activity, (Class)LaunchActivity.class).putExtra("extra_source", s);
-    }
-    
     private void handleManagerReady(final ServiceManager serviceManager) {
+        final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging();
         final boolean userLoggedIn = serviceManager.isUserLoggedIn();
         final boolean signUpEnabled = serviceManager.getSignUpParams().isSignUpEnabled();
         if (this.mSplashScreenStarted > 0L) {
             Log.d("LaunchActivity", "Splash screen was displayed, reporting");
-            this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().uiViewChanged(DeviceUtils.isPortrait((Context)this), IClientLogging.ModalView.appLoading, this.mSplashScreenStarted);
+            applicationPerformanceMetricsLogging.uiViewChanged(DeviceUtils.isPortrait((Context)this), IClientLogging.ModalView.appLoading, this.mSplashScreenStarted);
         }
         if (!userLoggedIn) {
             if (signUpEnabled && !this.getNetflixApplication().hasSignedUpOnce()) {
                 Log.d("LaunchActivity", "User has not signed up, redirect to Signup screen");
-                this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.signupPrompt, this.mStarted);
+                if (this.shouldCreateUiSessions()) {
+                    applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.signupPrompt, this.mStarted);
+                }
                 this.startNextActivity(SignupActivity.createStartIntent((Context)this, this.getIntent()));
             }
             else {
                 Log.d("LaunchActivity", "User is NOT logged in, redirect to Login screen");
-                this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.login, this.mStarted);
+                if (this.shouldCreateUiSessions()) {
+                    applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.login, this.mStarted);
+                }
                 this.startNextActivity(LoginActivity.createStartIntent((Context)this));
             }
-            this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(this.mStarted);
+            if (this.shouldCreateUiSessions()) {
+                applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
+            }
             this.finish();
             return;
         }
@@ -174,24 +181,28 @@ public class LaunchActivity extends NetflixActivity
             return;
         }
         if (serviceManager.getCurrentProfile() == null) {
-            this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, this.mStarted);
-            this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(this.mStarted);
+            if (this.shouldCreateUiSessions()) {
+                applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, this.mStarted);
+                applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
+            }
             this.startNextActivity(ProfileSelectionActivity.createStartIntent(this));
             this.finish();
             return;
         }
         Log.d("LaunchActivity", String.format("Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileId()));
         this.startNextActivity(HomeActivity.createStartIntent(this));
-        this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.homeScreen, this.mStarted);
-        this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(this.mStarted);
+        if (this.shouldCreateUiSessions()) {
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.homeScreen, this.mStarted);
+            applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
+        }
         this.finish();
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131165567);
+        final ImageView imageView = (ImageView)this.findViewById(2131165592);
         imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165568);
-            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165569);
+            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165593);
+            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165594);
             
             public void onGlobalLayout() {
                 if (imageView.getWidth() <= 0) {
@@ -308,6 +319,10 @@ public class LaunchActivity extends NetflixActivity
         Log.d("LaunchActivity", "Received new intent:");
         AndroidUtils.logIntent("LaunchActivity", intent);
         super.onNewIntent(intent);
+    }
+    
+    protected boolean shouldCreateUiSessions() {
+        return true;
     }
     
     @Override

@@ -27,6 +27,7 @@ import com.netflix.mediaclient.servicemgr.CWVideo;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import android.widget.RelativeLayout;
 
+@Deprecated
 @SuppressLint({ "ViewConstructor" })
 public class KidsOneToOneCwView extends RelativeLayout implements IVideoView<CWVideo>
 {
@@ -42,9 +43,9 @@ public class KidsOneToOneCwView extends RelativeLayout implements IVideoView<CWV
         final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131361836);
         this.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903096, (ViewGroup)this);
-        (this.mainImg = (AdvancedImageView)this.findViewById(2131165386)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361904));
-        (this.tvCard = (AdvancedImageView)this.findViewById(2131165392)).setPressedStateHandlerEnabled(false);
+        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903098, (ViewGroup)this);
+        (this.mainImg = (AdvancedImageView)this.findViewById(2131165391)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361905));
+        (this.tvCard = (AdvancedImageView)this.findViewById(2131165398)).setPressedStateHandlerEnabled(false);
     }
     
     public PlayContext getPlayContext() {
@@ -63,11 +64,11 @@ public class KidsOneToOneCwView extends RelativeLayout implements IVideoView<CWV
         }
         this.playContext = new PlayContextImp(trackable, n);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493180), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493186), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView mainImg = this.mainImg;
-        final String boxshotURL = cwVideo.getBoxshotURL();
+        final String squareUrl = cwVideo.getSquareUrl();
         final IClientLogging.AssetType boxArt = IClientLogging.AssetType.boxArt;
         if (b) {
             n = 1;
@@ -75,7 +76,7 @@ public class KidsOneToOneCwView extends RelativeLayout implements IVideoView<CWV
         else {
             n = 0;
         }
-        imageLoader.showImg(mainImg, boxshotURL, boxArt, format, true, true, n);
+        imageLoader.showImg(mainImg, squareUrl, boxArt, format, false, true, n);
         final ImageLoader imageLoader2 = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView tvCard = this.tvCard;
         final String tvCardUrl = cwVideo.getTvCardUrl();
@@ -86,10 +87,10 @@ public class KidsOneToOneCwView extends RelativeLayout implements IVideoView<CWV
         else {
             n = 0;
         }
-        imageLoader2.showImg(tvCard, tvCardUrl, boxArt2, format, true, true, n);
+        imageLoader2.showImg(tvCard, tvCardUrl, boxArt2, format, false, true, n);
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
-                PlaybackLauncher.startPlayback((NetflixActivity)KidsOneToOneCwView.this.getContext(), cwVideo, KidsOneToOneCwView.this.playContext);
+                PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)KidsOneToOneCwView.this.getContext(), cwVideo, KidsOneToOneCwView.this.playContext);
             }
         });
     }

@@ -18,6 +18,8 @@ public interface UserAgentWebCallback
     
     void onDummyWebCallDone(final int p0);
     
+    void onPinVerified(final boolean p0, final int p1);
+    
     void onProfileDataFetched(final UserProfile p0, final int p1);
     
     void onUserProfileSwitched(final UserBoundCookies p0, final int p1);

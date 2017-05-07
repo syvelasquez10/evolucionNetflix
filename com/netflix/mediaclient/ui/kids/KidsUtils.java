@@ -13,13 +13,13 @@ import android.view.Menu;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
-import android.content.Context;
 import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.UserProfile;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import android.app.Activity;
 
 public class KidsUtils
@@ -49,9 +49,13 @@ public class KidsUtils
         return false;
     }
     
+    public static int computeHorizontalRowHeight(final NetflixActivity netflixActivity, final boolean b) {
+        return (int)(BasePaginatedAdapter.computeViewPagerWidth(netflixActivity, b) * 0.5625f);
+    }
+    
     public static int computeRowHeight(final NetflixActivity netflixActivity, final boolean b) {
         final int computeViewPagerWidth;
-        final int n = computeViewPagerWidth = BasePaginatedAdapter.computeViewPagerWidth((Context)netflixActivity, b);
+        final int n = computeViewPagerWidth = BasePaginatedAdapter.computeViewPagerWidth(netflixActivity, b);
         final ServiceManager serviceManager = netflixActivity.getServiceManager();
         if (serviceManager == null) {
             Log.w("KidsUtils", "Null service manager in computeRowHeight()");
@@ -67,18 +71,18 @@ public class KidsUtils
         return n2;
     }
     
-    public static Intent createExitKidsIntent(final Activity activity) {
-        return ProfileSelectionActivity.createStartIntent(activity);
+    public static Intent createExitKidsIntent(final Activity activity, final UIViewLogging.UIViewCommandName uiViewCommandName) {
+        return ProfileSelectionActivity.createSwitchFromKidsIntent(activity, uiViewCommandName);
     }
     
     public static MenuItem createKidsMenuItem(final NetflixActivity netflixActivity, final Menu menu) {
-        final MenuItem add = menu.add(0, 2131165242, 0, 2131492956);
+        final MenuItem add = menu.add(0, 2131165242, 0, 2131492962);
         updateKidsMenuItem(netflixActivity, add);
         return add;
     }
     
-    private static Intent createSwitchToKidsIntent(final Activity activity) {
-        return ProfileSelectionActivity.createSwitchToKidsIntent(activity);
+    private static Intent createSwitchToKidsIntent(final Activity activity, final UIViewLogging.UIViewCommandName uiViewCommandName) {
+        return ProfileSelectionActivity.createSwitchToKidsIntent(activity, uiViewCommandName);
     }
     
     public static boolean isKidsProfile(final UserProfile userProfile) {
@@ -90,11 +94,11 @@ public class KidsUtils
     }
     
     public static boolean isKoPExperience(final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final UserProfile userProfile) {
-        return isKidsProfile(userProfile) && isUserInKopTest(configurationAgentInterface);
+        return isKidsProfile(userProfile) && isUserInKopExperience(configurationAgentInterface);
     }
     
-    public static boolean isUserInKopTest(final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface) {
-        return configurationAgentInterface != null && configurationAgentInterface.getKidsOnPhoneConfiguration() != null && configurationAgentInterface.getKidsOnPhoneConfiguration().isInKidsOnPhoneTest();
+    public static boolean isUserInKopExperience(final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface) {
+        return configurationAgentInterface != null && configurationAgentInterface.getKidsOnPhoneConfiguration() != null && configurationAgentInterface.getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled();
     }
     
     public static boolean shouldShowHorizontalImages(final NetflixActivity netflixActivity) {
@@ -157,22 +161,24 @@ public class KidsUtils
         }
         menuItem.setVisible(true).setEnabled(true);
         if (netflixActivity.isForKids()) {
-            menuItem.setTitle(2131492961).setIntent(createExitKidsIntent(netflixActivity)).setShowAsAction(2);
+            menuItem.setTitle(2131492967).setIcon(2130837694).setIntent(createExitKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsExit)).setShowAsAction(2);
             return;
         }
-        menuItem.setTitle(2131492948).setIcon(2130837723).setIntent(createSwitchToKidsIntent(netflixActivity)).setShowAsAction(2);
+        menuItem.setTitle(2131492948).setIcon(2130837732).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
     }
     
     public static class OnSwitchToKidsClickListener implements View$OnClickListener
     {
         private final Activity activity;
+        private final UIViewLogging.UIViewCommandName entryName;
         
-        public OnSwitchToKidsClickListener(final Activity activity) {
+        public OnSwitchToKidsClickListener(final Activity activity, final UIViewLogging.UIViewCommandName entryName) {
             this.activity = activity;
+            this.entryName = entryName;
         }
         
         public void onClick(final View view) {
-            this.activity.startActivity(createSwitchToKidsIntent(this.activity));
+            this.activity.startActivity(createSwitchToKidsIntent(this.activity, this.entryName));
         }
     }
 }

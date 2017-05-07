@@ -162,6 +162,14 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
     }
     
     @Override
+    public String getInterestingUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.intrUrl;
+    }
+    
+    @Override
     public String getNextEpisodeId() {
         if (this.currentEpisode == null) {
             return null;
@@ -229,6 +237,14 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
     }
     
     @Override
+    public String getSquareUrl() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.getSquareUrl();
+    }
+    
+    @Override
     public String getStillUrl() {
         if (this.bookmarkStill == null) {
             return null;
@@ -276,6 +292,19 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
     @Override
     public boolean isNextPlayableEpisode() {
         return VideoType.SHOW.equals(this.getType()) && this.currentEpisode != null && this.currentEpisode.isNextPlayableEpisode();
+    }
+    
+    @Override
+    public boolean isPinProtected() {
+        if (VideoType.MOVIE.equals(this.getType())) {
+            if (this.detail != null) {
+                return this.detail.isPinProtected;
+            }
+        }
+        else if (this.currentEpisode != null) {
+            return this.currentEpisode.isPinProtected;
+        }
+        return false;
     }
     
     @Override

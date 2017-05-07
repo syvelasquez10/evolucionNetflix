@@ -26,8 +26,6 @@ public interface VideoDetails extends Playable
     
     String getHighResolutionPortraitBoxArtUrl();
     
-    String getHorzDispUrl();
-    
     float getPredictedRating();
     
     String getQuality();

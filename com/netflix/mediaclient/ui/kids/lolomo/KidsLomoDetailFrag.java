@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
+import com.netflix.mediaclient.servicemgr.BasicLoMo;
 import android.os.Parcelable;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.LoMo;

@@ -20,6 +20,7 @@ public interface IPushNotification
     public static final String GCM_ON_MESSAGE = "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONMESSAGE";
     public static final String GCM_ON_REGISTERED = "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONREGISTERED";
     public static final String GCM_ON_UNREGISTERED = "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONUNREGISTERED";
+    public static final String NOTIFICATION_BROWSER_REDIRECT = "com.netflix.mediaclient.intent.action.NOTIFICATION_BROWSER_REDIRECT";
     public static final String NOTIFICATION_CANCELED = "com.netflix.mediaclient.intent.action.NOTIFICATION_CANCELED";
     public static final String ONLOGIN = "com.netflix.mediaclient.intent.action.PUSH_ONLOGIN";
     public static final String ONLOGOUT = "com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT";

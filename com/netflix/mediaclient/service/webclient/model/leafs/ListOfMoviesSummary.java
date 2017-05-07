@@ -35,6 +35,7 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
     }
     
     public ListOfMoviesSummary(final Parcel parcel) {
+        super(parcel);
         this.id = parcel.readString();
         this.type = parcel.readString();
         this.displayName = parcel.readString();
@@ -87,6 +88,7 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
+        super.writeToParcel(parcel, n);
         parcel.writeString(this.id);
         parcel.writeString(this.type);
         parcel.writeString(this.displayName);

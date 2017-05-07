@@ -7,6 +7,9 @@ package com.netflix.mediaclient.service.logging.client.model;
 import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.util.NumberUtils;
+import com.netflix.mediaclient.servicemgr.Trackable;
 import com.google.gson.annotations.Since;
 import com.google.gson.annotations.SerializedName;
 
@@ -36,6 +39,27 @@ public class DataContext
     @SerializedName("xid")
     @Since(1.0)
     private String xid;
+    
+    public DataContext() {
+    }
+    
+    public DataContext(final Trackable trackable) {
+        this(trackable, 0, null);
+    }
+    
+    public DataContext(final Trackable trackable, final Integer rank, final String s) {
+        if (trackable != null) {
+            this.setRow(trackable.getListPos());
+            this.setRequestId(trackable.getRequestId());
+            this.setTrackId(trackable.getTrackId());
+        }
+        this.setRank(rank);
+        this.setVideoId(NumberUtils.toIntegerSafely(s, null));
+    }
+    
+    public DataContext(final PlayContext playContext, final String s) {
+        this(playContext, playContext.getVideoPos(), s);
+    }
     
     public static DataContext createInstance(final JSONObject jsonObject) throws JSONException {
         if (jsonObject == null) {

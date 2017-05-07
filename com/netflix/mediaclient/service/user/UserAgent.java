@@ -562,6 +562,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     
     public void logoutUser(final UserAgentCallback mLogoutCallback) {
         this.mLogoutCallback = mLogoutCallback;
+        this.getService().getClientLogging().flush();
         if (!this.isUserLoggedIn()) {
             this.notifyLogoutComplete(0);
             return;
@@ -642,6 +643,7 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     @Override
     public void switchWebUserProfile(final String s) {
         Log.d("nf_service_useragent", "switchWebUserProfile");
+        this.getService().getClientLogging().flush();
         this.launchWebTask(new SwitchWebUserProfilesTask(s));
     }
     
@@ -692,6 +694,10 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     @Override
     public void userAccountInactive() {
         this.mCurrentUserAccount = null;
+    }
+    
+    public void verifyPin(final String s, final UserAgentCallback userAgentCallback) {
+        this.launchTask((FetchTask<?>)new VerifyPinTask(s, userAgentCallback));
     }
     
     private class ActivateListener implements EventListener
@@ -1008,5 +1014,34 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
         void onLoginComplete(final int p0, final String p1);
         
         void onLogoutComplete(final int p0);
+        
+        void onPinVerified(final boolean p0, final int p1);
+    }
+    
+    private class VerifyPinTask extends FetchTask<Void>
+    {
+        final String enteredPin;
+        private final UserAgentWebCallback webClientCallback;
+        
+        public VerifyPinTask(final String enteredPin, final UserAgentCallback userAgentCallback) {
+            super(userAgentCallback);
+            this.webClientCallback = new SimpleUserAgentWebCallback() {
+                @Override
+                public void onPinVerified(final boolean b, final int n) {
+                    UserAgent.this.getMainHandler().post((Runnable)new Runnable() {
+                        @Override
+                        public void run() {
+                            ((FetchTask)VerifyPinTask.this).getCallback().onPinVerified(b, n);
+                        }
+                    });
+                }
+            };
+            this.enteredPin = enteredPin;
+        }
+        
+        @Override
+        public void run() {
+            UserAgent.this.mUserWebClient.verifyPin(this.enteredPin, this.webClientCallback);
+        }
     }
 }

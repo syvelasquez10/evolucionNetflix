@@ -34,6 +34,7 @@ public class KidsCharacterView extends RelativeLayout implements IVideoView<Vide
     private ImageView bg;
     private TopCropImageView img;
     private PlayContext playContext;
+    private final Boolean useHorizontalImg;
     
     public KidsCharacterView(final Context context, final boolean b) {
         super(context);
@@ -42,20 +43,20 @@ public class KidsCharacterView extends RelativeLayout implements IVideoView<Vide
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903090, (ViewGroup)this);
-        this.bg = (ImageView)this.findViewById(2131165374);
-        final boolean shouldShowHorizontalImages = KidsUtils.shouldShowHorizontalImages(netflixActivity);
+        this.bg = (ImageView)this.findViewById(2131165378);
+        this.useHorizontalImg = KidsUtils.shouldShowHorizontalImages(netflixActivity);
         final ImageView bg = this.bg;
         int imageResource;
-        if (shouldShowHorizontalImages) {
-            imageResource = 2130837720;
+        if (this.useHorizontalImg) {
+            imageResource = 2130837728;
         }
         else {
-            imageResource = 2130837721;
+            imageResource = 2130837729;
         }
         bg.setImageResource(imageResource);
-        (this.img = (TopCropImageView)this.findViewById(2131165375)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361904));
-        if (shouldShowHorizontalImages) {
-            final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131361907);
+        (this.img = (TopCropImageView)this.findViewById(2131165379)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361905));
+        if (this.useHorizontalImg) {
+            final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131361908);
             this.img.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
         }
     }
@@ -75,9 +76,15 @@ public class KidsCharacterView extends RelativeLayout implements IVideoView<Vide
         }
         this.playContext = new PlayContextImp(trackable, n);
         this.setVisibility(0);
+        String s;
+        if (this.useHorizontalImg) {
+            s = video.getHorzDispUrl();
+        }
+        else {
+            s = video.getSquareUrl();
+        }
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final TopCropImageView img = this.img;
-        final String boxshotURL = video.getBoxshotURL();
         final IClientLogging.AssetType bif = IClientLogging.AssetType.bif;
         final String title = video.getTitle();
         if (b) {
@@ -86,7 +93,7 @@ public class KidsCharacterView extends RelativeLayout implements IVideoView<Vide
         else {
             n = 0;
         }
-        imageLoader.showImg(img, boxshotURL, bif, title, false, true, n);
+        imageLoader.showImg(img, s, bif, title, false, true, n);
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 DetailsActivity.show((NetflixActivity)KidsCharacterView.this.getContext(), video, KidsCharacterView.this.playContext);

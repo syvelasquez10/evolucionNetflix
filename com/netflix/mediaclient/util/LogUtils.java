@@ -7,6 +7,16 @@ package com.netflix.mediaclient.util;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.Trackable;
+import java.util.Collections;
+import com.netflix.mediaclient.servicemgr.UiLocation;
+import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
@@ -262,6 +272,28 @@ public final class LogUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
+    public static void reportPresentationTracking(final ServiceManager serviceManager, final BasicLoMo basicLoMo, final Video video, final int n) {
+        if (serviceManager == null || !serviceManager.isReady()) {
+            Log.w("nf_presentation", "Manager not ready - can't report presentation tracking");
+            return;
+        }
+        if (!VideoType.isPresentationTrackingType(video.getType())) {
+            Log.v("nf_presentation", "Video is not presentation-trackable");
+            return;
+        }
+        UiLocation uiLocation;
+        if (basicLoMo.getType() == LoMoType.FLAT_GENRE) {
+            uiLocation = UiLocation.GENRE_LOLOMO;
+        }
+        else {
+            uiLocation = UiLocation.HOME_LOLOMO;
+        }
+        if (Log.isLoggable("nf_presentation", 2)) {
+            Log.v("nf_presentation", String.format("%s, %s, offset %d, id: %s", basicLoMo.getTitle(), uiLocation, n, video.getId()));
+        }
+        serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, Collections.singletonList(video.getId()), n, uiLocation);
+    }
+    
     public static void reportRateActionEnded(final Context context, final IClientLogging.CompletionReason completionReason, final UIError uiError, final Integer n, final Integer n2) {
         validateArgument(context, "Context can not be null!");
         validateArgument(completionReason, "Reason can not be null!");
@@ -270,7 +302,7 @@ public final class LogUtils
         intent.putExtra("reason", completionReason.name());
         while (true) {
             if (uiError == null) {
-                break Label_0062;
+                break Label_0063;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());
@@ -310,7 +342,7 @@ public final class LogUtils
         intent.putExtra("reason", completionReason.name());
         while (true) {
             if (uiError == null) {
-                break Label_0058;
+                break Label_0059;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());
@@ -373,6 +405,46 @@ public final class LogUtils
             intent.putExtra("term", s);
         }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportSignUpOnDevice(final Context context) {
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.ONSIGNUP");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportUIViewCommandEnded(final Context context) {
+        validateArgument(context, "Context can not be null!");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_ENDED"));
+    }
+    
+    public static void reportUIViewCommandStarted(final Context context, UIViewLogging.UIViewCommandName string, final IClientLogging.ModalView modalView, final DataContext dataContext) {
+        validateArgument(context, "Context can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_START");
+        if (modalView != null) {
+            intent.putExtra("view", modalView.name());
+        }
+        if (string != null) {
+            intent.putExtra("cmd", string.name());
+        }
+        Label_0076: {
+            if (dataContext == null) {
+                break Label_0076;
+            }
+            string = null;
+            while (true) {
+                try {
+                    string = (UIViewLogging.UIViewCommandName)dataContext.toJSONObject().toString();
+                    intent.putExtra("dataContext", (String)string);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                }
+                catch (JSONException ex) {
+                    Log.w("nf_log", "failed to create dataContext: " + dataContext.toString());
+                    continue;
+                }
+                break;
+            }
+        }
     }
     
     public static void reportUiModalViewChanged(final Context context, final IClientLogging.ModalView modalView) {

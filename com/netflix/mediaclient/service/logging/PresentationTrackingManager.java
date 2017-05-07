@@ -29,7 +29,7 @@ class PresentationTrackingManager implements PresentationTracking
     private static final int PT_MAX_TIME_EVENT_CAN_STAY_IN_QUEUE_MS = 300000;
     private static final int PT_MIN_NUMBER_OF_PAGES_TO_POST = 50;
     static final String REPOSITORY_DIR = "ptevents";
-    private static final String TAG = "nf_presentation";
+    public static final String TAG = "nf_presentation";
     private Context mContext;
     private DataRepository mDataRepository;
     private ScheduledExecutorService mExecutor;
@@ -162,6 +162,10 @@ class PresentationTrackingManager implements PresentationTracking
         if (this.mPresentationEventQueue.flushIfCriteriaIsFulfilled()) {
             Log.d("nf_presentation", "Presentation tracking events were send recently ms. We reached timeout, force send");
         }
+    }
+    
+    void flush() {
+        this.mPresentationEventQueue.flushEvents();
     }
     
     void init(final ScheduledExecutorService mExecutor) {

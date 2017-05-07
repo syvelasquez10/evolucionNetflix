@@ -44,6 +44,9 @@ public class AccountConfiguration
     }
     
     public KidsOnPhoneConfiguration getKidsOnPhoneConfiguration() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
         return this.mAccountConfigData.getKidsOnPhone();
     }
     

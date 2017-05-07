@@ -11,6 +11,7 @@ import com.netflix.mediaclient.servicemgr.Trackable;
 import java.util.List;
 import android.widget.LinearLayout$LayoutParams;
 import com.netflix.mediaclient.android.fragment.CustomViewPager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.content.Context;
@@ -27,7 +28,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.setOrientation(0);
         if (b) {
-            CustomViewPager.applyContentOverlapPadding(this.getContext(), (View)this);
+            CustomViewPager.applyContentOverlapPadding((NetflixActivity)this.getContext(), (View)this);
         }
     }
     
@@ -38,7 +39,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
         for (int i = 0; i < n; ++i) {
             final View childView = this.createChildView(this.getContext());
             if (this.shouldApplyPaddingToChildren()) {
-                final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361869);
+                final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361870);
                 childView.setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             }
             this.addView(childView, (ViewGroup$LayoutParams)linearLayout$LayoutParams);

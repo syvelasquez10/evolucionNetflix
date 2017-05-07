@@ -70,7 +70,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         String string2 = s;
         if (isEmpty(s)) {
-            string2 = context.getString(2131493167);
+            string2 = context.getString(2131493173);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string2);
@@ -160,7 +160,7 @@ public final class StringUtils
         if (videoDetails.getCertification() != null) {
             sb.append(videoDetails.getCertification()).append("   ");
         }
-        sb.append(String.format(context.getResources().getString(2131493172), TimeUtils.convertSecondsToMinutes(videoDetails.getRuntime())));
+        sb.append(String.format(context.getResources().getString(2131493178), TimeUtils.convertSecondsToMinutes(videoDetails.getRuntime())));
         return sb.toString();
     }
     
@@ -617,6 +617,28 @@ public final class StringUtils
     
     public static boolean isEmpty(final String s) {
         return s == null || "".equals(s.trim());
+    }
+    
+    public static boolean isInteger(final String s) {
+        return isInteger(s, 10);
+    }
+    
+    public static boolean isInteger(String trim, final int n) {
+        if (!isEmpty(trim)) {
+            trim = trim.trim();
+            for (int i = 0; i < trim.length(); ++i) {
+                if (i == 0 && trim.charAt(i) == '-') {
+                    if (trim.length() == 1) {
+                        return false;
+                    }
+                }
+                else if (Character.digit(trim.charAt(i), n) < 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
     
     public static boolean isNotEmpty(final CharSequence charSequence) {

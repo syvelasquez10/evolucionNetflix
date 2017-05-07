@@ -249,6 +249,14 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     }
     
     @Override
+    public String getSquareUrl() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.getSquareUrl();
+    }
+    
+    @Override
     public String getStoryUrl() {
         if (this.detail == null) {
             return null;
@@ -317,6 +325,11 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     @Override
     public boolean isNextPlayableEpisode() {
         return this.detail != null && this.detail.isNextPlayableEpisode;
+    }
+    
+    @Override
+    public boolean isPinProtected() {
+        return this.detail != null && this.detail.isPinProtected;
     }
     
     @Override

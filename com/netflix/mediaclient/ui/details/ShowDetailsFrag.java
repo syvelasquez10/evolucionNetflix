@@ -79,7 +79,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131165583);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131165608);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {
@@ -151,12 +151,12 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         
         @Override
         public CharSequence getCreatorsText() {
-            return StringUtils.createBoldLabeledText(this.context, 2131493169, this.details.getCreators());
+            return StringUtils.createBoldLabeledText(this.context, 2131493175, this.details.getCreators());
         }
         
         @Override
         public CharSequence getStarringText() {
-            return StringUtils.createBoldLabeledText(this.context, 2131493168, this.details.getActors());
+            return StringUtils.createBoldLabeledText(this.context, 2131493174, this.details.getActors());
         }
     }
 }

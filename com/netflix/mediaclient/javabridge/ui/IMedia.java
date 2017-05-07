@@ -82,6 +82,8 @@ public interface IMedia
     
     void setAudioBitrateRange(final AudioBitrateRange p0);
     
+    void setBytesReport(final int p0, final int p1);
+    
     void setMaxVideoBufferSize(final int p0);
     
     void setNetworkProfile(final int p0);

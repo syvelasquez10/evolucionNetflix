@@ -193,6 +193,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public String getSquareUrl() {
+        return null;
+    }
+    
+    @Override
     public String getStoryUrl() {
         return null;
     }
@@ -239,6 +244,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     
     @Override
     public boolean isNextPlayableEpisode() {
+        return false;
+    }
+    
+    @Override
+    public boolean isPinProtected() {
         return false;
     }
     

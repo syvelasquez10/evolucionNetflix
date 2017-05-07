@@ -17,7 +17,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.6/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/3.7/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT_FULL = "responseFormat=json&pathFormat=hierarchical&progressive=false";
@@ -40,6 +40,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PARAM_DEBUG_BUILD = "dbg";
     private static final String PARAM_FORM_FACTOR = "ffbc";
     private static final String PARAM_IMG_PREFERENCE = "imgpref";
+    public static final String PARAM_KOP_EXPERIENCE = "kop";
     private static final String PARAM_LANGUAGES = "languages";
     private static final String PARAM_MANUFACTURER = "mnf";
     private static final String PARAM_MODEL_ID = "mId";
@@ -52,7 +53,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String WEBCLIENT_ENDPOINT = "api-global.netflix.com";
     private String mApiEndpointUrl;
     private String mClientLogEndpointUrl;
-    private ServiceAgent.ConfigurationAgentInterface mConfigAgentInterface;
+    private ServiceAgent.ConfigurationAgentInterface mConfigAgent;
     private String mConfigEndpointUrl;
     private final Context mContext;
     private final Boolean mDeviceHd;
@@ -61,7 +62,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private final ImagePrefRepository mImagePrefRepository;
     private String mPresentationTrackingUrl;
     private final String mUiResolutionType;
-    private ServiceAgent.UserAgentInterface mUserAgentInterface;
+    private ServiceAgent.UserAgentInterface mUserAgent;
     
     public EndpointRegistryProvider(final Context mContext, final DeviceModel mDeviceModel, final Boolean mDeviceHd, final ImagePrefRepository mImagePrefRepository, final String mUiResolutionType) {
         this.mContext = mContext;
@@ -73,13 +74,16 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     }
     
     private StringBuilder addDynamicParams(final StringBuilder sb) {
-        if (this.mUserAgentInterface != null && StringUtils.isNotEmpty(this.mUserAgentInterface.getLanguagesInCsv())) {
-            sb.append(this.buildUrlParam("languages", UriUtil.urlEncodeParam(this.mUserAgentInterface.getLanguagesInCsv())));
+        if (this.mUserAgent != null && StringUtils.isNotEmpty(this.mUserAgent.getLanguagesInCsv())) {
+            sb.append(this.buildUrlParam("languages", UriUtil.urlEncodeParam(this.mUserAgent.getLanguagesInCsv())));
         }
-        if (this.mUserAgentInterface != null && KidsUtils.isKoPExperience(this.mConfigAgentInterface, this.mUserAgentInterface.getCurrentProfile())) {
-            sb.append(this.buildUrlParam("prfType", this.mUserAgentInterface.getCurrentProfile().getProfileType().toString()));
-            if (this.mConfigAgentInterface.getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled()) {
-                sb.append(this.buildUrlParam("bat", this.mConfigAgentInterface.getKidsOnPhoneConfiguration().getLolomoImageType().toString()));
+        if (this.mUserAgent != null && KidsUtils.isKidsProfile(this.mUserAgent.getCurrentProfile())) {
+            sb.append(this.buildUrlParam("prfType", this.mUserAgent.getCurrentProfile().getProfileType().toString()));
+            if (KidsUtils.isKoPExperience(this.mConfigAgent, this.mUserAgent.getCurrentProfile())) {
+                sb.append(this.buildUrlParam("kop", Boolean.TRUE.toString()));
+                if (this.mConfigAgent.getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled()) {
+                    sb.append(this.buildUrlParam("bat", this.mConfigAgent.getKidsOnPhoneConfiguration().getLolomoImageType().toString()));
+                }
             }
         }
         return sb;
@@ -158,7 +162,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.6/api");
+        sb.append("/android/3.7/api");
         sb.append("?");
         sb.append("responseFormat=json&pathFormat=hierarchical&progressive=false");
         sb.append("&routing=reject");
@@ -232,12 +236,12 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         return true;
     }
     
-    public void setConfigurationAgentInterface(final ServiceAgent.ConfigurationAgentInterface mConfigAgentInterface) {
-        this.mConfigAgentInterface = mConfigAgentInterface;
+    public void setConfigurationAgentInterface(final ServiceAgent.ConfigurationAgentInterface mConfigAgent) {
+        this.mConfigAgent = mConfigAgent;
     }
     
-    public void setUserAgentInterface(final ServiceAgent.UserAgentInterface mUserAgentInterface) {
-        this.mUserAgentInterface = mUserAgentInterface;
+    public void setUserAgentInterface(final ServiceAgent.UserAgentInterface mUserAgent) {
+        this.mUserAgent = mUserAgent;
     }
     
     @Override

@@ -53,6 +53,14 @@ public class SearchVideo extends Video implements com.netflix.mediaclient.servic
     }
     
     @Override
+    public String getSquareUrl() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.getSquareUrl();
+    }
+    
+    @Override
     public String getTitle() {
         if (this.summary == null) {
             return null;

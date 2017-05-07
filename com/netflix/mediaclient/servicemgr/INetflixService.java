@@ -145,4 +145,6 @@ public interface INetflixService
     void setVideoRating(final String p0, final int p1, final int p2, final int p3, final int p4);
     
     void unregisterCallback(final INetflixServiceCallback p0);
+    
+    void verifyPin(final String p0, final int p1, final int p2);
 }

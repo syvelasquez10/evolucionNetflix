@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import android.os.Parcel;
 import com.netflix.mediaclient.servicemgr.Trackable;
 
 public class TrackableListSummary extends ListSummary implements Trackable
@@ -11,6 +12,20 @@ public class TrackableListSummary extends ListSummary implements Trackable
     private int listPos;
     private String requestId;
     private int trackId;
+    
+    protected TrackableListSummary(final int n, final int trackId, final int listPos, final String requestId) {
+        super(n);
+        this.trackId = trackId;
+        this.listPos = listPos;
+        this.requestId = requestId;
+    }
+    
+    protected TrackableListSummary(final Parcel parcel) {
+        super(parcel);
+        this.trackId = parcel.readInt();
+        this.listPos = parcel.readInt();
+        this.requestId = parcel.readString();
+    }
     
     @Override
     public int getListPos() {
@@ -34,5 +49,13 @@ public class TrackableListSummary extends ListSummary implements Trackable
     @Override
     public String toString() {
         return "TrackableListSummary [trackId=" + this.trackId + ", listPos=" + this.listPos + ", requestId=" + this.requestId + "]";
+    }
+    
+    @Override
+    protected void writeToParcel(final Parcel parcel, final int n) {
+        super.writeToParcel(parcel, n);
+        parcel.writeInt(this.trackId);
+        parcel.writeInt(this.listPos);
+        parcel.writeString(this.requestId);
     }
 }

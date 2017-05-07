@@ -65,6 +65,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onPinVerified(final boolean b, final int n) {
+    }
+    
+    @Override
     public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
     }
     

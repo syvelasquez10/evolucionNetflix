@@ -76,13 +76,11 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     public void onApplicationDisconnected(final int n) {
         Log.d(MdxCastApplication.TAG, "Cast.Listener disconnected with statusCode" + n);
         this.mCallback.onApplicationStopped();
-        this.logAppStatus();
     }
     
     @Override
     public void onApplicationStatusChanged() {
         Log.d(MdxCastApplication.TAG, "Cast.Listener onApplicationStatusChanged");
-        this.logAppStatus();
     }
     
     @Override

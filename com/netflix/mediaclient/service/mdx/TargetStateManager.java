@@ -64,6 +64,7 @@ public class TargetStateManager
         if (Log.isLoggable("nf_mdx", 3)) {
             Log.d("nf_mdx", "TargetStateManager: from " + this.mCurrentState.mName + " to " + mCurrentState.mName);
         }
+        this.mPreviousState = this.mCurrentState;
         if (this.mCurrentState == mCurrentState) {
             if (this.mRetryCurrentAction <= 0) {
                 this.transitionStateTo(TargetState.StateRetryExhausted);
@@ -80,7 +81,6 @@ public class TargetStateManager
             this.mListener.removeEvents(TargetContextEvent.Timeout);
             this.mListener.removeEvents(TargetContextEvent.SessionRetry);
             this.mListener.removeEvents(TargetContextEvent.PairingRetry);
-            this.mPreviousState = this.mCurrentState;
             this.mCurrentState = mCurrentState;
             this.mRetryCurrentAction = this.mCurrentState.getRetry();
             this.mRetryCurrentInterval = this.mCurrentState.getRetryInterval();
@@ -370,6 +370,14 @@ public class TargetStateManager
                 case StateSessionEnd: {
                     if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent)) {
                         this.transitionStateTo(TargetState.StateHasPair);
+                        return;
+                    }
+                    if (TargetContextEvent.LaunchFailed.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateNotLaunched);
+                        return;
+                    }
+                    if (TargetContextEvent.LaunchSucceed.equals(targetContextEvent)) {
+                        this.transitionStateTo(TargetState.StateNeedHandShake);
                         return;
                     }
                     break;

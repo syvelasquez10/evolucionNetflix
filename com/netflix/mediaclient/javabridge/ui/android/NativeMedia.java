@@ -16,6 +16,7 @@ import com.netflix.mediaclient.javabridge.invoke.android.SetVideoSurface;
 import android.view.Surface;
 import com.netflix.mediaclient.javabridge.invoke.SetConfigData;
 import com.netflix.mediaclient.javabridge.invoke.media.SetStreamingBuffer;
+import com.netflix.mediaclient.javabridge.invoke.android.SetBytesReport;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.javabridge.invoke.media.SelectTracks;
 import com.netflix.mediaclient.javabridge.invoke.media.Swim;
@@ -790,6 +791,12 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     
     @Override
     public void setAudioBitrateRange(final AudioBitrateRange audioBitrateRange) {
+    }
+    
+    @Override
+    public void setBytesReport(final int n, final int n2) {
+        this.bridge.getNrdProxy().invokeMethod(new SetBytesReport(n, n2));
+        Log.d("nf-bridge", "invokeMethod setBytesReport just called...");
     }
     
     @Override

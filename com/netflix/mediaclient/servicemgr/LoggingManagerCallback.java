@@ -150,6 +150,11 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onPinVerified(final boolean b, final int n) {
+        Log.v(this.tag, String.format("onPinVerified, status: %d, isPinValid: %s", n, b));
+    }
+    
+    @Override
     public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
         final String tag = this.tag;
         int size;
