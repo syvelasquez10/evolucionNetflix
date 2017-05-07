@@ -222,8 +222,6 @@ final class b implements GoogleApiClient
     }
     
     private void go() {
-        boolean b;
-        Label_0033_Outer:Label_0026_Outer:
         while (true) {
             this.IO.lock();
             while (true) {
@@ -234,29 +232,30 @@ final class b implements GoogleApiClient
                                 break Label_0093;
                             }
                             break Label_0108;
-                            // iftrue(Label_0098:, this.IS.isEmpty())
+                            final boolean b;
+                            n.a(b, (Object)"GoogleApiClient is not connected yet.");
                             while (true) {
-                                while (true) {
+                                Label_0033: {
+                                    break Label_0033;
                                     try {
                                         this.a((b$c<?>)this.IS.remove());
                                     }
                                     catch (DeadObjectException ex) {
                                         Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
                                     }
-                                    continue Label_0033_Outer;
                                 }
-                                n.a(b, (Object)"GoogleApiClient is not connected yet.");
-                                continue Label_0026_Outer;
+                                continue;
                             }
                         }
+                        // iftrue(Label_0098:, this.IS.isEmpty())
                         finally {
                             this.IO.unlock();
                         }
                     }
-                    b = false;
+                    final boolean b = false;
                     continue;
                 }
-                b = true;
+                final boolean b = true;
                 continue;
             }
         }

@@ -548,7 +548,10 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
                     }
                     break;
                 }
-                this.mVolumeController.destroy();
+                if (this.mVolumeController != null) {
+                    this.mVolumeController.destroy();
+                    continue;
+                }
                 continue;
             }
         }
@@ -1048,7 +1051,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         if (AndroidUtils.getAndroidVersion() < 21) {
             this.mRemoteControlClientManager.stop();
         }
-        else {
+        else if (this.mVolumeController != null) {
             this.mVolumeController.stopMediaSession();
         }
         this.mMdxNotificationManager.stopNotification(this.getService());

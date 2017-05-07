@@ -326,14 +326,17 @@ public class gv extends WebView implements DownloadListener
     }
     
     protected void onMeasure(int n, int n2) {
-    Label_0081_Outer:
+        int n3;
+        int mode;
+        int size = 0;
+        int mode2 = 0;
+        int size2 = 0;
+        float density;
+        Label_0103_Outer:Label_0081_Outer:
         while (true) {
-            final int n3 = Integer.MAX_VALUE;
+            n3 = Integer.MAX_VALUE;
             while (true) {
-                final int mode2;
-                final int size2;
                 Label_0283: {
-                    final int size;
                     Label_0280: {
                         Label_0273: {
                             synchronized (this.mw) {
@@ -341,7 +344,7 @@ public class gv extends WebView implements DownloadListener
                                     super.onMeasure(n, n2);
                                     return;
                                 }
-                                final int mode = View$MeasureSpec.getMode(n);
+                                mode = View$MeasureSpec.getMode(n);
                                 size = View$MeasureSpec.getSize(n);
                                 mode2 = View$MeasureSpec.getMode(n2);
                                 size2 = View$MeasureSpec.getSize(n2);
@@ -349,20 +352,20 @@ public class gv extends WebView implements DownloadListener
                                     break Label_0273;
                                 }
                                 break Label_0280;
+                                // iftrue(Label_0220:, this.getVisibility() == 8)
                                 while (true) {
-                                    this.setVisibility(4);
-                                    Label_0220: {
-                                        break Label_0220;
+                                    while (true) {
+                                        this.setMeasuredDimension(0, 0);
+                                        return;
+                                        density = this.wI.getResources().getDisplayMetrics().density;
+                                        gs.W("Not enough space to show ad. Needs " + (int)(this.qr.widthPixels / density) + "x" + (int)(this.qr.heightPixels / density) + " dp, but only has " + (int)(size / density) + "x" + (int)(size2 / density) + " dp.");
+                                        this.setVisibility(4);
+                                        continue Label_0103_Outer;
                                     }
-                                    this.setMeasuredDimension(0, 0);
-                                    return;
-                                    final float density = this.wI.getResources().getDisplayMetrics().density;
-                                    gs.W("Not enough space to show ad. Needs " + (int)(this.qr.widthPixels / density) + "x" + (int)(this.qr.heightPixels / density) + " dp, but only has " + (int)(size / density) + "x" + (int)(size2 / density) + " dp.");
                                     continue Label_0081_Outer;
                                 }
                             }
                             // iftrue(Label_0238:, this.qr.widthPixels <= n && this.qr.heightPixels <= n2)
-                            // iftrue(Label_0220:, this.getVisibility() == 8)
                             Label_0238: {
                                 if (this.getVisibility() != 8) {
                                     this.setVisibility(0);

@@ -64,7 +64,6 @@ public final class FileLruCache
     private void trim() {
     Label_0149_Outer:
         while (true) {
-        Label_0149:
             while (true) {
                 Label_0314: {
                     try {
@@ -83,6 +82,13 @@ public final class FileLruCache
                             length2 = file.length();
                         }
                         break Label_0314;
+                        Label_0244: {
+                            synchronized (this.lock) {
+                                this.isTrimPending = false;
+                                this.lock.notifyAll();
+                                return;
+                            }
+                        }
                         while (true) {
                             final AbstractQueue<FileLruCache$ModifiedFile> abstractQueue;
                             final File file2 = abstractQueue.remove().getFile();
@@ -90,14 +96,6 @@ public final class FileLruCache
                             n2 -= file2.length();
                             file2.delete();
                             --n;
-                            break Label_0149;
-                            Label_0244: {
-                                synchronized (this.lock) {
-                                    this.isTrimPending = false;
-                                    this.lock.notifyAll();
-                                    return;
-                                }
-                            }
                             continue Label_0149_Outer;
                         }
                     }
@@ -110,7 +108,7 @@ public final class FileLruCache
                         // monitorexit(this.lock)
                     }
                 }
-                continue Label_0149;
+                continue;
             }
         }
     }

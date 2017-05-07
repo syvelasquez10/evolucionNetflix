@@ -97,7 +97,7 @@ class MdxAgent$3 extends BroadcastReceiver
                 this.this$0.mRemoteControlClientManager.setBoxart(this.this$0.mBoxartBitmap);
             }
         }
-        else {
+        else if (this.this$0.mVolumeController != null) {
             this.this$0.mVolumeController.startMediaSession();
         }
         this.this$0.mMdxNotificationManager.startNotification((Notification)this.this$0.getMdxNotification(false).second, this.this$0.getService(), false);
@@ -185,7 +185,7 @@ class MdxAgent$3 extends BroadcastReceiver
                             }
                         }
                     }
-                    if (AndroidUtils.getAndroidVersion() >= 21) {
+                    if (AndroidUtils.getAndroidVersion() >= 21 && this.this$0.mVolumeController != null) {
                         this.this$0.mVolumeController.updateCurrentVolume(intent.getIntExtra("volume", 0), false);
                     }
                 }

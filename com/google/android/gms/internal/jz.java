@@ -5,8 +5,8 @@
 package com.google.android.gms.internal;
 
 import java.util.Iterator;
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.regex.Matcher;
 import android.text.TextUtils;
@@ -93,13 +93,9 @@ public final class jz
             }
             final JSONObject jsonObject = (JSONObject)o;
             final JSONObject jsonObject2 = (JSONObject)o2;
-            Iterator keys = null;
-            String s;
-            JSONArray jsonArray;
-            int n;
-            JSONArray jsonArray2;
-            Block_10_Outer:Label_0135_Outer:
+        Label_0135_Outer:
             while (true) {
+                final Iterator keys;
                 if (jsonObject.length() == jsonObject2.length()) {
                     keys = jsonObject.keys();
                     break Label_0043;
@@ -110,7 +106,7 @@ public final class jz
                 if (!keys.hasNext()) {
                     return true;
                 }
-                s = keys.next();
+                final String s = keys.next();
                 if (!jsonObject2.has(s)) {
                     return false;
                 }
@@ -118,37 +114,38 @@ public final class jz
                     if (!d(jsonObject.get(s), jsonObject2.get(s))) {
                         return false;
                     }
-                    continue Block_10_Outer;
+                    continue Label_0135_Outer;
                     // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
                     // iftrue(Label_0168:, n >= jsonArray.length())
-                Label_0135:
                     while (true) {
-                    Block_8:
-                        while (true) {
-                            try {
-                                if (d(jsonArray.get(n), jsonArray2.get(n))) {
-                                    ++n;
-                                    break Label_0135;
-                                }
-                                return false;
-                                Label_0170:
-                                return o.equals(o2);
-                                Label_0168:
-                                return true;
+                        int n = 0;
+                        final JSONArray jsonArray;
+                        final JSONArray jsonArray2;
+                        Block_10: {
+                            Block_8: {
+                                break Block_8;
+                                break Block_10;
                             }
-                            catch (JSONException ex) {
-                                return false;
+                            jsonArray = (JSONArray)o;
+                            jsonArray2 = (JSONArray)o2;
+                            n = 0;
+                            continue;
+                        }
+                        try {
+                            if (d(jsonArray.get(n), jsonArray2.get(n))) {
+                                ++n;
+                                continue;
                             }
-                            break Block_8;
-                            continue Label_0135_Outer;
+                            return false;
+                            Label_0170:
+                            return o.equals(o2);
+                            Label_0168:
+                            return true;
                         }
-                        jsonArray = (JSONArray)o;
-                        jsonArray2 = (JSONArray)o2;
-                        Block_9: {
-                            break Block_9;
+                        catch (JSONException ex) {
+                            return false;
                         }
-                        n = 0;
-                        continue Label_0135;
+                        break;
                     }
                 }
                 // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())

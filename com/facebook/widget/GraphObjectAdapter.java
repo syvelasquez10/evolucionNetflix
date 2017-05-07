@@ -376,7 +376,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     
     protected URL getPictureUrlOfGraphObject(final T t) {
         final Object property = t.getProperty("picture");
-    Block_5_Outer:
+    Block_4_Outer:
         while (true) {
             Label_0036: {
                 if (!(property instanceof String)) {
@@ -388,19 +388,18 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 }
                 try {
                     return new URL(url);
+                    // iftrue(Label_0084:, data == null)
                     // iftrue(Label_0084:, !property instanceof JSONObject)
+                    GraphObjectAdapter$ItemPictureData data = null;
+                Block_5:
                     while (true) {
-                        Block_4: {
-                            break Block_4;
-                            final GraphObjectAdapter$ItemPictureData data;
-                            url = data.getUrl();
-                            continue Block_5_Outer;
-                        }
-                        final GraphObjectAdapter$ItemPictureData data = GraphObject$Factory.create((JSONObject)property).cast(GraphObjectAdapter$ItemPicture.class).getData();
+                        data = GraphObject$Factory.create((JSONObject)property).cast(GraphObjectAdapter$ItemPicture.class).getData();
+                        break Block_5;
                         continue;
                     }
+                    url = data.getUrl();
+                    continue Block_4_Outer;
                 }
-                // iftrue(Label_0084:, data == null)
                 catch (MalformedURLException ex) {}
             }
             return null;

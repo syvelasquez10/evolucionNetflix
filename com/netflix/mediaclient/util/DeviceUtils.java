@@ -191,64 +191,53 @@ public final class DeviceUtils
     }
     
     public static boolean isDeviceEnabled(final Context context, final int n) {
-        boolean b = true;
-        boolean b2 = true;
-        // monitorenter(DeviceUtils.class)
-        Label_0028: {
-            if (n > 0) {
-                break Label_0028;
-            }
-            int n3;
-            int n2 = 0;
-            long hashCode = 0L;
-            final String s;
-            Block_5_Outer:Label_0082_Outer:Label_0166_Outer:
+    Label_0201_Outer:
+        while (true) {
+            boolean b = true;
+            boolean b2 = true;
             while (true) {
                 while (true) {
-                    while (true) {
-                        Label_0172: {
-                            try {
+                    int n3 = 0;
+                    Label_0207: {
+                        synchronized (DeviceUtils.class) {
+                            if (Log.isLoggable("nf_device_utils", 3)) {
+                                Log.d("nf_device_utils", "isDeviceEnabled:: Disabled percentage: " + n);
+                            }
+                            final long hashCode;
+                            if (n <= 0) {
                                 Log.d("nf_device_utils", "Everybody is enabled");
-                                Label_0022: {
-                                    return b2;
+                            }
+                            else if (n >= 100) {
+                                Log.d("nf_device_utils", "Everybody is disabled");
+                                b2 = false;
+                            }
+                            else {
+                                hashCode = hashCode(BaseEsnProvider.getHashedDeviceId(context));
+                                final int n2 = (int)(hashCode % 100L);
+                                if ((n3 = n2) < 0) {
+                                    n3 = n2 + 100;
                                 }
-                                // iftrue(Label_0022:, !Log.isLoggable("nf_device_utils", 3))
-                                // iftrue(Label_0049:, n < 100)
-                                // iftrue(Label_0172:, n2 = n3 >= 0)
-                            Block_6:
-                                while (true) {
-                                    while (true) {
-                                        Log.d("nf_device_utils", "Everybody is disabled");
-                                        b2 = false;
-                                        return b2;
-                                        n2 = n3 + 100;
-                                        break Label_0172;
-                                        b2 = b;
-                                        break Block_6;
-                                        continue Block_5_Outer;
-                                    }
-                                    Label_0049:
-                                    hashCode = hashCode(BaseEsnProvider.getHashedDeviceId(context));
-                                    n3 = (int)(hashCode % 100L);
-                                    continue Label_0082_Outer;
-                                }
-                                Log.d("nf_device_utils", "isDeviceEnabled:: deviceID " + s + ", hash " + hashCode + ", bucket " + n2 + ", enabled " + b);
-                                b2 = b;
+                                break Label_0207;
+                            }
+                            Label_0057: {
                                 return b2;
                             }
-                            finally {
-                            }
-                            // monitorexit(DeviceUtils.class)
-                            b = false;
-                            continue Label_0166_Outer;
+                            b2 = b;
+                            // iftrue(Label_0057:, !Log.isLoggable("nf_device_utils", 3))
+                            final String s;
+                            Log.d("nf_device_utils", "isDeviceEnabled:: deviceID " + s + ", hash " + hashCode + ", bucket " + n3 + ", enabled " + b);
+                            b2 = b;
+                            return b2;
                         }
-                        if (n2 <= 100 - n) {
-                            continue Label_0166_Outer;
-                        }
-                        break;
+                        b = false;
+                        continue Label_0201_Outer;
                     }
-                    continue;
+                    if (n3 <= 100 - n) {
+                        continue Label_0201_Outer;
+                    }
+                    break;
                 }
+                continue;
             }
         }
     }

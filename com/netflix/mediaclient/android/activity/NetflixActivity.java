@@ -982,7 +982,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     }
     
     public void showDialog(final DialogFragment dialogFragment) {
-        if (dialogFragment == null || this.isDestroyed) {
+        if (dialogFragment == null || this.isDestroyed || this.isFinishing()) {
             return;
         }
         synchronized (this.instanceStateSaved) {
@@ -991,22 +991,31 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                 return;
             }
         }
-        final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-        final DialogFragment dialogFragment2 = this.getDialogFragment();
-        if (dialogFragment2 != null) {
-            if (dialogFragment2 instanceof DialogFragment) {
-                Log.v("NetflixActivity", "Dismissing previous dialog");
-                dialogFragment2.dismiss();
+        while (true) {
+            try {
+                final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
+                final DialogFragment dialogFragment2 = this.getDialogFragment();
+                if (dialogFragment2 != null) {
+                    if (dialogFragment2 instanceof DialogFragment) {
+                        Log.v("NetflixActivity", "Dismissing previous dialog");
+                        dialogFragment2.dismiss();
+                    }
+                    Log.v("NetflixActivity", "Removing previous dialog");
+                    beginTransaction.remove((Fragment)dialogFragment2);
+                }
+                beginTransaction.addToBackStack((String)null);
+                Log.v("NetflixActivity", "Showing dialog");
+                final DialogFragment dialogFragment3;
+                dialogFragment3.show(beginTransaction, "frag_dialog");
             }
-            Log.v("NetflixActivity", "Removing previous dialog");
-            beginTransaction.remove((Fragment)dialogFragment2);
+            // monitorexit(atomicBoolean)
+            catch (Throwable t) {
+                Log.e("NetflixActivity", "We failed to display dialog", t);
+                continue;
+            }
+            break;
         }
-        beginTransaction.addToBackStack((String)null);
-        Log.v("NetflixActivity", "Showing dialog");
-        final DialogFragment dialogFragment3;
-        dialogFragment3.show(beginTransaction, "frag_dialog");
     }
-    // monitorexit(atomicBoolean)
     
     public void showFetchErrorsToast() {
     }

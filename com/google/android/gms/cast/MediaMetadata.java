@@ -141,7 +141,7 @@ public class MediaMetadata
         array = (String[])(Object)new HashSet((Collection<? extends E>)Arrays.asList(array));
         try {
             final Iterator keys = jsonObject.keys();
-        Label_0018:
+        Block_17_Outer:
             while (keys.hasNext()) {
                 final String s = keys.next();
                 if (!"metadataType".equals(s)) {
@@ -191,21 +191,27 @@ public class MediaMetadata
                                     continue;
                                 }
                             }
+                            // iftrue(Label_0310:, !value2 instanceof Integer)
                             // iftrue(Label_0018:, !value2 instanceof Double)
                             // iftrue(Label_0282:, !value2 instanceof String)
-                            // iftrue(Label_0310:, !value2 instanceof Integer)
                             final Object value2;
-                            Block_17: {
-                                break Block_17;
-                                value2 = jsonObject.get(s);
-                                this.Fp.putString(s, (String)value2);
-                                continue;
-                                Label_0282: {
-                                    this.Fp.putInt(s, (int)value2);
+                            Block_15: {
+                                Block_16: {
+                                    break Block_16;
+                                    while (true) {
+                                        this.Fp.putDouble(s, (double)value2);
+                                        continue Block_17_Outer;
+                                        Label_0310: {
+                                            continue;
+                                        }
+                                    }
+                                    value2 = jsonObject.get(s);
+                                    break Block_15;
                                 }
+                                this.Fp.putInt(s, (int)value2);
                                 continue;
                             }
-                            this.Fp.putDouble(s, (double)value2);
+                            this.Fp.putString(s, (String)value2);
                         }
                         catch (JSONException ex) {}
                     }

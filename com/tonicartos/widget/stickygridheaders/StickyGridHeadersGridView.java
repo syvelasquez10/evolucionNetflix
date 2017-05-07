@@ -387,10 +387,10 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
         boolean b2;
         int n4;
         int measureSpec;
-        int width;
-        int n5;
         int measureSpec2;
-        Block_31_Outer:Block_23_Outer:Label_0645_Outer:Label_0633_Outer:
+        int n5;
+        int width;
+        Label_0735_Outer:Label_0673_Outer:
         while (true) {
             Label_0618: {
                 if (n3 >= list.size()) {
@@ -443,119 +443,116 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView$O
                         canvas.restore();
                     }
                     ++n3;
-                    continue Block_31_Outer;
-                    // iftrue(Label_0859:, this.mHeaderBottomPosition == headerHeight)
-                    // iftrue(Label_0880:, this.mHeaderBottomPosition == headerHeight)
+                    continue Label_0735_Outer;
+                    Label_0931: {
+                        this.mStickiedHeader.layout(this.getLeft() + this.getPaddingLeft(), 0, this.getRight() - this.getPaddingRight(), this.mStickiedHeader.getHeight());
+                    }
                     // iftrue(Label_0885:, b == false || !this.mMaskStickyHeaderRegion)
                     // iftrue(Label_0890:, !this.mHeadersIgnorePadding)
-                    // iftrue(Label_0997:, !this.mClippingToPadding)
-                    // iftrue(Label_0908:, !this.mHeadersIgnorePadding)
-                    // iftrue(Label_1008:, !this.mHeadersIgnorePadding)
-                    // iftrue(Label_0735:, this.mStickiedHeader.getWidth() == width)
-                    // iftrue(Label_0633:, b != false)
-                    // iftrue(Label_0967:, !this.mHeadersIgnorePadding)
                     // iftrue(Label_0931:, !this.mHeadersIgnorePadding)
+                    // iftrue(Label_0967:, !this.mHeadersIgnorePadding)
+                    // iftrue(Label_0880:, this.mHeaderBottomPosition == headerHeight)
+                    // iftrue(Label_1008:, !this.mHeadersIgnorePadding)
+                    // iftrue(Label_0859:, this.mHeaderBottomPosition == headerHeight)
+                    // iftrue(Label_0997:, !this.mClippingToPadding)
+                    Block_29_Outer:Block_28_Outer:Label_0859_Outer:Block_24_Outer:
                     while (true) {
-                        Label_0820:Block_26_Outer:
+                    Block_25:
                         while (true) {
-                            while (true) {
-                            Label_0673:
+                            Label_0645: {
                                 while (true) {
-                                    Label_0735: {
-                                        Label_0645:Block_24_Outer:
-                                        while (true) {
-                                        Block_29_Outer:
+                                    Block_30: {
+                                        Block_23: {
                                             while (true) {
-                                                while (true) {
-                                                    Label_0791: {
-                                                        Label_0880: {
-                                                            while (true) {
-                                                                Label_0761: {
+                                                Label_0761: {
+                                                    Block_27: {
+                                                    Label_0820:
+                                                        while (true) {
+                                                            Label_0791: {
+                                                                while (true) {
+                                                                Label_0633_Outer:
                                                                     while (true) {
-                                                                        Block_30: {
-                                                                            while (true) {
+                                                                        break Label_0735;
+                                                                    Block_26:
+                                                                        while (true) {
+                                                                            Block_22: {
+                                                                                break Block_22;
                                                                                 while (true) {
                                                                                     canvas.restore();
-                                                                                    break Label_0880;
-                                                                                    width = this.getWidth();
-                                                                                    break Label_0645;
-                                                                                    break Block_30;
-                                                                                    Label_0967: {
-                                                                                        this.mClippingRect.left = this.getPaddingLeft();
-                                                                                    }
-                                                                                    this.mClippingRect.right = this.getWidth() - this.getPaddingRight();
-                                                                                    break Label_0761;
-                                                                                    this.mStickiedHeader.draw(canvas);
-                                                                                    continue Block_23_Outer;
+                                                                                    return;
+                                                                                    Label_0997:
+                                                                                    this.mClippingRect.top = 0;
+                                                                                    break Label_0791;
+                                                                                    break Block_23;
+                                                                                    measureSpec2 = View$MeasureSpec.makeMeasureSpec(0, 0);
+                                                                                    this.mStickiedHeader.measure(View$MeasureSpec.makeMeasureSpec(0, 0), View$MeasureSpec.makeMeasureSpec(0, 0));
+                                                                                    this.mStickiedHeader.measure(n5, measureSpec2);
+                                                                                    break Block_26;
+                                                                                    canvas.translate(0.0f, (float)n);
+                                                                                    break Label_0820;
+                                                                                    break Block_27;
+                                                                                    canvas.restore();
+                                                                                    continue Label_0633_Outer;
                                                                                 }
+                                                                                Label_1008:
+                                                                                canvas.translate((float)this.getPaddingLeft(), (float)n);
                                                                                 break Label_0820;
-                                                                                continue Label_0645_Outer;
+                                                                                this.mClippingRect.top = this.getPaddingTop();
+                                                                                break Label_0791;
                                                                             }
-                                                                            Label_0997: {
-                                                                                this.mClippingRect.top = 0;
-                                                                            }
-                                                                            break Label_0791;
-                                                                            this.mClippingRect.left = 0;
-                                                                            this.mClippingRect.right = this.getWidth();
-                                                                            break Label_0761;
+                                                                            canvas.restore();
+                                                                            continue Label_0673_Outer;
                                                                         }
-                                                                        canvas.saveLayerAlpha(0.0f, 0.0f, (float)canvas.getWidth(), (float)canvas.getHeight(), this.mHeaderBottomPosition * 255 / headerHeight, 31);
+                                                                        this.mStickiedHeader.layout(this.getLeft(), 0, this.getRight(), this.mStickiedHeader.getHeight());
                                                                         continue Label_0633_Outer;
                                                                     }
-                                                                    this.mStickiedHeader.layout(this.getLeft(), 0, this.getRight(), this.mStickiedHeader.getHeight());
-                                                                    break Label_0735;
-                                                                    this.mClippingRect.top = this.getPaddingTop();
-                                                                    break Label_0791;
-                                                                    Label_0931: {
-                                                                        this.mStickiedHeader.layout(this.getLeft() + this.getPaddingLeft(), 0, this.getRight() - this.getPaddingRight(), this.mStickiedHeader.getHeight());
-                                                                    }
-                                                                    break Label_0735;
-                                                                    Label_0908:
-                                                                    n5 = View$MeasureSpec.makeMeasureSpec(this.getWidth() - this.getPaddingLeft() - this.getPaddingRight(), 1073741824);
-                                                                    break Label_0673;
+                                                                    this.mStickiedHeader.draw(canvas);
+                                                                    continue Block_28_Outer;
                                                                 }
-                                                                this.mClippingRect.bottom = n + headerHeight;
-                                                                continue Block_24_Outer;
                                                             }
-                                                            n5 = View$MeasureSpec.makeMeasureSpec(this.getWidth(), 1073741824);
-                                                            break Label_0673;
-                                                            canvas.translate(0.0f, (float)n);
-                                                            continue Label_0820;
+                                                            canvas.save();
+                                                            canvas.clipRect(this.mClippingRect);
+                                                            continue Block_28_Outer;
                                                         }
-                                                        canvas.restore();
-                                                        return;
+                                                        break Block_30;
+                                                        Label_0908:
+                                                        n5 = View$MeasureSpec.makeMeasureSpec(this.getWidth() - this.getPaddingLeft() - this.getPaddingRight(), 1073741824);
+                                                        continue Block_29_Outer;
+                                                        Label_0967:
+                                                        this.mClippingRect.left = this.getPaddingLeft();
+                                                        this.mClippingRect.right = this.getWidth() - this.getPaddingRight();
+                                                        break Label_0761;
                                                     }
-                                                    canvas.save();
-                                                    canvas.clipRect(this.mClippingRect);
-                                                    continue;
+                                                    this.mClippingRect.left = 0;
+                                                    this.mClippingRect.right = this.getWidth();
+                                                    break Label_0761;
+                                                    Label_0890:
+                                                    width = this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
+                                                    break Label_0645;
                                                 }
-                                                continue Block_29_Outer;
+                                                this.mClippingRect.bottom = n + headerHeight;
+                                                continue Label_0859_Outer;
                                             }
-                                            Label_0890: {
-                                                width = this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
-                                            }
-                                            continue Label_0645;
                                         }
-                                        Label_0885: {
-                                            return;
-                                        }
+                                        width = this.getWidth();
+                                        break Label_0645;
+                                        break Block_25;
                                     }
-                                    continue Block_26_Outer;
+                                    canvas.saveLayerAlpha(0.0f, 0.0f, (float)canvas.getWidth(), (float)canvas.getHeight(), this.mHeaderBottomPosition * 255 / headerHeight, 31);
+                                    continue Block_24_Outer;
                                 }
-                                measureSpec2 = View$MeasureSpec.makeMeasureSpec(0, 0);
-                                this.mStickiedHeader.measure(View$MeasureSpec.makeMeasureSpec(0, 0), View$MeasureSpec.makeMeasureSpec(0, 0));
-                                this.mStickiedHeader.measure(n5, measureSpec2);
-                                continue;
+                                Label_0885:
+                                return;
                             }
-                            Label_1008: {
-                                canvas.translate((float)this.getPaddingLeft(), (float)n);
-                            }
-                            continue Label_0820;
+                            continue;
                         }
-                        canvas.restore();
-                        continue;
+                        n5 = View$MeasureSpec.makeMeasureSpec(this.getWidth(), 1073741824);
+                        continue Label_0859_Outer;
                     }
                 }
+                // iftrue(Label_0908:, !this.mHeadersIgnorePadding)
+                // iftrue(Label_0633:, b != false)
+                // iftrue(Label_0735:, this.mStickiedHeader.getWidth() == width)
                 catch (Exception ex) {}
             }
         }

@@ -184,42 +184,39 @@ public final class Settings
                     break Label_0361;
                 }
                 while (true) {
-                    GraphObject create2;
-                    Response executeAndWait;
-                    Label_0351_Outer:Block_11_Outer:
+                Label_0351_Outer:
                     while (true) {
                         try {
-                            create2 = GraphObject$Factory.create(new JSONObject(string3));
+                            GraphObject create2 = GraphObject$Factory.create(new JSONObject(string3));
                             if (create2 == null) {
                                 return Response.createResponsesFromString("true", null, new RequestBatch(new Request[] { o }), true).get(0);
                             }
                             return new Response(null, null, create2, true);
-                            // iftrue(Label_0265:, attributionId != null)
-                            throw new FacebookException("No attribution id returned from the Facebook application");
-                            Label_0265: {
-                                throw new FacebookException("Install attribution has been disabled on the server.");
-                            }
-                            // iftrue(Label_0283:, Utility.queryAppAttributionSupportAndWait(s))
                             while (true) {
-                                while (true) {
-                                    ((SharedPreferences$Editor)o).commit();
-                                    return executeAndWait;
-                                    ((SharedPreferences$Editor)o).putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
-                                    continue Block_11_Outer;
+                                ((SharedPreferences$Editor)o).commit();
+                                return;
+                                Label_0265: {
+                                    throw new FacebookException("Install attribution has been disabled on the server.");
                                 }
-                                create2 = null;
-                                continue Label_0351_Outer;
-                                Label_0283: {
-                                    executeAndWait = ((Request)o).executeAndWait();
-                                }
+                                Label_0283:
+                                executeAndWait = ((Request)o).executeAndWait();
                                 o = sharedPreferences.edit();
                                 ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
+                                Block_11: {
+                                    break Block_11;
+                                    throw new FacebookException("No attribution id returned from the Facebook application");
+                                    create2 = null;
+                                    continue Label_0351_Outer;
+                                }
+                                ((SharedPreferences$Editor)o).putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
                                 continue;
                             }
                         }
+                        // iftrue(Label_0283:, Utility.queryAppAttributionSupportAndWait(s))
                         // iftrue(Label_0351:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
+                        // iftrue(Label_0265:, attributionId != null)
                         catch (JSONException ex2) {
-                            create2 = null;
+                            final GraphObject create2 = null;
                             continue;
                         }
                         continue;

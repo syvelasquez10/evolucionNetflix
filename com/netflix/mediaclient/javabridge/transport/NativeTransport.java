@@ -274,12 +274,12 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    // iftrue(Label_0106:, !string.startsWith("nrdp"))
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
                     Label_0106: {
                         string = "nrdp." + string;
                     }
+                    continue;
+                    // iftrue(Label_0106:, !string.startsWith("nrdp"))
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }
                 catch (Throwable t) {
