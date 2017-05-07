@@ -5,67 +5,67 @@
 package com.google.android.gms.games.internal.request;
 
 import com.google.android.gms.games.internal.constants.RequestUpdateResultOutcome;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import java.util.Set;
 import com.google.android.gms.common.data.DataHolder;
 import java.util.HashMap;
 
 public final class RequestUpdateOutcomes
 {
-    private static final String[] LN;
-    private final int Ah;
-    private final HashMap<String, Integer> LO;
+    private static final String[] abh;
+    private final int HF;
+    private final HashMap<String, Integer> abi;
     
     static {
-        LN = new String[] { "requestId", "outcome" };
+        abh = new String[] { "requestId", "outcome" };
     }
     
-    private RequestUpdateOutcomes(final int ah, final HashMap<String, Integer> lo) {
-        this.Ah = ah;
-        this.LO = lo;
+    private RequestUpdateOutcomes(final int hf, final HashMap<String, Integer> abi) {
+        this.HF = hf;
+        this.abi = abi;
     }
     
-    public static RequestUpdateOutcomes J(final DataHolder dataHolder) {
+    public static RequestUpdateOutcomes V(final DataHolder dataHolder) {
         final Builder builder = new Builder();
-        builder.bm(dataHolder.getStatusCode());
+        builder.dR(dataHolder.getStatusCode());
         for (int count = dataHolder.getCount(), i = 0; i < count; ++i) {
-            final int g = dataHolder.G(i);
-            builder.s(dataHolder.getString("requestId", i, g), dataHolder.getInteger("outcome", i, g));
+            final int ar = dataHolder.ar(i);
+            builder.x(dataHolder.c("requestId", i, ar), dataHolder.b("outcome", i, ar));
         }
-        return builder.hB();
+        return builder.lw();
     }
     
     public Set<String> getRequestIds() {
-        return this.LO.keySet();
+        return this.abi.keySet();
     }
     
     public int getRequestOutcome(final String s) {
-        fq.b(this.LO.containsKey(s), "Request " + s + " was not part of the update operation!");
-        return this.LO.get(s);
+        n.b(this.abi.containsKey(s), (Object)("Request " + s + " was not part of the update operation!"));
+        return this.abi.get(s);
     }
     
     public static final class Builder
     {
-        private int Ah;
-        private HashMap<String, Integer> LO;
+        private int HF;
+        private HashMap<String, Integer> abi;
         
         public Builder() {
-            this.LO = new HashMap<String, Integer>();
-            this.Ah = 0;
+            this.abi = new HashMap<String, Integer>();
+            this.HF = 0;
         }
         
-        public Builder bm(final int ah) {
-            this.Ah = ah;
+        public Builder dR(final int hf) {
+            this.HF = hf;
             return this;
         }
         
-        public RequestUpdateOutcomes hB() {
-            return new RequestUpdateOutcomes(this.Ah, this.LO, null);
+        public RequestUpdateOutcomes lw() {
+            return new RequestUpdateOutcomes(this.HF, this.abi, null);
         }
         
-        public Builder s(final String s, final int n) {
+        public Builder x(final String s, final int n) {
             if (RequestUpdateResultOutcome.isValid(n)) {
-                this.LO.put(s, n);
+                this.abi.put(s, n);
             }
             return this;
         }

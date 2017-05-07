@@ -4,119 +4,95 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import com.google.android.gms.fitness.result.SessionReadResult;
+import android.os.IInterface;
 
-public class kq<M extends kp<M>, T>
+public interface kq extends IInterface
 {
-    protected final Class<T> adV;
-    protected final boolean adW;
-    protected final int tag;
-    protected final int type;
+    void a(final SessionReadResult p0) throws RemoteException;
     
-    private kq(final int type, final Class<T> adV, final int tag, final boolean adW) {
-        this.type = type;
-        this.adV = adV;
-        this.tag = tag;
-        this.adW = adW;
-    }
-    
-    public static <M extends kp<M>, T extends kt> kq<M, T> a(final int n, final Class<T> clazz, final int n2) {
-        return new kq<M, T>(n, clazz, n2, false);
-    }
-    
-    protected void a(final kv kv, final List<Object> list) {
-        list.add(this.o(kn.n(kv.adZ)));
-    }
-    
-    protected boolean dd(final int n) {
-        return n == this.tag;
-    }
-    
-    final T f(final List<kv> list) {
-        final int n = 0;
-        T t;
-        if (list == null) {
-            t = null;
+    public abstract static class a extends Binder implements kq
+    {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.fitness.internal.ISessionReadCallback");
         }
-        else if (this.adW) {
-            final ArrayList<Object> list2 = new ArrayList<Object>();
-            for (int i = 0; i < list.size(); ++i) {
-                final kv kv = list.get(i);
-                if (this.dd(kv.tag) && kv.adZ.length != 0) {
-                    this.a(kv, list2);
-                }
-            }
-            final int size = list2.size();
-            if (size == 0) {
+        
+        public static kq au(final IBinder binder) {
+            if (binder == null) {
                 return null;
             }
-            final T cast = this.adV.cast(Array.newInstance(this.adV.getComponentType(), size));
-            int n2 = n;
-            while (true) {
-                t = cast;
-                if (n2 >= size) {
-                    break;
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.fitness.internal.ISessionReadCallback");
+            if (queryLocalInterface != null && queryLocalInterface instanceof kq) {
+                return (kq)queryLocalInterface;
+            }
+            return new kq.a.a(binder);
+        }
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
+        }
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
                 }
-                Array.set(cast, n2, list2.get(n2));
-                ++n2;
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.fitness.internal.ISessionReadCallback");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.fitness.internal.ISessionReadCallback");
+                    SessionReadResult sessionReadResult;
+                    if (parcel.readInt() != 0) {
+                        sessionReadResult = (SessionReadResult)SessionReadResult.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        sessionReadResult = null;
+                    }
+                    this.a(sessionReadResult);
+                    parcel2.writeNoException();
+                    return true;
+                }
             }
         }
-        else {
-            int n3;
-            kv kv2;
-            kv kv3;
-            for (n3 = list.size() - 1, kv2 = null; kv2 == null && n3 >= 0; --n3) {
-                kv3 = list.get(n3);
-                if (this.dd(kv3.tag) && kv3.adZ.length != 0) {
-                    kv2 = kv3;
+        
+        private static class a implements kq
+        {
+            private IBinder lb;
+            
+            a(final IBinder lb) {
+                this.lb = lb;
+            }
+            
+            @Override
+            public void a(final SessionReadResult sessionReadResult) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.fitness.internal.ISessionReadCallback");
+                    if (sessionReadResult != null) {
+                        obtain.writeInt(1);
+                        sessionReadResult.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
                 }
             }
-            if (kv2 == null) {
-                return null;
-            }
-            return this.adV.cast(this.o(kn.n(kv2.adZ)));
-        }
-        return t;
-    }
-    
-    protected Object o(final kn kn) {
-        if (!this.adW) {
-            goto Label_0099;
-        }
-        while (true) {
-            final Class<?> componentType = this.adV.getComponentType();
-            while (true) {
-                Label_0185: {
-                    try {
-                        switch (this.type) {
-                            case 10: {
-                                goto Label_0107;
-                                goto Label_0107;
-                            }
-                            case 11: {
-                                goto Label_0129;
-                                goto Label_0129;
-                            }
-                            default: {
-                                break Label_0185;
-                            }
-                        }
-                        throw new IllegalArgumentException("Unknown type " + this.type);
-                    }
-                    catch (InstantiationException ex) {
-                        throw new IllegalArgumentException("Error creating instance of class " + componentType, ex);
-                    }
-                    catch (IllegalAccessException ex2) {
-                        throw new IllegalArgumentException("Error creating instance of class " + componentType, ex2);
-                    }
-                    catch (IOException ex3) {
-                        throw new IllegalArgumentException("Error reading extension field", ex3);
-                    }
-                }
-                continue;
+            
+            public IBinder asBinder() {
+                return this.lb;
             }
         }
     }

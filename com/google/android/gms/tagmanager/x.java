@@ -8,63 +8,63 @@ import android.util.Log;
 
 class x implements bi
 {
-    private int sz;
+    private int xW;
     
     x() {
-        this.sz = 5;
+        this.xW = 5;
     }
     
     @Override
-    public void b(final String s, final Throwable t) {
-        if (this.sz <= 6) {
-            Log.e("GoogleTagManager", s, t);
-        }
-    }
-    
-    @Override
-    public void c(final String s, final Throwable t) {
-        if (this.sz <= 5) {
-            Log.w("GoogleTagManager", s, t);
-        }
-    }
-    
-    @Override
-    public void setLogLevel(final int sz) {
-        this.sz = sz;
-    }
-    
-    @Override
-    public void v(final String s) {
-        if (this.sz <= 3) {
+    public void S(final String s) {
+        if (this.xW <= 3) {
             Log.d("GoogleTagManager", s);
         }
     }
     
     @Override
-    public void w(final String s) {
-        if (this.sz <= 6) {
+    public void T(final String s) {
+        if (this.xW <= 6) {
             Log.e("GoogleTagManager", s);
         }
     }
     
     @Override
-    public void x(final String s) {
-        if (this.sz <= 4) {
+    public void U(final String s) {
+        if (this.xW <= 4) {
             Log.i("GoogleTagManager", s);
         }
     }
     
     @Override
-    public void y(final String s) {
-        if (this.sz <= 2) {
+    public void V(final String s) {
+        if (this.xW <= 2) {
             Log.v("GoogleTagManager", s);
         }
     }
     
     @Override
-    public void z(final String s) {
-        if (this.sz <= 5) {
+    public void W(final String s) {
+        if (this.xW <= 5) {
             Log.w("GoogleTagManager", s);
         }
+    }
+    
+    @Override
+    public void b(final String s, final Throwable t) {
+        if (this.xW <= 6) {
+            Log.e("GoogleTagManager", s, t);
+        }
+    }
+    
+    @Override
+    public void d(final String s, final Throwable t) {
+        if (this.xW <= 5) {
+            Log.w("GoogleTagManager", s, t);
+        }
+    }
+    
+    @Override
+    public void setLogLevel(final int xw) {
+        this.xW = xw;
     }
 }

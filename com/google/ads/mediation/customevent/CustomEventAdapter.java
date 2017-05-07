@@ -12,7 +12,7 @@ import com.google.ads.AdSize;
 import com.google.ads.mediation.MediationServerParameters;
 import android.app.Activity;
 import com.google.ads.mediation.MediationBannerListener;
-import com.google.android.gms.internal.dw;
+import com.google.android.gms.internal.gs;
 import android.view.View;
 import com.google.ads.mediation.MediationInterstitialAdapter;
 import com.google.android.gms.ads.mediation.customevent.CustomEventExtras;
@@ -29,7 +29,7 @@ public final class CustomEventAdapter implements MediationBannerAdapter<CustomEv
             return (T)Class.forName(s).newInstance();
         }
         catch (Throwable t) {
-            dw.z("Could not instantiate custom event adapter: " + s + ". " + t.getMessage());
+            gs.W("Could not instantiate custom event adapter: " + s + ". " + t.getMessage());
             return null;
         }
     }
@@ -114,37 +114,37 @@ public final class CustomEventAdapter implements MediationBannerAdapter<CustomEv
         
         @Override
         public void onClick() {
-            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            gs.S("Custom event adapter called onFailedToReceiveAd.");
             this.r.onClick(this.q);
         }
         
         @Override
         public void onDismissScreen() {
-            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            gs.S("Custom event adapter called onFailedToReceiveAd.");
             this.r.onDismissScreen(this.q);
         }
         
         @Override
         public void onFailedToReceiveAd() {
-            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            gs.S("Custom event adapter called onFailedToReceiveAd.");
             this.r.onFailedToReceiveAd(this.q, AdRequest.ErrorCode.NO_FILL);
         }
         
         @Override
         public void onLeaveApplication() {
-            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            gs.S("Custom event adapter called onFailedToReceiveAd.");
             this.r.onLeaveApplication(this.q);
         }
         
         @Override
         public void onPresentScreen() {
-            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            gs.S("Custom event adapter called onFailedToReceiveAd.");
             this.r.onPresentScreen(this.q);
         }
         
         @Override
         public void onReceivedAd(final View view) {
-            dw.v("Custom event adapter called onReceivedAd.");
+            gs.S("Custom event adapter called onReceivedAd.");
             this.q.a(view);
             this.r.onReceivedAd(this.q);
         }
@@ -162,31 +162,31 @@ public final class CustomEventAdapter implements MediationBannerAdapter<CustomEv
         
         @Override
         public void onDismissScreen() {
-            dw.v("Custom event adapter called onDismissScreen.");
+            gs.S("Custom event adapter called onDismissScreen.");
             this.s.onDismissScreen(this.q);
         }
         
         @Override
         public void onFailedToReceiveAd() {
-            dw.v("Custom event adapter called onFailedToReceiveAd.");
+            gs.S("Custom event adapter called onFailedToReceiveAd.");
             this.s.onFailedToReceiveAd(this.q, AdRequest.ErrorCode.NO_FILL);
         }
         
         @Override
         public void onLeaveApplication() {
-            dw.v("Custom event adapter called onLeaveApplication.");
+            gs.S("Custom event adapter called onLeaveApplication.");
             this.s.onLeaveApplication(this.q);
         }
         
         @Override
         public void onPresentScreen() {
-            dw.v("Custom event adapter called onPresentScreen.");
+            gs.S("Custom event adapter called onPresentScreen.");
             this.s.onPresentScreen(this.q);
         }
         
         @Override
         public void onReceivedAd() {
-            dw.v("Custom event adapter called onReceivedAd.");
+            gs.S("Custom event adapter called onReceivedAd.");
             this.s.onReceivedAd(CustomEventAdapter.this);
         }
     }

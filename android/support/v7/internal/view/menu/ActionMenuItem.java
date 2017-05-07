@@ -6,6 +6,7 @@ package android.support.v7.internal.view.menu;
 
 import android.support.v4.view.MenuItemCompat;
 import android.view.MenuItem$OnActionExpandListener;
+import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.ContextMenu$ContextMenuInfo;
@@ -116,7 +117,10 @@ public class ActionMenuItem implements SupportMenuItem
     }
     
     public CharSequence getTitleCondensed() {
-        return this.mTitleCondensed;
+        if (this.mTitleCondensed != null) {
+            return this.mTitleCondensed;
+        }
+        return this.mTitle;
     }
     
     public boolean hasSubMenu() {
@@ -226,7 +230,7 @@ public class ActionMenuItem implements SupportMenuItem
     
     public MenuItem setIcon(final int mIconResId) {
         this.mIconResId = mIconResId;
-        this.mIconDrawable = this.mContext.getResources().getDrawable(mIconResId);
+        this.mIconDrawable = ContextCompat.getDrawable(this.mContext, mIconResId);
         return (MenuItem)this;
     }
     

@@ -29,6 +29,7 @@ public abstract class BaseCustomerEvent
     protected static final String DATA_LOGGEDIN = "loggedIn";
     protected static final String DATA_NETFLIX_ID = "netflixId";
     protected static final String DATA_OS_VERSION = "os_version";
+    protected static final String DATA_PROFILE_GUID = "profileGuid";
     protected static final String DATA_PUSHOPTSTATUS = "pushOptStatus";
     protected static final String DATA_SECURE_NETFLIX_ID = "secureNetflixId";
     protected static final String DATA_SOURCE = "source";
@@ -54,7 +55,7 @@ public abstract class BaseCustomerEvent
     
     protected CommonRequestParameters getCommonRequestParameters(final Context context) {
         final CommonRequestParameters instanceWithCredentials = CommonRequestParameters.getInstanceWithCredentials();
-        instanceWithCredentials.userId = this.mUser.currentProfileUserId;
+        instanceWithCredentials.userId = this.mUser.currentProfileToken;
         instanceWithCredentials.osVersion = String.valueOf(AndroidUtils.getAndroidVersion());
         instanceWithCredentials.deviceCategory = this.mUser.deviceCategory;
         instanceWithCredentials.appVersion = AndroidManifestUtils.getVersion(context);

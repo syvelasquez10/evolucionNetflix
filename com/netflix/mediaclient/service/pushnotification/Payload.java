@@ -37,7 +37,7 @@ public class Payload
     private static final String PARAM_info = "info";
     private static final String PARAM_largeIcon = "largeIcon";
     private static final String PARAM_ledColor = "ledColor";
-    private static final String PARAM_profileId = "profileId";
+    private static final String PARAM_profileGuid = "profileId";
     private static final String PARAM_smallIcon = "smallIcon";
     private static final String PARAM_sound = "sound";
     private static final String PARAM_subtext = "subtext";
@@ -65,7 +65,7 @@ public class Payload
     public int ledColor;
     public String messageGuid;
     public String originator;
-    public String profileId;
+    public String profileGuid;
     public String smallIcon;
     public String sound;
     public String subtext;
@@ -151,7 +151,7 @@ public class Payload
             this.messageGuid = intent.getStringExtra("messageGuid");
         }
         if (intent.hasExtra("profileId")) {
-            this.profileId = intent.getStringExtra("profileId");
+            this.profileGuid = intent.getStringExtra("profileId");
         }
         if (intent.hasExtra("type")) {
             this.actionInfoType = intent.getStringExtra("type");
@@ -272,7 +272,7 @@ public class Payload
     
     private void validate() {
         if ("INFO".equals(this.defaultActionKey)) {
-            if (StringUtils.isEmpty(this.profileId) || StringUtils.isEmpty(this.actionInfoType)) {
+            if (StringUtils.isEmpty(this.actionInfoType)) {
                 throw new IllegalArgumentException("Payload:: missing fields in INFO !");
             }
         }
@@ -356,7 +356,7 @@ public class Payload
         }
         
         public int getIcon() {
-            return 2130837736;
+            return 2130837702;
         }
         
         public Uri getPayload() {

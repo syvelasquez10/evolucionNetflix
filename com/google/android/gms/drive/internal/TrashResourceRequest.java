@@ -12,16 +12,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class TrashResourceRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<TrashResourceRequest> CREATOR;
-    final DriveId EV;
-    final int xH;
+    final int BR;
+    final DriveId NV;
     
     static {
-        CREATOR = (Parcelable$Creator)new am();
+        CREATOR = (Parcelable$Creator)new bc();
     }
     
-    TrashResourceRequest(final int xh, final DriveId ev) {
-        this.xH = xh;
-        this.EV = ev;
+    TrashResourceRequest(final int br, final DriveId nv) {
+        this.BR = br;
+        this.NV = nv;
     }
     
     public int describeContents() {
@@ -29,6 +29,6 @@ public class TrashResourceRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        am.a(this, parcel, n);
+        bc.a(this, parcel, n);
     }
 }

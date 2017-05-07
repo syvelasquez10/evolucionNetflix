@@ -4,42 +4,30 @@
 
 package com.google.android.gms.tagmanager;
 
-class cv implements cf
+import android.os.Build$VERSION;
+import com.google.android.gms.internal.d;
+import java.util.Map;
+import com.google.android.gms.internal.a;
+
+class cv extends aj
 {
-    private long aab;
-    private final long vm;
-    private final int vn;
-    private double vo;
-    private final Object vq;
+    private static final String ID;
     
-    public cv() {
-        this(60, 2000L);
+    static {
+        ID = a.U.toString();
     }
     
-    public cv(final int vn, final long vm) {
-        this.vq = new Object();
-        this.vn = vn;
-        this.vo = this.vn;
-        this.vm = vm;
+    public cv() {
+        super(cv.ID, new String[0]);
     }
     
     @Override
-    public boolean cS() {
-        synchronized (this.vq) {
-            final long currentTimeMillis = System.currentTimeMillis();
-            if (this.vo < this.vn) {
-                final double n = (currentTimeMillis - this.aab) / this.vm;
-                if (n > 0.0) {
-                    this.vo = Math.min(this.vn, n + this.vo);
-                }
-            }
-            this.aab = currentTimeMillis;
-            if (this.vo >= 1.0) {
-                --this.vo;
-                return true;
-            }
-            bh.z("No more tokens available.");
-            return false;
-        }
+    public d.a C(final Map<String, d.a> map) {
+        return di.u(Build$VERSION.SDK_INT);
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

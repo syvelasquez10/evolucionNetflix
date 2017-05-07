@@ -5,100 +5,101 @@
 package com.google.android.gms.common.api;
 
 import android.os.Message;
-import android.app.PendingIntent;
+import android.support.v4.app.FragmentActivity;
 import java.util.concurrent.TimeUnit;
+import android.app.PendingIntent;
 import android.util.Log;
 import android.os.DeadObjectException;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import java.util.Iterator;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collections;
+import java.util.WeakHashMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
-import com.google.android.gms.internal.fc;
+import com.google.android.gms.common.internal.ClientSettings;
 import android.content.Context;
 import java.util.Set;
+import java.util.List;
 import java.util.Map;
 import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.gms.common.ConnectionResult;
 import java.util.Queue;
-import com.google.android.gms.internal.fg;
+import com.google.android.gms.common.internal.e;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import android.os.Looper;
 
 final class b implements GoogleApiClient
 {
-    private final a AL;
-    private final Looper AS;
-    private final Lock Ba;
-    private final Condition Bb;
-    private final fg Bc;
-    final Queue<c<?>> Bd;
-    private ConnectionResult Be;
-    private int Bf;
-    private int Bg;
-    private int Bh;
-    private boolean Bi;
-    private int Bj;
-    private long Bk;
-    final Handler Bl;
-    private final Bundle Bm;
-    private final Map<Api.c<?>, Api.a> Bn;
-    private boolean Bo;
-    final Set<c<?>> Bp;
-    final ConnectionCallbacks Bq;
-    private final fg.b Br;
+    private final Looper IB;
+    private final Lock IO;
+    private final Condition IP;
+    private final e IQ;
+    private final int IR;
+    final Queue<c<?>> IS;
+    private ConnectionResult IT;
+    private int IU;
+    private volatile int IV;
+    private volatile int IW;
+    private boolean IX;
+    private int IY;
+    private long IZ;
+    private final a Iu;
+    final Handler Ja;
+    private final Bundle Jb;
+    private final Map<Api.c<?>, Api.a> Jc;
+    private final List<String> Jd;
+    private boolean Je;
+    private final Set<com.google.android.gms.common.api.c<?>> Jf;
+    final Set<c<?>> Jg;
+    private final ConnectionCallbacks Jh;
+    private final e.b Ji;
     
-    public b(final Context context, final Looper as, final fc fc, final Map<Api<?>, Api.ApiOptions> map, final Set<ConnectionCallbacks> set, final Set<OnConnectionFailedListener> set2) {
-        this.Ba = new ReentrantLock();
-        this.Bb = this.Ba.newCondition();
-        this.Bd = new LinkedList<c<?>>();
-        this.Bg = 4;
-        this.Bh = 0;
-        this.Bi = false;
-        this.Bk = 5000L;
-        this.Bm = new Bundle();
-        this.Bn = new HashMap<Api.c<?>, Api.a>();
-        this.Bp = new HashSet<c<?>>();
-        this.AL = (a)new a() {
+    public b(final Context context, final Looper ib, final ClientSettings clientSettings, final Map<Api<?>, Api.ApiOptions> map, final Set<ConnectionCallbacks> set, final Set<OnConnectionFailedListener> set2, final int ir) {
+        this.IO = new ReentrantLock();
+        this.IP = this.IO.newCondition();
+        this.IS = new LinkedList<c<?>>();
+        this.IV = 4;
+        this.IX = false;
+        this.IZ = 5000L;
+        this.Jb = new Bundle();
+        this.Jc = new HashMap<Api.c<?>, Api.a>();
+        this.Jf = Collections.newSetFromMap(new WeakHashMap<com.google.android.gms.common.api.c<?>, Boolean>());
+        this.Jg = Collections.newSetFromMap(new ConcurrentHashMap<c<?>, Boolean>());
+        this.Iu = (a)new a() {
             @Override
             public void b(final c<?> c) {
-                b.this.Ba.lock();
-                try {
-                    b.this.Bp.remove(c);
-                }
-                finally {
-                    b.this.Ba.unlock();
-                }
+                b.this.Jg.remove(c);
             }
         };
-        this.Bq = new ConnectionCallbacks() {
+        this.Jh = new ConnectionCallbacks() {
             @Override
             public void onConnected(final Bundle bundle) {
-                b.this.Ba.lock();
+                b.this.IO.lock();
                 try {
-                    if (b.this.Bg == 1) {
+                    if (b.this.IV == 1) {
                         if (bundle != null) {
-                            b.this.Bm.putAll(bundle);
+                            b.this.Jb.putAll(bundle);
                         }
-                        b.this.ei();
+                        b.this.gn();
                     }
                 }
                 finally {
-                    b.this.Ba.unlock();
+                    b.this.IO.unlock();
                 }
             }
             
             @Override
             public void onConnectionSuspended(final int n) {
                 while (true) {
-                    b.this.Ba.lock();
+                    b.this.IO.lock();
                     Label_0082: {
                         try {
-                            b.this.E(n);
+                            b.this.aj(n);
                             switch (n) {
                                 case 2: {
                                     b.this.connect();
@@ -111,28 +112,28 @@ final class b implements GoogleApiClient
                             return;
                         }
                         finally {
-                            b.this.Ba.unlock();
+                            b.this.IO.unlock();
                         }
                     }
-                    if (b.this.ek()) {
+                    if (b.this.gp()) {
                         break;
                     }
-                    b.this.Bh = 2;
-                    b.this.Bl.sendMessageDelayed(b.this.Bl.obtainMessage(1), b.this.Bk);
+                    b.this.IW = 2;
+                    b.this.Ja.sendMessageDelayed(b.this.Ja.obtainMessage(1), b.this.IZ);
                     return;
                 }
-                b.this.Ba.unlock();
+                b.this.IO.unlock();
             }
         };
-        this.Br = new fg.b() {
+        this.Ji = new e.b() {
             @Override
-            public Bundle dG() {
+            public Bundle fD() {
                 return null;
             }
             
             @Override
-            public boolean em() {
-                return b.this.Bo;
+            public boolean gr() {
+                return b.this.Je;
             }
             
             @Override
@@ -140,55 +141,78 @@ final class b implements GoogleApiClient
                 return b.this.isConnected();
             }
         };
-        this.Bc = new fg(context, as, this.Br);
-        this.AS = as;
-        this.Bl = new b(as);
+        this.IQ = new e(context, ib, this.Ji);
+        this.IB = ib;
+        this.Ja = new b(ib);
+        this.IR = ir;
         final Iterator<ConnectionCallbacks> iterator = set.iterator();
         while (iterator.hasNext()) {
-            this.Bc.registerConnectionCallbacks(iterator.next());
+            this.IQ.registerConnectionCallbacks(iterator.next());
         }
         final Iterator<OnConnectionFailedListener> iterator2 = set2.iterator();
         while (iterator2.hasNext()) {
-            this.Bc.registerConnectionFailedListener(iterator2.next());
+            this.IQ.registerConnectionFailedListener(iterator2.next());
         }
         for (final Api<O> api : map.keySet()) {
-            final Api.b<?, O> dy = api.dY();
-            this.Bn.put(api.ea(), a((Api.b<Api.a, Object>)dy, map.get(api), context, as, fc, this.Bq, new OnConnectionFailedListener() {
+            final Api.b<?, O> gd = api.gd();
+            this.Jc.put(api.gf(), a((Api.b<Api.a, Object>)gd, map.get(api), context, ib, clientSettings, this.Jh, new OnConnectionFailedListener() {
                 @Override
                 public void onConnectionFailed(final ConnectionResult connectionResult) {
-                    b.this.Ba.lock();
+                    b.this.IO.lock();
                     try {
-                        if (b.this.Be == null || dy.getPriority() < b.this.Bf) {
-                            b.this.Be = connectionResult;
-                            b.this.Bf = dy.getPriority();
+                        if (b.this.IT == null || gd.getPriority() < b.this.IU) {
+                            b.this.IT = connectionResult;
+                            b.this.IU = gd.getPriority();
                         }
-                        b.this.ei();
+                        b.this.gn();
                     }
                     finally {
-                        b.this.Ba.unlock();
+                        b.this.IO.unlock();
                     }
                 }
             }));
         }
+        this.Jd = Collections.unmodifiableList((List<? extends String>)clientSettings.getScopes());
     }
     
-    private void E(final int n) {
-        this.Ba.lock();
-        Label_0328: {
-            Label_0195: {
+    private static <C extends Api.a, O> C a(final Api.b<C, O> b, final Object o, final Context context, final Looper looper, final ClientSettings clientSettings, final ConnectionCallbacks connectionCallbacks, final OnConnectionFailedListener onConnectionFailedListener) {
+        return b.a(context, looper, clientSettings, (O)o, connectionCallbacks, onConnectionFailedListener);
+    }
+    
+    private <A extends Api.a> void a(final c<A> c) throws DeadObjectException {
+        this.IO.lock();
+        try {
+            n.b(c.gf() != null, (Object)"This task can not be executed or enqueued (it's probably a Batch or malformed)");
+            this.Jg.add(c);
+            c.a(this.Iu);
+            if (this.gp()) {
+                c.m(new Status(8));
+                return;
+            }
+            c.b(this.a(c.gf()));
+        }
+        finally {
+            this.IO.unlock();
+        }
+    }
+    
+    private void aj(final int n) {
+        this.IO.lock();
+        Label_0374: {
+            Label_0241: {
                 Label_0113: {
                     try {
-                        if (this.Bg == 3) {
-                            break Label_0328;
+                        if (this.IV == 3) {
+                            break Label_0374;
                         }
                         if (n != -1) {
-                            break Label_0195;
+                            break Label_0241;
                         }
                         if (this.isConnecting()) {
-                            final Iterator<c> iterator = (Iterator<c>)this.Bd.iterator();
+                            final Iterator<c> iterator = (Iterator<c>)this.IS.iterator();
                             while (iterator.hasNext()) {
                                 final c c = iterator.next();
-                                if (c.ef() != 1) {
+                                if (c.gk() != 1) {
                                     c.cancel();
                                     iterator.remove();
                                 }
@@ -197,229 +221,237 @@ final class b implements GoogleApiClient
                         }
                     }
                     finally {
-                        this.Ba.unlock();
+                        this.IO.unlock();
                     }
-                    this.Bd.clear();
+                    this.IS.clear();
                 }
-                final Iterator<c<?>> iterator2 = this.Bp.iterator();
+                final Iterator<c<?>> iterator2 = this.Jg.iterator();
                 while (iterator2.hasNext()) {
                     iterator2.next().cancel();
                 }
-                this.Bp.clear();
-                if (this.Be == null && !this.Bd.isEmpty()) {
-                    this.Bi = true;
-                    this.Ba.unlock();
+                this.Jg.clear();
+                final Iterator<com.google.android.gms.common.api.c<?>> iterator3 = this.Jf.iterator();
+                while (iterator3.hasNext()) {
+                    iterator3.next().clear();
+                }
+                this.Jf.clear();
+                if (this.IT == null && !this.IS.isEmpty()) {
+                    this.IX = true;
+                    this.IO.unlock();
                     return;
                 }
             }
             final boolean connecting = this.isConnecting();
             final boolean connected = this.isConnected();
-            this.Bg = 3;
+            this.IV = 3;
             if (connecting) {
                 if (n == -1) {
-                    this.Be = null;
+                    this.IT = null;
                 }
-                this.Bb.signalAll();
+                this.IP.signalAll();
             }
-            this.Bo = false;
-            for (final Api.a a : this.Bn.values()) {
+            this.Je = false;
+            for (final Api.a a : this.Jc.values()) {
                 if (a.isConnected()) {
                     a.disconnect();
                 }
             }
-            this.Bo = true;
-            this.Bg = 4;
+            this.Je = true;
+            this.IV = 4;
             if (connected) {
                 if (n != -1) {
-                    this.Bc.O(n);
+                    this.IQ.aB(n);
                 }
-                this.Bo = false;
+                this.Je = false;
             }
         }
-        this.Ba.unlock();
+        this.IO.unlock();
     }
     
-    private static <C extends Api.a, O> C a(final Api.b<C, O> b, final Object o, final Context context, final Looper looper, final fc fc, final ConnectionCallbacks connectionCallbacks, final OnConnectionFailedListener onConnectionFailedListener) {
-        return b.a(context, looper, fc, (O)o, connectionCallbacks, onConnectionFailedListener);
+    private void gn() {
+        --this.IY;
+        if (this.IY == 0) {
+            if (this.IT != null) {
+                this.IX = false;
+                this.aj(3);
+                if (this.gp()) {
+                    this.Ja.sendMessageDelayed(this.Ja.obtainMessage(1), this.IZ);
+                }
+                else {
+                    this.IQ.b(this.IT);
+                }
+                this.Je = false;
+            }
+            else {
+                this.IV = 2;
+                this.gq();
+                this.IP.signalAll();
+                this.go();
+                if (this.IX) {
+                    this.IX = false;
+                    this.aj(-1);
+                    return;
+                }
+                Bundle jb;
+                if (this.Jb.isEmpty()) {
+                    jb = null;
+                }
+                else {
+                    jb = this.Jb;
+                }
+                this.IQ.d(jb);
+            }
+        }
     }
     
-    private <A extends Api.a> void a(final c<A> c) throws DeadObjectException {
+    private void go() {
         while (true) {
-            final boolean b = true;
-            this.Ba.lock();
+            this.IO.lock();
             while (true) {
-                try {
-                    if (!this.isConnected()) {
-                        if (!this.ek()) {
-                            final boolean b2 = false;
-                            fq.a(b2, (Object)"GoogleApiClient is not connected yet.");
-                            fq.b(c.ea() != null && b, "This task can not be executed or enqueued (it's probably a Batch or malformed)");
-                            this.Bp.add(c);
-                            c.a(this.AL);
-                            if (this.ek()) {
-                                c.k(new Status(8));
-                                return;
+                Label_0108: {
+                    Label_0093: {
+                        try {
+                            if (!this.isConnected() && !this.gp()) {
+                                break Label_0093;
                             }
-                            c.b(this.a((Api.c<?>)c.ea()));
-                            return;
+                            break Label_0108;
+                            final boolean b;
+                            n.a(b, (Object)"GoogleApiClient is not connected yet.");
+                            while (true) {
+                                Label_0033: {
+                                    break Label_0033;
+                                    try {
+                                        this.a((c<?>)this.IS.remove());
+                                    }
+                                    catch (DeadObjectException ex) {
+                                        Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
+                                    }
+                                }
+                                continue;
+                            }
+                        }
+                        // iftrue(Label_0098:, this.IS.isEmpty())
+                        finally {
+                            this.IO.unlock();
                         }
                     }
+                    final boolean b = false;
+                    continue;
                 }
-                finally {
-                    this.Ba.unlock();
-                }
-                final boolean b2 = true;
+                final boolean b = true;
                 continue;
             }
         }
-    }
-    
-    private void ei() {
-        while (true) {
-            this.Ba.lock();
-            Label_0128: {
-                try {
-                    --this.Bj;
-                    if (this.Bj == 0) {
-                        if (this.Be == null) {
-                            break Label_0128;
-                        }
-                        this.Bi = false;
-                        this.E(3);
-                        if (this.ek()) {
-                            --this.Bh;
-                        }
-                        if (this.ek()) {
-                            this.Bl.sendMessageDelayed(this.Bl.obtainMessage(1), this.Bk);
-                        }
-                        else {
-                            this.Bc.a(this.Be);
-                        }
-                        this.Bo = false;
-                    }
-                    return;
-                }
-                finally {
-                    this.Ba.unlock();
-                }
-            }
-            this.Bg = 2;
-            this.el();
-            this.Bb.signalAll();
-            this.ej();
-            if (this.Bi) {
-                this.Bi = false;
-                this.E(-1);
-                return;
-            }
-            Bundle bm;
-            if (this.Bm.isEmpty()) {
-                bm = null;
-            }
-            else {
-                bm = this.Bm;
-            }
-            this.Bc.b(bm);
+        Label_0098: {
+            this.IO.unlock();
         }
     }
     
-    private void ej() {
-        while (true) {
-            Label_0092: {
-                if (!this.isConnected() && !this.ek()) {
-                    break Label_0092;
-                }
-                final boolean b = true;
-                fq.a(b, (Object)"GoogleApiClient is not connected yet.");
-                this.Ba.lock();
-                Label_0097: {
-                    try {
-                        while (!this.Bd.isEmpty()) {
-                            try {
-                                this.a((c<?>)this.Bd.remove());
-                            }
-                            catch (DeadObjectException ex) {
-                                Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
-                            }
-                        }
-                        break Label_0097;
-                    }
-                    finally {
-                        this.Ba.unlock();
-                    }
-                    break Label_0092;
-                }
-                this.Ba.unlock();
-                return;
-            }
-            final boolean b = false;
-            continue;
-        }
+    private boolean gp() {
+        return this.IW != 0;
     }
     
-    private boolean ek() {
-        this.Ba.lock();
+    private void gq() {
+        this.IO.lock();
         try {
-            return this.Bh != 0;
+            this.IW = 0;
+            this.Ja.removeMessages(1);
         }
         finally {
-            this.Ba.unlock();
-        }
-    }
-    
-    private void el() {
-        this.Ba.lock();
-        try {
-            this.Bh = 0;
-            this.Bl.removeMessages(1);
-        }
-        finally {
-            this.Ba.unlock();
+            this.IO.unlock();
         }
     }
     
     @Override
     public <C extends Api.a> C a(final Api.c<C> c) {
-        final Api.a a = this.Bn.get(c);
-        fq.b(a, "Appropriate Api was not requested.");
+        final Api.a a = this.Jc.get(c);
+        n.b(a, "Appropriate Api was not requested.");
         return (C)a;
     }
     
     @Override
-    public <A extends Api.a, T extends com.google.android.gms.common.api.a.b<? extends Result, A>> T a(final T t) {
-        this.Ba.lock();
+    public <A extends Api.a, R extends Result, T extends BaseImplementation.a<R, A>> T a(final T t) {
+        this.IO.lock();
         try {
+            ((BaseImplementation.AbstractPendingResult<R>)t).a((BaseImplementation.CallbackHandler<R>)new BaseImplementation.CallbackHandler(this.getLooper()));
             if (this.isConnected()) {
-                this.b((com.google.android.gms.common.api.a.b)t);
+                this.b(t);
             }
             else {
-                this.Bd.add((c<?>)t);
+                this.IS.add((c<?>)t);
             }
             return t;
         }
         finally {
-            this.Ba.unlock();
+            this.IO.unlock();
         }
     }
     
     @Override
-    public <A extends Api.a, T extends com.google.android.gms.common.api.a.b<? extends Result, A>> T b(final T t) {
+    public boolean a(final Scope scope) {
+        return this.Jd.contains(scope.gt());
+    }
+    
+    @Override
+    public <A extends Api.a, T extends BaseImplementation.a<? extends Result, A>> T b(final T t) {
         Label_0034: {
-            if (!this.isConnected() && !this.ek()) {
+            if (!this.isConnected() && !this.gp()) {
                 break Label_0034;
             }
             boolean b = true;
             while (true) {
-                fq.a(b, (Object)"GoogleApiClient is not connected yet.");
-                this.ej();
+                n.a(b, (Object)"GoogleApiClient is not connected yet.");
+                this.go();
                 try {
                     this.a((c<Api.a>)t);
                     return t;
                     b = false;
                 }
                 catch (DeadObjectException ex) {
-                    this.E(1);
+                    this.aj(1);
                     return t;
+                }
+            }
+        }
+    }
+    
+    @Override
+    public ConnectionResult blockingConnect() {
+        Label_0081: {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                break Label_0081;
+            }
+            boolean connecting = true;
+            while (true) {
+                n.a(connecting, (Object)"blockingConnect must not be called on the UI thread");
+                this.IO.lock();
+                try {
+                    this.connect();
+                    while (true) {
+                        connecting = this.isConnecting();
+                        if (connecting) {
+                            try {
+                                this.IP.await();
+                                continue;
+                            }
+                            catch (InterruptedException ex) {
+                                Thread.currentThread().interrupt();
+                                return new ConnectionResult(15, null);
+                            }
+                            connecting = false;
+                            break;
+                        }
+                        if (this.isConnected()) {
+                            return ConnectionResult.HE;
+                        }
+                        if (this.IT != null) {
+                            return this.IT;
+                        }
+                        return new ConnectionResult(13, null);
+                    }
+                }
+                finally {
+                    this.IO.unlock();
                 }
             }
         }
@@ -434,8 +466,8 @@ final class b implements GoogleApiClient
             boolean connecting = true;
         Label_0012:
             while (true) {
-                fq.a(connecting, (Object)"blockingConnect must not be called on the UI thread");
-                this.Ba.lock();
+                n.a(connecting, (Object)"blockingConnect must not be called on the UI thread");
+                this.IO.lock();
                 try {
                     this.connect();
                     n = timeUnit.toNanos(n);
@@ -443,7 +475,7 @@ final class b implements GoogleApiClient
                         connecting = this.isConnecting();
                         if (connecting) {
                             try {
-                                if ((n = this.Bb.awaitNanos(n)) <= 0L) {
+                                if ((n = this.IP.awaitNanos(n)) <= 0L) {
                                     return new ConnectionResult(14, null);
                                 }
                                 continue;
@@ -459,89 +491,87 @@ final class b implements GoogleApiClient
                         break;
                     }
                     if (this.isConnected()) {
-                        return ConnectionResult.Ag;
+                        return ConnectionResult.HE;
                     }
-                    if (this.Be != null) {
-                        return this.Be;
+                    if (this.IT != null) {
+                        return this.IT;
                     }
                     return new ConnectionResult(13, null);
                 }
                 finally {
-                    this.Ba.unlock();
+                    this.IO.unlock();
                 }
             }
+        }
+    }
+    
+    @Override
+    public <L> com.google.android.gms.common.api.c<L> c(final L l) {
+        n.b(l, "Listener must not be null");
+        this.IO.lock();
+        try {
+            final com.google.android.gms.common.api.c<Object> c = new com.google.android.gms.common.api.c<Object>(this.IB, l);
+            this.Jf.add(c);
+            return (com.google.android.gms.common.api.c<L>)c;
+        }
+        finally {
+            this.IO.unlock();
         }
     }
     
     @Override
     public void connect() {
-        this.Ba.lock();
+        this.IO.lock();
         try {
-            this.Bi = false;
+            this.IX = false;
             if (this.isConnected() || this.isConnecting()) {
                 return;
             }
-            this.Bo = true;
-            this.Be = null;
-            this.Bg = 1;
-            this.Bm.clear();
-            this.Bj = this.Bn.size();
-            final Iterator<Api.a> iterator = this.Bn.values().iterator();
+            this.Je = true;
+            this.IT = null;
+            this.IV = 1;
+            this.Jb.clear();
+            this.IY = this.Jc.size();
+            final Iterator<Api.a> iterator = this.Jc.values().iterator();
             while (iterator.hasNext()) {
                 iterator.next().connect();
             }
         }
         finally {
-            this.Ba.unlock();
+            this.IO.unlock();
         }
-        this.Ba.unlock();
+        this.IO.unlock();
     }
     
     @Override
     public void disconnect() {
-        this.el();
-        this.E(-1);
+        this.gq();
+        this.aj(-1);
     }
     
     @Override
     public Looper getLooper() {
-        return this.AS;
+        return this.IB;
     }
     
     @Override
     public boolean isConnected() {
-        this.Ba.lock();
-        try {
-            return this.Bg == 2;
-        }
-        finally {
-            this.Ba.unlock();
-        }
+        return this.IV == 2;
     }
     
     @Override
     public boolean isConnecting() {
-        boolean b = true;
-        this.Ba.lock();
-        try {
-            if (this.Bg != 1) {
-                b = false;
-            }
-            return b;
-        }
-        finally {
-            this.Ba.unlock();
-        }
+        return this.IV == 1;
     }
     
     @Override
     public boolean isConnectionCallbacksRegistered(final ConnectionCallbacks connectionCallbacks) {
-        return this.Bc.isConnectionCallbacksRegistered(connectionCallbacks);
+        return this.IQ.isConnectionCallbacksRegistered(connectionCallbacks);
     }
     
     @Override
     public boolean isConnectionFailedListenerRegistered(final OnConnectionFailedListener onConnectionFailedListener) {
-        return this.Bc.isConnectionFailedListenerRegistered(onConnectionFailedListener);
+        return this.IQ.isConnectionFailedListenerRegistered(onConnectionFailedListener);
     }
     
     @Override
@@ -552,22 +582,28 @@ final class b implements GoogleApiClient
     
     @Override
     public void registerConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.Bc.registerConnectionCallbacks(connectionCallbacks);
+        this.IQ.registerConnectionCallbacks(connectionCallbacks);
     }
     
     @Override
     public void registerConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.Bc.registerConnectionFailedListener(onConnectionFailedListener);
+        this.IQ.registerConnectionFailedListener(onConnectionFailedListener);
+    }
+    
+    @Override
+    public void stopAutoManage(final FragmentActivity fragmentActivity) {
+        n.a(this.IR >= 0, (Object)"Called stopAutoManage but automatic lifecycle management is not enabled.");
+        d.a(fragmentActivity).al(this.IR);
     }
     
     @Override
     public void unregisterConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.Bc.unregisterConnectionCallbacks(connectionCallbacks);
+        this.IQ.unregisterConnectionCallbacks(connectionCallbacks);
     }
     
     @Override
     public void unregisterConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.Bc.unregisterConnectionFailedListener(onConnectionFailedListener);
+        this.IQ.unregisterConnectionFailedListener(onConnectionFailedListener);
     }
     
     interface a
@@ -583,15 +619,17 @@ final class b implements GoogleApiClient
         
         public void handleMessage(final Message message) {
             if (message.what == 1) {
-                com.google.android.gms.common.api.b.this.Ba.lock();
+                com.google.android.gms.common.api.b.this.IO.lock();
                 try {
-                    if (!com.google.android.gms.common.api.b.this.isConnected() && !com.google.android.gms.common.api.b.this.isConnecting()) {
-                        com.google.android.gms.common.api.b.this.connect();
+                    if (com.google.android.gms.common.api.b.this.isConnected() || com.google.android.gms.common.api.b.this.isConnecting() || !com.google.android.gms.common.api.b.this.gp()) {
+                        return;
                     }
+                    com.google.android.gms.common.api.b.this.IW--;
+                    com.google.android.gms.common.api.b.this.connect();
                     return;
                 }
                 finally {
-                    com.google.android.gms.common.api.b.this.Ba.unlock();
+                    com.google.android.gms.common.api.b.this.IO.unlock();
                 }
             }
             Log.wtf("GoogleApiClientImpl", "Don't know how to handle this message.");
@@ -606,10 +644,10 @@ final class b implements GoogleApiClient
         
         void cancel();
         
-        Api.c<A> ea();
+        Api.c<A> gf();
         
-        int ef();
+        int gk();
         
-        void k(final Status p0);
+        void m(final Status p0);
     }
 }

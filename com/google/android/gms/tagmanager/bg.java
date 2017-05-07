@@ -8,14 +8,14 @@ interface bg<T>
 {
     void a(final a p0);
     
-    void i(final T p0);
+    void l(final T p0);
     
-    void kl();
+    void nZ();
     
     public enum a
     {
-        YA, 
-        Yy, 
-        Yz;
+        apB, 
+        apC, 
+        apD;
     }
 }

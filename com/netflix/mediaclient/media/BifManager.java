@@ -463,7 +463,7 @@ public class BifManager
                 //   707: aload_0        
                 //   708: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
                 //   711: invokestatic    com/netflix/mediaclient/media/BifManager.access$100:(Lcom/netflix/mediaclient/media/BifManager;)Z
-                //   714: ifeq            1868
+                //   714: ifeq            1864
                 //   717: aload           13
                 //   719: astore          8
                 //   721: aload           12
@@ -678,7 +678,7 @@ public class BifManager
                 //  1168: invokeinterface java/util/SortedMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
                 //  1173: checkcast       Ljava/lang/Integer;
                 //  1176: invokevirtual   java/lang/Integer.intValue:()I
-                //  1179: istore_3       
+                //  1179: istore_2       
                 //  1180: aload           13
                 //  1182: astore          8
                 //  1184: aload           12
@@ -693,7 +693,7 @@ public class BifManager
                 //  1207: invokeinterface java/util/SortedMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
                 //  1212: checkcast       Ljava/lang/Integer;
                 //  1215: invokevirtual   java/lang/Integer.intValue:()I
-                //  1218: istore_2       
+                //  1218: istore_3       
                 //  1219: aload           13
                 //  1221: astore          8
                 //  1223: aload           12
@@ -712,11 +712,11 @@ public class BifManager
                 //  1250: invokespecial   java/lang/StringBuilder.<init>:()V
                 //  1253: ldc             "first offset "
                 //  1255: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1258: iload_3        
+                //  1258: iload_2        
                 //  1259: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
                 //  1262: ldc             ", end @"
                 //  1264: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-                //  1267: iload_2        
+                //  1267: iload_3        
                 //  1268: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
                 //  1271: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
                 //  1274: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
@@ -725,7 +725,7 @@ public class BifManager
                 //  1280: astore          8
                 //  1282: aload           12
                 //  1284: astore          7
-                //  1286: iload_3        
+                //  1286: iload_2        
                 //  1287: aload_0        
                 //  1288: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
                 //  1291: invokestatic    com/netflix/mediaclient/media/BifManager.access$500:(Lcom/netflix/mediaclient/media/BifManager;)I
@@ -735,7 +735,7 @@ public class BifManager
                 //  1301: aload           12
                 //  1303: astore          7
                 //  1305: aload           11
-                //  1307: iload_3        
+                //  1307: iload_2        
                 //  1308: aload_0        
                 //  1309: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
                 //  1312: invokestatic    com/netflix/mediaclient/media/BifManager.access$500:(Lcom/netflix/mediaclient/media/BifManager;)I
@@ -766,8 +766,8 @@ public class BifManager
                 //  1364: iconst_0       
                 //  1365: istore_1       
                 //  1366: iload_1        
-                //  1367: iload_2        
-                //  1368: iload_3        
+                //  1367: iload_3        
+                //  1368: iload_2        
                 //  1369: isub           
                 //  1370: if_icmpge       1595
                 //  1373: aload           9
@@ -822,16 +822,16 @@ public class BifManager
                 //  1481: aload           11
                 //  1483: astore          7
                 //  1485: aload           8
-                //  1487: astore          10
+                //  1487: astore          11
                 //  1489: aload           6
-                //  1491: astore          11
+                //  1491: astore          10
                 //  1493: aload           7
                 //  1495: astore          6
                 //  1497: aload           6
                 //  1499: astore          8
-                //  1501: aload           11
+                //  1501: aload           10
                 //  1503: astore          7
-                //  1505: aload           10
+                //  1505: aload           11
                 //  1507: astore          9
                 //  1509: aload_0        
                 //  1510: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -840,24 +840,24 @@ public class BifManager
                 //  1517: pop            
                 //  1518: aload           6
                 //  1520: astore          8
-                //  1522: aload           11
+                //  1522: aload           10
                 //  1524: astore          7
-                //  1526: aload           10
+                //  1526: aload           11
                 //  1528: astore          9
                 //  1530: ldc             "BifManager"
                 //  1532: ldc             "Failed downlaod"
                 //  1534: aload           12
                 //  1536: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
                 //  1539: pop            
-                //  1540: aload           10
+                //  1540: aload           11
                 //  1542: ifnull          1555
-                //  1545: aload           10
+                //  1545: aload           11
                 //  1547: invokevirtual   java/io/FileOutputStream.flush:()V
-                //  1550: aload           10
+                //  1550: aload           11
                 //  1552: invokevirtual   java/io/FileOutputStream.close:()V
-                //  1555: aload           11
+                //  1555: aload           10
                 //  1557: ifnull          1565
-                //  1560: aload           11
+                //  1560: aload           10
                 //  1562: invokevirtual   java/io/InputStream.close:()V
                 //  1565: aload           6
                 //  1567: ifnull          1575
@@ -992,30 +992,28 @@ public class BifManager
                 //  1851: astore          12
                 //  1853: aload           16
                 //  1855: astore          6
-                //  1857: aload           10
+                //  1857: aload           15
                 //  1859: astore          11
-                //  1861: aload           15
-                //  1863: astore          10
-                //  1865: goto            1497
-                //  1868: sipush          1024
-                //  1871: istore_2       
-                //  1872: iload_3        
-                //  1873: iload_1        
-                //  1874: isub           
-                //  1875: sipush          1024
-                //  1878: if_icmpge       852
-                //  1881: iload_3        
-                //  1882: iload_1        
-                //  1883: isub           
-                //  1884: istore_2       
-                //  1885: goto            852
+                //  1861: goto            1497
+                //  1864: sipush          1024
+                //  1867: istore_2       
+                //  1868: iload_3        
+                //  1869: iload_1        
+                //  1870: isub           
+                //  1871: sipush          1024
+                //  1874: if_icmpge       852
+                //  1877: iload_3        
+                //  1878: iload_1        
+                //  1879: isub           
+                //  1880: istore_2       
+                //  1881: goto            852
                 //    Exceptions:
                 //  Try           Handler
                 //  Start  End    Start  End    Type                 
                 //  -----  -----  -----  -----  ---------------------
-                //  123    140    1851   1868   Ljava/io/IOException;
+                //  123    140    1851   1864   Ljava/io/IOException;
                 //  123    140    1750   1760   Any
-                //  156    167    1851   1868   Ljava/io/IOException;
+                //  156    167    1851   1864   Ljava/io/IOException;
                 //  156    167    1750   1760   Any
                 //  175    181    1479   1497   Ljava/io/IOException;
                 //  175    181    1830   1851   Any

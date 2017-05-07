@@ -6,6 +6,8 @@ package com.google.android.gms.ads.mediation;
 
 public interface MediationInterstitialListener
 {
+    void onAdClicked(final MediationInterstitialAdapter p0);
+    
     void onAdClosed(final MediationInterstitialAdapter p0);
     
     void onAdFailedToLoad(final MediationInterstitialAdapter p0, final int p1);

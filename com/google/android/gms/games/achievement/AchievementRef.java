@@ -4,19 +4,27 @@
 
 package com.google.android.gms.games.achievement;
 
-import com.google.android.gms.internal.fo;
+import android.os.Parcel;
 import android.net.Uri;
 import com.google.android.gms.games.PlayerRef;
 import com.google.android.gms.games.Player;
 import android.database.CharArrayBuffer;
-import com.google.android.gms.internal.fb;
+import com.google.android.gms.common.internal.a;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class AchievementRef extends b implements Achievement
+public final class AchievementRef extends d implements Achievement
 {
     AchievementRef(final DataHolder dataHolder, final int n) {
         super(dataHolder, n);
+    }
+    
+    public int describeContents() {
+        return 0;
+    }
+    
+    public Achievement freeze() {
+        return new AchievementEntity(this);
     }
     
     @Override
@@ -30,7 +38,7 @@ public final class AchievementRef extends b implements Achievement
         if (this.getType() != 1) {
             b = false;
         }
-        fb.x(b);
+        a.I(b);
         return this.getInteger("current_steps");
     }
     
@@ -50,7 +58,7 @@ public final class AchievementRef extends b implements Achievement
         if (this.getType() != 1) {
             b = false;
         }
-        fb.x(b);
+        a.I(b);
         return this.getString("formatted_current_steps");
     }
     
@@ -60,7 +68,7 @@ public final class AchievementRef extends b implements Achievement
         if (this.getType() != 1) {
             b = false;
         }
-        fb.x(b);
+        a.I(b);
         this.a("formatted_current_steps", charArrayBuffer);
     }
     
@@ -70,7 +78,7 @@ public final class AchievementRef extends b implements Achievement
         if (this.getType() != 1) {
             b = false;
         }
-        fb.x(b);
+        a.I(b);
         return this.getString("formatted_total_steps");
     }
     
@@ -80,7 +88,7 @@ public final class AchievementRef extends b implements Achievement
         if (this.getType() != 1) {
             b = false;
         }
-        fb.x(b);
+        a.I(b);
         this.a("formatted_total_steps", charArrayBuffer);
     }
     
@@ -101,12 +109,12 @@ public final class AchievementRef extends b implements Achievement
     
     @Override
     public Player getPlayer() {
-        return new PlayerRef(this.BB, this.BD);
+        return new PlayerRef(this.IC, this.JQ);
     }
     
     @Override
     public Uri getRevealedImageUri() {
-        return this.ah("revealed_icon_image_uri");
+        return this.aR("revealed_icon_image_uri");
     }
     
     @Override
@@ -125,7 +133,7 @@ public final class AchievementRef extends b implements Achievement
         if (this.getType() != 1) {
             b = false;
         }
-        fb.x(b);
+        a.I(b);
         return this.getInteger("total_steps");
     }
     
@@ -136,7 +144,7 @@ public final class AchievementRef extends b implements Achievement
     
     @Override
     public Uri getUnlockedImageUri() {
-        return this.ah("unlocked_icon_image_uri");
+        return this.aR("unlocked_icon_image_uri");
     }
     
     @Override
@@ -145,12 +153,19 @@ public final class AchievementRef extends b implements Achievement
     }
     
     @Override
-    public String toString() {
-        final fo.a a = fo.e(this).a("AchievementId", this.getAchievementId()).a("Type", this.getType()).a("Name", this.getName()).a("Description", this.getDescription()).a("UnlockedImageUri", this.getUnlockedImageUri()).a("UnlockedImageUrl", this.getUnlockedImageUrl()).a("RevealedImageUri", this.getRevealedImageUri()).a("RevealedImageUrl", this.getRevealedImageUrl()).a("Player", this.getPlayer()).a("LastUpdatedTimeStamp", this.getLastUpdatedTimestamp());
-        if (this.getType() == 1) {
-            a.a("CurrentSteps", this.getCurrentSteps());
-            a.a("TotalSteps", this.getTotalSteps());
+    public long getXpValue() {
+        if (!this.aQ("instance_xp_value") || this.aS("instance_xp_value")) {
+            return this.getLong("definition_xp_value");
         }
-        return a.toString();
+        return this.getLong("instance_xp_value");
+    }
+    
+    @Override
+    public String toString() {
+        return AchievementEntity.b(this);
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        ((AchievementEntity)this.freeze()).writeToParcel(parcel, n);
     }
 }

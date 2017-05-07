@@ -9,28 +9,31 @@ import com.google.android.gms.drive.metadata.SearchableMetadataField;
 import com.google.android.gms.drive.metadata.MetadataField;
 import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import android.os.Parcelable$Creator;
-import com.google.android.gms.drive.query.Filter;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class FieldOnlyFilter implements SafeParcelable, Filter
+public class FieldOnlyFilter extends AbstractFilter
 {
     public static final Parcelable$Creator<FieldOnlyFilter> CREATOR;
-    final MetadataBundle GH;
-    private final MetadataField<?> GI;
-    final int xH;
+    final int BR;
+    final MetadataBundle QD;
+    private final MetadataField<?> QE;
     
     static {
         CREATOR = (Parcelable$Creator)new b();
     }
     
-    FieldOnlyFilter(final int xh, final MetadataBundle gh) {
-        this.xH = xh;
-        this.GH = gh;
-        this.GI = e.b(gh);
+    FieldOnlyFilter(final int br, final MetadataBundle qd) {
+        this.BR = br;
+        this.QD = qd;
+        this.QE = e.b(qd);
     }
     
     public FieldOnlyFilter(final SearchableMetadataField<?> searchableMetadataField) {
         this(1, MetadataBundle.a(searchableMetadataField, null));
+    }
+    
+    @Override
+    public <T> T a(final f<T> f) {
+        return f.d(this.QE);
     }
     
     public int describeContents() {

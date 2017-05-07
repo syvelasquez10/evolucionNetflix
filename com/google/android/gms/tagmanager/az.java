@@ -16,31 +16,31 @@ import com.google.android.gms.internal.a;
 class az extends aj
 {
     private static final String ID;
-    private static final String XQ;
-    private static final String Ym;
-    private static final String Yn;
-    private static final String Yo;
+    private static final String aoU;
+    private static final String app;
+    private static final String apq;
+    private static final String apr;
     
     static {
-        ID = com.google.android.gms.internal.a.ac.toString();
-        XQ = b.bi.toString();
-        Ym = b.cL.toString();
-        Yn = b.cO.toString();
-        Yo = b.co.toString();
+        ID = com.google.android.gms.internal.a.ae.toString();
+        aoU = b.bw.toString();
+        app = b.di.toString();
+        apq = b.dm.toString();
+        apr = b.cH.toString();
     }
     
     public az() {
-        super(az.ID, new String[] { az.XQ });
+        super(az.ID, new String[] { az.aoU });
     }
     
     private String a(String s, final a a, final Set<Character> set) {
-        switch (az$1.Yp[a.ordinal()]) {
+        switch (az$1.aps[a.ordinal()]) {
             default: {
                 return s;
             }
             case 1: {
                 try {
-                    return dk.cd(s);
+                    return dm.db(s);
                 }
                 catch (UnsupportedEncodingException ex) {
                     bh.b("Joiner: unsupported encoding", ex);
@@ -70,47 +70,42 @@ class az extends aj
     }
     
     @Override
-    public boolean jX() {
-        return true;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        final d.a a = map.get(az.XQ);
+    public d.a C(final Map<String, d.a> map) {
+        final d.a a = map.get(az.aoU);
         if (a == null) {
-            return dh.lT();
+            return di.pI();
         }
-        final d.a a2 = map.get(az.Ym);
+        final d.a a2 = map.get(az.app);
         String j;
         if (a2 != null) {
-            j = dh.j(a2);
+            j = di.j(a2);
         }
         else {
             j = "";
         }
-        final d.a a3 = map.get(az.Yn);
+        final d.a a3 = map.get(az.apq);
         String i;
         if (a3 != null) {
-            i = dh.j(a3);
+            i = di.j(a3);
         }
         else {
             i = "=";
         }
-        a a4 = az.a.Yq;
-        final d.a a5 = map.get(az.Yo);
+        a a4 = az.a.apt;
+        final d.a a5 = map.get(az.apr);
         Set<Character> set;
         if (a5 != null) {
-            final String k = dh.j(a5);
+            final String k = di.j(a5);
             if ("url".equals(k)) {
-                a4 = az.a.Yr;
+                a4 = az.a.apu;
                 set = null;
             }
             else {
                 if (!"backslash".equals(k)) {
-                    bh.w("Joiner: unsupported escape type: " + k);
-                    return dh.lT();
+                    bh.T("Joiner: unsupported escape type: " + k);
+                    return di.pI();
                 }
-                a4 = az.a.Ys;
+                a4 = az.a.apv;
                 set = new HashSet<Character>();
                 this.a(set, j);
                 this.a(set, i);
@@ -123,28 +118,28 @@ class az extends aj
         final StringBuilder sb = new StringBuilder();
         switch (a.type) {
             default: {
-                this.a(sb, dh.j(a), a4, set);
+                this.a(sb, di.j(a), a4, set);
                 break;
             }
             case 2: {
                 int n = 1;
-                final d.a[] fo = a.fO;
-                for (int length = fo.length, l = 0; l < length; ++l, n = 0) {
-                    final d.a a6 = fo[l];
+                final d.a[] gw = a.gw;
+                for (int length = gw.length, l = 0; l < length; ++l, n = 0) {
+                    final d.a a6 = gw[l];
                     if (n == 0) {
                         sb.append(j);
                     }
-                    this.a(sb, dh.j(a6), a4, set);
+                    this.a(sb, di.j(a6), a4, set);
                 }
                 break;
             }
             case 3: {
-                for (int n2 = 0; n2 < a.fP.length; ++n2) {
+                for (int n2 = 0; n2 < a.gx.length; ++n2) {
                     if (n2 > 0) {
                         sb.append(j);
                     }
-                    final String m = dh.j(a.fP[n2]);
-                    final String j2 = dh.j(a.fQ[n2]);
+                    final String m = di.j(a.gx[n2]);
+                    final String j2 = di.j(a.gy[n2]);
                     this.a(sb, m, a4, set);
                     sb.append(i);
                     this.a(sb, j2, a4, set);
@@ -152,13 +147,18 @@ class az extends aj
                 break;
             }
         }
-        return dh.r(sb.toString());
+        return di.u(sb.toString());
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
     }
     
     private enum a
     {
-        Yq, 
-        Yr, 
-        Ys;
+        apt, 
+        apu, 
+        apv;
     }
 }

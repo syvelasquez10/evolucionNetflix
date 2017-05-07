@@ -4,108 +4,62 @@
 
 package com.google.android.gms.analytics;
 
-import android.content.res.Resources$NotFoundException;
-import java.io.IOException;
-import org.xmlpull.v1.XmlPullParserException;
-import android.text.TextUtils;
-import android.content.res.XmlResourceParser;
-import android.content.Context;
+import android.util.Log;
 
-abstract class k<T extends j>
+class k implements Logger
 {
-    Context mContext;
-    a<T> sy;
+    private int xW;
     
-    public k(final Context mContext, final a<T> sy) {
-        this.mContext = mContext;
-        this.sy = sy;
+    k() {
+        this.xW = 2;
     }
     
-    private T a(final XmlResourceParser xmlResourceParser) {
-        while (true) {
-            while (true) {
-                String lowerCase = null;
-                try {
-                    xmlResourceParser.next();
-                    for (int i = xmlResourceParser.getEventType(); i != 1; i = xmlResourceParser.next()) {
-                        if (xmlResourceParser.getEventType() == 2) {
-                            lowerCase = xmlResourceParser.getName().toLowerCase();
-                            if (lowerCase.equals("screenname")) {
-                                final String attributeValue = xmlResourceParser.getAttributeValue((String)null, "name");
-                                final String trim = xmlResourceParser.nextText().trim();
-                                if (!TextUtils.isEmpty((CharSequence)attributeValue) && !TextUtils.isEmpty((CharSequence)trim)) {
-                                    this.sy.a(attributeValue, trim);
-                                }
-                            }
-                            else {
-                                if (!lowerCase.equals("string")) {
-                                    goto Label_0205;
-                                }
-                                final String attributeValue2 = xmlResourceParser.getAttributeValue((String)null, "name");
-                                final String trim2 = xmlResourceParser.nextText().trim();
-                                if (!TextUtils.isEmpty((CharSequence)attributeValue2) && trim2 != null) {
-                                    this.sy.b(attributeValue2, trim2);
-                                }
-                            }
-                        }
-                    }
-                    goto Label_0195;
-                }
-                catch (XmlPullParserException ex) {
-                    aa.w("Error parsing tracker configuration file: " + ex);
-                }
-                catch (IOException ex2) {
-                    aa.w("Error parsing tracker configuration file: " + ex2);
-                    goto Label_0195;
-                }
-                try {
-                    final String s;
-                    final String s2;
-                    this.sy.c(s, Boolean.parseBoolean(s2));
-                    continue;
-                }
-                catch (NumberFormatException ex3) {}
-                if (!lowerCase.equals("integer")) {
-                    continue;
-                }
-                final String attributeValue3 = xmlResourceParser.getAttributeValue((String)null, "name");
-                final String trim3 = xmlResourceParser.nextText().trim();
-                if (!TextUtils.isEmpty((CharSequence)attributeValue3) && !TextUtils.isEmpty((CharSequence)trim3)) {
-                    try {
-                        this.sy.a(attributeValue3, Integer.parseInt(trim3));
-                        continue;
-                    }
-                    catch (NumberFormatException ex4) {
-                        aa.w("Error parsing int configuration value: " + trim3);
-                        continue;
-                    }
-                    continue;
-                }
-                continue;
-            }
+    private String ae(final String s) {
+        return Thread.currentThread().toString() + ": " + s;
+    }
+    
+    @Override
+    public void error(final Exception ex) {
+        if (this.xW <= 3) {
+            Log.e("GAV4", (String)null, (Throwable)ex);
         }
     }
     
-    public T p(final int n) {
-        try {
-            return this.a(this.mContext.getResources().getXml(n));
-        }
-        catch (Resources$NotFoundException ex) {
-            aa.z("inflate() called with unknown resourceId: " + ex);
-            return null;
+    @Override
+    public void error(final String s) {
+        if (this.xW <= 3) {
+            Log.e("GAV4", this.ae(s));
         }
     }
     
-    public interface a<U extends j>
-    {
-        void a(final String p0, final int p1);
-        
-        void a(final String p0, final String p1);
-        
-        void b(final String p0, final String p1);
-        
-        void c(final String p0, final boolean p1);
-        
-        U cg();
+    @Override
+    public int getLogLevel() {
+        return this.xW;
+    }
+    
+    @Override
+    public void info(final String s) {
+        if (this.xW <= 1) {
+            Log.i("GAV4", this.ae(s));
+        }
+    }
+    
+    @Override
+    public void setLogLevel(final int xw) {
+        this.xW = xw;
+    }
+    
+    @Override
+    public void verbose(final String s) {
+        if (this.xW <= 0) {
+            Log.v("GAV4", this.ae(s));
+        }
+    }
+    
+    @Override
+    public void warn(final String s) {
+        if (this.xW <= 2) {
+            Log.w("GAV4", this.ae(s));
+        }
     }
 }

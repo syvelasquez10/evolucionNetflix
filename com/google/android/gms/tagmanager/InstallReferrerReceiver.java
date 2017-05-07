@@ -15,7 +15,7 @@ public final class InstallReferrerReceiver extends BroadcastReceiver
         if (!"com.android.vending.INSTALL_REFERRER".equals(intent.getAction()) || stringExtra == null) {
             return;
         }
-        ay.bF(stringExtra);
+        ay.cC(stringExtra);
         intent = new Intent(context, (Class)InstallReferrerService.class);
         intent.putExtra("referrer", stringExtra);
         context.startService(intent);

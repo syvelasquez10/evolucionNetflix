@@ -7,7 +7,6 @@ package com.google.android.gms.common.api;
 public class CommonStatusCodes
 {
     public static final int CANCELED = 16;
-    public static final int DATE_INVALID = 12;
     public static final int DEVELOPER_ERROR = 10;
     public static final int ERROR = 13;
     public static final int INTERNAL_ERROR = 8;

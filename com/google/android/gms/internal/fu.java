@@ -4,146 +4,194 @@
 
 package com.google.android.gms.internal;
 
+import java.util.Arrays;
 import java.util.Map;
-import java.util.LinkedHashMap;
+import java.util.List;
 
-public class fu<K, V>
+@ez
+public final class fu
 {
-    private final LinkedHashMap<K, V> DL;
-    private int DM;
-    private int DN;
-    private int DO;
-    private int DP;
-    private int DQ;
-    private int DR;
-    private int size;
+    private int mOrientation;
+    private String pn;
+    private List<String> uA;
+    private long uB;
+    private boolean uC;
+    private final long uD;
+    private long uE;
+    private boolean uF;
+    private boolean uG;
+    private boolean uH;
+    private boolean uI;
+    private List<String> ua;
+    private String uv;
+    private String uw;
+    private List<String> ux;
+    private String uy;
+    private String uz;
     
-    public fu(final int dm) {
-        if (dm <= 0) {
-            throw new IllegalArgumentException("maxSize <= 0");
-        }
-        this.DM = dm;
-        this.DL = new LinkedHashMap<K, V>(0, 0.75f, true);
+    public fu() {
+        this.uB = -1L;
+        this.uC = false;
+        this.uD = -1L;
+        this.uE = -1L;
+        this.mOrientation = -1;
+        this.uF = false;
+        this.uG = false;
+        this.uH = false;
+        this.uI = false;
     }
     
-    private int c(final K k, final V v) {
-        final int size = this.sizeOf(k, v);
-        if (size < 0) {
-            throw new IllegalStateException("Negative size: " + k + "=" + v);
+    static String a(final Map<String, List<String>> map, final String s) {
+        final List<String> list = map.get(s);
+        if (list != null && !list.isEmpty()) {
+            return list.get(0);
         }
-        return size;
-    }
-    
-    protected V create(final K k) {
         return null;
     }
     
-    protected void entryRemoved(final boolean b, final K k, final V v, final V v2) {
+    static long b(Map<String, List<String>> s, final String s2) {
+        final List<String> list = ((Map<String, List<String>>)s).get(s2);
+        if (list != null && !list.isEmpty()) {
+            s = list.get(0);
+            try {
+                return (long)(Float.parseFloat(s) * 1000.0f);
+            }
+            catch (NumberFormatException ex) {
+                gs.W("Could not parse float from " + s2 + " header: " + s);
+            }
+        }
+        return -1L;
     }
     
-    public final void evictAll() {
-        this.trimToSize(-1);
+    static List<String> c(final Map<String, List<String>> map, final String s) {
+        final List<String> list = map.get(s);
+        if (list != null && !list.isEmpty()) {
+            final String s2 = list.get(0);
+            if (s2 != null) {
+                return Arrays.asList(s2.trim().split("\\s+"));
+            }
+        }
+        return null;
     }
     
-    public final V get(final K k) {
-        if (k == null) {
-            throw new NullPointerException("key == null");
-        }
-        V v;
-        synchronized (this) {
-            v = this.DL.get(k);
-            if (v != null) {
-                ++this.DQ;
-                return v;
-            }
-            ++this.DR;
-            // monitorexit(this)
-            v = this.create(k);
-            if (v == null) {
-                return null;
-            }
-        }
-        synchronized (this) {
-            ++this.DO;
-            final K i;
-            final V put = this.DL.put(i, v);
-            if (put != null) {
-                this.DL.put(i, put);
-            }
-            else {
-                this.size += this.c(i, v);
-            }
-            // monitorexit(this)
-            if (put != null) {
-                this.entryRemoved(false, i, v, put);
-                return put;
-            }
-        }
-        this.trimToSize(this.DM);
-        return v;
+    private boolean d(final Map<String, List<String>> map, final String s) {
+        final List<String> list = map.get(s);
+        return list != null && !list.isEmpty() && Boolean.valueOf(list.get(0));
     }
     
-    public final V put(final K k, final V v) {
-        if (k == null || v == null) {
-            throw new NullPointerException("key == null || value == null");
-        }
-        synchronized (this) {
-            ++this.DN;
-            this.size += this.c(k, v);
-            final V put = this.DL.put(k, v);
-            if (put != null) {
-                this.size -= this.c(k, put);
-            }
-            // monitorexit(this)
-            if (put != null) {
-                this.entryRemoved(false, k, put, v);
-            }
-            this.trimToSize(this.DM);
-            return put;
+    private void f(final Map<String, List<String>> map) {
+        this.uv = a(map, "X-Afma-Ad-Size");
+    }
+    
+    private void g(final Map<String, List<String>> map) {
+        final List<String> c = c(map, "X-Afma-Click-Tracking-Urls");
+        if (c != null) {
+            this.ux = c;
         }
     }
     
-    public final int size() {
-        synchronized (this) {
-            return this.size;
+    private void h(final Map<String, List<String>> map) {
+        final List<String> list = map.get("X-Afma-Debug-Dialog");
+        if (list != null && !list.isEmpty()) {
+            this.uy = list.get(0);
         }
     }
     
-    protected int sizeOf(final K k, final V v) {
-        return 1;
-    }
-    
-    @Override
-    public final String toString() {
-        int n = 0;
-        synchronized (this) {
-            final int n2 = this.DQ + this.DR;
-            if (n2 != 0) {
-                n = this.DQ * 100 / n2;
-            }
-            return String.format("LruCache[maxSize=%d,hits=%d,misses=%d,hitRate=%d%%]", this.DM, this.DQ, this.DR, n);
+    private void i(final Map<String, List<String>> map) {
+        final List<String> c = c(map, "X-Afma-Tracking-Urls");
+        if (c != null) {
+            this.uA = c;
         }
     }
     
-    public void trimToSize(final int n) {
-        while (true) {
-            synchronized (this) {
-                if (this.size < 0 || (this.DL.isEmpty() && this.size != 0)) {
-                    throw new IllegalStateException(this.getClass().getName() + ".sizeOf() is reporting inconsistent results!");
-                }
-            }
-            if (this.size <= n || this.DL.isEmpty()) {
-                break;
-            }
-            final Map.Entry<K, V> entry = this.DL.entrySet().iterator().next();
-            final K key = entry.getKey();
-            final V value = entry.getValue();
-            this.DL.remove(key);
-            this.size -= this.c(key, value);
-            ++this.DP;
-            // monitorexit(this)
-            this.entryRemoved(true, key, value, null);
+    private void j(final Map<String, List<String>> map) {
+        final long b = b(map, "X-Afma-Interstitial-Timeout");
+        if (b != -1L) {
+            this.uB = b;
         }
     }
-    // monitorexit(this)
+    
+    private void k(final Map<String, List<String>> map) {
+        this.uz = a(map, "X-Afma-ActiveView");
+    }
+    
+    private void l(final Map<String, List<String>> map) {
+        this.uG |= this.d(map, "X-Afma-Native");
+    }
+    
+    private void m(final Map<String, List<String>> map) {
+        this.uF |= this.d(map, "X-Afma-Custom-Rendering-Allowed");
+    }
+    
+    private void n(final Map<String, List<String>> map) {
+        this.uC |= this.d(map, "X-Afma-Mediation");
+    }
+    
+    private void o(final Map<String, List<String>> map) {
+        final List<String> c = c(map, "X-Afma-Manual-Tracking-Urls");
+        if (c != null) {
+            this.ua = c;
+        }
+    }
+    
+    private void p(final Map<String, List<String>> map) {
+        final long b = b(map, "X-Afma-Refresh-Rate");
+        if (b != -1L) {
+            this.uE = b;
+        }
+    }
+    
+    private void q(final Map<String, List<String>> map) {
+        final List<String> list = map.get("X-Afma-Orientation");
+        if (list != null && !list.isEmpty()) {
+            final String s = list.get(0);
+            if ("portrait".equalsIgnoreCase(s)) {
+                this.mOrientation = gj.dn();
+            }
+            else if ("landscape".equalsIgnoreCase(s)) {
+                this.mOrientation = gj.dm();
+            }
+        }
+    }
+    
+    private void r(final Map<String, List<String>> map) {
+        final List<String> list = map.get("X-Afma-Use-HTTPS");
+        if (list != null && !list.isEmpty()) {
+            this.uH = Boolean.valueOf(list.get(0));
+        }
+    }
+    
+    private void s(final Map<String, List<String>> map) {
+        final List<String> list = map.get("X-Afma-Content-Url-Opted-Out");
+        if (list != null && !list.isEmpty()) {
+            this.uI = Boolean.valueOf(list.get(0));
+        }
+    }
+    
+    public void a(final String uw, final Map<String, List<String>> map, final String pn) {
+        this.uw = uw;
+        this.pn = pn;
+        this.e(map);
+    }
+    
+    public void e(final Map<String, List<String>> map) {
+        this.f(map);
+        this.g(map);
+        this.h(map);
+        this.i(map);
+        this.j(map);
+        this.n(map);
+        this.o(map);
+        this.p(map);
+        this.q(map);
+        this.k(map);
+        this.r(map);
+        this.m(map);
+        this.l(map);
+        this.s(map);
+    }
+    
+    public fk i(final long n) {
+        return new fk(this.uw, this.pn, this.ux, this.uA, this.uB, this.uC, -1L, this.ua, this.uE, this.mOrientation, this.uv, n, this.uy, this.uz, this.uF, this.uG, this.uH, this.uI);
+    }
 }

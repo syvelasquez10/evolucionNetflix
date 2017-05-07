@@ -36,22 +36,22 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131493233);
-            }
-            case 104: {
-                return this.activity.getString(2131493234);
-            }
-            case 105: {
-                return this.activity.getString(2131493235);
-            }
-            case 200: {
-                return this.activity.getString(2131493236);
-            }
-            case 106: {
                 return this.activity.getString(2131493238);
             }
+            case 104: {
+                return this.activity.getString(2131493239);
+            }
+            case 105: {
+                return this.activity.getString(2131493240);
+            }
+            case 200: {
+                return this.activity.getString(2131493241);
+            }
+            case 106: {
+                return this.activity.getString(2131493243);
+            }
             case 201: {
-                return this.activity.getString(2131493237);
+                return this.activity.getString(2131493242);
             }
         }
     }

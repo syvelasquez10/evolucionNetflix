@@ -10,6 +10,6 @@ public final class ParticipantBuffer extends DataBuffer<Participant>
 {
     @Override
     public Participant get(final int n) {
-        return new ParticipantRef(this.BB, n);
+        return new ParticipantRef(this.IC, n);
     }
 }

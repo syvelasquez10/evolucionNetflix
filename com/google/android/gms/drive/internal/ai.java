@@ -4,62 +4,56 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.Contents;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class ai implements Parcelable$Creator<OpenFileIntentSenderRequest>
+public class ai implements Parcelable$Creator<OnContentsResponse>
 {
-    static void a(final OpenFileIntentSenderRequest openFileIntentSenderRequest, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, openFileIntentSenderRequest.xH);
-        b.a(parcel, 2, openFileIntentSenderRequest.EB, false);
-        b.a(parcel, 3, openFileIntentSenderRequest.EQ, false);
-        b.a(parcel, 4, (Parcelable)openFileIntentSenderRequest.EC, n, false);
-        b.F(parcel, p3);
+    static void a(final OnContentsResponse onContentsResponse, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1, onContentsResponse.BR);
+        b.a(parcel, 2, (Parcelable)onContentsResponse.Op, n, false);
+        b.a(parcel, 3, onContentsResponse.Pg);
+        b.H(parcel, d);
     }
     
-    public OpenFileIntentSenderRequest W(final Parcel parcel) {
-        DriveId driveId = null;
-        final int o = a.o(parcel);
+    public OnContentsResponse ak(final Parcel parcel) {
+        boolean c = false;
+        final int c2 = a.C(parcel);
+        Contents contents = null;
         int g = 0;
-        String[] z = null;
-        String n = null;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
+        while (parcel.dataPosition() < c2) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n2);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n2);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n = a.n(parcel, n2);
+                    contents = a.a(parcel, b, Contents.CREATOR);
                     continue;
                 }
                 case 3: {
-                    z = a.z(parcel, n2);
-                    continue;
-                }
-                case 4: {
-                    driveId = a.a(parcel, n2, DriveId.CREATOR);
+                    c = a.c(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c2) {
+            throw new a.a("Overread allowed size end=" + c2, parcel);
         }
-        return new OpenFileIntentSenderRequest(g, n, z, driveId);
+        return new OnContentsResponse(g, contents, c);
     }
     
-    public OpenFileIntentSenderRequest[] aA(final int n) {
-        return new OpenFileIntentSenderRequest[n];
+    public OnContentsResponse[] bw(final int n) {
+        return new OnContentsResponse[n];
     }
 }

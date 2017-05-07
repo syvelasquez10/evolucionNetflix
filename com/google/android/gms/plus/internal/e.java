@@ -8,55 +8,55 @@ import com.google.android.gms.plus.model.people.PersonBuffer;
 import com.google.android.gms.plus.model.moments.MomentBuffer;
 import android.os.IInterface;
 import java.util.Arrays;
-import com.google.android.gms.internal.fl;
-import com.google.android.gms.internal.fm;
+import com.google.android.gms.common.internal.j;
+import com.google.android.gms.common.internal.k;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import android.app.PendingIntent;
-import com.google.android.gms.internal.gg;
-import com.google.android.gms.internal.ie;
+import com.google.android.gms.internal.jp;
+import com.google.android.gms.internal.nv;
 import com.google.android.gms.plus.model.moments.Moment;
 import com.google.android.gms.common.api.Status;
 import android.net.Uri;
 import com.google.android.gms.plus.Moments;
-import com.google.android.gms.internal.ih;
+import com.google.android.gms.internal.ny;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.internal.fk;
+import com.google.android.gms.common.internal.i;
 import com.google.android.gms.plus.People;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.api.GoogleApiClient;
 import android.os.Looper;
 import android.content.Context;
 import com.google.android.gms.plus.model.people.Person;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.internal.ff;
+import com.google.android.gms.common.internal.d;
 
-public class e extends ff<com.google.android.gms.plus.internal.d> implements GooglePlayServicesClient
+public class e extends com.google.android.gms.common.internal.d<com.google.android.gms.plus.internal.d>
 {
-    private Person Ub;
-    private final com.google.android.gms.plus.internal.h Uc;
+    private Person ali;
+    private final com.google.android.gms.plus.internal.h alj;
     
-    public e(final Context context, final Looper looper, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final com.google.android.gms.plus.internal.h uc) {
-        super(context, looper, connectionCallbacks, onConnectionFailedListener, uc.iP());
-        this.Uc = uc;
+    public e(final Context context, final Looper looper, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final com.google.android.gms.plus.internal.h alj) {
+        super(context, looper, connectionCallbacks, onConnectionFailedListener, alj.ne());
+        this.alj = alj;
     }
     
-    public e(final Context context, final ConnectionCallbacks connectionCallbacks, final OnConnectionFailedListener onConnectionFailedListener, final com.google.android.gms.plus.internal.h h) {
-        this(context, context.getMainLooper(), new ff.c(connectionCallbacks), new ff.g(onConnectionFailedListener), h);
+    public e(final Context context, final GooglePlayServicesClient.ConnectionCallbacks connectionCallbacks, final GooglePlayServicesClient.OnConnectionFailedListener onConnectionFailedListener, final com.google.android.gms.plus.internal.h h) {
+        this(context, context.getMainLooper(), new com.google.android.gms.common.internal.d.c(connectionCallbacks), new com.google.android.gms.common.internal.d.g(onConnectionFailedListener), h);
     }
     
-    public fk a(com.google.android.gms.common.api.a.d<People.LoadPeopleResult> e, final int n, final String s) {
-        this.bT();
-        e = new e((com.google.android.gms.common.api.a.d<People.LoadPeopleResult>)e);
+    public i a(BaseImplementation.b<People.LoadPeopleResult> e, final int n, final String s) {
+        this.dK();
+        e = new e((BaseImplementation.b<People.LoadPeopleResult>)e);
         try {
-            return this.eM().a(e, 1, n, -1, s);
+            return this.gS().a(e, 1, n, -1, s);
         }
         catch (RemoteException ex) {
-            e.a(DataHolder.empty(8), null);
+            e.a(DataHolder.as(8), null);
             return null;
         }
     }
@@ -64,42 +64,42 @@ public class e extends ff<com.google.android.gms.plus.internal.d> implements Goo
     @Override
     protected void a(final int n, final IBinder binder, final Bundle bundle) {
         if (n == 0 && bundle != null && bundle.containsKey("loaded_person")) {
-            this.Ub = ih.i(bundle.getByteArray("loaded_person"));
+            this.ali = ny.i(bundle.getByteArray("loaded_person"));
         }
         super.a(n, binder, bundle);
     }
     
-    public void a(com.google.android.gms.common.api.a.d<Moments.LoadMomentsResult> b, final int n, final String s, final Uri uri, final String s2, final String s3) {
-        this.bT();
+    public void a(BaseImplementation.b<Moments.LoadMomentsResult> b, final int n, final String s, final Uri uri, final String s2, final String s3) {
+        this.dK();
         Label_0040: {
             if (b == null) {
                 break Label_0040;
             }
-            b = new b((com.google.android.gms.common.api.a.d<Moments.LoadMomentsResult>)b);
+            b = new b((BaseImplementation.b<Moments.LoadMomentsResult>)b);
             try {
                 while (true) {
-                    this.eM().a(b, n, s, uri, s2, s3);
+                    this.gS().a(b, n, s, uri, s2, s3);
                     return;
                     b = null;
                     continue;
                 }
             }
             catch (RemoteException ex) {
-                b.a(DataHolder.empty(8), null, null);
+                b.a(DataHolder.as(8), null, null);
             }
         }
     }
     
-    public void a(com.google.android.gms.common.api.a.d<Status> a, final Moment moment) {
-        this.bT();
+    public void a(BaseImplementation.b<Status> a, final Moment moment) {
+        this.dK();
         Label_0041: {
             if (a == null) {
                 break Label_0041;
             }
-            a = new a((com.google.android.gms.common.api.a.d<Status>)a);
+            a = new a((BaseImplementation.b<Status>)a);
             try {
                 while (true) {
-                    this.eM().a(a, gg.a(moment));
+                    this.gS().a(a, jp.a(moment));
                     return;
                     a = null;
                     continue;
@@ -109,66 +109,56 @@ public class e extends ff<com.google.android.gms.plus.internal.d> implements Goo
                 if (a == null) {
                     throw new IllegalStateException((Throwable)ex);
                 }
-                a.Z(new Status(8, null, null));
+                a.aB(new Status(8, null, null));
             }
         }
     }
     
-    public void a(com.google.android.gms.common.api.a.d<People.LoadPeopleResult> e, final Collection<String> collection) {
-        this.bT();
-        e = new e((com.google.android.gms.common.api.a.d<People.LoadPeopleResult>)e);
+    public void a(BaseImplementation.b<People.LoadPeopleResult> e, final Collection<String> collection) {
+        this.dK();
+        e = new e((BaseImplementation.b<People.LoadPeopleResult>)e);
         try {
-            this.eM().a(e, new ArrayList<String>(collection));
+            this.gS().a(e, new ArrayList<String>(collection));
         }
         catch (RemoteException ex) {
-            e.a(DataHolder.empty(8), null);
+            e.a(DataHolder.as(8), null);
         }
     }
     
     @Override
-    protected void a(final fm fm, final ff.e e) throws RemoteException {
-        final Bundle ix = this.Uc.iX();
-        ix.putStringArray("request_visible_actions", this.Uc.iQ());
-        fm.a(e, 4452000, this.Uc.iT(), this.Uc.iS(), this.eL(), this.Uc.getAccountName(), ix);
+    protected void a(final k k, final com.google.android.gms.common.internal.d.e e) throws RemoteException {
+        final Bundle nm = this.alj.nm();
+        nm.putStringArray("request_visible_actions", this.alj.nf());
+        k.a(e, 6111000, this.alj.ni(), this.alj.nh(), this.gR(), this.alj.getAccountName(), nm);
     }
     
-    protected com.google.android.gms.plus.internal.d aR(final IBinder binder) {
-        return com.google.android.gms.plus.internal.d.a.aQ(binder);
+    protected com.google.android.gms.plus.internal.d bH(final IBinder binder) {
+        return com.google.android.gms.plus.internal.d.a.bG(binder);
     }
     
-    @Override
-    protected String bg() {
-        return "com.google.android.gms.plus.service.START";
-    }
-    
-    public boolean bg(final String s) {
-        return Arrays.asList(this.eL()).contains(s);
-    }
-    
-    @Override
-    protected String bh() {
-        return "com.google.android.gms.plus.internal.IPlusService";
+    public boolean cd(final String s) {
+        return Arrays.asList(this.gR()).contains(s);
     }
     
     public void clearDefaultAccount() {
-        this.bT();
+        this.dK();
         try {
-            this.Ub = null;
-            this.eM().clearDefaultAccount();
+            this.ali = null;
+            this.gS().clearDefaultAccount();
         }
         catch (RemoteException ex) {
             throw new IllegalStateException((Throwable)ex);
         }
     }
     
-    public void d(final com.google.android.gms.common.api.a.d<People.LoadPeopleResult> d, final String[] array) {
-        this.a(d, Arrays.asList(array));
+    public void d(final BaseImplementation.b<People.LoadPeopleResult> b, final String[] array) {
+        this.a(b, Arrays.asList(array));
     }
     
     public String getAccountName() {
-        this.bT();
+        this.dK();
         try {
-            return this.eM().getAccountName();
+            return this.gS().getAccountName();
         }
         catch (RemoteException ex) {
             throw new IllegalStateException((Throwable)ex);
@@ -176,45 +166,55 @@ public class e extends ff<com.google.android.gms.plus.internal.d> implements Goo
     }
     
     public Person getCurrentPerson() {
-        this.bT();
-        return this.Ub;
+        this.dK();
+        return this.ali;
     }
     
-    public void l(final com.google.android.gms.common.api.a.d<Moments.LoadMomentsResult> d) {
-        this.a(d, 20, null, null, null, "me");
+    @Override
+    protected String getServiceDescriptor() {
+        return "com.google.android.gms.plus.internal.IPlusService";
     }
     
-    public void m(com.google.android.gms.common.api.a.d<People.LoadPeopleResult> e) {
-        this.bT();
-        e = new e((com.google.android.gms.common.api.a.d<People.LoadPeopleResult>)e);
+    @Override
+    protected String getStartServiceAction() {
+        return "com.google.android.gms.plus.service.START";
+    }
+    
+    public void k(final BaseImplementation.b<Moments.LoadMomentsResult> b) {
+        this.a(b, 20, null, null, null, "me");
+    }
+    
+    public void l(BaseImplementation.b<People.LoadPeopleResult> e) {
+        this.dK();
+        e = new e((BaseImplementation.b<People.LoadPeopleResult>)e);
         try {
-            this.eM().a(e, 2, 1, -1, null);
+            this.gS().a(e, 2, 1, -1, null);
         }
         catch (RemoteException ex) {
-            e.a(DataHolder.empty(8), null);
+            e.a(DataHolder.as(8), null);
         }
     }
     
-    public void n(com.google.android.gms.common.api.a.d<Status> g) {
-        this.bT();
+    public void m(BaseImplementation.b<Status> g) {
+        this.dK();
         this.clearDefaultAccount();
-        g = new g((com.google.android.gms.common.api.a.d<Status>)g);
+        g = new g((BaseImplementation.b<Status>)g);
         try {
-            this.eM().b(g);
+            this.gS().b(g);
         }
         catch (RemoteException ex) {
-            g.e(8, null);
+            g.h(8, null);
         }
     }
     
-    public fk o(final com.google.android.gms.common.api.a.d<People.LoadPeopleResult> d, final String s) {
-        return this.a(d, 0, s);
+    public i r(final BaseImplementation.b<People.LoadPeopleResult> b, final String s) {
+        return this.a(b, 0, s);
     }
     
     public void removeMoment(final String s) {
-        this.bT();
+        this.dK();
         try {
-            this.eM().removeMoment(s);
+            this.gS().removeMoment(s);
         }
         catch (RemoteException ex) {
             throw new IllegalStateException((Throwable)ex);
@@ -223,31 +223,31 @@ public class e extends ff<com.google.android.gms.plus.internal.d> implements Goo
     
     final class a extends com.google.android.gms.plus.internal.a
     {
-        private final com.google.android.gms.common.api.a.d<Status> TG;
+        private final BaseImplementation.b<Status> alk;
         
-        public a(final com.google.android.gms.common.api.a.d<Status> tg) {
-            this.TG = tg;
+        public a(final BaseImplementation.b<Status> alk) {
+            this.alk = alk;
         }
         
         @Override
-        public void Z(final Status status) {
-            e.this.a((ff.b<?>)new d(this.TG, status));
+        public void aB(final Status status) {
+            e.this.a((com.google.android.gms.common.internal.d.b<?>)new d(this.alk, status));
         }
     }
     
     final class b extends a
     {
-        private final com.google.android.gms.common.api.a.d<Moments.LoadMomentsResult> TG;
+        private final BaseImplementation.b<Moments.LoadMomentsResult> alk;
         
-        public b(final com.google.android.gms.common.api.a.d<Moments.LoadMomentsResult> tg) {
-            this.TG = tg;
+        public b(final BaseImplementation.b<Moments.LoadMomentsResult> alk) {
+            this.alk = alk;
         }
         
         @Override
         public void a(DataHolder dataHolder, final String s, final String s2) {
             PendingIntent pendingIntent;
-            if (dataHolder.getMetadata() != null) {
-                pendingIntent = (PendingIntent)dataHolder.getMetadata().getParcelable("pendingIntent");
+            if (dataHolder.gz() != null) {
+                pendingIntent = (PendingIntent)dataHolder.gz().getParcelable("pendingIntent");
             }
             else {
                 pendingIntent = null;
@@ -259,97 +259,97 @@ public class e extends ff<com.google.android.gms.plus.internal.d> implements Goo
                 }
                 dataHolder = null;
             }
-            e.this.a((ff.b<?>)new c(this.TG, status, dataHolder, s, s2));
+            e.this.a((com.google.android.gms.common.internal.d.b<?>)new c(this.alk, status, dataHolder, s, s2));
         }
     }
     
-    final class c extends ff.d<a.d<LoadMomentsResult>> implements LoadMomentsResult
+    final class c extends d<BaseImplementation.b<LoadMomentsResult>> implements LoadMomentsResult
     {
-        private final String EM;
-        private final String Ue;
-        private MomentBuffer Uf;
-        private final Status wJ;
+        private final Status CM;
+        private final String Ni;
+        private final String alm;
+        private MomentBuffer aln;
         
-        public c(final a.d<LoadMomentsResult> d, final Status wj, final DataHolder dataHolder, final String em, final String ue) {
-            super(d, dataHolder);
-            this.wJ = wj;
-            this.EM = em;
-            this.Ue = ue;
+        public c(final BaseImplementation.b<LoadMomentsResult> b, final Status cm, final DataHolder dataHolder, final String ni, final String alm) {
+            super(b, dataHolder);
+            this.CM = cm;
+            this.Ni = ni;
+            this.alm = alm;
         }
         
-        protected void a(final a.d<LoadMomentsResult> d, final DataHolder dataHolder) {
-            MomentBuffer uf;
+        protected void a(final BaseImplementation.b<LoadMomentsResult> b, final DataHolder dataHolder) {
+            MomentBuffer aln;
             if (dataHolder != null) {
-                uf = new MomentBuffer(dataHolder);
+                aln = new MomentBuffer(dataHolder);
             }
             else {
-                uf = null;
+                aln = null;
             }
-            this.Uf = uf;
-            d.b(this);
+            this.aln = aln;
+            b.b(this);
         }
         
         @Override
         public MomentBuffer getMomentBuffer() {
-            return this.Uf;
+            return this.aln;
         }
         
         @Override
         public String getNextPageToken() {
-            return this.EM;
+            return this.Ni;
         }
         
         @Override
         public Status getStatus() {
-            return this.wJ;
+            return this.CM;
         }
         
         @Override
         public String getUpdated() {
-            return this.Ue;
+            return this.alm;
         }
         
         @Override
         public void release() {
-            if (this.Uf != null) {
-                this.Uf.close();
+            if (this.aln != null) {
+                this.aln.close();
             }
         }
     }
     
-    final class d extends ff.b<com.google.android.gms.common.api.a.d<Status>>
+    final class d extends com.google.android.gms.common.internal.d.b<BaseImplementation.b<Status>>
     {
-        private final Status wJ;
+        private final Status CM;
         
-        public d(final com.google.android.gms.common.api.a.d<Status> d, final Status wj) {
-            super(d);
-            this.wJ = wj;
-        }
-        
-        protected void c(final com.google.android.gms.common.api.a.d<Status> d) {
-            if (d != null) {
-                d.b(this.wJ);
-            }
+        public d(final BaseImplementation.b<Status> b, final Status cm) {
+            super(b);
+            this.CM = cm;
         }
         
         @Override
-        protected void dx() {
+        protected void gT() {
+        }
+        
+        protected void n(final BaseImplementation.b<Status> b) {
+            if (b != null) {
+                b.b(this.CM);
+            }
         }
     }
     
     final class e extends a
     {
-        private final com.google.android.gms.common.api.a.d<People.LoadPeopleResult> TG;
+        private final BaseImplementation.b<People.LoadPeopleResult> alk;
         
-        public e(final com.google.android.gms.common.api.a.d<People.LoadPeopleResult> tg) {
-            this.TG = tg;
+        public e(final BaseImplementation.b<People.LoadPeopleResult> alk) {
+            this.alk = alk;
         }
         
         @Override
         public void a(DataHolder dataHolder, final String s) {
             PendingIntent pendingIntent;
-            if (dataHolder.getMetadata() != null) {
-                pendingIntent = (PendingIntent)dataHolder.getMetadata().getParcelable("pendingIntent");
+            if (dataHolder.gz() != null) {
+                pendingIntent = (PendingIntent)dataHolder.gz().getParcelable("pendingIntent");
             }
             else {
                 pendingIntent = null;
@@ -361,67 +361,67 @@ public class e extends ff<com.google.android.gms.plus.internal.d> implements Goo
                 }
                 dataHolder = null;
             }
-            com.google.android.gms.plus.internal.e.this.a((ff.b<?>)new f(this.TG, status, dataHolder, s));
+            com.google.android.gms.plus.internal.e.this.a((com.google.android.gms.common.internal.d.b<?>)new f(this.alk, status, dataHolder, s));
         }
     }
     
-    final class f extends ff.d<a.d<LoadPeopleResult>> implements LoadPeopleResult
+    final class f extends d<BaseImplementation.b<LoadPeopleResult>> implements LoadPeopleResult
     {
-        private final String EM;
-        private PersonBuffer Ug;
-        private final Status wJ;
+        private final Status CM;
+        private final String Ni;
+        private PersonBuffer alo;
         
-        public f(final a.d<LoadPeopleResult> d, final Status wj, final DataHolder dataHolder, final String em) {
-            super(d, dataHolder);
-            this.wJ = wj;
-            this.EM = em;
+        public f(final BaseImplementation.b<LoadPeopleResult> b, final Status cm, final DataHolder dataHolder, final String ni) {
+            super(b, dataHolder);
+            this.CM = cm;
+            this.Ni = ni;
         }
         
-        protected void a(final a.d<LoadPeopleResult> d, final DataHolder dataHolder) {
-            PersonBuffer ug;
+        protected void a(final BaseImplementation.b<LoadPeopleResult> b, final DataHolder dataHolder) {
+            PersonBuffer alo;
             if (dataHolder != null) {
-                ug = new PersonBuffer(dataHolder);
+                alo = new PersonBuffer(dataHolder);
             }
             else {
-                ug = null;
+                alo = null;
             }
-            this.Ug = ug;
-            d.b(this);
+            this.alo = alo;
+            b.b(this);
         }
         
         @Override
         public String getNextPageToken() {
-            return this.EM;
+            return this.Ni;
         }
         
         @Override
         public PersonBuffer getPersonBuffer() {
-            return this.Ug;
+            return this.alo;
         }
         
         @Override
         public Status getStatus() {
-            return this.wJ;
+            return this.CM;
         }
         
         @Override
         public void release() {
-            if (this.Ug != null) {
-                this.Ug.close();
+            if (this.alo != null) {
+                this.alo.close();
             }
         }
     }
     
     final class g extends a
     {
-        private final com.google.android.gms.common.api.a.d<Status> TG;
+        private final BaseImplementation.b<Status> alk;
         
-        public g(final com.google.android.gms.common.api.a.d<Status> tg) {
-            this.TG = tg;
+        public g(final BaseImplementation.b<Status> alk) {
+            this.alk = alk;
         }
         
         @Override
-        public void e(final int n, final Bundle bundle) {
+        public void h(final int n, final Bundle bundle) {
             PendingIntent pendingIntent;
             if (bundle != null) {
                 pendingIntent = (PendingIntent)bundle.getParcelable("pendingIntent");
@@ -429,28 +429,28 @@ public class e extends ff<com.google.android.gms.plus.internal.d> implements Goo
             else {
                 pendingIntent = null;
             }
-            e.this.a((ff.b<?>)new h(this.TG, new Status(n, null, pendingIntent)));
+            e.this.a((com.google.android.gms.common.internal.d.b<?>)new h(this.alk, new Status(n, null, pendingIntent)));
         }
     }
     
-    final class h extends ff.b<a.d<Status>>
+    final class h extends b<BaseImplementation.b<Status>>
     {
-        private final Status wJ;
+        private final Status CM;
         
-        public h(final a.d<Status> d, final Status wj) {
-            super(d);
-            this.wJ = wj;
-        }
-        
-        protected void c(final a.d<Status> d) {
-            e.this.disconnect();
-            if (d != null) {
-                d.b(this.wJ);
-            }
+        public h(final BaseImplementation.b<Status> b, final Status cm) {
+            super(b);
+            this.CM = cm;
         }
         
         @Override
-        protected void dx() {
+        protected void gT() {
+        }
+        
+        protected void n(final BaseImplementation.b<Status> b) {
+            e.this.disconnect();
+            if (b != null) {
+                b.b(this.CM);
+            }
         }
     }
 }

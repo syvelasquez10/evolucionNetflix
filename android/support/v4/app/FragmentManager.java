@@ -37,6 +37,8 @@ public abstract class FragmentManager
     
     public abstract List<Fragment> getFragments();
     
+    public abstract boolean isDestroyed();
+    
     @Deprecated
     public FragmentTransaction openTransaction() {
         return this.beginTransaction();

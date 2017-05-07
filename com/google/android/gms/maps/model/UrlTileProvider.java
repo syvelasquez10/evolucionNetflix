@@ -12,12 +12,12 @@ import java.io.InputStream;
 
 public abstract class UrlTileProvider implements TileProvider
 {
-    private final int kr;
-    private final int ks;
+    private final int lf;
+    private final int lg;
     
-    public UrlTileProvider(final int kr, final int ks) {
-        this.kr = kr;
-        this.ks = ks;
+    public UrlTileProvider(final int lf, final int lg) {
+        this.lf = lf;
+        this.lg = lg;
     }
     
     private static long a(final InputStream inputStream, final OutputStream outputStream) throws IOException {
@@ -34,7 +34,7 @@ public abstract class UrlTileProvider implements TileProvider
         return n;
     }
     
-    private static byte[] a(final InputStream inputStream) throws IOException {
+    private static byte[] e(final InputStream inputStream) throws IOException {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         a(inputStream, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
@@ -47,7 +47,7 @@ public abstract class UrlTileProvider implements TileProvider
             return UrlTileProvider.NO_TILE;
         }
         try {
-            return new Tile(this.kr, this.ks, a(tileUrl.openStream()));
+            return new Tile(this.lf, this.lg, e(tileUrl.openStream()));
         }
         catch (IOException ex) {
             return null;

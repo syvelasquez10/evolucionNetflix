@@ -12,106 +12,112 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import android.content.Context;
 
-class h implements m
+class h implements l
 {
-    private static final Object sf;
-    private static h st;
+    private static h xQ;
+    private static final Object xz;
     private final Context mContext;
-    private String su;
-    private boolean sv;
-    private final Object sw;
+    private String xR;
+    private boolean xS;
+    private final Object xT;
     
     static {
-        sf = new Object();
+        xz = new Object();
     }
     
     protected h(final Context mContext) {
-        this.sv = false;
-        this.sw = new Object();
+        this.xS = false;
+        this.xT = new Object();
         this.mContext = mContext;
-        this.ce();
+        this.dV();
     }
     
-    private boolean D(final String s) {
+    private boolean ad(final String s) {
         try {
-            aa.y("Storing clientId.");
+            z.V("Storing clientId.");
             final FileOutputStream openFileOutput = this.mContext.openFileOutput("gaClientId", 0);
             openFileOutput.write(s.getBytes());
             openFileOutput.close();
             return true;
         }
         catch (FileNotFoundException ex) {
-            aa.w("Error creating clientId file.");
+            z.T("Error creating clientId file.");
             return false;
         }
         catch (IOException ex2) {
-            aa.w("Error writing to clientId file.");
+            z.T("Error writing to clientId file.");
             return false;
         }
     }
     
-    public static h cb() {
-        synchronized (h.sf) {
-            return h.st;
+    public static h dR() {
+        synchronized (h.xz) {
+            return h.xQ;
         }
     }
     
-    private String cc() {
+    private String dT() {
         Label_0042: {
-            if (this.sv) {
+            if (this.xS) {
                 break Label_0042;
             }
-            synchronized (this.sw) {
+            synchronized (this.xT) {
                 Label_0040: {
-                    if (this.sv) {
+                    if (this.xS) {
                         break Label_0040;
                     }
-                    aa.y("Waiting for clientId to load");
+                    z.V("Waiting for clientId to load");
                     try {
                         do {
-                            this.sw.wait();
-                        } while (!this.sv);
-                        // monitorexit(this.sw)
-                        aa.y("Loaded clientId");
-                        return this.su;
+                            this.xT.wait();
+                        } while (!this.xS);
+                        // monitorexit(this.xT)
+                        z.V("Loaded clientId");
+                        return this.xR;
                     }
                     catch (InterruptedException ex) {
-                        aa.w("Exception while waiting for clientId: " + ex);
+                        z.T("Exception while waiting for clientId: " + ex);
                     }
                 }
             }
         }
     }
     
-    private void ce() {
+    private void dV() {
         new Thread("client_id_fetcher") {
             @Override
             public void run() {
-                synchronized (h.this.sw) {
-                    h.this.su = h.this.cf();
-                    h.this.sv = true;
-                    h.this.sw.notifyAll();
+                synchronized (h.this.xT) {
+                    h.this.xR = h.this.dW();
+                    h.this.xS = true;
+                    h.this.xT.notifyAll();
                 }
             }
         }.start();
     }
     
-    public static void n(final Context context) {
-        synchronized (h.sf) {
-            if (h.st == null) {
-                h.st = new h(context);
+    public static void y(final Context context) {
+        synchronized (h.xz) {
+            if (h.xQ == null) {
+                h.xQ = new h(context);
             }
         }
     }
     
-    public boolean C(final String s) {
+    public boolean ac(final String s) {
         return "&cid".equals(s);
     }
     
-    protected String cd() {
+    String dS() {
+        synchronized (this.xT) {
+            return this.xR = this.dU();
+        }
+    }
+    
+    protected String dU() {
         String lowerCase = UUID.randomUUID().toString().toLowerCase();
         try {
-            if (!this.D(lowerCase)) {
+            if (!this.ad(lowerCase)) {
                 lowerCase = "0";
             }
             return lowerCase;
@@ -121,9 +127,9 @@ class h implements m
         }
     }
     
-    String cf() {
+    String dW() {
         final IOException ex = null;
-        Serializable cd = null;
+        Serializable du = null;
         while (true) {
             FileInputStream openFileInput = null;
             try {
@@ -132,38 +138,42 @@ class h implements m
                 final int read = openFileInput.read(array, 0, 128);
                 String s;
                 if (openFileInput.available() > 0) {
-                    aa.w("clientId file seems corrupted, deleting it.");
+                    z.T("clientId file seems corrupted, deleting it.");
                     openFileInput.close();
                     this.mContext.deleteFile("gaClientId");
-                    s = (String)cd;
+                    s = (String)du;
                 }
                 else if (read <= 0) {
-                    aa.w("clientId file seems empty, deleting it.");
+                    z.T("clientId file seems empty, deleting it.");
                     openFileInput.close();
                     this.mContext.deleteFile("gaClientId");
-                    s = (String)cd;
+                    s = (String)du;
                 }
                 else {
                     s = new String(array, 0, read);
                     final FileInputStream fileInputStream = openFileInput;
                     fileInputStream.close();
+                    final String s2 = "Loaded client id from disk.";
+                    z.V(s2);
                 }
-                cd = s;
+                du = s;
                 if (s == null) {
-                    cd = this.cd();
+                    du = this.dU();
                 }
-                return (String)cd;
+                return (String)du;
             }
             catch (IOException s) {
                 s = (String)ex;
             }
             catch (FileNotFoundException ex2) {
-                final String s = (String)cd;
+                final String s = (String)du;
                 continue;
             }
             try {
                 final FileInputStream fileInputStream = openFileInput;
                 fileInputStream.close();
+                final String s2 = "Loaded client id from disk.";
+                z.V(s2);
                 continue;
             }
             catch (IOException ex3) {}
@@ -175,7 +185,7 @@ class h implements m
     @Override
     public String getValue(final String s) {
         if ("&cid".equals(s)) {
-            return this.cc();
+            return this.dT();
         }
         return null;
     }

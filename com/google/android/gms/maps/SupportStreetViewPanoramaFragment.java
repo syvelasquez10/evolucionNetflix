@@ -11,7 +11,7 @@ import com.google.android.gms.dynamic.f;
 import com.google.android.gms.dynamic.a;
 import com.google.android.gms.dynamic.e;
 import com.google.android.gms.maps.internal.t;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.dynamic.LifecycleDelegate;
 import android.util.AttributeSet;
 import android.view.View;
@@ -28,11 +28,11 @@ import android.support.v4.app.Fragment;
 
 public class SupportStreetViewPanoramaFragment extends Fragment
 {
-    private StreetViewPanorama Sj;
-    private final b Sx;
+    private StreetViewPanorama aiW;
+    private final b ajk;
     
     public SupportStreetViewPanoramaFragment() {
-        this.Sx = new b(this);
+        this.ajk = new b(this);
     }
     
     public static SupportStreetViewPanoramaFragment newInstance() {
@@ -48,15 +48,15 @@ public class SupportStreetViewPanoramaFragment extends Fragment
     }
     
     public final StreetViewPanorama getStreetViewPanorama() {
-        final IStreetViewPanoramaFragmentDelegate is = this.is();
-        if (is != null) {
+        final IStreetViewPanoramaFragmentDelegate mb = this.mB();
+        if (mb != null) {
             try {
-                final IStreetViewPanoramaDelegate streetViewPanorama = is.getStreetViewPanorama();
+                final IStreetViewPanoramaDelegate streetViewPanorama = mb.getStreetViewPanorama();
                 if (streetViewPanorama != null) {
-                    if (this.Sj == null || this.Sj.ir().asBinder() != streetViewPanorama.asBinder()) {
-                        this.Sj = new StreetViewPanorama(streetViewPanorama);
+                    if (this.aiW == null || this.aiW.mA().asBinder() != streetViewPanorama.asBinder()) {
+                        this.aiW = new StreetViewPanorama(streetViewPanorama);
                     }
-                    return this.Sj;
+                    return this.aiW;
                 }
             }
             catch (RemoteException ex) {
@@ -66,12 +66,12 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         return null;
     }
     
-    protected IStreetViewPanoramaFragmentDelegate is() {
-        this.Sx.ip();
-        if (this.Sx.fW() == null) {
+    protected IStreetViewPanoramaFragmentDelegate mB() {
+        this.ajk.my();
+        if (this.ajk.it() == null) {
             return null;
         }
-        return this.Sx.fW().is();
+        return this.ajk.it().mB();
     }
     
     @Override
@@ -85,55 +85,55 @@ public class SupportStreetViewPanoramaFragment extends Fragment
     @Override
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
-        this.Sx.setActivity(activity);
+        this.ajk.setActivity(activity);
     }
     
     @Override
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.Sx.onCreate(bundle);
+        this.ajk.onCreate(bundle);
     }
     
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        return this.Sx.onCreateView(layoutInflater, viewGroup, bundle);
+        return this.ajk.onCreateView(layoutInflater, viewGroup, bundle);
     }
     
     @Override
     public void onDestroy() {
-        this.Sx.onDestroy();
+        this.ajk.onDestroy();
         super.onDestroy();
     }
     
     @Override
     public void onDestroyView() {
-        this.Sx.onDestroyView();
+        this.ajk.onDestroyView();
         super.onDestroyView();
     }
     
     @Override
     public void onInflate(final Activity activity, final AttributeSet set, final Bundle bundle) {
         super.onInflate(activity, set, bundle);
-        this.Sx.setActivity(activity);
-        this.Sx.onInflate(activity, new Bundle(), bundle);
+        this.ajk.setActivity(activity);
+        this.ajk.onInflate(activity, new Bundle(), bundle);
     }
     
     @Override
     public void onLowMemory() {
-        this.Sx.onLowMemory();
+        this.ajk.onLowMemory();
         super.onLowMemory();
     }
     
     @Override
     public void onPause() {
-        this.Sx.onPause();
+        this.ajk.onPause();
         super.onPause();
     }
     
     @Override
     public void onResume() {
         super.onResume();
-        this.Sx.onResume();
+        this.ajk.onResume();
     }
     
     @Override
@@ -142,7 +142,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
             bundle.setClassLoader(SupportStreetViewPanoramaFragment.class.getClassLoader());
         }
         super.onSaveInstanceState(bundle);
-        this.Sx.onSaveInstanceState(bundle);
+        this.ajk.onSaveInstanceState(bundle);
     }
     
     @Override
@@ -152,16 +152,16 @@ public class SupportStreetViewPanoramaFragment extends Fragment
     
     static class a implements LifecycleDelegate
     {
-        private final Fragment Hz;
-        private final IStreetViewPanoramaFragmentDelegate Sk;
+        private final Fragment Ll;
+        private final IStreetViewPanoramaFragmentDelegate aiX;
         
         public a(final Fragment fragment, final IStreetViewPanoramaFragmentDelegate streetViewPanoramaFragmentDelegate) {
-            this.Sk = fq.f(streetViewPanoramaFragmentDelegate);
-            this.Hz = fq.f(fragment);
+            this.aiX = n.i(streetViewPanoramaFragmentDelegate);
+            this.Ll = n.i(fragment);
         }
         
-        public IStreetViewPanoramaFragmentDelegate is() {
-            return this.Sk;
+        public IStreetViewPanoramaFragmentDelegate mB() {
+            return this.aiX;
         }
         
         @Override
@@ -173,11 +173,11 @@ public class SupportStreetViewPanoramaFragment extends Fragment
                 }
                 try {
                     bundle = new Bundle();
-                    arguments = this.Hz.getArguments();
+                    arguments = this.Ll.getArguments();
                     if (arguments != null && arguments.containsKey("StreetViewPanoramaOptions")) {
                         t.a(bundle, "StreetViewPanoramaOptions", arguments.getParcelable("StreetViewPanoramaOptions"));
                     }
-                    this.Sk.onCreate(bundle);
+                    this.aiX.onCreate(bundle);
                 }
                 catch (RemoteException ex) {
                     throw new RuntimeRemoteException(ex);
@@ -188,7 +188,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         @Override
         public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
             try {
-                return e.d(this.Sk.onCreateView(e.h(layoutInflater), e.h(viewGroup), bundle));
+                return e.f(this.aiX.onCreateView(e.k(layoutInflater), e.k(viewGroup), bundle));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -198,7 +198,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         @Override
         public void onDestroy() {
             try {
-                this.Sk.onDestroy();
+                this.aiX.onDestroy();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -208,7 +208,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         @Override
         public void onDestroyView() {
             try {
-                this.Sk.onDestroyView();
+                this.aiX.onDestroyView();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -218,7 +218,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         @Override
         public void onInflate(final Activity activity, final Bundle bundle, final Bundle bundle2) {
             try {
-                this.Sk.onInflate(e.h(activity), null, bundle2);
+                this.aiX.onInflate(e.k(activity), null, bundle2);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -228,7 +228,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         @Override
         public void onLowMemory() {
             try {
-                this.Sk.onLowMemory();
+                this.aiX.onLowMemory();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -238,7 +238,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         @Override
         public void onPause() {
             try {
-                this.Sk.onPause();
+                this.aiX.onPause();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -248,7 +248,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         @Override
         public void onResume() {
             try {
-                this.Sk.onResume();
+                this.aiX.onResume();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -258,7 +258,7 @@ public class SupportStreetViewPanoramaFragment extends Fragment
         @Override
         public void onSaveInstanceState(final Bundle bundle) {
             try {
-                this.Sk.onSaveInstanceState(bundle);
+                this.aiX.onSaveInstanceState(bundle);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -276,32 +276,32 @@ public class SupportStreetViewPanoramaFragment extends Fragment
     
     static class b extends a<SupportStreetViewPanoramaFragment.a>
     {
-        private final Fragment Hz;
-        protected f<SupportStreetViewPanoramaFragment.a> RV;
-        private Activity nS;
+        private final Fragment Ll;
+        protected f<SupportStreetViewPanoramaFragment.a> aiI;
+        private Activity nr;
         
-        b(final Fragment hz) {
-            this.Hz = hz;
+        b(final Fragment ll) {
+            this.Ll = ll;
         }
         
-        private void setActivity(final Activity ns) {
-            this.nS = ns;
-            this.ip();
+        private void setActivity(final Activity nr) {
+            this.nr = nr;
+            this.my();
         }
         
         @Override
-        protected void a(final f<SupportStreetViewPanoramaFragment.a> rv) {
-            this.RV = rv;
-            this.ip();
+        protected void a(final f<SupportStreetViewPanoramaFragment.a> aiI) {
+            this.aiI = aiI;
+            this.my();
         }
         
-        public void ip() {
-            if (this.nS == null || this.RV == null || this.fW() != null) {
+        public void my() {
+            if (this.nr == null || this.aiI == null || this.it() != null) {
                 return;
             }
             try {
-                MapsInitializer.initialize((Context)this.nS);
-                this.RV.a(new SupportStreetViewPanoramaFragment.a(this.Hz, u.A((Context)this.nS).i(e.h(this.nS))));
+                MapsInitializer.initialize((Context)this.nr);
+                this.aiI.a(new SupportStreetViewPanoramaFragment.a(this.Ll, u.R((Context)this.nr).k(e.k(this.nr))));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);

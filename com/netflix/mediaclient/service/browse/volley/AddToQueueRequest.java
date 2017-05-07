@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.StatusCode;
 import com.google.gson.JsonParser;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import android.annotation.SuppressLint;
@@ -168,8 +168,13 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
     @Override
     protected void onSuccess(final String s) {
         if (this.responseCallback != null) {
-            Log.d("nf_service_browse_addtoqueuerequest", "AddToQueueRequest finished onSuccess");
-            this.responseCallback.onQueueAdd(CommonStatus.OK);
+            if (s == null || !s.equals(Integer.toString(StatusCode.ALREADY_IN_QUEUE.getValue()))) {
+                Log.d("nf_service_browse_addtoqueuerequest", "AddToQueueRequestNoLolomo finished onSuccess");
+                this.responseCallback.onQueueAdd(CommonStatus.OK);
+                return;
+            }
+            Log.d("nf_service_browse_addtoqueuerequest", "AddToQueueRequestNoLolomo finished with alreadyInQueue");
+            this.responseCallback.onQueueAdd(CommonStatus.ALREAD_IN_QUEUE);
         }
     }
     
@@ -179,14 +184,15 @@ public class AddToQueueRequest extends FalcorVolleyWebClientRequest<String>
             Log.v("nf_service_browse_addtoqueuerequest", "String response to parse = " + s);
         }
         JsonObject asJsonObject = null;
-        Label_0131: {
+        Label_0137: {
             try {
                 asJsonObject = new JsonParser().parse(s).getAsJsonObject();
                 if (!FalcorParseUtils.containsErrors(asJsonObject)) {
-                    break Label_0131;
+                    break Label_0137;
                 }
-                if (FalcorParseUtils.getErrorMessage(asJsonObject).contains("AlreadyInQueue")) {
-                    return Integer.toString(StatusCode.OK.getValue());
+                if (FalcorParseUtils.isAlreadyInQueue(FalcorParseUtils.getErrorMessage(asJsonObject))) {
+                    Log.v("nf_service_browse_addtoqueuerequest", "AlreadyInQueue");
+                    return Integer.toString(StatusCode.ALREADY_IN_QUEUE.getValue());
                 }
             }
             catch (Exception ex) {

@@ -26,19 +26,19 @@ class g extends aj
     }
     
     @Override
-    public boolean jX() {
-        return true;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
+    public d.a C(final Map<String, d.a> map) {
         try {
             final PackageManager packageManager = this.mContext.getPackageManager();
-            return dh.r(packageManager.getApplicationLabel(packageManager.getApplicationInfo(this.mContext.getPackageName(), 0)).toString());
+            return di.u(packageManager.getApplicationLabel(packageManager.getApplicationInfo(this.mContext.getPackageName(), 0)).toString());
         }
         catch (PackageManager$NameNotFoundException ex) {
             bh.b("App name is not found.", (Throwable)ex);
-            return dh.lT();
+            return di.pI();
         }
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

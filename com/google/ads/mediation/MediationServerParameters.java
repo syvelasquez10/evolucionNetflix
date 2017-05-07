@@ -14,7 +14,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
-import com.google.android.gms.internal.dw;
+import com.google.android.gms.internal.gs;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +36,7 @@ public abstract class MediationServerParameters
             }
         }
         if (hashMap.isEmpty()) {
-            dw.z("No server options fields detected. To suppress this message either add a field with the @Parameter annotation, or override the load() method.");
+            gs.W("No server options fields detected. To suppress this message either add a field with the @Parameter annotation, or override the load() method.");
         }
         iterator = ((Map<Object, Object>)iterator).entrySet().iterator();
         while (iterator.hasNext()) {
@@ -47,20 +47,20 @@ public abstract class MediationServerParameters
                     field2.set(this, entry.getValue());
                 }
                 catch (IllegalAccessException ex) {
-                    dw.z("Server option \"" + entry.getKey() + "\" could not be set: Illegal Access");
+                    gs.W("Server option \"" + entry.getKey() + "\" could not be set: Illegal Access");
                 }
                 catch (IllegalArgumentException ex2) {
-                    dw.z("Server option \"" + entry.getKey() + "\" could not be set: Bad Type");
+                    gs.W("Server option \"" + entry.getKey() + "\" could not be set: Bad Type");
                 }
             }
             else {
-                dw.v("Unexpected server option: " + entry.getKey() + " = \"" + entry.getValue() + "\"");
+                gs.S("Unexpected server option: " + entry.getKey() + " = \"" + entry.getValue() + "\"");
             }
         }
         final StringBuilder sb = new StringBuilder();
         for (final Field field3 : hashMap.values()) {
             if (field3.getAnnotation(Parameter.class).required()) {
-                dw.z("Required server option missing: " + field3.getAnnotation(Parameter.class).name());
+                gs.W("Required server option missing: " + field3.getAnnotation(Parameter.class).name());
                 if (sb.length() > 0) {
                     sb.append(", ");
                 }

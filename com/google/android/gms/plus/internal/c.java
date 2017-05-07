@@ -19,7 +19,7 @@ public interface c extends IInterface
     
     public abstract static class a extends Binder implements c
     {
-        public static c aP(final IBinder binder) {
+        public static c bF(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -42,7 +42,7 @@ public interface c extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusOneButtonCreator");
-                    final d a = this.a(d.a.K(parcel.readStrongBinder()), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readInt());
+                    final d a = this.a(d.a.am(parcel.readStrongBinder()), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readInt());
                     parcel2.writeNoException();
                     IBinder binder2;
                     if (a != null) {
@@ -56,7 +56,7 @@ public interface c extends IInterface
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusOneButtonCreator");
-                    final d a2 = this.a(d.a.K(parcel.readStrongBinder()), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString());
+                    final d a2 = this.a(d.a.am(parcel.readStrongBinder()), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString());
                     parcel2.writeNoException();
                     IBinder binder3 = binder;
                     if (a2 != null) {
@@ -70,21 +70,21 @@ public interface c extends IInterface
         
         private static class a implements c
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
-            public d a(d k, final int n, final int n2, final String s, final int n3) throws RemoteException {
+            public d a(d am, final int n, final int n2, final String s, final int n3) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusOneButtonCreator");
                     IBinder binder;
-                    if (k != null) {
-                        binder = k.asBinder();
+                    if (am != null) {
+                        binder = am.asBinder();
                     }
                     else {
                         binder = null;
@@ -94,10 +94,10 @@ public interface c extends IInterface
                     obtain.writeInt(n2);
                     obtain.writeString(s);
                     obtain.writeInt(n3);
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    k = d.a.K(obtain2.readStrongBinder());
-                    return k;
+                    am = d.a.am(obtain2.readStrongBinder());
+                    return am;
                 }
                 finally {
                     obtain2.recycle();
@@ -106,14 +106,14 @@ public interface c extends IInterface
             }
             
             @Override
-            public d a(d k, final int n, final int n2, final String s, final String s2) throws RemoteException {
+            public d a(d am, final int n, final int n2, final String s, final String s2) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusOneButtonCreator");
                     IBinder binder;
-                    if (k != null) {
-                        binder = k.asBinder();
+                    if (am != null) {
+                        binder = am.asBinder();
                     }
                     else {
                         binder = null;
@@ -123,10 +123,10 @@ public interface c extends IInterface
                     obtain.writeInt(n2);
                     obtain.writeString(s);
                     obtain.writeString(s2);
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
-                    k = d.a.K(obtain2.readStrongBinder());
-                    return k;
+                    am = d.a.am(obtain2.readStrongBinder());
+                    return am;
                 }
                 finally {
                     obtain2.recycle();
@@ -135,7 +135,7 @@ public interface c extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
         }
     }

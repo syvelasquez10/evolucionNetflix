@@ -66,30 +66,30 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165454);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165456);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131165456);
+        final TextView textView = (TextView)view.findViewById(2131165458);
         final Resources resources = this.activity.getResources();
         int n;
         if (this.activity.isForKids()) {
-            n = 2131296306;
+            n = 2131296352;
         }
         else {
-            n = 2131296315;
+            n = 2131296361;
         }
         textView.setTextColor(resources.getColor(n));
         final LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
         TextView textView2;
         if (this.activity.isForKids()) {
-            view.findViewById(2131165457).setVisibility(8);
-            textView2 = (TextView)view.findViewById(2131165458);
+            view.findViewById(2131165459).setVisibility(8);
+            textView2 = (TextView)view.findViewById(2131165460);
             textView2.setVisibility(0);
         }
         else {
-            textView2 = (TextView)view.findViewById(2131165457);
+            textView2 = (TextView)view.findViewById(2131165459);
         }
-        ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragOffsetLeftPx(this.activity) + this.activity.getResources().getDimensionPixelOffset(2131361871);
-        return new RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165453));
+        ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragOffsetLeftPx(this.activity) + this.activity.getResources().getDimensionPixelOffset(2131361897);
+        return new RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165455));
     }
     
     private void fetchMoreData() {
@@ -140,7 +140,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final TextView title = rowHolder.title;
         String text;
         if (item.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131493304);
+            text = this.activity.getString(2131493309);
         }
         else {
             text = item.getTitle();
@@ -174,9 +174,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             return;
         }
         if (item.getType() == LoMoType.CONTINUE_WATCHING) {
-            rowHolder.contentGroup.setBackgroundResource(2130837745);
+            rowHolder.contentGroup.setBackgroundResource(2130837711);
             rowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
-            rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296309));
+            rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296355));
             return;
         }
         ViewUtils.setBackgroundDrawableCompat(rowHolder.contentGroup, null);

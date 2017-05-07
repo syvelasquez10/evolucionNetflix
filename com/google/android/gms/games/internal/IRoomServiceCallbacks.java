@@ -6,15 +6,13 @@ package com.google.android.gms.games.internal;
 
 import android.os.Parcel;
 import android.os.Binder;
-import android.os.ParcelFileDescriptor;
-import android.os.RemoteException;
 import android.os.IBinder;
+import android.os.RemoteException;
+import android.os.ParcelFileDescriptor;
 import android.os.IInterface;
 
 public interface IRoomServiceCallbacks extends IInterface
 {
-    void P(final IBinder p0) throws RemoteException;
-    
     void a(final ParcelFileDescriptor p0, final int p1) throws RemoteException;
     
     void a(final ConnectionInfo p0) throws RemoteException;
@@ -23,29 +21,31 @@ public interface IRoomServiceCallbacks extends IInterface
     
     void a(final String p0, final String[] p1) throws RemoteException;
     
-    void aO(final String p0) throws RemoteException;
-    
-    void aP(final String p0) throws RemoteException;
-    
-    void aQ(final String p0) throws RemoteException;
-    
-    void aR(final String p0) throws RemoteException;
-    
-    void aS(final String p0) throws RemoteException;
-    
-    void aT(final String p0) throws RemoteException;
-    
-    void aU(final String p0) throws RemoteException;
+    void aD(final IBinder p0) throws RemoteException;
     
     void b(final String p0, final String[] p1) throws RemoteException;
     
-    void bb(final int p0) throws RemoteException;
+    void bM(final String p0) throws RemoteException;
+    
+    void bN(final String p0) throws RemoteException;
+    
+    void bO(final String p0) throws RemoteException;
+    
+    void bP(final String p0) throws RemoteException;
+    
+    void bQ(final String p0) throws RemoteException;
+    
+    void bR(final String p0) throws RemoteException;
     
     void c(final int p0, final int p1, final String p2) throws RemoteException;
+    
+    void c(final String p0, final byte[] p1) throws RemoteException;
     
     void c(final String p0, final String[] p1) throws RemoteException;
     
     void d(final String p0, final String[] p1) throws RemoteException;
+    
+    void dF(final int p0) throws RemoteException;
     
     void e(final String p0, final String[] p1) throws RemoteException;
     
@@ -53,15 +53,17 @@ public interface IRoomServiceCallbacks extends IInterface
     
     void g(final String p0, final String[] p1) throws RemoteException;
     
-    void gQ() throws RemoteException;
+    void i(final String p0, final boolean p1) throws RemoteException;
     
-    void gR() throws RemoteException;
+    void kH() throws RemoteException;
+    
+    void kI() throws RemoteException;
     
     void onP2PConnected(final String p0) throws RemoteException;
     
     void onP2PDisconnected(final String p0) throws RemoteException;
     
-    void r(final String p0, final int p1) throws RemoteException;
+    void v(final String p0, final int p1) throws RemoteException;
     
     public abstract static class Stub extends Binder implements IRoomServiceCallbacks
     {
@@ -69,7 +71,7 @@ public interface IRoomServiceCallbacks extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.games.internal.IRoomServiceCallbacks");
         }
         
-        public static IRoomServiceCallbacks Q(final IBinder binder) {
+        public static IRoomServiceCallbacks aE(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -103,27 +105,27 @@ public interface IRoomServiceCallbacks extends IInterface
                 }
                 case 1003: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.aO(parcel.readString());
+                    this.bM(parcel.readString());
                     return true;
                 }
                 case 1004: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.aP(parcel.readString());
+                    this.bN(parcel.readString());
                     return true;
                 }
                 case 1005: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.aQ(parcel.readString());
+                    this.bO(parcel.readString());
                     return true;
                 }
                 case 1006: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.aR(parcel.readString());
+                    this.bP(parcel.readString());
                     return true;
                 }
                 case 1007: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.aS(parcel.readString());
+                    this.bQ(parcel.readString());
                     return true;
                 }
                 case 1008: {
@@ -168,7 +170,7 @@ public interface IRoomServiceCallbacks extends IInterface
                 }
                 case 1016: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.gQ();
+                    this.kH();
                     return true;
                 }
                 case 1017: {
@@ -178,36 +180,36 @@ public interface IRoomServiceCallbacks extends IInterface
                 }
                 case 1018: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.aT(parcel.readString());
+                    this.c(parcel.readString(), parcel.createByteArray());
                     return true;
                 }
                 case 1019: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.aU(parcel.readString());
+                    this.bR(parcel.readString());
                     return true;
                 }
                 case 1020: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.bb(parcel.readInt());
+                    this.dF(parcel.readInt());
                     return true;
                 }
                 case 1021: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.P(parcel.readStrongBinder());
+                    this.aD(parcel.readStrongBinder());
                     return true;
                 }
                 case 1022: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    ConnectionInfo ap = connectionInfo;
+                    ConnectionInfo cf = connectionInfo;
                     if (parcel.readInt() != 0) {
-                        ap = ConnectionInfo.CREATOR.ap(parcel);
+                        cf = ConnectionInfo.CREATOR.cf(parcel);
                     }
-                    this.a(ap);
+                    this.a(cf);
                     return true;
                 }
                 case 1023: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.gR();
+                    this.kI();
                     return true;
                 }
                 case 1024: {
@@ -221,7 +223,12 @@ public interface IRoomServiceCallbacks extends IInterface
                 }
                 case 1025: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.r(parcel.readString(), parcel.readInt());
+                    this.v(parcel.readString(), parcel.readInt());
+                    return true;
+                }
+                case 1026: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    this.i(parcel.readString(), parcel.readInt() != 0);
                     return true;
                 }
             }
@@ -229,23 +236,10 @@ public interface IRoomServiceCallbacks extends IInterface
         
         private static class Proxy implements IRoomServiceCallbacks
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            Proxy(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            @Override
-            public void P(final IBinder binder) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(1021, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
+            Proxy(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -261,7 +255,7 @@ public interface IRoomServiceCallbacks extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(1024, obtain, (Parcel)null, 1);
+                    this.lb.transact(1024, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -280,7 +274,7 @@ public interface IRoomServiceCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(1022, obtain, (Parcel)null, 1);
+                    this.lb.transact(1022, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -295,7 +289,7 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeString(s);
                     obtain.writeByteArray(array);
                     obtain.writeInt(n);
-                    this.kn.transact(1002, obtain, (Parcel)null, 1);
+                    this.lb.transact(1002, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -309,7 +303,7 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
                     obtain.writeStringArray(array);
-                    this.kn.transact(1008, obtain, (Parcel)null, 1);
+                    this.lb.transact(1008, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -317,90 +311,12 @@ public interface IRoomServiceCallbacks extends IInterface
             }
             
             @Override
-            public void aO(final String s) throws RemoteException {
+            public void aD(final IBinder binder) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeString(s);
-                    this.kn.transact(1003, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aP(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeString(s);
-                    this.kn.transact(1004, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aQ(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeString(s);
-                    this.kn.transact(1005, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aR(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeString(s);
-                    this.kn.transact(1006, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aS(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeString(s);
-                    this.kn.transact(1007, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aT(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeString(s);
-                    this.kn.transact(1018, obtain, (Parcel)null, 1);
-                }
-                finally {
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aU(final String s) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeString(s);
-                    this.kn.transact(1019, obtain, (Parcel)null, 1);
+                    obtain.writeStrongBinder(binder);
+                    this.lb.transact(1021, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -408,7 +324,7 @@ public interface IRoomServiceCallbacks extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -418,7 +334,7 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
                     obtain.writeStringArray(array);
-                    this.kn.transact(1009, obtain, (Parcel)null, 1);
+                    this.lb.transact(1009, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -426,12 +342,77 @@ public interface IRoomServiceCallbacks extends IInterface
             }
             
             @Override
-            public void bb(final int n) throws RemoteException {
+            public void bM(final String s) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    obtain.writeInt(n);
-                    this.kn.transact(1020, obtain, (Parcel)null, 1);
+                    obtain.writeString(s);
+                    this.lb.transact(1003, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void bN(final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    obtain.writeString(s);
+                    this.lb.transact(1004, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void bO(final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    obtain.writeString(s);
+                    this.lb.transact(1005, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void bP(final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    obtain.writeString(s);
+                    this.lb.transact(1006, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void bQ(final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    obtain.writeString(s);
+                    this.lb.transact(1007, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void bR(final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    obtain.writeString(s);
+                    this.lb.transact(1019, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -446,7 +427,21 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeInt(n);
                     obtain.writeInt(n2);
                     obtain.writeString(s);
-                    this.kn.transact(1001, obtain, (Parcel)null, 1);
+                    this.lb.transact(1001, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void c(final String s, final byte[] array) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    obtain.writeString(s);
+                    obtain.writeByteArray(array);
+                    this.lb.transact(1018, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -460,7 +455,7 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
                     obtain.writeStringArray(array);
-                    this.kn.transact(1010, obtain, (Parcel)null, 1);
+                    this.lb.transact(1010, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -474,7 +469,20 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
                     obtain.writeStringArray(array);
-                    this.kn.transact(1011, obtain, (Parcel)null, 1);
+                    this.lb.transact(1011, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void dF(final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    obtain.writeInt(n);
+                    this.lb.transact(1020, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -488,7 +496,7 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
                     obtain.writeStringArray(array);
-                    this.kn.transact(1012, obtain, (Parcel)null, 1);
+                    this.lb.transact(1012, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -502,7 +510,7 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
                     obtain.writeStringArray(array);
-                    this.kn.transact(1013, obtain, (Parcel)null, 1);
+                    this.lb.transact(1013, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -516,7 +524,7 @@ public interface IRoomServiceCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
                     obtain.writeStringArray(array);
-                    this.kn.transact(1017, obtain, (Parcel)null, 1);
+                    this.lb.transact(1017, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -524,11 +532,17 @@ public interface IRoomServiceCallbacks extends IInterface
             }
             
             @Override
-            public void gQ() throws RemoteException {
+            public void i(final String s, final boolean b) throws RemoteException {
+                int n = 1;
                 final Parcel obtain = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.kn.transact(1016, obtain, (Parcel)null, 1);
+                    obtain.writeString(s);
+                    if (!b) {
+                        n = 0;
+                    }
+                    obtain.writeInt(n);
+                    this.lb.transact(1026, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -536,11 +550,23 @@ public interface IRoomServiceCallbacks extends IInterface
             }
             
             @Override
-            public void gR() throws RemoteException {
+            public void kH() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
-                    this.kn.transact(1023, obtain, (Parcel)null, 1);
+                    this.lb.transact(1016, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void kI() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
+                    this.lb.transact(1023, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -553,7 +579,7 @@ public interface IRoomServiceCallbacks extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
-                    this.kn.transact(1014, obtain, (Parcel)null, 1);
+                    this.lb.transact(1014, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -566,7 +592,7 @@ public interface IRoomServiceCallbacks extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
-                    this.kn.transact(1015, obtain, (Parcel)null, 1);
+                    this.lb.transact(1015, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();
@@ -574,13 +600,13 @@ public interface IRoomServiceCallbacks extends IInterface
             }
             
             @Override
-            public void r(final String s, final int n) throws RemoteException {
+            public void v(final String s, final int n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IRoomServiceCallbacks");
                     obtain.writeString(s);
                     obtain.writeInt(n);
-                    this.kn.transact(1025, obtain, (Parcel)null, 1);
+                    this.lb.transact(1025, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();

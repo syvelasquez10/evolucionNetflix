@@ -13,7 +13,12 @@ public interface DriveFolder extends DriveResource
 {
     public static final String MIME_TYPE = "application/vnd.google-apps.folder";
     
+    @Deprecated
     PendingResult<DriveFileResult> createFile(final GoogleApiClient p0, final MetadataChangeSet p1, final Contents p2);
+    
+    PendingResult<DriveFileResult> createFile(final GoogleApiClient p0, final MetadataChangeSet p1, final DriveContents p2);
+    
+    PendingResult<DriveFileResult> createFile(final GoogleApiClient p0, final MetadataChangeSet p1, final DriveContents p2, final ExecutionOptions p3);
     
     PendingResult<DriveFolderResult> createFolder(final GoogleApiClient p0, final MetadataChangeSet p1);
     

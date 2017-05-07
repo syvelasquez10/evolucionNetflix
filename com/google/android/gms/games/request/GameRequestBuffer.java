@@ -5,20 +5,20 @@
 package com.google.android.gms.games.request;
 
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.d;
+import com.google.android.gms.common.data.g;
 
-public final class GameRequestBuffer extends d<GameRequest>
+public final class GameRequestBuffer extends g<GameRequest>
 {
     public GameRequestBuffer(final DataHolder dataHolder) {
         super(dataHolder);
     }
     
-    protected GameRequest getEntry(final int n, final int n2) {
-        return new GameRequestRef(this.BB, n, n2);
+    @Override
+    protected String gE() {
+        return "external_request_id";
     }
     
-    @Override
-    protected String getPrimaryDataMarkerColumn() {
-        return "external_request_id";
+    protected GameRequest n(final int n, final int n2) {
+        return new GameRequestRef(this.IC, n, n2);
     }
 }

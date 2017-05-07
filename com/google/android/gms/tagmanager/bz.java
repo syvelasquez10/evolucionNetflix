@@ -4,30 +4,21 @@
 
 package com.google.android.gms.tagmanager;
 
-import android.os.Build$VERSION;
-import com.google.android.gms.internal.d;
-import java.util.Map;
-import com.google.android.gms.internal.a;
-
-class bz extends aj
+class bz<T>
 {
-    private static final String ID;
+    private final T apJ;
+    private final boolean apK;
     
-    static {
-        ID = a.M.toString();
+    bz(final T apJ, final boolean apK) {
+        this.apJ = apJ;
+        this.apK = apK;
     }
     
-    public bz() {
-        super(bz.ID, new String[0]);
+    public T getObject() {
+        return this.apJ;
     }
     
-    @Override
-    public boolean jX() {
-        return true;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        return dh.r(Build$VERSION.RELEASE);
+    public boolean oE() {
+        return this.apK;
     }
 }

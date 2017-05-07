@@ -10,19 +10,19 @@ import com.google.ads.mediation.NetworkExtras;
 @Deprecated
 public final class AdMobExtras implements NetworkExtras
 {
-    private final Bundle rP;
+    private final Bundle mExtras;
     
-    public AdMobExtras(Bundle rp) {
-        if (rp != null) {
-            rp = new Bundle(rp);
+    public AdMobExtras(Bundle mExtras) {
+        if (mExtras != null) {
+            mExtras = new Bundle(mExtras);
         }
         else {
-            rp = null;
+            mExtras = null;
         }
-        this.rP = rp;
+        this.mExtras = mExtras;
     }
     
     public Bundle getExtras() {
-        return this.rP;
+        return this.mExtras;
     }
 }

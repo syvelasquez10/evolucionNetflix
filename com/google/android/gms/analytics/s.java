@@ -4,435 +4,380 @@
 
 package com.google.android.gms.analytics;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
+import android.text.TextUtils;
 import java.util.Map;
-import android.content.Intent;
-import java.util.TimerTask;
-import com.google.android.gms.internal.ef;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.Timer;
-import java.util.Queue;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import com.google.android.gms.internal.hb;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import android.content.Context;
 
-class s implements ag, com.google.android.gms.analytics.c.b, com.google.android.gms.analytics.c.c
+class s extends Thread implements f
 {
+    private static s yX;
+    private volatile boolean mClosed;
     private final Context mContext;
-    private com.google.android.gms.analytics.d sG;
-    private final f sH;
-    private boolean sJ;
-    private volatile long sT;
-    private volatile a sU;
-    private volatile com.google.android.gms.analytics.b sV;
-    private com.google.android.gms.analytics.d sW;
-    private final GoogleAnalytics sX;
-    private final Queue<d> sY;
-    private volatile int sZ;
-    private volatile Timer ta;
-    private volatile Timer tb;
-    private volatile Timer tc;
-    private boolean td;
-    private boolean te;
-    private boolean tf;
-    private i tg;
-    private long th;
+    private final LinkedBlockingQueue<Runnable> yT;
+    private volatile boolean yU;
+    private volatile List<hb> yV;
+    private volatile String yW;
+    private volatile af yY;
     
-    s(final Context context, final f f) {
-        this(context, f, null, GoogleAnalytics.getInstance(context));
-    }
-    
-    s(final Context mContext, final f sh, final com.google.android.gms.analytics.d sw, final GoogleAnalytics sx) {
-        this.sY = new ConcurrentLinkedQueue<d>();
-        this.th = 300000L;
-        this.sW = sw;
-        this.mContext = mContext;
-        this.sH = sh;
-        this.sX = sx;
-        this.tg = new i() {
-            @Override
-            public long currentTimeMillis() {
-                return System.currentTimeMillis();
-            }
-        };
-        this.sZ = 0;
-        this.sU = a.tq;
-    }
-    
-    private Timer a(final Timer timer) {
-        if (timer != null) {
-            timer.cancel();
+    private s(final Context mContext) {
+        super("GAThread");
+        this.yT = new LinkedBlockingQueue<Runnable>();
+        this.yU = false;
+        this.mClosed = false;
+        if (mContext != null) {
+            this.mContext = mContext.getApplicationContext();
         }
-        return null;
-    }
-    
-    private void be() {
-        synchronized (this) {
-            if (this.sV != null && this.sU == a.tl) {
-                this.sU = a.tp;
-                this.sV.disconnect();
-            }
+        else {
+            this.mContext = mContext;
         }
+        this.start();
     }
     
-    private void co() {
-        this.ta = this.a(this.ta);
-        this.tb = this.a(this.tb);
-        this.tc = this.a(this.tc);
+    static s B(final Context context) {
+        if (s.yX == null) {
+            s.yX = new s(context);
+        }
+        return s.yX;
     }
     
-    private void cq() {
-        while (true) {
-            Label_0317: {
-                Label_0184: {
-                    Label_0198: {
-                        synchronized (this) {
-                            if (!Thread.currentThread().equals(this.sH.getThread())) {
-                                this.sH.bZ().add(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        s.this.cq();
-                                    }
-                                });
-                                return;
-                            }
-                            if (this.td) {
-                                this.bR();
-                            }
-                            switch (s$3.tj[this.sU.ordinal()]) {
-                                case 1: {
-                                    while (!this.sY.isEmpty()) {
-                                        final d d = this.sY.poll();
-                                        aa.y("Sending hit to store  " + d);
-                                        this.sG.a(d.cv(), d.cw(), d.getPath(), d.cx());
-                                    }
-                                    break;
-                                }
-                                case 2: {
-                                    break Label_0198;
-                                }
-                                case 6: {
-                                    break Label_0317;
-                                }
-                                default: {
-                                    return;
-                                }
-                            }
-                        }
-                        break Label_0184;
-                    }
-                    while (!this.sY.isEmpty()) {
-                        final d d2 = this.sY.peek();
-                        aa.y("Sending hit to service   " + d2);
-                        if (!this.sX.isDryRunEnabled()) {
-                            this.sV.a(d2.cv(), d2.cw(), d2.getPath(), d2.cx());
-                        }
-                        else {
-                            aa.y("Dry run enabled. Hit not actually sent to service.");
-                        }
-                        this.sY.poll();
-                    }
-                    this.sT = this.tg.currentTimeMillis();
-                    return;
-                }
-                if (this.sJ) {
-                    this.cr();
-                    return;
-                }
-                return;
+    static String C(final Context context) {
+        try {
+            final FileInputStream openFileInput = context.openFileInput("gaInstallData");
+            final int read = openFileInput.read(new byte[8192], 0, 8192);
+            if (openFileInput.available() > 0) {
+                z.T("Too much campaign data, ignoring it.");
+                openFileInput.close();
+                context.deleteFile("gaInstallData");
+                return null;
             }
-            aa.y("Need to reconnect");
-            if (!this.sY.isEmpty()) {
-                this.ct();
+            openFileInput.close();
+            context.deleteFile("gaInstallData");
+            if (read <= 0) {
+                z.W("Campaign file is empty.");
+                return null;
             }
+            goto Label_0078;
+        }
+        catch (FileNotFoundException ex) {
+            z.U("No campaign data found.");
+            return null;
+        }
+        catch (IOException ex2) {
+            z.T("Error reading campaign data.");
+            context.deleteFile("gaInstallData");
+            return null;
         }
     }
     
-    private void cr() {
-        this.sG.bW();
-        this.sJ = false;
-    }
-    
-    private void cs() {
-        while (true) {
+    static int ah(final String s) {
+        int n = 1;
+        if (!TextUtils.isEmpty((CharSequence)s)) {
+            final int length = s.length();
+            int n2 = 0;
+            int n3 = length - 1;
             while (true) {
-                Label_0063: {
-                    synchronized (this) {
-                        if (this.sU != a.tm) {
-                            this.co();
-                            aa.y("falling back to local store");
-                            if (this.sW == null) {
-                                break Label_0063;
-                            }
-                            this.sG = this.sW;
-                            this.sU = a.tm;
-                            this.cq();
-                        }
-                        return;
-                    }
+                n = n2;
+                if (n3 < 0) {
+                    break;
                 }
-                final r ci = r.ci();
-                ci.a(this.mContext, this.sH);
-                this.sG = ci.cl();
+                final char char1 = s.charAt(n3);
+                final int n4 = (n2 << 6 & 0xFFFFFFF) + char1 + (char1 << 14);
+                final int n5 = 0xFE00000 & n4;
+                n2 = n4;
+                if (n5 != 0) {
+                    n2 = (n4 ^ n5 >> 21);
+                }
+                --n3;
+            }
+        }
+        return n;
+    }
+    
+    private String g(final Throwable t) {
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        final PrintStream printStream = new PrintStream(byteArrayOutputStream);
+        t.printStackTrace(printStream);
+        printStream.flush();
+        return new String(byteArrayOutputStream.toByteArray());
+    }
+    
+    private String v(final Map<String, String> map) {
+        if (!map.containsKey("useSecure")) {
+            return "https:";
+        }
+        if (aj.e(map.get("useSecure"), true)) {
+            return "https:";
+        }
+        return "http:";
+    }
+    
+    private boolean w(final Map<String, String> map) {
+        if (map.get("&sf") == null) {
+            return false;
+        }
+        final double a = aj.a(map.get("&sf"), 100.0);
+        if (a >= 100.0) {
+            return false;
+        }
+        if (ah(map.get("&cid")) % 10000 >= a * 100.0) {
+            String s;
+            if (map.get("&t") == null) {
+                s = "unknown";
+            }
+            else {
+                s = map.get("&t");
+            }
+            z.V(String.format("%s hit sampled out", s));
+            return true;
+        }
+        return false;
+    }
+    
+    private void x(final Map<String, String> map) {
+        final l w = a.w(this.mContext);
+        aj.a(map, "&adid", w);
+        aj.a(map, "&ate", w);
+    }
+    
+    private void y(final Map<String, String> map) {
+        final g dq = g.dQ();
+        aj.a(map, "&an", dq);
+        aj.a(map, "&av", dq);
+        aj.a(map, "&aid", dq);
+        aj.a(map, "&aiid", dq);
+        map.put("&v", "1");
+    }
+    
+    void b(final Runnable runnable) {
+        this.yT.add(runnable);
+    }
+    
+    @Override
+    public void dI() {
+        this.b(new Runnable() {
+            @Override
+            public void run() {
+                s.this.yY.dI();
+            }
+        });
+    }
+    
+    @Override
+    public void dO() {
+        this.b(new Runnable() {
+            @Override
+            public void run() {
+                s.this.yY.dO();
+            }
+        });
+    }
+    
+    @Override
+    public LinkedBlockingQueue<Runnable> dP() {
+        return this.yT;
+    }
+    
+    @Override
+    public void dispatch() {
+        this.b(new Runnable() {
+            @Override
+            public void run() {
+                s.this.yY.dispatch();
+            }
+        });
+    }
+    
+    @Override
+    public Thread getThread() {
+        return this;
+    }
+    
+    protected void init() {
+        this.yY.eh();
+        (this.yV = new ArrayList<hb>()).add(new hb("appendVersion", "&_v".substring(1), "ma4.0.3"));
+        this.yV.add(new hb("appendQueueTime", "&qt".substring(1), null));
+        this.yV.add(new hb("appendCacheBuster", "&z".substring(1), null));
+    }
+    
+    @Override
+    public void run() {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: bipush          10
+        //     2: invokestatic    android/os/Process.setThreadPriority:(I)V
+        //     5: ldc2_w          5000
+        //     8: invokestatic    java/lang/Thread.sleep:(J)V
+        //    11: aload_0        
+        //    12: getfield        com/google/android/gms/analytics/s.yY:Lcom/google/android/gms/analytics/af;
+        //    15: ifnonnull       34
+        //    18: aload_0        
+        //    19: new             Lcom/google/android/gms/analytics/r;
+        //    22: dup            
+        //    23: aload_0        
+        //    24: getfield        com/google/android/gms/analytics/s.mContext:Landroid/content/Context;
+        //    27: aload_0        
+        //    28: invokespecial   com/google/android/gms/analytics/r.<init>:(Landroid/content/Context;Lcom/google/android/gms/analytics/f;)V
+        //    31: putfield        com/google/android/gms/analytics/s.yY:Lcom/google/android/gms/analytics/af;
+        //    34: aload_0        
+        //    35: invokevirtual   com/google/android/gms/analytics/s.init:()V
+        //    38: aload_0        
+        //    39: aload_0        
+        //    40: getfield        com/google/android/gms/analytics/s.mContext:Landroid/content/Context;
+        //    43: invokestatic    com/google/android/gms/analytics/s.C:(Landroid/content/Context;)Ljava/lang/String;
+        //    46: putfield        com/google/android/gms/analytics/s.yW:Ljava/lang/String;
+        //    49: ldc_w           "Initialized GA Thread"
+        //    52: invokestatic    com/google/android/gms/analytics/z.V:(Ljava/lang/String;)V
+        //    55: aload_0        
+        //    56: getfield        com/google/android/gms/analytics/s.mClosed:Z
+        //    59: ifne            194
+        //    62: aload_0        
+        //    63: getfield        com/google/android/gms/analytics/s.yT:Ljava/util/concurrent/LinkedBlockingQueue;
+        //    66: invokevirtual   java/util/concurrent/LinkedBlockingQueue.take:()Ljava/lang/Object;
+        //    69: checkcast       Ljava/lang/Runnable;
+        //    72: astore_1       
+        //    73: aload_0        
+        //    74: getfield        com/google/android/gms/analytics/s.yU:Z
+        //    77: ifne            55
+        //    80: aload_1        
+        //    81: invokeinterface java/lang/Runnable.run:()V
+        //    86: goto            55
+        //    89: astore_1       
+        //    90: aload_1        
+        //    91: invokevirtual   java/lang/InterruptedException.toString:()Ljava/lang/String;
+        //    94: invokestatic    com/google/android/gms/analytics/z.U:(Ljava/lang/String;)V
+        //    97: goto            55
+        //   100: astore_1       
+        //   101: new             Ljava/lang/StringBuilder;
+        //   104: dup            
+        //   105: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   108: ldc_w           "Error on GAThread: "
+        //   111: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   114: aload_0        
+        //   115: aload_1        
+        //   116: invokespecial   com/google/android/gms/analytics/s.g:(Ljava/lang/Throwable;)Ljava/lang/String;
+        //   119: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   122: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   125: invokestatic    com/google/android/gms/analytics/z.T:(Ljava/lang/String;)V
+        //   128: ldc_w           "Google Analytics is shutting down."
+        //   131: invokestatic    com/google/android/gms/analytics/z.T:(Ljava/lang/String;)V
+        //   134: aload_0        
+        //   135: iconst_1       
+        //   136: putfield        com/google/android/gms/analytics/s.yU:Z
+        //   139: goto            55
+        //   142: astore_1       
+        //   143: ldc_w           "sleep interrupted in GAThread initialize"
+        //   146: invokestatic    com/google/android/gms/analytics/z.W:(Ljava/lang/String;)V
+        //   149: goto            11
+        //   152: astore_1       
+        //   153: new             Ljava/lang/StringBuilder;
+        //   156: dup            
+        //   157: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   160: ldc_w           "Error initializing the GAThread: "
+        //   163: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   166: aload_0        
+        //   167: aload_1        
+        //   168: invokespecial   com/google/android/gms/analytics/s.g:(Ljava/lang/Throwable;)Ljava/lang/String;
+        //   171: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   174: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   177: invokestatic    com/google/android/gms/analytics/z.T:(Ljava/lang/String;)V
+        //   180: ldc_w           "Google Analytics will not start up."
+        //   183: invokestatic    com/google/android/gms/analytics/z.T:(Ljava/lang/String;)V
+        //   186: aload_0        
+        //   187: iconst_1       
+        //   188: putfield        com/google/android/gms/analytics/s.yU:Z
+        //   191: goto            55
+        //   194: return         
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                            
+        //  -----  -----  -----  -----  --------------------------------
+        //  5      11     142    152    Ljava/lang/InterruptedException;
+        //  11     34     152    194    Ljava/lang/Throwable;
+        //  34     55     152    194    Ljava/lang/Throwable;
+        //  62     86     89     100    Ljava/lang/InterruptedException;
+        //  62     86     100    142    Ljava/lang/Throwable;
+        //  90     97     100    142    Ljava/lang/Throwable;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0011:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    @Override
+    public void u(final Map<String, String> map) {
+        final HashMap<String, String> hashMap = new HashMap<String, String>(map);
+        String s2;
+        final String s = s2 = map.get("&ht");
+        while (true) {
+            if (s == null) {
+                break Label_0035;
+            }
+            try {
+                Long.valueOf(s);
+                s2 = s;
+                if (s2 == null) {
+                    hashMap.put("&ht", Long.toString(System.currentTimeMillis()));
+                }
+                this.b(new Runnable() {
+                    @Override
+                    public void run() {
+                        s.this.x(hashMap);
+                        if (TextUtils.isEmpty((CharSequence)hashMap.get("&cid"))) {
+                            hashMap.put("&cid", h.dR().getValue("&cid"));
+                        }
+                        if (GoogleAnalytics.getInstance(s.this.mContext).getAppOptOut() || s.this.w(hashMap)) {
+                            return;
+                        }
+                        if (!TextUtils.isEmpty((CharSequence)s.this.yW)) {
+                            t.eq().B(true);
+                            hashMap.putAll(new HitBuilders.HitBuilder<HitBuilders.HitBuilder>().setCampaignParamsFromUrl(s.this.yW).build());
+                            t.eq().B(false);
+                            s.this.yW = null;
+                        }
+                        s.this.y(hashMap);
+                        s.this.yY.b(x.z(hashMap), Long.valueOf(hashMap.get("&ht")), s.this.v(hashMap), s.this.yV);
+                    }
+                });
+            }
+            catch (NumberFormatException ex) {
+                s2 = null;
                 continue;
             }
-        }
-    }
-    
-    private void ct() {
-        while (true) {
-            synchronized (this) {
-                if (!this.tf && this.sV != null && this.sU != a.tm) {
-                    try {
-                        ++this.sZ;
-                        this.a(this.tb);
-                        this.sU = a.tk;
-                        (this.tb = new Timer("Failed Connect")).schedule(new c(), 3000L);
-                        aa.y("connecting to Analytics service");
-                        this.sV.connect();
-                        return;
-                    }
-                    catch (SecurityException ex) {
-                        aa.z("security exception on connectToService");
-                        this.cs();
-                    }
-                }
-            }
-            aa.z("client not initialized.");
-            this.cs();
-        }
-    }
-    
-    private void cu() {
-        this.ta = this.a(this.ta);
-        (this.ta = new Timer("Service Reconnect")).schedule(new e(), 5000L);
-    }
-    
-    @Override
-    public void a(final int n, final Intent intent) {
-        synchronized (this) {
-            this.sU = a.to;
-            if (this.sZ < 2) {
-                aa.z("Service unavailable (code=" + n + "), will retry.");
-                this.cu();
-            }
-            else {
-                aa.z("Service unavailable (code=" + n + "), using local store.");
-                this.cs();
-            }
-        }
-    }
-    
-    @Override
-    public void b(final Map<String, String> map, final long n, final String s, final List<ef> list) {
-        aa.y("putHit called");
-        this.sY.add(new d(map, n, s, list));
-        this.cq();
-    }
-    
-    @Override
-    public void bR() {
-        aa.y("clearHits called");
-        this.sY.clear();
-        switch (s$3.tj[this.sU.ordinal()]) {
-            default: {
-                this.td = true;
-            }
-            case 1: {
-                this.sG.j(0L);
-                this.td = false;
-            }
-            case 2: {
-                this.sV.bR();
-                this.td = false;
-            }
-        }
-    }
-    
-    @Override
-    public void bW() {
-        switch (s$3.tj[this.sU.ordinal()]) {
-            default: {
-                this.sJ = true;
-            }
-            case 2: {}
-            case 1: {
-                this.cr();
-            }
-        }
-    }
-    
-    @Override
-    public void bY() {
-        while (true) {
-            Label_0088: {
-                synchronized (this) {
-                    if (!this.tf) {
-                        aa.y("setForceLocalDispatch called.");
-                        this.tf = true;
-                        switch (s$3.tj[this.sU.ordinal()]) {
-                            case 2: {
-                                this.be();
-                            }
-                            case 1:
-                            case 4:
-                            case 5:
-                            case 6: {
-                                break;
-                            }
-                            case 3: {
-                                break Label_0088;
-                            }
-                            default: {}
-                        }
-                    }
-                    return;
-                }
-            }
-            this.te = true;
-        }
-    }
-    
-    @Override
-    public void cp() {
-        if (this.sV != null) {
-            return;
-        }
-        this.sV = new com.google.android.gms.analytics.c(this.mContext, (com.google.android.gms.analytics.c.b)this, (com.google.android.gms.analytics.c.c)this);
-        this.ct();
-    }
-    
-    @Override
-    public void onConnected() {
-        synchronized (this) {
-            this.tb = this.a(this.tb);
-            this.sZ = 0;
-            aa.y("Connected to service");
-            this.sU = a.tl;
-            if (this.te) {
-                this.be();
-                this.te = false;
-            }
-            else {
-                this.cq();
-                this.tc = this.a(this.tc);
-                (this.tc = new Timer("disconnect check")).schedule(new b(), this.th);
-            }
-        }
-    }
-    
-    @Override
-    public void onDisconnected() {
-        while (true) {
-            Label_0065: {
-                synchronized (this) {
-                    if (this.sU == a.tp) {
-                        aa.y("Disconnected from service");
-                        this.co();
-                        this.sU = a.tq;
-                    }
-                    else {
-                        aa.y("Unexpected disconnect.");
-                        this.sU = a.to;
-                        if (this.sZ >= 2) {
-                            break Label_0065;
-                        }
-                        this.cu();
-                    }
-                    return;
-                }
-            }
-            this.cs();
-        }
-    }
-    
-    private enum a
-    {
-        tk, 
-        tl, 
-        tm, 
-        tn, 
-        to, 
-        tp, 
-        tq;
-    }
-    
-    private class b extends TimerTask
-    {
-        @Override
-        public void run() {
-            if (s.this.sU == a.tl && s.this.sY.isEmpty() && s.this.sT + s.this.th < s.this.tg.currentTimeMillis()) {
-                aa.y("Disconnecting due to inactivity");
-                s.this.be();
-                return;
-            }
-            s.this.tc.schedule(new b(), s.this.th);
-        }
-    }
-    
-    private class c extends TimerTask
-    {
-        @Override
-        public void run() {
-            if (s.this.sU == a.tk) {
-                s.this.cs();
-            }
-        }
-    }
-    
-    private static class d
-    {
-        private final Map<String, String> ts;
-        private final long tt;
-        private final String tu;
-        private final List<ef> tv;
-        
-        public d(final Map<String, String> ts, final long tt, final String tu, final List<ef> tv) {
-            this.ts = ts;
-            this.tt = tt;
-            this.tu = tu;
-            this.tv = tv;
-        }
-        
-        public Map<String, String> cv() {
-            return this.ts;
-        }
-        
-        public long cw() {
-            return this.tt;
-        }
-        
-        public List<ef> cx() {
-            return this.tv;
-        }
-        
-        public String getPath() {
-            return this.tu;
-        }
-        
-        @Override
-        public String toString() {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("PATH: ");
-            sb.append(this.tu);
-            if (this.ts != null) {
-                sb.append("  PARAMS: ");
-                for (final Map.Entry<String, String> entry : this.ts.entrySet()) {
-                    sb.append(entry.getKey());
-                    sb.append("=");
-                    sb.append(entry.getValue());
-                    sb.append(",  ");
-                }
-            }
-            return sb.toString();
-        }
-    }
-    
-    private class e extends TimerTask
-    {
-        @Override
-        public void run() {
-            s.this.ct();
+            break;
         }
     }
 }

@@ -4,153 +4,94 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.internal.kn;
-import java.io.IOException;
-import com.google.android.gms.internal.ko;
-import com.google.android.gms.internal.ks;
-import com.google.android.gms.internal.kt;
-import com.google.android.gms.internal.kp;
+import com.google.android.gms.drive.events.CompletionEvent;
+import com.google.android.gms.drive.events.CompletionListener;
+import com.google.android.gms.drive.events.ChangeListener;
+import com.google.android.gms.drive.events.ChangeEvent;
+import android.os.Message;
+import android.util.Pair;
+import android.os.Handler;
+import android.os.RemoteException;
+import com.google.android.gms.drive.events.DriveEvent;
+import com.google.android.gms.common.internal.n;
+import java.util.ArrayList;
+import android.content.Context;
+import android.os.Looper;
+import java.util.List;
+import com.google.android.gms.drive.events.c;
 
-public final class y extends kp<y>
+public class y extends ad.a
 {
-    public String FC;
-    public long FD;
-    public long FE;
-    public int versionCode;
+    private final int NS;
+    private final c OW;
+    private final a OX;
+    private final List<Integer> OY;
     
-    public y() {
-        this.fH();
+    public y(final Looper looper, final Context context, final int ns, final c ow) {
+        this.OY = new ArrayList<Integer>();
+        this.NS = ns;
+        this.OW = ow;
+        this.OX = new a(looper, context);
     }
     
-    public static y g(final byte[] array) throws ks {
-        return kt.a(new y(), array);
+    public void bq(final int n) {
+        this.OY.add(n);
     }
     
-    @Override
-    public void a(final ko ko) throws IOException {
-        ko.i(1, this.versionCode);
-        ko.b(2, this.FC);
-        ko.c(3, this.FD);
-        ko.c(4, this.FE);
-        super.a(ko);
+    public boolean br(final int n) {
+        return this.OY.contains(n);
     }
     
-    @Override
-    public int c() {
-        return this.adY = super.c() + ko.j(1, this.versionCode) + ko.g(2, this.FC) + ko.e(3, this.FD) + ko.e(4, this.FE);
+    public void c(final OnEventResponse onEventResponse) throws RemoteException {
+        final DriveEvent ih = onEventResponse.ih();
+        n.I(this.NS == ih.getType());
+        n.I(this.OY.contains(ih.getType()));
+        this.OX.a(this.OW, ih);
     }
     
-    @Override
-    public boolean equals(final Object o) {
-        final boolean b = false;
-        boolean b2;
-        if (o == this) {
-            b2 = true;
+    private static class a extends Handler
+    {
+        private final Context mContext;
+        
+        private a(final Looper looper, final Context mContext) {
+            super(looper);
+            this.mContext = mContext;
         }
-        else {
-            b2 = b;
-            if (o instanceof y) {
-                final y y = (y)o;
-                b2 = b;
-                if (this.versionCode == y.versionCode) {
-                    if (this.FC == null) {
-                        b2 = b;
-                        if (y.FC != null) {
-                            return b2;
-                        }
-                    }
-                    else if (!this.FC.equals(y.FC)) {
-                        return false;
-                    }
-                    b2 = b;
-                    if (this.FD == y.FD) {
-                        b2 = b;
-                        if (this.FE == y.FE) {
-                            if (this.adU == null || this.adU.isEmpty()) {
-                                if (y.adU != null) {
-                                    b2 = b;
-                                    if (!y.adU.isEmpty()) {
-                                        return b2;
-                                    }
-                                }
-                                return true;
-                            }
-                            return this.adU.equals(y.adU);
-                        }
-                    }
-                }
-            }
+        
+        public void a(final c c, final DriveEvent driveEvent) {
+            this.sendMessage(this.obtainMessage(1, (Object)new Pair((Object)c, (Object)driveEvent)));
         }
-        return b2;
-    }
-    
-    public y fH() {
-        this.versionCode = 1;
-        this.FC = "";
-        this.FD = -1L;
-        this.FE = -1L;
-        this.adU = null;
-        this.adY = -1;
-        return this;
-    }
-    
-    @Override
-    public int hashCode() {
-        final boolean b = false;
-        final int versionCode = this.versionCode;
-        int hashCode;
-        if (this.FC == null) {
-            hashCode = 0;
-        }
-        else {
-            hashCode = this.FC.hashCode();
-        }
-        final int n = (int)(this.FD ^ this.FD >>> 32);
-        final int n2 = (int)(this.FE ^ this.FE >>> 32);
-        int hashCode2 = b ? 1 : 0;
-        if (this.adU != null) {
-            if (this.adU.isEmpty()) {
-                hashCode2 = (b ? 1 : 0);
-            }
-            else {
-                hashCode2 = this.adU.hashCode();
-            }
-        }
-        return (((hashCode + (versionCode + 527) * 31) * 31 + n) * 31 + n2) * 31 + hashCode2;
-    }
-    
-    public y m(final kn kn) throws IOException {
-    Label_0065:
-        while (true) {
-            final int mh = kn.mh();
-            switch (mh) {
+        
+        public void handleMessage(final Message message) {
+            switch (message.what) {
                 default: {
-                    if (!this.a(kn, mh)) {
-                        break Label_0065;
+                    v.e(this.mContext, "EventCallback", "Don't know how to handle this event");
+                }
+                case 1: {
+                    final Pair pair = (Pair)message.obj;
+                    final c c = (c)pair.first;
+                    final DriveEvent driveEvent = (DriveEvent)pair.second;
+                    switch (driveEvent.getType()) {
+                        default: {
+                            v.p("EventCallback", "Unexpected event: " + driveEvent);
+                            return;
+                        }
+                        case 1: {
+                            if (c instanceof DriveEvent.Listener) {
+                                ((DriveEvent.Listener<ChangeEvent>)c).onEvent((ChangeEvent)driveEvent);
+                                return;
+                            }
+                            ((ChangeListener)c).onChange((ChangeEvent)driveEvent);
+                            return;
+                        }
+                        case 2: {
+                            ((CompletionListener)c).onCompletion((CompletionEvent)driveEvent);
+                            return;
+                        }
                     }
-                    continue;
-                }
-                case 0: {
-                    break Label_0065;
-                }
-                case 8: {
-                    this.versionCode = kn.mk();
-                    continue;
-                }
-                case 18: {
-                    this.FC = kn.readString();
-                    continue;
-                }
-                case 24: {
-                    this.FD = kn.mm();
-                    continue;
-                }
-                case 32: {
-                    this.FE = kn.mm();
-                    continue;
+                    break;
                 }
             }
         }
-        return this;
     }
 }

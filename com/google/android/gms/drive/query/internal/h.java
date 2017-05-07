@@ -4,42 +4,50 @@
 
 package com.google.android.gms.drive.query.internal;
 
+import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class h implements Parcelable$Creator<MatchAllFilter>
+public class h implements Parcelable$Creator<InFilter>
 {
-    static void a(final MatchAllFilter matchAllFilter, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1000, matchAllFilter.xH);
-        b.F(parcel, p3);
+    static void a(final InFilter inFilter, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1000, inFilter.BR);
+        b.a(parcel, 1, (Parcelable)inFilter.QD, n, false);
+        b.H(parcel, d);
     }
     
-    public MatchAllFilter[] aO(final int n) {
-        return new MatchAllFilter[n];
-    }
-    
-    public MatchAllFilter ak(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public InFilter aP(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        MetadataBundle metadataBundle = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    metadataBundle = a.a(parcel, b, MetadataBundle.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new MatchAllFilter(g);
+        return new InFilter(g, metadataBundle);
+    }
+    
+    public InFilter[] cb(final int n) {
+        return new InFilter[n];
     }
 }

@@ -4,6 +4,11 @@
 
 package android.support.v4.app;
 
+import android.support.annotation.IntDef;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Annotation;
+import android.support.annotation.NonNull;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
@@ -163,6 +168,7 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
         }
     }
     
+    @NonNull
     public Dialog onCreateDialog(final Bundle bundle) {
         return new Dialog((Context)this.getActivity(), this.getTheme());
     }
@@ -269,5 +275,10 @@ public class DialogFragment extends Fragment implements DialogInterface$OnCancel
         final FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
         beginTransaction.add(this, s);
         beginTransaction.commit();
+    }
+    
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({ 0L, 1L, 2L, 3L })
+    private @interface DialogStyle {
     }
 }

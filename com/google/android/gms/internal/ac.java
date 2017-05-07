@@ -6,5 +6,5 @@ package com.google.android.gms.internal;
 
 public interface ac
 {
-    void a(final ab p0);
+    void a(final af p0, final boolean p1);
 }

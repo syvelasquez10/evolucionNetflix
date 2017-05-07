@@ -138,11 +138,14 @@ public class PartnerJSObject extends JSObject
                             Log.e("nf_partner", "Service not found!");
                             PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserToken", getErrorForPartner(null, n, s, "101", "Service not found!"));
                             return;
-                            // iftrue(Label_0129:, partner.getSSO() != null)
-                            Log.e("nf_partner", "Service does not support SSO!");
-                            PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserToken", getErrorForPartner(null, n, s, "102", "Service does not support SSO!"));
-                            return;
+                            while (true) {
+                                Log.e("nf_partner", "Service does not support SSO!");
+                                PartnerJSObject.this.returnResultToJS("nrdpPartner.Sso._handleExternalUserToken", getErrorForPartner(null, n, s, "102", "Service does not support SSO!"));
+                                return;
+                                continue;
+                            }
                         }
+                        // iftrue(Label_0129:, partner.getSSO() != null)
                         catch (Exception ex) {
                             Log.e("nf_partner", "Failed to work with JSON", ex);
                             return;

@@ -6,7 +6,7 @@ package com.google.android.gms.maps;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.view.View;
 import com.google.android.gms.maps.internal.IStreetViewPanoramaViewDelegate;
 import com.google.android.gms.dynamic.LifecycleDelegate;
@@ -25,39 +25,39 @@ import android.widget.FrameLayout;
 
 public class StreetViewPanoramaView extends FrameLayout
 {
-    private StreetViewPanorama Sj;
-    private final a Ss;
+    private StreetViewPanorama aiW;
+    private final a ajf;
     
     public StreetViewPanoramaView(final Context context) {
         super(context);
-        this.Ss = new a((ViewGroup)this, context, null);
+        this.ajf = new a((ViewGroup)this, context, null);
     }
     
     public StreetViewPanoramaView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.Ss = new a((ViewGroup)this, context, null);
+        this.ajf = new a((ViewGroup)this, context, null);
     }
     
     public StreetViewPanoramaView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.Ss = new a((ViewGroup)this, context, null);
+        this.ajf = new a((ViewGroup)this, context, null);
     }
     
     public StreetViewPanoramaView(final Context context, final StreetViewPanoramaOptions streetViewPanoramaOptions) {
         super(context);
-        this.Ss = new a((ViewGroup)this, context, streetViewPanoramaOptions);
+        this.ajf = new a((ViewGroup)this, context, streetViewPanoramaOptions);
     }
     
     public final StreetViewPanorama getStreetViewPanorama() {
-        if (this.Sj != null) {
-            return this.Sj;
+        if (this.aiW != null) {
+            return this.aiW;
         }
-        this.Ss.ip();
-        if (this.Ss.fW() == null) {
+        this.ajf.my();
+        if (this.ajf.it() == null) {
             return null;
         }
         try {
-            return this.Sj = new StreetViewPanorama(this.Ss.fW().iw().getStreetViewPanorama());
+            return this.aiW = new StreetViewPanorama(this.ajf.it().mF().getStreetViewPanorama());
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -65,58 +65,58 @@ public class StreetViewPanoramaView extends FrameLayout
     }
     
     public final void onCreate(final Bundle bundle) {
-        this.Ss.onCreate(bundle);
-        if (this.Ss.fW() == null) {
-            final a ss = this.Ss;
+        this.ajf.onCreate(bundle);
+        if (this.ajf.it() == null) {
+            final a ajf = this.ajf;
             com.google.android.gms.dynamic.a.b(this);
         }
     }
     
     public final void onDestroy() {
-        this.Ss.onDestroy();
+        this.ajf.onDestroy();
     }
     
     public final void onLowMemory() {
-        this.Ss.onLowMemory();
+        this.ajf.onLowMemory();
     }
     
     public final void onPause() {
-        this.Ss.onPause();
+        this.ajf.onPause();
     }
     
     public final void onResume() {
-        this.Ss.onResume();
+        this.ajf.onResume();
     }
     
     public final void onSaveInstanceState(final Bundle bundle) {
-        this.Ss.onSaveInstanceState(bundle);
+        this.ajf.onSaveInstanceState(bundle);
     }
     
     static class a extends com.google.android.gms.dynamic.a<b>
     {
-        protected f<b> RV;
-        private final ViewGroup Sa;
-        private final StreetViewPanoramaOptions St;
+        protected f<b> aiI;
+        private final ViewGroup aiN;
+        private final StreetViewPanoramaOptions ajg;
         private final Context mContext;
         
-        a(final ViewGroup sa, final Context mContext, final StreetViewPanoramaOptions st) {
-            this.Sa = sa;
+        a(final ViewGroup aiN, final Context mContext, final StreetViewPanoramaOptions ajg) {
+            this.aiN = aiN;
             this.mContext = mContext;
-            this.St = st;
+            this.ajg = ajg;
         }
         
         @Override
-        protected void a(final f<b> rv) {
-            this.RV = rv;
-            this.ip();
+        protected void a(final f<b> aiI) {
+            this.aiI = aiI;
+            this.my();
         }
         
-        public void ip() {
-            if (this.RV == null || this.fW() != null) {
+        public void my() {
+            if (this.aiI == null || this.it() != null) {
                 return;
             }
             try {
-                this.RV.a(new b(this.Sa, u.A(this.mContext).a(e.h(this.mContext), this.St)));
+                this.aiI.a(new b(this.aiN, u.R(this.mContext).a(e.k(this.mContext), this.ajg)));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -127,26 +127,26 @@ public class StreetViewPanoramaView extends FrameLayout
     
     static class b implements LifecycleDelegate
     {
-        private final ViewGroup RX;
-        private final IStreetViewPanoramaViewDelegate Su;
-        private View Sv;
+        private final ViewGroup aiK;
+        private final IStreetViewPanoramaViewDelegate ajh;
+        private View aji;
         
         public b(final ViewGroup viewGroup, final IStreetViewPanoramaViewDelegate streetViewPanoramaViewDelegate) {
-            this.Su = fq.f(streetViewPanoramaViewDelegate);
-            this.RX = fq.f(viewGroup);
+            this.ajh = n.i(streetViewPanoramaViewDelegate);
+            this.aiK = n.i(viewGroup);
         }
         
-        public IStreetViewPanoramaViewDelegate iw() {
-            return this.Su;
+        public IStreetViewPanoramaViewDelegate mF() {
+            return this.ajh;
         }
         
         @Override
         public void onCreate(final Bundle bundle) {
             try {
-                this.Su.onCreate(bundle);
-                this.Sv = e.d(this.Su.getView());
-                this.RX.removeAllViews();
-                this.RX.addView(this.Sv);
+                this.ajh.onCreate(bundle);
+                this.aji = e.f(this.ajh.getView());
+                this.aiK.removeAllViews();
+                this.aiK.addView(this.aji);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -161,7 +161,7 @@ public class StreetViewPanoramaView extends FrameLayout
         @Override
         public void onDestroy() {
             try {
-                this.Su.onDestroy();
+                this.ajh.onDestroy();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -181,7 +181,7 @@ public class StreetViewPanoramaView extends FrameLayout
         @Override
         public void onLowMemory() {
             try {
-                this.Su.onLowMemory();
+                this.ajh.onLowMemory();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -191,7 +191,7 @@ public class StreetViewPanoramaView extends FrameLayout
         @Override
         public void onPause() {
             try {
-                this.Su.onPause();
+                this.ajh.onPause();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -201,7 +201,7 @@ public class StreetViewPanoramaView extends FrameLayout
         @Override
         public void onResume() {
             try {
-                this.Su.onResume();
+                this.ajh.onResume();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -211,7 +211,7 @@ public class StreetViewPanoramaView extends FrameLayout
         @Override
         public void onSaveInstanceState(final Bundle bundle) {
             try {
-                this.Su.onSaveInstanceState(bundle);
+                this.ajh.onSaveInstanceState(bundle);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);

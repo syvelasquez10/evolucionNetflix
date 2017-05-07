@@ -4,216 +4,449 @@
 
 package com.google.android.gms.analytics;
 
-import android.os.Message;
-import android.os.Handler$Callback;
-import android.os.Handler;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import android.content.Intent;
+import java.util.TimerTask;
+import com.google.android.gms.internal.hb;
+import java.util.Collection;
+import com.google.android.gms.internal.jw;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Timer;
+import java.util.Queue;
+import com.google.android.gms.internal.ju;
 import android.content.Context;
 
-class r extends af
+class r implements af, com.google.android.gms.analytics.c.b, com.google.android.gms.analytics.c.c
 {
-    private static final Object sF;
-    private static r sR;
-    private Context mContext;
-    private Handler mHandler;
-    private d sG;
-    private volatile f sH;
-    private int sI;
-    private boolean sJ;
-    private boolean sK;
-    private String sL;
-    private boolean sM;
-    private boolean sN;
-    private e sO;
-    private q sP;
-    private boolean sQ;
+    private final Context mContext;
+    private boolean yA;
+    private boolean yB;
+    private boolean yC;
+    private ju yD;
+    private long yE;
+    private com.google.android.gms.analytics.d yd;
+    private final f ye;
+    private boolean yg;
+    private volatile long yq;
+    private volatile a yr;
+    private volatile com.google.android.gms.analytics.b ys;
+    private com.google.android.gms.analytics.d yt;
+    private final GoogleAnalytics yu;
+    private final Queue<d> yv;
+    private volatile int yw;
+    private volatile Timer yx;
+    private volatile Timer yy;
+    private volatile Timer yz;
     
-    static {
-        sF = new Object();
+    r(final Context context, final f f) {
+        this(context, f, null, GoogleAnalytics.getInstance(context));
     }
     
-    private r() {
-        this.sI = 1800;
-        this.sJ = true;
-        this.sM = true;
-        this.sN = true;
-        this.sO = new e() {
-            @Override
-            public void r(final boolean b) {
-                r.this.a(b, r.this.sM);
-            }
-        };
-        this.sQ = false;
+    r(final Context mContext, final f ye, final com.google.android.gms.analytics.d yt, final GoogleAnalytics yu) {
+        this.yv = new ConcurrentLinkedQueue<d>();
+        this.yE = 300000L;
+        this.yt = yt;
+        this.mContext = mContext;
+        this.ye = ye;
+        this.yu = yu;
+        this.yD = jw.hA();
+        this.yw = 0;
+        this.yr = a.yN;
     }
     
-    public static r ci() {
-        if (r.sR == null) {
-            r.sR = new r();
+    private Timer a(final Timer timer) {
+        if (timer != null) {
+            timer.cancel();
         }
-        return r.sR;
+        return null;
     }
     
-    private void cj() {
-        (this.sP = new q(this)).o(this.mContext);
-    }
-    
-    private void ck() {
-        this.mHandler = new Handler(this.mContext.getMainLooper(), (Handler$Callback)new Handler$Callback() {
-            public boolean handleMessage(final Message message) {
-                if (1 == message.what && r.sF.equals(message.obj)) {
-                    u.cy().t(true);
-                    r.this.dispatchLocalHits();
-                    u.cy().t(false);
-                    if (r.this.sI > 0 && !r.this.sQ) {
-                        r.this.mHandler.sendMessageDelayed(r.this.mHandler.obtainMessage(1, r.sF), (long)(r.this.sI * 1000));
-                    }
-                }
-                return true;
-            }
-        });
-        if (this.sI > 0) {
-            this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(1, r.sF), (long)(this.sI * 1000));
-        }
-    }
-    
-    void a(final Context context, final f sh) {
+    private void cD() {
         synchronized (this) {
-            if (this.mContext == null) {
-                this.mContext = context.getApplicationContext();
-                if (this.sH == null) {
-                    this.sH = sh;
-                    if (this.sJ) {
-                        this.dispatchLocalHits();
-                        this.sJ = false;
-                    }
-                    if (this.sK) {
-                        this.bY();
-                        this.sK = false;
-                    }
-                }
+            if (this.ys != null && this.yr == a.yI) {
+                this.yr = a.yM;
+                this.ys.disconnect();
             }
         }
     }
     
-    void a(final boolean sq, final boolean sm) {
+    private void eg() {
+        this.yx = this.a(this.yx);
+        this.yy = this.a(this.yy);
+        this.yz = this.a(this.yz);
+    }
+    
+    private void ei() {
         while (true) {
-            while (true) {
-                Label_0157: {
-                    Label_0150: {
-                        synchronized (this) {
-                            if (this.sQ != sq || this.sM != sm) {
-                                if ((sq || !sm) && this.sI > 0) {
-                                    this.mHandler.removeMessages(1, r.sF);
+            Label_0340: {
+                Label_0205: {
+                    Label_0188: {
+                        Label_0219: {
+                            synchronized (this) {
+                                if (!Thread.currentThread().equals(this.ye.getThread())) {
+                                    this.ye.dP().add(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            r.this.ei();
+                                        }
+                                    });
+                                    return;
                                 }
-                                if (!sq && sm && this.sI > 0) {
-                                    this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(1, r.sF), (long)(this.sI * 1000));
+                                if (this.yA) {
+                                    this.dI();
                                 }
-                                final StringBuilder append = new StringBuilder().append("PowerSaveMode ");
-                                if (!sq && sm) {
-                                    break Label_0150;
+                                switch (r$2.yG[this.yr.ordinal()]) {
+                                    case 1: {
+                                        while (!this.yv.isEmpty()) {
+                                            final d d = this.yv.poll();
+                                            z.V("Sending hit to store  " + d);
+                                            this.yd.a(d.en(), d.eo(), d.getPath(), d.ep());
+                                        }
+                                        break Label_0205;
+                                    }
+                                    case 7: {
+                                        break;
+                                    }
+                                    case 2: {
+                                        break Label_0219;
+                                    }
+                                    case 6: {
+                                        break Label_0340;
+                                    }
+                                    default: {
+                                        return;
+                                    }
                                 }
-                                break Label_0157;
                             }
-                            return;
-                            final StringBuilder append;
-                            final String s;
-                            aa.y(append.append(s).toString());
-                            this.sQ = sq;
-                            this.sM = sm;
-                            return;
+                            break Label_0188;
+                        }
+                        while (!this.yv.isEmpty()) {
+                            final d d2 = this.yv.peek();
+                            z.V("Sending hit to service   " + d2);
+                            if (!this.yu.isDryRunEnabled()) {
+                                this.ys.a(d2.en(), d2.eo(), d2.getPath(), d2.ep());
+                            }
+                            else {
+                                z.V("Dry run enabled. Hit not actually sent to service.");
+                            }
+                            this.yv.poll();
+                        }
+                        this.yq = this.yD.elapsedRealtime();
+                        return;
+                    }
+                    z.V("Blocked. Dropping hits.");
+                    this.yv.clear();
+                    return;
+                }
+                if (this.yg) {
+                    this.ej();
+                    return;
+                }
+                return;
+            }
+            z.V("Need to reconnect");
+            if (!this.yv.isEmpty()) {
+                this.el();
+            }
+        }
+    }
+    
+    private void ej() {
+        this.yd.dispatch();
+        this.yg = false;
+    }
+    
+    private void ek() {
+        while (true) {
+            Label_0072: {
+                synchronized (this) {
+                    if (this.yr != a.yJ) {
+                        if (this.mContext == null || !"com.google.android.gms".equals(this.mContext.getPackageName())) {
+                            break Label_0072;
+                        }
+                        this.yr = a.yK;
+                        this.ys.disconnect();
+                        z.W("Attempted to fall back to local store from service.");
+                    }
+                    return;
+                }
+            }
+            this.eg();
+            z.V("falling back to local store");
+            if (this.yt != null) {
+                this.yd = this.yt;
+            }
+            else {
+                final q ea = q.ea();
+                ea.a(this.mContext, this.ye);
+                this.yd = ea.ed();
+            }
+            this.yr = a.yJ;
+            this.ei();
+        }
+    }
+    
+    private void el() {
+        while (true) {
+            synchronized (this) {
+                if (!this.yC && this.ys != null && this.yr != a.yJ) {
+                    try {
+                        ++this.yw;
+                        this.a(this.yy);
+                        this.yr = a.yH;
+                        (this.yy = new Timer("Failed Connect")).schedule(new c(), 3000L);
+                        z.V("connecting to Analytics service");
+                        this.ys.connect();
+                        return;
+                    }
+                    catch (SecurityException ex) {
+                        z.W("security exception on connectToService");
+                        this.ek();
+                    }
+                }
+            }
+            z.W("client not initialized.");
+            this.ek();
+        }
+    }
+    
+    private void em() {
+        this.yx = this.a(this.yx);
+        (this.yx = new Timer("Service Reconnect")).schedule(new e(), 5000L);
+    }
+    
+    @Override
+    public void a(final int n, final Intent intent) {
+        synchronized (this) {
+            this.yr = a.yL;
+            if (this.yw < 2) {
+                z.W("Service unavailable (code=" + n + "), will retry.");
+                this.em();
+            }
+            else {
+                z.W("Service unavailable (code=" + n + "), using local store.");
+                this.ek();
+            }
+        }
+    }
+    
+    @Override
+    public void b(final Map<String, String> map, final long n, final String s, final List<hb> list) {
+        z.V("putHit called");
+        this.yv.add(new d(map, n, s, list));
+        this.ei();
+    }
+    
+    @Override
+    public void dI() {
+        z.V("clearHits called");
+        this.yv.clear();
+        switch (r$2.yG[this.yr.ordinal()]) {
+            default: {
+                this.yA = true;
+            }
+            case 1: {
+                this.yd.l(0L);
+                this.yA = false;
+            }
+            case 2: {
+                this.ys.dI();
+                this.yA = false;
+            }
+        }
+    }
+    
+    @Override
+    public void dO() {
+        while (true) {
+            Label_0088: {
+                synchronized (this) {
+                    if (!this.yC) {
+                        z.V("setForceLocalDispatch called.");
+                        this.yC = true;
+                        switch (r$2.yG[this.yr.ordinal()]) {
+                            case 2: {
+                                this.cD();
+                            }
+                            case 1:
+                            case 4:
+                            case 5:
+                            case 6: {
+                                break;
+                            }
+                            case 3: {
+                                break Label_0088;
+                            }
+                            default: {}
                         }
                     }
-                    final String s = "terminated.";
-                    continue;
+                    return;
                 }
-                final String s = "initiated.";
-                continue;
+            }
+            this.yB = true;
+        }
+    }
+    
+    @Override
+    public void dispatch() {
+        switch (r$2.yG[this.yr.ordinal()]) {
+            default: {
+                this.yg = true;
+            }
+            case 2: {}
+            case 1: {
+                this.ej();
             }
         }
     }
     
-    void bY() {
-        if (this.sH == null) {
-            aa.y("setForceLocalDispatch() queued. It will be called once initialization is complete.");
-            this.sK = true;
+    @Override
+    public void eh() {
+        if (this.ys != null) {
             return;
         }
-        u.cy().a(u.a.uN);
-        this.sH.bY();
-    }
-    
-    d cl() {
-        Label_0080: {
-            synchronized (this) {
-                if (this.sG != null) {
-                    break Label_0080;
-                }
-                if (this.mContext == null) {
-                    throw new IllegalStateException("Cant get a store unless we have a context");
-                }
-            }
-            this.sG = new ac(this.sO, this.mContext);
-            if (this.sL != null) {
-                this.sG.bX().F(this.sL);
-                this.sL = null;
-            }
-        }
-        if (this.mHandler == null) {
-            this.ck();
-        }
-        if (this.sP == null && this.sN) {
-            this.cj();
-        }
-        // monitorexit(this)
-        return this.sG;
+        this.ys = new com.google.android.gms.analytics.c(this.mContext, (com.google.android.gms.analytics.c.b)this, (com.google.android.gms.analytics.c.c)this);
+        this.el();
     }
     
     @Override
-    void cm() {
+    public void onConnected() {
         synchronized (this) {
-            if (!this.sQ && this.sM && this.sI > 0) {
-                this.mHandler.removeMessages(1, r.sF);
-                this.mHandler.sendMessage(this.mHandler.obtainMessage(1, r.sF));
-            }
-        }
-    }
-    
-    @Override
-    void dispatchLocalHits() {
-        synchronized (this) {
-            if (this.sH == null) {
-                aa.y("Dispatch call queued. Dispatch will run once initialization is complete.");
-                this.sJ = true;
+            this.yy = this.a(this.yy);
+            this.yw = 0;
+            z.V("Connected to service");
+            this.yr = a.yI;
+            if (this.yB) {
+                this.cD();
+                this.yB = false;
             }
             else {
-                u.cy().a(u.a.uA);
-                this.sH.bW();
+                this.ei();
+                this.yz = this.a(this.yz);
+                (this.yz = new Timer("disconnect check")).schedule(new b(), this.yE);
             }
         }
     }
     
     @Override
-    void s(final boolean b) {
-        synchronized (this) {
-            this.a(this.sQ, b);
+    public void onDisconnected() {
+        while (true) {
+            Label_0060: {
+                synchronized (this) {
+                    if (this.yr == a.yK) {
+                        z.V("Service blocked.");
+                        this.eg();
+                    }
+                    else {
+                        if (this.yr != a.yM) {
+                            break Label_0060;
+                        }
+                        z.V("Disconnected from service");
+                        this.eg();
+                        this.yr = a.yN;
+                    }
+                    return;
+                }
+            }
+            z.V("Unexpected disconnect.");
+            this.yr = a.yL;
+            if (this.yw < 2) {
+                this.em();
+                return;
+            }
+            this.ek();
         }
     }
     
-    @Override
-    void setLocalDispatchPeriod(final int n) {
-        synchronized (this) {
-            if (this.mHandler == null) {
-                aa.y("Dispatch period set with null handler. Dispatch will run once initialization is complete.");
-                this.sI = n;
+    private enum a
+    {
+        yH, 
+        yI, 
+        yJ, 
+        yK, 
+        yL, 
+        yM, 
+        yN;
+    }
+    
+    private class b extends TimerTask
+    {
+        @Override
+        public void run() {
+            if (r.this.yr == a.yI && r.this.yv.isEmpty() && r.this.yq + r.this.yE < r.this.yD.elapsedRealtime()) {
+                z.V("Disconnecting due to inactivity");
+                r.this.cD();
+                return;
             }
-            else {
-                u.cy().a(u.a.uB);
-                if (!this.sQ && this.sM && this.sI > 0) {
-                    this.mHandler.removeMessages(1, r.sF);
-                }
-                if ((this.sI = n) > 0 && !this.sQ && this.sM) {
-                    this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(1, r.sF), (long)(n * 1000));
+            r.this.yz.schedule(new b(), r.this.yE);
+        }
+    }
+    
+    private class c extends TimerTask
+    {
+        @Override
+        public void run() {
+            if (r.this.yr == a.yH) {
+                r.this.ek();
+            }
+        }
+    }
+    
+    private static class d
+    {
+        private final Map<String, String> yP;
+        private final long yQ;
+        private final String yR;
+        private final List<hb> yS;
+        
+        public d(final Map<String, String> yp, final long yq, final String yr, final List<hb> ys) {
+            this.yP = yp;
+            this.yQ = yq;
+            this.yR = yr;
+            this.yS = ys;
+        }
+        
+        public Map<String, String> en() {
+            return this.yP;
+        }
+        
+        public long eo() {
+            return this.yQ;
+        }
+        
+        public List<hb> ep() {
+            return this.yS;
+        }
+        
+        public String getPath() {
+            return this.yR;
+        }
+        
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("PATH: ");
+            sb.append(this.yR);
+            if (this.yP != null) {
+                sb.append("  PARAMS: ");
+                for (final Map.Entry<String, String> entry : this.yP.entrySet()) {
+                    sb.append(entry.getKey());
+                    sb.append("=");
+                    sb.append(entry.getValue());
+                    sb.append(",  ");
                 }
             }
+            return sb.toString();
+        }
+    }
+    
+    private class e extends TimerTask
+    {
+        @Override
+        public void run() {
+            r.this.el();
         }
     }
 }

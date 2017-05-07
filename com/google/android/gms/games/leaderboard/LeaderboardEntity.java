@@ -5,9 +5,9 @@
 package com.google.android.gms.games.leaderboard;
 
 import java.util.Collection;
-import com.google.android.gms.internal.gm;
+import com.google.android.gms.internal.jv;
 import android.database.CharArrayBuffer;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import com.google.android.gms.games.GameEntity;
 import com.google.android.gms.games.Game;
 import java.util.ArrayList;
@@ -15,39 +15,39 @@ import android.net.Uri;
 
 public final class LeaderboardEntity implements Leaderboard
 {
-    private final String HA;
-    private final Uri HF;
-    private final String HQ;
-    private final String LP;
-    private final int LQ;
-    private final ArrayList<LeaderboardVariantEntity> LR;
-    private final Game LS;
+    private final String Nz;
+    private final Uri UW;
+    private final String Vh;
+    private final String abj;
+    private final int abk;
+    private final ArrayList<LeaderboardVariantEntity> abl;
+    private final Game abm;
     
     public LeaderboardEntity(final Leaderboard leaderboard) {
-        this.LP = leaderboard.getLeaderboardId();
-        this.HA = leaderboard.getDisplayName();
-        this.HF = leaderboard.getIconImageUri();
-        this.HQ = leaderboard.getIconImageUrl();
-        this.LQ = leaderboard.getScoreOrder();
+        this.abj = leaderboard.getLeaderboardId();
+        this.Nz = leaderboard.getDisplayName();
+        this.UW = leaderboard.getIconImageUri();
+        this.Vh = leaderboard.getIconImageUrl();
+        this.abk = leaderboard.getScoreOrder();
         final Game game = leaderboard.getGame();
-        Game ls;
+        Game abm;
         if (game == null) {
-            ls = null;
+            abm = null;
         }
         else {
-            ls = new GameEntity(game);
+            abm = new GameEntity(game);
         }
-        this.LS = ls;
+        this.abm = abm;
         final ArrayList<LeaderboardVariant> variants = leaderboard.getVariants();
         final int size = variants.size();
-        this.LR = new ArrayList<LeaderboardVariantEntity>(size);
+        this.abl = new ArrayList<LeaderboardVariantEntity>(size);
         for (int i = 0; i < size; ++i) {
-            this.LR.add((LeaderboardVariantEntity)variants.get(i).freeze());
+            this.abl.add((LeaderboardVariantEntity)variants.get(i).freeze());
         }
     }
     
     static int a(final Leaderboard leaderboard) {
-        return fo.hashCode(leaderboard.getLeaderboardId(), leaderboard.getDisplayName(), leaderboard.getIconImageUri(), leaderboard.getScoreOrder(), leaderboard.getVariants());
+        return m.hashCode(leaderboard.getLeaderboardId(), leaderboard.getDisplayName(), leaderboard.getIconImageUri(), leaderboard.getScoreOrder(), leaderboard.getVariants());
     }
     
     static boolean a(final Leaderboard leaderboard, final Object o) {
@@ -60,9 +60,9 @@ public final class LeaderboardEntity implements Leaderboard
             b2 = b;
             if (leaderboard != o) {
                 final Leaderboard leaderboard2 = (Leaderboard)o;
-                if (fo.equal(leaderboard2.getLeaderboardId(), leaderboard.getLeaderboardId()) && fo.equal(leaderboard2.getDisplayName(), leaderboard.getDisplayName()) && fo.equal(leaderboard2.getIconImageUri(), leaderboard.getIconImageUri()) && fo.equal(leaderboard2.getScoreOrder(), leaderboard.getScoreOrder())) {
+                if (m.equal(leaderboard2.getLeaderboardId(), leaderboard.getLeaderboardId()) && m.equal(leaderboard2.getDisplayName(), leaderboard.getDisplayName()) && m.equal(leaderboard2.getIconImageUri(), leaderboard.getIconImageUri()) && m.equal(leaderboard2.getScoreOrder(), leaderboard.getScoreOrder())) {
                     b2 = b;
-                    if (fo.equal(leaderboard2.getVariants(), leaderboard.getVariants())) {
+                    if (m.equal(leaderboard2.getVariants(), leaderboard.getVariants())) {
                         return b2;
                     }
                 }
@@ -73,7 +73,7 @@ public final class LeaderboardEntity implements Leaderboard
     }
     
     static String b(final Leaderboard leaderboard) {
-        return fo.e(leaderboard).a("LeaderboardId", leaderboard.getLeaderboardId()).a("DisplayName", leaderboard.getDisplayName()).a("IconImageUri", leaderboard.getIconImageUri()).a("IconImageUrl", leaderboard.getIconImageUrl()).a("ScoreOrder", leaderboard.getScoreOrder()).a("Variants", leaderboard.getVariants()).toString();
+        return m.h(leaderboard).a("LeaderboardId", leaderboard.getLeaderboardId()).a("DisplayName", leaderboard.getDisplayName()).a("IconImageUri", leaderboard.getIconImageUri()).a("IconImageUrl", leaderboard.getIconImageUrl()).a("ScoreOrder", leaderboard.getScoreOrder()).a("Variants", leaderboard.getVariants()).toString();
     }
     
     @Override
@@ -83,46 +83,42 @@ public final class LeaderboardEntity implements Leaderboard
     
     @Override
     public String getDisplayName() {
-        return this.HA;
+        return this.Nz;
     }
     
     @Override
     public void getDisplayName(final CharArrayBuffer charArrayBuffer) {
-        gm.b(this.HA, charArrayBuffer);
+        jv.b(this.Nz, charArrayBuffer);
     }
     
     @Override
     public Game getGame() {
-        return this.LS;
+        return this.abm;
     }
     
     @Override
     public Uri getIconImageUri() {
-        return this.HF;
+        return this.UW;
     }
     
     @Override
     public String getIconImageUrl() {
-        return this.HQ;
+        return this.Vh;
     }
     
     @Override
     public String getLeaderboardId() {
-        return this.LP;
+        return this.abj;
     }
     
     @Override
     public int getScoreOrder() {
-        return this.LQ;
+        return this.abk;
     }
     
     @Override
     public ArrayList<LeaderboardVariant> getVariants() {
-        return new ArrayList<LeaderboardVariant>(this.LR);
-    }
-    
-    public Leaderboard hC() {
-        return this;
+        return new ArrayList<LeaderboardVariant>(this.abl);
     }
     
     @Override
@@ -133,6 +129,10 @@ public final class LeaderboardEntity implements Leaderboard
     @Override
     public boolean isDataValid() {
         return true;
+    }
+    
+    public Leaderboard lx() {
+        return this;
     }
     
     @Override

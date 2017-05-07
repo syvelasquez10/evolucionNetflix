@@ -14,50 +14,50 @@ public class ActivityRecognitionResultCreator implements Parcelable$Creator<Acti
 {
     public static final int CONTENT_DESCRIPTION = 0;
     
-    static void a(final ActivityRecognitionResult activityRecognitionResult, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.b(parcel, 1, activityRecognitionResult.NP, false);
+    static void a(final ActivityRecognitionResult activityRecognitionResult, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, activityRecognitionResult.adQ, false);
         b.c(parcel, 1000, activityRecognitionResult.getVersionCode());
-        b.a(parcel, 2, activityRecognitionResult.NQ);
-        b.a(parcel, 3, activityRecognitionResult.NR);
-        b.F(parcel, p3);
+        b.a(parcel, 2, activityRecognitionResult.adR);
+        b.a(parcel, 3, activityRecognitionResult.adS);
+        b.H(parcel, d);
     }
     
     public ActivityRecognitionResult createFromParcel(final Parcel parcel) {
         long i = 0L;
-        final int o = a.o(parcel);
+        final int c = a.C(parcel);
         int g = 0;
-        List<DetectedActivity> c = null;
+        List<DetectedActivity> c2 = null;
         long j = 0L;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    c = a.c(parcel, n, (android.os.Parcelable$Creator<DetectedActivity>)DetectedActivity.CREATOR);
+                    c2 = a.c(parcel, b, (android.os.Parcelable$Creator<DetectedActivity>)DetectedActivity.CREATOR);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    j = a.i(parcel, n);
+                    j = a.i(parcel, b);
                     continue;
                 }
                 case 3: {
-                    i = a.i(parcel, n);
+                    i = a.i(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new ActivityRecognitionResult(g, c, j, i);
+        return new ActivityRecognitionResult(g, c2, j, i);
     }
     
     public ActivityRecognitionResult[] newArray(final int n) {

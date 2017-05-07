@@ -9,9 +9,10 @@ import android.view.ActionMode$Callback;
 import android.view.View;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.widget.LinearLayout;
+import android.annotation.TargetApi;
 
-public class NativeActionModeAwareLayout extends LinearLayout
+@TargetApi(11)
+public class NativeActionModeAwareLayout extends ContentFrameLayout
 {
     private OnActionModeForChildListener mActionModeForChildListener;
     
@@ -24,15 +25,14 @@ public class NativeActionModeAwareLayout extends LinearLayout
     }
     
     public ActionMode startActionModeForChild(final View view, final ActionMode$Callback actionMode$Callback) {
-        ActionMode$Callback onActionModeForChild = actionMode$Callback;
         if (this.mActionModeForChildListener != null) {
-            onActionModeForChild = this.mActionModeForChildListener.onActionModeForChild(actionMode$Callback);
+            return this.mActionModeForChildListener.startActionModeForChild(view, actionMode$Callback);
         }
-        return super.startActionModeForChild(view, onActionModeForChild);
+        return super.startActionModeForChild(view, actionMode$Callback);
     }
     
     public interface OnActionModeForChildListener
     {
-        ActionMode$Callback onActionModeForChild(final ActionMode$Callback p0);
+        ActionMode startActionModeForChild(final View p0, final ActionMode$Callback p1);
     }
 }

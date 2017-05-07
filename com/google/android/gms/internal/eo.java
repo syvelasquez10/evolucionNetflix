@@ -4,38 +4,70 @@
 
 package com.google.android.gms.internal;
 
-import android.text.TextUtils;
+import android.content.Intent;
+import android.os.RemoteException;
+import com.google.android.gms.ads.purchase.InAppPurchaseResult;
 
-public final class eo
+@ez
+public class eo implements InAppPurchaseResult
 {
-    public static void W(final String s) throws IllegalArgumentException {
-        if (TextUtils.isEmpty((CharSequence)s)) {
-            throw new IllegalArgumentException("Namespace cannot be null or empty");
+    private final ek sL;
+    
+    public eo(final ek sl) {
+        this.sL = sl;
+    }
+    
+    @Override
+    public void finishPurchase() {
+        try {
+            this.sL.finishPurchase();
         }
-        if (s.length() > 128) {
-            throw new IllegalArgumentException("Invalid namespace length");
-        }
-        if (!s.startsWith("urn:x-cast:")) {
-            throw new IllegalArgumentException("Namespace must begin with the prefix \"urn:x-cast:\"");
-        }
-        if (s.length() == "urn:x-cast:".length()) {
-            throw new IllegalArgumentException("Namespace must begin with the prefix \"urn:x-cast:\" and have non-empty suffix");
+        catch (RemoteException ex) {
+            gs.d("Could not forward finishPurchase to InAppPurchaseResult", (Throwable)ex);
         }
     }
     
-    public static String X(final String s) {
-        return "urn:x-cast:" + s;
+    @Override
+    public String getProductId() {
+        try {
+            return this.sL.getProductId();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not forward getProductId to InAppPurchaseResult", (Throwable)ex);
+            return null;
+        }
     }
     
-    public static <T> boolean a(final T t, final T t2) {
-        return (t == null && t2 == null) || (t != null && t2 != null && t.equals(t2));
+    @Override
+    public Intent getPurchaseData() {
+        try {
+            return this.sL.getPurchaseData();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not forward getPurchaseData to InAppPurchaseResult", (Throwable)ex);
+            return null;
+        }
     }
     
-    public static long b(final double n) {
-        return (long)(1000.0 * n);
+    @Override
+    public int getResultCode() {
+        try {
+            return this.sL.getResultCode();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not forward getPurchaseData to InAppPurchaseResult", (Throwable)ex);
+            return 0;
+        }
     }
     
-    public static double m(final long n) {
-        return n / 1000.0;
+    @Override
+    public boolean isVerified() {
+        try {
+            return this.sL.isVerified();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not forward isVerified to InAppPurchaseResult", (Throwable)ex);
+            return false;
+        }
     }
 }

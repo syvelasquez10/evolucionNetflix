@@ -4,21 +4,30 @@
 
 package com.google.android.gms.analytics;
 
-public final class o
+import android.os.Build$VERSION;
+import java.io.File;
+
+class o
 {
-    private static String b(final String s, final int n) {
-        if (n < 1) {
-            aa.w("index out of range for " + s + " (" + n + ")");
-            return "";
+    static boolean ag(final String s) {
+        if (version() < 9) {
+            return false;
         }
-        return s + n;
+        final File file = new File(s);
+        file.setReadable(false, false);
+        file.setWritable(false, false);
+        file.setReadable(true, true);
+        file.setWritable(true, true);
+        return true;
     }
     
-    static String q(final int n) {
-        return b("&cd", n);
-    }
-    
-    static String r(final int n) {
-        return b("&cm", n);
+    public static int version() {
+        try {
+            return Integer.parseInt(Build$VERSION.SDK);
+        }
+        catch (NumberFormatException ex) {
+            z.T("Invalid version number: " + Build$VERSION.SDK);
+            return 0;
+        }
     }
 }

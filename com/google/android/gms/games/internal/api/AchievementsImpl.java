@@ -4,12 +4,12 @@
 
 package com.google.android.gms.games.internal.api;
 
+import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.achievement.AchievementBuffer;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
 import com.google.android.gms.games.internal.GamesClientImpl;
 import com.google.android.gms.common.api.Api;
@@ -22,7 +22,7 @@ public final class AchievementsImpl implements Achievements
 {
     @Override
     public Intent getAchievementsIntent(final GoogleApiClient googleApiClient) {
-        return Games.c(googleApiClient).gq();
+        return Games.c(googleApiClient).kc();
     }
     
     @Override
@@ -38,7 +38,7 @@ public final class AchievementsImpl implements Achievements
     public PendingResult<UpdateAchievementResult> incrementImmediate(final GoogleApiClient googleApiClient, final String s, final int n) {
         return googleApiClient.b((PendingResult<UpdateAchievementResult>)new UpdateImpl(s) {
             public void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.a((d<UpdateAchievementResult>)this, s, n);
+                gamesClientImpl.a((BaseImplementation.b<UpdateAchievementResult>)this, s, n);
             }
         });
     }
@@ -47,7 +47,7 @@ public final class AchievementsImpl implements Achievements
     public PendingResult<LoadAchievementsResult> load(final GoogleApiClient googleApiClient, final boolean b) {
         return googleApiClient.a((PendingResult<LoadAchievementsResult>)new LoadImpl() {
             public void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.c((d<LoadAchievementsResult>)this, b);
+                gamesClientImpl.c((BaseImplementation.b<LoadAchievementsResult>)this, b);
             }
         });
     }
@@ -65,7 +65,7 @@ public final class AchievementsImpl implements Achievements
     public PendingResult<UpdateAchievementResult> revealImmediate(final GoogleApiClient googleApiClient, final String s) {
         return googleApiClient.b((PendingResult<UpdateAchievementResult>)new UpdateImpl(s) {
             public void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.b((d<UpdateAchievementResult>)this, s);
+                gamesClientImpl.b((BaseImplementation.b<UpdateAchievementResult>)this, s);
             }
         });
     }
@@ -83,7 +83,7 @@ public final class AchievementsImpl implements Achievements
     public PendingResult<UpdateAchievementResult> setStepsImmediate(final GoogleApiClient googleApiClient, final String s, final int n) {
         return googleApiClient.b((PendingResult<UpdateAchievementResult>)new UpdateImpl(s) {
             public void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.b((d<UpdateAchievementResult>)this, s, n);
+                gamesClientImpl.b((BaseImplementation.b<UpdateAchievementResult>)this, s, n);
             }
         });
     }
@@ -101,18 +101,18 @@ public final class AchievementsImpl implements Achievements
     public PendingResult<UpdateAchievementResult> unlockImmediate(final GoogleApiClient googleApiClient, final String s) {
         return googleApiClient.b((PendingResult<UpdateAchievementResult>)new UpdateImpl(s) {
             public void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.c((d<UpdateAchievementResult>)this, s);
+                gamesClientImpl.c((BaseImplementation.b<UpdateAchievementResult>)this, s);
             }
         });
     }
     
     private abstract static class LoadImpl extends BaseGamesApiMethodImpl<LoadAchievementsResult>
     {
-        public LoadAchievementsResult t(final Status status) {
+        public LoadAchievementsResult J(final Status status) {
             return new LoadAchievementsResult() {
                 @Override
                 public AchievementBuffer getAchievements() {
-                    return new AchievementBuffer(DataHolder.empty(14));
+                    return new AchievementBuffer(DataHolder.as(14));
                 }
                 
                 @Override
@@ -129,17 +129,17 @@ public final class AchievementsImpl implements Achievements
     
     private abstract static class UpdateImpl extends BaseGamesApiMethodImpl<UpdateAchievementResult>
     {
-        private final String wp;
+        private final String BL;
         
-        public UpdateImpl(final String wp) {
-            this.wp = wp;
+        public UpdateImpl(final String bl) {
+            this.BL = bl;
         }
         
-        public UpdateAchievementResult u(final Status status) {
+        public UpdateAchievementResult K(final Status status) {
             return new UpdateAchievementResult() {
                 @Override
                 public String getAchievementId() {
-                    return UpdateImpl.this.wp;
+                    return UpdateImpl.this.BL;
                 }
                 
                 @Override

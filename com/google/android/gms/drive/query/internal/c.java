@@ -11,47 +11,47 @@ import android.os.Parcelable$Creator;
 
 public class c implements Parcelable$Creator<FieldWithSortOrder>
 {
-    static void a(final FieldWithSortOrder fieldWithSortOrder, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1000, fieldWithSortOrder.xH);
-        b.a(parcel, 1, fieldWithSortOrder.FM, false);
-        b.a(parcel, 2, fieldWithSortOrder.GJ);
-        b.F(parcel, p3);
+    static void a(final FieldWithSortOrder fieldWithSortOrder, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1000, fieldWithSortOrder.BR);
+        b.a(parcel, 1, fieldWithSortOrder.Pt, false);
+        b.a(parcel, 2, fieldWithSortOrder.QF);
+        b.H(parcel, d);
     }
     
-    public FieldWithSortOrder[] aK(final int n) {
-        return new FieldWithSortOrder[n];
-    }
-    
-    public FieldWithSortOrder ag(final Parcel parcel) {
+    public FieldWithSortOrder aM(final Parcel parcel) {
         boolean c = false;
-        final int o = a.o(parcel);
-        String n = null;
+        final int c2 = a.C(parcel);
+        String o = null;
         int g = 0;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
+        while (parcel.dataPosition() < c2) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n2);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n2);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 1: {
-                    n = a.n(parcel, n2);
+                    o = a.o(parcel, b);
                     continue;
                 }
                 case 2: {
-                    c = a.c(parcel, n2);
+                    c = a.c(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c2) {
+            throw new a.a("Overread allowed size end=" + c2, parcel);
         }
-        return new FieldWithSortOrder(g, n, c);
+        return new FieldWithSortOrder(g, o, c);
+    }
+    
+    public FieldWithSortOrder[] bY(final int n) {
+        return new FieldWithSortOrder[n];
     }
 }

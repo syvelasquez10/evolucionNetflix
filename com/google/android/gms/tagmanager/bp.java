@@ -4,19 +4,15 @@
 
 package com.google.android.gms.tagmanager;
 
-class bp implements af
+class bp implements t
 {
     @Override
-    public bj kx() {
-        return new br();
+    public ck oe() {
+        return new bt();
     }
     
     @Override
-    public t ky() {
-        return new bo();
-    }
-    
-    @Override
-    public void kz() {
+    public cs of() {
+        return new bw();
     }
 }

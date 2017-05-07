@@ -5,20 +5,20 @@
 package com.google.android.gms.games.leaderboard;
 
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.d;
+import com.google.android.gms.common.data.g;
 
-public final class LeaderboardBuffer extends d<Leaderboard>
+public final class LeaderboardBuffer extends g<Leaderboard>
 {
     public LeaderboardBuffer(final DataHolder dataHolder) {
         super(dataHolder);
     }
     
-    protected Leaderboard getEntry(final int n, final int n2) {
-        return new LeaderboardRef(this.BB, n, n2);
+    @Override
+    protected String gE() {
+        return "external_leaderboard_id";
     }
     
-    @Override
-    protected String getPrimaryDataMarkerColumn() {
-        return "external_leaderboard_id";
+    protected Leaderboard i(final int n, final int n2) {
+        return new LeaderboardRef(this.IC, n, n2);
     }
 }

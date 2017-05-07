@@ -27,11 +27,15 @@ public final class WalletConstants
     public static final String EXTRA_MASKED_WALLET = "com.google.android.gms.wallet.EXTRA_MASKED_WALLET";
     public static final String EXTRA_MASKED_WALLET_REQUEST = "com.google.android.gms.wallet.EXTRA_MASKED_WALLET_REQUEST";
     public static final int RESULT_ERROR = 1;
+    public static final int THEME_DARK = 0;
+    @Deprecated
     public static final int THEME_HOLO_DARK = 0;
+    @Deprecated
     public static final int THEME_HOLO_LIGHT = 1;
-    public static final Account acr;
+    public static final int THEME_LIGHT = 1;
+    public static final Account atB;
     
     static {
-        acr = new Account("ACCOUNT_NO_WALLET", "com.google");
+        atB = new Account("ACCOUNT_NO_WALLET", "com.google");
     }
 }

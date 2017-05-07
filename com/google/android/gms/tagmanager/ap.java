@@ -8,33 +8,33 @@ import android.text.TextUtils;
 
 class ap
 {
-    private final long XX;
-    private String XY;
-    private final long vi;
-    private final long vj;
+    private final long AF;
+    private final long AG;
+    private final long apb;
+    private String apc;
     
-    ap(final long vi, final long vj, final long xx) {
-        this.vi = vi;
-        this.vj = vj;
-        this.XX = xx;
+    ap(final long af, final long ag, final long apb) {
+        this.AF = af;
+        this.AG = ag;
+        this.apb = apb;
     }
     
-    void K(final String xy) {
-        if (xy == null || TextUtils.isEmpty((CharSequence)xy.trim())) {
+    void ak(final String apc) {
+        if (apc == null || TextUtils.isEmpty((CharSequence)apc.trim())) {
             return;
         }
-        this.XY = xy;
+        this.apc = apc;
     }
     
-    long cP() {
-        return this.vi;
+    long eH() {
+        return this.AF;
     }
     
-    long kD() {
-        return this.XX;
+    long or() {
+        return this.apb;
     }
     
-    String kE() {
-        return this.XY;
+    String os() {
+        return this.apc;
     }
 }

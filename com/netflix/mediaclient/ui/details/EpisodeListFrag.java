@@ -146,7 +146,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public static NetflixDialogFrag create(final String s, final String s2, final boolean b) {
         final EpisodeListFrag episodeListFrag = new EpisodeListFrag();
-        episodeListFrag.setStyle(1, 2131558605);
+        episodeListFrag.setStyle(1, 2131558710);
         return applyCreateArgs(episodeListFrag, s, s2, b);
     }
     
@@ -167,7 +167,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
                 Log.v("EpisodeListFrag", "Season spinner - Nothing selected");
             }
         });
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131296346);
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131296392);
         this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
         return this.spinnerViewGroup;

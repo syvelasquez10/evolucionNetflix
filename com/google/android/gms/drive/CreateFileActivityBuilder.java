@@ -4,63 +4,66 @@
 
 package com.google.android.gms.drive;
 
-import com.google.android.gms.drive.internal.u;
-import java.io.IOException;
-import android.os.RemoteException;
-import com.google.android.gms.drive.internal.CreateFileIntentSenderRequest;
-import com.google.android.gms.drive.internal.n;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.drive.internal.r;
+import com.google.android.gms.internal.jy;
+import com.google.android.gms.common.internal.n;
 import android.content.IntentSender;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.internal.h;
 
 public class CreateFileActivityBuilder
 {
     public static final String EXTRA_RESPONSE_DRIVE_ID = "response_drive_id";
-    private Contents EA;
-    private String EB;
-    private DriveId EC;
-    private MetadataChangeSet Ez;
+    private final h MS;
+    private DriveContents MT;
     
-    public IntentSender build(GoogleApiClient fe) {
-        fq.b(this.Ez, "Must provide initial metadata to CreateFileActivityBuilder.");
-        fq.b(this.EA, "Must provide initial contents to CreateFileActivityBuilder.");
-        while (true) {
-            try {
-                this.EA.getParcelFileDescriptor().close();
-                this.EA.close();
-                fq.a(((GoogleApiClient)fe).isConnected(), (Object)"Client must be connected");
-                fe = (RemoteException)((GoogleApiClient)fe).a(Drive.wx).fE();
-                try {
-                    return ((u)fe).a(new CreateFileIntentSenderRequest(this.Ez.fD(), this.EA.fA(), this.EB, this.EC));
-                }
-                catch (RemoteException fe) {
-                    throw new RuntimeException("Unable to connect Drive Play Service", (Throwable)fe);
-                }
-            }
-            catch (IOException ex) {
-                continue;
-            }
-            break;
-        }
+    public CreateFileActivityBuilder() {
+        this.MS = new h(0);
+    }
+    
+    public IntentSender build(final GoogleApiClient googleApiClient) {
+        n.b(this.MT, "Must provide initial contents to CreateFileActivityBuilder.");
+        n.b(googleApiClient.a(Drive.SCOPE_FILE) || googleApiClient.a(Drive.MU), (Object)"The apiClient must have suitable scope to create files");
+        jy.a(this.MT.getParcelFileDescriptor());
+        this.MT.getContents().hJ();
+        return this.MS.build(googleApiClient);
     }
     
     public CreateFileActivityBuilder setActivityStartFolder(final DriveId driveId) {
-        this.EC = fq.f(driveId);
+        this.MS.a(driveId);
         return this;
     }
     
     public CreateFileActivityBuilder setActivityTitle(final String s) {
-        this.EB = fq.f(s);
+        this.MS.bi(s);
         return this;
     }
     
+    @Deprecated
     public CreateFileActivityBuilder setInitialContents(final Contents contents) {
-        this.EA = fq.f(contents);
+        return this.setInitialDriveContents(new r(contents));
+    }
+    
+    public CreateFileActivityBuilder setInitialDriveContents(final DriveContents mt) {
+        if (mt == null) {
+            throw new IllegalArgumentException("DriveContents must be provided.");
+        }
+        if (!(mt instanceof r)) {
+            throw new IllegalArgumentException("Only DriveContents obtained from the Drive API are accepted.");
+        }
+        if (mt.getDriveId() != null) {
+            throw new IllegalArgumentException("Only DriveContents obtained through DriveApi.newDriveContents are accepted for file creation.");
+        }
+        if (mt.getContents().hK()) {
+            throw new IllegalArgumentException("DriveContents are already closed.");
+        }
+        this.MS.bk(mt.getContents().getRequestId());
+        this.MT = mt;
         return this;
     }
     
     public CreateFileActivityBuilder setInitialMetadata(final MetadataChangeSet set) {
-        this.Ez = fq.f(set);
+        this.MS.a(set);
         return this;
     }
 }

@@ -6,6 +6,7 @@ package com.netflix.mediaclient;
 
 public enum StatusCode
 {
+    ALREADY_IN_QUEUE(10), 
     BROWSE_AGENT_WRONG_STATE(-66), 
     BROWSE_CW_WRONG_STATE(-68), 
     BROWSE_IQ_WRONG_STATE(-67), 
@@ -25,6 +26,7 @@ public enum StatusCode
     NETWORK_ERROR(-3), 
     NON_RECOMMENDED_APP_VERSION(1), 
     NOT_IMPLEMENTED(-10), 
+    NOT_IN_QUEUE(11), 
     NO_CONNECTIVITY(-11), 
     NRD_ERROR(-4), 
     NRD_INVALID_SW_VERSION(-20), 

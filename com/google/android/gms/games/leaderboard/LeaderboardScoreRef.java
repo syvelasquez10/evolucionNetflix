@@ -9,15 +9,15 @@ import com.google.android.gms.games.Player;
 import android.database.CharArrayBuffer;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.PlayerRef;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class LeaderboardScoreRef extends b implements LeaderboardScore
+public final class LeaderboardScoreRef extends d implements LeaderboardScore
 {
-    private final PlayerRef Mg;
+    private final PlayerRef abA;
     
     LeaderboardScoreRef(final DataHolder dataHolder, final int n) {
         super(dataHolder, n);
-        this.Mg = new PlayerRef(dataHolder, n);
+        this.abA = new PlayerRef(dataHolder, n);
     }
     
     @Override
@@ -57,59 +57,59 @@ public final class LeaderboardScoreRef extends b implements LeaderboardScore
     
     @Override
     public Player getScoreHolder() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return null;
         }
-        return this.Mg;
+        return this.abA;
     }
     
     @Override
     public String getScoreHolderDisplayName() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return this.getString("default_display_name");
         }
-        return this.Mg.getDisplayName();
+        return this.abA.getDisplayName();
     }
     
     @Override
     public void getScoreHolderDisplayName(final CharArrayBuffer charArrayBuffer) {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             this.a("default_display_name", charArrayBuffer);
             return;
         }
-        this.Mg.getDisplayName(charArrayBuffer);
+        this.abA.getDisplayName(charArrayBuffer);
     }
     
     @Override
     public Uri getScoreHolderHiResImageUri() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return null;
         }
-        return this.Mg.getHiResImageUri();
+        return this.abA.getHiResImageUri();
     }
     
     @Override
     public String getScoreHolderHiResImageUrl() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return null;
         }
-        return this.Mg.getHiResImageUrl();
+        return this.abA.getHiResImageUrl();
     }
     
     @Override
     public Uri getScoreHolderIconImageUri() {
-        if (this.ai("external_player_id")) {
-            return this.ah("default_display_image_uri");
+        if (this.aS("external_player_id")) {
+            return this.aR("default_display_image_uri");
         }
-        return this.Mg.getIconImageUri();
+        return this.abA.getIconImageUri();
     }
     
     @Override
     public String getScoreHolderIconImageUrl() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return this.getString("default_display_image_url");
         }
-        return this.Mg.getIconImageUrl();
+        return this.abA.getIconImageUrl();
     }
     
     @Override
@@ -122,13 +122,13 @@ public final class LeaderboardScoreRef extends b implements LeaderboardScore
         return this.getLong("achieved_timestamp");
     }
     
-    public LeaderboardScore hF() {
-        return new LeaderboardScoreEntity(this);
-    }
-    
     @Override
     public int hashCode() {
         return LeaderboardScoreEntity.a(this);
+    }
+    
+    public LeaderboardScore lA() {
+        return new LeaderboardScoreEntity(this);
     }
     
     @Override

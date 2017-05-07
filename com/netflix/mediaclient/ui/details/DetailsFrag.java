@@ -49,9 +49,9 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("DetailsFrag", "Creating new frag view...");
         final View inflate = layoutInflater.inflate(2130903188, (ViewGroup)null, false);
-        this.detailsViewGroup = (VideoDetailsViewGroup)inflate.findViewById(2131165643);
+        this.detailsViewGroup = (VideoDetailsViewGroup)inflate.findViewById(2131165646);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        (this.primaryView = inflate.findViewById(2131165642)).setVerticalScrollBarEnabled(false);
+        (this.primaryView = inflate.findViewById(2131165645)).setVerticalScrollBarEnabled(false);
         return inflate;
     }
     

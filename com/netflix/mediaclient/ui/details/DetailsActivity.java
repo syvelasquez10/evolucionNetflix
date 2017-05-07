@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.widget.Toast;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
@@ -291,9 +292,12 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         @Override
         public void onQueueAdd(final Status status) {
             super.onQueueAdd(status);
-            int n = 2131493199;
+            int n = 2131493204;
             if (CommonStatus.OK == status) {
-                n = 2131493371;
+                n = 2131493376;
+            }
+            else if (status.getStatusCode() == StatusCode.ALREADY_IN_QUEUE) {
+                n = 2131493378;
             }
             Toast.makeText((Context)DetailsActivity.this, n, 1).show();
         }
@@ -301,9 +305,13 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         @Override
         public void onQueueRemove(final Status status) {
             super.onQueueRemove(status);
-            int n = 2131493375;
+            int n = 2131493380;
             if (CommonStatus.OK == status) {
-                n = 2131493374;
+                n = 2131493379;
+            }
+            else if (status.getStatusCode() == StatusCode.NOT_IN_QUEUE) {
+                Log.w("DetailsActivity", "It was already removed");
+                n = 2131493379;
             }
             Toast.makeText((Context)DetailsActivity.this, n, 1).show();
         }

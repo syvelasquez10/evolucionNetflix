@@ -4,21 +4,30 @@
 
 package com.google.android.gms.tagmanager;
 
-import java.util.Map;
-import com.google.android.gms.internal.d;
-
-abstract class bx extends cc
+class bx implements dl
 {
-    public bx(final String s) {
-        super(s);
+    @Override
+    public dl fh(final int n) {
+        return new bx();
     }
     
     @Override
-    protected boolean a(final d.a a, final d.a a2, final Map<String, d.a> map) {
-        final dg k = dh.k(a);
-        final dg i = dh.k(a2);
-        return k != dh.lR() && i != dh.lR() && this.a(k, i, map);
+    public dl fi(final int n) {
+        return new bx();
     }
     
-    protected abstract boolean a(final dg p0, final dg p1, final Map<String, d.a> p2);
+    @Override
+    public dl fj(final int n) {
+        return new bx();
+    }
+    
+    @Override
+    public dl fk(final int n) {
+        return new bx();
+    }
+    
+    @Override
+    public bk oD() {
+        return new bs();
+    }
 }

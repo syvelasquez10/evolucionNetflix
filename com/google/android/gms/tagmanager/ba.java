@@ -15,20 +15,20 @@ import org.json.JSONObject;
 
 class ba
 {
-    public static cq.c bG(final String s) throws JSONException {
-        final d.a k = k(new JSONObject(s));
-        final cq.d lh = cq.c.lh();
-        for (int i = 0; i < k.fP.length; ++i) {
-            lh.a(cq.a.ld().b(b.cI.toString(), k.fP[i]).b(b.cx.toString(), dh.bX(m.ka())).b(m.kb(), k.fQ[i]).lg());
+    public static cr.c cD(final String s) throws JSONException {
+        final d.a n = n(new JSONObject(s));
+        final cr.d ov = cr.c.oV();
+        for (int i = 0; i < n.gx.length; ++i) {
+            ov.a(cr.a.oR().b(b.df.toString(), n.gx[i]).b(b.cU.toString(), di.cU(m.nO())).b(m.nP(), n.gy[i]).oU());
         }
-        return lh.lk();
+        return ov.oY();
     }
     
-    private static d.a k(final Object o) throws JSONException {
-        return dh.r(l(o));
+    private static d.a n(final Object o) throws JSONException {
+        return di.u(o(o));
     }
     
-    static Object l(final Object o) throws JSONException {
+    static Object o(final Object o) throws JSONException {
         if (o instanceof JSONArray) {
             throw new RuntimeException("JSONArrays are not supported");
         }
@@ -42,7 +42,7 @@ class ba
             final Iterator keys = jsonObject.keys();
             while (keys.hasNext()) {
                 final String s = keys.next();
-                ((Map<String, Object>)o2).put(s, l(jsonObject.get(s)));
+                ((Map<String, Object>)o2).put(s, o(jsonObject.get(s)));
             }
         }
         return o2;

@@ -130,11 +130,11 @@ public class SignupActivity extends AccountActivity
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131493216);
+            this.showToast(2131493221);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493276) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493281) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -148,7 +148,7 @@ public class SignupActivity extends AccountActivity
         this.runOnUiThread((Runnable)new Runnable() {
             @Override
             public void run() {
-                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493134), SignupActivity.this.getString(17039370), null)));
+                SignupActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)SignupActivity.this, SignupActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, SignupActivity.this.getString(2131493139), SignupActivity.this.getString(17039370), null)));
             }
         });
     }
@@ -163,8 +163,8 @@ public class SignupActivity extends AccountActivity
     
     private void setUpSignInView(final ServiceManager serviceManager) {
         this.setContentView(2130903179);
-        this.mWebView = (WebView)this.findViewById(2131165631);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131165533);
+        this.mWebView = (WebView)this.findViewById(2131165635);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131165535);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -268,7 +268,7 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131493277), new Runnable() {
+            this.provideTwoButtonDialog(this.getString(2131493282), new Runnable() {
                 @Override
                 public void run() {
                     SignupActivity.this.reloadSignUp(false);
@@ -289,14 +289,14 @@ public class SignupActivity extends AccountActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.mHandler = new Handler();
-        this.getNetflixActionBar().setBackgroundResource(2130837597);
+        this.getNetflixActionBar().setBackgroundResource(2130837561);
     }
     
     public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         super.onCreateOptionsMenu(menu, menu2);
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493184));
+            menuItem = menu.add((CharSequence)this.getString(2131493189));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -308,7 +308,7 @@ public class SignupActivity extends AccountActivity
             });
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493185));
+            menuItem = menu.add((CharSequence)this.getString(2131493190));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -457,7 +457,7 @@ public class SignupActivity extends AccountActivity
                 Log.e("SignupActivity", "Failed to LoginToApp");
                 ex.printStackTrace();
                 SignupActivity.this.mSignupOngoing = false;
-                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493276), SignupActivity.this.mHandleError);
+                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493281), SignupActivity.this.mHandleError);
                 return;
             }
             Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");

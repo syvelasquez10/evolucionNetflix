@@ -5,12 +5,14 @@
 package com.netflix.mediaclient.ui.search;
 
 import com.netflix.mediaclient.util.DeviceUtils;
+import android.util.Log;
 import android.content.Context;
 import android.util.SparseIntArray;
 import android.util.SparseArray;
 
 public class SearchUtils
 {
+    public static final String TAG = "nf_log_search";
     private static TestCell currentTest;
     private static final SparseArray<SparseIntArray> numPeopleColumnsTable;
     private static final SparseArray<SparseIntArray> numRelatedColumnsTable;
@@ -57,33 +59,30 @@ public class SearchUtils
     }
     
     public static int getMaxResultsPeople(final Context context) {
-        final int n = 3;
+        if (context == null) {
+            Log.w("nf_log_search", "getMaxResultsPeople, Context is null");
+            return 1;
+        }
         final int basicScreenOrientation = DeviceUtils.getBasicScreenOrientation(context);
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(context);
-        int computeMaxResultsForPeople = 0;
         switch (SearchUtils.currentTest) {
             default: {
-                computeMaxResultsForPeople = computeMaxResultsForPeople(context);
-                break;
+                return computeMaxResultsForPeople(context);
             }
             case THREE: {
-                if (basicScreenOrientation == 1) {
-                    computeMaxResultsForPeople = n;
-                    if (screenSizeCategory == 3) {
-                        break;
-                    }
-                    computeMaxResultsForPeople = n;
-                    if (screenSizeCategory == 4) {
-                        break;
-                    }
+                if (basicScreenOrientation == 1 && (screenSizeCategory == 3 || screenSizeCategory == 4)) {
+                    return 3;
                 }
                 return computeMaxResultsForPeople(context);
             }
         }
-        return computeMaxResultsForPeople;
     }
     
     public static int getMaxResultsRelated(final Context context) {
+        if (context == null) {
+            Log.w("nf_log_search", "getMaxResultsRelated, Context is null");
+            return 1;
+        }
         final int basicScreenOrientation = DeviceUtils.getBasicScreenOrientation(context);
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(context);
         if (basicScreenOrientation == 1 && (screenSizeCategory == 3 || screenSizeCategory == 4)) {
@@ -97,14 +96,26 @@ public class SearchUtils
     }
     
     public static int getNumPeopleGridCols(final Context context) {
+        if (context == null) {
+            Log.w("nf_log_search", "getNumPeopleGridCols, Context is null");
+            return 2;
+        }
         return ((SparseIntArray)SearchUtils.numPeopleColumnsTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context));
     }
     
     public static int getNumRelatedGridCols(final Context context) {
+        if (context == null) {
+            Log.w("nf_log_search", "getNumRelatedGridCols, Context is null");
+            return 2;
+        }
         return ((SparseIntArray)SearchUtils.numRelatedColumnsTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context));
     }
     
     public static int getNumVideoGridCols(final Context context) {
+        if (context == null) {
+            Log.w("nf_log_search", "getNumVideoGridCols, Context is null");
+            return 2;
+        }
         return ((SparseIntArray)SearchUtils.numVideoColumnsTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context));
     }
     

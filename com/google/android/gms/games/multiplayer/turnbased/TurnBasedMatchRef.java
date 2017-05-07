@@ -13,17 +13,17 @@ import android.os.Bundle;
 import com.google.android.gms.games.GameRef;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.Game;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class TurnBasedMatchRef extends b implements TurnBasedMatch
+public final class TurnBasedMatchRef extends d implements TurnBasedMatch
 {
-    private final int LE;
-    private final Game LS;
+    private final int aaz;
+    private final Game abm;
     
-    TurnBasedMatchRef(final DataHolder dataHolder, final int n, final int le) {
+    TurnBasedMatchRef(final DataHolder dataHolder, final int n, final int aaz) {
         super(dataHolder, n);
-        this.LS = new GameRef(dataHolder, n);
-        this.LE = le;
+        this.abm = new GameRef(dataHolder, n);
+        this.aaz = aaz;
     }
     
     @Override
@@ -87,7 +87,11 @@ public final class TurnBasedMatchRef extends b implements TurnBasedMatch
     
     @Override
     public Participant getDescriptionParticipant() {
-        return this.getParticipant(this.getDescriptionParticipantId());
+        final String descriptionParticipantId = this.getDescriptionParticipantId();
+        if (descriptionParticipantId == null) {
+            return null;
+        }
+        return this.getParticipant(descriptionParticipantId);
     }
     
     @Override
@@ -97,7 +101,7 @@ public final class TurnBasedMatchRef extends b implements TurnBasedMatch
     
     @Override
     public Game getGame() {
-        return this.LS;
+        return this.abm;
     }
     
     @Override
@@ -141,9 +145,9 @@ public final class TurnBasedMatchRef extends b implements TurnBasedMatch
     }
     
     public ArrayList<Participant> getParticipants() {
-        final ArrayList<ParticipantRef> list = (ArrayList<ParticipantRef>)new ArrayList<Participant>(this.LE);
-        for (int i = 0; i < this.LE; ++i) {
-            list.add(new ParticipantRef(this.BB, this.BD + i));
+        final ArrayList<ParticipantRef> list = (ArrayList<ParticipantRef>)new ArrayList<Participant>(this.aaz);
+        for (int i = 0; i < this.aaz; ++i) {
+            list.add(new ParticipantRef(this.IC, this.JQ + i));
         }
         return (ArrayList<Participant>)list;
     }

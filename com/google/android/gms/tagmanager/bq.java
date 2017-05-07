@@ -4,20 +4,19 @@
 
 package com.google.android.gms.tagmanager;
 
-class bq implements ag
+class bq implements af
 {
     @Override
-    public af bA(final String s) {
+    public bk ol() {
+        return new bs();
+    }
+    
+    @Override
+    public t om() {
         return new bp();
     }
     
     @Override
-    public af bB(final String s) {
-        return new bp();
-    }
-    
-    @Override
-    public boolean kA() {
-        return false;
+    public void on() {
     }
 }

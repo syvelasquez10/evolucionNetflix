@@ -90,7 +90,7 @@ public class NotificationFeedback extends BaseCmpEvent implements Runnable
         try {
             final AuthorizationCredentials authorizationCredentials = new AuthorizationCredentials(this.mUser.netflixId, this.mUser.secureNetflixId);
             final CommonRequestParameters commonRequestParameters = this.getCommonRequestParameters(this.mContext);
-            final NotificationFeedbackCommand notificationFeedbackCommand = new NotificationFeedbackCommand(this.mUser.esn, authorizationCredentials, commonRequestParameters, this.getEvent(this.mUser.esn, commonRequestParameters, authorizationCredentials), this.mUser.currentProfileUserId);
+            final NotificationFeedbackCommand notificationFeedbackCommand = new NotificationFeedbackCommand(this.mUser.esn, authorizationCredentials, commonRequestParameters, this.getEvent(this.mUser.esn, commonRequestParameters, authorizationCredentials), this.mUser.currentProfileToken);
             Log.d("nf_rest", "Executing NotificationFeedbackCommand WebAPI call start");
             final String execute = notificationFeedbackCommand.execute();
             Log.d("nf_rest", "Executing NotificationFeedbackCommand WebAPI call done");

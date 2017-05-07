@@ -27,15 +27,16 @@ import android.support.v4.view.ActionProvider;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.PopupWindow$OnDismissListener;
 import android.database.DataSetObserver;
+import android.support.v7.widget.ListPopupWindow;
 import android.widget.ImageView;
 import android.widget.FrameLayout;
 import android.graphics.drawable.Drawable;
-import android.widget.LinearLayout;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.ViewGroup;
 
 public class ActivityChooserView extends ViewGroup implements ActivityChooserModelClient
 {
-    private final LinearLayout mActivityChooserContent;
+    private final LinearLayoutCompat mActivityChooserContent;
     private final Drawable mActivityChooserContentBackground;
     private final ActivityChooserViewAdapter mAdapter;
     private final Callbacks mCallbacks;
@@ -92,12 +93,12 @@ public class ActivityChooserView extends ViewGroup implements ActivityChooserMod
         };
         this.mInitialActivityCount = 4;
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.ActivityChooserView, n, 0);
-        this.mInitialActivityCount = obtainStyledAttributes.getInt(0, 4);
-        final Drawable drawable = obtainStyledAttributes.getDrawable(1);
+        this.mInitialActivityCount = obtainStyledAttributes.getInt(R.styleable.ActivityChooserView_initialActivityCount, 4);
+        final Drawable drawable = obtainStyledAttributes.getDrawable(R.styleable.ActivityChooserView_expandActivityOverflowButtonDrawable);
         obtainStyledAttributes.recycle();
         LayoutInflater.from(this.getContext()).inflate(R.layout.abc_activity_chooser_view, (ViewGroup)this, true);
         this.mCallbacks = new Callbacks();
-        this.mActivityChooserContent = (LinearLayout)this.findViewById(R.id.activity_chooser_view_content);
+        this.mActivityChooserContent = (LinearLayoutCompat)this.findViewById(R.id.activity_chooser_view_content);
         this.mActivityChooserContentBackground = this.mActivityChooserContent.getBackground();
         (this.mDefaultActivityButton = (FrameLayout)this.findViewById(R.id.default_activity_button)).setOnClickListener((View$OnClickListener)this.mCallbacks);
         this.mDefaultActivityButton.setOnLongClickListener((View$OnLongClickListener)this.mCallbacks);
@@ -244,7 +245,7 @@ public class ActivityChooserView extends ViewGroup implements ActivityChooserMod
     }
     
     protected void onMeasure(final int n, final int n2) {
-        final LinearLayout mActivityChooserContent = this.mActivityChooserContent;
+        final LinearLayoutCompat mActivityChooserContent = this.mActivityChooserContent;
         int measureSpec = n2;
         if (this.mDefaultActivityButton.getVisibility() != 0) {
             measureSpec = View$MeasureSpec.makeMeasureSpec(View$MeasureSpec.getSize(n2), 1073741824);

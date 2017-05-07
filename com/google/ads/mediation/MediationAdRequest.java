@@ -4,6 +4,7 @@
 
 package com.google.ads.mediation;
 
+import java.util.Calendar;
 import android.location.Location;
 import java.util.Set;
 import com.google.ads.AdRequest;
@@ -27,6 +28,23 @@ public final class MediationAdRequest
     }
     
     public Integer getAgeInYears() {
+        if (this.d != null) {
+            final Calendar instance = Calendar.getInstance();
+            final Calendar instance2 = Calendar.getInstance();
+            instance.setTime(this.d);
+            final Integer value = instance2.get(1) - instance.get(1);
+            if (instance2.get(2) >= instance.get(2)) {
+                Integer value2 = value;
+                if (instance2.get(2) != instance.get(2)) {
+                    return value2;
+                }
+                value2 = value;
+                if (instance2.get(5) >= instance.get(5)) {
+                    return value2;
+                }
+            }
+            return value - 1;
+        }
         return null;
     }
     

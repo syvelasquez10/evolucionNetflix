@@ -36,9 +36,9 @@ public class ServiceErrorsHandler
         final UpdateDialog.Builder builder = new UpdateDialog.Builder((Context)activity);
         builder.setTitle("");
         if (!b) {
-            builder.setMessage(2131492981);
+            builder.setMessage(2131492986);
             builder.setCancelable(false);
-            builder.setNegativeButton(2131493121, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+            builder.setNegativeButton(2131493126, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
                 public void onClick(final DialogInterface dialogInterface, int intPref) {
                     intPref = PreferenceUtils.getIntPref((Context)activity, "config_recommended_version", -1);
                     if (Log.isLoggable("ServiceErrorsHandler", 4)) {
@@ -51,9 +51,9 @@ public class ServiceErrorsHandler
             });
         }
         else {
-            builder.setMessage(2131492982);
+            builder.setMessage(2131492987);
         }
-        builder.setPositiveButton(2131492977, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        builder.setPositiveButton(2131492982, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 Log.i("ServiceErrorsHandler", "User clicked Ok on prompt to update");
                 final Intent updateSourceIntent = AppStoreHelper.getUpdateSourceIntent((Context)activity);
@@ -82,7 +82,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
         switch (statusCode) {
             default: {
-                provideDialog(activity, activity.getString(2131493273) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131493278) + " (" + statusCode.getValue() + ")");
                 b = true;
                 return b;
             }
@@ -96,25 +96,25 @@ public class ServiceErrorsHandler
                 return handleAppUpdateNeeded(activity, true);
             }
             case NO_CONNECTIVITY: {
-                provideDialog(activity, activity.getString(2131493134));
+                provideDialog(activity, activity.getString(2131493139));
                 return true;
             }
             case DRM_FAILURE_CDM:
             case DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED: {
-                provideDialog(activity, activity.getString(2131493246));
+                provideDialog(activity, activity.getString(2131493251));
                 return true;
             }
             case HTTP_SSL_DATE_TIME_ERROR:
             case HTTP_SSL_ERROR:
             case HTTP_SSL_NO_VALID_CERT: {
-                provideDialog(activity, activity.getString(2131493272) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131493277) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }
     }
     
     private static void provideDialog(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131492977, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131492982, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.finish();
             }

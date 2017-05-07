@@ -4,44 +4,99 @@
 
 package com.google.android.gms.internal;
 
-import org.json.JSONObject;
+import java.util.Iterator;
+import android.view.View;
 import android.content.Context;
+import java.util.ArrayList;
+import java.util.WeakHashMap;
 
-public class ae implements ad
+@ez
+public final class ae implements ag
 {
-    private final dz lC;
+    private final Object mw;
+    private final WeakHashMap<fz, af> mx;
+    private final ArrayList<af> my;
     
-    public ae(final Context context, final dx dx) {
-        this.lC = dz.a(context, new ak(), false, false, null, dx);
+    public ae() {
+        this.mw = new Object();
+        this.mx = new WeakHashMap<fz, af>();
+        this.my = new ArrayList<af>();
     }
     
-    @Override
-    public void a(final a a) {
-        this.lC.bI().a((ea.a)new ea.a() {
-            @Override
-            public void a(final dz dz) {
-                a.ay();
+    public af a(final Context context, final ay ay, final fz fz, final View view, final gt gt) {
+        synchronized (this.mw) {
+            if (this.c(fz)) {
+                return this.mx.get(fz);
             }
-        });
+            final af af = new af(context, ay, fz, view, gt);
+            af.a(this);
+            this.mx.put(fz, af);
+            this.my.add(af);
+            return af;
+        }
+    }
+    
+    public af a(final ay ay, final fz fz) {
+        return this.a(fz.rN.getContext(), ay, fz, (View)fz.rN, fz.rN.dy());
     }
     
     @Override
-    public void a(final String s, final bb bb) {
-        this.lC.bI().a(s, bb);
+    public void a(final af af) {
+        synchronized (this.mw) {
+            if (!af.aH()) {
+                this.my.remove(af);
+            }
+        }
     }
     
-    @Override
-    public void a(final String s, final JSONObject jsonObject) {
-        this.lC.a(s, jsonObject);
+    public boolean c(final fz fz) {
+        while (true) {
+            synchronized (this.mw) {
+                final af af = this.mx.get(fz);
+                if (af != null && af.aH()) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
     
-    @Override
-    public void d(final String s) {
-        this.lC.loadUrl(s);
+    public void d(final fz fz) {
+        synchronized (this.mw) {
+            final af af = this.mx.get(fz);
+            if (af != null) {
+                af.aF();
+            }
+        }
     }
     
-    @Override
-    public void e(final String s) {
-        this.lC.bI().a(s, null);
+    public void pause() {
+        synchronized (this.mw) {
+            final Iterator<af> iterator = this.my.iterator();
+            while (iterator.hasNext()) {
+                iterator.next().pause();
+            }
+        }
     }
+    // monitorexit(o)
+    
+    public void resume() {
+        synchronized (this.mw) {
+            final Iterator<af> iterator = this.my.iterator();
+            while (iterator.hasNext()) {
+                iterator.next().resume();
+            }
+        }
+    }
+    // monitorexit(o)
+    
+    public void stop() {
+        synchronized (this.mw) {
+            final Iterator<af> iterator = this.my.iterator();
+            while (iterator.hasNext()) {
+                iterator.next().stop();
+            }
+        }
+    }
+    // monitorexit(o)
 }

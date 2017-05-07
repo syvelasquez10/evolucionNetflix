@@ -13,46 +13,46 @@ import android.os.Parcelable$Creator;
 public class a implements Parcelable$Creator<ComparisonFilter>
 {
     static void a(final ComparisonFilter comparisonFilter, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1000, comparisonFilter.xH);
-        b.a(parcel, 1, (Parcelable)comparisonFilter.GG, n, false);
-        b.a(parcel, 2, (Parcelable)comparisonFilter.GH, n, false);
-        b.F(parcel, p3);
+        final int d = b.D(parcel);
+        b.c(parcel, 1000, comparisonFilter.BR);
+        b.a(parcel, 1, (Parcelable)comparisonFilter.QC, n, false);
+        b.a(parcel, 2, (Parcelable)comparisonFilter.QD, n, false);
+        b.H(parcel, d);
     }
     
-    public ComparisonFilter[] aI(final int n) {
-        return new ComparisonFilter[n];
-    }
-    
-    public ComparisonFilter ae(final Parcel parcel) {
+    public ComparisonFilter aK(final Parcel parcel) {
         MetadataBundle metadataBundle = null;
-        final int o = com.google.android.gms.common.internal.safeparcel.a.o(parcel);
+        final int c = com.google.android.gms.common.internal.safeparcel.a.C(parcel);
         int g = 0;
         Operator operator = null;
-        while (parcel.dataPosition() < o) {
-            final int n = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.a.R(n)) {
+        while (parcel.dataPosition() < c) {
+            final int b = com.google.android.gms.common.internal.safeparcel.a.B(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.a.aD(b)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, n);
+                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, b);
                     continue;
                 }
                 case 1000: {
-                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n);
+                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, b);
                     continue;
                 }
                 case 1: {
-                    operator = com.google.android.gms.common.internal.safeparcel.a.a(parcel, n, Operator.CREATOR);
+                    operator = com.google.android.gms.common.internal.safeparcel.a.a(parcel, b, Operator.CREATOR);
                     continue;
                 }
                 case 2: {
-                    metadataBundle = com.google.android.gms.common.internal.safeparcel.a.a(parcel, n, MetadataBundle.CREATOR);
+                    metadataBundle = com.google.android.gms.common.internal.safeparcel.a.a(parcel, b, MetadataBundle.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
         }
         return new ComparisonFilter(g, operator, metadataBundle);
+    }
+    
+    public ComparisonFilter[] bW(final int n) {
+        return new ComparisonFilter[n];
     }
 }

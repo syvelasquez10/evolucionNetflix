@@ -5,26 +5,48 @@
 package com.google.android.gms.drive.metadata.internal;
 
 import android.os.Bundle;
-import java.util.Collection;
-import com.google.android.gms.drive.metadata.a;
-import android.os.Parcelable;
+import com.google.android.gms.common.internal.safeparcel.a;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public abstract class h<T extends Parcelable> extends a<T>
+public class h implements Parcelable$Creator<MetadataBundle>
 {
-    public h(final String s, final int n) {
-        super(s, n);
+    static void a(final MetadataBundle metadataBundle, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, metadataBundle.BR);
+        b.a(parcel, 2, metadataBundle.PD, false);
+        b.H(parcel, d);
     }
     
-    public h(final String s, final Collection<String> collection, final int n) {
-        super(s, collection, n);
+    public MetadataBundle aH(final Parcel parcel) {
+        final int c = a.C(parcel);
+        int g = 0;
+        Bundle q = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
+                default: {
+                    a.b(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    g = a.g(parcel, b);
+                    continue;
+                }
+                case 2: {
+                    q = a.q(parcel, b);
+                    continue;
+                }
+            }
+        }
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
+        }
+        return new MetadataBundle(g, q);
     }
     
-    @Override
-    protected void a(final Bundle bundle, final T t) {
-        bundle.putParcelable(this.getName(), (Parcelable)t);
-    }
-    
-    protected T k(final Bundle bundle) {
-        return (T)bundle.getParcelable(this.getName());
+    public MetadataBundle[] bT(final int n) {
+        return new MetadataBundle[n];
     }
 }

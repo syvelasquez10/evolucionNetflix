@@ -4,7 +4,6 @@
 
 package com.google.android.gms.drive.metadata;
 
-import java.util.Collection;
 import android.os.Bundle;
 import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import com.google.android.gms.common.data.DataHolder;
@@ -17,9 +16,7 @@ public interface MetadataField<T>
     
     void a(final T p0, final Bundle p1);
     
-    T d(final Bundle p0);
-    
-    Collection<String> fR();
+    T f(final Bundle p0);
     
     String getName();
 }

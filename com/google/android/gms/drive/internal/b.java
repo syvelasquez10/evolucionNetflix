@@ -13,46 +13,46 @@ import android.os.Parcelable$Creator;
 public class b implements Parcelable$Creator<AuthorizeAccessRequest>
 {
     static void a(final AuthorizeAccessRequest authorizeAccessRequest, final Parcel parcel, final int n) {
-        final int p3 = com.google.android.gms.common.internal.safeparcel.b.p(parcel);
-        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, authorizeAccessRequest.xH);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, authorizeAccessRequest.EU);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, (Parcelable)authorizeAccessRequest.Ew, n, false);
-        com.google.android.gms.common.internal.safeparcel.b.F(parcel, p3);
+        final int d = com.google.android.gms.common.internal.safeparcel.b.D(parcel);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, authorizeAccessRequest.BR);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, authorizeAccessRequest.NT);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, (Parcelable)authorizeAccessRequest.MO, n, false);
+        com.google.android.gms.common.internal.safeparcel.b.H(parcel, d);
     }
     
-    public AuthorizeAccessRequest D(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public AuthorizeAccessRequest W(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
         long i = 0L;
         DriveId driveId = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    i = a.i(parcel, n);
+                    i = a.i(parcel, b);
                     continue;
                 }
                 case 3: {
-                    driveId = a.a(parcel, n, DriveId.CREATOR);
+                    driveId = a.a(parcel, b, DriveId.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
         return new AuthorizeAccessRequest(g, i, driveId);
     }
     
-    public AuthorizeAccessRequest[] ah(final int n) {
+    public AuthorizeAccessRequest[] bf(final int n) {
         return new AuthorizeAccessRequest[n];
     }
 }

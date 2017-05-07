@@ -5,14 +5,14 @@
 package com.google.android.gms.wallet;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.gi;
-import com.google.android.gms.internal.jo;
-import com.google.android.gms.internal.js;
-import com.google.android.gms.internal.jw;
-import com.google.android.gms.internal.jm;
+import com.google.android.gms.internal.jr;
+import com.google.android.gms.wallet.wobs.f;
+import com.google.android.gms.wallet.wobs.j;
+import com.google.android.gms.wallet.wobs.n;
+import com.google.android.gms.wallet.wobs.d;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.internal.ju;
-import com.google.android.gms.internal.jy;
+import com.google.android.gms.wallet.wobs.l;
+import com.google.android.gms.wallet.wobs.p;
 import java.util.ArrayList;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -20,68 +20,68 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class LoyaltyWalletObject implements SafeParcelable
 {
     public static final Parcelable$Creator<LoyaltyWalletObject> CREATOR;
-    String abA;
-    String abB;
-    String abC;
-    String abD;
-    String abE;
-    String abF;
-    String abG;
-    String abH;
-    ArrayList<jy> abI;
-    ju abJ;
-    ArrayList<LatLng> abK;
-    String abL;
-    String abM;
-    ArrayList<jm> abN;
-    boolean abO;
-    ArrayList<jw> abP;
-    ArrayList<js> abQ;
-    ArrayList<jw> abR;
-    jo abS;
-    String abz;
-    String eC;
+    private final int BR;
+    String Dv;
+    String asI;
+    String asJ;
+    String asK;
+    String asL;
+    String asM;
+    String asN;
+    String asO;
+    String asP;
+    ArrayList<p> asQ;
+    l asR;
+    ArrayList<LatLng> asS;
+    String asT;
+    String asU;
+    ArrayList<d> asV;
+    boolean asW;
+    ArrayList<n> asX;
+    ArrayList<j> asY;
+    ArrayList<n> asZ;
+    f ata;
+    String fl;
     int state;
-    private final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new j();
+        CREATOR = (Parcelable$Creator)new com.google.android.gms.wallet.j();
     }
     
     LoyaltyWalletObject() {
-        this.xH = 4;
-        this.abI = gi.fs();
-        this.abK = gi.fs();
-        this.abN = gi.fs();
-        this.abP = gi.fs();
-        this.abQ = gi.fs();
-        this.abR = gi.fs();
+        this.BR = 4;
+        this.asQ = jr.hz();
+        this.asS = jr.hz();
+        this.asV = jr.hz();
+        this.asX = jr.hz();
+        this.asY = jr.hz();
+        this.asZ = jr.hz();
     }
     
-    LoyaltyWalletObject(final int xh, final String ec, final String abz, final String abA, final String abB, final String abC, final String abD, final String abE, final String abF, final String abG, final String abH, final int state, final ArrayList<jy> abI, final ju abJ, final ArrayList<LatLng> abK, final String abL, final String abM, final ArrayList<jm> abN, final boolean abO, final ArrayList<jw> abP, final ArrayList<js> abQ, final ArrayList<jw> abR, final jo abS) {
-        this.xH = xh;
-        this.eC = ec;
-        this.abz = abz;
-        this.abA = abA;
-        this.abB = abB;
-        this.abC = abC;
-        this.abD = abD;
-        this.abE = abE;
-        this.abF = abF;
-        this.abG = abG;
-        this.abH = abH;
+    LoyaltyWalletObject(final int br, final String fl, final String asI, final String asJ, final String asK, final String dv, final String asL, final String asM, final String asN, final String asO, final String asP, final int state, final ArrayList<p> asQ, final l asR, final ArrayList<LatLng> asS, final String asT, final String asU, final ArrayList<d> asV, final boolean asW, final ArrayList<n> asX, final ArrayList<j> asY, final ArrayList<n> asZ, final f ata) {
+        this.BR = br;
+        this.fl = fl;
+        this.asI = asI;
+        this.asJ = asJ;
+        this.asK = asK;
+        this.Dv = dv;
+        this.asL = asL;
+        this.asM = asM;
+        this.asN = asN;
+        this.asO = asO;
+        this.asP = asP;
         this.state = state;
-        this.abI = abI;
-        this.abJ = abJ;
-        this.abK = abK;
-        this.abL = abL;
-        this.abM = abM;
-        this.abN = abN;
-        this.abO = abO;
-        this.abP = abP;
-        this.abQ = abQ;
-        this.abR = abR;
-        this.abS = abS;
+        this.asQ = asQ;
+        this.asR = asR;
+        this.asS = asS;
+        this.asT = asT;
+        this.asU = asU;
+        this.asV = asV;
+        this.asW = asW;
+        this.asX = asX;
+        this.asY = asY;
+        this.asZ = asZ;
+        this.ata = ata;
     }
     
     public int describeContents() {
@@ -89,42 +89,42 @@ public final class LoyaltyWalletObject implements SafeParcelable
     }
     
     public String getAccountId() {
-        return this.abz;
+        return this.asI;
     }
     
     public String getAccountName() {
-        return this.abC;
+        return this.Dv;
     }
     
     public String getBarcodeAlternateText() {
-        return this.abD;
+        return this.asL;
     }
     
     public String getBarcodeType() {
-        return this.abE;
+        return this.asM;
     }
     
     public String getBarcodeValue() {
-        return this.abF;
+        return this.asN;
     }
     
     public String getId() {
-        return this.eC;
+        return this.fl;
     }
     
     public String getIssuerName() {
-        return this.abA;
+        return this.asJ;
     }
     
     public String getProgramName() {
-        return this.abB;
+        return this.asK;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        j.a(this, parcel, n);
+        com.google.android.gms.wallet.j.a(this, parcel, n);
     }
 }

@@ -4,153 +4,134 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.drive.MetadataBuffer;
-import com.google.android.gms.drive.Metadata;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveApi;
-import com.google.android.gms.common.api.a;
+import android.os.ParcelFileDescriptor;
+import java.io.OutputStream;
+import java.io.InputStream;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
 import com.google.android.gms.common.api.Api;
-import com.google.android.gms.drive.Drive;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.drive.events.ChangeEvent;
-import com.google.android.gms.drive.events.DriveEvent;
+import com.google.android.gms.drive.ExecutionOptions;
+import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.DriveResource;
+import com.google.android.gms.common.internal.n;
+import com.google.android.gms.drive.Contents;
+import com.google.android.gms.drive.DriveContents;
 
-public class r implements DriveResource
+public class r implements DriveContents
 {
-    protected final DriveId Ew;
+    private final Contents Op;
     
-    protected r(final DriveId ew) {
-        this.Ew = ew;
+    public r(final Contents contents) {
+        this.Op = n.i(contents);
+    }
+    
+    private PendingResult<Status> a(final GoogleApiClient googleApiClient, MetadataChangeSet nl, final ExecutionOptions executionOptions) {
+        if (this.Op.getMode() == 268435456) {
+            throw new IllegalStateException("Cannot commit contents opened with MODE_READ_ONLY");
+        }
+        if (ExecutionOptions.aV(executionOptions.hQ()) && !this.Op.hL()) {
+            throw new IllegalStateException("DriveContents must be valid for conflict detection.");
+        }
+        ExecutionOptions.a(googleApiClient, executionOptions);
+        if (this.Op.hK()) {
+            throw new IllegalStateException("DriveContents already closed.");
+        }
+        if (this.getDriveId() == null) {
+            throw new IllegalStateException("Only DriveContents obtained through DriveFile.open can be committed.");
+        }
+        if (nl == null) {
+            nl = MetadataChangeSet.Nl;
+        }
+        this.Op.hJ();
+        return googleApiClient.b((PendingResult<Status>)new p.a() {
+            protected void a(final q q) throws RemoteException {
+                nl.hS().setContext(q.getContext());
+                q.hY().a(new CloseContentsAndUpdateMetadataRequest(r.this.Op.getDriveId(), nl.hS(), r.this.Op, executionOptions), new bb((BaseImplementation.b<Status>)this));
+            }
+        });
     }
     
     @Override
-    public PendingResult<Status> addChangeListener(final GoogleApiClient googleApiClient, final DriveEvent.Listener<ChangeEvent> listener) {
-        return googleApiClient.a(Drive.wx).a(googleApiClient, this.Ew, 1, (DriveEvent.Listener<DriveEvent>)listener);
+    public PendingResult<Status> commit(final GoogleApiClient googleApiClient, final MetadataChangeSet set) {
+        return this.a(googleApiClient, set, new ExecutionOptions.Builder().build());
+    }
+    
+    @Override
+    public PendingResult<Status> commit(final GoogleApiClient googleApiClient, final MetadataChangeSet set, final ExecutionOptions executionOptions) {
+        return this.a(googleApiClient, set, executionOptions);
+    }
+    
+    @Override
+    public void discard(final GoogleApiClient googleApiClient) {
+        if (this.Op.hK()) {
+            throw new IllegalStateException("DriveContents already closed.");
+        }
+        this.Op.hJ();
+        ((BaseImplementation.AbstractPendingResult<R>)googleApiClient.b(new p.a() {
+            protected void a(final q q) throws RemoteException {
+                q.hY().a(new CloseContentsRequest(r.this.Op, false), new bb((BaseImplementation.b<Status>)this));
+            }
+        })).setResultCallback((ResultCallback<R>)new ResultCallback<Status>() {
+            public void k(final Status status) {
+                if (!status.isSuccess()) {
+                    v.q("DriveContentsImpl", "Error discarding contents");
+                    return;
+                }
+                v.n("DriveContentsImpl", "Contents discarded");
+            }
+        });
+    }
+    
+    @Override
+    public Contents getContents() {
+        return this.Op;
     }
     
     @Override
     public DriveId getDriveId() {
-        return this.Ew;
+        return this.Op.getDriveId();
     }
     
     @Override
-    public PendingResult<MetadataResult> getMetadata(final GoogleApiClient googleApiClient) {
-        return googleApiClient.a((PendingResult<MetadataResult>)new a() {
-            protected void a(final n n) throws RemoteException {
-                n.fE().a(new GetMetadataRequest(r.this.Ew), new r.d((com.google.android.gms.common.api.a.d<MetadataResult>)this));
+    public InputStream getInputStream() {
+        return this.Op.getInputStream();
+    }
+    
+    @Override
+    public int getMode() {
+        return this.Op.getMode();
+    }
+    
+    @Override
+    public OutputStream getOutputStream() {
+        return this.Op.getOutputStream();
+    }
+    
+    @Override
+    public ParcelFileDescriptor getParcelFileDescriptor() {
+        return this.Op.getParcelFileDescriptor();
+    }
+    
+    @Override
+    public PendingResult<DriveApi.DriveContentsResult> reopenForWrite(final GoogleApiClient googleApiClient) {
+        if (this.Op.hK()) {
+            throw new IllegalStateException("DriveContents already closed.");
+        }
+        if (this.Op.getMode() != 268435456) {
+            throw new IllegalStateException("reopenForWrite can only be used with DriveContents opened with MODE_READ_ONLY.");
+        }
+        this.Op.hJ();
+        return googleApiClient.a((PendingResult<DriveApi.DriveContentsResult>)new o.d() {
+            protected void a(final q q) throws RemoteException {
+                q.hY().a(new OpenContentsRequest(r.this.getDriveId(), 536870912, r.this.Op.getRequestId()), new av((BaseImplementation.b<DriveContentsResult>)this, null));
             }
         });
-    }
-    
-    @Override
-    public PendingResult<DriveApi.MetadataBufferResult> listParents(final GoogleApiClient googleApiClient) {
-        return googleApiClient.a((PendingResult<DriveApi.MetadataBufferResult>)new c() {
-            protected void a(final n n) throws RemoteException {
-                n.fE().a(new ListParentsRequest(r.this.Ew), new r.b((a.d<DriveApi.MetadataBufferResult>)this));
-            }
-        });
-    }
-    
-    @Override
-    public PendingResult<Status> removeChangeListener(final GoogleApiClient googleApiClient, final DriveEvent.Listener<ChangeEvent> listener) {
-        return googleApiClient.a(Drive.wx).b(googleApiClient, this.Ew, 1, listener);
-    }
-    
-    @Override
-    public PendingResult<MetadataResult> updateMetadata(final GoogleApiClient googleApiClient, final MetadataChangeSet set) {
-        if (set == null) {
-            throw new IllegalArgumentException("ChangeSet must be provided.");
-        }
-        return googleApiClient.b((PendingResult<MetadataResult>)new f() {
-            protected void a(final n n) throws RemoteException {
-                n.fE().a(new UpdateMetadataRequest(r.this.Ew, set.fD()), new r.d((a.d<MetadataResult>)this));
-            }
-        });
-    }
-    
-    private abstract class a extends m<MetadataResult>
-    {
-        public MetadataResult s(final Status status) {
-            return new e(status, null);
-        }
-    }
-    
-    private static class b extends c
-    {
-        private final com.google.android.gms.common.api.a.d<DriveApi.MetadataBufferResult> wH;
-        
-        public b(final com.google.android.gms.common.api.a.d<DriveApi.MetadataBufferResult> wh) {
-            this.wH = wh;
-        }
-        
-        @Override
-        public void a(final OnListParentsResponse onListParentsResponse) throws RemoteException {
-            this.wH.b(new l.e(Status.Bv, new MetadataBuffer(onListParentsResponse.fP(), null), false));
-        }
-        
-        @Override
-        public void m(final Status status) throws RemoteException {
-            this.wH.b(new l.e(status, null, false));
-        }
-    }
-    
-    private abstract class c extends m<DriveApi.MetadataBufferResult>
-    {
-        public DriveApi.MetadataBufferResult p(final Status status) {
-            return new l.e(status, null, false);
-        }
-    }
-    
-    private static class d extends c
-    {
-        private final com.google.android.gms.common.api.a.d<MetadataResult> wH;
-        
-        public d(final com.google.android.gms.common.api.a.d<MetadataResult> wh) {
-            this.wH = wh;
-        }
-        
-        @Override
-        public void a(final OnMetadataResponse onMetadataResponse) throws RemoteException {
-            this.wH.b(new e(Status.Bv, new j(onMetadataResponse.fQ())));
-        }
-        
-        @Override
-        public void m(final Status status) throws RemoteException {
-            this.wH.b(new e(status, null));
-        }
-    }
-    
-    private static class e implements MetadataResult
-    {
-        private final Metadata Fy;
-        private final Status wJ;
-        
-        public e(final Status wj, final Metadata fy) {
-            this.wJ = wj;
-            this.Fy = fy;
-        }
-        
-        @Override
-        public Metadata getMetadata() {
-            return this.Fy;
-        }
-        
-        @Override
-        public Status getStatus() {
-            return this.wJ;
-        }
-    }
-    
-    private abstract class f extends m<MetadataResult>
-    {
-        public MetadataResult s(final Status status) {
-            return new e(status, null);
-        }
     }
 }

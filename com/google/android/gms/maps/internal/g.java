@@ -21,7 +21,7 @@ public interface g extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnInfoWindowClickListener");
         }
         
-        public static g aj(final IBinder binder) {
+        public static g aX(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -47,7 +47,7 @@ public interface g extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IOnInfoWindowClickListener");
-                    this.e(f.a.aG(parcel.readStrongBinder()));
+                    this.e(f.a.bu(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -56,14 +56,14 @@ public interface g extends IInterface
         
         private static class a implements g
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -80,7 +80,7 @@ public interface g extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

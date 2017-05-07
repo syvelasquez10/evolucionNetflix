@@ -25,12 +25,12 @@ public class PlusOneDummyView extends FrameLayout
         super(context);
         final Button button = new Button(context);
         button.setEnabled(false);
-        button.setBackgroundDrawable(this.iJ().getDrawable(n));
-        final Point bl = this.bL(n);
-        this.addView((View)button, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(bl.x, bl.y, 17));
+        button.setBackgroundDrawable(this.mY().getDrawable(n));
+        final Point ep = this.eP(n);
+        this.addView((View)button, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(ep.x, ep.y, 17));
     }
     
-    private Point bL(int n) {
+    private Point eP(int n) {
         final int n2 = 24;
         int n3 = 20;
         final Point point = new Point();
@@ -62,7 +62,7 @@ public class PlusOneDummyView extends FrameLayout
         return point;
     }
     
-    private d iJ() {
+    private d mY() {
         d d;
         if (!(d = new b(this.getContext())).isValid()) {
             d = new c(this.getContext());

@@ -40,7 +40,7 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
     
     public abstract static class a extends Binder implements ICameraUpdateFactoryDelegate
     {
-        public static ICameraUpdateFactoryDelegate Z(final IBinder binder) {
+        public static ICameraUpdateFactoryDelegate aN(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -139,14 +139,14 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 7: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    CameraPosition fromParcel;
+                    CameraPosition ci;
                     if (parcel.readInt() != 0) {
-                        fromParcel = CameraPosition.CREATOR.createFromParcel(parcel);
+                        ci = CameraPosition.CREATOR.cI(parcel);
                     }
                     else {
-                        fromParcel = null;
+                        ci = null;
                     }
-                    final d cameraPosition = this.newCameraPosition(fromParcel);
+                    final d cameraPosition = this.newCameraPosition(ci);
                     parcel2.writeNoException();
                     IBinder binder18 = binder6;
                     if (cameraPosition != null) {
@@ -157,14 +157,14 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 8: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    LatLng fromParcel2;
+                    LatLng cm;
                     if (parcel.readInt() != 0) {
-                        fromParcel2 = LatLng.CREATOR.createFromParcel(parcel);
+                        cm = LatLng.CREATOR.cM(parcel);
                     }
                     else {
-                        fromParcel2 = null;
+                        cm = null;
                     }
-                    final d latLng = this.newLatLng(fromParcel2);
+                    final d latLng = this.newLatLng(cm);
                     parcel2.writeNoException();
                     IBinder binder19 = binder7;
                     if (latLng != null) {
@@ -175,14 +175,14 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 9: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    LatLng fromParcel3;
+                    LatLng cm2;
                     if (parcel.readInt() != 0) {
-                        fromParcel3 = LatLng.CREATOR.createFromParcel(parcel);
+                        cm2 = LatLng.CREATOR.cM(parcel);
                     }
                     else {
-                        fromParcel3 = null;
+                        cm2 = null;
                     }
-                    final d latLngZoom = this.newLatLngZoom(fromParcel3, parcel.readFloat());
+                    final d latLngZoom = this.newLatLngZoom(cm2, parcel.readFloat());
                     parcel2.writeNoException();
                     IBinder binder20 = binder8;
                     if (latLngZoom != null) {
@@ -193,14 +193,14 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 10: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    LatLngBounds fromParcel4;
+                    LatLngBounds cl;
                     if (parcel.readInt() != 0) {
-                        fromParcel4 = LatLngBounds.CREATOR.createFromParcel(parcel);
+                        cl = LatLngBounds.CREATOR.cL(parcel);
                     }
                     else {
-                        fromParcel4 = null;
+                        cl = null;
                     }
-                    final d latLngBounds = this.newLatLngBounds(fromParcel4, parcel.readInt());
+                    final d latLngBounds = this.newLatLngBounds(cl, parcel.readInt());
                     parcel2.writeNoException();
                     IBinder binder21 = binder9;
                     if (latLngBounds != null) {
@@ -211,14 +211,14 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 }
                 case 11: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    LatLngBounds fromParcel5;
+                    LatLngBounds cl2;
                     if (parcel.readInt() != 0) {
-                        fromParcel5 = LatLngBounds.CREATOR.createFromParcel(parcel);
+                        cl2 = LatLngBounds.CREATOR.cL(parcel);
                     }
                     else {
-                        fromParcel5 = null;
+                        cl2 = null;
                     }
-                    final d latLngBoundsWithSize = this.newLatLngBoundsWithSize(fromParcel5, parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    final d latLngBoundsWithSize = this.newLatLngBoundsWithSize(cl2, parcel.readInt(), parcel.readInt(), parcel.readInt());
                     parcel2.writeNoException();
                     IBinder binder22 = binder10;
                     if (latLngBoundsWithSize != null) {
@@ -232,14 +232,14 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
         
         private static class a implements ICameraUpdateFactoryDelegate
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -255,9 +255,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(7, obtain, obtain2, 0);
+                    this.lb.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -278,9 +278,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(8, obtain, obtain2, 0);
+                    this.lb.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -302,9 +302,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(10, obtain, obtain2, 0);
+                    this.lb.transact(10, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -328,9 +328,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     obtain.writeInt(n);
                     obtain.writeInt(n2);
                     obtain.writeInt(n3);
-                    this.kn.transact(11, obtain, obtain2, 0);
+                    this.lb.transact(11, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -352,9 +352,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeFloat(n);
-                    this.kn.transact(9, obtain, obtain2, 0);
+                    this.lb.transact(9, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -370,9 +370,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
                     obtain.writeFloat(n);
                     obtain.writeFloat(n2);
-                    this.kn.transact(3, obtain, obtain2, 0);
+                    this.lb.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -387,9 +387,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
                     obtain.writeFloat(n);
-                    this.kn.transact(5, obtain, obtain2, 0);
+                    this.lb.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -406,9 +406,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                     obtain.writeFloat(n);
                     obtain.writeInt(n2);
                     obtain.writeInt(n3);
-                    this.kn.transact(6, obtain, obtain2, 0);
+                    this.lb.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -422,9 +422,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -438,9 +438,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -455,9 +455,9 @@ public interface ICameraUpdateFactoryDelegate extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICameraUpdateFactoryDelegate");
                     obtain.writeFloat(n);
-                    this.kn.transact(4, obtain, obtain2, 0);
+                    this.lb.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();

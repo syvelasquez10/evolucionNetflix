@@ -6,7 +6,7 @@ package com.google.android.gms.games.internal.constants;
 
 public final class PlatformType
 {
-    public static String bd(final int n) {
+    public static String dH(final int n) {
         switch (n) {
             default: {
                 throw new IllegalArgumentException("Unknown platform type: " + n);

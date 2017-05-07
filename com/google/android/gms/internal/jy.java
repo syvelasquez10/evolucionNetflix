@@ -4,46 +4,72 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import java.io.ByteArrayOutputStream;
+import android.os.ParcelFileDescriptor;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.InputStream;
 
-public final class jy implements SafeParcelable
+public final class jy
 {
-    public static final Parcelable$Creator<jy> CREATOR;
-    String adn;
-    ju adr;
-    jw ads;
-    jw adt;
-    String pm;
-    private final int xH;
-    
-    static {
-        CREATOR = (Parcelable$Creator)new jz();
+    public static long a(final InputStream inputStream, final OutputStream outputStream, final boolean b) throws IOException {
+        return a(inputStream, outputStream, b, 1024);
     }
     
-    jy() {
-        this.xH = 1;
+    public static long a(final InputStream inputStream, final OutputStream outputStream, final boolean b, int read) throws IOException {
+        final byte[] array = new byte[read];
+        long n = 0L;
+        try {
+            while (true) {
+                read = inputStream.read(array, 0, array.length);
+                if (read == -1) {
+                    break;
+                }
+                n += read;
+                outputStream.write(array, 0, read);
+            }
+        }
+        finally {
+            if (b) {
+                b(inputStream);
+                b(outputStream);
+            }
+        }
+        if (b) {
+            b(inputStream);
+            b(outputStream);
+        }
+        return n;
     }
     
-    jy(final int xh, final String adn, final String pm, final ju adr, final jw ads, final jw adt) {
-        this.xH = xh;
-        this.adn = adn;
-        this.pm = pm;
-        this.adr = adr;
-        this.ads = ads;
-        this.adt = adt;
+    public static void a(final ParcelFileDescriptor parcelFileDescriptor) {
+        if (parcelFileDescriptor == null) {
+            return;
+        }
+        try {
+            parcelFileDescriptor.close();
+        }
+        catch (IOException ex) {}
     }
     
-    public int describeContents() {
-        return 0;
+    public static byte[] a(final InputStream inputStream, final boolean b) throws IOException {
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        a(inputStream, byteArrayOutputStream, b);
+        return byteArrayOutputStream.toByteArray();
     }
     
-    public int getVersionCode() {
-        return this.xH;
+    public static void b(final Closeable closeable) {
+        if (closeable == null) {
+            return;
+        }
+        try {
+            closeable.close();
+        }
+        catch (IOException ex) {}
     }
     
-    public void writeToParcel(final Parcel parcel, final int n) {
-        jz.a(this, parcel, n);
+    public static byte[] d(final InputStream inputStream) throws IOException {
+        return a(inputStream, true);
     }
 }

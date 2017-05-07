@@ -14,7 +14,7 @@ import android.content.Context;
 
 public class NotificationOptIn implements Runnable
 {
-    private static final String TAG = "nf_rest";
+    private static final String TAG = "nf_push";
     private Context mContext;
     private String mDeviceToken;
     private boolean mGcmInfoOptIn;
@@ -31,7 +31,7 @@ public class NotificationOptIn implements Runnable
     
     protected CommonRequestParameters getCommonRequestParameters(final Context context, final UserData userData) {
         final CommonRequestParameters instanceWithCredentials = CommonRequestParameters.getInstanceWithCredentials();
-        instanceWithCredentials.userId = userData.currentProfileUserId;
+        instanceWithCredentials.userId = userData.currentProfileToken;
         instanceWithCredentials.osVersion = String.valueOf(AndroidUtils.getAndroidVersion());
         instanceWithCredentials.deviceCategory = this.mUser.deviceCategory;
         instanceWithCredentials.appVersion = AndroidManifestUtils.getVersion(context);
@@ -46,14 +46,14 @@ public class NotificationOptIn implements Runnable
     public void run() {
         try {
             final AuthorizationCredentials authorizationCredentials = new AuthorizationCredentials(this.mUser.netflixId, this.mUser.secureNetflixId);
-            final CustomerEventCommand customerEventCommand = new CustomerEventCommand(this.mUser.esn, authorizationCredentials, new PushNotificationOptInStatus(this.mUser.esn, this.getCommonRequestParameters(this.mContext, this.mUser), this.mDeviceToken, this.mOptIn, this.mGcmInfoOptIn, true, authorizationCredentials).toString());
-            Log.d("nf_rest", "Executing NotificationOptInCommand WebAPI call start");
+            final CustomerEventCommand customerEventCommand = new CustomerEventCommand(this.mUser.esn, authorizationCredentials, new PushNotificationOptInStatus(this.mUser.esn, this.getCommonRequestParameters(this.mContext, this.mUser), this.mDeviceToken, this.mOptIn, this.mGcmInfoOptIn, true, authorizationCredentials, this.mUser.currentProfileGuid).toString());
+            Log.d("nf_push", "Executing NotificationOptInCommand WebAPI call start");
             final String execute = customerEventCommand.execute();
-            Log.d("nf_rest", "Executing NotificationOptInCommand WebAPI call done");
-            Log.d("nf_rest", "NotificationOptInCommand response: " + execute);
+            Log.d("nf_push", "Executing NotificationOptInCommand WebAPI call done");
+            Log.d("nf_push", "NotificationOptInCommand response: " + execute);
         }
         catch (Throwable t) {
-            Log.e("nf_rest", "Failed to execute both WebAPI call!", t);
+            Log.e("nf_push", "Failed to execute both WebAPI call!", t);
         }
     }
     

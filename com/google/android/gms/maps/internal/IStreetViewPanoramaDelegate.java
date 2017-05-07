@@ -57,7 +57,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
     
     public abstract static class a extends Binder implements IStreetViewPanoramaDelegate
     {
-        public static IStreetViewPanoramaDelegate ax(final IBinder binder) {
+        public static IStreetViewPanoramaDelegate bl(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -173,14 +173,14 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 }
                 case 9: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    StreetViewPanoramaCamera fromParcel;
+                    StreetViewPanoramaCamera cq;
                     if (parcel.readInt() != 0) {
-                        fromParcel = StreetViewPanoramaCamera.CREATOR.createFromParcel(parcel);
+                        cq = StreetViewPanoramaCamera.CREATOR.cQ(parcel);
                     }
                     else {
-                        fromParcel = null;
+                        cq = null;
                     }
-                    this.animateTo(fromParcel, parcel.readLong());
+                    this.animateTo(cq, parcel.readLong());
                     parcel2.writeNoException();
                     return true;
                 }
@@ -204,21 +204,21 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 }
                 case 12: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    LatLng fromParcel2 = latLng2;
+                    LatLng cm = latLng2;
                     if (parcel.readInt() != 0) {
-                        fromParcel2 = LatLng.CREATOR.createFromParcel(parcel);
+                        cm = LatLng.CREATOR.cM(parcel);
                     }
-                    this.setPosition(fromParcel2);
+                    this.setPosition(cm);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 13: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    LatLng fromParcel3 = latLng;
+                    LatLng cm2 = latLng;
                     if (parcel.readInt() != 0) {
-                        fromParcel3 = LatLng.CREATOR.createFromParcel(parcel);
+                        cm2 = LatLng.CREATOR.cM(parcel);
                     }
-                    this.setPositionWithRadius(fromParcel3, parcel.readInt());
+                    this.setPositionWithRadius(cm2, parcel.readInt());
                     parcel2.writeNoException();
                     return true;
                 }
@@ -236,25 +236,25 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 }
                 case 15: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.setOnStreetViewPanoramaChangeListener(q.a.at(parcel.readStrongBinder()));
+                    this.setOnStreetViewPanoramaChangeListener(q.a.bh(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 16: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.setOnStreetViewPanoramaCameraChangeListener(p.a.as(parcel.readStrongBinder()));
+                    this.setOnStreetViewPanoramaCameraChangeListener(p.a.bg(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 17: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.setOnStreetViewPanoramaClickListener(r.a.au(parcel.readStrongBinder()));
+                    this.setOnStreetViewPanoramaClickListener(r.a.bi(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 18: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    final StreetViewPanoramaOrientation pointToOrientation = this.pointToOrientation(d.a.K(parcel.readStrongBinder()));
+                    final StreetViewPanoramaOrientation pointToOrientation = this.pointToOrientation(d.a.am(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     if (pointToOrientation != null) {
                         parcel2.writeInt(1);
@@ -266,14 +266,14 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 }
                 case 19: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    StreetViewPanoramaOrientation fromParcel4;
+                    StreetViewPanoramaOrientation ct;
                     if (parcel.readInt() != 0) {
-                        fromParcel4 = StreetViewPanoramaOrientation.CREATOR.createFromParcel(parcel);
+                        ct = StreetViewPanoramaOrientation.CREATOR.cT(parcel);
                     }
                     else {
-                        fromParcel4 = null;
+                        ct = null;
                     }
-                    final d orientationToPoint = this.orientationToPoint(fromParcel4);
+                    final d orientationToPoint = this.orientationToPoint(ct);
                     parcel2.writeNoException();
                     IBinder binder2 = binder;
                     if (orientationToPoint != null) {
@@ -287,10 +287,10 @@ public interface IStreetViewPanoramaDelegate extends IInterface
         
         private static class a implements IStreetViewPanoramaDelegate
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -307,7 +307,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeLong(n);
-                    this.kn.transact(9, obtain, obtain2, 0);
+                    this.lb.transact(9, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -317,7 +317,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -331,7 +331,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -351,7 +351,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(4, obtain, obtain2, 0);
+                    this.lb.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -371,7 +371,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(3, obtain, obtain2, 0);
+                    this.lb.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -391,7 +391,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         n = 0;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -406,16 +406,16 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.kn.transact(10, obtain, obtain2, 0);
+                    this.lb.transact(10, obtain, obtain2, 0);
                     obtain2.readException();
-                    StreetViewPanoramaCamera fromParcel;
+                    StreetViewPanoramaCamera cq;
                     if (obtain2.readInt() != 0) {
-                        fromParcel = StreetViewPanoramaCamera.CREATOR.createFromParcel(obtain2);
+                        cq = StreetViewPanoramaCamera.CREATOR.cQ(obtain2);
                     }
                     else {
-                        fromParcel = null;
+                        cq = null;
                     }
-                    return fromParcel;
+                    return cq;
                 }
                 finally {
                     obtain2.recycle();
@@ -429,16 +429,16 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.kn.transact(14, obtain, obtain2, 0);
+                    this.lb.transact(14, obtain, obtain2, 0);
                     obtain2.readException();
-                    StreetViewPanoramaLocation fromParcel;
+                    StreetViewPanoramaLocation cs;
                     if (obtain2.readInt() != 0) {
-                        fromParcel = StreetViewPanoramaLocation.CREATOR.createFromParcel(obtain2);
+                        cs = StreetViewPanoramaLocation.CREATOR.cS(obtain2);
                     }
                     else {
-                        fromParcel = null;
+                        cs = null;
                     }
-                    return fromParcel;
+                    return cs;
                 }
                 finally {
                     obtain2.recycle();
@@ -453,7 +453,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.kn.transact(6, obtain, obtain2, 0);
+                    this.lb.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -473,7 +473,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.kn.transact(8, obtain, obtain2, 0);
+                    this.lb.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -493,7 +493,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.kn.transact(7, obtain, obtain2, 0);
+                    this.lb.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -513,7 +513,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
-                    this.kn.transact(5, obtain, obtain2, 0);
+                    this.lb.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -539,9 +539,9 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(19, obtain, obtain2, 0);
+                    this.lb.transact(19, obtain, obtain2, 0);
                     obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return d.a.am(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -564,13 +564,13 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(18, obtain, obtain2, 0);
+                    this.lb.transact(18, obtain, obtain2, 0);
                     obtain2.readException();
-                    StreetViewPanoramaOrientation fromParcel = streetViewPanoramaOrientation;
+                    StreetViewPanoramaOrientation ct = streetViewPanoramaOrientation;
                     if (obtain2.readInt() != 0) {
-                        fromParcel = StreetViewPanoramaOrientation.CREATOR.createFromParcel(obtain2);
+                        ct = StreetViewPanoramaOrientation.CREATOR.cT(obtain2);
                     }
-                    return fromParcel;
+                    return ct;
                 }
                 finally {
                     obtain2.recycle();
@@ -592,7 +592,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(16, obtain, obtain2, 0);
+                    this.lb.transact(16, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -615,7 +615,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(15, obtain, obtain2, 0);
+                    this.lb.transact(15, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -638,7 +638,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(17, obtain, obtain2, 0);
+                    this.lb.transact(17, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -660,7 +660,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(12, obtain, obtain2, 0);
+                    this.lb.transact(12, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -676,7 +676,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate");
                     obtain.writeString(s);
-                    this.kn.transact(11, obtain, obtain2, 0);
+                    this.lb.transact(11, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -699,7 +699,7 @@ public interface IStreetViewPanoramaDelegate extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(13, obtain, obtain2, 0);
+                    this.lb.transact(13, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

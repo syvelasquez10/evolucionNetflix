@@ -4,100 +4,146 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.Bundle;
-import android.os.IInterface;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
-public interface ja extends IInterface
+public class ja<K, V>
 {
-    void a(final int p0, final int p1, final Bundle p2) throws RemoteException;
+    private final LinkedHashMap<K, V> Mb;
+    private int Mc;
+    private int Md;
+    private int Me;
+    private int Mf;
+    private int Mg;
+    private int Mh;
+    private int size;
     
-    public abstract static class a extends Binder implements ja
-    {
-        public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.wallet.fragment.internal.IWalletFragmentStateListener");
+    public ja(final int mc) {
+        if (mc <= 0) {
+            throw new IllegalArgumentException("maxSize <= 0");
         }
-        
-        public static ja aT(final IBinder binder) {
-            if (binder == null) {
+        this.Mc = mc;
+        this.Mb = new LinkedHashMap<K, V>(0, 0.75f, true);
+    }
+    
+    private int c(final K k, final V v) {
+        final int size = this.sizeOf(k, v);
+        if (size < 0) {
+            throw new IllegalStateException("Negative size: " + k + "=" + v);
+        }
+        return size;
+    }
+    
+    protected V create(final K k) {
+        return null;
+    }
+    
+    protected void entryRemoved(final boolean b, final K k, final V v, final V v2) {
+    }
+    
+    public final void evictAll() {
+        this.trimToSize(-1);
+    }
+    
+    public final V get(final K k) {
+        if (k == null) {
+            throw new NullPointerException("key == null");
+        }
+        V v;
+        synchronized (this) {
+            v = this.Mb.get(k);
+            if (v != null) {
+                ++this.Mg;
+                return v;
+            }
+            ++this.Mh;
+            // monitorexit(this)
+            v = this.create(k);
+            if (v == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.wallet.fragment.internal.IWalletFragmentStateListener");
-            if (queryLocalInterface != null && queryLocalInterface instanceof ja) {
-                return (ja)queryLocalInterface;
+        }
+        synchronized (this) {
+            ++this.Me;
+            final K i;
+            final V put = this.Mb.put(i, v);
+            if (put != null) {
+                this.Mb.put(i, put);
             }
-            return new ja.a.a(binder);
-        }
-        
-        public IBinder asBinder() {
-            return (IBinder)this;
-        }
-        
-        public boolean onTransact(int int1, final Parcel parcel, final Parcel parcel2, int int2) throws RemoteException {
-            switch (int1) {
-                default: {
-                    return super.onTransact(int1, parcel, parcel2, int2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.wallet.fragment.internal.IWalletFragmentStateListener");
-                    return true;
-                }
-                case 2: {
-                    parcel.enforceInterface("com.google.android.gms.wallet.fragment.internal.IWalletFragmentStateListener");
-                    int1 = parcel.readInt();
-                    int2 = parcel.readInt();
-                    Bundle bundle;
-                    if (parcel.readInt() != 0) {
-                        bundle = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle = null;
-                    }
-                    this.a(int1, int2, bundle);
-                    parcel2.writeNoException();
-                    return true;
-                }
+            else {
+                this.size += this.c(i, v);
+            }
+            // monitorexit(this)
+            if (put != null) {
+                this.entryRemoved(false, i, v, put);
+                return put;
             }
         }
-        
-        private static class a implements ja
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
+        this.trimToSize(this.Mc);
+        return v;
+    }
+    
+    public final V put(final K k, final V v) {
+        if (k == null || v == null) {
+            throw new NullPointerException("key == null || value == null");
+        }
+        synchronized (this) {
+            ++this.Md;
+            this.size += this.c(k, v);
+            final V put = this.Mb.put(k, v);
+            if (put != null) {
+                this.size -= this.c(k, put);
             }
-            
-            @Override
-            public void a(final int n, final int n2, final Bundle bundle) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.wallet.fragment.internal.IWalletFragmentStateListener");
-                    obtain.writeInt(n);
-                    obtain.writeInt(n2);
-                    if (bundle != null) {
-                        obtain.writeInt(1);
-                        bundle.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    this.kn.transact(2, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
+            // monitorexit(this)
+            if (put != null) {
+                this.entryRemoved(false, k, put, v);
             }
-            
-            public IBinder asBinder() {
-                return this.kn;
-            }
+            this.trimToSize(this.Mc);
+            return put;
         }
     }
+    
+    public final int size() {
+        synchronized (this) {
+            return this.size;
+        }
+    }
+    
+    protected int sizeOf(final K k, final V v) {
+        return 1;
+    }
+    
+    @Override
+    public final String toString() {
+        int n = 0;
+        synchronized (this) {
+            final int n2 = this.Mg + this.Mh;
+            if (n2 != 0) {
+                n = this.Mg * 100 / n2;
+            }
+            return String.format("LruCache[maxSize=%d,hits=%d,misses=%d,hitRate=%d%%]", this.Mc, this.Mg, this.Mh, n);
+        }
+    }
+    
+    public void trimToSize(final int n) {
+        while (true) {
+            synchronized (this) {
+                if (this.size < 0 || (this.Mb.isEmpty() && this.size != 0)) {
+                    throw new IllegalStateException(this.getClass().getName() + ".sizeOf() is reporting inconsistent results!");
+                }
+            }
+            if (this.size <= n || this.Mb.isEmpty()) {
+                break;
+            }
+            final Map.Entry<K, V> entry = this.Mb.entrySet().iterator().next();
+            final K key = entry.getKey();
+            final V value = entry.getValue();
+            this.Mb.remove(key);
+            this.size -= this.c(key, value);
+            ++this.Mf;
+            // monitorexit(this)
+            this.entryRemoved(true, key, value, null);
+        }
+    }
+    // monitorexit(this)
 }

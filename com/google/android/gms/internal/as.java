@@ -4,195 +4,78 @@
 
 package com.google.android.gms.internal;
 
-import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.android.gms.ads.mediation.admob.AdMobExtras;
-import java.util.HashMap;
-import java.util.HashSet;
-import android.content.Context;
-import java.util.Collections;
-import com.google.android.gms.ads.search.SearchAdRequest;
-import com.google.android.gms.ads.mediation.NetworkExtras;
-import android.os.Bundle;
-import com.google.android.gms.ads.mediation.MediationAdapter;
-import java.util.Map;
-import android.location.Location;
-import java.util.Set;
-import java.util.Date;
+import java.util.PriorityQueue;
 
-public final class as
+public class as
 {
-    public static final String DEVICE_ID_EMULATOR;
-    private final Date d;
-    private final Set<String> f;
-    private final Location h;
-    private final String lY;
-    private final int lZ;
-    private final boolean ma;
-    private final Map<Class<? extends MediationAdapter>, Bundle> mb;
-    private final Map<Class<? extends NetworkExtras>, NetworkExtras> mc;
-    private final String md;
-    private final SearchAdRequest me;
-    private final int mf;
-    private final Set<String> mg;
-    
-    static {
-        DEVICE_ID_EMULATOR = dv.u("emulator");
+    static long a(final int n, final int n2, final long n3, final long n4, final long n5) {
+        return ((n3 + 1073807359L - (n + 2147483647L) % 1073807359L * n4 % 1073807359L) % 1073807359L * n5 % 1073807359L + (n2 + 2147483647L) % 1073807359L) % 1073807359L;
     }
     
-    public as(final a a) {
-        this(a, null);
+    static long a(final long n, final int n2) {
+        long n3;
+        if (n2 == 0) {
+            n3 = 1L;
+        }
+        else {
+            n3 = n;
+            if (n2 != 1) {
+                if (n2 % 2 == 0) {
+                    return a(n * n % 1073807359L, n2 / 2) % 1073807359L;
+                }
+                return a(n * n % 1073807359L, n2 / 2) % 1073807359L * n % 1073807359L;
+            }
+        }
+        return n3;
     }
     
-    public as(final a a, final SearchAdRequest me) {
-        this.d = a.d;
-        this.lY = a.lY;
-        this.lZ = a.lZ;
-        this.f = Collections.unmodifiableSet((Set<? extends String>)a.mh);
-        this.h = a.h;
-        this.ma = a.ma;
-        this.mb = Collections.unmodifiableMap((Map<? extends Class<? extends MediationAdapter>, ? extends Bundle>)a.mi);
-        this.mc = Collections.unmodifiableMap((Map<? extends Class<? extends NetworkExtras>, ? extends NetworkExtras>)a.mj);
-        this.md = a.md;
-        this.me = me;
-        this.mf = a.mf;
-        this.mg = Collections.unmodifiableSet((Set<? extends String>)a.mk);
+    static String a(final String[] array, final int n, final int n2) {
+        if (array.length < n + n2) {
+            gs.T("Unable to construct shingle");
+            return "";
+        }
+        final StringBuffer sb = new StringBuffer();
+        for (int i = n; i < n + n2 - 1; ++i) {
+            sb.append(array[i]);
+            sb.append(' ');
+        }
+        sb.append(array[n + n2 - 1]);
+        return sb.toString();
     }
     
-    public SearchAdRequest aB() {
-        return this.me;
+    private static void a(final int n, final long n2, final int n3, final String[] array, final int n4, final PriorityQueue<a> priorityQueue) {
+        priorityQueue.add(new a(n2, a(array, n3, n4)));
+        if (priorityQueue.size() > n) {
+            priorityQueue.poll();
+        }
     }
     
-    public Map<Class<? extends NetworkExtras>, NetworkExtras> aC() {
-        return this.mc;
+    public static void a(final String[] array, final int n, final int n2, final PriorityQueue<a> priorityQueue) {
+        long n3 = b(array, 0, n2);
+        a(n, n3, 0, array, n2, priorityQueue);
+        final long a = a(16785407L, n2 - 1);
+        for (int i = 1; i < array.length - n2 + 1; ++i) {
+            n3 = a(aq.o(array[i - 1]), aq.o(array[i + n2 - 1]), n3, a, 16785407L);
+            a(n, n3, i, array, n2, priorityQueue);
+        }
     }
     
-    public Map<Class<? extends MediationAdapter>, Bundle> aD() {
-        return this.mb;
+    private static long b(final String[] array, final int n, final int n2) {
+        long n3 = (aq.o(array[n]) + 2147483647L) % 1073807359L;
+        for (int i = n + 1; i < n + n2; ++i) {
+            n3 = (n3 * 16785407L % 1073807359L + (aq.o(array[i]) + 2147483647L) % 1073807359L) % 1073807359L;
+        }
+        return n3;
     }
     
-    public int aE() {
-        return this.mf;
-    }
-    
-    public Date getBirthday() {
-        return this.d;
-    }
-    
-    public String getContentUrl() {
-        return this.lY;
-    }
-    
-    public int getGender() {
-        return this.lZ;
-    }
-    
-    public Set<String> getKeywords() {
-        return this.f;
-    }
-    
-    public Location getLocation() {
-        return this.h;
-    }
-    
-    public boolean getManualImpressionsEnabled() {
-        return this.ma;
-    }
-    
-    @Deprecated
-    public <T extends NetworkExtras> T getNetworkExtras(final Class<T> clazz) {
-        return (T)this.mc.get(clazz);
-    }
-    
-    public Bundle getNetworkExtrasBundle(final Class<? extends MediationAdapter> clazz) {
-        return this.mb.get(clazz);
-    }
-    
-    public String getPublisherProvidedId() {
-        return this.md;
-    }
-    
-    public boolean isTestDevice(final Context context) {
-        return this.mg.contains(dv.l(context));
-    }
-    
-    public static final class a
+    public static class a
     {
-        private Date d;
-        private Location h;
-        private String lY;
-        private int lZ;
-        private boolean ma;
-        private String md;
-        private int mf;
-        private final HashSet<String> mh;
-        private final HashMap<Class<? extends MediationAdapter>, Bundle> mi;
-        private final HashMap<Class<? extends NetworkExtras>, NetworkExtras> mj;
-        private final HashSet<String> mk;
+        final String nQ;
+        final long value;
         
-        public a() {
-            this.mh = new HashSet<String>();
-            this.mi = new HashMap<Class<? extends MediationAdapter>, Bundle>();
-            this.mj = new HashMap<Class<? extends NetworkExtras>, NetworkExtras>();
-            this.mk = new HashSet<String>();
-            this.lZ = -1;
-            this.ma = false;
-            this.mf = -1;
-        }
-        
-        public void a(final Location h) {
-            this.h = h;
-        }
-        
-        @Deprecated
-        public void a(final NetworkExtras networkExtras) {
-            if (networkExtras instanceof AdMobExtras) {
-                this.a(AdMobAdapter.class, ((AdMobExtras)networkExtras).getExtras());
-                return;
-            }
-            this.mj.put(networkExtras.getClass(), networkExtras);
-        }
-        
-        public void a(final Class<? extends MediationAdapter> clazz, final Bundle bundle) {
-            this.mi.put(clazz, bundle);
-        }
-        
-        public void a(final Date d) {
-            this.d = d;
-        }
-        
-        public void d(final int lz) {
-            this.lZ = lz;
-        }
-        
-        public void f(final boolean ma) {
-            this.ma = ma;
-        }
-        
-        public void g(final String s) {
-            this.mh.add(s);
-        }
-        
-        public void g(final boolean b) {
-            int mf;
-            if (b) {
-                mf = 1;
-            }
-            else {
-                mf = 0;
-            }
-            this.mf = mf;
-        }
-        
-        public void h(final String s) {
-            this.mk.add(s);
-        }
-        
-        public void i(final String ly) {
-            this.lY = ly;
-        }
-        
-        public void j(final String md) {
-            this.md = md;
+        a(final long value, final String nq) {
+            this.value = value;
+            this.nQ = nq;
         }
     }
 }

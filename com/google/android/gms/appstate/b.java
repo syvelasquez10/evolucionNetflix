@@ -5,20 +5,21 @@
 package com.google.android.gms.appstate;
 
 import com.google.android.gms.common.data.DataHolder;
+import com.google.android.gms.common.data.d;
 
-public final class b extends com.google.android.gms.common.data.b implements AppState
+public final class b extends d implements AppState
 {
     b(final DataHolder dataHolder, final int n) {
         super(dataHolder, n);
     }
     
-    public AppState dt() {
-        return new a(this);
-    }
-    
     @Override
     public boolean equals(final Object o) {
         return a.a(this, o);
+    }
+    
+    public AppState fp() {
+        return new a(this);
     }
     
     @Override
@@ -48,7 +49,7 @@ public final class b extends com.google.android.gms.common.data.b implements App
     
     @Override
     public boolean hasConflict() {
-        return !this.ai("conflict_version");
+        return !this.aS("conflict_version");
     }
     
     @Override

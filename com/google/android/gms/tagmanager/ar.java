@@ -6,7 +6,7 @@ package com.google.android.gms.tagmanager;
 
 interface ar
 {
-    void a(final Runnable p0);
+    void b(final Runnable p0);
     
-    void bC(final String p0);
+    void cz(final String p0);
 }

@@ -4,120 +4,106 @@
 
 package com.google.android.gms.internal;
 
-import android.view.MotionEvent;
-import android.os.SystemClock;
-import java.util.Map;
-import android.util.DisplayMetrics;
+import android.os.Parcel;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.IBinder;
+import com.google.android.gms.dynamic.d;
+import android.os.IInterface;
 
-public final class be implements bb
+public interface be extends IInterface
 {
-    private static int a(final DisplayMetrics displayMetrics, Map<String, String> s, final String s2, final int n) {
-        s = ((Map<String, String>)s).get(s2);
-        int a = n;
-        if (s == null) {
-            return a;
-        }
-        try {
-            a = dv.a(displayMetrics, Integer.parseInt(s));
-            return a;
-        }
-        catch (NumberFormatException ex) {
-            dw.z("Could not parse " + s2 + " in a video GMSG: " + s);
-            return n;
-        }
-    }
+    IBinder a(final d p0, final ay p1, final String p2, final ct p3, final int p4) throws RemoteException;
     
-    @Override
-    public void b(dz dz, final Map<String, String> map) {
-        final String s = map.get("action");
-        if (s == null) {
-            dw.z("Action missing from video GMSG.");
-            return;
+    public abstract static class a extends Binder implements be
+    {
+        public static be g(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.client.IAdManagerCreator");
+            if (queryLocalInterface != null && queryLocalInterface instanceof be) {
+                return (be)queryLocalInterface;
+            }
+            return new be.a.a(binder);
         }
-        final cc bh = dz.bH();
-        if (bh == null) {
-            dw.z("Could not get ad overlay for a video GMSG.");
-            return;
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.ads.internal.client.IAdManagerCreator");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManagerCreator");
+                    final d am = d.a.am(parcel.readStrongBinder());
+                    ay c;
+                    if (parcel.readInt() != 0) {
+                        c = ay.CREATOR.c(parcel);
+                    }
+                    else {
+                        c = null;
+                    }
+                    final IBinder a = this.a(am, c, parcel.readString(), ct.a.l(parcel.readStrongBinder()), parcel.readInt());
+                    parcel2.writeNoException();
+                    parcel2.writeStrongBinder(a);
+                    return true;
+                }
+            }
         }
-        final boolean equalsIgnoreCase = "new".equalsIgnoreCase(s);
-        final boolean equalsIgnoreCase2 = "position".equalsIgnoreCase(s);
-        if (equalsIgnoreCase || equalsIgnoreCase2) {
-            final DisplayMetrics displayMetrics = dz.getContext().getResources().getDisplayMetrics();
-            final int a = a(displayMetrics, map, "x", 0);
-            final int a2 = a(displayMetrics, map, "y", 0);
-            final int a3 = a(displayMetrics, map, "w", -1);
-            final int a4 = a(displayMetrics, map, "h", -1);
-            if (equalsIgnoreCase && bh.aK() == null) {
-                bh.c(a, a2, a3, a4);
-                return;
+        
+        private static class a implements be
+        {
+            private IBinder lb;
+            
+            a(final IBinder lb) {
+                this.lb = lb;
             }
-            bh.b(a, a2, a3, a4);
-        }
-        else {
-            final cg ak = bh.aK();
-            if (ak == null) {
-                cg.a(dz, "no_video_view", (String)null);
-                return;
-            }
-            if ("click".equalsIgnoreCase(s)) {
-                final DisplayMetrics displayMetrics2 = dz.getContext().getResources().getDisplayMetrics();
-                final int a5 = a(displayMetrics2, map, "x", 0);
-                final int a6 = a(displayMetrics2, map, "y", 0);
-                final long uptimeMillis = SystemClock.uptimeMillis();
-                final MotionEvent obtain = MotionEvent.obtain(uptimeMillis, uptimeMillis, 0, (float)a5, (float)a6, 0);
-                ak.b(obtain);
-                obtain.recycle();
-                return;
-            }
-            if ("controls".equalsIgnoreCase(s)) {
-                final String s2 = map.get("enabled");
-                if (s2 == null) {
-                    dw.z("Enabled parameter missing from controls video GMSG.");
-                    return;
-                }
-                ak.k(Boolean.parseBoolean(s2));
-            }
-            else {
-                if ("currentTime".equalsIgnoreCase(s)) {
-                    dz = (dz)map.get("time");
-                    if (dz == null) {
-                        dw.z("Time parameter missing from currentTime video GMSG.");
-                        return;
+            
+            @Override
+            public IBinder a(final d d, final ay ay, final String s, final ct ct, final int n) throws RemoteException {
+                final IBinder binder = null;
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManagerCreator");
+                    IBinder binder2;
+                    if (d != null) {
+                        binder2 = d.asBinder();
                     }
-                    try {
-                        ak.seekTo((int)(Float.parseFloat((String)dz) * 1000.0f));
-                        return;
+                    else {
+                        binder2 = null;
                     }
-                    catch (NumberFormatException ex) {
-                        dw.z("Could not parse time parameter from currentTime video GMSG: " + (String)dz);
-                        return;
+                    obtain.writeStrongBinder(binder2);
+                    if (ay != null) {
+                        obtain.writeInt(1);
+                        ay.writeToParcel(obtain, 0);
                     }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    obtain.writeString(s);
+                    IBinder binder3 = binder;
+                    if (ct != null) {
+                        binder3 = ct.asBinder();
+                    }
+                    obtain.writeStrongBinder(binder3);
+                    obtain.writeInt(n);
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return obtain2.readStrongBinder();
                 }
-                if ("hide".equalsIgnoreCase(s)) {
-                    ak.setVisibility(4);
-                    return;
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
                 }
-                if ("load".equalsIgnoreCase(s)) {
-                    ak.aU();
-                    return;
-                }
-                if ("pause".equalsIgnoreCase(s)) {
-                    ak.pause();
-                    return;
-                }
-                if ("play".equalsIgnoreCase(s)) {
-                    ak.play();
-                    return;
-                }
-                if ("show".equalsIgnoreCase(s)) {
-                    ak.setVisibility(0);
-                    return;
-                }
-                if ("src".equalsIgnoreCase(s)) {
-                    ak.o(map.get("src"));
-                    return;
-                }
-                dw.z("Unknown video action: " + s);
+            }
+            
+            public IBinder asBinder() {
+                return this.lb;
             }
         }
     }

@@ -8,17 +8,5 @@ import com.google.android.gms.internal.d;
 
 interface cm
 {
-    void f(final d.a p0);
-    
-    cj kI();
-    
-    cj kJ();
-    
-    ck kK();
-    
-    ck kL();
-    
-    ck kM();
-    
-    ck kN();
+    dl e(final d.a p0);
 }

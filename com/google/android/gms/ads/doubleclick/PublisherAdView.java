@@ -9,54 +9,58 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdListener;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.google.android.gms.internal.at;
+import com.google.android.gms.internal.bh;
 import android.view.ViewGroup;
 
 public final class PublisherAdView extends ViewGroup
 {
-    private final at ku;
+    private final bh li;
     
     public PublisherAdView(final Context context) {
         super(context);
-        this.ku = new at(this);
+        this.li = new bh(this);
     }
     
     public PublisherAdView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.ku = new at(this, set, true);
+        this.li = new bh(this, set, true);
     }
     
     public PublisherAdView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.ku = new at(this, set, true);
+        this.li = new bh(this, set, true);
     }
     
     public void destroy() {
-        this.ku.destroy();
+        this.li.destroy();
     }
     
     public AdListener getAdListener() {
-        return this.ku.getAdListener();
+        return this.li.getAdListener();
     }
     
     public AdSize getAdSize() {
-        return this.ku.getAdSize();
+        return this.li.getAdSize();
     }
     
     public AdSize[] getAdSizes() {
-        return this.ku.getAdSizes();
+        return this.li.getAdSizes();
     }
     
     public String getAdUnitId() {
-        return this.ku.getAdUnitId();
+        return this.li.getAdUnitId();
     }
     
     public AppEventListener getAppEventListener() {
-        return this.ku.getAppEventListener();
+        return this.li.getAppEventListener();
+    }
+    
+    public String getMediationAdapterClassName() {
+        return this.li.getMediationAdapterClassName();
     }
     
     public void loadAd(final PublisherAdRequest publisherAdRequest) {
-        this.ku.a(publisherAdRequest.O());
+        this.li.a(publisherAdRequest.V());
     }
     
     protected void onLayout(final boolean b, int n, int n2, final int n3, final int n4) {
@@ -92,33 +96,33 @@ public final class PublisherAdView extends ViewGroup
     }
     
     public void pause() {
-        this.ku.pause();
+        this.li.pause();
     }
     
     public void recordManualImpression() {
-        this.ku.recordManualImpression();
+        this.li.recordManualImpression();
     }
     
     public void resume() {
-        this.ku.resume();
+        this.li.resume();
     }
     
     public void setAdListener(final AdListener adListener) {
-        this.ku.setAdListener(adListener);
+        this.li.setAdListener(adListener);
     }
     
     public void setAdSizes(final AdSize... array) {
         if (array == null || array.length < 1) {
             throw new IllegalArgumentException("The supported ad sizes must contain at least one valid ad size.");
         }
-        this.ku.a(array);
+        this.li.a(array);
     }
     
     public void setAdUnitId(final String adUnitId) {
-        this.ku.setAdUnitId(adUnitId);
+        this.li.setAdUnitId(adUnitId);
     }
     
     public void setAppEventListener(final AppEventListener appEventListener) {
-        this.ku.setAppEventListener(appEventListener);
+        this.li.setAppEventListener(appEventListener);
     }
 }

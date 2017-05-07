@@ -4,136 +4,165 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import com.google.android.gms.ads.a;
-import android.util.DisplayMetrics;
-import com.google.android.gms.ads.AdSize;
-import android.content.Context;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import java.util.Iterator;
+import java.util.ArrayList;
 
-public final class ak implements SafeParcelable
+@ez
+public class ak
 {
-    public static final al CREATOR;
-    public final int height;
-    public final int heightPixels;
-    public final String lS;
-    public final boolean lT;
-    public final ak[] lU;
-    public final int versionCode;
-    public final int width;
-    public final int widthPixels;
+    private final Object mw;
+    private final int nf;
+    private final int ng;
+    private final int nh;
+    private final ap ni;
+    private ArrayList<String> nj;
+    private int nk;
+    private int nl;
+    private int nm;
+    private int nn;
+    private String no;
     
-    static {
-        CREATOR = new al();
+    public ak(final int nf, final int ng, final int nh, final int n) {
+        this.mw = new Object();
+        this.nj = new ArrayList<String>();
+        this.nk = 0;
+        this.nl = 0;
+        this.nm = 0;
+        this.no = "";
+        this.nf = nf;
+        this.ng = ng;
+        this.nh = nh;
+        this.ni = new ap(n);
     }
     
-    public ak() {
-        this(2, "interstitial_mb", 0, 0, true, 0, 0, null);
-    }
-    
-    ak(final int versionCode, final String ls, final int height, final int heightPixels, final boolean lt, final int width, final int widthPixels, final ak[] lu) {
-        this.versionCode = versionCode;
-        this.lS = ls;
-        this.height = height;
-        this.heightPixels = heightPixels;
-        this.lT = lt;
-        this.width = width;
-        this.widthPixels = widthPixels;
-        this.lU = lu;
-    }
-    
-    public ak(final Context context, final AdSize adSize) {
-        this(context, new AdSize[] { adSize });
-    }
-    
-    public ak(final Context context, final AdSize[] array) {
-        final int n = 0;
-        final AdSize adSize = array[0];
-        this.versionCode = 2;
-        this.lT = false;
-        this.width = adSize.getWidth();
-        this.height = adSize.getHeight();
-        boolean b;
-        if (this.width == -1) {
-            b = true;
+    private String a(final ArrayList<String> list, final int n) {
+        String string;
+        if (list.isEmpty()) {
+            string = "";
         }
         else {
-            b = false;
-        }
-        boolean b2;
-        if (this.height == -2) {
-            b2 = true;
-        }
-        else {
-            b2 = false;
-        }
-        final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int width;
-        if (b) {
-            this.widthPixels = a(displayMetrics);
-            width = (int)(this.widthPixels / displayMetrics.density);
-        }
-        else {
-            width = this.width;
-            this.widthPixels = dv.a(displayMetrics, this.width);
-        }
-        int n2;
-        if (b2) {
-            n2 = c(displayMetrics);
-        }
-        else {
-            n2 = this.height;
-        }
-        this.heightPixels = dv.a(displayMetrics, n2);
-        if (b || b2) {
-            this.lS = width + "x" + n2 + "_as";
-        }
-        else {
-            this.lS = adSize.toString();
-        }
-        if (array.length > 1) {
-            this.lU = new ak[array.length];
-            for (int i = n; i < array.length; ++i) {
-                this.lU[i] = new ak(context, array[i]);
+            final StringBuffer sb = new StringBuffer();
+            final Iterator<String> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                sb.append(iterator.next());
+                sb.append(' ');
+                if (sb.length() > n) {
+                    break;
+                }
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            final String s = string = sb.toString();
+            if (s.length() >= n) {
+                return s.substring(0, n);
             }
         }
-        else {
-            this.lU = null;
+        return string;
+    }
+    
+    private void j(final String s) {
+        if (s == null || s.length() < this.nh) {
+            return;
+        }
+        synchronized (this.mw) {
+            this.nj.add(s);
+            this.nk += s.length();
         }
     }
     
-    public ak(final ak ak, final ak[] array) {
-        this(2, ak.lS, ak.height, ak.heightPixels, ak.lT, ak.width, ak.widthPixels, array);
+    int a(final int n, final int n2) {
+        return this.nf * n + this.ng * n2;
     }
     
-    public static int a(final DisplayMetrics displayMetrics) {
-        return displayMetrics.widthPixels;
-    }
-    
-    public static int b(final DisplayMetrics displayMetrics) {
-        return (int)(c(displayMetrics) * displayMetrics.density);
-    }
-    
-    private static int c(final DisplayMetrics displayMetrics) {
-        final int n = (int)(displayMetrics.heightPixels / displayMetrics.density);
-        if (n <= 400) {
-            return 32;
+    public boolean aN() {
+        while (true) {
+            synchronized (this.mw) {
+                if (this.nm == 0) {
+                    return true;
+                }
+            }
+            return false;
         }
-        if (n <= 720) {
-            return 50;
+    }
+    
+    public String aO() {
+        return this.no;
+    }
+    
+    public void aP() {
+        synchronized (this.mw) {
+            this.nn -= 100;
         }
-        return 90;
     }
     
-    public AdSize aA() {
-        return a.a(this.width, this.height, this.lS);
+    public void aQ() {
+        synchronized (this.mw) {
+            --this.nm;
+        }
     }
     
-    public int describeContents() {
-        return 0;
+    public void aR() {
+        synchronized (this.mw) {
+            ++this.nm;
+        }
     }
     
-    public void writeToParcel(final Parcel parcel, final int n) {
-        al.a(this, parcel, n);
+    public void aS() {
+        synchronized (this.mw) {
+            final int a = this.a(this.nk, this.nl);
+            if (a > this.nn) {
+                this.nn = a;
+                this.no = this.ni.a(this.nj);
+            }
+        }
+    }
+    
+    int aT() {
+        return this.nk;
+    }
+    
+    public void c(final int nl) {
+        this.nl = nl;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (o instanceof ak) {
+            if (o == this) {
+                return true;
+            }
+            final ak ak = (ak)o;
+            if (ak.aO() != null && ak.aO().equals(this.aO())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int getScore() {
+        return this.nn;
+    }
+    
+    public void h(final String s) {
+        this.j(s);
+        synchronized (this.mw) {
+            if (this.nm < 0) {
+                gs.S("ActivityContent: negative number of WebViews.");
+            }
+            this.aS();
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        return this.aO().hashCode();
+    }
+    
+    public void i(final String s) {
+        this.j(s);
+    }
+    
+    @Override
+    public String toString() {
+        return "ActivityContent fetchId: " + this.nl + " score:" + this.nn + " total_length:" + this.nk + "\n text: " + this.a(this.nj, 200) + "\n signture: " + this.no;
     }
 }

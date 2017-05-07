@@ -4,6 +4,10 @@
 
 package com.google.android.gms.drive.query;
 
-public interface Filter
+import com.google.android.gms.drive.query.internal.f;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+
+public interface Filter extends SafeParcelable
 {
+     <T> T a(final f<T> p0);
 }

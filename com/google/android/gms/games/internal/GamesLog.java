@@ -4,29 +4,37 @@
 
 package com.google.android.gms.games.internal;
 
-import com.google.android.gms.internal.fj;
+import com.google.android.gms.common.internal.h;
 
 public final class GamesLog
 {
-    private static final fj JH;
+    private static final h OS;
     
     static {
-        JH = new fj("Games");
+        OS = new h("Games");
     }
     
     public static void a(final String s, final String s2, final Throwable t) {
-        GamesLog.JH.a(s, s2, t);
+        GamesLog.OS.a(s, s2, t);
     }
     
-    public static void f(final String s, final String s2) {
-        GamesLog.JH.f(s, s2);
+    public static void b(final String s, final String s2, final Throwable t) {
+        GamesLog.OS.b(s, s2, t);
     }
     
-    public static void g(final String s, final String s2) {
-        GamesLog.JH.g(s, s2);
+    public static void c(final String s, final String s2, final Throwable t) {
+        GamesLog.OS.c(s, s2, t);
     }
     
-    public static void h(final String s, final String s2) {
-        GamesLog.JH.h(s, s2);
+    public static void o(final String s, final String s2) {
+        GamesLog.OS.o(s, s2);
+    }
+    
+    public static void p(final String s, final String s2) {
+        GamesLog.OS.p(s, s2);
+    }
+    
+    public static void q(final String s, final String s2) {
+        GamesLog.OS.q(s, s2);
     }
 }

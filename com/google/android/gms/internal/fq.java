@@ -4,78 +4,15 @@
 
 package com.google.android.gms.internal;
 
-import android.text.TextUtils;
-import android.os.Looper;
+import android.graphics.drawable.Drawable;
+import java.util.concurrent.ExecutionException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public final class fq
+@ez
+public class fq implements a<bp>
 {
-    public static void a(final boolean b, final Object o) {
-        if (!b) {
-            throw new IllegalStateException(String.valueOf(o));
-        }
-    }
-    
-    public static void a(final boolean b, final String s, final Object... array) {
-        if (!b) {
-            throw new IllegalArgumentException(String.format(s, array));
-        }
-    }
-    
-    public static void aj(final String s) {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            throw new IllegalStateException(s);
-        }
-    }
-    
-    public static void ak(final String s) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            throw new IllegalStateException(s);
-        }
-    }
-    
-    public static String ap(final String s) {
-        if (TextUtils.isEmpty((CharSequence)s)) {
-            throw new IllegalArgumentException("Given String is empty or null");
-        }
-        return s;
-    }
-    
-    public static <T> T b(final T t, final Object o) {
-        if (t == null) {
-            throw new NullPointerException(String.valueOf(o));
-        }
-        return t;
-    }
-    
-    public static String b(final String s, final Object o) {
-        if (TextUtils.isEmpty((CharSequence)s)) {
-            throw new IllegalArgumentException(String.valueOf(o));
-        }
-        return s;
-    }
-    
-    public static void b(final boolean b, final Object o) {
-        if (!b) {
-            throw new IllegalArgumentException(String.valueOf(o));
-        }
-    }
-    
-    public static <T> T f(final T t) {
-        if (t == null) {
-            throw new NullPointerException("null reference");
-        }
-        return t;
-    }
-    
-    public static void x(final boolean b) {
-        if (!b) {
-            throw new IllegalStateException();
-        }
-    }
-    
-    public static void z(final boolean b) {
-        if (!b) {
-            throw new IllegalArgumentException();
-        }
+    public bp c(final fo fo, final JSONObject jsonObject) throws JSONException, InterruptedException, ExecutionException {
+        return new bp(jsonObject.getString("headline"), fo.a(jsonObject, "image", true).get(), jsonObject.getString("body"), fo.a(jsonObject, "secondary_image", false).get(), jsonObject.getString("call_to_action"), jsonObject.getString("attribution"));
     }
 }

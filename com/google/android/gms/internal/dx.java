@@ -4,47 +4,156 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.os.IBinder;
+import android.content.ComponentName;
+import java.util.ArrayList;
+import android.os.Bundle;
+import java.util.Iterator;
+import java.util.HashMap;
+import android.os.SystemClock;
+import android.os.RemoteException;
+import android.content.Intent;
+import java.util.List;
+import android.content.Context;
+import android.content.ServiceConnection;
 
-public final class dx implements SafeParcelable
+@ez
+public class dx extends gg implements ServiceConnection
 {
-    public static final dy CREATOR;
-    public String rq;
-    public int rr;
-    public int rs;
-    public boolean rt;
-    public final int versionCode;
+    private Context mContext;
+    private final Object mw;
+    private boolean sl;
+    private el sm;
+    private dw sn;
+    private ec so;
+    private List<ea> sp;
+    private ee sq;
     
-    static {
-        CREATOR = new dy();
+    public dx(final Context mContext, final el sm, final ee sq) {
+        this.mw = new Object();
+        this.sl = false;
+        this.sp = null;
+        this.mContext = mContext;
+        this.sm = sm;
+        this.sq = sq;
+        this.sn = new dw(mContext);
+        this.so = ec.j(this.mContext);
+        this.sp = this.so.d(10L);
     }
     
-    public dx(final int n, final int n2, final boolean b) {
-        final StringBuilder append = new StringBuilder().append("afma-sdk-a-v").append(n).append(".").append(n2).append(".");
-        String s;
-        if (b) {
-            s = "0";
+    private void a(final ea ea, final String s, final String s2) {
+        final Intent intent = new Intent();
+        intent.putExtra("RESPONSE_CODE", 0);
+        intent.putExtra("INAPP_PURCHASE_DATA", s);
+        intent.putExtra("INAPP_DATA_SIGNATURE", s2);
+        gr.wC.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (dx.this.sq.a(ea.sB, -1, intent)) {
+                        dx.this.sm.a(new eb(dx.this.mContext, ea.sC, true, -1, intent, ea));
+                        return;
+                    }
+                    dx.this.sm.a(new eb(dx.this.mContext, ea.sC, false, -1, intent, ea));
+                }
+                catch (RemoteException ex) {
+                    gs.W("Fail to verify and dispatch pending transaction");
+                }
+            }
+        });
+    }
+    
+    private void b(final long n) {
+        do {
+            if (!this.c(n)) {
+                gs.W("Timeout waiting for pending transaction to be processed.");
+            }
+        } while (!this.sl);
+    }
+    
+    private boolean c(long n) {
+        n = 60000L - (SystemClock.elapsedRealtime() - n);
+        if (n <= 0L) {
+            return false;
         }
-        else {
-            s = "1";
+        try {
+            this.mw.wait(n);
+            return true;
         }
-        this(1, append.append(s).toString(), n, n2, b);
+        catch (InterruptedException ex) {
+            gs.W("waitWithTimeout_lock interrupted");
+            return true;
+        }
     }
     
-    dx(final int versionCode, final String rq, final int rr, final int rs, final boolean rt) {
-        this.versionCode = versionCode;
-        this.rq = rq;
-        this.rr = rr;
-        this.rs = rs;
-        this.rt = rt;
+    private void cq() {
+        if (!this.sp.isEmpty()) {
+            final HashMap<String, ea> hashMap = new HashMap<String, ea>();
+            for (final ea ea : this.sp) {
+                hashMap.put(ea.sC, ea);
+            }
+            String string = null;
+            do {
+                final Bundle d = this.sn.d(this.mContext.getPackageName(), string);
+                if (d == null || ed.b(d) != 0) {
+                    break;
+                }
+                final ArrayList stringArrayList = d.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+                final ArrayList stringArrayList2 = d.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+                final ArrayList stringArrayList3 = d.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
+                string = d.getString("INAPP_CONTINUATION_TOKEN");
+                for (int i = 0; i < stringArrayList.size(); ++i) {
+                    if (hashMap.containsKey(stringArrayList.get(i))) {
+                        final String s = stringArrayList.get(i);
+                        final String s2 = stringArrayList2.get(i);
+                        final String s3 = stringArrayList3.get(i);
+                        final ea ea2 = hashMap.get(s);
+                        if (ea2.sB.equals(ed.D(s2))) {
+                            this.a(ea2, s2, s3);
+                            hashMap.remove(s);
+                        }
+                    }
+                }
+            } while (string != null && !hashMap.isEmpty());
+            final Iterator<String> iterator2 = hashMap.keySet().iterator();
+            while (iterator2.hasNext()) {
+                this.so.a(hashMap.get(iterator2.next()));
+            }
+        }
     }
     
-    public int describeContents() {
-        return 0;
+    @Override
+    public void cp() {
+        synchronized (this.mw) {
+            final Context mContext = this.mContext;
+            final Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+            final Context mContext2 = this.mContext;
+            mContext.bindService(intent, (ServiceConnection)this, 1);
+            this.b(SystemClock.elapsedRealtime());
+            this.mContext.unbindService((ServiceConnection)this);
+            this.sn.destroy();
+        }
     }
     
-    public void writeToParcel(final Parcel parcel, final int n) {
-        dy.a(this, parcel, n);
+    public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
+        synchronized (this.mw) {
+            this.sn.r(binder);
+            this.cq();
+            this.sl = true;
+            this.mw.notify();
+        }
+    }
+    
+    public void onServiceDisconnected(final ComponentName componentName) {
+        gs.U("In-app billing service disconnected.");
+        this.sn.destroy();
+    }
+    
+    @Override
+    public void onStop() {
+        synchronized (this.mw) {
+            this.mContext.unbindService((ServiceConnection)this);
+            this.sn.destroy();
+        }
     }
 }

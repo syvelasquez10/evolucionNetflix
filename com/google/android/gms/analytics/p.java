@@ -4,30 +4,54 @@
 
 package com.google.android.gms.analytics;
 
-import android.os.Build$VERSION;
-import java.io.File;
+import android.content.IntentFilter;
+import android.content.Intent;
+import android.content.Context;
+import android.content.BroadcastReceiver;
 
-class p
+class p extends BroadcastReceiver
 {
-    static boolean G(final String s) {
-        if (version() < 9) {
-            return false;
-        }
-        final File file = new File(s);
-        file.setReadable(false, false);
-        file.setWritable(false, false);
-        file.setReadable(true, true);
-        file.setWritable(true, true);
-        return true;
+    static final String ya;
+    private final ae yb;
+    
+    static {
+        ya = p.class.getName();
     }
     
-    public static int version() {
-        try {
-            return Integer.parseInt(Build$VERSION.SDK);
+    p(final ae yb) {
+        this.yb = yb;
+    }
+    
+    public static void A(final Context context) {
+        final Intent intent = new Intent("com.google.analytics.RADIO_POWERED");
+        intent.addCategory(context.getPackageName());
+        intent.putExtra(p.ya, true);
+        context.sendBroadcast(intent);
+    }
+    
+    public void onReceive(final Context context, final Intent intent) {
+        boolean b = false;
+        final String action = intent.getAction();
+        if ("android.net.conn.CONNECTIVITY_CHANGE".equals(action)) {
+            final boolean booleanExtra = intent.getBooleanExtra("noConnectivity", false);
+            final ae yb = this.yb;
+            if (!booleanExtra) {
+                b = true;
+            }
+            yb.A(b);
         }
-        catch (NumberFormatException ex) {
-            aa.w("Invalid version number: " + Build$VERSION.SDK);
-            return 0;
+        else if ("com.google.analytics.RADIO_POWERED".equals(action) && !intent.hasExtra(p.ya)) {
+            this.yb.ee();
         }
+    }
+    
+    public void z(final Context context) {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        context.registerReceiver((BroadcastReceiver)this, intentFilter);
+        final IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction("com.google.analytics.RADIO_POWERED");
+        intentFilter2.addCategory(context.getPackageName());
+        context.registerReceiver((BroadcastReceiver)this, intentFilter2);
     }
 }

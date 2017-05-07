@@ -5,21 +5,29 @@
 package com.google.android.gms.games.internal.game;
 
 import android.os.Parcel;
-import com.google.android.gms.games.Game;
+import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import java.util.ArrayList;
+import com.google.android.gms.games.Game;
 import com.google.android.gms.common.data.DataHolder;
+import com.google.android.gms.games.snapshot.SnapshotMetadataRef;
 import com.google.android.gms.games.GameRef;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public class ExtendedGameRef extends b implements ExtendedGame
+public class ExtendedGameRef extends d implements ExtendedGame
 {
-    private final GameRef LD;
-    private final int LE;
+    private final GameRef aam;
+    private final SnapshotMetadataRef aay;
+    private final int aaz;
     
-    ExtendedGameRef(final DataHolder dataHolder, final int n, final int le) {
+    ExtendedGameRef(final DataHolder dataHolder, final int n, final int aaz) {
         super(dataHolder, n);
-        this.LD = new GameRef(dataHolder, n);
-        this.LE = le;
+        this.aam = new GameRef(dataHolder, n);
+        this.aaz = aaz;
+        if (this.aQ("external_snapshot_id") && !this.aS("external_snapshot_id")) {
+            this.aay = new SnapshotMetadataRef(dataHolder, n);
+            return;
+        }
+        this.aay = null;
     }
     
     public int describeContents() {
@@ -32,42 +40,8 @@ public class ExtendedGameRef extends b implements ExtendedGame
     }
     
     @Override
-    public ArrayList<GameBadge> gW() {
-        int i = 0;
-        if (this.BB.getString("badge_title", this.BD, this.BB.G(this.BD)) == null) {
-            return new ArrayList<GameBadge>(0);
-        }
-        final ArrayList<GameBadgeRef> list = (ArrayList<GameBadgeRef>)new ArrayList<GameBadge>(this.LE);
-        while (i < this.LE) {
-            list.add(new GameBadgeRef(this.BB, this.BD + i));
-            ++i;
-        }
-        return (ArrayList<GameBadge>)list;
-    }
-    
-    @Override
-    public int gX() {
-        return this.getInteger("availability");
-    }
-    
-    @Override
-    public boolean gY() {
-        return this.getBoolean("owned");
-    }
-    
-    @Override
-    public int gZ() {
-        return this.getInteger("achievement_unlocked_count");
-    }
-    
-    @Override
     public Game getGame() {
-        return this.LD;
-    }
-    
-    @Override
-    public long ha() {
-        return this.getLong("last_played_server_time");
+        return this.aam;
     }
     
     @Override
@@ -76,26 +50,65 @@ public class ExtendedGameRef extends b implements ExtendedGame
     }
     
     @Override
-    public long hb() {
+    public ArrayList<GameBadge> kO() {
+        int i = 0;
+        if (this.IC.c("badge_title", this.JQ, this.IC.ar(this.JQ)) == null) {
+            return new ArrayList<GameBadge>(0);
+        }
+        final ArrayList<GameBadgeRef> list = (ArrayList<GameBadgeRef>)new ArrayList<GameBadge>(this.aaz);
+        while (i < this.aaz) {
+            list.add(new GameBadgeRef(this.IC, this.JQ + i));
+            ++i;
+        }
+        return (ArrayList<GameBadge>)list;
+    }
+    
+    @Override
+    public int kP() {
+        return this.getInteger("availability");
+    }
+    
+    @Override
+    public boolean kQ() {
+        return this.getBoolean("owned");
+    }
+    
+    @Override
+    public int kR() {
+        return this.getInteger("achievement_unlocked_count");
+    }
+    
+    @Override
+    public long kS() {
+        return this.getLong("last_played_server_time");
+    }
+    
+    @Override
+    public long kT() {
         return this.getLong("price_micros");
     }
     
     @Override
-    public String hc() {
+    public String kU() {
         return this.getString("formatted_price");
     }
     
     @Override
-    public long hd() {
+    public long kV() {
         return this.getLong("full_price_micros");
     }
     
     @Override
-    public String he() {
+    public String kW() {
         return this.getString("formatted_full_price");
     }
     
-    public ExtendedGame hg() {
+    @Override
+    public SnapshotMetadata kX() {
+        return this.aay;
+    }
+    
+    public ExtendedGame kZ() {
         return new ExtendedGameEntity(this);
     }
     
@@ -105,6 +118,6 @@ public class ExtendedGameRef extends b implements ExtendedGame
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        ((ExtendedGameEntity)this.hg()).writeToParcel(parcel, n);
+        ((ExtendedGameEntity)this.kZ()).writeToParcel(parcel, n);
     }
 }

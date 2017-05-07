@@ -25,13 +25,17 @@ public final class DataBufferUtils
         return;
     }
     
+    public static boolean hasData(final DataBuffer<?> dataBuffer) {
+        return dataBuffer != null && dataBuffer.getCount() > 0;
+    }
+    
     public static boolean hasNextPage(final DataBuffer<?> dataBuffer) {
-        final Bundle metadata = dataBuffer.getMetadata();
-        return metadata != null && metadata.getString("next_page_token") != null;
+        final Bundle gz = dataBuffer.gz();
+        return gz != null && gz.getString("next_page_token") != null;
     }
     
     public static boolean hasPrevPage(final DataBuffer<?> dataBuffer) {
-        final Bundle metadata = dataBuffer.getMetadata();
-        return metadata != null && metadata.getString("prev_page_token") != null;
+        final Bundle gz = dataBuffer.gz();
+        return gz != null && gz.getString("prev_page_token") != null;
     }
 }

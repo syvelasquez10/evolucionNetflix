@@ -50,13 +50,13 @@ public class FacebookLoginActivity extends AccountActivity
     }
     
     private void handleConnectFailure() {
-        Toast.makeText((Context)this, 2131493227, 1).show();
+        Toast.makeText((Context)this, 2131493232, 1).show();
         this.finish();
     }
     
     private void handleConnectSuccess() {
         this.sendHomeRefreshBrodcast();
-        Toast.makeText((Context)this, 2131493226, 1).show();
+        Toast.makeText((Context)this, 2131493231, 1).show();
         this.finish();
     }
     
@@ -117,7 +117,7 @@ public class FacebookLoginActivity extends AccountActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         this.getWindow().requestFeature(1);
-        this.getWindow().setBackgroundDrawableResource(2131296304);
+        this.getWindow().setBackgroundDrawableResource(2131296350);
         super.onCreate(bundle);
         this.printAppSignatureKeyIfDebug();
     }

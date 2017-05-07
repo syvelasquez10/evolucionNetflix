@@ -10,17 +10,17 @@ import android.database.CharArrayBuffer;
 import com.google.android.gms.games.GameRef;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.Game;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class LeaderboardRef extends b implements Leaderboard
+public final class LeaderboardRef extends d implements Leaderboard
 {
-    private final int LE;
-    private final Game LS;
+    private final int aaz;
+    private final Game abm;
     
-    LeaderboardRef(final DataHolder dataHolder, final int n, final int le) {
+    LeaderboardRef(final DataHolder dataHolder, final int n, final int aaz) {
         super(dataHolder, n);
-        this.LE = le;
-        this.LS = new GameRef(dataHolder, n);
+        this.aaz = aaz;
+        this.abm = new GameRef(dataHolder, n);
     }
     
     @Override
@@ -40,12 +40,12 @@ public final class LeaderboardRef extends b implements Leaderboard
     
     @Override
     public Game getGame() {
-        return this.LS;
+        return this.abm;
     }
     
     @Override
     public Uri getIconImageUri() {
-        return this.ah("board_icon_image_uri");
+        return this.aR("board_icon_image_uri");
     }
     
     @Override
@@ -65,20 +65,20 @@ public final class LeaderboardRef extends b implements Leaderboard
     
     @Override
     public ArrayList<LeaderboardVariant> getVariants() {
-        final ArrayList<LeaderboardVariantRef> list = (ArrayList<LeaderboardVariantRef>)new ArrayList<LeaderboardVariant>(this.LE);
-        for (int i = 0; i < this.LE; ++i) {
-            list.add(new LeaderboardVariantRef(this.BB, this.BD + i));
+        final ArrayList<LeaderboardVariantRef> list = (ArrayList<LeaderboardVariantRef>)new ArrayList<LeaderboardVariant>(this.aaz);
+        for (int i = 0; i < this.aaz; ++i) {
+            list.add(new LeaderboardVariantRef(this.IC, this.JQ + i));
         }
         return (ArrayList<LeaderboardVariant>)list;
-    }
-    
-    public Leaderboard hC() {
-        return new LeaderboardEntity(this);
     }
     
     @Override
     public int hashCode() {
         return LeaderboardEntity.a(this);
+    }
+    
+    public Leaderboard lx() {
+        return new LeaderboardEntity(this);
     }
     
     @Override

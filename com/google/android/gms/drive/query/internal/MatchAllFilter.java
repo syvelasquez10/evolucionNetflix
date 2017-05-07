@@ -5,24 +5,27 @@
 package com.google.android.gms.drive.query.internal;
 
 import android.os.Parcel;
-import com.google.android.gms.drive.query.Filter;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class MatchAllFilter implements SafeParcelable, Filter
+public class MatchAllFilter extends AbstractFilter
 {
-    public static final h CREATOR;
-    final int xH;
+    public static final j CREATOR;
+    final int BR;
     
     static {
-        CREATOR = new h();
+        CREATOR = new j();
     }
     
     public MatchAllFilter() {
         this(1);
     }
     
-    MatchAllFilter(final int xh) {
-        this.xH = xh;
+    MatchAllFilter(final int br) {
+        this.BR = br;
+    }
+    
+    @Override
+    public <F> F a(final f<F> f) {
+        return f.is();
     }
     
     public int describeContents() {
@@ -30,6 +33,6 @@ public class MatchAllFilter implements SafeParcelable, Filter
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        h.a(this, parcel, n);
+        j.a(this, parcel, n);
     }
 }

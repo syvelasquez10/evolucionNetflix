@@ -5,27 +5,31 @@
 package com.google.android.gms.drive.query.internal;
 
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
 import com.google.android.gms.drive.query.Filter;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.os.Parcelable$Creator;
 
-public class NotFilter implements SafeParcelable, Filter
+public class NotFilter extends AbstractFilter
 {
     public static final Parcelable$Creator<NotFilter> CREATOR;
-    final FilterHolder GT;
-    final int xH;
+    final int BR;
+    final FilterHolder QQ;
     
     static {
-        CREATOR = (Parcelable$Creator)new i();
+        CREATOR = (Parcelable$Creator)new k();
     }
     
-    NotFilter(final int xh, final FilterHolder gt) {
-        this.xH = xh;
-        this.GT = gt;
+    NotFilter(final int br, final FilterHolder qq) {
+        this.BR = br;
+        this.QQ = qq;
     }
     
     public NotFilter(final Filter filter) {
         this(1, new FilterHolder(filter));
+    }
+    
+    @Override
+    public <T> T a(final f<T> f) {
+        return f.j(this.QQ.getFilter().a(f));
     }
     
     public int describeContents() {
@@ -33,6 +37,6 @@ public class NotFilter implements SafeParcelable, Filter
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        i.a(this, parcel, n);
+        k.a(this, parcel, n);
     }
 }

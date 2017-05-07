@@ -9,4 +9,6 @@ import android.view.View;
 interface FragmentContainer
 {
     View findViewById(final int p0);
+    
+    boolean hasView();
 }

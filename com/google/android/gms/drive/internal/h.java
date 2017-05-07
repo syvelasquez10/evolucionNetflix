@@ -4,82 +4,61 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.drive.Contents;
-import com.google.android.gms.drive.metadata.internal.MetadataBundle;
+import android.os.RemoteException;
+import com.google.android.gms.drive.Drive;
+import android.content.IntentSender;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.internal.n;
+import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.common.internal.safeparcel.a;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
 
-public class h implements Parcelable$Creator<CreateFileRequest>
+public class h
 {
-    static void a(final CreateFileRequest createFileRequest, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, createFileRequest.xH);
-        b.a(parcel, 2, (Parcelable)createFileRequest.Fa, n, false);
-        b.a(parcel, 3, (Parcelable)createFileRequest.EZ, n, false);
-        b.a(parcel, 4, (Parcelable)createFileRequest.EX, n, false);
-        b.F(parcel, p3);
+    private String No;
+    private DriveId Nq;
+    protected MetadataChangeSet Oa;
+    private Integer Ob;
+    private final int Oc;
+    
+    public h(final int oc) {
+        this.Oc = oc;
     }
     
-    public CreateFileRequest I(final Parcel parcel) {
-        Contents contents = null;
-        final int o = a.o(parcel);
-        int g = 0;
-        MetadataBundle metadataBundle = null;
-        DriveId driveId = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            DriveId driveId2 = null;
-            MetadataBundle metadataBundle3 = null;
-            switch (a.R(n)) {
-                default: {
-                    a.b(parcel, n);
-                    final MetadataBundle metadataBundle2 = metadataBundle;
-                    driveId2 = driveId;
-                    metadataBundle3 = metadataBundle2;
-                    break;
-                }
-                case 1: {
-                    g = a.g(parcel, n);
-                    final DriveId driveId3 = driveId;
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId3;
-                    break;
-                }
-                case 2: {
-                    final DriveId driveId4 = a.a(parcel, n, DriveId.CREATOR);
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId4;
-                    break;
-                }
-                case 3: {
-                    final MetadataBundle metadataBundle4 = a.a(parcel, n, MetadataBundle.CREATOR);
-                    driveId2 = driveId;
-                    metadataBundle3 = metadataBundle4;
-                    break;
-                }
-                case 4: {
-                    contents = a.a(parcel, n, Contents.CREATOR);
-                    final DriveId driveId5 = driveId;
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId5;
-                    break;
-                }
+    public void a(final DriveId driveId) {
+        this.Nq = n.i(driveId);
+    }
+    
+    public void a(final MetadataChangeSet set) {
+        this.Oa = n.i(set);
+    }
+    
+    public void bi(final String s) {
+        this.No = n.i(s);
+    }
+    
+    public void bk(final int n) {
+        this.Ob = n;
+    }
+    
+    public IntentSender build(final GoogleApiClient googleApiClient) {
+        n.b(this.Oa, "Must provide initial metadata to CreateFileActivityBuilder.");
+        n.a(googleApiClient.isConnected(), (Object)"Client must be connected");
+        final q q = googleApiClient.a(Drive.CU);
+        this.Oa.hS().setContext(q.getContext());
+        final ab hy = q.hY();
+        Label_0098: {
+            if (this.Ob != null) {
+                break Label_0098;
             }
-            final DriveId driveId6 = driveId2;
-            metadataBundle = metadataBundle3;
-            driveId = driveId6;
+            int intValue = -1;
+            try {
+                return hy.a(new CreateFileIntentSenderRequest(this.Oa.hS(), intValue, this.No, this.Nq, this.Oc));
+                intValue = this.Ob;
+                return hy.a(new CreateFileIntentSenderRequest(this.Oa.hS(), intValue, this.No, this.Nq, this.Oc));
+            }
+            catch (RemoteException ex) {
+                throw new RuntimeException("Unable to connect Drive Play Service", (Throwable)ex);
+            }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
-        }
-        return new CreateFileRequest(g, driveId, metadataBundle, contents);
-    }
-    
-    public CreateFileRequest[] am(final int n) {
-        return new CreateFileRequest[n];
     }
 }

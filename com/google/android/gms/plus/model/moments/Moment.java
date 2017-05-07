@@ -4,9 +4,9 @@
 
 package com.google.android.gms.plus.model.moments;
 
-import com.google.android.gms.internal.ie;
+import com.google.android.gms.internal.nv;
 import java.util.HashSet;
-import com.google.android.gms.internal.ic;
+import com.google.android.gms.internal.nt;
 import java.util.Set;
 import com.google.android.gms.common.data.Freezable;
 
@@ -34,48 +34,48 @@ public interface Moment extends Freezable<Moment>
     
     public static class Builder
     {
-        private String Rd;
-        private final Set<Integer> UJ;
-        private ic VE;
-        private ic VF;
-        private String Vw;
-        private String wp;
+        private String BL;
+        private final Set<Integer> alR;
+        private String amE;
+        private nt amM;
+        private nt amN;
+        private String uO;
         
         public Builder() {
-            this.UJ = new HashSet<Integer>();
+            this.alR = new HashSet<Integer>();
         }
         
         public Moment build() {
-            return new ie(this.UJ, this.wp, this.VE, this.Vw, this.VF, this.Rd);
+            return new nv(this.alR, this.BL, this.amM, this.amE, this.amN, this.uO);
         }
         
-        public Builder setId(final String wp) {
-            this.wp = wp;
-            this.UJ.add(2);
+        public Builder setId(final String bl) {
+            this.BL = bl;
+            this.alR.add(2);
             return this;
         }
         
         public Builder setResult(final ItemScope itemScope) {
-            this.VE = (ic)itemScope;
-            this.UJ.add(4);
+            this.amM = (nt)itemScope;
+            this.alR.add(4);
             return this;
         }
         
-        public Builder setStartDate(final String vw) {
-            this.Vw = vw;
-            this.UJ.add(5);
+        public Builder setStartDate(final String amE) {
+            this.amE = amE;
+            this.alR.add(5);
             return this;
         }
         
         public Builder setTarget(final ItemScope itemScope) {
-            this.VF = (ic)itemScope;
-            this.UJ.add(6);
+            this.amN = (nt)itemScope;
+            this.alR.add(6);
             return this;
         }
         
-        public Builder setType(final String rd) {
-            this.Rd = rd;
-            this.UJ.add(7);
+        public Builder setType(final String uo) {
+            this.uO = uo;
+            this.alR.add(7);
             return this;
         }
     }

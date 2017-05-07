@@ -6,55 +6,65 @@ package com.google.android.gms.analytics;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Iterator;
+import android.app.Activity;
 import android.app.Application$ActivityLifecycleCallbacks;
 import android.os.Build$VERSION;
 import android.app.Application;
-import java.util.Iterator;
 import android.os.Bundle;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager$NameNotFoundException;
-import android.app.Activity;
 import java.util.HashSet;
-import java.util.Set;
 import android.content.Context;
+import java.util.Set;
 
 public class GoogleAnalytics extends TrackerHandler
 {
-    private static boolean uY;
-    private static GoogleAnalytics vf;
+    private static GoogleAnalytics AC;
+    private static boolean Av;
+    private Set<a> AA;
+    private boolean AB;
+    private boolean Aw;
+    private ae Ax;
+    private volatile Boolean Ay;
+    private Logger Az;
     private Context mContext;
-    private f sH;
-    private String so;
-    private String sp;
-    private boolean uZ;
-    private af va;
-    private volatile Boolean vb;
-    private Logger vc;
-    private Set<a> vd;
-    private boolean ve;
+    private String xL;
+    private String xM;
+    private f ye;
     
     protected GoogleAnalytics(final Context context) {
-        this(context, t.q(context), r.ci());
+        this(context, s.B(context), q.ea());
     }
     
-    private GoogleAnalytics(final Context context, final f sh, final af va) {
-        this.vb = false;
-        this.ve = false;
+    private GoogleAnalytics(final Context context, final f ye, final ae ax) {
+        this.Ay = false;
+        this.AB = false;
         if (context == null) {
             throw new IllegalArgumentException("context cannot be null");
         }
         this.mContext = context.getApplicationContext();
-        this.sH = sh;
-        this.va = va;
-        g.n(this.mContext);
-        ae.n(this.mContext);
-        h.n(this.mContext);
-        this.vc = new l();
-        this.vd = new HashSet<a>();
-        this.cN();
+        this.ye = ye;
+        this.Ax = ax;
+        g.y(this.mContext);
+        ad.y(this.mContext);
+        h.y(this.mContext);
+        this.Az = new k();
+        this.AA = new HashSet<a>();
+        this.eF();
     }
     
-    private int I(String lowerCase) {
+    private Tracker a(final Tracker tracker) {
+        if (this.xL != null) {
+            tracker.set("&an", this.xL);
+        }
+        if (this.xM != null) {
+            tracker.set("&av", this.xM);
+        }
+        return tracker;
+    }
+    
+    private int ai(String lowerCase) {
         lowerCase = lowerCase.toLowerCase();
         if ("verbose".equals(lowerCase)) {
             return 0;
@@ -71,35 +81,25 @@ public class GoogleAnalytics extends TrackerHandler
         return -1;
     }
     
-    private Tracker a(final Tracker tracker) {
-        if (this.so != null) {
-            tracker.set("&an", this.so);
-        }
-        if (this.sp != null) {
-            tracker.set("&av", this.sp);
-        }
-        return tracker;
-    }
-    
-    static GoogleAnalytics cM() {
+    static GoogleAnalytics eE() {
         synchronized (GoogleAnalytics.class) {
-            return GoogleAnalytics.vf;
+            return GoogleAnalytics.AC;
         }
     }
     
-    private void cN() {
-        if (!GoogleAnalytics.uY) {
+    private void eF() {
+        if (!GoogleAnalytics.Av) {
             ApplicationInfo applicationInfo;
             while (true) {
                 try {
                     applicationInfo = this.mContext.getPackageManager().getApplicationInfo(this.mContext.getPackageName(), 129);
                     if (applicationInfo == null) {
-                        aa.z("Couldn't get ApplicationInfo to load gloabl config.");
+                        z.W("Couldn't get ApplicationInfo to load gloabl config.");
                         return;
                     }
                 }
                 catch (PackageManager$NameNotFoundException ex) {
-                    aa.y("PackageManager doesn't know about package: " + ex);
+                    z.V("PackageManager doesn't know about package: " + ex);
                     applicationInfo = null;
                     continue;
                 }
@@ -109,105 +109,108 @@ public class GoogleAnalytics extends TrackerHandler
             if (metaData != null) {
                 final int int1 = metaData.getInt("com.google.android.gms.analytics.globalConfigResource");
                 if (int1 > 0) {
-                    final w w = new v(this.mContext).p(int1);
-                    if (w != null) {
-                        this.a(w);
+                    final v v = new u(this.mContext).w(int1);
+                    if (v != null) {
+                        this.a(v);
                     }
                 }
             }
         }
     }
     
-    private void d(final Activity activity) {
-        final Iterator<a> iterator = this.vd.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().f(activity);
-        }
-    }
-    
-    private void e(final Activity activity) {
-        final Iterator<a> iterator = this.vd.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().g(activity);
-        }
-    }
-    
     public static GoogleAnalytics getInstance(final Context context) {
         synchronized (GoogleAnalytics.class) {
-            if (GoogleAnalytics.vf == null) {
-                GoogleAnalytics.vf = new GoogleAnalytics(context);
+            if (GoogleAnalytics.AC == null) {
+                GoogleAnalytics.AC = new GoogleAnalytics(context);
             }
-            return GoogleAnalytics.vf;
+            return GoogleAnalytics.AC;
         }
     }
     
     void a(final a a) {
-        this.vd.add(a);
+        this.AA.add(a);
+        if (this.mContext instanceof Application) {
+            this.enableAutoActivityReports((Application)this.mContext);
+        }
     }
     
-    void a(final w w) {
-        aa.y("Loading global config values.");
-        if (w.cC()) {
-            this.so = w.cD();
-            aa.y("app name loaded: " + this.so);
+    void a(final v v) {
+        z.V("Loading global config values.");
+        if (v.eu()) {
+            this.xL = v.ev();
+            z.V("app name loaded: " + this.xL);
         }
-        if (w.cE()) {
-            this.sp = w.cF();
-            aa.y("app version loaded: " + this.sp);
+        if (v.ew()) {
+            this.xM = v.ex();
+            z.V("app version loaded: " + this.xM);
         }
-        if (w.cG()) {
-            final int i = this.I(w.cH());
-            if (i >= 0) {
-                aa.y("log level loaded: " + i);
-                this.getLogger().setLogLevel(i);
+        if (v.ey()) {
+            final int ai = this.ai(v.ez());
+            if (ai >= 0) {
+                z.V("log level loaded: " + ai);
+                this.getLogger().setLogLevel(ai);
             }
         }
-        if (w.cI()) {
-            this.va.setLocalDispatchPeriod(w.cJ());
+        if (v.eA()) {
+            this.Ax.setLocalDispatchPeriod(v.eB());
         }
-        if (w.cK()) {
-            this.setDryRun(w.cL());
+        if (v.eC()) {
+            this.setDryRun(v.eD());
         }
     }
     
     void b(final a a) {
-        this.vd.remove(a);
+        this.AA.remove(a);
     }
     
     @Deprecated
     public void dispatchLocalHits() {
-        this.va.dispatchLocalHits();
+        this.Ax.dispatchLocalHits();
     }
     
     public void enableAutoActivityReports(final Application application) {
-        if (Build$VERSION.SDK_INT >= 14 && !this.ve) {
+        if (Build$VERSION.SDK_INT >= 14 && !this.AB) {
             application.registerActivityLifecycleCallbacks((Application$ActivityLifecycleCallbacks)new b());
-            this.ve = true;
+            this.AB = true;
+        }
+    }
+    
+    void g(final Activity activity) {
+        final Iterator<a> iterator = this.AA.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().i(activity);
         }
     }
     
     public boolean getAppOptOut() {
-        u.cy().a(u.a.uz);
-        return this.vb;
+        t.eq().a(t.a.zW);
+        return this.Ay;
     }
     
     public Logger getLogger() {
-        return this.vc;
+        return this.Az;
+    }
+    
+    void h(final Activity activity) {
+        final Iterator<a> iterator = this.AA.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().j(activity);
+        }
     }
     
     public boolean isDryRunEnabled() {
-        u.cy().a(u.a.uL);
-        return this.uZ;
+        t.eq().a(t.a.Ai);
+        return this.Aw;
     }
     
     public Tracker newTracker(final int n) {
         synchronized (this) {
-            u.cy().a(u.a.uv);
-            final Tracker tracker = new Tracker(null, this);
+            t.eq().a(t.a.zS);
+            final Tracker tracker = new Tracker(null, this, this.mContext);
             if (n > 0) {
-                final aj aj = new ai(this.mContext).p(n);
-                if (aj != null) {
-                    tracker.a(this.mContext, aj);
+                final ai ai = new ah(this.mContext).w(n);
+                if (ai != null) {
+                    tracker.a(ai);
                 }
             }
             return this.a(tracker);
@@ -216,13 +219,48 @@ public class GoogleAnalytics extends TrackerHandler
     
     public Tracker newTracker(final String s) {
         synchronized (this) {
-            u.cy().a(u.a.uv);
-            return this.a(new Tracker(s, this));
+            t.eq().a(t.a.zS);
+            return this.a(new Tracker(s, this, this.mContext));
         }
     }
     
+    public void reportActivityStart(final Activity activity) {
+        if (!this.AB) {
+            this.g(activity);
+        }
+    }
+    
+    public void reportActivityStop(final Activity activity) {
+        if (!this.AB) {
+            this.h(activity);
+        }
+    }
+    
+    public void setAppOptOut(final boolean b) {
+        t.eq().a(t.a.zV);
+        this.Ay = b;
+        if (this.Ay) {
+            this.ye.dI();
+        }
+    }
+    
+    public void setDryRun(final boolean aw) {
+        t.eq().a(t.a.Ah);
+        this.Aw = aw;
+    }
+    
+    @Deprecated
+    public void setLocalDispatchPeriod(final int localDispatchPeriod) {
+        this.Ax.setLocalDispatchPeriod(localDispatchPeriod);
+    }
+    
+    public void setLogger(final Logger az) {
+        t.eq().a(t.a.Aj);
+        this.Az = az;
+    }
+    
     @Override
-    void q(final Map<String, String> map) {
+    void u(final Map<String, String> map) {
         // monitorenter(this)
         if (map == null) {
             try {
@@ -232,54 +270,19 @@ public class GoogleAnalytics extends TrackerHandler
             }
             // monitorexit(this)
         }
-        ak.a(map, "&ul", ak.a(Locale.getDefault()));
-        ak.a(map, "&sr", ae.cZ().getValue("&sr"));
-        map.put("&_u", u.cy().cA());
-        u.cy().cz();
-        this.sH.q(map);
+        aj.a(map, "&ul", aj.a(Locale.getDefault()));
+        aj.a(map, "&sr", ad.eR());
+        map.put("&_u", t.eq().es());
+        t.eq().er();
+        this.ye.u(map);
     }
     // monitorexit(this)
     
-    public void reportActivityStart(final Activity activity) {
-        if (!this.ve) {
-            this.d(activity);
-        }
-    }
-    
-    public void reportActivityStop(final Activity activity) {
-        if (!this.ve) {
-            this.e(activity);
-        }
-    }
-    
-    public void setAppOptOut(final boolean b) {
-        u.cy().a(u.a.uy);
-        this.vb = b;
-        if (this.vb) {
-            this.sH.bR();
-        }
-    }
-    
-    public void setDryRun(final boolean uz) {
-        u.cy().a(u.a.uK);
-        this.uZ = uz;
-    }
-    
-    @Deprecated
-    public void setLocalDispatchPeriod(final int localDispatchPeriod) {
-        this.va.setLocalDispatchPeriod(localDispatchPeriod);
-    }
-    
-    public void setLogger(final Logger vc) {
-        u.cy().a(u.a.uM);
-        this.vc = vc;
-    }
-    
     interface a
     {
-        void f(final Activity p0);
+        void i(final Activity p0);
         
-        void g(final Activity p0);
+        void j(final Activity p0);
     }
     
     class b implements Application$ActivityLifecycleCallbacks
@@ -300,11 +303,11 @@ public class GoogleAnalytics extends TrackerHandler
         }
         
         public void onActivityStarted(final Activity activity) {
-            GoogleAnalytics.this.d(activity);
+            GoogleAnalytics.this.g(activity);
         }
         
         public void onActivityStopped(final Activity activity) {
-            GoogleAnalytics.this.e(activity);
+            GoogleAnalytics.this.h(activity);
         }
     }
 }

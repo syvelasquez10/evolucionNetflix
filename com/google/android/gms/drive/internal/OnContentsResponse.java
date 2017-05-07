@@ -12,27 +12,33 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class OnContentsResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<OnContentsResponse> CREATOR;
-    final Contents EA;
-    final int xH;
+    final int BR;
+    final Contents Op;
+    final boolean Pg;
     
     static {
-        CREATOR = (Parcelable$Creator)new z();
+        CREATOR = (Parcelable$Creator)new ai();
     }
     
-    OnContentsResponse(final int xh, final Contents ea) {
-        this.xH = xh;
-        this.EA = ea;
+    OnContentsResponse(final int br, final Contents op, final boolean pg) {
+        this.BR = br;
+        this.Op = op;
+        this.Pg = pg;
     }
     
     public int describeContents() {
         return 0;
     }
     
-    public Contents fI() {
-        return this.EA;
+    public Contents id() {
+        return this.Op;
+    }
+    
+    public boolean ie() {
+        return this.Pg;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        z.a(this, parcel, n);
+        ai.a(this, parcel, n);
     }
 }

@@ -8,10 +8,10 @@ import com.google.android.gms.games.internal.GamesLog;
 
 public final class RequestType
 {
-    public static String bd(final int n) {
+    public static String dH(final int n) {
         switch (n) {
             default: {
-                GamesLog.h("RequestType", "Unknown request type: " + n);
+                GamesLog.q("RequestType", "Unknown request type: " + n);
                 return "UNKNOWN_TYPE";
             }
             case 1: {

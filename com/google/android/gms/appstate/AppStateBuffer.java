@@ -15,6 +15,6 @@ public final class AppStateBuffer extends DataBuffer<AppState>
     
     @Override
     public AppState get(final int n) {
-        return new b(this.BB, n);
+        return new b(this.IC, n);
     }
 }

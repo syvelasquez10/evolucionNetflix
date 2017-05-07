@@ -5,20 +5,20 @@
 package com.google.android.gms.games.multiplayer.realtime;
 
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.d;
+import com.google.android.gms.common.data.g;
 
-public final class RoomBuffer extends d<Room>
+public final class RoomBuffer extends g<Room>
 {
     public RoomBuffer(final DataHolder dataHolder) {
         super(dataHolder);
     }
     
-    protected Room e(final int n, final int n2) {
-        return new RoomRef(this.BB, n, n2);
+    @Override
+    protected String gE() {
+        return "external_match_id";
     }
     
-    @Override
-    protected String getPrimaryDataMarkerColumn() {
-        return "external_match_id";
+    protected Room k(final int n, final int n2) {
+        return new RoomRef(this.IC, n, n2);
     }
 }

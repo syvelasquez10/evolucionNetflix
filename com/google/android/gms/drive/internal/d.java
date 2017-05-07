@@ -4,82 +4,49 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.drive.Contents;
-import com.google.android.gms.drive.metadata.internal.MetadataBundle;
-import com.google.android.gms.drive.DriveId;
+import java.util.List;
 import com.google.android.gms.common.internal.safeparcel.a;
-import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class d implements Parcelable$Creator<CloseContentsAndUpdateMetadataRequest>
+public class d implements Parcelable$Creator<CheckResourceIdsExistRequest>
 {
-    static void a(final CloseContentsAndUpdateMetadataRequest closeContentsAndUpdateMetadataRequest, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, closeContentsAndUpdateMetadataRequest.xH);
-        b.a(parcel, 2, (Parcelable)closeContentsAndUpdateMetadataRequest.EV, n, false);
-        b.a(parcel, 3, (Parcelable)closeContentsAndUpdateMetadataRequest.EW, n, false);
-        b.a(parcel, 4, (Parcelable)closeContentsAndUpdateMetadataRequest.EX, n, false);
-        b.F(parcel, p3);
+    static void a(final CheckResourceIdsExistRequest checkResourceIdsExistRequest, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, checkResourceIdsExistRequest.getVersionCode());
+        b.b(parcel, 2, checkResourceIdsExistRequest.hX(), false);
+        b.H(parcel, d);
     }
     
-    public CloseContentsAndUpdateMetadataRequest E(final Parcel parcel) {
-        Contents contents = null;
-        final int o = a.o(parcel);
+    public CheckResourceIdsExistRequest X(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
-        MetadataBundle metadataBundle = null;
-        DriveId driveId = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            DriveId driveId2 = null;
-            MetadataBundle metadataBundle3 = null;
-            switch (a.R(n)) {
+        List<String> c2 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
-                    final MetadataBundle metadataBundle2 = metadataBundle;
-                    driveId2 = driveId;
-                    metadataBundle3 = metadataBundle2;
-                    break;
+                    a.b(parcel, b);
+                    continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n);
-                    final DriveId driveId3 = driveId;
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId3;
-                    break;
+                    g = a.g(parcel, b);
+                    continue;
                 }
                 case 2: {
-                    final DriveId driveId4 = a.a(parcel, n, DriveId.CREATOR);
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId4;
-                    break;
-                }
-                case 3: {
-                    final MetadataBundle metadataBundle4 = a.a(parcel, n, MetadataBundle.CREATOR);
-                    driveId2 = driveId;
-                    metadataBundle3 = metadataBundle4;
-                    break;
-                }
-                case 4: {
-                    contents = a.a(parcel, n, Contents.CREATOR);
-                    final DriveId driveId5 = driveId;
-                    metadataBundle3 = metadataBundle;
-                    driveId2 = driveId5;
-                    break;
+                    c2 = a.C(parcel, b);
+                    continue;
                 }
             }
-            final DriveId driveId6 = driveId2;
-            metadataBundle = metadataBundle3;
-            driveId = driveId6;
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new CloseContentsAndUpdateMetadataRequest(g, driveId, metadataBundle, contents);
+        return new CheckResourceIdsExistRequest(g, c2);
     }
     
-    public CloseContentsAndUpdateMetadataRequest[] ai(final int n) {
-        return new CloseContentsAndUpdateMetadataRequest[n];
+    public CheckResourceIdsExistRequest[] bg(final int n) {
+        return new CheckResourceIdsExistRequest[n];
     }
 }

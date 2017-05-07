@@ -4,84 +4,43 @@
 
 package com.google.android.gms.internal;
 
-import android.util.Log;
-import android.text.TextUtils;
+import com.google.android.gms.dynamic.e;
+import android.view.View;
+import com.google.android.gms.dynamic.d;
 
-public class er
+@ez
+public final class er extends es.a
 {
-    private static boolean zC;
-    private final String mTag;
-    private boolean zD;
-    private boolean zE;
-    private String zF;
+    private final aa sM;
+    private final String sN;
+    private final String sO;
     
-    static {
-        er.zC = false;
+    public er(final aa sm, final String sn, final String so) {
+        this.sM = sm;
+        this.sN = sn;
+        this.sO = so;
     }
     
-    public er(final String s) {
-        this(s, dR());
+    public void ar() {
+        this.sM.ar();
     }
     
-    public er(final String mTag, final boolean zd) {
-        this.mTag = mTag;
-        this.zD = zd;
-        this.zE = false;
+    public void as() {
+        this.sM.as();
     }
     
-    public static boolean dR() {
-        return er.zC;
-    }
-    
-    private String e(String s, final Object... array) {
-        final String s2 = s = String.format(s, array);
-        if (!TextUtils.isEmpty((CharSequence)this.zF)) {
-            s = this.zF + s2;
+    public void c(final d d) {
+        if (d == null) {
+            return;
         }
-        return s;
+        this.sM.b(e.f(d));
     }
     
-    public void a(final String s, final Object... array) {
-        if (this.dQ()) {
-            Log.v(this.mTag, this.e(s, array));
-        }
+    public String cv() {
+        return this.sN;
     }
     
-    public void a(final Throwable t, final String s, final Object... array) {
-        if (this.dP() || er.zC) {
-            Log.d(this.mTag, this.e(s, array), t);
-        }
-    }
-    
-    public void ab(String format) {
-        if (TextUtils.isEmpty((CharSequence)format)) {
-            format = null;
-        }
-        else {
-            format = String.format("[%s] ", format);
-        }
-        this.zF = format;
-    }
-    
-    public void b(final String s, final Object... array) {
-        if (this.dP() || er.zC) {
-            Log.d(this.mTag, this.e(s, array));
-        }
-    }
-    
-    public void c(final String s, final Object... array) {
-        Log.i(this.mTag, this.e(s, array));
-    }
-    
-    public void d(final String s, final Object... array) {
-        Log.w(this.mTag, this.e(s, array));
-    }
-    
-    public boolean dP() {
-        return this.zD;
-    }
-    
-    public boolean dQ() {
-        return this.zE;
+    public String cw() {
+        return this.sO;
     }
 }

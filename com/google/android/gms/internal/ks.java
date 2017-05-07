@@ -4,39 +4,96 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import com.google.android.gms.common.api.Status;
+import android.os.IInterface;
 
-public class ks extends IOException
+public interface ks extends IInterface
 {
-    public ks(final String s) {
-        super(s);
-    }
+    void k(final Status p0) throws RemoteException;
     
-    static ks mA() {
-        return new ks("CodedInputStream encountered a malformed varint.");
-    }
-    
-    static ks mB() {
-        return new ks("Protocol message contained an invalid tag (zero).");
-    }
-    
-    static ks mC() {
-        return new ks("Protocol message end-group tag did not match expected tag.");
-    }
-    
-    static ks mD() {
-        return new ks("Protocol message tag had invalid wire type.");
-    }
-    
-    static ks mE() {
-        return new ks("Protocol message had too many levels of nesting.  May be malicious.  Use CodedInputStream.setRecursionLimit() to increase the depth limit.");
-    }
-    
-    static ks my() {
-        return new ks("While parsing a protocol message, the input ended unexpectedly in the middle of a field.  This could mean either than the input has been truncated or that an embedded message misreported its own length.");
-    }
-    
-    static ks mz() {
-        return new ks("CodedInputStream encountered an embedded string or message which claimed to have negative size.");
+    public abstract static class a extends Binder implements ks
+    {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.fitness.internal.IStatusCallback");
+        }
+        
+        public static ks aw(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.fitness.internal.IStatusCallback");
+            if (queryLocalInterface != null && queryLocalInterface instanceof ks) {
+                return (ks)queryLocalInterface;
+            }
+            return new ks.a.a(binder);
+        }
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
+        }
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.fitness.internal.IStatusCallback");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.fitness.internal.IStatusCallback");
+                    Status fromParcel;
+                    if (parcel.readInt() != 0) {
+                        fromParcel = Status.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        fromParcel = null;
+                    }
+                    this.k(fromParcel);
+                    parcel2.writeNoException();
+                    return true;
+                }
+            }
+        }
+        
+        private static class a implements ks
+        {
+            private IBinder lb;
+            
+            a(final IBinder lb) {
+                this.lb = lb;
+            }
+            
+            public IBinder asBinder() {
+                return this.lb;
+            }
+            
+            @Override
+            public void k(final Status status) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.fitness.internal.IStatusCallback");
+                    if (status != null) {
+                        obtain.writeInt(1);
+                        status.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+        }
     }
 }

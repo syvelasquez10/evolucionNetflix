@@ -13,7 +13,7 @@ public final class GameInstanceBuffer extends DataBuffer<GameInstance>
         super(dataHolder);
     }
     
-    public GameInstance bh(final int n) {
-        return new GameInstanceRef(this.BB, n);
+    public GameInstance dM(final int n) {
+        return new GameInstanceRef(this.IC, n);
     }
 }

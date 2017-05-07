@@ -31,10 +31,10 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         this.inflater = (LayoutInflater)this.context.getSystemService("layout_inflater");
         int itemBgDrawableId;
         if (context.isForKids()) {
-            itemBgDrawableId = 2130837756;
+            itemBgDrawableId = 2130837722;
         }
         else {
-            itemBgDrawableId = 2130837876;
+            itemBgDrawableId = 2130837842;
         }
         this.itemBgDrawableId = itemBgDrawableId;
     }
@@ -78,7 +78,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         textView.setTag((Object)item.getSeasonNumber());
         textView.setText((CharSequence)item.getSeasonNumberTitle(this.context));
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBgDrawableId = 2131296304;
+            itemBgDrawableId = 2131296350;
         }
         else {
             itemBgDrawableId = this.itemBgDrawableId;

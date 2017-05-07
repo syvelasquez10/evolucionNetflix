@@ -5,35 +5,35 @@
 package com.google.android.gms.games.multiplayer;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.games.GameRef;
 import com.google.android.gms.common.data.DataHolder;
-import java.util.ArrayList;
 import com.google.android.gms.games.Game;
-import com.google.android.gms.common.data.b;
+import java.util.ArrayList;
+import com.google.android.gms.common.data.d;
 
-public final class InvitationRef extends b implements Invitation
+public final class InvitationRef extends d implements Invitation
 {
-    private final Game LS;
-    private final ParticipantRef MA;
-    private final ArrayList<Participant> Mx;
+    private final ArrayList<Participant> abR;
+    private final ParticipantRef abU;
+    private final Game abm;
     
     InvitationRef(final DataHolder dataHolder, int i, final int n) {
         super(dataHolder, i);
-        this.LS = new GameRef(dataHolder, i);
-        this.Mx = new ArrayList<Participant>(n);
+        this.abm = new GameRef(dataHolder, i);
+        this.abR = new ArrayList<Participant>(n);
         final String string = this.getString("external_inviter_id");
         i = 0;
         ParticipantRef participantRef = null;
         while (i < n) {
-            final ParticipantRef participantRef2 = new ParticipantRef(this.BB, this.BD + i);
+            final ParticipantRef participantRef2 = new ParticipantRef(this.IC, this.JQ + i);
             if (participantRef2.getParticipantId().equals(string)) {
                 participantRef = participantRef2;
             }
-            this.Mx.add(participantRef2);
+            this.abR.add(participantRef2);
             ++i;
         }
-        this.MA = fq.b(participantRef, "Must have a valid inviter!");
+        this.abU = n.b(participantRef, "Must have a valid inviter!");
     }
     
     public int describeContents() {
@@ -64,7 +64,7 @@ public final class InvitationRef extends b implements Invitation
     
     @Override
     public Game getGame() {
-        return this.LS;
+        return this.abm;
     }
     
     @Override
@@ -79,11 +79,11 @@ public final class InvitationRef extends b implements Invitation
     
     @Override
     public Participant getInviter() {
-        return this.MA;
+        return this.abU;
     }
     
     public ArrayList<Participant> getParticipants() {
-        return this.Mx;
+        return this.abR;
     }
     
     @Override

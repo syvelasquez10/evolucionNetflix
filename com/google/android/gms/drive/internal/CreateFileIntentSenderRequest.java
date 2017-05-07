@@ -13,26 +13,28 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class CreateFileIntentSenderRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<CreateFileIntentSenderRequest> CREATOR;
-    final String EB;
-    final DriveId EC;
-    final MetadataBundle EZ;
-    final int Eu;
-    final int xH;
+    final int BR;
+    final String No;
+    final DriveId Nq;
+    final MetadataBundle Od;
+    final Integer Oe;
+    final int uQ;
     
     static {
-        CREATOR = (Parcelable$Creator)new g();
+        CREATOR = (Parcelable$Creator)new i();
     }
     
-    CreateFileIntentSenderRequest(final int xh, final MetadataBundle ez, final int eu, final String eb, final DriveId ec) {
-        this.xH = xh;
-        this.EZ = ez;
-        this.Eu = eu;
-        this.EB = eb;
-        this.EC = ec;
+    CreateFileIntentSenderRequest(final int br, final MetadataBundle od, final int uq, final String no, final DriveId nq, final Integer oe) {
+        this.BR = br;
+        this.Od = od;
+        this.uQ = uq;
+        this.No = no;
+        this.Nq = nq;
+        this.Oe = oe;
     }
     
-    public CreateFileIntentSenderRequest(final MetadataBundle metadataBundle, final int n, final String s, final DriveId driveId) {
-        this(1, metadataBundle, n, s, driveId);
+    public CreateFileIntentSenderRequest(final MetadataBundle metadataBundle, final int n, final String s, final DriveId driveId, final int n2) {
+        this(1, metadataBundle, n, s, driveId, n2);
     }
     
     public int describeContents() {
@@ -40,6 +42,6 @@ public class CreateFileIntentSenderRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        g.a(this, parcel, n);
+        i.a(this, parcel, n);
     }
 }

@@ -5,28 +5,28 @@
 package com.google.android.gms.maps.model;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.fo;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.m;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public class StreetViewPanoramaOrientation implements SafeParcelable
 {
-    public static final StreetViewPanoramaOrientationCreator CREATOR;
+    public static final t CREATOR;
+    private final int BR;
     public final float bearing;
     public final float tilt;
-    private final int xH;
     
     static {
-        CREATOR = new StreetViewPanoramaOrientationCreator();
+        CREATOR = new t();
     }
     
     public StreetViewPanoramaOrientation(final float n, final float n2) {
         this(1, n, n2);
     }
     
-    StreetViewPanoramaOrientation(final int xh, float n, final float n2) {
-        fq.b(-90.0f <= n && n <= 90.0f, "Tilt needs to be between -90 and 90 inclusive");
-        this.xH = xh;
+    StreetViewPanoramaOrientation(final int br, float n, final float n2) {
+        n.b(-90.0f <= n && n <= 90.0f, (Object)"Tilt needs to be between -90 and 90 inclusive");
+        this.BR = br;
         this.tilt = 0.0f + n;
         n = n2;
         if (n2 <= 0.0) {
@@ -62,21 +62,21 @@ public class StreetViewPanoramaOrientation implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.tilt, this.bearing);
+        return m.hashCode(this.tilt, this.bearing);
     }
     
     @Override
     public String toString() {
-        return fo.e(this).a("tilt", this.tilt).a("bearing", this.bearing).toString();
+        return m.h(this).a("tilt", this.tilt).a("bearing", this.bearing).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        StreetViewPanoramaOrientationCreator.a(this, parcel, n);
+        t.a(this, parcel, n);
     }
     
     public static final class Builder

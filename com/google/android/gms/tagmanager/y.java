@@ -10,58 +10,58 @@ import android.content.Context;
 
 class y implements aq
 {
-    private static y XM;
-    private static final Object sf;
-    private String XN;
-    private String XO;
-    private ar XP;
-    private cf Xa;
+    private static y aoQ;
+    private static final Object xz;
+    private String aoR;
+    private String aoS;
+    private ar aoT;
+    private cg aoh;
     
     static {
-        sf = new Object();
+        xz = new Object();
     }
     
     private y(final Context context) {
-        this(as.H(context), new cv());
+        this(as.Y(context), new cw());
     }
     
-    y(final ar xp, final cf xa) {
-        this.XP = xp;
-        this.Xa = xa;
+    y(final ar aoT, final cg aoh) {
+        this.aoT = aoT;
+        this.aoh = aoh;
     }
     
-    public static aq F(final Context context) {
-        synchronized (y.sf) {
-            if (y.XM == null) {
-                y.XM = new y(context);
+    public static aq W(final Context context) {
+        synchronized (y.xz) {
+            if (y.aoQ == null) {
+                y.aoQ = new y(context);
             }
-            return y.XM;
+            return y.aoQ;
         }
     }
     
     @Override
-    public boolean bz(final String s) {
-        if (!this.Xa.cS()) {
-            bh.z("Too many urls sent too quickly with the TagManagerSender, rate limiting invoked.");
+    public boolean cw(final String s) {
+        if (!this.aoh.eK()) {
+            bh.W("Too many urls sent too quickly with the TagManagerSender, rate limiting invoked.");
             return false;
         }
         String string = s;
         Label_0103: {
-            if (this.XN == null) {
+            if (this.aoR == null) {
                 break Label_0103;
             }
             string = s;
-            if (this.XO == null) {
+            if (this.aoS == null) {
                 break Label_0103;
             }
             try {
-                string = this.XN + "?" + this.XO + "=" + URLEncoder.encode(s, "UTF-8");
-                bh.y("Sending wrapped url hit: " + string);
-                this.XP.bC(string);
+                string = this.aoR + "?" + this.aoS + "=" + URLEncoder.encode(s, "UTF-8");
+                bh.V("Sending wrapped url hit: " + string);
+                this.aoT.cz(string);
                 return true;
             }
             catch (UnsupportedEncodingException ex) {
-                bh.c("Error wrapping URL for testing.", ex);
+                bh.d("Error wrapping URL for testing.", ex);
                 return false;
             }
         }

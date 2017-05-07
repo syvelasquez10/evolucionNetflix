@@ -6,22 +6,22 @@ package com.google.android.gms.common.data;
 
 import java.util.Iterator;
 import android.os.Bundle;
+import com.google.android.gms.common.api.Releasable;
 
-public abstract class DataBuffer<T> implements Iterable<T>
+public abstract class DataBuffer<T> implements Releasable, Iterable<T>
 {
-    protected final DataHolder BB;
+    protected final DataHolder IC;
     
-    protected DataBuffer(final DataHolder bb) {
-        this.BB = bb;
-        if (this.BB != null) {
-            this.BB.c(this);
+    protected DataBuffer(final DataHolder ic) {
+        this.IC = ic;
+        if (this.IC != null) {
+            this.IC.e(this);
         }
     }
     
-    public void close() {
-        if (this.BB != null) {
-            this.BB.close();
-        }
+    @Deprecated
+    public final void close() {
+        this.release();
     }
     
     public int describeContents() {
@@ -31,22 +31,34 @@ public abstract class DataBuffer<T> implements Iterable<T>
     public abstract T get(final int p0);
     
     public int getCount() {
-        if (this.BB == null) {
+        if (this.IC == null) {
             return 0;
         }
-        return this.BB.getCount();
+        return this.IC.getCount();
     }
     
-    public Bundle getMetadata() {
-        return this.BB.getMetadata();
+    public Bundle gz() {
+        return this.IC.gz();
     }
     
+    @Deprecated
     public boolean isClosed() {
-        return this.BB == null || this.BB.isClosed();
+        return this.IC == null || this.IC.isClosed();
     }
     
     @Override
     public Iterator<T> iterator() {
-        return new a<T>(this);
+        return new c<T>(this);
+    }
+    
+    @Override
+    public void release() {
+        if (this.IC != null) {
+            this.IC.close();
+        }
+    }
+    
+    public Iterator<T> singleRefIterator() {
+        return new h<T>(this);
     }
 }

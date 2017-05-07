@@ -12,18 +12,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class RemoveEventListenerRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<RemoveEventListenerRequest> CREATOR;
-    final int ES;
-    final DriveId Ew;
-    final int xH;
+    final int BR;
+    final DriveId MO;
+    final int NS;
     
     static {
-        CREATOR = (Parcelable$Creator)new ak();
+        CREATOR = (Parcelable$Creator)new ay();
     }
     
-    RemoveEventListenerRequest(final int xh, final DriveId ew, final int es) {
-        this.xH = xh;
-        this.Ew = ew;
-        this.ES = es;
+    RemoveEventListenerRequest(final int br, final DriveId mo, final int ns) {
+        this.BR = br;
+        this.MO = mo;
+        this.NS = ns;
     }
     
     public RemoveEventListenerRequest(final DriveId driveId, final int n) {
@@ -35,6 +35,6 @@ public class RemoveEventListenerRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        ak.a(this, parcel, n);
+        ay.a(this, parcel, n);
     }
 }

@@ -4,6 +4,7 @@
 
 package com.google.android.gms.ads.mediation;
 
+import android.location.Location;
 import java.util.Set;
 import java.util.Date;
 
@@ -18,6 +19,8 @@ public interface MediationAdRequest
     int getGender();
     
     Set<String> getKeywords();
+    
+    Location getLocation();
     
     boolean isTesting();
     

@@ -11,81 +11,81 @@ import com.google.android.gms.games.multiplayer.InvitationBuffer;
 
 public final class LoadMatchesResponse
 {
-    private final InvitationBuffer MV;
-    private final TurnBasedMatchBuffer MW;
-    private final TurnBasedMatchBuffer MX;
-    private final TurnBasedMatchBuffer MY;
+    private final InvitationBuffer aco;
+    private final TurnBasedMatchBuffer acp;
+    private final TurnBasedMatchBuffer acq;
+    private final TurnBasedMatchBuffer acr;
     
     public LoadMatchesResponse(final Bundle bundle) {
         final DataHolder a = a(bundle, 0);
         if (a != null) {
-            this.MV = new InvitationBuffer(a);
+            this.aco = new InvitationBuffer(a);
         }
         else {
-            this.MV = null;
+            this.aco = null;
         }
         final DataHolder a2 = a(bundle, 1);
         if (a2 != null) {
-            this.MW = new TurnBasedMatchBuffer(a2);
+            this.acp = new TurnBasedMatchBuffer(a2);
         }
         else {
-            this.MW = null;
+            this.acp = null;
         }
         final DataHolder a3 = a(bundle, 2);
         if (a3 != null) {
-            this.MX = new TurnBasedMatchBuffer(a3);
+            this.acq = new TurnBasedMatchBuffer(a3);
         }
         else {
-            this.MX = null;
+            this.acq = null;
         }
         final DataHolder a4 = a(bundle, 3);
         if (a4 != null) {
-            this.MY = new TurnBasedMatchBuffer(a4);
+            this.acr = new TurnBasedMatchBuffer(a4);
             return;
         }
-        this.MY = null;
+        this.acr = null;
     }
     
     private static DataHolder a(final Bundle bundle, final int n) {
-        final String bd = TurnBasedMatchTurnStatus.bd(n);
-        if (!bundle.containsKey(bd)) {
+        final String dh = TurnBasedMatchTurnStatus.dH(n);
+        if (!bundle.containsKey(dh)) {
             return null;
         }
-        return (DataHolder)bundle.getParcelable(bd);
+        return (DataHolder)bundle.getParcelable(dh);
     }
     
     public void close() {
-        if (this.MV != null) {
-            this.MV.close();
+        if (this.aco != null) {
+            this.aco.close();
         }
-        if (this.MW != null) {
-            this.MW.close();
+        if (this.acp != null) {
+            this.acp.close();
         }
-        if (this.MX != null) {
-            this.MX.close();
+        if (this.acq != null) {
+            this.acq.close();
         }
-        if (this.MY != null) {
-            this.MY.close();
+        if (this.acr != null) {
+            this.acr.close();
         }
     }
     
     public TurnBasedMatchBuffer getCompletedMatches() {
-        return this.MY;
+        return this.acr;
     }
     
     public InvitationBuffer getInvitations() {
-        return this.MV;
+        return this.aco;
     }
     
     public TurnBasedMatchBuffer getMyTurnMatches() {
-        return this.MW;
+        return this.acp;
     }
     
     public TurnBasedMatchBuffer getTheirTurnMatches() {
-        return this.MX;
+        return this.acq;
     }
     
     public boolean hasData() {
-        return (this.MV != null && this.MV.getCount() > 0) || (this.MW != null && this.MW.getCount() > 0) || (this.MX != null && this.MX.getCount() > 0) || (this.MY != null && this.MY.getCount() > 0);
+        return (this.aco != null && this.aco.getCount() > 0) || (this.acp != null && this.acp.getCount() > 0) || (this.acq != null && this.acq.getCount() > 0) || (this.acr != null && this.acr.getCount() > 0);
     }
 }

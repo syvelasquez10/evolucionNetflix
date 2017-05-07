@@ -4,50 +4,19 @@
 
 package com.google.android.gms.internal;
 
-import android.graphics.drawable.Drawable;
+import android.content.Context;
 
-public final class fa extends fu<a, Drawable>
+@ez
+public final class fa
 {
-    public fa() {
-        super(10);
+    public static gg a(final Context context, final fi.a a, final k k, final a a2) {
+        final fb fb = new fb(context, a, k, a2);
+        fb.start();
+        return fb;
     }
     
-    public static final class a
+    public interface a
     {
-        public final int CR;
-        public final int CS;
-        
-        public a(final int cr, final int cs) {
-            this.CR = cr;
-            this.CS = cs;
-        }
-        
-        @Override
-        public boolean equals(final Object o) {
-            final boolean b = true;
-            boolean b2;
-            if (!(o instanceof a)) {
-                b2 = false;
-            }
-            else {
-                b2 = b;
-                if (this != o) {
-                    final a a = (a)o;
-                    if (a.CR == this.CR) {
-                        b2 = b;
-                        if (a.CS == this.CS) {
-                            return b2;
-                        }
-                    }
-                    return false;
-                }
-            }
-            return b2;
-        }
-        
-        @Override
-        public int hashCode() {
-            return fo.hashCode(this.CR, this.CS);
-        }
+        void a(final fz.a p0);
     }
 }

@@ -4,45 +4,29 @@
 
 package com.google.android.gms.internal;
 
-import android.os.RemoteException;
-import com.google.android.gms.ads.purchase.InAppPurchase;
-
-public class cq implements InAppPurchase
+@ez
+public final class cq
 {
-    private final cn oF;
+    public final String qA;
+    public final co qB;
+    public final int qx;
+    public final cl qy;
+    public final cu qz;
     
-    public cq(final cn of) {
-        this.oF = of;
+    public cq(final int n) {
+        this(null, null, null, null, n);
     }
     
-    @Override
-    public String getProductId() {
-        try {
-            return this.oF.getProductId();
-        }
-        catch (RemoteException ex) {
-            dw.c("Could not forward getProductId to InAppPurchase", (Throwable)ex);
-            return null;
-        }
+    public cq(final cl qy, final cu qz, final String qa, final co qb, final int qx) {
+        this.qy = qy;
+        this.qz = qz;
+        this.qA = qa;
+        this.qB = qb;
+        this.qx = qx;
     }
     
-    @Override
-    public void recordPlayBillingResolution(final int n) {
-        try {
-            this.oF.recordPlayBillingResolution(n);
-        }
-        catch (RemoteException ex) {
-            dw.c("Could not forward recordPlayBillingResolution to InAppPurchase", (Throwable)ex);
-        }
-    }
-    
-    @Override
-    public void recordResolution(final int n) {
-        try {
-            this.oF.recordResolution(n);
-        }
-        catch (RemoteException ex) {
-            dw.c("Could not forward recordResolution to InAppPurchase", (Throwable)ex);
-        }
+    public interface a
+    {
+        void j(final int p0);
     }
 }

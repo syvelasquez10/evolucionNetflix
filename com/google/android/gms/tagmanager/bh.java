@@ -6,46 +6,46 @@ package com.google.android.gms.tagmanager;
 
 final class bh
 {
-    static bi YC;
-    static int YD;
+    static bi apF;
+    static int apG;
     
     static {
-        bh.YC = new x();
+        bh.apF = new x();
+    }
+    
+    public static void S(final String s) {
+        bh.apF.S(s);
+    }
+    
+    public static void T(final String s) {
+        bh.apF.T(s);
+    }
+    
+    public static void U(final String s) {
+        bh.apF.U(s);
+    }
+    
+    public static void V(final String s) {
+        bh.apF.V(s);
+    }
+    
+    public static void W(final String s) {
+        bh.apF.W(s);
     }
     
     public static void b(final String s, final Throwable t) {
-        bh.YC.b(s, t);
+        bh.apF.b(s, t);
     }
     
-    public static void c(final String s, final Throwable t) {
-        bh.YC.c(s, t);
+    public static void d(final String s, final Throwable t) {
+        bh.apF.d(s, t);
     }
     
     public static int getLogLevel() {
-        return bh.YD;
+        return bh.apG;
     }
     
     public static void setLogLevel(final int logLevel) {
-        bh.YC.setLogLevel(logLevel);
-    }
-    
-    public static void v(final String s) {
-        bh.YC.v(s);
-    }
-    
-    public static void w(final String s) {
-        bh.YC.w(s);
-    }
-    
-    public static void x(final String s) {
-        bh.YC.x(s);
-    }
-    
-    public static void y(final String s) {
-        bh.YC.y(s);
-    }
-    
-    public static void z(final String s) {
-        bh.YC.z(s);
+        bh.apF.setLogLevel(logLevel);
     }
 }

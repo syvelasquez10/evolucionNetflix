@@ -4,50 +4,81 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.events.CompletionEvent;
+import com.google.android.gms.drive.events.ChangeEvent;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class am implements Parcelable$Creator<TrashResourceRequest>
+public class am implements Parcelable$Creator<OnEventResponse>
 {
-    static void a(final TrashResourceRequest trashResourceRequest, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, trashResourceRequest.xH);
-        b.a(parcel, 2, (Parcelable)trashResourceRequest.EV, n, false);
-        b.F(parcel, p3);
+    static void a(final OnEventResponse onEventResponse, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1, onEventResponse.BR);
+        b.c(parcel, 2, onEventResponse.NS);
+        b.a(parcel, 3, (Parcelable)onEventResponse.Pk, n, false);
+        b.a(parcel, 5, (Parcelable)onEventResponse.Pl, n, false);
+        b.H(parcel, d);
     }
     
-    public TrashResourceRequest Z(final Parcel parcel) {
-        final int o = a.o(parcel);
-        int g = 0;
-        DriveId driveId = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+    public OnEventResponse ao(final Parcel parcel) {
+        CompletionEvent completionEvent = null;
+        int n = 0;
+        final int c = a.C(parcel);
+        ChangeEvent changeEvent = null;
+        int n2 = 0;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            int n4 = 0;
+            int n5 = 0;
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
-                    continue;
+                    a.b(parcel, b);
+                    final int n3 = n;
+                    n4 = n2;
+                    n5 = n3;
+                    break;
                 }
                 case 1: {
-                    g = a.g(parcel, n);
-                    continue;
+                    final int g = a.g(parcel, b);
+                    n5 = n;
+                    n4 = g;
+                    break;
                 }
                 case 2: {
-                    driveId = a.a(parcel, n, DriveId.CREATOR);
-                    continue;
+                    final int g2 = a.g(parcel, b);
+                    n4 = n2;
+                    n5 = g2;
+                    break;
+                }
+                case 3: {
+                    changeEvent = a.a(parcel, b, ChangeEvent.CREATOR);
+                    final int n6 = n2;
+                    n5 = n;
+                    n4 = n6;
+                    break;
+                }
+                case 5: {
+                    completionEvent = a.a(parcel, b, CompletionEvent.CREATOR);
+                    final int n7 = n2;
+                    n5 = n;
+                    n4 = n7;
+                    break;
                 }
             }
+            final int n8 = n4;
+            n = n5;
+            n2 = n8;
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new TrashResourceRequest(g, driveId);
+        return new OnEventResponse(n2, n, changeEvent, completionEvent);
     }
     
-    public TrashResourceRequest[] aD(final int n) {
-        return new TrashResourceRequest[n];
+    public OnEventResponse[] bA(final int n) {
+        return new OnEventResponse[n];
     }
 }

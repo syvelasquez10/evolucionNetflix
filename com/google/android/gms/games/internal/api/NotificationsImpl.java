@@ -14,17 +14,17 @@ public final class NotificationsImpl implements Notifications
 {
     @Override
     public void clear(final GoogleApiClient googleApiClient, final int n) {
-        Games.c(googleApiClient).aY(n);
+        Games.c(googleApiClient).dC(n);
     }
     
     @Override
     public void clearAll(final GoogleApiClient googleApiClient) {
-        this.clear(googleApiClient, 7);
+        this.clear(googleApiClient, 31);
     }
     
     private abstract static class ContactSettingLoadImpl extends BaseGamesApiMethodImpl<ContactSettingLoadResult>
     {
-        public ContactSettingLoadResult J(final Status status) {
+        public ContactSettingLoadResult aa(final Status status) {
             return new ContactSettingLoadResult() {
                 @Override
                 public Status getStatus() {
@@ -36,8 +36,20 @@ public final class NotificationsImpl implements Notifications
     
     private abstract static class ContactSettingUpdateImpl extends BaseGamesApiMethodImpl<Status>
     {
-        public Status f(final Status status) {
+        public Status d(final Status status) {
             return status;
+        }
+    }
+    
+    private abstract static class InboxCountImpl extends BaseGamesApiMethodImpl<InboxCountResult>
+    {
+        public InboxCountResult ab(final Status status) {
+            return new InboxCountResult() {
+                @Override
+                public Status getStatus() {
+                    return status;
+                }
+            };
         }
     }
 }

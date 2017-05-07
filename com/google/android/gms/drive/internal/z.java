@@ -4,50 +4,54 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.drive.Contents;
 import com.google.android.gms.common.internal.safeparcel.a;
-import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class z implements Parcelable$Creator<OnContentsResponse>
+public class z implements Parcelable$Creator<GetDriveIdFromUniqueIdentifierRequest>
 {
-    static void a(final OnContentsResponse onContentsResponse, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, onContentsResponse.xH);
-        b.a(parcel, 2, (Parcelable)onContentsResponse.EA, n, false);
-        b.F(parcel, p3);
+    static void a(final GetDriveIdFromUniqueIdentifierRequest getDriveIdFromUniqueIdentifierRequest, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, getDriveIdFromUniqueIdentifierRequest.BR);
+        b.a(parcel, 2, getDriveIdFromUniqueIdentifierRequest.OZ, false);
+        b.a(parcel, 3, getDriveIdFromUniqueIdentifierRequest.Pa);
+        b.H(parcel, d);
     }
     
-    public OnContentsResponse N(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public GetDriveIdFromUniqueIdentifierRequest ag(final Parcel parcel) {
+        boolean c = false;
+        final int c2 = a.C(parcel);
+        String o = null;
         int g = 0;
-        Contents contents = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        while (parcel.dataPosition() < c2) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    contents = a.a(parcel, n, Contents.CREATOR);
+                    o = a.o(parcel, b);
+                    continue;
+                }
+                case 3: {
+                    c = a.c(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c2) {
+            throw new a.a("Overread allowed size end=" + c2, parcel);
         }
-        return new OnContentsResponse(g, contents);
+        return new GetDriveIdFromUniqueIdentifierRequest(g, o, c);
     }
     
-    public OnContentsResponse[] ar(final int n) {
-        return new OnContentsResponse[n];
+    public GetDriveIdFromUniqueIdentifierRequest[] bs(final int n) {
+        return new GetDriveIdFromUniqueIdentifierRequest[n];
     }
 }

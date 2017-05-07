@@ -224,7 +224,7 @@ public class ProfileSelectionActivity extends NetflixActivity
     
     private void refreshEditProfileModeViews() {
         if (this.isProfileEditMode) {
-            this.getNetflixActionBar().setTitle(this.getResources().getString(2131493341));
+            this.getNetflixActionBar().setTitle(this.getResources().getString(2131493346));
         }
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         NetflixActionBar.LogoType logoType;
@@ -251,7 +251,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                 Log.e("ProfileSelectionActivity", "Something wierd happened: null grid child view!");
             }
             else if (i < this.profiles.size()) {
-                final View viewById = child.findViewById(2131165297);
+                final View viewById = child.findViewById(2131165299);
                 int visibility;
                 if (this.isProfileEditMode) {
                     visibility = 0;
@@ -260,7 +260,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     visibility = 8;
                 }
                 viewById.setVisibility(visibility);
-                final ViewPropertyAnimator animate2 = child.findViewById(2131165296).animate();
+                final ViewPropertyAnimator animate2 = child.findViewById(2131165298).animate();
                 float n2;
                 if (this.isProfileEditMode) {
                     n2 = 0.2f;
@@ -330,14 +330,14 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     private void showPromoViewIfNeeded(final int n) {
-        final View viewById = this.findViewById(2131165611);
+        final View viewById = this.findViewById(2131165613);
         if (PreferenceUtils.getBooleanPref((Context)this, "user_profile_was_selected", false) || this.profiles == null || this.profiles.size() > 1) {
             viewById.setVisibility(8);
             return;
         }
         viewById.setVisibility(0);
-        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131361917)) / 2.0f);
-        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n + n2, (int)this.getResources().getDimension(2131361836));
+        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131361943)) / 2.0f);
+        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n + n2, (int)this.getResources().getDimension(2131361862));
     }
     
     private void updateAppWasRestartedFlag(final Intent intent) {
@@ -448,18 +448,18 @@ public class ProfileSelectionActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131361905);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131361931);
         this.setContentView(2130903165);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165607), this.errorCallback);
-        this.content = this.findViewById(2131165608);
-        this.topTextHeader = (TextView)this.findViewById(2131165609);
-        (this.gridView = (StaticGridView)this.findViewById(2131165610)).setOnItemClickListener(this.onAvatarClickListener);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165609), this.errorCallback);
+        this.content = this.findViewById(2131165610);
+        this.topTextHeader = (TextView)this.findViewById(2131165611);
+        (this.gridView = (StaticGridView)this.findViewById(2131165612)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 ProfileSelectionActivity.this.adjustGridViewMargins();
             }
         });
-        this.kidsLoadingScreen = this.findViewById(2131165416);
+        this.kidsLoadingScreen = this.findViewById(2131165418);
         this.mDestination = this.getIntent().getStringExtra("extra_destination");
         if (bundle == null) {
             this.logKidsEntryExit(this.getIntent());
@@ -481,9 +481,9 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         super.onCreateOptionsMenu(menu, menu2);
-        final MenuItem add = menu.add(0, 2131165243, 0, (CharSequence)this.getString(2131493340));
+        final MenuItem add = menu.add(0, 2131165246, 0, (CharSequence)this.getString(2131493345));
         add.setShowAsAction(1);
-        add.setIcon(2130837708);
+        add.setIcon(2130837674);
         add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
             public boolean onMenuItemClick(final MenuItem menuItem) {
                 ProfileSelectionActivity.this.isProfileEditMode = !ProfileSelectionActivity.this.isProfileEditMode;
@@ -581,13 +581,13 @@ public class ProfileSelectionActivity extends NetflixActivity
             View inflate = view;
             if (view == null) {
                 inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903166, viewGroup, false);
-                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131165296), (TextView)inflate.findViewById(2131165612), inflate.findViewById(2131165297)));
+                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131165298), (TextView)inflate.findViewById(2131165614), inflate.findViewById(2131165299)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final UserProfile item = this.getItem(visibility);
             if (visibility == ProfileSelectionActivity.this.profiles.size()) {
-                holder.img.setImageResource(2130837862);
-                holder.title.setText(2131493332);
+                holder.img.setImageResource(2130837828);
+                holder.title.setText(2131493337);
                 holder.topEditImg.setVisibility(8);
                 return inflate;
             }

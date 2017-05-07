@@ -6,26 +6,26 @@ package com.google.android.gms.maps.model;
 
 import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
-import com.google.android.gms.internal.fo;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.m;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class LatLngBounds implements SafeParcelable
 {
-    public static final LatLngBoundsCreator CREATOR;
+    public static final g CREATOR;
+    private final int BR;
     public final LatLng northeast;
     public final LatLng southwest;
-    private final int xH;
     
     static {
-        CREATOR = new LatLngBoundsCreator();
+        CREATOR = new g();
     }
     
-    LatLngBounds(final int xh, final LatLng southwest, final LatLng northeast) {
-        fq.b(southwest, "null southwest");
-        fq.b(northeast, "null northeast");
-        fq.a(northeast.latitude >= southwest.latitude, "southern latitude exceeds northern latitude (%s > %s)", southwest.latitude, northeast.latitude);
-        this.xH = xh;
+    LatLngBounds(final int br, final LatLng southwest, final LatLng northeast) {
+        n.b(southwest, "null southwest");
+        n.b(northeast, "null northeast");
+        n.b(northeast.latitude >= southwest.latitude, "southern latitude exceeds northern latitude (%s > %s)", southwest.latitude, northeast.latitude);
+        this.BR = br;
         this.southwest = southwest;
         this.northeast = northeast;
     }
@@ -98,12 +98,12 @@ public final class LatLngBounds implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.southwest, this.northeast);
+        return m.hashCode(this.southwest, this.northeast);
     }
     
     public LatLngBounds including(final LatLng latLng) {
@@ -126,61 +126,61 @@ public final class LatLngBounds implements SafeParcelable
     
     @Override
     public String toString() {
-        return fo.e(this).a("southwest", this.southwest).a("northeast", this.northeast).toString();
+        return m.h(this).a("southwest", this.southwest).a("northeast", this.northeast).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (v.iB()) {
-            d.a(this, parcel, n);
+        if (v.mK()) {
+            h.a(this, parcel, n);
             return;
         }
-        LatLngBoundsCreator.a(this, parcel, n);
+        g.a(this, parcel, n);
     }
     
     public static final class Builder
     {
-        private double Ta;
-        private double Tb;
-        private double Tc;
-        private double Td;
+        private double ajN;
+        private double ajO;
+        private double ajP;
+        private double ajQ;
         
         public Builder() {
-            this.Ta = Double.POSITIVE_INFINITY;
-            this.Tb = Double.NEGATIVE_INFINITY;
-            this.Tc = Double.NaN;
-            this.Td = Double.NaN;
+            this.ajN = Double.POSITIVE_INFINITY;
+            this.ajO = Double.NEGATIVE_INFINITY;
+            this.ajP = Double.NaN;
+            this.ajQ = Double.NaN;
         }
         
         private boolean d(final double n) {
             boolean b = false;
-            if (this.Tc <= this.Td) {
-                return this.Tc <= n && n <= this.Td;
+            if (this.ajP <= this.ajQ) {
+                return this.ajP <= n && n <= this.ajQ;
             }
-            if (this.Tc <= n || n <= this.Td) {
+            if (this.ajP <= n || n <= this.ajQ) {
                 b = true;
             }
             return b;
         }
         
         public LatLngBounds build() {
-            fq.a(!Double.isNaN(this.Tc), (Object)"no included points");
-            return new LatLngBounds(new LatLng(this.Ta, this.Tc), new LatLng(this.Tb, this.Td));
+            n.a(!Double.isNaN(this.ajP), (Object)"no included points");
+            return new LatLngBounds(new LatLng(this.ajN, this.ajP), new LatLng(this.ajO, this.ajQ));
         }
         
         public Builder include(final LatLng latLng) {
-            this.Ta = Math.min(this.Ta, latLng.latitude);
-            this.Tb = Math.max(this.Tb, latLng.latitude);
+            this.ajN = Math.min(this.ajN, latLng.latitude);
+            this.ajO = Math.max(this.ajO, latLng.latitude);
             final double longitude = latLng.longitude;
-            if (Double.isNaN(this.Tc)) {
-                this.Tc = longitude;
-                this.Td = longitude;
+            if (Double.isNaN(this.ajP)) {
+                this.ajP = longitude;
+                this.ajQ = longitude;
             }
             else if (!this.d(longitude)) {
-                if (b(this.Tc, longitude) < c(this.Td, longitude)) {
-                    this.Tc = longitude;
+                if (b(this.ajP, longitude) < c(this.ajQ, longitude)) {
+                    this.ajP = longitude;
                     return this;
                 }
-                this.Td = longitude;
+                this.ajQ = longitude;
                 return this;
             }
             return this;

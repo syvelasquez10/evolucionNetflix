@@ -4,25 +4,33 @@
 
 package com.google.android.gms.internal;
 
+import android.os.Parcelable;
+import android.os.Parcelable$Creator;
 import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.RemoteException;
-import android.os.Bundle;
-import android.net.Uri;
 import android.os.IInterface;
 
 public interface hv extends IInterface
 {
-    void a(final hu p0, final Uri p1, final Bundle p2, final boolean p3) throws RemoteException;
+    void a(final hm.a p0, final hw p1) throws RemoteException;
+    
+    void a(final hw p0) throws RemoteException;
+    
+    void a(final hw p0, final String p1, final hs[] p2) throws RemoteException;
+    
+    void a(final hw p0, final boolean p1) throws RemoteException;
+    
+    void b(final hw p0) throws RemoteException;
     
     public abstract static class a extends Binder implements hv
     {
-        public static hv aM(final IBinder binder) {
+        public static hv F(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.panorama.internal.IPanoramaService");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
             if (queryLocalInterface != null && queryLocalInterface instanceof hv) {
                 return (hv)queryLocalInterface;
             }
@@ -35,27 +43,44 @@ public interface hv extends IInterface
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.panorama.internal.IPanoramaService");
+                    parcel2.writeString("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.panorama.internal.IPanoramaService");
-                    final hu al = hu.a.aL(parcel.readStrongBinder());
-                    Uri uri;
+                    parcel.enforceInterface("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    this.a(hw.a.G(parcel.readStrongBinder()), parcel.readString(), (hs[])parcel.createTypedArray((Parcelable$Creator)hs.CREATOR));
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 2: {
+                    parcel.enforceInterface("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    this.a(hw.a.G(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    this.b(hw.a.G(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 4: {
+                    parcel.enforceInterface("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    this.a(hw.a.G(parcel.readStrongBinder()), parcel.readInt() != 0);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5: {
+                    parcel.enforceInterface("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    hm.a p4;
                     if (parcel.readInt() != 0) {
-                        uri = (Uri)Uri.CREATOR.createFromParcel(parcel);
+                        p4 = hm.a.CREATOR.p(parcel);
                     }
                     else {
-                        uri = null;
+                        p4 = null;
                     }
-                    Bundle bundle;
-                    if (parcel.readInt() != 0) {
-                        bundle = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle = null;
-                    }
-                    this.a(al, uri, bundle, parcel.readInt() != 0);
+                    this.a(p4, hw.a.G(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
                     return true;
                 }
             }
@@ -63,61 +88,146 @@ public interface hv extends IInterface
         
         private static class a implements hv
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
-            public void a(final hu hu, final Uri uri, final Bundle bundle, final boolean b) throws RemoteException {
+            public void a(final hm.a a, final hw hw) throws RemoteException {
                 while (true) {
-                    IBinder binder = null;
-                    int n = 1;
                     final Parcel obtain = Parcel.obtain();
+                    final Parcel obtain2 = Parcel.obtain();
                     while (true) {
-                        Label_0134: {
-                            Label_0119: {
-                                try {
-                                    obtain.writeInterfaceToken("com.google.android.gms.panorama.internal.IPanoramaService");
-                                    if (hu != null) {
-                                        binder = hu.asBinder();
-                                    }
-                                    obtain.writeStrongBinder(binder);
-                                    if (uri != null) {
-                                        obtain.writeInt(1);
-                                        uri.writeToParcel(obtain, 0);
-                                    }
-                                    else {
-                                        obtain.writeInt(0);
-                                    }
-                                    if (bundle != null) {
-                                        obtain.writeInt(1);
-                                        bundle.writeToParcel(obtain, 0);
-                                        break Label_0134;
-                                    }
-                                    break Label_0119;
-                                    obtain.writeInt(n);
-                                    this.kn.transact(1, obtain, (Parcel)null, 1);
-                                    return;
-                                }
-                                finally {
-                                    obtain.recycle();
-                                }
+                        try {
+                            obtain.writeInterfaceToken("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                            if (a != null) {
+                                obtain.writeInt(1);
+                                a.writeToParcel(obtain, 0);
                             }
-                            obtain.writeInt(0);
+                            else {
+                                obtain.writeInt(0);
+                            }
+                            if (hw != null) {
+                                final IBinder binder = hw.asBinder();
+                                obtain.writeStrongBinder(binder);
+                                this.lb.transact(5, obtain, obtain2, 0);
+                                obtain2.readException();
+                                return;
+                            }
                         }
-                        if (b) {
-                            continue;
+                        finally {
+                            obtain2.recycle();
+                            obtain.recycle();
                         }
-                        n = 0;
+                        final IBinder binder = null;
                         continue;
                     }
                 }
             }
             
+            @Override
+            public void a(final hw hw) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    IBinder binder;
+                    if (hw != null) {
+                        binder = hw.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.lb.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void a(final hw hw, final String s, final hs[] array) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    IBinder binder;
+                    if (hw != null) {
+                        binder = hw.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    obtain.writeString(s);
+                    obtain.writeTypedArray((Parcelable[])array, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void a(final hw hw, final boolean b) throws RemoteException {
+                int n = 0;
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    IBinder binder;
+                    if (hw != null) {
+                        binder = hw.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    if (b) {
+                        n = 1;
+                    }
+                    obtain.writeInt(n);
+                    this.lb.transact(4, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
+            }
+            
+            @Override
+            public void b(final hw hw) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.appdatasearch.internal.ILightweightAppDataSearch");
+                    IBinder binder;
+                    if (hw != null) {
+                        binder = hw.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    this.lb.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
             }
         }
     }

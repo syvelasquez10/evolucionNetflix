@@ -6,15 +6,15 @@ package com.google.android.gms.maps.model;
 
 import java.util.List;
 import android.os.RemoteException;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.maps.model.internal.IPolylineDelegate;
 
 public final class Polyline
 {
-    private final IPolylineDelegate Tq;
+    private final IPolylineDelegate akd;
     
     public Polyline(final IPolylineDelegate polylineDelegate) {
-        this.Tq = fq.f(polylineDelegate);
+        this.akd = n.i(polylineDelegate);
     }
     
     @Override
@@ -23,7 +23,7 @@ public final class Polyline
             return false;
         }
         try {
-            return this.Tq.equalsRemote(((Polyline)o).Tq);
+            return this.akd.equalsRemote(((Polyline)o).akd);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -32,7 +32,7 @@ public final class Polyline
     
     public int getColor() {
         try {
-            return this.Tq.getColor();
+            return this.akd.getColor();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -41,7 +41,7 @@ public final class Polyline
     
     public String getId() {
         try {
-            return this.Tq.getId();
+            return this.akd.getId();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -50,7 +50,7 @@ public final class Polyline
     
     public List<LatLng> getPoints() {
         try {
-            return this.Tq.getPoints();
+            return this.akd.getPoints();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -59,7 +59,7 @@ public final class Polyline
     
     public float getWidth() {
         try {
-            return this.Tq.getWidth();
+            return this.akd.getWidth();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -68,7 +68,7 @@ public final class Polyline
     
     public float getZIndex() {
         try {
-            return this.Tq.getZIndex();
+            return this.akd.getZIndex();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -78,7 +78,7 @@ public final class Polyline
     @Override
     public int hashCode() {
         try {
-            return this.Tq.hashCodeRemote();
+            return this.akd.hashCodeRemote();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -87,7 +87,7 @@ public final class Polyline
     
     public boolean isGeodesic() {
         try {
-            return this.Tq.isGeodesic();
+            return this.akd.isGeodesic();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -96,7 +96,7 @@ public final class Polyline
     
     public boolean isVisible() {
         try {
-            return this.Tq.isVisible();
+            return this.akd.isVisible();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -105,7 +105,7 @@ public final class Polyline
     
     public void remove() {
         try {
-            this.Tq.remove();
+            this.akd.remove();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -114,7 +114,7 @@ public final class Polyline
     
     public void setColor(final int color) {
         try {
-            this.Tq.setColor(color);
+            this.akd.setColor(color);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -123,7 +123,7 @@ public final class Polyline
     
     public void setGeodesic(final boolean geodesic) {
         try {
-            this.Tq.setGeodesic(geodesic);
+            this.akd.setGeodesic(geodesic);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -132,7 +132,7 @@ public final class Polyline
     
     public void setPoints(final List<LatLng> points) {
         try {
-            this.Tq.setPoints(points);
+            this.akd.setPoints(points);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -141,7 +141,7 @@ public final class Polyline
     
     public void setVisible(final boolean visible) {
         try {
-            this.Tq.setVisible(visible);
+            this.akd.setVisible(visible);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -150,7 +150,7 @@ public final class Polyline
     
     public void setWidth(final float width) {
         try {
-            this.Tq.setWidth(width);
+            this.akd.setWidth(width);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -159,7 +159,7 @@ public final class Polyline
     
     public void setZIndex(final float zIndex) {
         try {
-            this.Tq.setZIndex(zIndex);
+            this.akd.setZIndex(zIndex);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

@@ -22,12 +22,7 @@ class aa extends aj
     }
     
     @Override
-    public boolean jX() {
-        return true;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
+    public d.a C(final Map<String, d.a> map) {
         final String manufacturer = Build.MANUFACTURER;
         String s2;
         final String s = s2 = Build.MODEL;
@@ -37,6 +32,11 @@ class aa extends aj
                 s2 = manufacturer + " " + s;
             }
         }
-        return dh.r(s2);
+        return di.u(s2);
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

@@ -17,6 +17,18 @@ class ViewCompatJellybeanMr1
         return view.getLayoutDirection();
     }
     
+    public static int getPaddingEnd(final View view) {
+        return view.getPaddingEnd();
+    }
+    
+    public static int getPaddingStart(final View view) {
+        return view.getPaddingStart();
+    }
+    
+    public static int getWindowSystemUiVisibility(final View view) {
+        return view.getWindowSystemUiVisibility();
+    }
+    
     public static void setLabelFor(final View view, final int labelFor) {
         view.setLabelFor(labelFor);
     }
@@ -27,5 +39,9 @@ class ViewCompatJellybeanMr1
     
     public static void setLayoutDirection(final View view, final int layoutDirection) {
         view.setLayoutDirection(layoutDirection);
+    }
+    
+    public static void setPaddingRelative(final View view, final int n, final int n2, final int n3, final int n4) {
+        view.setPaddingRelative(n, n2, n3, n4);
     }
 }

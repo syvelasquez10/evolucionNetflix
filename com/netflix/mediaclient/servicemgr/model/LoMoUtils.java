@@ -32,16 +32,16 @@ public class LoMoUtils
     
     public static int getLomoFragOffsetLeftPx(final NetflixActivity netflixActivity) {
         if (netflixActivity.isForKids()) {
-            return (int)(0.667f * netflixActivity.getResources().getDimensionPixelOffset(2131361929));
+            return (int)(0.667f * netflixActivity.getResources().getDimensionPixelOffset(2131361955));
         }
-        return netflixActivity.getResources().getDimensionPixelOffset(2131361870);
+        return netflixActivity.getResources().getDimensionPixelOffset(2131361896);
     }
     
     public static int getLomoFragOffsetRightPx(final NetflixActivity netflixActivity) {
         if (netflixActivity.isForKids()) {
-            return (int)(1.333f * netflixActivity.getResources().getDimensionPixelOffset(2131361929));
+            return (int)(1.333f * netflixActivity.getResources().getDimensionPixelOffset(2131361955));
         }
-        return netflixActivity.getResources().getDimensionPixelOffset(2131361870);
+        return netflixActivity.getResources().getDimensionPixelOffset(2131361896);
     }
     
     public static void injectSocialData(final LoMo loMo, final List<Video> list) {

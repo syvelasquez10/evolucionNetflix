@@ -4,111 +4,42 @@
 
 package com.google.android.gms.tagmanager;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import android.net.Uri;
+import java.util.Iterator;
+import com.google.android.gms.internal.d;
+import java.util.Map;
+import com.google.android.gms.internal.b;
 
-class cd
+abstract class cd extends aj
 {
-    private static cd YP;
-    private volatile String WJ;
-    private volatile a YQ;
-    private volatile String YR;
-    private volatile String YS;
+    private static final String aoU;
+    private static final String apQ;
     
-    cd() {
-        this.clear();
+    static {
+        aoU = b.bw.toString();
+        apQ = b.bx.toString();
     }
     
-    private String bI(final String s) {
-        return s.split("&")[0].split("=")[1];
+    public cd(final String s) {
+        super(s, new String[] { cd.aoU, cd.apQ });
     }
     
-    private String h(final Uri uri) {
-        return uri.getQuery().replace("&gtm_debug=x", "");
-    }
-    
-    static cd kT() {
-        synchronized (cd.class) {
-            if (cd.YP == null) {
-                cd.YP = new cd();
+    @Override
+    public d.a C(final Map<String, d.a> map) {
+        final Iterator<d.a> iterator = map.values().iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next() == di.pI()) {
+                return di.u(false);
             }
-            return cd.YP;
         }
+        final d.a a = map.get(cd.aoU);
+        final d.a a2 = map.get(cd.apQ);
+        return di.u(a != null && a2 != null && this.a(a, a2, map));
     }
     
-    void clear() {
-        this.YQ = a.YT;
-        this.YR = null;
-        this.WJ = null;
-        this.YS = null;
-    }
+    protected abstract boolean a(final d.a p0, final d.a p1, final Map<String, d.a> p2);
     
-    boolean g(final Uri uri) {
-        while (true) {
-            boolean b = true;
-            String decode;
-            synchronized (this) {
-                while (true) {
-                    while (true) {
-                        try {
-                            decode = URLDecoder.decode(uri.toString(), "UTF-8");
-                            if (!decode.matches("^tagmanager.c.\\S+:\\/\\/preview\\/p\\?id=\\S+&gtm_auth=\\S+&gtm_preview=\\d+(&gtm_debug=x)?$")) {
-                                break;
-                            }
-                            bh.y("Container preview url: " + decode);
-                            if (decode.matches(".*?&gtm_debug=x$")) {
-                                this.YQ = a.YV;
-                                this.YS = this.h(uri);
-                                if (this.YQ == a.YU || this.YQ == a.YV) {
-                                    this.YR = "/r?" + this.YS;
-                                }
-                                this.WJ = this.bI(this.YS);
-                                return b;
-                            }
-                        }
-                        catch (UnsupportedEncodingException ex) {
-                            b = false;
-                            return b;
-                        }
-                        this.YQ = a.YU;
-                        continue;
-                    }
-                }
-            }
-            if (!decode.matches("^tagmanager.c.\\S+:\\/\\/preview\\/p\\?id=\\S+&gtm_preview=$")) {
-                bh.z("Invalid preview uri: " + decode);
-                b = false;
-                return b;
-            }
-            final Uri uri2;
-            if (this.bI(uri2.getQuery()).equals(this.WJ)) {
-                bh.y("Exit preview mode for container: " + this.WJ);
-                this.YQ = a.YT;
-                this.YR = null;
-                return b;
-            }
-            b = false;
-            return b;
-        }
-    }
-    
-    String getContainerId() {
-        return this.WJ;
-    }
-    
-    a kU() {
-        return this.YQ;
-    }
-    
-    String kV() {
-        return this.YR;
-    }
-    
-    enum a
-    {
-        YT, 
-        YU, 
-        YV;
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

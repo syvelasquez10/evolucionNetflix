@@ -12,58 +12,58 @@ import android.os.Parcelable$Creator;
 public class b implements Parcelable$Creator<WalletFragmentOptions>
 {
     static void a(final WalletFragmentOptions walletFragmentOptions, final Parcel parcel, final int n) {
-        final int p3 = com.google.android.gms.common.internal.safeparcel.b.p(parcel);
-        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, walletFragmentOptions.xH);
+        final int d = com.google.android.gms.common.internal.safeparcel.b.D(parcel);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, walletFragmentOptions.BR);
         com.google.android.gms.common.internal.safeparcel.b.c(parcel, 2, walletFragmentOptions.getEnvironment());
         com.google.android.gms.common.internal.safeparcel.b.c(parcel, 3, walletFragmentOptions.getTheme());
         com.google.android.gms.common.internal.safeparcel.b.a(parcel, 4, (Parcelable)walletFragmentOptions.getFragmentStyle(), n, false);
         com.google.android.gms.common.internal.safeparcel.b.c(parcel, 5, walletFragmentOptions.getMode());
-        com.google.android.gms.common.internal.safeparcel.b.F(parcel, p3);
+        com.google.android.gms.common.internal.safeparcel.b.H(parcel, d);
     }
     
-    public WalletFragmentOptions bo(final Parcel parcel) {
+    public WalletFragmentOptions dE(final Parcel parcel) {
         int g = 1;
         int g2 = 0;
-        final int o = a.o(parcel);
+        final int c = a.C(parcel);
         WalletFragmentStyle walletFragmentStyle = null;
         int g3 = 1;
         int g4 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g4 = a.g(parcel, n);
+                    g4 = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    g3 = a.g(parcel, n);
+                    g3 = a.g(parcel, b);
                     continue;
                 }
                 case 3: {
-                    g2 = a.g(parcel, n);
+                    g2 = a.g(parcel, b);
                     continue;
                 }
                 case 4: {
-                    walletFragmentStyle = a.a(parcel, n, WalletFragmentStyle.CREATOR);
+                    walletFragmentStyle = a.a(parcel, b, WalletFragmentStyle.CREATOR);
                     continue;
                 }
                 case 5: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
         return new WalletFragmentOptions(g4, g3, g2, walletFragmentStyle, g);
     }
     
-    public WalletFragmentOptions[] cB(final int n) {
+    public WalletFragmentOptions[] fF(final int n) {
         return new WalletFragmentOptions[n];
     }
 }

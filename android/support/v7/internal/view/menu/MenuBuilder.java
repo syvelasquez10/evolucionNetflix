@@ -16,8 +16,7 @@ import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import android.content.ComponentName;
 import android.support.v7.appcompat.R;
-import android.util.SparseArray;
-import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import java.util.Iterator;
 import android.view.MenuItem;
@@ -26,6 +25,8 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.CopyOnWriteArrayList;
 import android.view.View;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.view.ContextMenu$ContextMenuInfo;
 import android.content.Context;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class MenuBuilder implements SupportMenu
     private ContextMenu$ContextMenuInfo mCurrentMenuInfo;
     private int mDefaultShowAsAction;
     private MenuItemImpl mExpandedItem;
+    private SparseArray<Parcelable> mFrozenViewStates;
     Drawable mHeaderIcon;
     CharSequence mHeaderTitle;
     View mHeaderView;
@@ -86,13 +88,17 @@ public class MenuBuilder implements SupportMenu
     
     private MenuItem addInternal(final int n, final int n2, final int n3, final CharSequence charSequence) {
         final int ordering = getOrdering(n3);
-        final MenuItemImpl menuItemImpl = new MenuItemImpl(this, n, n2, n3, ordering, charSequence, this.mDefaultShowAsAction);
+        final MenuItemImpl newMenuItem = this.createNewMenuItem(n, n2, n3, ordering, charSequence, this.mDefaultShowAsAction);
         if (this.mCurrentMenuInfo != null) {
-            menuItemImpl.setMenuInfo(this.mCurrentMenuInfo);
+            newMenuItem.setMenuInfo(this.mCurrentMenuInfo);
         }
-        this.mItems.add(findInsertIndex(this.mItems, ordering), menuItemImpl);
+        this.mItems.add(findInsertIndex(this.mItems, ordering), newMenuItem);
         this.onItemsChanged(true);
-        return (MenuItem)menuItemImpl;
+        return (MenuItem)newMenuItem;
+    }
+    
+    private MenuItemImpl createNewMenuItem(final int n, final int n2, final int n3, final int n4, final CharSequence charSequence, final int n5) {
+        return new MenuItemImpl(this, n, n2, n3, n4, charSequence, n5);
     }
     
     private void dispatchPresenterUpdate(final boolean b) {
@@ -160,29 +166,32 @@ public class MenuBuilder implements SupportMenu
         bundle.putSparseParcelableArray("android:menu:presenters", sparseArray);
     }
     
-    private boolean dispatchSubMenuSelected(final SubMenuBuilder subMenuBuilder) {
+    private boolean dispatchSubMenuSelected(final SubMenuBuilder subMenuBuilder, final MenuPresenter menuPresenter) {
         boolean b;
         if (this.mPresenters.isEmpty()) {
             b = false;
         }
         else {
-            boolean onSubMenuSelected = false;
+            boolean b2 = false;
+            if (menuPresenter != null) {
+                b2 = menuPresenter.onSubMenuSelected(subMenuBuilder);
+            }
             final Iterator<WeakReference<MenuPresenter>> iterator = this.mPresenters.iterator();
             while (true) {
-                b = onSubMenuSelected;
+                b = b2;
                 if (!iterator.hasNext()) {
                     break;
                 }
                 final WeakReference<MenuPresenter> weakReference = iterator.next();
-                final MenuPresenter menuPresenter = weakReference.get();
-                if (menuPresenter == null) {
+                final MenuPresenter menuPresenter2 = weakReference.get();
+                if (menuPresenter2 == null) {
                     this.mPresenters.remove(weakReference);
                 }
                 else {
-                    if (onSubMenuSelected) {
+                    if (b2) {
                         continue;
                     }
-                    onSubMenuSelected = menuPresenter.onSubMenuSelected(subMenuBuilder);
+                    b2 = menuPresenter2.onSubMenuSelected(subMenuBuilder);
                 }
             }
         }
@@ -230,7 +239,7 @@ public class MenuBuilder implements SupportMenu
                 this.mHeaderTitle = mHeaderTitle;
             }
             if (n2 > 0) {
-                this.mHeaderIcon = resources.getDrawable(n2);
+                this.mHeaderIcon = ContextCompat.getDrawable(this.getContext(), n2);
             }
             else if (mHeaderIcon != null) {
                 this.mHeaderIcon = mHeaderIcon;
@@ -297,8 +306,12 @@ public class MenuBuilder implements SupportMenu
     }
     
     public void addMenuPresenter(final MenuPresenter menuPresenter) {
+        this.addMenuPresenter(menuPresenter, this.mContext);
+    }
+    
+    public void addMenuPresenter(final MenuPresenter menuPresenter, final Context context) {
         this.mPresenters.add(new WeakReference<MenuPresenter>(menuPresenter));
-        menuPresenter.initForMenu(this.mContext, this);
+        menuPresenter.initForMenu(context, this);
         this.mIsActionItemsStale = true;
     }
     
@@ -355,7 +368,7 @@ public class MenuBuilder implements SupportMenu
         this.close(true);
     }
     
-    final void close(final boolean b) {
+    public final void close(final boolean b) {
         if (this.mIsClosing) {
             return;
         }
@@ -551,6 +564,7 @@ public class MenuBuilder implements SupportMenu
     }
     
     public void flagActionItems() {
+        final ArrayList<MenuItemImpl> visibleItems = this.getVisibleItems();
         if (!this.mIsActionItemsStale) {
             return;
         }
@@ -567,7 +581,6 @@ public class MenuBuilder implements SupportMenu
         if (b) {
             this.mActionItems.clear();
             this.mNonActionItems.clear();
-            final ArrayList<MenuItemImpl> visibleItems = this.getVisibleItems();
             for (int size = visibleItems.size(), i = 0; i < size; ++i) {
                 final MenuItemImpl menuItemImpl = visibleItems.get(i);
                 if (menuItemImpl.isActionButton()) {
@@ -586,7 +599,7 @@ public class MenuBuilder implements SupportMenu
         this.mIsActionItemsStale = false;
     }
     
-    ArrayList<MenuItemImpl> getActionItems() {
+    public ArrayList<MenuItemImpl> getActionItems() {
         this.flagActionItems();
         return this.mActionItems;
     }
@@ -619,7 +632,7 @@ public class MenuBuilder implements SupportMenu
         return (MenuItem)this.mItems.get(n);
     }
     
-    ArrayList<MenuItemImpl> getNonActionItems() {
+    public ArrayList<MenuItemImpl> getNonActionItems() {
         this.flagActionItems();
         return this.mNonActionItems;
     }
@@ -636,7 +649,7 @@ public class MenuBuilder implements SupportMenu
         return this;
     }
     
-    ArrayList<MenuItemImpl> getVisibleItems() {
+    public ArrayList<MenuItemImpl> getVisibleItems() {
         if (!this.mIsVisibleItemsStale) {
             return this.mVisibleItems;
         }
@@ -681,7 +694,7 @@ public class MenuBuilder implements SupportMenu
         this.onItemsChanged(this.mIsVisibleItemsStale = true);
     }
     
-    void onItemsChanged(final boolean b) {
+    public void onItemsChanged(final boolean b) {
         if (!this.mPreventDispatchingItemsChanged) {
             if (b) {
                 this.mIsVisibleItemsStale = true;
@@ -698,6 +711,10 @@ public class MenuBuilder implements SupportMenu
     }
     
     public boolean performItemAction(final MenuItem menuItem, final int n) {
+        return this.performItemAction(menuItem, null, n);
+    }
+    
+    public boolean performItemAction(final MenuItem menuItem, final MenuPresenter menuPresenter, final int n) {
         final MenuItemImpl menuItemImpl = (MenuItemImpl)menuItem;
         boolean b;
         if (menuItemImpl == null || !menuItemImpl.isEnabled()) {
@@ -723,7 +740,7 @@ public class MenuBuilder implements SupportMenu
                 if (b2) {
                     supportActionProvider.onPrepareSubMenu((SubMenu)subMenuBuilder);
                 }
-                final boolean b4 = b = (invoke | this.dispatchSubMenuSelected(subMenuBuilder));
+                final boolean b4 = b = (invoke | this.dispatchSubMenuSelected(subMenuBuilder, menuPresenter));
                 if (!b4) {
                     this.close(true);
                     return b4;

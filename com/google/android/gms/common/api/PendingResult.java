@@ -24,6 +24,6 @@ public interface PendingResult<R extends Result>
     
     public interface a
     {
-        void l(final Status p0);
+        void n(final Status p0);
     }
 }

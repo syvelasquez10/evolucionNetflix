@@ -4,8 +4,8 @@
 
 package com.google.android.gms.games;
 
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.Releasable;
+import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.PendingResult;
 import android.content.Intent;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,10 +32,6 @@ public interface Players
     
     PendingResult<LoadPlayersResult> loadRecentlyPlayedWithPlayers(final GoogleApiClient p0, final int p1, final boolean p2);
     
-    public interface LoadExtendedPlayersResult extends Releasable, Result
-    {
-    }
-    
     public interface LoadOwnerCoverPhotoUrisResult extends Result
     {
     }
@@ -43,5 +39,24 @@ public interface Players
     public interface LoadPlayersResult extends Releasable, Result
     {
         PlayerBuffer getPlayers();
+    }
+    
+    public interface LoadProfileSettingsResult extends Result
+    {
+        boolean isProfileVisible();
+        
+        boolean isVisibilityExplicitlySet();
+    }
+    
+    public interface LoadXpForGameCategoriesResult extends Result
+    {
+    }
+    
+    public interface LoadXpForGamesResult extends Result
+    {
+    }
+    
+    public interface LoadXpStreamResult extends Result
+    {
     }
 }

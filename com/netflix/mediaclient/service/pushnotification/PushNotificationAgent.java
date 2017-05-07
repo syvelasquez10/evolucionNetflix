@@ -99,7 +99,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         userData.netflixId = intent.getStringExtra("nid");
         userData.secureNetflixId = intent.getStringExtra("sid");
         userData.userId = intent.getStringExtra("uid");
-        userData.currentProfileUserId = intent.getStringExtra("cp_uid");
+        userData.currentProfileToken = intent.getStringExtra("cp_uid");
         if (Log.isLoggable("nf_push", 3)) {
             Log.d("nf_push", "CreateUserData: " + userData);
         }
@@ -140,7 +140,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         userData.netflixId = this.getUserAgent().getUserCredentialRegistry().getNetflixID();
         userData.secureNetflixId = this.getUserAgent().getUserCredentialRegistry().getSecureNetflixID();
         userData.userId = this.getService().getUserId();
-        userData.currentProfileUserId = this.getService().getCurrentProfileUserId();
+        userData.currentProfileToken = this.getService().getCurrentProfileUserId();
         userData.accountCountry = this.getUserAgent().getReqCountry();
         userData.accountCountry = this.getUserAgent().getGeoCountry();
         userData.languages = this.getUserAgent().getLanguagesInCsv();
@@ -244,7 +244,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                         this.mCurrentUserSettings.current = true;
                         this.mCurrentUserSettings.userId = userData.userId;
                         this.mCurrentUserSettings.optedIn = true;
-                        this.mCurrentUserSettings.currentProfileUserId = userData.currentProfileUserId;
+                        this.mCurrentUserSettings.currentProfileUserId = userData.currentProfileToken;
                         this.mCurrentUserSettings.oldAppVersion = AndroidManifestUtils.getVersionCode(this.getContext());
                     }
                 }

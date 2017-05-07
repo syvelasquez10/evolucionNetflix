@@ -20,6 +20,7 @@ public class AccessibilityNodeInfoCompat
     public static final String ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT = "ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT";
     public static final String ACTION_ARGUMENT_SELECTION_END_INT = "ACTION_ARGUMENT_SELECTION_END_INT";
     public static final String ACTION_ARGUMENT_SELECTION_START_INT = "ACTION_ARGUMENT_SELECTION_START_INT";
+    public static final String ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE = "ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE";
     public static final int ACTION_CLEAR_ACCESSIBILITY_FOCUS = 128;
     public static final int ACTION_CLEAR_FOCUS = 2;
     public static final int ACTION_CLEAR_SELECTION = 8;
@@ -37,6 +38,7 @@ public class AccessibilityNodeInfoCompat
     public static final int ACTION_SCROLL_FORWARD = 4096;
     public static final int ACTION_SELECT = 4;
     public static final int ACTION_SET_SELECTION = 131072;
+    public static final int ACTION_SET_TEXT = 2097152;
     public static final int FOCUS_ACCESSIBILITY = 2;
     public static final int FOCUS_INPUT = 1;
     private static final AccessibilityNodeInfoImpl IMPL;
@@ -48,6 +50,10 @@ public class AccessibilityNodeInfoCompat
     private final Object mInfo;
     
     static {
+        if (Build$VERSION.SDK_INT >= 21) {
+            IMPL = (AccessibilityNodeInfoImpl)new AccessibilityNodeInfoApi21Impl();
+            return;
+        }
         if (Build$VERSION.SDK_INT >= 19) {
             IMPL = (AccessibilityNodeInfoImpl)new AccessibilityNodeInfoKitKatImpl();
             return;
@@ -207,6 +213,15 @@ public class AccessibilityNodeInfoCompat
         return wrapNonNullInstance(AccessibilityNodeInfoCompat.IMPL.focusSearch(this.mInfo, n));
     }
     
+    public List<AccessibilityActionCompat> getActionList() {
+        final ArrayList<AccessibilityActionCompat> list = new ArrayList<AccessibilityActionCompat>();
+        final List<Object> actionList = AccessibilityNodeInfoCompat.IMPL.getActionList(this.mInfo);
+        for (int size = actionList.size(), i = 0; i < size; ++i) {
+            list.add(new AccessibilityActionCompat(actionList.get(i)));
+        }
+        return list;
+    }
+    
     public int getActions() {
         return AccessibilityNodeInfoCompat.IMPL.getActions(this.mInfo);
     }
@@ -231,6 +246,22 @@ public class AccessibilityNodeInfoCompat
         return AccessibilityNodeInfoCompat.IMPL.getClassName(this.mInfo);
     }
     
+    public CollectionInfoCompat getCollectionInfo() {
+        final Object collectionInfo = AccessibilityNodeInfoCompat.IMPL.getCollectionInfo(this.mInfo);
+        if (collectionInfo == null) {
+            return null;
+        }
+        return new CollectionInfoCompat(collectionInfo);
+    }
+    
+    public CollectionItemInfoCompat getCollectionItemInfo() {
+        final Object collectionItemInfo = AccessibilityNodeInfoCompat.IMPL.getCollectionItemInfo(this.mInfo);
+        if (collectionItemInfo == null) {
+            return null;
+        }
+        return new CollectionItemInfoCompat(collectionItemInfo);
+    }
+    
     public CharSequence getContentDescription() {
         return AccessibilityNodeInfoCompat.IMPL.getContentDescription(this.mInfo);
     }
@@ -253,6 +284,14 @@ public class AccessibilityNodeInfoCompat
     
     public AccessibilityNodeInfoCompat getParent() {
         return wrapNonNullInstance(AccessibilityNodeInfoCompat.IMPL.getParent(this.mInfo));
+    }
+    
+    public RangeInfoCompat getRangeInfo() {
+        final Object rangeInfo = AccessibilityNodeInfoCompat.IMPL.getRangeInfo(this.mInfo);
+        if (rangeInfo == null) {
+            return null;
+        }
+        return new RangeInfoCompat(rangeInfo);
     }
     
     public CharSequence getText() {
@@ -361,6 +400,14 @@ public class AccessibilityNodeInfoCompat
     
     public void setClickable(final boolean b) {
         AccessibilityNodeInfoCompat.IMPL.setClickable(this.mInfo, b);
+    }
+    
+    public void setCollectionInfo(final Object o) {
+        AccessibilityNodeInfoCompat.IMPL.setCollectionInfo(this.mInfo, ((CollectionInfoCompat)o).mInfo);
+    }
+    
+    public void setCollectionItemInfo(final Object o) {
+        AccessibilityNodeInfoCompat.IMPL.setCollectionItemInfo(this.mInfo, ((CollectionItemInfoCompat)o).mInfo);
     }
     
     public void setContentDescription(final CharSequence charSequence) {
@@ -473,11 +520,63 @@ public class AccessibilityNodeInfoCompat
         return sb.toString();
     }
     
+    public static class AccessibilityActionCompat
+    {
+        private final Object mAction;
+        
+        private AccessibilityActionCompat(final Object mAction) {
+            this.mAction = mAction;
+        }
+        
+        public int getId() {
+            return AccessibilityNodeInfoCompatApi21.AccessibilityAction.getId(this.mAction);
+        }
+        
+        public CharSequence getLabel() {
+            return AccessibilityNodeInfoCompatApi21.AccessibilityAction.getLabel(this.mAction);
+        }
+    }
+    
+    static class AccessibilityNodeInfoApi21Impl extends AccessibilityNodeInfoKitKatImpl
+    {
+        @Override
+        public void addAction(final Object o, final int n, final CharSequence charSequence) {
+            AccessibilityNodeInfoCompatApi21.addAction(o, n, charSequence);
+        }
+        
+        @Override
+        public List<Object> getActionList(final Object o) {
+            return AccessibilityNodeInfoCompatApi21.getActionList(o);
+        }
+        
+        @Override
+        public boolean isCollectionItemSelected(final Object o) {
+            return AccessibilityNodeInfoCompatApi21.CollectionItemInfo.isSelected(o);
+        }
+        
+        @Override
+        public Object obtainCollectionInfo(final int n, final int n2, final boolean b, final int n3) {
+            return AccessibilityNodeInfoCompatApi21.obtainCollectionInfo(n, n2, b, n3);
+        }
+        
+        @Override
+        public Object obtainCollectionItemInfo(final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2) {
+            return AccessibilityNodeInfoCompatApi21.obtainCollectionItemInfo(n, n2, n3, n4, b, b2);
+        }
+    }
+    
     static class AccessibilityNodeInfoIcsImpl extends AccessibilityNodeInfoStubImpl
     {
         @Override
         public void addAction(final Object o, final int n) {
             AccessibilityNodeInfoCompatIcs.addAction(o, n);
+        }
+        
+        @Override
+        public void addAction(final Object o, final int n, final CharSequence charSequence) {
+            if (Integer.bitCount(n) == 1) {
+                this.addAction(o, n);
+            }
         }
         
         @Override
@@ -715,6 +814,8 @@ public class AccessibilityNodeInfoCompat
     {
         void addAction(final Object p0, final int p1);
         
+        void addAction(final Object p0, final int p1, final CharSequence p2);
+        
         void addChild(final Object p0, final View p1);
         
         void addChild(final Object p0, final View p1, final int p2);
@@ -724,6 +825,8 @@ public class AccessibilityNodeInfoCompat
         Object findFocus(final Object p0, final int p1);
         
         Object focusSearch(final Object p0, final int p1);
+        
+        List<Object> getActionList(final Object p0);
         
         int getActions(final Object p0);
         
@@ -737,6 +840,22 @@ public class AccessibilityNodeInfoCompat
         
         CharSequence getClassName(final Object p0);
         
+        Object getCollectionInfo(final Object p0);
+        
+        int getCollectionInfoColumnCount(final Object p0);
+        
+        int getCollectionInfoRowCount(final Object p0);
+        
+        int getCollectionItemColumnIndex(final Object p0);
+        
+        int getCollectionItemColumnSpan(final Object p0);
+        
+        Object getCollectionItemInfo(final Object p0);
+        
+        int getCollectionItemRowIndex(final Object p0);
+        
+        int getCollectionItemRowSpan(final Object p0);
+        
         CharSequence getContentDescription(final Object p0);
         
         int getLiveRegion(final Object p0);
@@ -746,6 +865,8 @@ public class AccessibilityNodeInfoCompat
         CharSequence getPackageName(final Object p0);
         
         Object getParent(final Object p0);
+        
+        Object getRangeInfo(final Object p0);
         
         CharSequence getText(final Object p0);
         
@@ -760,6 +881,12 @@ public class AccessibilityNodeInfoCompat
         boolean isChecked(final Object p0);
         
         boolean isClickable(final Object p0);
+        
+        boolean isCollectionInfoHierarchical(final Object p0);
+        
+        boolean isCollectionItemHeading(final Object p0);
+        
+        boolean isCollectionItemSelected(final Object p0);
         
         boolean isEnabled(final Object p0);
         
@@ -785,6 +912,10 @@ public class AccessibilityNodeInfoCompat
         
         Object obtain(final Object p0);
         
+        Object obtainCollectionInfo(final int p0, final int p1, final boolean p2, final int p3);
+        
+        Object obtainCollectionItemInfo(final int p0, final int p1, final int p2, final int p3, final boolean p4, final boolean p5);
+        
         boolean performAction(final Object p0, final int p1);
         
         boolean performAction(final Object p0, final int p1, final Bundle p2);
@@ -804,6 +935,10 @@ public class AccessibilityNodeInfoCompat
         void setClassName(final Object p0, final CharSequence p1);
         
         void setClickable(final Object p0, final boolean p1);
+        
+        void setCollectionInfo(final Object p0, final Object p1);
+        
+        void setCollectionItemInfo(final Object p0, final Object p1);
         
         void setContentDescription(final Object p0, final CharSequence p1);
         
@@ -926,8 +1061,83 @@ public class AccessibilityNodeInfoCompat
     static class AccessibilityNodeInfoKitKatImpl extends AccessibilityNodeInfoJellybeanMr2Impl
     {
         @Override
+        public Object getCollectionInfo(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.getCollectionInfo(o);
+        }
+        
+        @Override
+        public int getCollectionInfoColumnCount(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.CollectionInfo.getColumnCount(o);
+        }
+        
+        @Override
+        public int getCollectionInfoRowCount(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.CollectionInfo.getRowCount(o);
+        }
+        
+        @Override
+        public int getCollectionItemColumnIndex(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.CollectionItemInfo.getColumnIndex(o);
+        }
+        
+        @Override
+        public int getCollectionItemColumnSpan(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.CollectionItemInfo.getColumnSpan(o);
+        }
+        
+        @Override
+        public Object getCollectionItemInfo(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.getCollectionItemInfo(o);
+        }
+        
+        @Override
+        public int getCollectionItemRowIndex(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.CollectionItemInfo.getRowIndex(o);
+        }
+        
+        @Override
+        public int getCollectionItemRowSpan(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.CollectionItemInfo.getRowSpan(o);
+        }
+        
+        @Override
         public int getLiveRegion(final Object o) {
             return AccessibilityNodeInfoCompatKitKat.getLiveRegion(o);
+        }
+        
+        @Override
+        public Object getRangeInfo(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.getRangeInfo(o);
+        }
+        
+        @Override
+        public boolean isCollectionInfoHierarchical(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.CollectionInfo.isHierarchical(o);
+        }
+        
+        @Override
+        public boolean isCollectionItemHeading(final Object o) {
+            return AccessibilityNodeInfoCompatKitKat.CollectionItemInfo.isHeading(o);
+        }
+        
+        @Override
+        public Object obtainCollectionInfo(final int n, final int n2, final boolean b, final int n3) {
+            return AccessibilityNodeInfoCompatKitKat.obtainCollectionInfo(n, n2, b, n3);
+        }
+        
+        @Override
+        public Object obtainCollectionItemInfo(final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2) {
+            return AccessibilityNodeInfoCompatKitKat.obtainCollectionItemInfo(n, n2, n3, n4, b);
+        }
+        
+        @Override
+        public void setCollectionInfo(final Object o, final Object o2) {
+            AccessibilityNodeInfoCompatKitKat.setCollectionInfo(o, o2);
+        }
+        
+        @Override
+        public void setCollectionItemInfo(final Object o, final Object o2) {
+            AccessibilityNodeInfoCompatKitKat.setCollectionItemInfo(o, o2);
         }
         
         @Override
@@ -940,6 +1150,10 @@ public class AccessibilityNodeInfoCompat
     {
         @Override
         public void addAction(final Object o, final int n) {
+        }
+        
+        @Override
+        public void addAction(final Object o, final int n, final CharSequence charSequence) {
         }
         
         @Override
@@ -962,6 +1176,11 @@ public class AccessibilityNodeInfoCompat
         
         @Override
         public Object focusSearch(final Object o, final int n) {
+            return null;
+        }
+        
+        @Override
+        public List<Object> getActionList(final Object o) {
             return null;
         }
         
@@ -994,6 +1213,46 @@ public class AccessibilityNodeInfoCompat
         }
         
         @Override
+        public Object getCollectionInfo(final Object o) {
+            return null;
+        }
+        
+        @Override
+        public int getCollectionInfoColumnCount(final Object o) {
+            return 0;
+        }
+        
+        @Override
+        public int getCollectionInfoRowCount(final Object o) {
+            return 0;
+        }
+        
+        @Override
+        public int getCollectionItemColumnIndex(final Object o) {
+            return 0;
+        }
+        
+        @Override
+        public int getCollectionItemColumnSpan(final Object o) {
+            return 0;
+        }
+        
+        @Override
+        public Object getCollectionItemInfo(final Object o) {
+            return null;
+        }
+        
+        @Override
+        public int getCollectionItemRowIndex(final Object o) {
+            return 0;
+        }
+        
+        @Override
+        public int getCollectionItemRowSpan(final Object o) {
+            return 0;
+        }
+        
+        @Override
         public CharSequence getContentDescription(final Object o) {
             return null;
         }
@@ -1015,6 +1274,11 @@ public class AccessibilityNodeInfoCompat
         
         @Override
         public Object getParent(final Object o) {
+            return null;
+        }
+        
+        @Override
+        public Object getRangeInfo(final Object o) {
             return null;
         }
         
@@ -1050,6 +1314,21 @@ public class AccessibilityNodeInfoCompat
         
         @Override
         public boolean isClickable(final Object o) {
+            return false;
+        }
+        
+        @Override
+        public boolean isCollectionInfoHierarchical(final Object o) {
+            return false;
+        }
+        
+        @Override
+        public boolean isCollectionItemHeading(final Object o) {
+            return false;
+        }
+        
+        @Override
+        public boolean isCollectionItemSelected(final Object o) {
             return false;
         }
         
@@ -1114,6 +1393,16 @@ public class AccessibilityNodeInfoCompat
         }
         
         @Override
+        public Object obtainCollectionInfo(final int n, final int n2, final boolean b, final int n3) {
+            return null;
+        }
+        
+        @Override
+        public Object obtainCollectionItemInfo(final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2) {
+            return null;
+        }
+        
+        @Override
         public boolean performAction(final Object o, final int n) {
             return false;
         }
@@ -1153,6 +1442,14 @@ public class AccessibilityNodeInfoCompat
         
         @Override
         public void setClickable(final Object o, final boolean b) {
+        }
+        
+        @Override
+        public void setCollectionInfo(final Object o, final Object o2) {
+        }
+        
+        @Override
+        public void setCollectionItemInfo(final Object o, final Object o2) {
         }
         
         @Override
@@ -1225,6 +1522,99 @@ public class AccessibilityNodeInfoCompat
         
         @Override
         public void setVisibleToUser(final Object o, final boolean b) {
+        }
+    }
+    
+    public static class CollectionInfoCompat
+    {
+        public static final int SELECTION_MODE_MULTIPLE = 2;
+        public static final int SELECTION_MODE_NONE = 0;
+        public static final int SELECTION_MODE_SINGLE = 1;
+        final Object mInfo;
+        
+        private CollectionInfoCompat(final Object mInfo) {
+            this.mInfo = mInfo;
+        }
+        
+        public static CollectionInfoCompat obtain(final int n, final int n2, final boolean b, final int n3) {
+            return new CollectionInfoCompat(AccessibilityNodeInfoCompat.IMPL.obtainCollectionInfo(n, n2, b, n3));
+        }
+        
+        public int getColumnCount() {
+            return AccessibilityNodeInfoCompat.IMPL.getCollectionInfoColumnCount(this.mInfo);
+        }
+        
+        public int getRowCount() {
+            return AccessibilityNodeInfoCompat.IMPL.getCollectionInfoRowCount(this.mInfo);
+        }
+        
+        public boolean isHierarchical() {
+            return AccessibilityNodeInfoCompat.IMPL.isCollectionInfoHierarchical(this.mInfo);
+        }
+    }
+    
+    public static class CollectionItemInfoCompat
+    {
+        private final Object mInfo;
+        
+        private CollectionItemInfoCompat(final Object mInfo) {
+            this.mInfo = mInfo;
+        }
+        
+        public static CollectionItemInfoCompat obtain(final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2) {
+            return new CollectionItemInfoCompat(AccessibilityNodeInfoCompat.IMPL.obtainCollectionItemInfo(n, n2, n3, n4, b, b2));
+        }
+        
+        public int getColumnIndex() {
+            return AccessibilityNodeInfoCompat.IMPL.getCollectionItemColumnIndex(this.mInfo);
+        }
+        
+        public int getColumnSpan() {
+            return AccessibilityNodeInfoCompat.IMPL.getCollectionItemColumnSpan(this.mInfo);
+        }
+        
+        public int getRowIndex() {
+            return AccessibilityNodeInfoCompat.IMPL.getCollectionItemRowIndex(this.mInfo);
+        }
+        
+        public int getRowSpan() {
+            return AccessibilityNodeInfoCompat.IMPL.getCollectionItemRowSpan(this.mInfo);
+        }
+        
+        public boolean isHeading() {
+            return AccessibilityNodeInfoCompat.IMPL.isCollectionItemHeading(this.mInfo);
+        }
+        
+        public boolean isSelected() {
+            return AccessibilityNodeInfoCompat.IMPL.isCollectionItemSelected(this.mInfo);
+        }
+    }
+    
+    public static class RangeInfoCompat
+    {
+        public static final int RANGE_TYPE_FLOAT = 1;
+        public static final int RANGE_TYPE_INT = 0;
+        public static final int RANGE_TYPE_PERCENT = 2;
+        private final Object mInfo;
+        
+        private RangeInfoCompat(final Object mInfo) {
+            this.mInfo = mInfo;
+        }
+        
+        public float getCurrent() {
+            return AccessibilityNodeInfoCompatKitKat.RangeInfo.getCurrent(this.mInfo);
+        }
+        
+        public float getMax() {
+            return AccessibilityNodeInfoCompatKitKat.RangeInfo.getMax(this.mInfo);
+        }
+        
+        public float getMin() {
+            return AccessibilityNodeInfoCompatKitKat.RangeInfo.getMin(this.mInfo);
+        }
+        
+        public int getType() {
+            return AccessibilityNodeInfoCompatKitKat.RangeInfo.getType(this.mInfo);
         }
     }
 }

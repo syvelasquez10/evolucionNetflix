@@ -34,11 +34,11 @@ public interface LeaderboardVariant extends Freezable<LeaderboardVariant>
     
     int getTimeSpan();
     
-    String hG();
-    
-    String hH();
-    
-    String hI();
-    
     boolean hasPlayerInfo();
+    
+    String lB();
+    
+    String lC();
+    
+    String lD();
 }

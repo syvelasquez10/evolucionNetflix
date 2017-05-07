@@ -21,7 +21,7 @@ public interface q extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnStreetViewPanoramaChangeListener");
         }
         
-        public static q at(final IBinder binder) {
+        public static q bh(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -47,14 +47,14 @@ public interface q extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IOnStreetViewPanoramaChangeListener");
-                    StreetViewPanoramaLocation fromParcel;
+                    StreetViewPanoramaLocation cs;
                     if (parcel.readInt() != 0) {
-                        fromParcel = StreetViewPanoramaLocation.CREATOR.createFromParcel(parcel);
+                        cs = StreetViewPanoramaLocation.CREATOR.cS(parcel);
                     }
                     else {
-                        fromParcel = null;
+                        cs = null;
                     }
-                    this.onStreetViewPanoramaChange(fromParcel);
+                    this.onStreetViewPanoramaChange(cs);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -63,14 +63,14 @@ public interface q extends IInterface
         
         private static class a implements q
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -86,7 +86,7 @@ public interface q extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

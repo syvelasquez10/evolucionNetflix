@@ -10,8 +10,8 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 
 public interface ImageLoader
 {
-    public static final int ONFAIL_DRAWABLE_RESOURCE = 2130837603;
-    public static final int PLACEHOLDER_DRAWABLE_RESOURCE = 2130837603;
+    public static final int ONFAIL_DRAWABLE_RESOURCE = 2130837567;
+    public static final int PLACEHOLDER_DRAWABLE_RESOURCE = 2130837567;
     public static final int PRIORITY_LOW = 0;
     public static final int PRIORITY_NORMAL = 1;
     

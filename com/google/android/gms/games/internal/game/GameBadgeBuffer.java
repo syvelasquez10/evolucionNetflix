@@ -8,7 +8,7 @@ import com.google.android.gms.common.data.DataBuffer;
 
 public final class GameBadgeBuffer extends DataBuffer<GameBadge>
 {
-    public GameBadge bf(final int n) {
-        return new GameBadgeRef(this.BB, n);
+    public GameBadge dK(final int n) {
+        return new GameBadgeRef(this.IC, n);
     }
 }

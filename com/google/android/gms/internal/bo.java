@@ -4,44 +4,92 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Iterator;
-import android.content.Context;
-import org.json.JSONException;
-import org.json.JSONArray;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.List;
-import org.json.JSONObject;
+import com.google.android.gms.dynamic.e;
+import com.google.android.gms.dynamic.d;
+import android.graphics.drawable.Drawable;
 
-public final class bo
+@ez
+public class bo extends br.a implements bq.a
 {
-    public static List<String> a(final JSONObject jsonObject, final String s) throws JSONException {
-        final JSONArray optJSONArray = jsonObject.optJSONArray(s);
-        if (optJSONArray != null) {
-            final ArrayList<String> list = new ArrayList<String>(optJSONArray.length());
-            for (int i = 0; i < optJSONArray.length(); ++i) {
-                list.add(optJSONArray.getString(i));
-            }
-            return (List<String>)Collections.unmodifiableList((List<?>)list);
-        }
-        return null;
+    private final Object mw;
+    private final String pl;
+    private final Drawable pm;
+    private final String pn;
+    private final Drawable po;
+    private final String pp;
+    private final double pq;
+    private final String pr;
+    private final String ps;
+    private bq pt;
+    
+    public bo(final String pl, final Drawable pm, final String pn, final Drawable po, final String pp, final double pq, final String pr, final String ps) {
+        this.mw = new Object();
+        this.pl = pl;
+        this.pm = pm;
+        this.pn = pn;
+        this.po = po;
+        this.pp = pp;
+        this.pq = pq;
+        this.pr = pr;
+        this.ps = ps;
     }
     
-    public static void a(final Context context, final String s, final dh dh, final String s2, final boolean b, final List<String> list) {
-        String s3;
-        if (b) {
-            s3 = "1";
+    @Override
+    public void a(final bq pt) {
+        synchronized (this.mw) {
+            this.pt = pt;
         }
-        else {
-            s3 = "0";
-        }
-        final Iterator<String> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            String s4 = iterator.next().replaceAll("@gw_adlocid@", s2).replaceAll("@gw_adnetrefresh@", s3).replaceAll("@gw_qdata@", dh.qt.nh).replaceAll("@gw_sdkver@", s).replaceAll("@gw_sessid@", dj.qK).replaceAll("@gw_seqnum@", dh.pj);
-            if (dh.nx != null) {
-                s4 = s4.replaceAll("@gw_adnetid@", dh.nx.mX).replaceAll("@gw_allocid@", dh.nx.mZ);
+    }
+    
+    public void as() {
+        synchronized (this.mw) {
+            if (this.pt == null) {
+                gs.T("Attempt to record impression before app install ad initialized.");
+                return;
             }
-            new du(context, s, s4).start();
+            this.pt.as();
+        }
+    }
+    
+    public String bt() {
+        return this.pl;
+    }
+    
+    public d bu() {
+        return e.k(this.pm);
+    }
+    
+    public d bv() {
+        return e.k(this.po);
+    }
+    
+    public String bw() {
+        return this.pp;
+    }
+    
+    public double bx() {
+        return this.pq;
+    }
+    
+    public String by() {
+        return this.pr;
+    }
+    
+    public String bz() {
+        return this.ps;
+    }
+    
+    public String getBody() {
+        return this.pn;
+    }
+    
+    public void i(final int n) {
+        synchronized (this.mw) {
+            if (this.pt == null) {
+                gs.T("Attempt to perform click before app install ad initialized.");
+                return;
+            }
+            this.pt.b("2", n);
         }
     }
 }

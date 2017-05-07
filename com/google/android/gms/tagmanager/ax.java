@@ -13,37 +13,37 @@ import android.content.Context;
 class ax extends aj
 {
     private static final String ID;
-    private static final String WA;
-    private final Context kI;
+    private static final String anI;
+    private final Context lB;
     
     static {
-        ID = a.ab.toString();
-        WA = b.bH.toString();
+        ID = a.ad.toString();
+        anI = b.bW.toString();
     }
     
-    public ax(final Context ki) {
+    public ax(final Context lb) {
         super(ax.ID, new String[0]);
-        this.kI = ki;
+        this.lB = lb;
     }
     
     @Override
-    public boolean jX() {
-        return true;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
+    public d.a C(final Map<String, d.a> map) {
         String j;
-        if (map.get(ax.WA) != null) {
-            j = dh.j(map.get(ax.WA));
+        if (map.get(ax.anI) != null) {
+            j = di.j(map.get(ax.anI));
         }
         else {
             j = null;
         }
-        final String d = ay.d(this.kI, j);
-        if (d != null) {
-            return dh.r(d);
+        final String e = ay.e(this.lB, j);
+        if (e != null) {
+            return di.u(e);
         }
-        return dh.lT();
+        return di.pI();
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

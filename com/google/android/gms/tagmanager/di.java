@@ -4,212 +4,337 @@
 
 package com.google.android.gms.tagmanager;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Iterator;
-import java.util.LinkedList;
-import com.google.android.gms.analytics.Tracker;
-import java.util.HashMap;
-import com.google.android.gms.internal.d;
-import java.util.HashSet;
-import android.content.Context;
-import com.google.android.gms.internal.b;
-import com.google.android.gms.internal.a;
 import java.util.Set;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.ArrayList;
+import com.google.android.gms.internal.d;
 import java.util.Map;
+import java.util.List;
 
-class di extends df
+class di
 {
-    private static final String ID;
-    private static final String aaO;
-    private static final String aaP;
-    private static final String aaQ;
-    private static final String aaR;
-    private static final String aaS;
-    private static final String aaT;
-    private static Map<String, String> aaU;
-    private static Map<String, String> aaV;
-    private final DataLayer WK;
-    private final Set<String> aaW;
-    private final de aaX;
+    private static final Object arJ;
+    private static Long arK;
+    private static Double arL;
+    private static dh arM;
+    private static String arN;
+    private static Boolean arO;
+    private static List<Object> arP;
+    private static Map<Object, Object> arQ;
+    private static d.a arR;
     
     static {
-        ID = a.aF.toString();
-        aaO = b.aV.toString();
-        aaP = b.be.toString();
-        aaQ = b.bd.toString();
-        aaR = b.eg.toString();
-        aaS = b.ei.toString();
-        aaT = b.ek.toString();
+        arJ = null;
+        di.arK = new Long(0L);
+        di.arL = new Double(0.0);
+        di.arM = dh.z(0L);
+        di.arN = new String("");
+        di.arO = new Boolean(false);
+        di.arP = new ArrayList<Object>(0);
+        di.arQ = new HashMap<Object, Object>();
+        di.arR = u(di.arN);
     }
     
-    public di(final Context context, final DataLayer dataLayer) {
-        this(context, dataLayer, new de(context));
+    public static d.a cU(final String ga) {
+        final d.a a = new d.a();
+        a.type = 5;
+        a.gA = ga;
+        return a;
     }
     
-    di(final Context context, final DataLayer wk, final de aaX) {
-        super(di.ID, new String[0]);
-        this.WK = wk;
-        this.aaX = aaX;
-        (this.aaW = new HashSet<String>()).add("");
-        this.aaW.add("0");
-        this.aaW.add("false");
-    }
-    
-    private Map<String, String> H(final Map<String, d.a> map) {
-        final d.a a = map.get(di.aaS);
-        if (a != null) {
-            return this.c(a);
+    private static dh cV(final String s) {
+        try {
+            return dh.cT(s);
         }
-        if (di.aaU == null) {
-            final HashMap<String, String> aaU = new HashMap<String, String>();
-            aaU.put("transactionId", "&ti");
-            aaU.put("transactionAffiliation", "&ta");
-            aaU.put("transactionTax", "&tt");
-            aaU.put("transactionShipping", "&ts");
-            aaU.put("transactionTotal", "&tr");
-            aaU.put("transactionCurrency", "&cu");
-            di.aaU = aaU;
+        catch (NumberFormatException ex) {
+            bh.T("Failed to convert '" + s + "' to a number.");
+            return di.arM;
         }
-        return di.aaU;
     }
     
-    private Map<String, String> I(final Map<String, d.a> map) {
-        final d.a a = map.get(di.aaT);
-        if (a != null) {
-            return this.c(a);
+    private static Long cW(final String s) {
+        final dh cv = cV(s);
+        if (cv == di.arM) {
+            return di.arK;
         }
-        if (di.aaV == null) {
-            final HashMap<String, String> aaV = new HashMap<String, String>();
-            aaV.put("name", "&in");
-            aaV.put("sku", "&ic");
-            aaV.put("category", "&iv");
-            aaV.put("price", "&ip");
-            aaV.put("quantity", "&iq");
-            aaV.put("currency", "&cu");
-            di.aaV = aaV;
-        }
-        return di.aaV;
+        return cv.longValue();
     }
     
-    private void a(final Tracker tracker, final Map<String, d.a> map) {
-        final String cc = this.cc("transactionId");
-        if (cc == null) {
-            bh.w("Cannot find transactionId in data layer.");
+    private static Double cX(final String s) {
+        final dh cv = cV(s);
+        if (cv == di.arM) {
+            return di.arL;
+        }
+        return cv.doubleValue();
+    }
+    
+    private static Boolean cY(final String s) {
+        if ("true".equalsIgnoreCase(s)) {
+            return Boolean.TRUE;
+        }
+        if ("false".equalsIgnoreCase(s)) {
+            return Boolean.FALSE;
+        }
+        return di.arO;
+    }
+    
+    private static double getDouble(final Object o) {
+        if (o instanceof Number) {
+            return ((Number)o).doubleValue();
+        }
+        bh.T("getDouble received non-Number");
+        return 0.0;
+    }
+    
+    public static String j(final d.a a) {
+        return p(o(a));
+    }
+    
+    public static dh k(final d.a a) {
+        return q(o(a));
+    }
+    
+    public static Long l(final d.a a) {
+        return r(o(a));
+    }
+    
+    public static Double m(final d.a a) {
+        return s(o(a));
+    }
+    
+    public static Boolean n(final d.a a) {
+        return t(o(a));
+    }
+    
+    public static Object o(final d.a a) {
+        final int n = 0;
+        final int n2 = 0;
+        int i = 0;
+        if (a == null) {
+            return di.arJ;
+        }
+        switch (a.type) {
+            default: {
+                bh.T("Failed to convert a value of type: " + a.type);
+                return di.arJ;
+            }
+            case 1: {
+                return a.gv;
+            }
+            case 2: {
+                final ArrayList<Object> list = new ArrayList<Object>(a.gw.length);
+                for (d.a[] gw = a.gw; i < gw.length; ++i) {
+                    final Object o = o(gw[i]);
+                    if (o == di.arJ) {
+                        return di.arJ;
+                    }
+                    list.add(o);
+                }
+                return list;
+            }
+            case 3: {
+                if (a.gx.length != a.gy.length) {
+                    bh.T("Converting an invalid value to object: " + a.toString());
+                    return di.arJ;
+                }
+                final HashMap<Object, Object> hashMap = new HashMap<Object, Object>(a.gy.length);
+                for (int j = n; j < a.gx.length; ++j) {
+                    final Object o2 = o(a.gx[j]);
+                    final Object o3 = o(a.gy[j]);
+                    if (o2 == di.arJ || o3 == di.arJ) {
+                        return di.arJ;
+                    }
+                    hashMap.put(o2, o3);
+                }
+                return hashMap;
+            }
+            case 4: {
+                bh.T("Trying to convert a macro reference to object");
+                return di.arJ;
+            }
+            case 5: {
+                bh.T("Trying to convert a function id to object");
+                return di.arJ;
+            }
+            case 6: {
+                return a.gB;
+            }
+            case 7: {
+                final StringBuffer sb = new StringBuffer();
+                final d.a[] gd = a.gD;
+                for (int length = gd.length, k = n2; k < length; ++k) {
+                    final String l = j(gd[k]);
+                    if (l == di.arN) {
+                        return di.arJ;
+                    }
+                    sb.append(l);
+                }
+                return sb.toString();
+            }
+            case 8: {
+                return a.gC;
+            }
+        }
+    }
+    
+    public static String p(final Object o) {
+        if (o == null) {
+            return di.arN;
+        }
+        return o.toString();
+    }
+    
+    public static Object pC() {
+        return di.arJ;
+    }
+    
+    public static Long pD() {
+        return di.arK;
+    }
+    
+    public static Double pE() {
+        return di.arL;
+    }
+    
+    public static Boolean pF() {
+        return di.arO;
+    }
+    
+    public static dh pG() {
+        return di.arM;
+    }
+    
+    public static String pH() {
+        return di.arN;
+    }
+    
+    public static d.a pI() {
+        return di.arR;
+    }
+    
+    public static dh q(final Object o) {
+        if (o instanceof dh) {
+            return (dh)o;
+        }
+        if (w(o)) {
+            return dh.z(x(o));
+        }
+        if (v(o)) {
+            return dh.a(Double.valueOf(getDouble(o)));
+        }
+        return cV(p(o));
+    }
+    
+    public static Long r(final Object o) {
+        if (w(o)) {
+            return x(o);
+        }
+        return cW(p(o));
+    }
+    
+    public static Double s(final Object o) {
+        if (v(o)) {
+            return getDouble(o);
+        }
+        return cX(p(o));
+    }
+    
+    public static Boolean t(final Object o) {
+        if (o instanceof Boolean) {
+            return (Boolean)o;
+        }
+        return cY(p(o));
+    }
+    
+    public static d.a u(final Object o) {
+        boolean gf = false;
+        final d.a a = new d.a();
+        if (o instanceof d.a) {
+            return (d.a)o;
+        }
+        if (o instanceof String) {
+            a.type = 1;
+            a.gv = (String)o;
+        }
+        else if (o instanceof List) {
+            a.type = 2;
+            final List list = (List)o;
+            final ArrayList list2 = new ArrayList<d.a>(list.size());
+            final Iterator<Object> iterator = list.iterator();
+            gf = false;
+            while (iterator.hasNext()) {
+                final d.a u = u(iterator.next());
+                if (u == di.arR) {
+                    return di.arR;
+                }
+                gf = (gf || u.gF);
+                list2.add(u);
+            }
+            a.gw = list2.toArray(new d.a[0]);
+        }
+        else if (o instanceof Map) {
+            a.type = 3;
+            final Set<Map.Entry<Object, V>> entrySet = (Set<Map.Entry<Object, V>>)((Map)o).entrySet();
+            final ArrayList list3 = new ArrayList<d.a>(entrySet.size());
+            final ArrayList list4 = new ArrayList<d.a>(entrySet.size());
+            final Iterator<Map.Entry<Object, V>> iterator2 = entrySet.iterator();
+            gf = false;
+            while (iterator2.hasNext()) {
+                final Map.Entry<Object, V> entry = iterator2.next();
+                final d.a u2 = u(entry.getKey());
+                final d.a u3 = u(entry.getValue());
+                if (u2 == di.arR || u3 == di.arR) {
+                    return di.arR;
+                }
+                gf = (gf || u2.gF || u3.gF);
+                list3.add(u2);
+                list4.add(u3);
+            }
+            a.gx = list3.toArray(new d.a[0]);
+            a.gy = list4.toArray(new d.a[0]);
+        }
+        else if (v(o)) {
+            a.type = 1;
+            a.gv = o.toString();
+        }
+        else if (w(o)) {
+            a.type = 6;
+            a.gB = x(o);
         }
         else {
-            final LinkedList<Map<String, String>> list = new LinkedList<Map<String, String>>();
-            Map<String, String> p2;
-            try {
-                p2 = this.p(map.get(di.aaQ));
-                p2.put("&t", "transaction");
-                for (final Map.Entry<String, String> entry : this.H(map).entrySet()) {
-                    this.b(p2, entry.getValue(), this.cc(entry.getKey()));
+            if (!(o instanceof Boolean)) {
+                final StringBuilder append = new StringBuilder().append("Converting to Value from unknown object type: ");
+                String string;
+                if (o == null) {
+                    string = "null";
                 }
-            }
-            catch (IllegalArgumentException ex) {
-                bh.b("Unable to send transaction", ex);
-                return;
-            }
-            list.add(p2);
-            final List<Map<String, String>> lu = this.lU();
-            if (lu != null) {
-                for (final Map<String, String> map2 : lu) {
-                    if (map2.get("name") == null) {
-                        bh.w("Unable to send transaction item hit due to missing 'name' field.");
-                        return;
-                    }
-                    final Map<String, String> p3 = this.p(map.get(di.aaQ));
-                    p3.put("&t", "item");
-                    p3.put("&ti", cc);
-                    for (final Map.Entry<String, String> entry2 : this.I(map).entrySet()) {
-                        this.b(p3, entry2.getValue(), map2.get(entry2.getKey()));
-                    }
-                    list.add(p3);
+                else {
+                    string = o.getClass().toString();
                 }
+                bh.T(append.append(string).toString());
+                return di.arR;
             }
-            final Iterator<Object> iterator4 = list.iterator();
-            while (iterator4.hasNext()) {
-                tracker.send(iterator4.next());
-            }
+            a.type = 8;
+            a.gC = (boolean)o;
         }
+        a.gF = gf;
+        return a;
     }
     
-    private void b(final Map<String, String> map, final String s, final String s2) {
-        if (s2 != null) {
-            map.put(s, s2);
-        }
+    private static boolean v(final Object o) {
+        return o instanceof Double || o instanceof Float || (o instanceof dh && ((dh)o).px());
     }
     
-    private Map<String, String> c(final d.a a) {
-        final Object o = dh.o(a);
-        if (!(o instanceof Map)) {
-            return null;
-        }
-        final Map<Object, V> map = (Map<Object, V>)o;
-        final LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<String, String>();
-        for (final Map.Entry<Object, V> entry : map.entrySet()) {
-            linkedHashMap.put(entry.getKey().toString(), entry.getValue().toString());
-        }
-        return linkedHashMap;
+    private static boolean w(final Object o) {
+        return o instanceof Byte || o instanceof Short || o instanceof Integer || o instanceof Long || (o instanceof dh && ((dh)o).py());
     }
     
-    private String cc(final String s) {
-        final Object value = this.WK.get(s);
-        if (value == null) {
-            return null;
+    private static long x(final Object o) {
+        if (o instanceof Number) {
+            return ((Number)o).longValue();
         }
-        return value.toString();
-    }
-    
-    private boolean e(final Map<String, d.a> map, final String s) {
-        final d.a a = map.get(s);
-        return a != null && dh.n(a);
-    }
-    
-    private List<Map<String, String>> lU() {
-        final Object value = this.WK.get("transactionProducts");
-        if (value == null) {
-            return null;
-        }
-        if (!(value instanceof List)) {
-            throw new IllegalArgumentException("transactionProducts should be of type List.");
-        }
-        final Iterator<Map<String, String>> iterator = ((List<Map<String, String>>)value).iterator();
-        while (iterator.hasNext()) {
-            if (!(iterator.next() instanceof Map)) {
-                throw new IllegalArgumentException("Each element of transactionProducts should be of type Map.");
-            }
-        }
-        return (List<Map<String, String>>)value;
-    }
-    
-    private Map<String, String> p(final d.a a) {
-        if (a == null) {
-            return new HashMap<String, String>();
-        }
-        final Map<String, String> c = this.c(a);
-        if (c == null) {
-            return new HashMap<String, String>();
-        }
-        final String s = c.get("&aip");
-        if (s != null && this.aaW.contains(s.toLowerCase())) {
-            c.remove("&aip");
-        }
-        return c;
-    }
-    
-    @Override
-    public void z(final Map<String, d.a> map) {
-        final Tracker bu = this.aaX.bU("_GTM_DEFAULT_TRACKER_");
-        if (this.e(map, di.aaP)) {
-            bu.send(this.p(map.get(di.aaQ)));
-            return;
-        }
-        if (this.e(map, di.aaR)) {
-            this.a(bu, map);
-            return;
-        }
-        bh.z("Ignoring unknown tag.");
+        bh.T("getInt64 received non-Number");
+        return 0L;
     }
 }

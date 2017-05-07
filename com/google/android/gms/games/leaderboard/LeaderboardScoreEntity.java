@@ -5,54 +5,54 @@
 package com.google.android.gms.games.leaderboard;
 
 import com.google.android.gms.common.data.Freezable;
-import com.google.android.gms.internal.gm;
+import com.google.android.gms.internal.jv;
 import android.database.CharArrayBuffer;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import com.google.android.gms.games.Player;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.games.PlayerEntity;
 import android.net.Uri;
 
 public final class LeaderboardScoreEntity implements LeaderboardScore
 {
-    private final long LU;
-    private final String LV;
-    private final String LW;
-    private final long LX;
-    private final long LY;
-    private final String LZ;
-    private final Uri Ma;
-    private final Uri Mb;
-    private final PlayerEntity Mc;
-    private final String Md;
-    private final String Me;
-    private final String Mf;
+    private final long abo;
+    private final String abp;
+    private final String abq;
+    private final long abr;
+    private final long abs;
+    private final String abt;
+    private final Uri abu;
+    private final Uri abv;
+    private final PlayerEntity abw;
+    private final String abx;
+    private final String aby;
+    private final String abz;
     
     public LeaderboardScoreEntity(final LeaderboardScore leaderboardScore) {
-        this.LU = leaderboardScore.getRank();
-        this.LV = fq.f(leaderboardScore.getDisplayRank());
-        this.LW = fq.f(leaderboardScore.getDisplayScore());
-        this.LX = leaderboardScore.getRawScore();
-        this.LY = leaderboardScore.getTimestampMillis();
-        this.LZ = leaderboardScore.getScoreHolderDisplayName();
-        this.Ma = leaderboardScore.getScoreHolderIconImageUri();
-        this.Mb = leaderboardScore.getScoreHolderHiResImageUri();
+        this.abo = leaderboardScore.getRank();
+        this.abp = n.i(leaderboardScore.getDisplayRank());
+        this.abq = n.i(leaderboardScore.getDisplayScore());
+        this.abr = leaderboardScore.getRawScore();
+        this.abs = leaderboardScore.getTimestampMillis();
+        this.abt = leaderboardScore.getScoreHolderDisplayName();
+        this.abu = leaderboardScore.getScoreHolderIconImageUri();
+        this.abv = leaderboardScore.getScoreHolderHiResImageUri();
         final Player scoreHolder = leaderboardScore.getScoreHolder();
-        PlayerEntity mc;
+        PlayerEntity abw;
         if (scoreHolder == null) {
-            mc = null;
+            abw = null;
         }
         else {
-            mc = ((Freezable<PlayerEntity>)scoreHolder).freeze();
+            abw = ((Freezable<PlayerEntity>)scoreHolder).freeze();
         }
-        this.Mc = mc;
-        this.Md = leaderboardScore.getScoreTag();
-        this.Me = leaderboardScore.getScoreHolderIconImageUrl();
-        this.Mf = leaderboardScore.getScoreHolderHiResImageUrl();
+        this.abw = abw;
+        this.abx = leaderboardScore.getScoreTag();
+        this.aby = leaderboardScore.getScoreHolderIconImageUrl();
+        this.abz = leaderboardScore.getScoreHolderHiResImageUrl();
     }
     
     static int a(final LeaderboardScore leaderboardScore) {
-        return fo.hashCode(leaderboardScore.getRank(), leaderboardScore.getDisplayRank(), leaderboardScore.getRawScore(), leaderboardScore.getDisplayScore(), leaderboardScore.getTimestampMillis(), leaderboardScore.getScoreHolderDisplayName(), leaderboardScore.getScoreHolderIconImageUri(), leaderboardScore.getScoreHolderHiResImageUri(), leaderboardScore.getScoreHolder());
+        return m.hashCode(leaderboardScore.getRank(), leaderboardScore.getDisplayRank(), leaderboardScore.getRawScore(), leaderboardScore.getDisplayScore(), leaderboardScore.getTimestampMillis(), leaderboardScore.getScoreHolderDisplayName(), leaderboardScore.getScoreHolderIconImageUri(), leaderboardScore.getScoreHolderHiResImageUri(), leaderboardScore.getScoreHolder());
     }
     
     static boolean a(final LeaderboardScore leaderboardScore, final Object o) {
@@ -65,9 +65,9 @@ public final class LeaderboardScoreEntity implements LeaderboardScore
             b2 = b;
             if (leaderboardScore != o) {
                 final LeaderboardScore leaderboardScore2 = (LeaderboardScore)o;
-                if (fo.equal(leaderboardScore2.getRank(), leaderboardScore.getRank()) && fo.equal(leaderboardScore2.getDisplayRank(), leaderboardScore.getDisplayRank()) && fo.equal(leaderboardScore2.getRawScore(), leaderboardScore.getRawScore()) && fo.equal(leaderboardScore2.getDisplayScore(), leaderboardScore.getDisplayScore()) && fo.equal(leaderboardScore2.getTimestampMillis(), leaderboardScore.getTimestampMillis()) && fo.equal(leaderboardScore2.getScoreHolderDisplayName(), leaderboardScore.getScoreHolderDisplayName()) && fo.equal(leaderboardScore2.getScoreHolderIconImageUri(), leaderboardScore.getScoreHolderIconImageUri()) && fo.equal(leaderboardScore2.getScoreHolderHiResImageUri(), leaderboardScore.getScoreHolderHiResImageUri()) && fo.equal(leaderboardScore2.getScoreHolder(), leaderboardScore.getScoreHolder())) {
+                if (m.equal(leaderboardScore2.getRank(), leaderboardScore.getRank()) && m.equal(leaderboardScore2.getDisplayRank(), leaderboardScore.getDisplayRank()) && m.equal(leaderboardScore2.getRawScore(), leaderboardScore.getRawScore()) && m.equal(leaderboardScore2.getDisplayScore(), leaderboardScore.getDisplayScore()) && m.equal(leaderboardScore2.getTimestampMillis(), leaderboardScore.getTimestampMillis()) && m.equal(leaderboardScore2.getScoreHolderDisplayName(), leaderboardScore.getScoreHolderDisplayName()) && m.equal(leaderboardScore2.getScoreHolderIconImageUri(), leaderboardScore.getScoreHolderIconImageUri()) && m.equal(leaderboardScore2.getScoreHolderHiResImageUri(), leaderboardScore.getScoreHolderHiResImageUri()) && m.equal(leaderboardScore2.getScoreHolder(), leaderboardScore.getScoreHolder())) {
                     b2 = b;
-                    if (fo.equal(leaderboardScore2.getScoreTag(), leaderboardScore.getScoreTag())) {
+                    if (m.equal(leaderboardScore2.getScoreTag(), leaderboardScore.getScoreTag())) {
                         return b2;
                     }
                 }
@@ -78,7 +78,7 @@ public final class LeaderboardScoreEntity implements LeaderboardScore
     }
     
     static String b(final LeaderboardScore leaderboardScore) {
-        final fo.a a = fo.e(leaderboardScore).a("Rank", leaderboardScore.getRank()).a("DisplayRank", leaderboardScore.getDisplayRank()).a("Score", leaderboardScore.getRawScore()).a("DisplayScore", leaderboardScore.getDisplayScore()).a("Timestamp", leaderboardScore.getTimestampMillis()).a("DisplayName", leaderboardScore.getScoreHolderDisplayName()).a("IconImageUri", leaderboardScore.getScoreHolderIconImageUri()).a("IconImageUrl", leaderboardScore.getScoreHolderIconImageUrl()).a("HiResImageUri", leaderboardScore.getScoreHolderHiResImageUri()).a("HiResImageUrl", leaderboardScore.getScoreHolderHiResImageUrl());
+        final m.a a = m.h(leaderboardScore).a("Rank", leaderboardScore.getRank()).a("DisplayRank", leaderboardScore.getDisplayRank()).a("Score", leaderboardScore.getRawScore()).a("DisplayScore", leaderboardScore.getDisplayScore()).a("Timestamp", leaderboardScore.getTimestampMillis()).a("DisplayName", leaderboardScore.getScoreHolderDisplayName()).a("IconImageUri", leaderboardScore.getScoreHolderIconImageUri()).a("IconImageUrl", leaderboardScore.getScoreHolderIconImageUrl()).a("HiResImageUri", leaderboardScore.getScoreHolderHiResImageUri()).a("HiResImageUrl", leaderboardScore.getScoreHolderHiResImageUrl());
         Object scoreHolder;
         if (leaderboardScore.getScoreHolder() == null) {
             scoreHolder = null;
@@ -96,100 +96,96 @@ public final class LeaderboardScoreEntity implements LeaderboardScore
     
     @Override
     public String getDisplayRank() {
-        return this.LV;
+        return this.abp;
     }
     
     @Override
     public void getDisplayRank(final CharArrayBuffer charArrayBuffer) {
-        gm.b(this.LV, charArrayBuffer);
+        jv.b(this.abp, charArrayBuffer);
     }
     
     @Override
     public String getDisplayScore() {
-        return this.LW;
+        return this.abq;
     }
     
     @Override
     public void getDisplayScore(final CharArrayBuffer charArrayBuffer) {
-        gm.b(this.LW, charArrayBuffer);
+        jv.b(this.abq, charArrayBuffer);
     }
     
     @Override
     public long getRank() {
-        return this.LU;
+        return this.abo;
     }
     
     @Override
     public long getRawScore() {
-        return this.LX;
+        return this.abr;
     }
     
     @Override
     public Player getScoreHolder() {
-        return this.Mc;
+        return this.abw;
     }
     
     @Override
     public String getScoreHolderDisplayName() {
-        if (this.Mc == null) {
-            return this.LZ;
+        if (this.abw == null) {
+            return this.abt;
         }
-        return this.Mc.getDisplayName();
+        return this.abw.getDisplayName();
     }
     
     @Override
     public void getScoreHolderDisplayName(final CharArrayBuffer charArrayBuffer) {
-        if (this.Mc == null) {
-            gm.b(this.LZ, charArrayBuffer);
+        if (this.abw == null) {
+            jv.b(this.abt, charArrayBuffer);
             return;
         }
-        this.Mc.getDisplayName(charArrayBuffer);
+        this.abw.getDisplayName(charArrayBuffer);
     }
     
     @Override
     public Uri getScoreHolderHiResImageUri() {
-        if (this.Mc == null) {
-            return this.Mb;
+        if (this.abw == null) {
+            return this.abv;
         }
-        return this.Mc.getHiResImageUri();
+        return this.abw.getHiResImageUri();
     }
     
     @Override
     public String getScoreHolderHiResImageUrl() {
-        if (this.Mc == null) {
-            return this.Mf;
+        if (this.abw == null) {
+            return this.abz;
         }
-        return this.Mc.getHiResImageUrl();
+        return this.abw.getHiResImageUrl();
     }
     
     @Override
     public Uri getScoreHolderIconImageUri() {
-        if (this.Mc == null) {
-            return this.Ma;
+        if (this.abw == null) {
+            return this.abu;
         }
-        return this.Mc.getIconImageUri();
+        return this.abw.getIconImageUri();
     }
     
     @Override
     public String getScoreHolderIconImageUrl() {
-        if (this.Mc == null) {
-            return this.Me;
+        if (this.abw == null) {
+            return this.aby;
         }
-        return this.Mc.getIconImageUrl();
+        return this.abw.getIconImageUrl();
     }
     
     @Override
     public String getScoreTag() {
-        return this.Md;
+        return this.abx;
     }
     
     @Override
     public long getTimestampMillis() {
-        return this.LY;
-    }
-    
-    public LeaderboardScore hF() {
-        return this;
+        return this.abs;
     }
     
     @Override
@@ -200,6 +196,10 @@ public final class LeaderboardScoreEntity implements LeaderboardScore
     @Override
     public boolean isDataValid() {
         return true;
+    }
+    
+    public LeaderboardScore lA() {
+        return this;
     }
     
     @Override

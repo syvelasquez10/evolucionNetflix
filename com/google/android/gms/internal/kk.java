@@ -4,62 +4,64 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import com.google.android.gms.wearable.f;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.os.IInterface;
+import android.os.IBinder;
+import android.os.RemoteException;
+import com.google.android.gms.common.internal.j;
+import android.os.Bundle;
+import com.google.android.gms.common.internal.k;
+import com.google.android.gms.common.api.GoogleApiClient;
+import android.os.Looper;
+import android.content.Context;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import com.google.android.gms.common.internal.d;
 
-public class kk implements SafeParcelable, f
+public class kk extends d<ko> implements kj
 {
-    public static final Parcelable$Creator<kk> CREATOR;
-    private final String HA;
-    private final String wp;
-    final int xH;
+    private static final Set<String> Tm;
+    private final String Dd;
     
     static {
-        CREATOR = (Parcelable$Creator)new kl();
-    }
-    
-    kk(final int xh, final String wp, final String ha) {
-        this.xH = xh;
-        this.wp = wp;
-        this.HA = ha;
-    }
-    
-    public int describeContents() {
-        return 0;
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (o instanceof kk) {
-            final kk kk = (kk)o;
-            if (kk.wp.equals(this.wp) && kk.HA.equals(this.HA)) {
-                return true;
+        Tm = Collections.unmodifiableSet((Set<? extends String>)new HashSet<String>() {
+            {
+                this.add("https://www.googleapis.com/auth/fitness.activity.read");
+                this.add("https://www.googleapis.com/auth/fitness.activity.write");
+                this.add("https://www.googleapis.com/auth/fitness.body.read");
+                this.add("https://www.googleapis.com/auth/fitness.body.write");
+                this.add("https://www.googleapis.com/auth/fitness.location.read");
+                this.add("https://www.googleapis.com/auth/fitness.location.write");
             }
-        }
-        return false;
+        });
     }
     
-    public String getDisplayName() {
-        return this.HA;
-    }
-    
-    public String getId() {
-        return this.wp;
+    public kk(final Context context, final Looper looper, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String dd, final String[] array) {
+        super(context, looper, connectionCallbacks, onConnectionFailedListener, array);
+        this.Dd = dd;
     }
     
     @Override
-    public int hashCode() {
-        return (this.wp.hashCode() + 629) * 37 + this.HA.hashCode();
+    protected void a(final k k, final e e) throws RemoteException {
+        k.a(e, 6111000, this.getContext().getPackageName(), this.Dd, this.gR(), new Bundle());
+    }
+    
+    protected ko ao(final IBinder binder) {
+        return ko.a.as(binder);
     }
     
     @Override
-    public String toString() {
-        return "NodeParcelable{" + this.wp + "," + this.HA + "}";
+    protected String getServiceDescriptor() {
+        return "com.google.android.gms.fitness.internal.IGoogleFitnessService";
     }
     
-    public void writeToParcel(final Parcel parcel, final int n) {
-        kl.a(this, parcel, n);
+    @Override
+    protected String getStartServiceAction() {
+        return "com.google.android.gms.fitness.GoogleFitnessService.START";
+    }
+    
+    @Override
+    public ko iT() {
+        return this.gS();
     }
 }

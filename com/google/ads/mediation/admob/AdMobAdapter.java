@@ -9,12 +9,13 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.mediation.MediationBannerListener;
 import android.view.View;
+import android.location.Location;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Date;
 import com.google.android.gms.ads.mediation.MediationAdapter;
 import android.text.TextUtils;
-import com.google.android.gms.internal.dv;
+import com.google.android.gms.internal.gr;
 import com.google.android.gms.ads.AdRequest;
 import android.os.Bundle;
 import com.google.android.gms.ads.mediation.MediationAdRequest;
@@ -29,7 +30,7 @@ public final class AdMobAdapter implements MediationBannerAdapter, MediationInte
     private AdView i;
     private InterstitialAd j;
     
-    private static AdRequest a(final Context context, final MediationAdRequest mediationAdRequest, Bundle bundle, final Bundle bundle2) {
+    static AdRequest a(final Context context, final MediationAdRequest mediationAdRequest, Bundle bundle, final Bundle bundle2) {
         final AdRequest.Builder builder = new AdRequest.Builder();
         final Date birthday = mediationAdRequest.getBirthday();
         if (birthday != null) {
@@ -46,8 +47,12 @@ public final class AdMobAdapter implements MediationBannerAdapter, MediationInte
                 builder.addKeyword(iterator.next());
             }
         }
+        final Location location = mediationAdRequest.getLocation();
+        if (location != null) {
+            builder.setLocation(location);
+        }
         if (mediationAdRequest.isTesting()) {
-            builder.addTestDevice(dv.l(context));
+            builder.addTestDevice(gr.v(context));
         }
         if (bundle2.getInt("tagForChildDirectedTreatment") != -1) {
             builder.tagForChildDirectedTreatment(bundle2.getInt("tagForChildDirectedTreatment") == 1);

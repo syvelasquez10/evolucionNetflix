@@ -8,34 +8,34 @@ import com.google.android.gms.common.api.Releasable;
 import android.app.PendingIntent;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.internal.it;
-import com.google.android.gms.internal.gn;
+import com.google.android.gms.internal.ok;
+import com.google.android.gms.internal.jw;
+import com.google.android.gms.internal.ju;
 import android.content.Context;
 import com.google.android.gms.internal.c;
-import com.google.android.gms.internal.gl;
 import android.os.Looper;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 
-class o extends com.google.android.gms.common.api.a.a<ContainerHolder>
+class o extends AbstractPendingResult<ContainerHolder>
 {
-    private final Looper AS;
-    private final String WJ;
-    private long WO;
-    private final TagManager WW;
-    private final d WZ;
-    private final gl Wv;
-    private final cf Xa;
-    private final int Xb;
-    private f Xc;
-    private volatile n Xd;
-    private volatile boolean Xe;
-    private com.google.android.gms.internal.c.j Xf;
-    private String Xg;
-    private e Xh;
-    private a Xi;
+    private final Looper IB;
+    private final String anR;
+    private long anW;
+    private final TagManager aod;
+    private final d aog;
+    private final cg aoh;
+    private final int aoi;
+    private f aoj;
+    private volatile n aok;
+    private volatile boolean aol;
+    private com.google.android.gms.internal.c.j aom;
+    private String aon;
+    private e aoo;
+    private a aop;
     private final Context mContext;
+    private final ju yD;
     
-    o(final Context mContext, final TagManager ww, final Looper looper, final String wj, final int xb, final f xc, final e xh, final gl wv, final cf xa) {
+    o(final Context mContext, final TagManager aod, final Looper looper, final String anR, final int aoi, final f aoj, final e aoo, final ju yd, final cg aoh) {
         Looper mainLooper;
         if (looper == null) {
             mainLooper = Looper.getMainLooper();
@@ -45,41 +45,41 @@ class o extends com.google.android.gms.common.api.a.a<ContainerHolder>
         }
         super(mainLooper);
         this.mContext = mContext;
-        this.WW = ww;
+        this.aod = aod;
         Looper mainLooper2 = looper;
         if (looper == null) {
             mainLooper2 = Looper.getMainLooper();
         }
-        this.AS = mainLooper2;
-        this.WJ = wj;
-        this.Xb = xb;
-        this.Xc = xc;
-        this.Xh = xh;
-        this.WZ = new d();
-        this.Xf = new com.google.android.gms.internal.c.j();
-        this.Wv = wv;
-        this.Xa = xa;
-        if (this.kk()) {
-            this.br(cd.kT().kV());
+        this.IB = mainLooper2;
+        this.anR = anR;
+        this.aoi = aoi;
+        this.aoj = aoj;
+        this.aoo = aoo;
+        this.aog = new d();
+        this.aom = new com.google.android.gms.internal.c.j();
+        this.yD = yd;
+        this.aoh = aoh;
+        if (this.nY()) {
+            this.co(ce.oH().oJ());
         }
     }
     
     public o(final Context context, final TagManager tagManager, final Looper looper, final String s, final int n, final r r) {
-        this(context, tagManager, looper, s, n, (f)new cp(context, s), (e)new co(context, s, r), gn.ft(), new bf(30, 900000L, 5000L, "refreshing", gn.ft()));
+        this(context, tagManager, looper, s, n, (f)new cq(context, s), (e)new cp(context, s, r), jw.hA(), new bf(30, 900000L, 5000L, "refreshing", jw.hA()));
     }
     
-    private void C(final boolean b) {
-        this.Xc.a(new b());
-        this.Xh.a(new c());
-        final cq.c ca = this.Xc.ca(this.Xb);
-        if (ca != null) {
-            this.Xd = new n(this.WW, this.AS, new Container(this.mContext, this.WW.getDataLayer(), this.WJ, 0L, ca), (n.a)this.WZ);
+    private void T(final boolean b) {
+        this.aoj.a(new b());
+        this.aoo.a(new c());
+        final cr.c fe = this.aoj.fe(this.aoi);
+        if (fe != null) {
+            this.aok = new n(this.aod, this.IB, new Container(this.mContext, this.aod.getDataLayer(), this.anR, 0L, fe), (n.a)this.aog);
         }
-        this.Xi = (a)new a() {
+        this.aop = (a)new a() {
             @Override
             public boolean b(final Container container) {
                 if (b) {
-                    if (container.getLastRefreshTime() + 43200000L < o.this.Wv.currentTimeMillis()) {
+                    if (container.getLastRefreshTime() + 43200000L < o.this.yD.currentTimeMillis()) {
                         return false;
                     }
                 }
@@ -89,26 +89,26 @@ class o extends com.google.android.gms.common.api.a.a<ContainerHolder>
                 return true;
             }
         };
-        if (this.kk()) {
-            this.Xh.d(0L, "");
+        if (this.nY()) {
+            this.aoo.e(0L, "");
             return;
         }
-        this.Xc.km();
+        this.aoj.oa();
     }
     
-    private void a(final com.google.android.gms.internal.c.j aaZ) {
+    private void a(final com.google.android.gms.internal.c.j ash) {
         synchronized (this) {
-            if (this.Xc != null) {
-                final it.a a = new it.a();
-                a.aaY = this.WO;
-                a.fK = new com.google.android.gms.internal.c.f();
-                a.aaZ = aaZ;
-                this.Xc.b(a);
+            if (this.aoj != null) {
+                final ok.a a = new ok.a();
+                a.asg = this.anW;
+                a.gs = new com.google.android.gms.internal.c.f();
+                a.ash = ash;
+                this.aoj.b(a);
             }
         }
     }
     
-    private void a(final com.google.android.gms.internal.c.j xf, final long wo, final boolean b) {
+    private void a(final com.google.android.gms.internal.c.j aom, final long anW, final boolean b) {
         // monitorenter(this)
         Label_0021: {
             if (!b) {
@@ -119,18 +119,18 @@ class o extends com.google.android.gms.common.api.a.a<ContainerHolder>
                     Container container = null;
                     Label_0169: {
                         try {
-                            if (!this.Xe) {
-                                if (!((com.google.android.gms.common.api.a.a)this).isReady() || this.Xd == null) {}
-                                this.Xf = xf;
-                                this.WO = wo;
-                                this.t(Math.max(0L, Math.min(43200000L, this.WO + 43200000L - this.Wv.currentTimeMillis())));
-                                container = new Container(this.mContext, this.WW.getDataLayer(), this.WJ, wo, xf);
-                                if (this.Xd != null) {
+                            if (!this.aol) {
+                                if (!((BaseImplementation.AbstractPendingResult)this).isReady() || this.aok == null) {}
+                                this.aom = aom;
+                                this.anW = anW;
+                                this.w(Math.max(0L, Math.min(43200000L, this.anW + 43200000L - this.yD.currentTimeMillis())));
+                                container = new Container(this.mContext, this.aod.getDataLayer(), this.anR, anW, aom);
+                                if (this.aok != null) {
                                     break Label_0169;
                                 }
-                                this.Xd = new n(this.WW, this.AS, container, (n.a)this.WZ);
-                                if (!((com.google.android.gms.common.api.a.a)this).isReady() && this.Xi.b(container)) {
-                                    ((com.google.android.gms.common.api.a.a<n>)this).a(this.Xd);
+                                this.aok = new n(this.aod, this.IB, container, (n.a)this.aog);
+                                if (!((BaseImplementation.AbstractPendingResult)this).isReady() && this.aop.b(container)) {
+                                    ((BaseImplementation.AbstractPendingResult<n>)this).b(this.aok);
                                 }
                             }
                             return;
@@ -139,88 +139,88 @@ class o extends com.google.android.gms.common.api.a.a<ContainerHolder>
                         }
                         // monitorexit(this)
                     }
-                    this.Xd.a(container);
+                    this.aok.a(container);
                     continue;
                 }
             }
         }
     }
     
-    private boolean kk() {
-        final cd kt = cd.kT();
-        return (kt.kU() == cd.a.YU || kt.kU() == cd.a.YV) && this.WJ.equals(kt.getContainerId());
+    private boolean nY() {
+        final ce oh = ce.oH();
+        return (oh.oI() == ce.a.apX || oh.oI() == ce.a.apY) && this.anR.equals(oh.getContainerId());
     }
     
-    private void t(final long n) {
+    private void w(final long n) {
         synchronized (this) {
-            if (this.Xh == null) {
-                bh.z("Refresh requested, but no network load scheduler.");
+            if (this.aoo == null) {
+                bh.W("Refresh requested, but no network load scheduler.");
             }
             else {
-                this.Xh.d(n, this.Xf.fL);
+                this.aoo.e(n, this.aom.gt);
             }
         }
     }
     
-    protected ContainerHolder ac(final Status status) {
-        if (this.Xd != null) {
-            return this.Xd;
+    protected ContainerHolder aE(final Status status) {
+        if (this.aok != null) {
+            return this.aok;
         }
-        if (status == Status.By) {
-            bh.w("timer expired: setting result to failure");
+        if (status == Status.Jr) {
+            bh.T("timer expired: setting result to failure");
         }
         return new n(status);
     }
     
-    void br(final String xg) {
+    void co(final String aon) {
         synchronized (this) {
-            this.Xg = xg;
-            if (this.Xh != null) {
-                this.Xh.bu(xg);
+            this.aon = aon;
+            if (this.aoo != null) {
+                this.aoo.cr(aon);
             }
         }
     }
     
-    String ke() {
+    String nS() {
         synchronized (this) {
-            return this.Xg;
+            return this.aon;
         }
     }
     
-    public void kh() {
-        final cq.c ca = this.Xc.ca(this.Xb);
-        if (ca != null) {
-            ((com.google.android.gms.common.api.a.a<n>)this).a(new n(this.WW, this.AS, new Container(this.mContext, this.WW.getDataLayer(), this.WJ, 0L, ca), (n.a)new n.a() {
+    public void nV() {
+        final cr.c fe = this.aoj.fe(this.aoi);
+        if (fe != null) {
+            ((BaseImplementation.AbstractPendingResult<n>)this).b(new n(this.aod, this.IB, new Container(this.mContext, this.aod.getDataLayer(), this.anR, 0L, fe), (n.a)new n.a() {
                 @Override
-                public void br(final String s) {
-                    o.this.br(s);
+                public void co(final String s) {
+                    o.this.co(s);
                 }
                 
                 @Override
-                public String ke() {
-                    return o.this.ke();
+                public String nS() {
+                    return o.this.nS();
                 }
                 
                 @Override
-                public void kg() {
-                    bh.z("Refresh ignored: container loaded as default only.");
+                public void nU() {
+                    bh.W("Refresh ignored: container loaded as default only.");
                 }
             }));
         }
         else {
-            bh.w("Default was requested, but no default container was found");
-            ((com.google.android.gms.common.api.a.a<ContainerHolder>)this).a(this.ac(new Status(10, "Default was requested, but no default container was found", null)));
+            bh.T("Default was requested, but no default container was found");
+            ((BaseImplementation.AbstractPendingResult<ContainerHolder>)this).b(this.aE(new Status(10, "Default was requested, but no default container was found", null)));
         }
-        this.Xh = null;
-        this.Xc = null;
+        this.aoo = null;
+        this.aoj = null;
     }
     
-    public void ki() {
-        this.C(false);
+    public void nW() {
+        this.T(false);
     }
     
-    public void kj() {
-        this.C(true);
+    public void nX() {
+        this.T(true);
     }
     
     interface a
@@ -228,32 +228,32 @@ class o extends com.google.android.gms.common.api.a.a<ContainerHolder>
         boolean b(final Container p0);
     }
     
-    private class b implements bg<it.a>
+    private class b implements bg<ok.a>
     {
-        public void a(final it.a a) {
-            com.google.android.gms.internal.c.j aaZ;
-            if (a.aaZ != null) {
-                aaZ = a.aaZ;
+        public void a(final ok.a a) {
+            com.google.android.gms.internal.c.j ash;
+            if (a.ash != null) {
+                ash = a.ash;
             }
             else {
-                final com.google.android.gms.internal.c.f fk = a.fK;
-                aaZ = new com.google.android.gms.internal.c.j();
-                aaZ.fK = fk;
-                aaZ.fJ = null;
-                aaZ.fL = fk.fg;
+                final com.google.android.gms.internal.c.f gs = a.gs;
+                ash = new com.google.android.gms.internal.c.j();
+                ash.gs = gs;
+                ash.gr = null;
+                ash.gt = gs.version;
             }
-            o.this.a(aaZ, a.aaY, true);
+            o.this.a(ash, a.asg, true);
         }
         
         @Override
         public void a(final bg.a a) {
-            if (!o.this.Xe) {
-                o.this.t(0L);
+            if (!o.this.aol) {
+                o.this.w(0L);
             }
         }
         
         @Override
-        public void kl() {
+        public void nZ() {
         }
     }
     
@@ -261,54 +261,54 @@ class o extends com.google.android.gms.common.api.a.a<ContainerHolder>
     {
         @Override
         public void a(final bg.a a) {
-            if (o.this.Xd != null) {
-                ((a.a<n>)o.this).a(o.this.Xd);
+            if (o.this.aok != null) {
+                ((BaseImplementation.AbstractPendingResult<n>)o.this).b(o.this.aok);
             }
             else {
-                ((a.a<ContainerHolder>)o.this).a(o.this.ac(Status.By));
+                ((BaseImplementation.AbstractPendingResult<ContainerHolder>)o.this).b(o.this.aE(Status.Jr));
             }
-            o.this.t(3600000L);
+            o.this.w(3600000L);
         }
         
         public void b(final com.google.android.gms.internal.c.j j) {
             synchronized (o.this) {
-                if (j.fK == null) {
-                    if (o.this.Xf.fK == null) {
-                        bh.w("Current resource is null; network resource is also null");
-                        o.this.t(3600000L);
+                if (j.gs == null) {
+                    if (o.this.aom.gs == null) {
+                        bh.T("Current resource is null; network resource is also null");
+                        o.this.w(3600000L);
                         return;
                     }
-                    j.fK = o.this.Xf.fK;
+                    j.gs = o.this.aom.gs;
                 }
-                o.this.a(j, o.this.Wv.currentTimeMillis(), false);
-                bh.y("setting refresh time to current time: " + o.this.WO);
-                if (!o.this.kk()) {
+                o.this.a(j, o.this.yD.currentTimeMillis(), false);
+                bh.V("setting refresh time to current time: " + o.this.anW);
+                if (!o.this.nY()) {
                     o.this.a(j);
                 }
             }
         }
         
         @Override
-        public void kl() {
+        public void nZ() {
         }
     }
     
     private class d implements n.a
     {
         @Override
-        public void br(final String s) {
-            o.this.br(s);
+        public void co(final String s) {
+            o.this.co(s);
         }
         
         @Override
-        public String ke() {
-            return o.this.ke();
+        public String nS() {
+            return o.this.nS();
         }
         
         @Override
-        public void kg() {
-            if (o.this.Xa.cS()) {
-                o.this.t(0L);
+        public void nU() {
+            if (o.this.aoh.eK()) {
+                o.this.w(0L);
             }
         }
     }
@@ -317,19 +317,19 @@ class o extends com.google.android.gms.common.api.a.a<ContainerHolder>
     {
         void a(final bg<com.google.android.gms.internal.c.j> p0);
         
-        void bu(final String p0);
+        void cr(final String p0);
         
-        void d(final long p0, final String p1);
+        void e(final long p0, final String p1);
     }
     
     interface f extends Releasable
     {
-        void a(final bg<it.a> p0);
+        void a(final bg<ok.a> p0);
         
-        void b(final it.a p0);
+        void b(final ok.a p0);
         
-        cq.c ca(final int p0);
+        cr.c fe(final int p0);
         
-        void km();
+        void oa();
     }
 }

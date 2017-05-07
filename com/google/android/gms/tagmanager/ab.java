@@ -8,7 +8,7 @@ import java.util.List;
 
 interface ab
 {
-    boolean ch();
+    boolean dY();
     
-    void d(final List<ap> p0);
+    void j(final List<ap> p0);
 }

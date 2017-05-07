@@ -37,7 +37,7 @@ public class DeleteProfileAlertDlg extends NetflixDialogFrag
         arguments.putString("name", s2);
         arguments.putString("url", s);
         deleteProfileAlertDlg.setArguments(arguments);
-        deleteProfileAlertDlg.setStyle(1, 2131558605);
+        deleteProfileAlertDlg.setStyle(1, 2131558710);
         return deleteProfileAlertDlg;
     }
     
@@ -64,13 +64,13 @@ public class DeleteProfileAlertDlg extends NetflixDialogFrag
     public Dialog onCreateDialog(final Bundle bundle) {
         super.onCreate(bundle);
         final View inflate = this.getActivity().getLayoutInflater().inflate(2130903083, (ViewGroup)null);
-        this.mProfileName = (TextView)inflate.findViewById(2131165336);
-        this.mProfileAvatar = (AdvancedImageView)inflate.findViewById(2131165296);
+        this.mProfileName = (TextView)inflate.findViewById(2131165338);
+        this.mProfileAvatar = (AdvancedImageView)inflate.findViewById(2131165298);
         this.updateUIIfPossible();
         final DialogInterface$OnClickListener dialogInterface$OnClickListener = (DialogInterface$OnClickListener)this.getActivity();
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setNegativeButton(2131493347, dialogInterface$OnClickListener);
-        alertDialog$Builder.setPositiveButton(2131493348, dialogInterface$OnClickListener);
+        alertDialog$Builder.setNegativeButton(2131493352, dialogInterface$OnClickListener);
+        alertDialog$Builder.setPositiveButton(2131493353, dialogInterface$OnClickListener);
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);

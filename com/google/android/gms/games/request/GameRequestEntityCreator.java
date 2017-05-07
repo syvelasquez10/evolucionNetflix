@@ -19,91 +19,91 @@ public class GameRequestEntityCreator implements Parcelable$Creator<GameRequestE
     public static final int CONTENT_DESCRIPTION = 0;
     
     static void a(final GameRequestEntity gameRequestEntity, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
+        final int d = b.D(parcel);
         b.a(parcel, 1, (Parcelable)gameRequestEntity.getGame(), n, false);
         b.c(parcel, 1000, gameRequestEntity.getVersionCode());
         b.a(parcel, 2, (Parcelable)gameRequestEntity.getSender(), n, false);
         b.a(parcel, 3, gameRequestEntity.getData(), false);
         b.a(parcel, 4, gameRequestEntity.getRequestId(), false);
-        b.b(parcel, 5, gameRequestEntity.getRecipients(), false);
+        b.c(parcel, 5, gameRequestEntity.getRecipients(), false);
         b.c(parcel, 7, gameRequestEntity.getType());
         b.a(parcel, 9, gameRequestEntity.getCreationTimestamp());
         b.a(parcel, 10, gameRequestEntity.getExpirationTimestamp());
-        b.a(parcel, 11, gameRequestEntity.hK(), false);
+        b.a(parcel, 11, gameRequestEntity.lJ(), false);
         b.c(parcel, 12, gameRequestEntity.getStatus());
-        b.F(parcel, p3);
+        b.H(parcel, d);
     }
     
     public GameRequestEntity createFromParcel(final Parcel parcel) {
-        final int o = a.o(parcel);
+        final int c = a.C(parcel);
         int g = 0;
         GameEntity gameEntity = null;
         PlayerEntity playerEntity = null;
-        byte[] q = null;
-        String n = null;
-        ArrayList<PlayerEntity> c = null;
+        byte[] r = null;
+        String o = null;
+        ArrayList<PlayerEntity> c2 = null;
         int g2 = 0;
         long i = 0L;
         long j = 0L;
-        Bundle p = null;
+        Bundle q = null;
         int g3 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n2);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    gameEntity = a.a(parcel, n2, GameEntity.CREATOR);
+                    gameEntity = a.a(parcel, b, GameEntity.CREATOR);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n2);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    playerEntity = a.a(parcel, n2, PlayerEntity.CREATOR);
+                    playerEntity = a.a(parcel, b, PlayerEntity.CREATOR);
                     continue;
                 }
                 case 3: {
-                    q = a.q(parcel, n2);
+                    r = a.r(parcel, b);
                     continue;
                 }
                 case 4: {
-                    n = a.n(parcel, n2);
+                    o = a.o(parcel, b);
                     continue;
                 }
                 case 5: {
-                    c = a.c(parcel, n2, PlayerEntity.CREATOR);
+                    c2 = a.c(parcel, b, PlayerEntity.CREATOR);
                     continue;
                 }
                 case 7: {
-                    g2 = a.g(parcel, n2);
+                    g2 = a.g(parcel, b);
                     continue;
                 }
                 case 9: {
-                    i = a.i(parcel, n2);
+                    i = a.i(parcel, b);
                     continue;
                 }
                 case 10: {
-                    j = a.i(parcel, n2);
+                    j = a.i(parcel, b);
                     continue;
                 }
                 case 11: {
-                    p = a.p(parcel, n2);
+                    q = a.q(parcel, b);
                     continue;
                 }
                 case 12: {
-                    g3 = a.g(parcel, n2);
+                    g3 = a.g(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new GameRequestEntity(g, gameEntity, playerEntity, q, n, c, g2, i, j, p, g3);
+        return new GameRequestEntity(g, gameEntity, playerEntity, r, o, c2, g2, i, j, q, g3);
     }
     
     public GameRequestEntity[] newArray(final int n) {

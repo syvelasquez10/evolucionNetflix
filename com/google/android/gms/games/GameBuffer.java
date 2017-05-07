@@ -15,6 +15,6 @@ public final class GameBuffer extends DataBuffer<Game>
     
     @Override
     public Game get(final int n) {
-        return new GameRef(this.BB, n);
+        return new GameRef(this.IC, n);
     }
 }

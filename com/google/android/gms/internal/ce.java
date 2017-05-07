@@ -4,199 +4,122 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.Bundle;
-import android.content.Intent;
-import com.google.android.gms.dynamic.e;
-import com.google.android.gms.dynamic.d;
-import android.os.IBinder;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.view.MotionEvent;
+import android.os.SystemClock;
+import java.util.Map;
+import android.util.DisplayMetrics;
 
-public final class ce implements SafeParcelable
+@ez
+public final class ce implements by
 {
-    public static final cd CREATOR;
-    public final dx kK;
-    public final String nO;
-    public final cb og;
-    public final u oh;
-    public final cf oi;
-    public final dz oj;
-    public final az ok;
-    public final String ol;
-    public final boolean om;
-    public final String on;
-    public final ci oo;
-    public final int op;
-    public final bc oq;
-    public final String or;
-    public final int orientation;
-    public final int versionCode;
-    
-    static {
-        CREATOR = new cd();
-    }
-    
-    ce(final int versionCode, final cb og, final IBinder binder, final IBinder binder2, final IBinder binder3, final IBinder binder4, final String ol, final boolean om, final String on, final IBinder binder5, final int orientation, final int op, final String no, final dx kk, final IBinder binder6, final String or) {
-        this.versionCode = versionCode;
-        this.og = og;
-        this.oh = e.d(d.a.K(binder));
-        this.oi = e.d(d.a.K(binder2));
-        this.oj = e.d(d.a.K(binder3));
-        this.ok = e.d(d.a.K(binder4));
-        this.ol = ol;
-        this.om = om;
-        this.on = on;
-        this.oo = e.d(d.a.K(binder5));
-        this.orientation = orientation;
-        this.op = op;
-        this.nO = no;
-        this.kK = kk;
-        this.oq = e.d(d.a.K(binder6));
-        this.or = or;
-    }
-    
-    public ce(final cb og, final u oh, final cf oi, final ci oo, final dx kk) {
-        this.versionCode = 3;
-        this.og = og;
-        this.oh = oh;
-        this.oi = oi;
-        this.oj = null;
-        this.ok = null;
-        this.ol = null;
-        this.om = false;
-        this.on = null;
-        this.oo = oo;
-        this.orientation = -1;
-        this.op = 4;
-        this.nO = null;
-        this.kK = kk;
-        this.oq = null;
-        this.or = null;
-    }
-    
-    public ce(final u oh, final cf oi, final az ok, final ci oo, final dz oj, final boolean om, final int orientation, final String no, final dx kk, final bc oq) {
-        this.versionCode = 3;
-        this.og = null;
-        this.oh = oh;
-        this.oi = oi;
-        this.oj = oj;
-        this.ok = ok;
-        this.ol = null;
-        this.om = om;
-        this.on = null;
-        this.oo = oo;
-        this.orientation = orientation;
-        this.op = 3;
-        this.nO = no;
-        this.kK = kk;
-        this.oq = oq;
-        this.or = null;
-    }
-    
-    public ce(final u oh, final cf oi, final az ok, final ci oo, final dz oj, final boolean om, final int orientation, final String on, final String ol, final dx kk, final bc oq) {
-        this.versionCode = 3;
-        this.og = null;
-        this.oh = oh;
-        this.oi = oi;
-        this.oj = oj;
-        this.ok = ok;
-        this.ol = ol;
-        this.om = om;
-        this.on = on;
-        this.oo = oo;
-        this.orientation = orientation;
-        this.op = 3;
-        this.nO = null;
-        this.kK = kk;
-        this.oq = oq;
-        this.or = null;
-    }
-    
-    public ce(final u oh, final cf oi, final ci oo, final dz oj, final int orientation, final dx kk, final String or) {
-        this.versionCode = 3;
-        this.og = null;
-        this.oh = oh;
-        this.oi = oi;
-        this.oj = oj;
-        this.ok = null;
-        this.ol = null;
-        this.om = false;
-        this.on = null;
-        this.oo = oo;
-        this.orientation = orientation;
-        this.op = 1;
-        this.nO = null;
-        this.kK = kk;
-        this.oq = null;
-        this.or = or;
-    }
-    
-    public ce(final u oh, final cf oi, final ci oo, final dz oj, final boolean om, final int orientation, final dx kk) {
-        this.versionCode = 3;
-        this.og = null;
-        this.oh = oh;
-        this.oi = oi;
-        this.oj = oj;
-        this.ok = null;
-        this.ol = null;
-        this.om = om;
-        this.on = null;
-        this.oo = oo;
-        this.orientation = orientation;
-        this.op = 2;
-        this.nO = null;
-        this.kK = kk;
-        this.oq = null;
-        this.or = null;
-    }
-    
-    public static ce a(final Intent intent) {
+    private static int a(final DisplayMetrics displayMetrics, Map<String, String> s, final String s2, final int n) {
+        s = ((Map<String, String>)s).get(s2);
+        int a = n;
+        if (s == null) {
+            return a;
+        }
         try {
-            final Bundle bundleExtra = intent.getBundleExtra("com.google.android.gms.ads.inernal.overlay.AdOverlayInfo");
-            bundleExtra.setClassLoader(ce.class.getClassLoader());
-            return (ce)bundleExtra.getParcelable("com.google.android.gms.ads.inernal.overlay.AdOverlayInfo");
+            a = gr.a(displayMetrics, Integer.parseInt(s));
+            return a;
         }
-        catch (Exception ex) {
-            return null;
+        catch (NumberFormatException ex) {
+            gs.W("Could not parse " + s2 + " in a video GMSG: " + s);
+            return n;
         }
     }
     
-    public static void a(final Intent intent, final ce ce) {
-        final Bundle bundle = new Bundle(1);
-        bundle.putParcelable("com.google.android.gms.ads.inernal.overlay.AdOverlayInfo", (Parcelable)ce);
-        intent.putExtra("com.google.android.gms.ads.inernal.overlay.AdOverlayInfo", bundle);
-    }
-    
-    IBinder aO() {
-        return e.h(this.oh).asBinder();
-    }
-    
-    IBinder aP() {
-        return e.h(this.oi).asBinder();
-    }
-    
-    IBinder aQ() {
-        return e.h(this.oj).asBinder();
-    }
-    
-    IBinder aR() {
-        return e.h(this.ok).asBinder();
-    }
-    
-    IBinder aS() {
-        return e.h(this.oq).asBinder();
-    }
-    
-    IBinder aT() {
-        return e.h(this.oo).asBinder();
-    }
-    
-    public int describeContents() {
-        return 0;
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        cd.a(this, parcel, n);
+    @Override
+    public void a(gv gv, final Map<String, String> map) {
+        final String s = map.get("action");
+        if (s == null) {
+            gs.W("Action missing from video GMSG.");
+            return;
+        }
+        final dk du = gv.du();
+        if (du == null) {
+            gs.W("Could not get ad overlay for a video GMSG.");
+            return;
+        }
+        final boolean equalsIgnoreCase = "new".equalsIgnoreCase(s);
+        final boolean equalsIgnoreCase2 = "position".equalsIgnoreCase(s);
+        if (equalsIgnoreCase || equalsIgnoreCase2) {
+            final DisplayMetrics displayMetrics = gv.getContext().getResources().getDisplayMetrics();
+            final int a = a(displayMetrics, map, "x", 0);
+            final int a2 = a(displayMetrics, map, "y", 0);
+            final int a3 = a(displayMetrics, map, "w", -1);
+            final int a4 = a(displayMetrics, map, "h", -1);
+            if (equalsIgnoreCase && du.bW() == null) {
+                du.c(a, a2, a3, a4);
+                return;
+            }
+            du.b(a, a2, a3, a4);
+        }
+        else {
+            final do bw = du.bW();
+            if (bw == null) {
+                do.a(gv, "no_video_view", (String)null);
+                return;
+            }
+            if ("click".equalsIgnoreCase(s)) {
+                final DisplayMetrics displayMetrics2 = gv.getContext().getResources().getDisplayMetrics();
+                final int a5 = a(displayMetrics2, map, "x", 0);
+                final int a6 = a(displayMetrics2, map, "y", 0);
+                final long uptimeMillis = SystemClock.uptimeMillis();
+                final MotionEvent obtain = MotionEvent.obtain(uptimeMillis, uptimeMillis, 0, (float)a5, (float)a6, 0);
+                bw.b(obtain);
+                obtain.recycle();
+                return;
+            }
+            if ("controls".equalsIgnoreCase(s)) {
+                final String s2 = map.get("enabled");
+                if (s2 == null) {
+                    gs.W("Enabled parameter missing from controls video GMSG.");
+                    return;
+                }
+                bw.q(Boolean.parseBoolean(s2));
+            }
+            else {
+                if ("currentTime".equalsIgnoreCase(s)) {
+                    gv = (gv)map.get("time");
+                    if (gv == null) {
+                        gs.W("Time parameter missing from currentTime video GMSG.");
+                        return;
+                    }
+                    try {
+                        bw.seekTo((int)(Float.parseFloat((String)gv) * 1000.0f));
+                        return;
+                    }
+                    catch (NumberFormatException ex) {
+                        gs.W("Could not parse time parameter from currentTime video GMSG: " + (String)gv);
+                        return;
+                    }
+                }
+                if ("hide".equalsIgnoreCase(s)) {
+                    bw.setVisibility(4);
+                    return;
+                }
+                if ("load".equalsIgnoreCase(s)) {
+                    bw.ci();
+                    return;
+                }
+                if ("pause".equalsIgnoreCase(s)) {
+                    bw.pause();
+                    return;
+                }
+                if ("play".equalsIgnoreCase(s)) {
+                    bw.play();
+                    return;
+                }
+                if ("show".equalsIgnoreCase(s)) {
+                    bw.setVisibility(0);
+                    return;
+                }
+                if ("src".equalsIgnoreCase(s)) {
+                    bw.C(map.get("src"));
+                    return;
+                }
+                gs.W("Unknown video action: " + s);
+            }
+        }
     }
 }

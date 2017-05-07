@@ -71,7 +71,7 @@ public class Dimension
             case 3:
             case 4:
             case 5: {
-                return f(n, Float.floatToIntBits(n2));
+                return o(n, Float.floatToIntBits(n2));
             }
         }
     }
@@ -82,25 +82,25 @@ public class Dimension
                 throw new IllegalArgumentException("Unexpected dimension type: " + typedValue.type);
             }
             case 16: {
-                return cz(typedValue.data);
+                return fD(typedValue.data);
             }
             case 5: {
-                return f(128, typedValue.data);
+                return o(128, typedValue.data);
             }
         }
     }
     
-    public static long cz(final int n) {
+    public static long fD(final int n) {
         if (n >= 0) {
             return a(0, n);
         }
         if (n == -1 || n == -2) {
-            return f(129, n);
+            return o(129, n);
         }
         throw new IllegalArgumentException("Unexpected dimension value: " + n);
     }
     
-    private static long f(final int n, final int n2) {
+    private static long o(final int n, final int n2) {
         return n << 32 | (n2 & 0xFFFFFFFFL);
     }
 }

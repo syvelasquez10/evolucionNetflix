@@ -4,170 +4,50 @@
 
 package com.google.android.gms.internal;
 
+import android.os.IBinder;
 import android.os.RemoteException;
-import com.google.android.gms.ads.purchase.InAppPurchaseListener;
+import com.google.android.gms.dynamic.e;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import android.content.Context;
-import com.google.android.gms.ads.doubleclick.AppEventListener;
-import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.dynamic.g;
 
-public final class au
+@ez
+public final class au extends g<be>
 {
-    private AdListener lF;
-    private AppEventListener lV;
-    private String lX;
-    private final Context mContext;
-    private final bp ml;
-    private final aj mm;
-    private ap mn;
-    private InAppPurchaseListener mp;
+    private static final au nS;
     
-    public au(final Context context) {
-        this(context, aj.az());
+    static {
+        nS = new au();
     }
     
-    public au(final Context mContext, final aj mm) {
-        this.ml = new bp();
-        this.mContext = mContext;
-        this.mm = mm;
+    private au() {
+        super("com.google.android.gms.ads.AdManagerCreatorImpl");
     }
     
-    private void k(final String s) throws RemoteException {
-        if (this.lX == null) {
-            this.l(s);
+    public static bd a(final Context context, final ay ay, final String s, final cs cs) {
+        bd b;
+        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(context) != 0 || (b = au.nS.b(context, ay, s, cs)) == null) {
+            gs.S("Using AdManager from the client jar.");
+            b = new u(context, ay, s, cs, new gt(6111000, 6111000, true));
         }
-        this.mn = ag.a(this.mContext, new ak(), this.lX, this.ml);
-        if (this.lF != null) {
-            this.mn.a(new af(this.lF));
-        }
-        if (this.lV != null) {
-            this.mn.a(new am(this.lV));
-        }
-        if (this.mp != null) {
-            this.mn.a(new cp(this.mp));
-        }
+        return b;
     }
     
-    private void l(final String s) {
-        if (this.mn == null) {
-            throw new IllegalStateException("The ad unit ID must be set on InterstitialAd before " + s + " is called.");
-        }
-    }
-    
-    public void a(final as as) {
+    private bd b(final Context context, final ay ay, final String s, final cs cs) {
         try {
-            if (this.mn == null) {
-                this.k("loadAd");
-            }
-            if (this.mn.a(this.mm.a(this.mContext, as))) {
-                this.ml.c(as.aC());
-                this.ml.d(as.aD());
-            }
+            return bd.a.f(this.L(context).a(e.k(context), ay, s, cs, 6111000));
         }
         catch (RemoteException ex) {
-            dw.c("Failed to load ad.", (Throwable)ex);
+            gs.d("Could not create remote AdManager.", (Throwable)ex);
+            return null;
+        }
+        catch (a a) {
+            gs.d("Could not create remote AdManager.", a);
+            return null;
         }
     }
     
-    public AdListener getAdListener() {
-        return this.lF;
-    }
-    
-    public String getAdUnitId() {
-        return this.lX;
-    }
-    
-    public AppEventListener getAppEventListener() {
-        return this.lV;
-    }
-    
-    public InAppPurchaseListener getInAppPurchaseListener() {
-        return this.mp;
-    }
-    
-    public boolean isLoaded() {
-        try {
-            return this.mn != null && this.mn.isReady();
-        }
-        catch (RemoteException ex) {
-            dw.c("Failed to check if ad is ready.", (Throwable)ex);
-            return false;
-        }
-    }
-    
-    public void setAdListener(final AdListener lf) {
-        try {
-            this.lF = lf;
-            if (this.mn != null) {
-                final ap mn = this.mn;
-                af af;
-                if (lf != null) {
-                    af = new af(lf);
-                }
-                else {
-                    af = null;
-                }
-                mn.a(af);
-            }
-        }
-        catch (RemoteException ex) {
-            dw.c("Failed to set the AdListener.", (Throwable)ex);
-        }
-    }
-    
-    public void setAdUnitId(final String lx) {
-        if (this.lX != null) {
-            throw new IllegalStateException("The ad unit ID can only be set once on InterstitialAd.");
-        }
-        this.lX = lx;
-    }
-    
-    public void setAppEventListener(final AppEventListener lv) {
-        try {
-            this.lV = lv;
-            if (this.mn != null) {
-                final ap mn = this.mn;
-                am am;
-                if (lv != null) {
-                    am = new am(lv);
-                }
-                else {
-                    am = null;
-                }
-                mn.a(am);
-            }
-        }
-        catch (RemoteException ex) {
-            dw.c("Failed to set the AppEventListener.", (Throwable)ex);
-        }
-    }
-    
-    public void setInAppPurchaseListener(final InAppPurchaseListener mp) {
-        try {
-            this.mp = mp;
-            if (this.mn != null) {
-                final ap mn = this.mn;
-                cp cp;
-                if (mp != null) {
-                    cp = new cp(mp);
-                }
-                else {
-                    cp = null;
-                }
-                mn.a(cp);
-            }
-        }
-        catch (RemoteException ex) {
-            dw.c("Failed to set the InAppPurchaseListener.", (Throwable)ex);
-        }
-    }
-    
-    public void show() {
-        try {
-            this.l("show");
-            this.mn.showInterstitial();
-        }
-        catch (RemoteException ex) {
-            dw.c("Failed to show interstitial.", (Throwable)ex);
-        }
+    protected be c(final IBinder binder) {
+        return be.a.g(binder);
     }
 }

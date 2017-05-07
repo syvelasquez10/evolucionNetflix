@@ -15,64 +15,64 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class PolylineOptions implements SafeParcelable
 {
-    public static final PolylineOptionsCreator CREATOR;
-    private int Av;
-    private float SN;
-    private boolean SO;
-    private float SS;
-    private final List<LatLng> Tn;
-    private boolean Tp;
-    private final int xH;
+    public static final o CREATOR;
+    private final int BR;
+    private float ajA;
+    private boolean ajB;
+    private float ajF;
+    private final List<LatLng> aka;
+    private boolean akc;
+    private int mColor;
     
     static {
-        CREATOR = new PolylineOptionsCreator();
+        CREATOR = new o();
     }
     
     public PolylineOptions() {
-        this.SS = 10.0f;
-        this.Av = -16777216;
-        this.SN = 0.0f;
-        this.SO = true;
-        this.Tp = false;
-        this.xH = 1;
-        this.Tn = new ArrayList<LatLng>();
+        this.ajF = 10.0f;
+        this.mColor = -16777216;
+        this.ajA = 0.0f;
+        this.ajB = true;
+        this.akc = false;
+        this.BR = 1;
+        this.aka = new ArrayList<LatLng>();
     }
     
-    PolylineOptions(final int xh, final List tn, final float ss, final int av, final float sn, final boolean so, final boolean tp) {
-        this.SS = 10.0f;
-        this.Av = -16777216;
-        this.SN = 0.0f;
-        this.SO = true;
-        this.Tp = false;
-        this.xH = xh;
-        this.Tn = (List<LatLng>)tn;
-        this.SS = ss;
-        this.Av = av;
-        this.SN = sn;
-        this.SO = so;
-        this.Tp = tp;
+    PolylineOptions(final int br, final List aka, final float ajF, final int mColor, final float ajA, final boolean ajB, final boolean akc) {
+        this.ajF = 10.0f;
+        this.mColor = -16777216;
+        this.ajA = 0.0f;
+        this.ajB = true;
+        this.akc = false;
+        this.BR = br;
+        this.aka = (List<LatLng>)aka;
+        this.ajF = ajF;
+        this.mColor = mColor;
+        this.ajA = ajA;
+        this.ajB = ajB;
+        this.akc = akc;
     }
     
     public PolylineOptions add(final LatLng latLng) {
-        this.Tn.add(latLng);
+        this.aka.add(latLng);
         return this;
     }
     
     public PolylineOptions add(final LatLng... array) {
-        this.Tn.addAll(Arrays.asList(array));
+        this.aka.addAll(Arrays.asList(array));
         return this;
     }
     
     public PolylineOptions addAll(final Iterable<LatLng> iterable) {
         final Iterator<LatLng> iterator = iterable.iterator();
         while (iterator.hasNext()) {
-            this.Tn.add(iterator.next());
+            this.aka.add(iterator.next());
         }
         return this;
     }
     
-    public PolylineOptions color(final int av) {
-        this.Av = av;
+    public PolylineOptions color(final int mColor) {
+        this.mColor = mColor;
         return this;
     }
     
@@ -80,59 +80,59 @@ public final class PolylineOptions implements SafeParcelable
         return 0;
     }
     
-    public PolylineOptions geodesic(final boolean tp) {
-        this.Tp = tp;
+    public PolylineOptions geodesic(final boolean akc) {
+        this.akc = akc;
         return this;
     }
     
     public int getColor() {
-        return this.Av;
+        return this.mColor;
     }
     
     public List<LatLng> getPoints() {
-        return this.Tn;
+        return this.aka;
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public float getWidth() {
-        return this.SS;
+        return this.ajF;
     }
     
     public float getZIndex() {
-        return this.SN;
+        return this.ajA;
     }
     
     public boolean isGeodesic() {
-        return this.Tp;
+        return this.akc;
     }
     
     public boolean isVisible() {
-        return this.SO;
+        return this.ajB;
     }
     
-    public PolylineOptions visible(final boolean so) {
-        this.SO = so;
+    public PolylineOptions visible(final boolean ajB) {
+        this.ajB = ajB;
         return this;
     }
     
-    public PolylineOptions width(final float ss) {
-        this.SS = ss;
+    public PolylineOptions width(final float ajF) {
+        this.ajF = ajF;
         return this;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (v.iB()) {
-            h.a(this, parcel, n);
+        if (v.mK()) {
+            p.a(this, parcel, n);
             return;
         }
-        PolylineOptionsCreator.a(this, parcel, n);
+        o.a(this, parcel, n);
     }
     
-    public PolylineOptions zIndex(final float sn) {
-        this.SN = sn;
+    public PolylineOptions zIndex(final float ajA) {
+        this.ajA = ajA;
         return this;
     }
 }

@@ -11,48 +11,48 @@ import java.util.ArrayList;
 
 public class i
 {
-    private String[] Um;
-    private String Un;
-    private String Uo;
-    private String Up;
-    private PlusCommonExtras Ur;
-    private final ArrayList<String> Us;
-    private String[] Ut;
-    private String wG;
+    private String Dd;
+    private final ArrayList<String> alA;
+    private String[] alB;
+    private String[] alu;
+    private String alv;
+    private String alw;
+    private String alx;
+    private PlusCommonExtras alz;
     
     public i(final Context context) {
-        this.Us = new ArrayList<String>();
-        this.Uo = context.getPackageName();
-        this.Un = context.getPackageName();
-        this.Ur = new PlusCommonExtras();
-        this.Us.add("https://www.googleapis.com/auth/plus.login");
+        this.alA = new ArrayList<String>();
+        this.alw = context.getPackageName();
+        this.alv = context.getPackageName();
+        this.alz = new PlusCommonExtras();
+        this.alA.add("https://www.googleapis.com/auth/plus.login");
     }
     
-    public i bh(final String wg) {
-        this.wG = wg;
+    public i ce(final String dd) {
+        this.Dd = dd;
         return this;
     }
     
-    public i e(final String... array) {
-        this.Us.clear();
-        this.Us.addAll(Arrays.asList(array));
+    public i g(final String... array) {
+        this.alA.clear();
+        this.alA.addAll(Arrays.asList(array));
         return this;
     }
     
-    public i f(final String... ut) {
-        this.Ut = ut;
+    public i h(final String... alB) {
+        this.alB = alB;
         return this;
     }
     
-    public i iY() {
-        this.Us.clear();
+    public i nn() {
+        this.alA.clear();
         return this;
     }
     
-    public h iZ() {
-        if (this.wG == null) {
-            this.wG = "<<default account>>";
+    public h no() {
+        if (this.Dd == null) {
+            this.Dd = "<<default account>>";
         }
-        return new h(this.wG, this.Us.toArray(new String[this.Us.size()]), this.Ut, this.Um, this.Un, this.Uo, this.Up, this.Ur);
+        return new h(this.Dd, this.alA.toArray(new String[this.alA.size()]), this.alB, this.alu, this.alv, this.alw, this.alx, this.alz);
     }
 }

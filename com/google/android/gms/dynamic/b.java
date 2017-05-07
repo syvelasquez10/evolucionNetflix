@@ -11,10 +11,10 @@ import android.app.Fragment;
 
 public final class b extends c.a
 {
-    private Fragment Hv;
+    private Fragment Sb;
     
-    private b(final Fragment hv) {
-        this.Hv = hv;
+    private b(final Fragment sb) {
+        this.Sb = sb;
     }
     
     public static b a(final Fragment fragment) {
@@ -24,107 +24,107 @@ public final class b extends c.a
         return null;
     }
     
-    public void b(final d d) {
-        this.Hv.registerForContextMenu((View)e.d(d));
+    public void d(final d d) {
+        this.Sb.registerForContextMenu((View)e.f(d));
     }
     
-    public void c(final d d) {
-        this.Hv.unregisterForContextMenu((View)e.d(d));
-    }
-    
-    public d fX() {
-        return e.h(this.Hv.getActivity());
-    }
-    
-    public c fY() {
-        return a(this.Hv.getParentFragment());
-    }
-    
-    public d fZ() {
-        return e.h(this.Hv.getResources());
-    }
-    
-    public c ga() {
-        return a(this.Hv.getTargetFragment());
+    public void e(final d d) {
+        this.Sb.unregisterForContextMenu((View)e.f(d));
     }
     
     public Bundle getArguments() {
-        return this.Hv.getArguments();
+        return this.Sb.getArguments();
     }
     
     public int getId() {
-        return this.Hv.getId();
+        return this.Sb.getId();
     }
     
     public boolean getRetainInstance() {
-        return this.Hv.getRetainInstance();
+        return this.Sb.getRetainInstance();
     }
     
     public String getTag() {
-        return this.Hv.getTag();
+        return this.Sb.getTag();
     }
     
     public int getTargetRequestCode() {
-        return this.Hv.getTargetRequestCode();
+        return this.Sb.getTargetRequestCode();
     }
     
     public boolean getUserVisibleHint() {
-        return this.Hv.getUserVisibleHint();
+        return this.Sb.getUserVisibleHint();
     }
     
     public d getView() {
-        return e.h(this.Hv.getView());
+        return e.k(this.Sb.getView());
     }
     
     public boolean isAdded() {
-        return this.Hv.isAdded();
+        return this.Sb.isAdded();
     }
     
     public boolean isDetached() {
-        return this.Hv.isDetached();
+        return this.Sb.isDetached();
     }
     
     public boolean isHidden() {
-        return this.Hv.isHidden();
+        return this.Sb.isHidden();
     }
     
     public boolean isInLayout() {
-        return this.Hv.isInLayout();
+        return this.Sb.isInLayout();
     }
     
     public boolean isRemoving() {
-        return this.Hv.isRemoving();
+        return this.Sb.isRemoving();
     }
     
     public boolean isResumed() {
-        return this.Hv.isResumed();
+        return this.Sb.isResumed();
     }
     
     public boolean isVisible() {
-        return this.Hv.isVisible();
+        return this.Sb.isVisible();
+    }
+    
+    public d iu() {
+        return e.k(this.Sb.getActivity());
+    }
+    
+    public c iv() {
+        return a(this.Sb.getParentFragment());
+    }
+    
+    public d iw() {
+        return e.k(this.Sb.getResources());
+    }
+    
+    public c ix() {
+        return a(this.Sb.getTargetFragment());
     }
     
     public void setHasOptionsMenu(final boolean hasOptionsMenu) {
-        this.Hv.setHasOptionsMenu(hasOptionsMenu);
+        this.Sb.setHasOptionsMenu(hasOptionsMenu);
     }
     
     public void setMenuVisibility(final boolean menuVisibility) {
-        this.Hv.setMenuVisibility(menuVisibility);
+        this.Sb.setMenuVisibility(menuVisibility);
     }
     
     public void setRetainInstance(final boolean retainInstance) {
-        this.Hv.setRetainInstance(retainInstance);
+        this.Sb.setRetainInstance(retainInstance);
     }
     
     public void setUserVisibleHint(final boolean userVisibleHint) {
-        this.Hv.setUserVisibleHint(userVisibleHint);
+        this.Sb.setUserVisibleHint(userVisibleHint);
     }
     
     public void startActivity(final Intent intent) {
-        this.Hv.startActivity(intent);
+        this.Sb.startActivity(intent);
     }
     
     public void startActivityForResult(final Intent intent, final int n) {
-        this.Hv.startActivityForResult(intent, n);
+        this.Sb.startActivityForResult(intent, n);
     }
 }

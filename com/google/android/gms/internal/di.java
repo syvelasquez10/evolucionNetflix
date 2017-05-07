@@ -4,182 +4,84 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Iterator;
-import java.util.ArrayList;
-import android.os.Bundle;
-import android.os.SystemClock;
-import java.util.LinkedList;
+import com.google.android.gms.common.internal.safeparcel.a;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public class di
+public class di implements Parcelable$Creator<dj>
 {
-    private final Object li;
-    private boolean pV;
-    private final String qA;
-    private long qB;
-    private long qC;
-    private long qD;
-    private long qE;
-    private long qF;
-    private long qG;
-    private final dj qx;
-    private final LinkedList<a> qy;
-    private final String qz;
-    
-    public di(final dj qx, final String qz, final String qa) {
-        this.li = new Object();
-        this.qB = -1L;
-        this.qC = -1L;
-        this.pV = false;
-        this.qD = -1L;
-        this.qE = 0L;
-        this.qF = -1L;
-        this.qG = -1L;
-        this.qx = qx;
-        this.qz = qz;
-        this.qA = qa;
-        this.qy = new LinkedList<a>();
+    static void a(final dj dj, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, dj.versionCode);
+        b.a(parcel, 2, dj.rp, false);
+        b.a(parcel, 3, dj.rq, false);
+        b.a(parcel, 4, dj.mimeType, false);
+        b.a(parcel, 5, dj.packageName, false);
+        b.a(parcel, 6, dj.rr, false);
+        b.a(parcel, 7, dj.rs, false);
+        b.a(parcel, 8, dj.rt, false);
+        b.H(parcel, d);
     }
     
-    public di(final String s, final String s2) {
-        this(dj.bq(), s, s2);
-    }
-    
-    public void bk() {
-        synchronized (this.li) {
-            if (this.qG != -1L && this.qC == -1L) {
-                this.qC = SystemClock.elapsedRealtime();
-                this.qx.a(this);
-            }
-            final dj qx = this.qx;
-            dj.bu().bk();
-        }
-    }
-    
-    public void bl() {
-        synchronized (this.li) {
-            if (this.qG != -1L) {
-                final a a = new a();
-                a.bp();
-                this.qy.add(a);
-                ++this.qE;
-                final dj qx = this.qx;
-                dj.bu().bl();
-                this.qx.a(this);
-            }
-        }
-    }
-    
-    public void bm() {
-        synchronized (this.li) {
-            if (this.qG != -1L && !this.qy.isEmpty()) {
-                final a a = this.qy.getLast();
-                if (a.bn() == -1L) {
-                    a.bo();
-                    this.qx.a(this);
+    public dj e(final Parcel parcel) {
+        String o = null;
+        final int c = a.C(parcel);
+        int g = 0;
+        String o2 = null;
+        String o3 = null;
+        String o4 = null;
+        String o5 = null;
+        String o6 = null;
+        String o7 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
+                default: {
+                    a.b(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    g = a.g(parcel, b);
+                    continue;
+                }
+                case 2: {
+                    o7 = a.o(parcel, b);
+                    continue;
+                }
+                case 3: {
+                    o6 = a.o(parcel, b);
+                    continue;
+                }
+                case 4: {
+                    o5 = a.o(parcel, b);
+                    continue;
+                }
+                case 5: {
+                    o4 = a.o(parcel, b);
+                    continue;
+                }
+                case 6: {
+                    o3 = a.o(parcel, b);
+                    continue;
+                }
+                case 7: {
+                    o2 = a.o(parcel, b);
+                    continue;
+                }
+                case 8: {
+                    o = a.o(parcel, b);
+                    continue;
                 }
             }
         }
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
+        }
+        return new dj(g, o7, o6, o5, o4, o3, o2, o);
     }
     
-    public void f(final ah ah) {
-        synchronized (this.li) {
-            this.qF = SystemClock.elapsedRealtime();
-            final dj qx = this.qx;
-            dj.bu().b(ah, this.qF);
-        }
-    }
-    
-    public void h(final long qg) {
-        synchronized (this.li) {
-            this.qG = qg;
-            if (this.qG != -1L) {
-                this.qx.a(this);
-            }
-        }
-    }
-    
-    public void i(final long qb) {
-        synchronized (this.li) {
-            if (this.qG != -1L) {
-                this.qB = qb;
-                this.qx.a(this);
-            }
-        }
-    }
-    
-    public void m(final boolean b) {
-        synchronized (this.li) {
-            if (this.qG != -1L) {
-                this.qD = SystemClock.elapsedRealtime();
-                if (!b) {
-                    this.qC = this.qD;
-                    this.qx.a(this);
-                }
-            }
-        }
-    }
-    
-    public void n(final boolean pv) {
-        synchronized (this.li) {
-            if (this.qG != -1L) {
-                this.pV = pv;
-                this.qx.a(this);
-            }
-        }
-    }
-    
-    public Bundle toBundle() {
-        final ArrayList<Bundle> list;
-        synchronized (this.li) {
-            final Bundle bundle = new Bundle();
-            bundle.putString("seqnum", this.qz);
-            bundle.putString("slotid", this.qA);
-            bundle.putBoolean("ismediation", this.pV);
-            bundle.putLong("treq", this.qF);
-            bundle.putLong("tresponse", this.qG);
-            bundle.putLong("timp", this.qC);
-            bundle.putLong("tload", this.qD);
-            bundle.putLong("pcc", this.qE);
-            bundle.putLong("tfetch", this.qB);
-            list = new ArrayList<Bundle>();
-            final Iterator<a> iterator = this.qy.iterator();
-            while (iterator.hasNext()) {
-                list.add(iterator.next().toBundle());
-            }
-        }
-        final Bundle bundle2;
-        bundle2.putParcelableArrayList("tclick", (ArrayList)list);
-        // monitorexit(o)
-        return bundle2;
-    }
-    
-    private static final class a
-    {
-        private long qH;
-        private long qI;
-        
-        public a() {
-            this.qH = -1L;
-            this.qI = -1L;
-        }
-        
-        public long bn() {
-            return this.qI;
-        }
-        
-        public void bo() {
-            this.qI = SystemClock.elapsedRealtime();
-        }
-        
-        public void bp() {
-            this.qH = SystemClock.elapsedRealtime();
-        }
-        
-        public Bundle toBundle() {
-            final Bundle bundle = new Bundle();
-            bundle.putLong("topen", this.qH);
-            bundle.putLong("tclose", this.qI);
-            return bundle;
-        }
+    public dj[] l(final int n) {
+        return new dj[n];
     }
 }

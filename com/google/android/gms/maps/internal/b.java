@@ -22,7 +22,7 @@ public interface b extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.ICancelableCallback");
         }
         
-        public static b aa(final IBinder binder) {
+        public static b aO(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -63,14 +63,14 @@ public interface b extends IInterface
         
         private static class a implements b
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -79,7 +79,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICancelableCallback");
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -94,7 +94,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ICancelableCallback");
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

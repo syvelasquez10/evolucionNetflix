@@ -4,66 +4,45 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import com.google.android.gms.common.internal.n;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.common.api.BaseImplementation;
+import com.google.android.gms.common.api.Result;
+import android.content.Context;
+import com.google.android.gms.common.api.Api;
 
-public class kj implements Parcelable$Creator<ki>
+public interface kj extends Api.a
 {
-    static void a(final ki ki, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, ki.xH);
-        b.c(parcel, 2, ki.fA());
-        b.a(parcel, 3, ki.getPath(), false);
-        b.a(parcel, 4, ki.getData(), false);
-        b.a(parcel, 5, ki.getSource(), false);
-        b.F(parcel, p3);
+    Context getContext();
+    
+    ko iT();
+    
+    public abstract static class a<R extends Result> extends BaseImplementation.a<R, kj>
+    {
+        public a() {
+            super(Fitness.CU);
+        }
     }
     
-    public ki by(final Parcel parcel) {
-        int g = 0;
-        String n = null;
-        final int o = a.o(parcel);
-        byte[] q = null;
-        String n2 = null;
-        int g2 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n3 = a.n(parcel);
-            switch (a.R(n3)) {
-                default: {
-                    a.b(parcel, n3);
-                    continue;
-                }
-                case 1: {
-                    g2 = a.g(parcel, n3);
-                    continue;
-                }
-                case 2: {
-                    g = a.g(parcel, n3);
-                    continue;
-                }
-                case 3: {
-                    n2 = a.n(parcel, n3);
-                    continue;
-                }
-                case 4: {
-                    q = a.q(parcel, n3);
-                    continue;
-                }
-                case 5: {
-                    n = a.n(parcel, n3);
-                    continue;
-                }
-            }
+    public static class b extends ks.a
+    {
+        private final BaseImplementation.b<Status> De;
+        
+        public b(final BaseImplementation.b<Status> de) {
+            this.De = de;
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        
+        public void k(final Status status) {
+            this.De.b(status);
         }
-        return new ki(g2, g, n2, q, n);
     }
     
-    public ki[] cN(final int n) {
-        return new ki[n];
+    public abstract static class c extends a<Status>
+    {
+        protected Status d(final Status status) {
+            n.K(!status.isSuccess());
+            return status;
+        }
     }
 }

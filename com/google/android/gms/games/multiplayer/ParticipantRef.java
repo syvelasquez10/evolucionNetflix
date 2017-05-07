@@ -10,15 +10,15 @@ import android.net.Uri;
 import android.database.CharArrayBuffer;
 import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.PlayerRef;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class ParticipantRef extends b implements Participant
+public final class ParticipantRef extends d implements Participant
 {
-    private final PlayerRef LL;
+    private final PlayerRef abX;
     
     public ParticipantRef(final DataHolder dataHolder, final int n) {
         super(dataHolder, n);
-        this.LL = new PlayerRef(dataHolder, n);
+        this.abX = new PlayerRef(dataHolder, n);
     }
     
     public int describeContents() {
@@ -41,51 +41,51 @@ public final class ParticipantRef extends b implements Participant
     
     @Override
     public String getDisplayName() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return this.getString("default_display_name");
         }
-        return this.LL.getDisplayName();
+        return this.abX.getDisplayName();
     }
     
     @Override
     public void getDisplayName(final CharArrayBuffer charArrayBuffer) {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             this.a("default_display_name", charArrayBuffer);
             return;
         }
-        this.LL.getDisplayName(charArrayBuffer);
+        this.abX.getDisplayName(charArrayBuffer);
     }
     
     @Override
     public Uri getHiResImageUri() {
-        if (this.ai("external_player_id")) {
-            return this.ah("default_display_hi_res_image_uri");
+        if (this.aS("external_player_id")) {
+            return this.aR("default_display_hi_res_image_uri");
         }
-        return this.LL.getHiResImageUri();
+        return this.abX.getHiResImageUri();
     }
     
     @Override
     public String getHiResImageUrl() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return this.getString("default_display_hi_res_image_url");
         }
-        return this.LL.getHiResImageUrl();
+        return this.abX.getHiResImageUrl();
     }
     
     @Override
     public Uri getIconImageUri() {
-        if (this.ai("external_player_id")) {
-            return this.ah("default_display_image_uri");
+        if (this.aS("external_player_id")) {
+            return this.aR("default_display_image_uri");
         }
-        return this.LL.getIconImageUri();
+        return this.abX.getIconImageUri();
     }
     
     @Override
     public String getIconImageUrl() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return this.getString("default_display_image_url");
         }
-        return this.LL.getIconImageUrl();
+        return this.abX.getIconImageUrl();
     }
     
     @Override
@@ -95,15 +95,15 @@ public final class ParticipantRef extends b implements Participant
     
     @Override
     public Player getPlayer() {
-        if (this.ai("external_player_id")) {
+        if (this.aS("external_player_id")) {
             return null;
         }
-        return this.LL;
+        return this.abX;
     }
     
     @Override
     public ParticipantResult getResult() {
-        if (this.ai("result_type")) {
+        if (this.aS("result_type")) {
             return null;
         }
         return new ParticipantResult(this.getParticipantId(), this.getInteger("result_type"), this.getInteger("placing"));
@@ -115,11 +115,6 @@ public final class ParticipantRef extends b implements Participant
     }
     
     @Override
-    public String gi() {
-        return this.getString("client_address");
-    }
-    
-    @Override
     public int hashCode() {
         return ParticipantEntity.a(this);
     }
@@ -127,6 +122,11 @@ public final class ParticipantRef extends b implements Participant
     @Override
     public boolean isConnectedToRoom() {
         return this.getInteger("connected") > 0;
+    }
+    
+    @Override
+    public String jU() {
+        return this.getString("client_address");
     }
     
     @Override

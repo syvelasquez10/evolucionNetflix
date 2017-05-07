@@ -12,7 +12,7 @@ import com.netflix.mediaclient.service.NetflixService;
 
 public class InfoEventHandler
 {
-    private static final long GCM_BROWSE_EVENT_RATE_LIMIT_DELAY_MS = 10000L;
+    private static final long GCM_BROWSE_EVENT_RATE_LIMIT_DELAY_MS = 1000L;
     private static final String TAG = "nf_push_info";
     private static InfoEventHandler mInfoEventHanlder;
     private static long mPrevMyListEventTime;
@@ -24,10 +24,13 @@ public class InfoEventHandler
     
     private long getBrowseEventRateLimit(final NetflixService netflixService) {
         final int rateLimitForGcmBrowseEvents = netflixService.getConfiguration().getRateLimitForGcmBrowseEvents();
-        if (rateLimitForGcmBrowseEvents <= 0) {
-            return 10000L;
+        if (rateLimitForGcmBrowseEvents < 0) {
+            return 0L;
         }
-        return rateLimitForGcmBrowseEvents * 1000;
+        if (rateLimitForGcmBrowseEvents > 0) {
+            return rateLimitForGcmBrowseEvents * 1000;
+        }
+        return 1000L;
     }
     
     public static InfoEventHandler getInstance() {
@@ -56,9 +59,14 @@ public class InfoEventHandler
                 netflixService.getPushNotification().informServiceStartedOnGcmInfo();
             }
             else {
-                if (!StringUtils.safeEquals(profileId, payload.profileId)) {
-                    Log.d("nf_push_info", String.format("drop push event - !currentProfile :%s", profileId));
-                    return;
+                if (StringUtils.isNotEmpty(payload.profileGuid)) {
+                    if (!StringUtils.safeEquals(profileId, payload.profileGuid)) {
+                        Log.d("nf_push_info", String.format("drop push event - !currentProfile :%s", profileId));
+                        return;
+                    }
+                }
+                else {
+                    Log.d("nf_push_info", "msg missing profileGuid... processing");
                 }
                 if (!Payload.ActionInfoType.EVENT_MYLIST_CHANGED.getValue().equals(payload.actionInfoType) && !Payload.ActionInfoType.EVENT_PLAYBACK_ENDED.getValue().equals(payload.actionInfoType)) {
                     Log.d("nf_push_info", String.format("drop push event - !actionInfoType :%s", payload.actionInfoType));

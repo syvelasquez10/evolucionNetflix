@@ -6,6 +6,7 @@ package android.support.v4.app;
 
 import android.util.Log;
 import android.content.pm.ActivityInfo;
+import android.support.annotation.Nullable;
 import android.content.pm.PackageManager$NameNotFoundException;
 import android.support.v4.content.IntentCompat;
 import android.content.ComponentName;
@@ -56,6 +57,7 @@ public class NavUtils
         return new Intent().setComponent(component);
     }
     
+    @Nullable
     public static String getParentActivityName(final Activity activity) {
         try {
             return getParentActivityName((Context)activity, activity.getComponentName());
@@ -65,6 +67,7 @@ public class NavUtils
         }
     }
     
+    @Nullable
     public static String getParentActivityName(final Context context, final ComponentName componentName) throws PackageManager$NameNotFoundException {
         return NavUtils.IMPL.getParentActivityName(context, context.getPackageManager().getActivityInfo(componentName, 128));
     }

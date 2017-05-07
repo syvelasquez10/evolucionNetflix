@@ -4,27 +4,27 @@
 
 package com.google.android.gms.panorama;
 
-import com.google.android.gms.internal.hw;
+import com.google.android.gms.internal.nb;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.internal.fc;
+import com.google.android.gms.common.internal.ClientSettings;
 import android.os.Looper;
 import android.content.Context;
-import com.google.android.gms.internal.hx;
+import com.google.android.gms.internal.nc;
 import com.google.android.gms.common.api.Api;
 
 public final class Panorama
 {
     public static final Api<Api.ApiOptions.NoOptions> API;
+    public static final Api.c<nc> CU;
+    static final Api.b<nc, Api.ApiOptions.NoOptions> CV;
     public static final PanoramaApi PanoramaApi;
-    public static final Api.c<hx> wx;
-    static final Api.b<hx, Api.ApiOptions.NoOptions> wy;
     
     static {
-        wx = new Api.c();
-        wy = new Api.b<hx, Api.ApiOptions.NoOptions>() {
-            public hx c(final Context context, final Looper looper, final fc fc, final NoOptions noOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
-                return new hx(context, looper, connectionCallbacks, onConnectionFailedListener);
+        CU = new Api.c();
+        CV = new Api.b<nc, Api.ApiOptions.NoOptions>() {
+            public nc e(final Context context, final Looper looper, final ClientSettings clientSettings, final NoOptions noOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
+                return new nc(context, looper, connectionCallbacks, onConnectionFailedListener);
             }
             
             @Override
@@ -32,7 +32,7 @@ public final class Panorama
                 return Integer.MAX_VALUE;
             }
         };
-        API = new Api<Api.ApiOptions.NoOptions>((Api.b<C, Api.ApiOptions.NoOptions>)Panorama.wy, (Api.c<C>)Panorama.wx, new Scope[0]);
-        PanoramaApi = new hw();
+        API = new Api<Api.ApiOptions.NoOptions>((Api.b<C, Api.ApiOptions.NoOptions>)Panorama.CV, (Api.c<C>)Panorama.CU, new Scope[0]);
+        PanoramaApi = new nb();
     }
 }

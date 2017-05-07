@@ -6,13 +6,13 @@ package com.google.android.gms.tagmanager;
 
 class r
 {
-    private String Xm;
+    private String aos;
     
     public r() {
-        this.Xm = "https://www.googletagmanager.com";
+        this.aos = "https://www.googletagmanager.com";
     }
     
-    public String kn() {
-        return this.Xm;
+    public String ob() {
+        return this.aos;
     }
 }

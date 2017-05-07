@@ -4,27 +4,26 @@
 
 package com.google.android.gms.common.api;
 
-import com.google.android.gms.internal.fq;
+import java.util.concurrent.TimeUnit;
+import com.google.android.gms.common.internal.n;
 
 public final class BatchResult implements Result
 {
-    private final PendingResult<?>[] AP;
-    private final Status wJ;
+    private final Status CM;
+    private final PendingResult<?>[] Iy;
     
-    BatchResult(final Status wj, final PendingResult<?>[] ap) {
-        this.wJ = wj;
-        this.AP = ap;
+    BatchResult(final Status cm, final PendingResult<?>[] iy) {
+        this.CM = cm;
+        this.Iy = iy;
     }
     
     @Override
     public Status getStatus() {
-        return this.wJ;
+        return this.CM;
     }
     
     public <R extends Result> R take(final BatchResultToken<R> batchResultToken) {
-        fq.b(batchResultToken.mId < this.AP.length, "The result token does not belong to this batch");
-        final PendingResult<?> pendingResult = this.AP[batchResultToken.mId];
-        this.AP[batchResultToken.mId] = null;
-        return (R)pendingResult.await();
+        n.b(batchResultToken.mId < this.Iy.length, (Object)"The result token does not belong to this batch");
+        return (R)this.Iy[batchResultToken.mId].await(0L, TimeUnit.MILLISECONDS);
     }
 }

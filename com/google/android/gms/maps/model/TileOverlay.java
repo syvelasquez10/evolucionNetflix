@@ -5,20 +5,20 @@
 package com.google.android.gms.maps.model;
 
 import android.os.RemoteException;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.maps.model.internal.h;
 
 public final class TileOverlay
 {
-    private final h Ts;
+    private final h akf;
     
     public TileOverlay(final h h) {
-        this.Ts = fq.f(h);
+        this.akf = n.i(h);
     }
     
     public void clearTileCache() {
         try {
-            this.Ts.clearTileCache();
+            this.akf.clearTileCache();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -31,7 +31,7 @@ public final class TileOverlay
             return false;
         }
         try {
-            return this.Ts.a(((TileOverlay)o).Ts);
+            return this.akf.a(((TileOverlay)o).akf);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -40,7 +40,7 @@ public final class TileOverlay
     
     public boolean getFadeIn() {
         try {
-            return this.Ts.getFadeIn();
+            return this.akf.getFadeIn();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -49,7 +49,7 @@ public final class TileOverlay
     
     public String getId() {
         try {
-            return this.Ts.getId();
+            return this.akf.getId();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -58,7 +58,7 @@ public final class TileOverlay
     
     public float getZIndex() {
         try {
-            return this.Ts.getZIndex();
+            return this.akf.getZIndex();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -68,7 +68,7 @@ public final class TileOverlay
     @Override
     public int hashCode() {
         try {
-            return this.Ts.hashCodeRemote();
+            return this.akf.hashCodeRemote();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -77,7 +77,7 @@ public final class TileOverlay
     
     public boolean isVisible() {
         try {
-            return this.Ts.isVisible();
+            return this.akf.isVisible();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -86,7 +86,7 @@ public final class TileOverlay
     
     public void remove() {
         try {
-            this.Ts.remove();
+            this.akf.remove();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -95,7 +95,7 @@ public final class TileOverlay
     
     public void setFadeIn(final boolean fadeIn) {
         try {
-            this.Ts.setFadeIn(fadeIn);
+            this.akf.setFadeIn(fadeIn);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -104,7 +104,7 @@ public final class TileOverlay
     
     public void setVisible(final boolean visible) {
         try {
-            this.Ts.setVisible(visible);
+            this.akf.setVisible(visible);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -113,7 +113,7 @@ public final class TileOverlay
     
     public void setZIndex(final float zIndex) {
         try {
-            this.Ts.setZIndex(zIndex);
+            this.akf.setZIndex(zIndex);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

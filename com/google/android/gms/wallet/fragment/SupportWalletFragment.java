@@ -7,7 +7,7 @@ package com.google.android.gms.wallet.fragment;
 import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.dynamic.c;
-import com.google.android.gms.internal.jh;
+import com.google.android.gms.internal.oy;
 import com.google.android.gms.dynamic.f;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup$LayoutParams;
@@ -18,9 +18,9 @@ import android.view.View$OnClickListener;
 import com.google.android.gms.dynamic.a;
 import com.google.android.gms.dynamic.e;
 import android.os.RemoteException;
-import com.google.android.gms.internal.iz;
+import com.google.android.gms.internal.oq;
 import com.google.android.gms.dynamic.LifecycleDelegate;
-import com.google.android.gms.internal.ja;
+import com.google.android.gms.internal.or;
 import android.support.v4.app.FragmentManager;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import android.util.AttributeSet;
@@ -33,58 +33,63 @@ import android.content.Intent;
 import android.util.Log;
 import android.os.Parcelable;
 import android.os.Bundle;
-import com.google.android.gms.dynamic.h;
+import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.MaskedWalletRequest;
+import com.google.android.gms.dynamic.h;
 import android.support.v4.app.Fragment;
 
 public final class SupportWalletFragment extends Fragment
 {
-    private final Fragment Hz;
-    private WalletFragmentInitParams acA;
-    private MaskedWalletRequest acB;
-    private Boolean acC;
-    private b acv;
-    private final h acw;
-    private final c acx;
-    private a acy;
-    private WalletFragmentOptions acz;
+    private final Fragment Ll;
+    private b atF;
+    private final h atG;
+    private final c atH;
+    private a atI;
+    private WalletFragmentOptions atJ;
+    private WalletFragmentInitParams atK;
+    private MaskedWalletRequest atL;
+    private MaskedWallet atM;
+    private Boolean atN;
     private boolean mCreated;
     
     public SupportWalletFragment() {
         this.mCreated = false;
-        this.acw = h.a(this);
-        this.acx = new c();
-        this.acy = new a(this);
-        this.Hz = this;
+        this.atG = h.a(this);
+        this.atH = new c();
+        this.atI = new a(this);
+        this.Ll = this;
     }
     
     public static SupportWalletFragment newInstance(final WalletFragmentOptions walletFragmentOptions) {
         final SupportWalletFragment supportWalletFragment = new SupportWalletFragment();
         final Bundle arguments = new Bundle();
         arguments.putParcelable("extraWalletFragmentOptions", (Parcelable)walletFragmentOptions);
-        supportWalletFragment.Hz.setArguments(arguments);
+        supportWalletFragment.Ll.setArguments(arguments);
         return supportWalletFragment;
     }
     
     public int getState() {
-        if (this.acv != null) {
-            return this.acv.getState();
+        if (this.atF != null) {
+            return this.atF.getState();
         }
         return 0;
     }
     
-    public void initialize(final WalletFragmentInitParams acA) {
-        if (this.acv != null) {
-            this.acv.initialize(acA);
-            this.acA = null;
+    public void initialize(final WalletFragmentInitParams atK) {
+        if (this.atF != null) {
+            this.atF.initialize(atK);
+            this.atK = null;
         }
         else {
-            if (this.acA != null) {
+            if (this.atK != null) {
                 Log.w("SupportWalletFragment", "initialize(WalletFragmentInitParams) was called more than once. Ignoring.");
                 return;
             }
-            this.acA = acA;
-            if (this.acB != null) {
+            this.atK = atK;
+            if (this.atL != null) {
+                Log.w("SupportWalletFragment", "updateMaskedWalletRequest() was called before initialize()");
+            }
+            if (this.atM != null) {
                 Log.w("SupportWalletFragment", "updateMaskedWallet() was called before initialize()");
             }
         }
@@ -93,8 +98,8 @@ public final class SupportWalletFragment extends Fragment
     @Override
     public void onActivityResult(final int n, final int n2, final Intent intent) {
         super.onActivityResult(n, n2, intent);
-        if (this.acv != null) {
-            this.acv.onActivityResult(n, n2, intent);
+        if (this.atF != null) {
+            this.atF.onActivityResult(n, n2, intent);
         }
     }
     
@@ -103,37 +108,40 @@ public final class SupportWalletFragment extends Fragment
         super.onCreate(bundle);
         if (bundle != null) {
             bundle.setClassLoader(WalletFragmentOptions.class.getClassLoader());
-            final WalletFragmentInitParams acA = (WalletFragmentInitParams)bundle.getParcelable("walletFragmentInitParams");
-            if (acA != null) {
-                if (this.acA != null) {
+            final WalletFragmentInitParams atK = (WalletFragmentInitParams)bundle.getParcelable("walletFragmentInitParams");
+            if (atK != null) {
+                if (this.atK != null) {
                     Log.w("SupportWalletFragment", "initialize(WalletFragmentInitParams) was called more than once.Ignoring.");
                 }
-                this.acA = acA;
+                this.atK = atK;
             }
-            if (this.acB == null) {
-                this.acB = (MaskedWalletRequest)bundle.getParcelable("maskedWalletRequest");
+            if (this.atL == null) {
+                this.atL = (MaskedWalletRequest)bundle.getParcelable("maskedWalletRequest");
+            }
+            if (this.atM == null) {
+                this.atM = (MaskedWallet)bundle.getParcelable("maskedWallet");
             }
             if (bundle.containsKey("walletFragmentOptions")) {
-                this.acz = (WalletFragmentOptions)bundle.getParcelable("walletFragmentOptions");
+                this.atJ = (WalletFragmentOptions)bundle.getParcelable("walletFragmentOptions");
             }
             if (bundle.containsKey("enabled")) {
-                this.acC = bundle.getBoolean("enabled");
+                this.atN = bundle.getBoolean("enabled");
             }
         }
-        else if (this.Hz.getArguments() != null) {
-            final WalletFragmentOptions acz = (WalletFragmentOptions)this.Hz.getArguments().getParcelable("extraWalletFragmentOptions");
-            if (acz != null) {
-                acz.I((Context)this.Hz.getActivity());
-                this.acz = acz;
+        else if (this.Ll.getArguments() != null) {
+            final WalletFragmentOptions atJ = (WalletFragmentOptions)this.Ll.getArguments().getParcelable("extraWalletFragmentOptions");
+            if (atJ != null) {
+                atJ.Z((Context)this.Ll.getActivity());
+                this.atJ = atJ;
             }
         }
         this.mCreated = true;
-        this.acx.onCreate(bundle);
+        this.atH.onCreate(bundle);
     }
     
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        return this.acx.onCreateView(layoutInflater, viewGroup, bundle);
+        return this.atH.onCreateView(layoutInflater, viewGroup, bundle);
     }
     
     @Override
@@ -145,29 +153,29 @@ public final class SupportWalletFragment extends Fragment
     @Override
     public void onInflate(final Activity activity, final AttributeSet set, final Bundle bundle) {
         super.onInflate(activity, set, bundle);
-        if (this.acz == null) {
-            this.acz = WalletFragmentOptions.a((Context)activity, set);
+        if (this.atJ == null) {
+            this.atJ = WalletFragmentOptions.a((Context)activity, set);
         }
         final Bundle bundle2 = new Bundle();
-        bundle2.putParcelable("attrKeyWalletFragmentOptions", (Parcelable)this.acz);
-        this.acx.onInflate(activity, bundle2, bundle);
+        bundle2.putParcelable("attrKeyWalletFragmentOptions", (Parcelable)this.atJ);
+        this.atH.onInflate(activity, bundle2, bundle);
     }
     
     @Override
     public void onPause() {
         super.onPause();
-        this.acx.onPause();
+        this.atH.onPause();
     }
     
     @Override
     public void onResume() {
         super.onResume();
-        this.acx.onResume();
-        final FragmentManager supportFragmentManager = this.Hz.getActivity().getSupportFragmentManager();
+        this.atH.onResume();
+        final FragmentManager supportFragmentManager = this.Ll.getActivity().getSupportFragmentManager();
         final Fragment fragmentByTag = supportFragmentManager.findFragmentByTag("GooglePlayServicesErrorDialog");
         if (fragmentByTag != null) {
             supportFragmentManager.beginTransaction().remove(fragmentByTag).commit();
-            GooglePlayServicesUtil.showErrorDialogFragment(GooglePlayServicesUtil.isGooglePlayServicesAvailable((Context)this.Hz.getActivity()), this.Hz.getActivity(), -1);
+            GooglePlayServicesUtil.showErrorDialogFragment(GooglePlayServicesUtil.isGooglePlayServicesAvailable((Context)this.Ll.getActivity()), this.Ll.getActivity(), -1);
         }
     }
     
@@ -175,57 +183,70 @@ public final class SupportWalletFragment extends Fragment
     public void onSaveInstanceState(final Bundle bundle) {
         super.onSaveInstanceState(bundle);
         bundle.setClassLoader(WalletFragmentOptions.class.getClassLoader());
-        this.acx.onSaveInstanceState(bundle);
-        if (this.acA != null) {
-            bundle.putParcelable("walletFragmentInitParams", (Parcelable)this.acA);
-            this.acA = null;
+        this.atH.onSaveInstanceState(bundle);
+        if (this.atK != null) {
+            bundle.putParcelable("walletFragmentInitParams", (Parcelable)this.atK);
+            this.atK = null;
         }
-        if (this.acB != null) {
-            bundle.putParcelable("maskedWalletRequest", (Parcelable)this.acB);
-            this.acB = null;
+        if (this.atL != null) {
+            bundle.putParcelable("maskedWalletRequest", (Parcelable)this.atL);
+            this.atL = null;
         }
-        if (this.acz != null) {
-            bundle.putParcelable("walletFragmentOptions", (Parcelable)this.acz);
-            this.acz = null;
+        if (this.atM != null) {
+            bundle.putParcelable("maskedWallet", (Parcelable)this.atM);
+            this.atM = null;
         }
-        if (this.acC != null) {
-            bundle.putBoolean("enabled", (boolean)this.acC);
-            this.acC = null;
+        if (this.atJ != null) {
+            bundle.putParcelable("walletFragmentOptions", (Parcelable)this.atJ);
+            this.atJ = null;
+        }
+        if (this.atN != null) {
+            bundle.putBoolean("enabled", (boolean)this.atN);
+            this.atN = null;
         }
     }
     
     @Override
     public void onStart() {
         super.onStart();
-        this.acx.onStart();
+        this.atH.onStart();
     }
     
     @Override
     public void onStop() {
         super.onStop();
-        this.acx.onStop();
+        this.atH.onStop();
     }
     
     public void setEnabled(final boolean b) {
-        if (this.acv != null) {
-            this.acv.setEnabled(b);
-            this.acC = null;
+        if (this.atF != null) {
+            this.atF.setEnabled(b);
+            this.atN = null;
             return;
         }
-        this.acC = b;
+        this.atN = b;
     }
     
     public void setOnStateChangedListener(final OnStateChangedListener onStateChangedListener) {
-        this.acy.a(onStateChangedListener);
+        this.atI.a(onStateChangedListener);
     }
     
-    public void updateMaskedWalletRequest(final MaskedWalletRequest acB) {
-        if (this.acv != null) {
-            this.acv.updateMaskedWalletRequest(acB);
-            this.acB = null;
+    public void updateMaskedWallet(final MaskedWallet atM) {
+        if (this.atF != null) {
+            this.atF.updateMaskedWallet(atM);
+            this.atM = null;
             return;
         }
-        this.acB = acB;
+        this.atM = atM;
+    }
+    
+    public void updateMaskedWalletRequest(final MaskedWalletRequest atL) {
+        if (this.atF != null) {
+            this.atF.updateMaskedWalletRequest(atL);
+            this.atL = null;
+            return;
+        }
+        this.atL = atL;
     }
     
     public interface OnStateChangedListener
@@ -233,37 +254,37 @@ public final class SupportWalletFragment extends Fragment
         void onStateChanged(final SupportWalletFragment p0, final int p1, final int p2, final Bundle p3);
     }
     
-    static class a extends ja.a
+    static class a extends or.a
     {
-        private OnStateChangedListener acD;
-        private final SupportWalletFragment acE;
+        private OnStateChangedListener atO;
+        private final SupportWalletFragment atP;
         
-        a(final SupportWalletFragment acE) {
-            this.acE = acE;
+        a(final SupportWalletFragment atP) {
+            this.atP = atP;
         }
         
         public void a(final int n, final int n2, final Bundle bundle) {
-            if (this.acD != null) {
-                this.acD.onStateChanged(this.acE, n, n2, bundle);
+            if (this.atO != null) {
+                this.atO.onStateChanged(this.atP, n, n2, bundle);
             }
         }
         
-        public void a(final OnStateChangedListener acD) {
-            this.acD = acD;
+        public void a(final OnStateChangedListener atO) {
+            this.atO = atO;
         }
     }
     
     private static class b implements LifecycleDelegate
     {
-        private final iz acF;
+        private final oq atQ;
         
-        private b(final iz acF) {
-            this.acF = acF;
+        private b(final oq atQ) {
+            this.atQ = atQ;
         }
         
         private int getState() {
             try {
-                return this.acF.getState();
+                return this.atQ.getState();
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -272,7 +293,7 @@ public final class SupportWalletFragment extends Fragment
         
         private void initialize(final WalletFragmentInitParams walletFragmentInitParams) {
             try {
-                this.acF.initialize(walletFragmentInitParams);
+                this.atQ.initialize(walletFragmentInitParams);
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -281,7 +302,7 @@ public final class SupportWalletFragment extends Fragment
         
         private void onActivityResult(final int n, final int n2, final Intent intent) {
             try {
-                this.acF.onActivityResult(n, n2, intent);
+                this.atQ.onActivityResult(n, n2, intent);
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -290,7 +311,16 @@ public final class SupportWalletFragment extends Fragment
         
         private void setEnabled(final boolean enabled) {
             try {
-                this.acF.setEnabled(enabled);
+                this.atQ.setEnabled(enabled);
+            }
+            catch (RemoteException ex) {
+                throw new RuntimeException((Throwable)ex);
+            }
+        }
+        
+        private void updateMaskedWallet(final MaskedWallet maskedWallet) {
+            try {
+                this.atQ.updateMaskedWallet(maskedWallet);
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -299,7 +329,7 @@ public final class SupportWalletFragment extends Fragment
         
         private void updateMaskedWalletRequest(final MaskedWalletRequest maskedWalletRequest) {
             try {
-                this.acF.updateMaskedWalletRequest(maskedWalletRequest);
+                this.atQ.updateMaskedWalletRequest(maskedWalletRequest);
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -309,7 +339,7 @@ public final class SupportWalletFragment extends Fragment
         @Override
         public void onCreate(final Bundle bundle) {
             try {
-                this.acF.onCreate(bundle);
+                this.atQ.onCreate(bundle);
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -319,7 +349,7 @@ public final class SupportWalletFragment extends Fragment
         @Override
         public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
             try {
-                return e.d(this.acF.onCreateView(e.h(layoutInflater), e.h(viewGroup), bundle));
+                return e.f(this.atQ.onCreateView(e.k(layoutInflater), e.k(viewGroup), bundle));
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -338,7 +368,7 @@ public final class SupportWalletFragment extends Fragment
         public void onInflate(final Activity activity, final Bundle bundle, final Bundle bundle2) {
             final WalletFragmentOptions walletFragmentOptions = (WalletFragmentOptions)bundle.getParcelable("extraWalletFragmentOptions");
             try {
-                this.acF.a(e.h(activity), walletFragmentOptions, bundle2);
+                this.atQ.a(e.k(activity), walletFragmentOptions, bundle2);
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -352,7 +382,7 @@ public final class SupportWalletFragment extends Fragment
         @Override
         public void onPause() {
             try {
-                this.acF.onPause();
+                this.atQ.onPause();
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -362,7 +392,7 @@ public final class SupportWalletFragment extends Fragment
         @Override
         public void onResume() {
             try {
-                this.acF.onResume();
+                this.atQ.onResume();
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -372,7 +402,7 @@ public final class SupportWalletFragment extends Fragment
         @Override
         public void onSaveInstanceState(final Bundle bundle) {
             try {
-                this.acF.onSaveInstanceState(bundle);
+                this.atQ.onSaveInstanceState(bundle);
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -382,7 +412,7 @@ public final class SupportWalletFragment extends Fragment
         @Override
         public void onStart() {
             try {
-                this.acF.onStart();
+                this.atQ.onStart();
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -392,7 +422,7 @@ public final class SupportWalletFragment extends Fragment
         @Override
         public void onStop() {
             try {
-                this.acF.onStop();
+                this.atQ.onStop();
             }
             catch (RemoteException ex) {
                 throw new RuntimeException((Throwable)ex);
@@ -404,17 +434,17 @@ public final class SupportWalletFragment extends Fragment
     {
         @Override
         protected void a(final FrameLayout frameLayout) {
-            final Button button = new Button((Context)SupportWalletFragment.this.Hz.getActivity());
+            final Button button = new Button((Context)SupportWalletFragment.this.Ll.getActivity());
             button.setText(R.string.wallet_buy_button_place_holder);
             final int n = -1;
             int a = -2;
             int a2 = n;
-            if (SupportWalletFragment.this.acz != null) {
-                final WalletFragmentStyle fragmentStyle = SupportWalletFragment.this.acz.getFragmentStyle();
+            if (SupportWalletFragment.this.atJ != null) {
+                final WalletFragmentStyle fragmentStyle = SupportWalletFragment.this.atJ.getFragmentStyle();
                 a = a;
                 a2 = n;
                 if (fragmentStyle != null) {
-                    final DisplayMetrics displayMetrics = SupportWalletFragment.this.Hz.getResources().getDisplayMetrics();
+                    final DisplayMetrics displayMetrics = SupportWalletFragment.this.Ll.getResources().getDisplayMetrics();
                     a2 = fragmentStyle.a("buyButtonWidth", displayMetrics, -1);
                     a = fragmentStyle.a("buyButtonHeight", displayMetrics, -2);
                 }
@@ -426,32 +456,36 @@ public final class SupportWalletFragment extends Fragment
         
         @Override
         protected void a(final f<b> f) {
-            final FragmentActivity activity = SupportWalletFragment.this.Hz.getActivity();
-            if (SupportWalletFragment.this.acv != null || !SupportWalletFragment.this.mCreated || activity == null) {
+            final FragmentActivity activity = SupportWalletFragment.this.Ll.getActivity();
+            if (SupportWalletFragment.this.atF != null || !SupportWalletFragment.this.mCreated || activity == null) {
                 return;
             }
             try {
-                SupportWalletFragment.this.acv = new b(jh.a(activity, SupportWalletFragment.this.acw, SupportWalletFragment.this.acz, SupportWalletFragment.this.acy));
-                SupportWalletFragment.this.acz = null;
-                f.a(SupportWalletFragment.this.acv);
-                if (SupportWalletFragment.this.acA != null) {
-                    SupportWalletFragment.this.acv.initialize(SupportWalletFragment.this.acA);
-                    SupportWalletFragment.this.acA = null;
+                SupportWalletFragment.this.atF = new b(oy.a(activity, SupportWalletFragment.this.atG, SupportWalletFragment.this.atJ, SupportWalletFragment.this.atI));
+                SupportWalletFragment.this.atJ = null;
+                f.a(SupportWalletFragment.this.atF);
+                if (SupportWalletFragment.this.atK != null) {
+                    SupportWalletFragment.this.atF.initialize(SupportWalletFragment.this.atK);
+                    SupportWalletFragment.this.atK = null;
                 }
-                if (SupportWalletFragment.this.acB != null) {
-                    SupportWalletFragment.this.acv.updateMaskedWalletRequest(SupportWalletFragment.this.acB);
-                    SupportWalletFragment.this.acB = null;
+                if (SupportWalletFragment.this.atL != null) {
+                    SupportWalletFragment.this.atF.updateMaskedWalletRequest(SupportWalletFragment.this.atL);
+                    SupportWalletFragment.this.atL = null;
                 }
-                if (SupportWalletFragment.this.acC != null) {
-                    SupportWalletFragment.this.acv.setEnabled(SupportWalletFragment.this.acC);
-                    SupportWalletFragment.this.acC = null;
+                if (SupportWalletFragment.this.atM != null) {
+                    SupportWalletFragment.this.atF.updateMaskedWallet(SupportWalletFragment.this.atM);
+                    SupportWalletFragment.this.atM = null;
+                }
+                if (SupportWalletFragment.this.atN != null) {
+                    SupportWalletFragment.this.atF.setEnabled(SupportWalletFragment.this.atN);
+                    SupportWalletFragment.this.atN = null;
                 }
             }
             catch (GooglePlayServicesNotAvailableException ex) {}
         }
         
         public void onClick(final View view) {
-            final FragmentActivity activity = SupportWalletFragment.this.Hz.getActivity();
+            final FragmentActivity activity = SupportWalletFragment.this.Ll.getActivity();
             GooglePlayServicesUtil.showErrorDialogFragment(GooglePlayServicesUtil.isGooglePlayServicesAvailable((Context)activity), activity, -1);
         }
     }

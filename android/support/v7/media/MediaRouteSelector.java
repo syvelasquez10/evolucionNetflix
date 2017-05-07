@@ -5,10 +5,12 @@
 package android.support.v7.media;
 
 import java.util.Iterator;
+import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import android.content.IntentFilter;
 import java.util.Collection;
+import android.support.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import android.os.Bundle;
@@ -38,7 +40,7 @@ public final class MediaRouteSelector
         }
     }
     
-    public static MediaRouteSelector fromBundle(final Bundle bundle) {
+    public static MediaRouteSelector fromBundle(@Nullable final Bundle bundle) {
         if (bundle != null) {
             return new MediaRouteSelector(bundle, null);
         }
@@ -138,7 +140,7 @@ public final class MediaRouteSelector
         public Builder() {
         }
         
-        public Builder(final MediaRouteSelector mediaRouteSelector) {
+        public Builder(@NonNull final MediaRouteSelector mediaRouteSelector) {
             if (mediaRouteSelector == null) {
                 throw new IllegalArgumentException("selector must not be null");
             }
@@ -148,7 +150,8 @@ public final class MediaRouteSelector
             }
         }
         
-        public Builder addControlCategories(final Collection<String> collection) {
+        @NonNull
+        public Builder addControlCategories(@NonNull final Collection<String> collection) {
             if (collection == null) {
                 throw new IllegalArgumentException("categories must not be null");
             }
@@ -161,7 +164,8 @@ public final class MediaRouteSelector
             return this;
         }
         
-        public Builder addControlCategory(final String s) {
+        @NonNull
+        public Builder addControlCategory(@NonNull final String s) {
             if (s == null) {
                 throw new IllegalArgumentException("category must not be null");
             }
@@ -174,7 +178,8 @@ public final class MediaRouteSelector
             return this;
         }
         
-        public Builder addSelector(final MediaRouteSelector mediaRouteSelector) {
+        @NonNull
+        public Builder addSelector(@NonNull final MediaRouteSelector mediaRouteSelector) {
             if (mediaRouteSelector == null) {
                 throw new IllegalArgumentException("selector must not be null");
             }
@@ -182,6 +187,7 @@ public final class MediaRouteSelector
             return this;
         }
         
+        @NonNull
         public MediaRouteSelector build() {
             if (this.mControlCategories == null) {
                 return MediaRouteSelector.EMPTY;

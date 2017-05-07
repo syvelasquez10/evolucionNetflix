@@ -11,28 +11,28 @@ import android.content.Context;
 class c extends aj
 {
     private static final String ID;
-    private final a Wz;
+    private final a anH;
     
     static {
         ID = com.google.android.gms.internal.a.v.toString();
     }
     
     public c(final Context context) {
-        this(a.E(context));
+        this(a.V(context));
     }
     
-    c(final a wz) {
+    c(final a anH) {
         super(c.ID, new String[0]);
-        this.Wz = wz;
+        this.anH = anH;
     }
     
     @Override
-    public boolean jX() {
+    public d.a C(final Map<String, d.a> map) {
+        return di.u(!this.anH.isLimitAdTrackingEnabled());
+    }
+    
+    @Override
+    public boolean nL() {
         return false;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        return dh.r(!this.Wz.isLimitAdTrackingEnabled());
     }
 }

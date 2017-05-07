@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 public class Capability
 {
-    public static final ArrayList<String> Lp;
+    public static final ArrayList<String> aab;
     
     static {
-        (Lp = new ArrayList<String>()).add("ibb");
-        Capability.Lp.add("rtp");
-        Capability.Lp.add("unreliable_ping");
+        (aab = new ArrayList<String>()).add("ibb");
+        Capability.aab.add("rtp");
+        Capability.aab.add("unreliable_ping");
     }
 }

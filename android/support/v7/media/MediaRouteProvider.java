@@ -7,7 +7,9 @@ package android.support.v7.media;
 import android.content.Intent;
 import android.os.Message;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.content.ComponentName;
+import android.support.annotation.NonNull;
 import android.content.Context;
 
 public abstract class MediaRouteProvider
@@ -23,7 +25,7 @@ public abstract class MediaRouteProvider
     private boolean mPendingDescriptorChange;
     private boolean mPendingDiscoveryRequestChange;
     
-    public MediaRouteProvider(final Context context) {
+    public MediaRouteProvider(@NonNull final Context context) {
         this(context, null);
     }
     
@@ -56,10 +58,12 @@ public abstract class MediaRouteProvider
         return this.mContext;
     }
     
+    @Nullable
     public final MediaRouteProviderDescriptor getDescriptor() {
         return this.mDescriptor;
     }
     
+    @Nullable
     public final MediaRouteDiscoveryRequest getDiscoveryRequest() {
         return this.mDiscoveryRequest;
     }
@@ -72,19 +76,20 @@ public abstract class MediaRouteProvider
         return this.mMetadata;
     }
     
+    @Nullable
     public RouteController onCreateRouteController(final String s) {
         return null;
     }
     
-    public void onDiscoveryRequestChanged(final MediaRouteDiscoveryRequest mediaRouteDiscoveryRequest) {
+    public void onDiscoveryRequestChanged(@Nullable final MediaRouteDiscoveryRequest mediaRouteDiscoveryRequest) {
     }
     
-    public final void setCallback(final Callback mCallback) {
+    public final void setCallback(@Nullable final Callback mCallback) {
         MediaRouter.checkCallingThread();
         this.mCallback = mCallback;
     }
     
-    public final void setDescriptor(final MediaRouteProviderDescriptor mDescriptor) {
+    public final void setDescriptor(@Nullable final MediaRouteProviderDescriptor mDescriptor) {
         MediaRouter.checkCallingThread();
         if (this.mDescriptor != mDescriptor) {
             this.mDescriptor = mDescriptor;
@@ -108,7 +113,7 @@ public abstract class MediaRouteProvider
     
     public abstract static class Callback
     {
-        public void onDescriptorChanged(final MediaRouteProvider mediaRouteProvider, final MediaRouteProviderDescriptor mediaRouteProviderDescriptor) {
+        public void onDescriptorChanged(@NonNull final MediaRouteProvider mediaRouteProvider, @Nullable final MediaRouteProviderDescriptor mediaRouteProviderDescriptor) {
         }
     }
     
@@ -154,7 +159,7 @@ public abstract class MediaRouteProvider
     
     public abstract static class RouteController
     {
-        public boolean onControlRequest(final Intent intent, final MediaRouter.ControlRequestCallback controlRequestCallback) {
+        public boolean onControlRequest(final Intent intent, @Nullable final MediaRouter.ControlRequestCallback controlRequestCallback) {
             return false;
         }
         

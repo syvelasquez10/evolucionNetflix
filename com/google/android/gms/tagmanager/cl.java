@@ -4,9 +4,9 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
+import java.util.List;
 
 interface cl
 {
-    dj e(final d.a p0);
+    void c(final List<cr.a> p0, final List<String> p1);
 }

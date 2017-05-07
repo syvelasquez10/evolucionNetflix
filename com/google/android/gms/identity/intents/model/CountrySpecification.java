@@ -11,21 +11,21 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class CountrySpecification implements SafeParcelable
 {
     public static final Parcelable$Creator<CountrySpecification> CREATOR;
-    String qd;
-    private final int xH;
+    private final int BR;
+    String uW;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
-    CountrySpecification(final int xh, final String qd) {
-        this.xH = xh;
-        this.qd = qd;
+    CountrySpecification(final int br, final String uw) {
+        this.BR = br;
+        this.uW = uw;
     }
     
-    public CountrySpecification(final String qd) {
-        this.xH = 1;
-        this.qd = qd;
+    public CountrySpecification(final String uw) {
+        this.BR = 1;
+        this.uW = uw;
     }
     
     public int describeContents() {
@@ -33,11 +33,11 @@ public class CountrySpecification implements SafeParcelable
     }
     
     public String getCountryCode() {
-        return this.qd;
+        return this.uW;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

@@ -12,67 +12,67 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class MarkerOptions implements SafeParcelable
 {
-    public static final MarkerOptionsCreator CREATOR;
-    private String EB;
-    private boolean SO;
-    private float SW;
-    private float SX;
-    private LatLng Sn;
-    private String Tf;
-    private BitmapDescriptor Tg;
-    private boolean Th;
-    private boolean Ti;
-    private float Tj;
-    private float Tk;
-    private float Tl;
+    public static final k CREATOR;
+    private final int BR;
+    private String No;
+    private boolean ajB;
+    private float ajJ;
+    private float ajK;
+    private String ajS;
+    private BitmapDescriptor ajT;
+    private boolean ajU;
+    private boolean ajV;
+    private float ajW;
+    private float ajX;
+    private float ajY;
+    private LatLng aja;
     private float mAlpha;
-    private final int xH;
     
     static {
-        CREATOR = new MarkerOptionsCreator();
+        CREATOR = new k();
     }
     
     public MarkerOptions() {
-        this.SW = 0.5f;
-        this.SX = 1.0f;
-        this.SO = true;
-        this.Ti = false;
-        this.Tj = 0.0f;
-        this.Tk = 0.5f;
-        this.Tl = 0.0f;
+        this.ajJ = 0.5f;
+        this.ajK = 1.0f;
+        this.ajB = true;
+        this.ajV = false;
+        this.ajW = 0.0f;
+        this.ajX = 0.5f;
+        this.ajY = 0.0f;
         this.mAlpha = 1.0f;
-        this.xH = 1;
+        this.BR = 1;
     }
     
-    MarkerOptions(final int xh, final LatLng sn, final String eb, final String tf, final IBinder binder, final float sw, final float sx, final boolean th, final boolean so, final boolean ti, final float tj, final float tk, final float tl, final float mAlpha) {
-        this.SW = 0.5f;
-        this.SX = 1.0f;
-        this.SO = true;
-        this.Ti = false;
-        this.Tj = 0.0f;
-        this.Tk = 0.5f;
-        this.Tl = 0.0f;
+    MarkerOptions(final int br, final LatLng aja, final String no, final String ajS, final IBinder binder, final float ajJ, final float ajK, final boolean ajU, final boolean ajB, final boolean ajV, final float ajW, final float ajX, final float ajY, final float mAlpha) {
+        this.ajJ = 0.5f;
+        this.ajK = 1.0f;
+        this.ajB = true;
+        this.ajV = false;
+        this.ajW = 0.0f;
+        this.ajX = 0.5f;
+        this.ajY = 0.0f;
         this.mAlpha = 1.0f;
-        this.xH = xh;
-        this.Sn = sn;
-        this.EB = eb;
-        this.Tf = tf;
-        BitmapDescriptor tg;
+        this.BR = br;
+        this.aja = aja;
+        this.No = no;
+        this.ajS = ajS;
+        BitmapDescriptor ajT;
         if (binder == null) {
-            tg = null;
+            ajT = null;
         }
         else {
-            tg = new BitmapDescriptor(d.a.K(binder));
+            ajT = new BitmapDescriptor(d.a.am(binder));
         }
-        this.Tg = tg;
-        this.SW = sw;
-        this.SX = sx;
-        this.Th = th;
-        this.SO = so;
-        this.Ti = ti;
-        this.Tj = tj;
-        this.Tk = tk;
-        this.Tl = tl;
+        this.ajT = ajT;
+        this.ajJ = ajJ;
+        this.ajK = ajK;
+        this.ajU = ajU;
+        this.ajB = ajB;
+        this.ajV = ajV;
+        this.ajW = ajW;
+        this.ajX = ajX;
+        this.ajY = ajY;
         this.mAlpha = mAlpha;
     }
     
@@ -81,9 +81,9 @@ public final class MarkerOptions implements SafeParcelable
         return this;
     }
     
-    public MarkerOptions anchor(final float sw, final float sx) {
-        this.SW = sw;
-        this.SX = sx;
+    public MarkerOptions anchor(final float ajJ, final float ajK) {
+        this.ajJ = ajJ;
+        this.ajK = ajK;
         return this;
     }
     
@@ -91,13 +91,13 @@ public final class MarkerOptions implements SafeParcelable
         return 0;
     }
     
-    public MarkerOptions draggable(final boolean th) {
-        this.Th = th;
+    public MarkerOptions draggable(final boolean ajU) {
+        this.ajU = ajU;
         return this;
     }
     
-    public MarkerOptions flat(final boolean ti) {
-        this.Ti = ti;
+    public MarkerOptions flat(final boolean ajV) {
+        this.ajV = ajV;
         return this;
     }
     
@@ -106,105 +106,105 @@ public final class MarkerOptions implements SafeParcelable
     }
     
     public float getAnchorU() {
-        return this.SW;
+        return this.ajJ;
     }
     
     public float getAnchorV() {
-        return this.SX;
+        return this.ajK;
     }
     
     public BitmapDescriptor getIcon() {
-        return this.Tg;
+        return this.ajT;
     }
     
     public float getInfoWindowAnchorU() {
-        return this.Tk;
+        return this.ajX;
     }
     
     public float getInfoWindowAnchorV() {
-        return this.Tl;
+        return this.ajY;
     }
     
     public LatLng getPosition() {
-        return this.Sn;
+        return this.aja;
     }
     
     public float getRotation() {
-        return this.Tj;
+        return this.ajW;
     }
     
     public String getSnippet() {
-        return this.Tf;
+        return this.ajS;
     }
     
     public String getTitle() {
-        return this.EB;
+        return this.No;
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
-    IBinder iE() {
-        if (this.Tg == null) {
-            return null;
-        }
-        return this.Tg.id().asBinder();
-    }
-    
-    public MarkerOptions icon(final BitmapDescriptor tg) {
-        this.Tg = tg;
+    public MarkerOptions icon(final BitmapDescriptor ajT) {
+        this.ajT = ajT;
         return this;
     }
     
-    public MarkerOptions infoWindowAnchor(final float tk, final float tl) {
-        this.Tk = tk;
-        this.Tl = tl;
+    public MarkerOptions infoWindowAnchor(final float ajX, final float ajY) {
+        this.ajX = ajX;
+        this.ajY = ajY;
         return this;
     }
     
     public boolean isDraggable() {
-        return this.Th;
+        return this.ajU;
     }
     
     public boolean isFlat() {
-        return this.Ti;
+        return this.ajV;
     }
     
     public boolean isVisible() {
-        return this.SO;
+        return this.ajB;
     }
     
-    public MarkerOptions position(final LatLng sn) {
-        this.Sn = sn;
+    IBinder mN() {
+        if (this.ajT == null) {
+            return null;
+        }
+        return this.ajT.mm().asBinder();
+    }
+    
+    public MarkerOptions position(final LatLng aja) {
+        this.aja = aja;
         return this;
     }
     
-    public MarkerOptions rotation(final float tj) {
-        this.Tj = tj;
+    public MarkerOptions rotation(final float ajW) {
+        this.ajW = ajW;
         return this;
     }
     
-    public MarkerOptions snippet(final String tf) {
-        this.Tf = tf;
+    public MarkerOptions snippet(final String ajS) {
+        this.ajS = ajS;
         return this;
     }
     
-    public MarkerOptions title(final String eb) {
-        this.EB = eb;
+    public MarkerOptions title(final String no) {
+        this.No = no;
         return this;
     }
     
-    public MarkerOptions visible(final boolean so) {
-        this.SO = so;
+    public MarkerOptions visible(final boolean ajB) {
+        this.ajB = ajB;
         return this;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (v.iB()) {
-            f.a(this, parcel, n);
+        if (v.mK()) {
+            l.a(this, parcel, n);
             return;
         }
-        MarkerOptionsCreator.a(this, parcel, n);
+        k.a(this, parcel, n);
     }
 }

@@ -4,9 +4,11 @@
 
 package com.google.android.gms.tagmanager;
 
-import java.util.List;
+import com.google.android.gms.internal.d;
 
 interface ck
 {
-    void b(final List<cq.a> p0, final List<String> p1);
+    cm cE(final String p0);
+    
+    void d(final d.a p0);
 }

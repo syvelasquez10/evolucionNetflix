@@ -6,25 +6,24 @@ package com.google.android.gms.drive.metadata.internal;
 
 import com.google.android.gms.common.data.DataHolder;
 import android.os.Bundle;
-import java.util.Date;
-import com.google.android.gms.drive.metadata.c;
+import com.google.android.gms.drive.metadata.a;
 
-public class b extends c<Date>
+public class b extends a<Boolean>
 {
     public b(final String s, final int n) {
         super(s, n);
     }
     
     @Override
-    protected void a(final Bundle bundle, final Date date) {
-        bundle.putLong(this.getName(), date.getTime());
+    protected void a(final Bundle bundle, final Boolean b) {
+        bundle.putBoolean(this.getName(), (boolean)b);
     }
     
-    protected Date e(final DataHolder dataHolder, final int n, final int n2) {
-        return new Date(dataHolder.getLong(this.getName(), n, n2));
+    protected Boolean e(final DataHolder dataHolder, final int n, final int n2) {
+        return dataHolder.d(this.getName(), n, n2);
     }
     
-    protected Date g(final Bundle bundle) {
-        return new Date(bundle.getLong(this.getName()));
+    protected Boolean h(final Bundle bundle) {
+        return bundle.getBoolean(this.getName());
     }
 }

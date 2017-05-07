@@ -5,7 +5,7 @@
 package com.google.android.gms.location;
 
 import android.os.SystemClock;
-import com.google.android.gms.internal.hd;
+import com.google.android.gms.internal.mb;
 
 public interface Geofence
 {
@@ -18,81 +18,81 @@ public interface Geofence
     
     public static final class Builder
     {
-        private String Jo;
-        private int NU;
-        private long NV;
-        private short NW;
-        private double NX;
-        private double NY;
-        private float NZ;
-        private int Oa;
-        private int Ob;
+        private String Xr;
+        private int adW;
+        private long adX;
+        private short adY;
+        private double adZ;
+        private double aea;
+        private float aeb;
+        private int aec;
+        private int aed;
         
         public Builder() {
-            this.Jo = null;
-            this.NU = 0;
-            this.NV = Long.MIN_VALUE;
-            this.NW = -1;
-            this.Oa = 0;
-            this.Ob = -1;
+            this.Xr = null;
+            this.adW = 0;
+            this.adX = Long.MIN_VALUE;
+            this.adY = -1;
+            this.aec = 0;
+            this.aed = -1;
         }
         
         public Geofence build() {
-            if (this.Jo == null) {
+            if (this.Xr == null) {
                 throw new IllegalArgumentException("Request ID not set.");
             }
-            if (this.NU == 0) {
+            if (this.adW == 0) {
                 throw new IllegalArgumentException("Transitions types not set.");
             }
-            if ((this.NU & 0x4) != 0x0 && this.Ob < 0) {
+            if ((this.adW & 0x4) != 0x0 && this.aed < 0) {
                 throw new IllegalArgumentException("Non-negative loitering delay needs to be set when transition types include GEOFENCE_TRANSITION_DWELLING.");
             }
-            if (this.NV == Long.MIN_VALUE) {
+            if (this.adX == Long.MIN_VALUE) {
                 throw new IllegalArgumentException("Expiration not set.");
             }
-            if (this.NW == -1) {
+            if (this.adY == -1) {
                 throw new IllegalArgumentException("Geofence region not set.");
             }
-            if (this.Oa < 0) {
+            if (this.aec < 0) {
                 throw new IllegalArgumentException("Notification responsiveness should be nonnegative.");
             }
-            return new hd(this.Jo, this.NU, (short)1, this.NX, this.NY, this.NZ, this.NV, this.Oa, this.Ob);
+            return new mb(this.Xr, this.adW, (short)1, this.adZ, this.aea, this.aeb, this.adX, this.aec, this.aed);
         }
         
-        public Builder setCircularRegion(final double nx, final double ny, final float nz) {
-            this.NW = 1;
-            this.NX = nx;
-            this.NY = ny;
-            this.NZ = nz;
+        public Builder setCircularRegion(final double adZ, final double aea, final float aeb) {
+            this.adY = 1;
+            this.adZ = adZ;
+            this.aea = aea;
+            this.aeb = aeb;
             return this;
         }
         
         public Builder setExpirationDuration(final long n) {
             if (n < 0L) {
-                this.NV = -1L;
+                this.adX = -1L;
                 return this;
             }
-            this.NV = SystemClock.elapsedRealtime() + n;
+            this.adX = SystemClock.elapsedRealtime() + n;
             return this;
         }
         
-        public Builder setLoiteringDelay(final int ob) {
-            this.Ob = ob;
+        public Builder setLoiteringDelay(final int aed) {
+            this.aed = aed;
             return this;
         }
         
-        public Builder setNotificationResponsiveness(final int oa) {
-            this.Oa = oa;
+        public Builder setNotificationResponsiveness(final int aec) {
+            this.aec = aec;
             return this;
         }
         
-        public Builder setRequestId(final String jo) {
-            this.Jo = jo;
+        public Builder setRequestId(final String xr) {
+            this.Xr = xr;
             return this;
         }
         
-        public Builder setTransitionTypes(final int nu) {
-            this.NU = nu;
+        public Builder setTransitionTypes(final int adW) {
+            this.adW = adW;
             return this;
         }
     }

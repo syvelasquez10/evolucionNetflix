@@ -17,11 +17,14 @@ import android.widget.ScrollView;
 import com.netflix.mediaclient.android.widget.StaticGridView;
 import java.util.ArrayList;
 import java.util.List;
-import android.graphics.Paint;
 import com.netflix.mediaclient.Log;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.graphics.Point;
+import android.graphics.Paint;
+import android.graphics.Canvas;
+import android.graphics.Bitmap$Config;
+import android.graphics.Bitmap;
 import android.view.View$OnClickListener;
 import android.widget.Toast;
 import android.view.MenuItem;
@@ -87,7 +90,7 @@ public class ViewUtils
     
     public static View createActionBarDummyView(final NetflixActivity netflixActivity) {
         final View view = new View((Context)netflixActivity);
-        view.setId(2131165241);
+        view.setId(2131165244);
         view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, netflixActivity.getActionBarHeight()));
         return view;
     }
@@ -135,6 +138,15 @@ public class ViewUtils
                 Toast.makeText((Context)activity, (CharSequence)sb.toString(), 0).show();
             }
         };
+    }
+    
+    public static Bitmap createSquaredBitmap(final Bitmap bitmap) {
+        final int max = Math.max(bitmap.getWidth(), bitmap.getHeight());
+        final Bitmap bitmap2 = Bitmap.createBitmap(max, max, Bitmap$Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bitmap2);
+        canvas.drawColor(0);
+        canvas.drawBitmap(bitmap, (float)((max - bitmap.getWidth()) / 2), (float)((max - bitmap.getHeight()) / 2), (Paint)null);
+        return bitmap2;
     }
     
     public static Point getDisplaySize(final Activity activity) {

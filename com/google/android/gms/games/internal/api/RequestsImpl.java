@@ -5,6 +5,7 @@
 package com.google.android.gms.games.internal.api;
 
 import java.util.Set;
+import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.request.GameRequestBuffer;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.Status;
@@ -14,7 +15,7 @@ import com.google.android.gms.games.Games;
 import android.content.Intent;
 import com.google.android.gms.games.request.GameRequest;
 import android.os.Bundle;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
 import com.google.android.gms.games.internal.GamesClientImpl;
 import com.google.android.gms.common.api.Api;
@@ -44,7 +45,7 @@ public final class RequestsImpl implements Requests
         }
         return googleApiClient.b((PendingResult<UpdateRequestsResult>)new UpdateRequestsImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.b((d<UpdateRequestsResult>)this, array);
+                gamesClientImpl.b((BaseImplementation.b<UpdateRequestsResult>)this, array);
             }
         });
     }
@@ -67,7 +68,7 @@ public final class RequestsImpl implements Requests
         }
         return googleApiClient.b((PendingResult<UpdateRequestsResult>)new UpdateRequestsImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.c((d<UpdateRequestsResult>)this, array);
+                gamesClientImpl.c((BaseImplementation.b<UpdateRequestsResult>)this, array);
             }
         });
     }
@@ -95,17 +96,17 @@ public final class RequestsImpl implements Requests
     
     @Override
     public Intent getInboxIntent(final GoogleApiClient googleApiClient) {
-        return Games.c(googleApiClient).gB();
+        return Games.c(googleApiClient).ko();
     }
     
     @Override
     public int getMaxLifetimeDays(final GoogleApiClient googleApiClient) {
-        return Games.c(googleApiClient).gD();
+        return Games.c(googleApiClient).kq();
     }
     
     @Override
     public int getMaxPayloadSize(final GoogleApiClient googleApiClient) {
-        return Games.c(googleApiClient).gC();
+        return Games.c(googleApiClient).kp();
     }
     
     @Override
@@ -117,7 +118,7 @@ public final class RequestsImpl implements Requests
     public PendingResult<LoadRequestsResult> loadRequests(final GoogleApiClient googleApiClient, final int n, final int n2, final int n3) {
         return googleApiClient.a((PendingResult<LoadRequestsResult>)new LoadRequestsImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.a((d<LoadRequestsResult>)this, n, n2, n3);
+                gamesClientImpl.a((BaseImplementation.b<LoadRequestsResult>)this, n, n2, n3);
             }
         });
     }
@@ -129,12 +130,12 @@ public final class RequestsImpl implements Requests
     
     @Override
     public void unregisterRequestListener(final GoogleApiClient googleApiClient) {
-        Games.c(googleApiClient).gv();
+        Games.c(googleApiClient).ki();
     }
     
     private abstract static class LoadRequestSummariesImpl extends BaseGamesApiMethodImpl<LoadRequestSummariesResult>
     {
-        public LoadRequestSummariesResult N(final Status status) {
+        public LoadRequestSummariesResult ak(final Status status) {
             return new LoadRequestSummariesResult() {
                 @Override
                 public Status getStatus() {
@@ -150,11 +151,11 @@ public final class RequestsImpl implements Requests
     
     private abstract static class LoadRequestsImpl extends BaseGamesApiMethodImpl<LoadRequestsResult>
     {
-        public LoadRequestsResult O(final Status status) {
+        public LoadRequestsResult al(final Status status) {
             return new LoadRequestsResult() {
                 @Override
                 public GameRequestBuffer getRequests(final int n) {
-                    return null;
+                    return new GameRequestBuffer(DataHolder.as(status.getStatusCode()));
                 }
                 
                 @Override
@@ -171,7 +172,7 @@ public final class RequestsImpl implements Requests
     
     private abstract static class SendRequestImpl extends BaseGamesApiMethodImpl<SendRequestResult>
     {
-        public SendRequestResult P(final Status status) {
+        public SendRequestResult am(final Status status) {
             return new SendRequestResult() {
                 @Override
                 public Status getStatus() {
@@ -183,7 +184,7 @@ public final class RequestsImpl implements Requests
     
     private abstract static class UpdateRequestsImpl extends BaseGamesApiMethodImpl<UpdateRequestsResult>
     {
-        public UpdateRequestsResult Q(final Status status) {
+        public UpdateRequestsResult an(final Status status) {
             return new UpdateRequestsResult() {
                 @Override
                 public Set<String> getRequestIds() {

@@ -106,12 +106,12 @@ public class NetflixActionBar
         this.systemActionBar.setDisplayShowTitleEnabled(true);
         this.systemActionBar.setDisplayUseLogoEnabled(true);
         this.systemActionBar.setHomeButtonEnabled(true);
-        this.systemActionBar.setBackgroundDrawable(activity.getResources().getDrawable(2130837596));
-        this.systemActionBar.setLogo(2131296304);
+        this.systemActionBar.setBackgroundDrawable(activity.getResources().getDrawable(2130837560));
+        this.systemActionBar.setLogo(2131296350);
         this.systemActionBar.setTitle((CharSequence)"");
         this.content = this.systemActionBar.getCustomView();
-        this.logo = (ImageView)this.content.findViewById(2131165283);
-        this.title = (TextView)this.content.findViewById(2131165284);
+        this.logo = (ImageView)this.content.findViewById(2131165285);
+        this.title = (TextView)this.content.findViewById(2131165286);
         this.fixBackgroundRepeat(this.content);
         this.setupFocusability();
         this.setLogoType(LogoType.FULL_SIZE);
@@ -153,7 +153,7 @@ public class NetflixActionBar
             actionBar.setDisplayShowHomeEnabled(false);
             if (!b || DeviceUtils.getScreenResolutionDpi(this.activity) >= 320) {
                 Log.v("NetflixActionBar", "Configuring action bar 'up' affordance for back behavior");
-                final View viewById = this.content.findViewById(2131165282);
+                final View viewById = this.content.findViewById(2131165284);
                 final ViewGroup$LayoutParams layoutParams = viewById.getLayoutParams();
                 final int actionBarHeight = this.activity.getActionBarHeight();
                 layoutParams.width = actionBarHeight;

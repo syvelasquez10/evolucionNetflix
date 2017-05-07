@@ -4,135 +4,311 @@
 
 package com.google.android.gms.internal;
 
-import android.content.res.TypedArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import android.text.TextUtils;
-import com.google.android.gms.R;
-import android.util.AttributeSet;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+import java.util.Iterator;
+import java.util.List;
 import android.content.Context;
-import com.google.android.gms.ads.AdSize;
+import android.os.Process;
+import android.app.ActivityManager$RunningAppProcessInfo;
+import android.os.PowerManager;
+import android.app.KeyguardManager;
+import android.app.ActivityManager;
+import android.webkit.ValueCallback;
+import android.webkit.WebView;
+import android.view.View;
+import android.app.Activity;
+import android.os.Bundle;
 
-public final class an
+@ez
+public class an extends Thread
 {
-    private final AdSize[] lW;
-    private final String lX;
+    private boolean mStarted;
+    private final Object mw;
+    private final int nf;
+    private final int nh;
+    private boolean ns;
+    private boolean nt;
+    private final am nu;
+    private final al nv;
+    private final ey nw;
+    private final int nx;
+    private final int ny;
+    private final int nz;
     
-    public an(final Context context, final AttributeSet set) {
-        boolean b = true;
-        final TypedArray obtainAttributes = context.getResources().obtainAttributes(set, R.styleable.AdsAttrs);
-        final String string = obtainAttributes.getString(0);
-        final String string2 = obtainAttributes.getString(1);
-        boolean b2;
-        if (!TextUtils.isEmpty((CharSequence)string)) {
-            b2 = true;
-        }
-        else {
-            b2 = false;
-        }
-        if (TextUtils.isEmpty((CharSequence)string2)) {
-            b = false;
-        }
-        if (b2 && !b) {
-            this.lW = f(string);
-        }
-        else if (!b2 && b) {
-            this.lW = f(string2);
-        }
-        else {
-            if (b2 && b) {
-                throw new IllegalArgumentException("Either XML attribute \"adSize\" or XML attribute \"supportedAdSizes\" should be specified, but not both.");
+    public an(final am nu, final al nv, final Bundle bundle, final ey nw) {
+        this.mStarted = false;
+        this.ns = false;
+        this.nt = false;
+        this.nu = nu;
+        this.nv = nv;
+        this.nw = nw;
+        this.mw = new Object();
+        this.nf = bundle.getInt(bn.pe.getKey());
+        this.ny = bundle.getInt(bn.pf.getKey());
+        this.nh = bundle.getInt(bn.pg.getKey());
+        this.nz = bundle.getInt(bn.ph.getKey());
+        this.nx = bundle.getInt(bn.pi.getKey(), 10);
+        this.setName("ContentFetchTask");
+    }
+    
+    private void a(final Activity activity) {
+        if (activity != null) {
+            View viewById;
+            final View view = viewById = null;
+            if (activity.getWindow() != null) {
+                viewById = view;
+                if (activity.getWindow().getDecorView() != null) {
+                    viewById = activity.getWindow().getDecorView().findViewById(16908290);
+                }
             }
-            throw new IllegalArgumentException("Required XML attribute \"adSize\" was missing.");
-        }
-        this.lX = obtainAttributes.getString(2);
-        if (TextUtils.isEmpty((CharSequence)this.lX)) {
-            throw new IllegalArgumentException("Required XML attribute \"adUnitId\" was missing.");
+            if (viewById != null) {
+                this.g(viewById);
+            }
         }
     }
     
-    private static AdSize[] f(final String s) {
-        final String[] split = s.split("\\s*,\\s*");
-        final AdSize[] array = new AdSize[split.length];
+    private boolean a(final WebView webView, final ak ak) {
+        if (!kc.hI()) {
+            return false;
+        }
+        ak.aR();
+        webView.post((Runnable)new Runnable() {
+            ValueCallback<String> nC = new ValueCallback<String>() {
+                public void k(final String s) {
+                    an.this.a(ak, webView, s);
+                }
+            };
+            
+            @Override
+            public void run() {
+                if (webView.getSettings().getJavaScriptEnabled()) {
+                    webView.evaluateJavascript("(function() { return  {text:document.body.innerText}})();", (ValueCallback)this.nC);
+                }
+            }
+        });
+        return true;
+    }
+    
+    private boolean aW() {
+        try {
+            final Context context = this.nu.getContext();
+            if (context == null) {
+                return false;
+            }
+            final ActivityManager activityManager = (ActivityManager)context.getSystemService("activity");
+            final KeyguardManager keyguardManager = (KeyguardManager)context.getSystemService("keyguard");
+            final PowerManager powerManager = (PowerManager)context.getSystemService("power");
+            if (activityManager != null && keyguardManager != null) {
+                if (powerManager != null) {
+                    final List runningAppProcesses = activityManager.getRunningAppProcesses();
+                    if (runningAppProcesses == null) {
+                        return false;
+                    }
+                    for (final ActivityManager$RunningAppProcessInfo activityManager$RunningAppProcessInfo : runningAppProcesses) {
+                        if (Process.myPid() == activityManager$RunningAppProcessInfo.pid) {
+                            if (activityManager$RunningAppProcessInfo.importance == 100 && !keyguardManager.inKeyguardRestrictedInputMode() && powerManager.isScreenOn()) {
+                                return true;
+                            }
+                            break;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        catch (Throwable t) {
+            return false;
+        }
+        return false;
+    }
+    
+    a a(final View view, final ak ak) {
         int i = 0;
-    Label_0121_Outer:
-        while (i < split.length) {
-            final String trim = split[i].trim();
-            while (true) {
-                Label_0179: {
-                    if (!trim.matches("^(\\d+|FULL_WIDTH)\\s*[xX]\\s*(\\d+|AUTO_HEIGHT)$")) {
-                        break Label_0179;
-                    }
-                    final String[] split2 = trim.split("[xX]");
-                    split2[0] = split2[0].trim();
-                    split2[1] = split2[1].trim();
-                    try {
-                        int int1;
-                        if ("FULL_WIDTH".equals(split2[0])) {
-                            int1 = -1;
-                        }
-                        else {
-                            int1 = Integer.parseInt(split2[0]);
-                        }
-                        int int2;
-                        if ("AUTO_HEIGHT".equals(split2[1])) {
-                            int2 = -2;
-                        }
-                        else {
-                            int2 = Integer.parseInt(split2[1]);
-                        }
-                        array[i] = new AdSize(int1, int2);
-                        ++i;
-                        continue Label_0121_Outer;
-                    }
-                    catch (NumberFormatException ex) {
-                        throw new IllegalArgumentException("Could not parse XML attribute \"adSize\": " + trim);
-                    }
-                }
-                if ("BANNER".equals(trim)) {
-                    array[i] = AdSize.BANNER;
-                    continue;
-                }
-                if ("LARGE_BANNER".equals(trim)) {
-                    array[i] = AdSize.LARGE_BANNER;
-                    continue;
-                }
-                if ("FULL_BANNER".equals(trim)) {
-                    array[i] = AdSize.FULL_BANNER;
-                    continue;
-                }
-                if ("LEADERBOARD".equals(trim)) {
-                    array[i] = AdSize.LEADERBOARD;
-                    continue;
-                }
-                if ("MEDIUM_RECTANGLE".equals(trim)) {
-                    array[i] = AdSize.MEDIUM_RECTANGLE;
-                    continue;
-                }
-                if ("SMART_BANNER".equals(trim)) {
-                    array[i] = AdSize.SMART_BANNER;
-                    continue;
-                }
-                if ("WIDE_SKYSCRAPER".equals(trim)) {
-                    array[i] = AdSize.WIDE_SKYSCRAPER;
-                    continue;
-                }
-                break;
+        if (view == null) {
+            return new a(0, 0);
+        }
+        if (view instanceof TextView && !(view instanceof EditText)) {
+            ak.i(((TextView)view).getText().toString());
+            return new a(1, 0);
+        }
+        if (view instanceof WebView && !(view instanceof gv)) {
+            ak.aR();
+            if (this.a((WebView)view, ak)) {
+                return new a(0, 1);
             }
-            throw new IllegalArgumentException("Could not parse XML attribute \"adSize\": " + trim);
+            return new a(0, 0);
         }
-        if (array.length == 0) {
-            throw new IllegalArgumentException("Could not parse XML attribute \"adSize\": " + s);
+        else {
+            if (view instanceof ViewGroup) {
+                final ViewGroup viewGroup = (ViewGroup)view;
+                int n = 0;
+                int n2 = 0;
+                while (i < viewGroup.getChildCount()) {
+                    final a a = this.a(viewGroup.getChildAt(i), ak);
+                    n2 += a.nG;
+                    n += a.nH;
+                    ++i;
+                }
+                return new a(n2, n);
+            }
+            return new a(0, 0);
         }
-        return array;
     }
     
-    public AdSize[] e(final boolean b) {
-        if (!b && this.lW.length != 1) {
-            throw new IllegalArgumentException("The adSizes XML attribute is only allowed on PublisherAdViews.");
+    void a(final ak ak, final WebView webView, String optString) {
+        ak.aQ();
+        try {
+            if (!TextUtils.isEmpty((CharSequence)optString)) {
+                optString = new JSONObject(optString).optString("text");
+                if (!TextUtils.isEmpty((CharSequence)webView.getTitle())) {
+                    ak.h(webView.getTitle() + "\n" + optString);
+                }
+                else {
+                    ak.h(optString);
+                }
+            }
+            if (ak.aN()) {
+                this.nv.b(ak);
+            }
         }
-        return this.lW;
+        catch (JSONException ex) {
+            gs.S("Json string may be malformed.");
+        }
+        catch (Throwable t) {
+            gs.a("Failed to get webview content.", t);
+            this.nw.b(t);
+        }
     }
     
-    public String getAdUnitId() {
-        return this.lX;
+    public void aV() {
+        synchronized (this.mw) {
+            if (this.mStarted) {
+                gs.S("Content hash thread already started, quiting...");
+                return;
+            }
+            this.mStarted = true;
+            // monitorexit(this.mw)
+            this.start();
+        }
+    }
+    
+    public ak aX() {
+        return this.nv.aU();
+    }
+    
+    public void aY() {
+        synchronized (this.mw) {
+            this.ns = true;
+            gs.S("ContentFetchThread: paused, mPause = " + this.ns);
+        }
+    }
+    
+    public boolean aZ() {
+        return this.ns;
+    }
+    
+    boolean g(final View view) {
+        if (view == null) {
+            return false;
+        }
+        view.post((Runnable)new Runnable() {
+            @Override
+            public void run() {
+                an.this.h(view);
+            }
+        });
+        return true;
+    }
+    
+    void h(final View view) {
+        try {
+            final ak ak = new ak(this.nf, this.ny, this.nh, this.nz);
+            final a a = this.a(view, ak);
+            ak.aS();
+            if (a.nG == 0 && a.nH == 0) {
+                return;
+            }
+            if ((a.nH != 0 || ak.aT() != 0) && (a.nH != 0 || !this.nv.a(ak))) {
+                this.nv.c(ak);
+            }
+        }
+        catch (Exception ex) {
+            gs.b("Exception in fetchContentOnUIThread", ex);
+            this.nw.b(ex);
+        }
+    }
+    
+    @Override
+    public void run() {
+    Label_0051_Outer:
+        while (!this.nt) {
+            Label_0087: {
+                try {
+                    if (!this.aW()) {
+                        break Label_0087;
+                    }
+                    final Object o = this.nu.getActivity();
+                    if (o == null) {
+                        gs.S("ContentFetchThread: no activity");
+                        continue Label_0051_Outer;
+                    }
+                    break Label_0087;
+                }
+                catch (Throwable t) {
+                    gs.b("Error in ContentFetchTask", t);
+                    this.nw.b(t);
+                }
+            Label_0092_Outer:
+                while (true) {
+                    final Object o = this.mw;
+                    synchronized (o) {
+                        while (this.ns) {
+                            try {
+                                gs.S("ContentFetchTask: waiting");
+                                this.mw.wait();
+                            }
+                            catch (InterruptedException ex) {}
+                        }
+                        continue Label_0051_Outer;
+                        while (true) {
+                            Thread.sleep(this.nx * 1000);
+                            continue Label_0092_Outer;
+                            this.a((Activity)o);
+                            continue;
+                            gs.S("ContentFetchTask: sleeping");
+                            this.aY();
+                            continue;
+                        }
+                    }
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    
+    public void wakeup() {
+        synchronized (this.mw) {
+            this.ns = false;
+            this.mw.notifyAll();
+            gs.S("ContentFetchThread: wakeup");
+        }
+    }
+    
+    @ez
+    class a
+    {
+        final int nG;
+        final int nH;
+        
+        a(final int ng, final int nh) {
+            this.nG = ng;
+            this.nH = nh;
+        }
     }
 }

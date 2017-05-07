@@ -402,7 +402,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
                 return;
             }
             Log.w("ImageLoader", "Error loading bitmap for url: " + this.imgUrl);
-            ImageLoader.this.setDrawableResource(this.view, 2130837603);
+            ImageLoader.this.setDrawableResource(this.view, 2130837567);
         }
         
         @Override
@@ -452,7 +452,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         @Override
         protected void updateView(final ImageView imageView, final Bitmap bitmap) {
             if (bitmap == null) {
-                ImageLoader.this.setDrawableResource(imageView, 2130837603);
+                ImageLoader.this.setDrawableResource(imageView, 2130837567);
                 return;
             }
             AnimationUtils.setImageBitmapWithPropertyFade(imageView, bitmap);

@@ -23,12 +23,12 @@ public final class RealTimeMultiplayerImpl implements RealTimeMultiplayer
     
     @Override
     public void declineInvitation(final GoogleApiClient googleApiClient, final String s) {
-        Games.c(googleApiClient).m(s, 0);
+        Games.c(googleApiClient).p(s, 0);
     }
     
     @Override
     public void dismissInvitation(final GoogleApiClient googleApiClient, final String s) {
-        Games.c(googleApiClient).l(s, 0);
+        Games.c(googleApiClient).o(s, 0);
     }
     
     @Override
@@ -43,7 +43,7 @@ public final class RealTimeMultiplayerImpl implements RealTimeMultiplayer
     
     @Override
     public RealTimeSocket getSocketForParticipant(final GoogleApiClient googleApiClient, final String s, final String s2) {
-        return Games.c(googleApiClient).i(s, s2);
+        return Games.c(googleApiClient).t(s, s2);
     }
     
     @Override

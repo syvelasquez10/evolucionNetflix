@@ -10,18 +10,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class ConnectionInfo implements SafeParcelable
 {
     public static final ConnectionInfoCreator CREATOR;
-    private final String Is;
-    private final int It;
-    private final int xH;
+    private final int BR;
+    private final String Wf;
+    private final int Wg;
     
     static {
         CREATOR = new ConnectionInfoCreator();
     }
     
-    public ConnectionInfo(final int xh, final String is, final int it) {
-        this.xH = xh;
-        this.Is = is;
-        this.It = it;
+    public ConnectionInfo(final int br, final String wf, final int wg) {
+        this.BR = br;
+        this.Wf = wf;
+        this.Wg = wg;
     }
     
     public int describeContents() {
@@ -29,15 +29,15 @@ public class ConnectionInfo implements SafeParcelable
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
-    public String gi() {
-        return this.Is;
+    public String jU() {
+        return this.Wf;
     }
     
-    public int gj() {
-        return this.It;
+    public int jV() {
+        return this.Wg;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

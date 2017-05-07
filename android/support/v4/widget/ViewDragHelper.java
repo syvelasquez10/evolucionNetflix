@@ -526,18 +526,18 @@ public class ViewDragHelper
             if (n != 0 || n2 != 0) {
                 this.mCallback.onViewPositionChanged(this.mCapturedView, currX, currY, n, n2);
             }
-            boolean finished = computeScrollOffset;
+            boolean b2 = computeScrollOffset;
             if (computeScrollOffset) {
-                finished = computeScrollOffset;
+                b2 = computeScrollOffset;
                 if (currX == this.mScroller.getFinalX()) {
-                    finished = computeScrollOffset;
+                    b2 = computeScrollOffset;
                     if (currY == this.mScroller.getFinalY()) {
                         this.mScroller.abortAnimation();
-                        finished = this.mScroller.isFinished();
+                        b2 = false;
                     }
                 }
             }
-            if (!finished) {
+            if (!b2) {
                 if (b) {
                     this.mParentView.post(this.mSetIdleRunnable);
                 }
@@ -736,7 +736,7 @@ public class ViewDragHelper
         if (this.mDragState != mDragState) {
             this.mDragState = mDragState;
             this.mCallback.onViewDragStateChanged(mDragState);
-            if (mDragState == 0) {
+            if (this.mDragState == 0) {
                 this.mCapturedView = null;
             }
         }
@@ -817,12 +817,27 @@ public class ViewDragHelper
                     final float y3 = MotionEventCompat.getY(motionEvent, i);
                     final float n3 = x3 - this.mInitialMotionX[pointerId3];
                     final float n4 = y3 - this.mInitialMotionY[pointerId3];
-                    this.reportNewEdgeDrags(n3, n4, pointerId3);
-                    if (this.mDragState == 1) {
-                        break;
-                    }
                     final View topChildUnder3 = this.findTopChildUnder((int)x3, (int)y3);
-                    if (topChildUnder3 != null && this.checkTouchSlop(topChildUnder3, n3, n4) && this.tryCaptureViewForDrag(topChildUnder3, pointerId3)) {
+                    boolean b;
+                    if (topChildUnder3 != null && this.checkTouchSlop(topChildUnder3, n3, n4)) {
+                        b = true;
+                    }
+                    else {
+                        b = false;
+                    }
+                    if (b) {
+                        final int left = topChildUnder3.getLeft();
+                        final int clampViewPositionHorizontal = this.mCallback.clampViewPositionHorizontal(topChildUnder3, left + (int)n3, (int)n3);
+                        final int top = topChildUnder3.getTop();
+                        final int clampViewPositionVertical = this.mCallback.clampViewPositionVertical(topChildUnder3, top + (int)n4, (int)n4);
+                        final int viewHorizontalDragRange = this.mCallback.getViewHorizontalDragRange(topChildUnder3);
+                        final int viewVerticalDragRange = this.mCallback.getViewVerticalDragRange(topChildUnder3);
+                        if ((viewHorizontalDragRange == 0 || (viewHorizontalDragRange > 0 && clampViewPositionHorizontal == left)) && (viewVerticalDragRange == 0 || (viewVerticalDragRange > 0 && clampViewPositionVertical == top))) {
+                            break;
+                        }
+                    }
+                    this.reportNewEdgeDrags(n3, n4, pointerId3);
+                    if (this.mDragState == 1 || (b && this.tryCaptureViewForDrag(topChildUnder3, pointerId3))) {
                         break;
                     }
                 }
@@ -845,7 +860,11 @@ public class ViewDragHelper
     public boolean smoothSlideViewTo(final View mCapturedView, final int n, final int n2) {
         this.mCapturedView = mCapturedView;
         this.mActivePointerId = -1;
-        return this.forceSettleCapturedViewAt(n, n2, 0, 0);
+        final boolean forceSettleCapturedView = this.forceSettleCapturedViewAt(n, n2, 0, 0);
+        if (!forceSettleCapturedView && this.mDragState == 0 && this.mCapturedView != null) {
+            this.mCapturedView = null;
+        }
+        return forceSettleCapturedView;
     }
     
     boolean tryCaptureViewForDrag(final View view, final int mActivePointerId) {

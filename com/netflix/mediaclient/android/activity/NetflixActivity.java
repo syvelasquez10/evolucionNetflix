@@ -260,7 +260,7 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
     }
     
     private void addAboutTool(final Menu menu) {
-        menu.add(2131493003).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
+        menu.add(2131493008).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
             public boolean onMenuItemClick(final MenuItem menuItem) {
                 NetflixActivity.this.startActivity(AboutActivity.createStartIntent(NetflixActivity.this));
                 return true;
@@ -423,6 +423,7 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             if (!b) {
                 break Label_0098;
             }
+        Block_10_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable("NetflixActivity", 3)) {
@@ -430,18 +431,18 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
                     }
                     this.displayDialog(dialog);
                     return;
-                    // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                    // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                     while (true) {
-                        Block_10: {
-                            break Block_10;
+                        while (true) {
                             this.displayDialog(dialog);
                             return;
+                            Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                            continue Block_10_Outer;
                         }
-                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
                         continue;
                     }
                 }
+                // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
+                // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -584,14 +585,14 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
         }
         switch (status.getStatusCode()) {
             default: {
-                this.displayErrorDialog(this.getString(2131493273), status.getStatusCode().getValue());
+                this.displayErrorDialog(this.getString(2131493278), status.getStatusCode().getValue());
             }
             case NRD_LOGIN_ACTIONID_3: {
                 this.displayUserAgentDialog(message, null, false);
             }
             case NRD_LOGIN_ACTIONID_4:
             case NRD_LOGIN_ACTIONID_8: {
-                this.displayUserAgentDialog(String.format("%s ( %d )", this.getString(2131493278), status.getStatusCode().getValue()), new Runnable() {
+                this.displayUserAgentDialog(String.format("%s ( %d )", this.getString(2131493283), status.getStatusCode().getValue()), new Runnable() {
                     @Override
                     public void run() {
                         Log.d("NetflixActivity", "Restarting app, time: " + System.nanoTime());
@@ -611,12 +612,12 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             case NRD_LOGIN_ACTIONID_10:
             case NRD_LOGIN_ACTIONID_11:
             case NRD_LOGIN_ACTIONID_12: {
-                this.displayUserAgentDialog(String.format("%s ( %d )", this.getString(2131493269), status.getStatusCode().getValue()), null, false);
+                this.displayUserAgentDialog(String.format("%s ( %d )", this.getString(2131493274), status.getStatusCode().getValue()), null, false);
             }
             case HTTP_SSL_DATE_TIME_ERROR:
             case HTTP_SSL_ERROR:
             case HTTP_SSL_NO_VALID_CERT: {
-                this.displayErrorDialog(this.getString(2131493272), status.getStatusCode().getValue());
+                this.displayErrorDialog(this.getString(2131493277), status.getStatusCode().getValue());
             }
         }
     }
@@ -704,7 +705,7 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             this.setRequestedOrientation(1);
         }
         if (this.shouldShowKidsBackground()) {
-            this.getWindow().setBackgroundDrawableResource(2130837739);
+            this.getWindow().setBackgroundDrawableResource(2130837705);
         }
         if (bundle == null || !bundle.getBoolean("mini_player_expanded", false)) {
             shouldExpandMiniPlayer = false;
@@ -727,13 +728,13 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             new DebugMenuItems("NetflixActivity", this).addItems(menu2);
         }
         if (this.showSettingsInMenu()) {
-            menu.add(2131493137).setIcon(2130837728).setIntent(SettingsActivity.createStartIntent(this));
+            menu.add(2131493142).setIcon(2130837694).setIntent(SettingsActivity.createStartIntent(this));
         }
         if (this.showAboutInMenu()) {
             this.addAboutTool(menu);
         }
         if (this.showSignOutInMenu()) {
-            menu.add(2131493185).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
+            menu.add(2131493190).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
                     LogoutActivity.showLogoutDialog(NetflixActivity.this);
                     return true;
@@ -847,12 +848,12 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
     protected void onStart() {
         super.onStart();
         LogUtils.reportNavigationActionStarted((Context)this, null, this.getUiScreen());
-        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131165475);
-        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131165385);
+        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131165477);
+        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131165387);
         if (this.slidingPanel != null) {
             this.slidingPanel.setDragView(this.mdxFrag.getSlidingPanelDragView());
-            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131361844));
-            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837882));
+            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131361870));
+            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837848));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);

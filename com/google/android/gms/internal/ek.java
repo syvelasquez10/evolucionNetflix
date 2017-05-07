@@ -7,104 +7,93 @@ package com.google.android.gms.internal;
 import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
+import android.content.Intent;
 import android.os.RemoteException;
 import android.os.IInterface;
 
 public interface ek extends IInterface
 {
-    void a(final ej p0) throws RemoteException;
+    void finishPurchase() throws RemoteException;
     
-    void a(final ej p0, final int p1) throws RemoteException;
+    String getProductId() throws RemoteException;
     
-    void a(final ej p0, final int p1, final String p2, final byte[] p3) throws RemoteException;
+    Intent getPurchaseData() throws RemoteException;
     
-    void a(final ej p0, final int p1, final byte[] p2) throws RemoteException;
+    int getResultCode() throws RemoteException;
     
-    void b(final ej p0) throws RemoteException;
-    
-    void b(final ej p0, final int p1) throws RemoteException;
-    
-    void c(final ej p0) throws RemoteException;
-    
-    int dv() throws RemoteException;
-    
-    int dw() throws RemoteException;
+    boolean isVerified() throws RemoteException;
     
     public abstract static class a extends Binder implements ek
     {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+        }
+        
         public static ek w(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.appstate.internal.IAppStateService");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
             if (queryLocalInterface != null && queryLocalInterface instanceof ek) {
                 return (ek)queryLocalInterface;
             }
             return new ek.a.a(binder);
         }
         
-        public boolean onTransact(int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
+        public IBinder asBinder() {
+            return (IBinder)this;
+        }
+        
+        public boolean onTransact(int resultCode, final Parcel parcel, final Parcel parcel2, final int n) throws RemoteException {
+            final int n2 = 0;
+            switch (resultCode) {
                 default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
+                    return super.onTransact(resultCode, parcel, parcel2, n);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.appstate.internal.IAppStateService");
+                    parcel2.writeString("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
                     return true;
                 }
-                case 5001: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    n = this.dv();
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    final String productId = this.getProductId();
                     parcel2.writeNoException();
-                    parcel2.writeInt(n);
+                    parcel2.writeString(productId);
                     return true;
                 }
-                case 5002: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    n = this.dw();
+                case 2: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    final Intent purchaseData = this.getPurchaseData();
                     parcel2.writeNoException();
-                    parcel2.writeInt(n);
+                    if (purchaseData != null) {
+                        parcel2.writeInt(1);
+                        purchaseData.writeToParcel(parcel2, 1);
+                        return true;
+                    }
+                    parcel2.writeInt(0);
                     return true;
                 }
-                case 5003: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.a(ej.a.v(parcel.readStrongBinder()), parcel.readInt(), parcel.createByteArray());
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    resultCode = this.getResultCode();
                     parcel2.writeNoException();
+                    parcel2.writeInt(resultCode);
                     return true;
                 }
-                case 5004: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.a(ej.a.v(parcel.readStrongBinder()), parcel.readInt());
+                case 4: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    final boolean verified = this.isVerified();
                     parcel2.writeNoException();
+                    resultCode = n2;
+                    if (verified) {
+                        resultCode = 1;
+                    }
+                    parcel2.writeInt(resultCode);
                     return true;
                 }
-                case 5005: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.a(ej.a.v(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 5006: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.a(ej.a.v(parcel.readStrongBinder()), parcel.readInt(), parcel.readString(), parcel.createByteArray());
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 5007: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.b(ej.a.v(parcel.readStrongBinder()), parcel.readInt());
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 5008: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.b(ej.a.v(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 5009: {
-                    parcel.enforceInterface("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.c(ej.a.v(parcel.readStrongBinder()));
+                case 5: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    this.finishPurchase();
                     parcel2.writeNoException();
                     return true;
                 }
@@ -113,129 +102,23 @@ public interface ek extends IInterface
         
         private static class a implements ek
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            @Override
-            public void a(final ej ej) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    IBinder binder;
-                    if (ej != null) {
-                        binder = ej.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(5005, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void a(final ej ej, final int n) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    IBinder binder;
-                    if (ej != null) {
-                        binder = ej.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    obtain.writeInt(n);
-                    this.kn.transact(5004, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void a(final ej ej, final int n, final String s, final byte[] array) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    IBinder binder;
-                    if (ej != null) {
-                        binder = ej.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    obtain.writeInt(n);
-                    obtain.writeString(s);
-                    obtain.writeByteArray(array);
-                    this.kn.transact(5006, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void a(final ej ej, final int n, final byte[] array) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    IBinder binder;
-                    if (ej != null) {
-                        binder = ej.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    obtain.writeInt(n);
-                    obtain.writeByteArray(array);
-                    this.kn.transact(5003, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
-            public void b(final ej ej) throws RemoteException {
+            public void finishPurchase() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    IBinder binder;
-                    if (ej != null) {
-                        binder = ej.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(5008, obtain, obtain2, 0);
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    this.lb.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -245,22 +128,14 @@ public interface ek extends IInterface
             }
             
             @Override
-            public void b(final ej ej, final int n) throws RemoteException {
+            public String getProductId() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    IBinder binder;
-                    if (ej != null) {
-                        binder = ej.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    obtain.writeInt(n);
-                    this.kn.transact(5007, obtain, obtain2, 0);
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
+                    return obtain2.readString();
                 }
                 finally {
                     obtain2.recycle();
@@ -269,21 +144,21 @@ public interface ek extends IInterface
             }
             
             @Override
-            public void c(final ej ej) throws RemoteException {
+            public Intent getPurchaseData() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    IBinder binder;
-                    if (ej != null) {
-                        binder = ej.asBinder();
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    this.lb.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                    Intent intent;
+                    if (obtain2.readInt() != 0) {
+                        intent = (Intent)Intent.CREATOR.createFromParcel(obtain2);
                     }
                     else {
-                        binder = null;
+                        intent = null;
                     }
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(5009, obtain, obtain2, 0);
-                    obtain2.readException();
+                    return intent;
                 }
                 finally {
                     obtain2.recycle();
@@ -292,12 +167,12 @@ public interface ek extends IInterface
             }
             
             @Override
-            public int dv() throws RemoteException {
+            public int getResultCode() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.kn.transact(5001, obtain, obtain2, 0);
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    this.lb.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -308,14 +183,18 @@ public interface ek extends IInterface
             }
             
             @Override
-            public int dw() throws RemoteException {
+            public boolean isVerified() throws RemoteException {
+                boolean b = false;
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken("com.google.android.gms.appstate.internal.IAppStateService");
-                    this.kn.transact(5002, obtain, obtain2, 0);
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseResult");
+                    this.lb.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
-                    return obtain2.readInt();
+                    if (obtain2.readInt() != 0) {
+                        b = true;
+                    }
+                    return b;
                 }
                 finally {
                     obtain2.recycle();

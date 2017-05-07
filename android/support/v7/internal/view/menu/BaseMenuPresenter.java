@@ -5,6 +5,7 @@
 package android.support.v7.internal.view.menu;
 
 import java.util.ArrayList;
+import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup;
 import android.view.View;
 import android.view.LayoutInflater;
@@ -62,6 +63,10 @@ public abstract class BaseMenuPresenter implements MenuPresenter
     @Override
     public boolean flagActionItems() {
         return false;
+    }
+    
+    public Callback getCallback() {
+        return this.mCallback;
     }
     
     @Override
@@ -152,6 +157,7 @@ public abstract class BaseMenuPresenter implements MenuPresenter
                         final View itemView = this.getItemView(menuItemImpl, child, viewGroup);
                         if (menuItemImpl != itemData) {
                             itemView.setPressed(false);
+                            ViewCompat.jumpDrawablesToCurrentState(itemView);
                         }
                         if (itemView != child) {
                             this.addItemView(itemView, n);

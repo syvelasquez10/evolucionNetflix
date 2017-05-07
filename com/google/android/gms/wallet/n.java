@@ -4,54 +4,62 @@
 
 package com.google.android.gms.wallet;
 
+import com.google.android.gms.wallet.wobs.CommonWalletObject;
 import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
 public class n implements Parcelable$Creator<OfferWalletObject>
 {
-    static void a(final OfferWalletObject offerWalletObject, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
+    static void a(final OfferWalletObject offerWalletObject, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
         b.c(parcel, 1, offerWalletObject.getVersionCode());
-        b.a(parcel, 2, offerWalletObject.eC, false);
-        b.a(parcel, 3, offerWalletObject.acj, false);
-        b.F(parcel, p3);
+        b.a(parcel, 2, offerWalletObject.fl, false);
+        b.a(parcel, 3, offerWalletObject.ats, false);
+        b.a(parcel, 4, (Parcelable)offerWalletObject.att, n, false);
+        b.H(parcel, d);
     }
     
-    public OfferWalletObject bj(final Parcel parcel) {
-        String n = null;
-        final int o = a.o(parcel);
+    public OfferWalletObject dz(final Parcel parcel) {
+        CommonWalletObject commonWalletObject = null;
+        final int c = a.C(parcel);
         int g = 0;
-        String n2 = null;
-        while (parcel.dataPosition() < o) {
-            final int n3 = a.n(parcel);
-            switch (a.R(n3)) {
+        String o = null;
+        String o2 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n3);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n3);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n2 = a.n(parcel, n3);
+                    o2 = a.o(parcel, b);
                     continue;
                 }
                 case 3: {
-                    n = a.n(parcel, n3);
+                    o = a.o(parcel, b);
+                    continue;
+                }
+                case 4: {
+                    commonWalletObject = a.a(parcel, b, CommonWalletObject.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new OfferWalletObject(g, n2, n);
+        return new OfferWalletObject(g, o2, o, commonWalletObject);
     }
     
-    public OfferWalletObject[] cv(final int n) {
+    public OfferWalletObject[] fz(final int n) {
         return new OfferWalletObject[n];
     }
 }

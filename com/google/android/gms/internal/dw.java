@@ -4,59 +4,63 @@
 
 package com.google.android.gms.internal;
 
-import android.util.Log;
+import android.os.IBinder;
+import android.os.Bundle;
+import android.content.Context;
 
-public final class dw
+@ez
+public class dw
 {
-    public static void a(final String s, final Throwable t) {
-        if (n(3)) {
-            Log.d("Ads", s, t);
+    private final Context mContext;
+    private Object sk;
+    
+    public dw(final Context mContext) {
+        this.mContext = mContext;
+    }
+    
+    public Bundle a(final String s, final String s2, final String s3) {
+        try {
+            final Class<?> loadClass = this.mContext.getClassLoader().loadClass("com.android.vending.billing.IInAppBillingService");
+            return (Bundle)loadClass.getDeclaredMethod("getBuyIntent", Integer.TYPE, String.class, String.class, String.class, String.class).invoke(loadClass.cast(this.sk), 3, s, s2, "inapp", s3);
+        }
+        catch (Exception ex) {
+            gs.d("IInAppBillingService is not available, please add com.android.vending.billing.IInAppBillingService to project.", ex);
+            return null;
         }
     }
     
-    public static void b(final String s, final Throwable t) {
-        if (n(6)) {
-            Log.e("Ads", s, t);
+    public int c(final String s, final String s2) {
+        try {
+            final Class<?> loadClass = this.mContext.getClassLoader().loadClass("com.android.vending.billing.IInAppBillingService");
+            return (int)loadClass.getDeclaredMethod("consumePurchase", Integer.TYPE, String.class, String.class).invoke(loadClass.cast(this.sk), 3, s, s2);
+        }
+        catch (Exception ex) {
+            gs.d("IInAppBillingService is not available, please add com.android.vending.billing.IInAppBillingService to project.", ex);
+            return 5;
         }
     }
     
-    public static void c(final String s, final Throwable t) {
-        if (n(5)) {
-            Log.w("Ads", s, t);
+    public Bundle d(final String s, final String s2) {
+        try {
+            final Class<?> loadClass = this.mContext.getClassLoader().loadClass("com.android.vending.billing.IInAppBillingService");
+            return (Bundle)loadClass.getDeclaredMethod("getPurchases", Integer.TYPE, String.class, String.class, String.class).invoke(loadClass.cast(this.sk), 3, s, "inapp", s2);
+        }
+        catch (Exception ex) {
+            gs.d("IInAppBillingService is not available, please add com.android.vending.billing.IInAppBillingService to project.", ex);
+            return null;
         }
     }
     
-    public static boolean n(final int n) {
-        return (n >= 5 || Log.isLoggable("Ads", n)) && n != 2;
+    public void destroy() {
+        this.sk = null;
     }
     
-    public static void v(final String s) {
-        if (n(3)) {
-            Log.d("Ads", s);
+    public void r(final IBinder binder) {
+        try {
+            this.sk = this.mContext.getClassLoader().loadClass("com.android.vending.billing.IInAppBillingService$Stub").getDeclaredMethod("asInterface", IBinder.class).invoke(null, binder);
         }
-    }
-    
-    public static void w(final String s) {
-        if (n(6)) {
-            Log.e("Ads", s);
-        }
-    }
-    
-    public static void x(final String s) {
-        if (n(4)) {
-            Log.i("Ads", s);
-        }
-    }
-    
-    public static void y(final String s) {
-        if (n(2)) {
-            Log.v("Ads", s);
-        }
-    }
-    
-    public static void z(final String s) {
-        if (n(5)) {
-            Log.w("Ads", s);
+        catch (Exception ex) {
+            gs.W("IInAppBillingService is not available, please add com.android.vending.billing.IInAppBillingService to project.");
         }
     }
 }

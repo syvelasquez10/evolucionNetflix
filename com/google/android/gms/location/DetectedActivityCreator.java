@@ -13,42 +13,42 @@ public class DetectedActivityCreator implements Parcelable$Creator<DetectedActiv
 {
     public static final int CONTENT_DESCRIPTION = 0;
     
-    static void a(final DetectedActivity detectedActivity, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, detectedActivity.NS);
+    static void a(final DetectedActivity detectedActivity, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, detectedActivity.adU);
         b.c(parcel, 1000, detectedActivity.getVersionCode());
-        b.c(parcel, 2, detectedActivity.NT);
-        b.F(parcel, p3);
+        b.c(parcel, 2, detectedActivity.adV);
+        b.H(parcel, d);
     }
     
     public DetectedActivity createFromParcel(final Parcel parcel) {
         int g = 0;
-        final int o = a.o(parcel);
+        final int c = a.C(parcel);
         int g2 = 0;
         int g3 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g2 = a.g(parcel, n);
+                    g2 = a.g(parcel, b);
                     continue;
                 }
                 case 1000: {
-                    g3 = a.g(parcel, n);
+                    g3 = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
         return new DetectedActivity(g3, g2, g);
     }

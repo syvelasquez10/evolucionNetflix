@@ -200,22 +200,25 @@ public final class Settings
                         return Response.createResponsesFromString("true", null, new RequestBatch(new Request[] { o }), true).get(0);
                     }
                     return new Response(null, null, (GraphObject)create2, true);
+                    // iftrue(Label_0356:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
+                    while (true) {
+                        ((SharedPreferences$Editor)o).commit();
+                        return (Response)executeAndWait;
+                        Label_0288: {
+                            executeAndWait = (String)((Request)o).executeAndWait();
+                        }
+                        o = sharedPreferences.edit();
+                        ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
+                        ((SharedPreferences$Editor)o).putString(string2, ((Response)executeAndWait).getGraphObject().getInnerJSONObject().toString());
+                        continue;
+                    }
                     // iftrue(Label_0270:, attributionId != null)
                     throw new FacebookException("No attribution id returned from the Facebook application");
-                    Label_0288: {
-                        executeAndWait = (String)((Request)o).executeAndWait();
+                    Label_0270: {
+                        throw new FacebookException("Install attribution has been disabled on the server.");
                     }
-                    o = sharedPreferences.edit();
-                    ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
-                    // iftrue(Label_0356:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
-                    ((SharedPreferences$Editor)o).putString(string2, ((Response)executeAndWait).getGraphObject().getInnerJSONObject().toString());
-                    Label_0356:
-                    ((SharedPreferences$Editor)o).commit();
-                    return (Response)executeAndWait;
-                    Label_0270:
-                    // iftrue(Label_0288:, Utility.queryAppAttributionSupportAndWait(executeAndWait))
-                    throw new FacebookException("Install attribution has been disabled on the server.");
                 }
+                // iftrue(Label_0288:, Utility.queryAppAttributionSupportAndWait(executeAndWait))
                 catch (JSONException ex2) {
                     create2 = executeAndWait;
                     continue;

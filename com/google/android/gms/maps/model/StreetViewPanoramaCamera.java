@@ -5,30 +5,30 @@
 package com.google.android.gms.maps.model;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.fo;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.m;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public class StreetViewPanoramaCamera implements SafeParcelable
 {
-    public static final StreetViewPanoramaCameraCreator CREATOR;
-    private StreetViewPanoramaOrientation Tr;
+    public static final q CREATOR;
+    private final int BR;
+    private StreetViewPanoramaOrientation ake;
     public final float bearing;
     public final float tilt;
-    private final int xH;
     public final float zoom;
     
     static {
-        CREATOR = new StreetViewPanoramaCameraCreator();
+        CREATOR = new q();
     }
     
     public StreetViewPanoramaCamera(final float n, final float n2, final float n3) {
         this(1, n, n2, n3);
     }
     
-    StreetViewPanoramaCamera(final int xh, float zoom, final float n, final float n2) {
-        fq.b(-90.0f <= n && n <= 90.0f, "Tilt needs to be between -90 and 90 inclusive");
-        this.xH = xh;
+    StreetViewPanoramaCamera(final int br, float zoom, final float n, final float n2) {
+        n.b(-90.0f <= n && n <= 90.0f, (Object)"Tilt needs to be between -90 and 90 inclusive");
+        this.BR = br;
         this.zoom = zoom;
         this.tilt = 0.0f + n;
         if (n2 <= 0.0) {
@@ -38,7 +38,7 @@ public class StreetViewPanoramaCamera implements SafeParcelable
             zoom = n2;
         }
         this.bearing = zoom % 360.0f;
-        this.Tr = new StreetViewPanoramaOrientation.Builder().tilt(n).bearing(n2).build();
+        this.ake = new StreetViewPanoramaOrientation.Builder().tilt(n).bearing(n2).build();
     }
     
     public static Builder builder() {
@@ -68,25 +68,25 @@ public class StreetViewPanoramaCamera implements SafeParcelable
     }
     
     public StreetViewPanoramaOrientation getOrientation() {
-        return this.Tr;
+        return this.ake;
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.zoom, this.tilt, this.bearing);
+        return m.hashCode(this.zoom, this.tilt, this.bearing);
     }
     
     @Override
     public String toString() {
-        return fo.e(this).a("zoom", this.zoom).a("tilt", this.tilt).a("bearing", this.bearing).toString();
+        return m.h(this).a("zoom", this.zoom).a("tilt", this.tilt).a("bearing", this.bearing).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        StreetViewPanoramaCameraCreator.a(this, parcel, n);
+        q.a(this, parcel, n);
     }
     
     public static final class Builder

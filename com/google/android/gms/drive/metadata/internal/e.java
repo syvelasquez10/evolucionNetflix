@@ -4,26 +4,75 @@
 
 package com.google.android.gms.drive.metadata.internal;
 
-import com.google.android.gms.common.data.DataHolder;
-import android.os.Bundle;
-import com.google.android.gms.drive.metadata.a;
+import java.util.Collections;
+import java.util.Collection;
+import com.google.android.gms.internal.kh;
+import com.google.android.gms.internal.kf;
+import com.google.android.gms.internal.kd;
+import java.util.HashMap;
+import com.google.android.gms.drive.metadata.MetadataField;
+import java.util.Map;
 
-public class e extends a<Long>
+public final class e
 {
-    public e(final String s, final int n) {
-        super(s, n);
+    private static Map<String, MetadataField<?>> PC;
+    
+    static {
+        e.PC = new HashMap<String, MetadataField<?>>();
+        b(kd.PE);
+        b(kd.Qe);
+        b(kd.PV);
+        b(kd.Qc);
+        b(kd.Qf);
+        b(kd.PP);
+        b(kd.PQ);
+        b(kd.PN);
+        b(kd.PS);
+        b(kd.Qa);
+        b(kd.PF);
+        b(kd.PX);
+        b(kd.PH);
+        b(kd.PO);
+        b(kd.PI);
+        b(kd.PJ);
+        b(kd.PK);
+        b(kd.PU);
+        b(kd.PR);
+        b(kd.PW);
+        b(kd.PY);
+        b(kd.PZ);
+        b(kd.Qb);
+        b(kd.Qg);
+        b(kd.Qh);
+        b(kd.PM);
+        b(kd.PL);
+        b(kd.Qd);
+        b(kd.PT);
+        b(kd.PG);
+        b(kd.Qi);
+        b(kd.Qj);
+        b(kd.Qk);
+        b(kf.Ql);
+        b(kf.Qn);
+        b(kf.Qo);
+        b(kf.Qp);
+        b(kf.Qm);
+        b(kh.Qr);
+        b(kh.Qs);
     }
     
-    @Override
-    protected void a(final Bundle bundle, final Long n) {
-        bundle.putLong(this.getName(), (long)n);
+    private static void b(final MetadataField<?> metadataField) {
+        if (e.PC.containsKey(metadataField.getName())) {
+            throw new IllegalArgumentException("Duplicate field name registered: " + metadataField.getName());
+        }
+        e.PC.put(metadataField.getName(), metadataField);
     }
     
-    protected Long g(final DataHolder dataHolder, final int n, final int n2) {
-        return dataHolder.getLong(this.getName(), n, n2);
+    public static MetadataField<?> bj(final String s) {
+        return e.PC.get(s);
     }
     
-    protected Long i(final Bundle bundle) {
-        return bundle.getLong(this.getName());
+    public static Collection<MetadataField<?>> in() {
+        return Collections.unmodifiableCollection((Collection<? extends MetadataField<?>>)e.PC.values());
     }
 }

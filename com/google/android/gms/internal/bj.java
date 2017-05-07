@@ -4,80 +4,75 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Iterator;
-import org.json.JSONException;
-import org.json.JSONArray;
-import java.util.Collections;
-import java.util.ArrayList;
-import org.json.JSONObject;
-import java.util.List;
+import android.os.Parcel;
+import com.google.android.gms.ads.search.SearchAdRequest;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public final class bj
+@ez
+public final class bj implements SafeParcelable
 {
-    public final List<bi> nc;
-    public final long nd;
-    public final List<String> ne;
-    public final List<String> nf;
-    public final List<String> ng;
-    public final String nh;
-    public final long ni;
-    public int nj;
-    public int nk;
+    public static final bk CREATOR;
+    public final int backgroundColor;
+    public final int oH;
+    public final int oI;
+    public final int oJ;
+    public final int oK;
+    public final int oL;
+    public final int oM;
+    public final int oN;
+    public final String oO;
+    public final int oP;
+    public final String oQ;
+    public final int oR;
+    public final int oS;
+    public final String oT;
+    public final int versionCode;
     
-    public bj(final String s) throws JSONException {
-        final JSONObject jsonObject = new JSONObject(s);
-        if (dw.n(2)) {
-            dw.y("Mediation Response JSON: " + jsonObject.toString(2));
-        }
-        final JSONArray jsonArray = jsonObject.getJSONArray("ad_networks");
-        final ArrayList list = new ArrayList<bi>(jsonArray.length());
-        int nj = -1;
-        int n;
-        for (int i = 0; i < jsonArray.length(); ++i, nj = n) {
-            final bi bi = new bi(jsonArray.getJSONObject(i));
-            list.add(bi);
-            if ((n = nj) < 0) {
-                n = nj;
-                if (this.a(bi)) {
-                    n = i;
-                }
-            }
-        }
-        this.nj = nj;
-        this.nk = jsonArray.length();
-        this.nc = Collections.unmodifiableList((List<? extends bi>)list);
-        this.nh = jsonObject.getString("qdata");
-        final JSONObject optJSONObject = jsonObject.optJSONObject("settings");
-        if (optJSONObject != null) {
-            this.nd = optJSONObject.optLong("ad_network_timeout_millis", -1L);
-            this.ne = bo.a(optJSONObject, "click_urls");
-            this.nf = bo.a(optJSONObject, "imp_urls");
-            this.ng = bo.a(optJSONObject, "nofill_urls");
-            final long optLong = optJSONObject.optLong("refresh", -1L);
-            long ni;
-            if (optLong > 0L) {
-                ni = optLong * 1000L;
-            }
-            else {
-                ni = -1L;
-            }
-            this.ni = ni;
-            return;
-        }
-        this.nd = -1L;
-        this.ne = null;
-        this.nf = null;
-        this.ng = null;
-        this.ni = -1L;
+    static {
+        CREATOR = new bk();
     }
     
-    private boolean a(final bi bi) {
-        final Iterator<String> iterator = bi.mY.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next().equals("com.google.ads.mediation.admob.AdMobAdapter")) {
-                return true;
-            }
-        }
-        return false;
+    bj(final int versionCode, final int oh, final int backgroundColor, final int oi, final int oj, final int ok, final int ol, final int om, final int on, final String oo, final int op, final String oq, final int or, final int os, final String ot) {
+        this.versionCode = versionCode;
+        this.oH = oh;
+        this.backgroundColor = backgroundColor;
+        this.oI = oi;
+        this.oJ = oj;
+        this.oK = ok;
+        this.oL = ol;
+        this.oM = om;
+        this.oN = on;
+        this.oO = oo;
+        this.oP = op;
+        this.oQ = oq;
+        this.oR = or;
+        this.oS = os;
+        this.oT = ot;
+    }
+    
+    public bj(final SearchAdRequest searchAdRequest) {
+        this.versionCode = 1;
+        this.oH = searchAdRequest.getAnchorTextColor();
+        this.backgroundColor = searchAdRequest.getBackgroundColor();
+        this.oI = searchAdRequest.getBackgroundGradientBottom();
+        this.oJ = searchAdRequest.getBackgroundGradientTop();
+        this.oK = searchAdRequest.getBorderColor();
+        this.oL = searchAdRequest.getBorderThickness();
+        this.oM = searchAdRequest.getBorderType();
+        this.oN = searchAdRequest.getCallButtonColor();
+        this.oO = searchAdRequest.getCustomChannels();
+        this.oP = searchAdRequest.getDescriptionTextColor();
+        this.oQ = searchAdRequest.getFontFace();
+        this.oR = searchAdRequest.getHeaderTextColor();
+        this.oS = searchAdRequest.getHeaderTextSize();
+        this.oT = searchAdRequest.getQuery();
+    }
+    
+    public int describeContents() {
+        return 0;
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        bk.a(this, parcel, n);
     }
 }

@@ -4,48 +4,50 @@
 
 package com.google.android.gms.internal;
 
+import android.accounts.Account;
 import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class hn implements Parcelable$Creator<hm>
+public class hn implements Parcelable$Creator<hm.a>
 {
-    static void a(final hm hm, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.a(parcel, 1, hm.Rd, false);
-        b.c(parcel, 1000, hm.xH);
-        b.F(parcel, p3);
+    static void a(final hm.a a, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.a(parcel, 1, (Parcelable)a.Cj, n, false);
+        b.c(parcel, 1000, a.BR);
+        b.H(parcel, d);
     }
     
-    public hm aG(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public hm.a[] M(final int n) {
+        return new hm.a[n];
+    }
+    
+    public hm.a p(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
-        String n = null;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
+        Account account = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n2);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    n = a.n(parcel, n2);
+                    account = a.a(parcel, b, (android.os.Parcelable$Creator<Account>)Account.CREATOR);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n2);
+                    g = a.g(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new hm(g, n);
-    }
-    
-    public hm[] bH(final int n) {
-        return new hm[n];
+        return new hm.a(g, account);
     }
 }

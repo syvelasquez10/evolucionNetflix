@@ -13,7 +13,7 @@ import android.os.IInterface;
 
 public interface o extends IInterface
 {
-    void e(final d p0) throws RemoteException;
+    void g(final d p0) throws RemoteException;
     
     public abstract static class a extends Binder implements o
     {
@@ -21,7 +21,7 @@ public interface o extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMyLocationChangeListener");
         }
         
-        public static o ar(final IBinder binder) {
+        public static o bf(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -47,7 +47,7 @@ public interface o extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMyLocationChangeListener");
-                    this.e(d.a.K(parcel.readStrongBinder()));
+                    this.g(d.a.am(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -56,18 +56,18 @@ public interface o extends IInterface
         
         private static class a implements o
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
-            public void e(final d d) throws RemoteException {
+            public void g(final d d) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -80,7 +80,7 @@ public interface o extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

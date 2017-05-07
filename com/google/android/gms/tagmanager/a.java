@@ -8,141 +8,141 @@ import android.os.Process;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import java.io.IOException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.internal.gn;
+import com.google.android.gms.internal.jw;
+import com.google.android.gms.internal.ju;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import android.content.Context;
-import com.google.android.gms.internal.gl;
 
 class a
 {
-    private static a Wx;
-    private static Object sf;
-    private volatile long Ws;
-    private volatile long Wt;
-    private volatile long Wu;
-    private final gl Wv;
-    private a Ww;
+    private static a anF;
+    private static Object xz;
+    private volatile long anB;
+    private volatile long anC;
+    private volatile long anD;
+    private a anE;
     private volatile boolean mClosed;
     private final Context mContext;
-    private final Thread qY;
-    private volatile AdvertisingIdClient.Info sh;
+    private final Thread wf;
+    private volatile AdvertisingIdClient.Info xB;
+    private final ju yD;
     
     static {
-        a.sf = new Object();
+        a.xz = new Object();
     }
     
     private a(final Context context) {
-        this(context, null, gn.ft());
+        this(context, null, jw.hA());
     }
     
-    a(final Context mContext, final a ww, final gl wv) {
-        this.Ws = 900000L;
-        this.Wt = 30000L;
+    a(final Context mContext, final a anE, final ju yd) {
+        this.anB = 900000L;
+        this.anC = 30000L;
         this.mClosed = false;
-        this.Ww = (a)new a() {
+        this.anE = (a)new a() {
             @Override
-            public AdvertisingIdClient.Info jW() {
+            public AdvertisingIdClient.Info nK() {
                 try {
                     return AdvertisingIdClient.getAdvertisingIdInfo(a.this.mContext);
                 }
                 catch (IllegalStateException ex) {
-                    bh.z("IllegalStateException getting Advertising Id Info");
+                    bh.W("IllegalStateException getting Advertising Id Info");
                     return null;
                 }
                 catch (GooglePlayServicesRepairableException ex2) {
-                    bh.z("GooglePlayServicesRepairableException getting Advertising Id Info");
+                    bh.W("GooglePlayServicesRepairableException getting Advertising Id Info");
                     return null;
                 }
                 catch (IOException ex3) {
-                    bh.z("IOException getting Ad Id Info");
+                    bh.W("IOException getting Ad Id Info");
                     return null;
                 }
                 catch (GooglePlayServicesNotAvailableException ex4) {
-                    bh.z("GooglePlayServicesNotAvailableException getting Advertising Id Info");
+                    bh.W("GooglePlayServicesNotAvailableException getting Advertising Id Info");
                     return null;
                 }
                 catch (Exception ex5) {
-                    bh.z("Unknown exception. Could not get the Advertising Id Info.");
+                    bh.W("Unknown exception. Could not get the Advertising Id Info.");
                     return null;
                 }
             }
         };
-        this.Wv = wv;
+        this.yD = yd;
         if (mContext != null) {
             this.mContext = mContext.getApplicationContext();
         }
         else {
             this.mContext = mContext;
         }
-        if (ww != null) {
-            this.Ww = ww;
+        if (anE != null) {
+            this.anE = anE;
         }
-        this.qY = new Thread(new Runnable() {
+        this.wf = new Thread(new Runnable() {
             @Override
             public void run() {
-                a.this.jU();
+                a.this.nI();
             }
         });
     }
     
-    static a E(final Context context) {
+    static a V(final Context context) {
         Label_0037: {
-            if (a.Wx != null) {
+            if (a.anF != null) {
                 break Label_0037;
             }
-            synchronized (a.sf) {
-                if (a.Wx == null) {
-                    (a.Wx = new a(context)).start();
+            synchronized (a.xz) {
+                if (a.anF == null) {
+                    (a.anF = new a(context)).start();
                 }
-                return a.Wx;
+                return a.anF;
             }
         }
     }
     
-    private void jU() {
+    private void nI() {
         Process.setThreadPriority(10);
         while (!this.mClosed) {
             try {
-                this.sh = this.Ww.jW();
-                Thread.sleep(this.Ws);
+                this.xB = this.anE.nK();
+                Thread.sleep(this.anB);
             }
             catch (InterruptedException ex) {
-                bh.x("sleep interrupted in AdvertiserDataPoller thread; continuing");
+                bh.U("sleep interrupted in AdvertiserDataPoller thread; continuing");
             }
         }
     }
     
-    private void jV() {
-        if (this.Wv.currentTimeMillis() - this.Wu < this.Wt) {
+    private void nJ() {
+        if (this.yD.currentTimeMillis() - this.anD < this.anC) {
             return;
         }
         this.interrupt();
-        this.Wu = this.Wv.currentTimeMillis();
+        this.anD = this.yD.currentTimeMillis();
     }
     
     void interrupt() {
-        this.qY.interrupt();
+        this.wf.interrupt();
     }
     
     public boolean isLimitAdTrackingEnabled() {
-        this.jV();
-        return this.sh == null || this.sh.isLimitAdTrackingEnabled();
+        this.nJ();
+        return this.xB == null || this.xB.isLimitAdTrackingEnabled();
     }
     
-    public String jT() {
-        this.jV();
-        if (this.sh == null) {
+    public String nH() {
+        this.nJ();
+        if (this.xB == null) {
             return null;
         }
-        return this.sh.getId();
+        return this.xB.getId();
     }
     
     void start() {
-        this.qY.start();
+        this.wf.start();
     }
     
     public interface a
     {
-        AdvertisingIdClient.Info jW();
+        AdvertisingIdClient.Info nK();
     }
 }

@@ -4,35 +4,29 @@
 
 package com.google.android.gms.internal;
 
-import org.json.JSONObject;
+import java.util.Map;
+import java.util.HashMap;
 
-public final class z
+@ez
+class z implements ac
 {
-    private final String le;
-    private final JSONObject lf;
-    private final String lg;
-    private final String lh;
+    private gv mi;
     
-    public z(final String lg, final dx dx, final String le, final JSONObject lf) {
-        this.lh = dx.rq;
-        this.lf = lf;
-        this.lg = lg;
-        this.le = le;
+    public z(final gv mi) {
+        this.mi = mi;
     }
     
-    public String al() {
-        return this.le;
-    }
-    
-    public String am() {
-        return this.lh;
-    }
-    
-    public JSONObject an() {
-        return this.lf;
-    }
-    
-    public String ao() {
-        return this.lg;
+    @Override
+    public void a(final af af, final boolean b) {
+        final HashMap<String, String> hashMap = new HashMap<String, String>();
+        String s;
+        if (b) {
+            s = "1";
+        }
+        else {
+            s = "0";
+        }
+        hashMap.put("isVisible", s);
+        this.mi.a("onAdVisibilityChanged", hashMap);
     }
 }

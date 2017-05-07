@@ -4,7 +4,8 @@
 
 package com.google.android.gms.cast;
 
-import com.google.android.gms.internal.eo;
+import org.json.JSONArray;
+import com.google.android.gms.internal.ik;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,80 +27,83 @@ public final class MediaStatus
     public static final int PLAYER_STATE_PAUSED = 3;
     public static final int PLAYER_STATE_PLAYING = 2;
     public static final int PLAYER_STATE_UNKNOWN = 0;
-    private long yA;
-    private long yB;
-    private double yC;
-    private boolean yD;
-    private JSONObject yn;
-    private MediaInfo yo;
-    private long yw;
-    private double yx;
-    private int yy;
-    private int yz;
+    private double FA;
+    private boolean FB;
+    private long[] FC;
+    private JSONObject Fl;
+    private MediaInfo Fm;
+    private long Fu;
+    private double Fv;
+    private int Fw;
+    private int Fx;
+    private long Fy;
+    private long Fz;
     
     public MediaStatus(final JSONObject jsonObject) throws JSONException {
         this.a(jsonObject, 0);
     }
     
-    public int a(JSONObject jsonObject, int n) throws JSONException {
-        final int n2 = 2;
+    public int a(JSONObject jsonObject, int i) throws JSONException {
+        final int n = 2;
+        final boolean b = false;
+        final int n2 = 1;
         final long long1 = jsonObject.getLong("mediaSessionId");
-        boolean b;
-        if (long1 != this.yw) {
-            this.yw = long1;
-            b = true;
+        boolean b2;
+        if (long1 != this.Fu) {
+            this.Fu = long1;
+            b2 = true;
         }
         else {
-            b = false;
+            b2 = false;
         }
-        int n3 = b ? 1 : 0;
+        int n3 = b2 ? 1 : 0;
         if (jsonObject.has("playerState")) {
             final String string = jsonObject.getString("playerState");
-            int yy;
+            int fw;
             if (string.equals("IDLE")) {
-                yy = 1;
+                fw = 1;
             }
             else if (string.equals("PLAYING")) {
-                yy = 2;
+                fw = 2;
             }
             else if (string.equals("PAUSED")) {
-                yy = 3;
+                fw = 3;
             }
             else if (string.equals("BUFFERING")) {
-                yy = 4;
+                fw = 4;
             }
             else {
-                yy = 0;
+                fw = 0;
             }
-            int n4 = b ? 1 : 0;
-            if (yy != this.yy) {
-                this.yy = yy;
-                n4 = ((b ? 1 : 0) | 0x2);
+            int n4 = b2 ? 1 : 0;
+            if (fw != this.Fw) {
+                this.Fw = fw;
+                n4 = ((b2 ? 1 : 0) | 0x2);
             }
             n3 = n4;
-            if (yy == 1) {
+            if (fw == 1) {
                 n3 = n4;
                 if (jsonObject.has("idleReason")) {
                     final String string2 = jsonObject.getString("idleReason");
-                    int yz;
+                    int fx;
                     if (string2.equals("CANCELLED")) {
-                        yz = n2;
+                        fx = n;
                     }
                     else if (string2.equals("INTERRUPTED")) {
-                        yz = 3;
+                        fx = 3;
                     }
                     else if (string2.equals("FINISHED")) {
-                        yz = 1;
+                        fx = 1;
                     }
                     else if (string2.equals("ERROR")) {
-                        yz = 4;
+                        fx = 4;
                     }
                     else {
-                        yz = 0;
+                        fx = 0;
                     }
                     n3 = n4;
-                    if (yz != this.yz) {
-                        this.yz = yz;
+                    if (fx != this.Fx) {
+                        this.Fx = fx;
                         n3 = (n4 | 0x2);
                     }
                 }
@@ -109,19 +113,19 @@ public final class MediaStatus
         if (jsonObject.has("playbackRate")) {
             final double double1 = jsonObject.getDouble("playbackRate");
             n5 = n3;
-            if (this.yx != double1) {
-                this.yx = double1;
+            if (this.Fv != double1) {
+                this.Fv = double1;
                 n5 = (n3 | 0x2);
             }
         }
         int n6 = n5;
         if (jsonObject.has("currentTime")) {
             n6 = n5;
-            if ((n & 0x2) == 0x0) {
-                final long b2 = eo.b(jsonObject.getDouble("currentTime"));
+            if ((i & 0x2) == 0x0) {
+                final long b3 = ik.b(jsonObject.getDouble("currentTime"));
                 n6 = n5;
-                if (b2 != this.yA) {
-                    this.yA = b2;
+                if (b3 != this.Fy) {
+                    this.Fy = b3;
                     n6 = (n5 | 0x2);
                 }
             }
@@ -130,84 +134,132 @@ public final class MediaStatus
         if (jsonObject.has("supportedMediaCommands")) {
             final long long2 = jsonObject.getLong("supportedMediaCommands");
             n7 = n6;
-            if (long2 != this.yB) {
-                this.yB = long2;
+            if (long2 != this.Fz) {
+                this.Fz = long2;
                 n7 = (n6 | 0x2);
             }
         }
         int n8 = n7;
         if (jsonObject.has("volume")) {
             n8 = n7;
-            if ((n & 0x1) == 0x0) {
+            if ((i & 0x1) == 0x0) {
                 final JSONObject jsonObject2 = jsonObject.getJSONObject("volume");
                 final double double2 = jsonObject2.getDouble("level");
-                n = n7;
-                if (double2 != this.yC) {
-                    this.yC = double2;
-                    n = (n7 | 0x2);
+                i = n7;
+                if (double2 != this.FA) {
+                    this.FA = double2;
+                    i = (n7 | 0x2);
                 }
                 final boolean boolean1 = jsonObject2.getBoolean("muted");
-                n8 = n;
-                if (boolean1 != this.yD) {
-                    this.yD = boolean1;
-                    n8 = (n | 0x2);
+                n8 = i;
+                if (boolean1 != this.FB) {
+                    this.FB = boolean1;
+                    n8 = (i | 0x2);
                 }
             }
         }
-        n = n8;
-        if (jsonObject.has("customData")) {
-            this.yn = jsonObject.getJSONObject("customData");
-            n = (n8 | 0x2);
+        long[] array;
+        int n9;
+        if (jsonObject.has("activeTrackIds")) {
+            final JSONArray jsonArray = jsonObject.getJSONArray("activeTrackIds");
+            final int length = jsonArray.length();
+            array = new long[length];
+            for (i = 0; i < length; ++i) {
+                array[i] = jsonArray.getLong(i);
+            }
+            Label_0570: {
+                if (this.FC == null) {
+                    i = n2;
+                }
+                else {
+                    i = n2;
+                    if (this.FC.length == length) {
+                        for (int j = 0; j < length; ++j) {
+                            i = n2;
+                            if (this.FC[j] != array[j]) {
+                                break Label_0570;
+                            }
+                        }
+                        i = 0;
+                    }
+                }
+            }
+            if (i != 0) {
+                this.FC = array;
+            }
+            n9 = i;
         }
-        int n9 = n;
+        else if (this.FC != null) {
+            n9 = 1;
+            array = null;
+        }
+        else {
+            array = null;
+            n9 = (b ? 1 : 0);
+        }
+        i = n8;
+        if (n9 != 0) {
+            this.FC = array;
+            i = (n8 | 0x2);
+        }
+        int n10 = i;
+        if (jsonObject.has("customData")) {
+            this.Fl = jsonObject.getJSONObject("customData");
+            n10 = (i | 0x2);
+        }
+        i = n10;
         if (jsonObject.has("media")) {
             jsonObject = jsonObject.getJSONObject("media");
-            this.yo = new MediaInfo(jsonObject);
-            n = (n9 = (n | 0x2));
+            this.Fm = new MediaInfo(jsonObject);
+            final int n11 = i = (n10 | 0x2);
             if (jsonObject.has("metadata")) {
-                n9 = (n | 0x4);
+                i = (n11 | 0x4);
             }
         }
-        return n9;
+        return i;
     }
     
-    public long dC() {
-        return this.yw;
+    public long fx() {
+        return this.Fu;
+    }
+    
+    public long[] getActiveTrackIds() {
+        return this.FC;
     }
     
     public JSONObject getCustomData() {
-        return this.yn;
+        return this.Fl;
     }
     
     public int getIdleReason() {
-        return this.yz;
+        return this.Fx;
     }
     
     public MediaInfo getMediaInfo() {
-        return this.yo;
+        return this.Fm;
     }
     
     public double getPlaybackRate() {
-        return this.yx;
+        return this.Fv;
     }
     
     public int getPlayerState() {
-        return this.yy;
+        return this.Fw;
     }
     
     public long getStreamPosition() {
-        return this.yA;
+        return this.Fy;
     }
     
     public double getStreamVolume() {
-        return this.yC;
+        return this.FA;
     }
     
     public boolean isMediaCommandSupported(final long n) {
-        return (this.yB & n) != 0x0L;
+        return (this.Fz & n) != 0x0L;
     }
     
     public boolean isMute() {
-        return this.yD;
+        return this.FB;
     }
 }

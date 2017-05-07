@@ -20,7 +20,7 @@ public interface j extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMapLoadedCallback");
         }
         
-        public static j am(final IBinder binder) {
+        public static j ba(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -55,14 +55,14 @@ public interface j extends IInterface
         
         private static class a implements j
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -71,7 +71,7 @@ public interface j extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnMapLoadedCallback");
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

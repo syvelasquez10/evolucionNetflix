@@ -11,10 +11,10 @@ import android.support.v4.app.Fragment;
 
 public final class h extends c.a
 {
-    private Fragment Hz;
+    private Fragment Ll;
     
-    private h(final Fragment hz) {
-        this.Hz = hz;
+    private h(final Fragment ll) {
+        this.Ll = ll;
     }
     
     public static h a(final Fragment fragment) {
@@ -24,107 +24,107 @@ public final class h extends c.a
         return null;
     }
     
-    public void b(final d d) {
-        this.Hz.registerForContextMenu(e.d(d));
+    public void d(final d d) {
+        this.Ll.registerForContextMenu(e.f(d));
     }
     
-    public void c(final d d) {
-        this.Hz.unregisterForContextMenu(e.d(d));
-    }
-    
-    public d fX() {
-        return e.h(this.Hz.getActivity());
-    }
-    
-    public c fY() {
-        return a(this.Hz.getParentFragment());
-    }
-    
-    public d fZ() {
-        return e.h(this.Hz.getResources());
-    }
-    
-    public c ga() {
-        return a(this.Hz.getTargetFragment());
+    public void e(final d d) {
+        this.Ll.unregisterForContextMenu(e.f(d));
     }
     
     public Bundle getArguments() {
-        return this.Hz.getArguments();
+        return this.Ll.getArguments();
     }
     
     public int getId() {
-        return this.Hz.getId();
+        return this.Ll.getId();
     }
     
     public boolean getRetainInstance() {
-        return this.Hz.getRetainInstance();
+        return this.Ll.getRetainInstance();
     }
     
     public String getTag() {
-        return this.Hz.getTag();
+        return this.Ll.getTag();
     }
     
     public int getTargetRequestCode() {
-        return this.Hz.getTargetRequestCode();
+        return this.Ll.getTargetRequestCode();
     }
     
     public boolean getUserVisibleHint() {
-        return this.Hz.getUserVisibleHint();
+        return this.Ll.getUserVisibleHint();
     }
     
     public d getView() {
-        return e.h(this.Hz.getView());
+        return e.k(this.Ll.getView());
     }
     
     public boolean isAdded() {
-        return this.Hz.isAdded();
+        return this.Ll.isAdded();
     }
     
     public boolean isDetached() {
-        return this.Hz.isDetached();
+        return this.Ll.isDetached();
     }
     
     public boolean isHidden() {
-        return this.Hz.isHidden();
+        return this.Ll.isHidden();
     }
     
     public boolean isInLayout() {
-        return this.Hz.isInLayout();
+        return this.Ll.isInLayout();
     }
     
     public boolean isRemoving() {
-        return this.Hz.isRemoving();
+        return this.Ll.isRemoving();
     }
     
     public boolean isResumed() {
-        return this.Hz.isResumed();
+        return this.Ll.isResumed();
     }
     
     public boolean isVisible() {
-        return this.Hz.isVisible();
+        return this.Ll.isVisible();
+    }
+    
+    public d iu() {
+        return e.k(this.Ll.getActivity());
+    }
+    
+    public c iv() {
+        return a(this.Ll.getParentFragment());
+    }
+    
+    public d iw() {
+        return e.k(this.Ll.getResources());
+    }
+    
+    public c ix() {
+        return a(this.Ll.getTargetFragment());
     }
     
     public void setHasOptionsMenu(final boolean hasOptionsMenu) {
-        this.Hz.setHasOptionsMenu(hasOptionsMenu);
+        this.Ll.setHasOptionsMenu(hasOptionsMenu);
     }
     
     public void setMenuVisibility(final boolean menuVisibility) {
-        this.Hz.setMenuVisibility(menuVisibility);
+        this.Ll.setMenuVisibility(menuVisibility);
     }
     
     public void setRetainInstance(final boolean retainInstance) {
-        this.Hz.setRetainInstance(retainInstance);
+        this.Ll.setRetainInstance(retainInstance);
     }
     
     public void setUserVisibleHint(final boolean userVisibleHint) {
-        this.Hz.setUserVisibleHint(userVisibleHint);
+        this.Ll.setUserVisibleHint(userVisibleHint);
     }
     
     public void startActivity(final Intent intent) {
-        this.Hz.startActivity(intent);
+        this.Ll.startActivity(intent);
     }
     
     public void startActivityForResult(final Intent intent, final int n) {
-        this.Hz.startActivityForResult(intent, n);
+        this.Ll.startActivityForResult(intent, n);
     }
 }

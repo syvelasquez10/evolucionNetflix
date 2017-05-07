@@ -9,6 +9,7 @@ import android.media.MediaCodecList;
 import android.media.MediaCodec$CryptoInfo;
 import android.os.Message;
 import android.os.Looper;
+import java.io.IOException;
 import com.netflix.mediaclient.Log;
 import android.media.MediaCrypto;
 import android.view.Surface;
@@ -20,7 +21,9 @@ import android.os.Handler;
 import java.util.LinkedList;
 import java.nio.ByteBuffer;
 import android.media.MediaCodec;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 public abstract class MediaDecoderPipe2 extends MediaDecoderBase
 {
     private static final long INPUTBUFFER_TO = -1L;
@@ -53,7 +56,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     private String mTag;
     
     static {
-        USE_ANDROID_L_API = (AndroidUtils.getAndroidVersion() > 19);
+        USE_ANDROID_L_API = (AndroidUtils.getAndroidVersion() >= 21);
     }
     
     public MediaDecoderPipe2(final InputDataSource mDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final MediaCrypto mediaCrypto, final EventListener eventListener) throws Exception {
@@ -113,7 +116,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         }
     }
     
-    private boolean createDecoder(final String s, final MediaCrypto mediaCrypto) {
+    private boolean createDecoder(final String s, final MediaCrypto mediaCrypto) throws IOException {
         if (!this.mIsAudio) {
             final boolean b = mediaCrypto != null && mediaCrypto.requiresSecureDecoderComponent(s);
             if (AndroidUtils.getAndroidVersion() > 18) {

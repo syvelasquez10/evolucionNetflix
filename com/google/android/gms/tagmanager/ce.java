@@ -4,54 +4,111 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
-import java.util.Map;
-import com.google.android.gms.internal.b;
-import com.google.android.gms.internal.a;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import android.net.Uri;
 
-class ce extends aj
+class ce
 {
-    private static final String ID;
-    private static final String YX;
-    private static final String YY;
+    private static ce apS;
+    private volatile String anR;
+    private volatile a apT;
+    private volatile String apU;
+    private volatile String apV;
     
-    static {
-        ID = a.O.toString();
-        YX = b.da.toString();
-        YY = b.cZ.toString();
+    ce() {
+        this.clear();
     }
     
-    public ce() {
-        super(ce.ID, new String[0]);
+    private String cF(final String s) {
+        return s.split("&")[0].split("=")[1];
     }
     
-    @Override
-    public boolean jX() {
-        return false;
+    private String j(final Uri uri) {
+        return uri.getQuery().replace("&gtm_debug=x", "");
     }
     
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        final d.a a = map.get(ce.YX);
-        final d.a a2 = map.get(ce.YY);
-        Label_0118: {
-            if (a == null || a == dh.lT() || a2 == null || a2 == dh.lT()) {
-                break Label_0118;
+    static ce oH() {
+        synchronized (ce.class) {
+            if (ce.apS == null) {
+                ce.apS = new ce();
             }
-            final dg k = dh.k(a);
-            final dg i = dh.k(a2);
-            if (k == dh.lR() || i == dh.lR()) {
-                break Label_0118;
-            }
-            final double doubleValue = k.doubleValue();
-            final double doubleValue2 = i.doubleValue();
-            if (doubleValue > doubleValue2) {
-                break Label_0118;
-            }
-            return dh.r(Math.round((doubleValue2 - doubleValue) * Math.random() + doubleValue));
+            return ce.apS;
         }
-        final double doubleValue2 = 2.147483647E9;
-        final double doubleValue = 0.0;
-        return dh.r(Math.round((doubleValue2 - doubleValue) * Math.random() + doubleValue));
+    }
+    
+    void clear() {
+        this.apT = a.apW;
+        this.apU = null;
+        this.anR = null;
+        this.apV = null;
+    }
+    
+    String getContainerId() {
+        return this.anR;
+    }
+    
+    boolean i(final Uri uri) {
+        while (true) {
+            boolean b = true;
+            String decode;
+            synchronized (this) {
+                while (true) {
+                    while (true) {
+                        try {
+                            decode = URLDecoder.decode(uri.toString(), "UTF-8");
+                            if (!decode.matches("^tagmanager.c.\\S+:\\/\\/preview\\/p\\?id=\\S+&gtm_auth=\\S+&gtm_preview=\\d+(&gtm_debug=x)?$")) {
+                                break;
+                            }
+                            bh.V("Container preview url: " + decode);
+                            if (decode.matches(".*?&gtm_debug=x$")) {
+                                this.apT = a.apY;
+                                this.apV = this.j(uri);
+                                if (this.apT == a.apX || this.apT == a.apY) {
+                                    this.apU = "/r?" + this.apV;
+                                }
+                                this.anR = this.cF(this.apV);
+                                return b;
+                            }
+                        }
+                        catch (UnsupportedEncodingException ex) {
+                            b = false;
+                            return b;
+                        }
+                        this.apT = a.apX;
+                        continue;
+                    }
+                }
+            }
+            if (!decode.matches("^tagmanager.c.\\S+:\\/\\/preview\\/p\\?id=\\S+&gtm_preview=$")) {
+                bh.W("Invalid preview uri: " + decode);
+                b = false;
+                return b;
+            }
+            final Uri uri2;
+            if (this.cF(uri2.getQuery()).equals(this.anR)) {
+                bh.V("Exit preview mode for container: " + this.anR);
+                this.apT = a.apW;
+                this.apU = null;
+                return b;
+            }
+            b = false;
+            return b;
+        }
+    }
+    
+    a oI() {
+        return this.apT;
+    }
+    
+    String oJ() {
+        return this.apU;
+    }
+    
+    enum a
+    {
+        apW, 
+        apX, 
+        apY;
     }
 }

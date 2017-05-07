@@ -4,12 +4,41 @@
 
 package com.google.android.gms.tagmanager;
 
-import java.io.IOException;
-import java.io.InputStream;
+import android.provider.Settings$Secure;
+import com.google.android.gms.internal.d;
+import java.util.Map;
+import com.google.android.gms.internal.a;
+import android.content.Context;
 
-interface bl
+class bl extends aj
 {
-    InputStream bD(final String p0) throws IOException;
+    private static final String ID;
+    private final Context mContext;
     
-    void close();
+    static {
+        ID = a.af.toString();
+    }
+    
+    public bl(final Context mContext) {
+        super(bl.ID, new String[0]);
+        this.mContext = mContext;
+    }
+    
+    @Override
+    public d.a C(final Map<String, d.a> map) {
+        final String x = this.X(this.mContext);
+        if (x == null) {
+            return di.pI();
+        }
+        return di.u(x);
+    }
+    
+    protected String X(final Context context) {
+        return Settings$Secure.getString(context.getContentResolver(), "android_id");
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
+    }
 }

@@ -4,31 +4,38 @@
 
 package com.google.android.gms.common.data;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import java.util.NoSuchElementException;
+import com.google.android.gms.common.internal.n;
+import java.util.Iterator;
 
-public class c<T extends SafeParcelable> extends DataBuffer<T>
+public class c<T> implements Iterator<T>
 {
-    private static final String[] BF;
-    private final Parcelable$Creator<T> BG;
+    protected final DataBuffer<T> JO;
+    protected int JP;
     
-    static {
-        BF = new String[] { "data" };
+    public c(final DataBuffer<T> dataBuffer) {
+        this.JO = n.i(dataBuffer);
+        this.JP = -1;
     }
     
-    public c(final DataHolder dataHolder, final Parcelable$Creator<T> bg) {
-        super(dataHolder);
-        this.BG = bg;
+    @Override
+    public boolean hasNext() {
+        return this.JP < this.JO.getCount() - 1;
     }
     
-    public T F(final int n) {
-        final byte[] byteArray = this.BB.getByteArray("data", n, 0);
-        final Parcel obtain = Parcel.obtain();
-        obtain.unmarshall(byteArray, 0, byteArray.length);
-        obtain.setDataPosition(0);
-        final SafeParcelable safeParcelable = (SafeParcelable)this.BG.createFromParcel(obtain);
-        obtain.recycle();
-        return (T)safeParcelable;
+    @Override
+    public T next() {
+        if (!this.hasNext()) {
+            throw new NoSuchElementException("Cannot advance the iterator beyond " + this.JP);
+        }
+        final DataBuffer<T> jo = this.JO;
+        final int jp = this.JP + 1;
+        this.JP = jp;
+        return jo.get(jp);
+    }
+    
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException("Cannot remove elements from a DataBufferIterator");
     }
 }

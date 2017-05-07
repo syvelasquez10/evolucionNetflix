@@ -6,20 +6,34 @@ package com.google.android.gms.internal;
 
 import org.json.JSONObject;
 
-public interface ad
+@ez
+public final class ad
 {
-    void a(final a p0);
+    private final String ms;
+    private final JSONObject mt;
+    private final String mu;
+    private final String mv;
     
-    void a(final String p0, final bb p1);
+    public ad(final String mu, final gt gt, final String ms, final JSONObject mt) {
+        this.mv = gt.wD;
+        this.mt = mt;
+        this.mu = mu;
+        this.ms = ms;
+    }
     
-    void a(final String p0, final JSONObject p1);
+    public String aA() {
+        return this.mv;
+    }
     
-    void d(final String p0);
+    public JSONObject aB() {
+        return this.mt;
+    }
     
-    void e(final String p0);
+    public String aC() {
+        return this.mu;
+    }
     
-    public interface a
-    {
-        void ay();
+    public String az() {
+        return this.ms;
     }
 }

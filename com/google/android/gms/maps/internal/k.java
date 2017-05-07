@@ -21,7 +21,7 @@ public interface k extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMapLongClickListener");
         }
         
-        public static k an(final IBinder binder) {
+        public static k bb(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -47,14 +47,14 @@ public interface k extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMapLongClickListener");
-                    LatLng fromParcel;
+                    LatLng cm;
                     if (parcel.readInt() != 0) {
-                        fromParcel = LatLng.CREATOR.createFromParcel(parcel);
+                        cm = LatLng.CREATOR.cM(parcel);
                     }
                     else {
-                        fromParcel = null;
+                        cm = null;
                     }
-                    this.onMapLongClick(fromParcel);
+                    this.onMapLongClick(cm);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -63,14 +63,14 @@ public interface k extends IInterface
         
         private static class a implements k
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -86,7 +86,7 @@ public interface k extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

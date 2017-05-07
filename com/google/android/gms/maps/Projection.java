@@ -14,15 +14,15 @@ import com.google.android.gms.maps.internal.IProjectionDelegate;
 
 public final class Projection
 {
-    private final IProjectionDelegate Sc;
+    private final IProjectionDelegate aiP;
     
-    Projection(final IProjectionDelegate sc) {
-        this.Sc = sc;
+    Projection(final IProjectionDelegate aiP) {
+        this.aiP = aiP;
     }
     
     public LatLng fromScreenLocation(final Point point) {
         try {
-            return this.Sc.fromScreenLocation(e.h(point));
+            return this.aiP.fromScreenLocation(e.k(point));
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -31,7 +31,7 @@ public final class Projection
     
     public VisibleRegion getVisibleRegion() {
         try {
-            return this.Sc.getVisibleRegion();
+            return this.aiP.getVisibleRegion();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -40,7 +40,7 @@ public final class Projection
     
     public Point toScreenLocation(final LatLng latLng) {
         try {
-            return e.d(this.Sc.toScreenLocation(latLng));
+            return e.f(this.aiP.toScreenLocation(latLng));
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

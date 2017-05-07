@@ -24,7 +24,11 @@ public interface AddressConstants
     
     public interface Themes
     {
+        public static final int THEME_DARK = 0;
+        @Deprecated
         public static final int THEME_HOLO_DARK = 0;
+        @Deprecated
         public static final int THEME_HOLO_LIGHT = 1;
+        public static final int THEME_LIGHT = 1;
     }
 }

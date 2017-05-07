@@ -4,81 +4,82 @@
 
 package com.google.android.gms.analytics;
 
-import android.content.Context;
+import android.app.Activity;
+import java.util.HashMap;
+import java.util.Map;
 
-class ai extends k<aj>
+class ai implements i
 {
-    public ai(final Context context) {
-        super(context, (k.a)new a());
+    String BC;
+    double BD;
+    int BE;
+    int BF;
+    int BG;
+    int BH;
+    Map<String, String> BI;
+    
+    ai() {
+        this.BD = -1.0;
+        this.BE = -1;
+        this.BF = -1;
+        this.BG = -1;
+        this.BH = -1;
+        this.BI = new HashMap<String, String>();
     }
     
-    private static class a implements k.a<aj>
-    {
-        private final aj wg;
-        
-        public a() {
-            this.wg = new aj();
+    public String am(final String s) {
+        final String s2 = this.BI.get(s);
+        if (s2 != null) {
+            return s2;
         }
-        
-        @Override
-        public void a(final String s, final int wj) {
-            if ("ga_sessionTimeout".equals(s)) {
-                this.wg.wj = wj;
-                return;
-            }
-            aa.z("int configuration name not recognized:  " + s);
-        }
-        
-        @Override
-        public void a(final String s, final String s2) {
-            this.wg.wn.put(s, s2);
-        }
-        
-        @Override
-        public void b(final String s, final String wh) {
-            if ("ga_trackingId".equals(s)) {
-                this.wg.wh = wh;
-                return;
-            }
-            if ("ga_sampleFrequency".equals(s)) {
-                try {
-                    this.wg.wi = Double.parseDouble(wh);
-                    return;
-                }
-                catch (NumberFormatException ex) {
-                    aa.w("Error parsing ga_sampleFrequency value: " + wh);
-                    return;
-                }
-            }
-            aa.z("string configuration name not recognized:  " + s);
-        }
-        
-        @Override
-        public void c(final String s, final boolean b) {
-            final boolean b2 = true;
-            final boolean b3 = true;
-            int wk = 1;
-            if ("ga_autoActivityTracking".equals(s)) {
-                final aj wg = this.wg;
-                if (!b) {
-                    wk = 0;
-                }
-                wg.wk = wk;
-                return;
-            }
-            if ("ga_anonymizeIp".equals(s)) {
-                this.wg.wl = ((b && b2) ? 1 : 0);
-                return;
-            }
-            if ("ga_reportUncaughtExceptions".equals(s)) {
-                this.wg.wm = ((b && b3) ? 1 : 0);
-                return;
-            }
-            aa.z("bool configuration name not recognized:  " + s);
-        }
-        
-        public aj di() {
-            return this.wg;
-        }
+        return s;
+    }
+    
+    public boolean fa() {
+        return this.BC != null;
+    }
+    
+    public String fb() {
+        return this.BC;
+    }
+    
+    public boolean fc() {
+        return this.BD >= 0.0;
+    }
+    
+    public double fd() {
+        return this.BD;
+    }
+    
+    public boolean fe() {
+        return this.BE >= 0;
+    }
+    
+    public boolean ff() {
+        return this.BF != -1;
+    }
+    
+    public boolean fg() {
+        return this.BF == 1;
+    }
+    
+    public boolean fh() {
+        return this.BG != -1;
+    }
+    
+    public boolean fi() {
+        return this.BG == 1;
+    }
+    
+    public boolean fj() {
+        return this.BH == 1;
+    }
+    
+    public int getSessionTimeout() {
+        return this.BE;
+    }
+    
+    public String k(final Activity activity) {
+        return this.am(activity.getClass().getCanonicalName());
     }
 }

@@ -4,29 +4,21 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
 import java.util.Map;
-import com.google.android.gms.internal.a;
+import com.google.android.gms.internal.d;
 
-class dd extends aj
+abstract class dd extends cd
 {
-    private static final String ID;
-    
-    static {
-        ID = a.U.toString();
-    }
-    
-    public dd() {
-        super(dd.ID, new String[0]);
+    public dd(final String s) {
+        super(s);
     }
     
     @Override
-    public boolean jX() {
-        return false;
+    protected boolean a(final d.a a, final d.a a2, final Map<String, d.a> map) {
+        final String j = di.j(a);
+        final String i = di.j(a2);
+        return j != di.pH() && i != di.pH() && this.a(j, i, map);
     }
     
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        return dh.r(System.currentTimeMillis());
-    }
+    protected abstract boolean a(final String p0, final String p1, final Map<String, d.a> p2);
 }

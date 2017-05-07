@@ -8,7 +8,7 @@ import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.GameBuffer;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
 import com.google.android.gms.games.internal.GamesClientImpl;
 import com.google.android.gms.common.api.Api;
@@ -22,21 +22,21 @@ public final class GamesMetadataImpl implements GamesMetadata
 {
     @Override
     public Game getCurrentGame(final GoogleApiClient googleApiClient) {
-        return Games.c(googleApiClient).go();
+        return Games.c(googleApiClient).ka();
     }
     
     @Override
     public PendingResult<LoadGamesResult> loadGame(final GoogleApiClient googleApiClient) {
         return googleApiClient.a((PendingResult<LoadGamesResult>)new LoadGamesImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.g((d<LoadGamesResult>)this);
+                gamesClientImpl.f((BaseImplementation.b<LoadGamesResult>)this);
             }
         });
     }
     
     private abstract static class LoadExtendedGamesImpl extends BaseGamesApiMethodImpl<LoadExtendedGamesResult>
     {
-        public LoadExtendedGamesResult y(final Status status) {
+        public LoadExtendedGamesResult P(final Status status) {
             return new LoadExtendedGamesResult() {
                 @Override
                 public Status getStatus() {
@@ -52,7 +52,7 @@ public final class GamesMetadataImpl implements GamesMetadata
     
     private abstract static class LoadGameInstancesImpl extends BaseGamesApiMethodImpl<LoadGameInstancesResult>
     {
-        public LoadGameInstancesResult z(final Status status) {
+        public LoadGameInstancesResult Q(final Status status) {
             return new LoadGameInstancesResult() {
                 @Override
                 public Status getStatus() {
@@ -68,7 +68,7 @@ public final class GamesMetadataImpl implements GamesMetadata
     
     private abstract static class LoadGameSearchSuggestionsImpl extends BaseGamesApiMethodImpl<LoadGameSearchSuggestionsResult>
     {
-        public LoadGameSearchSuggestionsResult A(final Status status) {
+        public LoadGameSearchSuggestionsResult R(final Status status) {
             return new LoadGameSearchSuggestionsResult() {
                 @Override
                 public Status getStatus() {
@@ -84,11 +84,11 @@ public final class GamesMetadataImpl implements GamesMetadata
     
     private abstract static class LoadGamesImpl extends BaseGamesApiMethodImpl<LoadGamesResult>
     {
-        public LoadGamesResult B(final Status status) {
+        public LoadGamesResult S(final Status status) {
             return new LoadGamesResult() {
                 @Override
                 public GameBuffer getGames() {
-                    return new GameBuffer(DataHolder.empty(14));
+                    return new GameBuffer(DataHolder.as(14));
                 }
                 
                 @Override

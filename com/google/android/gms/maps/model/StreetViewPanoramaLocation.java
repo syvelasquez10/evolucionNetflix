@@ -5,23 +5,23 @@
 package com.google.android.gms.maps.model;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public class StreetViewPanoramaLocation implements SafeParcelable
 {
-    public static final StreetViewPanoramaLocationCreator CREATOR;
+    public static final s CREATOR;
+    private final int BR;
     public final StreetViewPanoramaLink[] links;
     public final String panoId;
     public final LatLng position;
-    private final int xH;
     
     static {
-        CREATOR = new StreetViewPanoramaLocationCreator();
+        CREATOR = new s();
     }
     
-    StreetViewPanoramaLocation(final int xh, final StreetViewPanoramaLink[] links, final LatLng position, final String panoId) {
-        this.xH = xh;
+    StreetViewPanoramaLocation(final int br, final StreetViewPanoramaLink[] links, final LatLng position, final String panoId) {
+        this.BR = br;
         this.links = links;
         this.position = position;
         this.panoId = panoId;
@@ -50,20 +50,20 @@ public class StreetViewPanoramaLocation implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.position, this.panoId);
+        return m.hashCode(this.position, this.panoId);
     }
     
     @Override
     public String toString() {
-        return fo.e(this).a("panoId", this.panoId).a("position", this.position.toString()).toString();
+        return m.h(this).a("panoId", this.panoId).a("position", this.position.toString()).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        StreetViewPanoramaLocationCreator.a(this, parcel, n);
+        s.a(this, parcel, n);
     }
 }

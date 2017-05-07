@@ -4,7 +4,6 @@
 
 package com.google.android.gms.drive;
 
-import android.content.IntentSender;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.common.api.Status;
@@ -13,6 +12,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 public interface DriveApi
 {
+    @Deprecated
     PendingResult<Status> discardContents(final GoogleApiClient p0, final Contents p1);
     
     PendingResult<DriveIdResult> fetchDriveId(final GoogleApiClient p0, final String p1);
@@ -25,9 +25,12 @@ public interface DriveApi
     
     DriveFolder getRootFolder(final GoogleApiClient p0);
     
+    @Deprecated
     PendingResult<ContentsResult> newContents(final GoogleApiClient p0);
     
     CreateFileActivityBuilder newCreateFileActivityBuilder();
+    
+    PendingResult<DriveContentsResult> newDriveContents(final GoogleApiClient p0);
     
     OpenFileActivityBuilder newOpenFileActivityBuilder();
     
@@ -35,9 +38,15 @@ public interface DriveApi
     
     PendingResult<Status> requestSync(final GoogleApiClient p0);
     
+    @Deprecated
     public interface ContentsResult extends Result
     {
         Contents getContents();
+    }
+    
+    public interface DriveContentsResult extends Result
+    {
+        DriveContents getDriveContents();
     }
     
     public interface DriveIdResult extends Result
@@ -45,18 +54,8 @@ public interface DriveApi
         DriveId getDriveId();
     }
     
-    public interface IntentSenderResult extends Result
-    {
-        IntentSender getIntentSender();
-    }
-    
     public interface MetadataBufferResult extends Result
     {
         MetadataBuffer getMetadataBuffer();
-    }
-    
-    public interface OnSyncFinishCallback
-    {
-        void onSyncFinish(final Status p0);
     }
 }

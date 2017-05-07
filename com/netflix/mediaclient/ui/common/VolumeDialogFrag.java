@@ -31,7 +31,7 @@ public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSee
     
     public static VolumeDialogFrag newInstance() {
         final VolumeDialogFrag volumeDialogFrag = new VolumeDialogFrag();
-        volumeDialogFrag.setStyle(1, 2131558605);
+        volumeDialogFrag.setStyle(1, 2131558710);
         return volumeDialogFrag;
     }
     
@@ -42,7 +42,7 @@ public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSee
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(2130903194, viewGroup, false);
-        (this.seekBar = (NetflixSeekBar)inflate.findViewById(2131165656)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)this);
+        (this.seekBar = (NetflixSeekBar)inflate.findViewById(2131165659)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)this);
         this.seekBar.setMax(100);
         return inflate;
     }

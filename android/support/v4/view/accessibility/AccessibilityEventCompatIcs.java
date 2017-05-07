@@ -20,4 +20,8 @@ class AccessibilityEventCompatIcs
     public static int getRecordCount(final AccessibilityEvent accessibilityEvent) {
         return accessibilityEvent.getRecordCount();
     }
+    
+    public static void setScrollable(final AccessibilityEvent accessibilityEvent, final boolean scrollable) {
+        accessibilityEvent.setScrollable(scrollable);
+    }
 }

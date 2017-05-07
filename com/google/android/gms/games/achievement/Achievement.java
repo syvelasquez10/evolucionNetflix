@@ -7,8 +7,10 @@ package com.google.android.gms.games.achievement;
 import android.net.Uri;
 import com.google.android.gms.games.Player;
 import android.database.CharArrayBuffer;
+import com.google.android.gms.common.data.Freezable;
+import android.os.Parcelable;
 
-public interface Achievement
+public interface Achievement extends Parcelable, Freezable<Achievement>
 {
     public static final int STATE_HIDDEN = 2;
     public static final int STATE_REVEALED = 1;
@@ -55,4 +57,6 @@ public interface Achievement
     
     @Deprecated
     String getUnlockedImageUrl();
+    
+    long getXpValue();
 }

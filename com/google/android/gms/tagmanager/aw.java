@@ -10,9 +10,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
-class aw implements bl
+class aw implements bm
 {
-    private HttpURLConnection Yh;
+    private HttpURLConnection apk;
     
     private InputStream a(final HttpURLConnection httpURLConnection) throws IOException {
         final int responseCode = httpURLConnection.getResponseCode();
@@ -33,12 +33,12 @@ class aw implements bl
     }
     
     @Override
-    public InputStream bD(final String s) throws IOException {
-        this.Yh = this.bE(s);
-        return this.a(this.Yh);
+    public InputStream cA(final String s) throws IOException {
+        this.apk = this.cB(s);
+        return this.a(this.apk);
     }
     
-    HttpURLConnection bE(final String s) throws IOException {
+    HttpURLConnection cB(final String s) throws IOException {
         final HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(s).openConnection();
         httpURLConnection.setReadTimeout(20000);
         httpURLConnection.setConnectTimeout(20000);
@@ -47,6 +47,6 @@ class aw implements bl
     
     @Override
     public void close() {
-        this.b(this.Yh);
+        this.b(this.apk);
     }
 }

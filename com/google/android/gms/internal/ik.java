@@ -4,78 +4,53 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
-import java.util.HashSet;
-import com.google.android.gms.common.internal.safeparcel.a;
-import java.util.Set;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import java.util.Locale;
+import android.text.TextUtils;
 
-public class ik implements Parcelable$Creator<ih.b>
+public final class ik
 {
-    static void a(final ih.b b, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        final Set<Integer> ja = b.ja();
-        if (ja.contains(1)) {
-            b.c(parcel, 1, b.getVersionCode());
-        }
-        if (ja.contains(2)) {
-            b.a(parcel, 2, (Parcelable)b.jE(), n, true);
-        }
-        if (ja.contains(3)) {
-            b.a(parcel, 3, (Parcelable)b.jF(), n, true);
-        }
-        if (ja.contains(4)) {
-            b.c(parcel, 4, b.getLayout());
-        }
-        b.F(parcel, p3);
+    public static <T> boolean a(final T t, final T t2) {
+        return (t == null && t2 == null) || (t != null && t2 != null && t.equals(t2));
     }
     
-    public ih.b aP(final Parcel parcel) {
-        SafeParcelable safeParcelable = null;
-        int g = 0;
-        final int o = a.o(parcel);
-        final HashSet<Integer> set = new HashSet<Integer>();
-        SafeParcelable safeParcelable2 = null;
-        int g2 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
-                default: {
-                    a.b(parcel, n);
-                    continue;
-                }
-                case 1: {
-                    g2 = a.g(parcel, n);
-                    set.add(1);
-                    continue;
-                }
-                case 2: {
-                    safeParcelable2 = a.a(parcel, n, (android.os.Parcelable$Creator<ih.b.a>)ih.b.a.CREATOR);
-                    set.add(2);
-                    continue;
-                }
-                case 3: {
-                    safeParcelable = a.a(parcel, n, (android.os.Parcelable$Creator<ih.b.b>)ih.b.b.CREATOR);
-                    set.add(3);
-                    continue;
-                }
-                case 4: {
-                    g = a.g(parcel, n);
-                    set.add(4);
-                    continue;
-                }
-            }
+    public static void aF(final String s) throws IllegalArgumentException {
+        if (TextUtils.isEmpty((CharSequence)s)) {
+            throw new IllegalArgumentException("Namespace cannot be null or empty");
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (s.length() > 128) {
+            throw new IllegalArgumentException("Invalid namespace length");
         }
-        return new ih.b(set, g2, (ih.b.a)safeParcelable2, (ih.b.b)safeParcelable, g);
+        if (!s.startsWith("urn:x-cast:")) {
+            throw new IllegalArgumentException("Namespace must begin with the prefix \"urn:x-cast:\"");
+        }
+        if (s.length() == "urn:x-cast:".length()) {
+            throw new IllegalArgumentException("Namespace must begin with the prefix \"urn:x-cast:\" and have non-empty suffix");
+        }
     }
     
-    public ih.b[] bS(final int n) {
-        return new ih.b[n];
+    public static String aG(final String s) {
+        return "urn:x-cast:" + s;
+    }
+    
+    public static long b(final double n) {
+        return (long)(1000.0 * n);
+    }
+    
+    public static String b(final Locale locale) {
+        final StringBuilder sb = new StringBuilder(20);
+        sb.append(locale.getLanguage());
+        final String country = locale.getCountry();
+        if (!TextUtils.isEmpty((CharSequence)country)) {
+            sb.append('-').append(country);
+        }
+        final String variant = locale.getVariant();
+        if (!TextUtils.isEmpty((CharSequence)variant)) {
+            sb.append('-').append(variant);
+        }
+        return sb.toString();
+    }
+    
+    public static double o(final long n) {
+        return n / 1000.0;
     }
 }

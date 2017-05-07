@@ -24,12 +24,12 @@ class f extends aj
     }
     
     @Override
-    public boolean jX() {
-        return true;
+    public d.a C(final Map<String, d.a> map) {
+        return di.u(this.mContext.getPackageName());
     }
     
     @Override
-    public d.a x(final Map<String, d.a> map) {
-        return dh.r(this.mContext.getPackageName());
+    public boolean nL() {
+        return true;
     }
 }

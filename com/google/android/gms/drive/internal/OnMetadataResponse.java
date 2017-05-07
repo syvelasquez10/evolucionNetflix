@@ -12,27 +12,27 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class OnMetadataResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<OnMetadataResponse> CREATOR;
-    final MetadataBundle EZ;
-    final int xH;
+    final int BR;
+    final MetadataBundle Od;
     
     static {
-        CREATOR = (Parcelable$Creator)new af();
+        CREATOR = (Parcelable$Creator)new ap();
     }
     
-    OnMetadataResponse(final int xh, final MetadataBundle ez) {
-        this.xH = xh;
-        this.EZ = ez;
+    OnMetadataResponse(final int br, final MetadataBundle od) {
+        this.BR = br;
+        this.Od = od;
     }
     
     public int describeContents() {
         return 0;
     }
     
-    public MetadataBundle fQ() {
-        return this.EZ;
+    public MetadataBundle il() {
+        return this.Od;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        af.a(this, parcel, n);
+        ap.a(this, parcel, n);
     }
 }

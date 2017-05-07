@@ -4,7 +4,11 @@
 
 package com.google.android.gms.internal;
 
+import android.location.Location;
+
 public interface ci
 {
-    void U();
+    Location a(final long p0);
+    
+    void init();
 }

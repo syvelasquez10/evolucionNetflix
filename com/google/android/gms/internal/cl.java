@@ -4,84 +4,57 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.IBinder;
-import com.google.android.gms.dynamic.d;
-import android.os.IInterface;
+import org.json.JSONException;
+import org.json.JSONArray;
+import java.util.Collections;
+import java.util.ArrayList;
+import org.json.JSONObject;
+import java.util.List;
 
-public interface cl extends IInterface
+@ez
+public final class cl
 {
-    IBinder a(final d p0) throws RemoteException;
+    public final String pW;
+    public final String pX;
+    public final List<String> pY;
+    public final String pZ;
+    public final String qa;
+    public final List<String> qb;
+    public final String qc;
     
-    public abstract static class a extends Binder implements cl
-    {
-        public static cl n(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-            if (queryLocalInterface != null && queryLocalInterface instanceof cl) {
-                return (cl)queryLocalInterface;
-            }
-            return new cl.a.a(binder);
+    public cl(final JSONObject jsonObject) throws JSONException {
+        final String s = null;
+        this.pX = jsonObject.getString("id");
+        final JSONArray jsonArray = jsonObject.getJSONArray("adapters");
+        final ArrayList list = new ArrayList<String>(jsonArray.length());
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            list.add(jsonArray.getString(i));
         }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-                    final IBinder a = this.a(d.a.K(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    parcel2.writeStrongBinder(a);
-                    return true;
-                }
-            }
+        this.pY = Collections.unmodifiableList((List<? extends String>)list);
+        this.pZ = jsonObject.optString("allocation_id", (String)null);
+        this.qb = cr.a(jsonObject, "imp_urls");
+        final JSONObject optJSONObject = jsonObject.optJSONObject("ad");
+        String string;
+        if (optJSONObject != null) {
+            string = optJSONObject.toString();
         }
-        
-        private static class a implements cl
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            @Override
-            public IBinder a(final d d) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.overlay.client.IAdOverlayCreator");
-                    IBinder binder;
-                    if (d != null) {
-                        binder = d.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readStrongBinder();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.kn;
-            }
+        else {
+            string = null;
         }
+        this.pW = string;
+        final JSONObject optJSONObject2 = jsonObject.optJSONObject("data");
+        String string2;
+        if (optJSONObject2 != null) {
+            string2 = optJSONObject2.toString();
+        }
+        else {
+            string2 = null;
+        }
+        this.qc = string2;
+        String optString = s;
+        if (optJSONObject2 != null) {
+            optString = optJSONObject2.optString("class_name");
+        }
+        this.qa = optString;
     }
 }

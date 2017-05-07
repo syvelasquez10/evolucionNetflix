@@ -14,40 +14,35 @@ import com.google.android.gms.internal.a;
 class ao extends aj
 {
     private static final String ID;
-    private static final String XQ;
-    private static final String XS;
-    private static final String XW;
+    private static final String aoU;
+    private static final String aoW;
+    private static final String apa;
     
     static {
-        ID = a.aa.toString();
-        XQ = b.bi.toString();
-        XW = b.aZ.toString();
-        XS = b.cH.toString();
+        ID = a.ac.toString();
+        aoU = b.bw.toString();
+        apa = b.bn.toString();
+        aoW = b.de.toString();
     }
     
     public ao() {
-        super(ao.ID, new String[] { ao.XQ });
+        super(ao.ID, new String[] { ao.aoU });
     }
     
-    private byte[] c(final String s, final byte[] array) throws NoSuchAlgorithmException {
+    private byte[] d(final String s, final byte[] array) throws NoSuchAlgorithmException {
         final MessageDigest instance = MessageDigest.getInstance(s);
         instance.update(array);
         return instance.digest();
     }
     
     @Override
-    public boolean jX() {
-        return true;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        final d.a a = map.get(ao.XQ);
-        if (a == null || a == dh.lT()) {
-            return dh.lT();
+    public d.a C(final Map<String, d.a> map) {
+        final d.a a = map.get(ao.aoU);
+        if (a == null || a == di.pI()) {
+            return di.pI();
         }
-        final String j = dh.j(a);
-        Object i = map.get(ao.XW);
+        final String j = di.j(a);
+        Object i = map.get(ao.apa);
         Label_0102: {
             if (i != null) {
                 break Label_0102;
@@ -55,7 +50,7 @@ class ao extends aj
             i = "MD5";
         Label_0073_Outer:
             while (true) {
-                final d.a a2 = map.get(ao.XS);
+                final d.a a2 = map.get(ao.aoW);
                 Label_0110: {
                     if (a2 != null) {
                         break Label_0110;
@@ -68,22 +63,22 @@ class ao extends aj
                             }
                             byte[] array = j.getBytes();
                             try {
-                                return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
-                                k = dh.j(a2);
+                                return di.u(com.google.android.gms.tagmanager.j.d(this.d((String)i, array)));
+                                k = di.j(a2);
                                 continue;
-                                // iftrue(Label_0135:, !"base16".equals((Object)k))
-                                array = com.google.android.gms.tagmanager.j.bm(j);
-                                return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
                                 Label_0135: {
-                                    bh.w("Hash: unknown input format: " + k);
+                                    bh.T("Hash: unknown input format: " + k);
                                 }
-                                return dh.lT();
-                                i = dh.j((d.a)i);
+                                return di.pI();
+                                i = di.j((d.a)i);
                                 continue Label_0073_Outer;
+                                // iftrue(Label_0135:, !"base16".equals((Object)k))
+                                array = com.google.android.gms.tagmanager.j.cj(j);
+                                return di.u(com.google.android.gms.tagmanager.j.d(this.d((String)i, array)));
                             }
                             catch (NoSuchAlgorithmException ex) {
-                                bh.w("Hash: unknown algorithm: " + (String)i);
-                                return dh.lT();
+                                bh.T("Hash: unknown algorithm: " + (String)i);
+                                return di.pI();
                             }
                         }
                         break;
@@ -92,5 +87,10 @@ class ao extends aj
                 break;
             }
         }
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

@@ -11,28 +11,28 @@ import com.google.android.gms.internal.a;
 class ah extends aj
 {
     private static final String ID;
-    private final cs WL;
+    private final ct anT;
     
     static {
-        ID = a.I.toString();
+        ID = a.K.toString();
     }
     
-    public ah(final cs wl) {
+    public ah(final ct anT) {
         super(ah.ID, new String[0]);
-        this.WL = wl;
+        this.anT = anT;
     }
     
     @Override
-    public boolean jX() {
-        return false;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        final String lx = this.WL.lx();
-        if (lx == null) {
-            return dh.lT();
+    public d.a C(final Map<String, d.a> map) {
+        final String pl = this.anT.pl();
+        if (pl == null) {
+            return di.pI();
         }
-        return dh.r(lx);
+        return di.u(pl);
+    }
+    
+    @Override
+    public boolean nL() {
+        return false;
     }
 }

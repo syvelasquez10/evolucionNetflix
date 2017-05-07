@@ -7,38 +7,32 @@ package com.google.android.gms.internal;
 import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
+import com.google.android.gms.dynamic.d;
 import android.os.RemoteException;
 import android.os.IInterface;
 
 public interface bs extends IInterface
 {
-    void P() throws RemoteException;
+    void as() throws RemoteException;
     
-    void onAdClosed() throws RemoteException;
+    d bA() throws RemoteException;
     
-    void onAdFailedToLoad(final int p0) throws RemoteException;
+    String bB() throws RemoteException;
     
-    void onAdLeftApplication() throws RemoteException;
+    String bt() throws RemoteException;
     
-    void onAdLoaded() throws RemoteException;
+    d bu() throws RemoteException;
     
-    void onAdOpened() throws RemoteException;
+    String bw() throws RemoteException;
+    
+    String getBody() throws RemoteException;
+    
+    void i(final int p0) throws RemoteException;
     
     public abstract static class a extends Binder implements bs
     {
         public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-        }
-        
-        public static bs k(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-            if (queryLocalInterface != null && queryLocalInterface instanceof bs) {
-                return (bs)queryLocalInterface;
-            }
-            return new bs.a.a(binder);
+            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.formats.client.INativeContentAd");
         }
         
         public IBinder asBinder() {
@@ -46,153 +40,77 @@ public interface bs extends IInterface
         }
         
         public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            final IBinder binder = null;
+            final IBinder binder2 = null;
             switch (n) {
                 default: {
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    parcel2.writeString("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.P();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
+                    this.i(parcel.readInt());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 2: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.onAdClosed();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
+                    this.as();
                     parcel2.writeNoException();
                     return true;
                 }
                 case 3: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.onAdFailedToLoad(parcel.readInt());
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
+                    final String bt = this.bt();
                     parcel2.writeNoException();
+                    parcel2.writeString(bt);
                     return true;
                 }
                 case 4: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.onAdLeftApplication();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
+                    final d bu = this.bu();
                     parcel2.writeNoException();
+                    IBinder binder3 = binder2;
+                    if (bu != null) {
+                        binder3 = bu.asBinder();
+                    }
+                    parcel2.writeStrongBinder(binder3);
                     return true;
                 }
                 case 5: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.onAdOpened();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
+                    final String body = this.getBody();
                     parcel2.writeNoException();
+                    parcel2.writeString(body);
                     return true;
                 }
                 case 6: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.onAdLoaded();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
+                    final d ba = this.bA();
                     parcel2.writeNoException();
+                    IBinder binder4 = binder;
+                    if (ba != null) {
+                        binder4 = ba.asBinder();
+                    }
+                    parcel2.writeStrongBinder(binder4);
                     return true;
                 }
-            }
-        }
-        
-        private static class a implements bs
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            @Override
-            public void P() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.kn.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
+                case 7: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
+                    final String bw = this.bw();
+                    parcel2.writeNoException();
+                    parcel2.writeString(bw);
+                    return true;
                 }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.kn;
-            }
-            
-            @Override
-            public void onAdClosed() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.kn.transact(2, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void onAdFailedToLoad(final int n) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    obtain.writeInt(n);
-                    this.kn.transact(3, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void onAdLeftApplication() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.kn.transact(4, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void onAdLoaded() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.kn.transact(6, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void onAdOpened() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
-                    this.kn.transact(5, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                case 8: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeContentAd");
+                    final String bb = this.bB();
+                    parcel2.writeNoException();
+                    parcel2.writeString(bb);
+                    return true;
                 }
             }
         }

@@ -4,76 +4,74 @@
 
 package com.google.android.gms.internal;
 
-import java.util.HashSet;
+import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.common.internal.safeparcel.a;
-import java.util.Set;
+import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class im implements Parcelable$Creator<ih.b.b>
+public class im implements Parcelable$Creator<il>
 {
-    static void a(final ih.b.b b, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        final Set<Integer> ja = b.ja();
-        if (ja.contains(1)) {
-            b.c(parcel, 1, b.getVersionCode());
-        }
-        if (ja.contains(2)) {
-            b.c(parcel, 2, b.getHeight());
-        }
-        if (ja.contains(3)) {
-            b.a(parcel, 3, b.getUrl(), true);
-        }
-        if (ja.contains(4)) {
-            b.c(parcel, 4, b.getWidth());
-        }
-        b.F(parcel, p3);
+    static void a(final il il, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1, il.getVersionCode());
+        b.a(parcel, 2, il.fF());
+        b.a(parcel, 3, il.fN());
+        b.c(parcel, 4, il.fO());
+        b.a(parcel, 5, (Parcelable)il.getApplicationMetadata(), n, false);
+        b.c(parcel, 6, il.fP());
+        b.H(parcel, d);
     }
     
-    public ih.b.b aR(final Parcel parcel) {
+    public il[] ah(final int n) {
+        return new il[n];
+    }
+    
+    public il x(final Parcel parcel) {
         int g = 0;
-        final int o = a.o(parcel);
-        final HashSet<Integer> set = new HashSet<Integer>();
-        String n = null;
+        final int c = a.C(parcel);
+        double m = 0.0;
+        ApplicationMetadata applicationMetadata = null;
         int g2 = 0;
+        boolean c2 = false;
         int g3 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n2);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g3 = a.g(parcel, n2);
-                    set.add(1);
+                    g3 = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    g2 = a.g(parcel, n2);
-                    set.add(2);
+                    m = a.m(parcel, b);
                     continue;
                 }
                 case 3: {
-                    n = a.n(parcel, n2);
-                    set.add(3);
+                    c2 = a.c(parcel, b);
                     continue;
                 }
                 case 4: {
-                    g = a.g(parcel, n2);
-                    set.add(4);
+                    g2 = a.g(parcel, b);
+                    continue;
+                }
+                case 5: {
+                    applicationMetadata = a.a(parcel, b, ApplicationMetadata.CREATOR);
+                    continue;
+                }
+                case 6: {
+                    g = a.g(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new ih.b.b(set, g3, g2, n, g);
-    }
-    
-    public ih.b.b[] bU(final int n) {
-        return new ih.b.b[n];
+        return new il(g3, m, c2, g2, applicationMetadata, g);
     }
 }

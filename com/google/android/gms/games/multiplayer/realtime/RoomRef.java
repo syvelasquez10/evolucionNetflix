@@ -11,15 +11,15 @@ import com.google.android.gms.games.multiplayer.Participant;
 import android.database.CharArrayBuffer;
 import android.os.Bundle;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class RoomRef extends b implements Room
+public final class RoomRef extends d implements Room
 {
-    private final int LE;
+    private final int aaz;
     
-    RoomRef(final DataHolder dataHolder, final int n, final int le) {
+    RoomRef(final DataHolder dataHolder, final int n, final int aaz) {
         super(dataHolder, n);
-        this.LE = le;
+        this.aaz = aaz;
     }
     
     public int describeContents() {
@@ -89,9 +89,9 @@ public final class RoomRef extends b implements Room
     }
     
     public ArrayList<Participant> getParticipants() {
-        final ArrayList<ParticipantRef> list = (ArrayList<ParticipantRef>)new ArrayList<Participant>(this.LE);
-        for (int i = 0; i < this.LE; ++i) {
-            list.add(new ParticipantRef(this.BB, this.BD + i));
+        final ArrayList<ParticipantRef> list = (ArrayList<ParticipantRef>)new ArrayList<Participant>(this.aaz);
+        for (int i = 0; i < this.aaz; ++i) {
+            list.add(new ParticipantRef(this.IC, this.JQ + i));
         }
         return (ArrayList<Participant>)list;
     }

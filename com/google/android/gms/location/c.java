@@ -4,59 +4,96 @@
 
 package com.google.android.gms.location;
 
-import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import com.google.android.gms.common.internal.m;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class c implements Parcelable$Creator<b>
+public class c implements SafeParcelable
 {
-    static void a(final b b, final Parcel parcel, int p3) {
-        p3 = com.google.android.gms.common.internal.safeparcel.b.p(parcel);
-        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, b.Oh);
-        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1000, b.getVersionCode());
-        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 2, b.Oi);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, b.Oj);
-        com.google.android.gms.common.internal.safeparcel.b.F(parcel, p3);
+    public static final d CREATOR;
+    private final int BR;
+    int aem;
+    int aen;
+    long aeo;
+    
+    static {
+        CREATOR = new d();
     }
     
-    public b aB(final Parcel parcel) {
-        int g = 1;
-        final int o = a.o(parcel);
-        int g2 = 0;
-        long i = 0L;
-        int g3 = 1;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
-                default: {
-                    a.b(parcel, n);
-                    continue;
-                }
-                case 1: {
-                    g3 = a.g(parcel, n);
-                    continue;
-                }
-                case 1000: {
-                    g2 = a.g(parcel, n);
-                    continue;
-                }
-                case 2: {
-                    g = a.g(parcel, n);
-                    continue;
-                }
-                case 3: {
-                    i = a.i(parcel, n);
-                    continue;
-                }
+    c(final int br, final int aem, final int aen, final long aeo) {
+        this.BR = br;
+        this.aem = aem;
+        this.aen = aen;
+        this.aeo = aeo;
+    }
+    
+    private String ed(final int n) {
+        switch (n) {
+            default: {
+                return "STATUS_UNKNOWN";
+            }
+            case 0: {
+                return "STATUS_SUCCESSFUL";
+            }
+            case 2: {
+                return "STATUS_TIMED_OUT_ON_SCAN";
+            }
+            case 3: {
+                return "STATUS_NO_INFO_IN_DATABASE";
+            }
+            case 4: {
+                return "STATUS_INVALID_SCAN";
+            }
+            case 5: {
+                return "STATUS_UNABLE_TO_QUERY_DATABASE";
+            }
+            case 6: {
+                return "STATUS_SCANS_DISABLED_IN_SETTINGS";
+            }
+            case 7: {
+                return "STATUS_LOCATION_DISABLED_IN_SETTINGS";
+            }
+            case 8: {
+                return "STATUS_IN_PROGRESS";
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
-        }
-        return new b(g2, g3, g, i);
     }
     
-    public b[] bA(final int n) {
-        return new b[n];
+    public int describeContents() {
+        return 0;
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (o instanceof c) {
+            final c c = (c)o;
+            if (this.aem == c.aem && this.aen == c.aen && this.aeo == c.aeo) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    int getVersionCode() {
+        return this.BR;
+    }
+    
+    @Override
+    public int hashCode() {
+        return m.hashCode(this.aem, this.aen, this.aeo);
+    }
+    
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("LocationStatus[cell status: ").append(this.ed(this.aem));
+        sb.append(", wifi status: ").append(this.ed(this.aen));
+        sb.append(", elapsed realtime ns: ").append(this.aeo);
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        d.a(this, parcel, n);
     }
 }

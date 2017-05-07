@@ -6,12 +6,12 @@ package com.google.android.gms.games.multiplayer;
 
 import com.google.android.gms.games.Player;
 import java.util.ArrayList;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 
 public final class ParticipantUtils
 {
-    public static boolean aV(final String s) {
-        fq.b(s, (Object)"Participant ID must not be null");
+    public static boolean bS(final String s) {
+        n.b(s, (Object)"Participant ID must not be null");
         return s.startsWith("p_");
     }
     

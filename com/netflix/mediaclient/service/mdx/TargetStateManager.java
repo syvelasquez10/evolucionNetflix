@@ -18,8 +18,8 @@ public class TargetStateManager
     private static final int PAIRING_TIMEOUT = 24000;
     private static final int REGPAIRING_RETRY_INTERVAL = 4000;
     private static final int REGPAIRING_TIMEOUT = 32000;
-    private static final int SESSION_MESSAGE_RETRY = 8;
-    private static final int SESSION_RETRY_INTERVAL = 100;
+    private static final int SESSION_MESSAGE_RETRY = 4;
+    private static final int SESSION_RETRY_INTERVAL = 1000;
     private static final int STATE_TIMEOUT = 8000;
     private static final String TAG = "nf_mdx";
     private boolean mActivated;
@@ -529,16 +529,16 @@ public class TargetStateManager
     {
         StateBadPair(StateId.StateBadPair, "badpair", 0, 0, 1000), 
         StateHasError(StateId.StateHasError, "haserror", 0, 0, 1000), 
-        StateHasPair(StateId.StateHasPair, "haspair", 8, 8000, 100), 
+        StateHasPair(StateId.StateHasPair, "haspair", 4, 8000, 1000), 
         StateLaunched(StateId.StateLaunched, "launched", 0, 0, 1000), 
-        StateNeedHandShake(StateId.StateNeedHandShake, "needhandshake", 8, 8000, 100), 
+        StateNeedHandShake(StateId.StateNeedHandShake, "needhandshake", 4, 8000, 1000), 
         StateNeedLaunched(StateId.StateNeedLaunched, "needlaunch", 1, 64000, 7000), 
         StateNeedRegPair(StateId.StateNeedRegPair, "needregpair", 3, 32000, 4000), 
         StateNoPair(StateId.StateNoPair, "nopair", 3, 24000, 3000), 
         StateNoPairNeedRegPair(StateId.StateNoPairNeedRegPair, "nopairneedregpair", 0, 0, 1000), 
         StateNotLaunched(StateId.StateNotLaunched, "notlaunched", 0, 0, 1000), 
         StateRetryExhausted(StateId.StateRetryExhausted, "retryexhausted", 0, 0, 1000), 
-        StateSendingMessage(StateId.StateSendingMessage, "sendingmessage", 8, 8000, 100), 
+        StateSendingMessage(StateId.StateSendingMessage, "sendingmessage", 4, 8000, 1000), 
         StateSessionEnd(StateId.StateSessionEnd, "sessionend", 0, 8000, 1000), 
         StateSessionReady(StateId.StateSessionReady, "sessionready", 0, 0, 1000), 
         StateTimeout(StateId.StateTimeout, "timeout", 0, 0, 1000);

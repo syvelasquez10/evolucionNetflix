@@ -10,6 +10,6 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 public class SearchMenu
 {
     public static void addSearchNavigation(final NetflixActivity netflixActivity, final Menu menu) {
-        menu.add(0, 2131165240, 0, 2131493206).setIcon(2130837726).setIntent(SearchActivity.create(netflixActivity)).setShowAsAction(1);
+        menu.add(0, 2131165243, 0, 2131493211).setIcon(2130837692).setIntent(SearchActivity.create(netflixActivity)).setShowAsAction(1);
     }
 }

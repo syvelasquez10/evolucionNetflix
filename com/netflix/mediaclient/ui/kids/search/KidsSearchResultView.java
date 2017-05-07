@@ -26,14 +26,14 @@ public class KidsSearchResultView extends SearchResultView
     
     private void init() {
         if (this.title != null) {
-            this.title.setTextColor(this.getResources().getColor(2131296306));
+            this.title.setTextColor(this.getResources().getColor(2131296352));
             ViewUtils.clearShadow(this.title);
         }
     }
     
     @Override
     protected int getYearColorResId() {
-        return 2131296307;
+        return 2131296353;
     }
     
     @Override

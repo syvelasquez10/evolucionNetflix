@@ -4,31 +4,44 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.wearable.c;
-import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.wearable.a;
-import com.google.android.gms.common.data.b;
+import android.os.Build$VERSION;
 
-public final class kc extends b implements a
+public final class kc
 {
-    private final int LE;
-    
-    public kc(final DataHolder dataHolder, final int n, final int le) {
-        super(dataHolder, n);
-        this.LE = le;
+    private static boolean aR(final int n) {
+        return Build$VERSION.SDK_INT >= n;
     }
     
-    @Override
-    public int getType() {
-        return this.getInteger("event_type");
+    public static boolean hB() {
+        return aR(11);
     }
     
-    @Override
-    public c lZ() {
-        return new kg(this.BB, this.BD, this.LE);
+    public static boolean hC() {
+        return aR(12);
     }
     
-    public a me() {
-        return new kb(this);
+    public static boolean hD() {
+        return aR(13);
+    }
+    
+    public static boolean hE() {
+        return aR(14);
+    }
+    
+    public static boolean hF() {
+        return aR(16);
+    }
+    
+    public static boolean hG() {
+        return aR(17);
+    }
+    
+    @Deprecated
+    public static boolean hH() {
+        return hI();
+    }
+    
+    public static boolean hI() {
+        return aR(19);
     }
 }

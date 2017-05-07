@@ -10,7 +10,7 @@ public final class TimeSpan
         throw new AssertionError((Object)"Uninstantiable");
     }
     
-    public static String bd(final int n) {
+    public static String dH(final int n) {
         switch (n) {
             default: {
                 throw new IllegalArgumentException("Unknown time span " + n);

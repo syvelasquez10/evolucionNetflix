@@ -156,6 +156,17 @@ public class LruCache<K, V>
         }
     }
     
+    public void resize(final int maxSize) {
+        if (maxSize <= 0) {
+            throw new IllegalArgumentException("maxSize <= 0");
+        }
+        synchronized (this) {
+            this.maxSize = maxSize;
+            // monitorexit(this)
+            this.trimToSize(maxSize);
+        }
+    }
+    
     public final int size() {
         synchronized (this) {
             return this.size;

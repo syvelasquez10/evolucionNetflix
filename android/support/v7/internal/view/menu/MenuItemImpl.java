@@ -13,6 +13,7 @@ import android.content.ActivityNotFoundException;
 import android.util.Log;
 import android.view.SubMenu;
 import android.view.ViewDebug$CapturedViewProperty;
+import android.support.v7.internal.widget.TintManager;
 import android.view.MenuItem;
 import android.support.v4.view.MenuItemCompat;
 import android.view.ContextMenu$ContextMenuInfo;
@@ -94,11 +95,11 @@ public final class MenuItemImpl implements SupportMenuItem
     
     @Override
     public boolean expandActionView() {
-        return (this.mShowAsAction & 0x8) != 0x0 && this.mActionView != null && (this.mOnActionExpandListener == null || this.mOnActionExpandListener.onMenuItemActionExpand((MenuItem)this)) && this.mMenu.expandItemActionView(this);
+        return this.hasCollapsibleActionView() && (this.mOnActionExpandListener == null || this.mOnActionExpandListener.onMenuItemActionExpand((MenuItem)this)) && this.mMenu.expandItemActionView(this);
     }
     
     public android.view.ActionProvider getActionProvider() {
-        throw new UnsupportedOperationException("Implementation should use getSupportActionProvider!");
+        throw new UnsupportedOperationException("This is not supported, use MenuItemCompat.getActionProvider()");
     }
     
     @Override
@@ -129,7 +130,7 @@ public final class MenuItemImpl implements SupportMenuItem
             return this.mIconDrawable;
         }
         if (this.mIconResId != 0) {
-            final Drawable drawable = this.mMenu.getResources().getDrawable(this.mIconResId);
+            final Drawable drawable = TintManager.getDrawable(this.mMenu.getContext(), this.mIconResId);
             this.mIconResId = 0;
             return this.mIconDrawable = drawable;
         }
@@ -162,7 +163,10 @@ public final class MenuItemImpl implements SupportMenuItem
     }
     
     char getShortcut() {
-        return this.mShortcutAlphabeticChar;
+        if (this.mMenu.isQwertyMode()) {
+            return this.mShortcutAlphabeticChar;
+        }
+        return this.mShortcutNumericChar;
     }
     
     String getShortcutLabel() {
@@ -221,7 +225,17 @@ public final class MenuItemImpl implements SupportMenuItem
     }
     
     public boolean hasCollapsibleActionView() {
-        return (this.mShowAsAction & 0x8) != 0x0 && this.mActionView != null;
+        boolean b = false;
+        if ((this.mShowAsAction & 0x8) != 0x0) {
+            if (this.mActionView == null && this.mActionProvider != null) {
+                this.mActionView = this.mActionProvider.onCreateActionView((MenuItem)this);
+            }
+            b = b;
+            if (this.mActionView != null) {
+                b = true;
+            }
+        }
+        return b;
     }
     
     public boolean hasSubMenu() {
@@ -296,7 +310,7 @@ public final class MenuItemImpl implements SupportMenuItem
     }
     
     public MenuItem setActionProvider(final android.view.ActionProvider actionProvider) {
-        throw new UnsupportedOperationException("Implementation should use setSupportActionProvider!");
+        throw new UnsupportedOperationException("This is not supported, use MenuItemCompat.setActionProvider()");
     }
     
     public SupportMenuItem setActionView(final int n) {
@@ -440,7 +454,7 @@ public final class MenuItemImpl implements SupportMenuItem
     }
     
     public MenuItem setOnActionExpandListener(final MenuItem$OnActionExpandListener menuItem$OnActionExpandListener) {
-        throw new UnsupportedOperationException("Implementation should use setSupportOnActionExpandListener!");
+        throw new UnsupportedOperationException("This is not supported, use MenuItemCompat.setOnActionExpandListener()");
     }
     
     public MenuItem setOnMenuItemClickListener(final MenuItem$OnMenuItemClickListener mClickListener) {
@@ -481,22 +495,19 @@ public final class MenuItemImpl implements SupportMenuItem
     
     @Override
     public SupportMenuItem setSupportActionProvider(final ActionProvider mActionProvider) {
-        if (this.mActionProvider != mActionProvider) {
-            this.mActionView = null;
-            if (this.mActionProvider != null) {
-                this.mActionProvider.setVisibilityListener(null);
-            }
-            this.mActionProvider = mActionProvider;
-            this.mMenu.onItemsChanged(true);
-            if (mActionProvider != null) {
-                mActionProvider.setVisibilityListener((ActionProvider.VisibilityListener)new ActionProvider.VisibilityListener() {
-                    @Override
-                    public void onActionProviderVisibilityChanged(final boolean b) {
-                        MenuItemImpl.this.mMenu.onItemVisibleChanged(MenuItemImpl.this);
-                    }
-                });
-                return this;
-            }
+        if (this.mActionProvider != null) {
+            this.mActionProvider.setVisibilityListener(null);
+        }
+        this.mActionView = null;
+        this.mActionProvider = mActionProvider;
+        this.mMenu.onItemsChanged(true);
+        if (this.mActionProvider != null) {
+            this.mActionProvider.setVisibilityListener((ActionProvider.VisibilityListener)new ActionProvider.VisibilityListener() {
+                @Override
+                public void onActionProviderVisibilityChanged(final boolean b) {
+                    MenuItemImpl.this.mMenu.onItemVisibleChanged(MenuItemImpl.this);
+                }
+            });
         }
         return this;
     }

@@ -12,27 +12,24 @@ import android.content.ServiceConnection;
 
 public class a implements ServiceConnection
 {
-    boolean Ae;
-    private final BlockingQueue<IBinder> Af;
+    boolean HC;
+    private final BlockingQueue<IBinder> HD;
     
     public a() {
-        this.Ae = false;
-        this.Af = new LinkedBlockingQueue<IBinder>();
+        this.HC = false;
+        this.HD = new LinkedBlockingQueue<IBinder>();
     }
     
-    public IBinder dV() throws InterruptedException {
-        if (this.Ae) {
+    public IBinder fX() throws InterruptedException {
+        if (this.HC) {
             throw new IllegalStateException();
         }
-        this.Ae = true;
-        return this.Af.take();
+        this.HC = true;
+        return this.HD.take();
     }
     
     public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
-        try {
-            this.Af.put(binder);
-        }
-        catch (InterruptedException ex) {}
+        this.HD.add(binder);
     }
     
     public void onServiceDisconnected(final ComponentName componentName) {

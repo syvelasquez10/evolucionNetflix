@@ -10,11 +10,16 @@ import android.os.Parcel;
 
 public class d
 {
-    static void a(final LatLngBounds latLngBounds, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, latLngBounds.getVersionCode());
-        b.a(parcel, 2, (Parcelable)latLngBounds.southwest, n, false);
-        b.a(parcel, 3, (Parcelable)latLngBounds.northeast, n, false);
-        b.F(parcel, p3);
+    static void a(final CircleOptions circleOptions, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1, circleOptions.getVersionCode());
+        b.a(parcel, 2, (Parcelable)circleOptions.getCenter(), n, false);
+        b.a(parcel, 3, circleOptions.getRadius());
+        b.a(parcel, 4, circleOptions.getStrokeWidth());
+        b.c(parcel, 5, circleOptions.getStrokeColor());
+        b.c(parcel, 6, circleOptions.getFillColor());
+        b.a(parcel, 7, circleOptions.getZIndex());
+        b.a(parcel, 8, circleOptions.isVisible());
+        b.H(parcel, d);
     }
 }

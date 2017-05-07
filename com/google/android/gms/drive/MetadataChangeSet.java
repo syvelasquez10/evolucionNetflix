@@ -4,105 +4,115 @@
 
 package com.google.android.gms.drive;
 
+import com.google.android.gms.drive.metadata.internal.AppVisibleCustomProperties;
 import com.google.android.gms.drive.metadata.MetadataField;
-import com.google.android.gms.internal.gt;
+import com.google.android.gms.internal.kf;
 import java.util.Date;
-import com.google.android.gms.internal.gs;
+import com.google.android.gms.internal.kd;
 import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 
 public final class MetadataChangeSet
 {
-    private final MetadataBundle EP;
+    public static final MetadataChangeSet Nl;
+    private final MetadataBundle Nm;
     
-    private MetadataChangeSet(final MetadataBundle metadataBundle) {
-        this.EP = MetadataBundle.a(metadataBundle);
+    static {
+        Nl = new MetadataChangeSet(MetadataBundle.io());
     }
     
-    public MetadataBundle fD() {
-        return this.EP;
+    public MetadataChangeSet(final MetadataBundle metadataBundle) {
+        this.Nm = MetadataBundle.a(metadataBundle);
     }
     
     public String getDescription() {
-        return this.EP.a(gs.FT);
+        return this.Nm.a(kd.PH);
     }
     
     public String getIndexableText() {
-        return this.EP.a(gs.FY);
+        return this.Nm.a(kd.PM);
     }
     
     public Date getLastViewedByMeDate() {
-        return this.EP.a((MetadataField<Date>)gt.Gt);
+        return this.Nm.a((MetadataField<Date>)kf.Qm);
     }
     
     public String getMimeType() {
-        return this.EP.a((MetadataField<String>)gs.Gh);
+        return this.Nm.a((MetadataField<String>)kd.PV);
     }
     
     public String getTitle() {
-        return this.EP.a((MetadataField<String>)gs.Go);
+        return this.Nm.a((MetadataField<String>)kd.Qe);
+    }
+    
+    public MetadataBundle hS() {
+        return this.Nm;
     }
     
     public Boolean isPinned() {
-        return this.EP.a((MetadataField<Boolean>)gs.Gc);
+        return this.Nm.a((MetadataField<Boolean>)kd.PQ);
     }
     
     public Boolean isStarred() {
-        return this.EP.a((MetadataField<Boolean>)gs.Gm);
+        return this.Nm.a((MetadataField<Boolean>)kd.Qc);
     }
     
     public Boolean isViewed() {
-        return this.EP.a(gs.Gg);
+        return this.Nm.a(kd.PU);
     }
     
     public static class Builder
     {
-        private final MetadataBundle EP;
+        private final MetadataBundle Nm;
+        private AppVisibleCustomProperties.a Nn;
         
         public Builder() {
-            this.EP = MetadataBundle.fT();
+            this.Nm = MetadataBundle.io();
         }
         
         public MetadataChangeSet build() {
-            return new MetadataChangeSet(this.EP, null);
+            if (this.Nn != null) {
+                this.Nm.b(kd.PG, this.Nn.im());
+            }
+            return new MetadataChangeSet(this.Nm);
         }
         
         public Builder setDescription(final String s) {
-            this.EP.b(gs.FT, s);
+            this.Nm.b(kd.PH, s);
             return this;
         }
         
         public Builder setIndexableText(final String s) {
-            this.EP.b(gs.FY, s);
+            this.Nm.b(kd.PM, s);
             return this;
         }
         
         public Builder setLastViewedByMeDate(final Date date) {
-            this.EP.b(gt.Gt, date);
+            this.Nm.b(kf.Qm, date);
             return this;
         }
         
         public Builder setMimeType(final String s) {
-            this.EP.b(gs.Gh, s);
+            this.Nm.b(kd.PV, s);
             return this;
         }
         
         public Builder setPinned(final boolean b) {
-            this.EP.b(gs.Gc, b);
+            this.Nm.b(kd.PQ, b);
             return this;
         }
         
         public Builder setStarred(final boolean b) {
-            this.EP.b(gs.Gm, b);
+            this.Nm.b(kd.Qc, b);
             return this;
         }
         
         public Builder setTitle(final String s) {
-            this.EP.b(gs.Go, s);
+            this.Nm.b(kd.Qe, s);
             return this;
         }
         
         public Builder setViewed(final boolean b) {
-            this.EP.b(gs.Gg, b);
+            this.Nm.b(kd.PU, b);
             return this;
         }
     }

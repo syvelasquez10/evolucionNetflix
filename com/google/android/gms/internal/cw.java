@@ -4,42 +4,57 @@
 
 package com.google.android.gms.internal;
 
-import android.os.IInterface;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.os.Bundle;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import android.content.Context;
+import android.location.Location;
+import java.util.Set;
+import java.util.Date;
+import com.google.android.gms.ads.mediation.MediationAdRequest;
 
-public class cw extends ff<db>
+@ez
+public final class cw implements MediationAdRequest
 {
-    final int pe;
+    private final Date d;
+    private final Set<String> f;
+    private final boolean g;
+    private final Location h;
+    private final int om;
+    private final int qD;
     
-    public cw(final Context context, final ConnectionCallbacks connectionCallbacks, final OnConnectionFailedListener onConnectionFailedListener, final int pe) {
-        super(context, connectionCallbacks, onConnectionFailedListener, new String[0]);
-        this.pe = pe;
+    public cw(final Date d, final int om, final Set<String> f, final Location h, final boolean g, final int qd) {
+        this.d = d;
+        this.om = om;
+        this.f = f;
+        this.h = h;
+        this.g = g;
+        this.qD = qd;
     }
     
     @Override
-    protected void a(final fm fm, final e e) throws RemoteException {
-        fm.g(e, this.pe, this.getContext().getPackageName(), new Bundle());
+    public Date getBirthday() {
+        return this.d;
     }
     
     @Override
-    protected String bg() {
-        return "com.google.android.gms.ads.service.START";
+    public int getGender() {
+        return this.om;
     }
     
     @Override
-    protected String bh() {
-        return "com.google.android.gms.ads.internal.request.IAdRequestService";
+    public Set<String> getKeywords() {
+        return this.f;
     }
     
-    public db bi() {
-        return super.eM();
+    @Override
+    public Location getLocation() {
+        return this.h;
     }
     
-    protected db q(final IBinder binder) {
-        return db.a.s(binder);
+    @Override
+    public boolean isTesting() {
+        return this.g;
+    }
+    
+    @Override
+    public int taggedForChildDirectedTreatment() {
+        return this.qD;
     }
 }

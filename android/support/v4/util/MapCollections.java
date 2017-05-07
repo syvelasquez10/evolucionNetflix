@@ -460,10 +460,10 @@ abstract class MapCollections<K, V>
             if (!this.mEntryValid) {
                 throw new IllegalStateException();
             }
+            MapCollections.this.colRemoveAt(this.mIndex);
             --this.mIndex;
             --this.mEnd;
             this.mEntryValid = false;
-            MapCollections.this.colRemoveAt(this.mIndex);
         }
         
         @Override

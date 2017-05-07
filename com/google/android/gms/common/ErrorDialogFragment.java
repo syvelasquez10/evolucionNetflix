@@ -8,44 +8,47 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.content.DialogInterface;
 import android.content.DialogInterface$OnDismissListener;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.app.Dialog;
 import android.content.DialogInterface$OnCancelListener;
 import android.app.DialogFragment;
 
 public class ErrorDialogFragment extends DialogFragment
 {
-    private DialogInterface$OnCancelListener Ai;
+    private DialogInterface$OnCancelListener HG;
     private Dialog mDialog;
     
     public ErrorDialogFragment() {
         this.mDialog = null;
-        this.Ai = null;
+        this.HG = null;
     }
     
     public static ErrorDialogFragment newInstance(final Dialog dialog) {
         return newInstance(dialog, null);
     }
     
-    public static ErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener ai) {
+    public static ErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener hg) {
         final ErrorDialogFragment errorDialogFragment = new ErrorDialogFragment();
-        mDialog = fq.b(mDialog, "Cannot display null dialog");
+        mDialog = n.b(mDialog, "Cannot display null dialog");
         mDialog.setOnCancelListener((DialogInterface$OnCancelListener)null);
         mDialog.setOnDismissListener((DialogInterface$OnDismissListener)null);
         errorDialogFragment.mDialog = mDialog;
-        if (ai != null) {
-            errorDialogFragment.Ai = ai;
+        if (hg != null) {
+            errorDialogFragment.HG = hg;
         }
         return errorDialogFragment;
     }
     
     public void onCancel(final DialogInterface dialogInterface) {
-        if (this.Ai != null) {
-            this.Ai.onCancel(dialogInterface);
+        if (this.HG != null) {
+            this.HG.onCancel(dialogInterface);
         }
     }
     
     public Dialog onCreateDialog(final Bundle bundle) {
+        if (this.mDialog == null) {
+            this.setShowsDialog(false);
+        }
         return this.mDialog;
     }
     

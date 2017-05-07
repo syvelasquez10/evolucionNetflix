@@ -12,22 +12,24 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class OpenContentsRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<OpenContentsRequest> CREATOR;
-    final DriveId EV;
-    final int Ev;
-    final int xH;
+    final int BR;
+    final int MN;
+    final DriveId NV;
+    final int Pp;
     
     static {
-        CREATOR = (Parcelable$Creator)new ah();
+        CREATOR = (Parcelable$Creator)new au();
     }
     
-    OpenContentsRequest(final int xh, final DriveId ev, final int ev2) {
-        this.xH = xh;
-        this.EV = ev;
-        this.Ev = ev2;
+    OpenContentsRequest(final int br, final DriveId nv, final int mn, final int pp) {
+        this.BR = br;
+        this.NV = nv;
+        this.MN = mn;
+        this.Pp = pp;
     }
     
-    public OpenContentsRequest(final DriveId driveId, final int n) {
-        this(1, driveId, n);
+    public OpenContentsRequest(final DriveId driveId, final int n, final int n2) {
+        this(1, driveId, n, n2);
     }
     
     public int describeContents() {
@@ -35,6 +37,6 @@ public class OpenContentsRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        ah.a(this, parcel, n);
+        au.a(this, parcel, n);
     }
 }

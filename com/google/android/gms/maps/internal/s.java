@@ -14,7 +14,7 @@ import android.os.IInterface;
 
 public interface s extends IInterface
 {
-    void f(final d p0) throws RemoteException;
+    void h(final d p0) throws RemoteException;
     
     void onSnapshotReady(final Bitmap p0) throws RemoteException;
     
@@ -24,7 +24,7 @@ public interface s extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.ISnapshotReadyCallback");
         }
         
-        public static s aw(final IBinder binder) {
+        public static s bk(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -63,7 +63,7 @@ public interface s extends IInterface
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ISnapshotReadyCallback");
-                    this.f(d.a.K(parcel.readStrongBinder()));
+                    this.h(d.a.am(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -72,18 +72,18 @@ public interface s extends IInterface
         
         private static class a implements s
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
-            public void f(final d d) throws RemoteException {
+            public void h(final d d) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -96,7 +96,7 @@ public interface s extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -118,7 +118,7 @@ public interface s extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

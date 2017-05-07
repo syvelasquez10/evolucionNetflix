@@ -12,7 +12,7 @@ import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.leaderboard.LeaderboardBuffer;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
 import com.google.android.gms.games.internal.GamesClientImpl;
 import com.google.android.gms.common.api.Api;
@@ -26,19 +26,19 @@ public final class LeaderboardsImpl implements Leaderboards
 {
     @Override
     public Intent getAllLeaderboardsIntent(final GoogleApiClient googleApiClient) {
-        return Games.c(googleApiClient).gp();
+        return Games.c(googleApiClient).kb();
     }
     
     @Override
     public Intent getLeaderboardIntent(final GoogleApiClient googleApiClient, final String s) {
-        return Games.c(googleApiClient).aA(s);
+        return Games.c(googleApiClient).bu(s);
     }
     
     @Override
     public PendingResult<LoadPlayerScoreResult> loadCurrentPlayerLeaderboardScore(final GoogleApiClient googleApiClient, final String s, final int n, final int n2) {
         return googleApiClient.a((PendingResult<LoadPlayerScoreResult>)new LoadPlayerScoreImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.a((d<LoadPlayerScoreResult>)this, null, s, n, n2);
+                gamesClientImpl.a((BaseImplementation.b<LoadPlayerScoreResult>)this, null, s, n, n2);
             }
         });
     }
@@ -47,7 +47,7 @@ public final class LeaderboardsImpl implements Leaderboards
     public PendingResult<LeaderboardMetadataResult> loadLeaderboardMetadata(final GoogleApiClient googleApiClient, final String s, final boolean b) {
         return googleApiClient.a((PendingResult<LeaderboardMetadataResult>)new LoadMetadataImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.a((d<LeaderboardMetadataResult>)this, s, b);
+                gamesClientImpl.a((BaseImplementation.b<LeaderboardMetadataResult>)this, s, b);
             }
         });
     }
@@ -56,7 +56,7 @@ public final class LeaderboardsImpl implements Leaderboards
     public PendingResult<LeaderboardMetadataResult> loadLeaderboardMetadata(final GoogleApiClient googleApiClient, final boolean b) {
         return googleApiClient.a((PendingResult<LeaderboardMetadataResult>)new LoadMetadataImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.b((d<LeaderboardMetadataResult>)this, b);
+                gamesClientImpl.b((BaseImplementation.b<LeaderboardMetadataResult>)this, b);
             }
         });
     }
@@ -65,7 +65,7 @@ public final class LeaderboardsImpl implements Leaderboards
     public PendingResult<LoadScoresResult> loadMoreScores(final GoogleApiClient googleApiClient, final LeaderboardScoreBuffer leaderboardScoreBuffer, final int n, final int n2) {
         return googleApiClient.a((PendingResult<LoadScoresResult>)new LoadScoresImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.a((d<LoadScoresResult>)this, leaderboardScoreBuffer, n, n2);
+                gamesClientImpl.a((BaseImplementation.b<LoadScoresResult>)this, leaderboardScoreBuffer, n, n2);
             }
         });
     }
@@ -79,7 +79,7 @@ public final class LeaderboardsImpl implements Leaderboards
     public PendingResult<LoadScoresResult> loadPlayerCenteredScores(final GoogleApiClient googleApiClient, final String s, final int n, final int n2, final int n3, final boolean b) {
         return googleApiClient.a((PendingResult<LoadScoresResult>)new LoadScoresImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.b((d<LoadScoresResult>)this, s, n, n2, n3, b);
+                gamesClientImpl.b((BaseImplementation.b<LoadScoresResult>)this, s, n, n2, n3, b);
             }
         });
     }
@@ -93,7 +93,7 @@ public final class LeaderboardsImpl implements Leaderboards
     public PendingResult<LoadScoresResult> loadTopScores(final GoogleApiClient googleApiClient, final String s, final int n, final int n2, final int n3, final boolean b) {
         return googleApiClient.a((PendingResult<LoadScoresResult>)new LoadScoresImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.a((d<LoadScoresResult>)this, s, n, n2, n3, b);
+                gamesClientImpl.a((BaseImplementation.b<LoadScoresResult>)this, s, n, n2, n3, b);
             }
         });
     }
@@ -117,18 +117,18 @@ public final class LeaderboardsImpl implements Leaderboards
     public PendingResult<SubmitScoreResult> submitScoreImmediate(final GoogleApiClient googleApiClient, final String s, final long n, final String s2) {
         return googleApiClient.b((PendingResult<SubmitScoreResult>)new SubmitScoreImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.a((d<SubmitScoreResult>)this, s, n, s2);
+                gamesClientImpl.a((BaseImplementation.b<SubmitScoreResult>)this, s, n, s2);
             }
         });
     }
     
     private abstract static class LoadMetadataImpl extends BaseGamesApiMethodImpl<LeaderboardMetadataResult>
     {
-        public LeaderboardMetadataResult D(final Status status) {
+        public LeaderboardMetadataResult U(final Status status) {
             return new LeaderboardMetadataResult() {
                 @Override
                 public LeaderboardBuffer getLeaderboards() {
-                    return new LeaderboardBuffer(DataHolder.empty(14));
+                    return new LeaderboardBuffer(DataHolder.as(14));
                 }
                 
                 @Override
@@ -145,7 +145,7 @@ public final class LeaderboardsImpl implements Leaderboards
     
     private abstract static class LoadPlayerScoreImpl extends BaseGamesApiMethodImpl<LoadPlayerScoreResult>
     {
-        public LoadPlayerScoreResult E(final Status status) {
+        public LoadPlayerScoreResult V(final Status status) {
             return new LoadPlayerScoreResult() {
                 @Override
                 public LeaderboardScore getScore() {
@@ -162,7 +162,7 @@ public final class LeaderboardsImpl implements Leaderboards
     
     private abstract static class LoadScoresImpl extends BaseGamesApiMethodImpl<LoadScoresResult>
     {
-        public LoadScoresResult F(final Status status) {
+        public LoadScoresResult W(final Status status) {
             return new LoadScoresResult() {
                 @Override
                 public Leaderboard getLeaderboard() {
@@ -171,7 +171,7 @@ public final class LeaderboardsImpl implements Leaderboards
                 
                 @Override
                 public LeaderboardScoreBuffer getScores() {
-                    return new LeaderboardScoreBuffer(DataHolder.empty(14));
+                    return new LeaderboardScoreBuffer(DataHolder.as(14));
                 }
                 
                 @Override
@@ -188,11 +188,11 @@ public final class LeaderboardsImpl implements Leaderboards
     
     protected abstract static class SubmitScoreImpl extends BaseGamesApiMethodImpl<SubmitScoreResult>
     {
-        public SubmitScoreResult G(final Status status) {
+        public SubmitScoreResult X(final Status status) {
             return new SubmitScoreResult() {
                 @Override
                 public ScoreSubmissionData getScoreData() {
-                    return new ScoreSubmissionData(DataHolder.empty(14));
+                    return new ScoreSubmissionData(DataHolder.as(14));
                 }
                 
                 @Override

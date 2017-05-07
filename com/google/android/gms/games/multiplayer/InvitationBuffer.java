@@ -5,20 +5,20 @@
 package com.google.android.gms.games.multiplayer;
 
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.d;
+import com.google.android.gms.common.data.g;
 
-public final class InvitationBuffer extends d<Invitation>
+public final class InvitationBuffer extends g<Invitation>
 {
     public InvitationBuffer(final DataHolder dataHolder) {
         super(dataHolder);
     }
     
-    protected Invitation getEntry(final int n, final int n2) {
-        return new InvitationRef(this.BB, n, n2);
+    @Override
+    protected String gE() {
+        return "external_invitation_id";
     }
     
-    @Override
-    protected String getPrimaryDataMarkerColumn() {
-        return "external_invitation_id";
+    protected Invitation j(final int n, final int n2) {
+        return new InvitationRef(this.IC, n, n2);
     }
 }

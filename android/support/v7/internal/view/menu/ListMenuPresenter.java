@@ -80,17 +80,15 @@ public class ListMenuPresenter implements MenuPresenter, AdapterView$OnItemClick
     
     @Override
     public MenuView getMenuView(final ViewGroup viewGroup) {
-        if (this.mAdapter == null) {
-            this.mAdapter = new MenuAdapter();
-        }
-        if (!this.mAdapter.isEmpty()) {
-            if (this.mMenuView == null) {
-                (this.mMenuView = (ExpandedMenuView)this.mInflater.inflate(R.layout.abc_expanded_menu_layout, viewGroup, false)).setAdapter((ListAdapter)this.mAdapter);
-                this.mMenuView.setOnItemClickListener((AdapterView$OnItemClickListener)this);
+        if (this.mMenuView == null) {
+            this.mMenuView = (ExpandedMenuView)this.mInflater.inflate(R.layout.abc_expanded_menu_layout, viewGroup, false);
+            if (this.mAdapter == null) {
+                this.mAdapter = new MenuAdapter();
             }
-            return this.mMenuView;
+            this.mMenuView.setAdapter((ListAdapter)this.mAdapter);
+            this.mMenuView.setOnItemClickListener((AdapterView$OnItemClickListener)this);
         }
-        return null;
+        return this.mMenuView;
     }
     
     @Override
@@ -119,7 +117,7 @@ public class ListMenuPresenter implements MenuPresenter, AdapterView$OnItemClick
     }
     
     public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-        this.mMenu.performItemAction((MenuItem)this.mAdapter.getItem(n), 0);
+        this.mMenu.performItemAction((MenuItem)this.mAdapter.getItem(n), this, 0);
     }
     
     @Override

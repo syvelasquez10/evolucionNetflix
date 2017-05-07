@@ -4,36 +4,44 @@
 
 package com.google.android.gms.tagmanager;
 
-import android.view.WindowManager;
-import android.util.DisplayMetrics;
+import java.util.regex.PatternSyntaxException;
+import java.util.regex.Pattern;
 import com.google.android.gms.internal.d;
 import java.util.Map;
+import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
-import android.content.Context;
 
-class ci extends aj
+class ci extends dd
 {
     private static final String ID;
-    private final Context mContext;
+    private static final String aqe;
     
     static {
-        ID = a.Q.toString();
+        ID = a.ap.toString();
+        aqe = b.dc.toString();
     }
     
-    public ci(final Context mContext) {
-        super(ci.ID, new String[0]);
-        this.mContext = mContext;
-    }
-    
-    @Override
-    public boolean jX() {
-        return true;
+    public ci() {
+        super(ci.ID);
     }
     
     @Override
-    public d.a x(final Map<String, d.a> map) {
-        final DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((WindowManager)this.mContext.getSystemService("window")).getDefaultDisplay().getMetrics(displayMetrics);
-        return dh.r(displayMetrics.widthPixels + "x" + displayMetrics.heightPixels);
+    protected boolean a(final String s, final String s2, final Map<String, d.a> map) {
+        while (true) {
+            Label_0046: {
+                if (!di.n(map.get(ci.aqe))) {
+                    break Label_0046;
+                }
+                final int n = 66;
+                try {
+                    return Pattern.compile(s2, n).matcher(s).find();
+                }
+                catch (PatternSyntaxException ex) {
+                    return false;
+                }
+            }
+            final int n = 64;
+            continue;
+        }
     }
 }

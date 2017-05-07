@@ -73,7 +73,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165531);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165533);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -82,10 +82,10 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131165533);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131165459);
-        this.mBufferingOverlay = mController.findViewById(2131165562);
-        this.mBif = (ImageView)mController.findViewById(2131165532);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131165535);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131165461);
+        this.mBufferingOverlay = mController.findViewById(2131165564);
+        this.mBif = (ImageView)mController.findViewById(2131165534);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -134,7 +134,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131296304);
+        final int color = this.mController.getResources().getColor(2131296350);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -153,7 +153,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131296304);
+        final int color = this.mController.getResources().getColor(2131296350);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }

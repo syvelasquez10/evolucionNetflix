@@ -4,82 +4,156 @@
 
 package com.google.android.gms.analytics;
 
-import android.app.Activity;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import android.text.TextUtils;
+import java.util.Locale;
 
-class aj implements j
+class aj
 {
-    String wh;
-    double wi;
-    int wj;
-    int wk;
-    int wl;
-    int wm;
-    Map<String, String> wn;
+    private static final char[] BJ;
     
-    aj() {
-        this.wi = -1.0;
-        this.wj = -1;
-        this.wk = -1;
-        this.wl = -1;
-        this.wm = -1;
-        this.wn = new HashMap<String, String>();
+    static {
+        BJ = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
     }
     
-    public String M(final String s) {
-        final String s2 = this.wn.get(s);
-        if (s2 != null) {
-            return s2;
+    static String C(final boolean b) {
+        if (b) {
+            return "1";
         }
-        return s;
+        return "0";
     }
     
-    public boolean dj() {
-        return this.wh != null;
+    public static double a(final String s, final double n) {
+        if (s == null) {
+            return n;
+        }
+        try {
+            return Double.parseDouble(s);
+        }
+        catch (NumberFormatException ex) {
+            return n;
+        }
     }
     
-    public String dk() {
-        return this.wh;
+    static String a(final Locale locale) {
+        if (locale != null && !TextUtils.isEmpty((CharSequence)locale.getLanguage())) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append(locale.getLanguage().toLowerCase());
+            if (!TextUtils.isEmpty((CharSequence)locale.getCountry())) {
+                sb.append("-").append(locale.getCountry().toLowerCase());
+            }
+            return sb.toString();
+        }
+        return null;
     }
     
-    public boolean dl() {
-        return this.wi >= 0.0;
+    public static void a(final Map<String, String> map, final String s, final l l) {
+        if (!map.containsKey(s)) {
+            map.put(s, l.getValue(s));
+        }
     }
     
-    public double dm() {
-        return this.wi;
+    public static void a(final Map<String, String> map, final String s, final String s2) {
+        if (!map.containsKey(s)) {
+            map.put(s, s2);
+        }
     }
     
-    public boolean dn() {
-        return this.wj >= 0;
+    public static Map<String, String> an(final String s) {
+        final HashMap<String, String> hashMap = new HashMap<String, String>();
+        final String[] split = s.split("&");
+        for (int length = split.length, i = 0; i < length; ++i) {
+            final String[] split2 = split[i].split("=");
+            if (split2.length > 1) {
+                hashMap.put(split2[0], split2[1]);
+            }
+            else if (split2.length == 1 && split2[0].length() != 0) {
+                hashMap.put(split2[0], null);
+            }
+        }
+        return hashMap;
     }
     
-    public boolean do() {
-        return this.wk != -1;
+    public static String ao(String decode) {
+        if (TextUtils.isEmpty((CharSequence)decode)) {
+            return null;
+        }
+        String s = decode;
+        if (decode.contains("?")) {
+            final String[] split = decode.split("[\\?]");
+            s = decode;
+            if (split.length > 1) {
+                s = split[1];
+            }
+        }
+        while (true) {
+            Label_0200: {
+                if (!s.contains("%3D")) {
+                    break Label_0200;
+                }
+                try {
+                    decode = URLDecoder.decode(s, "UTF-8");
+                    final Map<String, String> an = an(decode);
+                    final String[] array = { "dclid", "utm_source", "gclid", "utm_campaign", "utm_medium", "utm_term", "utm_content", "utm_id", "gmob_t" };
+                    final StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < array.length; ++i) {
+                        if (!TextUtils.isEmpty((CharSequence)an.get(array[i]))) {
+                            if (sb.length() > 0) {
+                                sb.append("&");
+                            }
+                            sb.append(array[i]).append("=").append(an.get(array[i]));
+                        }
+                    }
+                    return sb.toString();
+                }
+                catch (UnsupportedEncodingException ex) {
+                    return null;
+                }
+            }
+            decode = s;
+            if (!s.contains("=")) {
+                return null;
+            }
+            continue;
+        }
     }
     
-    public boolean dp() {
-        return this.wk == 1;
+    public static MessageDigest ap(final String s) {
+        for (int i = 0; i < 2; ++i) {
+            try {
+                final MessageDigest instance = MessageDigest.getInstance(s);
+                if (instance != null) {
+                    return instance;
+                }
+            }
+            catch (NoSuchAlgorithmException ex) {}
+        }
+        return null;
     }
     
-    public boolean dq() {
-        return this.wl != -1;
-    }
-    
-    public boolean dr() {
-        return this.wl == 1;
-    }
-    
-    public boolean ds() {
-        return this.wm == 1;
-    }
-    
-    public int getSessionTimeout() {
-        return this.wj;
-    }
-    
-    public String h(final Activity activity) {
-        return this.M(activity.getClass().getCanonicalName());
+    public static boolean e(final String s, final boolean b) {
+        boolean b2 = b;
+        if (s != null) {
+            if (!s.equalsIgnoreCase("true") && !s.equalsIgnoreCase("yes") && !s.equalsIgnoreCase("1")) {
+                if (!s.equalsIgnoreCase("false") && !s.equalsIgnoreCase("no")) {
+                    b2 = b;
+                    if (!s.equalsIgnoreCase("0")) {
+                        return b2;
+                    }
+                }
+                return false;
+            }
+            b2 = true;
+        }
+        return b2;
     }
 }

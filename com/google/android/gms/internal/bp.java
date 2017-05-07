@@ -4,46 +4,80 @@
 
 package com.google.android.gms.internal;
 
-import android.os.RemoteException;
-import com.google.ads.mediation.MediationServerParameters;
-import android.os.Bundle;
-import com.google.android.gms.ads.mediation.MediationAdapter;
-import com.google.android.gms.ads.mediation.NetworkExtras;
-import java.util.Map;
+import com.google.android.gms.dynamic.e;
+import com.google.android.gms.dynamic.d;
+import android.graphics.drawable.Drawable;
 
-public final class bp extends bq.a
+@ez
+public class bp extends bs.a implements bq.a
 {
-    private Map<Class<? extends NetworkExtras>, NetworkExtras> nB;
-    private Map<Class<? extends MediationAdapter>, Bundle> nC;
+    private final Object mw;
+    private final String pl;
+    private final Drawable pm;
+    private final String pn;
+    private final String pp;
+    private bq pt;
+    private final Drawable pu;
+    private final String pv;
     
-    private <NETWORK_EXTRAS extends com.google.ads.mediation.NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> br n(final String s) throws RemoteException {
-        try {
-            final Class<?> forName = Class.forName(s, false, bp.class.getClassLoader());
-            if (com.google.ads.mediation.MediationAdapter.class.isAssignableFrom(forName)) {
-                final com.google.ads.mediation.MediationAdapter mediationAdapter = (com.google.ads.mediation.MediationAdapter)forName.newInstance();
-                return new bw<Object, Object>(mediationAdapter, (com.google.ads.mediation.NetworkExtras)this.nB.get(mediationAdapter.getAdditionalParametersType()));
-            }
-            if (MediationAdapter.class.isAssignableFrom(forName)) {
-                return new bu((MediationAdapter)forName.newInstance(), this.nC.get(forName));
-            }
-            dw.z("Could not instantiate mediation adapter: " + s + " (not a valid adapter).");
-            throw new RemoteException();
+    public bp(final String pl, final Drawable pm, final String pn, final Drawable pu, final String pp, final String pv) {
+        this.mw = new Object();
+        this.pl = pl;
+        this.pm = pm;
+        this.pn = pn;
+        this.pu = pu;
+        this.pp = pp;
+        this.pv = pv;
+    }
+    
+    @Override
+    public void a(final bq pt) {
+        synchronized (this.mw) {
+            this.pt = pt;
         }
-        catch (Throwable t) {
-            dw.z("Could not instantiate mediation adapter: " + s + ". " + t.getMessage());
-            throw new RemoteException();
+    }
+    
+    public void as() {
+        synchronized (this.mw) {
+            if (this.pt == null) {
+                gs.T("Attempt to record impression before content ad initialized.");
+                return;
+            }
+            this.pt.as();
         }
     }
     
-    public void c(final Map<Class<? extends NetworkExtras>, NetworkExtras> nb) {
-        this.nB = nb;
+    public d bA() {
+        return e.k(this.pu);
     }
     
-    public void d(final Map<Class<? extends MediationAdapter>, Bundle> nc) {
-        this.nC = nc;
+    public String bB() {
+        return this.pv;
     }
     
-    public br m(final String s) throws RemoteException {
-        return this.n(s);
+    public String bt() {
+        return this.pl;
+    }
+    
+    public d bu() {
+        return e.k(this.pm);
+    }
+    
+    public String bw() {
+        return this.pp;
+    }
+    
+    public String getBody() {
+        return this.pn;
+    }
+    
+    public void i(final int n) {
+        synchronized (this.mw) {
+            if (this.pt == null) {
+                gs.T("Attempt to perform click before content ad initialized.");
+                return;
+            }
+            this.pt.b("1", n);
+        }
     }
 }

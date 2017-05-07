@@ -12,15 +12,15 @@ import java.util.List;
 import com.google.android.gms.games.GameRef;
 import com.google.android.gms.games.Game;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class GameRequestRef extends b implements GameRequest
+public final class GameRequestRef extends d implements GameRequest
 {
-    private final int LE;
+    private final int aaz;
     
-    public GameRequestRef(final DataHolder dataHolder, final int n, final int le) {
+    public GameRequestRef(final DataHolder dataHolder, final int n, final int aaz) {
         super(dataHolder, n);
-        this.LE = le;
+        this.aaz = aaz;
     }
     
     public int describeContents() {
@@ -53,15 +53,15 @@ public final class GameRequestRef extends b implements GameRequest
     
     @Override
     public Game getGame() {
-        return new GameRef(this.BB, this.BD);
+        return new GameRef(this.IC, this.JQ);
     }
     
     @Override
     public int getRecipientStatus(final String s) {
-        for (int i = this.BD; i < this.BD + this.LE; ++i) {
-            final int g = this.BB.G(i);
-            if (this.BB.getString("recipient_external_player_id", i, g).equals(s)) {
-                return this.BB.getInteger("recipient_status", i, g);
+        for (int i = this.JQ; i < this.JQ + this.aaz; ++i) {
+            final int ar = this.IC.ar(i);
+            if (this.IC.c("recipient_external_player_id", i, ar).equals(s)) {
+                return this.IC.b("recipient_status", i, ar);
             }
         }
         return -1;
@@ -69,9 +69,9 @@ public final class GameRequestRef extends b implements GameRequest
     
     @Override
     public List<Player> getRecipients() {
-        final ArrayList<PlayerRef> list = (ArrayList<PlayerRef>)new ArrayList<Player>(this.LE);
-        for (int i = 0; i < this.LE; ++i) {
-            list.add(new PlayerRef(this.BB, this.BD + i, "recipient_"));
+        final ArrayList<PlayerRef> list = (ArrayList<PlayerRef>)new ArrayList<Player>(this.aaz);
+        for (int i = 0; i < this.aaz; ++i) {
+            list.add(new PlayerRef(this.IC, this.JQ + i, "recipient_"));
         }
         return (List<Player>)list;
     }
@@ -83,7 +83,7 @@ public final class GameRequestRef extends b implements GameRequest
     
     @Override
     public Player getSender() {
-        return new PlayerRef(this.BB, this.BD, "sender_");
+        return new PlayerRef(this.IC, this.gA(), "sender_");
     }
     
     @Override

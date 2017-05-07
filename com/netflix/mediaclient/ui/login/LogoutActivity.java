@@ -36,7 +36,7 @@ public class LogoutActivity extends AccountActivity
     private void handleLogoutComplete() {
         Log.i("LogoutActivity", "Handling logout completion...");
         LogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging.CompletionReason.success, null);
-        Toast.makeText(this.getApplicationContext(), 2131493215, 1).show();
+        Toast.makeText(this.getApplicationContext(), 2131493220, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }
     
@@ -54,7 +54,7 @@ public class LogoutActivity extends AccountActivity
     }
     
     public static void showLogoutDialog(final Activity activity) {
-        new AlertDialog$Builder((Context)activity).setMessage(2131493213).setNegativeButton(2131493121, (DialogInterface$OnClickListener)null).setPositiveButton(2131493185, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)activity).setMessage(2131493218).setNegativeButton(2131493126, (DialogInterface$OnClickListener)null).setPositiveButton(2131493190, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.startActivity(LogoutActivity.create((Context)activity));
                 activity.overridePendingTransition(0, 0);
@@ -108,8 +108,8 @@ public class LogoutActivity extends AccountActivity
             if (Log.isLoggable("LogoutActivity", 6)) {
                 Log.e("LogoutActivity", "Could not log user out - status code: " + status.getStatusCode());
             }
-            LogoutActivity.this.reportError(status, LogoutActivity.this.getString(2131493214));
-            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493214, 1).show();
+            LogoutActivity.this.reportError(status, LogoutActivity.this.getString(2131493219));
+            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493219, 1).show();
             LogoutActivity.this.finish();
         }
     }

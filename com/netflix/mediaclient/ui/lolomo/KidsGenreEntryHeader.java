@@ -36,13 +36,13 @@ public class KidsGenreEntryHeader extends RelativeLayout
         }
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, n));
         activity.getLayoutInflater().inflate(2130903101, (ViewGroup)this, true);
-        final View viewById = this.findViewById(2131165411);
+        final View viewById = this.findViewById(2131165413);
         int backgroundResource;
         if (portrait) {
-            backgroundResource = 2130837743;
+            backgroundResource = 2130837709;
         }
         else {
-            backgroundResource = 2130837742;
+            backgroundResource = 2130837708;
         }
         viewById.setBackgroundResource(backgroundResource);
         this.pressHandler = new PressedStateHandler((View)this);

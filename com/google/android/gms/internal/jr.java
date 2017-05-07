@@ -4,67 +4,104 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import java.util.ArrayList;
 
-public class jr implements Parcelable$Creator<jo>
+public final class jr
 {
-    static void a(final jo jo, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, jo.getVersionCode());
-        b.a(parcel, 2, jo.label, false);
-        b.a(parcel, 3, (Parcelable)jo.adg, n, false);
-        b.a(parcel, 4, jo.type, false);
-        b.a(parcel, 5, (Parcelable)jo.abJ, n, false);
-        b.F(parcel, p3);
+    public static void a(final StringBuilder sb, final double[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Double.toString(array[i]));
+        }
     }
     
-    public jo bt(final Parcel parcel) {
-        ju ju = null;
-        final int o = a.o(parcel);
-        int g = 0;
-        String n = null;
-        jp jp = null;
-        String n2 = null;
-        while (parcel.dataPosition() < o) {
-            final int n3 = a.n(parcel);
-            switch (a.R(n3)) {
-                default: {
-                    a.b(parcel, n3);
-                    continue;
+    public static void a(final StringBuilder sb, final float[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Float.toString(array[i]));
+        }
+    }
+    
+    public static void a(final StringBuilder sb, final int[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Integer.toString(array[i]));
+        }
+    }
+    
+    public static void a(final StringBuilder sb, final long[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Long.toString(array[i]));
+        }
+    }
+    
+    public static <T> void a(final StringBuilder sb, final T[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(array[i].toString());
+        }
+    }
+    
+    public static void a(final StringBuilder sb, final String[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append("\"").append(array[i]).append("\"");
+        }
+    }
+    
+    public static void a(final StringBuilder sb, final boolean[] array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(Boolean.toString(array[i]));
+        }
+    }
+    
+    public static Integer[] a(final int[] array) {
+        Integer[] array2;
+        if (array == null) {
+            array2 = null;
+        }
+        else {
+            final int length = array.length;
+            final Integer[] array3 = new Integer[length];
+            int n = 0;
+            while (true) {
+                array2 = array3;
+                if (n >= length) {
+                    break;
                 }
-                case 1: {
-                    g = a.g(parcel, n3);
-                    continue;
-                }
-                case 2: {
-                    n2 = a.n(parcel, n3);
-                    continue;
-                }
-                case 3: {
-                    jp = a.a(parcel, n3, com.google.android.gms.internal.jp.CREATOR);
-                    continue;
-                }
-                case 4: {
-                    n = a.n(parcel, n3);
-                    continue;
-                }
-                case 5: {
-                    ju = a.a(parcel, n3, com.google.android.gms.internal.ju.CREATOR);
-                    continue;
-                }
+                array3[n] = array[n];
+                ++n;
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
-        }
-        return new jo(g, n2, jp, n, ju);
+        return array2;
     }
     
-    public jo[] cH(final int n) {
-        return new jo[n];
+    public static <T> ArrayList<T> b(final T[] array) {
+        final int length = array.length;
+        final ArrayList list = new ArrayList<T>(length);
+        for (int i = 0; i < length; ++i) {
+            list.add(array[i]);
+        }
+        return (ArrayList<T>)list;
+    }
+    
+    public static <T> ArrayList<T> hz() {
+        return new ArrayList<T>();
     }
 }

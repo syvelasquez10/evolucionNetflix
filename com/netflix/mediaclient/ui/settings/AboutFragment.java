@@ -41,7 +41,7 @@ public class AboutFragment extends PreferenceFragment
     }
     
     private void updateAboutDevice() {
-        final String string = this.getString(2131493174);
+        final String string = this.getString(2131493179);
         int n = 0;
         Serializable s = string;
         while (true) {
@@ -72,7 +72,7 @@ public class AboutFragment extends PreferenceFragment
         super.onCreate(bundle);
         this.activity = this.getActivity();
         this.addPreferencesFromResource(2131034112);
-        this.findPreference((CharSequence)this.getString(2131492946)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.findPreference((CharSequence)this.getString(2131492951)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {

@@ -4,93 +4,100 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import com.google.android.gms.dynamic.d;
-import android.os.IInterface;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Callable;
+import java.util.List;
+import android.content.Context;
+import java.util.concurrent.Future;
 
-public interface fn extends IInterface
+@ez
+public class fn extends gg
 {
-    d a(final d p0, final int p1, final int p2) throws RemoteException;
+    private final Object mw;
+    private final fk sZ;
+    private final fo tU;
+    private Future<fz> tV;
+    private final fd.a tm;
+    private final fz.a tn;
     
-    public abstract static class a extends Binder implements fn
-    {
-        public static fn D(final IBinder binder) {
-            if (binder == null) {
-                return null;
+    public fn(final Context context, final u u, final ai ai, final fz.a a, final fd.a a2) {
+        this(a, a2, new fo(context, u, ai, new go(), a));
+    }
+    
+    fn(final fz.a tn, final fd.a tm, final fo tu) {
+        this.mw = new Object();
+        this.tn = tn;
+        this.sZ = tn.vw;
+        this.tm = tm;
+        this.tU = tu;
+    }
+    
+    private fz r(final int n) {
+        return new fz(this.tn.vv.tx, null, null, n, null, null, this.sZ.orientation, this.sZ.qj, this.tn.vv.tA, false, null, null, null, null, null, this.sZ.tJ, this.tn.lH, this.sZ.tH, this.tn.vs, this.sZ.tM, this.sZ.tN, this.tn.vp, null);
+    }
+    
+    @Override
+    public void cp() {
+    Label_0046_Outer:
+        while (true) {
+            while (true) {
+                int n;
+                while (true) {
+                    try {
+                        Object o = this.mw;
+                        synchronized (o) {
+                            this.tV = gi.submit((Callable<fz>)this.tU);
+                            // monitorexit(o)
+                            o = this.tV.get(60000L, TimeUnit.MILLISECONDS);
+                            n = -2;
+                            if (o != null) {
+                                gr.wC.post((Runnable)new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        fn.this.tm.a(o);
+                                    }
+                                });
+                                return;
+                            }
+                        }
+                    }
+                    catch (TimeoutException ex) {
+                        gs.W("Timed out waiting for native ad.");
+                        n = 2;
+                        final Object o = null;
+                        continue Label_0046_Outer;
+                    }
+                    catch (ExecutionException ex2) {
+                        n = 0;
+                        final Object o = null;
+                        continue Label_0046_Outer;
+                    }
+                    catch (InterruptedException ex3) {
+                        final Object o = null;
+                        n = -1;
+                        continue Label_0046_Outer;
+                    }
+                    catch (CancellationException ex4) {
+                        final Object o = null;
+                        n = -1;
+                        continue Label_0046_Outer;
+                    }
+                    break;
+                }
+                Object o = this.r(n);
+                continue;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.common.internal.ISignInButtonCreator");
-            if (queryLocalInterface != null && queryLocalInterface instanceof fn) {
-                return (fn)queryLocalInterface;
-            }
-            return new fn.a.a(binder);
         }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.common.internal.ISignInButtonCreator");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.common.internal.ISignInButtonCreator");
-                    final d a = this.a(d.a.K(parcel.readStrongBinder()), parcel.readInt(), parcel.readInt());
-                    parcel2.writeNoException();
-                    IBinder binder;
-                    if (a != null) {
-                        binder = a.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    parcel2.writeStrongBinder(binder);
-                    return true;
-                }
-            }
-        }
-        
-        private static class a implements fn
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            @Override
-            public d a(d k, final int n, final int n2) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.common.internal.ISignInButtonCreator");
-                    IBinder binder;
-                    if (k != null) {
-                        binder = k.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    obtain.writeInt(n);
-                    obtain.writeInt(n2);
-                    this.kn.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                    k = d.a.K(obtain2.readStrongBinder());
-                    return k;
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.kn;
+    }
+    
+    @Override
+    public void onStop() {
+        synchronized (this.mw) {
+            if (this.tV != null) {
+                this.tV.cancel(true);
             }
         }
     }

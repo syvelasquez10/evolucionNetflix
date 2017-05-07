@@ -4,107 +4,96 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Arrays;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import com.google.android.gms.fitness.result.SessionStopResult;
+import android.os.IInterface;
 
-public final class kr
+public interface kr extends IInterface
 {
-    public static final Object adX;
+    void a(final SessionStopResult p0) throws RemoteException;
     
-    static {
-        adX = new Object();
-    }
-    
-    public static boolean equals(final int[] array, final int[] array2) {
-        if (array == null || array.length == 0) {
-            return array2 == null || array2.length == 0;
+    public abstract static class a extends Binder implements kr
+    {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.fitness.internal.ISessionStopCallback");
         }
-        return Arrays.equals(array, array2);
-    }
-    
-    public static boolean equals(final Object[] array, final Object[] array2) {
-        final boolean b = false;
-        int length;
-        if (array == null) {
-            length = 0;
-        }
-        else {
-            length = array.length;
-        }
-        int length2;
-        if (array2 == null) {
-            length2 = 0;
-        }
-        else {
-            length2 = array2.length;
-        }
-        int n = 0;
-        int n2 = 0;
-        boolean b4;
-        while (true) {
-            if (n2 < length && array[n2] == null) {
-                ++n2;
+        
+        public static kr av(final IBinder binder) {
+            if (binder == null) {
+                return null;
             }
-            else {
-                while (n < length2 && array2[n] == null) {
-                    ++n;
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.fitness.internal.ISessionStopCallback");
+            if (queryLocalInterface != null && queryLocalInterface instanceof kr) {
+                return (kr)queryLocalInterface;
+            }
+            return new kr.a.a(binder);
+        }
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
+        }
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
                 }
-                boolean b2;
-                if (n2 >= length) {
-                    b2 = true;
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.fitness.internal.ISessionStopCallback");
+                    return true;
                 }
-                else {
-                    b2 = false;
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.fitness.internal.ISessionStopCallback");
+                    SessionStopResult sessionStopResult;
+                    if (parcel.readInt() != 0) {
+                        sessionStopResult = (SessionStopResult)SessionStopResult.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        sessionStopResult = null;
+                    }
+                    this.a(sessionStopResult);
+                    parcel2.writeNoException();
+                    return true;
                 }
-                boolean b3;
-                if (n >= length2) {
-                    b3 = true;
-                }
-                else {
-                    b3 = false;
-                }
-                if (b2 && b3) {
-                    b4 = true;
-                    break;
-                }
-                b4 = b;
-                if (b2 != b3) {
-                    break;
-                }
-                b4 = b;
-                if (!array[n2].equals(array2[n])) {
-                    break;
-                }
-                ++n;
-                ++n2;
             }
         }
-        return b4;
-    }
-    
-    public static int hashCode(final int[] array) {
-        if (array == null || array.length == 0) {
-            return 0;
-        }
-        return Arrays.hashCode(array);
-    }
-    
-    public static int hashCode(final Object[] array) {
-        int n = 0;
-        int length;
-        if (array == null) {
-            length = 0;
-        }
-        else {
-            length = array.length;
-        }
-        int n2;
-        for (int i = 0; i < length; ++i, n = n2) {
-            final Object o = array[i];
-            n2 = n;
-            if (o != null) {
-                n2 = n * 31 + o.hashCode();
+        
+        private static class a implements kr
+        {
+            private IBinder lb;
+            
+            a(final IBinder lb) {
+                this.lb = lb;
+            }
+            
+            @Override
+            public void a(final SessionStopResult sessionStopResult) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.fitness.internal.ISessionStopCallback");
+                    if (sessionStopResult != null) {
+                        obtain.writeInt(1);
+                        sessionStopResult.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.lb;
             }
         }
-        return n;
     }
 }

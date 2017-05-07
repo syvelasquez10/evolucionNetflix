@@ -4,45 +4,48 @@
 
 package com.google.android.gms.analytics;
 
+import java.util.Iterator;
 import android.text.TextUtils;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 class x
 {
-    private String vh;
-    private final long vi;
-    private final long vj;
-    private String vk;
-    
-    x(final String vh, final long vi, final long vj) {
-        this.vk = "https:";
-        this.vh = vh;
-        this.vi = vi;
-        this.vj = vj;
+    static String a(final w w, long n) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(w.eG());
+        if (w.eI() > 0L) {
+            n -= w.eI();
+            if (n >= 0L) {
+                sb.append("&qt").append("=").append(n);
+            }
+        }
+        sb.append("&z").append("=").append(w.eH());
+        return sb.toString();
     }
     
-    void J(final String vh) {
-        this.vh = vh;
-    }
-    
-    void K(final String s) {
-        if (s != null && !TextUtils.isEmpty((CharSequence)s.trim()) && s.toLowerCase().startsWith("http:")) {
-            this.vk = "http:";
+    static String encode(final String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        }
+        catch (UnsupportedEncodingException ex) {
+            throw new AssertionError((Object)("URL encoding failed for: " + s));
         }
     }
     
-    String cO() {
-        return this.vh;
-    }
-    
-    long cP() {
-        return this.vi;
-    }
-    
-    long cQ() {
-        return this.vj;
-    }
-    
-    String cR() {
-        return this.vk;
+    static Map<String, String> z(final Map<String, String> map) {
+        final HashMap<String, Object> hashMap = new HashMap<String, Object>();
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
+            if (entry.getKey().startsWith("&") && entry.getValue() != null) {
+                final String substring = entry.getKey().substring(1);
+                if (TextUtils.isEmpty((CharSequence)substring)) {
+                    continue;
+                }
+                hashMap.put(substring, entry.getValue());
+            }
+        }
+        return (Map<String, String>)hashMap;
     }
 }

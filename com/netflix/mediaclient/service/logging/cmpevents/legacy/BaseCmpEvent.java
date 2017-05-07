@@ -50,7 +50,7 @@ public abstract class BaseCmpEvent
     
     protected CommonRequestParameters getCommonRequestParameters(final Context context) {
         final CommonRequestParameters instanceWithCredentials = CommonRequestParameters.getInstanceWithCredentials();
-        instanceWithCredentials.userId = this.mUser.currentProfileUserId;
+        instanceWithCredentials.userId = this.mUser.currentProfileToken;
         instanceWithCredentials.osVersion = String.valueOf(AndroidUtils.getAndroidVersion());
         instanceWithCredentials.deviceCategory = this.mUser.deviceCategory;
         instanceWithCredentials.appVersion = AndroidManifestUtils.getVersion(context);

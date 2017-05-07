@@ -12,53 +12,53 @@ import android.os.Parcelable$Creator;
 
 public class b implements Parcelable$Creator<Cart>
 {
-    static void a(final Cart cart, final Parcel parcel, int p3) {
-        p3 = com.google.android.gms.common.internal.safeparcel.b.p(parcel);
+    static void a(final Cart cart, final Parcel parcel, int d) {
+        d = com.google.android.gms.common.internal.safeparcel.b.D(parcel);
         com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, cart.getVersionCode());
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, cart.abc, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, cart.abd, false);
-        com.google.android.gms.common.internal.safeparcel.b.b(parcel, 4, cart.abe, false);
-        com.google.android.gms.common.internal.safeparcel.b.F(parcel, p3);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, cart.ask, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, cart.asl, false);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 4, cart.asm, false);
+        com.google.android.gms.common.internal.safeparcel.b.H(parcel, d);
     }
     
-    public Cart aY(final Parcel parcel) {
-        String n = null;
-        final int o = a.o(parcel);
+    public Cart do(final Parcel parcel) {
+        String o = null;
+        final int c = a.C(parcel);
         int g = 0;
-        ArrayList<LineItem> c = new ArrayList<LineItem>();
-        String n2 = null;
-        while (parcel.dataPosition() < o) {
-            final int n3 = a.n(parcel);
-            switch (a.R(n3)) {
+        ArrayList<LineItem> c2 = new ArrayList<LineItem>();
+        String o2 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n3);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n3);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n2 = a.n(parcel, n3);
+                    o2 = a.o(parcel, b);
                     continue;
                 }
                 case 3: {
-                    n = a.n(parcel, n3);
+                    o = a.o(parcel, b);
                     continue;
                 }
                 case 4: {
-                    c = a.c(parcel, n3, LineItem.CREATOR);
+                    c2 = a.c(parcel, b, LineItem.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new Cart(g, n2, n, c);
+        return new Cart(g, o2, o, c2);
     }
     
-    public Cart[] ck(final int n) {
+    public Cart[] fo(final int n) {
         return new Cart[n];
     }
 }

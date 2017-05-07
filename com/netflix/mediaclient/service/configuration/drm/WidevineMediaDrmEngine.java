@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.configuration.drm;
 
 import android.media.NotProvisionedException;
 import android.media.DeniedByServerException;
+import android.media.MediaCryptoException;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.media.MediaDrm;
@@ -128,7 +129,7 @@ public class WidevineMediaDrmEngine
         //   116: ldc             "fail to openSession "
         //   118: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //   121: aload_1        
-        //   122: invokevirtual   android/media/NotProvisionedException.getMessage:()Ljava/lang/String;
+        //   122: invokevirtual   java/lang/Throwable.getMessage:()Ljava/lang/String;
         //   125: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //   128: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
         //   131: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
@@ -235,7 +236,7 @@ public class WidevineMediaDrmEngine
         //  Try           Handler
         //  Start  End    Start  End    Type                                   
         //  -----  -----  -----  -----  ---------------------------------------
-        //  15     26     106    137    Landroid/media/NotProvisionedException;
+        //  15     26     106    137    Ljava/lang/Throwable;
         //  166    171    279    293    Ljava/io/IOException;
         //  218    241    293    324    Landroid/media/NotProvisionedException;
         // 
@@ -310,62 +311,39 @@ public class WidevineMediaDrmEngine
         //    81: areturn        
         //    82: astore_1       
         //    83: ldc             "WidevineMediaDrmEngine"
-        //    85: new             Ljava/lang/StringBuilder;
-        //    88: dup            
-        //    89: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    92: ldc             "fail to create MediaDrm: "
-        //    94: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    97: aload_1        
-        //    98: invokevirtual   android/media/MediaDrmException.getMessage:()Ljava/lang/String;
-        //   101: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   104: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   107: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   110: pop            
-        //   111: aconst_null    
-        //   112: areturn        
-        //   113: astore_1       
-        //   114: ldc             "WidevineMediaDrmEngine"
-        //   116: new             Ljava/lang/StringBuilder;
-        //   119: dup            
-        //   120: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   123: ldc             "fail to openSession "
-        //   125: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   128: aload_1        
-        //   129: invokevirtual   android/media/NotProvisionedException.getMessage:()Ljava/lang/String;
-        //   132: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   135: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   138: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //   141: pop            
-        //   142: aconst_null    
-        //   143: areturn        
-        //   144: astore_1       
-        //   145: ldc             "WidevineMediaDrmEngine"
-        //   147: new             Ljava/lang/StringBuilder;
-        //   150: dup            
-        //   151: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   154: ldc             "fail to create MediaCrypto: "
-        //   156: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   159: aload_1        
-        //   160: invokevirtual   android/media/MediaCryptoException.getMessage:()Ljava/lang/String;
-        //   163: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   166: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   169: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   172: pop            
-        //   173: aload_1        
-        //   174: invokevirtual   android/media/MediaCryptoException.printStackTrace:()V
-        //   177: aconst_null    
-        //   178: areturn        
+        //    85: ldc             "fail to create MediaDrm: "
+        //    87: aload_1        
+        //    88: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    91: pop            
+        //    92: aconst_null    
+        //    93: areturn        
+        //    94: astore_1       
+        //    95: ldc             "WidevineMediaDrmEngine"
+        //    97: ldc             "fail to openSession "
+        //    99: aload_1        
+        //   100: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   103: pop            
+        //   104: aconst_null    
+        //   105: areturn        
+        //   106: astore_1       
+        //   107: ldc             "WidevineMediaDrmEngine"
+        //   109: ldc             "fail to create MediaCrypto: "
+        //   111: aload_1        
+        //   112: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   115: pop            
+        //   116: aconst_null    
+        //   117: areturn        
         //    Exceptions:
         //  Try           Handler
-        //  Start  End    Start  End    Type                                   
-        //  -----  -----  -----  -----  ---------------------------------------
-        //  19     33     82     113    Landroid/media/MediaDrmException;
-        //  48     59     113    144    Landroid/media/NotProvisionedException;
-        //  59     77     144    179    Landroid/media/MediaCryptoException;
+        //  Start  End    Start  End    Type                                
+        //  -----  -----  -----  -----  ------------------------------------
+        //  19     33     82     94     Landroid/media/MediaDrmException;
+        //  48     59     94     106    Ljava/lang/Throwable;
+        //  59     77     106    118    Landroid/media/MediaCryptoException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 85, Size: 85
+        // java.lang.IndexOutOfBoundsException: Index: 62, Size: 62
         //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
         //     at java.util.ArrayList.get(ArrayList.java:429)
         //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
@@ -403,6 +381,18 @@ public class WidevineMediaDrmEngine
     
     public void releaseSecureStops(final byte[] array) {
         this.mDrm.releaseSecureStops(array);
+    }
+    
+    public MediaCrypto renewMediaCrypto() {
+        Log.i("WidevineMediaDrmEngine", "renewMediaCrypto");
+        try {
+            return this.mCrypto = new MediaCrypto(WidevineMediaDrmEngine.WideVineUUID, this.mSessionId);
+        }
+        catch (MediaCryptoException ex) {
+            Log.e("WidevineMediaDrmEngine", "fail to create MediaCrypto: " + ex.getMessage());
+            ex.printStackTrace();
+            return null;
+        }
     }
     
     public byte[] storeLicense(final byte[] array) {

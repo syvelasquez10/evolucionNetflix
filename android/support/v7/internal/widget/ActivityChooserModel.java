@@ -7,10 +7,9 @@ package android.support.v7.internal.widget;
 import java.math.BigDecimal;
 import android.content.ComponentName;
 import java.util.Collections;
-import android.os.Build$VERSION;
-import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
-import java.util.Collection;
+import android.support.v4.os.AsyncTaskCompat;
+import android.content.pm.ResolveInfo;
 import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,14 +96,6 @@ public class ActivityChooserModel extends DataSetObservable
         }
     }
     
-    private void executePersistHistoryAsyncTaskBase() {
-        new PersistHistoryAsyncTask().execute(new Object[] { new ArrayList(this.mHistoricalRecords), this.mHistoryFileName });
-    }
-    
-    private void executePersistHistoryAsyncTaskSDK11() {
-        new PersistHistoryAsyncTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new Object[] { new ArrayList(this.mHistoricalRecords), this.mHistoryFileName });
-    }
-    
     public static ActivityChooserModel get(final Context context, final String s) {
         synchronized (ActivityChooserModel.sRegistryLock) {
             ActivityChooserModel activityChooserModel;
@@ -140,11 +131,7 @@ public class ActivityChooserModel extends DataSetObservable
         if (this.mHistoricalRecordsChanged) {
             this.mHistoricalRecordsChanged = false;
             if (!TextUtils.isEmpty((CharSequence)this.mHistoryFileName)) {
-                if (Build$VERSION.SDK_INT >= 11) {
-                    this.executePersistHistoryAsyncTaskSDK11();
-                    return;
-                }
-                this.executePersistHistoryAsyncTaskBase();
+                AsyncTaskCompat.executeParallel((android.os.AsyncTask<Object, Object, Object>)new PersistHistoryAsyncTask(), this.mHistoricalRecords, this.mHistoryFileName);
             }
         }
     }

@@ -4,86 +4,54 @@
 
 package com.google.android.gms.common.data;
 
-import com.google.android.gms.internal.fo;
-import android.net.Uri;
-import android.database.CharArrayBuffer;
-import com.google.android.gms.internal.fq;
+import android.os.ParcelFileDescriptor;
+import android.os.Parcelable;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public abstract class b
+public class b implements Parcelable$Creator<a>
 {
-    protected final DataHolder BB;
-    protected final int BD;
-    private final int BE;
-    
-    public b(final DataHolder dataHolder, final int bd) {
-        this.BB = fq.f(dataHolder);
-        fq.x(bd >= 0 && bd < dataHolder.getCount());
-        this.BD = bd;
-        this.BE = dataHolder.G(this.BD);
+    static void a(final a a, final Parcel parcel, final int n) {
+        final int d = com.google.android.gms.common.internal.safeparcel.b.D(parcel);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, a.BR);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, (Parcelable)a.JK, n, false);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 3, a.FD);
+        com.google.android.gms.common.internal.safeparcel.b.H(parcel, d);
     }
     
-    protected void a(final String s, final CharArrayBuffer charArrayBuffer) {
-        this.BB.copyToBuffer(s, this.BD, this.BE, charArrayBuffer);
+    public a[] ao(final int n) {
+        return new a[n];
     }
     
-    protected Uri ah(final String s) {
-        return this.BB.parseUri(s, this.BD, this.BE);
-    }
-    
-    protected boolean ai(final String s) {
-        return this.BB.hasNull(s, this.BD, this.BE);
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        boolean b2;
-        final boolean b = b2 = false;
-        if (o instanceof b) {
-            final b b3 = (b)o;
-            b2 = b;
-            if (fo.equal(b3.BD, this.BD)) {
-                b2 = b;
-                if (fo.equal(b3.BE, this.BE)) {
-                    b2 = b;
-                    if (b3.BB == this.BB) {
-                        b2 = true;
-                    }
+    public a y(final Parcel parcel) {
+        int g = 0;
+        final int c = com.google.android.gms.common.internal.safeparcel.a.C(parcel);
+        ParcelFileDescriptor parcelFileDescriptor = null;
+        int g2 = 0;
+        while (parcel.dataPosition() < c) {
+            final int b = com.google.android.gms.common.internal.safeparcel.a.B(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.a.aD(b)) {
+                default: {
+                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    g2 = com.google.android.gms.common.internal.safeparcel.a.g(parcel, b);
+                    continue;
+                }
+                case 2: {
+                    parcelFileDescriptor = com.google.android.gms.common.internal.safeparcel.a.a(parcel, b, (android.os.Parcelable$Creator<ParcelFileDescriptor>)ParcelFileDescriptor.CREATOR);
+                    continue;
+                }
+                case 3: {
+                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, b);
+                    continue;
                 }
             }
         }
-        return b2;
-    }
-    
-    protected boolean getBoolean(final String s) {
-        return this.BB.getBoolean(s, this.BD, this.BE);
-    }
-    
-    protected byte[] getByteArray(final String s) {
-        return this.BB.getByteArray(s, this.BD, this.BE);
-    }
-    
-    protected int getInteger(final String s) {
-        return this.BB.getInteger(s, this.BD, this.BE);
-    }
-    
-    protected long getLong(final String s) {
-        return this.BB.getLong(s, this.BD, this.BE);
-    }
-    
-    protected String getString(final String s) {
-        return this.BB.getString(s, this.BD, this.BE);
-    }
-    
-    public boolean hasColumn(final String s) {
-        return this.BB.hasColumn(s);
-    }
-    
-    @Override
-    public int hashCode() {
-        return fo.hashCode(this.BD, this.BE, this.BB);
-    }
-    
-    public boolean isDataValid() {
-        return !this.BB.isClosed();
+        if (parcel.dataPosition() != c) {
+            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
+        }
+        return new a(g2, parcelFileDescriptor, g);
     }
 }

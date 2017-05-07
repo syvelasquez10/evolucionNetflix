@@ -6,9 +6,9 @@ package com.google.android.gms.tagmanager;
 
 interface af
 {
-    bj kx();
+    bk ol();
     
-    t ky();
+    t om();
     
-    void kz();
+    void on();
 }

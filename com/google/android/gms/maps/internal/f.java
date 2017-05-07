@@ -23,7 +23,7 @@ public interface f extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnIndoorStateChangeListener");
         }
         
-        public static f ai(final IBinder binder) {
+        public static f aW(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -55,7 +55,7 @@ public interface f extends IInterface
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IOnIndoorStateChangeListener");
-                    this.a(d.a.aE(parcel.readStrongBinder()));
+                    this.a(d.a.bs(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -64,10 +64,10 @@ public interface f extends IInterface
         
         private static class a implements f
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -84,7 +84,7 @@ public interface f extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -94,7 +94,7 @@ public interface f extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -103,7 +103,7 @@ public interface f extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IOnIndoorStateChangeListener");
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

@@ -4,476 +4,209 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import com.google.android.gms.dynamic.d;
-import android.os.IInterface;
+import java.io.IOException;
+import java.util.PriorityQueue;
+import java.util.Comparator;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import android.util.Base64OutputStream;
 
-public interface ap extends IInterface
+public class ap
 {
-    d Q() throws RemoteException;
+    private final int nJ;
+    private final int nK;
+    private final ao nL;
+    private Base64OutputStream nM;
+    private ByteArrayOutputStream nN;
     
-    ak R() throws RemoteException;
+    public ap(final int nk) {
+        this.nL = new ar();
+        this.nK = nk;
+        this.nJ = 6;
+    }
     
-    void a(final ak p0) throws RemoteException;
+    private String m(final String p0) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_1        
+        //     1: ldc             "\n"
+        //     3: invokevirtual   java/lang/String.split:(Ljava/lang/String;)[Ljava/lang/String;
+        //     6: astore_1       
+        //     7: aload_1        
+        //     8: ifnull          16
+        //    11: aload_1        
+        //    12: arraylength    
+        //    13: ifne            19
+        //    16: ldc             ""
+        //    18: areturn        
+        //    19: aload_0        
+        //    20: new             Ljava/io/ByteArrayOutputStream;
+        //    23: dup            
+        //    24: invokespecial   java/io/ByteArrayOutputStream.<init>:()V
+        //    27: putfield        com/google/android/gms/internal/ap.nN:Ljava/io/ByteArrayOutputStream;
+        //    30: aload_0        
+        //    31: new             Landroid/util/Base64OutputStream;
+        //    34: dup            
+        //    35: aload_0        
+        //    36: getfield        com/google/android/gms/internal/ap.nN:Ljava/io/ByteArrayOutputStream;
+        //    39: bipush          10
+        //    41: invokespecial   android/util/Base64OutputStream.<init>:(Ljava/io/OutputStream;I)V
+        //    44: putfield        com/google/android/gms/internal/ap.nM:Landroid/util/Base64OutputStream;
+        //    47: aload_1        
+        //    48: new             Lcom/google/android/gms/internal/ap$1;
+        //    51: dup            
+        //    52: aload_0        
+        //    53: invokespecial   com/google/android/gms/internal/ap$1.<init>:(Lcom/google/android/gms/internal/ap;)V
+        //    56: invokestatic    java/util/Arrays.sort:([Ljava/lang/Object;Ljava/util/Comparator;)V
+        //    59: iconst_0       
+        //    60: istore_2       
+        //    61: iload_2        
+        //    62: aload_1        
+        //    63: arraylength    
+        //    64: if_icmpge       124
+        //    67: iload_2        
+        //    68: aload_0        
+        //    69: getfield        com/google/android/gms/internal/ap.nK:I
+        //    72: if_icmpge       124
+        //    75: aload_1        
+        //    76: iload_2        
+        //    77: aaload         
+        //    78: invokevirtual   java/lang/String.trim:()Ljava/lang/String;
+        //    81: invokevirtual   java/lang/String.length:()I
+        //    84: ifne            94
+        //    87: iload_2        
+        //    88: iconst_1       
+        //    89: iadd           
+        //    90: istore_2       
+        //    91: goto            61
+        //    94: aload_0        
+        //    95: getfield        com/google/android/gms/internal/ap.nM:Landroid/util/Base64OutputStream;
+        //    98: aload_0        
+        //    99: getfield        com/google/android/gms/internal/ap.nL:Lcom/google/android/gms/internal/ao;
+        //   102: aload_1        
+        //   103: iload_2        
+        //   104: aaload         
+        //   105: invokevirtual   com/google/android/gms/internal/ao.l:(Ljava/lang/String;)[B
+        //   108: invokevirtual   android/util/Base64OutputStream.write:([B)V
+        //   111: goto            87
+        //   114: astore_3       
+        //   115: ldc             "Error while writing hash to byteStream"
+        //   117: aload_3        
+        //   118: invokestatic    com/google/android/gms/internal/gs.b:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   121: goto            87
+        //   124: aload_0        
+        //   125: getfield        com/google/android/gms/internal/ap.nM:Landroid/util/Base64OutputStream;
+        //   128: invokevirtual   android/util/Base64OutputStream.flush:()V
+        //   131: aload_0        
+        //   132: getfield        com/google/android/gms/internal/ap.nM:Landroid/util/Base64OutputStream;
+        //   135: invokevirtual   android/util/Base64OutputStream.close:()V
+        //   138: aload_0        
+        //   139: getfield        com/google/android/gms/internal/ap.nN:Ljava/io/ByteArrayOutputStream;
+        //   142: invokevirtual   java/io/ByteArrayOutputStream.toString:()Ljava/lang/String;
+        //   145: astore_1       
+        //   146: aload_1        
+        //   147: areturn        
+        //   148: astore_1       
+        //   149: ldc             "HashManager: Unable to convert to base 64"
+        //   151: aload_1        
+        //   152: invokestatic    com/google/android/gms/internal/gs.b:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   155: ldc             ""
+        //   157: areturn        
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  94     111    114    124    Ljava/io/IOException;
+        //  124    146    148    158    Ljava/io/IOException;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.NullPointerException
+        //     at com.strobel.assembler.ir.StackMappingVisitor.push(StackMappingVisitor.java:290)
+        //     at com.strobel.assembler.ir.StackMappingVisitor$InstructionAnalyzer.execute(StackMappingVisitor.java:833)
+        //     at com.strobel.assembler.ir.StackMappingVisitor$InstructionAnalyzer.visit(StackMappingVisitor.java:398)
+        //     at com.strobel.decompiler.ast.AstBuilder.performStackAnalysis(AstBuilder.java:2030)
+        //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:108)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
     
-    void a(final ao p0) throws RemoteException;
-    
-    void a(final ar p0) throws RemoteException;
-    
-    void a(final co p0) throws RemoteException;
-    
-    boolean a(final ah p0) throws RemoteException;
-    
-    void ac() throws RemoteException;
-    
-    void destroy() throws RemoteException;
-    
-    boolean isReady() throws RemoteException;
-    
-    void pause() throws RemoteException;
-    
-    void resume() throws RemoteException;
-    
-    void showInterstitial() throws RemoteException;
-    
-    void stopLoading() throws RemoteException;
-    
-    public abstract static class a extends Binder implements ap
-    {
-        public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.IAdManager");
+    public String a(final ArrayList<String> list) {
+        final StringBuffer sb = new StringBuffer();
+        final Iterator<String> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            sb.append(iterator.next().toLowerCase());
+            sb.append('\n');
         }
-        
-        public static ap f(final IBinder binder) {
-            if (binder == null) {
-                return null;
+        switch (false) {
+            default: {
+                return "";
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.client.IAdManager");
-            if (queryLocalInterface != null && queryLocalInterface instanceof ap) {
-                return (ap)queryLocalInterface;
+            case 0: {
+                return this.n(sb.toString());
             }
-            return new ap.a.a(binder);
-        }
-        
-        public IBinder asBinder() {
-            return (IBinder)this;
-        }
-        
-        public boolean onTransact(int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            final ah ah = null;
-            final ak ak = null;
-            final IBinder binder = null;
-            final int n3 = 0;
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.client.IAdManager");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    final d q = this.Q();
-                    parcel2.writeNoException();
-                    IBinder binder2 = binder;
-                    if (q != null) {
-                        binder2 = q.asBinder();
-                    }
-                    parcel2.writeStrongBinder(binder2);
-                    return true;
-                }
-                case 2: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.destroy();
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 3: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    final boolean ready = this.isReady();
-                    parcel2.writeNoException();
-                    if (ready) {
-                        n = 1;
-                    }
-                    else {
-                        n = 0;
-                    }
-                    parcel2.writeInt(n);
-                    return true;
-                }
-                case 4: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    ah a = ah;
-                    if (parcel.readInt() != 0) {
-                        a = com.google.android.gms.internal.ah.CREATOR.a(parcel);
-                    }
-                    final boolean a2 = this.a(a);
-                    parcel2.writeNoException();
-                    n = n3;
-                    if (a2) {
-                        n = 1;
-                    }
-                    parcel2.writeInt(n);
-                    return true;
-                }
-                case 5: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.pause();
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 6: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.resume();
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 7: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.a(ao.a.e(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 8: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.a(ar.a.h(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 9: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.showInterstitial();
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 10: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.stopLoading();
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 11: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.ac();
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 12: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    final ak r = this.R();
-                    parcel2.writeNoException();
-                    if (r != null) {
-                        parcel2.writeInt(1);
-                        r.writeToParcel(parcel2, 1);
-                        return true;
-                    }
-                    parcel2.writeInt(0);
-                    return true;
-                }
-                case 13: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    ak b = ak;
-                    if (parcel.readInt() != 0) {
-                        b = com.google.android.gms.internal.ak.CREATOR.b(parcel);
-                    }
-                    this.a(b);
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 14: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.a(co.a.p(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    return true;
-                }
+            case 1: {
+                return this.m(sb.toString());
             }
         }
-        
-        private static class a implements ap
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
+    }
+    
+    String n(String s) {
+        final String[] split = s.split("\n");
+        if (split == null || split.length == 0) {
+            return "";
+        }
+        this.nN = new ByteArrayOutputStream();
+        this.nM = new Base64OutputStream((OutputStream)this.nN, 10);
+        final PriorityQueue<as.a> priorityQueue = new PriorityQueue<as.a>(this.nK, (Comparator<? super as.a>)new Comparator<as.a>() {
+            public int a(final as.a a, final as.a a2) {
+                return (int)(a.value - a2.value);
             }
-            
-            @Override
-            public d Q() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
+        });
+        for (int i = 0; i < split.length; ++i) {
+            final String[] p = aq.p(split[i]);
+            if (p.length >= this.nJ) {
+                as.a(p, this.nK, this.nJ, priorityQueue);
             }
-            
-            @Override
-            public ak R() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(12, obtain, obtain2, 0);
-                    obtain2.readException();
-                    ak b;
-                    if (obtain2.readInt() != 0) {
-                        b = ak.CREATOR.b(obtain2);
-                    }
-                    else {
-                        b = null;
-                    }
-                    return b;
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
+        }
+        s = (String)priorityQueue.iterator();
+        while (((Iterator)s).hasNext()) {
+            final as.a a = ((Iterator<as.a>)s).next();
+            try {
+                this.nM.write(this.nL.l(a.nQ));
             }
-            
-            @Override
-            public void a(final ak ak) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    if (ak != null) {
-                        obtain.writeInt(1);
-                        ak.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    this.kn.transact(13, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
+            catch (IOException ex) {
+                gs.b("Error while writing hash to byteStream", ex);
             }
-            
-            @Override
-            public void a(final ao ao) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    IBinder binder;
-                    if (ao != null) {
-                        binder = ao.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(7, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void a(final ar ar) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    IBinder binder;
-                    if (ar != null) {
-                        binder = ar.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(8, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void a(final co co) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    IBinder binder;
-                    if (co != null) {
-                        binder = co.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(14, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public boolean a(final ah ah) throws RemoteException {
-                while (true) {
-                    boolean b = true;
-                    final Parcel obtain = Parcel.obtain();
-                    final Parcel obtain2 = Parcel.obtain();
-                    try {
-                        obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                        if (ah != null) {
-                            obtain.writeInt(1);
-                            ah.writeToParcel(obtain, 0);
-                        }
-                        else {
-                            obtain.writeInt(0);
-                        }
-                        this.kn.transact(4, obtain, obtain2, 0);
-                        obtain2.readException();
-                        if (obtain2.readInt() != 0) {
-                            return b;
-                        }
-                    }
-                    finally {
-                        obtain2.recycle();
-                        obtain.recycle();
-                    }
-                    b = false;
-                    return b;
-                }
-            }
-            
-            @Override
-            public void ac() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(11, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.kn;
-            }
-            
-            @Override
-            public void destroy() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(2, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public boolean isReady() throws RemoteException {
-                boolean b = false;
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(3, obtain, obtain2, 0);
-                    obtain2.readException();
-                    if (obtain2.readInt() != 0) {
-                        b = true;
-                    }
-                    return b;
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void pause() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(5, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void resume() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(6, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void showInterstitial() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(9, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void stopLoading() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManager");
-                    this.kn.transact(10, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
+        }
+        try {
+            this.nM.flush();
+            this.nM.close();
+            s = this.nN.toString();
+            return s;
+        }
+        catch (IOException ex2) {
+            gs.b("HashManager: unable to convert to base 64", ex2);
+            return "";
         }
     }
 }

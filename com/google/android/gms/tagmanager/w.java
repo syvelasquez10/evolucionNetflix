@@ -11,40 +11,40 @@ import com.google.android.gms.internal.d;
 import com.google.android.gms.internal.b;
 import com.google.android.gms.internal.a;
 
-class w extends df
+class w extends dg
 {
     private static final String ID;
     private static final String VALUE;
-    private static final String XL;
-    private final DataLayer WK;
+    private static final String aoP;
+    private final DataLayer anS;
     
     static {
-        ID = a.af.toString();
-        VALUE = b.ew.toString();
-        XL = b.bD.toString();
+        ID = a.ah.toString();
+        VALUE = b.ff.toString();
+        aoP = b.bS.toString();
     }
     
-    public w(final DataLayer wk) {
+    public w(final DataLayer anS) {
         super(w.ID, new String[] { w.VALUE });
-        this.WK = wk;
+        this.anS = anS;
     }
     
     private void a(final d.a a) {
-        if (a != null && a != dh.lN()) {
-            final String j = dh.j(a);
-            if (j != dh.lS()) {
-                this.WK.bv(j);
+        if (a != null && a != di.pC()) {
+            final String j = di.j(a);
+            if (j != di.pH()) {
+                this.anS.cs(j);
             }
         }
     }
     
     private void b(final d.a a) {
-        if (a != null && a != dh.lN()) {
-            final Object o = dh.o(a);
+        if (a != null && a != di.pC()) {
+            final Object o = di.o(a);
             if (o instanceof List) {
                 for (final Map<String, Object> next : (List<Object>)o) {
                     if (next instanceof Map) {
-                        this.WK.push(next);
+                        this.anS.push(next);
                     }
                 }
             }
@@ -52,8 +52,8 @@ class w extends df
     }
     
     @Override
-    public void z(final Map<String, d.a> map) {
+    public void E(final Map<String, d.a> map) {
         this.b(map.get(w.VALUE));
-        this.a(map.get(w.XL));
+        this.a(map.get(w.aoP));
     }
 }

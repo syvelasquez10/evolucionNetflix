@@ -4,62 +4,96 @@
 
 package com.google.android.gms.internal;
 
-import java.util.ArrayList;
-import java.io.IOException;
-import java.util.List;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import com.google.android.gms.fitness.result.ListSubscriptionsResult;
+import android.os.IInterface;
 
-public abstract class kp<M extends kp<M>> extends kt
+public interface kp extends IInterface
 {
-    protected List<kv> adU;
+    void a(final ListSubscriptionsResult p0) throws RemoteException;
     
-    public final <T> T a(final kq<M, T> kq) {
-        return kq.f(this.adU);
-    }
-    
-    @Override
-    public void a(final ko ko) throws IOException {
-        int size;
-        if (this.adU == null) {
-            size = 0;
+    public abstract static class a extends Binder implements kp
+    {
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.fitness.internal.IListSubscriptionsCallback");
         }
-        else {
-            size = this.adU.size();
+        
+        public static kp at(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.fitness.internal.IListSubscriptionsCallback");
+            if (queryLocalInterface != null && queryLocalInterface instanceof kp) {
+                return (kp)queryLocalInterface;
+            }
+            return new kp.a.a(binder);
         }
-        for (int i = 0; i < size; ++i) {
-            final kv kv = this.adU.get(i);
-            ko.da(kv.tag);
-            ko.p(kv.adZ);
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
         }
-    }
-    
-    protected final boolean a(final kn kn, final int n) throws IOException {
-        final int position = kn.getPosition();
-        if (!kn.cQ(n)) {
-            return false;
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.fitness.internal.IListSubscriptionsCallback");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.fitness.internal.IListSubscriptionsCallback");
+                    ListSubscriptionsResult listSubscriptionsResult;
+                    if (parcel.readInt() != 0) {
+                        listSubscriptionsResult = (ListSubscriptionsResult)ListSubscriptionsResult.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        listSubscriptionsResult = null;
+                    }
+                    this.a(listSubscriptionsResult);
+                    parcel2.writeNoException();
+                    return true;
+                }
+            }
         }
-        if (this.adU == null) {
-            this.adU = new ArrayList<kv>();
+        
+        private static class a implements kp
+        {
+            private IBinder lb;
+            
+            a(final IBinder lb) {
+                this.lb = lb;
+            }
+            
+            @Override
+            public void a(final ListSubscriptionsResult listSubscriptionsResult) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.fitness.internal.IListSubscriptionsCallback");
+                    if (listSubscriptionsResult != null) {
+                        obtain.writeInt(1);
+                        listSubscriptionsResult.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.lb;
+            }
         }
-        this.adU.add(new kv(n, kn.h(position, kn.getPosition() - position)));
-        return true;
-    }
-    
-    @Override
-    protected int mx() {
-        int size;
-        if (this.adU == null) {
-            size = 0;
-        }
-        else {
-            size = this.adU.size();
-        }
-        int i = 0;
-        int n = 0;
-        while (i < size) {
-            final kv kv = this.adU.get(i);
-            n = n + ko.db(kv.tag) + kv.adZ.length;
-            ++i;
-        }
-        return n;
     }
 }

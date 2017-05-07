@@ -5,43 +5,43 @@
 package com.google.android.gms.wallet;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 import com.google.android.gms.common.api.Result;
 import java.util.Locale;
-import com.google.android.gms.internal.ji;
-import com.google.android.gms.internal.jj;
-import com.google.android.gms.internal.jf;
+import com.google.android.gms.internal.oz;
+import com.google.android.gms.internal.pa;
+import com.google.android.gms.internal.ow;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.app.Activity;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.internal.fc;
+import com.google.android.gms.common.internal.ClientSettings;
 import android.os.Looper;
 import android.content.Context;
-import com.google.android.gms.internal.jg;
-import com.google.android.gms.internal.iu;
-import com.google.android.gms.internal.ka;
+import com.google.android.gms.internal.ol;
+import com.google.android.gms.wallet.wobs.r;
+import com.google.android.gms.internal.ox;
 import com.google.android.gms.common.api.Api;
 
 public final class Wallet
 {
     public static final Api<WalletOptions> API;
+    private static final Api.c<ox> CU;
+    private static final Api.b<ox, WalletOptions> CV;
     public static final Payments Payments;
-    public static final ka aco;
-    public static final iu acp;
-    private static final Api.c<jg> wx;
-    private static final Api.b<jg, WalletOptions> wy;
+    public static final r aty;
+    public static final ol atz;
     
     static {
-        wx = new Api.c();
-        wy = new Api.b<jg, WalletOptions>() {
-            public jg a(final Context context, final Looper looper, final fc fc, WalletOptions walletOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
-                fq.b(context instanceof Activity, "An Activity must be used for Wallet APIs");
+        CU = new Api.c();
+        CV = new Api.b<ox, WalletOptions>() {
+            public ox a(final Context context, final Looper looper, final ClientSettings clientSettings, WalletOptions walletOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
+                n.b(context instanceof Activity, (Object)"An Activity must be used for Wallet APIs");
                 final Activity activity = (Activity)context;
                 if (walletOptions == null) {
                     walletOptions = new WalletOptions();
                 }
-                return new jg(activity, looper, connectionCallbacks, onConnectionFailedListener, walletOptions.environment, fc.getAccountName(), walletOptions.theme);
+                return new ox(activity, looper, connectionCallbacks, onConnectionFailedListener, walletOptions.environment, clientSettings.getAccountName(), walletOptions.theme);
             }
             
             @Override
@@ -49,10 +49,10 @@ public final class Wallet
                 return Integer.MAX_VALUE;
             }
         };
-        API = new Api<WalletOptions>((Api.b<C, WalletOptions>)Wallet.wy, (Api.c<C>)Wallet.wx, new Scope[0]);
-        Payments = new jf();
-        aco = new jj();
-        acp = new ji();
+        API = new Api<WalletOptions>((Api.b<C, WalletOptions>)Wallet.CV, (Api.c<C>)Wallet.CU, new Scope[0]);
+        Payments = new ow();
+        aty = new pa();
+        atz = new oz();
     }
     
     @Deprecated
@@ -90,17 +90,17 @@ public final class Wallet
         }
         
         private WalletOptions(final Builder builder) {
-            this.environment = builder.acq;
+            this.environment = builder.atA;
             this.theme = builder.mTheme;
         }
         
         public static final class Builder
         {
-            private int acq;
+            private int atA;
             private int mTheme;
             
             public Builder() {
-                this.acq = 0;
+                this.atA = 0;
                 this.mTheme = 0;
             }
             
@@ -108,12 +108,12 @@ public final class Wallet
                 return new WalletOptions(this);
             }
             
-            public Builder setEnvironment(final int acq) {
-                if (acq == 0 || acq == 2 || acq == 1) {
-                    this.acq = acq;
+            public Builder setEnvironment(final int atA) {
+                if (atA == 0 || atA == 2 || atA == 1) {
+                    this.atA = atA;
                     return this;
                 }
-                throw new IllegalArgumentException(String.format(Locale.US, "Invalid environment value %d", acq));
+                throw new IllegalArgumentException(String.format(Locale.US, "Invalid environment value %d", atA));
             }
             
             public Builder setTheme(final int mTheme) {
@@ -126,16 +126,16 @@ public final class Wallet
         }
     }
     
-    public abstract static class a<R extends Result> extends com.google.android.gms.common.api.a.b<R, jg>
+    public abstract static class a<R extends Result> extends BaseImplementation.a<R, ox>
     {
         public a() {
-            super(Wallet.wx);
+            super(Wallet.CU);
         }
     }
     
     public abstract static class b extends a<Status>
     {
-        protected Status f(final Status status) {
+        protected Status d(final Status status) {
             return status;
         }
     }

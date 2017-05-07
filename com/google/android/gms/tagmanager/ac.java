@@ -13,36 +13,31 @@ import com.google.android.gms.internal.a;
 class ac extends aj
 {
     private static final String ID;
-    private static final String XQ;
-    private static final String XR;
-    private static final String XS;
-    private static final String XT;
+    private static final String aoU;
+    private static final String aoV;
+    private static final String aoW;
+    private static final String aoX;
     
     static {
-        ID = a.Y.toString();
-        XQ = b.bi.toString();
-        XR = b.di.toString();
-        XS = b.cH.toString();
-        XT = b.dq.toString();
+        ID = a.aa.toString();
+        aoU = b.bw.toString();
+        aoV = b.dH.toString();
+        aoW = b.de.toString();
+        aoX = b.dP.toString();
     }
     
     public ac() {
-        super(ac.ID, new String[] { ac.XQ });
+        super(ac.ID, new String[] { ac.aoU });
     }
     
     @Override
-    public boolean jX() {
-        return true;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        final d.a a = map.get(ac.XQ);
-        if (a == null || a == dh.lT()) {
-            return dh.lT();
+    public d.a C(final Map<String, d.a> map) {
+        final d.a a = map.get(ac.aoU);
+        if (a == null || a == di.pI()) {
+            return di.pI();
         }
-        final String j = dh.j(a);
-        final d.a a2 = map.get(ac.XS);
+        final String j = di.j(a);
+        final d.a a2 = map.get(ac.aoW);
         while (true) {
         Label_0148_Outer:
             while (true) {
@@ -67,32 +62,32 @@ class ac extends aj
                                                     array = j.getBytes();
                                                 }
                                                 else if ("base16".equals(i)) {
-                                                    array = com.google.android.gms.tagmanager.j.bm(j);
+                                                    array = com.google.android.gms.tagmanager.j.cj(j);
                                                 }
                                                 else if ("base64".equals(i)) {
                                                     array = Base64.decode(j, n);
                                                 }
                                                 else {
                                                     if (!"base64url".equals(i)) {
-                                                        bh.w("Encode: unknown input format: " + i);
-                                                        return dh.lT();
+                                                        bh.T("Encode: unknown input format: " + i);
+                                                        return di.pI();
                                                     }
                                                     array = Base64.decode(j, n | 0x8);
                                                 }
                                                 if ("base16".equals(k)) {
                                                     final String s = com.google.android.gms.tagmanager.j.d(array);
-                                                    return dh.r(s);
+                                                    return di.u(s);
                                                 }
                                                 break Label_0257;
-                                                i = dh.j(a2);
-                                                break Label_0055;
                                                 final d.a a3;
-                                                k = dh.j(a3);
+                                                k = di.j(a3);
                                                 break Label_0075;
+                                                i = di.j(a2);
+                                                break Label_0055;
                                             }
                                             catch (IllegalArgumentException ex) {
-                                                bh.w("Encode: invalid input:");
-                                                return dh.lT();
+                                                bh.T("Encode: invalid input:");
+                                                return di.pI();
                                             }
                                         }
                                         if ("base64".equals(k)) {
@@ -108,10 +103,10 @@ class ac extends aj
                                     break;
                                 }
                             }
-                            bh.w("Encode: unknown output format: " + k);
-                            return dh.lT();
+                            bh.T("Encode: unknown output format: " + k);
+                            return di.pI();
                         }
-                        final d.a a3 = map.get(ac.XT);
+                        final d.a a3 = map.get(ac.aoX);
                         if (a3 != null) {
                             continue;
                         }
@@ -119,8 +114,8 @@ class ac extends aj
                     }
                     String k = "base16";
                 }
-                final d.a a4 = map.get(ac.XR);
-                if (a4 != null && dh.n(a4)) {
+                final d.a a4 = map.get(ac.aoV);
+                if (a4 != null && di.n(a4)) {
                     final int n = 3;
                     continue Label_0148_Outer;
                 }
@@ -129,5 +124,10 @@ class ac extends aj
             final int n = 2;
             continue;
         }
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

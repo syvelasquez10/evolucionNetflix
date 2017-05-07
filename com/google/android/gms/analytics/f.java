@@ -9,15 +9,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 interface f
 {
-    void bR();
+    void dI();
     
-    void bW();
+    void dO();
     
-    void bY();
+    LinkedBlockingQueue<Runnable> dP();
     
-    LinkedBlockingQueue<Runnable> bZ();
+    void dispatch();
     
     Thread getThread();
     
-    void q(final Map<String, String> p0);
+    void u(final Map<String, String> p0);
 }

@@ -45,7 +45,7 @@ public final class LegacyCmpEventLoggingImpl implements CmpEventLogging
             userData.userId = this.mOwner.getUserId();
             final UserProfile currentProfile = user.getCurrentProfile();
             if (currentProfile != null) {
-                userData.currentProfileUserId = currentProfile.getUserId();
+                userData.currentProfileToken = currentProfile.getUserId();
             }
             userData.accountCountry = user.getReqCountry();
             userData.accountCountry = user.getGeoCountry();

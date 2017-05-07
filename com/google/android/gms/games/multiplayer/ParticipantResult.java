@@ -6,7 +6,7 @@ package com.google.android.gms.games.multiplayer;
 
 import android.os.Parcel;
 import com.google.android.gms.games.internal.constants.MatchResult;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class ParticipantResult implements SafeParcelable
@@ -20,21 +20,21 @@ public final class ParticipantResult implements SafeParcelable
     public static final int MATCH_RESULT_UNINITIALIZED = -1;
     public static final int MATCH_RESULT_WIN = 0;
     public static final int PLACING_UNINITIALIZED = -1;
-    private final String Jg;
-    private final int MF;
-    private final int MG;
-    private final int xH;
+    private final int BR;
+    private final String Xg;
+    private final int abY;
+    private final int abZ;
     
     static {
         CREATOR = new ParticipantResultCreator();
     }
     
-    public ParticipantResult(final int xh, final String s, final int mf, final int mg) {
-        this.xH = xh;
-        this.Jg = fq.f(s);
-        fq.x(MatchResult.isValid(mf));
-        this.MF = mf;
-        this.MG = mg;
+    public ParticipantResult(final int br, final String s, final int abY, final int abZ) {
+        this.BR = br;
+        this.Xg = n.i(s);
+        n.I(MatchResult.isValid(abY));
+        this.abY = abY;
+        this.abZ = abZ;
     }
     
     public ParticipantResult(final String s, final int n, final int n2) {
@@ -46,19 +46,19 @@ public final class ParticipantResult implements SafeParcelable
     }
     
     public String getParticipantId() {
-        return this.Jg;
+        return this.Xg;
     }
     
     public int getPlacing() {
-        return this.MG;
+        return this.abZ;
     }
     
     public int getResult() {
-        return this.MF;
+        return this.abY;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

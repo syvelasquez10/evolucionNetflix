@@ -4,89 +4,46 @@
 
 package com.google.android.gms.internal;
 
-import java.security.InvalidAlgorithmParameterException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.nio.ByteBuffer;
-import java.security.SecureRandom;
+import java.io.IOException;
 
-public class p
+class p implements n
 {
-    private final n jP;
-    private final SecureRandom ki;
+    private pf kY;
+    private byte[] kZ;
+    private final int la;
     
-    public p(final n jp, final SecureRandom ki) {
-        this.jP = jp;
-        this.ki = ki;
+    public p(final int la) {
+        this.la = la;
+        this.reset();
     }
     
-    static void c(final byte[] array) {
-        for (int i = 0; i < array.length; ++i) {
-            array[i] ^= 0x44;
+    @Override
+    public byte[] A() throws IOException {
+        final int qv = this.kY.qv();
+        if (qv < 0) {
+            throw new IOException();
         }
-    }
-    
-    public byte[] b(final String s) throws a {
-        byte[] a;
-        try {
-            a = this.jP.a(s, false);
-            if (a.length != 32) {
-                throw new a();
-            }
+        if (qv == 0) {
+            return this.kZ;
         }
-        catch (IllegalArgumentException ex) {
-            throw new a(ex);
-        }
-        final ByteBuffer wrap = ByteBuffer.wrap(a, 4, 16);
-        final byte[] array = new byte[16];
-        wrap.get(array);
-        c(array);
+        final byte[] array = new byte[this.kZ.length - qv];
+        System.arraycopy(this.kZ, 0, array, 0, array.length);
         return array;
     }
     
-    public byte[] c(final byte[] array, final String s) throws a {
-        if (array.length != 16) {
-            throw new a();
-        }
-        try {
-            if (this.jP.a(s, false).length <= 16) {
-                throw new a();
-            }
-            goto Label_0055;
-        }
-        catch (NoSuchAlgorithmException ex) {
-            throw new a(ex);
-        }
-        catch (InvalidKeyException ex2) {
-            throw new a(ex2);
-        }
-        catch (IllegalBlockSizeException ex3) {
-            throw new a(ex3);
-        }
-        catch (NoSuchPaddingException ex4) {
-            throw new a(ex4);
-        }
-        catch (BadPaddingException ex5) {
-            throw new a(ex5);
-        }
-        catch (InvalidAlgorithmParameterException ex6) {
-            throw new a(ex6);
-        }
-        catch (IllegalArgumentException ex7) {
-            throw new a(ex7);
-        }
+    @Override
+    public void b(final int n, final long n2) throws IOException {
+        this.kY.b(n, n2);
     }
     
-    public class a extends Exception
-    {
-        public a() {
-        }
-        
-        public a(final Throwable t) {
-            super(t);
-        }
+    @Override
+    public void b(final int n, final String s) throws IOException {
+        this.kY.b(n, s);
+    }
+    
+    @Override
+    public void reset() {
+        this.kZ = new byte[this.la];
+        this.kY = pf.q(this.kZ);
     }
 }

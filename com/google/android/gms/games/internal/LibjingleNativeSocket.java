@@ -15,44 +15,44 @@ import com.google.android.gms.games.multiplayer.realtime.RealTimeSocket;
 public final class LibjingleNativeSocket implements RealTimeSocket
 {
     private static final String TAG;
-    private final ParcelFileDescriptor Cj;
-    private final InputStream JI;
-    private final OutputStream JJ;
+    private final ParcelFileDescriptor Kx;
+    private final InputStream XM;
+    private final OutputStream XN;
     
     static {
         TAG = LibjingleNativeSocket.class.getSimpleName();
     }
     
-    LibjingleNativeSocket(final ParcelFileDescriptor cj) {
-        this.Cj = cj;
-        this.JI = (InputStream)new ParcelFileDescriptor$AutoCloseInputStream(cj);
-        this.JJ = (OutputStream)new ParcelFileDescriptor$AutoCloseOutputStream(cj);
+    LibjingleNativeSocket(final ParcelFileDescriptor kx) {
+        this.Kx = kx;
+        this.XM = (InputStream)new ParcelFileDescriptor$AutoCloseInputStream(kx);
+        this.XN = (OutputStream)new ParcelFileDescriptor$AutoCloseOutputStream(kx);
     }
     
     @Override
     public void close() throws IOException {
-        this.Cj.close();
+        this.Kx.close();
     }
     
     @Override
     public InputStream getInputStream() throws IOException {
-        return this.JI;
+        return this.XM;
     }
     
     @Override
     public OutputStream getOutputStream() throws IOException {
-        return this.JJ;
+        return this.XN;
     }
     
     @Override
     public ParcelFileDescriptor getParcelFileDescriptor() throws IOException {
-        return this.Cj;
+        return this.Kx;
     }
     
     @Override
     public boolean isClosed() {
         try {
-            this.JI.available();
+            this.XM.available();
             return false;
         }
         catch (IOException ex) {

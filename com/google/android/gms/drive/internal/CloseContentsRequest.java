@@ -12,18 +12,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class CloseContentsRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<CloseContentsRequest> CREATOR;
-    final Contents EX;
-    final Boolean EY;
-    final int xH;
+    final int BR;
+    final Contents NX;
+    final Boolean NZ;
     
     static {
-        CREATOR = (Parcelable$Creator)new e();
+        CREATOR = (Parcelable$Creator)new f();
     }
     
-    CloseContentsRequest(final int xh, final Contents ex, final Boolean ey) {
-        this.xH = xh;
-        this.EX = ex;
-        this.EY = ey;
+    CloseContentsRequest(final int br, final Contents nx, final Boolean nz) {
+        this.BR = br;
+        this.NX = nx;
+        this.NZ = nz;
     }
     
     public CloseContentsRequest(final Contents contents, final boolean b) {
@@ -35,6 +35,6 @@ public class CloseContentsRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        e.a(this, parcel, n);
+        f.a(this, parcel, n);
     }
 }

@@ -4,10 +4,10 @@
 
 package com.google.android.gms.wearable;
 
-import com.google.android.gms.internal.kk;
-import com.google.android.gms.internal.ki;
+import com.google.android.gms.wearable.internal.ak;
+import com.google.android.gms.wearable.internal.ah;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.internal.kh;
+import com.google.android.gms.wearable.internal.ae;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.content.Intent;
@@ -17,19 +17,22 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.app.Service;
 
-public abstract class WearableListenerService extends Service
+public abstract class WearableListenerService extends Service implements DataListener, MessageListener, NodeListener
 {
     public static final String BIND_LISTENER_INTENT_ACTION = "com.google.android.gms.wearable.BIND_LISTENER";
-    private IBinder DB;
-    private volatile int adu;
-    private String adv;
-    private Handler adw;
+    private String BZ;
+    private IBinder LR;
+    private volatile int NP;
+    private Handler auR;
+    private Object auS;
+    private boolean auT;
     
     public WearableListenerService() {
-        this.adu = -1;
+        this.NP = -1;
+        this.auS = new Object();
     }
     
-    private boolean cM(int n) {
+    private boolean bc(int n) {
         final boolean b = false;
         final String[] packagesForUid = this.getPackageManager().getPackagesForUid(n);
         boolean b2 = b;
@@ -50,21 +53,21 @@ public abstract class WearableListenerService extends Service
         return b2;
     }
     
-    private void md() throws SecurityException {
+    private void pS() throws SecurityException {
         final int callingUid = Binder.getCallingUid();
-        if (callingUid == this.adu) {
+        if (callingUid == this.NP) {
             return;
         }
-        if (GooglePlayServicesUtil.b(this.getPackageManager(), "com.google.android.gms") && this.cM(callingUid)) {
-            this.adu = callingUid;
+        if (GooglePlayServicesUtil.b(this.getPackageManager(), "com.google.android.gms") && this.bc(callingUid)) {
+            this.NP = callingUid;
             return;
         }
         throw new SecurityException("Caller is not GooglePlayServices");
     }
     
-    public IBinder onBind(final Intent intent) {
+    public final IBinder onBind(final Intent intent) {
         if ("com.google.android.gms.wearable.BIND_LISTENER".equals(intent.getAction())) {
-            return this.DB;
+            return this.LR;
         }
         return null;
     }
@@ -74,88 +77,113 @@ public abstract class WearableListenerService extends Service
         if (Log.isLoggable("WearableLS", 3)) {
             Log.d("WearableLS", "onCreate: " + this.getPackageName());
         }
-        this.adv = this.getPackageName();
+        this.BZ = this.getPackageName();
         final HandlerThread handlerThread = new HandlerThread("WearableListenerService");
         handlerThread.start();
-        this.adw = new Handler(handlerThread.getLooper());
-        this.DB = (IBinder)new a();
+        this.auR = new Handler(handlerThread.getLooper());
+        this.LR = (IBinder)new a();
     }
     
-    public void onDataChanged(final b b) {
+    public void onDataChanged(final DataEventBuffer dataEventBuffer) {
     }
     
     public void onDestroy() {
-        this.adw.getLooper().quit();
-        super.onDestroy();
+        synchronized (this.auS) {
+            this.auT = true;
+            this.auR.getLooper().quit();
+            // monitorexit(this.auS)
+            super.onDestroy();
+        }
     }
     
-    public void onMessageReceived(final e e) {
+    public void onMessageReceived(final MessageEvent messageEvent) {
     }
     
-    public void onPeerConnected(final f f) {
+    public void onPeerConnected(final Node node) {
     }
     
-    public void onPeerDisconnected(final f f) {
+    public void onPeerDisconnected(final Node node) {
     }
     
-    private class a extends kh.a
+    private class a extends ae.a
     {
-        public void M(final DataHolder dataHolder) {
+        public void Z(final DataHolder dataHolder) {
             if (Log.isLoggable("WearableLS", 3)) {
-                Log.d("WearableLS", "onDataItemChanged: " + WearableListenerService.this.adv + ": " + dataHolder);
+                Log.d("WearableLS", "onDataItemChanged: " + WearableListenerService.this.BZ + ": " + dataHolder);
             }
-            WearableListenerService.this.md();
-            WearableListenerService.this.adw.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    final b b = new b(dataHolder);
-                    try {
-                        WearableListenerService.this.onDataChanged(b);
+            WearableListenerService.this.pS();
+            synchronized (WearableListenerService.this.auS) {
+                if (WearableListenerService.this.auT) {
+                    dataHolder.close();
+                    return;
+                }
+                WearableListenerService.this.auR.post((Runnable)new Runnable() {
+                    @Override
+                    public void run() {
+                        final DataEventBuffer dataEventBuffer = new DataEventBuffer(dataHolder);
+                        try {
+                            WearableListenerService.this.onDataChanged(dataEventBuffer);
+                        }
+                        finally {
+                            dataEventBuffer.release();
+                        }
                     }
-                    finally {
-                        b.close();
+                });
+            }
+        }
+        
+        public void a(final ah ah) {
+            if (Log.isLoggable("WearableLS", 3)) {
+                Log.d("WearableLS", "onMessageReceived: " + ah);
+            }
+            WearableListenerService.this.pS();
+            synchronized (WearableListenerService.this.auS) {
+                if (WearableListenerService.this.auT) {
+                    return;
+                }
+                WearableListenerService.this.auR.post((Runnable)new Runnable() {
+                    @Override
+                    public void run() {
+                        WearableListenerService.this.onMessageReceived(ah);
                     }
-                }
-            });
+                });
+            }
         }
         
-        public void a(final ki ki) {
+        public void a(final ak ak) {
             if (Log.isLoggable("WearableLS", 3)) {
-                Log.d("WearableLS", "onMessageReceived: " + ki);
+                Log.d("WearableLS", "onPeerConnected: " + WearableListenerService.this.BZ + ": " + ak);
             }
-            WearableListenerService.this.md();
-            WearableListenerService.this.adw.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    WearableListenerService.this.onMessageReceived(ki);
+            WearableListenerService.this.pS();
+            synchronized (WearableListenerService.this.auS) {
+                if (WearableListenerService.this.auT) {
+                    return;
                 }
-            });
+                WearableListenerService.this.auR.post((Runnable)new Runnable() {
+                    @Override
+                    public void run() {
+                        WearableListenerService.this.onPeerConnected(ak);
+                    }
+                });
+            }
         }
         
-        public void a(final kk kk) {
+        public void b(final ak ak) {
             if (Log.isLoggable("WearableLS", 3)) {
-                Log.d("WearableLS", "onPeerConnected: " + WearableListenerService.this.adv + ": " + kk);
+                Log.d("WearableLS", "onPeerDisconnected: " + WearableListenerService.this.BZ + ": " + ak);
             }
-            WearableListenerService.this.md();
-            WearableListenerService.this.adw.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    WearableListenerService.this.onPeerConnected(kk);
+            WearableListenerService.this.pS();
+            synchronized (WearableListenerService.this.auS) {
+                if (WearableListenerService.this.auT) {
+                    return;
                 }
-            });
-        }
-        
-        public void b(final kk kk) {
-            if (Log.isLoggable("WearableLS", 3)) {
-                Log.d("WearableLS", "onPeerDisconnected: " + WearableListenerService.this.adv + ": " + kk);
+                WearableListenerService.this.auR.post((Runnable)new Runnable() {
+                    @Override
+                    public void run() {
+                        WearableListenerService.this.onPeerDisconnected(ak);
+                    }
+                });
             }
-            WearableListenerService.this.md();
-            WearableListenerService.this.adw.post((Runnable)new Runnable() {
-                @Override
-                public void run() {
-                    WearableListenerService.this.onPeerDisconnected(kk);
-                }
-            });
         }
     }
 }

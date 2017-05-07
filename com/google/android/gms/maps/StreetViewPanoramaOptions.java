@@ -12,45 +12,45 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class StreetViewPanoramaOptions implements SafeParcelable
 {
-    public static final StreetViewPanoramaOptionsCreator CREATOR;
-    private Boolean RJ;
-    private Boolean RP;
-    private StreetViewPanoramaCamera Sl;
-    private String Sm;
-    private LatLng Sn;
-    private Integer So;
-    private Boolean Sp;
-    private Boolean Sq;
-    private Boolean Sr;
-    private final int xH;
+    public static final c CREATOR;
+    private final int BR;
+    private Boolean aiC;
+    private StreetViewPanoramaCamera aiY;
+    private String aiZ;
+    private Boolean aiw;
+    private LatLng aja;
+    private Integer ajb;
+    private Boolean ajc;
+    private Boolean ajd;
+    private Boolean aje;
     
     static {
-        CREATOR = new StreetViewPanoramaOptionsCreator();
+        CREATOR = new c();
     }
     
     public StreetViewPanoramaOptions() {
-        this.Sp = true;
-        this.RP = true;
-        this.Sq = true;
-        this.Sr = true;
-        this.xH = 1;
+        this.ajc = true;
+        this.aiC = true;
+        this.ajd = true;
+        this.aje = true;
+        this.BR = 1;
     }
     
-    StreetViewPanoramaOptions(final int xh, final StreetViewPanoramaCamera sl, final String sm, final LatLng sn, final Integer so, final byte b, final byte b2, final byte b3, final byte b4, final byte b5) {
-        this.Sp = true;
-        this.RP = true;
-        this.Sq = true;
-        this.Sr = true;
-        this.xH = xh;
-        this.Sl = sl;
-        this.Sn = sn;
-        this.So = so;
-        this.Sm = sm;
-        this.Sp = a.a(b);
-        this.RP = a.a(b2);
-        this.Sq = a.a(b3);
-        this.Sr = a.a(b4);
-        this.RJ = a.a(b5);
+    StreetViewPanoramaOptions(final int br, final StreetViewPanoramaCamera aiY, final String aiZ, final LatLng aja, final Integer ajb, final byte b, final byte b2, final byte b3, final byte b4, final byte b5) {
+        this.ajc = true;
+        this.aiC = true;
+        this.ajd = true;
+        this.aje = true;
+        this.BR = br;
+        this.aiY = aiY;
+        this.aja = aja;
+        this.ajb = ajb;
+        this.aiZ = aiZ;
+        this.ajc = a.a(b);
+        this.aiC = a.a(b2);
+        this.ajd = a.a(b3);
+        this.aje = a.a(b4);
+        this.aiw = a.a(b5);
     }
     
     public int describeContents() {
@@ -58,112 +58,112 @@ public final class StreetViewPanoramaOptions implements SafeParcelable
     }
     
     public Boolean getPanningGesturesEnabled() {
-        return this.Sq;
+        return this.ajd;
     }
     
     public String getPanoramaId() {
-        return this.Sm;
+        return this.aiZ;
     }
     
     public LatLng getPosition() {
-        return this.Sn;
+        return this.aja;
     }
     
     public Integer getRadius() {
-        return this.So;
+        return this.ajb;
     }
     
     public Boolean getStreetNamesEnabled() {
-        return this.Sr;
+        return this.aje;
     }
     
     public StreetViewPanoramaCamera getStreetViewPanoramaCamera() {
-        return this.Sl;
+        return this.aiY;
     }
     
     public Boolean getUseViewLifecycleInFragment() {
-        return this.RJ;
+        return this.aiw;
     }
     
     public Boolean getUserNavigationEnabled() {
-        return this.Sp;
+        return this.ajc;
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public Boolean getZoomGesturesEnabled() {
-        return this.RP;
+        return this.aiC;
     }
     
-    byte ih() {
-        return a.c(this.RJ);
+    byte mC() {
+        return a.c(this.ajc);
     }
     
-    byte il() {
-        return a.c(this.RP);
+    byte mD() {
+        return a.c(this.ajd);
     }
     
-    byte it() {
-        return a.c(this.Sp);
+    byte mE() {
+        return a.c(this.aje);
     }
     
-    byte iu() {
-        return a.c(this.Sq);
+    byte mq() {
+        return a.c(this.aiw);
     }
     
-    byte iv() {
-        return a.c(this.Sr);
+    byte mu() {
+        return a.c(this.aiC);
     }
     
     public StreetViewPanoramaOptions panningGesturesEnabled(final boolean b) {
-        this.Sq = b;
+        this.ajd = b;
         return this;
     }
     
-    public StreetViewPanoramaOptions panoramaCamera(final StreetViewPanoramaCamera sl) {
-        this.Sl = sl;
+    public StreetViewPanoramaOptions panoramaCamera(final StreetViewPanoramaCamera aiY) {
+        this.aiY = aiY;
         return this;
     }
     
-    public StreetViewPanoramaOptions panoramaId(final String sm) {
-        this.Sm = sm;
+    public StreetViewPanoramaOptions panoramaId(final String aiZ) {
+        this.aiZ = aiZ;
         return this;
     }
     
-    public StreetViewPanoramaOptions position(final LatLng sn) {
-        this.Sn = sn;
+    public StreetViewPanoramaOptions position(final LatLng aja) {
+        this.aja = aja;
         return this;
     }
     
-    public StreetViewPanoramaOptions position(final LatLng sn, final Integer so) {
-        this.Sn = sn;
-        this.So = so;
+    public StreetViewPanoramaOptions position(final LatLng aja, final Integer ajb) {
+        this.aja = aja;
+        this.ajb = ajb;
         return this;
     }
     
     public StreetViewPanoramaOptions streetNamesEnabled(final boolean b) {
-        this.Sr = b;
+        this.aje = b;
         return this;
     }
     
     public StreetViewPanoramaOptions useViewLifecycleInFragment(final boolean b) {
-        this.RJ = b;
+        this.aiw = b;
         return this;
     }
     
     public StreetViewPanoramaOptions userNavigationEnabled(final boolean b) {
-        this.Sp = b;
+        this.ajc = b;
         return this;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        StreetViewPanoramaOptionsCreator.a(this, parcel, n);
+        c.a(this, parcel, n);
     }
     
     public StreetViewPanoramaOptions zoomGesturesEnabled(final boolean b) {
-        this.RP = b;
+        this.aiC = b;
         return this;
     }
 }

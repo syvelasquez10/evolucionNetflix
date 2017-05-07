@@ -6,7 +6,7 @@ package com.google.android.gms.drive.widget;
 
 import android.database.CursorIndexOutOfBoundsException;
 import java.util.Iterator;
-import android.util.Log;
+import com.google.android.gms.drive.internal.v;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import android.view.View;
@@ -20,12 +20,12 @@ import android.widget.BaseAdapter;
 
 public class DataBufferAdapter<T> extends BaseAdapter
 {
-    private final int Hd;
-    private int He;
-    private final int Hf;
-    private final List<DataBuffer<T>> Hg;
-    private final LayoutInflater Hh;
-    private boolean Hi;
+    private final int RJ;
+    private int RK;
+    private final int RL;
+    private final List<DataBuffer<T>> RM;
+    private final LayoutInflater RN;
+    private boolean RO;
     private final Context mContext;
     
     public DataBufferAdapter(final Context context, final int n) {
@@ -36,14 +36,14 @@ public class DataBufferAdapter<T> extends BaseAdapter
         this(context, n, n2, (List)new ArrayList());
     }
     
-    public DataBufferAdapter(final Context mContext, final int n, final int hf, final List<DataBuffer<T>> hg) {
-        this.Hi = true;
+    public DataBufferAdapter(final Context mContext, final int n, final int rl, final List<DataBuffer<T>> rm) {
+        this.RO = true;
         this.mContext = mContext;
-        this.He = n;
-        this.Hd = n;
-        this.Hf = hf;
-        this.Hg = hg;
-        this.Hh = (LayoutInflater)mContext.getSystemService("layout_inflater");
+        this.RK = n;
+        this.RJ = n;
+        this.RL = rl;
+        this.RM = rm;
+        this.RN = (LayoutInflater)mContext.getSystemService("layout_inflater");
     }
     
     public DataBufferAdapter(final Context context, final int n, final int n2, final DataBuffer<T>... array) {
@@ -65,14 +65,14 @@ public class DataBufferAdapter<T> extends BaseAdapter
             if (inflate != null) {
                 break Label_0054;
             }
-            inflate = this.Hh.inflate(n2, viewGroup, false);
+            inflate = this.RN.inflate(n2, viewGroup, false);
             try {
                 while (true) {
-                    if (this.Hf == 0) {
+                    if (this.RL == 0) {
                         textView = (TextView)inflate;
                     }
                     else {
-                        textView = (TextView)inflate.findViewById(this.Hf);
+                        textView = (TextView)inflate.findViewById(this.RL);
                     }
                     item = this.getItem(n);
                     if (item instanceof CharSequence) {
@@ -84,7 +84,7 @@ public class DataBufferAdapter<T> extends BaseAdapter
                 }
             }
             catch (ClassCastException ex) {
-                Log.e("DataBufferAdapter", "You must supply a resource ID for a TextView");
+                v.a("DataBufferAdapter", ex, "You must supply a resource ID for a TextView");
                 throw new IllegalStateException("DataBufferAdapter requires the resource ID to be a TextView", ex);
             }
         }
@@ -93,19 +93,19 @@ public class DataBufferAdapter<T> extends BaseAdapter
     }
     
     public void append(final DataBuffer<T> dataBuffer) {
-        this.Hg.add(dataBuffer);
-        if (this.Hi) {
+        this.RM.add(dataBuffer);
+        if (this.RO) {
             this.notifyDataSetChanged();
         }
     }
     
     public void clear() {
-        final Iterator<DataBuffer<T>> iterator = this.Hg.iterator();
+        final Iterator<DataBuffer<T>> iterator = this.RM.iterator();
         while (iterator.hasNext()) {
-            iterator.next().close();
+            iterator.next().release();
         }
-        this.Hg.clear();
-        if (this.Hi) {
+        this.RM.clear();
+        if (this.RO) {
             this.notifyDataSetChanged();
         }
     }
@@ -115,7 +115,7 @@ public class DataBufferAdapter<T> extends BaseAdapter
     }
     
     public int getCount() {
-        final Iterator<DataBuffer<T>> iterator = this.Hg.iterator();
+        final Iterator<DataBuffer<T>> iterator = this.RM.iterator();
         int n = 0;
         while (iterator.hasNext()) {
             n += iterator.next().getCount();
@@ -124,11 +124,11 @@ public class DataBufferAdapter<T> extends BaseAdapter
     }
     
     public View getDropDownView(final int n, final View view, final ViewGroup viewGroup) {
-        return this.a(n, view, viewGroup, this.He);
+        return this.a(n, view, viewGroup, this.RK);
     }
     
     public T getItem(final int n) throws CursorIndexOutOfBoundsException {
-        final Iterator<DataBuffer<T>> iterator = this.Hg.iterator();
+        final Iterator<DataBuffer<T>> iterator = this.RM.iterator();
         int n2 = n;
         while (iterator.hasNext()) {
             final DataBuffer<T> dataBuffer = iterator.next();
@@ -152,19 +152,19 @@ public class DataBufferAdapter<T> extends BaseAdapter
     }
     
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
-        return this.a(n, view, viewGroup, this.Hd);
+        return this.a(n, view, viewGroup, this.RJ);
     }
     
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        this.Hi = true;
+        this.RO = true;
     }
     
-    public void setDropDownViewResource(final int he) {
-        this.He = he;
+    public void setDropDownViewResource(final int rk) {
+        this.RK = rk;
     }
     
-    public void setNotifyOnChange(final boolean hi) {
-        this.Hi = hi;
+    public void setNotifyOnChange(final boolean ro) {
+        this.RO = ro;
     }
 }

@@ -6,7 +6,7 @@ package com.google.android.gms.internal;
 
 import android.util.Base64;
 
-class e implements n
+class e implements m
 {
     @Override
     public String a(final byte[] array, final boolean b) {

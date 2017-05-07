@@ -11,76 +11,76 @@ import android.view.Display;
 import java.lang.ref.WeakReference;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.View$OnAttachStateChangeListener;
-import android.os.Bundle;
 import android.view.View;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Binder;
-import com.google.android.gms.internal.gr;
+import com.google.android.gms.internal.kc;
 
 public class PopupManager
 {
-    protected GamesClientImpl JK;
-    protected PopupLocationInfo JL;
+    protected GamesClientImpl XO;
+    protected PopupLocationInfo XP;
     
-    private PopupManager(final GamesClientImpl jk, final int n) {
-        this.JK = jk;
-        this.bc(n);
+    private PopupManager(final GamesClientImpl xo, final int n) {
+        this.XO = xo;
+        this.dG(n);
     }
     
     public static PopupManager a(final GamesClientImpl gamesClientImpl, final int n) {
-        if (gr.fv()) {
+        if (kc.hC()) {
             return new PopupManagerHCMR1(gamesClientImpl, n);
         }
         return new PopupManager(gamesClientImpl, n);
     }
     
-    protected void bc(final int n) {
-        this.JL = new PopupLocationInfo(n, (IBinder)new Binder());
+    protected void dG(final int n) {
+        this.XP = new PopupLocationInfo(n, (IBinder)new Binder());
     }
     
-    public void g(final View view) {
+    public void kJ() {
+        this.XO.a(this.XP.XQ, this.XP.kM());
     }
     
-    public void gS() {
-        this.JK.a(this.JL.JM, this.JL.gV());
+    public Bundle kK() {
+        return this.XP.kM();
     }
     
-    public Bundle gT() {
-        return this.JL.gV();
+    public IBinder kL() {
+        return this.XP.XQ;
     }
     
-    public IBinder gU() {
-        return this.JL.JM;
+    public void l(final View view) {
     }
     
     public void setGravity(final int gravity) {
-        this.JL.gravity = gravity;
+        this.XP.gravity = gravity;
     }
     
     public static final class PopupLocationInfo
     {
-        public IBinder JM;
-        public int JN;
+        public IBinder XQ;
+        public int XR;
         public int bottom;
         public int gravity;
         public int left;
         public int right;
         public int top;
         
-        private PopupLocationInfo(final int gravity, final IBinder jm) {
-            this.JN = -1;
+        private PopupLocationInfo(final int gravity, final IBinder xq) {
+            this.XR = -1;
             this.left = 0;
             this.top = 0;
             this.right = 0;
             this.bottom = 0;
             this.gravity = gravity;
-            this.JM = jm;
+            this.XQ = xq;
         }
         
-        public Bundle gV() {
+        public Bundle kM() {
             final Bundle bundle = new Bundle();
             bundle.putInt("popupLocationInfo.gravity", this.gravity);
-            bundle.putInt("popupLocationInfo.displayId", this.JN);
+            bundle.putInt("popupLocationInfo.displayId", this.XR);
             bundle.putInt("popupLocationInfo.left", this.left);
             bundle.putInt("popupLocationInfo.top", this.top);
             bundle.putInt("popupLocationInfo.right", this.right);
@@ -91,17 +91,17 @@ public class PopupManager
     
     private static final class PopupManagerHCMR1 extends PopupManager implements View$OnAttachStateChangeListener, ViewTreeObserver$OnGlobalLayoutListener
     {
-        private boolean Iz;
-        private WeakReference<View> JO;
+        private boolean Wn;
+        private WeakReference<View> XS;
         
         protected PopupManagerHCMR1(final GamesClientImpl gamesClientImpl, final int n) {
             super(gamesClientImpl, n, null);
-            this.Iz = false;
+            this.Wn = false;
         }
         
-        private void h(final View view) {
+        private void m(final View view) {
             int displayId = -1;
-            if (gr.fz()) {
+            if (kc.hG()) {
                 final Display display = view.getDisplay();
                 displayId = displayId;
                 if (display != null) {
@@ -113,29 +113,38 @@ public class PopupManager
             view.getLocationInWindow(array);
             final int width = view.getWidth();
             final int height = view.getHeight();
-            this.JL.JN = displayId;
-            this.JL.JM = windowToken;
-            this.JL.left = array[0];
-            this.JL.top = array[1];
-            this.JL.right = array[0] + width;
-            this.JL.bottom = array[1] + height;
-            if (this.Iz) {
-                this.gS();
-                this.Iz = false;
+            this.XP.XR = displayId;
+            this.XP.XQ = windowToken;
+            this.XP.left = array[0];
+            this.XP.top = array[1];
+            this.XP.right = array[0] + width;
+            this.XP.bottom = array[1] + height;
+            if (this.Wn) {
+                this.kJ();
+                this.Wn = false;
             }
         }
         
         @Override
-        protected void bc(final int n) {
-            this.JL = new PopupLocationInfo(n, (IBinder)null);
+        protected void dG(final int n) {
+            this.XP = new PopupLocationInfo(n, (IBinder)null);
         }
         
         @Override
-        public void g(View view) {
-            this.JK.gF();
-            if (this.JO != null) {
-                final View view2 = this.JO.get();
-                final Context context = this.JK.getContext();
+        public void kJ() {
+            if (this.XP.XQ != null) {
+                super.kJ();
+                return;
+            }
+            this.Wn = (this.XS != null);
+        }
+        
+        @Override
+        public void l(View view) {
+            this.XO.ku();
+            if (this.XS != null) {
+                final View view2 = this.XS.get();
+                final Context context = this.XO.getContext();
                 View decorView;
                 if ((decorView = view2) == null) {
                     decorView = view2;
@@ -146,7 +155,7 @@ public class PopupManager
                 if (decorView != null) {
                     decorView.removeOnAttachStateChangeListener((View$OnAttachStateChangeListener)this);
                     final ViewTreeObserver viewTreeObserver = decorView.getViewTreeObserver();
-                    if (gr.fy()) {
+                    if (kc.hF()) {
                         viewTreeObserver.removeOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)this);
                     }
                     else {
@@ -154,8 +163,8 @@ public class PopupManager
                     }
                 }
             }
-            this.JO = null;
-            final Context context2 = this.JK.getContext();
+            this.XS = null;
+            final Context context2 = this.XO.getContext();
             View view3;
             if ((view3 = view) == null) {
                 view3 = view;
@@ -163,44 +172,35 @@ public class PopupManager
                     if ((view = ((Activity)context2).findViewById(16908290)) == null) {
                         view = ((Activity)context2).getWindow().getDecorView();
                     }
-                    GamesLog.g("PopupManager", "You have not specified a View to use as content view for popups. Falling back to the Activity content view which may not work properly in future versions of the API. Use setViewForPopups() to set your content view.");
+                    GamesLog.p("PopupManager", "You have not specified a View to use as content view for popups. Falling back to the Activity content view which may not work properly in future versions of the API. Use setViewForPopups() to set your content view.");
                     view3 = view;
                 }
             }
             if (view3 != null) {
-                this.h(view3);
-                this.JO = new WeakReference<View>(view3);
+                this.m(view3);
+                this.XS = new WeakReference<View>(view3);
                 view3.addOnAttachStateChangeListener((View$OnAttachStateChangeListener)this);
                 view3.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)this);
                 return;
             }
-            GamesLog.h("PopupManager", "No content view usable to display popups. Popups will not be displayed in response to this client's calls. Use setViewForPopups() to set your content view.");
-        }
-        
-        @Override
-        public void gS() {
-            if (this.JL.JM != null) {
-                super.gS();
-                return;
-            }
-            this.Iz = (this.JO != null);
+            GamesLog.q("PopupManager", "No content view usable to display popups. Popups will not be displayed in response to this client's calls. Use setViewForPopups() to set your content view.");
         }
         
         public void onGlobalLayout() {
-            if (this.JO != null) {
-                final View view = this.JO.get();
+            if (this.XS != null) {
+                final View view = this.XS.get();
                 if (view != null) {
-                    this.h(view);
+                    this.m(view);
                 }
             }
         }
         
         public void onViewAttachedToWindow(final View view) {
-            this.h(view);
+            this.m(view);
         }
         
         public void onViewDetachedFromWindow(final View view) {
-            this.JK.gF();
+            this.XO.ku();
             view.removeOnAttachStateChangeListener((View$OnAttachStateChangeListener)this);
         }
     }

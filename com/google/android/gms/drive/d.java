@@ -9,55 +9,43 @@ import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class d implements Parcelable$Creator<DriveId>
+public class d implements Parcelable$Creator<DrivePreferences>
 {
-    static void a(final DriveId driveId, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, driveId.xH);
-        b.a(parcel, 2, driveId.EH, false);
-        b.a(parcel, 3, driveId.EI);
-        b.a(parcel, 4, driveId.EJ);
-        b.F(parcel, p3);
+    static void a(final DrivePreferences drivePreferences, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, drivePreferences.BR);
+        b.a(parcel, 2, drivePreferences.Ne);
+        b.H(parcel, d);
     }
     
-    public DriveId[] ad(final int n) {
-        return new DriveId[n];
-    }
-    
-    public DriveId z(final Parcel parcel) {
-        long i = 0L;
-        final int o = a.o(parcel);
+    public DrivePreferences P(final Parcel parcel) {
+        boolean c = false;
+        final int c2 = a.C(parcel);
         int g = 0;
-        String n = null;
-        long j = 0L;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
+        while (parcel.dataPosition() < c2) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n2);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n2);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n = a.n(parcel, n2);
-                    continue;
-                }
-                case 3: {
-                    j = a.i(parcel, n2);
-                    continue;
-                }
-                case 4: {
-                    i = a.i(parcel, n2);
+                    c = a.c(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c2) {
+            throw new a.a("Overread allowed size end=" + c2, parcel);
         }
-        return new DriveId(g, n, j, i);
+        return new DrivePreferences(g, c);
+    }
+    
+    public DrivePreferences[] aU(final int n) {
+        return new DrivePreferences[n];
     }
 }

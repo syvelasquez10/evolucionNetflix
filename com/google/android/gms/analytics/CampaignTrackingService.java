@@ -30,10 +30,10 @@ public class CampaignTrackingService extends IntentService
             final FileOutputStream openFileOutput = context.openFileOutput("gaInstallData", 0);
             openFileOutput.write(stringExtra.getBytes());
             openFileOutput.close();
-            aa.y("Stored campaign information.");
+            z.V("Stored campaign information.");
         }
         catch (IOException ex) {
-            aa.w("Error storing install campaign.");
+            z.T("Error storing install campaign.");
         }
     }
 }

@@ -4,73 +4,155 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import java.util.Iterator;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.regex.Matcher;
+import android.text.TextUtils;
+import java.util.regex.Pattern;
 
-public class jz implements Parcelable$Creator<jy>
+public final class jz
 {
-    static void a(final jy jy, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, jy.getVersionCode());
-        b.a(parcel, 2, jy.adn, false);
-        b.a(parcel, 3, jy.pm, false);
-        b.a(parcel, 4, (Parcelable)jy.adr, n, false);
-        b.a(parcel, 5, (Parcelable)jy.ads, n, false);
-        b.a(parcel, 6, (Parcelable)jy.adt, n, false);
-        b.F(parcel, p3);
+    private static final Pattern ML;
+    private static final Pattern MM;
+    
+    static {
+        ML = Pattern.compile("\\\\.");
+        MM = Pattern.compile("[\\\\\"/\b\f\n\r\t]");
     }
     
-    public jy bx(final Parcel parcel) {
-        jw jw = null;
-        final int o = a.o(parcel);
-        int g = 0;
-        jw jw2 = null;
-        ju ju = null;
-        String n = null;
-        String n2 = null;
-        while (parcel.dataPosition() < o) {
-            final int n3 = a.n(parcel);
-            switch (a.R(n3)) {
-                default: {
-                    a.b(parcel, n3);
-                    continue;
+    public static String bf(final String s) {
+        if (!TextUtils.isEmpty((CharSequence)s)) {
+            final Matcher matcher = jz.MM.matcher(s);
+            StringBuffer sb = null;
+            while (matcher.find()) {
+                StringBuffer sb2;
+                if ((sb2 = sb) == null) {
+                    sb2 = new StringBuffer();
                 }
-                case 1: {
-                    g = a.g(parcel, n3);
-                    continue;
-                }
-                case 2: {
-                    n2 = a.n(parcel, n3);
-                    continue;
-                }
-                case 3: {
-                    n = a.n(parcel, n3);
-                    continue;
-                }
-                case 4: {
-                    ju = a.a(parcel, n3, com.google.android.gms.internal.ju.CREATOR);
-                    continue;
-                }
-                case 5: {
-                    jw2 = a.a(parcel, n3, com.google.android.gms.internal.jw.CREATOR);
-                    continue;
-                }
-                case 6: {
-                    jw = a.a(parcel, n3, com.google.android.gms.internal.jw.CREATOR);
-                    continue;
+                switch (matcher.group().charAt(0)) {
+                    default: {
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\b': {
+                        matcher.appendReplacement(sb2, "\\\\b");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\"': {
+                        matcher.appendReplacement(sb2, "\\\\\\\"");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\\': {
+                        matcher.appendReplacement(sb2, "\\\\\\\\");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '/': {
+                        matcher.appendReplacement(sb2, "\\\\/");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\f': {
+                        matcher.appendReplacement(sb2, "\\\\f");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\n': {
+                        matcher.appendReplacement(sb2, "\\\\n");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\r': {
+                        matcher.appendReplacement(sb2, "\\\\r");
+                        sb = sb2;
+                        continue;
+                    }
+                    case '\t': {
+                        matcher.appendReplacement(sb2, "\\\\t");
+                        sb = sb2;
+                        continue;
+                    }
                 }
             }
+            if (sb != null) {
+                matcher.appendTail(sb);
+                return sb.toString();
+            }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
-        }
-        return new jy(g, n2, n, ju, jw2, jw);
+        return s;
     }
     
-    public jy[] cL(final int n) {
-        return new jy[n];
+    public static boolean d(final Object o, final Object o2) {
+        Label_0098: {
+            if (!(o instanceof JSONObject) || !(o2 instanceof JSONObject)) {
+                break Label_0098;
+            }
+            final JSONObject jsonObject = (JSONObject)o;
+            final JSONObject jsonObject2 = (JSONObject)o2;
+        Block_10_Outer:
+            while (true) {
+                final Iterator keys;
+                if (jsonObject.length() == jsonObject2.length()) {
+                    keys = jsonObject.keys();
+                    break Label_0043;
+                }
+                Label_0035: {
+                    return false;
+                }
+                if (!keys.hasNext()) {
+                    return true;
+                }
+                final String s = keys.next();
+                if (!jsonObject2.has(s)) {
+                    return false;
+                }
+                try {
+                    if (!d(jsonObject.get(s), jsonObject2.get(s))) {
+                        return false;
+                    }
+                    continue Block_10_Outer;
+                    while (true) {
+                        Label_0135: {
+                            try {
+                                final JSONArray jsonArray;
+                                final int n;
+                                final JSONArray jsonArray2;
+                                if (d(jsonArray.get(n), jsonArray2.get(n))) {
+                                    ++n;
+                                    break Label_0135;
+                                }
+                                return false;
+                                Label_0168:
+                                return true;
+                                Label_0170:
+                                return o.equals(o2);
+                            }
+                            catch (JSONException ex) {
+                                return false;
+                            }
+                            while (true) {
+                                final JSONArray jsonArray = (JSONArray)o;
+                                final JSONArray jsonArray2 = (JSONArray)o2;
+                                final int n = 0;
+                                break Label_0135;
+                                continue;
+                            }
+                        }
+                        continue;
+                    }
+                }
+                // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())
+                // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
+                // iftrue(Label_0168:, n >= jsonArray.length())
+                catch (JSONException ex2) {
+                    return false;
+                }
+                break;
+            }
+        }
     }
 }

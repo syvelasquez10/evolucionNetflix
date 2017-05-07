@@ -5,20 +5,20 @@
 package com.google.android.gms.maps.model;
 
 import android.os.RemoteException;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.maps.model.internal.e;
 
 public final class IndoorLevel
 {
-    private final e SZ;
+    private final e ajM;
     
     public IndoorLevel(final e e) {
-        this.SZ = fq.f(e);
+        this.ajM = n.i(e);
     }
     
     public void activate() {
         try {
-            this.SZ.activate();
+            this.ajM.activate();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -31,7 +31,7 @@ public final class IndoorLevel
             return false;
         }
         try {
-            return this.SZ.a(((IndoorLevel)o).SZ);
+            return this.ajM.a(((IndoorLevel)o).ajM);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -40,7 +40,7 @@ public final class IndoorLevel
     
     public String getName() {
         try {
-            return this.SZ.getName();
+            return this.ajM.getName();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -49,7 +49,7 @@ public final class IndoorLevel
     
     public String getShortName() {
         try {
-            return this.SZ.getShortName();
+            return this.ajM.getShortName();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -59,7 +59,7 @@ public final class IndoorLevel
     @Override
     public int hashCode() {
         try {
-            return this.SZ.hashCodeRemote();
+            return this.ajM.hashCodeRemote();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

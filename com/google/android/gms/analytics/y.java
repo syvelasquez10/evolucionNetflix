@@ -4,48 +4,44 @@
 
 package com.google.android.gms.analytics;
 
-import java.util.Iterator;
-import android.text.TextUtils;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-class y
+class y implements ac
 {
-    static String a(final x x, long n) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(x.cO());
-        if (x.cQ() > 0L) {
-            n -= x.cQ();
-            if (n >= 0L) {
-                sb.append("&qt").append("=").append(n);
-            }
-        }
-        sb.append("&z").append("=").append(x.cP());
-        return sb.toString();
+    private final long AN;
+    private final int AO;
+    private double AP;
+    private long AQ;
+    private final Object AR;
+    private final String AS;
+    
+    public y(final int ao, final long an, final String as) {
+        this.AR = new Object();
+        this.AO = ao;
+        this.AP = this.AO;
+        this.AN = an;
+        this.AS = as;
     }
     
-    static String encode(final String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8");
-        }
-        catch (UnsupportedEncodingException ex) {
-            throw new AssertionError((Object)("URL encoding failed for: " + s));
-        }
+    public y(final String s) {
+        this(60, 2000L, s);
     }
     
-    static Map<String, String> v(final Map<String, String> map) {
-        final HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        for (final Map.Entry<String, String> entry : map.entrySet()) {
-            if (entry.getKey().startsWith("&") && entry.getValue() != null) {
-                final String substring = entry.getKey().substring(1);
-                if (TextUtils.isEmpty((CharSequence)substring)) {
-                    continue;
+    @Override
+    public boolean eK() {
+        synchronized (this.AR) {
+            final long currentTimeMillis = System.currentTimeMillis();
+            if (this.AP < this.AO) {
+                final double n = (currentTimeMillis - this.AQ) / this.AN;
+                if (n > 0.0) {
+                    this.AP = Math.min(this.AO, n + this.AP);
                 }
-                hashMap.put(substring, entry.getValue());
             }
+            this.AQ = currentTimeMillis;
+            if (this.AP >= 1.0) {
+                --this.AP;
+                return true;
+            }
+            z.W("Excessive " + this.AS + " detected; call ignored.");
+            return false;
         }
-        return (Map<String, String>)hashMap;
     }
 }

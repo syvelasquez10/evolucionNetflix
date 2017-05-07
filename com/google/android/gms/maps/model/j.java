@@ -9,12 +9,11 @@ import android.os.Parcel;
 
 public class j
 {
-    static void a(final TileOverlayOptions tileOverlayOptions, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, tileOverlayOptions.getVersionCode());
-        b.a(parcel, 2, tileOverlayOptions.iG(), false);
-        b.a(parcel, 3, tileOverlayOptions.isVisible());
-        b.a(parcel, 4, tileOverlayOptions.getZIndex());
-        b.F(parcel, p3);
+    static void a(final LatLng latLng, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, latLng.getVersionCode());
+        b.a(parcel, 2, latLng.latitude);
+        b.a(parcel, 3, latLng.longitude);
+        b.H(parcel, d);
     }
 }

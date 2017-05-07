@@ -4,24 +4,26 @@
 
 package com.google.android.gms.drive.metadata.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.google.android.gms.common.data.DataHolder;
 import android.os.Bundle;
-import com.google.android.gms.drive.metadata.b;
-import android.os.Parcelable;
+import com.google.android.gms.drive.metadata.a;
 
-public class g<T extends Parcelable> extends b<T>
+public class g extends a<Long>
 {
     public g(final String s, final int n) {
         super(s, n);
     }
     
     @Override
-    protected void a(final Bundle bundle, final Collection<T> collection) {
-        bundle.putParcelableArrayList(this.getName(), new ArrayList((Collection<? extends E>)collection));
+    protected void a(final Bundle bundle, final Long n) {
+        bundle.putLong(this.getName(), (long)n);
     }
     
-    protected Collection<T> j(final Bundle bundle) {
-        return (Collection<T>)bundle.getParcelableArrayList(this.getName());
+    protected Long h(final DataHolder dataHolder, final int n, final int n2) {
+        return dataHolder.a(this.getName(), n, n2);
+    }
+    
+    protected Long k(final Bundle bundle) {
+        return bundle.getLong(this.getName());
     }
 }

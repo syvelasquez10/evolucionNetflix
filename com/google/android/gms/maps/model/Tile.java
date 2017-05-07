@@ -10,18 +10,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class Tile implements SafeParcelable
 {
-    public static final TileCreator CREATOR;
+    public static final u CREATOR;
+    private final int BR;
     public final byte[] data;
     public final int height;
     public final int width;
-    private final int xH;
     
     static {
-        CREATOR = new TileCreator();
+        CREATOR = new u();
     }
     
-    Tile(final int xh, final int width, final int height, final byte[] data) {
-        this.xH = xh;
+    Tile(final int br, final int width, final int height, final byte[] data) {
+        this.BR = br;
         this.width = width;
         this.height = height;
         this.data = data;
@@ -36,14 +36,14 @@ public final class Tile implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (v.iB()) {
-            i.a(this, parcel, n);
+        if (v.mK()) {
+            com.google.android.gms.maps.model.v.a(this, parcel, n);
             return;
         }
-        TileCreator.a(this, parcel, n);
+        u.a(this, parcel, n);
     }
 }

@@ -4,69 +4,64 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import android.os.Parcelable;
+import android.text.TextUtils;
+import java.security.SignatureException;
+import java.security.InvalidKeyException;
+import java.security.Signature;
+import java.security.spec.InvalidKeySpecException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.KeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import android.util.Base64;
+import java.security.KeyFactory;
+import java.security.PublicKey;
 
-public class ef implements Parcelable
+@ez
+public class ef
 {
-    @Deprecated
-    public static final Parcelable$Creator<ef> CREATOR;
-    private String mValue;
-    private String wp;
-    private String wq;
+    public static PublicKey F(final String s) {
+        try {
+            return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode(s, 0)));
+        }
+        catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
+        catch (InvalidKeySpecException ex2) {
+            gs.T("Invalid key specification.");
+            throw new IllegalArgumentException(ex2);
+        }
+    }
     
-    static {
-        CREATOR = (Parcelable$Creator)new Parcelable$Creator<ef>() {
-            @Deprecated
-            public ef i(final Parcel parcel) {
-                return new ef(parcel);
+    public static boolean a(final PublicKey publicKey, final String s, final String s2) {
+        try {
+            final Signature instance = Signature.getInstance("SHA1withRSA");
+            instance.initVerify(publicKey);
+            instance.update(s.getBytes());
+            if (!instance.verify(Base64.decode(s2, 0))) {
+                gs.T("Signature verification failed.");
+                return false;
             }
-            
-            @Deprecated
-            public ef[] u(final int n) {
-                return new ef[n];
-            }
-        };
+            return true;
+        }
+        catch (NoSuchAlgorithmException ex) {
+            gs.T("NoSuchAlgorithmException.");
+            return false;
+        }
+        catch (InvalidKeyException ex2) {
+            gs.T("Invalid key specification.");
+            return false;
+        }
+        catch (SignatureException ex3) {
+            gs.T("Signature exception.");
+            return false;
+        }
     }
     
-    public ef() {
-    }
-    
-    ef(final Parcel parcel) {
-        this.readFromParcel(parcel);
-    }
-    
-    public ef(final String wp, final String wq, final String mValue) {
-        this.wp = wp;
-        this.wq = wq;
-        this.mValue = mValue;
-    }
-    
-    @Deprecated
-    private void readFromParcel(final Parcel parcel) {
-        this.wp = parcel.readString();
-        this.wq = parcel.readString();
-        this.mValue = parcel.readString();
-    }
-    
-    @Deprecated
-    public int describeContents() {
-        return 0;
-    }
-    
-    public String getId() {
-        return this.wp;
-    }
-    
-    public String getValue() {
-        return this.mValue;
-    }
-    
-    @Deprecated
-    public void writeToParcel(final Parcel parcel, final int n) {
-        parcel.writeString(this.wp);
-        parcel.writeString(this.wq);
-        parcel.writeString(this.mValue);
+    public static boolean b(final String s, final String s2, final String s3) {
+        if (TextUtils.isEmpty((CharSequence)s2) || TextUtils.isEmpty((CharSequence)s) || TextUtils.isEmpty((CharSequence)s3)) {
+            gs.T("Purchase verification failed: missing data.");
+            return false;
+        }
+        return a(F(s), s2, s3);
     }
 }

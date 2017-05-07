@@ -21,7 +21,7 @@ public interface e extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnCameraChangeListener");
         }
         
-        public static e ah(final IBinder binder) {
+        public static e aV(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -47,14 +47,14 @@ public interface e extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IOnCameraChangeListener");
-                    CameraPosition fromParcel;
+                    CameraPosition ci;
                     if (parcel.readInt() != 0) {
-                        fromParcel = CameraPosition.CREATOR.createFromParcel(parcel);
+                        ci = CameraPosition.CREATOR.cI(parcel);
                     }
                     else {
-                        fromParcel = null;
+                        ci = null;
                     }
-                    this.onCameraChange(fromParcel);
+                    this.onCameraChange(ci);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -63,14 +63,14 @@ public interface e extends IInterface
         
         private static class a implements e
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -86,7 +86,7 @@ public interface e extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

@@ -13,40 +13,46 @@ import android.os.Parcelable$Creator;
 public class e implements Parcelable$Creator<d>
 {
     static void a(final d d, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
+        final int d2 = b.D(parcel);
         b.c(parcel, 1, d.getVersionCode());
-        b.a(parcel, 2, (Parcelable)d.abg, n, false);
-        b.F(parcel, p3);
+        b.a(parcel, 2, (Parcelable)d.aso, n, false);
+        b.a(parcel, 3, (Parcelable)d.asp, n, false);
+        b.H(parcel, d2);
     }
     
-    public d ba(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public d dq(final Parcel parcel) {
+        OfferWalletObject offerWalletObject = null;
+        final int c = a.C(parcel);
         int g = 0;
         LoyaltyWalletObject loyaltyWalletObject = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    loyaltyWalletObject = a.a(parcel, n, LoyaltyWalletObject.CREATOR);
+                    loyaltyWalletObject = a.a(parcel, b, LoyaltyWalletObject.CREATOR);
+                    continue;
+                }
+                case 3: {
+                    offerWalletObject = a.a(parcel, b, OfferWalletObject.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new d(g, loyaltyWalletObject);
+        return new d(g, loyaltyWalletObject, offerWalletObject);
     }
     
-    public d[] cm(final int n) {
+    public d[] fq(final int n) {
         return new d[n];
     }
 }

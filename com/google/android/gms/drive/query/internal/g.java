@@ -4,56 +4,50 @@
 
 package com.google.android.gms.drive.query.internal;
 
-import java.util.List;
+import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class g implements Parcelable$Creator<LogicalFilter>
+public class g implements Parcelable$Creator<HasFilter>
 {
-    static void a(final LogicalFilter logicalFilter, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1000, logicalFilter.xH);
-        b.a(parcel, 1, (Parcelable)logicalFilter.GG, n, false);
-        b.b(parcel, 2, logicalFilter.GS, false);
-        b.F(parcel, p3);
+    static void a(final HasFilter hasFilter, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1000, hasFilter.BR);
+        b.a(parcel, 1, (Parcelable)hasFilter.QD, n, false);
+        b.H(parcel, d);
     }
     
-    public LogicalFilter[] aN(final int n) {
-        return new LogicalFilter[n];
-    }
-    
-    public LogicalFilter aj(final Parcel parcel) {
-        List<FilterHolder> c = null;
-        final int o = a.o(parcel);
+    public HasFilter aO(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
-        Operator operator = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        MetadataBundle metadataBundle = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 1: {
-                    operator = a.a(parcel, n, Operator.CREATOR);
-                    continue;
-                }
-                case 2: {
-                    c = a.c(parcel, n, FilterHolder.CREATOR);
+                    metadataBundle = a.a(parcel, b, MetadataBundle.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new LogicalFilter(g, operator, c);
+        return new HasFilter(g, metadataBundle);
+    }
+    
+    public HasFilter[] ca(final int n) {
+        return new HasFilter[n];
     }
 }

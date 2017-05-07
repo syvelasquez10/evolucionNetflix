@@ -109,8 +109,8 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     private void init() {
-        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837895), true);
-        this.userStars = this.tileify(this.getResources().getDrawable(2130837896), true);
+        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837861), true);
+        this.userStars = this.tileify(this.getResources().getDrawable(2130837862), true);
         this.setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
         final Context context = this.getContext();
         if (context instanceof VideoDetailsProvider) {
@@ -226,7 +226,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         if (Log.isLoggable("NetflixRatingBar", 2)) {
             Log.v("NetflixRatingBar", "Rating changed: " + currRating + ", from user: " + b);
         }
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493192), currRating));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493197), currRating));
         if (b && this.getUserRating() != currRating) {
             final int progress = (int)(currRating * this.getProgressPerStar());
             Log.v("NetflixRatingBar", "Setting progress: " + progress);
@@ -319,12 +319,12 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
             NetflixRatingBar.this.setEnabled(true);
             if (status.isError()) {
                 Log.w("NetflixRatingBar", "Invalid status code");
-                Toast.makeText(NetflixRatingBar.this.getContext(), 2131493200, 1).show();
+                Toast.makeText(NetflixRatingBar.this.getContext(), 2131493205, 1).show();
                 NetflixRatingBar.this.setRating((float)NetflixRatingBar.this.currRating);
                 return;
             }
             Log.v("NetflixRatingBar", "Rating has been updated");
-            Toast.makeText(NetflixRatingBar.this.getContext(), 2131493201, 1).show();
+            Toast.makeText(NetflixRatingBar.this.getContext(), 2131493206, 1).show();
             NetflixRatingBar.this.currRating = this.rating;
             if (NetflixRatingBar.this.details != null) {
                 NetflixRatingBar.this.details.setUserRating(this.rating);

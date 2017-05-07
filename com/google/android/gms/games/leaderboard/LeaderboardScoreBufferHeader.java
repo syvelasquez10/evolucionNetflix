@@ -8,18 +8,18 @@ import android.os.Bundle;
 
 public final class LeaderboardScoreBufferHeader
 {
-    private final Bundle Jf;
+    private final Bundle MZ;
     
     public LeaderboardScoreBufferHeader(final Bundle bundle) {
-        Bundle jf = bundle;
+        Bundle mz = bundle;
         if (bundle == null) {
-            jf = new Bundle();
+            mz = new Bundle();
         }
-        this.Jf = jf;
+        this.MZ = mz;
     }
     
-    public Bundle hE() {
-        return this.Jf;
+    public Bundle lz() {
+        return this.MZ;
     }
     
     public static final class Builder

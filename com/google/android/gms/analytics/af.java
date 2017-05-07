@@ -4,13 +4,19 @@
 
 package com.google.android.gms.analytics;
 
-abstract class af
+import com.google.android.gms.internal.hb;
+import java.util.List;
+import java.util.Map;
+
+interface af
 {
-    abstract void cm();
+    void b(final Map<String, String> p0, final long p1, final String p2, final List<hb> p3);
     
-    abstract void dispatchLocalHits();
+    void dI();
     
-    abstract void s(final boolean p0);
+    void dO();
     
-    abstract void setLocalDispatchPeriod(final int p0);
+    void dispatch();
+    
+    void eh();
 }

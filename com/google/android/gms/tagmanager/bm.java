@@ -4,18 +4,12 @@
 
 package com.google.android.gms.tagmanager;
 
-import android.os.Build$VERSION;
+import java.io.IOException;
+import java.io.InputStream;
 
-class bm
+interface bm
 {
-    int jZ() {
-        return Build$VERSION.SDK_INT;
-    }
+    InputStream cA(final String p0) throws IOException;
     
-    public bl kH() {
-        if (this.jZ() < 8) {
-            return new av();
-        }
-        return new aw();
-    }
+    void close();
 }

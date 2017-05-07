@@ -4,54 +4,56 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class jl implements Parcelable$Creator<jk>
+public class jl implements Parcelable$Creator<jm.b>
 {
-    static void a(final jk jk, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, jk.getVersionCode());
-        b.a(parcel, 2, jk.label, false);
-        b.a(parcel, 3, jk.value, false);
-        b.F(parcel, p3);
+    static void a(final jm.b b, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1, b.versionCode);
+        b.a(parcel, 2, b.fv, false);
+        b.a(parcel, 3, (Parcelable)b.ME, n, false);
+        b.H(parcel, d);
     }
     
-    public jk bq(final Parcel parcel) {
-        String n = null;
-        final int o = a.o(parcel);
+    public jm.b J(final Parcel parcel) {
+        SafeParcelable safeParcelable = null;
+        final int c = a.C(parcel);
         int g = 0;
-        String n2 = null;
-        while (parcel.dataPosition() < o) {
-            final int n3 = a.n(parcel);
-            switch (a.R(n3)) {
+        String o = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n3);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n3);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n2 = a.n(parcel, n3);
+                    o = a.o(parcel, b);
                     continue;
                 }
                 case 3: {
-                    n = a.n(parcel, n3);
+                    safeParcelable = a.a(parcel, b, (android.os.Parcelable$Creator<ji.a<?, ?>>)ji.a.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new jk(g, n2, n);
+        return new jm.b(g, o, (ji.a<?, ?>)safeParcelable);
     }
     
-    public jk[] cE(final int n) {
-        return new jk[n];
+    public jm.b[] aJ(final int n) {
+        return new jm.b[n];
     }
 }

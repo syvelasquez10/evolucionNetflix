@@ -5,22 +5,22 @@
 package com.google.android.gms.games.multiplayer.turnbased;
 
 import java.util.Collection;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import java.util.ArrayList;
 import android.os.Bundle;
 
 public final class TurnBasedMatchConfig
 {
-    private final String[] MN;
-    private final Bundle MO;
-    private final int MZ;
-    private final int My;
+    private final int abS;
+    private final String[] acg;
+    private final Bundle ach;
+    private final int acs;
     
     private TurnBasedMatchConfig(final Builder builder) {
-        this.My = builder.My;
-        this.MZ = builder.MZ;
-        this.MO = builder.MO;
-        this.MN = builder.MR.toArray(new String[builder.MR.size()]);
+        this.abS = builder.abS;
+        this.acs = builder.acs;
+        this.ach = builder.ach;
+        this.acg = builder.ack.toArray(new String[builder.ack.size()]);
     }
     
     public static Builder builder() {
@@ -36,44 +36,44 @@ public final class TurnBasedMatchConfig
     }
     
     public Bundle getAutoMatchCriteria() {
-        return this.MO;
+        return this.ach;
     }
     
     public String[] getInvitedPlayerIds() {
-        return this.MN;
-    }
-    
-    public int getMinPlayers() {
-        return this.MZ;
+        return this.acg;
     }
     
     public int getVariant() {
-        return this.My;
+        return this.abS;
+    }
+    
+    public int lF() {
+        return this.acs;
     }
     
     public static final class Builder
     {
-        Bundle MO;
-        ArrayList<String> MR;
-        int MZ;
-        int My;
+        int abS;
+        Bundle ach;
+        ArrayList<String> ack;
+        int acs;
         
         private Builder() {
-            this.My = -1;
-            this.MR = new ArrayList<String>();
-            this.MO = null;
-            this.MZ = 2;
+            this.abS = -1;
+            this.ack = new ArrayList<String>();
+            this.ach = null;
+            this.acs = 2;
         }
         
         public Builder addInvitedPlayer(final String s) {
-            fq.f(s);
-            this.MR.add(s);
+            n.i(s);
+            this.ack.add(s);
             return this;
         }
         
         public Builder addInvitedPlayers(final ArrayList<String> list) {
-            fq.f(list);
-            this.MR.addAll(list);
+            n.i(list);
+            this.ack.addAll(list);
             return this;
         }
         
@@ -81,19 +81,14 @@ public final class TurnBasedMatchConfig
             return new TurnBasedMatchConfig(this, null);
         }
         
-        public Builder setAutoMatchCriteria(final Bundle mo) {
-            this.MO = mo;
+        public Builder setAutoMatchCriteria(final Bundle ach) {
+            this.ach = ach;
             return this;
         }
         
-        public Builder setMinPlayers(final int mz) {
-            this.MZ = mz;
-            return this;
-        }
-        
-        public Builder setVariant(final int my) {
-            fq.b(my == -1 || my > 0, "Variant must be a positive integer or TurnBasedMatch.MATCH_VARIANT_ANY");
-            this.My = my;
+        public Builder setVariant(final int abS) {
+            n.b(abS == -1 || abS > 0, (Object)"Variant must be a positive integer or TurnBasedMatch.MATCH_VARIANT_ANY");
+            this.abS = abS;
             return this;
         }
     }

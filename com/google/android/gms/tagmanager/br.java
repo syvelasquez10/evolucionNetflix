@@ -4,15 +4,20 @@
 
 package com.google.android.gms.tagmanager;
 
-class br implements bj
+class br implements ag
 {
     @Override
-    public cj kG() {
-        return new bs();
+    public af cx(final String s) {
+        return new bq();
     }
     
     @Override
-    public cr kr() {
-        return new bv();
+    public af cy(final String s) {
+        return new bq();
+    }
+    
+    @Override
+    public boolean oo() {
+        return false;
     }
 }

@@ -4,34 +4,42 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Arrays;
+import com.google.android.gms.fitness.data.DataSource;
 
-public final class kv
+public class kv
 {
-    final byte[] adZ;
-    final int tag;
+    private static final ThreadLocal<String> To;
     
-    kv(final int tag, final byte[] adZ) {
-        this.tag = tag;
-        this.adZ = adZ;
+    static {
+        To = new ThreadLocal<String>();
     }
     
-    @Override
-    public boolean equals(final Object o) {
-        if (o != this) {
-            if (!(o instanceof kv)) {
-                return false;
-            }
-            final kv kv = (kv)o;
-            if (this.tag != kv.tag || !Arrays.equals(this.adZ, kv.adZ)) {
-                return false;
+    public static String bq(final String s) {
+        return s(s, kv.To.get());
+    }
+    
+    public static DataSource c(final DataSource dataSource) {
+        if (dataSource.iJ()) {
+            final String s = kv.To.get();
+            if (!iU() && !s.equals(dataSource.getAppPackageName())) {
+                return dataSource.iK();
             }
         }
-        return true;
+        return dataSource;
     }
     
-    @Override
-    public int hashCode() {
-        return (this.tag + 527) * 31 + Arrays.hashCode(this.adZ);
+    public static boolean iU() {
+        final String s = kv.To.get();
+        return s == null || s.startsWith("com.google");
+    }
+    
+    private static String s(final String s, final String s2) {
+        if (s == null || s2 == null) {
+            return s;
+        }
+        final byte[] array = new byte[s.length() + s2.length()];
+        System.arraycopy(s.getBytes(), 0, array, 0, s.length());
+        System.arraycopy(s2.getBytes(), 0, array, s.length(), s2.length());
+        return Integer.toHexString(kb.a(array, 0, array.length, 0));
     }
 }

@@ -8,10 +8,10 @@ import android.os.Build$VERSION;
 
 class l<K, V>
 {
-    final a<K, V> WH;
+    final a<K, V> anP;
     
     public l() {
-        this.WH = (a<K, V>)new a<K, V>() {
+        this.anP = (a<K, V>)new a<K, V>() {
             @Override
             public int sizeOf(final K k, final V v) {
                 return 1;
@@ -23,13 +23,13 @@ class l<K, V>
         if (n <= 0) {
             throw new IllegalArgumentException("maxSize <= 0");
         }
-        if (this.jZ() < 12) {
-            return new cz<K, V>(n, a);
+        if (this.nN() < 12) {
+            return new da<K, V>(n, a);
         }
         return new bb<K, V>(n, a);
     }
     
-    int jZ() {
+    int nN() {
         return Build$VERSION.SDK_INT;
     }
     

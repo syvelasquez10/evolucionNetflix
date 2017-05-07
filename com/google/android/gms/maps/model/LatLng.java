@@ -10,21 +10,21 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class LatLng implements SafeParcelable
 {
-    public static final LatLngCreator CREATOR;
+    public static final i CREATOR;
+    private final int BR;
     public final double latitude;
     public final double longitude;
-    private final int xH;
     
     static {
-        CREATOR = new LatLngCreator();
+        CREATOR = new i();
     }
     
     public LatLng(final double n, final double n2) {
         this(1, n, n2);
     }
     
-    LatLng(final int xh, final double n, final double longitude) {
-        this.xH = xh;
+    LatLng(final int br, final double n, final double longitude) {
+        this.BR = br;
         if (-180.0 <= longitude && longitude < 180.0) {
             this.longitude = longitude;
         }
@@ -53,7 +53,7 @@ public final class LatLng implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
@@ -70,10 +70,10 @@ public final class LatLng implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (v.iB()) {
-            e.a(this, parcel, n);
+        if (v.mK()) {
+            j.a(this, parcel, n);
             return;
         }
-        LatLngCreator.a(this, parcel, n);
+        i.a(this, parcel, n);
     }
 }

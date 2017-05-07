@@ -12,48 +12,48 @@ import java.util.Map;
 
 class ay
 {
-    private static String Yk;
-    static Map<String, String> Yl;
+    private static String apn;
+    static Map<String, String> apo;
     
     static {
-        ay.Yl = new HashMap<String, String>();
+        ay.apo = new HashMap<String, String>();
     }
     
-    static void bF(final String yk) {
+    static void cC(final String apn) {
         synchronized (ay.class) {
-            ay.Yk = yk;
+            ay.apn = apn;
         }
     }
     
-    static void c(final Context context, final String s) {
-        cy.a(context, "gtm_install_referrer", "referrer", s);
-        e(context, s);
+    static void d(final Context context, final String s) {
+        cz.a(context, "gtm_install_referrer", "referrer", s);
+        f(context, s);
     }
     
-    static String d(final Context context, final String s) {
+    static String e(final Context context, final String s) {
         Label_0043: {
-            if (ay.Yk != null) {
+            if (ay.apn != null) {
                 break Label_0043;
             }
             synchronized (ay.class) {
-                if (ay.Yk == null) {
+                if (ay.apn == null) {
                     final SharedPreferences sharedPreferences = context.getSharedPreferences("gtm_install_referrer", 0);
                     if (sharedPreferences != null) {
-                        ay.Yk = sharedPreferences.getString("referrer", "");
+                        ay.apn = sharedPreferences.getString("referrer", "");
                     }
                     else {
-                        ay.Yk = "";
+                        ay.apn = "";
                     }
                 }
                 // monitorexit(ay.class)
-                return m(ay.Yk, s);
+                return x(ay.apn, s);
             }
         }
     }
     
-    static String e(final Context context, final String s, final String s2) {
+    static String f(final Context context, final String s, final String s2) {
         String s3;
-        if ((s3 = ay.Yl.get(s)) == null) {
+        if ((s3 = ay.apo.get(s)) == null) {
             final SharedPreferences sharedPreferences = context.getSharedPreferences("gtm_click_referrers", 0);
             String string;
             if (sharedPreferences != null) {
@@ -62,21 +62,21 @@ class ay
             else {
                 string = "";
             }
-            ay.Yl.put(s, string);
+            ay.apo.put(s, string);
             s3 = string;
         }
-        return m(s3, s2);
+        return x(s3, s2);
     }
     
-    static void e(final Context context, final String s) {
-        final String m = m(s, "conv");
-        if (m != null && m.length() > 0) {
-            ay.Yl.put(m, s);
-            cy.a(context, "gtm_click_referrers", m, s);
+    static void f(final Context context, final String s) {
+        final String x = x(s, "conv");
+        if (x != null && x.length() > 0) {
+            ay.apo.put(x, s);
+            cz.a(context, "gtm_click_referrers", x, s);
         }
     }
     
-    static String m(final String s, final String s2) {
+    static String x(final String s, final String s2) {
         if (s2 != null) {
             return Uri.parse("http://hostname/?" + s).getQueryParameter(s2);
         }

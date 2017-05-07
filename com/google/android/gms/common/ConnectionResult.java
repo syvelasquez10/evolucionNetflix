@@ -4,7 +4,7 @@
 
 package com.google.android.gms.common;
 
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import android.content.IntentSender$SendIntentException;
 import android.content.Intent;
 import android.app.Activity;
@@ -13,11 +13,11 @@ import android.app.PendingIntent;
 public final class ConnectionResult
 {
     public static final int API_UNAVAILABLE = 16;
-    public static final ConnectionResult Ag;
     public static final int CANCELED = 13;
-    public static final int DATE_INVALID = 12;
     public static final int DEVELOPER_ERROR = 10;
+    @Deprecated
     public static final int DRIVE_EXTERNAL_STORAGE_REQUIRED = 1500;
+    public static final ConnectionResult HE;
     public static final int INTERNAL_ERROR = 8;
     public static final int INTERRUPTED = 15;
     public static final int INVALID_ACCOUNT = 5;
@@ -31,22 +31,22 @@ public final class ConnectionResult
     public static final int SIGN_IN_REQUIRED = 4;
     public static final int SUCCESS = 0;
     public static final int TIMEOUT = 14;
-    private final int Ah;
+    private final int HF;
     private final PendingIntent mPendingIntent;
     
     static {
-        Ag = new ConnectionResult(0, null);
+        HE = new ConnectionResult(0, null);
     }
     
-    public ConnectionResult(final int ah, final PendingIntent mPendingIntent) {
-        this.Ah = ah;
+    public ConnectionResult(final int hf, final PendingIntent mPendingIntent) {
+        this.HF = hf;
         this.mPendingIntent = mPendingIntent;
     }
     
-    private String dW() {
-        switch (this.Ah) {
+    private String fY() {
+        switch (this.HF) {
             default: {
-                return "unknown status code " + this.Ah;
+                return "unknown status code " + this.HF;
             }
             case 0: {
                 return "SUCCESS";
@@ -97,7 +97,7 @@ public final class ConnectionResult
     }
     
     public int getErrorCode() {
-        return this.Ah;
+        return this.HF;
     }
     
     public PendingIntent getResolution() {
@@ -105,11 +105,11 @@ public final class ConnectionResult
     }
     
     public boolean hasResolution() {
-        return this.Ah != 0 && this.mPendingIntent != null;
+        return this.HF != 0 && this.mPendingIntent != null;
     }
     
     public boolean isSuccess() {
-        return this.Ah == 0;
+        return this.HF == 0;
     }
     
     public void startResolutionForResult(final Activity activity, final int n) throws IntentSender$SendIntentException {
@@ -121,6 +121,6 @@ public final class ConnectionResult
     
     @Override
     public String toString() {
-        return fo.e(this).a("statusCode", this.dW()).a("resolution", this.mPendingIntent).toString();
+        return m.h(this).a("statusCode", this.fY()).a("resolution", this.mPendingIntent).toString();
     }
 }

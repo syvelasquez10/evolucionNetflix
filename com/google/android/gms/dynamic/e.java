@@ -9,15 +9,15 @@ import android.os.IBinder;
 
 public final class e<T> extends d.a
 {
-    private final T Hw;
+    private final T Sc;
     
-    private e(final T hw) {
-        this.Hw = hw;
+    private e(final T sc) {
+        this.Sc = sc;
     }
     
-    public static <T> T d(final d d) {
+    public static <T> T f(final d d) {
         if (d instanceof e) {
-            return (T)((e)d).Hw;
+            return (T)((e)d).Sc;
         }
         final IBinder binder = d.asBinder();
         final Field[] declaredFields = binder.getClass().getDeclaredFields();
@@ -43,7 +43,7 @@ public final class e<T> extends d.a
         throw new IllegalArgumentException("The concrete class implementing IObjectWrapper must have exactly *one* declared private field for the wrapped object.  Preferably, this is an instance of the ObjectWrapper<T> class.");
     }
     
-    public static <T> d h(final T t) {
+    public static <T> d k(final T t) {
         return new e<Object>(t);
     }
 }

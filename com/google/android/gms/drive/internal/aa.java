@@ -4,54 +4,50 @@
 
 package com.google.android.gms.drive.internal;
 
+import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class aa implements Parcelable$Creator<OnDownloadProgressResponse>
+public class aa implements Parcelable$Creator<GetMetadataRequest>
 {
-    static void a(final OnDownloadProgressResponse onDownloadProgressResponse, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, onDownloadProgressResponse.xH);
-        b.a(parcel, 2, onDownloadProgressResponse.FF);
-        b.a(parcel, 3, onDownloadProgressResponse.FG);
-        b.F(parcel, p3);
+    static void a(final GetMetadataRequest getMetadataRequest, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1, getMetadataRequest.BR);
+        b.a(parcel, 2, (Parcelable)getMetadataRequest.NV, n, false);
+        b.H(parcel, d);
     }
     
-    public OnDownloadProgressResponse O(final Parcel parcel) {
-        long i = 0L;
-        final int o = a.o(parcel);
+    public GetMetadataRequest ah(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
-        long j = 0L;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        DriveId driveId = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    j = a.i(parcel, n);
-                    continue;
-                }
-                case 3: {
-                    i = a.i(parcel, n);
+                    driveId = a.a(parcel, b, DriveId.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new OnDownloadProgressResponse(g, j, i);
+        return new GetMetadataRequest(g, driveId);
     }
     
-    public OnDownloadProgressResponse[] as(final int n) {
-        return new OnDownloadProgressResponse[n];
+    public GetMetadataRequest[] bt(final int n) {
+        return new GetMetadataRequest[n];
     }
 }

@@ -12,16 +12,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class ListParentsRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<ListParentsRequest> CREATOR;
-    final DriveId FB;
-    final int xH;
+    final int BR;
+    final DriveId Pb;
     
     static {
-        CREATOR = (Parcelable$Creator)new x();
+        CREATOR = (Parcelable$Creator)new af();
     }
     
-    ListParentsRequest(final int xh, final DriveId fb) {
-        this.xH = xh;
-        this.FB = fb;
+    ListParentsRequest(final int br, final DriveId pb) {
+        this.BR = br;
+        this.Pb = pb;
     }
     
     public ListParentsRequest(final DriveId driveId) {
@@ -33,6 +33,6 @@ public class ListParentsRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        x.a(this, parcel, n);
+        af.a(this, parcel, n);
     }
 }

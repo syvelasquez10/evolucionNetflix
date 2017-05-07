@@ -25,14 +25,22 @@ public class ListViewAutoScrollHelper extends AutoScrollHelper
     public boolean canTargetScrollVertically(final int n) {
         final ListView mTarget = this.mTarget;
         final int count = mTarget.getCount();
-        final int childCount = mTarget.getChildCount();
-        final int firstVisiblePosition = mTarget.getFirstVisiblePosition();
-        if (n > 0) {
-            if (firstVisiblePosition + childCount < count || mTarget.getChildAt(childCount - 1).getBottom() > mTarget.getHeight()) {
-                return true;
+        if (count != 0) {
+            final int childCount = mTarget.getChildCount();
+            final int firstVisiblePosition = mTarget.getFirstVisiblePosition();
+            if (n > 0) {
+                if (firstVisiblePosition + childCount >= count && mTarget.getChildAt(childCount - 1).getBottom() <= mTarget.getHeight()) {
+                    return false;
+                }
             }
-        }
-        else if (n < 0 && (firstVisiblePosition > 0 || mTarget.getChildAt(0).getTop() < 0)) {
+            else {
+                if (n >= 0) {
+                    return false;
+                }
+                if (firstVisiblePosition <= 0 && mTarget.getChildAt(0).getTop() >= 0) {
+                    return false;
+                }
+            }
             return true;
         }
         return false;

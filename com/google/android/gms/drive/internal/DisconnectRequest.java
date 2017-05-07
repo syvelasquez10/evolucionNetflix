@@ -11,18 +11,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class DisconnectRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<DisconnectRequest> CREATOR;
-    final int xH;
+    final int BR;
     
     static {
-        CREATOR = (Parcelable$Creator)new k();
+        CREATOR = (Parcelable$Creator)new n();
     }
     
     public DisconnectRequest() {
         this(1);
     }
     
-    DisconnectRequest(final int xh) {
-        this.xH = xh;
+    DisconnectRequest(final int br) {
+        this.BR = br;
     }
     
     public int describeContents() {
@@ -30,6 +30,6 @@ public class DisconnectRequest implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        k.a(this, parcel, n);
+        n.a(this, parcel, n);
     }
 }

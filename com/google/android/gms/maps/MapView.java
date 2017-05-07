@@ -10,7 +10,7 @@ import com.google.android.gms.dynamic.f;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import com.google.android.gms.dynamic.e;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.view.View;
 import com.google.android.gms.maps.internal.IMapViewDelegate;
 import com.google.android.gms.dynamic.LifecycleDelegate;
@@ -25,39 +25,39 @@ import android.widget.FrameLayout;
 
 public class MapView extends FrameLayout
 {
-    private GoogleMap RT;
-    private final b RW;
+    private GoogleMap aiG;
+    private final b aiJ;
     
     public MapView(final Context context) {
         super(context);
-        this.RW = new b((ViewGroup)this, context, null);
+        this.aiJ = new b((ViewGroup)this, context, null);
     }
     
     public MapView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.RW = new b((ViewGroup)this, context, GoogleMapOptions.createFromAttributes(context, set));
+        this.aiJ = new b((ViewGroup)this, context, GoogleMapOptions.createFromAttributes(context, set));
     }
     
     public MapView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.RW = new b((ViewGroup)this, context, GoogleMapOptions.createFromAttributes(context, set));
+        this.aiJ = new b((ViewGroup)this, context, GoogleMapOptions.createFromAttributes(context, set));
     }
     
     public MapView(final Context context, final GoogleMapOptions googleMapOptions) {
         super(context);
-        this.RW = new b((ViewGroup)this, context, googleMapOptions);
+        this.aiJ = new b((ViewGroup)this, context, googleMapOptions);
     }
     
     public final GoogleMap getMap() {
-        if (this.RT != null) {
-            return this.RT;
+        if (this.aiG != null) {
+            return this.aiG;
         }
-        this.RW.ip();
-        if (this.RW.fW() == null) {
+        this.aiJ.my();
+        if (this.aiJ.it() == null) {
             return null;
         }
         try {
-            return this.RT = new GoogleMap(this.RW.fW().iq().getMap());
+            return this.aiG = new GoogleMap(this.aiJ.it().mz().getMap());
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -65,55 +65,55 @@ public class MapView extends FrameLayout
     }
     
     public final void onCreate(final Bundle bundle) {
-        this.RW.onCreate(bundle);
-        if (this.RW.fW() == null) {
-            final b rw = this.RW;
+        this.aiJ.onCreate(bundle);
+        if (this.aiJ.it() == null) {
+            final b aiJ = this.aiJ;
             com.google.android.gms.dynamic.a.b(this);
         }
     }
     
     public final void onDestroy() {
-        this.RW.onDestroy();
+        this.aiJ.onDestroy();
     }
     
     public final void onLowMemory() {
-        this.RW.onLowMemory();
+        this.aiJ.onLowMemory();
     }
     
     public final void onPause() {
-        this.RW.onPause();
+        this.aiJ.onPause();
     }
     
     public final void onResume() {
-        this.RW.onResume();
+        this.aiJ.onResume();
     }
     
     public final void onSaveInstanceState(final Bundle bundle) {
-        this.RW.onSaveInstanceState(bundle);
+        this.aiJ.onSaveInstanceState(bundle);
     }
     
     static class a implements LifecycleDelegate
     {
-        private final ViewGroup RX;
-        private final IMapViewDelegate RY;
-        private View RZ;
+        private final ViewGroup aiK;
+        private final IMapViewDelegate aiL;
+        private View aiM;
         
         public a(final ViewGroup viewGroup, final IMapViewDelegate mapViewDelegate) {
-            this.RY = fq.f(mapViewDelegate);
-            this.RX = fq.f(viewGroup);
+            this.aiL = n.i(mapViewDelegate);
+            this.aiK = n.i(viewGroup);
         }
         
-        public IMapViewDelegate iq() {
-            return this.RY;
+        public IMapViewDelegate mz() {
+            return this.aiL;
         }
         
         @Override
         public void onCreate(final Bundle bundle) {
             try {
-                this.RY.onCreate(bundle);
-                this.RZ = e.d(this.RY.getView());
-                this.RX.removeAllViews();
-                this.RX.addView(this.RZ);
+                this.aiL.onCreate(bundle);
+                this.aiM = e.f(this.aiL.getView());
+                this.aiK.removeAllViews();
+                this.aiK.addView(this.aiM);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -128,7 +128,7 @@ public class MapView extends FrameLayout
         @Override
         public void onDestroy() {
             try {
-                this.RY.onDestroy();
+                this.aiL.onDestroy();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -148,7 +148,7 @@ public class MapView extends FrameLayout
         @Override
         public void onLowMemory() {
             try {
-                this.RY.onLowMemory();
+                this.aiL.onLowMemory();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -158,7 +158,7 @@ public class MapView extends FrameLayout
         @Override
         public void onPause() {
             try {
-                this.RY.onPause();
+                this.aiL.onPause();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -168,7 +168,7 @@ public class MapView extends FrameLayout
         @Override
         public void onResume() {
             try {
-                this.RY.onResume();
+                this.aiL.onResume();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -178,7 +178,7 @@ public class MapView extends FrameLayout
         @Override
         public void onSaveInstanceState(final Bundle bundle) {
             try {
-                this.RY.onSaveInstanceState(bundle);
+                this.aiL.onSaveInstanceState(bundle);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -196,29 +196,29 @@ public class MapView extends FrameLayout
     
     static class b extends a<MapView.a>
     {
-        protected f<MapView.a> RV;
-        private final ViewGroup Sa;
-        private final GoogleMapOptions Sb;
+        protected f<MapView.a> aiI;
+        private final ViewGroup aiN;
+        private final GoogleMapOptions aiO;
         private final Context mContext;
         
-        b(final ViewGroup sa, final Context mContext, final GoogleMapOptions sb) {
-            this.Sa = sa;
+        b(final ViewGroup aiN, final Context mContext, final GoogleMapOptions aiO) {
+            this.aiN = aiN;
             this.mContext = mContext;
-            this.Sb = sb;
+            this.aiO = aiO;
         }
         
         @Override
-        protected void a(final f<MapView.a> rv) {
-            this.RV = rv;
-            this.ip();
+        protected void a(final f<MapView.a> aiI) {
+            this.aiI = aiI;
+            this.my();
         }
         
-        public void ip() {
-            if (this.RV == null || this.fW() != null) {
+        public void my() {
+            if (this.aiI == null || this.it() != null) {
                 return;
             }
             try {
-                this.RV.a(new MapView.a(this.Sa, u.A(this.mContext).a(e.h(this.mContext), this.Sb)));
+                this.aiI.a(new MapView.a(this.aiN, u.R(this.mContext).a(e.k(this.mContext), this.aiO)));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);

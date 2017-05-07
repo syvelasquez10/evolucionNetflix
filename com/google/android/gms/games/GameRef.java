@@ -8,12 +8,17 @@ import android.os.Parcel;
 import android.net.Uri;
 import android.database.CharArrayBuffer;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class GameRef extends b implements Game
+public final class GameRef extends d implements Game
 {
     public GameRef(final DataHolder dataHolder, final int n) {
         super(dataHolder, n);
+    }
+    
+    @Override
+    public boolean areSnapshotsEnabled() {
+        return this.getInteger("snapshots_enabled") > 0;
     }
     
     public int describeContents() {
@@ -27,26 +32,6 @@ public final class GameRef extends b implements Game
     
     public Game freeze() {
         return new GameEntity(this);
-    }
-    
-    @Override
-    public boolean gb() {
-        return this.getBoolean("play_enabled_game");
-    }
-    
-    @Override
-    public boolean gc() {
-        return this.getBoolean("identity_sharing_confirmed");
-    }
-    
-    @Override
-    public boolean gd() {
-        return this.getInteger("installed") > 0;
-    }
-    
-    @Override
-    public String ge() {
-        return this.getString("package_name");
     }
     
     @Override
@@ -91,7 +76,7 @@ public final class GameRef extends b implements Game
     
     @Override
     public Uri getFeaturedImageUri() {
-        return this.ah("featured_image_uri");
+        return this.aR("featured_image_uri");
     }
     
     @Override
@@ -101,7 +86,7 @@ public final class GameRef extends b implements Game
     
     @Override
     public Uri getHiResImageUri() {
-        return this.ah("game_hi_res_image_uri");
+        return this.aR("game_hi_res_image_uri");
     }
     
     @Override
@@ -111,7 +96,7 @@ public final class GameRef extends b implements Game
     
     @Override
     public Uri getIconImageUri() {
-        return this.ah("game_icon_image_uri");
+        return this.aR("game_icon_image_uri");
     }
     
     @Override
@@ -135,8 +120,8 @@ public final class GameRef extends b implements Game
     }
     
     @Override
-    public int gf() {
-        return this.getInteger("gameplay_acl_status");
+    public String getThemeColor() {
+        return this.getString("theme_color");
     }
     
     @Override
@@ -157,6 +142,31 @@ public final class GameRef extends b implements Game
     @Override
     public boolean isTurnBasedMultiplayerEnabled() {
         return this.getInteger("turn_based_support") > 0;
+    }
+    
+    @Override
+    public boolean jL() {
+        return this.getBoolean("play_enabled_game");
+    }
+    
+    @Override
+    public boolean jM() {
+        return this.getBoolean("identity_sharing_confirmed");
+    }
+    
+    @Override
+    public boolean jN() {
+        return this.getInteger("installed") > 0;
+    }
+    
+    @Override
+    public String jO() {
+        return this.getString("package_name");
+    }
+    
+    @Override
+    public int jP() {
+        return this.getInteger("gameplay_acl_status");
     }
     
     @Override

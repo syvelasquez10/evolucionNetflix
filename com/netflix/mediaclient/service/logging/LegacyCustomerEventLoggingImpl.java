@@ -38,7 +38,8 @@ public final class LegacyCustomerEventLoggingImpl implements CustomerEventLoggin
         userData.secureNetflixId = this.mOwner.getUser().getUserCredentialRegistry().getSecureNetflixID();
         userData.userId = this.mOwner.getUserId();
         if (this.mOwner.getUser().getCurrentProfile() != null) {
-            userData.currentProfileUserId = this.mOwner.getUser().getCurrentProfile().getUserId();
+            userData.currentProfileToken = this.mOwner.getUser().getCurrentProfile().getUserId();
+            userData.currentProfileGuid = this.mOwner.getUser().getCurrentProfile().getProfileId();
         }
         userData.accountCountry = this.mOwner.getUser().getReqCountry();
         userData.accountCountry = this.mOwner.getUser().getGeoCountry();

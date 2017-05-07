@@ -4,10 +4,11 @@
 
 package android.support.v4.app;
 
-import java.util.ArrayList;
+import java.util.List;
 import android.util.Log;
 import android.text.TextUtils;
 import android.os.Parcel;
+import java.util.ArrayList;
 import android.os.Parcelable$Creator;
 import android.os.Parcelable;
 
@@ -21,6 +22,8 @@ final class BackStackState implements Parcelable
     final int mIndex;
     final String mName;
     final int[] mOps;
+    final ArrayList<String> mSharedElementSourceNames;
+    final ArrayList<String> mSharedElementTargetNames;
     final int mTransition;
     final int mTransitionStyle;
     
@@ -46,6 +49,8 @@ final class BackStackState implements Parcelable
         this.mBreadCrumbTitleText = (CharSequence)TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel);
         this.mBreadCrumbShortTitleRes = parcel.readInt();
         this.mBreadCrumbShortTitleText = (CharSequence)TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel);
+        this.mSharedElementSourceNames = (ArrayList<String>)parcel.createStringArrayList();
+        this.mSharedElementTargetNames = (ArrayList<String>)parcel.createStringArrayList();
     }
     
     public BackStackState(final FragmentManagerImpl fragmentManagerImpl, final BackStackRecord backStackRecord) {
@@ -111,6 +116,8 @@ final class BackStackState implements Parcelable
         this.mBreadCrumbTitleText = backStackRecord.mBreadCrumbTitleText;
         this.mBreadCrumbShortTitleRes = backStackRecord.mBreadCrumbShortTitleRes;
         this.mBreadCrumbShortTitleText = backStackRecord.mBreadCrumbShortTitleText;
+        this.mSharedElementSourceNames = backStackRecord.mSharedElementSourceNames;
+        this.mSharedElementTargetNames = backStackRecord.mSharedElementTargetNames;
     }
     
     public int describeContents() {
@@ -183,6 +190,8 @@ final class BackStackState implements Parcelable
         backStackRecord.mBreadCrumbTitleText = this.mBreadCrumbTitleText;
         backStackRecord.mBreadCrumbShortTitleRes = this.mBreadCrumbShortTitleRes;
         backStackRecord.mBreadCrumbShortTitleText = this.mBreadCrumbShortTitleText;
+        backStackRecord.mSharedElementSourceNames = this.mSharedElementSourceNames;
+        backStackRecord.mSharedElementTargetNames = this.mSharedElementTargetNames;
         backStackRecord.bumpBackStackNesting(1);
         return backStackRecord;
     }
@@ -197,5 +206,7 @@ final class BackStackState implements Parcelable
         TextUtils.writeToParcel(this.mBreadCrumbTitleText, parcel, 0);
         parcel.writeInt(this.mBreadCrumbShortTitleRes);
         TextUtils.writeToParcel(this.mBreadCrumbShortTitleText, parcel, 0);
+        parcel.writeStringList((List)this.mSharedElementSourceNames);
+        parcel.writeStringList((List)this.mSharedElementTargetNames);
     }
 }

@@ -8,56 +8,56 @@ import java.util.ArrayList;
 import android.os.Looper;
 import java.util.List;
 
-public final class Batch extends a<BatchResult>
+public final class Batch extends AbstractPendingResult<BatchResult>
 {
-    private int AM;
-    private boolean AN;
-    private boolean AO;
-    private final PendingResult<?>[] AP;
-    private final Object li;
+    private int Iv;
+    private boolean Iw;
+    private boolean Ix;
+    private final PendingResult<?>[] Iy;
+    private final Object mw;
     
     private Batch(final List<PendingResult<?>> list, final Looper looper) {
-        super((c)new c(looper));
-        this.li = new Object();
-        this.AM = list.size();
-        this.AP = (PendingResult<?>[])new PendingResult[this.AM];
+        super((CallbackHandler)new BaseImplementation.CallbackHandler(looper));
+        this.mw = new Object();
+        this.Iv = list.size();
+        this.Iy = (PendingResult<?>[])new PendingResult[this.Iv];
         for (int i = 0; i < list.size(); ++i) {
-            (this.AP[i] = list.get(i)).a((PendingResult.a)new PendingResult.a() {
+            (this.Iy[i] = list.get(i)).a((PendingResult.a)new PendingResult.a() {
                 @Override
-                public void l(Status bv) {
+                public void n(Status jo) {
                     while (true) {
                     Label_0101:
                         while (true) {
-                            synchronized (Batch.this.li) {
-                                if (((a.a)Batch.this).isCanceled()) {
+                            synchronized (Batch.this.mw) {
+                                if (((BaseImplementation.AbstractPendingResult)Batch.this).isCanceled()) {
                                     return;
                                 }
-                                if (bv.isCanceled()) {
-                                    Batch.this.AO = true;
-                                    Batch.this.AM--;
-                                    if (Batch.this.AM == 0) {
-                                        if (!Batch.this.AO) {
+                                if (jo.isCanceled()) {
+                                    Batch.this.Ix = true;
+                                    Batch.this.Iv--;
+                                    if (Batch.this.Iv == 0) {
+                                        if (!Batch.this.Ix) {
                                             break Label_0101;
                                         }
-                                        ((a.a)Batch.this).cancel();
+                                        ((BaseImplementation.AbstractPendingResult)Batch.this).cancel();
                                     }
                                     return;
                                 }
                             }
                             final Status status;
                             if (!status.isSuccess()) {
-                                Batch.this.AN = true;
+                                Batch.this.Iw = true;
                                 continue;
                             }
                             continue;
                         }
-                        if (Batch.this.AN) {
-                            bv = new Status(13);
+                        if (Batch.this.Iw) {
+                            jo = new Status(13);
                         }
                         else {
-                            bv = Status.Bv;
+                            jo = Status.Jo;
                         }
-                        ((a.a<BatchResult>)Batch.this).a(new BatchResult(bv, Batch.this.AP));
+                        ((BaseImplementation.AbstractPendingResult<BatchResult>)Batch.this).b(new BatchResult(jo, Batch.this.Iy));
                     }
                 }
             });
@@ -67,34 +67,34 @@ public final class Batch extends a<BatchResult>
     @Override
     public void cancel() {
         super.cancel();
-        final PendingResult<?>[] ap = this.AP;
-        for (int length = ap.length, i = 0; i < length; ++i) {
-            ap[i].cancel();
+        final PendingResult<?>[] iy = this.Iy;
+        for (int length = iy.length, i = 0; i < length; ++i) {
+            iy[i].cancel();
         }
     }
     
     public BatchResult createFailedResult(final Status status) {
-        return new BatchResult(status, this.AP);
+        return new BatchResult(status, this.Iy);
     }
     
     public static final class Builder
     {
-        private List<PendingResult<?>> AR;
-        private Looper AS;
+        private List<PendingResult<?>> IA;
+        private Looper IB;
         
         public Builder(final GoogleApiClient googleApiClient) {
-            this.AR = new ArrayList<PendingResult<?>>();
-            this.AS = googleApiClient.getLooper();
+            this.IA = new ArrayList<PendingResult<?>>();
+            this.IB = googleApiClient.getLooper();
         }
         
         public <R extends Result> BatchResultToken<R> add(final PendingResult<R> pendingResult) {
-            final BatchResultToken<R> batchResultToken = new BatchResultToken<R>(this.AR.size());
-            this.AR.add(pendingResult);
+            final BatchResultToken<R> batchResultToken = new BatchResultToken<R>(this.IA.size());
+            this.IA.add(pendingResult);
             return batchResultToken;
         }
         
         public Batch build() {
-            return new Batch(this.AR, this.AS, null);
+            return new Batch(this.IA, this.IB, null);
         }
     }
 }

@@ -4,79 +4,83 @@
 
 package com.google.android.gms.internal;
 
+import org.json.JSONObject;
+import android.app.DownloadManager;
+import android.content.DialogInterface;
+import android.content.DialogInterface$OnClickListener;
+import com.google.android.gms.R;
+import android.app.AlertDialog$Builder;
+import android.webkit.URLUtil;
+import android.text.TextUtils;
+import android.os.Environment;
+import android.app.DownloadManager$Request;
+import android.net.Uri;
 import java.util.Map;
+import android.content.Context;
 
-public final class de
+@ez
+public class de
 {
-    private dz lC;
-    private final Object li;
-    private int oS;
-    private String pI;
-    private String pJ;
-    public final bb pK;
-    public final bb pL;
+    private final Context mContext;
+    private final gv md;
+    private final Map<String, String> qM;
     
-    public de(final String pi) {
-        this.li = new Object();
-        this.oS = -2;
-        this.pK = new bb() {
-            @Override
-            public void b(final dz dz, final Map<String, String> map) {
-                synchronized (de.this.li) {
-                    dw.z("Invalid " + map.get("type") + " request error: " + map.get("errors"));
-                    de.this.oS = 1;
-                    de.this.li.notify();
-                }
-            }
-        };
-        this.pL = new bb() {
-            @Override
-            public void b(final dz dz, final Map<String, String> map) {
-                synchronized (de.this.li) {
-                    final String s = map.get("url");
-                    if (s == null) {
-                        dw.z("URL missing in loadAdUrl GMSG.");
-                        return;
-                    }
-                    String replaceAll = s;
-                    if (s.contains("%40mediation_adapters%40")) {
-                        replaceAll = s.replaceAll("%40mediation_adapters%40", dn.b(dz.getContext(), map.get("check_adapters"), de.this.pI));
-                        dw.y("Ad request URL modified to " + replaceAll);
-                    }
-                    de.this.pJ = replaceAll;
-                    de.this.li.notify();
-                }
-            }
-        };
-        this.pI = pi;
+    public de(final gv md, final Map<String, String> qm) {
+        this.md = md;
+        this.qM = qm;
+        this.mContext = md.dA();
     }
     
-    public void b(final dz lc) {
-        synchronized (this.li) {
-            this.lC = lc;
+    String B(final String s) {
+        return Uri.parse(s).getLastPathSegment();
+    }
+    
+    DownloadManager$Request b(final String s, final String s2) {
+        final DownloadManager$Request downloadManager$Request = new DownloadManager$Request(Uri.parse(s));
+        downloadManager$Request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, s2);
+        downloadManager$Request.allowScanningByMediaScanner();
+        downloadManager$Request.setNotificationVisibility(1);
+        return downloadManager$Request;
+    }
+    
+    public void execute() {
+        if (!new bl(this.mContext).bl()) {
+            gs.W("Store picture feature is not supported on this device.");
+            return;
         }
-    }
-    
-    public String bj() {
-        synchronized (this.li) {
-            while (this.pJ == null && this.oS == -2) {
+        if (TextUtils.isEmpty((CharSequence)this.qM.get("iurl"))) {
+            gs.W("Image url cannot be empty.");
+            return;
+        }
+        final String s = this.qM.get("iurl");
+        if (!URLUtil.isValidUrl(s)) {
+            gs.W("Invalid image url:" + s);
+            return;
+        }
+        final String b = this.B(s);
+        if (!gj.N(b)) {
+            gs.W("Image type not recognized:");
+            return;
+        }
+        final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(this.mContext);
+        alertDialog$Builder.setTitle((CharSequence)gb.c(R.string.store_picture_title, "Save image"));
+        alertDialog$Builder.setMessage((CharSequence)gb.c(R.string.store_picture_message, "Allow Ad to store image in Picture gallery?"));
+        alertDialog$Builder.setPositiveButton((CharSequence)gb.c(R.string.accept, "Accept"), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+            public void onClick(final DialogInterface dialogInterface, final int n) {
+                final DownloadManager downloadManager = (DownloadManager)de.this.mContext.getSystemService("download");
                 try {
-                    this.li.wait();
-                    continue;
+                    downloadManager.enqueue(de.this.b(s, b));
                 }
-                catch (InterruptedException ex) {
-                    dw.z("Ad request service was interrupted.");
-                    return null;
+                catch (IllegalStateException ex) {
+                    gs.U("Could not store picture.");
                 }
-                break;
             }
-            return this.pJ;
-        }
-    }
-    
-    public int getErrorCode() {
-        synchronized (this.li) {
-            return this.oS;
-        }
+        });
+        alertDialog$Builder.setNegativeButton((CharSequence)gb.c(R.string.decline, "Decline"), (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+            public void onClick(final DialogInterface dialogInterface, final int n) {
+                de.this.md.b("onStorePictureCanceled", new JSONObject());
+            }
+        });
+        alertDialog$Builder.create().show();
     }
 }

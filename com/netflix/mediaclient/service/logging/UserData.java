@@ -7,7 +7,8 @@ package com.netflix.mediaclient.service.logging;
 public class UserData
 {
     public String accountCountry;
-    public String currentProfileUserId;
+    public String currentProfileGuid;
+    public String currentProfileToken;
     public String deviceCategory;
     public String esn;
     public String geoLocationCountry;
@@ -18,6 +19,6 @@ public class UserData
     
     @Override
     public String toString() {
-        return "UserData [userId=" + this.userId + ", currentProfileUserId=" + this.currentProfileUserId + ", netflixId=" + this.netflixId + ", secureNetflixId=" + this.secureNetflixId + ", esn=" + this.esn + ", deviceCategory=" + this.deviceCategory + ", accountCountry=" + this.accountCountry + ", geoLocationCountry=" + this.geoLocationCountry + ", languages=" + this.languages + "]";
+        return "UserData [userId=" + this.userId + ", currentProfileToken=" + this.currentProfileToken + ", currentProfileGuid=" + this.currentProfileGuid + ", netflixId=" + this.netflixId + ", secureNetflixId=" + this.secureNetflixId + ", esn=" + this.esn + ", deviceCategory=" + this.deviceCategory + ", accountCountry=" + this.accountCountry + ", geoLocationCountry=" + this.geoLocationCountry + ", languages=" + this.languages + "]";
     }
 }

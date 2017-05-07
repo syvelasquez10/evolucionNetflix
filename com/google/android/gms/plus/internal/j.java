@@ -13,88 +13,88 @@ import android.os.Parcelable$Creator;
 public class j implements Parcelable$Creator<h>
 {
     static void a(final h h, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
+        final int d = b.D(parcel);
         b.a(parcel, 1, h.getAccountName(), false);
         b.c(parcel, 1000, h.getVersionCode());
-        b.a(parcel, 2, h.iP(), false);
-        b.a(parcel, 3, h.iQ(), false);
-        b.a(parcel, 4, h.iR(), false);
-        b.a(parcel, 5, h.iS(), false);
-        b.a(parcel, 6, h.iT(), false);
-        b.a(parcel, 7, h.iU(), false);
-        b.a(parcel, 8, h.iV(), false);
-        b.a(parcel, 9, (Parcelable)h.iW(), n, false);
-        b.F(parcel, p3);
+        b.a(parcel, 2, h.ne(), false);
+        b.a(parcel, 3, h.nf(), false);
+        b.a(parcel, 4, h.ng(), false);
+        b.a(parcel, 5, h.nh(), false);
+        b.a(parcel, 6, h.ni(), false);
+        b.a(parcel, 7, h.nj(), false);
+        b.a(parcel, 8, h.nk(), false);
+        b.a(parcel, 9, (Parcelable)h.nl(), n, false);
+        b.H(parcel, d);
     }
     
-    public h aK(final Parcel parcel) {
+    public h da(final Parcel parcel) {
         PlusCommonExtras plusCommonExtras = null;
-        final int o = a.o(parcel);
+        final int c = a.C(parcel);
         int g = 0;
-        String n = null;
-        String n2 = null;
-        String n3 = null;
-        String n4 = null;
-        String[] z = null;
-        String[] z2 = null;
-        String[] z3 = null;
-        String n5 = null;
-        while (parcel.dataPosition() < o) {
-            final int n6 = a.n(parcel);
-            switch (a.R(n6)) {
+        String o = null;
+        String o2 = null;
+        String o3 = null;
+        String o4 = null;
+        String[] a = null;
+        String[] a2 = null;
+        String[] a3 = null;
+        String o5 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = com.google.android.gms.common.internal.safeparcel.a.B(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.a.aD(b)) {
                 default: {
-                    a.b(parcel, n6);
+                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    n5 = a.n(parcel, n6);
+                    o5 = com.google.android.gms.common.internal.safeparcel.a.o(parcel, b);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n6);
+                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    z3 = a.z(parcel, n6);
+                    a3 = com.google.android.gms.common.internal.safeparcel.a.A(parcel, b);
                     continue;
                 }
                 case 3: {
-                    z2 = a.z(parcel, n6);
+                    a2 = com.google.android.gms.common.internal.safeparcel.a.A(parcel, b);
                     continue;
                 }
                 case 4: {
-                    z = a.z(parcel, n6);
+                    a = com.google.android.gms.common.internal.safeparcel.a.A(parcel, b);
                     continue;
                 }
                 case 5: {
-                    n4 = a.n(parcel, n6);
+                    o4 = com.google.android.gms.common.internal.safeparcel.a.o(parcel, b);
                     continue;
                 }
                 case 6: {
-                    n3 = a.n(parcel, n6);
+                    o3 = com.google.android.gms.common.internal.safeparcel.a.o(parcel, b);
                     continue;
                 }
                 case 7: {
-                    n2 = a.n(parcel, n6);
+                    o2 = com.google.android.gms.common.internal.safeparcel.a.o(parcel, b);
                     continue;
                 }
                 case 8: {
-                    n = a.n(parcel, n6);
+                    o = com.google.android.gms.common.internal.safeparcel.a.o(parcel, b);
                     continue;
                 }
                 case 9: {
-                    plusCommonExtras = a.a(parcel, n6, (android.os.Parcelable$Creator<PlusCommonExtras>)PlusCommonExtras.CREATOR);
+                    plusCommonExtras = com.google.android.gms.common.internal.safeparcel.a.a(parcel, b, (android.os.Parcelable$Creator<PlusCommonExtras>)PlusCommonExtras.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new h(g, n5, z3, z2, z, n4, n3, n2, n, plusCommonExtras);
+        return new h(g, o5, a3, a2, a, o4, o3, o2, o, plusCommonExtras);
     }
     
-    public h[] bN(final int n) {
+    public h[] eR(final int n) {
         return new h[n];
     }
 }

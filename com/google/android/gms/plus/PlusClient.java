@@ -13,7 +13,7 @@ import com.google.android.gms.plus.model.moments.Moment;
 import com.google.android.gms.common.api.Status;
 import java.util.Collection;
 import android.net.Uri;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.internal.e;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -21,143 +21,143 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 @Deprecated
 public class PlusClient implements GooglePlayServicesClient
 {
-    final e TL;
+    final e akS;
     
-    PlusClient(final e tl) {
-        this.TL = tl;
+    PlusClient(final e akS) {
+        this.akS = akS;
     }
     
     @Deprecated
     public void clearDefaultAccount() {
-        this.TL.clearDefaultAccount();
+        this.akS.clearDefaultAccount();
     }
     
     @Deprecated
     @Override
     public void connect() {
-        this.TL.connect();
+        this.akS.connect();
     }
     
     @Deprecated
     @Override
     public void disconnect() {
-        this.TL.disconnect();
+        this.akS.disconnect();
     }
     
     @Deprecated
     public String getAccountName() {
-        return this.TL.getAccountName();
+        return this.akS.getAccountName();
     }
     
     @Deprecated
     public Person getCurrentPerson() {
-        return this.TL.getCurrentPerson();
-    }
-    
-    e iI() {
-        return this.TL;
+        return this.akS.getCurrentPerson();
     }
     
     @Deprecated
     @Override
     public boolean isConnected() {
-        return this.TL.isConnected();
+        return this.akS.isConnected();
     }
     
     @Deprecated
     @Override
     public boolean isConnecting() {
-        return this.TL.isConnecting();
+        return this.akS.isConnecting();
     }
     
     @Deprecated
     @Override
     public boolean isConnectionCallbacksRegistered(final ConnectionCallbacks connectionCallbacks) {
-        return this.TL.isConnectionCallbacksRegistered(connectionCallbacks);
+        return this.akS.isConnectionCallbacksRegistered(connectionCallbacks);
     }
     
     @Deprecated
     @Override
     public boolean isConnectionFailedListenerRegistered(final OnConnectionFailedListener onConnectionFailedListener) {
-        return this.TL.isConnectionFailedListenerRegistered(onConnectionFailedListener);
+        return this.akS.isConnectionFailedListenerRegistered(onConnectionFailedListener);
     }
     
     @Deprecated
     public void loadMoments(final OnMomentsLoadedListener onMomentsLoadedListener) {
-        this.TL.l(new a.d<Moments.LoadMomentsResult>() {
+        this.akS.k(new BaseImplementation.b<Moments.LoadMomentsResult>() {
             public void a(final Moments.LoadMomentsResult loadMomentsResult) {
-                onMomentsLoadedListener.onMomentsLoaded(loadMomentsResult.getStatus().eq(), loadMomentsResult.getMomentBuffer(), loadMomentsResult.getNextPageToken(), loadMomentsResult.getUpdated());
+                onMomentsLoadedListener.onMomentsLoaded(loadMomentsResult.getStatus().gu(), loadMomentsResult.getMomentBuffer(), loadMomentsResult.getNextPageToken(), loadMomentsResult.getUpdated());
             }
         });
     }
     
     @Deprecated
     public void loadMoments(final OnMomentsLoadedListener onMomentsLoadedListener, final int n, final String s, final Uri uri, final String s2, final String s3) {
-        this.TL.a(new a.d<Moments.LoadMomentsResult>() {
+        this.akS.a(new BaseImplementation.b<Moments.LoadMomentsResult>() {
             public void a(final Moments.LoadMomentsResult loadMomentsResult) {
-                onMomentsLoadedListener.onMomentsLoaded(loadMomentsResult.getStatus().eq(), loadMomentsResult.getMomentBuffer(), loadMomentsResult.getNextPageToken(), loadMomentsResult.getUpdated());
+                onMomentsLoadedListener.onMomentsLoaded(loadMomentsResult.getStatus().gu(), loadMomentsResult.getMomentBuffer(), loadMomentsResult.getNextPageToken(), loadMomentsResult.getUpdated());
             }
         }, n, s, uri, s2, s3);
     }
     
     @Deprecated
     public void loadPeople(final OnPeopleLoadedListener onPeopleLoadedListener, final Collection<String> collection) {
-        this.TL.a(new a.d<People.LoadPeopleResult>() {
+        this.akS.a(new BaseImplementation.b<People.LoadPeopleResult>() {
             public void a(final People.LoadPeopleResult loadPeopleResult) {
-                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().eq(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
+                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().gu(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
             }
         }, collection);
     }
     
     @Deprecated
     public void loadPeople(final OnPeopleLoadedListener onPeopleLoadedListener, final String... array) {
-        this.TL.d(new a.d<People.LoadPeopleResult>() {
+        this.akS.d(new BaseImplementation.b<People.LoadPeopleResult>() {
             public void a(final People.LoadPeopleResult loadPeopleResult) {
-                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().eq(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
+                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().gu(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
             }
         }, array);
     }
     
     @Deprecated
     public void loadVisiblePeople(final OnPeopleLoadedListener onPeopleLoadedListener, final int n, final String s) {
-        this.TL.a(new a.d<People.LoadPeopleResult>() {
+        this.akS.a(new BaseImplementation.b<People.LoadPeopleResult>() {
             public void a(final People.LoadPeopleResult loadPeopleResult) {
-                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().eq(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
+                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().gu(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
             }
         }, n, s);
     }
     
     @Deprecated
     public void loadVisiblePeople(final OnPeopleLoadedListener onPeopleLoadedListener, final String s) {
-        this.TL.o(new a.d<People.LoadPeopleResult>() {
+        this.akS.r(new BaseImplementation.b<People.LoadPeopleResult>() {
             public void a(final People.LoadPeopleResult loadPeopleResult) {
-                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().eq(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
+                onPeopleLoadedListener.onPeopleLoaded(loadPeopleResult.getStatus().gu(), loadPeopleResult.getPersonBuffer(), loadPeopleResult.getNextPageToken());
             }
         }, s);
+    }
+    
+    e mX() {
+        return this.akS;
     }
     
     @Deprecated
     @Override
     public void registerConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.TL.registerConnectionCallbacks(connectionCallbacks);
+        this.akS.registerConnectionCallbacks(connectionCallbacks);
     }
     
     @Deprecated
     @Override
     public void registerConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.TL.registerConnectionFailedListener(onConnectionFailedListener);
+        this.akS.registerConnectionFailedListener(onConnectionFailedListener);
     }
     
     @Deprecated
     public void removeMoment(final String s) {
-        this.TL.removeMoment(s);
+        this.akS.removeMoment(s);
     }
     
     @Deprecated
     public void revokeAccessAndDisconnect(final OnAccessRevokedListener onAccessRevokedListener) {
-        this.TL.n(new a.d<Status>() {
-            public void Y(final Status status) {
-                onAccessRevokedListener.onAccessRevoked(status.getStatus().eq());
+        this.akS.m(new BaseImplementation.b<Status>() {
+            public void aA(final Status status) {
+                onAccessRevokedListener.onAccessRevoked(status.getStatus().gu());
             }
         });
     }
@@ -165,56 +165,56 @@ public class PlusClient implements GooglePlayServicesClient
     @Deprecated
     @Override
     public void unregisterConnectionCallbacks(final ConnectionCallbacks connectionCallbacks) {
-        this.TL.unregisterConnectionCallbacks(connectionCallbacks);
+        this.akS.unregisterConnectionCallbacks(connectionCallbacks);
     }
     
     @Deprecated
     @Override
     public void unregisterConnectionFailedListener(final OnConnectionFailedListener onConnectionFailedListener) {
-        this.TL.unregisterConnectionFailedListener(onConnectionFailedListener);
+        this.akS.unregisterConnectionFailedListener(onConnectionFailedListener);
     }
     
     @Deprecated
     public void writeMoment(final Moment moment) {
-        this.TL.a(null, moment);
+        this.akS.a(null, moment);
     }
     
     @Deprecated
     public static class Builder
     {
-        private final ConnectionCallbacks TQ;
-        private final OnConnectionFailedListener TR;
-        private final i TS;
+        private final ConnectionCallbacks akX;
+        private final OnConnectionFailedListener akY;
+        private final i akZ;
         private final Context mContext;
         
-        public Builder(final Context mContext, final ConnectionCallbacks tq, final OnConnectionFailedListener tr) {
+        public Builder(final Context mContext, final ConnectionCallbacks akX, final OnConnectionFailedListener akY) {
             this.mContext = mContext;
-            this.TQ = tq;
-            this.TR = tr;
-            this.TS = new i(this.mContext);
+            this.akX = akX;
+            this.akY = akY;
+            this.akZ = new i(this.mContext);
         }
         
         public PlusClient build() {
-            return new PlusClient(new e(this.mContext, this.TQ, this.TR, this.TS.iZ()));
+            return new PlusClient(new e(this.mContext, this.akX, this.akY, this.akZ.no()));
         }
         
         public Builder clearScopes() {
-            this.TS.iY();
+            this.akZ.nn();
             return this;
         }
         
         public Builder setAccountName(final String s) {
-            this.TS.bh(s);
+            this.akZ.ce(s);
             return this;
         }
         
         public Builder setActions(final String... array) {
-            this.TS.f(array);
+            this.akZ.h(array);
             return this;
         }
         
         public Builder setScopes(final String... array) {
-            this.TS.e(array);
+            this.akZ.g(array);
             return this;
         }
     }

@@ -4,8 +4,6 @@
 
 package android.support.v7.app;
 
-import java.util.List;
-import java.util.Comparator;
 import android.widget.AdapterView;
 import android.text.TextUtils;
 import android.widget.TextView;
@@ -13,12 +11,18 @@ import android.view.ViewGroup;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
+import java.util.Comparator;
+import java.util.Collections;
+import java.util.Collection;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListAdapter;
+import java.util.List;
 import android.support.v7.mediarouter.R;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.content.Context;
 import android.support.v7.media.MediaRouteSelector;
+import java.util.ArrayList;
 import android.support.v7.media.MediaRouter;
 import android.widget.ListView;
 import android.app.Dialog;
@@ -30,6 +34,7 @@ public class MediaRouteChooserDialog extends Dialog
     private final MediaRouterCallback mCallback;
     private ListView mListView;
     private final MediaRouter mRouter;
+    private ArrayList<MediaRouter.RouteInfo> mRoutes;
     private MediaRouteSelector mSelector;
     
     public MediaRouteChooserDialog(final Context context) {
@@ -43,6 +48,7 @@ public class MediaRouteChooserDialog extends Dialog
         this.mCallback = new MediaRouterCallback();
     }
     
+    @NonNull
     public MediaRouteSelector getRouteSelector() {
         return this.mSelector;
     }
@@ -60,7 +66,8 @@ public class MediaRouteChooserDialog extends Dialog
         this.setContentView(R.layout.mr_media_route_chooser_dialog);
         this.setTitle(R.string.mr_media_route_chooser_title);
         this.getWindow().setFeatureDrawableResource(3, MediaRouterThemeHelper.getThemeResource(this.getContext(), R.attr.mediaRouteOffDrawable));
-        this.mAdapter = new RouteAdapter(this.getContext());
+        this.mRoutes = new ArrayList<MediaRouter.RouteInfo>();
+        this.mAdapter = new RouteAdapter(this.getContext(), this.mRoutes);
         (this.mListView = (ListView)this.findViewById(R.id.media_route_list)).setAdapter((ListAdapter)this.mAdapter);
         this.mListView.setOnItemClickListener((AdapterView$OnItemClickListener)this.mAdapter);
         this.mListView.setEmptyView(this.findViewById(16908292));
@@ -72,17 +79,38 @@ public class MediaRouteChooserDialog extends Dialog
         super.onDetachedFromWindow();
     }
     
-    public boolean onFilterRoute(final MediaRouter.RouteInfo routeInfo) {
+    public boolean onFilterRoute(@NonNull final MediaRouter.RouteInfo routeInfo) {
         return !routeInfo.isDefault() && routeInfo.isEnabled() && routeInfo.matchesSelector(this.mSelector);
+    }
+    
+    public void onFilterRoutes(@NonNull final List<MediaRouter.RouteInfo> list) {
+        int size = list.size();
+        while (true) {
+            final int n = size - 1;
+            if (size <= 0) {
+                break;
+            }
+            if (!this.onFilterRoute(list.get(n))) {
+                list.remove(n);
+                size = n;
+            }
+            else {
+                size = n;
+            }
+        }
     }
     
     public void refreshRoutes() {
         if (this.mAttachedToWindow) {
-            this.mAdapter.update();
+            this.mRoutes.clear();
+            this.mRoutes.addAll((Collection<? extends MediaRouter.RouteInfo>)this.mRouter.getRoutes());
+            this.onFilterRoutes(this.mRoutes);
+            Collections.sort(this.mRoutes, RouteComparator.sInstance);
+            this.mAdapter.notifyDataSetChanged();
         }
     }
     
-    public void setRouteSelector(final MediaRouteSelector mSelector) {
+    public void setRouteSelector(@NonNull final MediaRouteSelector mSelector) {
         if (mSelector == null) {
             throw new IllegalArgumentException("selector must not be null");
         }
@@ -123,8 +151,8 @@ public class MediaRouteChooserDialog extends Dialog
     {
         private final LayoutInflater mInflater;
         
-        public RouteAdapter(final Context context) {
-            super(context, 0);
+        public RouteAdapter(final Context context, final List<MediaRouter.RouteInfo> list) {
+            super(context, 0, (List)list);
             this.mInflater = LayoutInflater.from(context);
         }
         
@@ -163,19 +191,6 @@ public class MediaRouteChooserDialog extends Dialog
                 routeInfo.select();
                 MediaRouteChooserDialog.this.dismiss();
             }
-        }
-        
-        public void update() {
-            this.clear();
-            final List<MediaRouter.RouteInfo> routes = MediaRouteChooserDialog.this.mRouter.getRoutes();
-            for (int size = routes.size(), i = 0; i < size; ++i) {
-                final MediaRouter.RouteInfo routeInfo = routes.get(i);
-                if (MediaRouteChooserDialog.this.onFilterRoute(routeInfo)) {
-                    this.add((Object)routeInfo);
-                }
-            }
-            this.sort((Comparator)RouteComparator.sInstance);
-            this.notifyDataSetChanged();
         }
     }
     

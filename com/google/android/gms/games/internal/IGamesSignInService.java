@@ -16,21 +16,21 @@ public interface IGamesSignInService extends IInterface
     
     void a(final IGamesSignInCallbacks p0, final String p1, final String p2, final String p3) throws RemoteException;
     
+    void a(final IGamesSignInCallbacks p0, final String p1, final String p2, final String p3, final String[] p4) throws RemoteException;
+    
     void a(final IGamesSignInCallbacks p0, final String p1, final String p2, final String[] p3) throws RemoteException;
     
     void a(final IGamesSignInCallbacks p0, final String p1, final String p2, final String[] p3, final String p4) throws RemoteException;
     
-    String aK(final String p0) throws RemoteException;
-    
-    String aL(final String p0) throws RemoteException;
-    
     void b(final IGamesSignInCallbacks p0, final String p1, final String p2, final String p3) throws RemoteException;
     
-    void b(final IGamesSignInCallbacks p0, final String p1, final String p2, final String[] p3) throws RemoteException;
+    String bI(final String p0) throws RemoteException;
     
-    String f(final String p0, final boolean p1) throws RemoteException;
+    String bJ(final String p0) throws RemoteException;
     
-    void l(final String p0, final String p1) throws RemoteException;
+    String h(final String p0, final boolean p1) throws RemoteException;
+    
+    void w(final String p0, final String p1) throws RemoteException;
     
     public abstract static class Stub extends Binder implements IGamesSignInService
     {
@@ -49,64 +49,64 @@ public interface IGamesSignInService extends IInterface
                 }
                 case 5001: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    final String ak = this.aK(parcel.readString());
+                    final String bi = this.bI(parcel.readString());
                     parcel2.writeNoException();
-                    parcel2.writeString(ak);
+                    parcel2.writeString(bi);
                     return true;
                 }
                 case 5002: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    final String al = this.aL(parcel.readString());
+                    final String bj = this.bJ(parcel.readString());
                     parcel2.writeNoException();
-                    parcel2.writeString(al);
+                    parcel2.writeString(bj);
                     return true;
                 }
                 case 5009: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    final String f = this.f(parcel.readString(), parcel.readInt() != 0);
+                    final String h = this.h(parcel.readString(), parcel.readInt() != 0);
                     parcel2.writeNoException();
-                    parcel2.writeString(f);
+                    parcel2.writeString(h);
                     return true;
                 }
                 case 5003: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    this.a(IGamesSignInCallbacks.Stub.O(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.createStringArray(), parcel.readString());
+                    this.a(IGamesSignInCallbacks.Stub.aC(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.createStringArray(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5004: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    this.a(IGamesSignInCallbacks.Stub.O(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.createStringArray());
+                    this.a(IGamesSignInCallbacks.Stub.aC(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.createStringArray());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5005: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    this.a(IGamesSignInCallbacks.Stub.O(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.readString());
+                    this.a(IGamesSignInCallbacks.Stub.aC(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5006: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    this.a(IGamesSignInCallbacks.Stub.O(parcel.readStrongBinder()), parcel.readString(), parcel.readString());
+                    this.a(IGamesSignInCallbacks.Stub.aC(parcel.readStrongBinder()), parcel.readString(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5007: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    this.b(IGamesSignInCallbacks.Stub.O(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.readString());
+                    this.b(IGamesSignInCallbacks.Stub.aC(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5008: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    this.b(IGamesSignInCallbacks.Stub.O(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.createStringArray());
+                    this.a(IGamesSignInCallbacks.Stub.aC(parcel.readStrongBinder()), parcel.readString(), parcel.readString(), parcel.readString(), parcel.createStringArray());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 9001: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInService");
-                    this.l(parcel.readString(), parcel.readString());
+                    this.w(parcel.readString(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
@@ -115,7 +115,7 @@ public interface IGamesSignInService extends IInterface
         
         private static class Proxy implements IGamesSignInService
         {
-            private IBinder kn;
+            private IBinder lb;
             
             @Override
             public void a(final IGamesSignInCallbacks gamesSignInCallbacks, final String s, final String s2) throws RemoteException {
@@ -133,7 +133,7 @@ public interface IGamesSignInService extends IInterface
                     obtain.writeStrongBinder(binder);
                     obtain.writeString(s);
                     obtain.writeString(s2);
-                    this.kn.transact(5006, obtain, obtain2, 0);
+                    this.lb.transact(5006, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -159,7 +159,34 @@ public interface IGamesSignInService extends IInterface
                     obtain.writeString(s);
                     obtain.writeString(s2);
                     obtain.writeString(s3);
-                    this.kn.transact(5005, obtain, obtain2, 0);
+                    this.lb.transact(5005, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void a(final IGamesSignInCallbacks gamesSignInCallbacks, final String s, final String s2, final String s3, final String[] array) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInService");
+                    IBinder binder;
+                    if (gamesSignInCallbacks != null) {
+                        binder = gamesSignInCallbacks.asBinder();
+                    }
+                    else {
+                        binder = null;
+                    }
+                    obtain.writeStrongBinder(binder);
+                    obtain.writeString(s);
+                    obtain.writeString(s2);
+                    obtain.writeString(s3);
+                    obtain.writeStringArray(array);
+                    this.lb.transact(5008, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -185,7 +212,7 @@ public interface IGamesSignInService extends IInterface
                     obtain.writeString(s);
                     obtain.writeString(s2);
                     obtain.writeStringArray(array);
-                    this.kn.transact(5004, obtain, obtain2, 0);
+                    this.lb.transact(5004, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -212,44 +239,8 @@ public interface IGamesSignInService extends IInterface
                     obtain.writeString(s2);
                     obtain.writeStringArray(array);
                     obtain.writeString(s3);
-                    this.kn.transact(5003, obtain, obtain2, 0);
+                    this.lb.transact(5003, obtain, obtain2, 0);
                     obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public String aK(String string) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInService");
-                    obtain.writeString(string);
-                    this.kn.transact(5001, obtain, obtain2, 0);
-                    obtain2.readException();
-                    string = obtain2.readString();
-                    return string;
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public String aL(String string) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInService");
-                    obtain.writeString(string);
-                    this.kn.transact(5002, obtain, obtain2, 0);
-                    obtain2.readException();
-                    string = obtain2.readString();
-                    return string;
                 }
                 finally {
                     obtain2.recycle();
@@ -258,7 +249,7 @@ public interface IGamesSignInService extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -278,7 +269,7 @@ public interface IGamesSignInService extends IInterface
                     obtain.writeString(s);
                     obtain.writeString(s2);
                     obtain.writeString(s3);
-                    this.kn.transact(5007, obtain, obtain2, 0);
+                    this.lb.transact(5007, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -288,44 +279,13 @@ public interface IGamesSignInService extends IInterface
             }
             
             @Override
-            public void b(final IGamesSignInCallbacks gamesSignInCallbacks, final String s, final String s2, final String[] array) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInService");
-                    IBinder binder;
-                    if (gamesSignInCallbacks != null) {
-                        binder = gamesSignInCallbacks.asBinder();
-                    }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    obtain.writeString(s);
-                    obtain.writeString(s2);
-                    obtain.writeStringArray(array);
-                    this.kn.transact(5008, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public String f(String string, final boolean b) throws RemoteException {
-                int n = 0;
+            public String bI(String string) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInService");
                     obtain.writeString(string);
-                    if (b) {
-                        n = 1;
-                    }
-                    obtain.writeInt(n);
-                    this.kn.transact(5009, obtain, obtain2, 0);
+                    this.lb.transact(5001, obtain, obtain2, 0);
                     obtain2.readException();
                     string = obtain2.readString();
                     return string;
@@ -337,14 +297,55 @@ public interface IGamesSignInService extends IInterface
             }
             
             @Override
-            public void l(final String s, final String s2) throws RemoteException {
+            public String bJ(String string) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInService");
+                    obtain.writeString(string);
+                    this.lb.transact(5002, obtain, obtain2, 0);
+                    obtain2.readException();
+                    string = obtain2.readString();
+                    return string;
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public String h(String string, final boolean b) throws RemoteException {
+                int n = 0;
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInService");
+                    obtain.writeString(string);
+                    if (b) {
+                        n = 1;
+                    }
+                    obtain.writeInt(n);
+                    this.lb.transact(5009, obtain, obtain2, 0);
+                    obtain2.readException();
+                    string = obtain2.readString();
+                    return string;
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void w(final String s, final String s2) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInService");
                     obtain.writeString(s);
                     obtain.writeString(s2);
-                    this.kn.transact(9001, obtain, obtain2, 0);
+                    this.lb.transact(9001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

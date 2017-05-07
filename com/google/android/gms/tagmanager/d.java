@@ -10,14 +10,14 @@ import android.content.Context;
 
 class d implements b
 {
-    private final Context kI;
+    private final Context lB;
     
-    public d(final Context ki) {
-        this.kI = ki;
+    public d(final Context lb) {
+        this.lB = lb;
     }
     
     @Override
-    public void y(final Map<String, Object> map) {
+    public void D(final Map<String, Object> map) {
         final Map<String, Object> value = map.get("gtm.url");
         while (true) {
             Label_0083: {
@@ -32,7 +32,7 @@ class d implements b
                 if (value3 != null && value3 instanceof String) {
                     final String queryParameter = Uri.parse((String)value3).getQueryParameter("referrer");
                     if (queryParameter != null) {
-                        ay.e(this.kI, queryParameter);
+                        ay.f(this.lB, queryParameter);
                         return;
                     }
                 }

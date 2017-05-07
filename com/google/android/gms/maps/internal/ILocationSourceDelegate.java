@@ -22,7 +22,7 @@ public interface ILocationSourceDelegate extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.ILocationSourceDelegate");
         }
         
-        public static ILocationSourceDelegate ae(final IBinder binder) {
+        public static ILocationSourceDelegate aS(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -48,7 +48,7 @@ public interface ILocationSourceDelegate extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.ILocationSourceDelegate");
-                    this.activate(h.a.ak(parcel.readStrongBinder()));
+                    this.activate(h.a.aY(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -63,10 +63,10 @@ public interface ILocationSourceDelegate extends IInterface
         
         private static class a implements ILocationSourceDelegate
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -83,7 +83,7 @@ public interface ILocationSourceDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -93,7 +93,7 @@ public interface ILocationSourceDelegate extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -102,7 +102,7 @@ public interface ILocationSourceDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.ILocationSourceDelegate");
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

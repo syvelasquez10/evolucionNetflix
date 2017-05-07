@@ -52,11 +52,11 @@ public class SkidmarkMoreButton extends FrameLayout
         Log.v("SkidmarkMoreButton", "Creating more button");
         activity.getLayoutInflater().inflate(2130903109, (ViewGroup)this);
         this.setOnClickListener(this.launchLomoDetailsClickListener);
-        this.imgViews.add(this.findAndConfigureView(2131165427));
-        this.imgViews.add(this.findAndConfigureView(2131165428));
         this.imgViews.add(this.findAndConfigureView(2131165429));
-        this.lomoTitle = (TextView)this.findViewById(2131165431);
-        final int dimensionPixelSize = activity.getResources().getDimensionPixelSize(2131361932);
+        this.imgViews.add(this.findAndConfigureView(2131165430));
+        this.imgViews.add(this.findAndConfigureView(2131165431));
+        this.lomoTitle = (TextView)this.findViewById(2131165433);
+        final int dimensionPixelSize = activity.getResources().getDimensionPixelSize(2131361958);
         this.setPadding(dimensionPixelSize, 0, dimensionPixelSize, AndroidUtils.dipToPixels((Context)activity, 50));
         this.pressedStateHandler = new PressedStateHandler((View)this);
     }

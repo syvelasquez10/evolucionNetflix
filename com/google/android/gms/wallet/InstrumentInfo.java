@@ -11,18 +11,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class InstrumentInfo implements SafeParcelable
 {
     public static final Parcelable$Creator<InstrumentInfo> CREATOR;
-    private String abt;
-    private String abu;
-    private final int xH;
+    private final int BR;
+    private String asC;
+    private String asD;
     
     static {
         CREATOR = (Parcelable$Creator)new h();
     }
     
-    InstrumentInfo(final int xh, final String abt, final String abu) {
-        this.xH = xh;
-        this.abt = abt;
-        this.abu = abu;
+    InstrumentInfo(final int br, final String asC, final String asD) {
+        this.BR = br;
+        this.asC = asC;
+        this.asD = asD;
     }
     
     public int describeContents() {
@@ -30,15 +30,15 @@ public final class InstrumentInfo implements SafeParcelable
     }
     
     public String getInstrumentDetails() {
-        return this.abu;
+        return this.asD;
     }
     
     public String getInstrumentType() {
-        return this.abt;
+        return this.asC;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

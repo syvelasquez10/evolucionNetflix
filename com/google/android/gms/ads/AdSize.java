@@ -4,8 +4,8 @@
 
 package com.google.android.gms.ads;
 
-import com.google.android.gms.internal.dv;
-import com.google.android.gms.internal.ak;
+import com.google.android.gms.internal.gr;
+import com.google.android.gms.internal.ay;
 import android.content.Context;
 
 public final class AdSize
@@ -19,9 +19,9 @@ public final class AdSize
     public static final AdSize MEDIUM_RECTANGLE;
     public static final AdSize SMART_BANNER;
     public static final AdSize WIDE_SKYSCRAPER;
-    private final int kr;
-    private final int ks;
-    private final String kt;
+    private final int lf;
+    private final int lg;
+    private final String lh;
     
     static {
         BANNER = new AdSize(320, 50, "320x50_mb");
@@ -53,16 +53,16 @@ public final class AdSize
         this(n, n2, append.append(value2).append("_as").toString());
     }
     
-    AdSize(final int kr, final int ks, final String kt) {
-        if (kr < 0 && kr != -1) {
-            throw new IllegalArgumentException("Invalid width for AdSize: " + kr);
+    AdSize(final int lf, final int lg, final String lh) {
+        if (lf < 0 && lf != -1) {
+            throw new IllegalArgumentException("Invalid width for AdSize: " + lf);
         }
-        if (ks < 0 && ks != -2) {
-            throw new IllegalArgumentException("Invalid height for AdSize: " + ks);
+        if (lg < 0 && lg != -2) {
+            throw new IllegalArgumentException("Invalid height for AdSize: " + lg);
         }
-        this.kr = kr;
-        this.ks = ks;
-        this.kt = kt;
+        this.lf = lf;
+        this.lg = lg;
+        this.lh = lh;
     }
     
     @Override
@@ -72,7 +72,7 @@ public final class AdSize
                 return false;
             }
             final AdSize adSize = (AdSize)o;
-            if (this.kr != adSize.kr || this.ks != adSize.ks || !this.kt.equals(adSize.kt)) {
+            if (this.lf != adSize.lf || this.lg != adSize.lg || !this.lh.equals(adSize.lh)) {
                 return false;
             }
         }
@@ -80,42 +80,42 @@ public final class AdSize
     }
     
     public int getHeight() {
-        return this.ks;
+        return this.lg;
     }
     
     public int getHeightInPixels(final Context context) {
-        if (this.ks == -2) {
-            return ak.b(context.getResources().getDisplayMetrics());
+        if (this.lg == -2) {
+            return ay.b(context.getResources().getDisplayMetrics());
         }
-        return dv.a(context, this.ks);
+        return gr.a(context, this.lg);
     }
     
     public int getWidth() {
-        return this.kr;
+        return this.lf;
     }
     
     public int getWidthInPixels(final Context context) {
-        if (this.kr == -1) {
-            return ak.a(context.getResources().getDisplayMetrics());
+        if (this.lf == -1) {
+            return ay.a(context.getResources().getDisplayMetrics());
         }
-        return dv.a(context, this.kr);
+        return gr.a(context, this.lf);
     }
     
     @Override
     public int hashCode() {
-        return this.kt.hashCode();
+        return this.lh.hashCode();
     }
     
     public boolean isAutoHeight() {
-        return this.ks == -2;
+        return this.lg == -2;
     }
     
     public boolean isFullWidth() {
-        return this.kr == -1;
+        return this.lf == -1;
     }
     
     @Override
     public String toString() {
-        return this.kt;
+        return this.lh;
     }
 }

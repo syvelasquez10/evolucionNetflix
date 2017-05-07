@@ -4,96 +4,89 @@
 
 package com.google.android.gms.location;
 
+import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcel;
-import com.google.android.gms.internal.fo;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.os.Parcelable$Creator;
 
-public class b implements SafeParcelable
+public class b implements Parcelable$Creator<LocationRequest>
 {
-    public static final c CREATOR;
-    int Oh;
-    int Oi;
-    long Oj;
-    private final int xH;
-    
-    static {
-        CREATOR = new c();
+    static void a(final LocationRequest locationRequest, final Parcel parcel, int d) {
+        d = com.google.android.gms.common.internal.safeparcel.b.D(parcel);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, locationRequest.mPriority);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1000, locationRequest.getVersionCode());
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, locationRequest.aeh);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, locationRequest.aei);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 4, locationRequest.Uz);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 5, locationRequest.adX);
+        com.google.android.gms.common.internal.safeparcel.b.c(parcel, 6, locationRequest.aej);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 7, locationRequest.aek);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 8, locationRequest.ael);
+        com.google.android.gms.common.internal.safeparcel.b.H(parcel, d);
     }
     
-    b(final int xh, final int oh, final int oi, final long oj) {
-        this.xH = xh;
-        this.Oh = oh;
-        this.Oi = oi;
-        this.Oj = oj;
-    }
-    
-    private String by(final int n) {
-        switch (n) {
-            default: {
-                return "STATUS_UNKNOWN";
-            }
-            case 0: {
-                return "STATUS_SUCCESSFUL";
-            }
-            case 2: {
-                return "STATUS_TIMED_OUT_ON_SCAN";
-            }
-            case 3: {
-                return "STATUS_NO_INFO_IN_DATABASE";
-            }
-            case 4: {
-                return "STATUS_INVALID_SCAN";
-            }
-            case 5: {
-                return "STATUS_UNABLE_TO_QUERY_DATABASE";
-            }
-            case 6: {
-                return "STATUS_SCANS_DISABLED_IN_SETTINGS";
-            }
-            case 7: {
-                return "STATUS_LOCATION_DISABLED_IN_SETTINGS";
-            }
-            case 8: {
-                return "STATUS_IN_PROGRESS";
+    public LocationRequest cs(final Parcel parcel) {
+        final int c = a.C(parcel);
+        int g = 0;
+        int g2 = 102;
+        long i = 3600000L;
+        long j = 600000L;
+        boolean c2 = false;
+        long k = Long.MAX_VALUE;
+        int g3 = Integer.MAX_VALUE;
+        float l = 0.0f;
+        long m = 0L;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
+                default: {
+                    a.b(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    g2 = a.g(parcel, b);
+                    continue;
+                }
+                case 1000: {
+                    g = a.g(parcel, b);
+                    continue;
+                }
+                case 2: {
+                    i = a.i(parcel, b);
+                    continue;
+                }
+                case 3: {
+                    j = a.i(parcel, b);
+                    continue;
+                }
+                case 4: {
+                    c2 = a.c(parcel, b);
+                    continue;
+                }
+                case 5: {
+                    k = a.i(parcel, b);
+                    continue;
+                }
+                case 6: {
+                    g3 = a.g(parcel, b);
+                    continue;
+                }
+                case 7: {
+                    l = a.l(parcel, b);
+                    continue;
+                }
+                case 8: {
+                    m = a.i(parcel, b);
+                    continue;
+                }
             }
         }
-    }
-    
-    public int describeContents() {
-        return 0;
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (o instanceof b) {
-            final b b = (b)o;
-            if (this.Oh == b.Oh && this.Oi == b.Oi && this.Oj == b.Oj) {
-                return true;
-            }
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return false;
+        return new LocationRequest(g, g2, i, j, c2, k, g3, l, m);
     }
     
-    int getVersionCode() {
-        return this.xH;
-    }
-    
-    @Override
-    public int hashCode() {
-        return fo.hashCode(this.Oh, this.Oi, this.Oj);
-    }
-    
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("LocationStatus[cell status: ").append(this.by(this.Oh));
-        sb.append(", wifi status: ").append(this.by(this.Oi));
-        sb.append(", elapsed realtime ns: ").append(this.Oj);
-        sb.append(']');
-        return sb.toString();
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        c.a(this, parcel, n);
+    public LocationRequest[] ec(final int n) {
+        return new LocationRequest[n];
     }
 }

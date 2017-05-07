@@ -4,96 +4,84 @@
 
 package com.google.android.gms.internal;
 
-import java.security.NoSuchAlgorithmException;
-import java.math.BigInteger;
-import java.util.Locale;
-import java.security.MessageDigest;
-import android.provider.Settings$Secure;
-import android.os.Build;
-import android.view.ViewGroup$LayoutParams;
-import android.view.View;
-import android.widget.FrameLayout$LayoutParams;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.view.ViewGroup;
-import android.util.TypedValue;
-import android.util.DisplayMetrics;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Bundle;
+import android.content.Intent;
+import com.google.android.gms.dynamic.e;
+import com.google.android.gms.dynamic.d;
+import android.os.IBinder;
 import android.content.Context;
-import android.os.Looper;
-import android.os.Handler;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public final class dv
+@ez
+public final class dv implements SafeParcelable
 {
-    public static final Handler rp;
+    public static final du CREATOR;
+    public final el lM;
+    public final ee lT;
+    public final eg si;
+    public final Context sj;
+    public final int versionCode;
     
     static {
-        rp = new Handler(Looper.getMainLooper());
+        CREATOR = new du();
     }
     
-    public static int a(final Context context, final int n) {
-        return a(context.getResources().getDisplayMetrics(), n);
+    dv(final int versionCode, final IBinder binder, final IBinder binder2, final IBinder binder3, final IBinder binder4) {
+        this.versionCode = versionCode;
+        this.lM = e.f(d.a.am(binder));
+        this.lT = e.f(d.a.am(binder2));
+        this.si = e.f(d.a.am(binder3));
+        this.sj = e.f(d.a.am(binder4));
     }
     
-    public static int a(final DisplayMetrics displayMetrics, final int n) {
-        return (int)TypedValue.applyDimension(1, (float)n, displayMetrics);
+    public dv(final eg si, final el lm, final ee lt, final Context sj) {
+        this.versionCode = 1;
+        this.si = si;
+        this.lM = lm;
+        this.lT = lt;
+        this.sj = sj;
     }
     
-    public static void a(final ViewGroup viewGroup, final ak ak, final String s) {
-        a(viewGroup, ak, s, -16777216, -1);
+    public static void a(final Intent intent, final dv dv) {
+        final Bundle bundle = new Bundle(1);
+        bundle.putParcelable("com.google.android.gms.ads.internal.purchase.InAppPurchaseManagerInfo", (Parcelable)dv);
+        intent.putExtra("com.google.android.gms.ads.internal.purchase.InAppPurchaseManagerInfo", bundle);
     }
     
-    private static void a(final ViewGroup viewGroup, final ak ak, final String text, int a, final int backgroundColor) {
-        if (viewGroup.getChildCount() != 0) {
-            return;
+    public static dv c(final Intent intent) {
+        try {
+            final Bundle bundleExtra = intent.getBundleExtra("com.google.android.gms.ads.internal.purchase.InAppPurchaseManagerInfo");
+            bundleExtra.setClassLoader(dv.class.getClassLoader());
+            return (dv)bundleExtra.getParcelable("com.google.android.gms.ads.internal.purchase.InAppPurchaseManagerInfo");
         }
-        final Context context = viewGroup.getContext();
-        final TextView textView = new TextView(context);
-        textView.setGravity(17);
-        textView.setText((CharSequence)text);
-        textView.setTextColor(a);
-        textView.setBackgroundColor(backgroundColor);
-        final FrameLayout frameLayout = new FrameLayout(context);
-        frameLayout.setBackgroundColor(a);
-        a = a(context, 3);
-        frameLayout.addView((View)textView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(ak.widthPixels - a, ak.heightPixels - a, 17));
-        viewGroup.addView((View)frameLayout, ak.widthPixels, ak.heightPixels);
-    }
-    
-    public static void a(final ViewGroup viewGroup, final ak ak, final String s, final String s2) {
-        dw.z(s2);
-        a(viewGroup, ak, s, -65536, -16777216);
-    }
-    
-    public static boolean bC() {
-        return Build.DEVICE.startsWith("generic");
-    }
-    
-    public static boolean bD() {
-        return Looper.myLooper() == Looper.getMainLooper();
-    }
-    
-    public static String l(final Context context) {
-        String string = Settings$Secure.getString(context.getContentResolver(), "android_id");
-        if (string == null || bC()) {
-            string = "emulator";
+        catch (Exception ex) {
+            return null;
         }
-        return u(string);
     }
     
-    public static String u(final String s) {
-        int i = 0;
-        while (i < 2) {
-            try {
-                final MessageDigest instance = MessageDigest.getInstance("MD5");
-                instance.update(s.getBytes());
-                return String.format(Locale.US, "%032X", new BigInteger(1, instance.digest()));
-            }
-            catch (NoSuchAlgorithmException ex) {
-                ++i;
-                continue;
-            }
-            break;
-        }
-        return null;
+    IBinder cl() {
+        return e.k(this.lM).asBinder();
+    }
+    
+    IBinder cm() {
+        return e.k(this.lT).asBinder();
+    }
+    
+    IBinder cn() {
+        return e.k(this.si).asBinder();
+    }
+    
+    IBinder co() {
+        return e.k(this.sj).asBinder();
+    }
+    
+    public int describeContents() {
+        return 0;
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        du.a(this, parcel, n);
     }
 }

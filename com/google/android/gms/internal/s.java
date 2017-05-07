@@ -8,73 +8,75 @@ import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
 import android.os.RemoteException;
-import android.os.Bundle;
 import android.os.IInterface;
 
 public interface s extends IInterface
 {
-    Bundle a(final String p0, final Bundle p1) throws RemoteException;
+    boolean a(final boolean p0) throws RemoteException;
     
-    Bundle a(final String p0, final String p1, final Bundle p2) throws RemoteException;
+    void b(final String p0, final boolean p1) throws RemoteException;
+    
+    String c(final String p0) throws RemoteException;
+    
+    String getId() throws RemoteException;
     
     public abstract static class a extends Binder implements s
     {
-        public static s a(final IBinder binder) {
+        public static s b(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.auth.IAuthManagerService");
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
             if (queryLocalInterface != null && queryLocalInterface instanceof s) {
                 return (s)queryLocalInterface;
             }
             return new s.a.a(binder);
         }
         
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            final Bundle bundle = null;
-            Bundle bundle2 = null;
+        public boolean onTransact(int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            boolean b = false;
+            final int n3 = 0;
             switch (n) {
                 default: {
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.auth.IAuthManagerService");
+                    parcel2.writeString("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.auth.IAuthManagerService");
-                    final String string = parcel.readString();
-                    final String string2 = parcel.readString();
-                    if (parcel.readInt() != 0) {
-                        bundle2 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    final Bundle a = this.a(string, string2, bundle2);
+                    parcel.enforceInterface("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                    final String id = this.getId();
                     parcel2.writeNoException();
-                    if (a != null) {
-                        parcel2.writeInt(1);
-                        a.writeToParcel(parcel2, 1);
-                    }
-                    else {
-                        parcel2.writeInt(0);
-                    }
+                    parcel2.writeString(id);
                     return true;
                 }
                 case 2: {
-                    parcel.enforceInterface("com.google.android.auth.IAuthManagerService");
-                    final String string3 = parcel.readString();
-                    Bundle bundle3 = bundle;
-                    if (parcel.readInt() != 0) {
-                        bundle3 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    final Bundle a2 = this.a(string3, bundle3);
+                    parcel.enforceInterface("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                    final boolean a = this.a(parcel.readInt() != 0);
                     parcel2.writeNoException();
-                    if (a2 != null) {
-                        parcel2.writeInt(1);
-                        a2.writeToParcel(parcel2, 1);
+                    n = n3;
+                    if (a) {
+                        n = 1;
                     }
-                    else {
-                        parcel2.writeInt(0);
+                    parcel2.writeInt(n);
+                    return true;
+                }
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                    final String c = this.c(parcel.readString());
+                    parcel2.writeNoException();
+                    parcel2.writeString(c);
+                    return true;
+                }
+                case 4: {
+                    parcel.enforceInterface("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                    final String string = parcel.readString();
+                    if (parcel.readInt() != 0) {
+                        b = true;
                     }
+                    this.b(string, b);
+                    parcel2.writeNoException();
                     return true;
                 }
             }
@@ -82,73 +84,94 @@ public interface s extends IInterface
         
         private static class a implements s
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
-            public Bundle a(final String s, final Bundle bundle) throws RemoteException {
-                while (true) {
-                    final Parcel obtain = Parcel.obtain();
-                    final Parcel obtain2 = Parcel.obtain();
-                    try {
-                        obtain.writeInterfaceToken("com.google.android.auth.IAuthManagerService");
-                        obtain.writeString(s);
-                        if (bundle != null) {
-                            obtain.writeInt(1);
-                            bundle.writeToParcel(obtain, 0);
-                        }
-                        else {
-                            obtain.writeInt(0);
-                        }
-                        this.kn.transact(2, obtain, obtain2, 0);
-                        obtain2.readException();
-                        if (obtain2.readInt() != 0) {
-                            return (Bundle)Bundle.CREATOR.createFromParcel(obtain2);
-                        }
+            public boolean a(final boolean b) throws RemoteException {
+                final boolean b2 = true;
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                    int n;
+                    if (b) {
+                        n = 1;
                     }
-                    finally {
-                        obtain2.recycle();
-                        obtain.recycle();
+                    else {
+                        n = 0;
                     }
-                    return null;
+                    obtain.writeInt(n);
+                    this.lb.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return obtain2.readInt() != 0 && b2;
                 }
-            }
-            
-            @Override
-            public Bundle a(final String s, final String s2, final Bundle bundle) throws RemoteException {
-                while (true) {
-                    final Parcel obtain = Parcel.obtain();
-                    final Parcel obtain2 = Parcel.obtain();
-                    try {
-                        obtain.writeInterfaceToken("com.google.android.auth.IAuthManagerService");
-                        obtain.writeString(s);
-                        obtain.writeString(s2);
-                        if (bundle != null) {
-                            obtain.writeInt(1);
-                            bundle.writeToParcel(obtain, 0);
-                        }
-                        else {
-                            obtain.writeInt(0);
-                        }
-                        this.kn.transact(1, obtain, obtain2, 0);
-                        obtain2.readException();
-                        if (obtain2.readInt() != 0) {
-                            return (Bundle)Bundle.CREATOR.createFromParcel(obtain2);
-                        }
-                    }
-                    finally {
-                        obtain2.recycle();
-                        obtain.recycle();
-                    }
-                    return null;
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
                 }
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
+            }
+            
+            @Override
+            public void b(final String s, final boolean b) throws RemoteException {
+                int n = 0;
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                    obtain.writeString(s);
+                    if (b) {
+                        n = 1;
+                    }
+                    obtain.writeInt(n);
+                    this.lb.transact(4, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public String c(String string) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                    obtain.writeString(string);
+                    this.lb.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                    string = obtain2.readString();
+                    return string;
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public String getId() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                    return obtain2.readString();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
             }
         }
     }

@@ -4,45 +4,92 @@
 
 package com.google.android.gms.internal;
 
-import android.view.ViewGroup$LayoutParams;
-import android.view.View;
-import android.widget.FrameLayout$LayoutParams;
-import android.content.Context;
-import android.widget.ImageButton;
-import android.app.Activity;
-import android.view.View$OnClickListener;
-import android.widget.FrameLayout;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.Bundle;
+import android.os.IInterface;
 
-public final class ch extends FrameLayout implements View$OnClickListener
+public interface ch extends IInterface
 {
-    private final Activity nS;
-    private final ImageButton oB;
+    Bundle bD() throws RemoteException;
     
-    public ch(final Activity ns, int a) {
-        super((Context)ns);
-        this.nS = ns;
-        this.setOnClickListener((View$OnClickListener)this);
-        (this.oB = new ImageButton((Context)ns)).setImageResource(17301527);
-        this.oB.setBackgroundColor(0);
-        this.oB.setOnClickListener((View$OnClickListener)this);
-        this.oB.setPadding(0, 0, 0, 0);
-        a = dv.a((Context)ns, a);
-        this.addView((View)this.oB, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(a, a, 17));
-    }
-    
-    public void i(final boolean b) {
-        final ImageButton ob = this.oB;
-        int visibility;
-        if (b) {
-            visibility = 4;
+    public abstract static class a extends Binder implements ch
+    {
+        public static ch k(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.gservice.IGservicesValueService");
+            if (queryLocalInterface != null && queryLocalInterface instanceof ch) {
+                return (ch)queryLocalInterface;
+            }
+            return new ch.a.a(binder);
         }
-        else {
-            visibility = 0;
+        
+        public IBinder asBinder() {
+            return (IBinder)this;
         }
-        ob.setVisibility(visibility);
-    }
-    
-    public void onClick(final View view) {
-        this.nS.finish();
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.ads.internal.gservice.IGservicesValueService");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.gservice.IGservicesValueService");
+                    final Bundle bd = this.bD();
+                    parcel2.writeNoException();
+                    if (bd != null) {
+                        parcel2.writeInt(1);
+                        bd.writeToParcel(parcel2, 1);
+                        return true;
+                    }
+                    parcel2.writeInt(0);
+                    return true;
+                }
+            }
+        }
+        
+        private static class a implements ch
+        {
+            private IBinder lb;
+            
+            a(final IBinder lb) {
+                this.lb = lb;
+            }
+            
+            public IBinder asBinder() {
+                return this.lb;
+            }
+            
+            @Override
+            public Bundle bD() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.gservice.IGservicesValueService");
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                    Bundle bundle;
+                    if (obtain2.readInt() != 0) {
+                        bundle = (Bundle)Bundle.CREATOR.createFromParcel(obtain2);
+                    }
+                    else {
+                        bundle = null;
+                    }
+                    return bundle;
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+        }
     }
 }

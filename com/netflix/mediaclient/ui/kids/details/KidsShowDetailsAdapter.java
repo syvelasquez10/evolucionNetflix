@@ -71,8 +71,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         for (int i = 0; i < this.getCount(); ++i) {
             this.episodes.add(this.loadingEpisode);
         }
-        this.lr = this.activity.getResources().getDimensionPixelSize(2131361932);
-        this.tb = this.activity.getResources().getDimensionPixelSize(2131361933);
+        this.lr = this.activity.getResources().getDimensionPixelSize(2131361958);
+        this.tb = this.activity.getResources().getDimensionPixelSize(2131361959);
         this.itemHeight = (int)((DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.lr - this.lr) * 0.75f) + this.tb;
         this.firstItemHeight = this.itemHeight + this.tb;
         this.itemParams = new AbsListView$LayoutParams(-1, this.itemHeight);
@@ -81,8 +81,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
     private TextView createStatusTextView() {
         final Resources resources = this.activity.getResources();
         final TextView textView = new TextView((Context)this.activity);
-        textView.setTextColor(resources.getColor(2131296364));
-        textView.setTextSize(0, (float)resources.getDimensionPixelSize(2131361840));
+        textView.setTextColor(resources.getColor(2131296410));
+        textView.setTextSize(0, (float)resources.getDimensionPixelSize(2131361866));
         textView.setGravity(17);
         textView.setLayoutParams((ViewGroup$LayoutParams)this.itemParams);
         return textView;
@@ -180,7 +180,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                 if (view == null) {
                     statusTextView = this.createStatusTextView();
                 }
-                ((TextView)statusTextView).setText(2131493178);
+                ((TextView)statusTextView).setText(2131493183);
                 return (View)statusTextView;
             }
             case 2: {
@@ -215,7 +215,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                 if (view == null) {
                     statusTextView2 = this.createStatusTextView();
                 }
-                ((TextView)statusTextView2).setText(2131492978);
+                ((TextView)statusTextView2).setText(2131492983);
                 return (View)statusTextView2;
             }
         }
@@ -278,7 +278,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         
         @Override
         public String getTitle() {
-            return this.activity.getString(2131492978);
+            return this.activity.getString(2131492983);
         }
     }
     
@@ -350,7 +350,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         
         @Override
         public String getTitle() {
-            return this.activity.getString(2131493178);
+            return this.activity.getString(2131493183);
         }
     }
 }

@@ -402,20 +402,17 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 }
                 try {
                     return new URL(url);
-                    url = s;
-                    // iftrue(Label_0023:, !property instanceof JSONObject)
                     while (true) {
-                        Block_4: {
-                            break Block_4;
-                            final ItemPictureData data;
-                            url = data.getUrl();
-                            continue Block_5_Outer;
-                        }
-                        final ItemPictureData data = GraphObject.Factory.create((JSONObject)property).cast(ItemPicture.class).getData();
+                        final ItemPictureData data;
+                        url = data.getUrl();
+                        continue Block_5_Outer;
+                        url = s;
+                        data = GraphObject.Factory.create((JSONObject)property).cast(ItemPicture.class).getData();
                         url = s;
                         continue;
                     }
                 }
+                // iftrue(Label_0023:, !property instanceof JSONObject)
                 // iftrue(Label_0023:, data == null)
                 catch (MalformedURLException ex) {}
                 break;

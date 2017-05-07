@@ -15,41 +15,41 @@ import android.os.Parcelable$Creator;
 
 public class GameRequestClusterCreator implements Parcelable$Creator<GameRequestCluster>
 {
-    static void a(final GameRequestCluster gameRequestCluster, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.b(parcel, 1, gameRequestCluster.hz(), false);
+    static void a(final GameRequestCluster gameRequestCluster, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, gameRequestCluster.lu(), false);
         b.c(parcel, 1000, gameRequestCluster.getVersionCode());
-        b.F(parcel, p3);
+        b.H(parcel, d);
     }
     
-    public GameRequestCluster at(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public GameRequestCluster ck(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
-        ArrayList<GameRequestEntity> c = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        ArrayList<GameRequestEntity> c2 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    c = a.c(parcel, n, (android.os.Parcelable$Creator<GameRequestEntity>)GameRequestEntity.CREATOR);
+                    c2 = a.c(parcel, b, (android.os.Parcelable$Creator<GameRequestEntity>)GameRequestEntity.CREATOR);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new GameRequestCluster(g, c);
+        return new GameRequestCluster(g, c2);
     }
     
-    public GameRequestCluster[] bl(final int n) {
+    public GameRequestCluster[] dQ(final int n) {
         return new GameRequestCluster[n];
     }
 }

@@ -4,31 +4,31 @@
 
 package com.google.android.gms.plus.model.people;
 
-import com.google.android.gms.internal.is;
+import com.google.android.gms.internal.oj;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.internal.ih;
-import com.google.android.gms.common.data.c;
+import com.google.android.gms.internal.ny;
+import com.google.android.gms.common.data.e;
 import com.google.android.gms.common.data.DataBuffer;
 
 public final class PersonBuffer extends DataBuffer<Person>
 {
-    private final c<ih> Wr;
+    private final e<ny> any;
     
     public PersonBuffer(final DataHolder dataHolder) {
         super(dataHolder);
-        if (dataHolder.getMetadata() != null && dataHolder.getMetadata().getBoolean("com.google.android.gms.plus.IsSafeParcelable", false)) {
-            this.Wr = new c<ih>(dataHolder, (android.os.Parcelable$Creator<ih>)ih.CREATOR);
+        if (dataHolder.gz() != null && dataHolder.gz().getBoolean("com.google.android.gms.plus.IsSafeParcelable", false)) {
+            this.any = new e<ny>(dataHolder, (android.os.Parcelable$Creator<ny>)ny.CREATOR);
             return;
         }
-        this.Wr = null;
+        this.any = null;
     }
     
     @Override
     public Person get(final int n) {
-        if (this.Wr != null) {
-            return this.Wr.F(n);
+        if (this.any != null) {
+            return this.any.aq(n);
         }
-        return new is(this.BB, n);
+        return new oj(this.IC, n);
     }
 }

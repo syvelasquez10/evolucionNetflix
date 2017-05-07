@@ -11,27 +11,27 @@ import com.google.android.gms.internal.a;
 class p extends aj
 {
     private static final String ID;
-    private final String Xl;
+    private final String Sq;
     
     static {
         ID = a.D.toString();
     }
     
-    public p(final String xl) {
+    public p(final String sq) {
         super(p.ID, new String[0]);
-        this.Xl = xl;
+        this.Sq = sq;
     }
     
     @Override
-    public boolean jX() {
-        return true;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        if (this.Xl == null) {
-            return dh.lT();
+    public d.a C(final Map<String, d.a> map) {
+        if (this.Sq == null) {
+            return di.pI();
         }
-        return dh.r(this.Xl);
+        return di.u(this.Sq);
+    }
+    
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

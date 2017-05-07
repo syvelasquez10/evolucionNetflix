@@ -10,15 +10,15 @@ import com.google.android.gms.maps.internal.IUiSettingsDelegate;
 
 public final class UiSettings
 {
-    private final IUiSettingsDelegate Sy;
+    private final IUiSettingsDelegate ajl;
     
-    UiSettings(final IUiSettingsDelegate sy) {
-        this.Sy = sy;
+    UiSettings(final IUiSettingsDelegate ajl) {
+        this.ajl = ajl;
     }
     
     public boolean isCompassEnabled() {
         try {
-            return this.Sy.isCompassEnabled();
+            return this.ajl.isCompassEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -27,7 +27,7 @@ public final class UiSettings
     
     public boolean isIndoorLevelPickerEnabled() {
         try {
-            return this.Sy.isIndoorLevelPickerEnabled();
+            return this.ajl.isIndoorLevelPickerEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -36,7 +36,7 @@ public final class UiSettings
     
     public boolean isMyLocationButtonEnabled() {
         try {
-            return this.Sy.isMyLocationButtonEnabled();
+            return this.ajl.isMyLocationButtonEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -45,7 +45,7 @@ public final class UiSettings
     
     public boolean isRotateGesturesEnabled() {
         try {
-            return this.Sy.isRotateGesturesEnabled();
+            return this.ajl.isRotateGesturesEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -54,7 +54,7 @@ public final class UiSettings
     
     public boolean isScrollGesturesEnabled() {
         try {
-            return this.Sy.isScrollGesturesEnabled();
+            return this.ajl.isScrollGesturesEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -63,7 +63,7 @@ public final class UiSettings
     
     public boolean isTiltGesturesEnabled() {
         try {
-            return this.Sy.isTiltGesturesEnabled();
+            return this.ajl.isTiltGesturesEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -72,7 +72,7 @@ public final class UiSettings
     
     public boolean isZoomControlsEnabled() {
         try {
-            return this.Sy.isZoomControlsEnabled();
+            return this.ajl.isZoomControlsEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -81,7 +81,7 @@ public final class UiSettings
     
     public boolean isZoomGesturesEnabled() {
         try {
-            return this.Sy.isZoomGesturesEnabled();
+            return this.ajl.isZoomGesturesEnabled();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -90,7 +90,7 @@ public final class UiSettings
     
     public void setAllGesturesEnabled(final boolean allGesturesEnabled) {
         try {
-            this.Sy.setAllGesturesEnabled(allGesturesEnabled);
+            this.ajl.setAllGesturesEnabled(allGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -99,7 +99,7 @@ public final class UiSettings
     
     public void setCompassEnabled(final boolean compassEnabled) {
         try {
-            this.Sy.setCompassEnabled(compassEnabled);
+            this.ajl.setCompassEnabled(compassEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -108,7 +108,7 @@ public final class UiSettings
     
     public void setIndoorLevelPickerEnabled(final boolean indoorLevelPickerEnabled) {
         try {
-            this.Sy.setIndoorLevelPickerEnabled(indoorLevelPickerEnabled);
+            this.ajl.setIndoorLevelPickerEnabled(indoorLevelPickerEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -117,7 +117,7 @@ public final class UiSettings
     
     public void setMyLocationButtonEnabled(final boolean myLocationButtonEnabled) {
         try {
-            this.Sy.setMyLocationButtonEnabled(myLocationButtonEnabled);
+            this.ajl.setMyLocationButtonEnabled(myLocationButtonEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -126,7 +126,7 @@ public final class UiSettings
     
     public void setRotateGesturesEnabled(final boolean rotateGesturesEnabled) {
         try {
-            this.Sy.setRotateGesturesEnabled(rotateGesturesEnabled);
+            this.ajl.setRotateGesturesEnabled(rotateGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -135,7 +135,7 @@ public final class UiSettings
     
     public void setScrollGesturesEnabled(final boolean scrollGesturesEnabled) {
         try {
-            this.Sy.setScrollGesturesEnabled(scrollGesturesEnabled);
+            this.ajl.setScrollGesturesEnabled(scrollGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -144,7 +144,7 @@ public final class UiSettings
     
     public void setTiltGesturesEnabled(final boolean tiltGesturesEnabled) {
         try {
-            this.Sy.setTiltGesturesEnabled(tiltGesturesEnabled);
+            this.ajl.setTiltGesturesEnabled(tiltGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -153,7 +153,7 @@ public final class UiSettings
     
     public void setZoomControlsEnabled(final boolean zoomControlsEnabled) {
         try {
-            this.Sy.setZoomControlsEnabled(zoomControlsEnabled);
+            this.ajl.setZoomControlsEnabled(zoomControlsEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -162,7 +162,7 @@ public final class UiSettings
     
     public void setZoomGesturesEnabled(final boolean zoomGesturesEnabled) {
         try {
-            this.Sy.setZoomGesturesEnabled(zoomGesturesEnabled);
+            this.ajl.setZoomGesturesEnabled(zoomGesturesEnabled);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

@@ -4,30 +4,16 @@
 
 package com.google.android.gms.tagmanager;
 
-class bw implements dj
+import java.util.Set;
+
+class bw implements cs
 {
     @Override
-    public dj cd(final int n) {
-        return new bw();
+    public void b(final Set<cr.a> set) {
     }
     
     @Override
-    public dj ce(final int n) {
-        return new bw();
-    }
-    
-    @Override
-    public dj cf(final int n) {
-        return new bw();
-    }
-    
-    @Override
-    public dj cg(final int n) {
-        return new bw();
-    }
-    
-    @Override
-    public bj kP() {
-        return new br();
+    public cn oC() {
+        return new bv();
     }
 }

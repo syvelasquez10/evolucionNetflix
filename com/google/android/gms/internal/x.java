@@ -4,94 +4,38 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Handler;
-import java.lang.ref.WeakReference;
+import android.os.Parcel;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public final class x
+@ez
+public final class x implements SafeParcelable
 {
-    private final a kV;
-    private final Runnable kW;
-    private ah kX;
-    private boolean kY;
-    private boolean kZ;
-    private long la;
+    public static final y CREATOR;
+    public final boolean lX;
+    public final boolean mh;
+    public final int versionCode;
     
-    public x(final v v) {
-        this(v, new a(dv.rp));
+    static {
+        CREATOR = new y();
     }
     
-    x(final v v, final a kv) {
-        this.kY = false;
-        this.kZ = false;
-        this.la = 0L;
-        this.kV = kv;
-        this.kW = new Runnable() {
-            private final WeakReference<v> lb = new WeakReference<v>(v);
-            
-            @Override
-            public void run() {
-                x.this.kY = false;
-                final v v = this.lb.get();
-                if (v != null) {
-                    v.b(x.this.kX);
-                }
-            }
-        };
+    x(final int versionCode, final boolean lx, final boolean mh) {
+        this.versionCode = versionCode;
+        this.lX = lx;
+        this.mh = mh;
     }
     
-    public void a(final ah kx, final long la) {
-        if (this.kY) {
-            dw.z("An ad refresh is already scheduled.");
-        }
-        else {
-            this.kX = kx;
-            this.kY = true;
-            this.la = la;
-            if (!this.kZ) {
-                dw.x("Scheduling ad refresh " + la + " milliseconds from now.");
-                this.kV.postDelayed(this.kW, la);
-            }
-        }
+    public x(final boolean lx, final boolean mh) {
+        this.versionCode = 1;
+        this.lX = lx;
+        this.mh = mh;
     }
     
-    public void cancel() {
-        this.kY = false;
-        this.kV.removeCallbacks(this.kW);
+    public int describeContents() {
+        return 0;
     }
     
-    public void d(final ah ah) {
-        this.a(ah, 60000L);
-    }
-    
-    public void pause() {
-        this.kZ = true;
-        if (this.kY) {
-            this.kV.removeCallbacks(this.kW);
-        }
-    }
-    
-    public void resume() {
-        this.kZ = false;
-        if (this.kY) {
-            this.kY = false;
-            this.a(this.kX, this.la);
-        }
-    }
-    
-    public static class a
-    {
-        private final Handler mHandler;
-        
-        public a(final Handler mHandler) {
-            this.mHandler = mHandler;
-        }
-        
-        public boolean postDelayed(final Runnable runnable, final long n) {
-            return this.mHandler.postDelayed(runnable, n);
-        }
-        
-        public void removeCallbacks(final Runnable runnable) {
-            this.mHandler.removeCallbacks(runnable);
-        }
+    public void writeToParcel(final Parcel parcel, final int n) {
+        y.a(this, parcel, n);
     }
 }

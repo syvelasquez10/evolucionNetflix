@@ -8,14 +8,14 @@ import android.content.Intent;
 
 public class GooglePlayServicesRepairableException extends UserRecoverableException
 {
-    private final int wQ;
+    private final int Dr;
     
-    GooglePlayServicesRepairableException(final int wq, final String s, final Intent intent) {
+    GooglePlayServicesRepairableException(final int dr, final String s, final Intent intent) {
         super(s, intent);
-        this.wQ = wq;
+        this.Dr = dr;
     }
     
     public int getConnectionStatusCode() {
-        return this.wQ;
+        return this.Dr;
     }
 }

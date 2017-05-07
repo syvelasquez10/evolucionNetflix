@@ -12,18 +12,18 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class AuthorizeAccessRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<AuthorizeAccessRequest> CREATOR;
-    final long EU;
-    final DriveId Ew;
-    final int xH;
+    final int BR;
+    final DriveId MO;
+    final long NT;
     
     static {
         CREATOR = (Parcelable$Creator)new b();
     }
     
-    AuthorizeAccessRequest(final int xh, final long eu, final DriveId ew) {
-        this.xH = xh;
-        this.EU = eu;
-        this.Ew = ew;
+    AuthorizeAccessRequest(final int br, final long nt, final DriveId mo) {
+        this.BR = br;
+        this.NT = nt;
+        this.MO = mo;
     }
     
     public int describeContents() {

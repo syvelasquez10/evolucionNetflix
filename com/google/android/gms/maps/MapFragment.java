@@ -10,7 +10,7 @@ import com.google.android.gms.dynamic.f;
 import com.google.android.gms.dynamic.a;
 import com.google.android.gms.dynamic.e;
 import com.google.android.gms.maps.internal.t;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.dynamic.LifecycleDelegate;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -28,11 +28,11 @@ import android.app.Fragment;
 
 public class MapFragment extends Fragment
 {
-    private final b RS;
-    private GoogleMap RT;
+    private final b aiF;
+    private GoogleMap aiG;
     
     public MapFragment() {
-        this.RS = new b(this);
+        this.aiF = new b(this);
     }
     
     public static MapFragment newInstance() {
@@ -48,15 +48,15 @@ public class MapFragment extends Fragment
     }
     
     public final GoogleMap getMap() {
-        final IMapFragmentDelegate io = this.io();
-        if (io != null) {
+        final IMapFragmentDelegate mx = this.mx();
+        if (mx != null) {
             try {
-                final IGoogleMapDelegate map = io.getMap();
+                final IGoogleMapDelegate map = mx.getMap();
                 if (map != null) {
-                    if (this.RT == null || this.RT.if().asBinder() != map.asBinder()) {
-                        this.RT = new GoogleMap(map);
+                    if (this.aiG == null || this.aiG.mo().asBinder() != map.asBinder()) {
+                        this.aiG = new GoogleMap(map);
                     }
-                    return this.RT;
+                    return this.aiG;
                 }
             }
             catch (RemoteException ex) {
@@ -66,12 +66,12 @@ public class MapFragment extends Fragment
         return null;
     }
     
-    protected IMapFragmentDelegate io() {
-        this.RS.ip();
-        if (this.RS.fW() == null) {
+    protected IMapFragmentDelegate mx() {
+        this.aiF.my();
+        if (this.aiF.it() == null) {
             return null;
         }
-        return this.RS.fW().io();
+        return this.aiF.it().mx();
     }
     
     public void onActivityCreated(final Bundle bundle) {
@@ -83,50 +83,50 @@ public class MapFragment extends Fragment
     
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
-        this.RS.setActivity(activity);
+        this.aiF.setActivity(activity);
     }
     
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.RS.onCreate(bundle);
+        this.aiF.onCreate(bundle);
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        return this.RS.onCreateView(layoutInflater, viewGroup, bundle);
+        return this.aiF.onCreateView(layoutInflater, viewGroup, bundle);
     }
     
     public void onDestroy() {
-        this.RS.onDestroy();
+        this.aiF.onDestroy();
         super.onDestroy();
     }
     
     public void onDestroyView() {
-        this.RS.onDestroyView();
+        this.aiF.onDestroyView();
         super.onDestroyView();
     }
     
     public void onInflate(final Activity activity, final AttributeSet set, final Bundle bundle) {
         super.onInflate(activity, set, bundle);
-        this.RS.setActivity(activity);
+        this.aiF.setActivity(activity);
         final GoogleMapOptions fromAttributes = GoogleMapOptions.createFromAttributes((Context)activity, set);
         final Bundle bundle2 = new Bundle();
         bundle2.putParcelable("MapOptions", (Parcelable)fromAttributes);
-        this.RS.onInflate(activity, bundle2, bundle);
+        this.aiF.onInflate(activity, bundle2, bundle);
     }
     
     public void onLowMemory() {
-        this.RS.onLowMemory();
+        this.aiF.onLowMemory();
         super.onLowMemory();
     }
     
     public void onPause() {
-        this.RS.onPause();
+        this.aiF.onPause();
         super.onPause();
     }
     
     public void onResume() {
         super.onResume();
-        this.RS.onResume();
+        this.aiF.onResume();
     }
     
     public void onSaveInstanceState(final Bundle bundle) {
@@ -134,7 +134,7 @@ public class MapFragment extends Fragment
             bundle.setClassLoader(MapFragment.class.getClassLoader());
         }
         super.onSaveInstanceState(bundle);
-        this.RS.onSaveInstanceState(bundle);
+        this.aiF.onSaveInstanceState(bundle);
     }
     
     public void setArguments(final Bundle arguments) {
@@ -143,16 +143,16 @@ public class MapFragment extends Fragment
     
     static class a implements LifecycleDelegate
     {
-        private final Fragment Hv;
-        private final IMapFragmentDelegate RU;
+        private final Fragment Sb;
+        private final IMapFragmentDelegate aiH;
         
         public a(final Fragment fragment, final IMapFragmentDelegate mapFragmentDelegate) {
-            this.RU = fq.f(mapFragmentDelegate);
-            this.Hv = fq.f(fragment);
+            this.aiH = n.i(mapFragmentDelegate);
+            this.Sb = n.i(fragment);
         }
         
-        public IMapFragmentDelegate io() {
-            return this.RU;
+        public IMapFragmentDelegate mx() {
+            return this.aiH;
         }
         
         @Override
@@ -164,11 +164,11 @@ public class MapFragment extends Fragment
                 }
                 try {
                     bundle = new Bundle();
-                    arguments = this.Hv.getArguments();
+                    arguments = this.Sb.getArguments();
                     if (arguments != null && arguments.containsKey("MapOptions")) {
                         t.a(bundle, "MapOptions", arguments.getParcelable("MapOptions"));
                     }
-                    this.RU.onCreate(bundle);
+                    this.aiH.onCreate(bundle);
                 }
                 catch (RemoteException ex) {
                     throw new RuntimeRemoteException(ex);
@@ -179,7 +179,7 @@ public class MapFragment extends Fragment
         @Override
         public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
             try {
-                return e.d(this.RU.onCreateView(e.h(layoutInflater), e.h(viewGroup), bundle));
+                return e.f(this.aiH.onCreateView(e.k(layoutInflater), e.k(viewGroup), bundle));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -189,7 +189,7 @@ public class MapFragment extends Fragment
         @Override
         public void onDestroy() {
             try {
-                this.RU.onDestroy();
+                this.aiH.onDestroy();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -199,7 +199,7 @@ public class MapFragment extends Fragment
         @Override
         public void onDestroyView() {
             try {
-                this.RU.onDestroyView();
+                this.aiH.onDestroyView();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -210,7 +210,7 @@ public class MapFragment extends Fragment
         public void onInflate(final Activity activity, final Bundle bundle, final Bundle bundle2) {
             final GoogleMapOptions googleMapOptions = (GoogleMapOptions)bundle.getParcelable("MapOptions");
             try {
-                this.RU.onInflate(e.h(activity), googleMapOptions, bundle2);
+                this.aiH.onInflate(e.k(activity), googleMapOptions, bundle2);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -220,7 +220,7 @@ public class MapFragment extends Fragment
         @Override
         public void onLowMemory() {
             try {
-                this.RU.onLowMemory();
+                this.aiH.onLowMemory();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -230,7 +230,7 @@ public class MapFragment extends Fragment
         @Override
         public void onPause() {
             try {
-                this.RU.onPause();
+                this.aiH.onPause();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -240,7 +240,7 @@ public class MapFragment extends Fragment
         @Override
         public void onResume() {
             try {
-                this.RU.onResume();
+                this.aiH.onResume();
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -250,7 +250,7 @@ public class MapFragment extends Fragment
         @Override
         public void onSaveInstanceState(final Bundle bundle) {
             try {
-                this.RU.onSaveInstanceState(bundle);
+                this.aiH.onSaveInstanceState(bundle);
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);
@@ -268,32 +268,32 @@ public class MapFragment extends Fragment
     
     static class b extends a<MapFragment.a>
     {
-        private final Fragment Hv;
-        protected f<MapFragment.a> RV;
-        private Activity nS;
+        private final Fragment Sb;
+        protected f<MapFragment.a> aiI;
+        private Activity nr;
         
-        b(final Fragment hv) {
-            this.Hv = hv;
+        b(final Fragment sb) {
+            this.Sb = sb;
         }
         
-        private void setActivity(final Activity ns) {
-            this.nS = ns;
-            this.ip();
+        private void setActivity(final Activity nr) {
+            this.nr = nr;
+            this.my();
         }
         
         @Override
-        protected void a(final f<MapFragment.a> rv) {
-            this.RV = rv;
-            this.ip();
+        protected void a(final f<MapFragment.a> aiI) {
+            this.aiI = aiI;
+            this.my();
         }
         
-        public void ip() {
-            if (this.nS == null || this.RV == null || this.fW() != null) {
+        public void my() {
+            if (this.nr == null || this.aiI == null || this.it() != null) {
                 return;
             }
             try {
-                MapsInitializer.initialize((Context)this.nS);
-                this.RV.a(new MapFragment.a(this.Hv, u.A((Context)this.nS).h(e.h(this.nS))));
+                MapsInitializer.initialize((Context)this.nr);
+                this.aiI.a(new MapFragment.a(this.Sb, u.R((Context)this.nr).j(e.k(this.nr))));
             }
             catch (RemoteException ex) {
                 throw new RuntimeRemoteException(ex);

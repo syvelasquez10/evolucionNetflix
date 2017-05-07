@@ -4,64 +4,84 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.ads.search.SearchAdRequest;
-import android.os.Bundle;
-import android.location.Location;
-import java.util.Set;
-import java.util.Date;
-import com.google.android.gms.ads.mediation.MediationAdapter;
-import com.google.ads.mediation.admob.AdMobAdapter;
-import java.util.List;
-import java.util.Collections;
-import java.util.Collection;
-import java.util.ArrayList;
+import android.webkit.WebView;
+import org.json.JSONObject;
 import android.content.Context;
 
-public class aj
+@ez
+public class aj implements ah
 {
-    public static final aj lR;
+    private final gv md;
     
-    static {
-        lR = new aj();
+    public aj(final Context context, final gt gt) {
+        this.md = gv.a(context, new ay(), false, false, null, gt);
     }
     
-    public static aj az() {
-        return aj.lR;
+    private void runOnUiThread(final Runnable runnable) {
+        if (gr.dt()) {
+            runnable.run();
+            return;
+        }
+        gr.wC.post(runnable);
     }
     
-    public ah a(final Context context, final as as) {
-        final Date birthday = as.getBirthday();
-        long time;
-        if (birthday != null) {
-            time = birthday.getTime();
-        }
-        else {
-            time = -1L;
-        }
-        final String contentUrl = as.getContentUrl();
-        final int gender = as.getGender();
-        final Set<String> keywords = as.getKeywords();
-        Object unmodifiableList;
-        if (!keywords.isEmpty()) {
-            unmodifiableList = Collections.unmodifiableList((List<?>)new ArrayList<Object>(keywords));
-        }
-        else {
-            unmodifiableList = null;
-        }
-        final boolean testDevice = as.isTestDevice(context);
-        final int ae = as.aE();
-        final Location location = as.getLocation();
-        final Bundle networkExtrasBundle = as.getNetworkExtrasBundle(AdMobAdapter.class);
-        final boolean manualImpressionsEnabled = as.getManualImpressionsEnabled();
-        final String publisherProvidedId = as.getPublisherProvidedId();
-        final SearchAdRequest ab = as.aB();
-        av av;
-        if (ab != null) {
-            av = new av(ab);
-        }
-        else {
-            av = null;
-        }
-        return new ah(3, time, networkExtrasBundle, gender, (List<String>)unmodifiableList, testDevice, ae, manualImpressionsEnabled, publisherProvidedId, av, location, contentUrl);
+    @Override
+    public void a(final a a) {
+        this.md.dv().a((gw.a)new gw.a() {
+            @Override
+            public void a(final gv gv) {
+                a.aM();
+            }
+        });
+    }
+    
+    @Override
+    public void a(final t t, final dn dn, final bw bw, final dq dq, final boolean b, final bz bz) {
+        this.md.dv().a(t, dn, bw, dq, b, bz, new v(false));
+    }
+    
+    @Override
+    public void a(final String s, final by by) {
+        this.md.dv().a(s, by);
+    }
+    
+    @Override
+    public void a(final String s, final JSONObject jsonObject) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                aj.this.md.a(s, jsonObject);
+            }
+        });
+    }
+    
+    @Override
+    public void destroy() {
+        this.md.destroy();
+    }
+    
+    @Override
+    public void f(final String s) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                aj.this.md.loadUrl(s);
+            }
+        });
+    }
+    
+    @Override
+    public void g(final String s) {
+        this.md.dv().a(s, null);
+    }
+    
+    @Override
+    public void pause() {
+        gj.a(this.md);
+    }
+    
+    @Override
+    public void resume() {
+        gj.b(this.md);
     }
 }

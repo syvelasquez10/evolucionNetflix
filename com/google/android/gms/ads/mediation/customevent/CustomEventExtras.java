@@ -7,19 +7,20 @@ package com.google.android.gms.ads.mediation.customevent;
 import java.util.HashMap;
 import com.google.ads.mediation.NetworkExtras;
 
+@Deprecated
 public final class CustomEventExtras implements NetworkExtras
 {
-    private final HashMap<String, Object> rQ;
+    private final HashMap<String, Object> xj;
     
     public CustomEventExtras() {
-        this.rQ = new HashMap<String, Object>();
+        this.xj = new HashMap<String, Object>();
     }
     
     public Object getExtra(final String s) {
-        return this.rQ.get(s);
+        return this.xj.get(s);
     }
     
     public void setExtra(final String s, final Object o) {
-        this.rQ.put(s, o);
+        this.xj.put(s, o);
     }
 }

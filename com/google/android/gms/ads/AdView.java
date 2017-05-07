@@ -4,54 +4,59 @@
 
 package com.google.android.gms.ads;
 
+import com.google.android.gms.ads.purchase.PlayStorePurchaseListener;
 import android.view.View;
 import com.google.android.gms.ads.purchase.InAppPurchaseListener;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.google.android.gms.internal.at;
+import com.google.android.gms.internal.bh;
 import android.view.ViewGroup;
 
 public final class AdView extends ViewGroup
 {
-    private final at ku;
+    private final bh li;
     
     public AdView(final Context context) {
         super(context);
-        this.ku = new at(this);
+        this.li = new bh(this);
     }
     
     public AdView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.ku = new at(this, set, false);
+        this.li = new bh(this, set, false);
     }
     
     public AdView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.ku = new at(this, set, false);
+        this.li = new bh(this, set, false);
     }
     
     public void destroy() {
-        this.ku.destroy();
+        this.li.destroy();
     }
     
     public AdListener getAdListener() {
-        return this.ku.getAdListener();
+        return this.li.getAdListener();
     }
     
     public AdSize getAdSize() {
-        return this.ku.getAdSize();
+        return this.li.getAdSize();
     }
     
     public String getAdUnitId() {
-        return this.ku.getAdUnitId();
+        return this.li.getAdUnitId();
     }
     
     public InAppPurchaseListener getInAppPurchaseListener() {
-        return this.ku.getInAppPurchaseListener();
+        return this.li.getInAppPurchaseListener();
+    }
+    
+    public String getMediationAdapterClassName() {
+        return this.li.getMediationAdapterClassName();
     }
     
     public void loadAd(final AdRequest adRequest) {
-        this.ku.a(adRequest.O());
+        this.li.a(adRequest.V());
     }
     
     protected void onLayout(final boolean b, int n, int n2, final int n3, final int n4) {
@@ -87,26 +92,30 @@ public final class AdView extends ViewGroup
     }
     
     public void pause() {
-        this.ku.pause();
+        this.li.pause();
     }
     
     public void resume() {
-        this.ku.resume();
+        this.li.resume();
     }
     
     public void setAdListener(final AdListener adListener) {
-        this.ku.setAdListener(adListener);
+        this.li.setAdListener(adListener);
     }
     
     public void setAdSize(final AdSize adSize) {
-        this.ku.setAdSizes(adSize);
+        this.li.setAdSizes(adSize);
     }
     
     public void setAdUnitId(final String adUnitId) {
-        this.ku.setAdUnitId(adUnitId);
+        this.li.setAdUnitId(adUnitId);
     }
     
     public void setInAppPurchaseListener(final InAppPurchaseListener inAppPurchaseListener) {
-        this.ku.setInAppPurchaseListener(inAppPurchaseListener);
+        this.li.setInAppPurchaseListener(inAppPurchaseListener);
+    }
+    
+    public void setPlayStorePurchaseParams(final PlayStorePurchaseListener playStorePurchaseListener, final String s) {
+        this.li.setPlayStorePurchaseParams(playStorePurchaseListener, s);
     }
 }

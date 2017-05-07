@@ -6,40 +6,40 @@ package com.google.android.gms.tagmanager;
 
 import android.os.Message;
 import android.os.Handler;
-import com.google.android.gms.common.api.Status;
 import android.os.Looper;
+import com.google.android.gms.common.api.Status;
 
 class n implements ContainerHolder
 {
-    private final Looper AS;
-    private Container WR;
-    private Container WS;
-    private b WT;
-    private a WU;
-    private boolean WV;
-    private TagManager WW;
-    private Status wJ;
+    private Status CM;
+    private final Looper IB;
+    private boolean NM;
+    private Container anZ;
+    private Container aoa;
+    private b aob;
+    private a aoc;
+    private TagManager aod;
     
-    public n(final Status wj) {
-        this.wJ = wj;
-        this.AS = null;
+    public n(final Status cm) {
+        this.CM = cm;
+        this.IB = null;
     }
     
-    public n(final TagManager ww, Looper mainLooper, final Container wr, final a wu) {
-        this.WW = ww;
+    public n(final TagManager aod, Looper mainLooper, final Container anZ, final a aoc) {
+        this.aod = aod;
         if (mainLooper == null) {
             mainLooper = Looper.getMainLooper();
         }
-        this.AS = mainLooper;
-        this.WR = wr;
-        this.WU = wu;
-        this.wJ = Status.Bv;
-        ww.a(this);
+        this.IB = mainLooper;
+        this.anZ = anZ;
+        this.aoc = aoc;
+        this.CM = Status.Jo;
+        aod.a(this);
     }
     
-    private void kf() {
-        if (this.WT != null) {
-            this.WT.bs(this.WS.kc());
+    private void nT() {
+        if (this.aob != null) {
+            this.aob.cp(this.aoa.nQ());
         }
     }
     
@@ -47,84 +47,84 @@ class n implements ContainerHolder
         while (true) {
             Label_0031: {
                 synchronized (this) {
-                    if (!this.WV) {
+                    if (!this.NM) {
                         if (container != null) {
                             break Label_0031;
                         }
-                        bh.w("Unexpected null container.");
+                        bh.T("Unexpected null container.");
                     }
                     return;
                 }
             }
-            final Container ws;
-            this.WS = ws;
-            this.kf();
+            final Container aoa;
+            this.aoa = aoa;
+            this.nT();
         }
     }
     
-    public void bp(final String s) {
+    public void cm(final String s) {
         synchronized (this) {
-            if (!this.WV) {
-                this.WR.bp(s);
+            if (!this.NM) {
+                this.anZ.cm(s);
             }
         }
     }
     
-    void br(final String s) {
-        if (this.WV) {
-            bh.w("setCtfeUrlPathAndQuery called on a released ContainerHolder.");
+    void co(final String s) {
+        if (this.NM) {
+            bh.T("setCtfeUrlPathAndQuery called on a released ContainerHolder.");
             return;
         }
-        this.WU.br(s);
+        this.aoc.co(s);
     }
     
     @Override
     public Container getContainer() {
-        Container wr = null;
+        Container anZ = null;
         synchronized (this) {
-            if (this.WV) {
-                bh.w("ContainerHolder is released.");
+            if (this.NM) {
+                bh.T("ContainerHolder is released.");
             }
             else {
-                if (this.WS != null) {
-                    this.WR = this.WS;
-                    this.WS = null;
+                if (this.aoa != null) {
+                    this.anZ = this.aoa;
+                    this.aoa = null;
                 }
-                wr = this.WR;
+                anZ = this.anZ;
             }
-            return wr;
+            return anZ;
         }
     }
     
     String getContainerId() {
-        if (this.WV) {
-            bh.w("getContainerId called on a released ContainerHolder.");
+        if (this.NM) {
+            bh.T("getContainerId called on a released ContainerHolder.");
             return "";
         }
-        return this.WR.getContainerId();
+        return this.anZ.getContainerId();
     }
     
     @Override
     public Status getStatus() {
-        return this.wJ;
+        return this.CM;
     }
     
-    String ke() {
-        if (this.WV) {
-            bh.w("setCtfeUrlPathAndQuery called on a released ContainerHolder.");
+    String nS() {
+        if (this.NM) {
+            bh.T("setCtfeUrlPathAndQuery called on a released ContainerHolder.");
             return "";
         }
-        return this.WU.ke();
+        return this.aoc.nS();
     }
     
     @Override
     public void refresh() {
         synchronized (this) {
-            if (this.WV) {
-                bh.w("Refreshing a released ContainerHolder.");
+            if (this.NM) {
+                bh.T("Refreshing a released ContainerHolder.");
             }
             else {
-                this.WU.kg();
+                this.aoc.nU();
             }
         }
     }
@@ -132,17 +132,17 @@ class n implements ContainerHolder
     @Override
     public void release() {
         synchronized (this) {
-            if (this.WV) {
-                bh.w("Releasing a released ContainerHolder.");
+            if (this.NM) {
+                bh.T("Releasing a released ContainerHolder.");
             }
             else {
-                this.WV = true;
-                this.WW.b(this);
-                this.WR.release();
-                this.WR = null;
-                this.WS = null;
-                this.WU = null;
-                this.WT = null;
+                this.NM = true;
+                this.aod.b(this);
+                this.anZ.release();
+                this.anZ = null;
+                this.aoa = null;
+                this.aoc = null;
+                this.aob = null;
             }
         }
     }
@@ -152,59 +152,59 @@ class n implements ContainerHolder
         while (true) {
             Label_0034: {
                 synchronized (this) {
-                    if (this.WV) {
-                        bh.w("ContainerHolder is released.");
+                    if (this.NM) {
+                        bh.T("ContainerHolder is released.");
                     }
                     else {
                         if (containerAvailableListener != null) {
                             break Label_0034;
                         }
-                        this.WT = null;
+                        this.aob = null;
                     }
                     return;
                 }
             }
             final ContainerAvailableListener containerAvailableListener2;
-            this.WT = new b(containerAvailableListener2, this.AS);
-            if (this.WS != null) {
-                this.kf();
+            this.aob = new b(containerAvailableListener2, this.IB);
+            if (this.aoa != null) {
+                this.nT();
             }
         }
     }
     
     public interface a
     {
-        void br(final String p0);
+        void co(final String p0);
         
-        String ke();
+        String nS();
         
-        void kg();
+        void nU();
     }
     
     private class b extends Handler
     {
-        private final ContainerAvailableListener WX;
+        private final ContainerAvailableListener aoe;
         
-        public b(final ContainerAvailableListener wx, final Looper looper) {
+        public b(final ContainerAvailableListener aoe, final Looper looper) {
             super(looper);
-            this.WX = wx;
+            this.aoe = aoe;
         }
         
-        public void bs(final String s) {
+        public void cp(final String s) {
             this.sendMessage(this.obtainMessage(1, (Object)s));
         }
         
-        protected void bt(final String s) {
-            this.WX.onContainerAvailable(n.this, s);
+        protected void cq(final String s) {
+            this.aoe.onContainerAvailable(n.this, s);
         }
         
         public void handleMessage(final Message message) {
             switch (message.what) {
                 default: {
-                    bh.w("Don't know how to handle this message.");
+                    bh.T("Don't know how to handle this message.");
                 }
                 case 1: {
-                    this.bt((String)message.obj);
+                    this.cq((String)message.obj);
                 }
             }
         }

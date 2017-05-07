@@ -9,17 +9,17 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager$NameNotFoundException;
 import android.content.Context;
 
-class g implements m
+class g implements l
 {
-    private static Object sf;
-    private static g ss;
-    protected String so;
-    protected String sp;
-    protected String sq;
-    protected String sr;
+    private static g xP;
+    private static Object xz;
+    protected String xL;
+    protected String xM;
+    protected String xN;
+    protected String xO;
     
     static {
-        g.sf = new Object();
+        g.xz = new Object();
     }
     
     protected g() {
@@ -27,48 +27,48 @@ class g implements m
     
     private g(final Context context) {
         final PackageManager packageManager = context.getPackageManager();
-        this.sq = context.getPackageName();
-        this.sr = packageManager.getInstallerPackageName(this.sq);
-        final String sq = this.sq;
+        this.xN = context.getPackageName();
+        this.xO = packageManager.getInstallerPackageName(this.xN);
+        final String xn = this.xN;
         final String s = null;
-        String string = sq;
+        String string = xn;
         while (true) {
             try {
                 final PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
-                String sp = s;
-                string = sq;
+                String xm = s;
+                string = xn;
                 if (packageInfo != null) {
-                    string = sq;
+                    string = xn;
                     final String s2 = string = packageManager.getApplicationLabel(packageInfo.applicationInfo).toString();
                     final String versionName = packageInfo.versionName;
                     string = s2;
-                    sp = versionName;
+                    xm = versionName;
                 }
-                this.so = string;
-                this.sp = sp;
+                this.xL = string;
+                this.xM = xm;
             }
             catch (PackageManager$NameNotFoundException ex) {
-                aa.w("Error retrieving package info: appName set to " + string);
-                final String sp = s;
+                z.T("Error retrieving package info: appName set to " + string);
+                final String xm = s;
                 continue;
             }
             break;
         }
     }
     
-    public static g ca() {
-        return g.ss;
+    public static g dQ() {
+        return g.xP;
     }
     
-    public static void n(final Context context) {
-        synchronized (g.sf) {
-            if (g.ss == null) {
-                g.ss = new g(context);
+    public static void y(final Context context) {
+        synchronized (g.xz) {
+            if (g.xP == null) {
+                g.xP = new g(context);
             }
         }
     }
     
-    public boolean C(final String s) {
+    public boolean ac(final String s) {
         return "&an".equals(s) || "&av".equals(s) || "&aid".equals(s) || "&aiid".equals(s);
     }
     
@@ -76,16 +76,16 @@ class g implements m
     public String getValue(final String s) {
         if (s != null) {
             if (s.equals("&an")) {
-                return this.so;
+                return this.xL;
             }
             if (s.equals("&av")) {
-                return this.sp;
+                return this.xM;
             }
             if (s.equals("&aid")) {
-                return this.sq;
+                return this.xN;
             }
             if (s.equals("&aiid")) {
-                return this.sr;
+                return this.xO;
             }
         }
         return null;

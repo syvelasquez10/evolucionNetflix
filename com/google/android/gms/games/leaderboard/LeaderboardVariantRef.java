@@ -5,9 +5,9 @@
 package com.google.android.gms.games.leaderboard;
 
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class LeaderboardVariantRef extends b implements LeaderboardVariant
+public final class LeaderboardVariantRef extends d implements LeaderboardVariant
 {
     LeaderboardVariantRef(final DataHolder dataHolder, final int n) {
         super(dataHolder, n);
@@ -35,7 +35,7 @@ public final class LeaderboardVariantRef extends b implements LeaderboardVariant
     
     @Override
     public long getNumScores() {
-        if (this.ai("total_scores")) {
+        if (this.aS("total_scores")) {
             return -1L;
         }
         return this.getLong("total_scores");
@@ -43,7 +43,7 @@ public final class LeaderboardVariantRef extends b implements LeaderboardVariant
     
     @Override
     public long getPlayerRank() {
-        if (this.ai("player_rank")) {
+        if (this.aS("player_rank")) {
             return -1L;
         }
         return this.getLong("player_rank");
@@ -56,7 +56,7 @@ public final class LeaderboardVariantRef extends b implements LeaderboardVariant
     
     @Override
     public long getRawPlayerScore() {
-        if (this.ai("player_raw_score")) {
+        if (this.aS("player_raw_score")) {
             return -1L;
         }
         return this.getLong("player_raw_score");
@@ -68,32 +68,32 @@ public final class LeaderboardVariantRef extends b implements LeaderboardVariant
     }
     
     @Override
-    public String hG() {
-        return this.getString("top_page_token_next");
-    }
-    
-    @Override
-    public String hH() {
-        return this.getString("window_page_token_prev");
-    }
-    
-    @Override
-    public String hI() {
-        return this.getString("window_page_token_next");
-    }
-    
-    public LeaderboardVariant hJ() {
-        return new LeaderboardVariantEntity(this);
-    }
-    
-    @Override
     public boolean hasPlayerInfo() {
-        return !this.ai("player_raw_score");
+        return !this.aS("player_raw_score");
     }
     
     @Override
     public int hashCode() {
         return LeaderboardVariantEntity.a(this);
+    }
+    
+    @Override
+    public String lB() {
+        return this.getString("top_page_token_next");
+    }
+    
+    @Override
+    public String lC() {
+        return this.getString("window_page_token_prev");
+    }
+    
+    @Override
+    public String lD() {
+        return this.getString("window_page_token_next");
+    }
+    
+    public LeaderboardVariant lE() {
+        return new LeaderboardVariantEntity(this);
     }
     
     @Override

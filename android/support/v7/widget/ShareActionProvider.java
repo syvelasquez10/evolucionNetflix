@@ -10,6 +10,7 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.SubMenu;
+import android.support.v7.internal.widget.TintManager;
 import android.support.v7.appcompat.R;
 import android.util.TypedValue;
 import android.support.v7.internal.widget.ActivityChooserView;
@@ -59,7 +60,7 @@ public class ShareActionProvider extends ActionProvider
         activityChooserView.setActivityChooserModel(value);
         final TypedValue typedValue = new TypedValue();
         this.mContext.getTheme().resolveAttribute(R.attr.actionModeShareDrawable, typedValue, true);
-        activityChooserView.setExpandActivityOverflowButtonDrawable(this.mContext.getResources().getDrawable(typedValue.resourceId));
+        activityChooserView.setExpandActivityOverflowButtonDrawable(TintManager.getDrawable(this.mContext, typedValue.resourceId));
         activityChooserView.setProvider(this);
         activityChooserView.setDefaultActionButtonContentDescription(R.string.abc_shareactionprovider_share_with_application);
         activityChooserView.setExpandActivityOverflowButtonContentDescription(R.string.abc_shareactionprovider_share_with);

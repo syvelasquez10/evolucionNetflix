@@ -4,121 +4,54 @@
 
 package com.google.android.gms.internal;
 
+import com.google.android.gms.common.internal.safeparcel.a;
+import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import com.google.android.gms.wallet.fragment.WalletFragmentOptions;
-import com.google.android.gms.dynamic.c;
-import com.google.android.gms.dynamic.d;
-import android.os.IInterface;
+import android.os.Parcelable$Creator;
 
-public interface jc extends IInterface
+public class jc implements Parcelable$Creator<jb>
 {
-    iz a(final d p0, final c p1, final WalletFragmentOptions p2, final ja p3) throws RemoteException;
+    static void a(final jb jb, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, jb.BR);
+        b.a(parcel, 2, jb.Mi, false);
+        b.c(parcel, 3, jb.Mj);
+        b.H(parcel, d);
+    }
     
-    public abstract static class a extends Binder implements jc
-    {
-        public static jc aV(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.wallet.internal.IWalletDynamiteCreator");
-            if (queryLocalInterface != null && queryLocalInterface instanceof jc) {
-                return (jc)queryLocalInterface;
-            }
-            return new jc.a.a(binder);
-        }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            final IBinder binder = null;
-            switch (n) {
+    public jb E(final Parcel parcel) {
+        int g = 0;
+        final int c = a.C(parcel);
+        String o = null;
+        int g2 = 0;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.wallet.internal.IWalletDynamiteCreator");
-                    return true;
+                    a.b(parcel, b);
+                    continue;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.wallet.internal.IWalletDynamiteCreator");
-                    final d k = d.a.K(parcel.readStrongBinder());
-                    final c j = c.a.J(parcel.readStrongBinder());
-                    WalletFragmentOptions walletFragmentOptions;
-                    if (parcel.readInt() != 0) {
-                        walletFragmentOptions = (WalletFragmentOptions)WalletFragmentOptions.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        walletFragmentOptions = null;
-                    }
-                    final iz a = this.a(k, j, walletFragmentOptions, ja.a.aT(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    IBinder binder2 = binder;
-                    if (a != null) {
-                        binder2 = a.asBinder();
-                    }
-                    parcel2.writeStrongBinder(binder2);
-                    return true;
+                    g2 = a.g(parcel, b);
+                    continue;
+                }
+                case 2: {
+                    o = a.o(parcel, b);
+                    continue;
+                }
+                case 3: {
+                    g = a.g(parcel, b);
+                    continue;
                 }
             }
         }
-        
-        private static class a implements jc
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            @Override
-            public iz a(final d d, final c c, final WalletFragmentOptions walletFragmentOptions, final ja ja) throws RemoteException {
-                final IBinder binder = null;
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.wallet.internal.IWalletDynamiteCreator");
-                    IBinder binder2;
-                    if (d != null) {
-                        binder2 = d.asBinder();
-                    }
-                    else {
-                        binder2 = null;
-                    }
-                    obtain.writeStrongBinder(binder2);
-                    IBinder binder3;
-                    if (c != null) {
-                        binder3 = c.asBinder();
-                    }
-                    else {
-                        binder3 = null;
-                    }
-                    obtain.writeStrongBinder(binder3);
-                    if (walletFragmentOptions != null) {
-                        obtain.writeInt(1);
-                        walletFragmentOptions.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    IBinder binder4 = binder;
-                    if (ja != null) {
-                        binder4 = ja.asBinder();
-                    }
-                    obtain.writeStrongBinder(binder4);
-                    this.kn.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return iz.a.aS(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.kn;
-            }
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
+        return new jb(g2, o, g);
+    }
+    
+    public jb[] aE(final int n) {
+        return new jb[n];
     }
 }

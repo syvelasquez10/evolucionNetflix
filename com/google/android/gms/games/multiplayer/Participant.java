@@ -44,7 +44,7 @@ public interface Participant extends Parcelable, Freezable<Participant>
     
     int getStatus();
     
-    String gi();
-    
     boolean isConnectedToRoom();
+    
+    String jU();
 }

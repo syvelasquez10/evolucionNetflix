@@ -12,31 +12,31 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import android.os.RemoteException;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
 import com.google.android.gms.dynamic.e;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.content.Context;
 
 public class u
 {
-    private static c SA;
-    private static Context Sz;
+    private static Context ajm;
+    private static c ajn;
     
-    public static c A(final Context context) throws GooglePlayServicesNotAvailableException {
-        fq.f(context);
-        if (u.SA != null) {
-            return u.SA;
+    public static c R(final Context context) throws GooglePlayServicesNotAvailableException {
+        n.i(context);
+        if (u.ajn != null) {
+            return u.ajn;
         }
-        B(context);
-        u.SA = C(context);
+        S(context);
+        u.ajn = T(context);
         try {
-            u.SA.a(e.h(getRemoteContext(context).getResources()), 4452000);
-            return u.SA;
+            u.ajn.a(e.k(getRemoteContext(context).getResources()), 6111000);
+            return u.ajn;
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
         }
     }
     
-    private static void B(final Context context) throws GooglePlayServicesNotAvailableException {
+    private static void S(final Context context) throws GooglePlayServicesNotAvailableException {
         final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         switch (googlePlayServicesAvailable) {
             default: {
@@ -46,18 +46,18 @@ public class u
         }
     }
     
-    private static c C(final Context context) {
-        if (iz()) {
+    private static c T(final Context context) {
+        if (mI()) {
             Log.i(u.class.getSimpleName(), "Making Creator statically");
-            return c(iA());
+            return c(mJ());
         }
         Log.i(u.class.getSimpleName(), "Making Creator dynamically");
-        return c.a.ab(a(getRemoteContext(context).getClassLoader(), "com.google.android.gms.maps.internal.CreatorImpl"));
+        return c.a.aP(a(getRemoteContext(context).getClassLoader(), "com.google.android.gms.maps.internal.CreatorImpl"));
     }
     
     private static <T> T a(final ClassLoader classLoader, final String s) {
         try {
-            return c(fq.f(classLoader).loadClass(s));
+            return c(n.i(classLoader).loadClass(s));
         }
         catch (ClassNotFoundException ex) {
             throw new IllegalStateException("Unable to find dynamic class " + s);
@@ -77,18 +77,22 @@ public class u
     }
     
     private static Context getRemoteContext(final Context context) {
-        if (u.Sz == null) {
-            if (iz()) {
-                u.Sz = context.getApplicationContext();
+        if (u.ajm == null) {
+            if (mI()) {
+                u.ajm = context.getApplicationContext();
             }
             else {
-                u.Sz = GooglePlayServicesUtil.getRemoteContext(context);
+                u.ajm = GooglePlayServicesUtil.getRemoteContext(context);
             }
         }
-        return u.Sz;
+        return u.ajm;
     }
     
-    private static Class<?> iA() {
+    private static boolean mI() {
+        return false;
+    }
+    
+    private static Class<?> mJ() {
         try {
             if (Build$VERSION.SDK_INT < 15) {
                 return Class.forName("com.google.android.gms.maps.internal.CreatorImplGmm6");
@@ -98,9 +102,5 @@ public class u
         catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
         }
-    }
-    
-    private static boolean iz() {
-        return false;
     }
 }

@@ -27,7 +27,7 @@ public final class MdxMenu
         mdxMiniPlayerFrag.attachMenuItem(this);
         this.activity = (NetflixActivity)mdxMiniPlayerFrag.getActivity();
         this.manager = this.activity.getServiceManager();
-        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493253))).setShowAsAction(1);
+        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493258))).setShowAsAction(1);
         this.mdxItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
             public boolean onMenuItemClick(final MenuItem menuItem) {
                 MdxMenu.this.activity.displayDialog((Dialog)MdxUtils.createMdxTargetSelectionDialog(MdxMenu.this.activity, (MdxUtils.MdxTargetSelectionDialogInterface)MdxMenu.this.activity.getMdxMiniPlayerFrag()));
@@ -44,9 +44,9 @@ public final class MdxMenu
     
     private int getIcon() {
         if (MdxUtils.isTargetReadyToControl(this.manager)) {
-            return 2130837801;
+            return 2130837767;
         }
-        return 2130837701;
+        return 2130837667;
     }
     
     private boolean isAnyMdxTargetAvailable() {

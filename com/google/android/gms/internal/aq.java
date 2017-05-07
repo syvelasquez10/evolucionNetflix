@@ -4,107 +4,72 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.IBinder;
-import com.google.android.gms.dynamic.d;
-import android.os.IInterface;
+import java.util.ArrayList;
 
-public interface aq extends IInterface
+public class aq
 {
-    IBinder a(final d p0, final ak p1, final String p2, final bq p3, final int p4) throws RemoteException;
+    private static boolean a(final Character.UnicodeBlock unicodeBlock) {
+        return unicodeBlock == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS || unicodeBlock == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A || unicodeBlock == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B || unicodeBlock == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION || unicodeBlock == Character.UnicodeBlock.CJK_RADICALS_SUPPLEMENT || unicodeBlock == Character.UnicodeBlock.CJK_COMPATIBILITY || unicodeBlock == Character.UnicodeBlock.CJK_COMPATIBILITY_FORMS || unicodeBlock == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS || unicodeBlock == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT || unicodeBlock == Character.UnicodeBlock.BOPOMOFO || unicodeBlock == Character.UnicodeBlock.HIRAGANA || unicodeBlock == Character.UnicodeBlock.KATAKANA || unicodeBlock == Character.UnicodeBlock.HANGUL_SYLLABLES || unicodeBlock == Character.UnicodeBlock.HANGUL_JAMO;
+    }
     
-    public abstract static class a extends Binder implements aq
-    {
-        public static aq g(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.client.IAdManagerCreator");
-            if (queryLocalInterface != null && queryLocalInterface instanceof aq) {
-                return (aq)queryLocalInterface;
-            }
-            return new aq.a.a(binder);
+    static boolean d(final int n) {
+        return Character.isLetter(n) && a(Character.UnicodeBlock.of(n));
+    }
+    
+    public static int o(final String s) {
+        return kb.a(s.getBytes(), 0, s.length(), 0);
+    }
+    
+    public static String[] p(final String s) {
+        if (s == null) {
+            return null;
         }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
+        final ArrayList<String> list = new ArrayList<String>();
+        final char[] charArray = s.toCharArray();
+        final int length = s.length();
+        int n = 0;
+        int n2 = 0;
+        int i;
+        int n6;
+        for (i = 0; i < length; i = n6) {
+            final int codePoint = Character.codePointAt(charArray, i);
+            final int charCount = Character.charCount(codePoint);
+            int n3;
+            int n4;
+            if (d(codePoint)) {
+                if (n != 0) {
+                    list.add(new String(charArray, n2, i - n2));
                 }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.client.IAdManagerCreator");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAdManagerCreator");
-                    final d k = d.a.K(parcel.readStrongBinder());
-                    ak b;
-                    if (parcel.readInt() != 0) {
-                        b = ak.CREATOR.b(parcel);
-                    }
-                    else {
-                        b = null;
-                    }
-                    final IBinder a = this.a(k, b, parcel.readString(), bq.a.i(parcel.readStrongBinder()), parcel.readInt());
-                    parcel2.writeNoException();
-                    parcel2.writeStrongBinder(a);
-                    return true;
-                }
+                list.add(new String(charArray, i, charCount));
+                final boolean b = false;
+                n3 = n2;
+                n4 = (b ? 1 : 0);
             }
+            else if (Character.isLetterOrDigit(codePoint)) {
+                if (n == 0) {
+                    n2 = i;
+                }
+                n3 = n2;
+                n4 = 1;
+            }
+            else if (n != 0) {
+                list.add(new String(charArray, n2, i - n2));
+                n3 = n2;
+                n4 = 0;
+            }
+            else {
+                final int n5 = n2;
+                n4 = n;
+                n3 = n5;
+            }
+            n6 = i + charCount;
+            final int n7 = n3;
+            n = n4;
+            n2 = n7;
         }
-        
-        private static class a implements aq
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            @Override
-            public IBinder a(final d d, final ak ak, final String s, final bq bq, final int n) throws RemoteException {
-                final IBinder binder = null;
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAdManagerCreator");
-                    IBinder binder2;
-                    if (d != null) {
-                        binder2 = d.asBinder();
-                    }
-                    else {
-                        binder2 = null;
-                    }
-                    obtain.writeStrongBinder(binder2);
-                    if (ak != null) {
-                        obtain.writeInt(1);
-                        ak.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    obtain.writeString(s);
-                    IBinder binder3 = binder;
-                    if (bq != null) {
-                        binder3 = bq.asBinder();
-                    }
-                    obtain.writeStrongBinder(binder3);
-                    obtain.writeInt(n);
-                    this.kn.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readStrongBinder();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.kn;
-            }
+        if (n != 0) {
+            list.add(new String(charArray, n2, i - n2));
         }
+        return list.toArray(new String[list.size()]);
     }
 }

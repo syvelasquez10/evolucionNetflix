@@ -4,38 +4,62 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.content.ContentResolver;
+import android.content.Context;
 
-public final class iv implements SafeParcelable
+public abstract class iv<T>
 {
-    public static final Parcelable$Creator<iv> CREATOR;
-    int[] acs;
-    private final int xH;
+    private static a JG;
+    private static final Object mw;
+    protected final String JH;
+    protected final T JI;
+    private T JJ;
     
     static {
-        CREATOR = (Parcelable$Creator)new iw();
+        mw = new Object();
+        iv.JG = null;
     }
     
-    iv() {
-        this(1, null);
+    protected iv(final String jh, final T ji) {
+        this.JJ = null;
+        this.JH = jh;
+        this.JI = ji;
     }
     
-    iv(final int xh, final int[] acs) {
-        this.xH = xh;
-        this.acs = acs;
+    public static void H(final Context context) {
+        synchronized (iv.mw) {
+            if (iv.JG == null) {
+                iv.JG = (a)new b(context.getContentResolver());
+            }
+        }
     }
     
-    public int describeContents() {
-        return 0;
+    public static iv<Integer> a(final String s, final Integer n) {
+        return new iv<Integer>(s, n) {};
     }
     
-    public int getVersionCode() {
-        return this.xH;
+    public static iv<Boolean> g(final String s, final boolean b) {
+        return new iv<Boolean>(s, Boolean.valueOf(b)) {};
     }
     
-    public void writeToParcel(final Parcel parcel, final int n) {
-        iw.a(this, parcel, n);
+    public static iv<String> m(final String s, final String s2) {
+        return new iv<String>(s, s2) {};
+    }
+    
+    public String getKey() {
+        return this.JH;
+    }
+    
+    private interface a
+    {
+    }
+    
+    private static class b implements a
+    {
+        private final ContentResolver mContentResolver;
+        
+        public b(final ContentResolver mContentResolver) {
+            this.mContentResolver = mContentResolver;
+        }
     }
 }

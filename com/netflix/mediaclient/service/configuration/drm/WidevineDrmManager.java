@@ -17,6 +17,7 @@ import android.media.MediaDrm$CryptoSession;
 import android.util.Base64;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import android.media.ResourceBusyException;
 import android.media.NotProvisionedException;
 import java.util.HashMap;
 import android.media.MediaDrm$KeyRequest;
@@ -100,7 +101,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
     }
     
-    private MediaDrm$KeyRequest createKeyRequest() throws NotProvisionedException {
+    private MediaDrm$KeyRequest createKeyRequest() throws NotProvisionedException, ResourceBusyException {
         synchronized (this) {
             Log.d(WidevineDrmManager.TAG, "get NCCP session key request");
             this.closeCryptoSessions(this.nccpCryptoFactoryCryptoSession.pendingSessionId);

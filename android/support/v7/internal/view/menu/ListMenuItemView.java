@@ -47,9 +47,9 @@ public class ListMenuItemView extends LinearLayout implements ItemView
         super(context, set);
         this.mContext = context;
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.MenuView, n, 0);
-        this.mBackground = obtainStyledAttributes.getDrawable(5);
-        this.mTextAppearance = obtainStyledAttributes.getResourceId(1, -1);
-        this.mPreserveIconSpacing = obtainStyledAttributes.getBoolean(7, false);
+        this.mBackground = obtainStyledAttributes.getDrawable(R.styleable.MenuView_android_itemBackground);
+        this.mTextAppearance = obtainStyledAttributes.getResourceId(R.styleable.MenuView_android_itemTextAppearance, -1);
+        this.mPreserveIconSpacing = obtainStyledAttributes.getBoolean(R.styleable.MenuView_preserveIconSpacing, false);
         this.mTextAppearanceContext = context;
         obtainStyledAttributes.recycle();
     }

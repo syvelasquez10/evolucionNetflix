@@ -21,7 +21,7 @@ public interface i extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.model.internal.ITileProviderDelegate");
         }
         
-        public static i aK(final IBinder binder) {
+        public static i by(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -62,14 +62,14 @@ public interface i extends IInterface
         
         private static class a implements i
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -81,16 +81,16 @@ public interface i extends IInterface
                     obtain.writeInt(n);
                     obtain.writeInt(n2);
                     obtain.writeInt(n3);
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    Tile fromParcel;
+                    Tile cu;
                     if (obtain2.readInt() != 0) {
-                        fromParcel = Tile.CREATOR.createFromParcel(obtain2);
+                        cu = Tile.CREATOR.cU(obtain2);
                     }
                     else {
-                        fromParcel = null;
+                        cu = null;
                     }
-                    return fromParcel;
+                    return cu;
                 }
                 finally {
                     obtain2.recycle();

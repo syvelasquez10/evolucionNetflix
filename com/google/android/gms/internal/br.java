@@ -7,45 +7,36 @@ package com.google.android.gms.internal;
 import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
-import android.os.RemoteException;
 import com.google.android.gms.dynamic.d;
+import android.os.RemoteException;
 import android.os.IInterface;
 
 public interface br extends IInterface
 {
-    void a(final d p0, final ah p1, final String p2, final bs p3) throws RemoteException;
+    void as() throws RemoteException;
     
-    void a(final d p0, final ah p1, final String p2, final String p3, final bs p4) throws RemoteException;
+    String bt() throws RemoteException;
     
-    void a(final d p0, final ak p1, final ah p2, final String p3, final bs p4) throws RemoteException;
+    d bu() throws RemoteException;
     
-    void a(final d p0, final ak p1, final ah p2, final String p3, final String p4, final bs p5) throws RemoteException;
+    d bv() throws RemoteException;
     
-    void destroy() throws RemoteException;
+    String bw() throws RemoteException;
     
-    d getView() throws RemoteException;
+    double bx() throws RemoteException;
     
-    void pause() throws RemoteException;
+    String by() throws RemoteException;
     
-    void resume() throws RemoteException;
+    String bz() throws RemoteException;
     
-    void showInterstitial() throws RemoteException;
+    String getBody() throws RemoteException;
+    
+    void i(final int p0) throws RemoteException;
     
     public abstract static class a extends Binder implements br
     {
         public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-        }
-        
-        public static br j(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-            if (queryLocalInterface != null && queryLocalInterface instanceof br) {
-                return (br)queryLocalInterface;
-            }
-            return new br.a.a(binder);
+            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
         }
         
         public IBinder asBinder() {
@@ -53,378 +44,91 @@ public interface br extends IInterface
         }
         
         public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            final ah ah = null;
             final IBinder binder = null;
+            final IBinder binder2 = null;
             switch (n) {
                 default: {
                     return super.onTransact(n, parcel, parcel2, n2);
                 }
                 case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
+                    parcel2.writeString("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
                     return true;
                 }
                 case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    final d k = d.a.K(parcel.readStrongBinder());
-                    ak b;
-                    if (parcel.readInt() != 0) {
-                        b = ak.CREATOR.b(parcel);
-                    }
-                    else {
-                        b = null;
-                    }
-                    ah a;
-                    if (parcel.readInt() != 0) {
-                        a = com.google.android.gms.internal.ah.CREATOR.a(parcel);
-                    }
-                    else {
-                        a = null;
-                    }
-                    this.a(k, b, a, parcel.readString(), bs.a.k(parcel.readStrongBinder()));
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    this.i(parcel.readInt());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 2: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    final d view = this.getView();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    this.as();
                     parcel2.writeNoException();
-                    IBinder binder2 = binder;
-                    if (view != null) {
-                        binder2 = view.asBinder();
-                    }
-                    parcel2.writeStrongBinder(binder2);
                     return true;
                 }
                 case 3: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    final d i = d.a.K(parcel.readStrongBinder());
-                    ah a2 = ah;
-                    if (parcel.readInt() != 0) {
-                        a2 = com.google.android.gms.internal.ah.CREATOR.a(parcel);
-                    }
-                    this.a(i, a2, parcel.readString(), bs.a.k(parcel.readStrongBinder()));
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    final String bt = this.bt();
                     parcel2.writeNoException();
+                    parcel2.writeString(bt);
                     return true;
                 }
                 case 4: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.showInterstitial();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    final d bu = this.bu();
                     parcel2.writeNoException();
+                    IBinder binder3 = binder2;
+                    if (bu != null) {
+                        binder3 = bu.asBinder();
+                    }
+                    parcel2.writeStrongBinder(binder3);
                     return true;
                 }
                 case 5: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.destroy();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    final String body = this.getBody();
                     parcel2.writeNoException();
+                    parcel2.writeString(body);
                     return true;
                 }
                 case 6: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    final d j = d.a.K(parcel.readStrongBinder());
-                    ak b2;
-                    if (parcel.readInt() != 0) {
-                        b2 = ak.CREATOR.b(parcel);
-                    }
-                    else {
-                        b2 = null;
-                    }
-                    ah a3;
-                    if (parcel.readInt() != 0) {
-                        a3 = com.google.android.gms.internal.ah.CREATOR.a(parcel);
-                    }
-                    else {
-                        a3 = null;
-                    }
-                    this.a(j, b2, a3, parcel.readString(), parcel.readString(), bs.a.k(parcel.readStrongBinder()));
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    final d bv = this.bv();
                     parcel2.writeNoException();
+                    IBinder binder4 = binder;
+                    if (bv != null) {
+                        binder4 = bv.asBinder();
+                    }
+                    parcel2.writeStrongBinder(binder4);
                     return true;
                 }
                 case 7: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    final d l = d.a.K(parcel.readStrongBinder());
-                    ah a4;
-                    if (parcel.readInt() != 0) {
-                        a4 = com.google.android.gms.internal.ah.CREATOR.a(parcel);
-                    }
-                    else {
-                        a4 = null;
-                    }
-                    this.a(l, a4, parcel.readString(), parcel.readString(), bs.a.k(parcel.readStrongBinder()));
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    final String bw = this.bw();
                     parcel2.writeNoException();
+                    parcel2.writeString(bw);
                     return true;
                 }
                 case 8: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.pause();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    final double bx = this.bx();
                     parcel2.writeNoException();
+                    parcel2.writeDouble(bx);
                     return true;
                 }
                 case 9: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.resume();
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    final String by = this.by();
                     parcel2.writeNoException();
+                    parcel2.writeString(by);
                     return true;
                 }
-            }
-        }
-        
-        private static class a implements br
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            @Override
-            public void a(final d d, final ah ah, final String s, final bs bs) throws RemoteException {
-                final IBinder binder = null;
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    IBinder binder2;
-                    if (d != null) {
-                        binder2 = d.asBinder();
-                    }
-                    else {
-                        binder2 = null;
-                    }
-                    obtain.writeStrongBinder(binder2);
-                    if (ah != null) {
-                        obtain.writeInt(1);
-                        ah.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    obtain.writeString(s);
-                    IBinder binder3 = binder;
-                    if (bs != null) {
-                        binder3 = bs.asBinder();
-                    }
-                    obtain.writeStrongBinder(binder3);
-                    this.kn.transact(3, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void a(final d d, final ah ah, final String s, final String s2, final bs bs) throws RemoteException {
-                final IBinder binder = null;
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    IBinder binder2;
-                    if (d != null) {
-                        binder2 = d.asBinder();
-                    }
-                    else {
-                        binder2 = null;
-                    }
-                    obtain.writeStrongBinder(binder2);
-                    if (ah != null) {
-                        obtain.writeInt(1);
-                        ah.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    obtain.writeString(s);
-                    obtain.writeString(s2);
-                    IBinder binder3 = binder;
-                    if (bs != null) {
-                        binder3 = bs.asBinder();
-                    }
-                    obtain.writeStrongBinder(binder3);
-                    this.kn.transact(7, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void a(final d d, final ak ak, final ah ah, final String s, final bs bs) throws RemoteException {
-                while (true) {
-                    final IBinder binder = null;
-                    final Parcel obtain = Parcel.obtain();
-                    final Parcel obtain2 = Parcel.obtain();
-                    while (true) {
-                        try {
-                            obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                            IBinder binder2;
-                            if (d != null) {
-                                binder2 = d.asBinder();
-                            }
-                            else {
-                                binder2 = null;
-                            }
-                            obtain.writeStrongBinder(binder2);
-                            if (ak != null) {
-                                obtain.writeInt(1);
-                                ak.writeToParcel(obtain, 0);
-                            }
-                            else {
-                                obtain.writeInt(0);
-                            }
-                            if (ah != null) {
-                                obtain.writeInt(1);
-                                ah.writeToParcel(obtain, 0);
-                                obtain.writeString(s);
-                                IBinder binder3 = binder;
-                                if (bs != null) {
-                                    binder3 = bs.asBinder();
-                                }
-                                obtain.writeStrongBinder(binder3);
-                                this.kn.transact(1, obtain, obtain2, 0);
-                                obtain2.readException();
-                                return;
-                            }
-                        }
-                        finally {
-                            obtain2.recycle();
-                            obtain.recycle();
-                        }
-                        obtain.writeInt(0);
-                        continue;
-                    }
-                }
-            }
-            
-            @Override
-            public void a(final d d, final ak ak, final ah ah, final String s, final String s2, final bs bs) throws RemoteException {
-                while (true) {
-                    final IBinder binder = null;
-                    final Parcel obtain = Parcel.obtain();
-                    final Parcel obtain2 = Parcel.obtain();
-                    while (true) {
-                        try {
-                            obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                            IBinder binder2;
-                            if (d != null) {
-                                binder2 = d.asBinder();
-                            }
-                            else {
-                                binder2 = null;
-                            }
-                            obtain.writeStrongBinder(binder2);
-                            if (ak != null) {
-                                obtain.writeInt(1);
-                                ak.writeToParcel(obtain, 0);
-                            }
-                            else {
-                                obtain.writeInt(0);
-                            }
-                            if (ah != null) {
-                                obtain.writeInt(1);
-                                ah.writeToParcel(obtain, 0);
-                                obtain.writeString(s);
-                                obtain.writeString(s2);
-                                IBinder binder3 = binder;
-                                if (bs != null) {
-                                    binder3 = bs.asBinder();
-                                }
-                                obtain.writeStrongBinder(binder3);
-                                this.kn.transact(6, obtain, obtain2, 0);
-                                obtain2.readException();
-                                return;
-                            }
-                        }
-                        finally {
-                            obtain2.recycle();
-                            obtain.recycle();
-                        }
-                        obtain.writeInt(0);
-                        continue;
-                    }
-                }
-            }
-            
-            public IBinder asBinder() {
-                return this.kn;
-            }
-            
-            @Override
-            public void destroy() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.kn.transact(5, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public d getView() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.kn.transact(2, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void pause() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.kn.transact(8, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void resume() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.kn.transact(9, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void showInterstitial() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapter");
-                    this.kn.transact(4, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                case 10: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.formats.client.INativeAppInstallAd");
+                    final String bz = this.bz();
+                    parcel2.writeNoException();
+                    parcel2.writeString(bz);
+                    return true;
                 }
             }
         }

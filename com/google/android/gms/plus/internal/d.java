@@ -7,19 +7,20 @@ package com.google.android.gms.plus.internal;
 import android.os.Parcel;
 import android.os.IBinder;
 import android.os.Binder;
+import com.google.android.gms.internal.jb;
 import java.util.List;
 import android.os.Bundle;
 import android.net.Uri;
-import com.google.android.gms.internal.gg;
+import com.google.android.gms.internal.jp;
 import android.os.RemoteException;
-import com.google.android.gms.internal.fk;
+import com.google.android.gms.common.internal.i;
 import android.os.IInterface;
 
 public interface d extends IInterface
 {
-    fk a(final b p0, final int p1, final int p2, final int p3, final String p4) throws RemoteException;
+    i a(final b p0, final int p1, final int p2, final int p3, final String p4) throws RemoteException;
     
-    void a(final gg p0) throws RemoteException;
+    void a(final jp p0) throws RemoteException;
     
     void a(final b p0) throws RemoteException;
     
@@ -27,13 +28,15 @@ public interface d extends IInterface
     
     void a(final b p0, final Uri p1, final Bundle p2) throws RemoteException;
     
-    void a(final b p0, final gg p1) throws RemoteException;
+    void a(final b p0, final jp p1) throws RemoteException;
     
     void a(final b p0, final String p1) throws RemoteException;
     
     void a(final b p0, final String p1, final String p2) throws RemoteException;
     
     void a(final b p0, final List<String> p1) throws RemoteException;
+    
+    void a(final String p0, final jb p1, final jb p2) throws RemoteException;
     
     void b(final b p0) throws RemoteException;
     
@@ -49,17 +52,17 @@ public interface d extends IInterface
     
     String getAccountName() throws RemoteException;
     
-    String iK() throws RemoteException;
+    String mZ() throws RemoteException;
     
-    boolean iL() throws RemoteException;
+    boolean na() throws RemoteException;
     
-    String iM() throws RemoteException;
+    String nb() throws RemoteException;
     
     void removeMoment(final String p0) throws RemoteException;
     
     public abstract static class a extends Binder implements d
     {
-        public static d aQ(final IBinder binder) {
+        public static d bG(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -71,7 +74,8 @@ public interface d extends IInterface
         }
         
         public boolean onTransact(int int1, final Parcel parcel, final Parcel parcel2, final int n) throws RemoteException {
-            final gg gg = null;
+            final jp jp = null;
+            jb e = null;
             final IBinder binder = null;
             switch (int1) {
                 default: {
@@ -83,32 +87,32 @@ public interface d extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.a(b.a.aO(parcel.readStrongBinder()), parcel.readString());
+                    this.a(b.a.bE(parcel.readStrongBinder()), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 2: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.a(b.a.aO(parcel.readStrongBinder()), parcel.readString(), parcel.readString());
+                    this.a(b.a.bE(parcel.readStrongBinder()), parcel.readString(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 3: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.b(b.a.aO(parcel.readStrongBinder()), parcel.readString());
+                    this.b(b.a.bE(parcel.readStrongBinder()), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 4: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    gg x;
+                    jp m;
                     if (parcel.readInt() != 0) {
-                        x = com.google.android.gms.internal.gg.CREATOR.x(parcel);
+                        m = com.google.android.gms.internal.jp.CREATOR.M(parcel);
                     }
                     else {
-                        x = null;
+                        m = null;
                     }
-                    this.a(x);
+                    this.a(m);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -127,13 +131,13 @@ public interface d extends IInterface
                 }
                 case 8: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.a(b.a.aO(parcel.readStrongBinder()));
+                    this.a(b.a.bE(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 9: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    final b ao = b.a.aO(parcel.readStrongBinder());
+                    final b be = b.a.bE(parcel.readStrongBinder());
                     Uri uri;
                     if (parcel.readInt() != 0) {
                         uri = (Uri)Uri.CREATOR.createFromParcel(parcel);
@@ -148,13 +152,13 @@ public interface d extends IInterface
                     else {
                         bundle = null;
                     }
-                    this.a(ao, uri, bundle);
+                    this.a(be, uri, bundle);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 14: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    final b ao2 = b.a.aO(parcel.readStrongBinder());
+                    final b be2 = b.a.bE(parcel.readStrongBinder());
                     int1 = parcel.readInt();
                     final String string = parcel.readString();
                     Uri uri2;
@@ -164,13 +168,13 @@ public interface d extends IInterface
                     else {
                         uri2 = null;
                     }
-                    this.a(ao2, int1, string, uri2, parcel.readString(), parcel.readString());
+                    this.a(be2, int1, string, uri2, parcel.readString(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 16: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    final fk a = this.a(b.a.aO(parcel.readStrongBinder()), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readString());
+                    final i a = this.a(b.a.bE(parcel.readStrongBinder()), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readString());
                     parcel2.writeNoException();
                     IBinder binder2 = binder;
                     if (a != null) {
@@ -187,40 +191,40 @@ public interface d extends IInterface
                 }
                 case 18: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.c(b.a.aO(parcel.readStrongBinder()), parcel.readString());
+                    this.c(b.a.bE(parcel.readStrongBinder()), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 19: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.b(b.a.aO(parcel.readStrongBinder()));
+                    this.b(b.a.bE(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 34: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.a(b.a.aO(parcel.readStrongBinder()), parcel.createStringArrayList());
+                    this.a(b.a.bE(parcel.readStrongBinder()), parcel.createStringArrayList());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 40: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.d(b.a.aO(parcel.readStrongBinder()), parcel.readString());
+                    this.d(b.a.bE(parcel.readStrongBinder()), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 41: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    final String ik = this.iK();
+                    final String mz = this.mZ();
                     parcel2.writeNoException();
-                    parcel2.writeString(ik);
+                    parcel2.writeString(mz);
                     return true;
                 }
                 case 42: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    final boolean il = this.iL();
+                    final boolean na = this.na();
                     parcel2.writeNoException();
-                    if (il) {
+                    if (na) {
                         int1 = 1;
                     }
                     else {
@@ -231,25 +235,42 @@ public interface d extends IInterface
                 }
                 case 43: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    final String im = this.iM();
+                    final String nb = this.nb();
                     parcel2.writeNoException();
-                    parcel2.writeString(im);
+                    parcel2.writeString(nb);
                     return true;
                 }
                 case 44: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    this.e(b.a.aO(parcel.readStrongBinder()), parcel.readString());
+                    this.e(b.a.bE(parcel.readStrongBinder()), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 45: {
                     parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
-                    final b ao3 = b.a.aO(parcel.readStrongBinder());
-                    gg x2 = gg;
+                    final b be3 = b.a.bE(parcel.readStrongBinder());
+                    jp i = jp;
                     if (parcel.readInt() != 0) {
-                        x2 = com.google.android.gms.internal.gg.CREATOR.x(parcel);
+                        i = com.google.android.gms.internal.jp.CREATOR.M(parcel);
                     }
-                    this.a(ao3, x2);
+                    this.a(be3, i);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 46: {
+                    parcel.enforceInterface("com.google.android.gms.plus.internal.IPlusService");
+                    final String string2 = parcel.readString();
+                    jb e2;
+                    if (parcel.readInt() != 0) {
+                        e2 = jb.CREATOR.E(parcel);
+                    }
+                    else {
+                        e2 = null;
+                    }
+                    if (parcel.readInt() != 0) {
+                        e = jb.CREATOR.E(parcel);
+                    }
+                    this.a(string2, e2, e);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -258,14 +279,14 @@ public interface d extends IInterface
         
         private static class a implements d
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
-            public fk a(final b b, final int n, final int n2, final int n3, final String s) throws RemoteException {
+            public i a(final b b, final int n, final int n2, final int n3, final String s) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -282,9 +303,9 @@ public interface d extends IInterface
                     obtain.writeInt(n2);
                     obtain.writeInt(n3);
                     obtain.writeString(s);
-                    this.kn.transact(16, obtain, obtain2, 0);
+                    this.lb.transact(16, obtain, obtain2, 0);
                     obtain2.readException();
-                    return fk.a.A(obtain2.readStrongBinder());
+                    return i.a.O(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -293,19 +314,19 @@ public interface d extends IInterface
             }
             
             @Override
-            public void a(final gg gg) throws RemoteException {
+            public void a(final jp jp) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusService");
-                    if (gg != null) {
+                    if (jp != null) {
                         obtain.writeInt(1);
-                        gg.writeToParcel(obtain, 0);
+                        jp.writeToParcel(obtain, 0);
                     }
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(4, obtain, obtain2, 0);
+                    this.lb.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -328,7 +349,7 @@ public interface d extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(8, obtain, obtain2, 0);
+                    this.lb.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -362,7 +383,7 @@ public interface d extends IInterface
                     }
                     obtain.writeString(s2);
                     obtain.writeString(s3);
-                    this.kn.transact(14, obtain, obtain2, 0);
+                    this.lb.transact(14, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -397,7 +418,7 @@ public interface d extends IInterface
                             if (bundle != null) {
                                 obtain.writeInt(1);
                                 bundle.writeToParcel(obtain, 0);
-                                this.kn.transact(9, obtain, obtain2, 0);
+                                this.lb.transact(9, obtain, obtain2, 0);
                                 obtain2.readException();
                                 return;
                             }
@@ -413,7 +434,7 @@ public interface d extends IInterface
             }
             
             @Override
-            public void a(final b b, final gg gg) throws RemoteException {
+            public void a(final b b, final jp jp) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -426,14 +447,14 @@ public interface d extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    if (gg != null) {
+                    if (jp != null) {
                         obtain.writeInt(1);
-                        gg.writeToParcel(obtain, 0);
+                        jp.writeToParcel(obtain, 0);
                     }
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(45, obtain, obtain2, 0);
+                    this.lb.transact(45, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -457,7 +478,7 @@ public interface d extends IInterface
                     }
                     obtain.writeStrongBinder(binder);
                     obtain.writeString(s);
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -482,7 +503,7 @@ public interface d extends IInterface
                     obtain.writeStrongBinder(binder);
                     obtain.writeString(s);
                     obtain.writeString(s2);
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -506,7 +527,7 @@ public interface d extends IInterface
                     }
                     obtain.writeStrongBinder(binder);
                     obtain.writeStringList((List)list);
-                    this.kn.transact(34, obtain, obtain2, 0);
+                    this.lb.transact(34, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -515,8 +536,42 @@ public interface d extends IInterface
                 }
             }
             
+            @Override
+            public void a(final String s, final jb jb, final jb jb2) throws RemoteException {
+                while (true) {
+                    final Parcel obtain = Parcel.obtain();
+                    final Parcel obtain2 = Parcel.obtain();
+                    while (true) {
+                        try {
+                            obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusService");
+                            obtain.writeString(s);
+                            if (jb != null) {
+                                obtain.writeInt(1);
+                                jb.writeToParcel(obtain, 0);
+                            }
+                            else {
+                                obtain.writeInt(0);
+                            }
+                            if (jb2 != null) {
+                                obtain.writeInt(1);
+                                jb2.writeToParcel(obtain, 0);
+                                this.lb.transact(46, obtain, obtain2, 0);
+                                obtain2.readException();
+                                return;
+                            }
+                        }
+                        finally {
+                            obtain2.recycle();
+                            obtain.recycle();
+                        }
+                        obtain.writeInt(0);
+                        continue;
+                    }
+                }
+            }
+            
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -533,7 +588,7 @@ public interface d extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(19, obtain, obtain2, 0);
+                    this.lb.transact(19, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -557,7 +612,7 @@ public interface d extends IInterface
                     }
                     obtain.writeStrongBinder(binder);
                     obtain.writeString(s);
-                    this.kn.transact(3, obtain, obtain2, 0);
+                    this.lb.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -581,7 +636,7 @@ public interface d extends IInterface
                     }
                     obtain.writeStrongBinder(binder);
                     obtain.writeString(s);
-                    this.kn.transact(18, obtain, obtain2, 0);
+                    this.lb.transact(18, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -596,7 +651,7 @@ public interface d extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusService");
-                    this.kn.transact(6, obtain, obtain2, 0);
+                    this.lb.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -620,7 +675,7 @@ public interface d extends IInterface
                     }
                     obtain.writeStrongBinder(binder);
                     obtain.writeString(s);
-                    this.kn.transact(40, obtain, obtain2, 0);
+                    this.lb.transact(40, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -644,7 +699,7 @@ public interface d extends IInterface
                     }
                     obtain.writeStrongBinder(binder);
                     obtain.writeString(s);
-                    this.kn.transact(44, obtain, obtain2, 0);
+                    this.lb.transact(44, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -659,7 +714,7 @@ public interface d extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusService");
-                    this.kn.transact(5, obtain, obtain2, 0);
+                    this.lb.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readString();
                 }
@@ -670,12 +725,12 @@ public interface d extends IInterface
             }
             
             @Override
-            public String iK() throws RemoteException {
+            public String mZ() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusService");
-                    this.kn.transact(41, obtain, obtain2, 0);
+                    this.lb.transact(41, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readString();
                 }
@@ -686,13 +741,13 @@ public interface d extends IInterface
             }
             
             @Override
-            public boolean iL() throws RemoteException {
+            public boolean na() throws RemoteException {
                 boolean b = false;
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusService");
-                    this.kn.transact(42, obtain, obtain2, 0);
+                    this.lb.transact(42, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -706,12 +761,12 @@ public interface d extends IInterface
             }
             
             @Override
-            public String iM() throws RemoteException {
+            public String nb() throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusService");
-                    this.kn.transact(43, obtain, obtain2, 0);
+                    this.lb.transact(43, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readString();
                 }
@@ -728,7 +783,7 @@ public interface d extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.plus.internal.IPlusService");
                     obtain.writeString(s);
-                    this.kn.transact(17, obtain, obtain2, 0);
+                    this.lb.transact(17, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

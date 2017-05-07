@@ -16,28 +16,28 @@ class m extends aj
     
     static {
         ID = a.A.toString();
-        VALUE = b.ew.toString();
+        VALUE = b.ff.toString();
     }
     
     public m() {
         super(m.ID, new String[] { m.VALUE });
     }
     
-    public static String ka() {
+    public static String nO() {
         return m.ID;
     }
     
-    public static String kb() {
+    public static String nP() {
         return m.VALUE;
     }
     
     @Override
-    public boolean jX() {
-        return true;
+    public d.a C(final Map<String, d.a> map) {
+        return map.get(m.VALUE);
     }
     
     @Override
-    public d.a x(final Map<String, d.a> map) {
-        return map.get(m.VALUE);
+    public boolean nL() {
+        return true;
     }
 }

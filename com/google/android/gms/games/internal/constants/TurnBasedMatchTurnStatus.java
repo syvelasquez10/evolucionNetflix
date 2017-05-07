@@ -8,10 +8,10 @@ import com.google.android.gms.games.internal.GamesLog;
 
 public final class TurnBasedMatchTurnStatus
 {
-    public static String bd(final int n) {
+    public static String dH(final int n) {
         switch (n) {
             default: {
-                GamesLog.h("MatchTurnStatus", "Unknown match turn status: " + n);
+                GamesLog.q("MatchTurnStatus", "Unknown match turn status: " + n);
                 return "TURN_STATUS_UNKNOWN";
             }
             case 0: {

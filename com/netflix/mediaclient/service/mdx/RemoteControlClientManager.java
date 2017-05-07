@@ -7,12 +7,16 @@ package com.netflix.mediaclient.service.mdx;
 import android.media.RemoteControlClient$MetadataEditor;
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import android.view.KeyEvent;
 import com.netflix.mediaclient.Log;
+import android.content.Intent;
+import android.content.BroadcastReceiver;
 import android.media.RemoteControlClient;
 import android.content.ComponentName;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -21,66 +25,97 @@ import android.media.AudioManager$OnAudioFocusChangeListener;
 public final class RemoteControlClientManager implements AudioManager$OnAudioFocusChangeListener
 {
     private static final boolean KEEP_EXISTING_METADATA_VALUE = false;
-    private static final String TAG = "nf_mdx_RemoteClient";
+    private static final String TAG = "RemoteControlClientManager";
     private String mAlbumTitle;
     private final AudioManager mAudioManager;
     private Bitmap mBoxart;
     private final Context mContext;
+    private VideoDetails mEpisodeDetails;
     private boolean mInTransition;
-    private final ComponentName mIntentReceiverComponent;
-    private final ComponentName mIntentReceiverComponentPostPlay;
+    private boolean mIsPostPlay;
     private boolean mPaused;
     private Bitmap mPrevBoxart;
-    private RemoteControlClient mRemoteControlClient;
+    private final ComponentName mProxyReceiverComponentName;
+    private final RemoteControlClient mRemoteControlClient;
+    private String mTargetUUID;
     private String mTitle;
-    private boolean mWasInPostPlay;
+    private final BroadcastReceiver mediaButtonIntentHandler;
     
     public RemoteControlClientManager(final Context mContext) {
-        Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager");
+        this.mediaButtonIntentHandler = new BroadcastReceiver() {
+            private final PostPlayMediaButtonHandler postPlayMediaButtonHandler = new PostPlayMediaButtonHandler();
+            private final StandardMediaButtonHandler standardMediaButtonHandler = new StandardMediaButtonHandler();
+            
+            public void onReceive(final Context context, final Intent intent) {
+                if (!intent.getAction().equals("com.netflix.mediaclient.service.mdx.MediaButtonIntentHandlerProxy")) {
+                    Log.w("RemoteControlClientManager", "Received broadcast event but not for Media Button proxy action!");
+                }
+                else {
+                    final KeyEvent keyEvent = (KeyEvent)intent.getExtras().get("android.intent.extra.KEY_EVENT");
+                    if (keyEvent.getAction() == 0) {
+                        if (Log.isLoggable("RemoteControlClientManager", 2)) {
+                            Log.v("RemoteControlClientManager", "received ACTION_MEDIA_BUTTON, key down event, keyCode: " + keyEvent.getKeyCode());
+                        }
+                        if (RemoteControlClientManager.this.mIsPostPlay) {
+                            final int n = -1;
+                            final int n2 = -1;
+                            int int1 = n;
+                            int int2 = n2;
+                            if (RemoteControlClientManager.this.mEpisodeDetails instanceof EpisodeDetails) {
+                                final EpisodeDetails episodeDetails = (EpisodeDetails)RemoteControlClientManager.this.mEpisodeDetails;
+                                int1 = n;
+                                int2 = n2;
+                                if (episodeDetails.getPlayable() != null) {
+                                    int1 = Integer.parseInt(episodeDetails.getPlayable().getParentId());
+                                    int2 = Integer.parseInt(episodeDetails.getId());
+                                }
+                            }
+                            this.postPlayMediaButtonHandler.handleButtonDown(context, keyEvent, int1, int2, RemoteControlClientManager.this.mTargetUUID);
+                            return;
+                        }
+                        this.standardMediaButtonHandler.handleButtonDown(context, keyEvent);
+                    }
+                }
+            }
+        };
+        Log.d("RemoteControlClientManager", "Creating RemoteControlClientManager");
         this.mContext = mContext;
-        this.mIntentReceiverComponent = new ComponentName(this.mContext, (Class)MediaButtonIntentReceiver.class);
-        this.mIntentReceiverComponentPostPlay = new ComponentName(this.mContext, (Class)PostPlayMediaButtonIntentReceiver.class);
+        this.mProxyReceiverComponentName = new ComponentName(this.mContext, (Class)MediaButtonIntentHandlerProxy.class);
         this.mAudioManager = (AudioManager)this.mContext.getSystemService("audio");
+        this.mRemoteControlClient = this.createRemoteControlClient();
+        LocalBroadcastManager.getInstance(this.mContext).registerReceiver(this.mediaButtonIntentHandler, new IntentFilter("com.netflix.mediaclient.service.mdx.MediaButtonIntentHandlerProxy"));
     }
     
-    private RemoteControlClient createRemoteControlClient(final boolean b, final VideoDetails videoDetails, final String s) {
-        Log.d("nf_mdx_RemoteClient", "Creating RemoteControlClient");
-        if (b && videoDetails != null) {
-            this.mAudioManager.registerMediaButtonEventReceiver(this.mIntentReceiverComponentPostPlay);
-            final Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
-            intent.setComponent(this.mIntentReceiverComponentPostPlay);
-            if (videoDetails instanceof EpisodeDetails) {
-                intent.putExtra("catalogId", Integer.parseInt(videoDetails.getPlayable().getParentId()));
-                intent.putExtra("episodeId", Integer.parseInt(((EpisodeDetails)videoDetails).getNextEpisodeId()));
-            }
-            intent.putExtra("uuid", s);
-            return new RemoteControlClient(PendingIntent.getBroadcast(this.mContext, 0, intent, 134217728));
-        }
-        this.mAudioManager.registerMediaButtonEventReceiver(this.mIntentReceiverComponent);
-        final Intent intent2 = new Intent("android.intent.action.MEDIA_BUTTON");
-        intent2.setComponent(this.mIntentReceiverComponent);
-        return new RemoteControlClient(PendingIntent.getBroadcast(this.mContext, 0, intent2, 0));
+    private RemoteControlClient createRemoteControlClient() {
+        Log.d("RemoteControlClientManager", "Creating RemoteControlClient");
+        final Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
+        intent.setComponent(this.mProxyReceiverComponentName);
+        return new RemoteControlClient(PendingIntent.getBroadcast(this.mContext, 0, intent, 0));
     }
     
     @TargetApi(18)
     private static void setupButtons(final RemoteControlClient remoteControlClient, final boolean b) {
+        remoteControlClient.setTransportControlFlags(308);
         if (b) {
-            remoteControlClient.setTransportControlFlags(308);
             remoteControlClient.setPlaybackState(2);
             return;
         }
-        remoteControlClient.setTransportControlFlags(308);
         remoteControlClient.setPlaybackState(3);
     }
     
     private void updateMetadata() {
         if (this.mRemoteControlClient != null) {
+            Log.d("RemoteControlClientManager", "Updating RemoteControlClient metadata");
             final RemoteControlClient$MetadataEditor editMetadata = this.mRemoteControlClient.editMetadata(false);
             editMetadata.putBitmap(100, this.mBoxart);
             editMetadata.putString(7, this.mTitle);
             editMetadata.putString(1, this.mAlbumTitle);
             editMetadata.apply();
         }
+    }
+    
+    public void destroy() {
+        LocalBroadcastManager.getInstance(this.mContext).unregisterReceiver(this.mediaButtonIntentHandler);
     }
     
     public boolean isInTransition() {
@@ -93,30 +128,33 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     
     public void onAudioFocusChange(final int n) {
         if (n == 1 || n == 2 || n == 3) {
-            if (Log.isLoggable("nf_mdx_RemoteClient", 3)) {
-                Log.d("nf_mdx_RemoteClient", "onAudioFocusChange gained " + n);
+            if (Log.isLoggable("RemoteControlClientManager", 3)) {
+                Log.d("RemoteControlClientManager", "onAudioFocusChange gained " + n);
             }
         }
-        else if (Log.isLoggable("nf_mdx_RemoteClient", 3)) {
-            Log.d("nf_mdx_RemoteClient", "onAudioFocusChange lost " + n);
+        else if (Log.isLoggable("RemoteControlClientManager", 3)) {
+            Log.d("RemoteControlClientManager", "onAudioFocusChange lost " + n);
         }
     }
     
     public void setBoxart(final Bitmap mPrevBoxart) {
         if (mPrevBoxart != null && mPrevBoxart != this.mPrevBoxart) {
-            Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager setBoxart - handling new bitmap");
+            Log.d("RemoteControlClientManager", "setBoxart - handling new bitmap");
             this.mPrevBoxart = mPrevBoxart;
             this.mBoxart = mPrevBoxart.copy(mPrevBoxart.getConfig(), false);
             this.updateMetadata();
         }
     }
     
-    public void setState(final boolean mPaused, final boolean mInTransition, final boolean b) {
-        Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager setState " + mPaused + ", " + mInTransition);
+    public void setState(final boolean mPaused, final boolean mInTransition, final boolean mIsPostPlay) {
+        if (Log.isLoggable("RemoteControlClientManager", 3)) {
+            Log.d("RemoteControlClientManager", "setState, paused: " + mPaused + ", transitioning: " + mInTransition + ", inPostPlay: " + mIsPostPlay);
+        }
         this.mPaused = mPaused;
         this.mInTransition = mInTransition;
+        this.mIsPostPlay = mIsPostPlay;
         if (this.mRemoteControlClient != null) {
-            if (!this.mPaused && !b) {
+            if (!this.mPaused && !mIsPostPlay) {
                 this.mRemoteControlClient.setPlaybackState(3);
                 return;
             }
@@ -125,37 +163,51 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     }
     
     public void setTitles(final String mTitle, final String mAlbumTitle) {
-        if (Log.isLoggable("nf_mdx_RemoteClient", 3)) {
-            Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager setTitles - title: " + mTitle + ", album: " + mAlbumTitle);
+        if (Log.isLoggable("RemoteControlClientManager", 3)) {
+            Log.d("RemoteControlClientManager", "setTitles - title: " + mTitle + ", album: " + mAlbumTitle);
         }
         this.mTitle = mTitle;
         this.mAlbumTitle = mAlbumTitle;
         this.updateMetadata();
     }
     
-    public void start(final boolean mWasInPostPlay, final VideoDetails videoDetails, final String s) {
-        Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager start");
-        if (1 != this.mAudioManager.requestAudioFocus((AudioManager$OnAudioFocusChangeListener)this, 3, 1)) {
-            Log.e("nf_mdx_RemoteClient", "can't gain audio focus");
+    public void start(final boolean mIsPostPlay, final VideoDetails mEpisodeDetails, final String mTargetUUID) {
+        if (Log.isLoggable("RemoteControlClientManager", 3)) {
+            Log.d("RemoteControlClientManager", "start, isPostPlay: " + mIsPostPlay + ", episodeDetails: " + mEpisodeDetails + ", uuid: " + mTargetUUID);
         }
-        if (this.mRemoteControlClient == null || this.mWasInPostPlay != mWasInPostPlay) {
-            this.mRemoteControlClient = this.createRemoteControlClient(mWasInPostPlay, videoDetails, s);
-            this.mAudioManager.registerRemoteControlClient(this.mRemoteControlClient);
+        this.mAudioManager.registerMediaButtonEventReceiver(this.mProxyReceiverComponentName);
+        this.mAudioManager.registerRemoteControlClient(this.mRemoteControlClient);
+        if (this.mAudioManager.requestAudioFocus((AudioManager$OnAudioFocusChangeListener)this, 3, 1) != 1) {
+            Log.e("RemoteControlClientManager", "Can't gain audio focus");
         }
-        setupButtons(this.mRemoteControlClient, mWasInPostPlay);
-        this.mWasInPostPlay = mWasInPostPlay;
+        this.mIsPostPlay = mIsPostPlay;
+        this.mEpisodeDetails = mEpisodeDetails;
+        this.mTargetUUID = mTargetUUID;
+        setupButtons(this.mRemoteControlClient, mIsPostPlay);
     }
     
     public void stop() {
-        Log.d("nf_mdx_RemoteClient", "RemoteControlClientManager stop");
+        Log.d("RemoteControlClientManager", "stop - clearing all state");
         this.mAudioManager.abandonAudioFocus((AudioManager$OnAudioFocusChangeListener)this);
-        if (this.mRemoteControlClient != null) {
-            this.mAudioManager.unregisterMediaButtonEventReceiver(this.mIntentReceiverComponent);
-            this.mAudioManager.unregisterRemoteControlClient(this.mRemoteControlClient);
-            this.mRemoteControlClient = null;
-            this.mTitle = null;
-            this.mAlbumTitle = null;
-            this.mPrevBoxart = null;
+        this.mAudioManager.unregisterMediaButtonEventReceiver(this.mProxyReceiverComponentName);
+        this.mAudioManager.unregisterRemoteControlClient(this.mRemoteControlClient);
+        this.mTitle = null;
+        this.mAlbumTitle = null;
+        this.mPrevBoxart = null;
+        this.mBoxart = null;
+        this.mIsPostPlay = false;
+        this.mEpisodeDetails = null;
+        this.mTargetUUID = null;
+    }
+    
+    public static class MediaButtonIntentHandlerProxy extends BroadcastReceiver
+    {
+        public static final String RESEND_MEDIA_BUTTON_ACTION = "com.netflix.mediaclient.service.mdx.MediaButtonIntentHandlerProxy";
+        
+        public void onReceive(final Context context, final Intent intent) {
+            Log.d("RemoteControlClientManager", "Re-sending media button event as local broadcast...");
+            intent.setAction("com.netflix.mediaclient.service.mdx.MediaButtonIntentHandlerProxy");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
     }
 }

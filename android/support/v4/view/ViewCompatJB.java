@@ -14,8 +14,20 @@ class ViewCompatJB
         return view.getAccessibilityNodeProvider();
     }
     
+    public static boolean getFitsSystemWindows(final View view) {
+        return view.getFitsSystemWindows();
+    }
+    
     public static int getImportantForAccessibility(final View view) {
         return view.getImportantForAccessibility();
+    }
+    
+    public static int getMinimumHeight(final View view) {
+        return view.getMinimumHeight();
+    }
+    
+    public static int getMinimumWidth(final View view) {
+        return view.getMinimumWidth();
     }
     
     public static ViewParent getParentForAccessibility(final View view) {
@@ -44,6 +56,10 @@ class ViewCompatJB
     
     public static void postOnAnimationDelayed(final View view, final Runnable runnable, final long n) {
         view.postOnAnimationDelayed(runnable, n);
+    }
+    
+    public static void requestApplyInsets(final View view) {
+        view.requestFitSystemWindows();
     }
     
     public static void setHasTransientState(final View view, final boolean hasTransientState) {

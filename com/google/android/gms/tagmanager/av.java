@@ -16,14 +16,14 @@ import java.io.InputStream;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 
-class av implements bl
+class av implements bm
 {
-    private HttpClient Yg;
+    private HttpClient apj;
     
     private InputStream a(final HttpClient httpClient, final HttpResponse httpResponse) throws IOException {
         final int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode == 200) {
-            bh.y("Success response");
+            bh.V("Success response");
             return httpResponse.getEntity().getContent();
         }
         final String string = "Bad response: " + statusCode;
@@ -40,17 +40,17 @@ class av implements bl
     }
     
     @Override
-    public InputStream bD(final String s) throws IOException {
-        this.Yg = this.kF();
-        return this.a(this.Yg, this.Yg.execute((HttpUriRequest)new HttpGet(s)));
+    public InputStream cA(final String s) throws IOException {
+        this.apj = this.ot();
+        return this.a(this.apj, this.apj.execute((HttpUriRequest)new HttpGet(s)));
     }
     
     @Override
     public void close() {
-        this.a(this.Yg);
+        this.a(this.apj);
     }
     
-    HttpClient kF() {
+    HttpClient ot() {
         final BasicHttpParams basicHttpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout((HttpParams)basicHttpParams, 20000);
         HttpConnectionParams.setSoTimeout((HttpParams)basicHttpParams, 20000);

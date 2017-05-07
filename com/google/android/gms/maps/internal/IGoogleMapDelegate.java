@@ -61,8 +61,6 @@ public interface IGoogleMapDelegate extends IInterface
     
     IProjectionDelegate getProjection() throws RemoteException;
     
-    d getTestingHelper() throws RemoteException;
-    
     IUiSettingsDelegate getUiSettings() throws RemoteException;
     
     boolean isBuildingsEnabled() throws RemoteException;
@@ -111,15 +109,13 @@ public interface IGoogleMapDelegate extends IInterface
     
     void setTrafficEnabled(final boolean p0) throws RemoteException;
     
-    void setWatermarkEnabled(final boolean p0) throws RemoteException;
-    
     void snapshot(final s p0, final d p1) throws RemoteException;
     
     void stopAnimation() throws RemoteException;
     
     public abstract static class a extends Binder implements IGoogleMapDelegate
     {
-        public static IGoogleMapDelegate ac(final IBinder binder) {
+        public static IGoogleMapDelegate aQ(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -138,7 +134,6 @@ public interface IGoogleMapDelegate extends IInterface
             final boolean b = false;
             final int n5 = 0;
             final boolean b2 = false;
-            final boolean b3 = false;
             final int n6 = 0;
             final IBinder binder = null;
             final IBinder binder2 = null;
@@ -149,7 +144,6 @@ public interface IGoogleMapDelegate extends IInterface
             final IBinder binder7 = null;
             final IBinder binder8 = null;
             final IBinder binder9 = null;
-            final IBinder binder10 = null;
             switch (mapType) {
                 default: {
                     return super.onTransact(mapType, parcel, parcel2, n);
@@ -186,25 +180,25 @@ public interface IGoogleMapDelegate extends IInterface
                 }
                 case 4: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.moveCamera(d.a.K(parcel.readStrongBinder()));
+                    this.moveCamera(d.a.am(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.animateCamera(d.a.K(parcel.readStrongBinder()));
+                    this.animateCamera(d.a.am(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 6: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.animateCameraWithCallback(d.a.K(parcel.readStrongBinder()), com.google.android.gms.maps.internal.b.a.aa(parcel.readStrongBinder()));
+                    this.animateCameraWithCallback(d.a.am(parcel.readStrongBinder()), com.google.android.gms.maps.internal.b.a.aO(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 7: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.animateCameraWithDurationAndCallback(d.a.K(parcel.readStrongBinder()), parcel.readInt(), com.google.android.gms.maps.internal.b.a.aa(parcel.readStrongBinder()));
+                    this.animateCameraWithDurationAndCallback(d.a.am(parcel.readStrongBinder()), parcel.readInt(), com.google.android.gms.maps.internal.b.a.aO(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -216,92 +210,92 @@ public interface IGoogleMapDelegate extends IInterface
                 }
                 case 9: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    PolylineOptions fromParcel;
+                    PolylineOptions cp;
                     if (parcel.readInt() != 0) {
-                        fromParcel = PolylineOptions.CREATOR.createFromParcel(parcel);
+                        cp = PolylineOptions.CREATOR.cP(parcel);
                     }
                     else {
-                        fromParcel = null;
+                        cp = null;
                     }
-                    final IPolylineDelegate addPolyline = this.addPolyline(fromParcel);
+                    final IPolylineDelegate addPolyline = this.addPolyline(cp);
                     parcel2.writeNoException();
-                    IBinder binder11 = binder10;
+                    IBinder binder10 = binder9;
                     if (addPolyline != null) {
-                        binder11 = addPolyline.asBinder();
+                        binder10 = addPolyline.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder11);
+                    parcel2.writeStrongBinder(binder10);
                     return true;
                 }
                 case 10: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    PolygonOptions fromParcel2;
+                    PolygonOptions co;
                     if (parcel.readInt() != 0) {
-                        fromParcel2 = PolygonOptions.CREATOR.createFromParcel(parcel);
+                        co = PolygonOptions.CREATOR.cO(parcel);
                     }
                     else {
-                        fromParcel2 = null;
+                        co = null;
                     }
-                    final g addPolygon = this.addPolygon(fromParcel2);
+                    final g addPolygon = this.addPolygon(co);
                     parcel2.writeNoException();
-                    IBinder binder12 = binder;
+                    IBinder binder11 = binder;
                     if (addPolygon != null) {
-                        binder12 = addPolygon.asBinder();
+                        binder11 = addPolygon.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder12);
+                    parcel2.writeStrongBinder(binder11);
                     return true;
                 }
                 case 11: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    MarkerOptions fromParcel3;
+                    MarkerOptions cn;
                     if (parcel.readInt() != 0) {
-                        fromParcel3 = MarkerOptions.CREATOR.createFromParcel(parcel);
+                        cn = MarkerOptions.CREATOR.cN(parcel);
                     }
                     else {
-                        fromParcel3 = null;
+                        cn = null;
                     }
-                    final f addMarker = this.addMarker(fromParcel3);
+                    final f addMarker = this.addMarker(cn);
                     parcel2.writeNoException();
-                    IBinder binder13 = binder2;
+                    IBinder binder12 = binder2;
                     if (addMarker != null) {
-                        binder13 = addMarker.asBinder();
+                        binder12 = addMarker.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder13);
+                    parcel2.writeStrongBinder(binder12);
                     return true;
                 }
                 case 12: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    GroundOverlayOptions fromParcel4;
+                    GroundOverlayOptions ck;
                     if (parcel.readInt() != 0) {
-                        fromParcel4 = GroundOverlayOptions.CREATOR.createFromParcel(parcel);
+                        ck = GroundOverlayOptions.CREATOR.cK(parcel);
                     }
                     else {
-                        fromParcel4 = null;
+                        ck = null;
                     }
-                    final c addGroundOverlay = this.addGroundOverlay(fromParcel4);
+                    final c addGroundOverlay = this.addGroundOverlay(ck);
                     parcel2.writeNoException();
-                    IBinder binder14 = binder3;
+                    IBinder binder13 = binder3;
                     if (addGroundOverlay != null) {
-                        binder14 = addGroundOverlay.asBinder();
+                        binder13 = addGroundOverlay.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder14);
+                    parcel2.writeStrongBinder(binder13);
                     return true;
                 }
                 case 13: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    TileOverlayOptions fromParcel5;
+                    TileOverlayOptions cv;
                     if (parcel.readInt() != 0) {
-                        fromParcel5 = TileOverlayOptions.CREATOR.createFromParcel(parcel);
+                        cv = TileOverlayOptions.CREATOR.cV(parcel);
                     }
                     else {
-                        fromParcel5 = null;
+                        cv = null;
                     }
-                    final h addTileOverlay = this.addTileOverlay(fromParcel5);
+                    final h addTileOverlay = this.addTileOverlay(cv);
                     parcel2.writeNoException();
-                    IBinder binder15 = binder4;
+                    IBinder binder14 = binder4;
                     if (addTileOverlay != null) {
-                        binder15 = addTileOverlay.asBinder();
+                        binder14 = addTileOverlay.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder15);
+                    parcel2.writeStrongBinder(binder14);
                     return true;
                 }
                 case 14: {
@@ -400,7 +394,7 @@ public interface IGoogleMapDelegate extends IInterface
                 }
                 case 24: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setLocationSource(ILocationSourceDelegate.a.ae(parcel.readStrongBinder()));
+                    this.setLocationSource(ILocationSourceDelegate.a.aS(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -408,110 +402,99 @@ public interface IGoogleMapDelegate extends IInterface
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
                     final IUiSettingsDelegate uiSettings = this.getUiSettings();
                     parcel2.writeNoException();
-                    IBinder binder16 = binder5;
+                    IBinder binder15 = binder5;
                     if (uiSettings != null) {
-                        binder16 = uiSettings.asBinder();
+                        binder15 = uiSettings.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder16);
+                    parcel2.writeStrongBinder(binder15);
                     return true;
                 }
                 case 26: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
                     final IProjectionDelegate projection = this.getProjection();
                     parcel2.writeNoException();
-                    IBinder binder17 = binder6;
+                    IBinder binder16 = binder6;
                     if (projection != null) {
-                        binder17 = projection.asBinder();
+                        binder16 = projection.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder17);
+                    parcel2.writeStrongBinder(binder16);
                     return true;
                 }
                 case 27: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnCameraChangeListener(e.a.ah(parcel.readStrongBinder()));
+                    this.setOnCameraChangeListener(e.a.aV(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 28: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnMapClickListener(i.a.al(parcel.readStrongBinder()));
+                    this.setOnMapClickListener(i.a.aZ(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 29: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnMapLongClickListener(k.a.an(parcel.readStrongBinder()));
+                    this.setOnMapLongClickListener(k.a.bb(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 30: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnMarkerClickListener(l.a.ao(parcel.readStrongBinder()));
+                    this.setOnMarkerClickListener(l.a.bc(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 31: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnMarkerDragListener(m.a.ap(parcel.readStrongBinder()));
+                    this.setOnMarkerDragListener(m.a.bd(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 32: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnInfoWindowClickListener(com.google.android.gms.maps.internal.g.a.aj(parcel.readStrongBinder()));
+                    this.setOnInfoWindowClickListener(com.google.android.gms.maps.internal.g.a.aX(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 33: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setInfoWindowAdapter(com.google.android.gms.maps.internal.d.a.ad(parcel.readStrongBinder()));
+                    this.setInfoWindowAdapter(com.google.android.gms.maps.internal.d.a.aR(parcel.readStrongBinder()));
                     parcel2.writeNoException();
-                    return true;
-                }
-                case 34: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    final d testingHelper = this.getTestingHelper();
-                    parcel2.writeNoException();
-                    IBinder binder18 = binder7;
-                    if (testingHelper != null) {
-                        binder18 = testingHelper.asBinder();
-                    }
-                    parcel2.writeStrongBinder(binder18);
                     return true;
                 }
                 case 35: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    CircleOptions fromParcel6;
+                    CircleOptions cj;
                     if (parcel.readInt() != 0) {
-                        fromParcel6 = CircleOptions.CREATOR.createFromParcel(parcel);
+                        cj = CircleOptions.CREATOR.cJ(parcel);
                     }
                     else {
-                        fromParcel6 = null;
+                        cj = null;
                     }
-                    final b addCircle = this.addCircle(fromParcel6);
+                    final b addCircle = this.addCircle(cj);
                     parcel2.writeNoException();
-                    IBinder binder19 = binder8;
+                    IBinder binder17 = binder7;
                     if (addCircle != null) {
-                        binder19 = addCircle.asBinder();
+                        binder17 = addCircle.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder19);
+                    parcel2.writeStrongBinder(binder17);
                     return true;
                 }
                 case 36: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnMyLocationChangeListener(o.a.ar(parcel.readStrongBinder()));
+                    this.setOnMyLocationChangeListener(o.a.bf(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 37: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnMyLocationButtonClickListener(n.a.aq(parcel.readStrongBinder()));
+                    this.setOnMyLocationButtonClickListener(n.a.be(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
                 case 38: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.snapshot(s.a.aw(parcel.readStrongBinder()), d.a.K(parcel.readStrongBinder()));
+                    this.snapshot(s.a.bk(parcel.readStrongBinder()), d.a.am(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -544,7 +527,7 @@ public interface IGoogleMapDelegate extends IInterface
                 }
                 case 42: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnMapLoadedCallback(j.a.am(parcel.readStrongBinder()));
+                    this.setOnMapLoadedCallback(j.a.ba(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -552,26 +535,16 @@ public interface IGoogleMapDelegate extends IInterface
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
                     final com.google.android.gms.maps.model.internal.d focusedBuilding = this.getFocusedBuilding();
                     parcel2.writeNoException();
-                    IBinder binder20 = binder9;
+                    IBinder binder18 = binder8;
                     if (focusedBuilding != null) {
-                        binder20 = focusedBuilding.asBinder();
+                        binder18 = focusedBuilding.asBinder();
                     }
-                    parcel2.writeStrongBinder(binder20);
+                    parcel2.writeStrongBinder(binder18);
                     return true;
                 }
                 case 45: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.setOnIndoorStateChangeListener(com.google.android.gms.maps.internal.f.a.ai(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    return true;
-                }
-                case 51: {
-                    parcel.enforceInterface("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    boolean watermarkEnabled = b3;
-                    if (parcel.readInt() != 0) {
-                        watermarkEnabled = true;
-                    }
-                    this.setWatermarkEnabled(watermarkEnabled);
+                    this.setOnIndoorStateChangeListener(com.google.android.gms.maps.internal.f.a.aW(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     return true;
                 }
@@ -580,10 +553,10 @@ public interface IGoogleMapDelegate extends IInterface
         
         private static class a implements IGoogleMapDelegate
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -599,9 +572,9 @@ public interface IGoogleMapDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(35, obtain, obtain2, 0);
+                    this.lb.transact(35, obtain, obtain2, 0);
                     obtain2.readException();
-                    return b.a.aC(obtain2.readStrongBinder());
+                    return b.a.bq(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -622,9 +595,9 @@ public interface IGoogleMapDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(12, obtain, obtain2, 0);
+                    this.lb.transact(12, obtain, obtain2, 0);
                     obtain2.readException();
-                    return c.a.aD(obtain2.readStrongBinder());
+                    return c.a.br(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -645,9 +618,9 @@ public interface IGoogleMapDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(11, obtain, obtain2, 0);
+                    this.lb.transact(11, obtain, obtain2, 0);
                     obtain2.readException();
-                    return f.a.aG(obtain2.readStrongBinder());
+                    return f.a.bu(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -668,9 +641,9 @@ public interface IGoogleMapDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(10, obtain, obtain2, 0);
+                    this.lb.transact(10, obtain, obtain2, 0);
                     obtain2.readException();
-                    return g.a.aH(obtain2.readStrongBinder());
+                    return g.a.bv(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -691,9 +664,9 @@ public interface IGoogleMapDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(9, obtain, obtain2, 0);
+                    this.lb.transact(9, obtain, obtain2, 0);
                     obtain2.readException();
-                    return IPolylineDelegate.a.aI(obtain2.readStrongBinder());
+                    return IPolylineDelegate.a.bw(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -714,9 +687,9 @@ public interface IGoogleMapDelegate extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(13, obtain, obtain2, 0);
+                    this.lb.transact(13, obtain, obtain2, 0);
                     obtain2.readException();
-                    return h.a.aJ(obtain2.readStrongBinder());
+                    return h.a.bx(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -738,7 +711,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(5, obtain, obtain2, 0);
+                    this.lb.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -767,7 +740,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder3 = b.asBinder();
                     }
                     obtain.writeStrongBinder(binder3);
-                    this.kn.transact(6, obtain, obtain2, 0);
+                    this.lb.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -797,7 +770,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder3 = b.asBinder();
                     }
                     obtain.writeStrongBinder(binder3);
-                    this.kn.transact(7, obtain, obtain2, 0);
+                    this.lb.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -807,7 +780,7 @@ public interface IGoogleMapDelegate extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -816,7 +789,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(14, obtain, obtain2, 0);
+                    this.lb.transact(14, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -831,16 +804,16 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
-                    CameraPosition fromParcel;
+                    CameraPosition ci;
                     if (obtain2.readInt() != 0) {
-                        fromParcel = CameraPosition.CREATOR.createFromParcel(obtain2);
+                        ci = CameraPosition.CREATOR.cI(obtain2);
                     }
                     else {
-                        fromParcel = null;
+                        ci = null;
                     }
-                    return fromParcel;
+                    return ci;
                 }
                 finally {
                     obtain2.recycle();
@@ -854,9 +827,9 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(44, obtain, obtain2, 0);
+                    this.lb.transact(44, obtain, obtain2, 0);
                     obtain2.readException();
-                    return com.google.android.gms.maps.model.internal.d.a.aE(obtain2.readStrongBinder());
+                    return com.google.android.gms.maps.model.internal.d.a.bs(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -870,7 +843,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(15, obtain, obtain2, 0);
+                    this.lb.transact(15, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -886,7 +859,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readFloat();
                 }
@@ -902,7 +875,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(3, obtain, obtain2, 0);
+                    this.lb.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readFloat();
                 }
@@ -918,7 +891,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(23, obtain, obtain2, 0);
+                    this.lb.transact(23, obtain, obtain2, 0);
                     obtain2.readException();
                     Location location;
                     if (obtain2.readInt() != 0) {
@@ -941,25 +914,9 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(26, obtain, obtain2, 0);
+                    this.lb.transact(26, obtain, obtain2, 0);
                     obtain2.readException();
-                    return IProjectionDelegate.a.av(obtain2.readStrongBinder());
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public d getTestingHelper() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(34, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return d.a.K(obtain2.readStrongBinder());
+                    return IProjectionDelegate.a.bj(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -973,9 +930,9 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(25, obtain, obtain2, 0);
+                    this.lb.transact(25, obtain, obtain2, 0);
                     obtain2.readException();
-                    return IUiSettingsDelegate.a.aA(obtain2.readStrongBinder());
+                    return IUiSettingsDelegate.a.bo(obtain2.readStrongBinder());
                 }
                 finally {
                     obtain2.recycle();
@@ -990,7 +947,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(40, obtain, obtain2, 0);
+                    this.lb.transact(40, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -1010,7 +967,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(19, obtain, obtain2, 0);
+                    this.lb.transact(19, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -1030,7 +987,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(21, obtain, obtain2, 0);
+                    this.lb.transact(21, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -1050,7 +1007,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(17, obtain, obtain2, 0);
+                    this.lb.transact(17, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -1077,7 +1034,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(4, obtain, obtain2, 0);
+                    this.lb.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1097,7 +1054,7 @@ public interface IGoogleMapDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(41, obtain, obtain2, 0);
+                    this.lb.transact(41, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1121,7 +1078,7 @@ public interface IGoogleMapDelegate extends IInterface
                         n = 0;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(20, obtain, obtain2, 0);
+                    this.lb.transact(20, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt() != 0 && b2;
                 }
@@ -1145,7 +1102,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(33, obtain, obtain2, 0);
+                    this.lb.transact(33, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1168,7 +1125,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(24, obtain, obtain2, 0);
+                    this.lb.transact(24, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1184,7 +1141,7 @@ public interface IGoogleMapDelegate extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
                     obtain.writeInt(n);
-                    this.kn.transact(16, obtain, obtain2, 0);
+                    this.lb.transact(16, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1204,7 +1161,7 @@ public interface IGoogleMapDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(22, obtain, obtain2, 0);
+                    this.lb.transact(22, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1227,7 +1184,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(27, obtain, obtain2, 0);
+                    this.lb.transact(27, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1250,7 +1207,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(45, obtain, obtain2, 0);
+                    this.lb.transact(45, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1273,7 +1230,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(32, obtain, obtain2, 0);
+                    this.lb.transact(32, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1296,7 +1253,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(28, obtain, obtain2, 0);
+                    this.lb.transact(28, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1319,7 +1276,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(42, obtain, obtain2, 0);
+                    this.lb.transact(42, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1342,7 +1299,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(29, obtain, obtain2, 0);
+                    this.lb.transact(29, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1365,7 +1322,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(30, obtain, obtain2, 0);
+                    this.lb.transact(30, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1388,7 +1345,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(31, obtain, obtain2, 0);
+                    this.lb.transact(31, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1411,7 +1368,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(37, obtain, obtain2, 0);
+                    this.lb.transact(37, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1434,7 +1391,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(36, obtain, obtain2, 0);
+                    this.lb.transact(36, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1453,7 +1410,7 @@ public interface IGoogleMapDelegate extends IInterface
                     obtain.writeInt(n2);
                     obtain.writeInt(n3);
                     obtain.writeInt(n4);
-                    this.kn.transact(39, obtain, obtain2, 0);
+                    this.lb.transact(39, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1473,27 +1430,7 @@ public interface IGoogleMapDelegate extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(18, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void setWatermarkEnabled(final boolean b) throws RemoteException {
-                int n = 0;
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    if (b) {
-                        n = 1;
-                    }
-                    obtain.writeInt(n);
-                    this.kn.transact(51, obtain, obtain2, 0);
+                    this.lb.transact(18, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1522,7 +1459,7 @@ public interface IGoogleMapDelegate extends IInterface
                         binder3 = d.asBinder();
                     }
                     obtain.writeStrongBinder(binder3);
-                    this.kn.transact(38, obtain, obtain2, 0);
+                    this.lb.transact(38, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1537,7 +1474,7 @@ public interface IGoogleMapDelegate extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.internal.IGoogleMapDelegate");
-                    this.kn.transact(8, obtain, obtain2, 0);
+                    this.lb.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

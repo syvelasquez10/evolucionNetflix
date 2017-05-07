@@ -4,44 +4,56 @@
 
 package com.google.android.gms.analytics;
 
-class z implements ad
+public class z
 {
-    private final long vm;
-    private final int vn;
-    private double vo;
-    private long vp;
-    private final Object vq;
-    private final String vr;
+    private static GoogleAnalytics AT;
     
-    public z(final int vn, final long vm, final String vr) {
-        this.vq = new Object();
-        this.vn = vn;
-        this.vo = this.vn;
-        this.vm = vm;
-        this.vr = vr;
-    }
-    
-    public z(final String s) {
-        this(60, 2000L, s);
-    }
-    
-    @Override
-    public boolean cS() {
-        synchronized (this.vq) {
-            final long currentTimeMillis = System.currentTimeMillis();
-            if (this.vo < this.vn) {
-                final double n = (currentTimeMillis - this.vp) / this.vm;
-                if (n > 0.0) {
-                    this.vo = Math.min(this.vn, n + this.vo);
-                }
-            }
-            this.vp = currentTimeMillis;
-            if (this.vo >= 1.0) {
-                --this.vo;
-                return true;
-            }
-            aa.z("Excessive " + this.vr + " detected; call ignored.");
-            return false;
+    public static void T(final String s) {
+        final Logger logger = getLogger();
+        if (logger != null) {
+            logger.error(s);
         }
+    }
+    
+    public static void U(final String s) {
+        final Logger logger = getLogger();
+        if (logger != null) {
+            logger.info(s);
+        }
+    }
+    
+    public static void V(final String s) {
+        final Logger logger = getLogger();
+        if (logger != null) {
+            logger.verbose(s);
+        }
+    }
+    
+    public static void W(final String s) {
+        final Logger logger = getLogger();
+        if (logger != null) {
+            logger.warn(s);
+        }
+    }
+    
+    public static boolean eL() {
+        boolean b = false;
+        if (getLogger() != null) {
+            b = b;
+            if (getLogger().getLogLevel() == 0) {
+                b = true;
+            }
+        }
+        return b;
+    }
+    
+    private static Logger getLogger() {
+        if (z.AT == null) {
+            z.AT = GoogleAnalytics.eE();
+        }
+        if (z.AT != null) {
+            return z.AT.getLogger();
+        }
+        return null;
     }
 }

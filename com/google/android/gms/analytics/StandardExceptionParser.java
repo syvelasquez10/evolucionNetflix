@@ -14,10 +14,10 @@ import java.util.TreeSet;
 
 public class StandardExceptionParser implements ExceptionParser
 {
-    private final TreeSet<String> vL;
+    private final TreeSet<String> Bl;
     
     public StandardExceptionParser(final Context context, final Collection<String> collection) {
-        this.vL = new TreeSet<String>();
+        this.Bl = new TreeSet<String>();
         this.setIncludedPackages(context, collection);
     }
     
@@ -29,7 +29,7 @@ public class StandardExceptionParser implements ExceptionParser
         for (int length = stackTrace.length, i = 0; i < length; ++i) {
             final StackTraceElement stackTraceElement = stackTrace[i];
             final String className = stackTraceElement.getClassName();
-            final Iterator<String> iterator = this.vL.iterator();
+            final Iterator<String> iterator = this.Bl.iterator();
             while (iterator.hasNext()) {
                 if (className.startsWith(iterator.next())) {
                     return stackTraceElement;
@@ -72,7 +72,7 @@ public class StandardExceptionParser implements ExceptionParser
     }
     
     public void setIncludedPackages(final Context context, final Collection<String> collection) {
-        this.vL.clear();
+        this.Bl.clear();
         final HashSet<String> set = new HashSet<String>();
         if (collection != null) {
             set.addAll((Collection<?>)collection);
@@ -80,7 +80,7 @@ public class StandardExceptionParser implements ExceptionParser
         if (context != null) {
             try {
                 final String packageName = context.getApplicationContext().getPackageName();
-                this.vL.add(packageName);
+                this.Bl.add(packageName);
                 final ActivityInfo[] activities = context.getApplicationContext().getPackageManager().getPackageInfo(packageName, 15).activities;
                 if (activities != null) {
                     for (int length = activities.length, i = 0; i < length; ++i) {
@@ -89,17 +89,17 @@ public class StandardExceptionParser implements ExceptionParser
                 }
             }
             catch (PackageManager$NameNotFoundException ex) {
-                aa.x("No package found");
+                z.U("No package found");
             }
         }
         for (final String s : set) {
-            final Iterator<String> iterator2 = this.vL.iterator();
+            final Iterator<String> iterator2 = this.Bl.iterator();
             int n = 1;
             while (iterator2.hasNext()) {
                 final String s2 = iterator2.next();
                 if (!s.startsWith(s2)) {
                     if (s2.startsWith(s)) {
-                        this.vL.remove(s2);
+                        this.Bl.remove(s2);
                         break;
                     }
                     break;
@@ -109,7 +109,7 @@ public class StandardExceptionParser implements ExceptionParser
                 }
             }
             if (n != 0) {
-                this.vL.add(s);
+                this.Bl.add(s);
             }
         }
     }

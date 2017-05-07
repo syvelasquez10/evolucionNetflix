@@ -13,7 +13,7 @@ class an extends aj
     private static final String ID;
     
     static {
-        ID = a.Z.toString();
+        ID = a.ab.toString();
     }
     
     public an() {
@@ -21,12 +21,12 @@ class an extends aj
     }
     
     @Override
-    public boolean jX() {
-        return true;
+    public d.a C(final Map<String, d.a> map) {
+        return di.u("4.00");
     }
     
     @Override
-    public d.a x(final Map<String, d.a> map) {
-        return dh.r("4.00");
+    public boolean nL() {
+        return true;
     }
 }

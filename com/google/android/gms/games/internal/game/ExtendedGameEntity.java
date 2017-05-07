@@ -6,75 +6,89 @@ package com.google.android.gms.games.internal.game;
 
 import android.os.Parcel;
 import java.util.Collection;
-import com.google.android.gms.internal.fe;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.c;
+import com.google.android.gms.common.internal.m;
+import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.Game;
-import com.google.android.gms.games.GameEntity;
+import com.google.android.gms.games.snapshot.SnapshotMetadataEntity;
 import java.util.ArrayList;
+import com.google.android.gms.games.GameEntity;
 import com.google.android.gms.games.internal.GamesDowngradeableSafeParcel;
 
 public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel implements ExtendedGame
 {
     public static final ExtendedGameEntityCreator CREATOR;
-    private final long LA;
-    private final String LB;
-    private final ArrayList<GameBadgeEntity> LC;
-    private final GameEntity Lt;
-    private final int Lu;
-    private final boolean Lv;
-    private final int Lw;
-    private final long Lx;
-    private final long Ly;
-    private final String Lz;
-    private final int xH;
+    private final int BR;
+    private final GameEntity aan;
+    private final int aao;
+    private final boolean aap;
+    private final int aaq;
+    private final long aar;
+    private final long aas;
+    private final String aat;
+    private final long aau;
+    private final String aav;
+    private final ArrayList<GameBadgeEntity> aaw;
+    private final SnapshotMetadataEntity aax;
     
     static {
         CREATOR = new ExtendedGameEntityCreatorCompat();
     }
     
-    ExtendedGameEntity(final int xh, final GameEntity lt, final int lu, final boolean lv, final int lw, final long lx, final long ly, final String lz, final long la, final String lb, final ArrayList<GameBadgeEntity> lc) {
-        this.xH = xh;
-        this.Lt = lt;
-        this.Lu = lu;
-        this.Lv = lv;
-        this.Lw = lw;
-        this.Lx = lx;
-        this.Ly = ly;
-        this.Lz = lz;
-        this.LA = la;
-        this.LB = lb;
-        this.LC = lc;
+    ExtendedGameEntity(final int br, final GameEntity aan, final int aao, final boolean aap, final int aaq, final long aar, final long aas, final String aat, final long aau, final String aav, final ArrayList<GameBadgeEntity> aaw, final SnapshotMetadataEntity aax) {
+        this.BR = br;
+        this.aan = aan;
+        this.aao = aao;
+        this.aap = aap;
+        this.aaq = aaq;
+        this.aar = aar;
+        this.aas = aas;
+        this.aat = aat;
+        this.aau = aau;
+        this.aav = aav;
+        this.aaw = aaw;
+        this.aax = aax;
     }
     
     public ExtendedGameEntity(final ExtendedGame extendedGame) {
-        this.xH = 1;
+        final SnapshotMetadataEntity snapshotMetadataEntity = null;
+        this.BR = 2;
         final Game game = extendedGame.getGame();
-        GameEntity lt;
+        GameEntity aan;
         if (game == null) {
-            lt = null;
+            aan = null;
         }
         else {
-            lt = new GameEntity(game);
+            aan = new GameEntity(game);
         }
-        this.Lt = lt;
-        this.Lu = extendedGame.gX();
-        this.Lv = extendedGame.gY();
-        this.Lw = extendedGame.gZ();
-        this.Lx = extendedGame.ha();
-        this.Ly = extendedGame.hb();
-        this.Lz = extendedGame.hc();
-        this.LA = extendedGame.hd();
-        this.LB = extendedGame.he();
-        final ArrayList<GameBadge> gw = extendedGame.gW();
-        final int size = gw.size();
-        this.LC = new ArrayList<GameBadgeEntity>(size);
+        this.aan = aan;
+        this.aao = extendedGame.kP();
+        this.aap = extendedGame.kQ();
+        this.aaq = extendedGame.kR();
+        this.aar = extendedGame.kS();
+        this.aas = extendedGame.kT();
+        this.aat = extendedGame.kU();
+        this.aau = extendedGame.kV();
+        this.aav = extendedGame.kW();
+        final SnapshotMetadata kx = extendedGame.kX();
+        SnapshotMetadataEntity aax;
+        if (kx == null) {
+            aax = snapshotMetadataEntity;
+        }
+        else {
+            aax = new SnapshotMetadataEntity(kx);
+        }
+        this.aax = aax;
+        final ArrayList<GameBadge> ko = extendedGame.kO();
+        final int size = ko.size();
+        this.aaw = new ArrayList<GameBadgeEntity>(size);
         for (int i = 0; i < size; ++i) {
-            this.LC.add((GameBadgeEntity)gw.get(i).freeze());
+            this.aaw.add((GameBadgeEntity)ko.get(i).freeze());
         }
     }
     
     static int a(final ExtendedGame extendedGame) {
-        return fo.hashCode(extendedGame.getGame(), extendedGame.gX(), extendedGame.gY(), extendedGame.gZ(), extendedGame.ha(), extendedGame.hb(), extendedGame.hc(), extendedGame.hd(), extendedGame.he());
+        return m.hashCode(extendedGame.getGame(), extendedGame.kP(), extendedGame.kQ(), extendedGame.kR(), extendedGame.kS(), extendedGame.kT(), extendedGame.kU(), extendedGame.kV(), extendedGame.kW());
     }
     
     static boolean a(final ExtendedGame extendedGame, final Object o) {
@@ -87,9 +101,9 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
             b2 = b;
             if (extendedGame != o) {
                 final ExtendedGame extendedGame2 = (ExtendedGame)o;
-                if (fo.equal(extendedGame2.getGame(), extendedGame.getGame()) && fo.equal(extendedGame2.gX(), extendedGame.gX()) && fo.equal(extendedGame2.gY(), extendedGame.gY()) && fo.equal(extendedGame2.gZ(), extendedGame.gZ()) && fo.equal(extendedGame2.ha(), extendedGame.ha()) && fo.equal(extendedGame2.hb(), extendedGame.hb()) && fo.equal(extendedGame2.hc(), extendedGame.hc()) && fo.equal(extendedGame2.hd(), extendedGame.hd())) {
+                if (m.equal(extendedGame2.getGame(), extendedGame.getGame()) && m.equal(extendedGame2.kP(), extendedGame.kP()) && m.equal(extendedGame2.kQ(), extendedGame.kQ()) && m.equal(extendedGame2.kR(), extendedGame.kR()) && m.equal(extendedGame2.kS(), extendedGame.kS()) && m.equal(extendedGame2.kT(), extendedGame.kT()) && m.equal(extendedGame2.kU(), extendedGame.kU()) && m.equal(extendedGame2.kV(), extendedGame.kV())) {
                     b2 = b;
-                    if (fo.equal(extendedGame2.he(), extendedGame.he())) {
+                    if (m.equal(extendedGame2.kW(), extendedGame.kW())) {
                         return b2;
                     }
                 }
@@ -100,7 +114,7 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
     }
     
     static String b(final ExtendedGame extendedGame) {
-        return fo.e(extendedGame).a("Game", extendedGame.getGame()).a("Availability", extendedGame.gX()).a("Owned", extendedGame.gY()).a("AchievementUnlockedCount", extendedGame.gZ()).a("LastPlayedServerTimestamp", extendedGame.ha()).a("PriceMicros", extendedGame.hb()).a("FormattedPrice", extendedGame.hc()).a("FullPriceMicros", extendedGame.hd()).a("FormattedFullPrice", extendedGame.he()).toString();
+        return m.h(extendedGame).a("Game", extendedGame.getGame()).a("Availability", extendedGame.kP()).a("Owned", extendedGame.kQ()).a("AchievementUnlockedCount", extendedGame.kR()).a("LastPlayedServerTimestamp", extendedGame.kS()).a("PriceMicros", extendedGame.kT()).a("FormattedPrice", extendedGame.kU()).a("FullPriceMicros", extendedGame.kV()).a("FormattedFullPrice", extendedGame.kW()).a("Snapshot", extendedGame.kX()).toString();
     }
     
     public int describeContents() {
@@ -112,33 +126,8 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
         return a(this, o);
     }
     
-    @Override
-    public ArrayList<GameBadge> gW() {
-        return new ArrayList<GameBadge>(this.LC);
-    }
-    
-    @Override
-    public int gX() {
-        return this.Lu;
-    }
-    
-    @Override
-    public boolean gY() {
-        return this.Lv;
-    }
-    
-    @Override
-    public int gZ() {
-        return this.Lw;
-    }
-    
     public int getVersionCode() {
-        return this.xH;
-    }
-    
-    @Override
-    public long ha() {
-        return this.Lx;
+        return this.BR;
     }
     
     @Override
@@ -146,36 +135,66 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
         return a(this);
     }
     
-    @Override
-    public long hb() {
-        return this.Ly;
-    }
-    
-    @Override
-    public String hc() {
-        return this.Lz;
-    }
-    
-    @Override
-    public long hd() {
-        return this.LA;
-    }
-    
-    @Override
-    public String he() {
-        return this.LB;
-    }
-    
-    public GameEntity hf() {
-        return this.Lt;
-    }
-    
-    public ExtendedGame hg() {
-        return this;
-    }
-    
     public boolean isDataValid() {
         return true;
+    }
+    
+    @Override
+    public ArrayList<GameBadge> kO() {
+        return new ArrayList<GameBadge>(this.aaw);
+    }
+    
+    @Override
+    public int kP() {
+        return this.aao;
+    }
+    
+    @Override
+    public boolean kQ() {
+        return this.aap;
+    }
+    
+    @Override
+    public int kR() {
+        return this.aaq;
+    }
+    
+    @Override
+    public long kS() {
+        return this.aar;
+    }
+    
+    @Override
+    public long kT() {
+        return this.aas;
+    }
+    
+    @Override
+    public String kU() {
+        return this.aat;
+    }
+    
+    @Override
+    public long kV() {
+        return this.aau;
+    }
+    
+    @Override
+    public String kW() {
+        return this.aav;
+    }
+    
+    @Override
+    public SnapshotMetadata kX() {
+        return this.aax;
+    }
+    
+    public GameEntity kY() {
+        return this.aan;
+    }
+    
+    public ExtendedGame kZ() {
+        return this;
     }
     
     @Override
@@ -185,30 +204,30 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
     
     public void writeToParcel(final Parcel parcel, final int n) {
         final int n2 = 0;
-        if (!this.eK()) {
+        if (!this.gQ()) {
             ExtendedGameEntityCreator.a(this, parcel, n);
         }
         else {
-            this.Lt.writeToParcel(parcel, n);
-            parcel.writeInt(this.Lu);
+            this.aan.writeToParcel(parcel, n);
+            parcel.writeInt(this.aao);
             int n3;
-            if (this.Lv) {
+            if (this.aap) {
                 n3 = 1;
             }
             else {
                 n3 = 0;
             }
             parcel.writeInt(n3);
-            parcel.writeInt(this.Lw);
-            parcel.writeLong(this.Lx);
-            parcel.writeLong(this.Ly);
-            parcel.writeString(this.Lz);
-            parcel.writeLong(this.LA);
-            parcel.writeString(this.LB);
-            final int size = this.LC.size();
+            parcel.writeInt(this.aaq);
+            parcel.writeLong(this.aar);
+            parcel.writeLong(this.aas);
+            parcel.writeString(this.aat);
+            parcel.writeLong(this.aau);
+            parcel.writeString(this.aav);
+            final int size = this.aaw.size();
             parcel.writeInt(size);
             for (int i = n2; i < size; ++i) {
-                this.LC.get(i).writeToParcel(parcel, n);
+                this.aaw.get(i).writeToParcel(parcel, n);
             }
         }
     }
@@ -216,9 +235,9 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
     static final class ExtendedGameEntityCreatorCompat extends ExtendedGameEntityCreator
     {
         @Override
-        public ExtendedGameEntity aq(final Parcel parcel) {
-            if (GamesDowngradeableSafeParcel.c(fe.eJ()) || fe.al(ExtendedGameEntity.class.getCanonicalName())) {
-                return super.aq(parcel);
+        public ExtendedGameEntity cg(final Parcel parcel) {
+            if (GamesDowngradeableSafeParcel.c(c.gP()) || c.aV(ExtendedGameEntity.class.getCanonicalName())) {
+                return super.cg(parcel);
             }
             final GameEntity gameEntity = (GameEntity)GameEntity.CREATOR.createFromParcel(parcel);
             final int int1 = parcel.readInt();
@@ -232,9 +251,9 @@ public final class ExtendedGameEntity extends GamesDowngradeableSafeParcel imple
             final int int3 = parcel.readInt();
             final ArrayList list = new ArrayList<GameBadgeEntity>(int3);
             for (int i = 0; i < int3; ++i) {
-                list.add(GameBadgeEntity.CREATOR.ar(parcel));
+                list.add(GameBadgeEntity.CREATOR.ch(parcel));
             }
-            return new ExtendedGameEntity(1, gameEntity, int1, b, int2, long1, long2, string, long3, string2, (ArrayList<GameBadgeEntity>)list);
+            return new ExtendedGameEntity(2, gameEntity, int1, b, int2, long1, long2, string, long3, string2, (ArrayList<GameBadgeEntity>)list, null);
         }
     }
 }

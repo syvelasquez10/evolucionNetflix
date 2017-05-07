@@ -4,12 +4,9 @@
 
 package com.google.android.gms.internal;
 
-public class m extends Exception
+public interface m
 {
-    public m() {
-    }
+    String a(final byte[] p0, final boolean p1);
     
-    public m(final String s) {
-        super(s);
-    }
+    byte[] a(final String p0, final boolean p1) throws IllegalArgumentException;
 }

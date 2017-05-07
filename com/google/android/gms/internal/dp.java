@@ -4,48 +4,47 @@
 
 package com.google.android.gms.internal;
 
-import java.util.concurrent.RejectedExecutionException;
-import android.os.Process;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
+import android.view.ViewGroup$LayoutParams;
+import android.view.View;
+import android.widget.FrameLayout$LayoutParams;
+import android.content.Context;
+import android.widget.ImageButton;
+import android.app.Activity;
+import android.view.View$OnClickListener;
+import android.widget.FrameLayout;
 
-public final class dp
+@ez
+public final class dp extends FrameLayout implements View$OnClickListener
 {
-    private static final ThreadFactory ra;
-    private static final ThreadPoolExecutor rb;
+    private final Activity nr;
+    private final ImageButton sg;
     
-    static {
-        ra = new ThreadFactory() {
-            private final AtomicInteger rd = new AtomicInteger(1);
-            
-            @Override
-            public Thread newThread(final Runnable runnable) {
-                return new Thread(runnable, "AdWorker #" + this.rd.getAndIncrement());
-            }
-        };
-        rb = new ThreadPoolExecutor(0, 10, 65L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(true), dp.ra);
+    public dp(final Activity nr, int a) {
+        super((Context)nr);
+        this.nr = nr;
+        this.setOnClickListener((View$OnClickListener)this);
+        (this.sg = new ImageButton((Context)nr)).setImageResource(17301527);
+        this.sg.setBackgroundColor(0);
+        this.sg.setOnClickListener((View$OnClickListener)this);
+        this.sg.setPadding(0, 0, 0, 0);
+        this.sg.setContentDescription((CharSequence)"Interstitial close button");
+        a = gr.a((Context)nr, a);
+        this.addView((View)this.sg, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(a, a, 17));
     }
     
-    public static void execute(final Runnable runnable) {
-        try {
-            dp.rb.execute(new Runnable() {
-                @Override
-                public void run() {
-                    Process.setThreadPriority(10);
-                    runnable.run();
-                }
-            });
+    public void o(final boolean b) {
+        final ImageButton sg = this.sg;
+        int visibility;
+        if (b) {
+            visibility = 4;
         }
-        catch (RejectedExecutionException ex) {
-            dw.c("Too many background threads already running. Aborting task.  Current pool size: " + getPoolSize(), ex);
+        else {
+            visibility = 0;
         }
+        sg.setVisibility(visibility);
     }
     
-    public static int getPoolSize() {
-        return dp.rb.getPoolSize();
+    public void onClick(final View view) {
+        this.nr.finish();
     }
 }

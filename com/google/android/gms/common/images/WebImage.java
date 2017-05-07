@@ -5,7 +5,7 @@
 package com.google.android.gms.common.images;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.net.Uri;
@@ -15,20 +15,20 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class WebImage implements SafeParcelable
 {
     public static final Parcelable$Creator<WebImage> CREATOR;
-    private final Uri Cu;
-    private final int kr;
-    private final int ks;
-    private final int xH;
+    private final int BR;
+    private final Uri KJ;
+    private final int lf;
+    private final int lg;
     
     static {
         CREATOR = (Parcelable$Creator)new b();
     }
     
-    WebImage(final int xh, final Uri cu, final int kr, final int ks) {
-        this.xH = xh;
-        this.Cu = cu;
-        this.kr = kr;
-        this.ks = ks;
+    WebImage(final int br, final Uri kj, final int lf, final int lg) {
+        this.BR = br;
+        this.KJ = kj;
+        this.lf = lf;
+        this.lg = lg;
     }
     
     public WebImage(final Uri uri) throws IllegalArgumentException {
@@ -63,12 +63,12 @@ public final class WebImage implements SafeParcelable
         }
     }
     
-    public JSONObject dB() {
+    public JSONObject bL() {
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("url", (Object)this.Cu.toString());
-            jsonObject.put("width", this.kr);
-            jsonObject.put("height", this.ks);
+            jsonObject.put("url", (Object)this.KJ.toString());
+            jsonObject.put("width", this.lf);
+            jsonObject.put("height", this.lg);
             return jsonObject;
         }
         catch (JSONException ex) {
@@ -87,7 +87,7 @@ public final class WebImage implements SafeParcelable
                 return false;
             }
             final WebImage webImage = (WebImage)o;
-            if (!fo.equal(this.Cu, webImage.Cu) || this.kr != webImage.kr || this.ks != webImage.ks) {
+            if (!m.equal(this.KJ, webImage.KJ) || this.lf != webImage.lf || this.lg != webImage.lg) {
                 return false;
             }
         }
@@ -95,29 +95,29 @@ public final class WebImage implements SafeParcelable
     }
     
     public int getHeight() {
-        return this.ks;
+        return this.lg;
     }
     
     public Uri getUrl() {
-        return this.Cu;
+        return this.KJ;
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public int getWidth() {
-        return this.kr;
+        return this.lf;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.Cu, this.kr, this.ks);
+        return m.hashCode(this.KJ, this.lf, this.lg);
     }
     
     @Override
     public String toString() {
-        return String.format("Image %dx%d %s", this.kr, this.ks, this.Cu.toString());
+        return String.format("Image %dx%d %s", this.lf, this.lg, this.KJ.toString());
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

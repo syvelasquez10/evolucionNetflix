@@ -4,82 +4,76 @@
 
 package com.google.android.gms.drive;
 
-import com.google.android.gms.drive.metadata.internal.MetadataBundle;
-import com.google.android.gms.common.data.DataHolder;
 import java.util.Iterator;
-import java.util.Collection;
+import com.google.android.gms.drive.internal.l;
+import com.google.android.gms.internal.kd;
+import com.google.android.gms.drive.metadata.b;
+import com.google.android.gms.common.data.a;
+import com.google.android.gms.drive.metadata.internal.e;
+import com.google.android.gms.drive.metadata.internal.MetadataBundle;
 import com.google.android.gms.drive.metadata.MetadataField;
-import com.google.android.gms.drive.metadata.internal.c;
-import java.util.ArrayList;
+import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.common.data.DataBuffer;
 
 public final class MetadataBuffer extends DataBuffer<Metadata>
 {
-    private static final String[] EL;
-    private final String EM;
-    private a EN;
+    private final String Ni;
+    private a Nj;
     
-    static {
-        final ArrayList list = new ArrayList();
-        final Iterator<MetadataField<?>> iterator = c.fS().iterator();
-        while (iterator.hasNext()) {
-            list.addAll(iterator.next().fR());
-        }
-        EL = (String[])list.toArray(new String[0]);
-    }
-    
-    public MetadataBuffer(final DataHolder dataHolder, final String em) {
+    public MetadataBuffer(final DataHolder dataHolder, final String ni) {
         super(dataHolder);
-        this.EM = em;
+        this.Ni = ni;
+        dataHolder.gz().setClassLoader(MetadataBuffer.class.getClassLoader());
     }
     
     @Override
     public Metadata get(final int n) {
-        final a en = this.EN;
-        if (en != null) {
-            final a en2 = en;
-            if (en.EO == n) {
-                return en2;
+        final a nj = this.Nj;
+        if (nj != null) {
+            final a nj2 = nj;
+            if (nj.Nk == n) {
+                return nj2;
             }
         }
-        final a en2 = new a(this.BB, n);
-        this.EN = en2;
-        return en2;
+        final a nj2 = new a(this.IC, n);
+        this.Nj = nj2;
+        return nj2;
     }
     
     public String getNextPageToken() {
-        return this.EM;
+        return this.Ni;
     }
     
     private static class a extends Metadata
     {
-        private final DataHolder BB;
-        private final int BE;
-        private final int EO;
+        private final DataHolder IC;
+        private final int JR;
+        private final int Nk;
         
-        public a(final DataHolder bb, final int eo) {
-            this.BB = bb;
-            this.EO = eo;
-            this.BE = bb.G(eo);
+        public a(final DataHolder ic, final int nk) {
+            this.IC = ic;
+            this.Nk = nk;
+            this.JR = ic.ar(nk);
         }
         
         @Override
         protected <T> T a(final MetadataField<T> metadataField) {
-            return metadataField.a(this.BB, this.EO, this.BE);
+            return metadataField.a(this.IC, this.Nk, this.JR);
         }
         
-        public Metadata fB() {
-            final MetadataBundle ft = MetadataBundle.fT();
-            final Iterator<MetadataField<?>> iterator = c.fS().iterator();
-            while (iterator.hasNext()) {
-                iterator.next().a(this.BB, ft, this.EO, this.BE);
+        public Metadata hR() {
+            final MetadataBundle io = MetadataBundle.io();
+            for (final MetadataField<com.google.android.gms.common.data.a> metadataField : e.in()) {
+                if (!(metadataField instanceof b) && metadataField != kd.Qd) {
+                    metadataField.a(this.IC, io, this.Nk, this.JR);
+                }
             }
-            return new b(ft);
+            return new l(io);
         }
         
         @Override
         public boolean isDataValid() {
-            return !this.BB.isClosed();
+            return !this.IC.isClosed();
         }
     }
 }

@@ -49,10 +49,7 @@ public class ArrayMap<K, V> extends SimpleArrayMap<K, V> implements Map<K, V>
                 
                 @Override
                 protected int colIndexOfKey(final Object o) {
-                    if (o == null) {
-                        return ArrayMap.this.indexOfNull();
-                    }
-                    return ArrayMap.this.indexOf(o, o.hashCode());
+                    return ArrayMap.this.indexOfKey(o);
                 }
                 
                 @Override

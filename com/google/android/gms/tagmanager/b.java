@@ -11,32 +11,32 @@ import android.content.Context;
 class b extends aj
 {
     private static final String ID;
-    private final a Wz;
+    private final a anH;
     
     static {
         ID = com.google.android.gms.internal.a.u.toString();
     }
     
     public b(final Context context) {
-        this(a.E(context));
+        this(a.V(context));
     }
     
-    b(final a wz) {
+    b(final a anH) {
         super(b.ID, new String[0]);
-        this.Wz = wz;
+        this.anH = anH;
     }
     
     @Override
-    public boolean jX() {
-        return false;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        final String jt = this.Wz.jT();
-        if (jt == null) {
-            return dh.lT();
+    public d.a C(final Map<String, d.a> map) {
+        final String nh = this.anH.nH();
+        if (nh == null) {
+            return di.pI();
         }
-        return dh.r(jt);
+        return di.u(nh);
+    }
+    
+    @Override
+    public boolean nL() {
+        return false;
     }
 }

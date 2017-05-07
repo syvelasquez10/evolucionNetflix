@@ -14,43 +14,43 @@ import com.google.android.gms.games.multiplayer.realtime.RealTimeSocket;
 
 final class RealTimeSocketImpl implements RealTimeSocket
 {
-    private ParcelFileDescriptor Cj;
-    private final LocalSocket JP;
-    private final String Jg;
+    private ParcelFileDescriptor Kx;
+    private final LocalSocket XT;
+    private final String Xg;
     
-    RealTimeSocketImpl(final LocalSocket jp, final String jg) {
-        this.JP = jp;
-        this.Jg = jg;
+    RealTimeSocketImpl(final LocalSocket xt, final String xg) {
+        this.XT = xt;
+        this.Xg = xg;
     }
     
     @Override
     public void close() throws IOException {
-        this.JP.close();
+        this.XT.close();
     }
     
     @Override
     public InputStream getInputStream() throws IOException {
-        return this.JP.getInputStream();
+        return this.XT.getInputStream();
     }
     
     @Override
     public OutputStream getOutputStream() throws IOException {
-        return this.JP.getOutputStream();
+        return this.XT.getOutputStream();
     }
     
     @Override
     public ParcelFileDescriptor getParcelFileDescriptor() throws IOException {
-        if (this.Cj == null && !this.isClosed()) {
+        if (this.Kx == null && !this.isClosed()) {
             final Parcel obtain = Parcel.obtain();
-            obtain.writeFileDescriptor(this.JP.getFileDescriptor());
+            obtain.writeFileDescriptor(this.XT.getFileDescriptor());
             obtain.setDataPosition(0);
-            this.Cj = obtain.readFileDescriptor();
+            this.Kx = obtain.readFileDescriptor();
         }
-        return this.Cj;
+        return this.Kx;
     }
     
     @Override
     public boolean isClosed() {
-        return !this.JP.isConnected() && !this.JP.isBound();
+        return !this.XT.isConnected() && !this.XT.isBound();
     }
 }

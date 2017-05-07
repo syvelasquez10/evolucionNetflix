@@ -6,7 +6,7 @@ package com.google.android.gms.tagmanager;
 
 interface t
 {
-    cj kq();
+    ck oe();
     
-    cr kr();
+    cs of();
 }

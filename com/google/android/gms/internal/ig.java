@@ -4,85 +4,53 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.plus.model.moments.ItemScope;
 import android.os.Parcel;
-import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.plus.model.moments.Moment;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.internal.m;
+import android.os.Parcelable$Creator;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public final class ig extends b implements Moment
+public class ig implements SafeParcelable
 {
-    private ie VG;
+    public static final Parcelable$Creator<ig> CREATOR;
+    private final int BR;
+    private String Gn;
     
-    public ig(final DataHolder dataHolder, final int n) {
-        super(dataHolder, n);
+    static {
+        CREATOR = (Parcelable$Creator)new ih();
     }
     
-    private ie ju() {
-        synchronized (this) {
-            if (this.VG == null) {
-                final byte[] byteArray = this.getByteArray("momentImpl");
-                final Parcel obtain = Parcel.obtain();
-                obtain.unmarshall(byteArray, 0, byteArray.length);
-                obtain.setDataPosition(0);
-                this.VG = ie.CREATOR.aM(obtain);
-                obtain.recycle();
-            }
-            return this.VG;
-        }
+    public ig() {
+        this(1, null);
     }
     
-    @Override
-    public String getId() {
-        return this.ju().getId();
+    ig(final int br, final String gn) {
+        this.BR = br;
+        this.Gn = gn;
+    }
+    
+    public int describeContents() {
+        return 0;
     }
     
     @Override
-    public ItemScope getResult() {
-        return this.ju().getResult();
+    public boolean equals(final Object o) {
+        return o == this || (o instanceof ig && ik.a(this.Gn, ((ig)o).Gn));
+    }
+    
+    public String fz() {
+        return this.Gn;
+    }
+    
+    public int getVersionCode() {
+        return this.BR;
     }
     
     @Override
-    public String getStartDate() {
-        return this.ju().getStartDate();
+    public int hashCode() {
+        return m.hashCode(this.Gn);
     }
     
-    @Override
-    public ItemScope getTarget() {
-        return this.ju().getTarget();
-    }
-    
-    @Override
-    public String getType() {
-        return this.ju().getType();
-    }
-    
-    @Override
-    public boolean hasId() {
-        return this.ju().hasId();
-    }
-    
-    @Override
-    public boolean hasResult() {
-        return this.ju().hasId();
-    }
-    
-    @Override
-    public boolean hasStartDate() {
-        return this.ju().hasStartDate();
-    }
-    
-    @Override
-    public boolean hasTarget() {
-        return this.ju().hasTarget();
-    }
-    
-    @Override
-    public boolean hasType() {
-        return this.ju().hasType();
-    }
-    
-    public ie jt() {
-        return this.ju();
+    public void writeToParcel(final Parcel parcel, final int n) {
+        ih.a(this, parcel, n);
     }
 }

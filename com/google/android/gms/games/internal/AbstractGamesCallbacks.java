@@ -6,6 +6,7 @@ package com.google.android.gms.games.internal;
 
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import android.os.Bundle;
+import com.google.android.gms.drive.Contents;
 import com.google.android.gms.common.data.DataHolder;
 
 public abstract class AbstractGamesCallbacks extends Stub
@@ -28,7 +29,37 @@ public abstract class AbstractGamesCallbacks extends Stub
     public void F(final DataHolder dataHolder) {
     }
     
-    public void a(final int n, final Bundle bundle) {
+    public void G(final DataHolder dataHolder) {
+    }
+    
+    public void H(final DataHolder dataHolder) {
+    }
+    
+    public void I(final DataHolder dataHolder) {
+    }
+    
+    public void J(final DataHolder dataHolder) {
+    }
+    
+    public void K(final DataHolder dataHolder) {
+    }
+    
+    public void L(final DataHolder dataHolder) {
+    }
+    
+    public void M(final DataHolder dataHolder) {
+    }
+    
+    public void N(final DataHolder dataHolder) {
+    }
+    
+    public void O(final DataHolder dataHolder) {
+    }
+    
+    public void P(final DataHolder dataHolder) {
+    }
+    
+    public void Q(final DataHolder dataHolder) {
     }
     
     public void a(final int n, final String s, final boolean b) {
@@ -37,22 +68,19 @@ public abstract class AbstractGamesCallbacks extends Stub
     public void a(final DataHolder dataHolder, final DataHolder dataHolder2) {
     }
     
+    public void a(final DataHolder dataHolder, final Contents contents) {
+    }
+    
+    public void a(final DataHolder dataHolder, final String s, final Contents contents, final Contents contents2, final Contents contents3) {
+    }
+    
     public void a(final DataHolder dataHolder, final String[] array) {
-    }
-    
-    public void aU(final int n) {
-    }
-    
-    public void aV(final int n) {
     }
     
     public void b(final int n, final int n2, final String s) {
     }
     
     public void b(final int n, final Bundle bundle) {
-    }
-    
-    public void b(final DataHolder dataHolder) {
     }
     
     public void b(final DataHolder dataHolder, final String[] array) {
@@ -67,7 +95,7 @@ public abstract class AbstractGamesCallbacks extends Stub
     public void c(final DataHolder dataHolder, final String[] array) {
     }
     
-    public void d(final int n, final String s) {
+    public void d(final int n, final Bundle bundle) {
     }
     
     public void d(final DataHolder dataHolder) {
@@ -76,16 +104,25 @@ public abstract class AbstractGamesCallbacks extends Stub
     public void d(final DataHolder dataHolder, final String[] array) {
     }
     
-    public void du() {
+    public void dx(final int n) {
     }
     
-    public void e(final int n, final String s) {
+    public void dy(final int n) {
+    }
+    
+    public void dz(final int n) {
+    }
+    
+    public void e(final int n, final Bundle bundle) {
     }
     
     public void e(final DataHolder dataHolder) {
     }
     
     public void e(final DataHolder dataHolder, final String[] array) {
+    }
+    
+    public void f(final int n, final Bundle bundle) {
     }
     
     public void f(final int n, final String s) {
@@ -97,10 +134,22 @@ public abstract class AbstractGamesCallbacks extends Stub
     public void f(final DataHolder dataHolder, final String[] array) {
     }
     
+    public void fq() {
+    }
+    
+    public void g(final int n, final String s) {
+    }
+    
     public void g(final DataHolder dataHolder) {
     }
     
+    public void h(final int n, final String s) {
+    }
+    
     public void h(final DataHolder dataHolder) {
+    }
+    
+    public void i(final int n, final String s) {
     }
     
     public void i(final DataHolder dataHolder) {

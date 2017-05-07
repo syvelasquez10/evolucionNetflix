@@ -14,37 +14,37 @@ import java.util.Map;
 
 public class Container
 {
-    private final String WJ;
-    private final DataLayer WK;
-    private cs WL;
-    private Map<String, FunctionCallMacroCallback> WM;
-    private Map<String, FunctionCallTagCallback> WN;
-    private volatile long WO;
-    private volatile String WP;
+    private final String anR;
+    private final DataLayer anS;
+    private ct anT;
+    private Map<String, FunctionCallMacroCallback> anU;
+    private Map<String, FunctionCallTagCallback> anV;
+    private volatile long anW;
+    private volatile String anX;
     private final Context mContext;
     
-    Container(final Context mContext, final DataLayer wk, final String wj, final long wo, final c.j j) {
-        this.WM = new HashMap<String, FunctionCallMacroCallback>();
-        this.WN = new HashMap<String, FunctionCallTagCallback>();
-        this.WP = "";
+    Container(final Context mContext, final DataLayer anS, final String anR, final long anW, final c.j j) {
+        this.anU = new HashMap<String, FunctionCallMacroCallback>();
+        this.anV = new HashMap<String, FunctionCallTagCallback>();
+        this.anX = "";
         this.mContext = mContext;
-        this.WK = wk;
-        this.WJ = wj;
-        this.WO = wo;
-        this.a(j.fK);
-        if (j.fJ != null) {
-            this.a(j.fJ);
+        this.anS = anS;
+        this.anR = anR;
+        this.anW = anW;
+        this.a(j.gs);
+        if (j.gr != null) {
+            this.a(j.gr);
         }
     }
     
-    Container(final Context mContext, final DataLayer wk, final String wj, final long wo, final cq.c c) {
-        this.WM = new HashMap<String, FunctionCallMacroCallback>();
-        this.WN = new HashMap<String, FunctionCallTagCallback>();
-        this.WP = "";
+    Container(final Context mContext, final DataLayer anS, final String anR, final long anW, final cr.c c) {
+        this.anU = new HashMap<String, FunctionCallMacroCallback>();
+        this.anV = new HashMap<String, FunctionCallTagCallback>();
+        this.anX = "";
         this.mContext = mContext;
-        this.WK = wk;
-        this.WJ = wj;
-        this.WO = wo;
+        this.anS = anS;
+        this.anR = anR;
+        this.anW = anW;
         this.a(c);
     }
     
@@ -53,21 +53,21 @@ public class Container
             throw new NullPointerException();
         }
         try {
-            this.a(cq.b(f));
+            this.a(cr.b(f));
         }
-        catch (cq.g g) {
-            bh.w("Not loading resource: " + f + " because it is invalid: " + g.toString());
+        catch (cr.g g) {
+            bh.T("Not loading resource: " + f + " because it is invalid: " + g.toString());
         }
     }
     
-    private void a(final cq.c c) {
-        this.WP = c.getVersion();
-        this.a(new cs(this.mContext, c, this.WK, new a(), new b(), this.bq(this.WP)));
+    private void a(final cr.c c) {
+        this.anX = c.getVersion();
+        this.a(new ct(this.mContext, c, this.anS, new a(), new b(), this.cn(this.anX)));
     }
     
-    private void a(final cs wl) {
+    private void a(final ct anT) {
         synchronized (this) {
-            this.WL = wl;
+            this.anT = anT;
         }
     }
     
@@ -76,102 +76,102 @@ public class Container
         for (int length = array.length, i = 0; i < length; ++i) {
             list.add(array[i]);
         }
-        this.kd().e(list);
+        this.nR().k(list);
     }
     
-    private cs kd() {
+    private ct nR() {
         synchronized (this) {
-            return this.WL;
+            return this.anT;
         }
     }
     
-    FunctionCallMacroCallback bn(final String s) {
-        synchronized (this.WM) {
-            return this.WM.get(s);
+    FunctionCallMacroCallback ck(final String s) {
+        synchronized (this.anU) {
+            return this.anU.get(s);
         }
     }
     
-    FunctionCallTagCallback bo(final String s) {
-        synchronized (this.WN) {
-            return this.WN.get(s);
+    FunctionCallTagCallback cl(final String s) {
+        synchronized (this.anV) {
+            return this.anV.get(s);
         }
     }
     
-    void bp(final String s) {
-        this.kd().bp(s);
+    void cm(final String s) {
+        this.nR().cm(s);
     }
     
-    ag bq(final String s) {
-        if (cd.kT().kU().equals(cd.a.YV)) {}
-        return new bq();
+    ag cn(final String s) {
+        if (ce.oH().oI().equals(ce.a.apY)) {}
+        return new br();
     }
     
     public boolean getBoolean(final String s) {
-        final cs kd = this.kd();
-        if (kd == null) {
-            bh.w("getBoolean called for closed container.");
-            return dh.lQ();
+        final ct nr = this.nR();
+        if (nr == null) {
+            bh.T("getBoolean called for closed container.");
+            return di.pF();
         }
         try {
-            return dh.n(kd.bR(s).getObject());
+            return di.n(nr.cO(s).getObject());
         }
         catch (Exception ex) {
-            bh.w("Calling getBoolean() threw an exception: " + ex.getMessage() + " Returning default value.");
-            return dh.lQ();
+            bh.T("Calling getBoolean() threw an exception: " + ex.getMessage() + " Returning default value.");
+            return di.pF();
         }
     }
     
     public String getContainerId() {
-        return this.WJ;
+        return this.anR;
     }
     
     public double getDouble(final String s) {
-        final cs kd = this.kd();
-        if (kd == null) {
-            bh.w("getDouble called for closed container.");
-            return dh.lP();
+        final ct nr = this.nR();
+        if (nr == null) {
+            bh.T("getDouble called for closed container.");
+            return di.pE();
         }
         try {
-            return dh.m(kd.bR(s).getObject());
+            return di.m(nr.cO(s).getObject());
         }
         catch (Exception ex) {
-            bh.w("Calling getDouble() threw an exception: " + ex.getMessage() + " Returning default value.");
-            return dh.lP();
+            bh.T("Calling getDouble() threw an exception: " + ex.getMessage() + " Returning default value.");
+            return di.pE();
         }
     }
     
     public long getLastRefreshTime() {
-        return this.WO;
+        return this.anW;
     }
     
     public long getLong(final String s) {
-        final cs kd = this.kd();
-        if (kd == null) {
-            bh.w("getLong called for closed container.");
-            return dh.lO();
+        final ct nr = this.nR();
+        if (nr == null) {
+            bh.T("getLong called for closed container.");
+            return di.pD();
         }
         try {
-            return dh.l(kd.bR(s).getObject());
+            return di.l(nr.cO(s).getObject());
         }
         catch (Exception ex) {
-            bh.w("Calling getLong() threw an exception: " + ex.getMessage() + " Returning default value.");
-            return dh.lO();
+            bh.T("Calling getLong() threw an exception: " + ex.getMessage() + " Returning default value.");
+            return di.pD();
         }
     }
     
     public String getString(String j) {
-        final cs kd = this.kd();
-        if (kd == null) {
-            bh.w("getString called for closed container.");
-            return dh.lS();
+        final ct nr = this.nR();
+        if (nr == null) {
+            bh.T("getString called for closed container.");
+            return di.pH();
         }
         try {
-            j = dh.j(kd.bR(j).getObject());
+            j = di.j(nr.cO(j).getObject());
             return j;
         }
         catch (Exception ex) {
-            bh.w("Calling getString() threw an exception: " + ex.getMessage() + " Returning default value.");
-            return dh.lS();
+            bh.T("Calling getString() threw an exception: " + ex.getMessage() + " Returning default value.");
+            return di.pH();
         }
     }
     
@@ -179,16 +179,16 @@ public class Container
         return this.getLastRefreshTime() == 0L;
     }
     
-    String kc() {
-        return this.WP;
+    String nQ() {
+        return this.anX;
     }
     
     public void registerFunctionCallMacroCallback(final String s, final FunctionCallMacroCallback functionCallMacroCallback) {
         if (functionCallMacroCallback == null) {
             throw new NullPointerException("Macro handler must be non-null");
         }
-        synchronized (this.WM) {
-            this.WM.put(s, functionCallMacroCallback);
+        synchronized (this.anU) {
+            this.anU.put(s, functionCallMacroCallback);
         }
     }
     
@@ -196,24 +196,24 @@ public class Container
         if (functionCallTagCallback == null) {
             throw new NullPointerException("Tag callback must be non-null");
         }
-        synchronized (this.WN) {
-            this.WN.put(s, functionCallTagCallback);
+        synchronized (this.anV) {
+            this.anV.put(s, functionCallTagCallback);
         }
     }
     
     void release() {
-        this.WL = null;
+        this.anT = null;
     }
     
     public void unregisterFunctionCallMacroCallback(final String s) {
-        synchronized (this.WM) {
-            this.WM.remove(s);
+        synchronized (this.anU) {
+            this.anU.remove(s);
         }
     }
     
     public void unregisterFunctionCallTagCallback(final String s) {
-        synchronized (this.WN) {
-            this.WN.remove(s);
+        synchronized (this.anV) {
+            this.anV.remove(s);
         }
     }
     
@@ -231,11 +231,11 @@ public class Container
     {
         @Override
         public Object b(final String s, final Map<String, Object> map) {
-            final FunctionCallMacroCallback bn = Container.this.bn(s);
-            if (bn == null) {
+            final FunctionCallMacroCallback ck = Container.this.ck(s);
+            if (ck == null) {
                 return null;
             }
-            return bn.getValue(s, map);
+            return ck.getValue(s, map);
         }
     }
     
@@ -243,11 +243,11 @@ public class Container
     {
         @Override
         public Object b(final String s, final Map<String, Object> map) {
-            final FunctionCallTagCallback bo = Container.this.bo(s);
-            if (bo != null) {
-                bo.execute(s, map);
+            final FunctionCallTagCallback cl = Container.this.cl(s);
+            if (cl != null) {
+                cl.execute(s, map);
             }
-            return dh.lS();
+            return di.pH();
         }
     }
 }

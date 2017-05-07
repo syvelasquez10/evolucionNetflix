@@ -8,12 +8,12 @@ import com.google.android.gms.internal.d;
 import java.util.Map;
 import com.google.android.gms.internal.a;
 
-class bd extends bx
+class bd extends by
 {
     private static final String ID;
     
     static {
-        ID = a.am.toString();
+        ID = a.av.toString();
     }
     
     public bd() {
@@ -21,7 +21,7 @@ class bd extends bx
     }
     
     @Override
-    protected boolean a(final dg dg, final dg dg2, final Map<String, d.a> map) {
-        return dg.a(dg2) <= 0;
+    protected boolean a(final dh dh, final dh dh2, final Map<String, d.a> map) {
+        return dh.a(dh2) <= 0;
     }
 }

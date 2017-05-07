@@ -5,35 +5,35 @@
 package com.google.android.gms.identity.intents;
 
 import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 import com.google.android.gms.common.api.Status;
 import android.os.RemoteException;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.app.Activity;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.internal.fc;
+import com.google.android.gms.common.internal.ClientSettings;
 import android.os.Looper;
 import android.content.Context;
-import com.google.android.gms.internal.gw;
+import com.google.android.gms.internal.ll;
 import com.google.android.gms.common.api.Api;
 
 public final class Address
 {
     public static final Api<AddressOptions> API;
-    static final Api.c<gw> wx;
-    private static final Api.b<gw, AddressOptions> wy;
+    static final Api.c<ll> CU;
+    private static final Api.b<ll, AddressOptions> CV;
     
     static {
-        wx = new Api.c();
-        wy = new Api.b<gw, AddressOptions>() {
-            public gw a(final Context context, final Looper looper, final fc fc, final AddressOptions addressOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
-                fq.b(context instanceof Activity, "An Activity must be used for Address APIs");
+        CU = new Api.c();
+        CV = new Api.b<ll, AddressOptions>() {
+            public ll a(final Context context, final Looper looper, final ClientSettings clientSettings, final AddressOptions addressOptions, final GoogleApiClient.ConnectionCallbacks connectionCallbacks, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
+                n.b(context instanceof Activity, (Object)"An Activity must be used for Address APIs");
                 AddressOptions addressOptions2 = addressOptions;
                 if (addressOptions == null) {
                     addressOptions2 = new AddressOptions();
                 }
-                return new gw((Activity)context, looper, connectionCallbacks, onConnectionFailedListener, fc.getAccountName(), addressOptions2.theme);
+                return new ll((Activity)context, looper, connectionCallbacks, onConnectionFailedListener, clientSettings.getAccountName(), addressOptions2.theme);
             }
             
             @Override
@@ -41,14 +41,14 @@ public final class Address
                 return Integer.MAX_VALUE;
             }
         };
-        API = new Api<AddressOptions>((Api.b<C, AddressOptions>)Address.wy, (Api.c<C>)Address.wx, new Scope[0]);
+        API = new Api<AddressOptions>((Api.b<C, AddressOptions>)Address.CV, (Api.c<C>)Address.CU, new Scope[0]);
     }
     
     public static void requestUserAddress(final GoogleApiClient googleApiClient, final UserAddressRequest userAddressRequest, final int n) {
         googleApiClient.a(new a() {
-            protected void a(final gw gw) throws RemoteException {
-                gw.a(userAddressRequest, n);
-                ((com.google.android.gms.common.api.a.a<R>)this).a((R)Status.Bv);
+            protected void a(final ll ll) throws RemoteException {
+                ll.a(userAddressRequest, n);
+                ((BaseImplementation.AbstractPendingResult<R>)this).b((R)Status.Jo);
             }
         });
     }
@@ -66,13 +66,13 @@ public final class Address
         }
     }
     
-    private abstract static class a extends b<Status, gw>
+    private abstract static class a extends BaseImplementation.a<Status, ll>
     {
         public a() {
-            super(Address.wx);
+            super(Address.CU);
         }
         
-        public Status f(final Status status) {
+        public Status d(final Status status) {
             return status;
         }
     }

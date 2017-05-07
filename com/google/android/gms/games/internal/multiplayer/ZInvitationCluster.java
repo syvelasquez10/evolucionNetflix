@@ -6,10 +6,10 @@ package com.google.android.gms.games.internal.multiplayer;
 
 import android.os.Parcel;
 import java.util.Collection;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.Game;
-import com.google.android.gms.internal.fb;
+import com.google.android.gms.common.internal.a;
 import com.google.android.gms.games.multiplayer.InvitationEntity;
 import java.util.ArrayList;
 import com.google.android.gms.games.multiplayer.Invitation;
@@ -18,24 +18,24 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class ZInvitationCluster implements SafeParcelable, Invitation
 {
     public static final InvitationClusterCreator CREATOR;
-    private final ArrayList<InvitationEntity> LG;
-    private final int xH;
+    private final int BR;
+    private final ArrayList<InvitationEntity> aaA;
     
     static {
         CREATOR = new InvitationClusterCreator();
     }
     
-    ZInvitationCluster(final int xh, final ArrayList<InvitationEntity> lg) {
-        this.xH = xh;
-        this.LG = lg;
-        this.hn();
+    ZInvitationCluster(final int br, final ArrayList<InvitationEntity> aaA) {
+        this.BR = br;
+        this.aaA = aaA;
+        this.lg();
     }
     
-    private void hn() {
-        fb.x(!this.LG.isEmpty());
-        final InvitationEntity invitationEntity = this.LG.get(0);
-        for (int size = this.LG.size(), i = 1; i < size; ++i) {
-            fb.a(invitationEntity.getInviter().equals(this.LG.get(i).getInviter()), "All the invitations must be from the same inviter");
+    private void lg() {
+        a.I(!this.aaA.isEmpty());
+        final InvitationEntity invitationEntity = this.aaA.get(0);
+        for (int size = this.aaA.size(), i = 1; i < size; ++i) {
+            a.a(invitationEntity.getInviter().equals(this.aaA.get(i).getInviter()), "All the invitations must be from the same inviter");
         }
     }
     
@@ -52,11 +52,11 @@ public final class ZInvitationCluster implements SafeParcelable, Invitation
             return true;
         }
         final ZInvitationCluster zInvitationCluster = (ZInvitationCluster)o;
-        if (zInvitationCluster.LG.size() != this.LG.size()) {
+        if (zInvitationCluster.aaA.size() != this.aaA.size()) {
             return false;
         }
-        for (int size = this.LG.size(), i = 0; i < size; ++i) {
-            if (!this.LG.get(i).equals(zInvitationCluster.LG.get(i))) {
+        for (int size = this.aaA.size(), i = 0; i < size; ++i) {
+            if (!this.aaA.get(i).equals(zInvitationCluster.aaA.get(i))) {
                 return false;
             }
         }
@@ -84,7 +84,7 @@ public final class ZInvitationCluster implements SafeParcelable, Invitation
     
     @Override
     public String getInvitationId() {
-        return this.LG.get(0).getInvitationId();
+        return this.aaA.get(0).getInvitationId();
     }
     
     @Override
@@ -94,7 +94,7 @@ public final class ZInvitationCluster implements SafeParcelable, Invitation
     
     @Override
     public Participant getInviter() {
-        return this.LG.get(0).getInviter();
+        return this.aaA.get(0).getInviter();
     }
     
     public ArrayList<Participant> getParticipants() {
@@ -107,20 +107,20 @@ public final class ZInvitationCluster implements SafeParcelable, Invitation
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.LG.toArray());
-    }
-    
-    public ArrayList<Invitation> ho() {
-        return new ArrayList<Invitation>(this.LG);
+        return m.hashCode(this.aaA.toArray());
     }
     
     public boolean isDataValid() {
         return true;
+    }
+    
+    public ArrayList<Invitation> lh() {
+        return new ArrayList<Invitation>(this.aaA);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

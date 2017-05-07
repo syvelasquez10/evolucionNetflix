@@ -5,20 +5,20 @@
 package com.google.android.gms.games.internal.game;
 
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.d;
+import com.google.android.gms.common.data.g;
 
-public final class ExtendedGameBuffer extends d<ExtendedGame>
+public final class ExtendedGameBuffer extends g<ExtendedGame>
 {
     public ExtendedGameBuffer(final DataHolder dataHolder) {
         super(dataHolder);
     }
     
-    protected ExtendedGame d(final int n, final int n2) {
-        return new ExtendedGameRef(this.BB, n, n2);
+    @Override
+    protected String gE() {
+        return "external_game_id";
     }
     
-    @Override
-    protected String getPrimaryDataMarkerColumn() {
-        return "external_game_id";
+    protected ExtendedGame h(final int n, final int n2) {
+        return new ExtendedGameRef(this.IC, n, n2);
     }
 }

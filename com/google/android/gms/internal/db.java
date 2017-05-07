@@ -4,107 +4,66 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.IInterface;
+import java.util.Set;
+import java.util.Date;
+import java.util.Collection;
+import java.util.HashSet;
+import com.google.ads.mediation.MediationAdRequest;
+import com.google.android.gms.ads.a;
+import com.google.ads.AdSize;
+import com.google.ads.AdRequest;
 
-public interface db extends IInterface
+@ez
+public final class db
 {
-    cz b(final cx p0) throws RemoteException;
+    public static int a(final AdRequest.ErrorCode errorCode) {
+        switch (db$1.qL[errorCode.ordinal()]) {
+            default: {
+                return 0;
+            }
+            case 2: {
+                return 1;
+            }
+            case 3: {
+                return 2;
+            }
+            case 4: {
+                return 3;
+            }
+        }
+    }
     
-    public abstract static class a extends Binder implements db
-    {
-        public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.request.IAdRequestService");
-        }
-        
-        public static db s(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.request.IAdRequestService");
-            if (queryLocalInterface != null && queryLocalInterface instanceof db) {
-                return (db)queryLocalInterface;
-            }
-            return new db.a.a(binder);
-        }
-        
-        public IBinder asBinder() {
-            return (IBinder)this;
-        }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.request.IAdRequestService");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.request.IAdRequestService");
-                    cx f;
-                    if (parcel.readInt() != 0) {
-                        f = cx.CREATOR.f(parcel);
-                    }
-                    else {
-                        f = null;
-                    }
-                    final cz b = this.b(f);
-                    parcel2.writeNoException();
-                    if (b != null) {
-                        parcel2.writeInt(1);
-                        b.writeToParcel(parcel2, 1);
-                    }
-                    else {
-                        parcel2.writeInt(0);
-                    }
-                    return true;
-                }
+    public static AdSize b(final ay ay) {
+        int i = 0;
+        for (AdSize[] array = { AdSize.SMART_BANNER, AdSize.BANNER, AdSize.IAB_MRECT, AdSize.IAB_BANNER, AdSize.IAB_LEADERBOARD, AdSize.IAB_WIDE_SKYSCRAPER }; i < array.length; ++i) {
+            if (array[i].getWidth() == ay.width && array[i].getHeight() == ay.height) {
+                return array[i];
             }
         }
-        
-        private static class a implements db
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
+        return new AdSize(a.a(ay.width, ay.height, ay.of));
+    }
+    
+    public static MediationAdRequest d(final av av) {
+        HashSet<String> set;
+        if (av.nV != null) {
+            set = new HashSet<String>(av.nV);
+        }
+        else {
+            set = null;
+        }
+        return new MediationAdRequest(new Date(av.nT), k(av.nU), set, av.nW, av.ob);
+    }
+    
+    public static AdRequest.Gender k(final int n) {
+        switch (n) {
+            default: {
+                return AdRequest.Gender.UNKNOWN;
             }
-            
-            public IBinder asBinder() {
-                return this.kn;
+            case 2: {
+                return AdRequest.Gender.FEMALE;
             }
-            
-            @Override
-            public cz b(final cx cx) throws RemoteException {
-                while (true) {
-                    final Parcel obtain = Parcel.obtain();
-                    final Parcel obtain2 = Parcel.obtain();
-                    try {
-                        obtain.writeInterfaceToken("com.google.android.gms.ads.internal.request.IAdRequestService");
-                        if (cx != null) {
-                            obtain.writeInt(1);
-                            cx.writeToParcel(obtain, 0);
-                        }
-                        else {
-                            obtain.writeInt(0);
-                        }
-                        this.kn.transact(1, obtain, obtain2, 0);
-                        obtain2.readException();
-                        if (obtain2.readInt() != 0) {
-                            return cz.CREATOR.g(obtain2);
-                        }
-                    }
-                    finally {
-                        obtain2.recycle();
-                        obtain.recycle();
-                    }
-                    return null;
-                }
+            case 1: {
+                return AdRequest.Gender.MALE;
             }
         }
     }

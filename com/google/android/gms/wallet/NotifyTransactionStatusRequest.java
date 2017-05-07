@@ -4,7 +4,7 @@
 
 package com.google.android.gms.wallet;
 
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.text.TextUtils;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
@@ -13,24 +13,24 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class NotifyTransactionStatusRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<NotifyTransactionStatusRequest> CREATOR;
-    String abh;
-    String ach;
+    final int BR;
+    String asq;
+    String atq;
     int status;
-    final int xH;
     
     static {
         CREATOR = (Parcelable$Creator)new m();
     }
     
     NotifyTransactionStatusRequest() {
-        this.xH = 1;
+        this.BR = 1;
     }
     
-    NotifyTransactionStatusRequest(final int xh, final String abh, final int status, final String ach) {
-        this.xH = xh;
-        this.abh = abh;
+    NotifyTransactionStatusRequest(final int br, final String asq, final int status, final String atq) {
+        this.BR = br;
+        this.asq = asq;
         this.status = status;
-        this.ach = ach;
+        this.atq = atq;
     }
     
     public static Builder newBuilder() {
@@ -44,11 +44,11 @@ public final class NotifyTransactionStatusRequest implements SafeParcelable
     }
     
     public String getDetailedReason() {
-        return this.ach;
+        return this.atq;
     }
     
     public String getGoogleTransactionId() {
-        return this.abh;
+        return this.asq;
     }
     
     public int getStatus() {
@@ -56,7 +56,7 @@ public final class NotifyTransactionStatusRequest implements SafeParcelable
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -67,18 +67,18 @@ public final class NotifyTransactionStatusRequest implements SafeParcelable
     {
         public NotifyTransactionStatusRequest build() {
             final boolean b = true;
-            fq.b(!TextUtils.isEmpty((CharSequence)NotifyTransactionStatusRequest.this.abh), "googleTransactionId is required");
-            fq.b(NotifyTransactionStatusRequest.this.status >= 1 && NotifyTransactionStatusRequest.this.status <= 8 && b, "status is an unrecognized value");
+            n.b(!TextUtils.isEmpty((CharSequence)NotifyTransactionStatusRequest.this.asq), (Object)"googleTransactionId is required");
+            n.b(NotifyTransactionStatusRequest.this.status >= 1 && NotifyTransactionStatusRequest.this.status <= 8 && b, (Object)"status is an unrecognized value");
             return NotifyTransactionStatusRequest.this;
         }
         
-        public Builder setDetailedReason(final String ach) {
-            NotifyTransactionStatusRequest.this.ach = ach;
+        public Builder setDetailedReason(final String atq) {
+            NotifyTransactionStatusRequest.this.atq = atq;
             return this;
         }
         
-        public Builder setGoogleTransactionId(final String abh) {
-            NotifyTransactionStatusRequest.this.abh = abh;
+        public Builder setGoogleTransactionId(final String asq) {
+            NotifyTransactionStatusRequest.this.asq = asq;
             return this;
         }
         

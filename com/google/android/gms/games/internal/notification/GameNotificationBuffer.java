@@ -8,7 +8,7 @@ import com.google.android.gms.common.data.DataBuffer;
 
 public final class GameNotificationBuffer extends DataBuffer<GameNotification>
 {
-    public GameNotification bj(final int n) {
-        return new GameNotificationRef(this.BB, n);
+    public GameNotification dO(final int n) {
+        return new GameNotificationRef(this.IC, n);
     }
 }

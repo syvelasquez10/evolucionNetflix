@@ -21,7 +21,7 @@ public interface l extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.maps.internal.IOnMarkerClickListener");
         }
         
-        public static l ao(final IBinder binder) {
+        public static l bc(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -47,7 +47,7 @@ public interface l extends IInterface
                 }
                 case 1: {
                     parcel.enforceInterface("com.google.android.gms.maps.internal.IOnMarkerClickListener");
-                    final boolean a = this.a(f.a.aG(parcel.readStrongBinder()));
+                    final boolean a = this.a(f.a.bu(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     if (a) {
                         n = 1;
@@ -63,10 +63,10 @@ public interface l extends IInterface
         
         private static class a implements l
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -84,7 +84,7 @@ public interface l extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() == 0) {
                         b = false;
@@ -98,7 +98,7 @@ public interface l extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
         }
     }

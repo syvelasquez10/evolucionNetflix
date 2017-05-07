@@ -23,75 +23,75 @@ import android.os.Bundle;
 
 public abstract class a<T extends LifecycleDelegate>
 {
-    private T Hj;
-    private Bundle Hk;
-    private LinkedList<a> Hl;
-    private final f<T> Hm;
+    private T RP;
+    private Bundle RQ;
+    private LinkedList<a> RR;
+    private final f<T> RS;
     
     public a() {
-        this.Hm = new f<T>() {
+        this.RS = new f<T>() {
             @Override
             public void a(final T t) {
-                a.this.Hj = t;
-                final Iterator iterator = a.this.Hl.iterator();
+                a.this.RP = t;
+                final Iterator iterator = a.this.RR.iterator();
                 while (iterator.hasNext()) {
-                    iterator.next().b(a.this.Hj);
+                    iterator.next().b(a.this.RP);
                 }
-                a.this.Hl.clear();
-                a.this.Hk = null;
+                a.this.RR.clear();
+                a.this.RQ = null;
             }
         };
     }
     
     private void a(final Bundle bundle, final a a) {
-        if (this.Hj != null) {
-            a.b(this.Hj);
+        if (this.RP != null) {
+            a.b(this.RP);
             return;
         }
-        if (this.Hl == null) {
-            this.Hl = new LinkedList<a>();
+        if (this.RR == null) {
+            this.RR = new LinkedList<a>();
         }
-        this.Hl.add(a);
+        this.RR.add(a);
         if (bundle != null) {
-            if (this.Hk == null) {
-                this.Hk = (Bundle)bundle.clone();
+            if (this.RQ == null) {
+                this.RQ = (Bundle)bundle.clone();
             }
             else {
-                this.Hk.putAll(bundle);
+                this.RQ.putAll(bundle);
             }
         }
-        this.a(this.Hm);
-    }
-    
-    private void aR(final int n) {
-        while (!this.Hl.isEmpty() && this.Hl.getLast().getState() >= n) {
-            this.Hl.removeLast();
-        }
+        this.a(this.RS);
     }
     
     public static void b(final FrameLayout frameLayout) {
         final Context context = frameLayout.getContext();
         final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-        final String c = GooglePlayServicesUtil.c(context, googlePlayServicesAvailable);
         final String d = GooglePlayServicesUtil.d(context, googlePlayServicesAvailable);
+        final String e = GooglePlayServicesUtil.e(context, googlePlayServicesAvailable);
         final LinearLayout linearLayout = new LinearLayout(frameLayout.getContext());
         linearLayout.setOrientation(1);
         linearLayout.setLayoutParams((ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
         frameLayout.addView((View)linearLayout);
         final TextView textView = new TextView(frameLayout.getContext());
         textView.setLayoutParams((ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
-        textView.setText((CharSequence)c);
+        textView.setText((CharSequence)d);
         linearLayout.addView((View)textView);
-        if (d != null) {
+        if (e != null) {
             final Button button = new Button(context);
             button.setLayoutParams((ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
-            button.setText((CharSequence)d);
+            button.setText((CharSequence)e);
             linearLayout.addView((View)button);
             button.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                 public void onClick(final View view) {
-                    context.startActivity(GooglePlayServicesUtil.b(context, googlePlayServicesAvailable));
+                    context.startActivity(GooglePlayServicesUtil.c(context, googlePlayServicesAvailable));
                 }
             });
+        }
+    }
+    
+    private void cv(final int n) {
+        while (!this.RR.isEmpty() && this.RR.getLast().getState() >= n) {
+            this.RR.removeLast();
         }
     }
     
@@ -101,15 +101,15 @@ public abstract class a<T extends LifecycleDelegate>
     
     protected abstract void a(final f<T> p0);
     
-    public T fW() {
-        return this.Hj;
+    public T it() {
+        return this.RP;
     }
     
     public void onCreate(final Bundle bundle) {
         this.a(bundle, (a)new a() {
             @Override
             public void b(final LifecycleDelegate lifecycleDelegate) {
-                a.this.Hj.onCreate(bundle);
+                a.this.RP.onCreate(bundle);
             }
             
             @Override
@@ -125,7 +125,7 @@ public abstract class a<T extends LifecycleDelegate>
             @Override
             public void b(final LifecycleDelegate lifecycleDelegate) {
                 frameLayout.removeAllViews();
-                frameLayout.addView(a.this.Hj.onCreateView(layoutInflater, viewGroup, bundle));
+                frameLayout.addView(a.this.RP.onCreateView(layoutInflater, viewGroup, bundle));
             }
             
             @Override
@@ -133,33 +133,33 @@ public abstract class a<T extends LifecycleDelegate>
                 return 2;
             }
         });
-        if (this.Hj == null) {
+        if (this.RP == null) {
             this.a(frameLayout);
         }
         return (View)frameLayout;
     }
     
     public void onDestroy() {
-        if (this.Hj != null) {
-            this.Hj.onDestroy();
+        if (this.RP != null) {
+            this.RP.onDestroy();
             return;
         }
-        this.aR(1);
+        this.cv(1);
     }
     
     public void onDestroyView() {
-        if (this.Hj != null) {
-            this.Hj.onDestroyView();
+        if (this.RP != null) {
+            this.RP.onDestroyView();
             return;
         }
-        this.aR(2);
+        this.cv(2);
     }
     
     public void onInflate(final Activity activity, final Bundle bundle, final Bundle bundle2) {
         this.a(bundle2, (a)new a() {
             @Override
             public void b(final LifecycleDelegate lifecycleDelegate) {
-                a.this.Hj.onInflate(activity, bundle, bundle2);
+                a.this.RP.onInflate(activity, bundle, bundle2);
             }
             
             @Override
@@ -170,24 +170,24 @@ public abstract class a<T extends LifecycleDelegate>
     }
     
     public void onLowMemory() {
-        if (this.Hj != null) {
-            this.Hj.onLowMemory();
+        if (this.RP != null) {
+            this.RP.onLowMemory();
         }
     }
     
     public void onPause() {
-        if (this.Hj != null) {
-            this.Hj.onPause();
+        if (this.RP != null) {
+            this.RP.onPause();
             return;
         }
-        this.aR(5);
+        this.cv(5);
     }
     
     public void onResume() {
         this.a(null, (a)new a() {
             @Override
             public void b(final LifecycleDelegate lifecycleDelegate) {
-                a.this.Hj.onResume();
+                a.this.RP.onResume();
             }
             
             @Override
@@ -198,11 +198,11 @@ public abstract class a<T extends LifecycleDelegate>
     }
     
     public void onSaveInstanceState(final Bundle bundle) {
-        if (this.Hj != null) {
-            this.Hj.onSaveInstanceState(bundle);
+        if (this.RP != null) {
+            this.RP.onSaveInstanceState(bundle);
         }
-        else if (this.Hk != null) {
-            bundle.putAll(this.Hk);
+        else if (this.RQ != null) {
+            bundle.putAll(this.RQ);
         }
     }
     
@@ -210,7 +210,7 @@ public abstract class a<T extends LifecycleDelegate>
         this.a(null, (a)new a() {
             @Override
             public void b(final LifecycleDelegate lifecycleDelegate) {
-                a.this.Hj.onStart();
+                a.this.RP.onStart();
             }
             
             @Override
@@ -221,11 +221,11 @@ public abstract class a<T extends LifecycleDelegate>
     }
     
     public void onStop() {
-        if (this.Hj != null) {
-            this.Hj.onStop();
+        if (this.RP != null) {
+            this.RP.onStop();
             return;
         }
-        this.aR(4);
+        this.cv(4);
     }
     
     private interface a

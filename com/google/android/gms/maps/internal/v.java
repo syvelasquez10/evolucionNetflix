@@ -6,13 +6,13 @@ package com.google.android.gms.maps.internal;
 
 public final class v
 {
-    private static boolean SB;
+    private static boolean ajo;
     
     static {
-        v.SB = false;
+        v.ajo = false;
     }
     
-    public static boolean iB() {
-        return v.SB;
+    public static boolean mK() {
+        return v.ajo;
     }
 }

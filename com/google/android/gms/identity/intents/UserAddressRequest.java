@@ -16,20 +16,20 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class UserAddressRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<UserAddressRequest> CREATOR;
-    List<CountrySpecification> Ny;
-    private final int xH;
+    private final int BR;
+    List<CountrySpecification> adz;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
     UserAddressRequest() {
-        this.xH = 1;
+        this.BR = 1;
     }
     
-    UserAddressRequest(final int xh, final List<CountrySpecification> ny) {
-        this.xH = xh;
-        this.Ny = ny;
+    UserAddressRequest(final int br, final List<CountrySpecification> adz) {
+        this.BR = br;
+        this.adz = adz;
     }
     
     public static Builder newBuilder() {
@@ -43,7 +43,7 @@ public final class UserAddressRequest implements SafeParcelable
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -53,24 +53,24 @@ public final class UserAddressRequest implements SafeParcelable
     public final class Builder
     {
         public Builder addAllowedCountrySpecification(final CountrySpecification countrySpecification) {
-            if (UserAddressRequest.this.Ny == null) {
-                UserAddressRequest.this.Ny = new ArrayList<CountrySpecification>();
+            if (UserAddressRequest.this.adz == null) {
+                UserAddressRequest.this.adz = new ArrayList<CountrySpecification>();
             }
-            UserAddressRequest.this.Ny.add(countrySpecification);
+            UserAddressRequest.this.adz.add(countrySpecification);
             return this;
         }
         
         public Builder addAllowedCountrySpecifications(final Collection<CountrySpecification> collection) {
-            if (UserAddressRequest.this.Ny == null) {
-                UserAddressRequest.this.Ny = new ArrayList<CountrySpecification>();
+            if (UserAddressRequest.this.adz == null) {
+                UserAddressRequest.this.adz = new ArrayList<CountrySpecification>();
             }
-            UserAddressRequest.this.Ny.addAll(collection);
+            UserAddressRequest.this.adz.addAll(collection);
             return this;
         }
         
         public UserAddressRequest build() {
-            if (UserAddressRequest.this.Ny != null) {
-                UserAddressRequest.this.Ny = Collections.unmodifiableList((List<? extends CountrySpecification>)UserAddressRequest.this.Ny);
+            if (UserAddressRequest.this.adz != null) {
+                UserAddressRequest.this.adz = Collections.unmodifiableList((List<? extends CountrySpecification>)UserAddressRequest.this.adz);
             }
             return UserAddressRequest.this;
         }

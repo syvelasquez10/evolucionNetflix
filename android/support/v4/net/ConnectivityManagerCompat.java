@@ -30,7 +30,11 @@ public class ConnectivityManagerCompat
     }
     
     public static NetworkInfo getNetworkInfoFromBroadcast(final ConnectivityManager connectivityManager, final Intent intent) {
-        return connectivityManager.getNetworkInfo(((NetworkInfo)intent.getParcelableExtra("networkInfo")).getType());
+        final NetworkInfo networkInfo = (NetworkInfo)intent.getParcelableExtra("networkInfo");
+        if (networkInfo != null) {
+            return connectivityManager.getNetworkInfo(networkInfo.getType());
+        }
+        return null;
     }
     
     public static boolean isActiveNetworkMetered(final ConnectivityManager connectivityManager) {

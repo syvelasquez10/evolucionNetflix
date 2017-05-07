@@ -97,7 +97,7 @@ public class MenuDialogHelper implements DialogInterface$OnKeyListener, DialogIn
     public void show(final IBinder token) {
         final MenuBuilder mMenu = this.mMenu;
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(mMenu.getContext());
-        (this.mPresenter = new ListMenuPresenter(R.layout.abc_list_menu_item_layout, R.style.Theme_AppCompat_CompactMenu_Dialog)).setCallback(this);
+        (this.mPresenter = new ListMenuPresenter(R.layout.abc_list_menu_item_layout, R.style.Theme_AppCompat_CompactMenu)).setCallback(this);
         this.mMenu.addMenuPresenter(this.mPresenter);
         alertDialog$Builder.setAdapter(this.mPresenter.getAdapter(), (DialogInterface$OnClickListener)this);
         final View headerView = mMenu.getHeaderView();

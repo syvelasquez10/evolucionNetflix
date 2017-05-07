@@ -6,10 +6,14 @@ package com.google.android.gms.tagmanager;
 
 import com.google.android.gms.internal.d;
 
-class bt implements cl
+class bt implements ck
 {
     @Override
-    public dj e(final d.a a) {
-        return new bw();
+    public cm cE(final String s) {
+        return new bu();
+    }
+    
+    @Override
+    public void d(final d.a a) {
     }
 }

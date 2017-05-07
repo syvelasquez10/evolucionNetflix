@@ -8,37 +8,39 @@ import android.os.Parcel;
 import com.google.android.gms.common.data.DataHolder;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import com.google.android.gms.drive.i;
 
-public class OnListEntriesResponse implements SafeParcelable
+public class OnListEntriesResponse extends i implements SafeParcelable
 {
     public static final Parcelable$Creator<OnListEntriesResponse> CREATOR;
-    final DataHolder FJ;
-    final boolean Fg;
-    final int xH;
+    final int BR;
+    final boolean Or;
+    final DataHolder Pm;
     
     static {
-        CREATOR = (Parcelable$Creator)new ad();
+        CREATOR = (Parcelable$Creator)new an();
     }
     
-    OnListEntriesResponse(final int xh, final DataHolder fj, final boolean fg) {
-        this.xH = xh;
-        this.FJ = fj;
-        this.Fg = fg;
+    OnListEntriesResponse(final int br, final DataHolder pm, final boolean or) {
+        this.BR = br;
+        this.Pm = pm;
+        this.Or = or;
+    }
+    
+    @Override
+    protected void I(final Parcel parcel, final int n) {
+        an.a(this, parcel, n);
     }
     
     public int describeContents() {
         return 0;
     }
     
-    public DataHolder fN() {
-        return this.FJ;
+    public DataHolder ii() {
+        return this.Pm;
     }
     
-    public boolean fO() {
-        return this.Fg;
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        ad.a(this, parcel, n);
+    public boolean ij() {
+        return this.Or;
     }
 }

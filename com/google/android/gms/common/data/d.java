@@ -4,81 +4,98 @@
 
 package com.google.android.gms.common.data;
 
-import java.util.ArrayList;
+import com.google.android.gms.common.internal.m;
+import android.net.Uri;
+import android.database.CharArrayBuffer;
+import com.google.android.gms.common.internal.n;
 
-public abstract class d<T> extends DataBuffer<T>
+public abstract class d
 {
-    private boolean BW;
-    private ArrayList<Integer> BX;
+    protected final DataHolder IC;
+    protected int JQ;
+    private int JR;
     
-    protected d(final DataHolder dataHolder) {
-        super(dataHolder);
-        this.BW = false;
+    public d(final DataHolder dataHolder, final int n) {
+        this.IC = n.i(dataHolder);
+        this.ap(n);
     }
     
-    private void eu() {
-        while (true) {
-            while (true) {
-                int g = 0;
-                Label_0145: {
-                    synchronized (this) {
-                        if (!this.BW) {
-                            final int count = this.BB.getCount();
-                            this.BX = new ArrayList<Integer>();
-                            if (count > 0) {
-                                this.BX.add(0);
-                                final String primaryDataMarkerColumn = this.getPrimaryDataMarkerColumn();
-                                g = this.BB.G(0);
-                                final String string = this.BB.getString(primaryDataMarkerColumn, 0, g);
-                                g = 1;
-                                if (g < count) {
-                                    if (!this.BB.getString(primaryDataMarkerColumn, g, this.BB.G(g)).equals(string)) {
-                                        this.BX.add(g);
-                                    }
-                                    break Label_0145;
-                                }
-                            }
-                            this.BW = true;
-                        }
-                        return;
+    protected void a(final String s, final CharArrayBuffer charArrayBuffer) {
+        this.IC.a(s, this.JQ, this.JR, charArrayBuffer);
+    }
+    
+    public boolean aQ(final String s) {
+        return this.IC.aQ(s);
+    }
+    
+    protected Uri aR(final String s) {
+        return this.IC.g(s, this.JQ, this.JR);
+    }
+    
+    protected boolean aS(final String s) {
+        return this.IC.h(s, this.JQ, this.JR);
+    }
+    
+    protected void ap(final int jq) {
+        n.I(jq >= 0 && jq < this.IC.getCount());
+        this.JQ = jq;
+        this.JR = this.IC.ar(this.JQ);
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        boolean b2;
+        final boolean b = b2 = false;
+        if (o instanceof d) {
+            final d d = (d)o;
+            b2 = b;
+            if (m.equal(d.JQ, this.JQ)) {
+                b2 = b;
+                if (m.equal(d.JR, this.JR)) {
+                    b2 = b;
+                    if (d.IC == this.IC) {
+                        b2 = true;
                     }
                 }
-                ++g;
-                continue;
             }
         }
+        return b2;
     }
     
-    int H(final int n) {
-        if (n < 0 || n >= this.BX.size()) {
-            throw new IllegalArgumentException("Position " + n + " is out of bounds for this buffer");
-        }
-        return this.BX.get(n);
+    protected int gA() {
+        return this.JQ;
     }
     
-    protected int I(final int n) {
-        if (n < 0 || n == this.BX.size()) {
-            return 0;
-        }
-        if (n == this.BX.size() - 1) {
-            return this.BB.getCount() - this.BX.get(n);
-        }
-        return this.BX.get(n + 1) - this.BX.get(n);
+    protected boolean getBoolean(final String s) {
+        return this.IC.d(s, this.JQ, this.JR);
     }
     
-    protected abstract T c(final int p0, final int p1);
+    protected byte[] getByteArray(final String s) {
+        return this.IC.f(s, this.JQ, this.JR);
+    }
+    
+    protected float getFloat(final String s) {
+        return this.IC.e(s, this.JQ, this.JR);
+    }
+    
+    protected int getInteger(final String s) {
+        return this.IC.b(s, this.JQ, this.JR);
+    }
+    
+    protected long getLong(final String s) {
+        return this.IC.a(s, this.JQ, this.JR);
+    }
+    
+    protected String getString(final String s) {
+        return this.IC.c(s, this.JQ, this.JR);
+    }
     
     @Override
-    public final T get(final int n) {
-        this.eu();
-        return this.c(this.H(n), this.I(n));
+    public int hashCode() {
+        return m.hashCode(this.JQ, this.JR, this.IC);
     }
     
-    @Override
-    public int getCount() {
-        this.eu();
-        return this.BX.size();
+    public boolean isDataValid() {
+        return !this.IC.isClosed();
     }
-    
-    protected abstract String getPrimaryDataMarkerColumn();
 }

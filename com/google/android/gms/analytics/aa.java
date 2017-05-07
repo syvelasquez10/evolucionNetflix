@@ -4,56 +4,47 @@
 
 package com.google.android.gms.analytics;
 
-public class aa
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
+
+class aa
 {
-    private static GoogleAnalytics vs;
+    private final Map<String, Integer> AU;
+    private final Map<String, String> AV;
+    private final boolean AW;
+    private final String AX;
     
-    public static boolean cT() {
-        boolean b = false;
-        if (getLogger() != null) {
-            b = b;
-            if (getLogger().getLogLevel() == 0) {
-                b = true;
-            }
-        }
-        return b;
+    aa(final String ax, final boolean aw) {
+        this.AU = new HashMap<String, Integer>();
+        this.AV = new HashMap<String, String>();
+        this.AW = aw;
+        this.AX = ax;
     }
     
-    private static Logger getLogger() {
-        if (aa.vs == null) {
-            aa.vs = GoogleAnalytics.cM();
+    void e(final String s, final int n) {
+        if (!this.AW) {
+            return;
         }
-        if (aa.vs != null) {
-            return aa.vs.getLogger();
+        Integer value;
+        if ((value = this.AU.get(s)) == null) {
+            value = 0;
         }
-        return null;
+        this.AU.put(s, value + n);
     }
     
-    public static void w(final String s) {
-        final Logger logger = getLogger();
-        if (logger != null) {
-            logger.error(s);
+    String eM() {
+        if (!this.AW) {
+            return "";
         }
-    }
-    
-    public static void x(final String s) {
-        final Logger logger = getLogger();
-        if (logger != null) {
-            logger.info(s);
+        final StringBuilder sb = new StringBuilder();
+        sb.append(this.AX);
+        for (final String s : this.AU.keySet()) {
+            sb.append("&").append(s).append("=").append(this.AU.get(s));
         }
-    }
-    
-    public static void y(final String s) {
-        final Logger logger = getLogger();
-        if (logger != null) {
-            logger.verbose(s);
+        for (final String s2 : this.AV.keySet()) {
+            sb.append("&").append(s2).append("=").append(this.AV.get(s2));
         }
-    }
-    
-    public static void z(final String s) {
-        final Logger logger = getLogger();
-        if (logger != null) {
-            logger.warn(s);
-        }
+        return sb.toString();
     }
 }

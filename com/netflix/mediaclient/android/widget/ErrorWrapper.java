@@ -36,9 +36,9 @@ public class ErrorWrapper
             }
         };
         this.callback = callback;
-        this.errorGroup = view.findViewById(2131165354);
-        this.errorMsg = (TextView)view.findViewById(2131165355);
-        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165356)).setOnClickListener(this.retryClickListener);
+        this.errorGroup = view.findViewById(2131165356);
+        this.errorMsg = (TextView)view.findViewById(2131165357);
+        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165358)).setOnClickListener(this.retryClickListener);
         if (view.getContext() instanceof NetflixActivity) {
             final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
             if (netflixActivity.isForKids()) {
@@ -50,15 +50,15 @@ public class ErrorWrapper
     
     private void configureViewsForKidsExperience(final NetflixActivity netflixActivity) {
         final Resources resources = netflixActivity.getResources();
-        this.errorMsg.setTextColor(resources.getColor(2131296306));
-        ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361838);
+        this.errorMsg.setTextColor(resources.getColor(2131296352));
+        ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361864);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131361928);
-        layoutParams.width = resources.getDimensionPixelSize(2131361927);
-        this.retryBtn.setBackgroundResource(2130837753);
-        this.retryBtn.setTextColor(resources.getColor(2131296309));
-        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361843);
+        layoutParams.height = resources.getDimensionPixelSize(2131361954);
+        layoutParams.width = resources.getDimensionPixelSize(2131361953);
+        this.retryBtn.setBackgroundResource(2130837719);
+        this.retryBtn.setTextColor(resources.getColor(2131296355));
+        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361869);
         ViewUtils.setTextViewToBold((TextView)this.retryBtn);
     }
     

@@ -7,9 +7,9 @@ package com.google.android.gms.games.internal.game;
 import android.os.Parcel;
 import android.net.Uri;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.common.data.d;
 
-public final class GameBadgeRef extends b implements GameBadge
+public final class GameBadgeRef extends d implements GameBadge
 {
     GameBadgeRef(final DataHolder dataHolder, final int n) {
         super(dataHolder, n);
@@ -31,7 +31,7 @@ public final class GameBadgeRef extends b implements GameBadge
     
     @Override
     public Uri getIconImageUri() {
-        return this.ah("badge_icon_image_uri");
+        return this.aR("badge_icon_image_uri");
     }
     
     @Override
@@ -49,7 +49,7 @@ public final class GameBadgeRef extends b implements GameBadge
         return GameBadgeEntity.a(this);
     }
     
-    public GameBadge hh() {
+    public GameBadge la() {
         return new GameBadgeEntity(this);
     }
     
@@ -59,6 +59,6 @@ public final class GameBadgeRef extends b implements GameBadge
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        ((GameBadgeEntity)this.hh()).writeToParcel(parcel, n);
+        ((GameBadgeEntity)this.la()).writeToParcel(parcel, n);
     }
 }

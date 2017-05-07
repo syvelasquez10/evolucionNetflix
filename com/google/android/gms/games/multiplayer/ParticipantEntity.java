@@ -5,10 +5,10 @@
 package com.google.android.gms.games.multiplayer;
 
 import android.os.Parcel;
-import com.google.android.gms.internal.gm;
+import com.google.android.gms.internal.jv;
 import android.database.CharArrayBuffer;
-import com.google.android.gms.internal.fe;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.c;
+import com.google.android.gms.common.internal.m;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.PlayerEntity;
 import android.net.Uri;
@@ -18,66 +18,66 @@ import com.google.android.gms.games.internal.GamesDowngradeableSafeParcel;
 public final class ParticipantEntity extends GamesDowngradeableSafeParcel implements Participant
 {
     public static final Parcelable$Creator<ParticipantEntity> CREATOR;
-    private final String HA;
-    private final Uri HF;
-    private final Uri HG;
-    private final String HQ;
-    private final String HR;
-    private final String Is;
-    private final String Jg;
-    private final PlayerEntity LH;
-    private final int MB;
-    private final boolean MC;
-    private final int MD;
-    private final ParticipantResult ME;
-    private final int xH;
+    private final int BR;
+    private final int EZ;
+    private final int Fa;
+    private final String Nz;
+    private final Uri UW;
+    private final Uri UX;
+    private final PlayerEntity VW;
+    private final String Vh;
+    private final String Vi;
+    private final String Wf;
+    private final String Xg;
+    private final boolean abV;
+    private final ParticipantResult abW;
     
     static {
         CREATOR = (Parcelable$Creator)new ParticipantEntityCreatorCompat();
     }
     
-    ParticipantEntity(final int xh, final String jg, final String ha, final Uri hf, final Uri hg, final int mb, final String is, final boolean mc, final PlayerEntity lh, final int md, final ParticipantResult me, final String hq, final String hr) {
-        this.xH = xh;
-        this.Jg = jg;
-        this.HA = ha;
-        this.HF = hf;
-        this.HG = hg;
-        this.MB = mb;
-        this.Is = is;
-        this.MC = mc;
-        this.LH = lh;
-        this.MD = md;
-        this.ME = me;
-        this.HQ = hq;
-        this.HR = hr;
+    ParticipantEntity(final int br, final String xg, final String nz, final Uri uw, final Uri ux, final int fa, final String wf, final boolean abV, final PlayerEntity vw, final int ez, final ParticipantResult abW, final String vh, final String vi) {
+        this.BR = br;
+        this.Xg = xg;
+        this.Nz = nz;
+        this.UW = uw;
+        this.UX = ux;
+        this.Fa = fa;
+        this.Wf = wf;
+        this.abV = abV;
+        this.VW = vw;
+        this.EZ = ez;
+        this.abW = abW;
+        this.Vh = vh;
+        this.Vi = vi;
     }
     
     public ParticipantEntity(final Participant participant) {
-        this.xH = 3;
-        this.Jg = participant.getParticipantId();
-        this.HA = participant.getDisplayName();
-        this.HF = participant.getIconImageUri();
-        this.HG = participant.getHiResImageUri();
-        this.MB = participant.getStatus();
-        this.Is = participant.gi();
-        this.MC = participant.isConnectedToRoom();
+        this.BR = 3;
+        this.Xg = participant.getParticipantId();
+        this.Nz = participant.getDisplayName();
+        this.UW = participant.getIconImageUri();
+        this.UX = participant.getHiResImageUri();
+        this.Fa = participant.getStatus();
+        this.Wf = participant.jU();
+        this.abV = participant.isConnectedToRoom();
         final Player player = participant.getPlayer();
-        PlayerEntity lh;
+        PlayerEntity vw;
         if (player == null) {
-            lh = null;
+            vw = null;
         }
         else {
-            lh = new PlayerEntity(player);
+            vw = new PlayerEntity(player);
         }
-        this.LH = lh;
-        this.MD = participant.getCapabilities();
-        this.ME = participant.getResult();
-        this.HQ = participant.getIconImageUrl();
-        this.HR = participant.getHiResImageUrl();
+        this.VW = vw;
+        this.EZ = participant.getCapabilities();
+        this.abW = participant.getResult();
+        this.Vh = participant.getIconImageUrl();
+        this.Vi = participant.getHiResImageUrl();
     }
     
     static int a(final Participant participant) {
-        return fo.hashCode(participant.getPlayer(), participant.getStatus(), participant.gi(), participant.isConnectedToRoom(), participant.getDisplayName(), participant.getIconImageUri(), participant.getHiResImageUri(), participant.getCapabilities(), participant.getResult(), participant.getParticipantId());
+        return m.hashCode(participant.getPlayer(), participant.getStatus(), participant.jU(), participant.isConnectedToRoom(), participant.getDisplayName(), participant.getIconImageUri(), participant.getHiResImageUri(), participant.getCapabilities(), participant.getResult(), participant.getParticipantId());
     }
     
     static boolean a(final Participant participant, final Object o) {
@@ -90,9 +90,9 @@ public final class ParticipantEntity extends GamesDowngradeableSafeParcel implem
             b2 = b;
             if (participant != o) {
                 final Participant participant2 = (Participant)o;
-                if (fo.equal(participant2.getPlayer(), participant.getPlayer()) && fo.equal(participant2.getStatus(), participant.getStatus()) && fo.equal(participant2.gi(), participant.gi()) && fo.equal(participant2.isConnectedToRoom(), participant.isConnectedToRoom()) && fo.equal(participant2.getDisplayName(), participant.getDisplayName()) && fo.equal(participant2.getIconImageUri(), participant.getIconImageUri()) && fo.equal(participant2.getHiResImageUri(), participant.getHiResImageUri()) && fo.equal(participant2.getCapabilities(), participant.getCapabilities()) && fo.equal(participant2.getResult(), participant.getResult())) {
+                if (m.equal(participant2.getPlayer(), participant.getPlayer()) && m.equal(participant2.getStatus(), participant.getStatus()) && m.equal(participant2.jU(), participant.jU()) && m.equal(participant2.isConnectedToRoom(), participant.isConnectedToRoom()) && m.equal(participant2.getDisplayName(), participant.getDisplayName()) && m.equal(participant2.getIconImageUri(), participant.getIconImageUri()) && m.equal(participant2.getHiResImageUri(), participant.getHiResImageUri()) && m.equal(participant2.getCapabilities(), participant.getCapabilities()) && m.equal(participant2.getResult(), participant.getResult())) {
                     b2 = b;
-                    if (fo.equal(participant2.getParticipantId(), participant.getParticipantId())) {
+                    if (m.equal(participant2.getParticipantId(), participant.getParticipantId())) {
                         return b2;
                     }
                 }
@@ -103,7 +103,7 @@ public final class ParticipantEntity extends GamesDowngradeableSafeParcel implem
     }
     
     static String b(final Participant participant) {
-        return fo.e(participant).a("ParticipantId", participant.getParticipantId()).a("Player", participant.getPlayer()).a("Status", participant.getStatus()).a("ClientAddress", participant.gi()).a("ConnectedToRoom", participant.isConnectedToRoom()).a("DisplayName", participant.getDisplayName()).a("IconImage", participant.getIconImageUri()).a("IconImageUrl", participant.getIconImageUrl()).a("HiResImage", participant.getHiResImageUri()).a("HiResImageUrl", participant.getHiResImageUrl()).a("Capabilities", participant.getCapabilities()).a("Result", participant.getResult()).toString();
+        return m.h(participant).a("ParticipantId", participant.getParticipantId()).a("Player", participant.getPlayer()).a("Status", participant.getStatus()).a("ClientAddress", participant.jU()).a("ConnectedToRoom", participant.isConnectedToRoom()).a("DisplayName", participant.getDisplayName()).a("IconImage", participant.getIconImageUri()).a("IconImageUrl", participant.getIconImageUrl()).a("HiResImage", participant.getHiResImageUri()).a("HiResImageUrl", participant.getHiResImageUrl()).a("Capabilities", participant.getCapabilities()).a("Result", participant.getResult()).toString();
     }
     
     public int describeContents() {
@@ -121,85 +121,80 @@ public final class ParticipantEntity extends GamesDowngradeableSafeParcel implem
     
     @Override
     public int getCapabilities() {
-        return this.MD;
+        return this.EZ;
     }
     
     @Override
     public String getDisplayName() {
-        if (this.LH == null) {
-            return this.HA;
+        if (this.VW == null) {
+            return this.Nz;
         }
-        return this.LH.getDisplayName();
+        return this.VW.getDisplayName();
     }
     
     @Override
     public void getDisplayName(final CharArrayBuffer charArrayBuffer) {
-        if (this.LH == null) {
-            gm.b(this.HA, charArrayBuffer);
+        if (this.VW == null) {
+            jv.b(this.Nz, charArrayBuffer);
             return;
         }
-        this.LH.getDisplayName(charArrayBuffer);
+        this.VW.getDisplayName(charArrayBuffer);
     }
     
     @Override
     public Uri getHiResImageUri() {
-        if (this.LH == null) {
-            return this.HG;
+        if (this.VW == null) {
+            return this.UX;
         }
-        return this.LH.getHiResImageUri();
+        return this.VW.getHiResImageUri();
     }
     
     @Override
     public String getHiResImageUrl() {
-        if (this.LH == null) {
-            return this.HR;
+        if (this.VW == null) {
+            return this.Vi;
         }
-        return this.LH.getHiResImageUrl();
+        return this.VW.getHiResImageUrl();
     }
     
     @Override
     public Uri getIconImageUri() {
-        if (this.LH == null) {
-            return this.HF;
+        if (this.VW == null) {
+            return this.UW;
         }
-        return this.LH.getIconImageUri();
+        return this.VW.getIconImageUri();
     }
     
     @Override
     public String getIconImageUrl() {
-        if (this.LH == null) {
-            return this.HQ;
+        if (this.VW == null) {
+            return this.Vh;
         }
-        return this.LH.getIconImageUrl();
+        return this.VW.getIconImageUrl();
     }
     
     @Override
     public String getParticipantId() {
-        return this.Jg;
+        return this.Xg;
     }
     
     @Override
     public Player getPlayer() {
-        return this.LH;
+        return this.VW;
     }
     
     @Override
     public ParticipantResult getResult() {
-        return this.ME;
+        return this.abW;
     }
     
     @Override
     public int getStatus() {
-        return this.MB;
+        return this.Fa;
     }
     
     public int getVersionCode() {
-        return this.xH;
-    }
-    
-    @Override
-    public String gi() {
-        return this.Is;
+        return this.BR;
     }
     
     @Override
@@ -209,11 +204,16 @@ public final class ParticipantEntity extends GamesDowngradeableSafeParcel implem
     
     @Override
     public boolean isConnectedToRoom() {
-        return this.MC;
+        return this.abV;
     }
     
     public boolean isDataValid() {
         return true;
+    }
+    
+    @Override
+    public String jU() {
+        return this.Wf;
     }
     
     @Override
@@ -224,32 +224,32 @@ public final class ParticipantEntity extends GamesDowngradeableSafeParcel implem
     public void writeToParcel(final Parcel parcel, final int n) {
         final String s = null;
         final boolean b = false;
-        if (!this.eK()) {
+        if (!this.gQ()) {
             ParticipantEntityCreator.a(this, parcel, n);
         }
         else {
-            parcel.writeString(this.Jg);
-            parcel.writeString(this.HA);
+            parcel.writeString(this.Xg);
+            parcel.writeString(this.Nz);
             String string;
-            if (this.HF == null) {
+            if (this.UW == null) {
                 string = null;
             }
             else {
-                string = this.HF.toString();
+                string = this.UW.toString();
             }
             parcel.writeString(string);
             String string2;
-            if (this.HG == null) {
+            if (this.UX == null) {
                 string2 = s;
             }
             else {
-                string2 = this.HG.toString();
+                string2 = this.UX.toString();
             }
             parcel.writeString(string2);
-            parcel.writeInt(this.MB);
-            parcel.writeString(this.Is);
+            parcel.writeInt(this.Fa);
+            parcel.writeString(this.Wf);
             int n2;
-            if (this.MC) {
+            if (this.abV) {
                 n2 = 1;
             }
             else {
@@ -257,15 +257,15 @@ public final class ParticipantEntity extends GamesDowngradeableSafeParcel implem
             }
             parcel.writeInt(n2);
             int n3;
-            if (this.LH == null) {
+            if (this.VW == null) {
                 n3 = (b ? 1 : 0);
             }
             else {
                 n3 = 1;
             }
             parcel.writeInt(n3);
-            if (this.LH != null) {
-                this.LH.writeToParcel(parcel, n);
+            if (this.VW != null) {
+                this.VW.writeToParcel(parcel, n);
             }
         }
     }
@@ -273,10 +273,10 @@ public final class ParticipantEntity extends GamesDowngradeableSafeParcel implem
     static final class ParticipantEntityCreatorCompat extends ParticipantEntityCreator
     {
         @Override
-        public ParticipantEntity av(final Parcel parcel) {
+        public ParticipantEntity cm(final Parcel parcel) {
             int n = 1;
-            if (GamesDowngradeableSafeParcel.c(fe.eJ()) || fe.al(ParticipantEntity.class.getCanonicalName())) {
-                return super.av(parcel);
+            if (GamesDowngradeableSafeParcel.c(c.gP()) || c.aV(ParticipantEntity.class.getCanonicalName())) {
+                return super.cm(parcel);
             }
             final String string = parcel.readString();
             final String string2 = parcel.readString();

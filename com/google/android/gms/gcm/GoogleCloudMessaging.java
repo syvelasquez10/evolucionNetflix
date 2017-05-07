@@ -25,21 +25,21 @@ public class GoogleCloudMessaging
     public static final String MESSAGE_TYPE_DELETED = "deleted_messages";
     public static final String MESSAGE_TYPE_MESSAGE = "gcm";
     public static final String MESSAGE_TYPE_SEND_ERROR = "send_error";
-    static GoogleCloudMessaging Nq;
-    private PendingIntent Nr;
-    final BlockingQueue<Intent> Ns;
-    private Handler Nt;
-    private Messenger Nu;
-    private Context kI;
+    static GoogleCloudMessaging adk;
+    private PendingIntent adl;
+    final BlockingQueue<Intent> adm;
+    private Handler adn;
+    private Messenger ado;
+    private Context lB;
     
     public GoogleCloudMessaging() {
-        this.Ns = new LinkedBlockingQueue<Intent>();
-        this.Nt = new Handler(Looper.getMainLooper()) {
+        this.adm = new LinkedBlockingQueue<Intent>();
+        this.adn = new Handler(Looper.getMainLooper()) {
             public void handleMessage(final Message message) {
-                GoogleCloudMessaging.this.Ns.add((Intent)message.obj);
+                GoogleCloudMessaging.this.adm.add((Intent)message.obj);
             }
         };
-        this.Nu = new Messenger(this.Nt);
+        this.ado = new Messenger(this.adn);
     }
     
     private void a(final String s, final String s2, final long n, final int n2, final Bundle bundle) throws IOException {
@@ -51,60 +51,49 @@ public class GoogleCloudMessaging
         }
         final Intent intent = new Intent("com.google.android.gcm.intent.SEND");
         intent.putExtras(bundle);
-        this.c(intent);
+        this.j(intent);
         intent.setPackage("com.google.android.gms");
         intent.putExtra("google.to", s);
         intent.putExtra("google.message_id", s2);
         intent.putExtra("google.ttl", Long.toString(n));
         intent.putExtra("google.delay", Integer.toString(n2));
-        this.kI.sendOrderedBroadcast(intent, "com.google.android.gtalkservice.permission.GTALK_SERVICE");
+        this.lB.sendOrderedBroadcast(intent, "com.google.android.gtalkservice.permission.GTALK_SERVICE");
     }
     
-    private void c(final String... array) {
-        final String d = this.d(array);
+    private void d(final String... array) {
+        final String e = this.e(array);
         final Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
         intent.setPackage("com.google.android.gms");
-        intent.putExtra("google.messenger", (Parcelable)this.Nu);
-        this.c(intent);
-        intent.putExtra("sender", d);
-        this.kI.startService(intent);
+        intent.putExtra("google.messenger", (Parcelable)this.ado);
+        this.j(intent);
+        intent.putExtra("sender", e);
+        this.lB.startService(intent);
     }
     
-    public static GoogleCloudMessaging getInstance(final Context ki) {
+    public static GoogleCloudMessaging getInstance(final Context lb) {
         synchronized (GoogleCloudMessaging.class) {
-            if (GoogleCloudMessaging.Nq == null) {
-                GoogleCloudMessaging.Nq = new GoogleCloudMessaging();
-                GoogleCloudMessaging.Nq.kI = ki;
+            if (GoogleCloudMessaging.adk == null) {
+                GoogleCloudMessaging.adk = new GoogleCloudMessaging();
+                GoogleCloudMessaging.adk.lB = lb;
             }
-            return GoogleCloudMessaging.Nq;
+            return GoogleCloudMessaging.adk;
         }
     }
     
-    private void hL() {
+    private void lL() {
         final Intent intent = new Intent("com.google.android.c2dm.intent.UNREGISTER");
         intent.setPackage("com.google.android.gms");
-        this.Ns.clear();
-        intent.putExtra("google.messenger", (Parcelable)this.Nu);
-        this.c(intent);
-        this.kI.startService(intent);
-    }
-    
-    void c(final Intent intent) {
-        synchronized (this) {
-            if (this.Nr == null) {
-                final Intent intent2 = new Intent();
-                intent2.setPackage("com.google.example.invalidpackage");
-                this.Nr = PendingIntent.getBroadcast(this.kI, 0, intent2, 0);
-            }
-            intent.putExtra("app", (Parcelable)this.Nr);
-        }
+        this.adm.clear();
+        intent.putExtra("google.messenger", (Parcelable)this.ado);
+        this.j(intent);
+        this.lB.startService(intent);
     }
     
     public void close() {
-        this.hM();
+        this.lM();
     }
     
-    String d(final String... array) {
+    String e(final String... array) {
         if (array == null || array.length == 0) {
             throw new IllegalArgumentException("No senderIds");
         }
@@ -126,11 +115,22 @@ public class GoogleCloudMessaging
         return stringExtra;
     }
     
-    void hM() {
+    void j(final Intent intent) {
         synchronized (this) {
-            if (this.Nr != null) {
-                this.Nr.cancel();
-                this.Nr = null;
+            if (this.adl == null) {
+                final Intent intent2 = new Intent();
+                intent2.setPackage("com.google.example.invalidpackage");
+                this.adl = PendingIntent.getBroadcast(this.lB, 0, intent2, 0);
+            }
+            intent.putExtra("app", (Parcelable)this.adl);
+        }
+    }
+    
+    void lM() {
+        synchronized (this) {
+            if (this.adl != null) {
+                this.adl.cancel();
+                this.adl = null;
             }
         }
     }
@@ -139,11 +139,11 @@ public class GoogleCloudMessaging
         if (Looper.getMainLooper() == Looper.myLooper()) {
             throw new IOException("MAIN_THREAD");
         }
-        this.Ns.clear();
-        this.c(array);
+        this.adm.clear();
+        this.d(array);
         Intent intent;
         try {
-            intent = this.Ns.poll(5000L, TimeUnit.MILLISECONDS);
+            intent = this.adm.poll(5000L, TimeUnit.MILLISECONDS);
             if (intent == null) {
                 throw new IOException("SERVICE_NOT_AVAILABLE");
             }
@@ -175,10 +175,10 @@ public class GoogleCloudMessaging
         if (Looper.getMainLooper() == Looper.myLooper()) {
             throw new IOException("MAIN_THREAD");
         }
-        this.hL();
+        this.lL();
         Intent intent;
         try {
-            intent = this.Ns.poll(5000L, TimeUnit.MILLISECONDS);
+            intent = this.adm.poll(5000L, TimeUnit.MILLISECONDS);
             if (intent == null) {
                 throw new IOException("SERVICE_NOT_AVAILABLE");
             }

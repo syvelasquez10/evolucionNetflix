@@ -4,169 +4,231 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.drive.query.Filters;
-import com.google.android.gms.drive.query.SearchableField;
-import com.google.android.gms.drive.query.Query;
-import com.google.android.gms.drive.DriveApi;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.a;
+import android.os.IInterface;
+import com.google.android.gms.common.internal.j;
+import com.google.android.gms.common.internal.k;
+import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
 import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.drive.Contents;
-import com.google.android.gms.drive.MetadataChangeSet;
+import android.os.IBinder;
+import android.content.pm.ServiceInfo;
+import java.util.List;
+import android.content.pm.ResolveInfo;
+import android.content.Intent;
+import com.google.android.gms.common.internal.n;
+import java.util.HashMap;
+import com.google.android.gms.common.internal.ClientSettings;
+import android.os.Looper;
+import android.content.Context;
+import com.google.android.gms.drive.events.c;
+import java.util.Map;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.DriveFolder;
+import android.os.Bundle;
+import com.google.android.gms.common.internal.d;
 
-public class q extends r implements DriveFolder
+public class q extends d<ab>
 {
-    public q(final DriveId driveId) {
-        super(driveId);
+    private final String Dd;
+    private final String IH;
+    private final Bundle Os;
+    private final boolean Ot;
+    private DriveId Ou;
+    private DriveId Ov;
+    final GoogleApiClient.ConnectionCallbacks Ow;
+    final Map<DriveId, Map<com.google.android.gms.drive.events.c, y>> Ox;
+    
+    public q(final Context context, final Looper looper, final ClientSettings clientSettings, final GoogleApiClient.ConnectionCallbacks ow, final GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener, final String[] array, final Bundle os) {
+        super(context, looper, ow, onConnectionFailedListener, array);
+        this.Ox = new HashMap<DriveId, Map<com.google.android.gms.drive.events.c, y>>();
+        this.Dd = n.b(clientSettings.getAccountNameOrDefault(), (Object)"Must call Api.ClientBuilder.setAccountName()");
+        this.IH = clientSettings.getRealClientPackageName();
+        this.Ow = ow;
+        this.Os = os;
+        final Intent intent = new Intent("com.google.android.gms.drive.events.HANDLE_EVENT");
+        intent.setPackage(context.getPackageName());
+        final List queryIntentServices = context.getPackageManager().queryIntentServices(intent, 0);
+        switch (queryIntentServices.size()) {
+            default: {
+                throw new IllegalStateException("AndroidManifest.xml can only define one service that handles the " + intent.getAction() + " action");
+            }
+            case 0: {
+                this.Ot = false;
+            }
+            case 1: {
+                final ServiceInfo serviceInfo = queryIntentServices.get(0).serviceInfo;
+                if (!serviceInfo.exported) {
+                    throw new IllegalStateException("Drive event service " + serviceInfo.name + " must be exported in AndroidManifest.xml");
+                }
+                this.Ot = true;
+            }
+        }
     }
     
-    @Override
-    public PendingResult<DriveFileResult> createFile(final GoogleApiClient googleApiClient, final MetadataChangeSet set, final Contents contents) {
-        if (set == null) {
-            throw new IllegalArgumentException("MetatadataChangeSet must be provided.");
+    protected ab T(final IBinder binder) {
+        return ab.a.U(binder);
+    }
+    
+    PendingResult<Status> a(final GoogleApiClient googleApiClient, final DriveId driveId, final int n) {
+        n.b(com.google.android.gms.drive.events.d.a(n, driveId), (Object)"id");
+        n.i("eventService");
+        n.a(this.isConnected(), (Object)"Client must be connected");
+        if (!this.Ot) {
+            throw new IllegalStateException("Application must define an exported DriveEventService subclass in AndroidManifest.xml to add event subscriptions");
         }
-        if (contents == null) {
-            throw new IllegalArgumentException("Contents must be provided.");
-        }
-        if ("application/vnd.google-apps.folder".equals(set.getMimeType())) {
-            throw new IllegalArgumentException("May not create folders (mimetype: application/vnd.google-apps.folder) using this method. Use DriveFolder.createFolder() instead.");
-        }
-        return googleApiClient.b((PendingResult<DriveFileResult>)new m<DriveFileResult>() {
-            protected void a(final n n) throws RemoteException {
-                contents.close();
-                n.fE().a(new CreateFileRequest(q.this.getDriveId(), set.fD(), contents), new q.a((a.d<DriveFileResult>)this));
-            }
-            
-            public DriveFileResult q(final Status status) {
-                return new q.d(status, null);
+        return googleApiClient.b((PendingResult<Status>)new p.a() {
+            protected void a(final q q) throws RemoteException {
+                q.hY().a(new AddEventListenerRequest(driveId, n), null, null, new bb((BaseImplementation.b<Status>)this));
             }
         });
     }
     
+    PendingResult<Status> a(final GoogleApiClient googleApiClient, final DriveId driveId, final int n, com.google.android.gms.drive.events.c c) {
+        while (true) {
+            n.b(com.google.android.gms.drive.events.d.a(n, driveId), (Object)"id");
+            n.b(c, "listener");
+            n.a(this.isConnected(), (Object)"Client must be connected");
+            while (true) {
+                Label_0199: {
+                    synchronized (this.Ox) {
+                        Map<com.google.android.gms.drive.events.c, y> map = this.Ox.get(driveId);
+                        if (map == null) {
+                            map = new HashMap<com.google.android.gms.drive.events.c, y>();
+                            this.Ox.put(driveId, map);
+                            final Object o = map.get(c);
+                            if (o == null) {
+                                final y y = new y(this.getLooper(), this.getContext(), n, c);
+                                map.put(c, y);
+                                c = (com.google.android.gms.drive.events.c)y;
+                            }
+                            else {
+                                c = (com.google.android.gms.drive.events.c)o;
+                                if (((y)o).br(n)) {
+                                    return (PendingResult<Status>)new o.m(googleApiClient, Status.Jo);
+                                }
+                            }
+                            ((y)c).bq(n);
+                            return googleApiClient.b((PendingResult<Status>)new p.a() {
+                                protected void a(final q q) throws RemoteException {
+                                    q.hY().a(new AddEventListenerRequest(driveId, n), c, null, new bb((BaseImplementation.b<Status>)this));
+                                }
+                            });
+                        }
+                        break Label_0199;
+                    }
+                }
+                continue;
+            }
+        }
+    }
+    
     @Override
-    public PendingResult<DriveFolderResult> createFolder(final GoogleApiClient googleApiClient, final MetadataChangeSet set) {
-        if (set == null) {
-            throw new IllegalArgumentException("MetatadataChangeSet must be provided.");
+    protected void a(final int n, final IBinder binder, final Bundle bundle) {
+        if (bundle != null) {
+            bundle.setClassLoader(this.getClass().getClassLoader());
+            this.Ou = (DriveId)bundle.getParcelable("com.google.android.gms.drive.root_id");
+            this.Ov = (DriveId)bundle.getParcelable("com.google.android.gms.drive.appdata_id");
         }
-        if (set.getMimeType() != null && !set.getMimeType().equals("application/vnd.google-apps.folder")) {
-            throw new IllegalArgumentException("The mimetype must be of type application/vnd.google-apps.folder");
+        super.a(n, binder, bundle);
+    }
+    
+    @Override
+    protected void a(final k k, final e e) throws RemoteException {
+        final String packageName = this.getContext().getPackageName();
+        n.i(e);
+        n.i(packageName);
+        n.i(this.gR());
+        final Bundle bundle = new Bundle();
+        if (!packageName.equals(this.IH)) {
+            bundle.putString("proxy_package_name", this.IH);
         }
-        return googleApiClient.b((PendingResult<DriveFolderResult>)new c() {
-            protected void a(final n n) throws RemoteException {
-                n.fE().a(new CreateFolderRequest(q.this.getDriveId(), set.fD()), new q.b((a.d<DriveFolderResult>)this));
+        bundle.putAll(this.Os);
+        k.a(e, 6111000, packageName, this.gR(), this.Dd, bundle);
+    }
+    
+    PendingResult<Status> b(final GoogleApiClient googleApiClient, final DriveId driveId, final int n) {
+        n.b(com.google.android.gms.drive.events.d.a(n, driveId), (Object)"id");
+        n.i("eventService");
+        n.a(this.isConnected(), (Object)"Client must be connected");
+        return googleApiClient.b((PendingResult<Status>)new p.a() {
+            protected void a(final q q) throws RemoteException {
+                q.hY().a(new RemoveEventListenerRequest(driveId, n), null, null, new bb((BaseImplementation.b<Status>)this));
             }
         });
     }
     
-    @Override
-    public PendingResult<DriveApi.MetadataBufferResult> listChildren(final GoogleApiClient googleApiClient) {
-        return this.queryChildren(googleApiClient, null);
-    }
-    
-    @Override
-    public PendingResult<DriveApi.MetadataBufferResult> queryChildren(final GoogleApiClient googleApiClient, final Query query) {
-        final Query.Builder addFilter = new Query.Builder().addFilter(Filters.in(SearchableField.PARENTS, this.getDriveId()));
-        if (query != null) {
-            if (query.getFilter() != null) {
-                addFilter.addFilter(query.getFilter());
+    PendingResult<Status> b(final GoogleApiClient googleApiClient, final DriveId driveId, final int n, com.google.android.gms.drive.events.c c) {
+        n.b(com.google.android.gms.drive.events.d.a(n, driveId), (Object)"id");
+        n.a(this.isConnected(), (Object)"Client must be connected");
+        n.b(c, "listener");
+        final Map<com.google.android.gms.drive.events.c, y> map;
+        synchronized (this.Ox) {
+            map = this.Ox.get(driveId);
+            if (map == null) {
+                return (PendingResult<Status>)new o.m(googleApiClient, Status.Jo);
             }
-            addFilter.setPageToken(query.getPageToken());
-            addFilter.a(query.fV());
+            c = (com.google.android.gms.drive.events.c)map.remove(c);
+            if (c == null) {
+                return (PendingResult<Status>)new o.m(googleApiClient, Status.Jo);
+            }
         }
-        return new l().query(googleApiClient, addFilter.build());
+        if (map.isEmpty()) {
+            this.Ox.remove(driveId);
+        }
+        final GoogleApiClient googleApiClient2;
+        final p.a b = googleApiClient2.b(new p.a() {
+            protected void a(final q q) throws RemoteException {
+                q.hY().a(new RemoveEventListenerRequest(driveId, n), c, null, new bb((BaseImplementation.b<Status>)this));
+            }
+        });
+        // monitorexit(map2)
+        return (PendingResult<Status>)b;
     }
     
-    private static class a extends c
-    {
-        private final com.google.android.gms.common.api.a.d<DriveFileResult> wH;
-        
-        public a(final com.google.android.gms.common.api.a.d<DriveFileResult> wh) {
-            this.wH = wh;
-        }
-        
-        @Override
-        public void a(final OnDriveIdResponse onDriveIdResponse) throws RemoteException {
-            this.wH.b(new d(Status.Bv, new o(onDriveIdResponse.getDriveId())));
-        }
-        
-        @Override
-        public void m(final Status status) throws RemoteException {
-            this.wH.b(new d(status, null));
-        }
-    }
-    
-    private static class b extends c
-    {
-        private final com.google.android.gms.common.api.a.d<DriveFolderResult> wH;
-        
-        public b(final com.google.android.gms.common.api.a.d<DriveFolderResult> wh) {
-            this.wH = wh;
-        }
-        
-        @Override
-        public void a(final OnDriveIdResponse onDriveIdResponse) throws RemoteException {
-            this.wH.b(new e(Status.Bv, new q(onDriveIdResponse.getDriveId())));
-        }
-        
-        @Override
-        public void m(final Status status) throws RemoteException {
-            this.wH.b(new e(status, null));
+    @Override
+    public void disconnect() {
+        final ab ab = this.gS();
+        while (true) {
+            if (ab == null) {
+                break Label_0025;
+            }
+            try {
+                ab.a(new DisconnectRequest());
+                super.disconnect();
+                this.Ox.clear();
+            }
+            catch (RemoteException ex) {
+                continue;
+            }
+            break;
         }
     }
     
-    private abstract class c extends m<DriveFolderResult>
-    {
-        public DriveFolderResult r(final Status status) {
-            return new e(status, null);
-        }
+    @Override
+    protected String getServiceDescriptor() {
+        return "com.google.android.gms.drive.internal.IDriveService";
     }
     
-    private static class d implements DriveFileResult
-    {
-        private final DriveFile Fv;
-        private final Status wJ;
-        
-        public d(final Status wj, final DriveFile fv) {
-            this.wJ = wj;
-            this.Fv = fv;
-        }
-        
-        @Override
-        public DriveFile getDriveFile() {
-            return this.Fv;
-        }
-        
-        @Override
-        public Status getStatus() {
-            return this.wJ;
-        }
+    @Override
+    protected String getStartServiceAction() {
+        return "com.google.android.gms.drive.ApiService.START";
     }
     
-    private static class e implements DriveFolderResult
-    {
-        private final DriveFolder Fw;
-        private final Status wJ;
-        
-        public e(final Status wj, final DriveFolder fw) {
-            this.wJ = wj;
-            this.Fw = fw;
-        }
-        
-        @Override
-        public DriveFolder getDriveFolder() {
-            return this.Fw;
-        }
-        
-        @Override
-        public Status getStatus() {
-            return this.wJ;
-        }
+    public ab hY() {
+        return this.gS();
+    }
+    
+    public DriveId hZ() {
+        return this.Ou;
+    }
+    
+    public DriveId ia() {
+        return this.Ov;
+    }
+    
+    public boolean ib() {
+        return this.Ot;
     }
 }

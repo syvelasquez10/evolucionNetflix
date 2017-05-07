@@ -6,49 +6,52 @@ package com.google.android.gms.location;
 
 import android.os.Parcel;
 import android.os.SystemClock;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class LocationRequest implements SafeParcelable
 {
-    public static final LocationRequestCreator CREATOR;
+    public static final b CREATOR;
     public static final int PRIORITY_BALANCED_POWER_ACCURACY = 102;
     public static final int PRIORITY_HIGH_ACCURACY = 100;
     public static final int PRIORITY_LOW_POWER = 104;
     public static final int PRIORITY_NO_POWER = 105;
-    long NV;
-    long Oc;
-    long Od;
-    boolean Oe;
-    int Of;
-    float Og;
+    private final int BR;
+    boolean Uz;
+    long adX;
+    long aeh;
+    long aei;
+    int aej;
+    float aek;
+    long ael;
     int mPriority;
-    private final int xH;
     
     static {
-        CREATOR = new LocationRequestCreator();
+        CREATOR = new b();
     }
     
     public LocationRequest() {
-        this.xH = 1;
+        this.BR = 1;
         this.mPriority = 102;
-        this.Oc = 3600000L;
-        this.Od = 600000L;
-        this.Oe = false;
-        this.NV = Long.MAX_VALUE;
-        this.Of = Integer.MAX_VALUE;
-        this.Og = 0.0f;
+        this.aeh = 3600000L;
+        this.aei = 600000L;
+        this.Uz = false;
+        this.adX = Long.MAX_VALUE;
+        this.aej = Integer.MAX_VALUE;
+        this.aek = 0.0f;
+        this.ael = 0L;
     }
     
-    LocationRequest(final int xh, final int mPriority, final long oc, final long od, final boolean oe, final long nv, final int of, final float og) {
-        this.xH = xh;
+    LocationRequest(final int br, final int mPriority, final long aeh, final long aei, final boolean uz, final long adX, final int aej, final float aek, final long ael) {
+        this.BR = br;
         this.mPriority = mPriority;
-        this.Oc = oc;
-        this.Od = od;
-        this.Oe = oe;
-        this.NV = nv;
-        this.Of = of;
-        this.Og = og;
+        this.aeh = aeh;
+        this.aei = aei;
+        this.Uz = uz;
+        this.adX = adX;
+        this.aej = aej;
+        this.aek = aek;
+        this.ael = ael;
     }
     
     private static void a(final float n) {
@@ -57,7 +60,11 @@ public final class LocationRequest implements SafeParcelable
         }
     }
     
-    private static void bw(final int n) {
+    public static LocationRequest create() {
+        return new LocationRequest();
+    }
+    
+    private static void ea(final int n) {
         switch (n) {
             default: {
                 throw new IllegalArgumentException("invalid quality: " + n);
@@ -69,7 +76,7 @@ public final class LocationRequest implements SafeParcelable
         }
     }
     
-    public static String bx(final int n) {
+    public static String eb(final int n) {
         switch (n) {
             default: {
                 return "???";
@@ -89,11 +96,7 @@ public final class LocationRequest implements SafeParcelable
         }
     }
     
-    public static LocationRequest create() {
-        return new LocationRequest();
-    }
-    
-    private static void s(final long n) {
+    private static void v(final long n) {
         if (n < 0L) {
             throw new IllegalArgumentException("invalid interval: " + n);
         }
@@ -110,7 +113,7 @@ public final class LocationRequest implements SafeParcelable
                 return false;
             }
             final LocationRequest locationRequest = (LocationRequest)o;
-            if (this.mPriority != locationRequest.mPriority || this.Oc != locationRequest.Oc || this.Od != locationRequest.Od || this.Oe != locationRequest.Oe || this.NV != locationRequest.NV || this.Of != locationRequest.Of || this.Og != locationRequest.Og) {
+            if (this.mPriority != locationRequest.mPriority || this.aeh != locationRequest.aeh || this.aei != locationRequest.aei || this.Uz != locationRequest.Uz || this.adX != locationRequest.adX || this.aej != locationRequest.aej || this.aek != locationRequest.aek) {
                 return false;
             }
         }
@@ -118,19 +121,19 @@ public final class LocationRequest implements SafeParcelable
     }
     
     public long getExpirationTime() {
-        return this.NV;
+        return this.adX;
     }
     
     public long getFastestInterval() {
-        return this.Od;
+        return this.aei;
     }
     
     public long getInterval() {
-        return this.Oc;
+        return this.aeh;
     }
     
     public int getNumUpdates() {
-        return this.Of;
+        return this.aej;
     }
     
     public int getPriority() {
@@ -138,100 +141,100 @@ public final class LocationRequest implements SafeParcelable
     }
     
     public float getSmallestDisplacement() {
-        return this.Og;
+        return this.aek;
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.mPriority, this.Oc, this.Od, this.Oe, this.NV, this.Of, this.Og);
+        return m.hashCode(this.mPriority, this.aeh, this.aei, this.Uz, this.adX, this.aej, this.aek);
     }
     
     public LocationRequest setExpirationDuration(final long n) {
         final long elapsedRealtime = SystemClock.elapsedRealtime();
         if (n > Long.MAX_VALUE - elapsedRealtime) {
-            this.NV = Long.MAX_VALUE;
+            this.adX = Long.MAX_VALUE;
         }
         else {
-            this.NV = elapsedRealtime + n;
+            this.adX = elapsedRealtime + n;
         }
-        if (this.NV < 0L) {
-            this.NV = 0L;
-        }
-        return this;
-    }
-    
-    public LocationRequest setExpirationTime(final long nv) {
-        this.NV = nv;
-        if (this.NV < 0L) {
-            this.NV = 0L;
+        if (this.adX < 0L) {
+            this.adX = 0L;
         }
         return this;
     }
     
-    public LocationRequest setFastestInterval(final long od) {
-        s(od);
-        this.Oe = true;
-        this.Od = od;
-        return this;
-    }
-    
-    public LocationRequest setInterval(final long oc) {
-        s(oc);
-        this.Oc = oc;
-        if (!this.Oe) {
-            this.Od = (long)(this.Oc / 6.0);
+    public LocationRequest setExpirationTime(final long adX) {
+        this.adX = adX;
+        if (this.adX < 0L) {
+            this.adX = 0L;
         }
         return this;
     }
     
-    public LocationRequest setNumUpdates(final int of) {
-        if (of <= 0) {
-            throw new IllegalArgumentException("invalid numUpdates: " + of);
+    public LocationRequest setFastestInterval(final long aei) {
+        v(aei);
+        this.Uz = true;
+        this.aei = aei;
+        return this;
+    }
+    
+    public LocationRequest setInterval(final long aeh) {
+        v(aeh);
+        this.aeh = aeh;
+        if (!this.Uz) {
+            this.aei = (long)(this.aeh / 6.0);
         }
-        this.Of = of;
+        return this;
+    }
+    
+    public LocationRequest setNumUpdates(final int aej) {
+        if (aej <= 0) {
+            throw new IllegalArgumentException("invalid numUpdates: " + aej);
+        }
+        this.aej = aej;
         return this;
     }
     
     public LocationRequest setPriority(final int mPriority) {
-        bw(mPriority);
+        ea(mPriority);
         this.mPriority = mPriority;
         return this;
     }
     
-    public LocationRequest setSmallestDisplacement(final float og) {
-        a(og);
-        this.Og = og;
+    public LocationRequest setSmallestDisplacement(final float aek) {
+        a(aek);
+        this.aek = aek;
         return this;
     }
     
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("Request[").append(bx(this.mPriority));
+        sb.append("Request[").append(eb(this.mPriority));
         if (this.mPriority != 105) {
             sb.append(" requested=");
-            sb.append(this.Oc + "ms");
+            sb.append(this.aeh + "ms");
         }
         sb.append(" fastest=");
-        sb.append(this.Od + "ms");
-        if (this.NV != Long.MAX_VALUE) {
-            final long nv = this.NV;
+        sb.append(this.aei + "ms");
+        if (this.adX != Long.MAX_VALUE) {
+            final long adX = this.adX;
             final long elapsedRealtime = SystemClock.elapsedRealtime();
             sb.append(" expireIn=");
-            sb.append(nv - elapsedRealtime + "ms");
+            sb.append(adX - elapsedRealtime + "ms");
         }
-        if (this.Of != Integer.MAX_VALUE) {
-            sb.append(" num=").append(this.Of);
+        if (this.aej != Integer.MAX_VALUE) {
+            sb.append(" num=").append(this.aej);
         }
         sb.append(']');
         return sb.toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        LocationRequestCreator.a(this, parcel, n);
+        b.a(this, parcel, n);
     }
 }

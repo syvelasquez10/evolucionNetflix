@@ -11,33 +11,33 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class Operator implements SafeParcelable
 {
     public static final Parcelable$Creator<Operator> CREATOR;
-    public static final Operator GU;
-    public static final Operator GV;
-    public static final Operator GW;
-    public static final Operator GX;
-    public static final Operator GY;
-    public static final Operator GZ;
-    public static final Operator Ha;
-    public static final Operator Hb;
-    public static final Operator Hc;
+    public static final Operator QR;
+    public static final Operator QS;
+    public static final Operator QT;
+    public static final Operator QU;
+    public static final Operator QV;
+    public static final Operator QW;
+    public static final Operator QX;
+    public static final Operator QY;
+    public static final Operator QZ;
+    final int BR;
     final String mTag;
-    final int xH;
     
     static {
-        CREATOR = (Parcelable$Creator)new j();
-        GU = new Operator("=");
-        GV = new Operator("<");
-        GW = new Operator("<=");
-        GX = new Operator(">");
-        GY = new Operator(">=");
-        GZ = new Operator("and");
-        Ha = new Operator("or");
-        Hb = new Operator("not");
-        Hc = new Operator("contains");
+        CREATOR = (Parcelable$Creator)new l();
+        QR = new Operator("=");
+        QS = new Operator("<");
+        QT = new Operator("<=");
+        QU = new Operator(">");
+        QV = new Operator(">=");
+        QW = new Operator("and");
+        QX = new Operator("or");
+        QY = new Operator("not");
+        QZ = new Operator("contains");
     }
     
-    Operator(final int xh, final String mTag) {
-        this.xH = xh;
+    Operator(final int br, final String mTag) {
+        this.BR = br;
         this.mTag = mTag;
     }
     
@@ -71,6 +71,10 @@ public class Operator implements SafeParcelable
         return true;
     }
     
+    public String getTag() {
+        return this.mTag;
+    }
+    
     @Override
     public int hashCode() {
         int hashCode;
@@ -84,6 +88,6 @@ public class Operator implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        j.a(this, parcel, n);
+        l.a(this, parcel, n);
     }
 }

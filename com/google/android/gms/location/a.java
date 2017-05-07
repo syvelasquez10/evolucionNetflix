@@ -21,7 +21,7 @@ public interface a extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.location.ILocationListener");
         }
         
-        public static a U(final IBinder binder) {
+        public static a aI(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -62,14 +62,14 @@ public interface a extends IInterface
         
         private static class a implements com.google.android.gms.location.a
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -84,7 +84,7 @@ public interface a extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(1, obtain, (Parcel)null, 1);
+                    this.lb.transact(1, obtain, (Parcel)null, 1);
                 }
                 finally {
                     obtain.recycle();

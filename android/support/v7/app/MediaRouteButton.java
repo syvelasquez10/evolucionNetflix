@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View$MeasureSpec;
 import android.graphics.Canvas;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.annotation.NonNull;
 import android.graphics.drawable.Drawable$Callback;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -65,9 +66,9 @@ public class MediaRouteButton extends View
         this.mRouter = MediaRouter.getInstance(context);
         this.mCallback = new MediaRouterCallback();
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.MediaRouteButton, n, 0);
-        this.setRemoteIndicatorDrawable(obtainStyledAttributes.getDrawable(2));
-        this.mMinWidth = obtainStyledAttributes.getDimensionPixelSize(0, 0);
-        this.mMinHeight = obtainStyledAttributes.getDimensionPixelSize(1, 0);
+        this.setRemoteIndicatorDrawable(obtainStyledAttributes.getDrawable(R.styleable.MediaRouteButton_externalRouteEnabledDrawable));
+        this.mMinWidth = obtainStyledAttributes.getDimensionPixelSize(R.styleable.MediaRouteButton_android_minWidth, 0);
+        this.mMinHeight = obtainStyledAttributes.getDimensionPixelSize(R.styleable.MediaRouteButton_android_minHeight, 0);
         obtainStyledAttributes.recycle();
         this.setClickable(true);
         this.setLongClickable(true);
@@ -139,10 +140,12 @@ public class MediaRouteButton extends View
         }
     }
     
+    @NonNull
     public MediaRouteDialogFactory getDialogFactory() {
         return this.mDialogFactory;
     }
     
+    @NonNull
     public MediaRouteSelector getRouteSelector() {
         return this.mSelector;
     }
@@ -303,7 +306,7 @@ public class MediaRouteButton extends View
         this.mCheatSheetEnabled = mCheatSheetEnabled;
     }
     
-    public void setDialogFactory(final MediaRouteDialogFactory mDialogFactory) {
+    public void setDialogFactory(@NonNull final MediaRouteDialogFactory mDialogFactory) {
         if (mDialogFactory == null) {
             throw new IllegalArgumentException("factory must not be null");
         }

@@ -154,15 +154,7 @@ public class SimpleArrayMap<K, V>
     }
     
     public boolean containsKey(final Object o) {
-        if (o == null) {
-            if (this.indexOfNull() < 0) {
-                return false;
-            }
-        }
-        else if (this.indexOf(o, o.hashCode()) < 0) {
-            return false;
-        }
-        return true;
+        return this.indexOfKey(o) >= 0;
     }
     
     public boolean containsValue(final Object o) {
@@ -222,15 +214,9 @@ public class SimpleArrayMap<K, V>
     }
     
     public V get(final Object o) {
-        int n;
-        if (o == null) {
-            n = this.indexOfNull();
-        }
-        else {
-            n = this.indexOf(o, o.hashCode());
-        }
-        if (n >= 0) {
-            return (V)this.mArray[(n << 1) + 1];
+        final int indexOfKey = this.indexOfKey(o);
+        if (indexOfKey >= 0) {
+            return (V)this.mArray[(indexOfKey << 1) + 1];
         }
         return null;
     }
@@ -282,6 +268,13 @@ public class SimpleArrayMap<K, V>
             }
         }
         return n2;
+    }
+    
+    public int indexOfKey(final Object o) {
+        if (o == null) {
+            return this.indexOfNull();
+        }
+        return this.indexOf(o, o.hashCode());
     }
     
     int indexOfNull() {
@@ -409,15 +402,9 @@ public class SimpleArrayMap<K, V>
     }
     
     public V remove(final Object o) {
-        int n;
-        if (o == null) {
-            n = this.indexOfNull();
-        }
-        else {
-            n = this.indexOf(o, o.hashCode());
-        }
-        if (n >= 0) {
-            return this.removeAt(n);
+        final int indexOfKey = this.indexOfKey(o);
+        if (indexOfKey >= 0) {
+            return this.removeAt(indexOfKey);
         }
         return null;
     }

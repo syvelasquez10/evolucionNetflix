@@ -100,19 +100,19 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             }
         };
         this.activity = activity;
-        (this.content = drawerLayout.findViewById(2131165390)).setOnClickListener((View$OnClickListener)null);
+        (this.content = drawerLayout.findViewById(2131165392)).setOnClickListener((View$OnClickListener)null);
         ViewUtils.setPaddingTop(this.content, activity.getActionBarHeight());
         this.leWrapper = new LoadingAndErrorWrapper(this.content, this.errorCallback);
-        (this.profilesGroup = this.content.findViewById(2131165391)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131165392);
-        this.profileName = (TextView)this.content.findViewById(2131165394);
-        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131165393)).setPressedStateHandlerEnabled(false);
+        (this.profilesGroup = this.content.findViewById(2131165393)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131165394);
+        this.profileName = (TextView)this.content.findViewById(2131165396);
+        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131165395)).setPressedStateHandlerEnabled(false);
         this.homeRow = activity.getLayoutInflater().inflate(2130903097, (ViewGroup)null);
-        (this.home = (TextView)this.homeRow.findViewById(2131165397)).setText(2131493181);
+        (this.home = (TextView)this.homeRow.findViewById(2131165399)).setText(2131493186);
         this.homeRow.setOnClickListener(this.onHomeClickListener);
-        this.homeRow.setTag((Object)new Holder(this.home, this.homeRow.findViewById(2131165398)));
+        this.homeRow.setTag((Object)new Holder(this.home, this.homeRow.findViewById(2131165400)));
         this.setSelectedGenre(SlidingMenuAdapter.HOME_LOLOMO);
-        (this.list = (ListView)this.content.findViewById(2131165396)).setFocusable(false);
+        (this.list = (ListView)this.content.findViewById(2131165398)).setFocusable(false);
         this.list.addHeaderView(this.homeRow, (Object)null, false);
         this.drawerLayout = drawerLayout;
         this.fetchGenresDataIfReady();
@@ -143,12 +143,12 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             return;
         }
         Log.v("SlidingMenuAdapter", "Showing 'switch to kids' menu item in sliding menu");
-        final TextView textView = (TextView)((ViewStub)this.content.findViewById(2131165395)).inflate().findViewById(2131165397);
-        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361884)));
-        textView.setBackgroundResource(2130837861);
-        textView.setCompoundDrawablesWithIntrinsicBounds(2130837733, 0, 0, 0);
+        final TextView textView = (TextView)((ViewStub)this.content.findViewById(2131165397)).inflate().findViewById(2131165399);
+        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361910)));
+        textView.setBackgroundResource(2130837827);
+        textView.setCompoundDrawablesWithIntrinsicBounds(2130837699, 0, 0, 0);
         textView.setCompoundDrawablePadding(AndroidUtils.dipToPixels((Context)this.activity, 12));
-        textView.setText(2131492948);
+        textView.setText(2131492953);
         textView.setOnClickListener((View$OnClickListener)new KidsUtils.OnSwitchToKidsClickListener(this.activity, UIViewLogging.UIViewCommandName.slidingMenuKidsEntry));
     }
     
@@ -218,7 +218,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             imageResource = 17301535;
         }
         else {
-            imageResource = 2130837692;
+            imageResource = 2130837658;
         }
         switchProfilesIcon.setImageResource(imageResource);
     }
@@ -226,7 +226,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     protected void applySelectionStyle(final View view) {
         final Holder holder = (Holder)view.getTag();
         ViewUtils.setTextViewToBold(holder.tv);
-        holder.tv.setBackgroundResource(2130837875);
+        holder.tv.setBackgroundResource(2130837841);
         holder.selectionIndicator.setVisibility(0);
     }
     
@@ -255,7 +255,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     protected void removeSelectionStyle(final View view) {
         final Holder holder = (Holder)view.getTag();
         ViewUtils.setTextViewToNormal(holder.tv);
-        holder.tv.setBackgroundResource(2130837874);
+        holder.tv.setBackgroundResource(2130837840);
         holder.selectionIndicator.setVisibility(8);
     }
     
@@ -350,7 +350,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             View inflate = view;
             if (view == null) {
                 inflate = SlidingMenuAdapter.this.activity.getLayoutInflater().inflate(2130903097, (ViewGroup)null);
-                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165397), inflate.findViewById(2131165398)));
+                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165399), inflate.findViewById(2131165400)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final GenreList item = this.getItem(n);

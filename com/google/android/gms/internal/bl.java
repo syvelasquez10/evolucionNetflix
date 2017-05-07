@@ -4,92 +4,58 @@
 
 package com.google.android.gms.internal;
 
-public final class bl extends bs.a
+import android.os.Build$VERSION;
+import android.net.Uri;
+import android.content.Intent;
+import android.os.Environment;
+import com.google.android.gms.common.internal.n;
+import android.content.Context;
+
+@ez
+public class bl
 {
-    private final Object li;
-    private bn.a nl;
-    private bk nm;
+    private final Context mContext;
     
-    public bl() {
-        this.li = new Object();
+    public bl(final Context mContext) {
+        n.b(mContext, "Context can not be null");
+        this.mContext = mContext;
     }
     
-    public void P() {
-        synchronized (this.li) {
-            if (this.nm != null) {
-                this.nm.X();
-            }
-        }
+    public static boolean bn() {
+        return "mounted".equals(Environment.getExternalStorageState());
     }
     
-    public void a(final bk nm) {
-        synchronized (this.li) {
-            this.nm = nm;
+    public boolean a(final Intent intent) {
+        boolean b = false;
+        n.b(intent, "Intent can not be null");
+        if (!this.mContext.getPackageManager().queryIntentActivities(intent, 0).isEmpty()) {
+            b = true;
         }
+        return b;
     }
     
-    public void a(final bn.a nl) {
-        synchronized (this.li) {
-            this.nl = nl;
-        }
+    public boolean bj() {
+        final Intent intent = new Intent("android.intent.action.DIAL");
+        intent.setData(Uri.parse("tel:"));
+        return this.a(intent);
     }
     
-    public void onAdClosed() {
-        synchronized (this.li) {
-            if (this.nm != null) {
-                this.nm.Y();
-            }
-        }
+    public boolean bk() {
+        final Intent intent = new Intent("android.intent.action.VIEW");
+        intent.setData(Uri.parse("sms:"));
+        return this.a(intent);
     }
     
-    public void onAdFailedToLoad(int n) {
-        while (true) {
-            while (true) {
-                Label_0044: {
-                    synchronized (this.li) {
-                        if (this.nl != null) {
-                            if (n != 3) {
-                                break Label_0044;
-                            }
-                            n = 1;
-                            this.nl.f(n);
-                            this.nl = null;
-                        }
-                        return;
-                    }
-                }
-                n = 2;
-                continue;
-            }
-        }
+    public boolean bl() {
+        return bn() && this.mContext.checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == 0;
     }
     
-    public void onAdLeftApplication() {
-        synchronized (this.li) {
-            if (this.nm != null) {
-                this.nm.Z();
-            }
-        }
+    public boolean bm() {
+        return false;
     }
     
-    public void onAdLoaded() {
-        synchronized (this.li) {
-            if (this.nl != null) {
-                this.nl.f(0);
-                this.nl = null;
-                return;
-            }
-            if (this.nm != null) {
-                this.nm.ab();
-            }
-        }
-    }
-    
-    public void onAdOpened() {
-        synchronized (this.li) {
-            if (this.nm != null) {
-                this.nm.aa();
-            }
-        }
+    public boolean bo() {
+        final Intent setType = new Intent("android.intent.action.INSERT").setType("vnd.android.cursor.dir/event");
+        return Build$VERSION.SDK_INT >= 14 && this.a(setType);
     }
 }

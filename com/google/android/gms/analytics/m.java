@@ -4,7 +4,13 @@
 
 package com.google.android.gms.analytics;
 
+import java.util.List;
+
 interface m
 {
-    String getValue(final String p0);
+    int a(final List<w> p0, final aa p1, final boolean p2);
+    
+    void af(final String p0);
+    
+    boolean dY();
 }

@@ -4,210 +4,142 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Message;
-import android.util.Log;
-import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
-import java.util.Iterator;
-import java.util.Collection;
-import android.os.Looper;
-import android.content.Context;
-import android.os.Handler;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.api.GoogleApiClient;
-import java.util.ArrayList;
+import android.os.Bundle;
+import android.content.Context;
+import android.os.RemoteException;
 
-public final class fg
+@ez
+public abstract class fg extends gg
 {
-    private final b Do;
-    private final ArrayList<GoogleApiClient.ConnectionCallbacks> Dp;
-    final ArrayList<GoogleApiClient.ConnectionCallbacks> Dq;
-    private boolean Dr;
-    private final ArrayList<GooglePlayServicesClient.OnConnectionFailedListener> Ds;
-    private final Handler mHandler;
+    private final fi pQ;
+    private final ff.a tu;
     
-    public fg(final Context context, final Looper looper, final b do1) {
-        this.Dp = new ArrayList<GoogleApiClient.ConnectionCallbacks>();
-        this.Dq = new ArrayList<GoogleApiClient.ConnectionCallbacks>();
-        this.Dr = false;
-        this.Ds = new ArrayList<GooglePlayServicesClient.OnConnectionFailedListener>();
-        this.Do = do1;
-        this.mHandler = new a(looper);
+    public fg(final fi pq, final ff.a tu) {
+        this.pQ = pq;
+        this.tu = tu;
     }
     
-    public void O(final int n) {
-        this.mHandler.removeMessages(1);
-        synchronized (this.Dp) {
-            this.Dr = true;
-            for (final GoogleApiClient.ConnectionCallbacks connectionCallbacks : new ArrayList<GoogleApiClient.ConnectionCallbacks>(this.Dp)) {
-                if (!this.Do.em()) {
-                    break;
-                }
-                if (!this.Dp.contains(connectionCallbacks)) {
-                    continue;
-                }
-                connectionCallbacks.onConnectionSuspended(n);
-            }
-            this.Dr = false;
+    private static fk a(final fm fm, final fi fi) {
+        try {
+            return fm.b(fi);
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not fetch ad response from ad request service.", (Throwable)ex);
+            return null;
+        }
+        catch (NullPointerException ex2) {
+            gs.d("Could not fetch ad response from ad request service due to an Exception.", ex2);
+            return null;
+        }
+        catch (SecurityException ex3) {
+            gs.d("Could not fetch ad response from ad request service due to an Exception.", ex3);
+            return null;
+        }
+        catch (Throwable t) {
+            gb.e(t);
+            return null;
         }
     }
     
-    public void a(final ConnectionResult connectionResult) {
-        this.mHandler.removeMessages(1);
-        synchronized (this.Ds) {
-            for (final GooglePlayServicesClient.OnConnectionFailedListener onConnectionFailedListener : new ArrayList<GooglePlayServicesClient.OnConnectionFailedListener>(this.Ds)) {
-                if (!this.Do.em()) {
-                    return;
-                }
-                if (!this.Ds.contains(onConnectionFailedListener)) {
-                    continue;
-                }
-                onConnectionFailedListener.onConnectionFailed(connectionResult);
-            }
-        }
-    }
-    // monitorexit(list)
+    public abstract void cD();
     
-    public void b(final Bundle bundle) {
-        boolean b;
-        boolean b2;
-        boolean b3;
-        Label_0020_Outer:Label_0049_Outer:
-        while (true) {
-            b = true;
-            while (true) {
-            Label_0165:
-                while (true) {
-                    synchronized (this.Dp) {
-                        if (!this.Dr) {
-                            b2 = true;
-                            fq.x(b2);
-                            this.mHandler.removeMessages(1);
-                            this.Dr = true;
-                            if (this.Dq.size() == 0) {
-                                b3 = b;
-                                fq.x(b3);
-                                for (final GoogleApiClient.ConnectionCallbacks connectionCallbacks : new ArrayList<GoogleApiClient.ConnectionCallbacks>(this.Dp)) {
-                                    if (!this.Do.em() || !this.Do.isConnected()) {
-                                        break;
-                                    }
-                                    if (this.Dq.contains(connectionCallbacks)) {
-                                        continue Label_0020_Outer;
-                                    }
-                                    connectionCallbacks.onConnected(bundle);
-                                }
-                                this.Dq.clear();
-                                this.Dr = false;
-                                return;
-                            }
-                            break Label_0165;
-                        }
-                    }
-                    b2 = false;
-                    continue Label_0049_Outer;
-                }
-                b3 = false;
-                continue;
+    public abstract fm cE();
+    
+    @Override
+    public final void cp() {
+        try {
+            final fm ce = this.cE();
+            fk a;
+            if (ce == null) {
+                a = new fk(0);
             }
+            else if ((a = a(ce, this.pQ)) == null) {
+                a = new fk(0);
+            }
+            this.cD();
+            this.tu.a(a);
+        }
+        finally {
+            this.cD();
         }
     }
     
-    protected void bV() {
-        synchronized (this.Dp) {
-            this.b(this.Do.dG());
-        }
+    @Override
+    public final void onStop() {
+        this.cD();
     }
     
-    public boolean isConnectionCallbacksRegistered(final GoogleApiClient.ConnectionCallbacks connectionCallbacks) {
-        fq.f(connectionCallbacks);
-        synchronized (this.Dp) {
-            return this.Dp.contains(connectionCallbacks);
-        }
-    }
-    
-    public boolean isConnectionFailedListenerRegistered(final GooglePlayServicesClient.OnConnectionFailedListener onConnectionFailedListener) {
-        fq.f(onConnectionFailedListener);
-        synchronized (this.Ds) {
-            return this.Ds.contains(onConnectionFailedListener);
-        }
-    }
-    
-    public void registerConnectionCallbacks(final GoogleApiClient.ConnectionCallbacks connectionCallbacks) {
-        fq.f(connectionCallbacks);
-        synchronized (this.Dp) {
-            if (this.Dp.contains(connectionCallbacks)) {
-                Log.w("GmsClientEvents", "registerConnectionCallbacks(): listener " + connectionCallbacks + " is already registered");
-            }
-            else {
-                this.Dp.add(connectionCallbacks);
-            }
-            // monitorexit(this.Dp)
-            if (this.Do.isConnected()) {
-                this.mHandler.sendMessage(this.mHandler.obtainMessage(1, (Object)connectionCallbacks));
-            }
-        }
-    }
-    
-    public void registerConnectionFailedListener(final GooglePlayServicesClient.OnConnectionFailedListener onConnectionFailedListener) {
-        fq.f(onConnectionFailedListener);
-        synchronized (this.Ds) {
-            if (this.Ds.contains(onConnectionFailedListener)) {
-                Log.w("GmsClientEvents", "registerConnectionFailedListener(): listener " + onConnectionFailedListener + " is already registered");
-            }
-            else {
-                this.Ds.add(onConnectionFailedListener);
-            }
-        }
-    }
-    
-    public void unregisterConnectionCallbacks(final GoogleApiClient.ConnectionCallbacks connectionCallbacks) {
-        fq.f(connectionCallbacks);
-        synchronized (this.Dp) {
-            if (this.Dp != null) {
-                if (!this.Dp.remove(connectionCallbacks)) {
-                    Log.w("GmsClientEvents", "unregisterConnectionCallbacks(): listener " + connectionCallbacks + " not found");
-                }
-                else if (this.Dr) {
-                    this.Dq.add(connectionCallbacks);
-                }
-            }
-        }
-    }
-    
-    public void unregisterConnectionFailedListener(final GooglePlayServicesClient.OnConnectionFailedListener onConnectionFailedListener) {
-        fq.f(onConnectionFailedListener);
-        synchronized (this.Ds) {
-            if (this.Ds != null && !this.Ds.remove(onConnectionFailedListener)) {
-                Log.w("GmsClientEvents", "unregisterConnectionFailedListener(): listener " + onConnectionFailedListener + " not found");
-            }
-        }
-    }
-    
-    final class a extends Handler
+    @ez
+    public static final class a extends fg
     {
-        public a(final Looper looper) {
-            super(looper);
+        private final Context mContext;
+        
+        public a(final Context mContext, final fi fi, final ff.a a) {
+            super(fi, a);
+            this.mContext = mContext;
         }
         
-        public void handleMessage(final Message message) {
-            if (message.what == 1) {
-                synchronized (fg.this.Dp) {
-                    if (fg.this.Do.em() && fg.this.Do.isConnected() && fg.this.Dp.contains(message.obj)) {
-                        ((GoogleApiClient.ConnectionCallbacks)message.obj).onConnected(fg.this.Do.dG());
-                    }
-                    return;
-                }
-            }
-            Log.wtf("GmsClientEvents", "Don't know how to handle this message.");
+        @Override
+        public void cD() {
+        }
+        
+        @Override
+        public fm cE() {
+            final Bundle bd = gb.bD();
+            return fr.a(this.mContext, new bm(bd.getString("gads:sdk_core_location"), bd.getString("gads:sdk_core_experiment_id"), bd.getString("gads:block_autoclicks_experiment_id")), new cj(), new fy());
         }
     }
     
-    public interface b
+    @ez
+    public static final class b extends fg implements ConnectionCallbacks, OnConnectionFailedListener
     {
-        Bundle dG();
+        private final Object mw;
+        private final ff.a tu;
+        private final fh tv;
         
-        boolean em();
+        public b(final Context context, final fi fi, final ff.a tu) {
+            super(fi, tu);
+            this.mw = new Object();
+            this.tu = tu;
+            (this.tv = new fh(context, this, this, fi.lD.wF)).connect();
+        }
         
-        boolean isConnected();
+        @Override
+        public void cD() {
+            synchronized (this.mw) {
+                if (this.tv.isConnected() || this.tv.isConnecting()) {
+                    this.tv.disconnect();
+                }
+            }
+        }
+        
+        @Override
+        public fm cE() {
+            synchronized (this.mw) {
+                try {
+                    return this.tv.cF();
+                }
+                catch (IllegalStateException ex) {
+                    return null;
+                }
+            }
+        }
+        
+        @Override
+        public void onConnected(final Bundle bundle) {
+            this.start();
+        }
+        
+        @Override
+        public void onConnectionFailed(final ConnectionResult connectionResult) {
+            this.tu.a(new fk(0));
+        }
+        
+        @Override
+        public void onDisconnected() {
+            gs.S("Disconnected from remote ad request service.");
+        }
     }
 }

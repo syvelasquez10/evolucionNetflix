@@ -16,82 +16,82 @@ import android.os.Parcelable$Creator;
 public class InvitationEntityCreator implements Parcelable$Creator<InvitationEntity>
 {
     static void a(final InvitationEntity invitationEntity, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
+        final int d = b.D(parcel);
         b.a(parcel, 1, (Parcelable)invitationEntity.getGame(), n, false);
         b.c(parcel, 1000, invitationEntity.getVersionCode());
         b.a(parcel, 2, invitationEntity.getInvitationId(), false);
         b.a(parcel, 3, invitationEntity.getCreationTimestamp());
         b.c(parcel, 4, invitationEntity.getInvitationType());
         b.a(parcel, 5, (Parcelable)invitationEntity.getInviter(), n, false);
-        b.b(parcel, 6, invitationEntity.getParticipants(), false);
+        b.c(parcel, 6, invitationEntity.getParticipants(), false);
         b.c(parcel, 7, invitationEntity.getVariant());
         b.c(parcel, 8, invitationEntity.getAvailableAutoMatchSlots());
-        b.F(parcel, p3);
+        b.H(parcel, d);
     }
     
-    public InvitationEntity au(final Parcel parcel) {
+    public InvitationEntity cl(final Parcel parcel) {
         ArrayList<ParticipantEntity> c = null;
         int g = 0;
-        final int o = a.o(parcel);
+        final int c2 = a.C(parcel);
         long i = 0L;
         int g2 = 0;
         ParticipantEntity participantEntity = null;
         int g3 = 0;
-        String n = null;
+        String o = null;
         GameEntity gameEntity = null;
         int g4 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
+        while (parcel.dataPosition() < c2) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n2);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    gameEntity = a.a(parcel, n2, GameEntity.CREATOR);
+                    gameEntity = a.a(parcel, b, GameEntity.CREATOR);
                     continue;
                 }
                 case 1000: {
-                    g4 = a.g(parcel, n2);
+                    g4 = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n = a.n(parcel, n2);
+                    o = a.o(parcel, b);
                     continue;
                 }
                 case 3: {
-                    i = a.i(parcel, n2);
+                    i = a.i(parcel, b);
                     continue;
                 }
                 case 4: {
-                    g3 = a.g(parcel, n2);
+                    g3 = a.g(parcel, b);
                     continue;
                 }
                 case 5: {
-                    participantEntity = a.a(parcel, n2, ParticipantEntity.CREATOR);
+                    participantEntity = a.a(parcel, b, ParticipantEntity.CREATOR);
                     continue;
                 }
                 case 6: {
-                    c = a.c(parcel, n2, ParticipantEntity.CREATOR);
+                    c = a.c(parcel, b, ParticipantEntity.CREATOR);
                     continue;
                 }
                 case 7: {
-                    g2 = a.g(parcel, n2);
+                    g2 = a.g(parcel, b);
                     continue;
                 }
                 case 8: {
-                    g = a.g(parcel, n2);
+                    g = a.g(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c2) {
+            throw new a.a("Overread allowed size end=" + c2, parcel);
         }
-        return new InvitationEntity(g4, gameEntity, n, i, g3, participantEntity, c, g2, g);
+        return new InvitationEntity(g4, gameEntity, o, i, g3, participantEntity, c, g2, g);
     }
     
-    public InvitationEntity[] bn(final int n) {
+    public InvitationEntity[] dS(final int n) {
         return new InvitationEntity[n];
     }
 }

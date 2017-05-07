@@ -11,26 +11,26 @@ import com.google.android.gms.internal.c;
 class ai
 {
     private static void a(final DataLayer dataLayer, final c.d d) {
-        final d.a[] es = d.eS;
-        for (int length = es.length, i = 0; i < length; ++i) {
-            dataLayer.bv(dh.j(es[i]));
+        final d.a[] fb = d.fB;
+        for (int length = fb.length, i = 0; i < length; ++i) {
+            dataLayer.cs(di.j(fb[i]));
         }
     }
     
     public static void a(final DataLayer dataLayer, final c.i i) {
-        if (i.fI == null) {
-            bh.z("supplemental missing experimentSupplemental");
+        if (i.gq == null) {
+            bh.W("supplemental missing experimentSupplemental");
             return;
         }
-        a(dataLayer, i.fI);
-        b(dataLayer, i.fI);
-        c(dataLayer, i.fI);
+        a(dataLayer, i.gq);
+        b(dataLayer, i.gq);
+        c(dataLayer, i.gq);
     }
     
     private static void b(final DataLayer dataLayer, final c.d d) {
-        final d.a[] er = d.eR;
-        for (int length = er.length, i = 0; i < length; ++i) {
-            final Map<String, Object> c = c(er[i]);
+        final d.a[] fa = d.fA;
+        for (int length = fa.length, i = 0; i < length; ++i) {
+            final Map<String, Object> c = c(fa[i]);
             if (c != null) {
                 dataLayer.push(c);
             }
@@ -38,23 +38,23 @@ class ai
     }
     
     private static Map<String, Object> c(final d.a a) {
-        final Object o = dh.o(a);
+        final Object o = di.o(a);
         if (!(o instanceof Map)) {
-            bh.z("value: " + o + " is not a map value, ignored.");
+            bh.W("value: " + o + " is not a map value, ignored.");
             return null;
         }
         return (Map<String, Object>)o;
     }
     
     private static void c(final DataLayer dataLayer, final c.d d) {
-        final c.c[] et = d.eT;
-        for (int length = et.length, i = 0; i < length; ++i) {
-            final c.c c = et[i];
-            if (c.eM == null) {
-                bh.z("GaExperimentRandom: No key");
+        final c.c[] fc = d.fC;
+        for (int length = fc.length, i = 0; i < length; ++i) {
+            final c.c c = fc[i];
+            if (c.fv == null) {
+                bh.W("GaExperimentRandom: No key");
             }
             else {
-                Object o = dataLayer.get(c.eM);
+                Object o = dataLayer.get(c.fv);
                 Long value;
                 if (!(o instanceof Number)) {
                     value = null;
@@ -62,28 +62,28 @@ class ai
                 else {
                     value = ((Number)o).longValue();
                 }
-                final long en = c.eN;
-                final long eo = c.eO;
-                if (!c.eP || value == null || value < en || value > eo) {
-                    if (en > eo) {
-                        bh.z("GaExperimentRandom: random range invalid");
+                final long fw = c.fw;
+                final long fx = c.fx;
+                if (!c.fy || value == null || value < fw || value > fx) {
+                    if (fw > fx) {
+                        bh.W("GaExperimentRandom: random range invalid");
                         continue;
                     }
-                    o = Math.round(Math.random() * (eo - en) + en);
+                    o = Math.round(Math.random() * (fx - fw) + fw);
                 }
-                dataLayer.bv(c.eM);
-                final Map<String, Object> c2 = dataLayer.c(c.eM, o);
-                if (c.eQ > 0L) {
+                dataLayer.cs(c.fv);
+                final Map<String, Object> c2 = dataLayer.c(c.fv, o);
+                if (c.fz > 0L) {
                     if (!c2.containsKey("gtm")) {
-                        c2.put("gtm", DataLayer.mapOf("lifetime", c.eQ));
+                        c2.put("gtm", DataLayer.mapOf("lifetime", c.fz));
                     }
                     else {
                         final Object value2 = c2.get("gtm");
                         if (value2 instanceof Map) {
-                            ((Map<String, Long>)value2).put("lifetime", c.eQ);
+                            ((Map<String, Long>)value2).put("lifetime", c.fz);
                         }
                         else {
-                            bh.z("GaExperimentRandom: gtm not a map");
+                            bh.W("GaExperimentRandom: gtm not a map");
                         }
                     }
                 }

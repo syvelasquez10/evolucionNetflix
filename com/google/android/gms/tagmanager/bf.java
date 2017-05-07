@@ -4,50 +4,50 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.gl;
+import com.google.android.gms.internal.ju;
 
-class bf implements cf
+class bf implements cg
 {
-    private final gl Wv;
-    private final long Yx;
-    private final long vm;
-    private final int vn;
-    private double vo;
-    private long vp;
-    private final Object vq;
-    private final String vr;
+    private final long AN;
+    private final int AO;
+    private double AP;
+    private long AQ;
+    private final Object AR;
+    private final String AS;
+    private final long apA;
+    private final ju yD;
     
-    public bf(final int vn, final long vm, final long yx, final String vr, final gl wv) {
-        this.vq = new Object();
-        this.vn = vn;
-        this.vo = this.vn;
-        this.vm = vm;
-        this.Yx = yx;
-        this.vr = vr;
-        this.Wv = wv;
+    public bf(final int ao, final long an, final long apA, final String as, final ju yd) {
+        this.AR = new Object();
+        this.AO = ao;
+        this.AP = this.AO;
+        this.AN = an;
+        this.apA = apA;
+        this.AS = as;
+        this.yD = yd;
     }
     
     @Override
-    public boolean cS() {
-        synchronized (this.vq) {
-            final long currentTimeMillis = this.Wv.currentTimeMillis();
-            if (currentTimeMillis - this.vp < this.Yx) {
-                bh.z("Excessive " + this.vr + " detected; call ignored.");
+    public boolean eK() {
+        synchronized (this.AR) {
+            final long currentTimeMillis = this.yD.currentTimeMillis();
+            if (currentTimeMillis - this.AQ < this.apA) {
+                bh.W("Excessive " + this.AS + " detected; call ignored.");
                 return false;
             }
-            if (this.vo < this.vn) {
-                final double n = (currentTimeMillis - this.vp) / this.vm;
+            if (this.AP < this.AO) {
+                final double n = (currentTimeMillis - this.AQ) / this.AN;
                 if (n > 0.0) {
-                    this.vo = Math.min(this.vn, n + this.vo);
+                    this.AP = Math.min(this.AO, n + this.AP);
                 }
             }
-            this.vp = currentTimeMillis;
-            if (this.vo >= 1.0) {
-                --this.vo;
+            this.AQ = currentTimeMillis;
+            if (this.AP >= 1.0) {
+                --this.AP;
                 return true;
             }
         }
-        bh.z("Excessive " + this.vr + " detected; call ignored.");
+        bh.W("Excessive " + this.AS + " detected; call ignored.");
         // monitorexit(o)
         return false;
     }

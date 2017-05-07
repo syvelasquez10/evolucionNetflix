@@ -4,9 +4,12 @@
 
 package android.support.v7.media;
 
+import android.support.annotation.Nullable;
 import android.content.IntentFilter;
 import android.content.ComponentName;
 import android.content.res.Resources;
+import android.support.v4.media.VolumeProviderCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import java.util.Collection;
 import android.os.Message;
 import android.os.Handler;
@@ -17,10 +20,17 @@ import android.content.ContentResolver;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
+import android.support.v4.app.ActivityManagerCompat;
+import android.app.ActivityManager;
 import java.lang.ref.WeakReference;
 import android.support.v4.hardware.display.DisplayManagerCompat;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Annotation;
 import java.util.List;
+import android.support.annotation.NonNull;
 import android.os.Looper;
 import android.util.Log;
 import android.content.Context;
@@ -29,6 +39,8 @@ import java.util.ArrayList;
 public final class MediaRouter
 {
     public static final int AVAILABILITY_FLAG_IGNORE_DEFAULT_ROUTE = 1;
+    public static final int AVAILABILITY_FLAG_REQUIRE_MATCH = 2;
+    public static final int CALLBACK_FLAG_FORCE_DISCOVERY = 8;
     public static final int CALLBACK_FLAG_PERFORM_ACTIVE_SCAN = 1;
     public static final int CALLBACK_FLAG_REQUEST_DISCOVERY = 4;
     public static final int CALLBACK_FLAG_UNFILTERED_EVENTS = 2;
@@ -66,7 +78,7 @@ public final class MediaRouter
         return -1;
     }
     
-    public static MediaRouter getInstance(final Context context) {
+    public static MediaRouter getInstance(@NonNull final Context context) {
         if (context == null) {
             throw new IllegalArgumentException("context must not be null");
         }
@@ -81,7 +93,7 @@ public final class MediaRouter
         this.addCallback(mediaRouteSelector, callback, 0);
     }
     
-    public void addCallback(final MediaRouteSelector mediaRouteSelector, final Callback callback, final int n) {
+    public void addCallback(@NonNull final MediaRouteSelector mediaRouteSelector, @NonNull final Callback callback, final int n) {
         if (mediaRouteSelector == null) {
             throw new IllegalArgumentException("selector must not be null");
         }
@@ -115,7 +127,7 @@ public final class MediaRouter
         }
     }
     
-    public void addProvider(final MediaRouteProvider mediaRouteProvider) {
+    public void addProvider(@NonNull final MediaRouteProvider mediaRouteProvider) {
         if (mediaRouteProvider == null) {
             throw new IllegalArgumentException("providerInstance must not be null");
         }
@@ -126,7 +138,7 @@ public final class MediaRouter
         MediaRouter.sGlobal.addProvider(mediaRouteProvider);
     }
     
-    public void addRemoteControlClient(final Object o) {
+    public void addRemoteControlClient(@NonNull final Object o) {
         if (o == null) {
             throw new IllegalArgumentException("remoteControlClient must not be null");
         }
@@ -137,6 +149,7 @@ public final class MediaRouter
         MediaRouter.sGlobal.addRemoteControlClient(o);
     }
     
+    @NonNull
     public RouteInfo getDefaultRoute() {
         checkCallingThread();
         return MediaRouter.sGlobal.getDefaultRoute();
@@ -152,12 +165,13 @@ public final class MediaRouter
         return MediaRouter.sGlobal.getRoutes();
     }
     
+    @NonNull
     public RouteInfo getSelectedRoute() {
         checkCallingThread();
         return MediaRouter.sGlobal.getSelectedRoute();
     }
     
-    public boolean isRouteAvailable(final MediaRouteSelector mediaRouteSelector, final int n) {
+    public boolean isRouteAvailable(@NonNull final MediaRouteSelector mediaRouteSelector, final int n) {
         if (mediaRouteSelector == null) {
             throw new IllegalArgumentException("selector must not be null");
         }
@@ -165,7 +179,7 @@ public final class MediaRouter
         return MediaRouter.sGlobal.isRouteAvailable(mediaRouteSelector, n);
     }
     
-    public void removeCallback(final Callback callback) {
+    public void removeCallback(@NonNull final Callback callback) {
         if (callback == null) {
             throw new IllegalArgumentException("callback must not be null");
         }
@@ -180,7 +194,7 @@ public final class MediaRouter
         }
     }
     
-    public void removeProvider(final MediaRouteProvider mediaRouteProvider) {
+    public void removeProvider(@NonNull final MediaRouteProvider mediaRouteProvider) {
         if (mediaRouteProvider == null) {
             throw new IllegalArgumentException("providerInstance must not be null");
         }
@@ -191,7 +205,7 @@ public final class MediaRouter
         MediaRouter.sGlobal.removeProvider(mediaRouteProvider);
     }
     
-    public void removeRemoteControlClient(final Object o) {
+    public void removeRemoteControlClient(@NonNull final Object o) {
         if (o == null) {
             throw new IllegalArgumentException("remoteControlClient must not be null");
         }
@@ -201,7 +215,7 @@ public final class MediaRouter
         MediaRouter.sGlobal.removeRemoteControlClient(o);
     }
     
-    public void selectRoute(final RouteInfo routeInfo) {
+    public void selectRoute(@NonNull final RouteInfo routeInfo) {
         if (routeInfo == null) {
             throw new IllegalArgumentException("route must not be null");
         }
@@ -212,7 +226,15 @@ public final class MediaRouter
         MediaRouter.sGlobal.selectRoute(routeInfo);
     }
     
-    public RouteInfo updateSelectedRoute(final MediaRouteSelector mediaRouteSelector) {
+    public void setMediaSession(final Object mediaSession) {
+        if (MediaRouter.DEBUG) {
+            Log.d("MediaRouter", "addMediaSession: " + mediaSession);
+        }
+        MediaRouter.sGlobal.setMediaSession(mediaSession);
+    }
+    
+    @NonNull
+    public RouteInfo updateSelectedRoute(@NonNull final MediaRouteSelector mediaRouteSelector) {
         if (mediaRouteSelector == null) {
             throw new IllegalArgumentException("selector must not be null");
         }
@@ -265,6 +287,11 @@ public final class MediaRouter
         }
     }
     
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef(flag = true, value = { 1L, 4L, 2L })
+    private @interface CallbackFlags {
+    }
+    
     private static final class CallbackRecord
     {
         public final Callback mCallback;
@@ -299,6 +326,8 @@ public final class MediaRouter
         private RouteInfo mDefaultRoute;
         private MediaRouteDiscoveryRequest mDiscoveryRequest;
         private final DisplayManagerCompat mDisplayManager;
+        private final boolean mLowRam;
+        private MediaSessionRecord mMediaSession;
         private final RemoteControlClientCompat.PlaybackInfo mPlaybackInfo;
         private final ProviderCallback mProviderCallback;
         private final ArrayList<ProviderInfo> mProviders;
@@ -320,6 +349,7 @@ public final class MediaRouter
             this.mCallbackHandler = new CallbackHandler();
             this.mApplicationContext = mApplicationContext;
             this.mDisplayManager = DisplayManagerCompat.getInstance(mApplicationContext);
+            this.mLowRam = ActivityManagerCompat.isLowRamDevice((ActivityManager)mApplicationContext.getSystemService("activity"));
             this.addProvider(this.mSystemProvider = SystemMediaRouteProvider.obtain(mApplicationContext, (SystemMediaRouteProvider.SyncCallback)this));
         }
         
@@ -424,6 +454,13 @@ public final class MediaRouter
                 this.mPlaybackInfo.playbackType = this.mSelectedRoute.getPlaybackType();
                 for (int size = this.mRemoteControlClients.size(), i = 0; i < size; ++i) {
                     this.mRemoteControlClients.get(i).updatePlaybackInfo();
+                }
+                if (this.mMediaSession != null) {
+                    int n = 0;
+                    if (this.mPlaybackInfo.volumeHandling == 1) {
+                        n = 2;
+                    }
+                    this.mMediaSession.configureVolume(n, this.mPlaybackInfo.volumeMax, this.mPlaybackInfo.volume);
                 }
             }
         }
@@ -662,10 +699,15 @@ public final class MediaRouter
         }
         
         public boolean isRouteAvailable(final MediaRouteSelector mediaRouteSelector, final int n) {
-            for (int size = this.mRoutes.size(), i = 0; i < size; ++i) {
-                final RouteInfo routeInfo = this.mRoutes.get(i);
-                if (((n & 0x1) == 0x0 || !routeInfo.isDefault()) && routeInfo.matchesSelector(mediaRouteSelector)) {
+            if (!mediaRouteSelector.isEmpty()) {
+                if ((n & 0x2) == 0x0 && this.mLowRam) {
                     return true;
+                }
+                for (int size = this.mRoutes.size(), i = 0; i < size; ++i) {
+                    final RouteInfo routeInfo = this.mRoutes.get(i);
+                    if (((n & 0x1) == 0x0 || !routeInfo.isDefault()) && routeInfo.matchesSelector(mediaRouteSelector)) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -724,6 +766,18 @@ public final class MediaRouter
             }
         }
         
+        public void setMediaSession(final Object o) {
+            if (this.mMediaSession != null) {
+                this.mMediaSession.clearVolumeHandling();
+            }
+            if (o == null) {
+                this.mMediaSession = null;
+                return;
+            }
+            this.mMediaSession = new MediaSessionRecord(o);
+            this.updatePlaybackInfoFromSelectedRoute();
+        }
+        
         public void start() {
             (this.mRegisteredProviderWatcher = new RegisteredMediaRouteProviderWatcher(this.mApplicationContext, (RegisteredMediaRouteProviderWatcher.Callback)this)).start();
         }
@@ -761,7 +815,15 @@ public final class MediaRouter
                             b2 = true;
                             n4 = 1;
                         }
+                        int n5 = n4;
                         if ((callbackRecord.mFlags & 0x4) != 0x0) {
+                            n5 = n4;
+                            if (!this.mLowRam) {
+                                n5 = 1;
+                            }
+                        }
+                        n4 = n5;
+                        if ((callbackRecord.mFlags & 0x8) != 0x0) {
                             n4 = 1;
                         }
                         ++n3;
@@ -787,6 +849,9 @@ public final class MediaRouter
                 }
                 if (MediaRouter.DEBUG) {
                     Log.d("MediaRouter", "Updated discovery request: " + this.mDiscoveryRequest);
+                }
+                if (n != 0 && !b && this.mLowRam) {
+                    Log.i("MediaRouter", "Forcing passive route discovery on a low-RAM device, system performance may be affected.  Please consider using CALLBACK_FLAG_REQUEST_DISCOVERY instead of CALLBACK_FLAG_FORCE_DISCOVERY.");
                 }
                 for (int size3 = this.mProviders.size(), i = 0; i < size3; ++i) {
                     this.mProviders.get(i).mProviderInstance.setDiscoveryRequest(this.mDiscoveryRequest);
@@ -939,6 +1004,46 @@ public final class MediaRouter
             
             public void post(final int n, final Object o) {
                 this.obtainMessage(n, o).sendToTarget();
+            }
+        }
+        
+        private final class MediaSessionRecord
+        {
+            private int mControlType;
+            private int mMaxVolume;
+            private final MediaSessionCompat mMsCompat;
+            private VolumeProviderCompat mVpCompat;
+            
+            public MediaSessionRecord(final Object o) {
+                this.mMsCompat = MediaSessionCompat.obtain(o);
+            }
+            
+            public void clearVolumeHandling() {
+                this.mMsCompat.setPlaybackToLocal(GlobalMediaRouter.this.mPlaybackInfo.playbackStream);
+                this.mVpCompat = null;
+            }
+            
+            public void configureVolume(final int n, final int n2, final int currentVolume) {
+                if (this.mVpCompat != null && n == this.mControlType && n2 == this.mMaxVolume) {
+                    this.mVpCompat.setCurrentVolume(currentVolume);
+                    return;
+                }
+                this.mVpCompat = new VolumeProviderCompat(n, n2, currentVolume) {
+                    @Override
+                    public void onAdjustVolume(final int n) {
+                        if (GlobalMediaRouter.this.mSelectedRoute != null) {
+                            GlobalMediaRouter.this.mSelectedRoute.requestUpdateVolume(n);
+                        }
+                    }
+                    
+                    @Override
+                    public void onSetVolumeTo(final int n) {
+                        if (GlobalMediaRouter.this.mSelectedRoute != null) {
+                            GlobalMediaRouter.this.mSelectedRoute.requestSetVolume(n);
+                        }
+                    }
+                };
+                this.mMsCompat.setPlaybackToRemote(this.mVpCompat);
             }
         }
         
@@ -1099,6 +1204,7 @@ public final class MediaRouter
             return this.mControlFilters;
         }
         
+        @Nullable
         public String getDescription() {
             return this.mDescription;
         }
@@ -1107,10 +1213,12 @@ public final class MediaRouter
             return this.mDescriptorId;
         }
         
+        @Nullable
         public Bundle getExtras() {
             return this.mExtras;
         }
         
+        @NonNull
         public String getId() {
             return this.mUniqueId;
         }
@@ -1127,6 +1235,7 @@ public final class MediaRouter
             return this.mPlaybackType;
         }
         
+        @Nullable
         public Display getPresentationDisplay() {
             MediaRouter.checkCallingThread();
             if (this.mPresentationDisplayId >= 0 && this.mPresentationDisplay == null) {
@@ -1173,7 +1282,7 @@ public final class MediaRouter
             return MediaRouter.sGlobal.getSelectedRoute() == this;
         }
         
-        public boolean matchesSelector(final MediaRouteSelector mediaRouteSelector) {
+        public boolean matchesSelector(@NonNull final MediaRouteSelector mediaRouteSelector) {
             if (mediaRouteSelector == null) {
                 throw new IllegalArgumentException("selector must not be null");
             }
@@ -1198,7 +1307,7 @@ public final class MediaRouter
             MediaRouter.sGlobal.selectRoute(this);
         }
         
-        public void sendControlRequest(final Intent intent, final ControlRequestCallback controlRequestCallback) {
+        public void sendControlRequest(@NonNull final Intent intent, @Nullable final ControlRequestCallback controlRequestCallback) {
             if (intent == null) {
                 throw new IllegalArgumentException("intent must not be null");
             }
@@ -1206,7 +1315,7 @@ public final class MediaRouter
             MediaRouter.sGlobal.sendControlRequest(this, intent, controlRequestCallback);
         }
         
-        public boolean supportsControlAction(final String s, final String s2) {
+        public boolean supportsControlAction(@NonNull final String s, @NonNull final String s2) {
             if (s == null) {
                 throw new IllegalArgumentException("category must not be null");
             }
@@ -1223,7 +1332,7 @@ public final class MediaRouter
             return false;
         }
         
-        public boolean supportsControlCategory(final String s) {
+        public boolean supportsControlCategory(@NonNull final String s) {
             if (s == null) {
                 throw new IllegalArgumentException("category must not be null");
             }
@@ -1236,7 +1345,7 @@ public final class MediaRouter
             return false;
         }
         
-        public boolean supportsControlRequest(final Intent intent) {
+        public boolean supportsControlRequest(@NonNull final Intent intent) {
             if (intent == null) {
                 throw new IllegalArgumentException("intent must not be null");
             }
@@ -1327,6 +1436,16 @@ public final class MediaRouter
                 }
             }
             return n;
+        }
+        
+        @Retention(RetentionPolicy.SOURCE)
+        @IntDef({ 0L, 1L })
+        private @interface PlaybackType {
+        }
+        
+        @Retention(RetentionPolicy.SOURCE)
+        @IntDef({ 0L, 1L })
+        private @interface PlaybackVolume {
         }
     }
 }

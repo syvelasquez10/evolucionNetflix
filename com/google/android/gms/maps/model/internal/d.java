@@ -27,7 +27,7 @@ public interface d extends IInterface
     
     public abstract static class a extends Binder implements d
     {
-        public static d aE(final IBinder binder) {
+        public static d bs(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -83,7 +83,7 @@ public interface d extends IInterface
                 }
                 case 5: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.IIndoorBuildingDelegate");
-                    final boolean b = this.b(aE(parcel.readStrongBinder()));
+                    final boolean b = this.b(bs(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     n = n3;
                     if (b) {
@@ -104,14 +104,14 @@ public interface d extends IInterface
         
         private static class a implements d
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -129,7 +129,7 @@ public interface d extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(5, obtain, obtain2, 0);
+                    this.lb.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -148,7 +148,7 @@ public interface d extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IIndoorBuildingDelegate");
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -164,7 +164,7 @@ public interface d extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IIndoorBuildingDelegate");
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -180,7 +180,7 @@ public interface d extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IIndoorBuildingDelegate");
-                    this.kn.transact(3, obtain, obtain2, 0);
+                    this.lb.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                     return (List<IBinder>)obtain2.createBinderArrayList();
                 }
@@ -196,7 +196,7 @@ public interface d extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IIndoorBuildingDelegate");
-                    this.kn.transact(6, obtain, obtain2, 0);
+                    this.lb.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -213,7 +213,7 @@ public interface d extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.IIndoorBuildingDelegate");
-                    this.kn.transact(4, obtain, obtain2, 0);
+                    this.lb.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;

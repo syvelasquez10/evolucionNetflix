@@ -4,14 +4,18 @@
 
 package android.support.v7.app;
 
-import android.os.Build$VERSION;
+import android.support.v7.widget.Toolbar;
 import android.support.v4.app.ActivityCompat;
-import android.content.Context;
 import android.support.v7.view.ActionMode;
 import android.view.MenuItem;
+import android.view.KeyEvent;
+import android.util.AttributeSet;
+import android.support.annotation.NonNull;
+import android.content.Context;
 import android.view.Menu;
 import android.os.Bundle;
 import android.content.res.Configuration;
+import android.support.annotation.Nullable;
 import android.app.Activity;
 import android.support.v4.app.NavUtils;
 import android.content.Intent;
@@ -22,25 +26,32 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.app.FragmentActivity;
 
-public class ActionBarActivity extends FragmentActivity implements Callback, SupportParentable, DelegateProvider
+public class ActionBarActivity extends FragmentActivity implements Callback, SupportParentable, ActionBarDrawerToggle.DelegateProvider, TmpDelegateProvider
 {
-    ActionBarActivityDelegate mImpl;
+    private ActionBarActivityDelegate mDelegate;
+    
+    private ActionBarActivityDelegate getDelegate() {
+        if (this.mDelegate == null) {
+            this.mDelegate = ActionBarActivityDelegate.createDelegate(this);
+        }
+        return this.mDelegate;
+    }
     
     public void addContentView(final View view, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        this.mImpl.addContentView(view, viewGroup$LayoutParams);
+        this.getDelegate().addContentView(view, viewGroup$LayoutParams);
     }
     
     @Override
-    public final Delegate getDrawerToggleDelegate() {
-        return this.mImpl.getDrawerToggleDelegate();
+    public final ActionBarDrawerToggle.Delegate getDrawerToggleDelegate() {
+        return this.getDelegate().getDrawerToggleDelegate();
     }
     
     public MenuInflater getMenuInflater() {
-        return this.mImpl.getMenuInflater();
+        return this.getDelegate().getMenuInflater();
     }
     
     public ActionBar getSupportActionBar() {
-        return this.mImpl.getSupportActionBar();
+        return this.getDelegate().getSupportActionBar();
     }
     
     @Override
@@ -48,9 +59,19 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
         return NavUtils.getParentActivityIntent(this);
     }
     
+    @Nullable
+    @Override
+    public ActionBarDrawerToggle.Delegate getV7DrawerToggleDelegate() {
+        return this.getDelegate().getV7DrawerToggleDelegate();
+    }
+    
+    public void invalidateOptionsMenu() {
+        this.getDelegate().supportInvalidateOptionsMenu();
+    }
+    
     @Override
     public void onBackPressed() {
-        if (!this.mImpl.onBackPressed()) {
+        if (!this.getDelegate().onBackPressed()) {
             super.onBackPressed();
         }
     }
@@ -58,28 +79,27 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
     @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        this.mImpl.onConfigurationChanged(configuration);
+        this.getDelegate().onConfigurationChanged(configuration);
     }
     
     public final void onContentChanged() {
-        this.mImpl.onContentChanged();
+        this.getDelegate().onContentChanged();
     }
     
     @Override
     protected void onCreate(final Bundle bundle) {
-        this.mImpl = ActionBarActivityDelegate.createDelegate(this);
         super.onCreate(bundle);
-        this.mImpl.onCreate(bundle);
+        this.getDelegate().onCreate(bundle);
     }
     
     @Override
     public boolean onCreatePanelMenu(final int n, final Menu menu) {
-        return this.mImpl.onCreatePanelMenu(n, menu);
+        return this.getDelegate().onCreatePanelMenu(n, menu);
     }
     
     public View onCreatePanelView(final int n) {
         if (n == 0) {
-            return this.mImpl.onCreatePanelView(n);
+            return this.getDelegate().onCreatePanelView(n);
         }
         return super.onCreatePanelView(n);
     }
@@ -89,28 +109,61 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
     }
     
     @Override
+    public View onCreateView(final String s, @NonNull final Context context, @NonNull final AttributeSet set) {
+        final View onCreateView = super.onCreateView(s, context, set);
+        if (onCreateView != null) {
+            return onCreateView;
+        }
+        return this.getDelegate().createView(s, set);
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.getDelegate().destroy();
+    }
+    
+    @Override
+    public boolean onKeyDown(final int n, final KeyEvent keyEvent) {
+        return super.onKeyDown(n, keyEvent) || this.getDelegate().onKeyDown(n, keyEvent);
+    }
+    
+    public boolean onKeyShortcut(final int n, final KeyEvent keyEvent) {
+        return this.getDelegate().onKeyShortcut(n, keyEvent);
+    }
+    
+    @Override
     public final boolean onMenuItemSelected(final int n, final MenuItem menuItem) {
-        if (this.mImpl.onMenuItemSelected(n, menuItem)) {
+        if (super.onMenuItemSelected(n, menuItem)) {
             return true;
         }
         final ActionBar supportActionBar = this.getSupportActionBar();
         return menuItem.getItemId() == 16908332 && supportActionBar != null && (supportActionBar.getDisplayOptions() & 0x4) != 0x0 && this.onSupportNavigateUp();
     }
     
+    public boolean onMenuOpened(final int n, final Menu menu) {
+        return this.getDelegate().onMenuOpened(n, menu);
+    }
+    
+    @Override
+    public void onPanelClosed(final int n, final Menu menu) {
+        this.getDelegate().onPanelClosed(n, menu);
+    }
+    
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        this.mImpl.onPostResume();
+        this.getDelegate().onPostResume();
     }
     
     @Override
     protected boolean onPrepareOptionsPanel(final View view, final Menu menu) {
-        return this.mImpl.onPrepareOptionsPanel(view, menu);
+        return this.getDelegate().onPrepareOptionsPanel(view, menu);
     }
     
     @Override
     public boolean onPreparePanel(final int n, final View view, final Menu menu) {
-        return this.mImpl.onPreparePanel(n, view, menu);
+        return this.getDelegate().onPreparePanel(n, view, menu);
     }
     
     public void onPrepareSupportNavigateUpTaskStack(final TaskStackBuilder taskStackBuilder) {
@@ -119,7 +172,7 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
     @Override
     protected void onStop() {
         super.onStop();
-        this.mImpl.onStop();
+        this.getDelegate().onStop();
     }
     
     public void onSupportActionModeFinished(final ActionMode actionMode) {
@@ -159,39 +212,43 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
     
     protected void onTitleChanged(final CharSequence charSequence, final int n) {
         super.onTitleChanged(charSequence, n);
-        this.mImpl.onTitleChanged(charSequence);
+        this.getDelegate().onTitleChanged(charSequence);
     }
     
     public void setContentView(final int contentView) {
-        this.mImpl.setContentView(contentView);
+        this.getDelegate().setContentView(contentView);
     }
     
     public void setContentView(final View contentView) {
-        this.mImpl.setContentView(contentView);
+        this.getDelegate().setContentView(contentView);
     }
     
     public void setContentView(final View view, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        this.mImpl.setContentView(view, viewGroup$LayoutParams);
+        this.getDelegate().setContentView(view, viewGroup$LayoutParams);
+    }
+    
+    public void setSupportActionBar(@Nullable final Toolbar supportActionBar) {
+        this.getDelegate().setSupportActionBar(supportActionBar);
     }
     
     public void setSupportProgress(final int supportProgress) {
-        this.mImpl.setSupportProgress(supportProgress);
+        this.getDelegate().setSupportProgress(supportProgress);
     }
     
     public void setSupportProgressBarIndeterminate(final boolean supportProgressBarIndeterminate) {
-        this.mImpl.setSupportProgressBarIndeterminate(supportProgressBarIndeterminate);
+        this.getDelegate().setSupportProgressBarIndeterminate(supportProgressBarIndeterminate);
     }
     
     public void setSupportProgressBarIndeterminateVisibility(final boolean supportProgressBarIndeterminateVisibility) {
-        this.mImpl.setSupportProgressBarIndeterminateVisibility(supportProgressBarIndeterminateVisibility);
+        this.getDelegate().setSupportProgressBarIndeterminateVisibility(supportProgressBarIndeterminateVisibility);
     }
     
     public void setSupportProgressBarVisibility(final boolean supportProgressBarVisibility) {
-        this.mImpl.setSupportProgressBarVisibility(supportProgressBarVisibility);
+        this.getDelegate().setSupportProgressBarVisibility(supportProgressBarVisibility);
     }
     
     public ActionMode startSupportActionMode(final ActionMode.Callback callback) {
-        return this.mImpl.startSupportActionMode(callback);
+        return this.getDelegate().startSupportActionMode(callback);
     }
     
     void superAddContentView(final View view, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
@@ -202,8 +259,12 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
         return super.onCreatePanelMenu(n, menu);
     }
     
-    boolean superOnMenuItemSelected(final int n, final MenuItem menuItem) {
-        return super.onMenuItemSelected(n, menuItem);
+    boolean superOnMenuOpened(final int n, final Menu menu) {
+        return super.onMenuOpened(n, menu);
+    }
+    
+    void superOnPanelClosed(final int n, final Menu menu) {
+        super.onPanelClosed(n, menu);
     }
     
     boolean superOnPrepareOptionsPanel(final View view, final Menu menu) {
@@ -228,10 +289,7 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
     
     @Override
     public void supportInvalidateOptionsMenu() {
-        if (Build$VERSION.SDK_INT >= 14) {
-            super.supportInvalidateOptionsMenu();
-        }
-        this.mImpl.supportInvalidateOptionsMenu();
+        this.getDelegate().supportInvalidateOptionsMenu();
     }
     
     public void supportNavigateUpTo(final Intent intent) {
@@ -239,7 +297,7 @@ public class ActionBarActivity extends FragmentActivity implements Callback, Sup
     }
     
     public boolean supportRequestWindowFeature(final int n) {
-        return this.mImpl.supportRequestWindowFeature(n);
+        return this.getDelegate().supportRequestWindowFeature(n);
     }
     
     public boolean supportShouldUpRecreateTask(final Intent intent) {

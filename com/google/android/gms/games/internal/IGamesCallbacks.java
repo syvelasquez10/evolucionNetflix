@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.Binder;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import android.os.Bundle;
+import com.google.android.gms.drive.Contents;
 import android.os.RemoteException;
 import com.google.android.gms.common.data.DataHolder;
 import android.os.IInterface;
@@ -27,23 +28,41 @@ public interface IGamesCallbacks extends IInterface
     
     void F(final DataHolder p0) throws RemoteException;
     
-    void a(final int p0, final Bundle p1) throws RemoteException;
+    void G(final DataHolder p0) throws RemoteException;
+    
+    void H(final DataHolder p0) throws RemoteException;
+    
+    void I(final DataHolder p0) throws RemoteException;
+    
+    void J(final DataHolder p0) throws RemoteException;
+    
+    void K(final DataHolder p0) throws RemoteException;
+    
+    void L(final DataHolder p0) throws RemoteException;
+    
+    void M(final DataHolder p0) throws RemoteException;
+    
+    void N(final DataHolder p0) throws RemoteException;
+    
+    void O(final DataHolder p0) throws RemoteException;
+    
+    void P(final DataHolder p0) throws RemoteException;
+    
+    void Q(final DataHolder p0) throws RemoteException;
     
     void a(final int p0, final String p1, final boolean p2) throws RemoteException;
     
     void a(final DataHolder p0, final DataHolder p1) throws RemoteException;
     
+    void a(final DataHolder p0, final Contents p1) throws RemoteException;
+    
+    void a(final DataHolder p0, final String p1, final Contents p2, final Contents p3, final Contents p4) throws RemoteException;
+    
     void a(final DataHolder p0, final String[] p1) throws RemoteException;
-    
-    void aU(final int p0) throws RemoteException;
-    
-    void aV(final int p0) throws RemoteException;
     
     void b(final int p0, final int p1, final String p2) throws RemoteException;
     
     void b(final int p0, final Bundle p1) throws RemoteException;
-    
-    void b(final DataHolder p0) throws RemoteException;
     
     void b(final DataHolder p0, final String[] p1) throws RemoteException;
     
@@ -53,19 +72,25 @@ public interface IGamesCallbacks extends IInterface
     
     void c(final DataHolder p0, final String[] p1) throws RemoteException;
     
-    void d(final int p0, final String p1) throws RemoteException;
+    void d(final int p0, final Bundle p1) throws RemoteException;
     
     void d(final DataHolder p0) throws RemoteException;
     
     void d(final DataHolder p0, final String[] p1) throws RemoteException;
     
-    void du() throws RemoteException;
+    void dx(final int p0) throws RemoteException;
     
-    void e(final int p0, final String p1) throws RemoteException;
+    void dy(final int p0) throws RemoteException;
+    
+    void dz(final int p0) throws RemoteException;
+    
+    void e(final int p0, final Bundle p1) throws RemoteException;
     
     void e(final DataHolder p0) throws RemoteException;
     
     void e(final DataHolder p0, final String[] p1) throws RemoteException;
+    
+    void f(final int p0, final Bundle p1) throws RemoteException;
     
     void f(final int p0, final String p1) throws RemoteException;
     
@@ -73,9 +98,17 @@ public interface IGamesCallbacks extends IInterface
     
     void f(final DataHolder p0, final String[] p1) throws RemoteException;
     
+    void fq() throws RemoteException;
+    
+    void g(final int p0, final String p1) throws RemoteException;
+    
     void g(final DataHolder p0) throws RemoteException;
     
+    void h(final int p0, final String p1) throws RemoteException;
+    
     void h(final DataHolder p0) throws RemoteException;
+    
+    void i(final int p0, final String p1) throws RemoteException;
     
     void i(final DataHolder p0) throws RemoteException;
     
@@ -133,7 +166,7 @@ public interface IGamesCallbacks extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.games.internal.IGamesCallbacks");
         }
         
-        public static IGamesCallbacks M(final IBinder binder) {
+        public static IGamesCallbacks aA(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -149,8 +182,8 @@ public interface IGamesCallbacks extends IInterface
         }
         
         public boolean onTransact(int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            DataHolder z = null;
             final DataHolder dataHolder = null;
-            DataHolder fromParcel = null;
             final DataHolder dataHolder2 = null;
             final DataHolder dataHolder3 = null;
             final DataHolder dataHolder4 = null;
@@ -172,12 +205,10 @@ public interface IGamesCallbacks extends IInterface
             final DataHolder dataHolder20 = null;
             final DataHolder dataHolder21 = null;
             final DataHolder dataHolder22 = null;
-            final RealTimeMessage realTimeMessage = null;
             final DataHolder dataHolder23 = null;
             final DataHolder dataHolder24 = null;
             final DataHolder dataHolder25 = null;
             final DataHolder dataHolder26 = null;
-            final Bundle bundle = null;
             final DataHolder dataHolder27 = null;
             final DataHolder dataHolder28 = null;
             final DataHolder dataHolder29 = null;
@@ -187,10 +218,18 @@ public interface IGamesCallbacks extends IInterface
             final DataHolder dataHolder33 = null;
             final DataHolder dataHolder34 = null;
             final DataHolder dataHolder35 = null;
-            final Bundle bundle2 = null;
             final DataHolder dataHolder36 = null;
-            final Bundle bundle3 = null;
-            DataHolder fromParcel2 = null;
+            Contents contents = null;
+            final DataHolder dataHolder37 = null;
+            final DataHolder dataHolder38 = null;
+            final DataHolder dataHolder39 = null;
+            final DataHolder dataHolder40 = null;
+            final DataHolder dataHolder41 = null;
+            final DataHolder dataHolder42 = null;
+            final DataHolder dataHolder43 = null;
+            final DataHolder dataHolder44 = null;
+            final DataHolder dataHolder45 = null;
+            DataHolder z2 = null;
             switch (n) {
                 default: {
                     return super.onTransact(n, parcel, parcel2, n2);
@@ -201,154 +240,157 @@ public interface IGamesCallbacks extends IInterface
                 }
                 case 5001: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    this.d(parcel.readInt(), parcel.readString());
+                    this.f(parcel.readInt(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5002: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z3;
                     if (parcel.readInt() != 0) {
-                        fromParcel2 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z3 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.b(fromParcel2);
+                    else {
+                        z3 = null;
+                    }
+                    this.c(z3);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5003: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    this.e(parcel.readInt(), parcel.readString());
+                    this.g(parcel.readInt(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5004: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel3 = dataHolder;
                     if (parcel.readInt() != 0) {
-                        fromParcel3 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z2 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.c(fromParcel3);
+                    this.e(z2);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5005: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel4;
+                    DataHolder z4;
                     if (parcel.readInt() != 0) {
-                        fromParcel4 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z4 = DataHolder.CREATOR.z(parcel);
                     }
                     else {
-                        fromParcel4 = null;
+                        z4 = null;
                     }
                     if (parcel.readInt() != 0) {
-                        fromParcel = DataHolder.CREATOR.createFromParcel(parcel);
+                        z = DataHolder.CREATOR.z(parcel);
                     }
-                    this.a(fromParcel4, fromParcel);
+                    this.a(z4, z);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5006: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel5 = dataHolder2;
+                    DataHolder z5 = dataHolder;
                     if (parcel.readInt() != 0) {
-                        fromParcel5 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z5 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.d(fromParcel5);
+                    this.f(z5);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5007: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel6 = dataHolder3;
+                    DataHolder z6 = dataHolder2;
                     if (parcel.readInt() != 0) {
-                        fromParcel6 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z6 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.e(fromParcel6);
+                    this.g(z6);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5008: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel7 = dataHolder4;
+                    DataHolder z7 = dataHolder3;
                     if (parcel.readInt() != 0) {
-                        fromParcel7 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z7 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.f(fromParcel7);
+                    this.h(z7);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5009: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel8 = dataHolder5;
+                    DataHolder z8 = dataHolder4;
                     if (parcel.readInt() != 0) {
-                        fromParcel8 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z8 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.g(fromParcel8);
+                    this.i(z8);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5010: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel9 = dataHolder6;
+                    DataHolder z9 = dataHolder5;
                     if (parcel.readInt() != 0) {
-                        fromParcel9 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z9 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.h(fromParcel9);
+                    this.j(z9);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5011: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel10 = dataHolder7;
+                    DataHolder z10 = dataHolder6;
                     if (parcel.readInt() != 0) {
-                        fromParcel10 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z10 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.i(fromParcel10);
+                    this.k(z10);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5016: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    this.du();
+                    this.fq();
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5017: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel11 = dataHolder8;
+                    DataHolder z11 = dataHolder7;
                     if (parcel.readInt() != 0) {
-                        fromParcel11 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z11 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.k(fromParcel11);
+                    this.m(z11);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5037: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel12 = dataHolder9;
+                    DataHolder z12 = dataHolder8;
                     if (parcel.readInt() != 0) {
-                        fromParcel12 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z12 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.l(fromParcel12);
+                    this.n(z12);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5018: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel13 = dataHolder10;
+                    DataHolder z13 = dataHolder9;
                     if (parcel.readInt() != 0) {
-                        fromParcel13 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z13 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.s(fromParcel13);
+                    this.u(z13);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5019: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel14 = dataHolder11;
+                    DataHolder z14 = dataHolder10;
                     if (parcel.readInt() != 0) {
-                        fromParcel14 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z14 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.t(fromParcel14);
+                    this.v(z14);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -360,121 +402,124 @@ public interface IGamesCallbacks extends IInterface
                 }
                 case 5021: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel15 = dataHolder12;
+                    DataHolder z15 = dataHolder11;
                     if (parcel.readInt() != 0) {
-                        fromParcel15 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z15 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.u(fromParcel15);
+                    this.w(z15);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5022: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel16 = dataHolder13;
+                    DataHolder z16 = dataHolder12;
                     if (parcel.readInt() != 0) {
-                        fromParcel16 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z16 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.v(fromParcel16);
+                    this.x(z16);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5023: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel17 = dataHolder14;
+                    DataHolder z17 = dataHolder13;
                     if (parcel.readInt() != 0) {
-                        fromParcel17 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z17 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.w(fromParcel17);
+                    this.y(z17);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5024: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel18 = dataHolder15;
+                    DataHolder z18 = dataHolder14;
                     if (parcel.readInt() != 0) {
-                        fromParcel18 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z18 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.x(fromParcel18);
+                    this.z(z18);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5025: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel19 = dataHolder16;
+                    DataHolder z19 = dataHolder15;
                     if (parcel.readInt() != 0) {
-                        fromParcel19 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z19 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.y(fromParcel19);
+                    this.A(z19);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5026: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel20 = dataHolder17;
+                    DataHolder z20 = dataHolder16;
                     if (parcel.readInt() != 0) {
-                        fromParcel20 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z20 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.a(fromParcel20, parcel.createStringArray());
+                    this.a(z20, parcel.createStringArray());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5027: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel21 = dataHolder18;
+                    DataHolder z21 = dataHolder17;
                     if (parcel.readInt() != 0) {
-                        fromParcel21 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z21 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.b(fromParcel21, parcel.createStringArray());
+                    this.b(z21, parcel.createStringArray());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5028: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel22 = dataHolder19;
+                    DataHolder z22 = dataHolder18;
                     if (parcel.readInt() != 0) {
-                        fromParcel22 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z22 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.c(fromParcel22, parcel.createStringArray());
+                    this.c(z22, parcel.createStringArray());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5029: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel23 = dataHolder20;
+                    DataHolder z23 = dataHolder19;
                     if (parcel.readInt() != 0) {
-                        fromParcel23 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z23 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.d(fromParcel23, parcel.createStringArray());
+                    this.d(z23, parcel.createStringArray());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5030: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel24 = dataHolder21;
+                    DataHolder z24 = dataHolder20;
                     if (parcel.readInt() != 0) {
-                        fromParcel24 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z24 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.e(fromParcel24, parcel.createStringArray());
+                    this.e(z24, parcel.createStringArray());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5031: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel25 = dataHolder22;
+                    DataHolder z25 = dataHolder21;
                     if (parcel.readInt() != 0) {
-                        fromParcel25 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z25 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.f(fromParcel25, parcel.createStringArray());
+                    this.f(z25, parcel.createStringArray());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5032: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    RealTimeMessage realTimeMessage2 = realTimeMessage;
+                    RealTimeMessage realTimeMessage;
                     if (parcel.readInt() != 0) {
-                        realTimeMessage2 = (RealTimeMessage)RealTimeMessage.CREATOR.createFromParcel(parcel);
+                        realTimeMessage = (RealTimeMessage)RealTimeMessage.CREATOR.createFromParcel(parcel);
                     }
-                    this.onRealTimeMessageReceived(realTimeMessage2);
+                    else {
+                        realTimeMessage = null;
+                    }
+                    this.onRealTimeMessageReceived(realTimeMessage);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -493,43 +538,43 @@ public interface IGamesCallbacks extends IInterface
                 }
                 case 5038: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel26 = dataHolder23;
+                    DataHolder z26 = dataHolder22;
                     if (parcel.readInt() != 0) {
-                        fromParcel26 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z26 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.z(fromParcel26);
+                    this.B(z26);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5035: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel27 = dataHolder24;
+                    DataHolder z27 = dataHolder23;
                     if (parcel.readInt() != 0) {
-                        fromParcel27 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z27 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.A(fromParcel27);
+                    this.C(z27);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5036: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    this.aU(parcel.readInt());
+                    this.dx(parcel.readInt());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5039: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel28 = dataHolder25;
+                    DataHolder z28 = dataHolder24;
                     if (parcel.readInt() != 0) {
-                        fromParcel28 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z28 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.B(fromParcel28);
+                    this.D(z28);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5040: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    this.aV(parcel.readInt());
+                    this.dy(parcel.readInt());
                     parcel2.writeNoException();
                     return true;
                 }
@@ -547,78 +592,81 @@ public interface IGamesCallbacks extends IInterface
                 }
                 case 8001: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel29 = dataHolder26;
+                    DataHolder z29 = dataHolder25;
                     if (parcel.readInt() != 0) {
-                        fromParcel29 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z29 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.C(fromParcel29);
+                    this.E(z29);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 8002: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
                     n = parcel.readInt();
-                    Bundle bundle4 = bundle;
+                    Bundle bundle;
                     if (parcel.readInt() != 0) {
-                        bundle4 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                        bundle = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
                     }
-                    this.a(n, bundle4);
+                    else {
+                        bundle = null;
+                    }
+                    this.b(n, bundle);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 8003: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel30 = dataHolder27;
+                    DataHolder z30 = dataHolder26;
                     if (parcel.readInt() != 0) {
-                        fromParcel30 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z30 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.n(fromParcel30);
+                    this.p(z30);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 8004: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel31 = dataHolder28;
+                    DataHolder z31 = dataHolder27;
                     if (parcel.readInt() != 0) {
-                        fromParcel31 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z31 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.o(fromParcel31);
+                    this.q(z31);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 8005: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel32 = dataHolder29;
+                    DataHolder z32 = dataHolder28;
                     if (parcel.readInt() != 0) {
-                        fromParcel32 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z32 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.p(fromParcel32);
+                    this.r(z32);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 8006: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel33 = dataHolder30;
+                    DataHolder z33 = dataHolder29;
                     if (parcel.readInt() != 0) {
-                        fromParcel33 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z33 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.q(fromParcel33);
+                    this.s(z33);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 8007: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    this.f(parcel.readInt(), parcel.readString());
+                    this.h(parcel.readInt(), parcel.readString());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 8008: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel34 = dataHolder31;
+                    DataHolder z34 = dataHolder30;
                     if (parcel.readInt() != 0) {
-                        fromParcel34 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z34 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.r(fromParcel34);
+                    this.t(z34);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -636,21 +684,21 @@ public interface IGamesCallbacks extends IInterface
                 }
                 case 9001: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel35 = dataHolder32;
+                    DataHolder z35 = dataHolder31;
                     if (parcel.readInt() != 0) {
-                        fromParcel35 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z35 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.j(fromParcel35);
+                    this.l(z35);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 10001: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel36 = dataHolder33;
+                    DataHolder z36 = dataHolder32;
                     if (parcel.readInt() != 0) {
-                        fromParcel36 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z36 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.m(fromParcel36);
+                    this.o(z36);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -662,53 +710,250 @@ public interface IGamesCallbacks extends IInterface
                 }
                 case 10003: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel37 = dataHolder34;
+                    DataHolder z37 = dataHolder33;
                     if (parcel.readInt() != 0) {
-                        fromParcel37 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z37 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.D(fromParcel37);
+                    this.F(z37);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 10004: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel38 = dataHolder35;
+                    DataHolder z38 = dataHolder34;
                     if (parcel.readInt() != 0) {
-                        fromParcel38 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z38 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.E(fromParcel38);
+                    this.G(z38);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 10005: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
                     n = parcel.readInt();
-                    Bundle bundle5 = bundle2;
+                    Bundle bundle2;
                     if (parcel.readInt() != 0) {
-                        bundle5 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                        bundle2 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
                     }
-                    this.b(n, bundle5);
+                    else {
+                        bundle2 = null;
+                    }
+                    this.c(n, bundle2);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 10006: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
-                    DataHolder fromParcel39 = dataHolder36;
+                    DataHolder z39 = dataHolder35;
                     if (parcel.readInt() != 0) {
-                        fromParcel39 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z39 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.F(fromParcel39);
+                    this.H(z39);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 11001: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
                     n = parcel.readInt();
-                    Bundle bundle6 = bundle3;
+                    Bundle bundle3;
                     if (parcel.readInt() != 0) {
-                        bundle6 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                        bundle3 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
                     }
-                    this.c(n, bundle6);
+                    else {
+                        bundle3 = null;
+                    }
+                    this.d(n, bundle3);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12001: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z40 = dataHolder36;
+                    if (parcel.readInt() != 0) {
+                        z40 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.I(z40);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12004: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z41;
+                    if (parcel.readInt() != 0) {
+                        z41 = DataHolder.CREATOR.z(parcel);
+                    }
+                    else {
+                        z41 = null;
+                    }
+                    Contents contents2;
+                    if (parcel.readInt() != 0) {
+                        contents2 = (Contents)Contents.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        contents2 = null;
+                    }
+                    this.a(z41, contents2);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12017: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z42;
+                    if (parcel.readInt() != 0) {
+                        z42 = DataHolder.CREATOR.z(parcel);
+                    }
+                    else {
+                        z42 = null;
+                    }
+                    final String string = parcel.readString();
+                    Contents contents3;
+                    if (parcel.readInt() != 0) {
+                        contents3 = (Contents)Contents.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        contents3 = null;
+                    }
+                    Contents contents4;
+                    if (parcel.readInt() != 0) {
+                        contents4 = (Contents)Contents.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        contents4 = null;
+                    }
+                    if (parcel.readInt() != 0) {
+                        contents = (Contents)Contents.CREATOR.createFromParcel(parcel);
+                    }
+                    this.a(z42, string, contents3, contents4, contents);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12005: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z43 = dataHolder37;
+                    if (parcel.readInt() != 0) {
+                        z43 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.J(z43);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12012: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    this.i(parcel.readInt(), parcel.readString());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12003: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    n = parcel.readInt();
+                    Bundle bundle4;
+                    if (parcel.readInt() != 0) {
+                        bundle4 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        bundle4 = null;
+                    }
+                    this.e(n, bundle4);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12013: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z44 = dataHolder38;
+                    if (parcel.readInt() != 0) {
+                        z44 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.P(z44);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12011: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z45 = dataHolder39;
+                    if (parcel.readInt() != 0) {
+                        z45 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.d(z45);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12006: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z46 = dataHolder40;
+                    if (parcel.readInt() != 0) {
+                        z46 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.K(z46);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12007: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z47 = dataHolder41;
+                    if (parcel.readInt() != 0) {
+                        z47 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.L(z47);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12014: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z48 = dataHolder42;
+                    if (parcel.readInt() != 0) {
+                        z48 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.M(z48);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12016: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z49 = dataHolder43;
+                    if (parcel.readInt() != 0) {
+                        z49 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.N(z49);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12008: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z50 = dataHolder44;
+                    if (parcel.readInt() != 0) {
+                        z50 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.O(z50);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 12015: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    n = parcel.readInt();
+                    Bundle bundle5;
+                    if (parcel.readInt() != 0) {
+                        bundle5 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                    }
+                    else {
+                        bundle5 = null;
+                    }
+                    this.f(n, bundle5);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 13001: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    DataHolder z51 = dataHolder45;
+                    if (parcel.readInt() != 0) {
+                        z51 = DataHolder.CREATOR.z(parcel);
+                    }
+                    this.Q(z51);
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 13002: {
+                    parcel.enforceInterface("com.google.android.gms.games.internal.IGamesCallbacks");
+                    this.dz(parcel.readInt());
                     parcel2.writeNoException();
                     return true;
                 }
@@ -717,10 +962,10 @@ public interface IGamesCallbacks extends IInterface
         
         private static class Proxy implements IGamesCallbacks
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            Proxy(final IBinder kn) {
-                this.kn = kn;
+            Proxy(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -736,7 +981,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5035, obtain, obtain2, 0);
+                    this.lb.transact(5025, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -758,7 +1003,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5039, obtain, obtain2, 0);
+                    this.lb.transact(5038, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -780,7 +1025,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(8001, obtain, obtain2, 0);
+                    this.lb.transact(5035, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -802,7 +1047,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(10003, obtain, obtain2, 0);
+                    this.lb.transact(5039, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -824,7 +1069,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(10004, obtain, obtain2, 0);
+                    this.lb.transact(8001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -846,7 +1091,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(10006, obtain, obtain2, 0);
+                    this.lb.transact(10003, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -856,20 +1101,239 @@ public interface IGamesCallbacks extends IInterface
             }
             
             @Override
-            public void a(final int n, final Bundle bundle) throws RemoteException {
+            public void G(final DataHolder dataHolder) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
-                    obtain.writeInt(n);
-                    if (bundle != null) {
+                    if (dataHolder != null) {
                         obtain.writeInt(1);
-                        bundle.writeToParcel(obtain, 0);
+                        dataHolder.writeToParcel(obtain, 0);
                     }
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(8002, obtain, obtain2, 0);
+                    this.lb.transact(10004, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void H(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(10006, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void I(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12001, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void J(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12005, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void K(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12006, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void L(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12007, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void M(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12014, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void N(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12016, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void O(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12008, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void P(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12013, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void Q(final DataHolder dataHolder) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    if (dataHolder != null) {
+                        obtain.writeInt(1);
+                        dataHolder.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(13001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -892,7 +1356,7 @@ public interface IGamesCallbacks extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(5034, obtain, obtain2, 0);
+                    this.lb.transact(5034, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -919,7 +1383,7 @@ public interface IGamesCallbacks extends IInterface
                             if (dataHolder2 != null) {
                                 obtain.writeInt(1);
                                 dataHolder2.writeToParcel(obtain, 0);
-                                this.kn.transact(5005, obtain, obtain2, 0);
+                                this.lb.transact(5005, obtain, obtain2, 0);
                                 obtain2.readException();
                                 return;
                             }
@@ -927,6 +1391,96 @@ public interface IGamesCallbacks extends IInterface
                         finally {
                             obtain2.recycle();
                             obtain.recycle();
+                        }
+                        obtain.writeInt(0);
+                        continue;
+                    }
+                }
+            }
+            
+            @Override
+            public void a(final DataHolder dataHolder, final Contents contents) throws RemoteException {
+                while (true) {
+                    final Parcel obtain = Parcel.obtain();
+                    final Parcel obtain2 = Parcel.obtain();
+                    while (true) {
+                        try {
+                            obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                            if (dataHolder != null) {
+                                obtain.writeInt(1);
+                                dataHolder.writeToParcel(obtain, 0);
+                            }
+                            else {
+                                obtain.writeInt(0);
+                            }
+                            if (contents != null) {
+                                obtain.writeInt(1);
+                                contents.writeToParcel(obtain, 0);
+                                this.lb.transact(12004, obtain, obtain2, 0);
+                                obtain2.readException();
+                                return;
+                            }
+                        }
+                        finally {
+                            obtain2.recycle();
+                            obtain.recycle();
+                        }
+                        obtain.writeInt(0);
+                        continue;
+                    }
+                }
+            }
+            
+            @Override
+            public void a(final DataHolder dataHolder, final String s, final Contents contents, final Contents contents2, final Contents contents3) throws RemoteException {
+                Parcel obtain;
+                Parcel obtain2;
+                Label_0076_Outer:Label_0095_Outer:
+                while (true) {
+                    obtain = Parcel.obtain();
+                    obtain2 = Parcel.obtain();
+                    while (true) {
+                    Label_0169:
+                        while (true) {
+                        Label_0160:
+                            while (true) {
+                                try {
+                                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                                    if (dataHolder != null) {
+                                        obtain.writeInt(1);
+                                        dataHolder.writeToParcel(obtain, 0);
+                                    }
+                                    else {
+                                        obtain.writeInt(0);
+                                    }
+                                    obtain.writeString(s);
+                                    if (contents != null) {
+                                        obtain.writeInt(1);
+                                        contents.writeToParcel(obtain, 0);
+                                        if (contents2 == null) {
+                                            break Label_0160;
+                                        }
+                                        obtain.writeInt(1);
+                                        contents2.writeToParcel(obtain, 0);
+                                        if (contents3 != null) {
+                                            obtain.writeInt(1);
+                                            contents3.writeToParcel(obtain, 0);
+                                            this.lb.transact(12017, obtain, obtain2, 0);
+                                            obtain2.readException();
+                                            return;
+                                        }
+                                        break Label_0169;
+                                    }
+                                }
+                                finally {
+                                    obtain2.recycle();
+                                    obtain.recycle();
+                                }
+                                obtain.writeInt(0);
+                                continue Label_0076_Outer;
+                            }
+                            obtain.writeInt(0);
+                            continue Label_0095_Outer;
                         }
                         obtain.writeInt(0);
                         continue;
@@ -948,39 +1502,7 @@ public interface IGamesCallbacks extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeStringArray(array);
-                    this.kn.transact(5026, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aU(final int n) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
-                    obtain.writeInt(n);
-                    this.kn.transact(5036, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aV(final int n) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
-                    obtain.writeInt(n);
-                    this.kn.transact(5040, obtain, obtain2, 0);
+                    this.lb.transact(5026, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -990,7 +1512,7 @@ public interface IGamesCallbacks extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -1002,7 +1524,7 @@ public interface IGamesCallbacks extends IInterface
                     obtain.writeInt(n);
                     obtain.writeInt(n2);
                     obtain.writeString(s);
-                    this.kn.transact(5033, obtain, obtain2, 0);
+                    this.lb.transact(5033, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1025,29 +1547,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(10005, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void b(final DataHolder dataHolder) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
-                    if (dataHolder != null) {
-                        obtain.writeInt(1);
-                        dataHolder.writeToParcel(obtain, 0);
-                    }
-                    else {
-                        obtain.writeInt(0);
-                    }
-                    this.kn.transact(5002, obtain, obtain2, 0);
+                    this.lb.transact(8002, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1070,7 +1570,7 @@ public interface IGamesCallbacks extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeStringArray(array);
-                    this.kn.transact(5027, obtain, obtain2, 0);
+                    this.lb.transact(5027, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1093,7 +1593,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(11001, obtain, obtain2, 0);
+                    this.lb.transact(10005, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1115,7 +1615,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5004, obtain, obtain2, 0);
+                    this.lb.transact(5002, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1138,7 +1638,7 @@ public interface IGamesCallbacks extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeStringArray(array);
-                    this.kn.transact(5028, obtain, obtain2, 0);
+                    this.lb.transact(5028, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1148,14 +1648,20 @@ public interface IGamesCallbacks extends IInterface
             }
             
             @Override
-            public void d(final int n, final String s) throws RemoteException {
+            public void d(final int n, final Bundle bundle) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeInt(n);
-                    obtain.writeString(s);
-                    this.kn.transact(5001, obtain, obtain2, 0);
+                    if (bundle != null) {
+                        obtain.writeInt(1);
+                        bundle.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(11001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1177,7 +1683,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5006, obtain, obtain2, 0);
+                    this.lb.transact(12011, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1200,7 +1706,7 @@ public interface IGamesCallbacks extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeStringArray(array);
-                    this.kn.transact(5029, obtain, obtain2, 0);
+                    this.lb.transact(5029, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1210,29 +1716,68 @@ public interface IGamesCallbacks extends IInterface
             }
             
             @Override
-            public void du() throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
-                    this.kn.transact(5016, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void e(final int n, final String s) throws RemoteException {
+            public void dx(final int n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeInt(n);
-                    obtain.writeString(s);
-                    this.kn.transact(5003, obtain, obtain2, 0);
+                    this.lb.transact(5036, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void dy(final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    obtain.writeInt(n);
+                    this.lb.transact(5040, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void dz(final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    obtain.writeInt(n);
+                    this.lb.transact(13002, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void e(final int n, final Bundle bundle) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    obtain.writeInt(n);
+                    if (bundle != null) {
+                        obtain.writeInt(1);
+                        bundle.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12003, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1254,7 +1799,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5007, obtain, obtain2, 0);
+                    this.lb.transact(5004, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1277,7 +1822,30 @@ public interface IGamesCallbacks extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeStringArray(array);
-                    this.kn.transact(5030, obtain, obtain2, 0);
+                    this.lb.transact(5030, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void f(final int n, final Bundle bundle) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    obtain.writeInt(n);
+                    if (bundle != null) {
+                        obtain.writeInt(1);
+                        bundle.writeToParcel(obtain, 0);
+                    }
+                    else {
+                        obtain.writeInt(0);
+                    }
+                    this.lb.transact(12015, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1294,7 +1862,7 @@ public interface IGamesCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeInt(n);
                     obtain.writeString(s);
-                    this.kn.transact(8007, obtain, obtain2, 0);
+                    this.lb.transact(5001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1316,7 +1884,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5008, obtain, obtain2, 0);
+                    this.lb.transact(5006, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1339,7 +1907,39 @@ public interface IGamesCallbacks extends IInterface
                         obtain.writeInt(0);
                     }
                     obtain.writeStringArray(array);
-                    this.kn.transact(5031, obtain, obtain2, 0);
+                    this.lb.transact(5031, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void fq() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    this.lb.transact(5016, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void g(final int n, final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    obtain.writeInt(n);
+                    obtain.writeString(s);
+                    this.lb.transact(5003, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1361,7 +1961,24 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5009, obtain, obtain2, 0);
+                    this.lb.transact(5007, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void h(final int n, final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    obtain.writeInt(n);
+                    obtain.writeString(s);
+                    this.lb.transact(8007, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1383,7 +2000,24 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5010, obtain, obtain2, 0);
+                    this.lb.transact(5008, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void i(final int n, final String s) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
+                    obtain.writeInt(n);
+                    obtain.writeString(s);
+                    this.lb.transact(12012, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1405,7 +2039,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5011, obtain, obtain2, 0);
+                    this.lb.transact(5009, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1427,7 +2061,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(9001, obtain, obtain2, 0);
+                    this.lb.transact(5010, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1449,7 +2083,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5017, obtain, obtain2, 0);
+                    this.lb.transact(5011, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1471,7 +2105,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5037, obtain, obtain2, 0);
+                    this.lb.transact(9001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1493,7 +2127,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(10001, obtain, obtain2, 0);
+                    this.lb.transact(5017, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1515,7 +2149,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(8003, obtain, obtain2, 0);
+                    this.lb.transact(5037, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1537,7 +2171,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(8004, obtain, obtain2, 0);
+                    this.lb.transact(10001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1553,7 +2187,7 @@ public interface IGamesCallbacks extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeString(s);
-                    this.kn.transact(8010, obtain, obtain2, 0);
+                    this.lb.transact(8010, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1570,7 +2204,7 @@ public interface IGamesCallbacks extends IInterface
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeInt(n);
                     obtain.writeString(s);
-                    this.kn.transact(5020, obtain, obtain2, 0);
+                    this.lb.transact(5020, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1586,7 +2220,7 @@ public interface IGamesCallbacks extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeString(s);
-                    this.kn.transact(6001, obtain, obtain2, 0);
+                    this.lb.transact(6001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1602,7 +2236,7 @@ public interface IGamesCallbacks extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeString(s);
-                    this.kn.transact(6002, obtain, obtain2, 0);
+                    this.lb.transact(6002, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1624,7 +2258,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5032, obtain, obtain2, 0);
+                    this.lb.transact(5032, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1640,7 +2274,7 @@ public interface IGamesCallbacks extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeString(s);
-                    this.kn.transact(10002, obtain, obtain2, 0);
+                    this.lb.transact(10002, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1656,7 +2290,7 @@ public interface IGamesCallbacks extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesCallbacks");
                     obtain.writeString(s);
-                    this.kn.transact(8009, obtain, obtain2, 0);
+                    this.lb.transact(8009, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1678,7 +2312,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(8005, obtain, obtain2, 0);
+                    this.lb.transact(8003, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1700,7 +2334,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(8006, obtain, obtain2, 0);
+                    this.lb.transact(8004, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1722,7 +2356,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(8008, obtain, obtain2, 0);
+                    this.lb.transact(8005, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1744,7 +2378,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5018, obtain, obtain2, 0);
+                    this.lb.transact(8006, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1766,7 +2400,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5019, obtain, obtain2, 0);
+                    this.lb.transact(8008, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1788,7 +2422,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5021, obtain, obtain2, 0);
+                    this.lb.transact(5018, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1810,7 +2444,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5022, obtain, obtain2, 0);
+                    this.lb.transact(5019, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1832,7 +2466,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5023, obtain, obtain2, 0);
+                    this.lb.transact(5021, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1854,7 +2488,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5024, obtain, obtain2, 0);
+                    this.lb.transact(5022, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1876,7 +2510,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5025, obtain, obtain2, 0);
+                    this.lb.transact(5023, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -1898,7 +2532,7 @@ public interface IGamesCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5038, obtain, obtain2, 0);
+                    this.lb.transact(5024, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

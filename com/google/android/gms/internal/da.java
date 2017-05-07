@@ -4,145 +4,307 @@
 
 package com.google.android.gms.internal;
 
-import java.util.List;
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import com.google.ads.AdRequest;
+import com.google.ads.mediation.MediationInterstitialAdapter;
+import android.os.RemoteException;
+import com.google.ads.mediation.MediationBannerAdapter;
+import com.google.ads.mediation.MediationInterstitialListener;
+import com.google.ads.mediation.MediationBannerListener;
+import com.google.ads.mediation.MediationServerParameters;
+import com.google.ads.mediation.NetworkExtras;
 
-public class da implements Parcelable$Creator<cz>
+@ez
+public final class da<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> implements MediationBannerListener, MediationInterstitialListener
 {
-    static void a(final cz cz, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, cz.versionCode);
-        b.a(parcel, 2, cz.ol, false);
-        b.a(parcel, 3, cz.pm, false);
-        b.a(parcel, 4, cz.ne, false);
-        b.c(parcel, 5, cz.errorCode);
-        b.a(parcel, 6, cz.nf, false);
-        b.a(parcel, 7, cz.pn);
-        b.a(parcel, 8, cz.po);
-        b.a(parcel, 9, cz.pp);
-        b.a(parcel, 10, cz.pq, false);
-        b.a(parcel, 11, cz.ni);
-        b.c(parcel, 12, cz.orientation);
-        b.a(parcel, 13, cz.pr, false);
-        b.a(parcel, 14, cz.ps);
-        b.a(parcel, 15, cz.pt, false);
-        b.a(parcel, 19, cz.pv, false);
-        b.a(parcel, 18, cz.pu);
-        b.a(parcel, 21, cz.pw, false);
-        b.F(parcel, p3);
+    private final cv qF;
+    
+    public da(final cv qf) {
+        this.qF = qf;
     }
     
-    public cz g(final Parcel parcel) {
-        final int o = a.o(parcel);
-        int g = 0;
-        String n = null;
-        String n2 = null;
-        List<String> a = null;
-        int g2 = 0;
-        List<String> a2 = null;
-        long i = 0L;
-        boolean c = false;
-        long j = 0L;
-        List<String> a3 = null;
-        long k = 0L;
-        int g3 = 0;
-        String n3 = null;
-        long l = 0L;
-        String n4 = null;
-        boolean c2 = false;
-        String n5 = null;
-        String n6 = null;
-        while (parcel.dataPosition() < o) {
-            final int n7 = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.a.R(n7)) {
-                default: {
-                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, n7);
-                    continue;
+    @Override
+    public void onClick(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        gs.S("Adapter called onClick.");
+        if (!gr.dt()) {
+            gs.W("onClick must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdClicked();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdClicked.", (Throwable)ex);
+                    }
                 }
-                case 1: {
-                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n7);
-                    continue;
-                }
-                case 2: {
-                    n = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n7);
-                    continue;
-                }
-                case 3: {
-                    n2 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n7);
-                    continue;
-                }
-                case 4: {
-                    a = com.google.android.gms.common.internal.safeparcel.a.A(parcel, n7);
-                    continue;
-                }
-                case 5: {
-                    g2 = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n7);
-                    continue;
-                }
-                case 6: {
-                    a2 = com.google.android.gms.common.internal.safeparcel.a.A(parcel, n7);
-                    continue;
-                }
-                case 7: {
-                    i = com.google.android.gms.common.internal.safeparcel.a.i(parcel, n7);
-                    continue;
-                }
-                case 8: {
-                    c = com.google.android.gms.common.internal.safeparcel.a.c(parcel, n7);
-                    continue;
-                }
-                case 9: {
-                    j = com.google.android.gms.common.internal.safeparcel.a.i(parcel, n7);
-                    continue;
-                }
-                case 10: {
-                    a3 = com.google.android.gms.common.internal.safeparcel.a.A(parcel, n7);
-                    continue;
-                }
-                case 11: {
-                    k = com.google.android.gms.common.internal.safeparcel.a.i(parcel, n7);
-                    continue;
-                }
-                case 12: {
-                    g3 = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n7);
-                    continue;
-                }
-                case 13: {
-                    n3 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n7);
-                    continue;
-                }
-                case 14: {
-                    l = com.google.android.gms.common.internal.safeparcel.a.i(parcel, n7);
-                    continue;
-                }
-                case 15: {
-                    n4 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n7);
-                    continue;
-                }
-                case 19: {
-                    n5 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n7);
-                    continue;
-                }
-                case 18: {
-                    c2 = com.google.android.gms.common.internal.safeparcel.a.c(parcel, n7);
-                    continue;
-                }
-                case 21: {
-                    n6 = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n7);
-                    continue;
-                }
-            }
+            });
+            return;
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        try {
+            this.qF.onAdClicked();
         }
-        return new cz(g, n, n2, a, g2, a2, i, c, j, a3, k, g3, n3, l, n4, c2, n5, n6);
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdClicked.", (Throwable)ex);
+        }
     }
     
-    public cz[] l(final int n) {
-        return new cz[n];
+    @Override
+    public void onDismissScreen(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        gs.S("Adapter called onDismissScreen.");
+        if (!gr.dt()) {
+            gs.W("onDismissScreen must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdClosed();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdClosed.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdClosed();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdClosed.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onDismissScreen(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter) {
+        gs.S("Adapter called onDismissScreen.");
+        if (!gr.dt()) {
+            gs.W("onDismissScreen must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdClosed();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdClosed.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdClosed();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdClosed.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onFailedToReceiveAd(final MediationBannerAdapter<?, ?> mediationBannerAdapter, final AdRequest.ErrorCode errorCode) {
+        gs.S("Adapter called onFailedToReceiveAd with error. " + errorCode);
+        if (!gr.dt()) {
+            gs.W("onFailedToReceiveAd must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdFailedToLoad(db.a(errorCode));
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdFailedToLoad.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdFailedToLoad(db.a(errorCode));
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdFailedToLoad.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onFailedToReceiveAd(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter, final AdRequest.ErrorCode errorCode) {
+        gs.S("Adapter called onFailedToReceiveAd with error " + errorCode + ".");
+        if (!gr.dt()) {
+            gs.W("onFailedToReceiveAd must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdFailedToLoad(db.a(errorCode));
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdFailedToLoad.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdFailedToLoad(db.a(errorCode));
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdFailedToLoad.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onLeaveApplication(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        gs.S("Adapter called onLeaveApplication.");
+        if (!gr.dt()) {
+            gs.W("onLeaveApplication must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdLeftApplication();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdLeftApplication.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdLeftApplication();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdLeftApplication.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onLeaveApplication(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter) {
+        gs.S("Adapter called onLeaveApplication.");
+        if (!gr.dt()) {
+            gs.W("onLeaveApplication must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdLeftApplication();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdLeftApplication.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdLeftApplication();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdLeftApplication.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onPresentScreen(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        gs.S("Adapter called onPresentScreen.");
+        if (!gr.dt()) {
+            gs.W("onPresentScreen must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdOpened();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdOpened.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdOpened();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdOpened.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onPresentScreen(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter) {
+        gs.S("Adapter called onPresentScreen.");
+        if (!gr.dt()) {
+            gs.W("onPresentScreen must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdOpened();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdOpened.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdOpened();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdOpened.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onReceivedAd(final MediationBannerAdapter<?, ?> mediationBannerAdapter) {
+        gs.S("Adapter called onReceivedAd.");
+        if (!gr.dt()) {
+            gs.W("onReceivedAd must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdLoaded();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdLoaded.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdLoaded();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdLoaded.", (Throwable)ex);
+        }
+    }
+    
+    @Override
+    public void onReceivedAd(final MediationInterstitialAdapter<?, ?> mediationInterstitialAdapter) {
+        gs.S("Adapter called onReceivedAd.");
+        if (!gr.dt()) {
+            gs.W("onReceivedAd must be called on the main UI thread.");
+            gr.wC.post((Runnable)new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        da.this.qF.onAdLoaded();
+                    }
+                    catch (RemoteException ex) {
+                        gs.d("Could not call onAdLoaded.", (Throwable)ex);
+                    }
+                }
+            });
+            return;
+        }
+        try {
+            this.qF.onAdLoaded();
+        }
+        catch (RemoteException ex) {
+            gs.d("Could not call onAdLoaded.", (Throwable)ex);
+        }
     }
 }

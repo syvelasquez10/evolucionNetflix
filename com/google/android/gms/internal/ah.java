@@ -4,52 +4,30 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.location.Location;
-import java.util.List;
-import android.os.Bundle;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import org.json.JSONObject;
 
-public final class ah implements SafeParcelable
+public interface ah
 {
-    public static final ai CREATOR;
-    public final Bundle extras;
-    public final long lH;
-    public final int lI;
-    public final List<String> lJ;
-    public final boolean lK;
-    public final int lL;
-    public final boolean lM;
-    public final String lN;
-    public final av lO;
-    public final Location lP;
-    public final String lQ;
-    public final int versionCode;
+    void a(final a p0);
     
-    static {
-        CREATOR = new ai();
-    }
+    void a(final t p0, final dn p1, final bw p2, final dq p3, final boolean p4, final bz p5);
     
-    public ah(final int versionCode, final long lh, final Bundle extras, final int li, final List<String> lj, final boolean lk, final int ll, final boolean lm, final String ln, final av lo, final Location lp, final String lq) {
-        this.versionCode = versionCode;
-        this.lH = lh;
-        this.extras = extras;
-        this.lI = li;
-        this.lJ = lj;
-        this.lK = lk;
-        this.lL = ll;
-        this.lM = lm;
-        this.lN = ln;
-        this.lO = lo;
-        this.lP = lp;
-        this.lQ = lq;
-    }
+    void a(final String p0, final by p1);
     
-    public int describeContents() {
-        return 0;
-    }
+    void a(final String p0, final JSONObject p1);
     
-    public void writeToParcel(final Parcel parcel, final int n) {
-        ai.a(this, parcel, n);
+    void destroy();
+    
+    void f(final String p0);
+    
+    void g(final String p0);
+    
+    void pause();
+    
+    void resume();
+    
+    public interface a
+    {
+        void aM();
     }
 }

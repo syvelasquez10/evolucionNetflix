@@ -6,7 +6,7 @@ package com.google.android.gms.maps.model;
 
 import android.graphics.Bitmap;
 import android.os.RemoteException;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.maps.model.internal.a;
 
 public final class BitmapDescriptorFactory
@@ -21,18 +21,18 @@ public final class BitmapDescriptorFactory
     public static final float HUE_ROSE = 330.0f;
     public static final float HUE_VIOLET = 270.0f;
     public static final float HUE_YELLOW = 60.0f;
-    private static a SC;
+    private static a ajp;
     
     public static void a(final a a) {
-        if (BitmapDescriptorFactory.SC != null) {
+        if (BitmapDescriptorFactory.ajp != null) {
             return;
         }
-        BitmapDescriptorFactory.SC = fq.f(a);
+        BitmapDescriptorFactory.ajp = n.i(a);
     }
     
     public static BitmapDescriptor defaultMarker() {
         try {
-            return new BitmapDescriptor(iC().iH());
+            return new BitmapDescriptor(mL().mQ());
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -41,7 +41,7 @@ public final class BitmapDescriptorFactory
     
     public static BitmapDescriptor defaultMarker(final float n) {
         try {
-            return new BitmapDescriptor(iC().c(n));
+            return new BitmapDescriptor(mL().c(n));
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -50,7 +50,7 @@ public final class BitmapDescriptorFactory
     
     public static BitmapDescriptor fromAsset(final String s) {
         try {
-            return new BitmapDescriptor(iC().ba(s));
+            return new BitmapDescriptor(mL().bX(s));
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -59,7 +59,7 @@ public final class BitmapDescriptorFactory
     
     public static BitmapDescriptor fromBitmap(final Bitmap bitmap) {
         try {
-            return new BitmapDescriptor(iC().b(bitmap));
+            return new BitmapDescriptor(mL().b(bitmap));
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -68,7 +68,7 @@ public final class BitmapDescriptorFactory
     
     public static BitmapDescriptor fromFile(final String s) {
         try {
-            return new BitmapDescriptor(iC().bb(s));
+            return new BitmapDescriptor(mL().bY(s));
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -77,7 +77,7 @@ public final class BitmapDescriptorFactory
     
     public static BitmapDescriptor fromPath(final String s) {
         try {
-            return new BitmapDescriptor(iC().bc(s));
+            return new BitmapDescriptor(mL().bZ(s));
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -86,14 +86,14 @@ public final class BitmapDescriptorFactory
     
     public static BitmapDescriptor fromResource(final int n) {
         try {
-            return new BitmapDescriptor(iC().bK(n));
+            return new BitmapDescriptor(mL().eM(n));
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
         }
     }
     
-    private static a iC() {
-        return fq.b(BitmapDescriptorFactory.SC, "IBitmapDescriptorFactory is not initialized");
+    private static a mL() {
+        return n.b(BitmapDescriptorFactory.ajp, "IBitmapDescriptorFactory is not initialized");
     }
 }

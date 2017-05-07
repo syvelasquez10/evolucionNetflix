@@ -10,125 +10,125 @@ import android.os.Parcelable$Creator;
 
 public class b implements Parcelable$Creator<UserAddress>
 {
-    static void a(final UserAddress userAddress, final Parcel parcel, int p3) {
-        p3 = com.google.android.gms.common.internal.safeparcel.b.p(parcel);
+    static void a(final UserAddress userAddress, final Parcel parcel, int d) {
+        d = com.google.android.gms.common.internal.safeparcel.b.D(parcel);
         com.google.android.gms.common.internal.safeparcel.b.c(parcel, 1, userAddress.getVersionCode());
         com.google.android.gms.common.internal.safeparcel.b.a(parcel, 2, userAddress.name, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, userAddress.NB, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 4, userAddress.NC, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 5, userAddress.ND, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 6, userAddress.NE, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 7, userAddress.NF, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 8, userAddress.NG, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 9, userAddress.NH, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 10, userAddress.qd, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 11, userAddress.NI, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 12, userAddress.NJ, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 13, userAddress.NK, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 14, userAddress.NL);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 15, userAddress.NM, false);
-        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 16, userAddress.NN, false);
-        com.google.android.gms.common.internal.safeparcel.b.F(parcel, p3);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 3, userAddress.adC, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 4, userAddress.adD, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 5, userAddress.adE, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 6, userAddress.adF, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 7, userAddress.adG, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 8, userAddress.adH, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 9, userAddress.adI, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 10, userAddress.uW, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 11, userAddress.adJ, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 12, userAddress.adK, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 13, userAddress.adL, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 14, userAddress.adM);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 15, userAddress.adN, false);
+        com.google.android.gms.common.internal.safeparcel.b.a(parcel, 16, userAddress.adO, false);
+        com.google.android.gms.common.internal.safeparcel.b.H(parcel, d);
     }
     
-    public UserAddress aA(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public UserAddress cr(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
-        String n = null;
-        String n2 = null;
-        String n3 = null;
-        String n4 = null;
-        String n5 = null;
-        String n6 = null;
-        String n7 = null;
-        String n8 = null;
-        String n9 = null;
-        String n10 = null;
-        String n11 = null;
-        String n12 = null;
-        boolean c = false;
-        String n13 = null;
-        String n14 = null;
-        while (parcel.dataPosition() < o) {
-            final int n15 = a.n(parcel);
-            switch (a.R(n15)) {
+        String o = null;
+        String o2 = null;
+        String o3 = null;
+        String o4 = null;
+        String o5 = null;
+        String o6 = null;
+        String o7 = null;
+        String o8 = null;
+        String o9 = null;
+        String o10 = null;
+        String o11 = null;
+        String o12 = null;
+        boolean c2 = false;
+        String o13 = null;
+        String o14 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n15);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n15);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n = a.n(parcel, n15);
+                    o = a.o(parcel, b);
                     continue;
                 }
                 case 3: {
-                    n2 = a.n(parcel, n15);
+                    o2 = a.o(parcel, b);
                     continue;
                 }
                 case 4: {
-                    n3 = a.n(parcel, n15);
+                    o3 = a.o(parcel, b);
                     continue;
                 }
                 case 5: {
-                    n4 = a.n(parcel, n15);
+                    o4 = a.o(parcel, b);
                     continue;
                 }
                 case 6: {
-                    n5 = a.n(parcel, n15);
+                    o5 = a.o(parcel, b);
                     continue;
                 }
                 case 7: {
-                    n6 = a.n(parcel, n15);
+                    o6 = a.o(parcel, b);
                     continue;
                 }
                 case 8: {
-                    n7 = a.n(parcel, n15);
+                    o7 = a.o(parcel, b);
                     continue;
                 }
                 case 9: {
-                    n8 = a.n(parcel, n15);
+                    o8 = a.o(parcel, b);
                     continue;
                 }
                 case 10: {
-                    n9 = a.n(parcel, n15);
+                    o9 = a.o(parcel, b);
                     continue;
                 }
                 case 11: {
-                    n10 = a.n(parcel, n15);
+                    o10 = a.o(parcel, b);
                     continue;
                 }
                 case 12: {
-                    n11 = a.n(parcel, n15);
+                    o11 = a.o(parcel, b);
                     continue;
                 }
                 case 13: {
-                    n12 = a.n(parcel, n15);
+                    o12 = a.o(parcel, b);
                     continue;
                 }
                 case 14: {
-                    c = a.c(parcel, n15);
+                    c2 = a.c(parcel, b);
                     continue;
                 }
                 case 15: {
-                    n13 = a.n(parcel, n15);
+                    o13 = a.o(parcel, b);
                     continue;
                 }
                 case 16: {
-                    n14 = a.n(parcel, n15);
+                    o14 = a.o(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new UserAddress(g, n, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, c, n13, n14);
+        return new UserAddress(g, o, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, c2, o13, o14);
     }
     
-    public UserAddress[] bu(final int n) {
+    public UserAddress[] dZ(final int n) {
         return new UserAddress[n];
     }
 }

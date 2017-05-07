@@ -10,15 +10,15 @@ import android.os.IBinder;
 import java.util.ArrayList;
 import java.util.List;
 import android.os.RemoteException;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.maps.model.internal.d;
 
 public final class IndoorBuilding
 {
-    private final d SY;
+    private final d ajL;
     
     public IndoorBuilding(final d d) {
-        this.SY = fq.f(d);
+        this.ajL = n.i(d);
     }
     
     @Override
@@ -27,7 +27,7 @@ public final class IndoorBuilding
             return false;
         }
         try {
-            return this.SY.b(((IndoorBuilding)o).SY);
+            return this.ajL.b(((IndoorBuilding)o).ajL);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -36,7 +36,7 @@ public final class IndoorBuilding
     
     public int getActiveLevelIndex() {
         try {
-            return this.SY.getActiveLevelIndex();
+            return this.ajL.getActiveLevelIndex();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -45,7 +45,7 @@ public final class IndoorBuilding
     
     public int getDefaultLevelIndex() {
         try {
-            return this.SY.getActiveLevelIndex();
+            return this.ajL.getActiveLevelIndex();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -55,11 +55,11 @@ public final class IndoorBuilding
     public List<IndoorLevel> getLevels() {
         ArrayList list;
         try {
-            final List<IBinder> levels = this.SY.getLevels();
+            final List<IBinder> levels = this.ajL.getLevels();
             list = new ArrayList<IndoorLevel>(levels.size());
             final Iterator<IBinder> iterator = levels.iterator();
             while (iterator.hasNext()) {
-                list.add(new IndoorLevel(e.a.aF(iterator.next())));
+                list.add(new IndoorLevel(e.a.bt(iterator.next())));
             }
         }
         catch (RemoteException ex) {
@@ -71,7 +71,7 @@ public final class IndoorBuilding
     @Override
     public int hashCode() {
         try {
-            return this.SY.hashCodeRemote();
+            return this.ajL.hashCodeRemote();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -80,7 +80,7 @@ public final class IndoorBuilding
     
     public boolean isUnderground() {
         try {
-            return this.SY.isUnderground();
+            return this.ajL.isUnderground();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

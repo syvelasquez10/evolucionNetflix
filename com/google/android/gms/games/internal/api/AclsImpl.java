@@ -11,7 +11,7 @@ import com.google.android.gms.games.internal.game.Acls;
 
 public final class AclsImpl implements Acls
 {
-    private static LoadAclResult v(final Status status) {
+    private static LoadAclResult L(final Status status) {
         return new LoadAclResult() {
             @Override
             public Status getStatus() {
@@ -26,14 +26,14 @@ public final class AclsImpl implements Acls
     
     private abstract static class LoadNotifyAclImpl extends BaseGamesApiMethodImpl<LoadAclResult>
     {
-        public LoadAclResult x(final Status status) {
-            return v(status);
+        public LoadAclResult N(final Status status) {
+            return L(status);
         }
     }
     
     private abstract static class UpdateNotifyAclImpl extends BaseGamesApiMethodImpl<Status>
     {
-        public Status f(final Status status) {
+        public Status d(final Status status) {
             return status;
         }
     }

@@ -85,12 +85,12 @@ public class BillboardView extends RelativeLayout implements IVideoView<Billboar
         if (Log.isLoggable("BillboardView", 2)) {
             Log.v("BillboardView", "isTablet: " + this.isTablet + ", showArtworkOnly: " + this.showArtworkOnly);
         }
-        this.infoViewGroup = this.findViewById(2131165301);
-        this.label = (TextView)this.findViewById(2131165302);
-        this.info = (TextView)this.findViewById(2131165304);
-        this.synopsis = (TextView)this.findViewById(2131165305);
-        this.tvCard = (AdvancedImageView)this.findViewById(2131165303);
-        this.storyArt = (AdvancedImageView)this.findViewById(2131165298);
+        this.infoViewGroup = this.findViewById(2131165303);
+        this.label = (TextView)this.findViewById(2131165304);
+        this.info = (TextView)this.findViewById(2131165306);
+        this.synopsis = (TextView)this.findViewById(2131165307);
+        this.tvCard = (AdvancedImageView)this.findViewById(2131165305);
+        this.storyArt = (AdvancedImageView)this.findViewById(2131165300);
         int n;
         if (this.showArtworkOnly) {
             n = 0;
@@ -99,12 +99,12 @@ public class BillboardView extends RelativeLayout implements IVideoView<Billboar
             n = DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) / 3;
         }
         this.storyArt.setPadding(n, 0, 0, 0);
-        this.shadowOverlay = this.findViewById(2131165299);
+        this.shadowOverlay = this.findViewById(2131165301);
         ((RelativeLayout$LayoutParams)this.shadowOverlay.getLayoutParams()).width = n;
-        this.shadowOverlayGradient = this.findViewById(2131165300);
+        this.shadowOverlayGradient = this.findViewById(2131165302);
         ((RelativeLayout$LayoutParams)this.shadowOverlayGradient.getLayoutParams()).leftMargin = n;
-        this.playButton = this.findViewById(2131165307);
-        this.infoButton = this.findViewById(2131165308);
+        this.playButton = this.findViewById(2131165309);
+        this.infoButton = this.findViewById(2131165310);
         this.updateViewVisibility();
         this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             public void onGlobalLayout() {
@@ -208,7 +208,7 @@ public class BillboardView extends RelativeLayout implements IVideoView<Billboar
             Log.v("BillboardView", "updating billboard, title: " + billboard.getTitle() + ", story url: " + billboard.getStoryUrl());
         }
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493187), billboard.getTitle());
+        final String format = String.format(this.getResources().getString(2131493192), billboard.getTitle());
         this.setContentDescription((CharSequence)format);
         if (this.showArtworkOnly) {
             this.storyArt.setPressedStateHandlerEnabled(true);

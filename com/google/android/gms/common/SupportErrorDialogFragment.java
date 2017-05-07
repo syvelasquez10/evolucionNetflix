@@ -8,46 +8,49 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.content.DialogInterface;
 import android.content.DialogInterface$OnDismissListener;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.app.Dialog;
 import android.content.DialogInterface$OnCancelListener;
 import android.support.v4.app.DialogFragment;
 
 public class SupportErrorDialogFragment extends DialogFragment
 {
-    private DialogInterface$OnCancelListener Ai;
+    private DialogInterface$OnCancelListener HG;
     private Dialog mDialog;
     
     public SupportErrorDialogFragment() {
         this.mDialog = null;
-        this.Ai = null;
+        this.HG = null;
     }
     
     public static SupportErrorDialogFragment newInstance(final Dialog dialog) {
         return newInstance(dialog, null);
     }
     
-    public static SupportErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener ai) {
+    public static SupportErrorDialogFragment newInstance(Dialog mDialog, final DialogInterface$OnCancelListener hg) {
         final SupportErrorDialogFragment supportErrorDialogFragment = new SupportErrorDialogFragment();
-        mDialog = fq.b(mDialog, "Cannot display null dialog");
+        mDialog = n.b(mDialog, "Cannot display null dialog");
         mDialog.setOnCancelListener((DialogInterface$OnCancelListener)null);
         mDialog.setOnDismissListener((DialogInterface$OnDismissListener)null);
         supportErrorDialogFragment.mDialog = mDialog;
-        if (ai != null) {
-            supportErrorDialogFragment.Ai = ai;
+        if (hg != null) {
+            supportErrorDialogFragment.HG = hg;
         }
         return supportErrorDialogFragment;
     }
     
     @Override
     public void onCancel(final DialogInterface dialogInterface) {
-        if (this.Ai != null) {
-            this.Ai.onCancel(dialogInterface);
+        if (this.HG != null) {
+            this.HG.onCancel(dialogInterface);
         }
     }
     
     @Override
     public Dialog onCreateDialog(final Bundle bundle) {
+        if (this.mDialog == null) {
+            this.setShowsDialog(false);
+        }
         return this.mDialog;
     }
     

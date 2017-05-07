@@ -51,7 +51,7 @@ public interface b extends IInterface
     
     public abstract static class a extends Binder implements b
     {
-        public static b aC(final IBinder binder) {
+        public static b bq(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -89,14 +89,14 @@ public interface b extends IInterface
                 }
                 case 3: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    LatLng fromParcel;
+                    LatLng cm;
                     if (parcel.readInt() != 0) {
-                        fromParcel = LatLng.CREATOR.createFromParcel(parcel);
+                        cm = LatLng.CREATOR.cM(parcel);
                     }
                     else {
-                        fromParcel = null;
+                        cm = null;
                     }
-                    this.setCenter(fromParcel);
+                    this.setCenter(cm);
                     parcel2.writeNoException();
                     return true;
                 }
@@ -199,7 +199,7 @@ public interface b extends IInterface
                 }
                 case 17: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    final boolean a = this.a(aC(parcel.readStrongBinder()));
+                    final boolean a = this.a(bq(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     n = n4;
                     if (a) {
@@ -220,10 +220,10 @@ public interface b extends IInterface
         
         private static class a implements b
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -241,7 +241,7 @@ public interface b extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(17, obtain, obtain2, 0);
+                    this.lb.transact(17, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b2 = true;
@@ -255,7 +255,7 @@ public interface b extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -264,16 +264,16 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(4, obtain, obtain2, 0);
+                    this.lb.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
-                    LatLng fromParcel;
+                    LatLng cm;
                     if (obtain2.readInt() != 0) {
-                        fromParcel = LatLng.CREATOR.createFromParcel(obtain2);
+                        cm = LatLng.CREATOR.cM(obtain2);
                     }
                     else {
-                        fromParcel = null;
+                        cm = null;
                     }
-                    return fromParcel;
+                    return cm;
                 }
                 finally {
                     obtain2.recycle();
@@ -287,7 +287,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(12, obtain, obtain2, 0);
+                    this.lb.transact(12, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -303,7 +303,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readString();
                 }
@@ -319,7 +319,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(6, obtain, obtain2, 0);
+                    this.lb.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readDouble();
                 }
@@ -335,7 +335,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(10, obtain, obtain2, 0);
+                    this.lb.transact(10, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -351,7 +351,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(8, obtain, obtain2, 0);
+                    this.lb.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readFloat();
                 }
@@ -367,7 +367,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(14, obtain, obtain2, 0);
+                    this.lb.transact(14, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readFloat();
                 }
@@ -383,7 +383,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(18, obtain, obtain2, 0);
+                    this.lb.transact(18, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -400,7 +400,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(16, obtain, obtain2, 0);
+                    this.lb.transact(16, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -419,7 +419,7 @@ public interface b extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -441,7 +441,7 @@ public interface b extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(3, obtain, obtain2, 0);
+                    this.lb.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -457,7 +457,7 @@ public interface b extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
                     obtain.writeInt(n);
-                    this.kn.transact(11, obtain, obtain2, 0);
+                    this.lb.transact(11, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -473,7 +473,7 @@ public interface b extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
                     obtain.writeDouble(n);
-                    this.kn.transact(5, obtain, obtain2, 0);
+                    this.lb.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -489,7 +489,7 @@ public interface b extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
                     obtain.writeInt(n);
-                    this.kn.transact(9, obtain, obtain2, 0);
+                    this.lb.transact(9, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -505,7 +505,7 @@ public interface b extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
                     obtain.writeFloat(n);
-                    this.kn.transact(7, obtain, obtain2, 0);
+                    this.lb.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -525,7 +525,7 @@ public interface b extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(15, obtain, obtain2, 0);
+                    this.lb.transact(15, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -541,7 +541,7 @@ public interface b extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ICircleDelegate");
                     obtain.writeFloat(n);
-                    this.kn.transact(13, obtain, obtain2, 0);
+                    this.lb.transact(13, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

@@ -4,71 +4,69 @@
 
 package com.google.android.gms.internal;
 
-import android.content.res.Resources$NotFoundException;
-import android.util.Log;
-import android.util.TypedValue;
-import android.util.AttributeSet;
-import android.content.Context;
+import java.util.concurrent.Future;
+import java.util.Map;
 
-public class ft
+@ez
+public final class ft
 {
-    public static String a(String attributeValue, final String s, final Context context, AttributeSet string, final boolean b, final boolean b2, final String s2) {
-    Label_0104:
-        while (true) {
-            while (true) {
-                Label_0006: {
-                    if (string == null) {
-                        attributeValue = null;
-                        break Label_0006;
+    private gv md;
+    private final Object mw;
+    private String uq;
+    private gk<fv> ur;
+    public final by us;
+    public final by ut;
+    
+    public ft(final String uq) {
+        this.mw = new Object();
+        this.ur = new gk<fv>();
+        this.us = new by() {
+            @Override
+            public void a(final gv gv, final Map<String, String> map) {
+                synchronized (ft.this.mw) {
+                    if (ft.this.ur.isDone()) {
+                        return;
                     }
-                    Label_0145: {
-                        break Label_0145;
-                        while (true) {
-                            final String substring = attributeValue.substring("@string/".length());
-                            final String packageName = context.getPackageName();
-                            string = (AttributeSet)new TypedValue();
-                        Label_0195:
-                            while (true) {
-                                try {
-                                    context.getResources().getValue(packageName + ":string/" + substring, (TypedValue)string, true);
-                                    if (((TypedValue)string).string != null) {
-                                        string = (AttributeSet)((TypedValue)string).string.toString();
-                                        if (b2 && string == null) {
-                                            Log.w(s2, "Required XML attribute \"" + s + "\" missing");
-                                        }
-                                        return (String)string;
-                                    }
-                                    break Label_0195;
-                                    attributeValue = string.getAttributeValue(attributeValue, s);
-                                    break;
-                                }
-                                catch (Resources$NotFoundException ex) {
-                                    Log.w(s2, "Could not find resource for " + s + ": " + attributeValue);
-                                    continue;
-                                }
-                                break;
-                            }
-                            Log.w(s2, "Resource " + s + " was not a string: " + string);
-                            string = (AttributeSet)attributeValue;
-                            continue Label_0104;
-                        }
-                    }
+                    final fv fv = new fv(1, map);
+                    gs.W("Invalid " + fv.getType() + " request error: " + fv.cM());
+                    ft.this.ur.a(fv);
                 }
-                string = (AttributeSet)attributeValue;
-                if (attributeValue == null) {
-                    continue Label_0104;
-                }
-                string = (AttributeSet)attributeValue;
-                if (!attributeValue.startsWith("@string/")) {
-                    continue Label_0104;
-                }
-                string = (AttributeSet)attributeValue;
-                if (b) {
-                    continue;
-                }
-                break;
             }
-            continue Label_0104;
-        }
+        };
+        this.ut = new by() {
+            @Override
+            public void a(final gv gv, final Map<String, String> map) {
+                final fv fv;
+                final String url;
+                synchronized (ft.this.mw) {
+                    if (ft.this.ur.isDone()) {
+                        return;
+                    }
+                    fv = new fv(-2, map);
+                    url = fv.getUrl();
+                    if (url == null) {
+                        gs.W("URL missing in loadAdUrl GMSG.");
+                        return;
+                    }
+                }
+                if (url.contains("%40mediation_adapters%40")) {
+                    final gv gv2;
+                    final String replaceAll = url.replaceAll("%40mediation_adapters%40", gf.a(gv2.getContext(), map.get("check_adapters"), ft.this.uq));
+                    fv.setUrl(replaceAll);
+                    gs.V("Ad request URL modified to " + replaceAll);
+                }
+                ft.this.ur.a(fv);
+            }
+            // monitorexit(o)
+        };
+        this.uq = uq;
+    }
+    
+    public void b(final gv md) {
+        this.md = md;
+    }
+    
+    public Future<fv> cL() {
+        return this.ur;
     }
 }

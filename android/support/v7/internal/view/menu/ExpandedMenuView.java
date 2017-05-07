@@ -7,6 +7,7 @@ package android.support.v7.internal.view.menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.view.MenuItem;
+import android.support.v7.internal.widget.TintTypedArray;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.AdapterView$OnItemClickListener;
@@ -14,12 +15,29 @@ import android.widget.ListView;
 
 public final class ExpandedMenuView extends ListView implements ItemInvoker, MenuView, AdapterView$OnItemClickListener
 {
+    private static final int[] TINT_ATTRS;
     private int mAnimations;
     private MenuBuilder mMenu;
     
+    static {
+        TINT_ATTRS = new int[] { 16842964, 16843049 };
+    }
+    
     public ExpandedMenuView(final Context context, final AttributeSet set) {
+        this(context, set, 16842868);
+    }
+    
+    public ExpandedMenuView(final Context context, final AttributeSet set, final int n) {
         super(context, set);
         this.setOnItemClickListener((AdapterView$OnItemClickListener)this);
+        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, ExpandedMenuView.TINT_ATTRS, n, 0);
+        if (obtainStyledAttributes.hasValue(0)) {
+            this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(0));
+        }
+        if (obtainStyledAttributes.hasValue(1)) {
+            this.setDivider(obtainStyledAttributes.getDrawable(1));
+        }
+        obtainStyledAttributes.recycle();
     }
     
     public int getWindowAnimations() {

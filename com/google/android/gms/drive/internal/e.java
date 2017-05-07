@@ -5,55 +5,81 @@
 package com.google.android.gms.drive.internal;
 
 import com.google.android.gms.drive.Contents;
+import com.google.android.gms.drive.metadata.internal.MetadataBundle;
+import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class e implements Parcelable$Creator<CloseContentsRequest>
+public class e implements Parcelable$Creator<CloseContentsAndUpdateMetadataRequest>
 {
-    static void a(final CloseContentsRequest closeContentsRequest, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, closeContentsRequest.xH);
-        b.a(parcel, 2, (Parcelable)closeContentsRequest.EX, n, false);
-        b.a(parcel, 3, closeContentsRequest.EY, false);
-        b.F(parcel, p3);
+    static void a(final CloseContentsAndUpdateMetadataRequest closeContentsAndUpdateMetadataRequest, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1, closeContentsAndUpdateMetadataRequest.BR);
+        b.a(parcel, 2, (Parcelable)closeContentsAndUpdateMetadataRequest.NV, n, false);
+        b.a(parcel, 3, (Parcelable)closeContentsAndUpdateMetadataRequest.NW, n, false);
+        b.a(parcel, 4, (Parcelable)closeContentsAndUpdateMetadataRequest.NX, n, false);
+        b.a(parcel, 5, closeContentsAndUpdateMetadataRequest.Ng);
+        b.a(parcel, 6, closeContentsAndUpdateMetadataRequest.Nf, false);
+        b.c(parcel, 7, closeContentsAndUpdateMetadataRequest.NY);
+        b.H(parcel, d);
     }
     
-    public CloseContentsRequest F(final Parcel parcel) {
-        Boolean d = null;
-        final int o = a.o(parcel);
+    public CloseContentsAndUpdateMetadataRequest Y(final Parcel parcel) {
         int g = 0;
+        String o = null;
+        final int c = a.C(parcel);
+        boolean c2 = false;
         Contents contents = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        MetadataBundle metadataBundle = null;
+        DriveId driveId = null;
+        int g2 = 0;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n);
+                    g2 = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    contents = a.a(parcel, n, Contents.CREATOR);
+                    driveId = a.a(parcel, b, DriveId.CREATOR);
                     continue;
                 }
                 case 3: {
-                    d = a.d(parcel, n);
+                    metadataBundle = a.a(parcel, b, MetadataBundle.CREATOR);
+                    continue;
+                }
+                case 4: {
+                    contents = a.a(parcel, b, Contents.CREATOR);
+                    continue;
+                }
+                case 5: {
+                    c2 = a.c(parcel, b);
+                    continue;
+                }
+                case 6: {
+                    o = a.o(parcel, b);
+                    continue;
+                }
+                case 7: {
+                    g = a.g(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new CloseContentsRequest(g, contents, d);
+        return new CloseContentsAndUpdateMetadataRequest(g2, driveId, metadataBundle, contents, c2, o, g);
     }
     
-    public CloseContentsRequest[] aj(final int n) {
-        return new CloseContentsRequest[n];
+    public CloseContentsAndUpdateMetadataRequest[] bh(final int n) {
+        return new CloseContentsAndUpdateMetadataRequest[n];
     }
 }

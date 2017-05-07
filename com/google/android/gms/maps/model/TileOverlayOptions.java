@@ -13,41 +13,41 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class TileOverlayOptions implements SafeParcelable
 {
-    public static final TileOverlayOptionsCreator CREATOR;
-    private float SN;
-    private boolean SO;
-    private i Tt;
-    private TileProvider Tu;
-    private boolean Tv;
-    private final int xH;
+    public static final w CREATOR;
+    private final int BR;
+    private float ajA;
+    private boolean ajB;
+    private i akg;
+    private TileProvider akh;
+    private boolean aki;
     
     static {
-        CREATOR = new TileOverlayOptionsCreator();
+        CREATOR = new w();
     }
     
     public TileOverlayOptions() {
-        this.SO = true;
-        this.Tv = true;
-        this.xH = 1;
+        this.ajB = true;
+        this.aki = true;
+        this.BR = 1;
     }
     
-    TileOverlayOptions(final int xh, final IBinder binder, final boolean so, final float sn, final boolean tv) {
-        this.SO = true;
-        this.Tv = true;
-        this.xH = xh;
-        this.Tt = i.a.aK(binder);
-        TileProvider tu;
-        if (this.Tt == null) {
-            tu = null;
+    TileOverlayOptions(final int br, final IBinder binder, final boolean ajB, final float ajA, final boolean aki) {
+        this.ajB = true;
+        this.aki = true;
+        this.BR = br;
+        this.akg = i.a.by(binder);
+        TileProvider akh;
+        if (this.akg == null) {
+            akh = null;
         }
         else {
-            tu = new TileProvider() {
-                private final i Tw = TileOverlayOptions.this.Tt;
+            akh = new TileProvider() {
+                private final i akj = TileOverlayOptions.this.akg;
                 
                 @Override
                 public Tile getTile(final int n, final int n2, final int n3) {
                     try {
-                        return this.Tw.getTile(n, n2, n3);
+                        return this.akj.getTile(n, n2, n3);
                     }
                     catch (RemoteException ex) {
                         return null;
@@ -55,77 +55,77 @@ public final class TileOverlayOptions implements SafeParcelable
                 }
             };
         }
-        this.Tu = tu;
-        this.SO = so;
-        this.SN = sn;
-        this.Tv = tv;
+        this.akh = akh;
+        this.ajB = ajB;
+        this.ajA = ajA;
+        this.aki = aki;
     }
     
     public int describeContents() {
         return 0;
     }
     
-    public TileOverlayOptions fadeIn(final boolean tv) {
-        this.Tv = tv;
+    public TileOverlayOptions fadeIn(final boolean aki) {
+        this.aki = aki;
         return this;
     }
     
     public boolean getFadeIn() {
-        return this.Tv;
+        return this.aki;
     }
     
     public TileProvider getTileProvider() {
-        return this.Tu;
+        return this.akh;
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public float getZIndex() {
-        return this.SN;
-    }
-    
-    IBinder iG() {
-        return this.Tt.asBinder();
+        return this.ajA;
     }
     
     public boolean isVisible() {
-        return this.SO;
+        return this.ajB;
     }
     
-    public TileOverlayOptions tileProvider(final TileProvider tu) {
-        this.Tu = tu;
-        i tt;
-        if (this.Tu == null) {
-            tt = null;
+    IBinder mP() {
+        return this.akg.asBinder();
+    }
+    
+    public TileOverlayOptions tileProvider(final TileProvider akh) {
+        this.akh = akh;
+        i akg;
+        if (this.akh == null) {
+            akg = null;
         }
         else {
-            tt = new i.a() {
+            akg = new i.a() {
                 public Tile getTile(final int n, final int n2, final int n3) {
-                    return tu.getTile(n, n2, n3);
+                    return akh.getTile(n, n2, n3);
                 }
             };
         }
-        this.Tt = tt;
+        this.akg = akg;
         return this;
     }
     
-    public TileOverlayOptions visible(final boolean so) {
-        this.SO = so;
+    public TileOverlayOptions visible(final boolean ajB) {
+        this.ajB = ajB;
         return this;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (v.iB()) {
-            j.a(this, parcel, n);
+        if (v.mK()) {
+            x.a(this, parcel, n);
             return;
         }
-        TileOverlayOptionsCreator.a(this, parcel, n);
+        w.a(this, parcel, n);
     }
     
-    public TileOverlayOptions zIndex(final float sn) {
-        this.SN = sn;
+    public TileOverlayOptions zIndex(final float ajA) {
+        this.ajA = ajA;
         return this;
     }
 }

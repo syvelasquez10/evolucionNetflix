@@ -16,7 +16,51 @@ import android.os.Parcel;
 
 public class a
 {
-    public static ArrayList<String> A(final Parcel parcel, int a) {
+    public static String[] A(final Parcel parcel, int a) {
+        a = a(parcel, a);
+        final int dataPosition = parcel.dataPosition();
+        if (a == 0) {
+            return null;
+        }
+        final String[] stringArray = parcel.createStringArray();
+        parcel.setDataPosition(a + dataPosition);
+        return stringArray;
+    }
+    
+    public static int B(final Parcel parcel) {
+        return parcel.readInt();
+    }
+    
+    public static ArrayList<Integer> B(final Parcel parcel, int i) {
+        final int a = a(parcel, i);
+        final int dataPosition = parcel.dataPosition();
+        if (a == 0) {
+            return null;
+        }
+        final ArrayList<Integer> list = new ArrayList<Integer>();
+        int int1;
+        for (int1 = parcel.readInt(), i = 0; i < int1; ++i) {
+            list.add(parcel.readInt());
+        }
+        parcel.setDataPosition(dataPosition + a);
+        return list;
+    }
+    
+    public static int C(final Parcel parcel) {
+        final int b = B(parcel);
+        final int a = a(parcel, b);
+        final int dataPosition = parcel.dataPosition();
+        if (aD(b) != 20293) {
+            throw new a("Expected object header. Got 0x" + Integer.toHexString(b), parcel);
+        }
+        final int n = dataPosition + a;
+        if (n < dataPosition || n > parcel.dataSize()) {
+            throw new a("Size read is invalid start=" + dataPosition + " end=" + n, parcel);
+        }
+        return n;
+    }
+    
+    public static ArrayList<String> C(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -27,7 +71,7 @@ public class a
         return (ArrayList<String>)stringArrayList;
     }
     
-    public static Parcel B(final Parcel parcel, int a) {
+    public static Parcel D(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -39,7 +83,7 @@ public class a
         return obtain;
     }
     
-    public static Parcel[] C(final Parcel parcel, int i) {
+    public static Parcel[] E(final Parcel parcel, int i) {
         final int a = a(parcel, i);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -65,10 +109,6 @@ public class a
         }
         parcel.setDataPosition(dataPosition + a);
         return array;
-    }
-    
-    public static int R(final int n) {
-        return 0xFFFF & n;
     }
     
     public static int a(final Parcel parcel, final int n) {
@@ -110,6 +150,10 @@ public class a
         }
         parcel.readList(list, classLoader);
         parcel.setDataPosition(a + dataPosition);
+    }
+    
+    public static int aD(final int n) {
+        return 0xFFFF & n;
     }
     
     public static void b(final Parcel parcel, final int n) {
@@ -181,7 +225,16 @@ public class a
         return parcel.readLong();
     }
     
-    public static BigInteger j(final Parcel parcel, int a) {
+    public static Long j(final Parcel parcel, final int n) {
+        final int a = a(parcel, n);
+        if (a == 0) {
+            return null;
+        }
+        a(parcel, n, a, 8);
+        return parcel.readLong();
+    }
+    
+    public static BigInteger k(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -192,17 +245,17 @@ public class a
         return new BigInteger(byteArray);
     }
     
-    public static float k(final Parcel parcel, final int n) {
+    public static float l(final Parcel parcel, final int n) {
         a(parcel, n, 4);
         return parcel.readFloat();
     }
     
-    public static double l(final Parcel parcel, final int n) {
+    public static double m(final Parcel parcel, final int n) {
         a(parcel, n, 8);
         return parcel.readDouble();
     }
     
-    public static BigDecimal m(final Parcel parcel, int a) {
+    public static BigDecimal n(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -214,11 +267,7 @@ public class a
         return new BigDecimal(new BigInteger(byteArray), int1);
     }
     
-    public static int n(final Parcel parcel) {
-        return parcel.readInt();
-    }
-    
-    public static String n(final Parcel parcel, int a) {
+    public static String o(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -229,21 +278,7 @@ public class a
         return string;
     }
     
-    public static int o(final Parcel parcel) {
-        final int n = n(parcel);
-        final int a = a(parcel, n);
-        final int dataPosition = parcel.dataPosition();
-        if (R(n) != 20293) {
-            throw new a("Expected object header. Got 0x" + Integer.toHexString(n), parcel);
-        }
-        final int n2 = dataPosition + a;
-        if (n2 < dataPosition || n2 > parcel.dataSize()) {
-            throw new a("Size read is invalid start=" + dataPosition + " end=" + n2, parcel);
-        }
-        return n2;
-    }
-    
-    public static IBinder o(final Parcel parcel, int a) {
+    public static IBinder p(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -254,7 +289,7 @@ public class a
         return strongBinder;
     }
     
-    public static Bundle p(final Parcel parcel, int a) {
+    public static Bundle q(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -265,7 +300,7 @@ public class a
         return bundle;
     }
     
-    public static byte[] q(final Parcel parcel, int a) {
+    public static byte[] r(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -276,7 +311,7 @@ public class a
         return byteArray;
     }
     
-    public static byte[][] r(final Parcel parcel, int i) {
+    public static byte[][] s(final Parcel parcel, int i) {
         final int a = a(parcel, i);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -291,7 +326,7 @@ public class a
         return array;
     }
     
-    public static boolean[] s(final Parcel parcel, int a) {
+    public static boolean[] t(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -302,7 +337,7 @@ public class a
         return booleanArray;
     }
     
-    public static int[] t(final Parcel parcel, int a) {
+    public static int[] u(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -313,7 +348,7 @@ public class a
         return intArray;
     }
     
-    public static long[] u(final Parcel parcel, int a) {
+    public static long[] v(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -324,7 +359,7 @@ public class a
         return longArray;
     }
     
-    public static BigInteger[] v(final Parcel parcel, int i) {
+    public static BigInteger[] w(final Parcel parcel, int i) {
         final int a = a(parcel, i);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -339,7 +374,7 @@ public class a
         return array;
     }
     
-    public static float[] w(final Parcel parcel, int a) {
+    public static float[] x(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -350,7 +385,7 @@ public class a
         return floatArray;
     }
     
-    public static double[] x(final Parcel parcel, int a) {
+    public static double[] y(final Parcel parcel, int a) {
         a = a(parcel, a);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -361,7 +396,7 @@ public class a
         return doubleArray;
     }
     
-    public static BigDecimal[] y(final Parcel parcel, int i) {
+    public static BigDecimal[] z(final Parcel parcel, int i) {
         final int a = a(parcel, i);
         final int dataPosition = parcel.dataPosition();
         if (a == 0) {
@@ -374,17 +409,6 @@ public class a
         }
         parcel.setDataPosition(dataPosition + a);
         return array;
-    }
-    
-    public static String[] z(final Parcel parcel, int a) {
-        a = a(parcel, a);
-        final int dataPosition = parcel.dataPosition();
-        if (a == 0) {
-            return null;
-        }
-        final String[] stringArray = parcel.createStringArray();
-        parcel.setDataPosition(a + dataPosition);
-        return stringArray;
     }
     
     public static class a extends RuntimeException

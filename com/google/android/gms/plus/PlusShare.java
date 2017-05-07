@@ -7,12 +7,12 @@ package com.google.android.gms.plus;
 import java.util.Iterator;
 import java.util.List;
 import android.os.Parcelable;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.app.Activity;
 import android.content.Context;
 import java.util.ArrayList;
 import android.content.Intent;
-import com.google.android.gms.internal.ih;
+import com.google.android.gms.internal.ny;
 import com.google.android.gms.plus.model.people.Person;
 import android.util.Log;
 import android.text.TextUtils;
@@ -49,7 +49,7 @@ public final class PlusShare
         return bundle;
     }
     
-    protected static boolean bd(final String s) {
+    protected static boolean ca(final String s) {
         if (TextUtils.isEmpty((CharSequence)s)) {
             Log.e("GooglePlusPlatform", "The provided deep-link ID is empty.");
             return false;
@@ -68,7 +68,7 @@ public final class PlusShare
         if (TextUtils.isEmpty((CharSequence)s2)) {
             throw new IllegalArgumentException("Display name must not be empty.");
         }
-        return new ih(s2, s, null, 0, null);
+        return new ny(s2, s, null, 0, null);
     }
     
     public static String getDeepLinkId(final Intent intent) {
@@ -84,8 +84,8 @@ public final class PlusShare
     
     public static class Builder
     {
-        private boolean TZ;
-        private ArrayList<Uri> Ua;
+        private boolean alg;
+        private ArrayList<Uri> alh;
         private final Context mContext;
         private final Intent mIntent;
         
@@ -93,15 +93,15 @@ public final class PlusShare
             this.mContext = (Context)mContext;
             (this.mIntent = new Intent().setAction("android.intent.action.SEND")).addFlags(524288);
             if (mContext != null && mContext.getComponentName() != null) {
-                this.TZ = true;
+                this.alg = true;
             }
         }
         
         public Builder(final Activity activity, final PlusClient plusClient) {
             this(activity);
-            fq.a(plusClient != null, (Object)"PlusClient must not be null.");
-            fq.a(plusClient.isConnected(), (Object)"PlusClient must be connected to create an interactive post.");
-            fq.a(plusClient.iI().bg("https://www.googleapis.com/auth/plus.login"), (Object)"Must request PLUS_LOGIN scope in PlusClient to create an interactive post.");
+            n.a(plusClient != null, (Object)"PlusClient must not be null.");
+            n.a(plusClient.isConnected(), (Object)"PlusClient must be connected to create an interactive post.");
+            n.a(plusClient.mX().cd("https://www.googleapis.com/auth/plus.login"), (Object)"Must request PLUS_LOGIN scope in PlusClient to create an interactive post.");
             final Person currentPerson = plusClient.getCurrentPerson();
             String id;
             if (currentPerson != null) {
@@ -119,15 +119,15 @@ public final class PlusShare
         }
         
         public Builder addCallToAction(final String s, final Uri uri, final String s2) {
-            fq.a(this.TZ, (Object)"Must include the launching activity with PlusShare.Builder constructor before setting call-to-action");
-            fq.b(uri != null && !TextUtils.isEmpty((CharSequence)uri.toString()), "Must provide a call to action URL");
+            n.a(this.alg, (Object)"Must include the launching activity with PlusShare.Builder constructor before setting call-to-action");
+            n.b(uri != null && !TextUtils.isEmpty((CharSequence)uri.toString()), (Object)"Must provide a call to action URL");
             final Bundle bundle = new Bundle();
             if (!TextUtils.isEmpty((CharSequence)s)) {
                 bundle.putString("label", s);
             }
             bundle.putString("url", uri.toString());
             if (!TextUtils.isEmpty((CharSequence)s2)) {
-                fq.a(PlusShare.bd(s2), (Object)"The specified deep-link ID was malformed.");
+                n.a(PlusShare.ca(s2), (Object)"The specified deep-link ID was malformed.");
                 bundle.putString("deepLinkId", s2);
             }
             this.mIntent.putExtra("com.google.android.apps.plus.CALL_TO_ACTION", bundle);
@@ -141,18 +141,18 @@ public final class PlusShare
             if (uri == null) {
                 return this.setStream(stream);
             }
-            if (this.Ua == null) {
-                this.Ua = new ArrayList<Uri>();
+            if (this.alh == null) {
+                this.alh = new ArrayList<Uri>();
             }
-            this.Ua.add(uri);
-            this.Ua.add(stream);
+            this.alh.add(uri);
+            this.alh.add(stream);
             return this;
         }
         
         public Intent getIntent() {
             final boolean b = true;
             boolean b2;
-            if (this.Ua != null && this.Ua.size() > 1) {
+            if (this.alh != null && this.alh.size() > 1) {
                 b2 = true;
             }
             else {
@@ -160,8 +160,8 @@ public final class PlusShare
             }
             final boolean equals = "android.intent.action.SEND_MULTIPLE".equals(this.mIntent.getAction());
             final boolean booleanExtra = this.mIntent.getBooleanExtra("com.google.android.apps.plus.GOOGLE_INTERACTIVE_POST", false);
-            fq.a(!b2 || !booleanExtra, (Object)"Call-to-action buttons are only available for URLs.");
-            fq.a(!booleanExtra || this.mIntent.hasExtra("com.google.android.apps.plus.CONTENT_URL"), (Object)"The content URL is required for interactive posts.");
+            n.a(!b2 || !booleanExtra, (Object)"Call-to-action buttons are only available for URLs.");
+            n.a(!booleanExtra || this.mIntent.hasExtra("com.google.android.apps.plus.CONTENT_URL"), (Object)"The content URL is required for interactive posts.");
             boolean b3 = b;
             if (booleanExtra) {
                 b3 = b;
@@ -169,24 +169,24 @@ public final class PlusShare
                     b3 = (this.mIntent.hasExtra("com.google.android.apps.plus.CONTENT_DEEP_LINK_ID") && b);
                 }
             }
-            fq.a(b3, (Object)"Must set content URL or content deep-link ID to use a call-to-action button.");
+            n.a(b3, (Object)"Must set content URL or content deep-link ID to use a call-to-action button.");
             if (this.mIntent.hasExtra("com.google.android.apps.plus.CONTENT_DEEP_LINK_ID")) {
-                fq.a(PlusShare.bd(this.mIntent.getStringExtra("com.google.android.apps.plus.CONTENT_DEEP_LINK_ID")), (Object)"The specified deep-link ID was malformed.");
+                n.a(PlusShare.ca(this.mIntent.getStringExtra("com.google.android.apps.plus.CONTENT_DEEP_LINK_ID")), (Object)"The specified deep-link ID was malformed.");
             }
             if (!b2 && equals) {
                 this.mIntent.setAction("android.intent.action.SEND");
-                if (this.Ua != null && !this.Ua.isEmpty()) {
-                    this.mIntent.putExtra("android.intent.extra.STREAM", (Parcelable)this.Ua.get(0));
+                if (this.alh != null && !this.alh.isEmpty()) {
+                    this.mIntent.putExtra("android.intent.extra.STREAM", (Parcelable)this.alh.get(0));
                 }
                 else {
                     this.mIntent.removeExtra("android.intent.extra.STREAM");
                 }
-                this.Ua = null;
+                this.alh = null;
             }
             if (b2 && !equals) {
                 this.mIntent.setAction("android.intent.action.SEND_MULTIPLE");
-                if (this.Ua != null && !this.Ua.isEmpty()) {
-                    this.mIntent.putParcelableArrayListExtra("android.intent.extra.STREAM", (ArrayList)this.Ua);
+                if (this.alh != null && !this.alh.isEmpty()) {
+                    this.mIntent.putParcelableArrayListExtra("android.intent.extra.STREAM", (ArrayList)this.alh);
                 }
                 else {
                     this.mIntent.removeExtra("android.intent.extra.STREAM");
@@ -210,8 +210,8 @@ public final class PlusShare
         }
         
         public Builder setContentDeepLinkId(final String s, final String s2, final String s3, final Uri uri) {
-            fq.b(this.TZ, "Must include the launching activity with PlusShare.Builder constructor before setting deep links");
-            fq.b(!TextUtils.isEmpty((CharSequence)s), "The deepLinkId parameter is required.");
+            n.b(this.alg, (Object)"Must include the launching activity with PlusShare.Builder constructor before setting deep links");
+            n.b(!TextUtils.isEmpty((CharSequence)s), (Object)"The deepLinkId parameter is required.");
             final Bundle a = PlusShare.a(s2, s3, uri);
             this.mIntent.putExtra("com.google.android.apps.plus.CONTENT_DEEP_LINK_ID", s);
             this.mIntent.putExtra("com.google.android.apps.plus.CONTENT_DEEP_LINK_METADATA", a);
@@ -271,7 +271,7 @@ public final class PlusShare
         }
         
         public Builder setStream(final Uri uri) {
-            this.Ua = null;
+            this.alh = null;
             this.mIntent.putExtra("android.intent.extra.STREAM", (Parcelable)uri);
             return this;
         }

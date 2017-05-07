@@ -6,11 +6,11 @@ package com.google.android.gms.games.internal.request;
 
 import android.os.Parcel;
 import java.util.Collection;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import com.google.android.gms.games.Player;
 import java.util.List;
 import com.google.android.gms.games.Game;
-import com.google.android.gms.internal.fb;
+import com.google.android.gms.common.internal.a;
 import com.google.android.gms.games.request.GameRequestEntity;
 import java.util.ArrayList;
 import com.google.android.gms.games.request.GameRequest;
@@ -19,26 +19,26 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class GameRequestCluster implements SafeParcelable, GameRequest
 {
     public static final GameRequestClusterCreator CREATOR;
-    private final ArrayList<GameRequestEntity> LM;
-    private final int xH;
+    private final int BR;
+    private final ArrayList<GameRequestEntity> abg;
     
     static {
         CREATOR = new GameRequestClusterCreator();
     }
     
-    GameRequestCluster(final int xh, final ArrayList<GameRequestEntity> lm) {
-        this.xH = xh;
-        this.LM = lm;
-        this.hn();
+    GameRequestCluster(final int br, final ArrayList<GameRequestEntity> abg) {
+        this.BR = br;
+        this.abg = abg;
+        this.lg();
     }
     
-    private void hn() {
-        fb.x(!this.LM.isEmpty());
-        final GameRequestEntity gameRequestEntity = this.LM.get(0);
-        for (int size = this.LM.size(), i = 1; i < size; ++i) {
-            final GameRequestEntity gameRequestEntity2 = this.LM.get(i);
-            fb.a(gameRequestEntity.getType() == gameRequestEntity2.getType(), "All the requests must be of the same type");
-            fb.a(gameRequestEntity.getSender().equals(gameRequestEntity2.getSender()), "All the requests must be from the same sender");
+    private void lg() {
+        a.I(!this.abg.isEmpty());
+        final GameRequestEntity gameRequestEntity = this.abg.get(0);
+        for (int size = this.abg.size(), i = 1; i < size; ++i) {
+            final GameRequestEntity gameRequestEntity2 = this.abg.get(i);
+            a.a(gameRequestEntity.getType() == gameRequestEntity2.getType(), "All the requests must be of the same type");
+            a.a(gameRequestEntity.getSender().equals(gameRequestEntity2.getSender()), "All the requests must be from the same sender");
         }
     }
     
@@ -55,11 +55,11 @@ public final class GameRequestCluster implements SafeParcelable, GameRequest
             return true;
         }
         final GameRequestCluster gameRequestCluster = (GameRequestCluster)o;
-        if (gameRequestCluster.LM.size() != this.LM.size()) {
+        if (gameRequestCluster.abg.size() != this.abg.size()) {
             return false;
         }
-        for (int size = this.LM.size(), i = 0; i < size; ++i) {
-            if (!this.LM.get(i).equals(gameRequestCluster.LM.get(i))) {
+        for (int size = this.abg.size(), i = 0; i < size; ++i) {
+            if (!this.abg.get(i).equals(gameRequestCluster.abg.get(i))) {
                 return false;
             }
         }
@@ -97,12 +97,12 @@ public final class GameRequestCluster implements SafeParcelable, GameRequest
     
     @Override
     public String getRequestId() {
-        return this.LM.get(0).getRequestId();
+        return this.abg.get(0).getRequestId();
     }
     
     @Override
     public Player getSender() {
-        return this.LM.get(0).getSender();
+        return this.abg.get(0).getSender();
     }
     
     @Override
@@ -112,24 +112,16 @@ public final class GameRequestCluster implements SafeParcelable, GameRequest
     
     @Override
     public int getType() {
-        return this.LM.get(0).getType();
+        return this.abg.get(0).getType();
     }
     
     public int getVersionCode() {
-        return this.xH;
-    }
-    
-    public ArrayList<Player> hA() {
-        throw new UnsupportedOperationException("Method not supported on a cluster");
+        return this.BR;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.LM.toArray());
-    }
-    
-    public ArrayList<GameRequest> hz() {
-        return new ArrayList<GameRequest>(this.LM);
+        return m.hashCode(this.abg.toArray());
     }
     
     @Override
@@ -139,6 +131,14 @@ public final class GameRequestCluster implements SafeParcelable, GameRequest
     
     public boolean isDataValid() {
         return true;
+    }
+    
+    public ArrayList<GameRequest> lu() {
+        return new ArrayList<GameRequest>(this.abg);
+    }
+    
+    public ArrayList<Player> lv() {
+        throw new UnsupportedOperationException("Method not supported on a cluster");
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

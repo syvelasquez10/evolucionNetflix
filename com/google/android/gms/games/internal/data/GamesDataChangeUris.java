@@ -8,13 +8,13 @@ import android.net.Uri;
 
 public final class GamesDataChangeUris
 {
-    private static final Uri Lq;
-    public static final Uri Lr;
-    public static final Uri Ls;
+    private static final Uri aac;
+    public static final Uri aad;
+    public static final Uri aae;
     
     static {
-        Lq = Uri.parse("content://com.google.android.gms.games/").buildUpon().appendPath("data_change").build();
-        Lr = GamesDataChangeUris.Lq.buildUpon().appendPath("invitations").build();
-        Ls = GamesDataChangeUris.Lq.buildUpon().appendEncodedPath("players").build();
+        aac = Uri.parse("content://com.google.android.gms.games/").buildUpon().appendPath("data_change").build();
+        aad = GamesDataChangeUris.aac.buildUpon().appendPath("invitations").build();
+        aae = GamesDataChangeUris.aac.buildUpon().appendEncodedPath("players").build();
     }
 }

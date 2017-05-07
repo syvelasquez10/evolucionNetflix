@@ -4,49 +4,56 @@
 
 package com.google.android.gms.drive.query.internal;
 
+import java.util.List;
 import com.google.android.gms.common.internal.safeparcel.a;
 import android.os.Parcelable;
 import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
-public class i implements Parcelable$Creator<NotFilter>
+public class i implements Parcelable$Creator<LogicalFilter>
 {
-    static void a(final NotFilter notFilter, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1000, notFilter.xH);
-        b.a(parcel, 1, (Parcelable)notFilter.GT, n, false);
-        b.F(parcel, p3);
+    static void a(final LogicalFilter logicalFilter, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1000, logicalFilter.BR);
+        b.a(parcel, 1, (Parcelable)logicalFilter.QC, n, false);
+        b.c(parcel, 2, logicalFilter.QP, false);
+        b.H(parcel, d);
     }
     
-    public NotFilter[] aP(final int n) {
-        return new NotFilter[n];
-    }
-    
-    public NotFilter al(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public LogicalFilter aQ(final Parcel parcel) {
+        List<FilterHolder> c = null;
+        final int c2 = a.C(parcel);
         int g = 0;
-        FilterHolder filterHolder = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+        Operator operator = null;
+        while (parcel.dataPosition() < c2) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 1: {
-                    filterHolder = a.a(parcel, n, FilterHolder.CREATOR);
+                    operator = a.a(parcel, b, Operator.CREATOR);
+                    continue;
+                }
+                case 2: {
+                    c = a.c(parcel, b, FilterHolder.CREATOR);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c2) {
+            throw new a.a("Overread allowed size end=" + c2, parcel);
         }
-        return new NotFilter(g, filterHolder);
+        return new LogicalFilter(g, operator, c);
+    }
+    
+    public LogicalFilter[] cc(final int n) {
+        return new LogicalFilter[n];
     }
 }

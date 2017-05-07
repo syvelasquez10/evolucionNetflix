@@ -71,12 +71,12 @@ public class AvatarsGridActivity extends NetflixActivity
     
     private void initUI() {
         this.setContentView(2130903066);
-        this.mGridView = (GridView)this.findViewById(2131165294);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165293), this.errorCallback);
+        this.mGridView = (GridView)this.findViewById(2131165296);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165295), this.errorCallback);
         this.mAdapter = new ProfileAvatarAdapter();
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getResources().getString(2131493342));
+            netflixActionBar.setTitle(this.getResources().getString(2131493347));
             netflixActionBar.setLogoType(NetflixActionBar.LogoType.GONE);
         }
     }
@@ -277,14 +277,14 @@ public class AvatarsGridActivity extends NetflixActivity
             View inflate = view;
             if (view == null) {
                 inflate = AvatarsGridActivity.this.getLayoutInflater().inflate(2130903067, viewGroup, false);
-                inflate.setTag((Object)new ViewHolder((AdvancedImageView)inflate.findViewById(2131165296), (ImageView)inflate.findViewById(2131165297)));
+                inflate.setTag((Object)new ViewHolder((AdvancedImageView)inflate.findViewById(2131165298), (ImageView)inflate.findViewById(2131165299)));
             }
             final ViewHolder viewHolder = (ViewHolder)inflate.getTag();
             final String item = this.getItem(n);
             if (AvatarsGridActivity.this.mSelectedIconPos == n) {
                 viewHolder.topEditImg.setVisibility(0);
-                viewHolder.topEditImg.setImageResource(2131296304);
-                viewHolder.topEditImg.setBackgroundResource(2130837859);
+                viewHolder.topEditImg.setImageResource(2131296350);
+                viewHolder.topEditImg.setBackgroundResource(2130837825);
             }
             else {
                 viewHolder.topEditImg.setVisibility(8);
@@ -302,8 +302,8 @@ public class AvatarsGridActivity extends NetflixActivity
             final int width = AvatarsGridActivity.this.mGridView.getWidth();
             if (width > 0) {
                 final Resources resources = AvatarsGridActivity.this.getResources();
-                final float dimension = resources.getDimension(2131361908);
-                final float n = resources.getDimension(2131361907) + dimension;
+                final float dimension = resources.getDimension(2131361934);
+                final float n = resources.getDimension(2131361933) + dimension;
                 final int numColumns = (int)(width / n);
                 AvatarsGridActivity.this.mGridView.setNumColumns(numColumns);
                 this.adjustGridViewPaddings(width, numColumns, n, dimension);

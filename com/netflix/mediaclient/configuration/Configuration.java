@@ -66,9 +66,8 @@ public class Configuration
     }
     
     public static void setConfigData(final NetflixApplication netflixApplication, final String s, final String s2) {
-    Label_0049_Outer:
+        Label_0061_Outer:Label_0049_Outer:
         while (true) {
-        Label_0061_Outer:
             while (true) {
                 while (true) {
                     Label_0107: {
@@ -77,27 +76,27 @@ public class Configuration
                                 Log.d("ConfigurationAPI", "nrdp.setConfigData: type =  " + s + ", data = " + s2);
                             }
                             break Label_0107;
+                            // iftrue(Label_0096:, !isApplicationConfiguration(s))
                             while (true) {
                                 Log.d("ConfigurationAPI", "nrdp.setConfigData: application bookmark");
                                 Configuration.appConfiguration.put(s, s2);
                                 return;
-                                Log.e("ConfigurationAPI", "PArameteres can not be null!");
-                                return;
-                                continue Label_0049_Outer;
+                                continue Label_0061_Outer;
                             }
+                            Log.e("ConfigurationAPI", "PArameteres can not be null!");
+                            return;
                         }
-                        // iftrue(Label_0096:, !isApplicationConfiguration(s))
                         Label_0096: {
                             Log.e("ConfigurationAPI", "Uknown property");
                         }
                         return;
                     }
                     if (s != null && s2 != null) {
-                        continue;
+                        continue Label_0049_Outer;
                     }
                     break;
                 }
-                continue Label_0061_Outer;
+                continue;
             }
         }
     }

@@ -92,7 +92,7 @@ public class MediaRouteDiscoveryFragment extends Fragment
             this.setArguments(arguments);
             if (this.mCallback != null) {
                 this.mRouter.removeCallback(this.mCallback);
-                this.mRouter.addCallback(this.mSelector, this.mCallback, 4);
+                this.mRouter.addCallback(this.mSelector, this.mCallback, this.onPrepareCallbackFlags());
             }
         }
     }

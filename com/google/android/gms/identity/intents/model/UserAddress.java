@@ -12,48 +12,48 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class UserAddress implements SafeParcelable
 {
     public static final Parcelable$Creator<UserAddress> CREATOR;
-    String NB;
-    String NC;
-    String ND;
-    String NE;
-    String NF;
-    String NG;
-    String NH;
-    String NI;
-    String NJ;
-    String NK;
-    boolean NL;
-    String NM;
-    String NN;
+    private final int BR;
+    String adC;
+    String adD;
+    String adE;
+    String adF;
+    String adG;
+    String adH;
+    String adI;
+    String adJ;
+    String adK;
+    String adL;
+    boolean adM;
+    String adN;
+    String adO;
     String name;
-    String qd;
-    private final int xH;
+    String uW;
     
     static {
         CREATOR = (Parcelable$Creator)new b();
     }
     
     UserAddress() {
-        this.xH = 1;
+        this.BR = 1;
     }
     
-    UserAddress(final int xh, final String name, final String nb, final String nc, final String nd, final String ne, final String nf, final String ng, final String nh, final String qd, final String ni, final String nj, final String nk, final boolean nl, final String nm, final String nn) {
-        this.xH = xh;
+    UserAddress(final int br, final String name, final String adC, final String adD, final String adE, final String adF, final String adG, final String adH, final String adI, final String uw, final String adJ, final String adK, final String adL, final boolean adM, final String adN, final String adO) {
+        this.BR = br;
         this.name = name;
-        this.NB = nb;
-        this.NC = nc;
-        this.ND = nd;
-        this.NE = ne;
-        this.NF = nf;
-        this.NG = ng;
-        this.NH = nh;
-        this.qd = qd;
-        this.NI = ni;
-        this.NJ = nj;
-        this.NK = nk;
-        this.NL = nl;
-        this.NM = nm;
-        this.NN = nn;
+        this.adC = adC;
+        this.adD = adD;
+        this.adE = adE;
+        this.adF = adF;
+        this.adG = adG;
+        this.adH = adH;
+        this.adI = adI;
+        this.uW = uw;
+        this.adJ = adJ;
+        this.adK = adK;
+        this.adL = adL;
+        this.adM = adM;
+        this.adN = adN;
+        this.adO = adO;
     }
     
     public static UserAddress fromIntent(final Intent intent) {
@@ -68,43 +68,43 @@ public final class UserAddress implements SafeParcelable
     }
     
     public String getAddress1() {
-        return this.NB;
+        return this.adC;
     }
     
     public String getAddress2() {
-        return this.NC;
+        return this.adD;
     }
     
     public String getAddress3() {
-        return this.ND;
+        return this.adE;
     }
     
     public String getAddress4() {
-        return this.NE;
+        return this.adF;
     }
     
     public String getAddress5() {
-        return this.NF;
+        return this.adG;
     }
     
     public String getAdministrativeArea() {
-        return this.NG;
+        return this.adH;
     }
     
     public String getCompanyName() {
-        return this.NM;
+        return this.adN;
     }
     
     public String getCountryCode() {
-        return this.qd;
+        return this.uW;
     }
     
     public String getEmailAddress() {
-        return this.NN;
+        return this.adO;
     }
     
     public String getLocality() {
-        return this.NH;
+        return this.adI;
     }
     
     public String getName() {
@@ -112,23 +112,23 @@ public final class UserAddress implements SafeParcelable
     }
     
     public String getPhoneNumber() {
-        return this.NK;
+        return this.adL;
     }
     
     public String getPostalCode() {
-        return this.NI;
+        return this.adJ;
     }
     
     public String getSortingCode() {
-        return this.NJ;
+        return this.adK;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public boolean isPostBox() {
-        return this.NL;
+        return this.adM;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

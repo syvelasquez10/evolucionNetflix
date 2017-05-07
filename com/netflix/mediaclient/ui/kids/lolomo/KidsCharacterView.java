@@ -41,12 +41,12 @@ public class KidsCharacterView extends RelativeLayout implements IVideoView<Vide
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903098, (ViewGroup)this);
-        (this.img = (AdvancedImageView)this.findViewById(2131165399)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361923));
+        (this.img = (AdvancedImageView)this.findViewById(2131165401)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361949));
         final boolean kidsWithUpDownScrolling = KidsUtils.isKidsWithUpDownScrolling(netflixActivity);
         Log.v("KidsCharacterView", "Setting padding, isSkidmark: " + kidsWithUpDownScrolling);
         if (kidsWithUpDownScrolling) {
             this.img.setPadding(AndroidUtils.dipToPixels((Context)netflixActivity, 0), AndroidUtils.dipToPixels((Context)netflixActivity, 2), AndroidUtils.dipToPixels((Context)netflixActivity, 4), AndroidUtils.dipToPixels((Context)netflixActivity, 6));
-            this.setPadding(0, 0, this.getResources().getDimensionPixelSize(2131361932), this.getResources().getDimensionPixelSize(2131361933));
+            this.setPadding(0, 0, this.getResources().getDimensionPixelSize(2131361958), this.getResources().getDimensionPixelSize(2131361959));
             return;
         }
         this.img.setPadding(AndroidUtils.dipToPixels((Context)netflixActivity, 0), AndroidUtils.dipToPixels((Context)netflixActivity, 2), AndroidUtils.dipToPixels((Context)netflixActivity, 1), AndroidUtils.dipToPixels((Context)netflixActivity, 6));

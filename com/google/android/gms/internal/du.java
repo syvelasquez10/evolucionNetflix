@@ -4,48 +4,67 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.HttpURLConnection;
-import android.content.Context;
+import android.os.IBinder;
+import com.google.android.gms.common.internal.safeparcel.a;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public final class du extends do
+public class du implements Parcelable$Creator<dv>
 {
-    private final String lh;
-    private final Context mContext;
-    private final String ro;
-    
-    public du(final Context mContext, final String lh, final String ro) {
-        this.mContext = mContext;
-        this.lh = lh;
-        this.ro = ro;
+    static void a(final dv dv, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, dv.versionCode);
+        b.a(parcel, 2, dv.cl(), false);
+        b.a(parcel, 3, dv.cm(), false);
+        b.a(parcel, 4, dv.cn(), false);
+        b.a(parcel, 5, dv.co(), false);
+        b.H(parcel, d);
     }
     
-    @Override
-    public void aY() {
-        try {
-            dw.y("Pinging URL: " + this.ro);
-            final HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(this.ro).openConnection();
-            try {
-                dq.a(this.mContext, this.lh, true, httpURLConnection);
-                final int responseCode = httpURLConnection.getResponseCode();
-                if (responseCode < 200 || responseCode >= 300) {
-                    dw.z("Received non-success response code " + responseCode + " from pinging URL: " + this.ro);
+    public dv g(final Parcel parcel) {
+        IBinder p = null;
+        final int c = a.C(parcel);
+        int g = 0;
+        IBinder p2 = null;
+        IBinder p3 = null;
+        IBinder p4 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
+                default: {
+                    a.b(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    g = a.g(parcel, b);
+                    continue;
+                }
+                case 2: {
+                    p4 = a.p(parcel, b);
+                    continue;
+                }
+                case 3: {
+                    p3 = a.p(parcel, b);
+                    continue;
+                }
+                case 4: {
+                    p2 = a.p(parcel, b);
+                    continue;
+                }
+                case 5: {
+                    p = a.p(parcel, b);
+                    continue;
                 }
             }
-            finally {
-                httpURLConnection.disconnect();
-            }
         }
-        catch (IndexOutOfBoundsException ex) {
-            dw.z("Error while parsing ping URL: " + this.ro + ". " + ex.getMessage());
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        catch (IOException ex2) {
-            dw.z("Error while pinging URL: " + this.ro + ". " + ex2.getMessage());
-        }
+        return new dv(g, p4, p3, p2, p);
     }
     
-    @Override
-    public void onStop() {
+    public dv[] n(final int n) {
+        return new dv[n];
     }
 }

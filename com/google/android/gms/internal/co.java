@@ -4,88 +4,92 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.IInterface;
-
-public interface co extends IInterface
+@ez
+public final class co extends cv.a
 {
-    void a(final cn p0) throws RemoteException;
+    private final Object mw;
+    private cq.a qm;
+    private cn qn;
     
-    public abstract static class a extends Binder implements co
-    {
-        public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseListener");
+    public co() {
+        this.mw = new Object();
+    }
+    
+    public void a(final cn qn) {
+        synchronized (this.mw) {
+            this.qn = qn;
         }
-        
-        public static co p(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseListener");
-            if (queryLocalInterface != null && queryLocalInterface instanceof co) {
-                return (co)queryLocalInterface;
-            }
-            return new co.a.a(binder);
+    }
+    
+    public void a(final cq.a qm) {
+        synchronized (this.mw) {
+            this.qm = qm;
         }
-        
-        public IBinder asBinder() {
-            return (IBinder)this;
-        }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseListener");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseListener");
-                    this.a(cn.a.o(parcel.readStrongBinder()));
-                    parcel2.writeNoException();
-                    return true;
-                }
+    }
+    
+    public void onAdClicked() {
+        synchronized (this.mw) {
+            if (this.qn != null) {
+                this.qn.ae();
             }
         }
-        
-        private static class a implements co
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
+    }
+    
+    public void onAdClosed() {
+        synchronized (this.mw) {
+            if (this.qn != null) {
+                this.qn.af();
             }
-            
-            @Override
-            public void a(final cn cn) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.purchase.client.IInAppPurchaseListener");
-                    IBinder binder;
-                    if (cn != null) {
-                        binder = cn.asBinder();
+        }
+    }
+    
+    public void onAdFailedToLoad(int n) {
+        while (true) {
+            while (true) {
+                Label_0044: {
+                    synchronized (this.mw) {
+                        if (this.qm != null) {
+                            if (n != 3) {
+                                break Label_0044;
+                            }
+                            n = 1;
+                            this.qm.j(n);
+                            this.qm = null;
+                        }
+                        return;
                     }
-                    else {
-                        binder = null;
-                    }
-                    obtain.writeStrongBinder(binder);
-                    this.kn.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
                 }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
+                n = 2;
+                continue;
             }
-            
-            public IBinder asBinder() {
-                return this.kn;
+        }
+    }
+    
+    public void onAdLeftApplication() {
+        synchronized (this.mw) {
+            if (this.qn != null) {
+                this.qn.ag();
+            }
+        }
+    }
+    
+    public void onAdLoaded() {
+        synchronized (this.mw) {
+            if (this.qm != null) {
+                this.qm.j(0);
+                this.qm = null;
+                return;
+            }
+            if (this.qn != null) {
+                this.qn.ai();
+            }
+        }
+    }
+    
+    public void onAdOpened() {
+        synchronized (this.mw) {
+            if (this.qn != null) {
+                this.qn.ah();
             }
         }
     }

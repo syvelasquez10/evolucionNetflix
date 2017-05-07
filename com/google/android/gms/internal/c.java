@@ -8,23 +8,23 @@ import java.io.IOException;
 
 public interface c
 {
-    public static final class a extends kp<a>
+    public static final class a extends pg<a>
     {
-        public int eE;
-        public int eF;
+        public int fn;
+        public int fo;
         public int level;
         
         public a() {
             this.b();
         }
         
-        public a a(final kn kn) throws IOException {
+        public a a(final pe pe) throws IOException {
         Label_0057:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0057;
                         }
                         continue;
@@ -33,26 +33,26 @@ public interface c
                         break Label_0057;
                     }
                     case 8: {
-                        final int mk = kn.mk();
-                        switch (mk) {
+                        final int qj = pe.qj();
+                        switch (qj) {
                             default: {
                                 continue;
                             }
                             case 1:
                             case 2:
                             case 3: {
-                                this.level = mk;
+                                this.level = qj;
                                 continue;
                             }
                         }
                         break;
                     }
                     case 16: {
-                        this.eE = kn.mk();
+                        this.fn = pe.qj();
                         continue;
                     }
                     case 24: {
-                        this.eF = kn.mk();
+                        this.fo = pe.qj();
                         continue;
                     }
                 }
@@ -61,44 +61,44 @@ public interface c
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
+        public void a(final pf pf) throws IOException {
             if (this.level != 1) {
-                ko.i(1, this.level);
+                pf.s(1, this.level);
             }
-            if (this.eE != 0) {
-                ko.i(2, this.eE);
+            if (this.fn != 0) {
+                pf.s(2, this.fn);
             }
-            if (this.eF != 0) {
-                ko.i(3, this.eF);
+            if (this.fo != 0) {
+                pf.s(3, this.fo);
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         public a b() {
             this.level = 1;
-            this.eE = 0;
-            this.eF = 0;
-            this.adU = null;
-            this.adY = -1;
+            this.fn = 0;
+            this.fo = 0;
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
         
         @Override
-        public int c() {
+        protected int c() {
             int c;
             final int n = c = super.c();
             if (this.level != 1) {
-                c = n + ko.j(1, this.level);
+                c = n + pf.u(1, this.level);
             }
             int n2 = c;
-            if (this.eE != 0) {
-                n2 = c + ko.j(2, this.eE);
+            if (this.fn != 0) {
+                n2 = c + pf.u(2, this.fn);
             }
-            int adY = n2;
-            if (this.eF != 0) {
-                adY = n2 + ko.j(3, this.eF);
+            int n3 = n2;
+            if (this.fo != 0) {
+                n3 = n2 + pf.u(3, this.fo);
             }
-            return this.adY = adY;
+            return n3;
         }
         
         @Override
@@ -115,19 +115,10 @@ public interface c
                     b2 = b;
                     if (this.level == a.level) {
                         b2 = b;
-                        if (this.eE == a.eE) {
+                        if (this.fn == a.fn) {
                             b2 = b;
-                            if (this.eF == a.eF) {
-                                if (this.adU == null || this.adU.isEmpty()) {
-                                    if (a.adU != null) {
-                                        b2 = b;
-                                        if (!a.adU.isEmpty()) {
-                                            return b2;
-                                        }
-                                    }
-                                    return true;
-                                }
-                                return this.adU.equals(a.adU);
+                            if (this.fo == a.fo) {
+                                return this.a(a);
                             }
                         }
                     }
@@ -138,27 +129,17 @@ public interface c
         
         @Override
         public int hashCode() {
-            final int level = this.level;
-            final int ee = this.eE;
-            final int ef = this.eF;
-            int hashCode;
-            if (this.adU == null || this.adU.isEmpty()) {
-                hashCode = 0;
-            }
-            else {
-                hashCode = this.adU.hashCode();
-            }
-            return hashCode + (((level + 527) * 31 + ee) * 31 + ef) * 31;
+            return (((this.level + 527) * 31 + this.fn) * 31 + this.fo) * 31 + this.qx();
         }
     }
     
-    public static final class b extends kp<b>
+    public static final class b extends pg<b>
     {
-        private static volatile b[] eG;
-        public int[] eH;
-        public int eI;
-        public boolean eJ;
-        public boolean eK;
+        private static volatile b[] fp;
+        public int[] fq;
+        public int fr;
+        public boolean fs;
+        public boolean ft;
         public int name;
         
         public b() {
@@ -167,74 +148,74 @@ public interface c
         
         public static b[] d() {
             Label_0027: {
-                if (b.eG != null) {
+                if (b.fp != null) {
                     break Label_0027;
                 }
-                synchronized (kr.adX) {
-                    if (b.eG == null) {
-                        b.eG = new b[0];
+                synchronized (pk.awI) {
+                    if (b.fp == null) {
+                        b.fp = new b[0];
                     }
-                    return b.eG;
+                    return b.fp;
                 }
             }
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
-            if (this.eK) {
-                ko.a(1, this.eK);
+        public void a(final pf pf) throws IOException {
+            if (this.ft) {
+                pf.b(1, this.ft);
             }
-            ko.i(2, this.eI);
-            if (this.eH != null && this.eH.length > 0) {
-                for (int i = 0; i < this.eH.length; ++i) {
-                    ko.i(3, this.eH[i]);
+            pf.s(2, this.fr);
+            if (this.fq != null && this.fq.length > 0) {
+                for (int i = 0; i < this.fq.length; ++i) {
+                    pf.s(3, this.fq[i]);
                 }
             }
             if (this.name != 0) {
-                ko.i(4, this.name);
+                pf.s(4, this.name);
             }
-            if (this.eJ) {
-                ko.a(6, this.eJ);
+            if (this.fs) {
+                pf.b(6, this.fs);
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
+        protected int c() {
             int n = 0;
             int c = super.c();
-            if (this.eK) {
-                c += ko.b(1, this.eK);
+            if (this.ft) {
+                c += pf.c(1, this.ft);
             }
-            final int n2 = ko.j(2, this.eI) + c;
+            final int n2 = pf.u(2, this.fr) + c;
             int n3;
-            if (this.eH != null && this.eH.length > 0) {
-                for (int i = 0; i < this.eH.length; ++i) {
-                    n += ko.cX(this.eH[i]);
+            if (this.fq != null && this.fq.length > 0) {
+                for (int i = 0; i < this.fq.length; ++i) {
+                    n += pf.gv(this.fq[i]);
                 }
-                n3 = n2 + n + this.eH.length * 1;
+                n3 = n2 + n + this.fq.length * 1;
             }
             else {
                 n3 = n2;
             }
             int n4 = n3;
             if (this.name != 0) {
-                n4 = n3 + ko.j(4, this.name);
+                n4 = n3 + pf.u(4, this.name);
             }
-            int adY = n4;
-            if (this.eJ) {
-                adY = n4 + ko.b(6, this.eJ);
+            int n5 = n4;
+            if (this.fs) {
+                n5 = n4 + pf.c(6, this.fs);
             }
-            return this.adY = adY;
+            return n5;
         }
         
-        public b c(final kn kn) throws IOException {
+        public b c(final pe pe) throws IOException {
         Label_0081:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0081;
                         }
                         continue;
@@ -243,73 +224,73 @@ public interface c
                         break Label_0081;
                     }
                     case 8: {
-                        this.eK = kn.ml();
+                        this.ft = pe.qk();
                         continue;
                     }
                     case 16: {
-                        this.eI = kn.mk();
+                        this.fr = pe.qj();
                         continue;
                     }
                     case 24: {
-                        final int b = kw.b(kn, 24);
+                        final int b = pp.b(pe, 24);
                         int length;
-                        if (this.eH == null) {
+                        if (this.fq == null) {
                             length = 0;
                         }
                         else {
-                            length = this.eH.length;
+                            length = this.fq.length;
                         }
-                        final int[] eh = new int[b + length];
+                        final int[] fq = new int[b + length];
                         int i = length;
                         if (length != 0) {
-                            System.arraycopy(this.eH, 0, eh, 0, length);
+                            System.arraycopy(this.fq, 0, fq, 0, length);
                             i = length;
                         }
-                        while (i < eh.length - 1) {
-                            eh[i] = kn.mk();
-                            kn.mh();
+                        while (i < fq.length - 1) {
+                            fq[i] = pe.qj();
+                            pe.qg();
                             ++i;
                         }
-                        eh[i] = kn.mk();
-                        this.eH = eh;
+                        fq[i] = pe.qj();
+                        this.fq = fq;
                         continue;
                     }
                     case 26: {
-                        final int cr = kn.cR(kn.mn());
-                        final int position = kn.getPosition();
+                        final int go = pe.go(pe.qn());
+                        final int position = pe.getPosition();
                         int n = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n;
                         }
-                        kn.cT(position);
+                        pe.gq(position);
                         int length2;
-                        if (this.eH == null) {
+                        if (this.fq == null) {
                             length2 = 0;
                         }
                         else {
-                            length2 = this.eH.length;
+                            length2 = this.fq.length;
                         }
-                        final int[] eh2 = new int[n + length2];
+                        final int[] fq2 = new int[n + length2];
                         int j = length2;
                         if (length2 != 0) {
-                            System.arraycopy(this.eH, 0, eh2, 0, length2);
+                            System.arraycopy(this.fq, 0, fq2, 0, length2);
                             j = length2;
                         }
-                        while (j < eh2.length) {
-                            eh2[j] = kn.mk();
+                        while (j < fq2.length) {
+                            fq2[j] = pe.qj();
                             ++j;
                         }
-                        this.eH = eh2;
-                        kn.cS(cr);
+                        this.fq = fq2;
+                        pe.gp(go);
                         continue;
                     }
                     case 32: {
-                        this.name = kn.mk();
+                        this.name = pe.qj();
                         continue;
                     }
                     case 48: {
-                        this.eJ = kn.ml();
+                        this.fs = pe.qk();
                         continue;
                     }
                 }
@@ -318,13 +299,13 @@ public interface c
         }
         
         public b e() {
-            this.eH = kw.aea;
-            this.eI = 0;
+            this.fq = pp.awL;
+            this.fr = 0;
             this.name = 0;
-            this.eJ = false;
-            this.eK = false;
-            this.adU = null;
-            this.adY = -1;
+            this.fs = false;
+            this.ft = false;
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
         
@@ -340,25 +321,16 @@ public interface c
                 if (o instanceof b) {
                     final b b3 = (b)o;
                     b2 = b;
-                    if (kr.equals(this.eH, b3.eH)) {
+                    if (pk.equals(this.fq, b3.fq)) {
                         b2 = b;
-                        if (this.eI == b3.eI) {
+                        if (this.fr == b3.fr) {
                             b2 = b;
                             if (this.name == b3.name) {
                                 b2 = b;
-                                if (this.eJ == b3.eJ) {
+                                if (this.fs == b3.fs) {
                                     b2 = b;
-                                    if (this.eK == b3.eK) {
-                                        if (this.adU == null || this.adU.isEmpty()) {
-                                            if (b3.adU != null) {
-                                                b2 = b;
-                                                if (!b3.adU.isEmpty()) {
-                                                    return b2;
-                                                }
-                                            }
-                                            return true;
-                                        }
-                                        return this.adU.equals(b3.adU);
+                                    if (this.ft == b3.ft) {
+                                        return this.a(b3);
                                     }
                                 }
                             }
@@ -372,38 +344,31 @@ public interface c
         @Override
         public int hashCode() {
             int n = 1231;
-            final int hashCode = kr.hashCode(this.eH);
-            final int ei = this.eI;
+            final int hashCode = pk.hashCode(this.fq);
+            final int fr = this.fr;
             final int name = this.name;
             int n2;
-            if (this.eJ) {
+            if (this.fs) {
                 n2 = 1231;
             }
             else {
                 n2 = 1237;
             }
-            if (!this.eK) {
+            if (!this.ft) {
                 n = 1237;
             }
-            int hashCode2;
-            if (this.adU == null || this.adU.isEmpty()) {
-                hashCode2 = 0;
-            }
-            else {
-                hashCode2 = this.adU.hashCode();
-            }
-            return hashCode2 + ((n2 + (((hashCode + 527) * 31 + ei) * 31 + name) * 31) * 31 + n) * 31;
+            return ((n2 + (((hashCode + 527) * 31 + fr) * 31 + name) * 31) * 31 + n) * 31 + this.qx();
         }
     }
     
-    public static final class c extends kp<c>
+    public static final class c extends pg<c>
     {
-        private static volatile c[] eL;
-        public String eM;
-        public long eN;
-        public long eO;
-        public boolean eP;
-        public long eQ;
+        private static volatile c[] fu;
+        public String fv;
+        public long fw;
+        public long fx;
+        public boolean fy;
+        public long fz;
         
         public c() {
             this.g();
@@ -411,71 +376,71 @@ public interface c
         
         public static c[] f() {
             Label_0027: {
-                if (c.eL != null) {
+                if (c.fu != null) {
                     break Label_0027;
                 }
-                synchronized (kr.adX) {
-                    if (c.eL == null) {
-                        c.eL = new c[0];
+                synchronized (pk.awI) {
+                    if (c.fu == null) {
+                        c.fu = new c[0];
                     }
-                    return c.eL;
+                    return c.fu;
                 }
             }
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
-            if (!this.eM.equals("")) {
-                ko.b(1, this.eM);
+        public void a(final pf pf) throws IOException {
+            if (!this.fv.equals("")) {
+                pf.b(1, this.fv);
             }
-            if (this.eN != 0L) {
-                ko.b(2, this.eN);
+            if (this.fw != 0L) {
+                pf.b(2, this.fw);
             }
-            if (this.eO != 2147483647L) {
-                ko.b(3, this.eO);
+            if (this.fx != 2147483647L) {
+                pf.b(3, this.fx);
             }
-            if (this.eP) {
-                ko.a(4, this.eP);
+            if (this.fy) {
+                pf.b(4, this.fy);
             }
-            if (this.eQ != 0L) {
-                ko.b(5, this.eQ);
+            if (this.fz != 0L) {
+                pf.b(5, this.fz);
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
+        protected int c() {
             int c;
             final int n = c = super.c();
-            if (!this.eM.equals("")) {
-                c = n + ko.g(1, this.eM);
+            if (!this.fv.equals("")) {
+                c = n + pf.j(1, this.fv);
             }
             int n2 = c;
-            if (this.eN != 0L) {
-                n2 = c + ko.d(2, this.eN);
+            if (this.fw != 0L) {
+                n2 = c + pf.d(2, this.fw);
             }
             int n3 = n2;
-            if (this.eO != 2147483647L) {
-                n3 = n2 + ko.d(3, this.eO);
+            if (this.fx != 2147483647L) {
+                n3 = n2 + pf.d(3, this.fx);
             }
             int n4 = n3;
-            if (this.eP) {
-                n4 = n3 + ko.b(4, this.eP);
+            if (this.fy) {
+                n4 = n3 + pf.c(4, this.fy);
             }
-            int adY = n4;
-            if (this.eQ != 0L) {
-                adY = n4 + ko.d(5, this.eQ);
+            int n5 = n4;
+            if (this.fz != 0L) {
+                n5 = n4 + pf.d(5, this.fz);
             }
-            return this.adY = adY;
+            return n5;
         }
         
-        public c d(final kn kn) throws IOException {
+        public c d(final pe pe) throws IOException {
         Label_0073:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0073;
                         }
                         continue;
@@ -484,23 +449,23 @@ public interface c
                         break Label_0073;
                     }
                     case 10: {
-                        this.eM = kn.readString();
+                        this.fv = pe.readString();
                         continue;
                     }
                     case 16: {
-                        this.eN = kn.mj();
+                        this.fw = pe.qi();
                         continue;
                     }
                     case 24: {
-                        this.eO = kn.mj();
+                        this.fx = pe.qi();
                         continue;
                     }
                     case 32: {
-                        this.eP = kn.ml();
+                        this.fy = pe.qk();
                         continue;
                     }
                     case 40: {
-                        this.eQ = kn.mj();
+                        this.fz = pe.qi();
                         continue;
                     }
                 }
@@ -519,33 +484,24 @@ public interface c
                 b2 = b;
                 if (o instanceof c) {
                     final c c = (c)o;
-                    if (this.eM == null) {
+                    if (this.fv == null) {
                         b2 = b;
-                        if (c.eM != null) {
+                        if (c.fv != null) {
                             return b2;
                         }
                     }
-                    else if (!this.eM.equals(c.eM)) {
+                    else if (!this.fv.equals(c.fv)) {
                         return false;
                     }
                     b2 = b;
-                    if (this.eN == c.eN) {
+                    if (this.fw == c.fw) {
                         b2 = b;
-                        if (this.eO == c.eO) {
+                        if (this.fx == c.fx) {
                             b2 = b;
-                            if (this.eP == c.eP) {
+                            if (this.fy == c.fy) {
                                 b2 = b;
-                                if (this.eQ == c.eQ) {
-                                    if (this.adU == null || this.adU.isEmpty()) {
-                                        if (c.adU != null) {
-                                            b2 = b;
-                                            if (!c.adU.isEmpty()) {
-                                                return b2;
-                                            }
-                                        }
-                                        return true;
-                                    }
-                                    return this.adU.equals(c.adU);
+                                if (this.fz == c.fz) {
+                                    return this.a(c);
                                 }
                             }
                         }
@@ -556,153 +512,142 @@ public interface c
         }
         
         public c g() {
-            this.eM = "";
-            this.eN = 0L;
-            this.eO = 2147483647L;
-            this.eP = false;
-            this.eQ = 0L;
-            this.adU = null;
-            this.adY = -1;
+            this.fv = "";
+            this.fw = 0L;
+            this.fx = 2147483647L;
+            this.fy = false;
+            this.fz = 0L;
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
         
         @Override
         public int hashCode() {
-            final boolean b = false;
             int hashCode;
-            if (this.eM == null) {
+            if (this.fv == null) {
                 hashCode = 0;
             }
             else {
-                hashCode = this.eM.hashCode();
+                hashCode = this.fv.hashCode();
             }
-            final int n = (int)(this.eN ^ this.eN >>> 32);
-            final int n2 = (int)(this.eO ^ this.eO >>> 32);
+            final int n = (int)(this.fw ^ this.fw >>> 32);
+            final int n2 = (int)(this.fx ^ this.fx >>> 32);
             int n3;
-            if (this.eP) {
+            if (this.fy) {
                 n3 = 1231;
             }
             else {
                 n3 = 1237;
             }
-            final int n4 = (int)(this.eQ ^ this.eQ >>> 32);
-            int hashCode2 = b ? 1 : 0;
-            if (this.adU != null) {
-                if (this.adU.isEmpty()) {
-                    hashCode2 = (b ? 1 : 0);
-                }
-                else {
-                    hashCode2 = this.adU.hashCode();
-                }
-            }
-            return ((n3 + (((hashCode + 527) * 31 + n) * 31 + n2) * 31) * 31 + n4) * 31 + hashCode2;
+            return ((n3 + (((hashCode + 527) * 31 + n) * 31 + n2) * 31) * 31 + (int)(this.fz ^ this.fz >>> 32)) * 31 + this.qx();
         }
     }
     
-    public static final class d extends kp<d>
+    public static final class d extends pg<d>
     {
-        public com.google.android.gms.internal.d.a[] eR;
-        public com.google.android.gms.internal.d.a[] eS;
-        public c[] eT;
+        public com.google.android.gms.internal.d.a[] fA;
+        public com.google.android.gms.internal.d.a[] fB;
+        public c[] fC;
         
         public d() {
             this.h();
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
+        public void a(final pf pf) throws IOException {
             final int n = 0;
-            if (this.eR != null && this.eR.length > 0) {
-                for (int i = 0; i < this.eR.length; ++i) {
-                    final com.google.android.gms.internal.d.a a = this.eR[i];
+            if (this.fA != null && this.fA.length > 0) {
+                for (int i = 0; i < this.fA.length; ++i) {
+                    final com.google.android.gms.internal.d.a a = this.fA[i];
                     if (a != null) {
-                        ko.a(1, a);
+                        pf.a(1, a);
                     }
                 }
             }
-            if (this.eS != null && this.eS.length > 0) {
-                for (int j = 0; j < this.eS.length; ++j) {
-                    final com.google.android.gms.internal.d.a a2 = this.eS[j];
+            if (this.fB != null && this.fB.length > 0) {
+                for (int j = 0; j < this.fB.length; ++j) {
+                    final com.google.android.gms.internal.d.a a2 = this.fB[j];
                     if (a2 != null) {
-                        ko.a(2, a2);
+                        pf.a(2, a2);
                     }
                 }
             }
-            if (this.eT != null && this.eT.length > 0) {
-                for (int k = n; k < this.eT.length; ++k) {
-                    final c c = this.eT[k];
+            if (this.fC != null && this.fC.length > 0) {
+                for (int k = n; k < this.fC.length; ++k) {
+                    final c c = this.fC[k];
                     if (c != null) {
-                        ko.a(3, c);
+                        pf.a(3, c);
                     }
                 }
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
+        protected int c() {
             final int n = 0;
             int c;
             int n2 = c = super.c();
-            if (this.eR != null) {
+            if (this.fA != null) {
                 c = n2;
-                if (this.eR.length > 0) {
+                if (this.fA.length > 0) {
                     int n3;
-                    for (int i = 0; i < this.eR.length; ++i, n2 = n3) {
-                        final com.google.android.gms.internal.d.a a = this.eR[i];
+                    for (int i = 0; i < this.fA.length; ++i, n2 = n3) {
+                        final com.google.android.gms.internal.d.a a = this.fA[i];
                         n3 = n2;
                         if (a != null) {
-                            n3 = n2 + ko.b(1, a);
+                            n3 = n2 + pf.c(1, a);
                         }
                     }
                     c = n2;
                 }
             }
             int n4 = c;
-            if (this.eS != null) {
+            if (this.fB != null) {
                 n4 = c;
-                if (this.eS.length > 0) {
+                if (this.fB.length > 0) {
                     n4 = c;
                     int n5;
-                    for (int j = 0; j < this.eS.length; ++j, n4 = n5) {
-                        final com.google.android.gms.internal.d.a a2 = this.eS[j];
+                    for (int j = 0; j < this.fB.length; ++j, n4 = n5) {
+                        final com.google.android.gms.internal.d.a a2 = this.fB[j];
                         n5 = n4;
                         if (a2 != null) {
-                            n5 = n4 + ko.b(2, a2);
+                            n5 = n4 + pf.c(2, a2);
                         }
                     }
                 }
             }
-            int adY = n4;
-            if (this.eT != null) {
-                adY = n4;
-                if (this.eT.length > 0) {
-                    int n6 = n;
+            int n6 = n4;
+            if (this.fC != null) {
+                n6 = n4;
+                if (this.fC.length > 0) {
+                    int n7 = n;
                     while (true) {
-                        adY = n4;
-                        if (n6 >= this.eT.length) {
+                        n6 = n4;
+                        if (n7 >= this.fC.length) {
                             break;
                         }
-                        final c c2 = this.eT[n6];
-                        int n7 = n4;
+                        final c c2 = this.fC[n7];
+                        int n8 = n4;
                         if (c2 != null) {
-                            n7 = n4 + ko.b(3, c2);
+                            n8 = n4 + pf.c(3, c2);
                         }
-                        ++n6;
-                        n4 = n7;
+                        ++n7;
+                        n4 = n8;
                     }
                 }
             }
-            return this.adY = adY;
+            return n6;
         }
         
-        public d e(final kn kn) throws IOException {
+        public d e(final pe pe) throws IOException {
         Label_0057:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0057;
                         }
                         continue;
@@ -711,75 +656,75 @@ public interface c
                         break Label_0057;
                     }
                     case 10: {
-                        final int b = kw.b(kn, 10);
+                        final int b = pp.b(pe, 10);
                         int length;
-                        if (this.eR == null) {
+                        if (this.fA == null) {
                             length = 0;
                         }
                         else {
-                            length = this.eR.length;
+                            length = this.fA.length;
                         }
-                        final com.google.android.gms.internal.d.a[] er = new com.google.android.gms.internal.d.a[b + length];
+                        final com.google.android.gms.internal.d.a[] fa = new com.google.android.gms.internal.d.a[b + length];
                         int i = length;
                         if (length != 0) {
-                            System.arraycopy(this.eR, 0, er, 0, length);
+                            System.arraycopy(this.fA, 0, fa, 0, length);
                             i = length;
                         }
-                        while (i < er.length - 1) {
-                            kn.a(er[i] = new com.google.android.gms.internal.d.a());
-                            kn.mh();
+                        while (i < fa.length - 1) {
+                            pe.a(fa[i] = new com.google.android.gms.internal.d.a());
+                            pe.qg();
                             ++i;
                         }
-                        kn.a(er[i] = new com.google.android.gms.internal.d.a());
-                        this.eR = er;
+                        pe.a(fa[i] = new com.google.android.gms.internal.d.a());
+                        this.fA = fa;
                         continue;
                     }
                     case 18: {
-                        final int b2 = kw.b(kn, 18);
+                        final int b2 = pp.b(pe, 18);
                         int length2;
-                        if (this.eS == null) {
+                        if (this.fB == null) {
                             length2 = 0;
                         }
                         else {
-                            length2 = this.eS.length;
+                            length2 = this.fB.length;
                         }
-                        final com.google.android.gms.internal.d.a[] es = new com.google.android.gms.internal.d.a[b2 + length2];
+                        final com.google.android.gms.internal.d.a[] fb = new com.google.android.gms.internal.d.a[b2 + length2];
                         int j = length2;
                         if (length2 != 0) {
-                            System.arraycopy(this.eS, 0, es, 0, length2);
+                            System.arraycopy(this.fB, 0, fb, 0, length2);
                             j = length2;
                         }
-                        while (j < es.length - 1) {
-                            kn.a(es[j] = new com.google.android.gms.internal.d.a());
-                            kn.mh();
+                        while (j < fb.length - 1) {
+                            pe.a(fb[j] = new com.google.android.gms.internal.d.a());
+                            pe.qg();
                             ++j;
                         }
-                        kn.a(es[j] = new com.google.android.gms.internal.d.a());
-                        this.eS = es;
+                        pe.a(fb[j] = new com.google.android.gms.internal.d.a());
+                        this.fB = fb;
                         continue;
                     }
                     case 26: {
-                        final int b3 = kw.b(kn, 26);
+                        final int b3 = pp.b(pe, 26);
                         int length3;
-                        if (this.eT == null) {
+                        if (this.fC == null) {
                             length3 = 0;
                         }
                         else {
-                            length3 = this.eT.length;
+                            length3 = this.fC.length;
                         }
-                        final c[] et = new c[b3 + length3];
+                        final c[] fc = new c[b3 + length3];
                         int k = length3;
                         if (length3 != 0) {
-                            System.arraycopy(this.eT, 0, et, 0, length3);
+                            System.arraycopy(this.fC, 0, fc, 0, length3);
                             k = length3;
                         }
-                        while (k < et.length - 1) {
-                            kn.a(et[k] = new c());
-                            kn.mh();
+                        while (k < fc.length - 1) {
+                            pe.a(fc[k] = new c());
+                            pe.qg();
                             ++k;
                         }
-                        kn.a(et[k] = new c());
-                        this.eT = et;
+                        pe.a(fc[k] = new c());
+                        this.fC = fc;
                         continue;
                     }
                 }
@@ -799,21 +744,12 @@ public interface c
                 if (o instanceof d) {
                     final d d = (d)o;
                     b2 = b;
-                    if (kr.equals(this.eR, d.eR)) {
+                    if (pk.equals(this.fA, d.fA)) {
                         b2 = b;
-                        if (kr.equals(this.eS, d.eS)) {
+                        if (pk.equals(this.fB, d.fB)) {
                             b2 = b;
-                            if (kr.equals(this.eT, d.eT)) {
-                                if (this.adU == null || this.adU.isEmpty()) {
-                                    if (d.adU != null) {
-                                        b2 = b;
-                                        if (!d.adU.isEmpty()) {
-                                            return b2;
-                                        }
-                                    }
-                                    return true;
-                                }
-                                return this.adU.equals(d.adU);
+                            if (pk.equals(this.fC, d.fC)) {
+                                return this.a(d);
                             }
                         }
                     }
@@ -823,33 +759,23 @@ public interface c
         }
         
         public d h() {
-            this.eR = com.google.android.gms.internal.d.a.r();
-            this.eS = com.google.android.gms.internal.d.a.r();
-            this.eT = c.f();
-            this.adU = null;
-            this.adY = -1;
+            this.fA = com.google.android.gms.internal.d.a.r();
+            this.fB = com.google.android.gms.internal.d.a.r();
+            this.fC = c.f();
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
         
         @Override
         public int hashCode() {
-            final int hashCode = kr.hashCode(this.eR);
-            final int hashCode2 = kr.hashCode(this.eS);
-            final int hashCode3 = kr.hashCode(this.eT);
-            int hashCode4;
-            if (this.adU == null || this.adU.isEmpty()) {
-                hashCode4 = 0;
-            }
-            else {
-                hashCode4 = this.adU.hashCode();
-            }
-            return hashCode4 + (((hashCode + 527) * 31 + hashCode2) * 31 + hashCode3) * 31;
+            return (((pk.hashCode(this.fA) + 527) * 31 + pk.hashCode(this.fB)) * 31 + pk.hashCode(this.fC)) * 31 + this.qx();
         }
     }
     
-    public static final class e extends kp<e>
+    public static final class e extends pg<e>
     {
-        private static volatile e[] eU;
+        private static volatile e[] fD;
         public int key;
         public int value;
         
@@ -859,28 +785,28 @@ public interface c
         
         public static e[] i() {
             Label_0027: {
-                if (e.eU != null) {
+                if (e.fD != null) {
                     break Label_0027;
                 }
-                synchronized (kr.adX) {
-                    if (e.eU == null) {
-                        e.eU = new e[0];
+                synchronized (pk.awI) {
+                    if (e.fD == null) {
+                        e.fD = new e[0];
                     }
-                    return e.eU;
+                    return e.fD;
                 }
             }
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
-            ko.i(1, this.key);
-            ko.i(2, this.value);
-            super.a(ko);
+        public void a(final pf pf) throws IOException {
+            pf.s(1, this.key);
+            pf.s(2, this.value);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
-            return this.adY = super.c() + ko.j(1, this.key) + ko.j(2, this.value);
+        protected int c() {
+            return super.c() + pf.u(1, this.key) + pf.u(2, this.value);
         }
         
         @Override
@@ -898,16 +824,7 @@ public interface c
                     if (this.key == e.key) {
                         b2 = b;
                         if (this.value == e.value) {
-                            if (this.adU == null || this.adU.isEmpty()) {
-                                if (e.adU != null) {
-                                    b2 = b;
-                                    if (!e.adU.isEmpty()) {
-                                        return b2;
-                                    }
-                                }
-                                return true;
-                            }
-                            return this.adU.equals(e.adU);
+                            return this.a(e);
                         }
                     }
                 }
@@ -915,13 +832,13 @@ public interface c
             return b2;
         }
         
-        public e f(final kn kn) throws IOException {
+        public e f(final pe pe) throws IOException {
         Label_0049:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0049;
                         }
                         continue;
@@ -930,11 +847,11 @@ public interface c
                         break Label_0049;
                     }
                     case 8: {
-                        this.key = kn.mk();
+                        this.key = pe.qj();
                         continue;
                     }
                     case 16: {
-                        this.value = kn.mk();
+                        this.value = pe.qj();
                         continue;
                     }
                 }
@@ -944,173 +861,164 @@ public interface c
         
         @Override
         public int hashCode() {
-            final int key = this.key;
-            final int value = this.value;
-            int hashCode;
-            if (this.adU == null || this.adU.isEmpty()) {
-                hashCode = 0;
-            }
-            else {
-                hashCode = this.adU.hashCode();
-            }
-            return hashCode + ((key + 527) * 31 + value) * 31;
+            return ((this.key + 527) * 31 + this.value) * 31 + this.qx();
         }
         
         public e j() {
             this.key = 0;
             this.value = 0;
-            this.adU = null;
-            this.adY = -1;
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
     }
     
-    public static final class f extends kp<f>
+    public static final class f extends pg<f>
     {
-        public String[] eV;
-        public String[] eW;
-        public com.google.android.gms.internal.d.a[] eX;
-        public e[] eY;
-        public b[] eZ;
-        public b[] fa;
-        public b[] fb;
-        public g[] fc;
-        public String fd;
-        public String fe;
-        public String ff;
-        public String fg;
-        public a fh;
-        public float fi;
-        public boolean fj;
-        public String[] fk;
-        public int fl;
+        public String[] fE;
+        public String[] fF;
+        public com.google.android.gms.internal.d.a[] fG;
+        public e[] fH;
+        public b[] fI;
+        public b[] fJ;
+        public b[] fK;
+        public g[] fL;
+        public String fM;
+        public String fN;
+        public String fO;
+        public a fP;
+        public float fQ;
+        public boolean fR;
+        public String[] fS;
+        public int fT;
+        public String version;
         
         public f() {
             this.k();
         }
         
-        public static f a(final byte[] array) throws ks {
-            return kt.a(new f(), array);
+        public static f a(final byte[] array) throws pl {
+            return pm.a(new f(), array);
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
+        public void a(final pf pf) throws IOException {
             final int n = 0;
-            if (this.eW != null && this.eW.length > 0) {
-                for (int i = 0; i < this.eW.length; ++i) {
-                    final String s = this.eW[i];
+            if (this.fF != null && this.fF.length > 0) {
+                for (int i = 0; i < this.fF.length; ++i) {
+                    final String s = this.fF[i];
                     if (s != null) {
-                        ko.b(1, s);
+                        pf.b(1, s);
                     }
                 }
             }
-            if (this.eX != null && this.eX.length > 0) {
-                for (int j = 0; j < this.eX.length; ++j) {
-                    final com.google.android.gms.internal.d.a a = this.eX[j];
+            if (this.fG != null && this.fG.length > 0) {
+                for (int j = 0; j < this.fG.length; ++j) {
+                    final com.google.android.gms.internal.d.a a = this.fG[j];
                     if (a != null) {
-                        ko.a(2, a);
+                        pf.a(2, a);
                     }
                 }
             }
-            if (this.eY != null && this.eY.length > 0) {
-                for (int k = 0; k < this.eY.length; ++k) {
-                    final e e = this.eY[k];
+            if (this.fH != null && this.fH.length > 0) {
+                for (int k = 0; k < this.fH.length; ++k) {
+                    final e e = this.fH[k];
                     if (e != null) {
-                        ko.a(3, e);
+                        pf.a(3, e);
                     }
                 }
             }
-            if (this.eZ != null && this.eZ.length > 0) {
-                for (int l = 0; l < this.eZ.length; ++l) {
-                    final b b = this.eZ[l];
+            if (this.fI != null && this.fI.length > 0) {
+                for (int l = 0; l < this.fI.length; ++l) {
+                    final b b = this.fI[l];
                     if (b != null) {
-                        ko.a(4, b);
+                        pf.a(4, b);
                     }
                 }
             }
-            if (this.fa != null && this.fa.length > 0) {
-                for (int n2 = 0; n2 < this.fa.length; ++n2) {
-                    final b b2 = this.fa[n2];
+            if (this.fJ != null && this.fJ.length > 0) {
+                for (int n2 = 0; n2 < this.fJ.length; ++n2) {
+                    final b b2 = this.fJ[n2];
                     if (b2 != null) {
-                        ko.a(5, b2);
+                        pf.a(5, b2);
                     }
                 }
             }
-            if (this.fb != null && this.fb.length > 0) {
-                for (int n3 = 0; n3 < this.fb.length; ++n3) {
-                    final b b3 = this.fb[n3];
+            if (this.fK != null && this.fK.length > 0) {
+                for (int n3 = 0; n3 < this.fK.length; ++n3) {
+                    final b b3 = this.fK[n3];
                     if (b3 != null) {
-                        ko.a(6, b3);
+                        pf.a(6, b3);
                     }
                 }
             }
-            if (this.fc != null && this.fc.length > 0) {
-                for (int n4 = 0; n4 < this.fc.length; ++n4) {
-                    final g g = this.fc[n4];
+            if (this.fL != null && this.fL.length > 0) {
+                for (int n4 = 0; n4 < this.fL.length; ++n4) {
+                    final g g = this.fL[n4];
                     if (g != null) {
-                        ko.a(7, g);
+                        pf.a(7, g);
                     }
                 }
             }
-            if (!this.fd.equals("")) {
-                ko.b(9, this.fd);
+            if (!this.fM.equals("")) {
+                pf.b(9, this.fM);
             }
-            if (!this.fe.equals("")) {
-                ko.b(10, this.fe);
+            if (!this.fN.equals("")) {
+                pf.b(10, this.fN);
             }
-            if (!this.ff.equals("0")) {
-                ko.b(12, this.ff);
+            if (!this.fO.equals("0")) {
+                pf.b(12, this.fO);
             }
-            if (!this.fg.equals("")) {
-                ko.b(13, this.fg);
+            if (!this.version.equals("")) {
+                pf.b(13, this.version);
             }
-            if (this.fh != null) {
-                ko.a(14, this.fh);
+            if (this.fP != null) {
+                pf.a(14, this.fP);
             }
-            if (Float.floatToIntBits(this.fi) != Float.floatToIntBits(0.0f)) {
-                ko.b(15, this.fi);
+            if (Float.floatToIntBits(this.fQ) != Float.floatToIntBits(0.0f)) {
+                pf.b(15, this.fQ);
             }
-            if (this.fk != null && this.fk.length > 0) {
-                for (int n5 = 0; n5 < this.fk.length; ++n5) {
-                    final String s2 = this.fk[n5];
+            if (this.fS != null && this.fS.length > 0) {
+                for (int n5 = 0; n5 < this.fS.length; ++n5) {
+                    final String s2 = this.fS[n5];
                     if (s2 != null) {
-                        ko.b(16, s2);
+                        pf.b(16, s2);
                     }
                 }
             }
-            if (this.fl != 0) {
-                ko.i(17, this.fl);
+            if (this.fT != 0) {
+                pf.s(17, this.fT);
             }
-            if (this.fj) {
-                ko.a(18, this.fj);
+            if (this.fR) {
+                pf.b(18, this.fR);
             }
-            if (this.eV != null && this.eV.length > 0) {
-                for (int n6 = n; n6 < this.eV.length; ++n6) {
-                    final String s3 = this.eV[n6];
+            if (this.fE != null && this.fE.length > 0) {
+                for (int n6 = n; n6 < this.fE.length; ++n6) {
+                    final String s3 = this.fE[n6];
                     if (s3 != null) {
-                        ko.b(19, s3);
+                        pf.b(19, s3);
                     }
                 }
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
+        protected int c() {
             final int n = 0;
             final int c = super.c();
             int n6;
-            if (this.eW != null && this.eW.length > 0) {
+            if (this.fF != null && this.fF.length > 0) {
                 int i = 0;
                 int n2 = 0;
                 int n3 = 0;
-                while (i < this.eW.length) {
-                    final String s = this.eW[i];
+                while (i < this.fF.length) {
+                    final String s = this.fF[i];
                     int n4 = n2;
                     int n5 = n3;
                     if (s != null) {
                         n5 = n3 + 1;
-                        n4 = n2 + ko.cf(s);
+                        n4 = n2 + pf.df(s);
                     }
                     ++i;
                     n2 = n4;
@@ -1122,133 +1030,133 @@ public interface c
                 n6 = c;
             }
             int n7 = n6;
-            if (this.eX != null) {
+            if (this.fG != null) {
                 n7 = n6;
-                if (this.eX.length > 0) {
+                if (this.fG.length > 0) {
                     n7 = n6;
                     int n8;
-                    for (int j = 0; j < this.eX.length; ++j, n7 = n8) {
-                        final com.google.android.gms.internal.d.a a = this.eX[j];
+                    for (int j = 0; j < this.fG.length; ++j, n7 = n8) {
+                        final com.google.android.gms.internal.d.a a = this.fG[j];
                         n8 = n7;
                         if (a != null) {
-                            n8 = n7 + ko.b(2, a);
+                            n8 = n7 + pf.c(2, a);
                         }
                     }
                 }
             }
             int n9 = n7;
-            if (this.eY != null) {
+            if (this.fH != null) {
                 n9 = n7;
-                if (this.eY.length > 0) {
+                if (this.fH.length > 0) {
                     int n10;
-                    for (int k = 0; k < this.eY.length; ++k, n7 = n10) {
-                        final e e = this.eY[k];
+                    for (int k = 0; k < this.fH.length; ++k, n7 = n10) {
+                        final e e = this.fH[k];
                         n10 = n7;
                         if (e != null) {
-                            n10 = n7 + ko.b(3, e);
+                            n10 = n7 + pf.c(3, e);
                         }
                     }
                     n9 = n7;
                 }
             }
             int n11 = n9;
-            if (this.eZ != null) {
+            if (this.fI != null) {
                 n11 = n9;
-                if (this.eZ.length > 0) {
+                if (this.fI.length > 0) {
                     n11 = n9;
                     int n12;
-                    for (int l = 0; l < this.eZ.length; ++l, n11 = n12) {
-                        final b b = this.eZ[l];
+                    for (int l = 0; l < this.fI.length; ++l, n11 = n12) {
+                        final b b = this.fI[l];
                         n12 = n11;
                         if (b != null) {
-                            n12 = n11 + ko.b(4, b);
+                            n12 = n11 + pf.c(4, b);
                         }
                     }
                 }
             }
             int n13 = n11;
-            if (this.fa != null) {
+            if (this.fJ != null) {
                 n13 = n11;
-                if (this.fa.length > 0) {
+                if (this.fJ.length > 0) {
                     int n15;
-                    for (int n14 = 0; n14 < this.fa.length; ++n14, n11 = n15) {
-                        final b b2 = this.fa[n14];
+                    for (int n14 = 0; n14 < this.fJ.length; ++n14, n11 = n15) {
+                        final b b2 = this.fJ[n14];
                         n15 = n11;
                         if (b2 != null) {
-                            n15 = n11 + ko.b(5, b2);
+                            n15 = n11 + pf.c(5, b2);
                         }
                     }
                     n13 = n11;
                 }
             }
             int n16 = n13;
-            if (this.fb != null) {
+            if (this.fK != null) {
                 n16 = n13;
-                if (this.fb.length > 0) {
+                if (this.fK.length > 0) {
                     n16 = n13;
                     int n18;
-                    for (int n17 = 0; n17 < this.fb.length; ++n17, n16 = n18) {
-                        final b b3 = this.fb[n17];
+                    for (int n17 = 0; n17 < this.fK.length; ++n17, n16 = n18) {
+                        final b b3 = this.fK[n17];
                         n18 = n16;
                         if (b3 != null) {
-                            n18 = n16 + ko.b(6, b3);
+                            n18 = n16 + pf.c(6, b3);
                         }
                     }
                 }
             }
             int n19 = n16;
-            if (this.fc != null) {
+            if (this.fL != null) {
                 n19 = n16;
-                if (this.fc.length > 0) {
+                if (this.fL.length > 0) {
                     int n21;
-                    for (int n20 = 0; n20 < this.fc.length; ++n20, n16 = n21) {
-                        final g g = this.fc[n20];
+                    for (int n20 = 0; n20 < this.fL.length; ++n20, n16 = n21) {
+                        final g g = this.fL[n20];
                         n21 = n16;
                         if (g != null) {
-                            n21 = n16 + ko.b(7, g);
+                            n21 = n16 + pf.c(7, g);
                         }
                     }
                     n19 = n16;
                 }
             }
             int n22 = n19;
-            if (!this.fd.equals("")) {
-                n22 = n19 + ko.g(9, this.fd);
+            if (!this.fM.equals("")) {
+                n22 = n19 + pf.j(9, this.fM);
             }
             int n23 = n22;
-            if (!this.fe.equals("")) {
-                n23 = n22 + ko.g(10, this.fe);
+            if (!this.fN.equals("")) {
+                n23 = n22 + pf.j(10, this.fN);
             }
             int n24 = n23;
-            if (!this.ff.equals("0")) {
-                n24 = n23 + ko.g(12, this.ff);
+            if (!this.fO.equals("0")) {
+                n24 = n23 + pf.j(12, this.fO);
             }
             int n25 = n24;
-            if (!this.fg.equals("")) {
-                n25 = n24 + ko.g(13, this.fg);
+            if (!this.version.equals("")) {
+                n25 = n24 + pf.j(13, this.version);
             }
             int n26 = n25;
-            if (this.fh != null) {
-                n26 = n25 + ko.b(14, this.fh);
+            if (this.fP != null) {
+                n26 = n25 + pf.c(14, this.fP);
             }
             int n27 = n26;
-            if (Float.floatToIntBits(this.fi) != Float.floatToIntBits(0.0f)) {
-                n27 = n26 + ko.c(15, this.fi);
+            if (Float.floatToIntBits(this.fQ) != Float.floatToIntBits(0.0f)) {
+                n27 = n26 + pf.c(15, this.fQ);
             }
             int n28 = n27;
-            if (this.fk != null) {
+            if (this.fS != null) {
                 n28 = n27;
-                if (this.fk.length > 0) {
+                if (this.fS.length > 0) {
                     int n29 = 0;
                     int n30 = 0;
                     int n31 = 0;
-                    while (n29 < this.fk.length) {
-                        final String s2 = this.fk[n29];
+                    while (n29 < this.fS.length) {
+                        final String s2 = this.fS[n29];
                         int n32 = n30;
                         int n33 = n31;
                         if (s2 != null) {
                             n33 = n31 + 1;
-                            n32 = n30 + ko.cf(s2);
+                            n32 = n30 + pf.df(s2);
                         }
                         ++n29;
                         n30 = n32;
@@ -1258,34 +1166,34 @@ public interface c
                 }
             }
             int n34 = n28;
-            if (this.fl != 0) {
-                n34 = n28 + ko.j(17, this.fl);
+            if (this.fT != 0) {
+                n34 = n28 + pf.u(17, this.fT);
             }
             int n35 = n34;
-            if (this.fj) {
-                n35 = n34 + ko.b(18, this.fj);
+            if (this.fR) {
+                n35 = n34 + pf.c(18, this.fR);
             }
-            int adY = n35;
-            if (this.eV != null) {
-                adY = n35;
-                if (this.eV.length > 0) {
-                    int n36 = 0;
+            int n36 = n35;
+            if (this.fE != null) {
+                n36 = n35;
+                if (this.fE.length > 0) {
                     int n37 = 0;
-                    int n39;
+                    int n38 = 0;
                     int n40;
-                    for (int n38 = n; n38 < this.eV.length; ++n38, n36 = n39, n37 = n40) {
-                        final String s3 = this.eV[n38];
-                        n39 = n36;
+                    int n41;
+                    for (int n39 = n; n39 < this.fE.length; ++n39, n37 = n40, n38 = n41) {
+                        final String s3 = this.fE[n39];
                         n40 = n37;
+                        n41 = n38;
                         if (s3 != null) {
-                            n40 = n37 + 1;
-                            n39 = n36 + ko.cf(s3);
+                            n41 = n38 + 1;
+                            n40 = n37 + pf.df(s3);
                         }
                     }
-                    adY = n35 + n36 + n37 * 2;
+                    n36 = n35 + n37 + n38 * 2;
                 }
             }
-            return this.adY = adY;
+            return n36;
         }
         
         @Override
@@ -1300,84 +1208,75 @@ public interface c
                 if (o instanceof f) {
                     final f f = (f)o;
                     b2 = b;
-                    if (kr.equals(this.eV, f.eV)) {
+                    if (pk.equals(this.fE, f.fE)) {
                         b2 = b;
-                        if (kr.equals(this.eW, f.eW)) {
+                        if (pk.equals(this.fF, f.fF)) {
                             b2 = b;
-                            if (kr.equals(this.eX, f.eX)) {
+                            if (pk.equals(this.fG, f.fG)) {
                                 b2 = b;
-                                if (kr.equals(this.eY, f.eY)) {
+                                if (pk.equals(this.fH, f.fH)) {
                                     b2 = b;
-                                    if (kr.equals(this.eZ, f.eZ)) {
+                                    if (pk.equals(this.fI, f.fI)) {
                                         b2 = b;
-                                        if (kr.equals(this.fa, f.fa)) {
+                                        if (pk.equals(this.fJ, f.fJ)) {
                                             b2 = b;
-                                            if (kr.equals(this.fb, f.fb)) {
+                                            if (pk.equals(this.fK, f.fK)) {
                                                 b2 = b;
-                                                if (kr.equals(this.fc, f.fc)) {
-                                                    if (this.fd == null) {
+                                                if (pk.equals(this.fL, f.fL)) {
+                                                    if (this.fM == null) {
                                                         b2 = b;
-                                                        if (f.fd != null) {
+                                                        if (f.fM != null) {
                                                             return b2;
                                                         }
                                                     }
-                                                    else if (!this.fd.equals(f.fd)) {
+                                                    else if (!this.fM.equals(f.fM)) {
                                                         return false;
                                                     }
-                                                    if (this.fe == null) {
+                                                    if (this.fN == null) {
                                                         b2 = b;
-                                                        if (f.fe != null) {
+                                                        if (f.fN != null) {
                                                             return b2;
                                                         }
                                                     }
-                                                    else if (!this.fe.equals(f.fe)) {
+                                                    else if (!this.fN.equals(f.fN)) {
                                                         return false;
                                                     }
-                                                    if (this.ff == null) {
+                                                    if (this.fO == null) {
                                                         b2 = b;
-                                                        if (f.ff != null) {
+                                                        if (f.fO != null) {
                                                             return b2;
                                                         }
                                                     }
-                                                    else if (!this.ff.equals(f.ff)) {
+                                                    else if (!this.fO.equals(f.fO)) {
                                                         return false;
                                                     }
-                                                    if (this.fg == null) {
+                                                    if (this.version == null) {
                                                         b2 = b;
-                                                        if (f.fg != null) {
+                                                        if (f.version != null) {
                                                             return b2;
                                                         }
                                                     }
-                                                    else if (!this.fg.equals(f.fg)) {
+                                                    else if (!this.version.equals(f.version)) {
                                                         return false;
                                                     }
-                                                    if (this.fh == null) {
+                                                    if (this.fP == null) {
                                                         b2 = b;
-                                                        if (f.fh != null) {
+                                                        if (f.fP != null) {
                                                             return b2;
                                                         }
                                                     }
-                                                    else if (!this.fh.equals(f.fh)) {
+                                                    else if (!this.fP.equals(f.fP)) {
                                                         return false;
                                                     }
                                                     b2 = b;
-                                                    if (Float.floatToIntBits(this.fi) == Float.floatToIntBits(f.fi)) {
+                                                    if (Float.floatToIntBits(this.fQ) == Float.floatToIntBits(f.fQ)) {
                                                         b2 = b;
-                                                        if (this.fj == f.fj) {
+                                                        if (this.fR == f.fR) {
                                                             b2 = b;
-                                                            if (kr.equals(this.fk, f.fk)) {
+                                                            if (pk.equals(this.fS, f.fS)) {
                                                                 b2 = b;
-                                                                if (this.fl == f.fl) {
-                                                                    if (this.adU == null || this.adU.isEmpty()) {
-                                                                        if (f.adU != null) {
-                                                                            b2 = b;
-                                                                            if (!f.adU.isEmpty()) {
-                                                                                return b2;
-                                                                            }
-                                                                        }
-                                                                        return true;
-                                                                    }
-                                                                    return this.adU.equals(f.adU);
+                                                                if (this.fT == f.fT) {
+                                                                    return this.a(f);
                                                                 }
                                                             }
                                                         }
@@ -1395,13 +1294,13 @@ public interface c
             return b2;
         }
         
-        public f g(final kn kn) throws IOException {
+        public f g(final pe pe) throws IOException {
         Label_0169:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0169;
                         }
                         continue;
@@ -1410,254 +1309,254 @@ public interface c
                         break Label_0169;
                     }
                     case 10: {
-                        final int b = kw.b(kn, 10);
+                        final int b = pp.b(pe, 10);
                         int length;
-                        if (this.eW == null) {
+                        if (this.fF == null) {
                             length = 0;
                         }
                         else {
-                            length = this.eW.length;
+                            length = this.fF.length;
                         }
-                        final String[] ew = new String[b + length];
+                        final String[] ff = new String[b + length];
                         int i = length;
                         if (length != 0) {
-                            System.arraycopy(this.eW, 0, ew, 0, length);
+                            System.arraycopy(this.fF, 0, ff, 0, length);
                             i = length;
                         }
-                        while (i < ew.length - 1) {
-                            ew[i] = kn.readString();
-                            kn.mh();
+                        while (i < ff.length - 1) {
+                            ff[i] = pe.readString();
+                            pe.qg();
                             ++i;
                         }
-                        ew[i] = kn.readString();
-                        this.eW = ew;
+                        ff[i] = pe.readString();
+                        this.fF = ff;
                         continue;
                     }
                     case 18: {
-                        final int b2 = kw.b(kn, 18);
+                        final int b2 = pp.b(pe, 18);
                         int length2;
-                        if (this.eX == null) {
+                        if (this.fG == null) {
                             length2 = 0;
                         }
                         else {
-                            length2 = this.eX.length;
+                            length2 = this.fG.length;
                         }
-                        final com.google.android.gms.internal.d.a[] ex = new com.google.android.gms.internal.d.a[b2 + length2];
+                        final com.google.android.gms.internal.d.a[] fg = new com.google.android.gms.internal.d.a[b2 + length2];
                         int j = length2;
                         if (length2 != 0) {
-                            System.arraycopy(this.eX, 0, ex, 0, length2);
+                            System.arraycopy(this.fG, 0, fg, 0, length2);
                             j = length2;
                         }
-                        while (j < ex.length - 1) {
-                            kn.a(ex[j] = new com.google.android.gms.internal.d.a());
-                            kn.mh();
+                        while (j < fg.length - 1) {
+                            pe.a(fg[j] = new com.google.android.gms.internal.d.a());
+                            pe.qg();
                             ++j;
                         }
-                        kn.a(ex[j] = new com.google.android.gms.internal.d.a());
-                        this.eX = ex;
+                        pe.a(fg[j] = new com.google.android.gms.internal.d.a());
+                        this.fG = fg;
                         continue;
                     }
                     case 26: {
-                        final int b3 = kw.b(kn, 26);
+                        final int b3 = pp.b(pe, 26);
                         int length3;
-                        if (this.eY == null) {
+                        if (this.fH == null) {
                             length3 = 0;
                         }
                         else {
-                            length3 = this.eY.length;
+                            length3 = this.fH.length;
                         }
-                        final e[] ey = new e[b3 + length3];
+                        final e[] fh = new e[b3 + length3];
                         int k = length3;
                         if (length3 != 0) {
-                            System.arraycopy(this.eY, 0, ey, 0, length3);
+                            System.arraycopy(this.fH, 0, fh, 0, length3);
                             k = length3;
                         }
-                        while (k < ey.length - 1) {
-                            kn.a(ey[k] = new e());
-                            kn.mh();
+                        while (k < fh.length - 1) {
+                            pe.a(fh[k] = new e());
+                            pe.qg();
                             ++k;
                         }
-                        kn.a(ey[k] = new e());
-                        this.eY = ey;
+                        pe.a(fh[k] = new e());
+                        this.fH = fh;
                         continue;
                     }
                     case 34: {
-                        final int b4 = kw.b(kn, 34);
+                        final int b4 = pp.b(pe, 34);
                         int length4;
-                        if (this.eZ == null) {
+                        if (this.fI == null) {
                             length4 = 0;
                         }
                         else {
-                            length4 = this.eZ.length;
+                            length4 = this.fI.length;
                         }
-                        final b[] ez = new b[b4 + length4];
+                        final b[] fi = new b[b4 + length4];
                         int l = length4;
                         if (length4 != 0) {
-                            System.arraycopy(this.eZ, 0, ez, 0, length4);
+                            System.arraycopy(this.fI, 0, fi, 0, length4);
                             l = length4;
                         }
-                        while (l < ez.length - 1) {
-                            kn.a(ez[l] = new b());
-                            kn.mh();
+                        while (l < fi.length - 1) {
+                            pe.a(fi[l] = new b());
+                            pe.qg();
                             ++l;
                         }
-                        kn.a(ez[l] = new b());
-                        this.eZ = ez;
+                        pe.a(fi[l] = new b());
+                        this.fI = fi;
                         continue;
                     }
                     case 42: {
-                        final int b5 = kw.b(kn, 42);
+                        final int b5 = pp.b(pe, 42);
                         int length5;
-                        if (this.fa == null) {
+                        if (this.fJ == null) {
                             length5 = 0;
                         }
                         else {
-                            length5 = this.fa.length;
+                            length5 = this.fJ.length;
                         }
-                        final b[] fa = new b[b5 + length5];
+                        final b[] fj = new b[b5 + length5];
                         int n = length5;
                         if (length5 != 0) {
-                            System.arraycopy(this.fa, 0, fa, 0, length5);
+                            System.arraycopy(this.fJ, 0, fj, 0, length5);
                             n = length5;
                         }
-                        while (n < fa.length - 1) {
-                            kn.a(fa[n] = new b());
-                            kn.mh();
+                        while (n < fj.length - 1) {
+                            pe.a(fj[n] = new b());
+                            pe.qg();
                             ++n;
                         }
-                        kn.a(fa[n] = new b());
-                        this.fa = fa;
+                        pe.a(fj[n] = new b());
+                        this.fJ = fj;
                         continue;
                     }
                     case 50: {
-                        final int b6 = kw.b(kn, 50);
+                        final int b6 = pp.b(pe, 50);
                         int length6;
-                        if (this.fb == null) {
+                        if (this.fK == null) {
                             length6 = 0;
                         }
                         else {
-                            length6 = this.fb.length;
+                            length6 = this.fK.length;
                         }
-                        final b[] fb = new b[b6 + length6];
+                        final b[] fk = new b[b6 + length6];
                         int n2 = length6;
                         if (length6 != 0) {
-                            System.arraycopy(this.fb, 0, fb, 0, length6);
+                            System.arraycopy(this.fK, 0, fk, 0, length6);
                             n2 = length6;
                         }
-                        while (n2 < fb.length - 1) {
-                            kn.a(fb[n2] = new b());
-                            kn.mh();
+                        while (n2 < fk.length - 1) {
+                            pe.a(fk[n2] = new b());
+                            pe.qg();
                             ++n2;
                         }
-                        kn.a(fb[n2] = new b());
-                        this.fb = fb;
+                        pe.a(fk[n2] = new b());
+                        this.fK = fk;
                         continue;
                     }
                     case 58: {
-                        final int b7 = kw.b(kn, 58);
+                        final int b7 = pp.b(pe, 58);
                         int length7;
-                        if (this.fc == null) {
+                        if (this.fL == null) {
                             length7 = 0;
                         }
                         else {
-                            length7 = this.fc.length;
+                            length7 = this.fL.length;
                         }
-                        final g[] fc = new g[b7 + length7];
+                        final g[] fl = new g[b7 + length7];
                         int n3 = length7;
                         if (length7 != 0) {
-                            System.arraycopy(this.fc, 0, fc, 0, length7);
+                            System.arraycopy(this.fL, 0, fl, 0, length7);
                             n3 = length7;
                         }
-                        while (n3 < fc.length - 1) {
-                            kn.a(fc[n3] = new g());
-                            kn.mh();
+                        while (n3 < fl.length - 1) {
+                            pe.a(fl[n3] = new g());
+                            pe.qg();
                             ++n3;
                         }
-                        kn.a(fc[n3] = new g());
-                        this.fc = fc;
+                        pe.a(fl[n3] = new g());
+                        this.fL = fl;
                         continue;
                     }
                     case 74: {
-                        this.fd = kn.readString();
+                        this.fM = pe.readString();
                         continue;
                     }
                     case 82: {
-                        this.fe = kn.readString();
+                        this.fN = pe.readString();
                         continue;
                     }
                     case 98: {
-                        this.ff = kn.readString();
+                        this.fO = pe.readString();
                         continue;
                     }
                     case 106: {
-                        this.fg = kn.readString();
+                        this.version = pe.readString();
                         continue;
                     }
                     case 114: {
-                        if (this.fh == null) {
-                            this.fh = new a();
+                        if (this.fP == null) {
+                            this.fP = new a();
                         }
-                        kn.a(this.fh);
+                        pe.a(this.fP);
                         continue;
                     }
                     case 125: {
-                        this.fi = kn.readFloat();
+                        this.fQ = pe.readFloat();
                         continue;
                     }
                     case 130: {
-                        final int b8 = kw.b(kn, 130);
+                        final int b8 = pp.b(pe, 130);
                         int length8;
-                        if (this.fk == null) {
+                        if (this.fS == null) {
                             length8 = 0;
                         }
                         else {
-                            length8 = this.fk.length;
+                            length8 = this.fS.length;
                         }
-                        final String[] fk = new String[b8 + length8];
+                        final String[] fs = new String[b8 + length8];
                         int n4 = length8;
                         if (length8 != 0) {
-                            System.arraycopy(this.fk, 0, fk, 0, length8);
+                            System.arraycopy(this.fS, 0, fs, 0, length8);
                             n4 = length8;
                         }
-                        while (n4 < fk.length - 1) {
-                            fk[n4] = kn.readString();
-                            kn.mh();
+                        while (n4 < fs.length - 1) {
+                            fs[n4] = pe.readString();
+                            pe.qg();
                             ++n4;
                         }
-                        fk[n4] = kn.readString();
-                        this.fk = fk;
+                        fs[n4] = pe.readString();
+                        this.fS = fs;
                         continue;
                     }
                     case 136: {
-                        this.fl = kn.mk();
+                        this.fT = pe.qj();
                         continue;
                     }
                     case 144: {
-                        this.fj = kn.ml();
+                        this.fR = pe.qk();
                         continue;
                     }
                     case 154: {
-                        final int b9 = kw.b(kn, 154);
+                        final int b9 = pp.b(pe, 154);
                         int length9;
-                        if (this.eV == null) {
+                        if (this.fE == null) {
                             length9 = 0;
                         }
                         else {
-                            length9 = this.eV.length;
+                            length9 = this.fE.length;
                         }
-                        final String[] ev = new String[b9 + length9];
+                        final String[] fe = new String[b9 + length9];
                         int n5 = length9;
                         if (length9 != 0) {
-                            System.arraycopy(this.eV, 0, ev, 0, length9);
+                            System.arraycopy(this.fE, 0, fe, 0, length9);
                             n5 = length9;
                         }
-                        while (n5 < ev.length - 1) {
-                            ev[n5] = kn.readString();
-                            kn.mh();
+                        while (n5 < fe.length - 1) {
+                            fe[n5] = pe.readString();
+                            pe.qg();
                             ++n5;
                         }
-                        ev[n5] = kn.readString();
-                        this.eV = ev;
+                        fe[n5] = pe.readString();
+                        this.fE = fe;
                         continue;
                     }
                 }
@@ -1667,109 +1566,94 @@ public interface c
         
         @Override
         public int hashCode() {
-            final boolean b = false;
-            final int hashCode = kr.hashCode(this.eV);
-            final int hashCode2 = kr.hashCode(this.eW);
-            final int hashCode3 = kr.hashCode(this.eX);
-            final int hashCode4 = kr.hashCode(this.eY);
-            final int hashCode5 = kr.hashCode(this.eZ);
-            final int hashCode6 = kr.hashCode(this.fa);
-            final int hashCode7 = kr.hashCode(this.fb);
-            final int hashCode8 = kr.hashCode(this.fc);
-            int hashCode9;
-            if (this.fd == null) {
-                hashCode9 = 0;
-            }
-            else {
-                hashCode9 = this.fd.hashCode();
-            }
+            int hashCode = 0;
+            final int hashCode2 = pk.hashCode(this.fE);
+            final int hashCode3 = pk.hashCode(this.fF);
+            final int hashCode4 = pk.hashCode(this.fG);
+            final int hashCode5 = pk.hashCode(this.fH);
+            final int hashCode6 = pk.hashCode(this.fI);
+            final int hashCode7 = pk.hashCode(this.fJ);
+            final int hashCode8 = pk.hashCode(this.fK);
+            final int hashCode9 = pk.hashCode(this.fL);
             int hashCode10;
-            if (this.fe == null) {
+            if (this.fM == null) {
                 hashCode10 = 0;
             }
             else {
-                hashCode10 = this.fe.hashCode();
+                hashCode10 = this.fM.hashCode();
             }
             int hashCode11;
-            if (this.ff == null) {
+            if (this.fN == null) {
                 hashCode11 = 0;
             }
             else {
-                hashCode11 = this.ff.hashCode();
+                hashCode11 = this.fN.hashCode();
             }
             int hashCode12;
-            if (this.fg == null) {
+            if (this.fO == null) {
                 hashCode12 = 0;
             }
             else {
-                hashCode12 = this.fg.hashCode();
+                hashCode12 = this.fO.hashCode();
             }
             int hashCode13;
-            if (this.fh == null) {
+            if (this.version == null) {
                 hashCode13 = 0;
             }
             else {
-                hashCode13 = this.fh.hashCode();
+                hashCode13 = this.version.hashCode();
             }
-            final int floatToIntBits = Float.floatToIntBits(this.fi);
+            if (this.fP != null) {
+                hashCode = this.fP.hashCode();
+            }
+            final int floatToIntBits = Float.floatToIntBits(this.fQ);
             int n;
-            if (this.fj) {
+            if (this.fR) {
                 n = 1231;
             }
             else {
                 n = 1237;
             }
-            final int hashCode14 = kr.hashCode(this.fk);
-            final int fl = this.fl;
-            int hashCode15 = b ? 1 : 0;
-            if (this.adU != null) {
-                if (this.adU.isEmpty()) {
-                    hashCode15 = (b ? 1 : 0);
-                }
-                else {
-                    hashCode15 = this.adU.hashCode();
-                }
-            }
-            return (((n + ((hashCode13 + (hashCode12 + (hashCode11 + (hashCode10 + (hashCode9 + ((((((((hashCode + 527) * 31 + hashCode2) * 31 + hashCode3) * 31 + hashCode4) * 31 + hashCode5) * 31 + hashCode6) * 31 + hashCode7) * 31 + hashCode8) * 31) * 31) * 31) * 31) * 31) * 31 + floatToIntBits) * 31) * 31 + hashCode14) * 31 + fl) * 31 + hashCode15;
+            return (((n + (((hashCode13 + (hashCode12 + (hashCode11 + (hashCode10 + ((((((((hashCode2 + 527) * 31 + hashCode3) * 31 + hashCode4) * 31 + hashCode5) * 31 + hashCode6) * 31 + hashCode7) * 31 + hashCode8) * 31 + hashCode9) * 31) * 31) * 31) * 31) * 31 + hashCode) * 31 + floatToIntBits) * 31) * 31 + pk.hashCode(this.fS)) * 31 + this.fT) * 31 + this.qx();
         }
         
         public f k() {
-            this.eV = kw.aef;
-            this.eW = kw.aef;
-            this.eX = com.google.android.gms.internal.d.a.r();
-            this.eY = e.i();
-            this.eZ = b.d();
-            this.fa = b.d();
-            this.fb = b.d();
-            this.fc = g.l();
-            this.fd = "";
-            this.fe = "";
-            this.ff = "0";
-            this.fg = "";
-            this.fh = null;
-            this.fi = 0.0f;
-            this.fj = false;
-            this.fk = kw.aef;
-            this.fl = 0;
-            this.adU = null;
-            this.adY = -1;
+            this.fE = pp.awQ;
+            this.fF = pp.awQ;
+            this.fG = com.google.android.gms.internal.d.a.r();
+            this.fH = e.i();
+            this.fI = b.d();
+            this.fJ = b.d();
+            this.fK = b.d();
+            this.fL = g.l();
+            this.fM = "";
+            this.fN = "";
+            this.fO = "0";
+            this.version = "";
+            this.fP = null;
+            this.fQ = 0.0f;
+            this.fR = false;
+            this.fS = pp.awQ;
+            this.fT = 0;
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
     }
     
-    public static final class g extends kp<g>
+    public static final class g extends pg<g>
     {
-        private static volatile g[] fm;
-        public int[] fn;
-        public int[] fo;
-        public int[] fp;
-        public int[] fq;
-        public int[] fr;
-        public int[] fs;
-        public int[] ft;
-        public int[] fu;
-        public int[] fv;
-        public int[] fw;
+        private static volatile g[] fU;
+        public int[] fV;
+        public int[] fW;
+        public int[] fX;
+        public int[] fY;
+        public int[] fZ;
+        public int[] ga;
+        public int[] gb;
+        public int[] gc;
+        public int[] gd;
+        public int[] ge;
         
         public g() {
             this.m();
@@ -1777,207 +1661,207 @@ public interface c
         
         public static g[] l() {
             Label_0027: {
-                if (g.fm != null) {
+                if (g.fU != null) {
                     break Label_0027;
                 }
-                synchronized (kr.adX) {
-                    if (g.fm == null) {
-                        g.fm = new g[0];
+                synchronized (pk.awI) {
+                    if (g.fU == null) {
+                        g.fU = new g[0];
                     }
-                    return g.fm;
+                    return g.fU;
                 }
             }
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
+        public void a(final pf pf) throws IOException {
             final int n = 0;
-            if (this.fn != null && this.fn.length > 0) {
-                for (int i = 0; i < this.fn.length; ++i) {
-                    ko.i(1, this.fn[i]);
+            if (this.fV != null && this.fV.length > 0) {
+                for (int i = 0; i < this.fV.length; ++i) {
+                    pf.s(1, this.fV[i]);
                 }
             }
-            if (this.fo != null && this.fo.length > 0) {
-                for (int j = 0; j < this.fo.length; ++j) {
-                    ko.i(2, this.fo[j]);
+            if (this.fW != null && this.fW.length > 0) {
+                for (int j = 0; j < this.fW.length; ++j) {
+                    pf.s(2, this.fW[j]);
                 }
             }
-            if (this.fp != null && this.fp.length > 0) {
-                for (int k = 0; k < this.fp.length; ++k) {
-                    ko.i(3, this.fp[k]);
+            if (this.fX != null && this.fX.length > 0) {
+                for (int k = 0; k < this.fX.length; ++k) {
+                    pf.s(3, this.fX[k]);
                 }
             }
-            if (this.fq != null && this.fq.length > 0) {
-                for (int l = 0; l < this.fq.length; ++l) {
-                    ko.i(4, this.fq[l]);
+            if (this.fY != null && this.fY.length > 0) {
+                for (int l = 0; l < this.fY.length; ++l) {
+                    pf.s(4, this.fY[l]);
                 }
             }
-            if (this.fr != null && this.fr.length > 0) {
-                for (int n2 = 0; n2 < this.fr.length; ++n2) {
-                    ko.i(5, this.fr[n2]);
+            if (this.fZ != null && this.fZ.length > 0) {
+                for (int n2 = 0; n2 < this.fZ.length; ++n2) {
+                    pf.s(5, this.fZ[n2]);
                 }
             }
-            if (this.fs != null && this.fs.length > 0) {
-                for (int n3 = 0; n3 < this.fs.length; ++n3) {
-                    ko.i(6, this.fs[n3]);
+            if (this.ga != null && this.ga.length > 0) {
+                for (int n3 = 0; n3 < this.ga.length; ++n3) {
+                    pf.s(6, this.ga[n3]);
                 }
             }
-            if (this.ft != null && this.ft.length > 0) {
-                for (int n4 = 0; n4 < this.ft.length; ++n4) {
-                    ko.i(7, this.ft[n4]);
+            if (this.gb != null && this.gb.length > 0) {
+                for (int n4 = 0; n4 < this.gb.length; ++n4) {
+                    pf.s(7, this.gb[n4]);
                 }
             }
-            if (this.fu != null && this.fu.length > 0) {
-                for (int n5 = 0; n5 < this.fu.length; ++n5) {
-                    ko.i(8, this.fu[n5]);
+            if (this.gc != null && this.gc.length > 0) {
+                for (int n5 = 0; n5 < this.gc.length; ++n5) {
+                    pf.s(8, this.gc[n5]);
                 }
             }
-            if (this.fv != null && this.fv.length > 0) {
-                for (int n6 = 0; n6 < this.fv.length; ++n6) {
-                    ko.i(9, this.fv[n6]);
+            if (this.gd != null && this.gd.length > 0) {
+                for (int n6 = 0; n6 < this.gd.length; ++n6) {
+                    pf.s(9, this.gd[n6]);
                 }
             }
-            if (this.fw != null && this.fw.length > 0) {
-                for (int n7 = n; n7 < this.fw.length; ++n7) {
-                    ko.i(10, this.fw[n7]);
+            if (this.ge != null && this.ge.length > 0) {
+                for (int n7 = n; n7 < this.ge.length; ++n7) {
+                    pf.s(10, this.ge[n7]);
                 }
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
+        protected int c() {
             final int n = 0;
             final int c = super.c();
             int n3;
-            if (this.fn != null && this.fn.length > 0) {
+            if (this.fV != null && this.fV.length > 0) {
                 int i = 0;
                 int n2 = 0;
-                while (i < this.fn.length) {
-                    n2 += ko.cX(this.fn[i]);
+                while (i < this.fV.length) {
+                    n2 += pf.gv(this.fV[i]);
                     ++i;
                 }
-                n3 = c + n2 + this.fn.length * 1;
+                n3 = c + n2 + this.fV.length * 1;
             }
             else {
                 n3 = c;
             }
             int n4 = n3;
-            if (this.fo != null) {
+            if (this.fW != null) {
                 n4 = n3;
-                if (this.fo.length > 0) {
+                if (this.fW.length > 0) {
                     int j = 0;
                     int n5 = 0;
-                    while (j < this.fo.length) {
-                        n5 += ko.cX(this.fo[j]);
+                    while (j < this.fW.length) {
+                        n5 += pf.gv(this.fW[j]);
                         ++j;
                     }
-                    n4 = n3 + n5 + this.fo.length * 1;
+                    n4 = n3 + n5 + this.fW.length * 1;
                 }
             }
             int n6 = n4;
-            if (this.fp != null) {
+            if (this.fX != null) {
                 n6 = n4;
-                if (this.fp.length > 0) {
+                if (this.fX.length > 0) {
                     int k = 0;
                     int n7 = 0;
-                    while (k < this.fp.length) {
-                        n7 += ko.cX(this.fp[k]);
+                    while (k < this.fX.length) {
+                        n7 += pf.gv(this.fX[k]);
                         ++k;
                     }
-                    n6 = n4 + n7 + this.fp.length * 1;
+                    n6 = n4 + n7 + this.fX.length * 1;
                 }
             }
             int n8 = n6;
-            if (this.fq != null) {
+            if (this.fY != null) {
                 n8 = n6;
-                if (this.fq.length > 0) {
+                if (this.fY.length > 0) {
                     int l = 0;
                     int n9 = 0;
-                    while (l < this.fq.length) {
-                        n9 += ko.cX(this.fq[l]);
+                    while (l < this.fY.length) {
+                        n9 += pf.gv(this.fY[l]);
                         ++l;
                     }
-                    n8 = n6 + n9 + this.fq.length * 1;
+                    n8 = n6 + n9 + this.fY.length * 1;
                 }
             }
             int n10 = n8;
-            if (this.fr != null) {
+            if (this.fZ != null) {
                 n10 = n8;
-                if (this.fr.length > 0) {
+                if (this.fZ.length > 0) {
                     int n11 = 0;
                     int n12 = 0;
-                    while (n11 < this.fr.length) {
-                        n12 += ko.cX(this.fr[n11]);
+                    while (n11 < this.fZ.length) {
+                        n12 += pf.gv(this.fZ[n11]);
                         ++n11;
                     }
-                    n10 = n8 + n12 + this.fr.length * 1;
+                    n10 = n8 + n12 + this.fZ.length * 1;
                 }
             }
             int n13 = n10;
-            if (this.fs != null) {
+            if (this.ga != null) {
                 n13 = n10;
-                if (this.fs.length > 0) {
+                if (this.ga.length > 0) {
                     int n14 = 0;
                     int n15 = 0;
-                    while (n14 < this.fs.length) {
-                        n15 += ko.cX(this.fs[n14]);
+                    while (n14 < this.ga.length) {
+                        n15 += pf.gv(this.ga[n14]);
                         ++n14;
                     }
-                    n13 = n10 + n15 + this.fs.length * 1;
+                    n13 = n10 + n15 + this.ga.length * 1;
                 }
             }
             int n16 = n13;
-            if (this.ft != null) {
+            if (this.gb != null) {
                 n16 = n13;
-                if (this.ft.length > 0) {
+                if (this.gb.length > 0) {
                     int n17 = 0;
                     int n18 = 0;
-                    while (n17 < this.ft.length) {
-                        n18 += ko.cX(this.ft[n17]);
+                    while (n17 < this.gb.length) {
+                        n18 += pf.gv(this.gb[n17]);
                         ++n17;
                     }
-                    n16 = n13 + n18 + this.ft.length * 1;
+                    n16 = n13 + n18 + this.gb.length * 1;
                 }
             }
             int n19 = n16;
-            if (this.fu != null) {
+            if (this.gc != null) {
                 n19 = n16;
-                if (this.fu.length > 0) {
+                if (this.gc.length > 0) {
                     int n20 = 0;
                     int n21 = 0;
-                    while (n20 < this.fu.length) {
-                        n21 += ko.cX(this.fu[n20]);
+                    while (n20 < this.gc.length) {
+                        n21 += pf.gv(this.gc[n20]);
                         ++n20;
                     }
-                    n19 = n16 + n21 + this.fu.length * 1;
+                    n19 = n16 + n21 + this.gc.length * 1;
                 }
             }
             int n22 = n19;
-            if (this.fv != null) {
+            if (this.gd != null) {
                 n22 = n19;
-                if (this.fv.length > 0) {
+                if (this.gd.length > 0) {
                     int n23 = 0;
                     int n24 = 0;
-                    while (n23 < this.fv.length) {
-                        n24 += ko.cX(this.fv[n23]);
+                    while (n23 < this.gd.length) {
+                        n24 += pf.gv(this.gd[n23]);
                         ++n23;
                     }
-                    n22 = n19 + n24 + this.fv.length * 1;
+                    n22 = n19 + n24 + this.gd.length * 1;
                 }
             }
-            int adY = n22;
-            if (this.fw != null) {
-                adY = n22;
-                if (this.fw.length > 0) {
-                    int n25 = 0;
-                    for (int n26 = n; n26 < this.fw.length; ++n26) {
-                        n25 += ko.cX(this.fw[n26]);
+            int n25 = n22;
+            if (this.ge != null) {
+                n25 = n22;
+                if (this.ge.length > 0) {
+                    int n26 = 0;
+                    for (int n27 = n; n27 < this.ge.length; ++n27) {
+                        n26 += pf.gv(this.ge[n27]);
                     }
-                    adY = n22 + n25 + this.fw.length * 1;
+                    n25 = n22 + n26 + this.ge.length * 1;
                 }
             }
-            return this.adY = adY;
+            return n25;
         }
         
         @Override
@@ -1992,35 +1876,26 @@ public interface c
                 if (o instanceof g) {
                     final g g = (g)o;
                     b2 = b;
-                    if (kr.equals(this.fn, g.fn)) {
+                    if (pk.equals(this.fV, g.fV)) {
                         b2 = b;
-                        if (kr.equals(this.fo, g.fo)) {
+                        if (pk.equals(this.fW, g.fW)) {
                             b2 = b;
-                            if (kr.equals(this.fp, g.fp)) {
+                            if (pk.equals(this.fX, g.fX)) {
                                 b2 = b;
-                                if (kr.equals(this.fq, g.fq)) {
+                                if (pk.equals(this.fY, g.fY)) {
                                     b2 = b;
-                                    if (kr.equals(this.fr, g.fr)) {
+                                    if (pk.equals(this.fZ, g.fZ)) {
                                         b2 = b;
-                                        if (kr.equals(this.fs, g.fs)) {
+                                        if (pk.equals(this.ga, g.ga)) {
                                             b2 = b;
-                                            if (kr.equals(this.ft, g.ft)) {
+                                            if (pk.equals(this.gb, g.gb)) {
                                                 b2 = b;
-                                                if (kr.equals(this.fu, g.fu)) {
+                                                if (pk.equals(this.gc, g.gc)) {
                                                     b2 = b;
-                                                    if (kr.equals(this.fv, g.fv)) {
+                                                    if (pk.equals(this.gd, g.gd)) {
                                                         b2 = b;
-                                                        if (kr.equals(this.fw, g.fw)) {
-                                                            if (this.adU == null || this.adU.isEmpty()) {
-                                                                if (g.adU != null) {
-                                                                    b2 = b;
-                                                                    if (!g.adU.isEmpty()) {
-                                                                        return b2;
-                                                                    }
-                                                                }
-                                                                return true;
-                                                            }
-                                                            return this.adU.equals(g.adU);
+                                                        if (pk.equals(this.ge, g.ge)) {
+                                                            return this.a(g);
                                                         }
                                                     }
                                                 }
@@ -2036,13 +1911,13 @@ public interface c
             return b2;
         }
         
-        public g h(final kn kn) throws IOException {
+        public g h(final pe pe) throws IOException {
         Label_0193:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0193;
                         }
                         continue;
@@ -2051,543 +1926,543 @@ public interface c
                         break Label_0193;
                     }
                     case 8: {
-                        final int b = kw.b(kn, 8);
+                        final int b = pp.b(pe, 8);
                         int length;
-                        if (this.fn == null) {
+                        if (this.fV == null) {
                             length = 0;
                         }
                         else {
-                            length = this.fn.length;
+                            length = this.fV.length;
                         }
-                        final int[] fn = new int[b + length];
+                        final int[] fv = new int[b + length];
                         int i = length;
                         if (length != 0) {
-                            System.arraycopy(this.fn, 0, fn, 0, length);
+                            System.arraycopy(this.fV, 0, fv, 0, length);
                             i = length;
                         }
-                        while (i < fn.length - 1) {
-                            fn[i] = kn.mk();
-                            kn.mh();
+                        while (i < fv.length - 1) {
+                            fv[i] = pe.qj();
+                            pe.qg();
                             ++i;
                         }
-                        fn[i] = kn.mk();
-                        this.fn = fn;
+                        fv[i] = pe.qj();
+                        this.fV = fv;
                         continue;
                     }
                     case 10: {
-                        final int cr = kn.cR(kn.mn());
-                        final int position = kn.getPosition();
+                        final int go = pe.go(pe.qn());
+                        final int position = pe.getPosition();
                         int n = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n;
                         }
-                        kn.cT(position);
+                        pe.gq(position);
                         int length2;
-                        if (this.fn == null) {
+                        if (this.fV == null) {
                             length2 = 0;
                         }
                         else {
-                            length2 = this.fn.length;
+                            length2 = this.fV.length;
                         }
-                        final int[] fn2 = new int[n + length2];
+                        final int[] fv2 = new int[n + length2];
                         int j = length2;
                         if (length2 != 0) {
-                            System.arraycopy(this.fn, 0, fn2, 0, length2);
+                            System.arraycopy(this.fV, 0, fv2, 0, length2);
                             j = length2;
                         }
-                        while (j < fn2.length) {
-                            fn2[j] = kn.mk();
+                        while (j < fv2.length) {
+                            fv2[j] = pe.qj();
                             ++j;
                         }
-                        this.fn = fn2;
-                        kn.cS(cr);
+                        this.fV = fv2;
+                        pe.gp(go);
                         continue;
                     }
                     case 16: {
-                        final int b2 = kw.b(kn, 16);
+                        final int b2 = pp.b(pe, 16);
                         int length3;
-                        if (this.fo == null) {
+                        if (this.fW == null) {
                             length3 = 0;
                         }
                         else {
-                            length3 = this.fo.length;
+                            length3 = this.fW.length;
                         }
-                        final int[] fo = new int[b2 + length3];
+                        final int[] fw = new int[b2 + length3];
                         int k = length3;
                         if (length3 != 0) {
-                            System.arraycopy(this.fo, 0, fo, 0, length3);
+                            System.arraycopy(this.fW, 0, fw, 0, length3);
                             k = length3;
                         }
-                        while (k < fo.length - 1) {
-                            fo[k] = kn.mk();
-                            kn.mh();
+                        while (k < fw.length - 1) {
+                            fw[k] = pe.qj();
+                            pe.qg();
                             ++k;
                         }
-                        fo[k] = kn.mk();
-                        this.fo = fo;
+                        fw[k] = pe.qj();
+                        this.fW = fw;
                         continue;
                     }
                     case 18: {
-                        final int cr2 = kn.cR(kn.mn());
-                        final int position2 = kn.getPosition();
+                        final int go2 = pe.go(pe.qn());
+                        final int position2 = pe.getPosition();
                         int n2 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n2;
                         }
-                        kn.cT(position2);
+                        pe.gq(position2);
                         int length4;
-                        if (this.fo == null) {
+                        if (this.fW == null) {
                             length4 = 0;
                         }
                         else {
-                            length4 = this.fo.length;
+                            length4 = this.fW.length;
                         }
-                        final int[] fo2 = new int[n2 + length4];
+                        final int[] fw2 = new int[n2 + length4];
                         int l = length4;
                         if (length4 != 0) {
-                            System.arraycopy(this.fo, 0, fo2, 0, length4);
+                            System.arraycopy(this.fW, 0, fw2, 0, length4);
                             l = length4;
                         }
-                        while (l < fo2.length) {
-                            fo2[l] = kn.mk();
+                        while (l < fw2.length) {
+                            fw2[l] = pe.qj();
                             ++l;
                         }
-                        this.fo = fo2;
-                        kn.cS(cr2);
+                        this.fW = fw2;
+                        pe.gp(go2);
                         continue;
                     }
                     case 24: {
-                        final int b3 = kw.b(kn, 24);
+                        final int b3 = pp.b(pe, 24);
                         int length5;
-                        if (this.fp == null) {
+                        if (this.fX == null) {
                             length5 = 0;
                         }
                         else {
-                            length5 = this.fp.length;
+                            length5 = this.fX.length;
                         }
-                        final int[] fp = new int[b3 + length5];
+                        final int[] fx = new int[b3 + length5];
                         int n3 = length5;
                         if (length5 != 0) {
-                            System.arraycopy(this.fp, 0, fp, 0, length5);
+                            System.arraycopy(this.fX, 0, fx, 0, length5);
                             n3 = length5;
                         }
-                        while (n3 < fp.length - 1) {
-                            fp[n3] = kn.mk();
-                            kn.mh();
+                        while (n3 < fx.length - 1) {
+                            fx[n3] = pe.qj();
+                            pe.qg();
                             ++n3;
                         }
-                        fp[n3] = kn.mk();
-                        this.fp = fp;
+                        fx[n3] = pe.qj();
+                        this.fX = fx;
                         continue;
                     }
                     case 26: {
-                        final int cr3 = kn.cR(kn.mn());
-                        final int position3 = kn.getPosition();
+                        final int go3 = pe.go(pe.qn());
+                        final int position3 = pe.getPosition();
                         int n4 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n4;
                         }
-                        kn.cT(position3);
+                        pe.gq(position3);
                         int length6;
-                        if (this.fp == null) {
+                        if (this.fX == null) {
                             length6 = 0;
                         }
                         else {
-                            length6 = this.fp.length;
+                            length6 = this.fX.length;
                         }
-                        final int[] fp2 = new int[n4 + length6];
+                        final int[] fx2 = new int[n4 + length6];
                         int n5 = length6;
                         if (length6 != 0) {
-                            System.arraycopy(this.fp, 0, fp2, 0, length6);
+                            System.arraycopy(this.fX, 0, fx2, 0, length6);
                             n5 = length6;
                         }
-                        while (n5 < fp2.length) {
-                            fp2[n5] = kn.mk();
+                        while (n5 < fx2.length) {
+                            fx2[n5] = pe.qj();
                             ++n5;
                         }
-                        this.fp = fp2;
-                        kn.cS(cr3);
+                        this.fX = fx2;
+                        pe.gp(go3);
                         continue;
                     }
                     case 32: {
-                        final int b4 = kw.b(kn, 32);
+                        final int b4 = pp.b(pe, 32);
                         int length7;
-                        if (this.fq == null) {
+                        if (this.fY == null) {
                             length7 = 0;
                         }
                         else {
-                            length7 = this.fq.length;
+                            length7 = this.fY.length;
                         }
-                        final int[] fq = new int[b4 + length7];
+                        final int[] fy = new int[b4 + length7];
                         int n6 = length7;
                         if (length7 != 0) {
-                            System.arraycopy(this.fq, 0, fq, 0, length7);
+                            System.arraycopy(this.fY, 0, fy, 0, length7);
                             n6 = length7;
                         }
-                        while (n6 < fq.length - 1) {
-                            fq[n6] = kn.mk();
-                            kn.mh();
+                        while (n6 < fy.length - 1) {
+                            fy[n6] = pe.qj();
+                            pe.qg();
                             ++n6;
                         }
-                        fq[n6] = kn.mk();
-                        this.fq = fq;
+                        fy[n6] = pe.qj();
+                        this.fY = fy;
                         continue;
                     }
                     case 34: {
-                        final int cr4 = kn.cR(kn.mn());
-                        final int position4 = kn.getPosition();
+                        final int go4 = pe.go(pe.qn());
+                        final int position4 = pe.getPosition();
                         int n7 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n7;
                         }
-                        kn.cT(position4);
+                        pe.gq(position4);
                         int length8;
-                        if (this.fq == null) {
+                        if (this.fY == null) {
                             length8 = 0;
                         }
                         else {
-                            length8 = this.fq.length;
+                            length8 = this.fY.length;
                         }
-                        final int[] fq2 = new int[n7 + length8];
+                        final int[] fy2 = new int[n7 + length8];
                         int n8 = length8;
                         if (length8 != 0) {
-                            System.arraycopy(this.fq, 0, fq2, 0, length8);
+                            System.arraycopy(this.fY, 0, fy2, 0, length8);
                             n8 = length8;
                         }
-                        while (n8 < fq2.length) {
-                            fq2[n8] = kn.mk();
+                        while (n8 < fy2.length) {
+                            fy2[n8] = pe.qj();
                             ++n8;
                         }
-                        this.fq = fq2;
-                        kn.cS(cr4);
+                        this.fY = fy2;
+                        pe.gp(go4);
                         continue;
                     }
                     case 40: {
-                        final int b5 = kw.b(kn, 40);
+                        final int b5 = pp.b(pe, 40);
                         int length9;
-                        if (this.fr == null) {
+                        if (this.fZ == null) {
                             length9 = 0;
                         }
                         else {
-                            length9 = this.fr.length;
+                            length9 = this.fZ.length;
                         }
-                        final int[] fr = new int[b5 + length9];
+                        final int[] fz = new int[b5 + length9];
                         int n9 = length9;
                         if (length9 != 0) {
-                            System.arraycopy(this.fr, 0, fr, 0, length9);
+                            System.arraycopy(this.fZ, 0, fz, 0, length9);
                             n9 = length9;
                         }
-                        while (n9 < fr.length - 1) {
-                            fr[n9] = kn.mk();
-                            kn.mh();
+                        while (n9 < fz.length - 1) {
+                            fz[n9] = pe.qj();
+                            pe.qg();
                             ++n9;
                         }
-                        fr[n9] = kn.mk();
-                        this.fr = fr;
+                        fz[n9] = pe.qj();
+                        this.fZ = fz;
                         continue;
                     }
                     case 42: {
-                        final int cr5 = kn.cR(kn.mn());
-                        final int position5 = kn.getPosition();
+                        final int go5 = pe.go(pe.qn());
+                        final int position5 = pe.getPosition();
                         int n10 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n10;
                         }
-                        kn.cT(position5);
+                        pe.gq(position5);
                         int length10;
-                        if (this.fr == null) {
+                        if (this.fZ == null) {
                             length10 = 0;
                         }
                         else {
-                            length10 = this.fr.length;
+                            length10 = this.fZ.length;
                         }
-                        final int[] fr2 = new int[n10 + length10];
+                        final int[] fz2 = new int[n10 + length10];
                         int n11 = length10;
                         if (length10 != 0) {
-                            System.arraycopy(this.fr, 0, fr2, 0, length10);
+                            System.arraycopy(this.fZ, 0, fz2, 0, length10);
                             n11 = length10;
                         }
-                        while (n11 < fr2.length) {
-                            fr2[n11] = kn.mk();
+                        while (n11 < fz2.length) {
+                            fz2[n11] = pe.qj();
                             ++n11;
                         }
-                        this.fr = fr2;
-                        kn.cS(cr5);
+                        this.fZ = fz2;
+                        pe.gp(go5);
                         continue;
                     }
                     case 48: {
-                        final int b6 = kw.b(kn, 48);
+                        final int b6 = pp.b(pe, 48);
                         int length11;
-                        if (this.fs == null) {
+                        if (this.ga == null) {
                             length11 = 0;
                         }
                         else {
-                            length11 = this.fs.length;
+                            length11 = this.ga.length;
                         }
-                        final int[] fs = new int[b6 + length11];
+                        final int[] ga = new int[b6 + length11];
                         int n12 = length11;
                         if (length11 != 0) {
-                            System.arraycopy(this.fs, 0, fs, 0, length11);
+                            System.arraycopy(this.ga, 0, ga, 0, length11);
                             n12 = length11;
                         }
-                        while (n12 < fs.length - 1) {
-                            fs[n12] = kn.mk();
-                            kn.mh();
+                        while (n12 < ga.length - 1) {
+                            ga[n12] = pe.qj();
+                            pe.qg();
                             ++n12;
                         }
-                        fs[n12] = kn.mk();
-                        this.fs = fs;
+                        ga[n12] = pe.qj();
+                        this.ga = ga;
                         continue;
                     }
                     case 50: {
-                        final int cr6 = kn.cR(kn.mn());
-                        final int position6 = kn.getPosition();
+                        final int go6 = pe.go(pe.qn());
+                        final int position6 = pe.getPosition();
                         int n13 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n13;
                         }
-                        kn.cT(position6);
+                        pe.gq(position6);
                         int length12;
-                        if (this.fs == null) {
+                        if (this.ga == null) {
                             length12 = 0;
                         }
                         else {
-                            length12 = this.fs.length;
+                            length12 = this.ga.length;
                         }
-                        final int[] fs2 = new int[n13 + length12];
+                        final int[] ga2 = new int[n13 + length12];
                         int n14 = length12;
                         if (length12 != 0) {
-                            System.arraycopy(this.fs, 0, fs2, 0, length12);
+                            System.arraycopy(this.ga, 0, ga2, 0, length12);
                             n14 = length12;
                         }
-                        while (n14 < fs2.length) {
-                            fs2[n14] = kn.mk();
+                        while (n14 < ga2.length) {
+                            ga2[n14] = pe.qj();
                             ++n14;
                         }
-                        this.fs = fs2;
-                        kn.cS(cr6);
+                        this.ga = ga2;
+                        pe.gp(go6);
                         continue;
                     }
                     case 56: {
-                        final int b7 = kw.b(kn, 56);
+                        final int b7 = pp.b(pe, 56);
                         int length13;
-                        if (this.ft == null) {
+                        if (this.gb == null) {
                             length13 = 0;
                         }
                         else {
-                            length13 = this.ft.length;
+                            length13 = this.gb.length;
                         }
-                        final int[] ft = new int[b7 + length13];
+                        final int[] gb = new int[b7 + length13];
                         int n15 = length13;
                         if (length13 != 0) {
-                            System.arraycopy(this.ft, 0, ft, 0, length13);
+                            System.arraycopy(this.gb, 0, gb, 0, length13);
                             n15 = length13;
                         }
-                        while (n15 < ft.length - 1) {
-                            ft[n15] = kn.mk();
-                            kn.mh();
+                        while (n15 < gb.length - 1) {
+                            gb[n15] = pe.qj();
+                            pe.qg();
                             ++n15;
                         }
-                        ft[n15] = kn.mk();
-                        this.ft = ft;
+                        gb[n15] = pe.qj();
+                        this.gb = gb;
                         continue;
                     }
                     case 58: {
-                        final int cr7 = kn.cR(kn.mn());
-                        final int position7 = kn.getPosition();
+                        final int go7 = pe.go(pe.qn());
+                        final int position7 = pe.getPosition();
                         int n16 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n16;
                         }
-                        kn.cT(position7);
+                        pe.gq(position7);
                         int length14;
-                        if (this.ft == null) {
+                        if (this.gb == null) {
                             length14 = 0;
                         }
                         else {
-                            length14 = this.ft.length;
+                            length14 = this.gb.length;
                         }
-                        final int[] ft2 = new int[n16 + length14];
+                        final int[] gb2 = new int[n16 + length14];
                         int n17 = length14;
                         if (length14 != 0) {
-                            System.arraycopy(this.ft, 0, ft2, 0, length14);
+                            System.arraycopy(this.gb, 0, gb2, 0, length14);
                             n17 = length14;
                         }
-                        while (n17 < ft2.length) {
-                            ft2[n17] = kn.mk();
+                        while (n17 < gb2.length) {
+                            gb2[n17] = pe.qj();
                             ++n17;
                         }
-                        this.ft = ft2;
-                        kn.cS(cr7);
+                        this.gb = gb2;
+                        pe.gp(go7);
                         continue;
                     }
                     case 64: {
-                        final int b8 = kw.b(kn, 64);
+                        final int b8 = pp.b(pe, 64);
                         int length15;
-                        if (this.fu == null) {
+                        if (this.gc == null) {
                             length15 = 0;
                         }
                         else {
-                            length15 = this.fu.length;
+                            length15 = this.gc.length;
                         }
-                        final int[] fu = new int[b8 + length15];
+                        final int[] gc = new int[b8 + length15];
                         int n18 = length15;
                         if (length15 != 0) {
-                            System.arraycopy(this.fu, 0, fu, 0, length15);
+                            System.arraycopy(this.gc, 0, gc, 0, length15);
                             n18 = length15;
                         }
-                        while (n18 < fu.length - 1) {
-                            fu[n18] = kn.mk();
-                            kn.mh();
+                        while (n18 < gc.length - 1) {
+                            gc[n18] = pe.qj();
+                            pe.qg();
                             ++n18;
                         }
-                        fu[n18] = kn.mk();
-                        this.fu = fu;
+                        gc[n18] = pe.qj();
+                        this.gc = gc;
                         continue;
                     }
                     case 66: {
-                        final int cr8 = kn.cR(kn.mn());
-                        final int position8 = kn.getPosition();
+                        final int go8 = pe.go(pe.qn());
+                        final int position8 = pe.getPosition();
                         int n19 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n19;
                         }
-                        kn.cT(position8);
+                        pe.gq(position8);
                         int length16;
-                        if (this.fu == null) {
+                        if (this.gc == null) {
                             length16 = 0;
                         }
                         else {
-                            length16 = this.fu.length;
+                            length16 = this.gc.length;
                         }
-                        final int[] fu2 = new int[n19 + length16];
+                        final int[] gc2 = new int[n19 + length16];
                         int n20 = length16;
                         if (length16 != 0) {
-                            System.arraycopy(this.fu, 0, fu2, 0, length16);
+                            System.arraycopy(this.gc, 0, gc2, 0, length16);
                             n20 = length16;
                         }
-                        while (n20 < fu2.length) {
-                            fu2[n20] = kn.mk();
+                        while (n20 < gc2.length) {
+                            gc2[n20] = pe.qj();
                             ++n20;
                         }
-                        this.fu = fu2;
-                        kn.cS(cr8);
+                        this.gc = gc2;
+                        pe.gp(go8);
                         continue;
                     }
                     case 72: {
-                        final int b9 = kw.b(kn, 72);
+                        final int b9 = pp.b(pe, 72);
                         int length17;
-                        if (this.fv == null) {
+                        if (this.gd == null) {
                             length17 = 0;
                         }
                         else {
-                            length17 = this.fv.length;
+                            length17 = this.gd.length;
                         }
-                        final int[] fv = new int[b9 + length17];
+                        final int[] gd = new int[b9 + length17];
                         int n21 = length17;
                         if (length17 != 0) {
-                            System.arraycopy(this.fv, 0, fv, 0, length17);
+                            System.arraycopy(this.gd, 0, gd, 0, length17);
                             n21 = length17;
                         }
-                        while (n21 < fv.length - 1) {
-                            fv[n21] = kn.mk();
-                            kn.mh();
+                        while (n21 < gd.length - 1) {
+                            gd[n21] = pe.qj();
+                            pe.qg();
                             ++n21;
                         }
-                        fv[n21] = kn.mk();
-                        this.fv = fv;
+                        gd[n21] = pe.qj();
+                        this.gd = gd;
                         continue;
                     }
                     case 74: {
-                        final int cr9 = kn.cR(kn.mn());
-                        final int position9 = kn.getPosition();
+                        final int go9 = pe.go(pe.qn());
+                        final int position9 = pe.getPosition();
                         int n22 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n22;
                         }
-                        kn.cT(position9);
+                        pe.gq(position9);
                         int length18;
-                        if (this.fv == null) {
+                        if (this.gd == null) {
                             length18 = 0;
                         }
                         else {
-                            length18 = this.fv.length;
+                            length18 = this.gd.length;
                         }
-                        final int[] fv2 = new int[n22 + length18];
+                        final int[] gd2 = new int[n22 + length18];
                         int n23 = length18;
                         if (length18 != 0) {
-                            System.arraycopy(this.fv, 0, fv2, 0, length18);
+                            System.arraycopy(this.gd, 0, gd2, 0, length18);
                             n23 = length18;
                         }
-                        while (n23 < fv2.length) {
-                            fv2[n23] = kn.mk();
+                        while (n23 < gd2.length) {
+                            gd2[n23] = pe.qj();
                             ++n23;
                         }
-                        this.fv = fv2;
-                        kn.cS(cr9);
+                        this.gd = gd2;
+                        pe.gp(go9);
                         continue;
                     }
                     case 80: {
-                        final int b10 = kw.b(kn, 80);
+                        final int b10 = pp.b(pe, 80);
                         int length19;
-                        if (this.fw == null) {
+                        if (this.ge == null) {
                             length19 = 0;
                         }
                         else {
-                            length19 = this.fw.length;
+                            length19 = this.ge.length;
                         }
-                        final int[] fw = new int[b10 + length19];
+                        final int[] ge = new int[b10 + length19];
                         int n24 = length19;
                         if (length19 != 0) {
-                            System.arraycopy(this.fw, 0, fw, 0, length19);
+                            System.arraycopy(this.ge, 0, ge, 0, length19);
                             n24 = length19;
                         }
-                        while (n24 < fw.length - 1) {
-                            fw[n24] = kn.mk();
-                            kn.mh();
+                        while (n24 < ge.length - 1) {
+                            ge[n24] = pe.qj();
+                            pe.qg();
                             ++n24;
                         }
-                        fw[n24] = kn.mk();
-                        this.fw = fw;
+                        ge[n24] = pe.qj();
+                        this.ge = ge;
                         continue;
                     }
                     case 82: {
-                        final int cr10 = kn.cR(kn.mn());
-                        final int position10 = kn.getPosition();
+                        final int go10 = pe.go(pe.qn());
+                        final int position10 = pe.getPosition();
                         int n25 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n25;
                         }
-                        kn.cT(position10);
+                        pe.gq(position10);
                         int length20;
-                        if (this.fw == null) {
+                        if (this.ge == null) {
                             length20 = 0;
                         }
                         else {
-                            length20 = this.fw.length;
+                            length20 = this.ge.length;
                         }
-                        final int[] fw2 = new int[n25 + length20];
+                        final int[] ge2 = new int[n25 + length20];
                         int n26 = length20;
                         if (length20 != 0) {
-                            System.arraycopy(this.fw, 0, fw2, 0, length20);
+                            System.arraycopy(this.ge, 0, ge2, 0, length20);
                             n26 = length20;
                         }
-                        while (n26 < fw2.length) {
-                            fw2[n26] = kn.mk();
+                        while (n26 < ge2.length) {
+                            ge2[n26] = pe.qj();
                             ++n26;
                         }
-                        this.fw = fw2;
-                        kn.cS(cr10);
+                        this.ge = ge2;
+                        pe.gp(go10);
                         continue;
                     }
                 }
@@ -2597,58 +2472,41 @@ public interface c
         
         @Override
         public int hashCode() {
-            final int hashCode = kr.hashCode(this.fn);
-            final int hashCode2 = kr.hashCode(this.fo);
-            final int hashCode3 = kr.hashCode(this.fp);
-            final int hashCode4 = kr.hashCode(this.fq);
-            final int hashCode5 = kr.hashCode(this.fr);
-            final int hashCode6 = kr.hashCode(this.fs);
-            final int hashCode7 = kr.hashCode(this.ft);
-            final int hashCode8 = kr.hashCode(this.fu);
-            final int hashCode9 = kr.hashCode(this.fv);
-            final int hashCode10 = kr.hashCode(this.fw);
-            int hashCode11;
-            if (this.adU == null || this.adU.isEmpty()) {
-                hashCode11 = 0;
-            }
-            else {
-                hashCode11 = this.adU.hashCode();
-            }
-            return hashCode11 + ((((((((((hashCode + 527) * 31 + hashCode2) * 31 + hashCode3) * 31 + hashCode4) * 31 + hashCode5) * 31 + hashCode6) * 31 + hashCode7) * 31 + hashCode8) * 31 + hashCode9) * 31 + hashCode10) * 31;
+            return ((((((((((pk.hashCode(this.fV) + 527) * 31 + pk.hashCode(this.fW)) * 31 + pk.hashCode(this.fX)) * 31 + pk.hashCode(this.fY)) * 31 + pk.hashCode(this.fZ)) * 31 + pk.hashCode(this.ga)) * 31 + pk.hashCode(this.gb)) * 31 + pk.hashCode(this.gc)) * 31 + pk.hashCode(this.gd)) * 31 + pk.hashCode(this.ge)) * 31 + this.qx();
         }
         
         public g m() {
-            this.fn = kw.aea;
-            this.fo = kw.aea;
-            this.fp = kw.aea;
-            this.fq = kw.aea;
-            this.fr = kw.aea;
-            this.fs = kw.aea;
-            this.ft = kw.aea;
-            this.fu = kw.aea;
-            this.fv = kw.aea;
-            this.fw = kw.aea;
-            this.adU = null;
-            this.adY = -1;
+            this.fV = pp.awL;
+            this.fW = pp.awL;
+            this.fX = pp.awL;
+            this.fY = pp.awL;
+            this.fZ = pp.awL;
+            this.ga = pp.awL;
+            this.gb = pp.awL;
+            this.gc = pp.awL;
+            this.gd = pp.awL;
+            this.ge = pp.awL;
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
     }
     
-    public static final class h extends kp<h>
+    public static final class h extends pg<h>
     {
-        public static final kq<com.google.android.gms.internal.d.a, h> fx;
-        private static final h[] fy;
-        public int[] fA;
-        public int[] fB;
-        public int fC;
-        public int[] fD;
-        public int fE;
-        public int fF;
-        public int[] fz;
+        public static final ph<com.google.android.gms.internal.d.a, h> gf;
+        private static final h[] gg;
+        public int[] gh;
+        public int[] gi;
+        public int[] gj;
+        public int gk;
+        public int[] gl;
+        public int gm;
+        public int gn;
         
         static {
-            fx = kq.a(11, h.class, 810);
-            fy = new h[0];
+            gf = ph.a(11, h.class, 810);
+            gg = new h[0];
         }
         
         public h() {
@@ -2656,107 +2514,107 @@ public interface c
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
+        public void a(final pf pf) throws IOException {
             final int n = 0;
-            if (this.fz != null && this.fz.length > 0) {
-                for (int i = 0; i < this.fz.length; ++i) {
-                    ko.i(1, this.fz[i]);
+            if (this.gh != null && this.gh.length > 0) {
+                for (int i = 0; i < this.gh.length; ++i) {
+                    pf.s(1, this.gh[i]);
                 }
             }
-            if (this.fA != null && this.fA.length > 0) {
-                for (int j = 0; j < this.fA.length; ++j) {
-                    ko.i(2, this.fA[j]);
+            if (this.gi != null && this.gi.length > 0) {
+                for (int j = 0; j < this.gi.length; ++j) {
+                    pf.s(2, this.gi[j]);
                 }
             }
-            if (this.fB != null && this.fB.length > 0) {
-                for (int k = 0; k < this.fB.length; ++k) {
-                    ko.i(3, this.fB[k]);
+            if (this.gj != null && this.gj.length > 0) {
+                for (int k = 0; k < this.gj.length; ++k) {
+                    pf.s(3, this.gj[k]);
                 }
             }
-            if (this.fC != 0) {
-                ko.i(4, this.fC);
+            if (this.gk != 0) {
+                pf.s(4, this.gk);
             }
-            if (this.fD != null && this.fD.length > 0) {
-                for (int l = n; l < this.fD.length; ++l) {
-                    ko.i(5, this.fD[l]);
+            if (this.gl != null && this.gl.length > 0) {
+                for (int l = n; l < this.gl.length; ++l) {
+                    pf.s(5, this.gl[l]);
                 }
             }
-            if (this.fE != 0) {
-                ko.i(6, this.fE);
+            if (this.gm != 0) {
+                pf.s(6, this.gm);
             }
-            if (this.fF != 0) {
-                ko.i(7, this.fF);
+            if (this.gn != 0) {
+                pf.s(7, this.gn);
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
+        protected int c() {
             final int n = 0;
             final int c = super.c();
             int n3;
-            if (this.fz != null && this.fz.length > 0) {
+            if (this.gh != null && this.gh.length > 0) {
                 int i = 0;
                 int n2 = 0;
-                while (i < this.fz.length) {
-                    n2 += ko.cX(this.fz[i]);
+                while (i < this.gh.length) {
+                    n2 += pf.gv(this.gh[i]);
                     ++i;
                 }
-                n3 = c + n2 + this.fz.length * 1;
+                n3 = c + n2 + this.gh.length * 1;
             }
             else {
                 n3 = c;
             }
             int n4 = n3;
-            if (this.fA != null) {
+            if (this.gi != null) {
                 n4 = n3;
-                if (this.fA.length > 0) {
+                if (this.gi.length > 0) {
                     int j = 0;
                     int n5 = 0;
-                    while (j < this.fA.length) {
-                        n5 += ko.cX(this.fA[j]);
+                    while (j < this.gi.length) {
+                        n5 += pf.gv(this.gi[j]);
                         ++j;
                     }
-                    n4 = n3 + n5 + this.fA.length * 1;
+                    n4 = n3 + n5 + this.gi.length * 1;
                 }
             }
             int n6 = n4;
-            if (this.fB != null) {
+            if (this.gj != null) {
                 n6 = n4;
-                if (this.fB.length > 0) {
+                if (this.gj.length > 0) {
                     int k = 0;
                     int n7 = 0;
-                    while (k < this.fB.length) {
-                        n7 += ko.cX(this.fB[k]);
+                    while (k < this.gj.length) {
+                        n7 += pf.gv(this.gj[k]);
                         ++k;
                     }
-                    n6 = n4 + n7 + this.fB.length * 1;
+                    n6 = n4 + n7 + this.gj.length * 1;
                 }
             }
             int n8 = n6;
-            if (this.fC != 0) {
-                n8 = n6 + ko.j(4, this.fC);
+            if (this.gk != 0) {
+                n8 = n6 + pf.u(4, this.gk);
             }
             int n9 = n8;
-            if (this.fD != null) {
+            if (this.gl != null) {
                 n9 = n8;
-                if (this.fD.length > 0) {
+                if (this.gl.length > 0) {
                     int n10 = 0;
-                    for (int l = n; l < this.fD.length; ++l) {
-                        n10 += ko.cX(this.fD[l]);
+                    for (int l = n; l < this.gl.length; ++l) {
+                        n10 += pf.gv(this.gl[l]);
                     }
-                    n9 = n8 + n10 + this.fD.length * 1;
+                    n9 = n8 + n10 + this.gl.length * 1;
                 }
             }
             int n11 = n9;
-            if (this.fE != 0) {
-                n11 = n9 + ko.j(6, this.fE);
+            if (this.gm != 0) {
+                n11 = n9 + pf.u(6, this.gm);
             }
-            int adY = n11;
-            if (this.fF != 0) {
-                adY = n11 + ko.j(7, this.fF);
+            int n12 = n11;
+            if (this.gn != 0) {
+                n12 = n11 + pf.u(7, this.gn);
             }
-            return this.adY = adY;
+            return n12;
         }
         
         @Override
@@ -2771,29 +2629,20 @@ public interface c
                 if (o instanceof h) {
                     final h h = (h)o;
                     b2 = b;
-                    if (kr.equals(this.fz, h.fz)) {
+                    if (pk.equals(this.gh, h.gh)) {
                         b2 = b;
-                        if (kr.equals(this.fA, h.fA)) {
+                        if (pk.equals(this.gi, h.gi)) {
                             b2 = b;
-                            if (kr.equals(this.fB, h.fB)) {
+                            if (pk.equals(this.gj, h.gj)) {
                                 b2 = b;
-                                if (this.fC == h.fC) {
+                                if (this.gk == h.gk) {
                                     b2 = b;
-                                    if (kr.equals(this.fD, h.fD)) {
+                                    if (pk.equals(this.gl, h.gl)) {
                                         b2 = b;
-                                        if (this.fE == h.fE) {
+                                        if (this.gm == h.gm) {
                                             b2 = b;
-                                            if (this.fF == h.fF) {
-                                                if (this.adU == null || this.adU.isEmpty()) {
-                                                    if (h.adU != null) {
-                                                        b2 = b;
-                                                        if (!h.adU.isEmpty()) {
-                                                            return b2;
-                                                        }
-                                                    }
-                                                    return true;
-                                                }
-                                                return this.adU.equals(h.adU);
+                                            if (this.gn == h.gn) {
+                                                return this.a(h);
                                             }
                                         }
                                     }
@@ -2808,30 +2657,16 @@ public interface c
         
         @Override
         public int hashCode() {
-            final int hashCode = kr.hashCode(this.fz);
-            final int hashCode2 = kr.hashCode(this.fA);
-            final int hashCode3 = kr.hashCode(this.fB);
-            final int fc = this.fC;
-            final int hashCode4 = kr.hashCode(this.fD);
-            final int fe = this.fE;
-            final int ff = this.fF;
-            int hashCode5;
-            if (this.adU == null || this.adU.isEmpty()) {
-                hashCode5 = 0;
-            }
-            else {
-                hashCode5 = this.adU.hashCode();
-            }
-            return hashCode5 + (((((((hashCode + 527) * 31 + hashCode2) * 31 + hashCode3) * 31 + fc) * 31 + hashCode4) * 31 + fe) * 31 + ff) * 31;
+            return (((((((pk.hashCode(this.gh) + 527) * 31 + pk.hashCode(this.gi)) * 31 + pk.hashCode(this.gj)) * 31 + this.gk) * 31 + pk.hashCode(this.gl)) * 31 + this.gm) * 31 + this.gn) * 31 + this.qx();
         }
         
-        public h i(final kn kn) throws IOException {
+        public h i(final pe pe) throws IOException {
         Label_0121:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0121;
                         }
                         continue;
@@ -2840,231 +2675,231 @@ public interface c
                         break Label_0121;
                     }
                     case 8: {
-                        final int b = kw.b(kn, 8);
+                        final int b = pp.b(pe, 8);
                         int length;
-                        if (this.fz == null) {
+                        if (this.gh == null) {
                             length = 0;
                         }
                         else {
-                            length = this.fz.length;
+                            length = this.gh.length;
                         }
-                        final int[] fz = new int[b + length];
+                        final int[] gh = new int[b + length];
                         int i = length;
                         if (length != 0) {
-                            System.arraycopy(this.fz, 0, fz, 0, length);
+                            System.arraycopy(this.gh, 0, gh, 0, length);
                             i = length;
                         }
-                        while (i < fz.length - 1) {
-                            fz[i] = kn.mk();
-                            kn.mh();
+                        while (i < gh.length - 1) {
+                            gh[i] = pe.qj();
+                            pe.qg();
                             ++i;
                         }
-                        fz[i] = kn.mk();
-                        this.fz = fz;
+                        gh[i] = pe.qj();
+                        this.gh = gh;
                         continue;
                     }
                     case 10: {
-                        final int cr = kn.cR(kn.mn());
-                        final int position = kn.getPosition();
+                        final int go = pe.go(pe.qn());
+                        final int position = pe.getPosition();
                         int n = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n;
                         }
-                        kn.cT(position);
+                        pe.gq(position);
                         int length2;
-                        if (this.fz == null) {
+                        if (this.gh == null) {
                             length2 = 0;
                         }
                         else {
-                            length2 = this.fz.length;
+                            length2 = this.gh.length;
                         }
-                        final int[] fz2 = new int[n + length2];
+                        final int[] gh2 = new int[n + length2];
                         int j = length2;
                         if (length2 != 0) {
-                            System.arraycopy(this.fz, 0, fz2, 0, length2);
+                            System.arraycopy(this.gh, 0, gh2, 0, length2);
                             j = length2;
                         }
-                        while (j < fz2.length) {
-                            fz2[j] = kn.mk();
+                        while (j < gh2.length) {
+                            gh2[j] = pe.qj();
                             ++j;
                         }
-                        this.fz = fz2;
-                        kn.cS(cr);
+                        this.gh = gh2;
+                        pe.gp(go);
                         continue;
                     }
                     case 16: {
-                        final int b2 = kw.b(kn, 16);
+                        final int b2 = pp.b(pe, 16);
                         int length3;
-                        if (this.fA == null) {
+                        if (this.gi == null) {
                             length3 = 0;
                         }
                         else {
-                            length3 = this.fA.length;
+                            length3 = this.gi.length;
                         }
-                        final int[] fa = new int[b2 + length3];
+                        final int[] gi = new int[b2 + length3];
                         int k = length3;
                         if (length3 != 0) {
-                            System.arraycopy(this.fA, 0, fa, 0, length3);
+                            System.arraycopy(this.gi, 0, gi, 0, length3);
                             k = length3;
                         }
-                        while (k < fa.length - 1) {
-                            fa[k] = kn.mk();
-                            kn.mh();
+                        while (k < gi.length - 1) {
+                            gi[k] = pe.qj();
+                            pe.qg();
                             ++k;
                         }
-                        fa[k] = kn.mk();
-                        this.fA = fa;
+                        gi[k] = pe.qj();
+                        this.gi = gi;
                         continue;
                     }
                     case 18: {
-                        final int cr2 = kn.cR(kn.mn());
-                        final int position2 = kn.getPosition();
+                        final int go2 = pe.go(pe.qn());
+                        final int position2 = pe.getPosition();
                         int n2 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n2;
                         }
-                        kn.cT(position2);
+                        pe.gq(position2);
                         int length4;
-                        if (this.fA == null) {
+                        if (this.gi == null) {
                             length4 = 0;
                         }
                         else {
-                            length4 = this.fA.length;
+                            length4 = this.gi.length;
                         }
-                        final int[] fa2 = new int[n2 + length4];
+                        final int[] gi2 = new int[n2 + length4];
                         int l = length4;
                         if (length4 != 0) {
-                            System.arraycopy(this.fA, 0, fa2, 0, length4);
+                            System.arraycopy(this.gi, 0, gi2, 0, length4);
                             l = length4;
                         }
-                        while (l < fa2.length) {
-                            fa2[l] = kn.mk();
+                        while (l < gi2.length) {
+                            gi2[l] = pe.qj();
                             ++l;
                         }
-                        this.fA = fa2;
-                        kn.cS(cr2);
+                        this.gi = gi2;
+                        pe.gp(go2);
                         continue;
                     }
                     case 24: {
-                        final int b3 = kw.b(kn, 24);
+                        final int b3 = pp.b(pe, 24);
                         int length5;
-                        if (this.fB == null) {
+                        if (this.gj == null) {
                             length5 = 0;
                         }
                         else {
-                            length5 = this.fB.length;
+                            length5 = this.gj.length;
                         }
-                        final int[] fb = new int[b3 + length5];
+                        final int[] gj = new int[b3 + length5];
                         int n3 = length5;
                         if (length5 != 0) {
-                            System.arraycopy(this.fB, 0, fb, 0, length5);
+                            System.arraycopy(this.gj, 0, gj, 0, length5);
                             n3 = length5;
                         }
-                        while (n3 < fb.length - 1) {
-                            fb[n3] = kn.mk();
-                            kn.mh();
+                        while (n3 < gj.length - 1) {
+                            gj[n3] = pe.qj();
+                            pe.qg();
                             ++n3;
                         }
-                        fb[n3] = kn.mk();
-                        this.fB = fb;
+                        gj[n3] = pe.qj();
+                        this.gj = gj;
                         continue;
                     }
                     case 26: {
-                        final int cr3 = kn.cR(kn.mn());
-                        final int position3 = kn.getPosition();
+                        final int go3 = pe.go(pe.qn());
+                        final int position3 = pe.getPosition();
                         int n4 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n4;
                         }
-                        kn.cT(position3);
+                        pe.gq(position3);
                         int length6;
-                        if (this.fB == null) {
+                        if (this.gj == null) {
                             length6 = 0;
                         }
                         else {
-                            length6 = this.fB.length;
+                            length6 = this.gj.length;
                         }
-                        final int[] fb2 = new int[n4 + length6];
+                        final int[] gj2 = new int[n4 + length6];
                         int n5 = length6;
                         if (length6 != 0) {
-                            System.arraycopy(this.fB, 0, fb2, 0, length6);
+                            System.arraycopy(this.gj, 0, gj2, 0, length6);
                             n5 = length6;
                         }
-                        while (n5 < fb2.length) {
-                            fb2[n5] = kn.mk();
+                        while (n5 < gj2.length) {
+                            gj2[n5] = pe.qj();
                             ++n5;
                         }
-                        this.fB = fb2;
-                        kn.cS(cr3);
+                        this.gj = gj2;
+                        pe.gp(go3);
                         continue;
                     }
                     case 32: {
-                        this.fC = kn.mk();
+                        this.gk = pe.qj();
                         continue;
                     }
                     case 40: {
-                        final int b4 = kw.b(kn, 40);
+                        final int b4 = pp.b(pe, 40);
                         int length7;
-                        if (this.fD == null) {
+                        if (this.gl == null) {
                             length7 = 0;
                         }
                         else {
-                            length7 = this.fD.length;
+                            length7 = this.gl.length;
                         }
-                        final int[] fd = new int[b4 + length7];
+                        final int[] gl = new int[b4 + length7];
                         int n6 = length7;
                         if (length7 != 0) {
-                            System.arraycopy(this.fD, 0, fd, 0, length7);
+                            System.arraycopy(this.gl, 0, gl, 0, length7);
                             n6 = length7;
                         }
-                        while (n6 < fd.length - 1) {
-                            fd[n6] = kn.mk();
-                            kn.mh();
+                        while (n6 < gl.length - 1) {
+                            gl[n6] = pe.qj();
+                            pe.qg();
                             ++n6;
                         }
-                        fd[n6] = kn.mk();
-                        this.fD = fd;
+                        gl[n6] = pe.qj();
+                        this.gl = gl;
                         continue;
                     }
                     case 42: {
-                        final int cr4 = kn.cR(kn.mn());
-                        final int position4 = kn.getPosition();
+                        final int go4 = pe.go(pe.qn());
+                        final int position4 = pe.getPosition();
                         int n7 = 0;
-                        while (kn.ms() > 0) {
-                            kn.mk();
+                        while (pe.qs() > 0) {
+                            pe.qj();
                             ++n7;
                         }
-                        kn.cT(position4);
+                        pe.gq(position4);
                         int length8;
-                        if (this.fD == null) {
+                        if (this.gl == null) {
                             length8 = 0;
                         }
                         else {
-                            length8 = this.fD.length;
+                            length8 = this.gl.length;
                         }
-                        final int[] fd2 = new int[n7 + length8];
+                        final int[] gl2 = new int[n7 + length8];
                         int n8 = length8;
                         if (length8 != 0) {
-                            System.arraycopy(this.fD, 0, fd2, 0, length8);
+                            System.arraycopy(this.gl, 0, gl2, 0, length8);
                             n8 = length8;
                         }
-                        while (n8 < fd2.length) {
-                            fd2[n8] = kn.mk();
+                        while (n8 < gl2.length) {
+                            gl2[n8] = pe.qj();
                             ++n8;
                         }
-                        this.fD = fd2;
-                        kn.cS(cr4);
+                        this.gl = gl2;
+                        pe.gp(go4);
                         continue;
                     }
                     case 48: {
-                        this.fE = kn.mk();
+                        this.gm = pe.qj();
                         continue;
                     }
                     case 56: {
-                        this.fF = kn.mk();
+                        this.gn = pe.qj();
                         continue;
                     }
                 }
@@ -3073,24 +2908,24 @@ public interface c
         }
         
         public h n() {
-            this.fz = kw.aea;
-            this.fA = kw.aea;
-            this.fB = kw.aea;
-            this.fC = 0;
-            this.fD = kw.aea;
-            this.fE = 0;
-            this.fF = 0;
-            this.adU = null;
-            this.adY = -1;
+            this.gh = pp.awL;
+            this.gi = pp.awL;
+            this.gj = pp.awL;
+            this.gk = 0;
+            this.gl = pp.awL;
+            this.gm = 0;
+            this.gn = 0;
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
     }
     
-    public static final class i extends kp<i>
+    public static final class i extends pg<i>
     {
-        private static volatile i[] fG;
-        public com.google.android.gms.internal.d.a fH;
-        public d fI;
+        private static volatile i[] go;
+        public com.google.android.gms.internal.d.a gp;
+        public d gq;
         public String name;
         
         public i() {
@@ -3099,48 +2934,48 @@ public interface c
         
         public static i[] o() {
             Label_0027: {
-                if (i.fG != null) {
+                if (i.go != null) {
                     break Label_0027;
                 }
-                synchronized (kr.adX) {
-                    if (i.fG == null) {
-                        i.fG = new i[0];
+                synchronized (pk.awI) {
+                    if (i.go == null) {
+                        i.go = new i[0];
                     }
-                    return i.fG;
+                    return i.go;
                 }
             }
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
+        public void a(final pf pf) throws IOException {
             if (!this.name.equals("")) {
-                ko.b(1, this.name);
+                pf.b(1, this.name);
             }
-            if (this.fH != null) {
-                ko.a(2, this.fH);
+            if (this.gp != null) {
+                pf.a(2, this.gp);
             }
-            if (this.fI != null) {
-                ko.a(3, this.fI);
+            if (this.gq != null) {
+                pf.a(3, this.gq);
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
+        protected int c() {
             int c;
             final int n = c = super.c();
             if (!this.name.equals("")) {
-                c = n + ko.g(1, this.name);
+                c = n + pf.j(1, this.name);
             }
             int n2 = c;
-            if (this.fH != null) {
-                n2 = c + ko.b(2, this.fH);
+            if (this.gp != null) {
+                n2 = c + pf.c(2, this.gp);
             }
-            int adY = n2;
-            if (this.fI != null) {
-                adY = n2 + ko.b(3, this.fI);
+            int n3 = n2;
+            if (this.gq != null) {
+                n3 = n2 + pf.c(3, this.gq);
             }
-            return this.adY = adY;
+            return n3;
         }
         
         @Override
@@ -3163,34 +2998,25 @@ public interface c
                     else if (!this.name.equals(i.name)) {
                         return false;
                     }
-                    if (this.fH == null) {
+                    if (this.gp == null) {
                         b2 = b;
-                        if (i.fH != null) {
+                        if (i.gp != null) {
                             return b2;
                         }
                     }
-                    else if (!this.fH.equals(i.fH)) {
+                    else if (!this.gp.equals(i.gp)) {
                         return false;
                     }
-                    if (this.fI == null) {
+                    if (this.gq == null) {
                         b2 = b;
-                        if (i.fI != null) {
+                        if (i.gq != null) {
                             return b2;
                         }
                     }
-                    else if (!this.fI.equals(i.fI)) {
+                    else if (!this.gq.equals(i.gq)) {
                         return false;
                     }
-                    if (this.adU == null || this.adU.isEmpty()) {
-                        if (i.adU != null) {
-                            b2 = b;
-                            if (!i.adU.isEmpty()) {
-                                return b2;
-                            }
-                        }
-                        return true;
-                    }
-                    return this.adU.equals(i.adU);
+                    return this.a(i);
                 }
             }
             return b2;
@@ -3198,47 +3024,34 @@ public interface c
         
         @Override
         public int hashCode() {
-            final boolean b = false;
-            int hashCode;
-            if (this.name == null) {
-                hashCode = 0;
-            }
-            else {
-                hashCode = this.name.hashCode();
-            }
+            int hashCode = 0;
             int hashCode2;
-            if (this.fH == null) {
+            if (this.name == null) {
                 hashCode2 = 0;
             }
             else {
-                hashCode2 = this.fH.hashCode();
+                hashCode2 = this.name.hashCode();
             }
             int hashCode3;
-            if (this.fI == null) {
+            if (this.gp == null) {
                 hashCode3 = 0;
             }
             else {
-                hashCode3 = this.fI.hashCode();
+                hashCode3 = this.gp.hashCode();
             }
-            int hashCode4 = b ? 1 : 0;
-            if (this.adU != null) {
-                if (this.adU.isEmpty()) {
-                    hashCode4 = (b ? 1 : 0);
-                }
-                else {
-                    hashCode4 = this.adU.hashCode();
-                }
+            if (this.gq != null) {
+                hashCode = this.gq.hashCode();
             }
-            return (hashCode3 + (hashCode2 + (hashCode + 527) * 31) * 31) * 31 + hashCode4;
+            return ((hashCode3 + (hashCode2 + 527) * 31) * 31 + hashCode) * 31 + this.qx();
         }
         
-        public i j(final kn kn) throws IOException {
+        public i j(final pe pe) throws IOException {
         Label_0057:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0057;
                         }
                         continue;
@@ -3247,21 +3060,21 @@ public interface c
                         break Label_0057;
                     }
                     case 10: {
-                        this.name = kn.readString();
+                        this.name = pe.readString();
                         continue;
                     }
                     case 18: {
-                        if (this.fH == null) {
-                            this.fH = new com.google.android.gms.internal.d.a();
+                        if (this.gp == null) {
+                            this.gp = new com.google.android.gms.internal.d.a();
                         }
-                        kn.a(this.fH);
+                        pe.a(this.gp);
                         continue;
                     }
                     case 26: {
-                        if (this.fI == null) {
-                            this.fI = new d();
+                        if (this.gq == null) {
+                            this.gq = new d();
                         }
-                        kn.a(this.fI);
+                        pe.a(this.gq);
                         continue;
                     }
                 }
@@ -3271,64 +3084,64 @@ public interface c
         
         public i p() {
             this.name = "";
-            this.fH = null;
-            this.fI = null;
-            this.adU = null;
-            this.adY = -1;
+            this.gp = null;
+            this.gq = null;
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
     }
     
-    public static final class j extends kp<j>
+    public static final class j extends pg<j>
     {
-        public i[] fJ;
-        public f fK;
-        public String fL;
+        public i[] gr;
+        public f gs;
+        public String gt;
         
         public j() {
             this.q();
         }
         
-        public static j b(final byte[] array) throws ks {
-            return kt.a(new j(), array);
+        public static j b(final byte[] array) throws pl {
+            return pm.a(new j(), array);
         }
         
         @Override
-        public void a(final ko ko) throws IOException {
-            if (this.fJ != null && this.fJ.length > 0) {
-                for (int i = 0; i < this.fJ.length; ++i) {
-                    final i j = this.fJ[i];
+        public void a(final pf pf) throws IOException {
+            if (this.gr != null && this.gr.length > 0) {
+                for (int i = 0; i < this.gr.length; ++i) {
+                    final i j = this.gr[i];
                     if (j != null) {
-                        ko.a(1, j);
+                        pf.a(1, j);
                     }
                 }
             }
-            if (this.fK != null) {
-                ko.a(2, this.fK);
+            if (this.gs != null) {
+                pf.a(2, this.gs);
             }
-            if (!this.fL.equals("")) {
-                ko.b(3, this.fL);
+            if (!this.gt.equals("")) {
+                pf.b(3, this.gt);
             }
-            super.a(ko);
+            super.a(pf);
         }
         
         @Override
-        public int c() {
+        protected int c() {
             int c;
             int n = c = super.c();
-            if (this.fJ != null) {
+            if (this.gr != null) {
                 c = n;
-                if (this.fJ.length > 0) {
+                if (this.gr.length > 0) {
                     int n2 = 0;
                     while (true) {
                         c = n;
-                        if (n2 >= this.fJ.length) {
+                        if (n2 >= this.gr.length) {
                             break;
                         }
-                        final i i = this.fJ[n2];
+                        final i i = this.gr[n2];
                         int n3 = n;
                         if (i != null) {
-                            n3 = n + ko.b(1, i);
+                            n3 = n + pf.c(1, i);
                         }
                         ++n2;
                         n = n3;
@@ -3336,14 +3149,14 @@ public interface c
                 }
             }
             int n4 = c;
-            if (this.fK != null) {
-                n4 = c + ko.b(2, this.fK);
+            if (this.gs != null) {
+                n4 = c + pf.c(2, this.gs);
             }
-            int adY = n4;
-            if (!this.fL.equals("")) {
-                adY = n4 + ko.g(3, this.fL);
+            int n5 = n4;
+            if (!this.gt.equals("")) {
+                n5 = n4 + pf.j(3, this.gt);
             }
-            return this.adY = adY;
+            return n5;
         }
         
         @Override
@@ -3358,35 +3171,26 @@ public interface c
                 if (o instanceof j) {
                     final j j = (j)o;
                     b2 = b;
-                    if (kr.equals(this.fJ, j.fJ)) {
-                        if (this.fK == null) {
+                    if (pk.equals(this.gr, j.gr)) {
+                        if (this.gs == null) {
                             b2 = b;
-                            if (j.fK != null) {
+                            if (j.gs != null) {
                                 return b2;
                             }
                         }
-                        else if (!this.fK.equals(j.fK)) {
+                        else if (!this.gs.equals(j.gs)) {
                             return false;
                         }
-                        if (this.fL == null) {
+                        if (this.gt == null) {
                             b2 = b;
-                            if (j.fL != null) {
+                            if (j.gt != null) {
                                 return b2;
                             }
                         }
-                        else if (!this.fL.equals(j.fL)) {
+                        else if (!this.gt.equals(j.gt)) {
                             return false;
                         }
-                        if (this.adU == null || this.adU.isEmpty()) {
-                            if (j.adU != null) {
-                                b2 = b;
-                                if (!j.adU.isEmpty()) {
-                                    return b2;
-                                }
-                            }
-                            return true;
-                        }
-                        return this.adU.equals(j.adU);
+                        return this.a(j);
                     }
                 }
             }
@@ -3395,41 +3199,28 @@ public interface c
         
         @Override
         public int hashCode() {
-            final boolean b = false;
-            final int hashCode = kr.hashCode(this.fJ);
-            int hashCode2;
-            if (this.fK == null) {
-                hashCode2 = 0;
-            }
-            else {
-                hashCode2 = this.fK.hashCode();
-            }
+            int hashCode = 0;
+            final int hashCode2 = pk.hashCode(this.gr);
             int hashCode3;
-            if (this.fL == null) {
+            if (this.gs == null) {
                 hashCode3 = 0;
             }
             else {
-                hashCode3 = this.fL.hashCode();
+                hashCode3 = this.gs.hashCode();
             }
-            int hashCode4 = b ? 1 : 0;
-            if (this.adU != null) {
-                if (this.adU.isEmpty()) {
-                    hashCode4 = (b ? 1 : 0);
-                }
-                else {
-                    hashCode4 = this.adU.hashCode();
-                }
+            if (this.gt != null) {
+                hashCode = this.gt.hashCode();
             }
-            return (hashCode3 + (hashCode2 + (hashCode + 527) * 31) * 31) * 31 + hashCode4;
+            return ((hashCode3 + (hashCode2 + 527) * 31) * 31 + hashCode) * 31 + this.qx();
         }
         
-        public j k(final kn kn) throws IOException {
+        public j k(final pe pe) throws IOException {
         Label_0057:
             while (true) {
-                final int mh = kn.mh();
-                switch (mh) {
+                final int qg = pe.qg();
+                switch (qg) {
                     default: {
-                        if (!this.a(kn, mh)) {
+                        if (!this.a(pe, qg)) {
                             break Label_0057;
                         }
                         continue;
@@ -3438,38 +3229,38 @@ public interface c
                         break Label_0057;
                     }
                     case 10: {
-                        final int b = kw.b(kn, 10);
+                        final int b = pp.b(pe, 10);
                         int length;
-                        if (this.fJ == null) {
+                        if (this.gr == null) {
                             length = 0;
                         }
                         else {
-                            length = this.fJ.length;
+                            length = this.gr.length;
                         }
-                        final i[] fj = new i[b + length];
+                        final i[] gr = new i[b + length];
                         int i = length;
                         if (length != 0) {
-                            System.arraycopy(this.fJ, 0, fj, 0, length);
+                            System.arraycopy(this.gr, 0, gr, 0, length);
                             i = length;
                         }
-                        while (i < fj.length - 1) {
-                            kn.a(fj[i] = new i());
-                            kn.mh();
+                        while (i < gr.length - 1) {
+                            pe.a(gr[i] = new i());
+                            pe.qg();
                             ++i;
                         }
-                        kn.a(fj[i] = new i());
-                        this.fJ = fj;
+                        pe.a(gr[i] = new i());
+                        this.gr = gr;
                         continue;
                     }
                     case 18: {
-                        if (this.fK == null) {
-                            this.fK = new f();
+                        if (this.gs == null) {
+                            this.gs = new f();
                         }
-                        kn.a(this.fK);
+                        pe.a(this.gs);
                         continue;
                     }
                     case 26: {
-                        this.fL = kn.readString();
+                        this.gt = pe.readString();
                         continue;
                     }
                 }
@@ -3478,11 +3269,11 @@ public interface c
         }
         
         public j q() {
-            this.fJ = i.o();
-            this.fK = null;
-            this.fL = "";
-            this.adU = null;
-            this.adY = -1;
+            this.gr = i.o();
+            this.gs = null;
+            this.gt = "";
+            this.awy = null;
+            this.awJ = -1;
             return this;
         }
     }

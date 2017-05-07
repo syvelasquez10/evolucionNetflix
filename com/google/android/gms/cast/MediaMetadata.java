@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Calendar;
 import android.text.TextUtils;
-import com.google.android.gms.internal.ew;
+import com.google.android.gms.internal.iu;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -23,6 +23,8 @@ import java.util.List;
 
 public class MediaMetadata
 {
+    private static final String[] Fn;
+    private static final a Fo;
     public static final String KEY_ALBUM_ARTIST = "com.google.android.gms.cast.metadata.ALBUM_ARTIST";
     public static final String KEY_ALBUM_TITLE = "com.google.android.gms.cast.metadata.ALBUM_TITLE";
     public static final String KEY_ARTIST = "com.google.android.gms.cast.metadata.ARTIST";
@@ -49,52 +51,50 @@ public class MediaMetadata
     public static final int MEDIA_TYPE_PHOTO = 4;
     public static final int MEDIA_TYPE_TV_SHOW = 2;
     public static final int MEDIA_TYPE_USER = 100;
-    private static final String[] yp;
-    private static final a yq;
-    private final List<WebImage> xJ;
-    private final Bundle yr;
-    private int ys;
+    private final List<WebImage> EA;
+    private final Bundle Fp;
+    private int Fq;
     
     static {
-        yp = new String[] { null, "String", "int", "double", "ISO-8601 date String" };
-        yq = new a().a("com.google.android.gms.cast.metadata.CREATION_DATE", "creationDateTime", 4).a("com.google.android.gms.cast.metadata.RELEASE_DATE", "releaseDate", 4).a("com.google.android.gms.cast.metadata.BROADCAST_DATE", "originalAirdate", 4).a("com.google.android.gms.cast.metadata.TITLE", "title", 1).a("com.google.android.gms.cast.metadata.SUBTITLE", "subtitle", 1).a("com.google.android.gms.cast.metadata.ARTIST", "artist", 1).a("com.google.android.gms.cast.metadata.ALBUM_ARTIST", "albumArtist", 1).a("com.google.android.gms.cast.metadata.ALBUM_TITLE", "albumName", 1).a("com.google.android.gms.cast.metadata.COMPOSER", "composer", 1).a("com.google.android.gms.cast.metadata.DISC_NUMBER", "discNumber", 2).a("com.google.android.gms.cast.metadata.TRACK_NUMBER", "trackNumber", 2).a("com.google.android.gms.cast.metadata.SEASON_NUMBER", "season", 2).a("com.google.android.gms.cast.metadata.EPISODE_NUMBER", "episode", 2).a("com.google.android.gms.cast.metadata.SERIES_TITLE", "seriesTitle", 1).a("com.google.android.gms.cast.metadata.STUDIO", "studio", 1).a("com.google.android.gms.cast.metadata.WIDTH", "width", 2).a("com.google.android.gms.cast.metadata.HEIGHT", "height", 2).a("com.google.android.gms.cast.metadata.LOCATION_NAME", "location", 1).a("com.google.android.gms.cast.metadata.LOCATION_LATITUDE", "latitude", 3).a("com.google.android.gms.cast.metadata.LOCATION_LONGITUDE", "longitude", 3);
+        Fn = new String[] { null, "String", "int", "double", "ISO-8601 date String" };
+        Fo = new a().a("com.google.android.gms.cast.metadata.CREATION_DATE", "creationDateTime", 4).a("com.google.android.gms.cast.metadata.RELEASE_DATE", "releaseDate", 4).a("com.google.android.gms.cast.metadata.BROADCAST_DATE", "originalAirdate", 4).a("com.google.android.gms.cast.metadata.TITLE", "title", 1).a("com.google.android.gms.cast.metadata.SUBTITLE", "subtitle", 1).a("com.google.android.gms.cast.metadata.ARTIST", "artist", 1).a("com.google.android.gms.cast.metadata.ALBUM_ARTIST", "albumArtist", 1).a("com.google.android.gms.cast.metadata.ALBUM_TITLE", "albumName", 1).a("com.google.android.gms.cast.metadata.COMPOSER", "composer", 1).a("com.google.android.gms.cast.metadata.DISC_NUMBER", "discNumber", 2).a("com.google.android.gms.cast.metadata.TRACK_NUMBER", "trackNumber", 2).a("com.google.android.gms.cast.metadata.SEASON_NUMBER", "season", 2).a("com.google.android.gms.cast.metadata.EPISODE_NUMBER", "episode", 2).a("com.google.android.gms.cast.metadata.SERIES_TITLE", "seriesTitle", 1).a("com.google.android.gms.cast.metadata.STUDIO", "studio", 1).a("com.google.android.gms.cast.metadata.WIDTH", "width", 2).a("com.google.android.gms.cast.metadata.HEIGHT", "height", 2).a("com.google.android.gms.cast.metadata.LOCATION_NAME", "location", 1).a("com.google.android.gms.cast.metadata.LOCATION_LATITUDE", "latitude", 3).a("com.google.android.gms.cast.metadata.LOCATION_LONGITUDE", "longitude", 3);
     }
     
     public MediaMetadata() {
         this(0);
     }
     
-    public MediaMetadata(final int ys) {
-        this.xJ = new ArrayList<WebImage>();
-        this.yr = new Bundle();
-        this.ys = ys;
+    public MediaMetadata(final int fq) {
+        this.EA = new ArrayList<WebImage>();
+        this.Fp = new Bundle();
+        this.Fq = fq;
     }
     
     private void a(final JSONObject jsonObject, final String... array) {
         try {
             for (int length = array.length, i = 0; i < length; ++i) {
                 final String s = array[i];
-                if (this.yr.containsKey(s)) {
-                    switch (MediaMetadata.yq.T(s)) {
+                if (this.Fp.containsKey(s)) {
+                    switch (MediaMetadata.Fo.aB(s)) {
                         case 1:
                         case 4: {
-                            jsonObject.put(MediaMetadata.yq.R(s), (Object)this.yr.getString(s));
+                            jsonObject.put(MediaMetadata.Fo.az(s), (Object)this.Fp.getString(s));
                             break;
                         }
                         case 2: {
-                            jsonObject.put(MediaMetadata.yq.R(s), this.yr.getInt(s));
+                            jsonObject.put(MediaMetadata.Fo.az(s), this.Fp.getInt(s));
                             break;
                         }
                         case 3: {
-                            jsonObject.put(MediaMetadata.yq.R(s), this.yr.getDouble(s));
+                            jsonObject.put(MediaMetadata.Fo.az(s), this.Fp.getDouble(s));
                             break;
                         }
                     }
                 }
             }
-            for (final String s2 : this.yr.keySet()) {
+            for (final String s2 : this.Fp.keySet()) {
                 if (!s2.startsWith("com.google.")) {
-                    final Object value = this.yr.get(s2);
+                    final Object value = this.Fp.get(s2);
                     if (value instanceof String) {
                         jsonObject.put(s2, value);
                     }
@@ -143,78 +143,79 @@ public class MediaMetadata
         array = (String[])(Object)new HashSet((Collection<? extends E>)Arrays.asList(array));
         try {
             final Iterator keys = jsonObject.keys();
-        Block_15_Outer:
+        Block_17_Outer:
             while (keys.hasNext()) {
                 final String s = keys.next();
                 if (!"metadataType".equals(s)) {
-                    final String s2 = MediaMetadata.yq.S(s);
+                    final String aa = MediaMetadata.Fo.aA(s);
                     Label_0249: {
-                        if (s2 == null) {
+                        if (aa == null) {
                             break Label_0249;
                         }
-                        if (!((Set)(Object)array).contains(s2)) {
+                        if (!((Set)(Object)array).contains(aa)) {
                             continue;
                         }
                         try {
                             final Object value = jsonObject.get(s);
                             if (value == null) {
-                                continue;
+                                continue Block_17_Outer;
                             }
-                            switch (MediaMetadata.yq.T(s2)) {
+                            switch (MediaMetadata.Fo.aB(aa)) {
                                 case 1: {
                                     if (value instanceof String) {
-                                        this.yr.putString(s2, (String)value);
-                                        continue;
+                                        this.Fp.putString(aa, (String)value);
+                                        continue Block_17_Outer;
                                     }
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                                 case 4: {
-                                    if (value instanceof String && ew.ac((String)value) != null) {
-                                        this.yr.putString(s2, (String)value);
-                                        continue;
+                                    if (value instanceof String && iu.aL((String)value) != null) {
+                                        this.Fp.putString(aa, (String)value);
+                                        continue Block_17_Outer;
                                     }
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                                 case 2: {
                                     if (value instanceof Integer) {
-                                        this.yr.putInt(s2, (int)value);
-                                        continue;
+                                        this.Fp.putInt(aa, (int)value);
+                                        continue Block_17_Outer;
                                     }
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                                 case 3: {
                                     if (value instanceof Double) {
-                                        this.yr.putDouble(s2, (double)value);
-                                        continue;
+                                        this.Fp.putDouble(aa, (double)value);
+                                        continue Block_17_Outer;
                                     }
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                                 default: {
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                             }
-                            // iftrue(Label_0018:, !value2 instanceof Double)
-                            // iftrue(Label_0310:, !value2 instanceof Integer)
-                            // iftrue(Label_0282:, !value2 instanceof String)
-                            Object value2 = null;
-                            Block_16: {
-                                while (true) {
-                                    Block_17: {
-                                        break Block_17;
-                                        Label_0282: {
-                                            break Block_16;
-                                        }
-                                        this.yr.putString(s, (String)value2);
-                                        continue Block_15_Outer;
+                        Label_0282:
+                            while (true) {
+                                final Object value2;
+                                Block_15: {
+                                    Block_16: {
+                                        break Block_16;
+                                        value2 = jsonObject.get(s);
+                                        break Block_15;
                                     }
-                                    this.yr.putDouble(s, (double)value2);
-                                    continue Block_15_Outer;
-                                    value2 = jsonObject.get(s);
-                                    continue;
+                                    this.Fp.putInt(s, (int)value2);
+                                    continue Block_17_Outer;
+                                    this.Fp.putDouble(s, (double)value2);
+                                    continue Block_17_Outer;
                                 }
+                                this.Fp.putString(s, (String)value2);
+                                continue Block_17_Outer;
+                                Label_0310:
+                                continue;
                             }
-                            this.yr.putInt(s, (int)value2);
                         }
+                        // iftrue(Label_0310:, !value2 instanceof Integer)
+                        // iftrue(Label_0282:, !value2 instanceof String)
+                        // iftrue(Label_0018:, !value2 instanceof Double)
                         catch (JSONException ex) {}
                     }
                 }
@@ -223,75 +224,27 @@ public class MediaMetadata
         catch (JSONException ex2) {}
     }
     
-    private void d(final String s, final int n) throws IllegalArgumentException {
+    private void f(final String s, final int n) throws IllegalArgumentException {
         if (TextUtils.isEmpty((CharSequence)s)) {
             throw new IllegalArgumentException("null and empty keys are not allowed");
         }
-        final int t = MediaMetadata.yq.T(s);
-        if (t != n && t != 0) {
-            throw new IllegalArgumentException("Value for " + s + " must be a " + MediaMetadata.yp[n]);
+        final int ab = MediaMetadata.Fo.aB(s);
+        if (ab != n && ab != 0) {
+            throw new IllegalArgumentException("Value for " + s + " must be a " + MediaMetadata.Fn[n]);
         }
     }
     
     public void addImage(final WebImage webImage) {
-        this.xJ.add(webImage);
+        this.EA.add(webImage);
     }
     
-    public void c(final JSONObject jsonObject) {
-        this.clear();
-        this.ys = 0;
-        while (true) {
-            try {
-                this.ys = jsonObject.getInt("metadataType");
-                ew.a(this.xJ, jsonObject);
-                switch (this.ys) {
-                    default: {
-                        this.b(jsonObject, new String[0]);
-                    }
-                    case 0: {
-                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.ARTIST", "com.google.android.gms.cast.metadata.SUBTITLE", "com.google.android.gms.cast.metadata.RELEASE_DATE");
-                    }
-                    case 1: {
-                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.STUDIO", "com.google.android.gms.cast.metadata.SUBTITLE", "com.google.android.gms.cast.metadata.RELEASE_DATE");
-                    }
-                    case 2: {
-                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.SERIES_TITLE", "com.google.android.gms.cast.metadata.SEASON_NUMBER", "com.google.android.gms.cast.metadata.EPISODE_NUMBER", "com.google.android.gms.cast.metadata.BROADCAST_DATE");
-                    }
-                    case 3: {
-                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.ALBUM_TITLE", "com.google.android.gms.cast.metadata.ARTIST", "com.google.android.gms.cast.metadata.ALBUM_ARTIST", "com.google.android.gms.cast.metadata.COMPOSER", "com.google.android.gms.cast.metadata.TRACK_NUMBER", "com.google.android.gms.cast.metadata.DISC_NUMBER", "com.google.android.gms.cast.metadata.RELEASE_DATE");
-                    }
-                    case 4: {
-                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.ARTIST", "com.google.android.gms.cast.metadata.LOCATION_NAME", "com.google.android.gms.cast.metadata.LOCATION_LATITUDE", "com.google.android.gms.cast.metadata.LOCATION_LONGITUDE", "com.google.android.gms.cast.metadata.WIDTH", "com.google.android.gms.cast.metadata.HEIGHT", "com.google.android.gms.cast.metadata.CREATION_DATE");
-                    }
-                }
-            }
-            catch (JSONException ex) {
-                continue;
-            }
-            break;
-        }
-    }
-    
-    public void clear() {
-        this.yr.clear();
-        this.xJ.clear();
-    }
-    
-    public void clearImages() {
-        this.xJ.clear();
-    }
-    
-    public boolean containsKey(final String s) {
-        return this.yr.containsKey(s);
-    }
-    
-    public JSONObject dB() {
+    public JSONObject bL() {
         final JSONObject jsonObject = new JSONObject();
         while (true) {
             try {
-                jsonObject.put("metadataType", this.ys);
-                ew.a(jsonObject, this.xJ);
-                switch (this.ys) {
+                jsonObject.put("metadataType", this.Fq);
+                iu.a(jsonObject, this.EA);
+                switch (this.Fq) {
                     default: {
                         this.a(jsonObject, new String[0]);
                         return jsonObject;
@@ -325,6 +278,54 @@ public class MediaMetadata
         }
     }
     
+    public void c(final JSONObject jsonObject) {
+        this.clear();
+        this.Fq = 0;
+        while (true) {
+            try {
+                this.Fq = jsonObject.getInt("metadataType");
+                iu.a(this.EA, jsonObject);
+                switch (this.Fq) {
+                    default: {
+                        this.b(jsonObject, new String[0]);
+                    }
+                    case 0: {
+                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.ARTIST", "com.google.android.gms.cast.metadata.SUBTITLE", "com.google.android.gms.cast.metadata.RELEASE_DATE");
+                    }
+                    case 1: {
+                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.STUDIO", "com.google.android.gms.cast.metadata.SUBTITLE", "com.google.android.gms.cast.metadata.RELEASE_DATE");
+                    }
+                    case 2: {
+                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.SERIES_TITLE", "com.google.android.gms.cast.metadata.SEASON_NUMBER", "com.google.android.gms.cast.metadata.EPISODE_NUMBER", "com.google.android.gms.cast.metadata.BROADCAST_DATE");
+                    }
+                    case 3: {
+                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.ALBUM_TITLE", "com.google.android.gms.cast.metadata.ARTIST", "com.google.android.gms.cast.metadata.ALBUM_ARTIST", "com.google.android.gms.cast.metadata.COMPOSER", "com.google.android.gms.cast.metadata.TRACK_NUMBER", "com.google.android.gms.cast.metadata.DISC_NUMBER", "com.google.android.gms.cast.metadata.RELEASE_DATE");
+                    }
+                    case 4: {
+                        this.b(jsonObject, "com.google.android.gms.cast.metadata.TITLE", "com.google.android.gms.cast.metadata.ARTIST", "com.google.android.gms.cast.metadata.LOCATION_NAME", "com.google.android.gms.cast.metadata.LOCATION_LATITUDE", "com.google.android.gms.cast.metadata.LOCATION_LONGITUDE", "com.google.android.gms.cast.metadata.WIDTH", "com.google.android.gms.cast.metadata.HEIGHT", "com.google.android.gms.cast.metadata.CREATION_DATE");
+                    }
+                }
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public void clear() {
+        this.Fp.clear();
+        this.EA.clear();
+    }
+    
+    public void clearImages() {
+        this.EA.clear();
+    }
+    
+    public boolean containsKey(final String s) {
+        return this.Fp.containsKey(s);
+    }
+    
     @Override
     public boolean equals(final Object o) {
         if (this != o) {
@@ -332,7 +333,7 @@ public class MediaMetadata
                 return false;
             }
             final MediaMetadata mediaMetadata = (MediaMetadata)o;
-            if (!this.a(this.yr, mediaMetadata.yr) || !this.xJ.equals(mediaMetadata.xJ)) {
+            if (!this.a(this.Fp, mediaMetadata.Fp) || !this.EA.equals(mediaMetadata.EA)) {
                 return false;
             }
         }
@@ -340,113 +341,113 @@ public class MediaMetadata
     }
     
     public Calendar getDate(String string) {
-        this.d(string, 4);
-        string = this.yr.getString(string);
+        this.f(string, 4);
+        string = this.Fp.getString(string);
         if (string != null) {
-            return ew.ac(string);
+            return iu.aL(string);
         }
         return null;
     }
     
     public String getDateAsString(final String s) {
-        this.d(s, 4);
-        return this.yr.getString(s);
+        this.f(s, 4);
+        return this.Fp.getString(s);
     }
     
     public double getDouble(final String s) {
-        this.d(s, 3);
-        return this.yr.getDouble(s);
+        this.f(s, 3);
+        return this.Fp.getDouble(s);
     }
     
     public List<WebImage> getImages() {
-        return this.xJ;
+        return this.EA;
     }
     
     public int getInt(final String s) {
-        this.d(s, 2);
-        return this.yr.getInt(s);
+        this.f(s, 2);
+        return this.Fp.getInt(s);
     }
     
     public int getMediaType() {
-        return this.ys;
+        return this.Fq;
     }
     
     public String getString(final String s) {
-        this.d(s, 1);
-        return this.yr.getString(s);
+        this.f(s, 1);
+        return this.Fp.getString(s);
     }
     
     public boolean hasImages() {
-        return this.xJ != null && !this.xJ.isEmpty();
+        return this.EA != null && !this.EA.isEmpty();
     }
     
     @Override
     public int hashCode() {
-        final Iterator<String> iterator = this.yr.keySet().iterator();
+        final Iterator<String> iterator = this.Fp.keySet().iterator();
         int n = 17;
         while (iterator.hasNext()) {
-            n = this.yr.get((String)iterator.next()).hashCode() + n * 31;
+            n = this.Fp.get((String)iterator.next()).hashCode() + n * 31;
         }
-        return n * 31 + this.xJ.hashCode();
+        return n * 31 + this.EA.hashCode();
     }
     
     public Set<String> keySet() {
-        return (Set<String>)this.yr.keySet();
+        return (Set<String>)this.Fp.keySet();
     }
     
     public void putDate(final String s, final Calendar calendar) {
-        this.d(s, 4);
-        this.yr.putString(s, ew.a(calendar));
+        this.f(s, 4);
+        this.Fp.putString(s, iu.a(calendar));
     }
     
     public void putDouble(final String s, final double n) {
-        this.d(s, 3);
-        this.yr.putDouble(s, n);
+        this.f(s, 3);
+        this.Fp.putDouble(s, n);
     }
     
     public void putInt(final String s, final int n) {
-        this.d(s, 2);
-        this.yr.putInt(s, n);
+        this.f(s, 2);
+        this.Fp.putInt(s, n);
     }
     
     public void putString(final String s, final String s2) {
-        this.d(s, 1);
-        this.yr.putString(s, s2);
+        this.f(s, 1);
+        this.Fp.putString(s, s2);
     }
     
     private static class a
     {
-        private final Map<String, String> yt;
-        private final Map<String, String> yu;
-        private final Map<String, Integer> yv;
+        private final Map<String, String> Fr;
+        private final Map<String, String> Fs;
+        private final Map<String, Integer> Ft;
         
         public a() {
-            this.yt = new HashMap<String, String>();
-            this.yu = new HashMap<String, String>();
-            this.yv = new HashMap<String, Integer>();
+            this.Fr = new HashMap<String, String>();
+            this.Fs = new HashMap<String, String>();
+            this.Ft = new HashMap<String, Integer>();
         }
         
-        public String R(final String s) {
-            return this.yt.get(s);
+        public a a(final String s, final String s2, final int n) {
+            this.Fr.put(s, s2);
+            this.Fs.put(s2, s);
+            this.Ft.put(s, n);
+            return this;
         }
         
-        public String S(final String s) {
-            return this.yu.get(s);
+        public String aA(final String s) {
+            return this.Fs.get(s);
         }
         
-        public int T(final String s) {
-            final Integer n = this.yv.get(s);
+        public int aB(final String s) {
+            final Integer n = this.Ft.get(s);
             if (n != null) {
                 return n;
             }
             return 0;
         }
         
-        public a a(final String s, final String s2, final int n) {
-            this.yt.put(s, s2);
-            this.yu.put(s2, s);
-            this.yv.put(s, n);
-            return this;
+        public String az(final String s) {
+            return this.Fr.get(s);
         }
     }
 }

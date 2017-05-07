@@ -88,6 +88,7 @@ public class SearchActivity extends NetflixActivity
                 SearchLogUtils.reportSearchEditChange(SearchActivity.this.requestId, (Context)SearchActivity.this, SearchActivity.this.getUiScreen(), s);
                 if (TextUtils.isEmpty((CharSequence)s) && SearchActivity.this.resultsFrag != null) {
                     SearchActivity.this.resultsFrag.clearSelectedStack();
+                    SearchActivity.this.resultsFrag.clearGridSelected();
                 }
                 return true;
             }
@@ -122,8 +123,8 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131165614);
-        this.loadingWrapper = this.findViewById(2131165613);
+        this.fragGroup = (ViewGroup)this.findViewById(2131165616);
+        this.loadingWrapper = this.findViewById(2131165615);
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -143,6 +144,7 @@ public class SearchActivity extends NetflixActivity
     
     private void handleQueryUpdate(final String s) {
         if (s != null) {
+            this.resultsFrag.clearGridSelected();
             this.query = s.trim();
             ++this.requestId;
             if (this.query.length() == 0) {
@@ -186,7 +188,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131165614, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131165616, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -198,7 +200,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131493223, false, false);
+        this.leWrapper.showErrorView(2131493228, false, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
@@ -244,7 +246,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     protected int getInitMessageStringId() {
-        return 2131493205;
+        return 2131493210;
     }
     
     @Override
@@ -297,7 +299,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131493222, true, false);
+        this.leWrapper.showErrorView(2131493227, true, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }

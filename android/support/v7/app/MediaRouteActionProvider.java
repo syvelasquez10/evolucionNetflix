@@ -8,6 +8,8 @@ import java.lang.ref.WeakReference;
 import android.view.ViewGroup$LayoutParams;
 import android.util.Log;
 import android.view.View;
+import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.content.Context;
 import android.support.v7.media.MediaRouteSelector;
 import android.support.v7.media.MediaRouter;
@@ -34,14 +36,17 @@ public class MediaRouteActionProvider extends ActionProvider
         this.refreshVisibility();
     }
     
+    @NonNull
     public MediaRouteDialogFactory getDialogFactory() {
         return this.mDialogFactory;
     }
     
+    @Nullable
     public MediaRouteButton getMediaRouteButton() {
         return this.mButton;
     }
     
+    @NonNull
     public MediaRouteSelector getRouteSelector() {
         return this.mSelector;
     }
@@ -77,7 +82,7 @@ public class MediaRouteActionProvider extends ActionProvider
         return true;
     }
     
-    public void setDialogFactory(final MediaRouteDialogFactory mediaRouteDialogFactory) {
+    public void setDialogFactory(@NonNull final MediaRouteDialogFactory mediaRouteDialogFactory) {
         if (mediaRouteDialogFactory == null) {
             throw new IllegalArgumentException("factory must not be null");
         }
@@ -89,7 +94,7 @@ public class MediaRouteActionProvider extends ActionProvider
         }
     }
     
-    public void setRouteSelector(final MediaRouteSelector mediaRouteSelector) {
+    public void setRouteSelector(@NonNull final MediaRouteSelector mediaRouteSelector) {
         if (mediaRouteSelector == null) {
             throw new IllegalArgumentException("selector must not be null");
         }

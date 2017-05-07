@@ -11,47 +11,47 @@ import android.os.Parcelable$Creator;
 
 public class f implements Parcelable$Creator<PlusCommonExtras>
 {
-    static void a(final PlusCommonExtras plusCommonExtras, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.a(parcel, 1, plusCommonExtras.iN(), false);
+    static void a(final PlusCommonExtras plusCommonExtras, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.a(parcel, 1, plusCommonExtras.nc(), false);
         b.c(parcel, 1000, plusCommonExtras.getVersionCode());
-        b.a(parcel, 2, plusCommonExtras.iO(), false);
-        b.F(parcel, p3);
+        b.a(parcel, 2, plusCommonExtras.nd(), false);
+        b.H(parcel, d);
     }
     
-    public PlusCommonExtras aJ(final Parcel parcel) {
-        String n = null;
-        final int o = a.o(parcel);
+    public PlusCommonExtras cZ(final Parcel parcel) {
+        String o = null;
+        final int c = a.C(parcel);
         int g = 0;
-        String n2 = null;
-        while (parcel.dataPosition() < o) {
-            final int n3 = a.n(parcel);
-            switch (a.R(n3)) {
+        String o2 = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n3);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    n2 = a.n(parcel, n3);
+                    o2 = a.o(parcel, b);
                     continue;
                 }
                 case 1000: {
-                    g = a.g(parcel, n3);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n = a.n(parcel, n3);
+                    o = a.o(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new PlusCommonExtras(g, n2, n);
+        return new PlusCommonExtras(g, o2, o);
     }
     
-    public PlusCommonExtras[] bM(final int n) {
+    public PlusCommonExtras[] eQ(final int n) {
         return new PlusCommonExtras[n];
     }
 }

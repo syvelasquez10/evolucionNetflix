@@ -18,7 +18,7 @@ public interface d extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.dynamic.IObjectWrapper");
         }
         
-        public static d K(final IBinder binder) {
+        public static d am(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -47,14 +47,14 @@ public interface d extends IInterface
         
         private static class a implements d
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
         }
     }

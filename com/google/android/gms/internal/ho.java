@@ -4,68 +4,57 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import java.util.Collection;
-import java.util.ArrayList;
 import java.util.List;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
 import android.os.Parcelable$Creator;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class ho implements SafeParcelable
+public class ho implements Parcelable$Creator<hm.b>
 {
-    public static final Parcelable$Creator<ho> CREATOR;
-    private final LatLng Re;
-    private final String Rf;
-    private final List<hm> Rg;
-    private final String Rh;
-    private final String Ri;
-    private final String mName;
-    final int xH;
-    
-    static {
-        CREATOR = (Parcelable$Creator)new hp();
+    static void a(final hm.b b, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1000, b.BR);
+        b.a(parcel, 1, (Parcelable)b.Ck, n, false);
+        b.c(parcel, 2, b.Cl, false);
+        b.H(parcel, d);
     }
     
-    ho(final int xh, final String mName, final LatLng re, final String rf, final List<hm> list, final String rh, final String ri) {
-        this.xH = xh;
-        this.mName = mName;
-        this.Re = re;
-        this.Rf = rf;
-        this.Rg = new ArrayList<hm>(list);
-        this.Rh = rh;
-        this.Ri = ri;
+    public hm.b[] N(final int n) {
+        return new hm.b[n];
     }
     
-    public int describeContents() {
-        return 0;
-    }
-    
-    public String getAddress() {
-        return this.Rf;
-    }
-    
-    public String getName() {
-        return this.mName;
-    }
-    
-    public String getPhoneNumber() {
-        return this.Rh;
-    }
-    
-    public LatLng ia() {
-        return this.Re;
-    }
-    
-    public List<hm> ib() {
-        return this.Rg;
-    }
-    
-    public String ic() {
-        return this.Ri;
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        hp.a(this, parcel, n);
+    public hm.b q(final Parcel parcel) {
+        Object c = null;
+        final int c2 = a.C(parcel);
+        int g = 0;
+        Status status = null;
+        while (parcel.dataPosition() < c2) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
+                default: {
+                    a.b(parcel, b);
+                    continue;
+                }
+                case 1000: {
+                    g = a.g(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    status = a.a(parcel, b, (android.os.Parcelable$Creator<Status>)Status.CREATOR);
+                    continue;
+                }
+                case 2: {
+                    c = a.c(parcel, b, (android.os.Parcelable$Creator<Object>)hs.CREATOR);
+                    continue;
+                }
+            }
+        }
+        if (parcel.dataPosition() != c2) {
+            throw new a.a("Overread allowed size end=" + c2, parcel);
+        }
+        return new hm.b(g, status, (List<hs>)c);
     }
 }

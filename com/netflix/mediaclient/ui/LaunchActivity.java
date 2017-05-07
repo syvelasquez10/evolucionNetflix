@@ -126,13 +126,13 @@ public class LaunchActivity extends NetflixActivity
     
     private void createContentView() {
         this.setContentView(2130903182);
-        final ImageView imageView = (ImageView)this.findViewById(2131165635);
+        final ImageView imageView = (ImageView)this.findViewById(2131165639);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837891;
+            imageResource = 2130837857;
         }
         else {
-            imageResource = 2130837890;
+            imageResource = 2130837856;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -202,10 +202,10 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131165635);
+        final ImageView imageView = (ImageView)this.findViewById(2131165639);
         imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165417);
-            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165418);
+            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165419);
+            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165420);
             
             public void onGlobalLayout() {
                 if (imageView.getWidth() <= 0) {

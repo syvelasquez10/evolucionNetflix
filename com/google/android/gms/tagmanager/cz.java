@@ -4,59 +4,28 @@
 
 package com.google.android.gms.tagmanager;
 
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
+import android.os.Build$VERSION;
+import android.content.SharedPreferences$Editor;
+import android.content.Context;
 
-class cz<K, V> implements k<K, V>
+class cz
 {
-    private final Map<K, V> aap;
-    private final int aaq;
-    private final l.a<K, V> aar;
-    private int aas;
-    
-    cz(final int aaq, final l.a<K, V> aar) {
-        this.aap = new HashMap<K, V>();
-        this.aaq = aaq;
-        this.aar = aar;
+    static void a(final Context context, final String s, final String s2, final String s3) {
+        final SharedPreferences$Editor edit = context.getSharedPreferences(s, 0).edit();
+        edit.putString(s2, s3);
+        a(edit);
     }
     
-    @Override
-    public void e(final K k, final V v) {
-        // monitorenter(this)
-        Label_0025: {
-            if (k != null) {
-                if (v != null) {
-                    break Label_0025;
-                }
-            }
-            try {
-                throw new NullPointerException("key == null || value == null");
-            }
-            finally {
-            }
-            // monitorexit(this)
+    static void a(final SharedPreferences$Editor sharedPreferences$Editor) {
+        if (Build$VERSION.SDK_INT >= 9) {
+            sharedPreferences$Editor.apply();
+            return;
         }
-        this.aas += this.aar.sizeOf(k, v);
-        if (this.aas > this.aaq) {
-            final Iterator<Map.Entry<K, V>> iterator = this.aap.entrySet().iterator();
-            while (iterator.hasNext()) {
-                final Map.Entry<K, V> entry = iterator.next();
-                this.aas -= this.aar.sizeOf(entry.getKey(), entry.getValue());
-                iterator.remove();
-                if (this.aas <= this.aaq) {
-                    break;
-                }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sharedPreferences$Editor.commit();
             }
-        }
-        this.aap.put(k, v);
-    }
-    // monitorexit(this)
-    
-    @Override
-    public V get(final K k) {
-        synchronized (this) {
-            return this.aap.get(k);
-        }
+        }).start();
     }
 }

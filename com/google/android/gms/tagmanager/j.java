@@ -6,7 +6,7 @@ package com.google.android.gms.tagmanager;
 
 class j
 {
-    public static byte[] bm(final String s) {
+    public static byte[] cj(final String s) {
         final int length = s.length();
         if (length % 2 != 0) {
             throw new IllegalArgumentException("purported base16 string has odd number of characters");

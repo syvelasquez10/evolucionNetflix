@@ -5,15 +5,15 @@
 package com.google.android.gms.maps.model;
 
 import android.os.RemoteException;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.maps.model.internal.c;
 
 public final class GroundOverlay
 {
-    private final c SP;
+    private final c ajC;
     
     public GroundOverlay(final c c) {
-        this.SP = fq.f(c);
+        this.ajC = n.i(c);
     }
     
     @Override
@@ -22,7 +22,7 @@ public final class GroundOverlay
             return false;
         }
         try {
-            return this.SP.a(((GroundOverlay)o).SP);
+            return this.ajC.a(((GroundOverlay)o).ajC);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -31,7 +31,7 @@ public final class GroundOverlay
     
     public float getBearing() {
         try {
-            return this.SP.getBearing();
+            return this.ajC.getBearing();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -40,7 +40,7 @@ public final class GroundOverlay
     
     public LatLngBounds getBounds() {
         try {
-            return this.SP.getBounds();
+            return this.ajC.getBounds();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -49,7 +49,7 @@ public final class GroundOverlay
     
     public float getHeight() {
         try {
-            return this.SP.getHeight();
+            return this.ajC.getHeight();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -58,7 +58,7 @@ public final class GroundOverlay
     
     public String getId() {
         try {
-            return this.SP.getId();
+            return this.ajC.getId();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -67,7 +67,7 @@ public final class GroundOverlay
     
     public LatLng getPosition() {
         try {
-            return this.SP.getPosition();
+            return this.ajC.getPosition();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -76,7 +76,7 @@ public final class GroundOverlay
     
     public float getTransparency() {
         try {
-            return this.SP.getTransparency();
+            return this.ajC.getTransparency();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -85,7 +85,7 @@ public final class GroundOverlay
     
     public float getWidth() {
         try {
-            return this.SP.getWidth();
+            return this.ajC.getWidth();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -94,7 +94,7 @@ public final class GroundOverlay
     
     public float getZIndex() {
         try {
-            return this.SP.getZIndex();
+            return this.ajC.getZIndex();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -104,7 +104,7 @@ public final class GroundOverlay
     @Override
     public int hashCode() {
         try {
-            return this.SP.hashCodeRemote();
+            return this.ajC.hashCodeRemote();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -113,7 +113,7 @@ public final class GroundOverlay
     
     public boolean isVisible() {
         try {
-            return this.SP.isVisible();
+            return this.ajC.isVisible();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -122,7 +122,7 @@ public final class GroundOverlay
     
     public void remove() {
         try {
-            this.SP.remove();
+            this.ajC.remove();
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -131,7 +131,7 @@ public final class GroundOverlay
     
     public void setBearing(final float bearing) {
         try {
-            this.SP.setBearing(bearing);
+            this.ajC.setBearing(bearing);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -140,7 +140,7 @@ public final class GroundOverlay
     
     public void setDimensions(final float dimensions) {
         try {
-            this.SP.setDimensions(dimensions);
+            this.ajC.setDimensions(dimensions);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -149,7 +149,7 @@ public final class GroundOverlay
     
     public void setDimensions(final float n, final float n2) {
         try {
-            this.SP.a(n, n2);
+            this.ajC.a(n, n2);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -158,7 +158,7 @@ public final class GroundOverlay
     
     public void setImage(final BitmapDescriptor bitmapDescriptor) {
         try {
-            this.SP.k(bitmapDescriptor.id());
+            this.ajC.m(bitmapDescriptor.mm());
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -167,7 +167,7 @@ public final class GroundOverlay
     
     public void setPosition(final LatLng position) {
         try {
-            this.SP.setPosition(position);
+            this.ajC.setPosition(position);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -176,7 +176,7 @@ public final class GroundOverlay
     
     public void setPositionFromBounds(final LatLngBounds positionFromBounds) {
         try {
-            this.SP.setPositionFromBounds(positionFromBounds);
+            this.ajC.setPositionFromBounds(positionFromBounds);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -185,7 +185,7 @@ public final class GroundOverlay
     
     public void setTransparency(final float transparency) {
         try {
-            this.SP.setTransparency(transparency);
+            this.ajC.setTransparency(transparency);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -194,7 +194,7 @@ public final class GroundOverlay
     
     public void setVisible(final boolean visible) {
         try {
-            this.SP.setVisible(visible);
+            this.ajC.setVisible(visible);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);
@@ -203,7 +203,7 @@ public final class GroundOverlay
     
     public void setZIndex(final float zIndex) {
         try {
-            this.SP.setZIndex(zIndex);
+            this.ajC.setZIndex(zIndex);
         }
         catch (RemoteException ex) {
             throw new RuntimeRemoteException(ex);

@@ -5,7 +5,7 @@
 package com.google.android.gms.plus.model.moments;
 
 import java.util.HashSet;
-import com.google.android.gms.internal.ic;
+import com.google.android.gms.internal.nt;
 import java.util.Set;
 import java.util.List;
 import com.google.android.gms.common.data.Freezable;
@@ -230,391 +230,391 @@ public interface ItemScope extends Freezable<ItemScope>
     
     public static class Builder
     {
-        private String HD;
-        private double NX;
-        private double NY;
-        private String Rd;
-        private final Set<Integer> UJ;
-        private ic UK;
-        private List<String> UL;
-        private ic UM;
-        private String UN;
-        private String UO;
-        private String UP;
-        private List<ic> UQ;
-        private int UR;
-        private List<ic> US;
-        private ic UT;
-        private List<ic> UU;
-        private String UV;
-        private String UW;
-        private ic UX;
-        private String UY;
-        private String UZ;
-        private String VA;
-        private String VB;
-        private String VC;
-        private String VD;
-        private List<ic> Va;
-        private String Vb;
-        private String Vc;
-        private String Vd;
-        private String Ve;
-        private String Vf;
-        private String Vg;
-        private String Vh;
-        private String Vi;
-        private ic Vj;
-        private String Vk;
-        private String Vl;
-        private String Vm;
-        private ic Vn;
-        private ic Vo;
-        private ic Vp;
-        private List<ic> Vq;
-        private String Vr;
-        private String Vs;
-        private String Vt;
-        private String Vu;
-        private ic Vv;
-        private String Vw;
-        private String Vx;
-        private String Vy;
-        private ic Vz;
-        private String lY;
+        private String BL;
+        private String Tg;
+        private double adZ;
+        private double aea;
+        private final Set<Integer> alR;
+        private nt alS;
+        private List<String> alT;
+        private nt alU;
+        private String alV;
+        private String alW;
+        private String alX;
+        private List<nt> alY;
+        private int alZ;
+        private String amA;
+        private String amB;
+        private String amC;
+        private nt amD;
+        private String amE;
+        private String amF;
+        private String amG;
+        private nt amH;
+        private String amI;
+        private String amJ;
+        private String amK;
+        private String amL;
+        private List<nt> ama;
+        private nt amb;
+        private List<nt> amc;
+        private String amd;
+        private String ame;
+        private nt amf;
+        private String amg;
+        private String amh;
+        private List<nt> ami;
+        private String amj;
+        private String amk;
+        private String aml;
+        private String amm;
+        private String amn;
+        private String amo;
+        private String amp;
+        private String amq;
+        private nt amr;
+        private String ams;
+        private String amt;
+        private String amu;
+        private nt amv;
+        private nt amw;
+        private nt amx;
+        private List<nt> amy;
+        private String amz;
         private String mName;
-        private String ro;
-        private String wp;
+        private String ol;
+        private String uO;
+        private String uR;
         
         public Builder() {
-            this.UJ = new HashSet<Integer>();
+            this.alR = new HashSet<Integer>();
         }
         
         public ItemScope build() {
-            return new ic(this.UJ, this.UK, this.UL, this.UM, this.UN, this.UO, this.UP, this.UQ, this.UR, this.US, this.UT, this.UU, this.UV, this.UW, this.UX, this.UY, this.UZ, this.lY, this.Va, this.Vb, this.Vc, this.Vd, this.HD, this.Ve, this.Vf, this.Vg, this.Vh, this.Vi, this.Vj, this.Vk, this.Vl, this.wp, this.Vm, this.Vn, this.NX, this.Vo, this.NY, this.mName, this.Vp, this.Vq, this.Vr, this.Vs, this.Vt, this.Vu, this.Vv, this.Vw, this.Vx, this.Vy, this.Vz, this.VA, this.VB, this.Rd, this.ro, this.VC, this.VD);
+            return new nt(this.alR, this.alS, this.alT, this.alU, this.alV, this.alW, this.alX, this.alY, this.alZ, this.ama, this.amb, this.amc, this.amd, this.ame, this.amf, this.amg, this.amh, this.ol, this.ami, this.amj, this.amk, this.aml, this.Tg, this.amm, this.amn, this.amo, this.amp, this.amq, this.amr, this.ams, this.amt, this.BL, this.amu, this.amv, this.adZ, this.amw, this.aea, this.mName, this.amx, this.amy, this.amz, this.amA, this.amB, this.amC, this.amD, this.amE, this.amF, this.amG, this.amH, this.amI, this.amJ, this.uO, this.uR, this.amK, this.amL);
         }
         
         public Builder setAbout(final ItemScope itemScope) {
-            this.UK = (ic)itemScope;
-            this.UJ.add(2);
+            this.alS = (nt)itemScope;
+            this.alR.add(2);
             return this;
         }
         
-        public Builder setAdditionalName(final List<String> ul) {
-            this.UL = ul;
-            this.UJ.add(3);
+        public Builder setAdditionalName(final List<String> alT) {
+            this.alT = alT;
+            this.alR.add(3);
             return this;
         }
         
         public Builder setAddress(final ItemScope itemScope) {
-            this.UM = (ic)itemScope;
-            this.UJ.add(4);
+            this.alU = (nt)itemScope;
+            this.alR.add(4);
             return this;
         }
         
-        public Builder setAddressCountry(final String un) {
-            this.UN = un;
-            this.UJ.add(5);
+        public Builder setAddressCountry(final String alV) {
+            this.alV = alV;
+            this.alR.add(5);
             return this;
         }
         
-        public Builder setAddressLocality(final String uo) {
-            this.UO = uo;
-            this.UJ.add(6);
+        public Builder setAddressLocality(final String alW) {
+            this.alW = alW;
+            this.alR.add(6);
             return this;
         }
         
-        public Builder setAddressRegion(final String up) {
-            this.UP = up;
-            this.UJ.add(7);
+        public Builder setAddressRegion(final String alX) {
+            this.alX = alX;
+            this.alR.add(7);
             return this;
         }
         
-        public Builder setAssociated_media(final List<ItemScope> uq) {
-            this.UQ = (List<ic>)uq;
-            this.UJ.add(8);
+        public Builder setAssociated_media(final List<ItemScope> alY) {
+            this.alY = (List<nt>)alY;
+            this.alR.add(8);
             return this;
         }
         
-        public Builder setAttendeeCount(final int ur) {
-            this.UR = ur;
-            this.UJ.add(9);
+        public Builder setAttendeeCount(final int alZ) {
+            this.alZ = alZ;
+            this.alR.add(9);
             return this;
         }
         
-        public Builder setAttendees(final List<ItemScope> us) {
-            this.US = (List<ic>)us;
-            this.UJ.add(10);
+        public Builder setAttendees(final List<ItemScope> ama) {
+            this.ama = (List<nt>)ama;
+            this.alR.add(10);
             return this;
         }
         
         public Builder setAudio(final ItemScope itemScope) {
-            this.UT = (ic)itemScope;
-            this.UJ.add(11);
+            this.amb = (nt)itemScope;
+            this.alR.add(11);
             return this;
         }
         
-        public Builder setAuthor(final List<ItemScope> uu) {
-            this.UU = (List<ic>)uu;
-            this.UJ.add(12);
+        public Builder setAuthor(final List<ItemScope> amc) {
+            this.amc = (List<nt>)amc;
+            this.alR.add(12);
             return this;
         }
         
-        public Builder setBestRating(final String uv) {
-            this.UV = uv;
-            this.UJ.add(13);
+        public Builder setBestRating(final String amd) {
+            this.amd = amd;
+            this.alR.add(13);
             return this;
         }
         
-        public Builder setBirthDate(final String uw) {
-            this.UW = uw;
-            this.UJ.add(14);
+        public Builder setBirthDate(final String ame) {
+            this.ame = ame;
+            this.alR.add(14);
             return this;
         }
         
         public Builder setByArtist(final ItemScope itemScope) {
-            this.UX = (ic)itemScope;
-            this.UJ.add(15);
+            this.amf = (nt)itemScope;
+            this.alR.add(15);
             return this;
         }
         
-        public Builder setCaption(final String uy) {
-            this.UY = uy;
-            this.UJ.add(16);
+        public Builder setCaption(final String amg) {
+            this.amg = amg;
+            this.alR.add(16);
             return this;
         }
         
-        public Builder setContentSize(final String uz) {
-            this.UZ = uz;
-            this.UJ.add(17);
+        public Builder setContentSize(final String amh) {
+            this.amh = amh;
+            this.alR.add(17);
             return this;
         }
         
-        public Builder setContentUrl(final String ly) {
-            this.lY = ly;
-            this.UJ.add(18);
+        public Builder setContentUrl(final String ol) {
+            this.ol = ol;
+            this.alR.add(18);
             return this;
         }
         
-        public Builder setContributor(final List<ItemScope> va) {
-            this.Va = (List<ic>)va;
-            this.UJ.add(19);
+        public Builder setContributor(final List<ItemScope> ami) {
+            this.ami = (List<nt>)ami;
+            this.alR.add(19);
             return this;
         }
         
-        public Builder setDateCreated(final String vb) {
-            this.Vb = vb;
-            this.UJ.add(20);
+        public Builder setDateCreated(final String amj) {
+            this.amj = amj;
+            this.alR.add(20);
             return this;
         }
         
-        public Builder setDateModified(final String vc) {
-            this.Vc = vc;
-            this.UJ.add(21);
+        public Builder setDateModified(final String amk) {
+            this.amk = amk;
+            this.alR.add(21);
             return this;
         }
         
-        public Builder setDatePublished(final String vd) {
-            this.Vd = vd;
-            this.UJ.add(22);
+        public Builder setDatePublished(final String aml) {
+            this.aml = aml;
+            this.alR.add(22);
             return this;
         }
         
-        public Builder setDescription(final String hd) {
-            this.HD = hd;
-            this.UJ.add(23);
+        public Builder setDescription(final String tg) {
+            this.Tg = tg;
+            this.alR.add(23);
             return this;
         }
         
-        public Builder setDuration(final String ve) {
-            this.Ve = ve;
-            this.UJ.add(24);
+        public Builder setDuration(final String amm) {
+            this.amm = amm;
+            this.alR.add(24);
             return this;
         }
         
-        public Builder setEmbedUrl(final String vf) {
-            this.Vf = vf;
-            this.UJ.add(25);
+        public Builder setEmbedUrl(final String amn) {
+            this.amn = amn;
+            this.alR.add(25);
             return this;
         }
         
-        public Builder setEndDate(final String vg) {
-            this.Vg = vg;
-            this.UJ.add(26);
+        public Builder setEndDate(final String amo) {
+            this.amo = amo;
+            this.alR.add(26);
             return this;
         }
         
-        public Builder setFamilyName(final String vh) {
-            this.Vh = vh;
-            this.UJ.add(27);
+        public Builder setFamilyName(final String amp) {
+            this.amp = amp;
+            this.alR.add(27);
             return this;
         }
         
-        public Builder setGender(final String vi) {
-            this.Vi = vi;
-            this.UJ.add(28);
+        public Builder setGender(final String amq) {
+            this.amq = amq;
+            this.alR.add(28);
             return this;
         }
         
         public Builder setGeo(final ItemScope itemScope) {
-            this.Vj = (ic)itemScope;
-            this.UJ.add(29);
+            this.amr = (nt)itemScope;
+            this.alR.add(29);
             return this;
         }
         
-        public Builder setGivenName(final String vk) {
-            this.Vk = vk;
-            this.UJ.add(30);
+        public Builder setGivenName(final String ams) {
+            this.ams = ams;
+            this.alR.add(30);
             return this;
         }
         
-        public Builder setHeight(final String vl) {
-            this.Vl = vl;
-            this.UJ.add(31);
+        public Builder setHeight(final String amt) {
+            this.amt = amt;
+            this.alR.add(31);
             return this;
         }
         
-        public Builder setId(final String wp) {
-            this.wp = wp;
-            this.UJ.add(32);
+        public Builder setId(final String bl) {
+            this.BL = bl;
+            this.alR.add(32);
             return this;
         }
         
-        public Builder setImage(final String vm) {
-            this.Vm = vm;
-            this.UJ.add(33);
+        public Builder setImage(final String amu) {
+            this.amu = amu;
+            this.alR.add(33);
             return this;
         }
         
         public Builder setInAlbum(final ItemScope itemScope) {
-            this.Vn = (ic)itemScope;
-            this.UJ.add(34);
+            this.amv = (nt)itemScope;
+            this.alR.add(34);
             return this;
         }
         
-        public Builder setLatitude(final double nx) {
-            this.NX = nx;
-            this.UJ.add(36);
+        public Builder setLatitude(final double adZ) {
+            this.adZ = adZ;
+            this.alR.add(36);
             return this;
         }
         
         public Builder setLocation(final ItemScope itemScope) {
-            this.Vo = (ic)itemScope;
-            this.UJ.add(37);
+            this.amw = (nt)itemScope;
+            this.alR.add(37);
             return this;
         }
         
-        public Builder setLongitude(final double ny) {
-            this.NY = ny;
-            this.UJ.add(38);
+        public Builder setLongitude(final double aea) {
+            this.aea = aea;
+            this.alR.add(38);
             return this;
         }
         
         public Builder setName(final String mName) {
             this.mName = mName;
-            this.UJ.add(39);
+            this.alR.add(39);
             return this;
         }
         
         public Builder setPartOfTVSeries(final ItemScope itemScope) {
-            this.Vp = (ic)itemScope;
-            this.UJ.add(40);
+            this.amx = (nt)itemScope;
+            this.alR.add(40);
             return this;
         }
         
-        public Builder setPerformers(final List<ItemScope> vq) {
-            this.Vq = (List<ic>)vq;
-            this.UJ.add(41);
+        public Builder setPerformers(final List<ItemScope> amy) {
+            this.amy = (List<nt>)amy;
+            this.alR.add(41);
             return this;
         }
         
-        public Builder setPlayerType(final String vr) {
-            this.Vr = vr;
-            this.UJ.add(42);
+        public Builder setPlayerType(final String amz) {
+            this.amz = amz;
+            this.alR.add(42);
             return this;
         }
         
-        public Builder setPostOfficeBoxNumber(final String vs) {
-            this.Vs = vs;
-            this.UJ.add(43);
+        public Builder setPostOfficeBoxNumber(final String amA) {
+            this.amA = amA;
+            this.alR.add(43);
             return this;
         }
         
-        public Builder setPostalCode(final String vt) {
-            this.Vt = vt;
-            this.UJ.add(44);
+        public Builder setPostalCode(final String amB) {
+            this.amB = amB;
+            this.alR.add(44);
             return this;
         }
         
-        public Builder setRatingValue(final String vu) {
-            this.Vu = vu;
-            this.UJ.add(45);
+        public Builder setRatingValue(final String amC) {
+            this.amC = amC;
+            this.alR.add(45);
             return this;
         }
         
         public Builder setReviewRating(final ItemScope itemScope) {
-            this.Vv = (ic)itemScope;
-            this.UJ.add(46);
+            this.amD = (nt)itemScope;
+            this.alR.add(46);
             return this;
         }
         
-        public Builder setStartDate(final String vw) {
-            this.Vw = vw;
-            this.UJ.add(47);
+        public Builder setStartDate(final String amE) {
+            this.amE = amE;
+            this.alR.add(47);
             return this;
         }
         
-        public Builder setStreetAddress(final String vx) {
-            this.Vx = vx;
-            this.UJ.add(48);
+        public Builder setStreetAddress(final String amF) {
+            this.amF = amF;
+            this.alR.add(48);
             return this;
         }
         
-        public Builder setText(final String vy) {
-            this.Vy = vy;
-            this.UJ.add(49);
+        public Builder setText(final String amG) {
+            this.amG = amG;
+            this.alR.add(49);
             return this;
         }
         
         public Builder setThumbnail(final ItemScope itemScope) {
-            this.Vz = (ic)itemScope;
-            this.UJ.add(50);
+            this.amH = (nt)itemScope;
+            this.alR.add(50);
             return this;
         }
         
-        public Builder setThumbnailUrl(final String va) {
-            this.VA = va;
-            this.UJ.add(51);
+        public Builder setThumbnailUrl(final String amI) {
+            this.amI = amI;
+            this.alR.add(51);
             return this;
         }
         
-        public Builder setTickerSymbol(final String vb) {
-            this.VB = vb;
-            this.UJ.add(52);
+        public Builder setTickerSymbol(final String amJ) {
+            this.amJ = amJ;
+            this.alR.add(52);
             return this;
         }
         
-        public Builder setType(final String rd) {
-            this.Rd = rd;
-            this.UJ.add(53);
+        public Builder setType(final String uo) {
+            this.uO = uo;
+            this.alR.add(53);
             return this;
         }
         
-        public Builder setUrl(final String ro) {
-            this.ro = ro;
-            this.UJ.add(54);
+        public Builder setUrl(final String ur) {
+            this.uR = ur;
+            this.alR.add(54);
             return this;
         }
         
-        public Builder setWidth(final String vc) {
-            this.VC = vc;
-            this.UJ.add(55);
+        public Builder setWidth(final String amK) {
+            this.amK = amK;
+            this.alR.add(55);
             return this;
         }
         
-        public Builder setWorstRating(final String vd) {
-            this.VD = vd;
-            this.UJ.add(56);
+        public Builder setWorstRating(final String amL) {
+            this.amL = amL;
+            this.alR.add(56);
             return this;
         }
     }

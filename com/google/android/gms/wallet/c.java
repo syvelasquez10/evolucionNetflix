@@ -11,41 +11,41 @@ import android.os.Parcelable$Creator;
 
 public class c implements Parcelable$Creator<CountrySpecification>
 {
-    static void a(final CountrySpecification countrySpecification, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
+    static void a(final CountrySpecification countrySpecification, final Parcel parcel, int d) {
+        d = b.D(parcel);
         b.c(parcel, 1, countrySpecification.getVersionCode());
-        b.a(parcel, 2, countrySpecification.qd, false);
-        b.F(parcel, p3);
+        b.a(parcel, 2, countrySpecification.uW, false);
+        b.H(parcel, d);
     }
     
-    public CountrySpecification aZ(final Parcel parcel) {
-        final int o = a.o(parcel);
+    public CountrySpecification dp(final Parcel parcel) {
+        final int c = a.C(parcel);
         int g = 0;
-        String n = null;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
+        String o = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n2);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = a.g(parcel, n2);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n = a.n(parcel, n2);
+                    o = a.o(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new CountrySpecification(g, n);
+        return new CountrySpecification(g, o);
     }
     
-    public CountrySpecification[] cl(final int n) {
+    public CountrySpecification[] fp(final int n) {
         return new CountrySpecification[n];
     }
 }

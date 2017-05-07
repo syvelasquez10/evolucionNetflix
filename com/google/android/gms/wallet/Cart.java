@@ -14,25 +14,25 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class Cart implements SafeParcelable
 {
     public static final Parcelable$Creator<Cart> CREATOR;
-    String abc;
-    String abd;
-    ArrayList<LineItem> abe;
-    private final int xH;
+    private final int BR;
+    String ask;
+    String asl;
+    ArrayList<LineItem> asm;
     
     static {
         CREATOR = (Parcelable$Creator)new b();
     }
     
     Cart() {
-        this.xH = 1;
-        this.abe = new ArrayList<LineItem>();
+        this.BR = 1;
+        this.asm = new ArrayList<LineItem>();
     }
     
-    Cart(final int xh, final String abc, final String abd, final ArrayList<LineItem> abe) {
-        this.xH = xh;
-        this.abc = abc;
-        this.abd = abd;
-        this.abe = abe;
+    Cart(final int br, final String ask, final String asl, final ArrayList<LineItem> asm) {
+        this.BR = br;
+        this.ask = ask;
+        this.asl = asl;
+        this.asm = asm;
     }
     
     public static Builder newBuilder() {
@@ -46,19 +46,19 @@ public final class Cart implements SafeParcelable
     }
     
     public String getCurrencyCode() {
-        return this.abd;
+        return this.asl;
     }
     
     public ArrayList<LineItem> getLineItems() {
-        return this.abe;
+        return this.asm;
     }
     
     public String getTotalPrice() {
-        return this.abc;
+        return this.ask;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -68,7 +68,7 @@ public final class Cart implements SafeParcelable
     public final class Builder
     {
         public Builder addLineItem(final LineItem lineItem) {
-            Cart.this.abe.add(lineItem);
+            Cart.this.asm.add(lineItem);
             return this;
         }
         
@@ -76,19 +76,19 @@ public final class Cart implements SafeParcelable
             return Cart.this;
         }
         
-        public Builder setCurrencyCode(final String abd) {
-            Cart.this.abd = abd;
+        public Builder setCurrencyCode(final String asl) {
+            Cart.this.asl = asl;
             return this;
         }
         
         public Builder setLineItems(final List<LineItem> list) {
-            Cart.this.abe.clear();
-            Cart.this.abe.addAll(list);
+            Cart.this.asm.clear();
+            Cart.this.asm.addAll(list);
             return this;
         }
         
-        public Builder setTotalPrice(final String abc) {
-            Cart.this.abc = abc;
+        public Builder setTotalPrice(final String ask) {
+            Cart.this.ask = ask;
             return this;
         }
     }

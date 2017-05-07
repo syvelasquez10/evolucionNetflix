@@ -4,100 +4,148 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import java.util.Collections;
-import java.util.List;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import com.google.ads.mediation.MediationBannerListener;
+import com.google.ads.mediation.MediationBannerAdapter;
+import com.google.ads.mediation.MediationInterstitialListener;
+import com.google.android.gms.dynamic.e;
+import android.app.Activity;
+import com.google.ads.mediation.MediationInterstitialAdapter;
+import com.google.android.gms.dynamic.d;
+import java.util.Iterator;
+import java.util.Map;
+import android.os.RemoteException;
+import java.util.HashMap;
+import org.json.JSONObject;
+import com.google.ads.mediation.MediationAdapter;
+import com.google.ads.mediation.MediationServerParameters;
+import com.google.ads.mediation.NetworkExtras;
 
-public final class cz implements SafeParcelable
+@ez
+public final class cz<NETWORK_EXTRAS extends NetworkExtras, SERVER_PARAMETERS extends MediationServerParameters> extends cu.a
 {
-    public static final da CREATOR;
-    public final int errorCode;
-    public final List<String> ne;
-    public final List<String> nf;
-    public final long ni;
-    public final String ol;
-    public final int orientation;
-    public final String pm;
-    public final long pn;
-    public final boolean po;
-    public final long pp;
-    public final List<String> pq;
-    public final String pr;
-    public final long ps;
-    public final String pt;
-    public final boolean pu;
-    public final String pv;
-    public final String pw;
-    public final int versionCode;
+    private final MediationAdapter<NETWORK_EXTRAS, SERVER_PARAMETERS> qG;
+    private final NETWORK_EXTRAS qH;
     
-    static {
-        CREATOR = new da();
+    public cz(final MediationAdapter<NETWORK_EXTRAS, SERVER_PARAMETERS> qg, final NETWORK_EXTRAS qh) {
+        this.qG = qg;
+        this.qH = qh;
     }
     
-    public cz(final int n) {
-        this(7, null, null, null, n, null, -1L, false, -1L, null, -1L, -1, null, -1L, null, false, null, null);
-    }
-    
-    public cz(final int n, final long n2) {
-        this(7, null, null, null, n, null, -1L, false, -1L, null, n2, -1, null, -1L, null, false, null, null);
-    }
-    
-    cz(final int versionCode, final String ol, final String pm, final List<String> list, final int errorCode, final List<String> list2, final long pn, final boolean po, final long pp, final List<String> list3, final long ni, final int orientation, final String pr, final long ps, final String pt, final boolean pu, final String pv, final String pw) {
-        this.versionCode = versionCode;
-        this.ol = ol;
-        this.pm = pm;
-        List<String> unmodifiableList;
-        if (list != null) {
-            unmodifiableList = Collections.unmodifiableList((List<? extends String>)list);
+    private SERVER_PARAMETERS b(String s, final int n, final String s2) throws RemoteException {
+        HashMap<String, String> hashMap2 = null;
+        Label_0098: {
+            if (s != null) {
+                try {
+                    final JSONObject jsonObject = new JSONObject(s);
+                    final HashMap hashMap = new HashMap<String, String>(jsonObject.length());
+                    final Iterator keys = jsonObject.keys();
+                    while (true) {
+                        hashMap2 = (HashMap<String, String>)hashMap;
+                        if (!keys.hasNext()) {
+                            break Label_0098;
+                        }
+                        s = keys.next();
+                        hashMap.put(s, jsonObject.getString(s));
+                    }
+                }
+                catch (Throwable t) {
+                    gs.d("Could not get MediationServerParameters.", t);
+                    throw new RemoteException();
+                }
+            }
+            hashMap2 = new HashMap<String, String>(0);
         }
-        else {
-            unmodifiableList = null;
+        final Class<SERVER_PARAMETERS> serverParametersType = this.qG.getServerParametersType();
+        MediationServerParameters mediationServerParameters = null;
+        if (serverParametersType != null) {
+            mediationServerParameters = serverParametersType.newInstance();
+            mediationServerParameters.load(hashMap2);
         }
-        this.ne = unmodifiableList;
-        this.errorCode = errorCode;
-        List<String> unmodifiableList2;
-        if (list2 != null) {
-            unmodifiableList2 = Collections.unmodifiableList((List<? extends String>)list2);
-        }
-        else {
-            unmodifiableList2 = null;
-        }
-        this.nf = unmodifiableList2;
-        this.pn = pn;
-        this.po = po;
-        this.pp = pp;
-        List<String> unmodifiableList3;
-        if (list3 != null) {
-            unmodifiableList3 = Collections.unmodifiableList((List<? extends String>)list3);
-        }
-        else {
-            unmodifiableList3 = null;
-        }
-        this.pq = unmodifiableList3;
-        this.ni = ni;
-        this.orientation = orientation;
-        this.pr = pr;
-        this.ps = ps;
-        this.pt = pt;
-        this.pu = pu;
-        this.pv = pv;
-        this.pw = pw;
+        return (SERVER_PARAMETERS)mediationServerParameters;
     }
     
-    public cz(final String s, final String s2, final List<String> list, final List<String> list2, final long n, final boolean b, final long n2, final List<String> list3, final long n3, final int n4, final String s3, final long n5, final String s4, final String s5) {
-        this(7, s, s2, list, -2, list2, n, b, n2, list3, n3, n4, s3, n5, s4, false, null, s5);
+    public void a(final d d, final av av, final String s, final cv cv) throws RemoteException {
+        this.a(d, av, s, null, cv);
     }
     
-    public cz(final String s, final String s2, final List<String> list, final List<String> list2, final long n, final boolean b, final long n2, final List<String> list3, final long n3, final int n4, final String s3, final long n5, final String s4, final boolean b2, final String s5, final String s6) {
-        this(7, s, s2, list, -2, list2, n, b, n2, list3, n3, n4, s3, n5, s4, b2, s5, s6);
+    public void a(final d d, final av av, final String s, final String s2, final cv cv) throws RemoteException {
+        if (!(this.qG instanceof MediationInterstitialAdapter)) {
+            gs.W("MediationAdapter is not a MediationInterstitialAdapter: " + this.qG.getClass().getCanonicalName());
+            throw new RemoteException();
+        }
+        gs.S("Requesting interstitial ad from adapter.");
+        try {
+            ((MediationInterstitialAdapter)this.qG).requestInterstitialAd(new da<Object, Object>(cv), e.f(d), this.b(s, av.nX, s2), db.d(av), this.qH);
+        }
+        catch (Throwable t) {
+            gs.d("Could not request interstitial ad from adapter.", t);
+            throw new RemoteException();
+        }
     }
     
-    public int describeContents() {
-        return 0;
+    public void a(final d d, final ay ay, final av av, final String s, final cv cv) throws RemoteException {
+        this.a(d, ay, av, s, null, cv);
     }
     
-    public void writeToParcel(final Parcel parcel, final int n) {
-        da.a(this, parcel, n);
+    public void a(final d d, final ay ay, final av av, final String s, final String s2, final cv cv) throws RemoteException {
+        if (!(this.qG instanceof MediationBannerAdapter)) {
+            gs.W("MediationAdapter is not a MediationBannerAdapter: " + this.qG.getClass().getCanonicalName());
+            throw new RemoteException();
+        }
+        gs.S("Requesting banner ad from adapter.");
+        try {
+            ((MediationBannerAdapter)this.qG).requestBannerAd(new da<Object, Object>(cv), e.f(d), this.b(s, av.nX, s2), db.b(ay), db.d(av), this.qH);
+        }
+        catch (Throwable t) {
+            gs.d("Could not request banner ad from adapter.", t);
+            throw new RemoteException();
+        }
+    }
+    
+    public void destroy() throws RemoteException {
+        try {
+            this.qG.destroy();
+        }
+        catch (Throwable t) {
+            gs.d("Could not destroy adapter.", t);
+            throw new RemoteException();
+        }
+    }
+    
+    public d getView() throws RemoteException {
+        if (!(this.qG instanceof MediationBannerAdapter)) {
+            gs.W("MediationAdapter is not a MediationBannerAdapter: " + this.qG.getClass().getCanonicalName());
+            throw new RemoteException();
+        }
+        try {
+            return e.k(((MediationBannerAdapter)this.qG).getBannerView());
+        }
+        catch (Throwable t) {
+            gs.d("Could not get banner view from adapter.", t);
+            throw new RemoteException();
+        }
+    }
+    
+    public void pause() throws RemoteException {
+        throw new RemoteException();
+    }
+    
+    public void resume() throws RemoteException {
+        throw new RemoteException();
+    }
+    
+    public void showInterstitial() throws RemoteException {
+        if (!(this.qG instanceof MediationInterstitialAdapter)) {
+            gs.W("MediationAdapter is not a MediationInterstitialAdapter: " + this.qG.getClass().getCanonicalName());
+            throw new RemoteException();
+        }
+        gs.S("Showing interstitial from adapter.");
+        try {
+            ((MediationInterstitialAdapter)this.qG).showInterstitial();
+        }
+        catch (Throwable t) {
+            gs.d("Could not show interstitial from adapter.", t);
+            throw new RemoteException();
+        }
     }
 }

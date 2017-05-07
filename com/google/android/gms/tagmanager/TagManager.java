@@ -7,6 +7,10 @@ package com.google.android.gms.tagmanager;
 import android.os.Handler;
 import com.google.android.gms.common.api.PendingResult;
 import android.net.Uri;
+import android.content.ComponentCallbacks;
+import android.content.res.Configuration;
+import android.content.ComponentCallbacks2;
+import android.os.Build$VERSION;
 import android.os.Looper;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,87 +20,116 @@ import java.util.concurrent.ConcurrentMap;
 
 public class TagManager
 {
-    private static TagManager aay;
-    private final DataLayer WK;
-    private final r Zg;
-    private final a aaw;
-    private final ConcurrentMap<n, Boolean> aax;
+    private static TagManager arC;
+    private final DataLayer anS;
+    private final r aqj;
+    private final cx arA;
+    private final ConcurrentMap<n, Boolean> arB;
+    private final a arz;
     private final Context mContext;
     
-    TagManager(final Context context, final a aaw, final DataLayer wk) {
+    TagManager(final Context context, final a arz, final DataLayer anS, final cx arA) {
         if (context == null) {
             throw new NullPointerException("context cannot be null");
         }
         this.mContext = context.getApplicationContext();
-        this.aaw = aaw;
-        this.aax = new ConcurrentHashMap<n, Boolean>();
-        (this.WK = wk).a((DataLayer.b)new DataLayer.b() {
+        this.arA = arA;
+        this.arz = arz;
+        this.arB = new ConcurrentHashMap<n, Boolean>();
+        (this.anS = anS).a((DataLayer.b)new DataLayer.b() {
             @Override
-            public void y(final Map<String, Object> map) {
+            public void D(final Map<String, Object> map) {
                 final Object value = map.get("event");
                 if (value != null) {
-                    TagManager.this.bT(value.toString());
+                    TagManager.this.cQ(value.toString());
                 }
             }
         });
-        this.WK.a((DataLayer.b)new d(this.mContext));
-        this.Zg = new r();
+        this.anS.a((DataLayer.b)new d(this.mContext));
+        this.aqj = new r();
+        this.pw();
     }
     
-    private void bT(final String s) {
-        final Iterator<n> iterator = this.aax.keySet().iterator();
+    private void cQ(final String s) {
+        final Iterator<n> iterator = this.arB.keySet().iterator();
         while (iterator.hasNext()) {
-            iterator.next().bp(s);
+            iterator.next().cm(s);
         }
     }
     
     public static TagManager getInstance(final Context context) {
-        Label_0065: {
+        Label_0068: {
             synchronized (TagManager.class) {
-                if (TagManager.aay != null) {
-                    break Label_0065;
+                if (TagManager.arC != null) {
+                    break Label_0068;
                 }
                 if (context == null) {
-                    bh.w("TagManager.getInstance requires non-null context.");
+                    bh.T("TagManager.getInstance requires non-null context.");
                     throw new NullPointerException();
                 }
             }
             final Context context2;
-            TagManager.aay = new TagManager(context2, (a)new a() {
+            TagManager.arC = new TagManager(context2, (a)new a() {
                 @Override
                 public o a(final Context context, final TagManager tagManager, final Looper looper, final String s, final int n, final r r) {
                     return new o(context, tagManager, looper, s, n, r);
                 }
-            }, new DataLayer((DataLayer.c)new v(context2)));
+            }, new DataLayer((DataLayer.c)new v(context2)), cy.pu());
         }
         // monitorexit(TagManager.class)
-        return TagManager.aay;
+        return TagManager.arC;
+    }
+    
+    private void pw() {
+        if (Build$VERSION.SDK_INT >= 14) {
+            this.mContext.registerComponentCallbacks((ComponentCallbacks)new ComponentCallbacks2() {
+                public void onConfigurationChanged(final Configuration configuration) {
+                }
+                
+                public void onLowMemory() {
+                }
+                
+                public void onTrimMemory(final int n) {
+                    if (n == 20) {
+                        TagManager.this.dispatch();
+                    }
+                }
+            });
+        }
     }
     
     void a(final n n) {
-        this.aax.put(n, true);
+        this.arB.put(n, true);
     }
     
     boolean b(final n n) {
-        return this.aax.remove(n) != null;
+        return this.arB.remove(n) != null;
     }
     
-    boolean g(final Uri uri) {
+    public void dispatch() {
+        this.arA.dispatch();
+    }
+    
+    public DataLayer getDataLayer() {
+        return this.anS;
+    }
+    
+    boolean i(final Uri uri) {
     Label_0064_Outer:
         while (true) {
             while (true) {
-                final cd kt;
+                final ce oh;
                 final String containerId;
                 Label_0139: {
                     synchronized (this) {
-                        kt = cd.kT();
-                        if (kt.g(uri)) {
-                            containerId = kt.getContainerId();
-                            switch (TagManager$3.aaA[kt.kU().ordinal()]) {
+                        oh = ce.oH();
+                        if (oh.i(uri)) {
+                            containerId = oh.getContainerId();
+                            switch (TagManager$4.arE[oh.oI().ordinal()]) {
                                 case 1: {
-                                    for (final n n : this.aax.keySet()) {
+                                    for (final n n : this.arB.keySet()) {
                                         if (n.getContainerId().equals(containerId)) {
-                                            n.br(null);
+                                            n.co(null);
                                             n.refresh();
                                         }
                                     }
@@ -112,16 +145,16 @@ public class TagManager
                         return false;
                     }
                 }
-                for (final n n2 : this.aax.keySet()) {
+                for (final n n2 : this.arB.keySet()) {
                     if (n2.getContainerId().equals(containerId)) {
-                        n2.br(kt.kV());
+                        n2.co(oh.oJ());
                         n2.refresh();
                     }
                     else {
-                        if (n2.ke() == null) {
+                        if (n2.nS() == null) {
                             continue Label_0064_Outer;
                         }
-                        n2.br(null);
+                        n2.co(null);
                         n2.refresh();
                     }
                 }
@@ -131,43 +164,39 @@ public class TagManager
         }
     }
     
-    public DataLayer getDataLayer() {
-        return this.WK;
-    }
-    
     public PendingResult<ContainerHolder> loadContainerDefaultOnly(final String s, final int n) {
-        final o a = this.aaw.a(this.mContext, this, null, s, n, this.Zg);
-        a.kh();
+        final o a = this.arz.a(this.mContext, this, null, s, n, this.aqj);
+        a.nV();
         return a;
     }
     
     public PendingResult<ContainerHolder> loadContainerDefaultOnly(final String s, final int n, final Handler handler) {
-        final o a = this.aaw.a(this.mContext, this, handler.getLooper(), s, n, this.Zg);
-        a.kh();
+        final o a = this.arz.a(this.mContext, this, handler.getLooper(), s, n, this.aqj);
+        a.nV();
         return a;
     }
     
     public PendingResult<ContainerHolder> loadContainerPreferFresh(final String s, final int n) {
-        final o a = this.aaw.a(this.mContext, this, null, s, n, this.Zg);
-        a.kj();
+        final o a = this.arz.a(this.mContext, this, null, s, n, this.aqj);
+        a.nX();
         return a;
     }
     
     public PendingResult<ContainerHolder> loadContainerPreferFresh(final String s, final int n, final Handler handler) {
-        final o a = this.aaw.a(this.mContext, this, handler.getLooper(), s, n, this.Zg);
-        a.kj();
+        final o a = this.arz.a(this.mContext, this, handler.getLooper(), s, n, this.aqj);
+        a.nX();
         return a;
     }
     
     public PendingResult<ContainerHolder> loadContainerPreferNonDefault(final String s, final int n) {
-        final o a = this.aaw.a(this.mContext, this, null, s, n, this.Zg);
-        a.ki();
+        final o a = this.arz.a(this.mContext, this, null, s, n, this.aqj);
+        a.nW();
         return a;
     }
     
     public PendingResult<ContainerHolder> loadContainerPreferNonDefault(final String s, final int n, final Handler handler) {
-        final o a = this.aaw.a(this.mContext, this, handler.getLooper(), s, n, this.Zg);
-        a.ki();
+        final o a = this.arz.a(this.mContext, this, handler.getLooper(), s, n, this.aqj);
+        a.nW();
         return a;
     }
     

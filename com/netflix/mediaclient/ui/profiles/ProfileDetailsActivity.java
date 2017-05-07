@@ -128,10 +128,10 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         if (!this.mProfileChangeRequestWasSent) {
             int n;
             if (this.mNewProfileCreation) {
-                n = 2131493343;
+                n = 2131493348;
             }
             else {
-                n = 2131493344;
+                n = 2131493349;
             }
             Toast.makeText((Context)this, n, 1).show();
         }
@@ -150,12 +150,12 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         }
         final String string = this.mName.getText().toString();
         if (string.contains("\"") || string.contains("<") || string.contains(">")) {
-            this.mName.setError((CharSequence)this.getString(2131493353));
+            this.mName.setError((CharSequence)this.getString(2131493358));
             return true;
         }
         for (final UserProfile userProfile : this.mServiceManager.getAllProfiles()) {
             if (userProfile.getProfileName().equalsIgnoreCase(string) && !userProfile.getProfileId().equals(this.mInputProfileId)) {
-                this.mName.setError((CharSequence)this.getString(2131493350));
+                this.mName.setError((CharSequence)this.getString(2131493355));
                 return true;
             }
         }
@@ -176,15 +176,15 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     
     private void initUI() {
         this.setContentView(2130903163);
-        this.mContentView = this.findViewById(2131165595);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165594), this.errorCallback);
-        (this.mCancelButton = this.findViewById(2131165603)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+        this.mContentView = this.findViewById(2131165597);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165596), this.errorCallback);
+        (this.mCancelButton = this.findViewById(2131165605)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 ProfileDetailsActivity.this.cancel();
             }
         });
-        this.mDeleteSection = this.findViewById(2131165601);
-        (this.mDeleteButton = this.findViewById(2131165602)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+        this.mDeleteSection = this.findViewById(2131165603);
+        (this.mDeleteButton = this.findViewById(2131165604)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 if (ProfileDetailsActivity.this.mInputProfile == null) {
                     LogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.failed, ProfileDetailsActivity.this.getUiScreen(), StatusCode.INTERNAL_ERROR, ProfileDetailsActivity.this.getProfileForLogging());
@@ -193,7 +193,7 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
                     return;
                 }
                 if (ProfileDetailsActivity.this.mServiceManager.getCurrentProfile() != null && ProfileDetailsActivity.this.mInputProfile.getProfileId().equals(ProfileDetailsActivity.this.mServiceManager.getCurrentProfile().getProfileId())) {
-                    ProfileDetailsActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)ProfileDetailsActivity.this, ProfileDetailsActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, ProfileDetailsActivity.this.getString(2131493349), ProfileDetailsActivity.this.getString(17039370), null)));
+                    ProfileDetailsActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)ProfileDetailsActivity.this, ProfileDetailsActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, ProfileDetailsActivity.this.getString(2131493354), ProfileDetailsActivity.this.getString(17039370), null)));
                     return;
                 }
                 LogUtils.reportEditProfileActionEnded((Context)ProfileDetailsActivity.this, IClientLogging.CompletionReason.canceled, ProfileDetailsActivity.this.getUiScreen(), StatusCode.OK, ProfileDetailsActivity.this.getProfileForLogging());
@@ -202,14 +202,14 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
                 ProfileDetailsActivity.this.showDialog(DeleteProfileAlertDlg.createDeleteProfileDialog(ProfileDetailsActivity.this, ProfileDetailsActivity.this.mInputProfile.getAvatarUrl(), ProfileDetailsActivity.this.mInputProfile.getFirstName()));
             }
         });
-        (this.mKidsSection = this.findViewById(2131165597)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+        (this.mKidsSection = this.findViewById(2131165599)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 ProfileDetailsActivity.this.mKidsCheckBox.setChecked(!ProfileDetailsActivity.this.mKidsCheckBox.isChecked());
             }
         });
-        this.mKidsCheckBox = (CheckBox)this.findViewById(2131165598);
-        this.mSaveButtonText = this.findViewById(2131165605);
-        (this.mSaveButton = this.findViewById(2131165604)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+        this.mKidsCheckBox = (CheckBox)this.findViewById(2131165600);
+        this.mSaveButtonText = this.findViewById(2131165607);
+        (this.mSaveButton = this.findViewById(2131165606)).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 String name = null;
                 Log.d("ProfileDetailsActivity", "Save button was triggered");
@@ -249,7 +249,7 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
                 LogUtils.reportEditProfileActionStarted((Context)ProfileDetailsActivity.this, null, ProfileDetailsActivity.this.getUiScreen());
             }
         });
-        (this.mName = (EditText)this.findViewById(2131165596)).addTextChangedListener((TextWatcher)new TextWatcher() {
+        (this.mName = (EditText)this.findViewById(2131165598)).addTextChangedListener((TextWatcher)new TextWatcher() {
             public void afterTextChanged(final Editable editable) {
                 ProfileDetailsActivity.this.updateSaveButton(true);
             }
@@ -261,7 +261,7 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
             public void onTextChanged(final CharSequence charSequence, final int n, final int n2, final int n3) {
             }
         });
-        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131165296);
+        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131165298);
         final View$OnClickListener view$OnClickListener = (View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 if (!ProfileDetailsActivity.this.isCurrentAvatarDataValid()) {
@@ -276,19 +276,19 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
             }
         };
         this.mProfilePictureView.setOnClickListener((View$OnClickListener)view$OnClickListener);
-        (this.mProfilePictureSection = this.findViewById(2131165599)).setOnClickListener((View$OnClickListener)view$OnClickListener);
-        this.mPictureSelectorHint = this.findViewById(2131165600);
+        (this.mProfilePictureSection = this.findViewById(2131165601)).setOnClickListener((View$OnClickListener)view$OnClickListener);
+        this.mPictureSelectorHint = this.findViewById(2131165602);
         if (this.mNewProfileCreation) {
             this.mName.requestFocus();
         }
-        final TextView textView = (TextView)this.findViewById(2131165606);
+        final TextView textView = (TextView)this.findViewById(2131165608);
         if (textView != null) {
             int text;
             if (this.mNewProfileCreation) {
-                text = 2131493332;
+                text = 2131493337;
             }
             else {
-                text = 2131493333;
+                text = 2131493338;
             }
             textView.setText(text);
         }

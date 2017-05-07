@@ -4,9 +4,15 @@
 
 package com.google.android.gms.internal;
 
-public interface n
+import java.io.IOException;
+
+interface n
 {
-    String a(final byte[] p0, final boolean p1);
+    byte[] A() throws IOException;
     
-    byte[] a(final String p0, final boolean p1) throws IllegalArgumentException;
+    void b(final int p0, final long p1) throws IOException;
+    
+    void b(final int p0, final String p1) throws IOException;
+    
+    void reset();
 }

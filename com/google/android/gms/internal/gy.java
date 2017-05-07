@@ -4,116 +4,63 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.Bundle;
-import com.google.android.gms.identity.intents.UserAddressRequest;
-import android.os.IInterface;
+import java.net.URLConnection;
+import java.io.File;
+import android.webkit.WebView;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import android.webkit.WebResourceResponse;
+import android.content.Context;
 
-public interface gy extends IInterface
+@ez
+public class gy extends gw
 {
-    void a(final gx p0, final UserAddressRequest p1, final Bundle p2) throws RemoteException;
+    public gy(final gv gv, final boolean b) {
+        super(gv, b);
+    }
     
-    public abstract static class a extends Binder implements gy
-    {
-        public static gy T(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.identity.intents.internal.IAddressService");
-            if (queryLocalInterface != null && queryLocalInterface instanceof gy) {
-                return (gy)queryLocalInterface;
-            }
-            return new gy.a.a(binder);
+    protected WebResourceResponse d(final Context context, final String s, String s2) throws IOException {
+        s2 = (String)new URL(s2).openConnection();
+        try {
+            gj.a(context, s, true, (HttpURLConnection)s2, true);
+            ((URLConnection)s2).addRequestProperty("Cache-Control", "max-stale=3600");
+            ((URLConnection)s2).connect();
+            return new WebResourceResponse("application/javascript", "UTF-8", (InputStream)new ByteArrayInputStream(gj.a(new InputStreamReader(((URLConnection)s2).getInputStream())).getBytes("UTF-8")));
         }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
-                }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.identity.intents.internal.IAddressService");
-                    return true;
-                }
-                case 2: {
-                    parcel.enforceInterface("com.google.android.gms.identity.intents.internal.IAddressService");
-                    final gx s = gx.a.S(parcel.readStrongBinder());
-                    UserAddressRequest userAddressRequest;
-                    if (parcel.readInt() != 0) {
-                        userAddressRequest = (UserAddressRequest)UserAddressRequest.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        userAddressRequest = null;
-                    }
-                    Bundle bundle;
-                    if (parcel.readInt() != 0) {
-                        bundle = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                    }
-                    else {
-                        bundle = null;
-                    }
-                    this.a(s, userAddressRequest, bundle);
-                    parcel2.writeNoException();
-                    return true;
-                }
-            }
+        finally {
+            ((HttpURLConnection)s2).disconnect();
         }
-        
-        private static class a implements gy
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
+    }
+    
+    public WebResourceResponse shouldInterceptRequest(final WebView webView, final String s) {
+        try {
+            if (!"mraid.js".equalsIgnoreCase(new File(s).getName())) {
+                return super.shouldInterceptRequest(webView, s);
             }
-            
-            @Override
-            public void a(final gx gx, final UserAddressRequest userAddressRequest, final Bundle bundle) throws RemoteException {
-                while (true) {
-                    final Parcel obtain = Parcel.obtain();
-                    final Parcel obtain2 = Parcel.obtain();
-                    while (true) {
-                        try {
-                            obtain.writeInterfaceToken("com.google.android.gms.identity.intents.internal.IAddressService");
-                            IBinder binder;
-                            if (gx != null) {
-                                binder = gx.asBinder();
-                            }
-                            else {
-                                binder = null;
-                            }
-                            obtain.writeStrongBinder(binder);
-                            if (userAddressRequest != null) {
-                                obtain.writeInt(1);
-                                userAddressRequest.writeToParcel(obtain, 0);
-                            }
-                            else {
-                                obtain.writeInt(0);
-                            }
-                            if (bundle != null) {
-                                obtain.writeInt(1);
-                                bundle.writeToParcel(obtain, 0);
-                                this.kn.transact(2, obtain, obtain2, 0);
-                                obtain2.readException();
-                                return;
-                            }
-                        }
-                        finally {
-                            obtain2.recycle();
-                            obtain.recycle();
-                        }
-                        obtain.writeInt(0);
-                        continue;
-                    }
-                }
+            if (!(webView instanceof gv)) {
+                gs.W("Tried to intercept request from a WebView that wasn't an AdWebView.");
+                return super.shouldInterceptRequest(webView, s);
             }
-            
-            public IBinder asBinder() {
-                return this.kn;
+            final gv gv = (gv)webView;
+            gv.dv().bY();
+            if (gv.Y().og) {
+                gs.V("shouldInterceptRequest(https://googleads.g.doubleclick.net/mads/static/mad/sdk/native/mraid/v2/mraid_app_interstitial.js)");
+                return this.d(gv.getContext(), this.md.dy().wD, "https://googleads.g.doubleclick.net/mads/static/mad/sdk/native/mraid/v2/mraid_app_interstitial.js");
             }
+            if (gv.dz()) {
+                gs.V("shouldInterceptRequest(https://googleads.g.doubleclick.net/mads/static/mad/sdk/native/mraid/v2/mraid_app_expanded_banner.js)");
+                return this.d(gv.getContext(), this.md.dy().wD, "https://googleads.g.doubleclick.net/mads/static/mad/sdk/native/mraid/v2/mraid_app_expanded_banner.js");
+            }
+            gs.V("shouldInterceptRequest(https://googleads.g.doubleclick.net/mads/static/mad/sdk/native/mraid/v2/mraid_app_banner.js)");
+            return this.d(gv.getContext(), this.md.dy().wD, "https://googleads.g.doubleclick.net/mads/static/mad/sdk/native/mraid/v2/mraid_app_banner.js");
+        }
+        catch (IOException ex) {
+            gs.W("Could not fetch MRAID JS. " + ex.getMessage());
+            return super.shouldInterceptRequest(webView, s);
         }
     }
 }

@@ -4,157 +4,71 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public final class df
+@ez
+public class df
 {
-    private int mOrientation;
-    private String pN;
-    private String pO;
-    private String pP;
-    private List<String> pQ;
-    private String pR;
-    private String pS;
-    private List<String> pT;
-    private long pU;
-    private boolean pV;
-    private final long pW;
-    private List<String> pX;
-    private long pY;
+    private final boolean rb;
+    private final boolean rc;
+    private final boolean rd;
+    private final boolean re;
+    private final boolean rf;
     
-    public df() {
-        this.pU = -1L;
-        this.pV = false;
-        this.pW = -1L;
-        this.pY = -1L;
-        this.mOrientation = -1;
+    private df(final a a) {
+        this.rb = a.rb;
+        this.rc = a.rc;
+        this.rd = a.rd;
+        this.re = a.re;
+        this.rf = a.rf;
     }
     
-    private static String a(final Map<String, List<String>> map, final String s) {
-        final List<String> list = map.get(s);
-        if (list != null && !list.isEmpty()) {
-            return list.get(0);
+    public JSONObject bL() {
+        try {
+            return new JSONObject().put("sms", this.rb).put("tel", this.rc).put("calendar", this.rd).put("storePicture", this.re).put("inlineVideo", this.rf);
         }
-        return null;
-    }
-    
-    private static long b(Map<String, List<String>> s, final String s2) {
-        final List<String> list = ((Map<String, List<String>>)s).get(s2);
-        if (list != null && !list.isEmpty()) {
-            s = list.get(0);
-            try {
-                return (long)(Float.parseFloat(s) * 1000.0f);
-            }
-            catch (NumberFormatException ex) {
-                dw.z("Could not parse float from " + s2 + " header: " + s);
-            }
-        }
-        return -1L;
-    }
-    
-    private static List<String> c(final Map<String, List<String>> map, final String s) {
-        final List<String> list = map.get(s);
-        if (list != null && !list.isEmpty()) {
-            final String s2 = list.get(0);
-            if (s2 != null) {
-                return Arrays.asList(s2.trim().split("\\s+"));
-            }
-        }
-        return null;
-    }
-    
-    private void f(final Map<String, List<String>> map) {
-        this.pN = a(map, "X-Afma-Ad-Size");
-    }
-    
-    private void g(final Map<String, List<String>> map) {
-        final List<String> c = c(map, "X-Afma-Click-Tracking-Urls");
-        if (c != null) {
-            this.pQ = c;
+        catch (JSONException ex) {
+            gs.b("Error occured while obtaining the MRAID capabilities.", (Throwable)ex);
+            return null;
         }
     }
     
-    private void h(final Map<String, List<String>> map) {
-        final List<String> list = map.get("X-Afma-Debug-Dialog");
-        if (list != null && !list.isEmpty()) {
-            this.pR = list.get(0);
+    public static final class a
+    {
+        private boolean rb;
+        private boolean rc;
+        private boolean rd;
+        private boolean re;
+        private boolean rf;
+        
+        public df bM() {
+            return new df(this, null);
         }
-    }
-    
-    private void i(final Map<String, List<String>> map) {
-        final List<String> c = c(map, "X-Afma-Tracking-Urls");
-        if (c != null) {
-            this.pT = c;
+        
+        public a i(final boolean rb) {
+            this.rb = rb;
+            return this;
         }
-    }
-    
-    private void j(final Map<String, List<String>> map) {
-        final long b = b(map, "X-Afma-Interstitial-Timeout");
-        if (b != -1L) {
-            this.pU = b;
+        
+        public a j(final boolean rc) {
+            this.rc = rc;
+            return this;
         }
-    }
-    
-    private void k(final Map<String, List<String>> map) {
-        this.pS = a(map, "X-Afma-ActiveView");
-    }
-    
-    private void l(final Map<String, List<String>> map) {
-        final List<String> list = map.get("X-Afma-Mediation");
-        if (list != null && !list.isEmpty()) {
-            this.pV = Boolean.valueOf(list.get(0));
+        
+        public a k(final boolean rd) {
+            this.rd = rd;
+            return this;
         }
-    }
-    
-    private void m(final Map<String, List<String>> map) {
-        final List<String> c = c(map, "X-Afma-Manual-Tracking-Urls");
-        if (c != null) {
-            this.pX = c;
+        
+        public a l(final boolean re) {
+            this.re = re;
+            return this;
         }
-    }
-    
-    private void n(final Map<String, List<String>> map) {
-        final long b = b(map, "X-Afma-Refresh-Rate");
-        if (b != -1L) {
-            this.pY = b;
+        
+        public a m(final boolean rf) {
+            this.rf = rf;
+            return this;
         }
-    }
-    
-    private void o(final Map<String, List<String>> map) {
-        final List<String> list = map.get("X-Afma-Orientation");
-        if (list != null && !list.isEmpty()) {
-            final String s = list.get(0);
-            if ("portrait".equalsIgnoreCase(s)) {
-                this.mOrientation = dq.bA();
-            }
-            else if ("landscape".equalsIgnoreCase(s)) {
-                this.mOrientation = dq.bz();
-            }
-        }
-    }
-    
-    public void a(final String po, final Map<String, List<String>> map, final String pp) {
-        this.pO = po;
-        this.pP = pp;
-        this.e(map);
-    }
-    
-    public void e(final Map<String, List<String>> map) {
-        this.f(map);
-        this.g(map);
-        this.h(map);
-        this.i(map);
-        this.j(map);
-        this.l(map);
-        this.m(map);
-        this.n(map);
-        this.o(map);
-        this.k(map);
-    }
-    
-    public cz g(final long n) {
-        return new cz(this.pO, this.pP, this.pQ, this.pT, this.pU, this.pV, -1L, this.pX, this.pY, this.mOrientation, this.pN, n, this.pR, this.pS);
     }
 }

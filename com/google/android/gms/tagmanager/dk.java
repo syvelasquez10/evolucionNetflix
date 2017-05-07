@@ -4,50 +4,32 @@
 
 package com.google.android.gms.tagmanager;
 
-import java.net.URLEncoder;
-import java.io.UnsupportedEncodingException;
 import com.google.android.gms.internal.d;
+import java.util.Map;
+import com.google.android.gms.internal.b;
+import com.google.android.gms.internal.a;
 
-class dk
+class dk extends aj
 {
-    private static by<d.a> a(final by<d.a> by) {
-        try {
-            return new by<d.a>(dh.r(cd(dh.j(by.getObject()))), by.kQ());
-        }
-        catch (UnsupportedEncodingException ex) {
-            bh.b("Escape URI: unsupported encoding", ex);
-            return by;
-        }
+    private static final String ID;
+    private static final String aoU;
+    
+    static {
+        ID = a.aj.toString();
+        aoU = b.bw.toString();
     }
     
-    private static by<d.a> a(final by<d.a> by, final int n) {
-        if (!q(by.getObject())) {
-            bh.w("Escaping can only be applied to strings.");
-            return by;
-        }
-        switch (n) {
-            default: {
-                bh.w("Unsupported Value Escaping: " + n);
-                return by;
-            }
-            case 12: {
-                return a(by);
-            }
-        }
+    public dk() {
+        super(dk.ID, new String[] { dk.aoU });
     }
     
-    static by<d.a> a(by<d.a> a, final int... array) {
-        for (int length = array.length, i = 0; i < length; ++i) {
-            a = a(a, array[i]);
-        }
-        return a;
+    @Override
+    public d.a C(final Map<String, d.a> map) {
+        return di.u(di.j(map.get(dk.aoU)).toUpperCase());
     }
     
-    static String cd(final String s) throws UnsupportedEncodingException {
-        return URLEncoder.encode(s, "UTF-8").replaceAll("\\+", "%20");
-    }
-    
-    private static boolean q(final d.a a) {
-        return dh.o(a) instanceof String;
+    @Override
+    public boolean nL() {
+        return true;
     }
 }

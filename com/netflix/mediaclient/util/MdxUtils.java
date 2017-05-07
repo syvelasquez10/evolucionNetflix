@@ -52,13 +52,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog.Builder builder = new MdxTargetSelectionDialog.Builder(netflixActivity);
         builder.setCancelable(true);
-        builder.setTitle(2131493150);
+        builder.setTitle(2131493155);
         builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxTargetSelectionDialogInterface.getVideoDetails() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle())) {
-                format = String.format(netflixActivity.getString(2131493244), mdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle());
+                format = String.format(netflixActivity.getString(2131493249), mdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle());
             }
         }
         builder.setSelection(devicePositionByUUID, format);
@@ -338,14 +338,14 @@ public final class MdxUtils
             }
             if (status.isError()) {
                 Log.w("MdxUtils", "Invalid status code failed");
-                Toast.makeText((Context)this.activity, 2131493200, 1).show();
+                Toast.makeText((Context)this.activity, 2131493205, 1).show();
                 Log.d("MdxUtils", "Report rate action ended");
                 final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(status, ActionOnUIError.displayedError, "", null);
                 LogUtils.reportRateActionEnded((Context)this.activity, logReportErrorArgs.getReason(), logReportErrorArgs.getError(), null, (int)this.rating);
                 return;
             }
             Log.v("MdxUtils", "Rating has been updated ok");
-            Toast.makeText((Context)this.activity, 2131493201, 1).show();
+            Toast.makeText((Context)this.activity, 2131493206, 1).show();
             LogUtils.reportRateActionEnded((Context)this.activity, IClientLogging.CompletionReason.success, null, null, (int)this.rating);
         }
     }

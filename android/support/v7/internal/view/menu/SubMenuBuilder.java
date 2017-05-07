@@ -6,6 +6,7 @@ package android.support.v7.internal.view.menu;
 
 import android.view.View;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Context;
@@ -23,15 +24,12 @@ public class SubMenuBuilder extends MenuBuilder implements SubMenu
     }
     
     @Override
-    public void clearHeader() {
-    }
-    
-    @Override
     public boolean collapseItemActionView(final MenuItemImpl menuItemImpl) {
         return this.mParentMenu.collapseItemActionView(menuItemImpl);
     }
     
-    public boolean dispatchMenuItemSelected(final MenuBuilder menuBuilder, final MenuItem menuItem) {
+    @Override
+    boolean dispatchMenuItemSelected(final MenuBuilder menuBuilder, final MenuItem menuItem) {
         return super.dispatchMenuItemSelected(menuBuilder, menuItem) || this.mParentMenu.dispatchMenuItemSelected(menuBuilder, menuItem);
     }
     
@@ -82,7 +80,7 @@ public class SubMenuBuilder extends MenuBuilder implements SubMenu
     }
     
     public SubMenu setHeaderIcon(final int n) {
-        super.setHeaderIconInt(this.getContext().getResources().getDrawable(n));
+        super.setHeaderIconInt(ContextCompat.getDrawable(this.getContext(), n));
         return (SubMenu)this;
     }
     

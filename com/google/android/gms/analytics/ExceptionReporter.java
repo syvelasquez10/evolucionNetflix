@@ -12,44 +12,48 @@ import android.content.Context;
 public class ExceptionReporter implements UncaughtExceptionHandler
 {
     private final Context mContext;
-    private final UncaughtExceptionHandler sA;
-    private final Tracker sB;
-    private ExceptionParser sC;
+    private final UncaughtExceptionHandler xX;
+    private final Tracker xY;
+    private ExceptionParser xZ;
     
-    public ExceptionReporter(final Tracker sb, final UncaughtExceptionHandler sa, final Context context) {
-        if (sb == null) {
+    public ExceptionReporter(final Tracker xy, final UncaughtExceptionHandler xx, final Context context) {
+        if (xy == null) {
             throw new NullPointerException("tracker cannot be null");
         }
         if (context == null) {
             throw new NullPointerException("context cannot be null");
         }
-        this.sA = sa;
-        this.sB = sb;
-        this.sC = new StandardExceptionParser(context, new ArrayList<String>());
+        this.xX = xx;
+        this.xY = xy;
+        this.xZ = new StandardExceptionParser(context, new ArrayList<String>());
         this.mContext = context.getApplicationContext();
         final StringBuilder append = new StringBuilder().append("ExceptionReporter created, original handler is ");
         String name;
-        if (sa == null) {
+        if (xx == null) {
             name = "null";
         }
         else {
-            name = sa.getClass().getName();
+            name = xx.getClass().getName();
         }
-        aa.y(append.append(name).toString());
+        z.V(append.append(name).toString());
+    }
+    
+    UncaughtExceptionHandler dZ() {
+        return this.xX;
     }
     
     public ExceptionParser getExceptionParser() {
-        return this.sC;
+        return this.xZ;
     }
     
-    public void setExceptionParser(final ExceptionParser sc) {
-        this.sC = sc;
+    public void setExceptionParser(final ExceptionParser xz) {
+        this.xZ = xz;
     }
     
     @Override
     public void uncaughtException(final Thread thread, final Throwable t) {
         String description = "UncaughtException";
-        if (this.sC != null) {
+        if (this.xZ != null) {
             String name;
             if (thread != null) {
                 name = thread.getName();
@@ -57,14 +61,14 @@ public class ExceptionReporter implements UncaughtExceptionHandler
             else {
                 name = null;
             }
-            description = this.sC.getDescription(name, t);
+            description = this.xZ.getDescription(name, t);
         }
-        aa.y("Tracking Exception: " + description);
-        this.sB.send(new HitBuilders.ExceptionBuilder().setDescription(description).setFatal(true).build());
+        z.V("Tracking Exception: " + description);
+        this.xY.send(new HitBuilders.ExceptionBuilder().setDescription(description).setFatal(true).build());
         GoogleAnalytics.getInstance(this.mContext).dispatchLocalHits();
-        if (this.sA != null) {
-            aa.y("Passing exception to original handler.");
-            this.sA.uncaughtException(thread, t);
+        if (this.xX != null) {
+            z.V("Passing exception to original handler.");
+            this.xX.uncaughtException(thread, t);
         }
     }
 }

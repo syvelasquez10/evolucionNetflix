@@ -180,6 +180,10 @@ public class FalcorParseUtils
         }
     }
     
+    public static boolean isAlreadyInQueue(final String s) {
+        return s != null && s.contains("AlreadyInQueue");
+    }
+    
     public static boolean isEmpty(final JsonObject jsonObject) {
         return jsonObject.isJsonNull() || jsonObject.toString().equals("{}");
     }
@@ -194,6 +198,10 @@ public class FalcorParseUtils
     
     public static boolean isNotAuthorized(final String s) {
         return s.contains("Not authorized") || s.contains("unauthorized");
+    }
+    
+    public static boolean isNotInQueue(final String s) {
+        return s.contains("NotInQueue");
     }
     
     public static boolean isNullPointerException(final String s) {

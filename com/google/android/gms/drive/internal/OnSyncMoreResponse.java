@@ -11,16 +11,16 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class OnSyncMoreResponse implements SafeParcelable
 {
     public static final Parcelable$Creator<OnSyncMoreResponse> CREATOR;
-    final boolean Fg;
-    final int xH;
+    final int BR;
+    final boolean Or;
     
     static {
-        CREATOR = (Parcelable$Creator)new ag();
+        CREATOR = (Parcelable$Creator)new at();
     }
     
-    OnSyncMoreResponse(final int xh, final boolean fg) {
-        this.xH = xh;
-        this.Fg = fg;
+    OnSyncMoreResponse(final int br, final boolean or) {
+        this.BR = br;
+        this.Or = or;
     }
     
     public int describeContents() {
@@ -28,6 +28,6 @@ public class OnSyncMoreResponse implements SafeParcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        ag.a(this, parcel, n);
+        at.a(this, parcel, n);
     }
 }

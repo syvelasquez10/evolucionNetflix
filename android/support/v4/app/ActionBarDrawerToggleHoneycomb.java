@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import java.lang.reflect.Method;
 import android.app.ActionBar;
 import android.util.Log;
+import android.os.Build$VERSION;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.app.Activity;
@@ -40,7 +41,11 @@ class ActionBarDrawerToggleHoneycomb
             return o2;
         }
         try {
-            setIndicatorInfo.setHomeActionContentDescription.invoke(activity.getActionBar(), n);
+            final ActionBar actionBar = activity.getActionBar();
+            setIndicatorInfo.setHomeActionContentDescription.invoke(actionBar, n);
+            if (Build$VERSION.SDK_INT <= 19) {
+                actionBar.setSubtitle(actionBar.getSubtitle());
+            }
             return o2;
         }
         catch (Exception ex) {

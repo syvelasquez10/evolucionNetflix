@@ -13,72 +13,64 @@ import android.database.Cursor;
 import java.util.Arrays;
 import android.text.TextUtils;
 import java.util.Collections;
-import android.content.ContentValues;
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteDatabase;
+import java.util.List;
 import java.util.concurrent.Executors;
-import com.google.android.gms.internal.gn;
+import com.google.android.gms.internal.jw;
+import com.google.android.gms.internal.ju;
 import android.content.Context;
 import java.util.concurrent.Executor;
-import com.google.android.gms.internal.gl;
 
 class v implements c
 {
-    private static final String XB;
-    private gl Wv;
-    private final Executor XC;
-    private a XD;
-    private int XE;
+    private static final String aoF;
+    private final Executor aoG;
+    private a aoH;
+    private int aoI;
     private final Context mContext;
+    private ju yD;
     
     static {
-        XB = String.format("CREATE TABLE IF NOT EXISTS %s ( '%s' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, '%s' STRING NOT NULL, '%s' BLOB NOT NULL, '%s' INTEGER NOT NULL);", "datalayer", "ID", "key", "value", "expires");
+        aoF = String.format("CREATE TABLE IF NOT EXISTS %s ( '%s' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, '%s' STRING NOT NULL, '%s' BLOB NOT NULL, '%s' INTEGER NOT NULL);", "datalayer", "ID", "key", "value", "expires");
     }
     
     public v(final Context context) {
-        this(context, gn.ft(), "google_tagmanager.db", 2000, Executors.newSingleThreadExecutor());
+        this(context, jw.hA(), "google_tagmanager.db", 2000, Executors.newSingleThreadExecutor());
     }
     
-    v(final Context mContext, final gl wv, final String s, final int xe, final Executor xc) {
+    v(final Context mContext, final ju yd, final String s, final int aoI, final Executor aoG) {
         this.mContext = mContext;
-        this.Wv = wv;
-        this.XE = xe;
-        this.XC = xc;
-        this.XD = new a(this.mContext, s);
+        this.yD = yd;
+        this.aoI = aoI;
+        this.aoG = aoG;
+        this.aoH = new a(this.mContext, s);
     }
     
-    private SQLiteDatabase L(final String s) {
+    private SQLiteDatabase al(final String s) {
         try {
-            return this.XD.getWritableDatabase();
+            return this.aoH.getWritableDatabase();
         }
         catch (SQLiteException ex) {
-            bh.z(s);
+            bh.W(s);
             return null;
         }
-    }
-    
-    private List<DataLayer.a> b(final List<b> list) {
-        final ArrayList<DataLayer.a> list2 = new ArrayList<DataLayer.a>();
-        for (final b b : list) {
-            list2.add(new DataLayer.a(b.Xy, this.j(b.XK)));
-        }
-        return list2;
     }
     
     private void b(final List<b> list, final long n) {
         // monitorenter(this)
         try {
-            final long currentTimeMillis = this.Wv.currentTimeMillis();
-            this.u(currentTimeMillis);
-            this.cb(list.size());
+            final long currentTimeMillis = this.yD.currentTimeMillis();
+            this.x(currentTimeMillis);
+            this.ff(list.size());
             this.c(list, currentTimeMillis + n);
             return;
         }
         finally {
-            this.kv();
+            this.oj();
         }
         try {}
         finally {
@@ -86,53 +78,45 @@ class v implements c
         // monitorexit(this)
     }
     
-    private void by(final String s) {
-        final SQLiteDatabase l = this.L("Error opening database for clearKeysWithPrefix.");
-        if (l == null) {
-            return;
-        }
-        try {
-            bh.y("Cleared " + l.delete("datalayer", "key = ? OR key LIKE ?", new String[] { s, s + ".%" }) + " items");
-        }
-        catch (SQLiteException ex) {
-            bh.z("Error deleting entries with key prefix: " + s + " (" + ex + ").");
-        }
-        finally {
-            this.kv();
-        }
-    }
-    
-    private List<b> c(final List<DataLayer.a> list) {
-        final ArrayList<b> list2 = new ArrayList<b>();
-        for (final DataLayer.a a : list) {
-            list2.add(new b(a.Xy, this.j(a.Xz)));
-        }
-        return list2;
-    }
-    
     private void c(final List<b> list, final long n) {
-        final SQLiteDatabase l = this.L("Error opening database for writeEntryToDatabase.");
-        if (l != null) {
+        final SQLiteDatabase al = this.al("Error opening database for writeEntryToDatabase.");
+        if (al != null) {
             for (final b b : list) {
                 final ContentValues contentValues = new ContentValues();
                 contentValues.put("expires", n);
-                contentValues.put("key", b.Xy);
-                contentValues.put("value", b.XK);
-                l.insert("datalayer", (String)null, contentValues);
+                contentValues.put("key", b.JH);
+                contentValues.put("value", b.aoO);
+                al.insert("datalayer", (String)null, contentValues);
             }
         }
     }
     
-    private void cb(int n) {
-        n += this.ku() - this.XE;
-        if (n > 0) {
-            final List<String> cc = this.cc(n);
-            bh.x("DataLayer store full, deleting " + cc.size() + " entries to make room.");
-            this.g(cc.toArray(new String[0]));
+    private void cv(final String s) {
+        final SQLiteDatabase al = this.al("Error opening database for clearKeysWithPrefix.");
+        if (al == null) {
+            return;
+        }
+        try {
+            bh.V("Cleared " + al.delete("datalayer", "key = ? OR key LIKE ?", new String[] { s, s + ".%" }) + " items");
+        }
+        catch (SQLiteException ex) {
+            bh.W("Error deleting entries with key prefix: " + s + " (" + ex + ").");
+        }
+        finally {
+            this.oj();
         }
     }
     
-    private List<String> cc(final int p0) {
+    private void ff(int n) {
+        n += this.oi() - this.aoI;
+        if (n > 0) {
+            final List<String> fg = this.fg(n);
+            bh.U("DataLayer store full, deleting " + fg.size() + " entries to make room.");
+            this.i(fg.toArray(new String[0]));
+        }
+    }
+    
+    private List<String> fg(final int p0) {
         // 
         // This method could not be decompiled.
         // 
@@ -145,12 +129,12 @@ class v implements c
         //     9: iload_1        
         //    10: ifgt            22
         //    13: ldc_w           "Invalid maxEntries specified. Skipping."
-        //    16: invokestatic    com/google/android/gms/tagmanager/bh.z:(Ljava/lang/String;)V
+        //    16: invokestatic    com/google/android/gms/tagmanager/bh.W:(Ljava/lang/String;)V
         //    19: aload           6
         //    21: areturn        
         //    22: aload_0        
         //    23: ldc_w           "Error opening database for peekEntryIds."
-        //    26: invokespecial   com/google/android/gms/tagmanager/v.L:(Ljava/lang/String;)Landroid/database/sqlite/SQLiteDatabase;
+        //    26: invokespecial   com/google/android/gms/tagmanager/v.al:(Ljava/lang/String;)Landroid/database/sqlite/SQLiteDatabase;
         //    29: astore_3       
         //    30: aload_3        
         //    31: ifnonnull       37
@@ -225,7 +209,7 @@ class v implements c
         //   173: invokevirtual   android/database/sqlite/SQLiteException.getMessage:()Ljava/lang/String;
         //   176: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //   179: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   182: invokestatic    com/google/android/gms/tagmanager/bh.z:(Ljava/lang/String;)V
+        //   182: invokestatic    com/google/android/gms/tagmanager/bh.W:(Ljava/lang/String;)V
         //   185: aload           4
         //   187: ifnull          147
         //   190: aload           4
@@ -285,16 +269,32 @@ class v implements c
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private void g(final String[] array) {
+    private List<DataLayer.a> h(final List<b> list) {
+        final ArrayList<DataLayer.a> list2 = new ArrayList<DataLayer.a>();
+        for (final b b : list) {
+            list2.add(new DataLayer.a(b.JH, this.j(b.aoO)));
+        }
+        return list2;
+    }
+    
+    private List<b> i(final List<DataLayer.a> list) {
+        final ArrayList<b> list2 = new ArrayList<b>();
+        for (final DataLayer.a a : list) {
+            list2.add(new b(a.JH, this.m(a.wq)));
+        }
+        return list2;
+    }
+    
+    private void i(final String[] array) {
         if (array != null && array.length != 0) {
-            final SQLiteDatabase l = this.L("Error opening database for deleteEntries.");
-            if (l != null) {
+            final SQLiteDatabase al = this.al("Error opening database for deleteEntries.");
+            if (al != null) {
                 final String format = String.format("%s in (%s)", "ID", TextUtils.join((CharSequence)",", (Iterable)Collections.nCopies(array.length, "?")));
                 try {
-                    l.delete("datalayer", format, array);
+                    al.delete("datalayer", format, array);
                 }
                 catch (SQLiteException ex) {
-                    bh.z("Error deleting entries " + Arrays.toString(array));
+                    bh.W("Error deleting entries " + Arrays.toString(array));
                 }
             }
         }
@@ -421,7 +421,7 @@ class v implements c
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private byte[] j(final Object p0) {
+    private byte[] m(final Object p0) {
         // 
         // This method could not be decompiled.
         // 
@@ -524,23 +524,23 @@ class v implements c
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private List<DataLayer.a> ks() {
+    private List<DataLayer.a> og() {
         try {
-            this.u(this.Wv.currentTimeMillis());
-            return this.b(this.kt());
+            this.x(this.yD.currentTimeMillis());
+            return this.h(this.oh());
         }
         finally {
-            this.kv();
+            this.oj();
         }
     }
     
-    private List<b> kt() {
-        final SQLiteDatabase l = this.L("Error opening database for loadSerialized.");
+    private List<b> oh() {
+        final SQLiteDatabase al = this.al("Error opening database for loadSerialized.");
         final ArrayList<b> list = new ArrayList<b>();
-        if (l == null) {
+        if (al == null) {
             return list;
         }
-        final Cursor query = l.query("datalayer", new String[] { "key", "value" }, (String)null, (String[])null, (String)null, (String)null, "ID", (String)null);
+        final Cursor query = al.query("datalayer", new String[] { "key", "value" }, (String)null, (String[])null, (String)null, (String)null, "ID", (String)null);
         try {
             while (query.moveToNext()) {
                 list.add(new b(query.getString(0), query.getBlob(1)));
@@ -553,17 +553,17 @@ class v implements c
         return;
     }
     
-    private int ku() {
+    private int oi() {
         Cursor cursor = null;
         Cursor rawQuery = null;
         int n = 0;
         int n2 = 0;
-        final SQLiteDatabase l = this.L("Error opening database for getNumStoredEntries.");
-        if (l == null) {
+        final SQLiteDatabase al = this.al("Error opening database for getNumStoredEntries.");
+        if (al == null) {
             return n2;
         }
         try {
-            final Cursor cursor2 = cursor = (rawQuery = l.rawQuery("SELECT COUNT(*) from datalayer", (String[])null));
+            final Cursor cursor2 = cursor = (rawQuery = al.rawQuery("SELECT COUNT(*) from datalayer", (String[])null));
             if (cursor2.moveToFirst()) {
                 rawQuery = cursor2;
                 cursor = cursor2;
@@ -574,7 +574,7 @@ class v implements c
         }
         catch (SQLiteException cursor) {
             cursor = rawQuery;
-            bh.z("Error getting numStoredEntries");
+            bh.W("Error getting numStoredEntries");
             return 0;
         }
         finally {
@@ -584,54 +584,54 @@ class v implements c
         }
     }
     
-    private void kv() {
+    private void oj() {
         try {
-            this.XD.close();
+            this.aoH.close();
         }
         catch (SQLiteException ex) {}
     }
     
-    private void u(final long n) {
-        final SQLiteDatabase l = this.L("Error opening database for deleteOlderThan.");
-        if (l == null) {
+    private void x(final long n) {
+        final SQLiteDatabase al = this.al("Error opening database for deleteOlderThan.");
+        if (al == null) {
             return;
         }
         try {
-            bh.y("Deleted " + l.delete("datalayer", "expires <= ?", new String[] { Long.toString(n) }) + " expired items");
+            bh.V("Deleted " + al.delete("datalayer", "expires <= ?", new String[] { Long.toString(n) }) + " expired items");
         }
         catch (SQLiteException ex) {
-            bh.z("Error deleting old entries.");
+            bh.W("Error deleting old entries.");
         }
     }
     
     @Override
     public void a(final c.a a) {
-        this.XC.execute(new Runnable() {
+        this.aoG.execute(new Runnable() {
             @Override
             public void run() {
-                a.a(v.this.ks());
+                a.g(v.this.og());
             }
         });
     }
     
     @Override
     public void a(final List<DataLayer.a> list, final long n) {
-        this.XC.execute(new Runnable() {
-            final /* synthetic */ List XF = v.this.c(list);
+        this.aoG.execute(new Runnable() {
+            final /* synthetic */ List aoJ = v.this.i(list);
             
             @Override
             public void run() {
-                v.this.b(this.XF, n);
+                v.this.b(this.aoJ, n);
             }
         });
     }
     
     @Override
-    public void bx(final String s) {
-        this.XC.execute(new Runnable() {
+    public void cu(final String s) {
+        this.aoG.execute(new Runnable() {
             @Override
             public void run() {
-                v.this.by(s);
+                v.this.cv(s);
             }
         });
     }
@@ -712,7 +712,7 @@ class v implements c
             //    66: aload_1        
             //    67: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
             //    70: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-            //    73: invokestatic    com/google/android/gms/tagmanager/bh.z:(Ljava/lang/String;)V
+            //    73: invokestatic    com/google/android/gms/tagmanager/bh.W:(Ljava/lang/String;)V
             //    76: aload_2        
             //    77: ifnull          86
             //    80: aload_2        
@@ -792,7 +792,7 @@ class v implements c
         }
         
         public void onCreate(final SQLiteDatabase sqLiteDatabase) {
-            ak.G(sqLiteDatabase.getPath());
+            ak.ag(sqLiteDatabase.getPath());
         }
         
         public void onOpen(final SQLiteDatabase sqLiteDatabase) {
@@ -803,7 +803,7 @@ class v implements c
                         rawQuery.moveToFirst();
                         rawQuery.close();
                         if (!this.a("datalayer", sqLiteDatabase)) {
-                            sqLiteDatabase.execSQL(v.XB);
+                            sqLiteDatabase.execSQL(v.aoF);
                             return;
                         }
                     }
@@ -824,17 +824,17 @@ class v implements c
     
     private static class b
     {
-        final byte[] XK;
-        final String Xy;
+        final String JH;
+        final byte[] aoO;
         
-        b(final String xy, final byte[] xk) {
-            this.Xy = xy;
-            this.XK = xk;
+        b(final String jh, final byte[] aoO) {
+            this.JH = jh;
+            this.aoO = aoO;
         }
         
         @Override
         public String toString() {
-            return "KeyAndSerialized: key = " + this.Xy + " serialized hash = " + Arrays.hashCode(this.XK);
+            return "KeyAndSerialized: key = " + this.JH + " serialized hash = " + Arrays.hashCode(this.aoO);
         }
     }
 }

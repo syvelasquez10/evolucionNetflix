@@ -4,62 +4,130 @@
 
 package com.google.android.gms.drive.internal;
 
-import android.os.Message;
-import android.util.Pair;
-import android.os.Handler;
+import com.google.android.gms.common.api.c;
+import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
-import android.util.Log;
-import com.google.android.gms.internal.fq;
-import android.os.Looper;
-import com.google.android.gms.drive.events.DriveEvent;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.drive.Contents;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.DriveFile;
 
-public class s<C extends DriveEvent> extends w.a
+public class s extends w implements DriveFile
 {
-    private final int ES;
-    private final a<C> FA;
-    private final DriveEvent.Listener<C> Fz;
-    
-    public s(final Looper looper, final int es, final DriveEvent.Listener<C> fz) {
-        this.ES = es;
-        this.Fz = fz;
-        this.FA = new a<C>(looper);
+    public s(final DriveId driveId) {
+        super(driveId);
     }
     
-    public void a(final OnEventResponse onEventResponse) throws RemoteException {
-        fq.x(this.ES == onEventResponse.getEventType());
-        switch (onEventResponse.getEventType()) {
-            default: {
-                Log.w("EventCallback", "Unexpected event type:" + onEventResponse.getEventType());
-            }
-            case 1: {
-                this.FA.a(this.Fz, (C)onEventResponse.fL());
-            }
-            case 2: {
-                this.FA.a(this.Fz, (C)onEventResponse.fM());
-            }
+    private static DownloadProgressListener a(final GoogleApiClient googleApiClient, final DownloadProgressListener downloadProgressListener) {
+        if (downloadProgressListener == null) {
+            return null;
         }
+        return new a(googleApiClient.c(downloadProgressListener));
     }
     
-    private static class a<E extends DriveEvent> extends Handler
+    @Override
+    public PendingResult<Status> commitAndCloseContents(final GoogleApiClient googleApiClient, final Contents contents) {
+        return new r(contents).commit(googleApiClient, null);
+    }
+    
+    @Override
+    public PendingResult<Status> commitAndCloseContents(final GoogleApiClient googleApiClient, final Contents contents, final MetadataChangeSet set) {
+        return new r(contents).commit(googleApiClient, set);
+    }
+    
+    @Override
+    public PendingResult<Status> discardContents(final GoogleApiClient googleApiClient, final Contents contents) {
+        return Drive.DriveApi.discardContents(googleApiClient, contents);
+    }
+    
+    @Override
+    public PendingResult<DriveApi.DriveContentsResult> open(final GoogleApiClient googleApiClient, final int n, final DownloadProgressListener downloadProgressListener) {
+        if (n != 268435456 && n != 536870912 && n != 805306368) {
+            throw new IllegalArgumentException("Invalid mode provided.");
+        }
+        return googleApiClient.a((PendingResult<DriveApi.DriveContentsResult>)new o.d() {
+            final /* synthetic */ DownloadProgressListener OG = a(googleApiClient, downloadProgressListener);
+            
+            protected void a(final q q) throws RemoteException {
+                q.hY().a(new OpenContentsRequest(s.this.getDriveId(), n, 0), new av((BaseImplementation.b<DriveContentsResult>)this, this.OG));
+            }
+        });
+    }
+    
+    @Override
+    public PendingResult<DriveApi.ContentsResult> openContents(final GoogleApiClient googleApiClient, final int n, final DownloadProgressListener downloadProgressListener) {
+        if (n != 268435456 && n != 536870912 && n != 805306368) {
+            throw new IllegalArgumentException("Invalid mode provided.");
+        }
+        return googleApiClient.a((PendingResult<DriveApi.ContentsResult>)new o.b() {
+            final /* synthetic */ DownloadProgressListener OG = a(googleApiClient, downloadProgressListener);
+            
+            protected void a(final q q) throws RemoteException {
+                q.hY().a(new OpenContentsRequest(s.this.getDriveId(), n, 0), new s.b((BaseImplementation.b<ContentsResult>)this, this.OG));
+            }
+        });
+    }
+    
+    private static class a implements DownloadProgressListener
     {
-        private a(final Looper looper) {
-            super(looper);
+        private final com.google.android.gms.common.api.c<DownloadProgressListener> OI;
+        
+        public a(final com.google.android.gms.common.api.c<DownloadProgressListener> oi) {
+            this.OI = oi;
         }
         
-        public void a(final DriveEvent.Listener<E> listener, final E e) {
-            this.sendMessage(this.obtainMessage(1, (Object)new Pair((Object)listener, (Object)e)));
+        @Override
+        public void onProgress(final long n, final long n2) {
+            this.OI.a((com.google.android.gms.common.api.c.b<DownloadProgressListener>)new com.google.android.gms.common.api.c.b<DownloadProgressListener>() {
+                public void a(final DownloadProgressListener downloadProgressListener) {
+                    downloadProgressListener.onProgress(n, n2);
+                }
+                
+                @Override
+                public void gs() {
+                }
+            });
+        }
+    }
+    
+    private static class b extends c
+    {
+        private final BaseImplementation.b<DriveApi.ContentsResult> De;
+        private final DownloadProgressListener OM;
+        
+        public b(final BaseImplementation.b<DriveApi.ContentsResult> de, final DownloadProgressListener om) {
+            this.De = de;
+            this.OM = om;
         }
         
-        public void handleMessage(final Message message) {
-            switch (message.what) {
-                default: {
-                    Log.wtf("EventCallback", "Don't know how to handle this event");
-                }
-                case 1: {
-                    final Pair pair = (Pair)message.obj;
-                    ((DriveEvent.Listener)pair.first).onEvent((DriveEvent)pair.second);
-                }
+        @Override
+        public void a(final OnContentsResponse onContentsResponse) throws RemoteException {
+            Status jo;
+            if (onContentsResponse.ie()) {
+                jo = new Status(-1);
             }
+            else {
+                jo = Status.Jo;
+            }
+            this.De.b(new o.a(jo, onContentsResponse.id()));
+        }
+        
+        @Override
+        public void a(final OnDownloadProgressResponse onDownloadProgressResponse) throws RemoteException {
+            if (this.OM != null) {
+                this.OM.onProgress(onDownloadProgressResponse.if(), onDownloadProgressResponse.ig());
+            }
+        }
+        
+        @Override
+        public void o(final Status status) throws RemoteException {
+            this.De.b(new o.a(status, null));
         }
     }
 }

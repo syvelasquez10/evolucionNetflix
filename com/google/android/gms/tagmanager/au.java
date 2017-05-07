@@ -6,5 +6,5 @@ package com.google.android.gms.tagmanager;
 
 interface au
 {
-    void r(final boolean p0);
+    void z(final boolean p0);
 }

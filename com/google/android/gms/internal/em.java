@@ -4,50 +4,19 @@
 
 package com.google.android.gms.internal;
 
-import java.io.IOException;
-import android.text.TextUtils;
+import com.google.android.gms.ads.purchase.InAppPurchase;
+import com.google.android.gms.ads.purchase.InAppPurchaseListener;
 
-public abstract class em
+@ez
+public final class em extends eh.a
 {
-    protected final er yY;
-    private final String yZ;
-    private et za;
+    private final InAppPurchaseListener oC;
     
-    protected em(final String yz, final String s, final String s2) {
-        eo.W(yz);
-        this.yZ = yz;
-        this.yY = new er(s);
-        if (!TextUtils.isEmpty((CharSequence)s2)) {
-            this.yY.ab(s2);
-        }
+    public em(final InAppPurchaseListener oc) {
+        this.oC = oc;
     }
     
-    public void U(final String s) {
-    }
-    
-    public void a(final long n, final int n2) {
-    }
-    
-    public final void a(final et za) {
-        this.za = za;
-        if (this.za == null) {
-            this.dF();
-        }
-    }
-    
-    protected final void a(final String s, final long n, final String s2) throws IOException {
-        this.yY.a("Sending text message: %s to: %s", s, s2);
-        this.za.a(this.yZ, s, n, s2);
-    }
-    
-    protected final long dE() {
-        return this.za.dD();
-    }
-    
-    public void dF() {
-    }
-    
-    public final String getNamespace() {
-        return this.yZ;
+    public void a(final eg eg) {
+        this.oC.onInAppPurchaseRequested(new ep(eg));
     }
 }

@@ -4,24 +4,48 @@
 
 package com.google.android.gms.games;
 
-import android.text.TextUtils;
 import android.os.Parcel;
+import com.google.android.gms.games.internal.player.MostRecentGameInfo;
 import android.net.Uri;
 import android.database.CharArrayBuffer;
 import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.data.b;
+import com.google.android.gms.games.internal.player.MostRecentGameInfoRef;
+import com.google.android.gms.games.internal.player.PlayerColumnNames;
+import com.google.android.gms.common.data.d;
 
-public final class PlayerRef extends b implements Player
+public final class PlayerRef extends d implements Player
 {
-    private final PlayerColumnNames Ii;
+    private final PlayerLevelInfo VE;
+    private final PlayerColumnNames VN;
+    private final MostRecentGameInfoRef VO;
     
     public PlayerRef(final DataHolder dataHolder, final int n) {
         this(dataHolder, n, null);
     }
     
-    public PlayerRef(final DataHolder dataHolder, final int n, final String s) {
-        super(dataHolder, n);
-        this.Ii = new PlayerColumnNames(s);
+    public PlayerRef(final DataHolder dataHolder, int integer, final String s) {
+        super(dataHolder, integer);
+        this.VN = new PlayerColumnNames(s);
+        this.VO = new MostRecentGameInfoRef(dataHolder, integer, this.VN);
+        if (this.jT()) {
+            integer = this.getInteger(this.VN.aaR);
+            final int integer2 = this.getInteger(this.VN.aaU);
+            final PlayerLevel playerLevel = new PlayerLevel(integer, this.getLong(this.VN.aaS), this.getLong(this.VN.aaT));
+            PlayerLevel playerLevel2;
+            if (integer != integer2) {
+                playerLevel2 = new PlayerLevel(integer2, this.getLong(this.VN.aaT), this.getLong(this.VN.aaV));
+            }
+            else {
+                playerLevel2 = playerLevel;
+            }
+            this.VE = new PlayerLevelInfo(this.getLong(this.VN.aaQ), this.getLong(this.VN.aaW), playerLevel, playerLevel2);
+            return;
+        }
+        this.VE = null;
+    }
+    
+    private boolean jT() {
+        return !this.aS(this.VN.aaQ) && this.getLong(this.VN.aaQ) != -1L;
     }
     
     public int describeContents() {
@@ -39,55 +63,65 @@ public final class PlayerRef extends b implements Player
     
     @Override
     public String getDisplayName() {
-        return this.getString(this.Ii.Ik);
+        return this.getString(this.VN.aaI);
     }
     
     @Override
     public void getDisplayName(final CharArrayBuffer charArrayBuffer) {
-        this.a(this.Ii.Ik, charArrayBuffer);
+        this.a(this.VN.aaI, charArrayBuffer);
     }
     
     @Override
     public Uri getHiResImageUri() {
-        return this.ah(this.Ii.In);
+        return this.aR(this.VN.aaL);
     }
     
     @Override
     public String getHiResImageUrl() {
-        return this.getString(this.Ii.Io);
+        return this.getString(this.VN.aaM);
     }
     
     @Override
     public Uri getIconImageUri() {
-        return this.ah(this.Ii.Il);
+        return this.aR(this.VN.aaJ);
     }
     
     @Override
     public String getIconImageUrl() {
-        return this.getString(this.Ii.Im);
+        return this.getString(this.VN.aaK);
     }
     
     @Override
     public long getLastPlayedWithTimestamp() {
-        if (!this.hasColumn(this.Ii.Ir)) {
+        if (!this.aQ(this.VN.aaP) || this.aS(this.VN.aaP)) {
             return -1L;
         }
-        return this.getLong(this.Ii.Ir);
+        return this.getLong(this.VN.aaP);
+    }
+    
+    @Override
+    public PlayerLevelInfo getLevelInfo() {
+        return this.VE;
     }
     
     @Override
     public String getPlayerId() {
-        return this.getString(this.Ii.Ij);
+        return this.getString(this.VN.aaH);
     }
     
     @Override
     public long getRetrievedTimestamp() {
-        return this.getLong(this.Ii.Ip);
+        return this.getLong(this.VN.aaN);
     }
     
     @Override
-    public int gh() {
-        return this.getInteger(this.Ii.Iq);
+    public String getTitle() {
+        return this.getString(this.VN.aaX);
+    }
+    
+    @Override
+    public void getTitle(final CharArrayBuffer charArrayBuffer) {
+        this.a(this.VN.aaX, charArrayBuffer);
     }
     
     @Override
@@ -102,52 +136,33 @@ public final class PlayerRef extends b implements Player
     
     @Override
     public int hashCode() {
-        return PlayerEntity.a(this);
+        return PlayerEntity.b(this);
+    }
+    
+    @Override
+    public boolean isProfileVisible() {
+        return this.getBoolean(this.VN.aaZ);
+    }
+    
+    @Override
+    public int jR() {
+        return this.getInteger(this.VN.aaO);
+    }
+    
+    @Override
+    public MostRecentGameInfo jS() {
+        if (this.aS(this.VN.aba)) {
+            return null;
+        }
+        return this.VO;
     }
     
     @Override
     public String toString() {
-        return PlayerEntity.b(this);
+        return PlayerEntity.c(this);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
         ((PlayerEntity)this.freeze()).writeToParcel(parcel, n);
-    }
-    
-    private static final class PlayerColumnNames
-    {
-        public final String Ij;
-        public final String Ik;
-        public final String Il;
-        public final String Im;
-        public final String In;
-        public final String Io;
-        public final String Ip;
-        public final String Iq;
-        public final String Ir;
-        
-        public PlayerColumnNames(final String s) {
-            if (TextUtils.isEmpty((CharSequence)s)) {
-                this.Ij = "external_player_id";
-                this.Ik = "profile_name";
-                this.Il = "profile_icon_image_uri";
-                this.Im = "profile_icon_image_url";
-                this.In = "profile_hi_res_image_uri";
-                this.Io = "profile_hi_res_image_url";
-                this.Ip = "last_updated";
-                this.Iq = "is_in_circles";
-                this.Ir = "played_with_timestamp";
-                return;
-            }
-            this.Ij = s + "external_player_id";
-            this.Ik = s + "profile_name";
-            this.Il = s + "profile_icon_image_uri";
-            this.Im = s + "profile_icon_image_url";
-            this.In = s + "profile_hi_res_image_uri";
-            this.Io = s + "profile_hi_res_image_url";
-            this.Ip = s + "last_updated";
-            this.Iq = s + "is_in_circles";
-            this.Ir = s + "played_with_timestamp";
-        }
     }
 }

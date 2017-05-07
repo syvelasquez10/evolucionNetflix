@@ -10,41 +10,41 @@ import android.os.Parcelable$Creator;
 
 public class a implements Parcelable$Creator<CountrySpecification>
 {
-    static void a(final CountrySpecification countrySpecification, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
+    static void a(final CountrySpecification countrySpecification, final Parcel parcel, int d) {
+        d = b.D(parcel);
         b.c(parcel, 1, countrySpecification.getVersionCode());
-        b.a(parcel, 2, countrySpecification.qd, false);
-        b.F(parcel, p3);
+        b.a(parcel, 2, countrySpecification.uW, false);
+        b.H(parcel, d);
     }
     
-    public CountrySpecification az(final Parcel parcel) {
-        final int o = com.google.android.gms.common.internal.safeparcel.a.o(parcel);
+    public CountrySpecification cq(final Parcel parcel) {
+        final int c = com.google.android.gms.common.internal.safeparcel.a.C(parcel);
         int g = 0;
-        String n = null;
-        while (parcel.dataPosition() < o) {
-            final int n2 = com.google.android.gms.common.internal.safeparcel.a.n(parcel);
-            switch (com.google.android.gms.common.internal.safeparcel.a.R(n2)) {
+        String o = null;
+        while (parcel.dataPosition() < c) {
+            final int b = com.google.android.gms.common.internal.safeparcel.a.B(parcel);
+            switch (com.google.android.gms.common.internal.safeparcel.a.aD(b)) {
                 default: {
-                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, n2);
+                    com.google.android.gms.common.internal.safeparcel.a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, n2);
+                    g = com.google.android.gms.common.internal.safeparcel.a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n = com.google.android.gms.common.internal.safeparcel.a.n(parcel, n2);
+                    o = com.google.android.gms.common.internal.safeparcel.a.o(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new com.google.android.gms.common.internal.safeparcel.a.a("Overread allowed size end=" + c, parcel);
         }
-        return new CountrySpecification(g, n);
+        return new CountrySpecification(g, o);
     }
     
-    public CountrySpecification[] bt(final int n) {
+    public CountrySpecification[] dY(final int n) {
         return new CountrySpecification[n];
     }
 }

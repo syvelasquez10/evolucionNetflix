@@ -4,56 +4,98 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
-import com.google.android.gms.common.internal.safeparcel.a;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.os.Bundle;
+import android.content.pm.PackageManager$NameNotFoundException;
+import android.content.ComponentName;
+import android.content.Context;
 
-public class gc implements Parcelable$Creator<gd.b>
+@ez
+public class gc
 {
-    static void a(final gd.b b, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, b.versionCode);
-        b.a(parcel, 2, b.eM, false);
-        b.a(parcel, 3, (Parcelable)b.Em, n, false);
-        b.F(parcel, p3);
+    private final Object mw;
+    private final String vL;
+    private int vX;
+    private long vY;
+    private long vZ;
+    private int wa;
+    private int wb;
+    
+    public gc(final String vl) {
+        this.mw = new Object();
+        this.vX = 0;
+        this.vY = -1L;
+        this.vZ = -1L;
+        this.wa = 0;
+        this.wb = -1;
+        this.vL = vl;
     }
     
-    public gd.b[] W(final int n) {
-        return new gd.b[n];
+    public static boolean m(final Context context) {
+        final int identifier = context.getResources().getIdentifier("Theme.Translucent", "style", "android");
+        if (identifier == 0) {
+            gs.U("Please set theme of AdActivity to @android:style/Theme.Translucent to enable transparent background interstitial ad.");
+            return false;
+        }
+        final ComponentName componentName = new ComponentName(context.getPackageName(), "com.google.android.gms.ads.AdActivity");
+        try {
+            if (identifier == context.getPackageManager().getActivityInfo(componentName, 0).theme) {
+                return true;
+            }
+            gs.U("Please set theme of AdActivity to @android:style/Theme.Translucent to enable transparent background interstitial ad.");
+            return false;
+        }
+        catch (PackageManager$NameNotFoundException ex) {
+            gs.W("Fail to fetch AdActivity theme");
+            gs.U("Please set theme of AdActivity to @android:style/Theme.Translucent to enable transparent background interstitial ad.");
+            return false;
+        }
     }
     
-    public gd.b u(final Parcel parcel) {
-        SafeParcelable safeParcelable = null;
-        final int o = a.o(parcel);
-        int g = 0;
-        String n = null;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
-                default: {
-                    a.b(parcel, n2);
-                    continue;
-                }
-                case 1: {
-                    g = a.g(parcel, n2);
-                    continue;
-                }
-                case 2: {
-                    n = a.n(parcel, n2);
-                    continue;
-                }
-                case 3: {
-                    safeParcelable = a.a(parcel, n2, (android.os.Parcelable$Creator<ga.a<?, ?>>)ga.a.CREATOR);
-                    continue;
-                }
+    public Bundle b(final Context context, final String s) {
+        synchronized (this.mw) {
+            final Bundle bundle = new Bundle();
+            bundle.putString("session_id", this.vL);
+            bundle.putLong("basets", this.vZ);
+            bundle.putLong("currts", this.vY);
+            bundle.putString("seq_num", s);
+            bundle.putInt("preqs", this.wb);
+            bundle.putInt("pclick", this.vX);
+            bundle.putInt("pimp", this.wa);
+            bundle.putBoolean("support_transparent_background", m(context));
+            return bundle;
+        }
+    }
+    
+    public void b(final av av, final long n) {
+        synchronized (this.mw) {
+            if (this.vZ == -1L) {
+                this.vZ = n;
+                this.vY = this.vZ;
+            }
+            else {
+                this.vY = n;
+            }
+            if (av.extras != null && av.extras.getInt("gw", 2) == 1) {
+                return;
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        ++this.wb;
+    }
+    // monitorexit(o)
+    
+    public void cP() {
+        synchronized (this.mw) {
+            ++this.wa;
         }
-        return new gd.b(g, n, (ga.a<?, ?>)safeParcelable);
+    }
+    
+    public void cQ() {
+        synchronized (this.mw) {
+            ++this.vX;
+        }
+    }
+    
+    public long di() {
+        return this.vZ;
     }
 }

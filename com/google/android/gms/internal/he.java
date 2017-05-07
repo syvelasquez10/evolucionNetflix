@@ -4,96 +4,95 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
+import java.util.ArrayList;
+import java.util.List;
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import java.util.BitSet;
+import android.accounts.Account;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
-public class he implements Parcelable$Creator<hd>
+public class he implements SafeParcelable
 {
-    static void a(final hd hd, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.a(parcel, 1, hd.getRequestId(), false);
-        b.c(parcel, 1000, hd.getVersionCode());
-        b.a(parcel, 2, hd.getExpirationTime());
-        b.a(parcel, 3, hd.hS());
-        b.a(parcel, 4, hd.getLatitude());
-        b.a(parcel, 5, hd.getLongitude());
-        b.a(parcel, 6, hd.hT());
-        b.c(parcel, 7, hd.hU());
-        b.c(parcel, 8, hd.getNotificationResponsiveness());
-        b.c(parcel, 9, hd.hV());
-        b.F(parcel, p3);
+    public static final hf CREATOR;
+    final int BR;
+    final hi[] BS;
+    public final String BT;
+    public final boolean BU;
+    public final Account account;
+    
+    static {
+        CREATOR = new hf();
     }
     
-    public hd aC(final Parcel parcel) {
-        final int o = a.o(parcel);
-        int g = 0;
-        String n = null;
-        int g2 = 0;
-        short f = 0;
-        double l = 0.0;
-        double i = 0.0;
-        float k = 0.0f;
-        long j = 0L;
-        int g3 = 0;
-        int g4 = -1;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
-                default: {
-                    a.b(parcel, n2);
-                    continue;
+    he(final int br, final hi[] bs, final String bt, final boolean bu, final Account account) {
+        this.BR = br;
+        this.BS = bs;
+        this.BT = bt;
+        this.BU = bu;
+        this.account = account;
+    }
+    
+    he(final String s, final boolean b, final Account account, final hi... array) {
+        this(1, array, s, b, account);
+        final BitSet set = new BitSet(hp.fm());
+        for (int i = 0; i < array.length; ++i) {
+            final int cg = array[i].Cg;
+            if (cg != -1) {
+                if (set.get(cg)) {
+                    throw new IllegalArgumentException("Duplicate global search section type " + hp.O(cg));
                 }
-                case 1: {
-                    n = a.n(parcel, n2);
-                    continue;
-                }
-                case 1000: {
-                    g = a.g(parcel, n2);
-                    continue;
-                }
-                case 2: {
-                    j = a.i(parcel, n2);
-                    continue;
-                }
-                case 3: {
-                    f = a.f(parcel, n2);
-                    continue;
-                }
-                case 4: {
-                    l = a.l(parcel, n2);
-                    continue;
-                }
-                case 5: {
-                    i = a.l(parcel, n2);
-                    continue;
-                }
-                case 6: {
-                    k = a.k(parcel, n2);
-                    continue;
-                }
-                case 7: {
-                    g2 = a.g(parcel, n2);
-                    continue;
-                }
-                case 8: {
-                    g3 = a.g(parcel, n2);
-                    continue;
-                }
-                case 9: {
-                    g4 = a.g(parcel, n2);
-                    continue;
-                }
+                set.set(cg);
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
-        }
-        return new hd(g, n, g2, f, l, i, k, j, g3, g4);
     }
     
-    public hd[] bD(final int n) {
-        return new hd[n];
+    public int describeContents() {
+        final hf creator = he.CREATOR;
+        return 0;
+    }
+    
+    public void writeToParcel(final Parcel parcel, final int n) {
+        final hf creator = he.CREATOR;
+        hf.a(this, parcel, n);
+    }
+    
+    public static class a
+    {
+        private List<hi> BV;
+        private String BW;
+        private boolean BX;
+        private Account BY;
+        
+        public a D(final boolean bx) {
+            this.BX = bx;
+            return this;
+        }
+        
+        public a a(final hi hi) {
+            if (this.BV == null) {
+                this.BV = new ArrayList<hi>();
+            }
+            this.BV.add(hi);
+            return this;
+        }
+        
+        public a ar(final String bw) {
+            this.BW = bw;
+            return this;
+        }
+        
+        public he fk() {
+            final String bw = this.BW;
+            final boolean bx = this.BX;
+            final Account by = this.BY;
+            hi[] array;
+            if (this.BV != null) {
+                array = this.BV.toArray(new hi[this.BV.size()]);
+            }
+            else {
+                array = null;
+            }
+            return new he(bw, bx, by, array);
+        }
     }
 }

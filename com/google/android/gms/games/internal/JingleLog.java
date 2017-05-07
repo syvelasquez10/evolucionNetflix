@@ -4,13 +4,13 @@
 
 package com.google.android.gms.games.internal;
 
-import com.google.android.gms.internal.fj;
+import com.google.android.gms.common.internal.h;
 
 public final class JingleLog
 {
-    private static final fj JH;
+    private static final h OS;
     
     static {
-        JH = new fj("GamesJingle");
+        OS = new h("GamesJingle");
     }
 }

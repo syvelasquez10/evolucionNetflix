@@ -4,126 +4,197 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.ConnectionResult;
-import android.os.Bundle;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import android.content.Context;
+import android.os.Parcel;
+import android.os.IBinder;
+import android.os.Binder;
 import android.os.RemoteException;
+import android.os.IInterface;
 
-public abstract class cv extends do
+public interface cv extends IInterface
 {
-    private final cx mQ;
-    private final cu.a pc;
+    void onAdClicked() throws RemoteException;
     
-    public cv(final cx mq, final cu.a pc) {
-        this.mQ = mq;
-        this.pc = pc;
-    }
+    void onAdClosed() throws RemoteException;
     
-    private static cz a(final db db, final cx cx) {
-        try {
-            return db.b(cx);
-        }
-        catch (RemoteException ex) {
-            dw.c("Could not fetch ad response from ad request service.", (Throwable)ex);
-            return null;
-        }
-    }
+    void onAdFailedToLoad(final int p0) throws RemoteException;
     
-    @Override
-    public final void aY() {
-        try {
-            final db bf = this.bf();
-            cz a;
-            if (bf == null) {
-                a = new cz(0);
-            }
-            else if ((a = a(bf, this.mQ)) == null) {
-                a = new cz(0);
-            }
-            this.be();
-            this.pc.a(a);
-        }
-        finally {
-            this.be();
-        }
-    }
+    void onAdLeftApplication() throws RemoteException;
     
-    public abstract void be();
+    void onAdLoaded() throws RemoteException;
     
-    public abstract db bf();
+    void onAdOpened() throws RemoteException;
     
-    @Override
-    public final void onStop() {
-        this.be();
-    }
-    
-    public static final class a extends cv
+    public abstract static class a extends Binder implements cv
     {
-        private final Context mContext;
-        
-        public a(final Context mContext, final cx cx, final cu.a a) {
-            super(cx, a);
-            this.mContext = mContext;
+        public a() {
+            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
         }
         
-        @Override
-        public void be() {
+        public static cv n(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+            if (queryLocalInterface != null && queryLocalInterface instanceof cv) {
+                return (cv)queryLocalInterface;
+            }
+            return new cv.a.a(binder);
         }
         
-        @Override
-        public db bf() {
-            return dc.a(this.mContext, new ax(), new bg());
-        }
-    }
-    
-    public static final class b extends cv implements ConnectionCallbacks, OnConnectionFailedListener
-    {
-        private final Object li;
-        private final cu.a pc;
-        private final cw pd;
-        
-        public b(final Context context, final cx cx, final cu.a pc) {
-            super(cx, pc);
-            this.li = new Object();
-            this.pc = pc;
-            (this.pd = new cw(context, this, this, cx.kK.rs)).connect();
+        public IBinder asBinder() {
+            return (IBinder)this;
         }
         
-        @Override
-        public void be() {
-            synchronized (this.li) {
-                if (this.pd.isConnected() || this.pd.isConnecting()) {
-                    this.pd.disconnect();
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
+                default: {
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    return true;
+                }
+                case 1: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.onAdClicked();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 2: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.onAdClosed();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 3: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.onAdFailedToLoad(parcel.readInt());
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 4: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.onAdLeftApplication();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 5: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.onAdOpened();
+                    parcel2.writeNoException();
+                    return true;
+                }
+                case 6: {
+                    parcel.enforceInterface("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.onAdLoaded();
+                    parcel2.writeNoException();
+                    return true;
                 }
             }
         }
         
-        @Override
-        public db bf() {
-            synchronized (this.li) {
+        private static class a implements cv
+        {
+            private IBinder lb;
+            
+            a(final IBinder lb) {
+                this.lb = lb;
+            }
+            
+            public IBinder asBinder() {
+                return this.lb;
+            }
+            
+            @Override
+            public void onAdClicked() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
                 try {
-                    return this.pd.bi();
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.lb.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
                 }
-                catch (IllegalStateException ex) {
-                    return null;
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
                 }
             }
-        }
-        
-        @Override
-        public void onConnected(final Bundle bundle) {
-            this.start();
-        }
-        
-        @Override
-        public void onConnectionFailed(final ConnectionResult connectionResult) {
-            this.pc.a(new cz(0));
-        }
-        
-        @Override
-        public void onDisconnected() {
-            dw.v("Disconnected from remote ad request service.");
+            
+            @Override
+            public void onAdClosed() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.lb.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onAdFailedToLoad(final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    obtain.writeInt(n);
+                    this.lb.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onAdLeftApplication() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.lb.transact(4, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onAdLoaded() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.lb.transact(6, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void onAdOpened() throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.mediation.client.IMediationAdapterListener");
+                    this.lb.transact(5, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
         }
     }
 }

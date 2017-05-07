@@ -14,17 +14,17 @@ import android.os.IInterface;
 
 public interface IGamesSignInCallbacks extends IInterface
 {
-    void H(final DataHolder p0) throws RemoteException;
+    void T(final DataHolder p0) throws RemoteException;
     
-    void I(final DataHolder p0) throws RemoteException;
-    
-    void aZ(final int p0) throws RemoteException;
+    void U(final DataHolder p0) throws RemoteException;
     
     void b(final int p0, final Intent p1) throws RemoteException;
     
-    void ba(final int p0) throws RemoteException;
+    void dD(final int p0) throws RemoteException;
     
-    void e(final DataHolder p0) throws RemoteException;
+    void dE(final int p0) throws RemoteException;
+    
+    void g(final DataHolder p0) throws RemoteException;
     
     public abstract static class Stub extends Binder implements IGamesSignInCallbacks
     {
@@ -32,7 +32,7 @@ public interface IGamesSignInCallbacks extends IInterface
             this.attachInterface((IInterface)this, "com.google.android.gms.games.internal.IGamesSignInCallbacks");
         }
         
-        public static IGamesSignInCallbacks O(final IBinder binder) {
+        public static IGamesSignInCallbacks aC(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -68,43 +68,43 @@ public interface IGamesSignInCallbacks extends IInterface
                 }
                 case 5002: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInCallbacks");
-                    DataHolder fromParcel = dataHolder;
+                    DataHolder z = dataHolder;
                     if (parcel.readInt() != 0) {
-                        fromParcel = DataHolder.CREATOR.createFromParcel(parcel);
+                        z = DataHolder.CREATOR.z(parcel);
                     }
-                    this.H(fromParcel);
+                    this.T(z);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5003: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInCallbacks");
-                    DataHolder fromParcel2 = dataHolder2;
+                    DataHolder z2 = dataHolder2;
                     if (parcel.readInt() != 0) {
-                        fromParcel2 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z2 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.I(fromParcel2);
+                    this.U(z2);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5004: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInCallbacks");
-                    this.aZ(parcel.readInt());
+                    this.dD(parcel.readInt());
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5005: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInCallbacks");
-                    DataHolder fromParcel3 = dataHolder3;
+                    DataHolder z3 = dataHolder3;
                     if (parcel.readInt() != 0) {
-                        fromParcel3 = DataHolder.CREATOR.createFromParcel(parcel);
+                        z3 = DataHolder.CREATOR.z(parcel);
                     }
-                    this.e(fromParcel3);
+                    this.g(z3);
                     parcel2.writeNoException();
                     return true;
                 }
                 case 5006: {
                     parcel.enforceInterface("com.google.android.gms.games.internal.IGamesSignInCallbacks");
-                    this.ba(parcel.readInt());
+                    this.dE(parcel.readInt());
                     parcel2.writeNoException();
                     return true;
                 }
@@ -113,14 +113,14 @@ public interface IGamesSignInCallbacks extends IInterface
         
         private static class Proxy implements IGamesSignInCallbacks
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            Proxy(final IBinder kn) {
-                this.kn = kn;
+            Proxy(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
-            public void H(final DataHolder dataHolder) throws RemoteException {
+            public void T(final DataHolder dataHolder) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -132,7 +132,7 @@ public interface IGamesSignInCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5002, obtain, obtain2, 0);
+                    this.lb.transact(5002, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -142,7 +142,7 @@ public interface IGamesSignInCallbacks extends IInterface
             }
             
             @Override
-            public void I(final DataHolder dataHolder) throws RemoteException {
+            public void U(final DataHolder dataHolder) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -154,23 +154,7 @@ public interface IGamesSignInCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5003, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-            
-            @Override
-            public void aZ(final int n) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInCallbacks");
-                    obtain.writeInt(n);
-                    this.kn.transact(5004, obtain, obtain2, 0);
+                    this.lb.transact(5003, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -180,7 +164,7 @@ public interface IGamesSignInCallbacks extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -197,7 +181,7 @@ public interface IGamesSignInCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5001, obtain, obtain2, 0);
+                    this.lb.transact(5001, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -207,13 +191,13 @@ public interface IGamesSignInCallbacks extends IInterface
             }
             
             @Override
-            public void ba(final int n) throws RemoteException {
+            public void dD(final int n) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInCallbacks");
                     obtain.writeInt(n);
-                    this.kn.transact(5006, obtain, obtain2, 0);
+                    this.lb.transact(5004, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -223,7 +207,23 @@ public interface IGamesSignInCallbacks extends IInterface
             }
             
             @Override
-            public void e(final DataHolder dataHolder) throws RemoteException {
+            public void dE(final int n) throws RemoteException {
+                final Parcel obtain = Parcel.obtain();
+                final Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.games.internal.IGamesSignInCallbacks");
+                    obtain.writeInt(n);
+                    this.lb.transact(5006, obtain, obtain2, 0);
+                    obtain2.readException();
+                }
+                finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+            
+            @Override
+            public void g(final DataHolder dataHolder) throws RemoteException {
                 final Parcel obtain = Parcel.obtain();
                 final Parcel obtain2 = Parcel.obtain();
                 try {
@@ -235,7 +235,7 @@ public interface IGamesSignInCallbacks extends IInterface
                     else {
                         obtain.writeInt(0);
                     }
-                    this.kn.transact(5005, obtain, obtain2, 0);
+                    this.lb.transact(5005, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

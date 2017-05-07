@@ -4,40 +4,28 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import android.os.SystemClock;
 
-public final class jw implements SafeParcelable
+public final class jw implements ju
 {
-    public static final Parcelable$Creator<jw> CREATOR;
-    String adq;
-    String description;
-    private final int xH;
+    private static jw MK;
     
-    static {
-        CREATOR = (Parcelable$Creator)new jx();
+    public static ju hA() {
+        synchronized (jw.class) {
+            if (jw.MK == null) {
+                jw.MK = new jw();
+            }
+            return jw.MK;
+        }
     }
     
-    jw() {
-        this.xH = 1;
+    @Override
+    public long currentTimeMillis() {
+        return System.currentTimeMillis();
     }
     
-    jw(final int xh, final String adq, final String description) {
-        this.xH = xh;
-        this.adq = adq;
-        this.description = description;
-    }
-    
-    public int describeContents() {
-        return 0;
-    }
-    
-    public int getVersionCode() {
-        return this.xH;
-    }
-    
-    public void writeToParcel(final Parcel parcel, final int n) {
-        jx.a(this, parcel, n);
+    @Override
+    public long elapsedRealtime() {
+        return SystemClock.elapsedRealtime();
     }
 }

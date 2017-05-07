@@ -13,35 +13,35 @@ class u extends aj
 {
     private static final String ID;
     private static final String NAME;
-    private static final String XA;
-    private final DataLayer WK;
+    private static final String aoE;
+    private final DataLayer anS;
     
     static {
         ID = a.C.toString();
-        NAME = b.dc.toString();
-        XA = b.cb.toString();
+        NAME = b.dB.toString();
+        aoE = b.cr.toString();
     }
     
-    public u(final DataLayer wk) {
+    public u(final DataLayer anS) {
         super(u.ID, new String[] { u.NAME });
-        this.WK = wk;
+        this.anS = anS;
     }
     
     @Override
-    public boolean jX() {
-        return false;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
-        final Object value = this.WK.get(dh.j(map.get(u.NAME)));
+    public d.a C(final Map<String, d.a> map) {
+        final Object value = this.anS.get(di.j(map.get(u.NAME)));
         if (value != null) {
-            return dh.r(value);
+            return di.u(value);
         }
-        final d.a a = map.get(u.XA);
+        final d.a a = map.get(u.aoE);
         if (a != null) {
             return a;
         }
-        return dh.lT();
+        return di.pI();
+    }
+    
+    @Override
+    public boolean nL() {
+        return false;
     }
 }

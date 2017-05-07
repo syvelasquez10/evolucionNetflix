@@ -7,40 +7,40 @@ package com.google.android.gms.games.leaderboard;
 import java.io.Serializable;
 import com.google.android.gms.games.internal.constants.LeaderboardCollection;
 import com.google.android.gms.games.internal.constants.TimeSpan;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 
 public final class LeaderboardVariantEntity implements LeaderboardVariant
 {
-    private final int Mh;
-    private final int Mi;
-    private final boolean Mj;
-    private final long Mk;
-    private final String Ml;
-    private final long Mm;
-    private final String Mn;
-    private final String Mo;
-    private final long Mp;
-    private final String Mq;
-    private final String Mr;
-    private final String Ms;
+    private final int abB;
+    private final int abC;
+    private final boolean abD;
+    private final long abE;
+    private final String abF;
+    private final long abG;
+    private final String abH;
+    private final String abI;
+    private final long abJ;
+    private final String abK;
+    private final String abL;
+    private final String abM;
     
     public LeaderboardVariantEntity(final LeaderboardVariant leaderboardVariant) {
-        this.Mh = leaderboardVariant.getTimeSpan();
-        this.Mi = leaderboardVariant.getCollection();
-        this.Mj = leaderboardVariant.hasPlayerInfo();
-        this.Mk = leaderboardVariant.getRawPlayerScore();
-        this.Ml = leaderboardVariant.getDisplayPlayerScore();
-        this.Mm = leaderboardVariant.getPlayerRank();
-        this.Mn = leaderboardVariant.getDisplayPlayerRank();
-        this.Mo = leaderboardVariant.getPlayerScoreTag();
-        this.Mp = leaderboardVariant.getNumScores();
-        this.Mq = leaderboardVariant.hG();
-        this.Mr = leaderboardVariant.hH();
-        this.Ms = leaderboardVariant.hI();
+        this.abB = leaderboardVariant.getTimeSpan();
+        this.abC = leaderboardVariant.getCollection();
+        this.abD = leaderboardVariant.hasPlayerInfo();
+        this.abE = leaderboardVariant.getRawPlayerScore();
+        this.abF = leaderboardVariant.getDisplayPlayerScore();
+        this.abG = leaderboardVariant.getPlayerRank();
+        this.abH = leaderboardVariant.getDisplayPlayerRank();
+        this.abI = leaderboardVariant.getPlayerScoreTag();
+        this.abJ = leaderboardVariant.getNumScores();
+        this.abK = leaderboardVariant.lB();
+        this.abL = leaderboardVariant.lC();
+        this.abM = leaderboardVariant.lD();
     }
     
     static int a(final LeaderboardVariant leaderboardVariant) {
-        return fo.hashCode(leaderboardVariant.getTimeSpan(), leaderboardVariant.getCollection(), leaderboardVariant.hasPlayerInfo(), leaderboardVariant.getRawPlayerScore(), leaderboardVariant.getDisplayPlayerScore(), leaderboardVariant.getPlayerRank(), leaderboardVariant.getDisplayPlayerRank(), leaderboardVariant.getNumScores(), leaderboardVariant.hG(), leaderboardVariant.hI(), leaderboardVariant.hH());
+        return m.hashCode(leaderboardVariant.getTimeSpan(), leaderboardVariant.getCollection(), leaderboardVariant.hasPlayerInfo(), leaderboardVariant.getRawPlayerScore(), leaderboardVariant.getDisplayPlayerScore(), leaderboardVariant.getPlayerRank(), leaderboardVariant.getDisplayPlayerRank(), leaderboardVariant.getNumScores(), leaderboardVariant.lB(), leaderboardVariant.lD(), leaderboardVariant.lC());
     }
     
     static boolean a(final LeaderboardVariant leaderboardVariant, final Object o) {
@@ -53,9 +53,9 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
             b2 = b;
             if (leaderboardVariant != o) {
                 final LeaderboardVariant leaderboardVariant2 = (LeaderboardVariant)o;
-                if (fo.equal(leaderboardVariant2.getTimeSpan(), leaderboardVariant.getTimeSpan()) && fo.equal(leaderboardVariant2.getCollection(), leaderboardVariant.getCollection()) && fo.equal(leaderboardVariant2.hasPlayerInfo(), leaderboardVariant.hasPlayerInfo()) && fo.equal(leaderboardVariant2.getRawPlayerScore(), leaderboardVariant.getRawPlayerScore()) && fo.equal(leaderboardVariant2.getDisplayPlayerScore(), leaderboardVariant.getDisplayPlayerScore()) && fo.equal(leaderboardVariant2.getPlayerRank(), leaderboardVariant.getPlayerRank()) && fo.equal(leaderboardVariant2.getDisplayPlayerRank(), leaderboardVariant.getDisplayPlayerRank()) && fo.equal(leaderboardVariant2.getNumScores(), leaderboardVariant.getNumScores()) && fo.equal(leaderboardVariant2.hG(), leaderboardVariant.hG()) && fo.equal(leaderboardVariant2.hI(), leaderboardVariant.hI())) {
+                if (m.equal(leaderboardVariant2.getTimeSpan(), leaderboardVariant.getTimeSpan()) && m.equal(leaderboardVariant2.getCollection(), leaderboardVariant.getCollection()) && m.equal(leaderboardVariant2.hasPlayerInfo(), leaderboardVariant.hasPlayerInfo()) && m.equal(leaderboardVariant2.getRawPlayerScore(), leaderboardVariant.getRawPlayerScore()) && m.equal(leaderboardVariant2.getDisplayPlayerScore(), leaderboardVariant.getDisplayPlayerScore()) && m.equal(leaderboardVariant2.getPlayerRank(), leaderboardVariant.getPlayerRank()) && m.equal(leaderboardVariant2.getDisplayPlayerRank(), leaderboardVariant.getDisplayPlayerRank()) && m.equal(leaderboardVariant2.getNumScores(), leaderboardVariant.getNumScores()) && m.equal(leaderboardVariant2.lB(), leaderboardVariant.lB()) && m.equal(leaderboardVariant2.lD(), leaderboardVariant.lD())) {
                     b2 = b;
-                    if (fo.equal(leaderboardVariant2.hH(), leaderboardVariant.hH())) {
+                    if (m.equal(leaderboardVariant2.lC(), leaderboardVariant.lC())) {
                         return b2;
                     }
                 }
@@ -66,7 +66,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
     }
     
     static String b(final LeaderboardVariant leaderboardVariant) {
-        final fo.a a = fo.e(leaderboardVariant).a("TimeSpan", TimeSpan.bd(leaderboardVariant.getTimeSpan())).a("Collection", LeaderboardCollection.bd(leaderboardVariant.getCollection()));
+        final m.a a = m.h(leaderboardVariant).a("TimeSpan", TimeSpan.dH(leaderboardVariant.getTimeSpan())).a("Collection", LeaderboardCollection.dH(leaderboardVariant.getCollection()));
         Serializable value;
         if (leaderboardVariant.hasPlayerInfo()) {
             value = leaderboardVariant.getRawPlayerScore();
@@ -74,7 +74,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
         else {
             value = "none";
         }
-        final fo.a a2 = a.a("RawPlayerScore", value);
+        final m.a a2 = a.a("RawPlayerScore", value);
         String displayPlayerScore;
         if (leaderboardVariant.hasPlayerInfo()) {
             displayPlayerScore = leaderboardVariant.getDisplayPlayerScore();
@@ -82,7 +82,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
         else {
             displayPlayerScore = "none";
         }
-        final fo.a a3 = a2.a("DisplayPlayerScore", displayPlayerScore);
+        final m.a a3 = a2.a("DisplayPlayerScore", displayPlayerScore);
         Serializable value2;
         if (leaderboardVariant.hasPlayerInfo()) {
             value2 = leaderboardVariant.getPlayerRank();
@@ -90,7 +90,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
         else {
             value2 = "none";
         }
-        final fo.a a4 = a3.a("PlayerRank", value2);
+        final m.a a4 = a3.a("PlayerRank", value2);
         String displayPlayerRank;
         if (leaderboardVariant.hasPlayerInfo()) {
             displayPlayerRank = leaderboardVariant.getDisplayPlayerRank();
@@ -98,7 +98,7 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
         else {
             displayPlayerRank = "none";
         }
-        return a4.a("DisplayPlayerRank", displayPlayerRank).a("NumScores", leaderboardVariant.getNumScores()).a("TopPageNextToken", leaderboardVariant.hG()).a("WindowPageNextToken", leaderboardVariant.hI()).a("WindowPagePrevToken", leaderboardVariant.hH()).toString();
+        return a4.a("DisplayPlayerRank", displayPlayerRank).a("NumScores", leaderboardVariant.getNumScores()).a("TopPageNextToken", leaderboardVariant.lB()).a("WindowPageNextToken", leaderboardVariant.lD()).a("WindowPagePrevToken", leaderboardVariant.lC()).toString();
     }
     
     @Override
@@ -108,66 +108,47 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
     
     @Override
     public int getCollection() {
-        return this.Mi;
+        return this.abC;
     }
     
     @Override
     public String getDisplayPlayerRank() {
-        return this.Mn;
+        return this.abH;
     }
     
     @Override
     public String getDisplayPlayerScore() {
-        return this.Ml;
+        return this.abF;
     }
     
     @Override
     public long getNumScores() {
-        return this.Mp;
+        return this.abJ;
     }
     
     @Override
     public long getPlayerRank() {
-        return this.Mm;
+        return this.abG;
     }
     
     @Override
     public String getPlayerScoreTag() {
-        return this.Mo;
+        return this.abI;
     }
     
     @Override
     public long getRawPlayerScore() {
-        return this.Mk;
+        return this.abE;
     }
     
     @Override
     public int getTimeSpan() {
-        return this.Mh;
-    }
-    
-    @Override
-    public String hG() {
-        return this.Mq;
-    }
-    
-    @Override
-    public String hH() {
-        return this.Mr;
-    }
-    
-    @Override
-    public String hI() {
-        return this.Ms;
-    }
-    
-    public LeaderboardVariant hJ() {
-        return this;
+        return this.abB;
     }
     
     @Override
     public boolean hasPlayerInfo() {
-        return this.Mj;
+        return this.abD;
     }
     
     @Override
@@ -178,6 +159,25 @@ public final class LeaderboardVariantEntity implements LeaderboardVariant
     @Override
     public boolean isDataValid() {
         return true;
+    }
+    
+    @Override
+    public String lB() {
+        return this.abK;
+    }
+    
+    @Override
+    public String lC() {
+        return this.abL;
+    }
+    
+    @Override
+    public String lD() {
+        return this.abM;
+    }
+    
+    public LeaderboardVariant lE() {
+        return this;
     }
     
     @Override

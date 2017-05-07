@@ -12,17 +12,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 class as extends Thread implements ar
 {
-    private static as Ya;
-    private final LinkedBlockingQueue<Runnable> XZ;
-    private volatile at Yb;
+    private static as ape;
+    private final LinkedBlockingQueue<Runnable> apd;
+    private volatile at apf;
     private volatile boolean mClosed;
     private final Context mContext;
-    private volatile boolean tx;
+    private volatile boolean yU;
     
     private as(final Context mContext) {
         super("GAThread");
-        this.XZ = new LinkedBlockingQueue<Runnable>();
-        this.tx = false;
+        this.apd = new LinkedBlockingQueue<Runnable>();
+        this.yU = false;
         this.mClosed = false;
         if (mContext != null) {
             this.mContext = mContext.getApplicationContext();
@@ -33,14 +33,14 @@ class as extends Thread implements ar
         this.start();
     }
     
-    static as H(final Context context) {
-        if (as.Ya == null) {
-            as.Ya = new as(context);
+    static as Y(final Context context) {
+        if (as.ape == null) {
+            as.ape = new as(context);
         }
-        return as.Ya;
+        return as.ape;
     }
     
-    private String a(final Throwable t) {
+    private String g(final Throwable t) {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(byteArrayOutputStream);
         t.printStackTrace(printStream);
@@ -49,28 +49,28 @@ class as extends Thread implements ar
     }
     
     @Override
-    public void a(final Runnable runnable) {
-        this.XZ.add(runnable);
+    public void b(final Runnable runnable) {
+        this.apd.add(runnable);
     }
     
     void b(final String s, final long n) {
-        this.a(new Runnable() {
-            final /* synthetic */ ar Yc;
+        this.b(new Runnable() {
+            final /* synthetic */ ar apg;
             
             @Override
             public void run() {
-                if (as.this.Yb == null) {
-                    final cx lg = cx.lG();
-                    lg.a(as.this.mContext, this.Yc);
-                    as.this.Yb = lg.lH();
+                if (as.this.apf == null) {
+                    final cy pu = cy.pu();
+                    pu.a(as.this.mContext, this.apg);
+                    as.this.apf = pu.pv();
                 }
-                as.this.Yb.e(n, s);
+                as.this.apf.f(n, s);
             }
         });
     }
     
     @Override
-    public void bC(final String s) {
+    public void cz(final String s) {
         this.b(s, System.currentTimeMillis());
     }
     
@@ -79,21 +79,21 @@ class as extends Thread implements ar
         while (!this.mClosed) {
             try {
                 try {
-                    final Runnable runnable = this.XZ.take();
-                    if (!this.tx) {
+                    final Runnable runnable = this.apd.take();
+                    if (!this.yU) {
                         runnable.run();
                         continue;
                     }
                     continue;
                 }
                 catch (InterruptedException ex) {
-                    bh.x(ex.toString());
+                    bh.U(ex.toString());
                 }
             }
             catch (Throwable t) {
-                bh.w("Error on GAThread: " + this.a(t));
-                bh.w("Google Analytics is shutting down.");
-                this.tx = true;
+                bh.T("Error on Google TagManager Thread: " + this.g(t));
+                bh.T("Google TagManager is shutting down.");
+                this.yU = true;
                 continue;
             }
             break;

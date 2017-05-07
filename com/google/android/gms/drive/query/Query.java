@@ -7,8 +7,9 @@ package com.google.android.gms.drive.query;
 import com.google.android.gms.drive.query.internal.Operator;
 import com.google.android.gms.drive.query.internal.MatchAllFilter;
 import java.util.ArrayList;
-import java.util.List;
 import android.os.Parcel;
+import java.util.Locale;
+import java.util.List;
 import com.google.android.gms.drive.query.internal.LogicalFilter;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -16,40 +17,51 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public class Query implements SafeParcelable
 {
     public static final Parcelable$Creator<Query> CREATOR;
-    final LogicalFilter GA;
-    final String GB;
-    final SortOrder GC;
-    final int xH;
+    final int BR;
+    final LogicalFilter Qt;
+    final String Qu;
+    final SortOrder Qv;
+    final List<String> Qw;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
-    Query(final int xh, final LogicalFilter ga, final String gb, final SortOrder gc) {
-        this.xH = xh;
-        this.GA = ga;
-        this.GB = gb;
-        this.GC = gc;
+    Query(final int br, final LogicalFilter qt, final String qu, final SortOrder qv, final List<String> qw) {
+        this.BR = br;
+        this.Qt = qt;
+        this.Qu = qu;
+        this.Qv = qv;
+        this.Qw = qw;
     }
     
-    Query(final LogicalFilter logicalFilter, final String s, final SortOrder sortOrder) {
-        this(1, logicalFilter, s, sortOrder);
+    Query(final LogicalFilter logicalFilter, final String s, final SortOrder sortOrder, final List<String> list) {
+        this(1, logicalFilter, s, sortOrder, list);
     }
     
     public int describeContents() {
         return 0;
     }
     
-    public SortOrder fV() {
-        return this.GC;
-    }
-    
     public Filter getFilter() {
-        return this.GA;
+        return this.Qt;
     }
     
     public String getPageToken() {
-        return this.GB;
+        return this.Qu;
+    }
+    
+    public SortOrder getSortOrder() {
+        return this.Qv;
+    }
+    
+    public List<String> iq() {
+        return this.Qw;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format(Locale.US, "Query[%s,%s,PageToken=%s]", this.Qt, this.Qv, this.Qu);
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -58,32 +70,40 @@ public class Query implements SafeParcelable
     
     public static class Builder
     {
-        private String GB;
-        private SortOrder GC;
-        private final List<Filter> GD;
+        private String Qu;
+        private SortOrder Qv;
+        private List<String> Qw;
+        private final List<Filter> Qx;
         
         public Builder() {
-            this.GD = new ArrayList<Filter>();
+            this.Qx = new ArrayList<Filter>();
         }
         
-        public Builder a(final SortOrder gc) {
-            this.GC = gc;
-            return this;
+        public Builder(final Query query) {
+            (this.Qx = new ArrayList<Filter>()).add(query.getFilter());
+            this.Qu = query.getPageToken();
+            this.Qv = query.getSortOrder();
+            this.Qw = query.iq();
         }
         
         public Builder addFilter(final Filter filter) {
             if (!(filter instanceof MatchAllFilter)) {
-                this.GD.add(filter);
+                this.Qx.add(filter);
             }
             return this;
         }
         
         public Query build() {
-            return new Query(new LogicalFilter(Operator.GZ, this.GD), this.GB, this.GC);
+            return new Query(new LogicalFilter(Operator.QW, this.Qx), this.Qu, this.Qv, this.Qw);
         }
         
-        public Builder setPageToken(final String gb) {
-            this.GB = gb;
+        public Builder setPageToken(final String qu) {
+            this.Qu = qu;
+            return this;
+        }
+        
+        public Builder setSortOrder(final SortOrder qv) {
+            this.Qv = qv;
             return this;
         }
     }

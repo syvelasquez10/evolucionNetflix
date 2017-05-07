@@ -12,38 +12,38 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class FullWallet implements SafeParcelable
 {
     public static final Parcelable$Creator<FullWallet> CREATOR;
-    String abh;
-    String abi;
-    ProxyCard abj;
-    String abk;
-    Address abl;
-    Address abm;
-    String[] abn;
-    UserAddress abo;
-    UserAddress abp;
-    InstrumentInfo[] abq;
-    private final int xH;
+    private final int BR;
+    String asq;
+    String asr;
+    ProxyCard ass;
+    String ast;
+    Address asu;
+    Address asv;
+    String[] asw;
+    UserAddress asx;
+    UserAddress asy;
+    InstrumentInfo[] asz;
     
     static {
         CREATOR = (Parcelable$Creator)new f();
     }
     
     private FullWallet() {
-        this.xH = 1;
+        this.BR = 1;
     }
     
-    FullWallet(final int xh, final String abh, final String abi, final ProxyCard abj, final String abk, final Address abl, final Address abm, final String[] abn, final UserAddress abo, final UserAddress abp, final InstrumentInfo[] abq) {
-        this.xH = xh;
-        this.abh = abh;
-        this.abi = abi;
-        this.abj = abj;
-        this.abk = abk;
-        this.abl = abl;
-        this.abm = abm;
-        this.abn = abn;
-        this.abo = abo;
-        this.abp = abp;
-        this.abq = abq;
+    FullWallet(final int br, final String asq, final String asr, final ProxyCard ass, final String ast, final Address asu, final Address asv, final String[] asw, final UserAddress asx, final UserAddress asy, final InstrumentInfo[] asz) {
+        this.BR = br;
+        this.asq = asq;
+        this.asr = asr;
+        this.ass = ass;
+        this.ast = ast;
+        this.asu = asu;
+        this.asv = asv;
+        this.asw = asw;
+        this.asx = asx;
+        this.asy = asy;
+        this.asz = asz;
     }
     
     public int describeContents() {
@@ -52,48 +52,48 @@ public final class FullWallet implements SafeParcelable
     
     @Deprecated
     public Address getBillingAddress() {
-        return this.abl;
+        return this.asu;
     }
     
     public UserAddress getBuyerBillingAddress() {
-        return this.abo;
+        return this.asx;
     }
     
     public UserAddress getBuyerShippingAddress() {
-        return this.abp;
+        return this.asy;
     }
     
     public String getEmail() {
-        return this.abk;
+        return this.ast;
     }
     
     public String getGoogleTransactionId() {
-        return this.abh;
+        return this.asq;
     }
     
     public InstrumentInfo[] getInstrumentInfos() {
-        return this.abq;
+        return this.asz;
     }
     
     public String getMerchantTransactionId() {
-        return this.abi;
+        return this.asr;
     }
     
     public String[] getPaymentDescriptions() {
-        return this.abn;
+        return this.asw;
     }
     
     public ProxyCard getProxyCard() {
-        return this.abj;
+        return this.ass;
     }
     
     @Deprecated
     public Address getShippingAddress() {
-        return this.abm;
+        return this.asv;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

@@ -4,50 +4,74 @@
 
 package com.google.android.gms.drive.internal;
 
-import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.common.internal.safeparcel.a;
-import android.os.Parcelable;
-import com.google.android.gms.common.internal.safeparcel.b;
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.os.IBinder;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.IInterface;
 
-public class ae implements Parcelable$Creator<OnListParentsResponse>
+public interface ae extends IInterface
 {
-    static void a(final OnListParentsResponse onListParentsResponse, final Parcel parcel, final int n) {
-        final int p3 = b.p(parcel);
-        b.c(parcel, 1, onListParentsResponse.xH);
-        b.a(parcel, 2, (Parcelable)onListParentsResponse.FK, n, false);
-        b.F(parcel, p3);
-    }
+    void L(final boolean p0) throws RemoteException;
     
-    public OnListParentsResponse S(final Parcel parcel) {
-        final int o = a.o(parcel);
-        int g = 0;
-        DataHolder dataHolder = null;
-        while (parcel.dataPosition() < o) {
-            final int n = a.n(parcel);
-            switch (a.R(n)) {
+    public abstract static class a extends Binder implements ae
+    {
+        public static ae X(final IBinder binder) {
+            if (binder == null) {
+                return null;
+            }
+            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.drive.internal.IEventReleaseCallback");
+            if (queryLocalInterface != null && queryLocalInterface instanceof ae) {
+                return (ae)queryLocalInterface;
+            }
+            return new ae.a.a(binder);
+        }
+        
+        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
+            switch (n) {
                 default: {
-                    a.b(parcel, n);
-                    continue;
+                    return super.onTransact(n, parcel, parcel2, n2);
+                }
+                case 1598968902: {
+                    parcel2.writeString("com.google.android.gms.drive.internal.IEventReleaseCallback");
+                    return true;
                 }
                 case 1: {
-                    g = a.g(parcel, n);
-                    continue;
-                }
-                case 2: {
-                    dataHolder = a.a(parcel, n, (android.os.Parcelable$Creator<DataHolder>)DataHolder.CREATOR);
-                    continue;
+                    parcel.enforceInterface("com.google.android.gms.drive.internal.IEventReleaseCallback");
+                    this.L(parcel.readInt() != 0);
+                    return true;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        
+        private static class a implements ae
+        {
+            private IBinder lb;
+            
+            a(final IBinder lb) {
+                this.lb = lb;
+            }
+            
+            @Override
+            public void L(final boolean b) throws RemoteException {
+                int n = 1;
+                final Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.gms.drive.internal.IEventReleaseCallback");
+                    if (!b) {
+                        n = 0;
+                    }
+                    obtain.writeInt(n);
+                    this.lb.transact(1, obtain, (Parcel)null, 1);
+                }
+                finally {
+                    obtain.recycle();
+                }
+            }
+            
+            public IBinder asBinder() {
+                return this.lb;
+            }
         }
-        return new OnListParentsResponse(g, dataHolder);
-    }
-    
-    public OnListParentsResponse[] aw(final int n) {
-        return new OnListParentsResponse[n];
     }
 }

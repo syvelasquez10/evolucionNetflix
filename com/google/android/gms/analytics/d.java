@@ -4,17 +4,17 @@
 
 package com.google.android.gms.analytics;
 
-import com.google.android.gms.internal.ef;
+import com.google.android.gms.internal.hb;
 import java.util.Collection;
 import java.util.Map;
 
 interface d
 {
-    void a(final Map<String, String> p0, final long p1, final String p2, final Collection<ef> p3);
+    void a(final Map<String, String> p0, final long p1, final String p2, final Collection<hb> p3);
     
-    void bW();
+    m dN();
     
-    n bX();
+    void dispatch();
     
-    void j(final long p0);
+    void l(final long p0);
 }

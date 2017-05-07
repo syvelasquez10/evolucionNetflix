@@ -51,6 +51,12 @@ public class FalcorServerException extends VolleyError
             }
             statusCode = StatusCode.WRONG_PATH;
         }
+        else if (FalcorParseUtils.isAlreadyInQueue(lowerCase)) {
+            statusCode = StatusCode.ALREADY_IN_QUEUE;
+        }
+        else if (FalcorParseUtils.isNotInQueue(lowerCase)) {
+            statusCode = StatusCode.NOT_IN_QUEUE;
+        }
         else if (FalcorParseUtils.isMapCacheError(lowerCase)) {
             if (errorLogging != null) {
                 errorLogging.logHandledException("map cache miss");

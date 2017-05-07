@@ -4,34 +4,66 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.data.DataHolder;
-import java.util.Collection;
-import java.util.Arrays;
-import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.metadata.internal.h;
+import com.google.android.gms.common.internal.safeparcel.a;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public class gu extends h<DriveId>
+public class gu implements Parcelable$Creator<gt>
 {
-    public static final gu Gx;
-    
-    static {
-        Gx = new gu();
+    static void a(final gt gt, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, gt.versionCode);
+        b.a(parcel, 2, gt.wD, false);
+        b.c(parcel, 3, gt.wE);
+        b.c(parcel, 4, gt.wF);
+        b.a(parcel, 5, gt.wG);
+        b.H(parcel, d);
     }
     
-    private gu() {
-        super("driveId", Arrays.asList("sqlId", "resourceId"), 4100000);
-    }
-    
-    protected DriveId j(final DataHolder dataHolder, final int n, final int n2) {
-        final long long1 = dataHolder.getMetadata().getLong("dbInstanceId");
-        String string;
-        final String s = string = dataHolder.getString("resourceId", n, n2);
-        if (s != null) {
-            string = s;
-            if (s.startsWith("generated-android-")) {
-                string = null;
+    public gt j(final Parcel parcel) {
+        boolean c = false;
+        final int c2 = a.C(parcel);
+        String o = null;
+        int g = 0;
+        int g2 = 0;
+        int g3 = 0;
+        while (parcel.dataPosition() < c2) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
+                default: {
+                    a.b(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    g3 = a.g(parcel, b);
+                    continue;
+                }
+                case 2: {
+                    o = a.o(parcel, b);
+                    continue;
+                }
+                case 3: {
+                    g2 = a.g(parcel, b);
+                    continue;
+                }
+                case 4: {
+                    g = a.g(parcel, b);
+                    continue;
+                }
+                case 5: {
+                    c = a.c(parcel, b);
+                    continue;
+                }
             }
         }
-        return new DriveId(string, Long.valueOf(dataHolder.getLong("sqlId", n, n2)), long1);
+        if (parcel.dataPosition() != c2) {
+            throw new a.a("Overread allowed size end=" + c2, parcel);
+        }
+        return new gt(g3, o, g2, g, c);
+    }
+    
+    public gt[] v(final int n) {
+        return new gt[n];
     }
 }

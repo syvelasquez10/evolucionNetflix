@@ -14,7 +14,7 @@ class bc extends aj
     private static final String ID;
     
     static {
-        ID = a.L.toString();
+        ID = a.N.toString();
     }
     
     public bc() {
@@ -22,20 +22,20 @@ class bc extends aj
     }
     
     @Override
-    public boolean jX() {
-        return false;
-    }
-    
-    @Override
-    public d.a x(final Map<String, d.a> map) {
+    public d.a C(final Map<String, d.a> map) {
         final Locale default1 = Locale.getDefault();
         if (default1 == null) {
-            return dh.lT();
+            return di.pI();
         }
         final String language = default1.getLanguage();
         if (language == null) {
-            return dh.lT();
+            return di.pI();
         }
-        return dh.r(language.toLowerCase());
+        return di.u(language.toLowerCase());
+    }
+    
+    @Override
+    public boolean nL() {
+        return false;
     }
 }

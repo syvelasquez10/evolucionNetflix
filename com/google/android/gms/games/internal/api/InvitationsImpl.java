@@ -9,7 +9,7 @@ import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.games.multiplayer.InvitationBuffer;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.common.api.BaseImplementation;
 import android.os.RemoteException;
 import com.google.android.gms.games.internal.GamesClientImpl;
 import com.google.android.gms.common.api.Api;
@@ -23,7 +23,7 @@ public final class InvitationsImpl implements Invitations
 {
     @Override
     public Intent getInvitationInboxIntent(final GoogleApiClient googleApiClient) {
-        return Games.c(googleApiClient).gs();
+        return Games.c(googleApiClient).ke();
     }
     
     @Override
@@ -35,7 +35,7 @@ public final class InvitationsImpl implements Invitations
     public PendingResult<LoadInvitationsResult> loadInvitations(final GoogleApiClient googleApiClient, final int n) {
         return googleApiClient.a((PendingResult<LoadInvitationsResult>)new LoadInvitationsImpl() {
             protected void a(final GamesClientImpl gamesClientImpl) {
-                gamesClientImpl.c((d<LoadInvitationsResult>)this, n);
+                gamesClientImpl.c((BaseImplementation.b<LoadInvitationsResult>)this, n);
             }
         });
     }
@@ -47,16 +47,16 @@ public final class InvitationsImpl implements Invitations
     
     @Override
     public void unregisterInvitationListener(final GoogleApiClient googleApiClient) {
-        Games.c(googleApiClient).gt();
+        Games.c(googleApiClient).kf();
     }
     
     private abstract static class LoadInvitationsImpl extends BaseGamesApiMethodImpl<LoadInvitationsResult>
     {
-        public LoadInvitationsResult C(final Status status) {
+        public LoadInvitationsResult T(final Status status) {
             return new LoadInvitationsResult() {
                 @Override
                 public InvitationBuffer getInvitations() {
-                    return new InvitationBuffer(DataHolder.empty(14));
+                    return new InvitationBuffer(DataHolder.as(14));
                 }
                 
                 @Override

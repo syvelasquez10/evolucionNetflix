@@ -42,8 +42,8 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeHorizontalRowHeight((NetflixActivity)this.getContext(), b)));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         ((Activity)this.getContext()).getLayoutInflater().inflate(2130903102, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131165414);
-        (this.img = (AdvancedImageView)this.findViewById(2131165412)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361923));
+        this.title = (TextView)this.findViewById(2131165416);
+        (this.img = (AdvancedImageView)this.findViewById(2131165414)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361949));
     }
     
     public PlayContext getPlayContext() {
@@ -61,10 +61,10 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         }
         this.playContext = new PlayContextImp(trackable, n);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493187), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493192), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493252, new Object[] { cwVideo.getTitle(), cwVideo.getPlayable().getSeasonNumber(), cwVideo.getPlayable().getEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493257, new Object[] { cwVideo.getTitle(), cwVideo.getPlayable().getSeasonNumber(), cwVideo.getPlayable().getEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());

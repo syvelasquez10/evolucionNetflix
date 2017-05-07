@@ -4,66 +4,109 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.internal.safeparcel.a;
-import com.google.android.gms.common.internal.safeparcel.b;
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import java.util.Iterator;
+import android.os.Build$VERSION;
+import android.content.pm.PackageManager$NameNotFoundException;
+import android.os.SystemClock;
+import java.util.HashMap;
+import java.util.ArrayList;
+import android.content.Context;
 
-public class dy implements Parcelable$Creator<dx>
+@ez
+public final class dy extends eg.a
 {
-    static void a(final dx dx, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, dx.versionCode);
-        b.a(parcel, 2, dx.rq, false);
-        b.c(parcel, 3, dx.rr);
-        b.c(parcel, 4, dx.rs);
-        b.a(parcel, 5, dx.rt);
-        b.F(parcel, p3);
+    private Context mContext;
+    private String mv;
+    private String su;
+    private ArrayList<String> sv;
+    
+    public dy(final String su, final ArrayList<String> sv, final Context mContext, final String mv) {
+        this.su = su;
+        this.sv = sv;
+        this.mv = mv;
+        this.mContext = mContext;
     }
     
-    public dx h(final Parcel parcel) {
-        boolean c = false;
-        final int o = a.o(parcel);
-        String n = null;
-        int g = 0;
-        int g2 = 0;
-        int g3 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n2 = a.n(parcel);
-            switch (a.R(n2)) {
-                default: {
-                    a.b(parcel, n2);
-                    continue;
-                }
-                case 1: {
-                    g3 = a.g(parcel, n2);
-                    continue;
-                }
-                case 2: {
-                    n = a.n(parcel, n2);
-                    continue;
-                }
-                case 3: {
-                    g2 = a.g(parcel, n2);
-                    continue;
-                }
-                case 4: {
-                    g = a.g(parcel, n2);
-                    continue;
-                }
-                case 5: {
-                    c = a.c(parcel, n2);
-                    continue;
+    private void cr() {
+        try {
+            this.mContext.getClassLoader().loadClass("com.google.ads.conversiontracking.IAPConversionReporter").getDeclaredMethod("reportWithProductId", Context.class, String.class, String.class, Boolean.TYPE).invoke(null, this.mContext, this.su, "", true);
+        }
+        catch (ClassNotFoundException ex2) {
+            gs.W("Google Conversion Tracking SDK 1.2.0 or above is required to report a conversion.");
+        }
+        catch (NoSuchMethodException ex3) {
+            gs.W("Google Conversion Tracking SDK 1.2.0 or above is required to report a conversion.");
+        }
+        catch (Exception ex) {
+            gs.d("Fail to report a conversion.", ex);
+        }
+    }
+    
+    protected String a(String replaceAll, final HashMap<String, String> hashMap) {
+        final String packageName = this.mContext.getPackageName();
+        String versionName;
+        long elapsedRealtime;
+        long di;
+        while (true) {
+            try {
+                versionName = this.mContext.getPackageManager().getPackageInfo(packageName, 0).versionName;
+                elapsedRealtime = SystemClock.elapsedRealtime();
+                di = gb.cZ().di();
+                for (final String s : hashMap.keySet()) {
+                    replaceAll = replaceAll.replaceAll(String.format("(?<!@)((?:@@)*)@%s(?<!@)((?:@@)*)@", s), String.format("$1%s$2", hashMap.get(s)));
                 }
             }
+            catch (PackageManager$NameNotFoundException ex) {
+                gs.d("Error to retrieve app version", (Throwable)ex);
+                versionName = "";
+                continue;
+            }
+            break;
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
-        }
-        return new dx(g3, n, g2, g, c);
+        return replaceAll.replaceAll(String.format("(?<!@)((?:@@)*)@%s(?<!@)((?:@@)*)@", "sessionid"), String.format("$1%s$2", gb.vK)).replaceAll(String.format("(?<!@)((?:@@)*)@%s(?<!@)((?:@@)*)@", "appid"), String.format("$1%s$2", packageName)).replaceAll(String.format("(?<!@)((?:@@)*)@%s(?<!@)((?:@@)*)@", "osversion"), String.format("$1%s$2", String.valueOf(Build$VERSION.SDK_INT))).replaceAll(String.format("(?<!@)((?:@@)*)@%s(?<!@)((?:@@)*)@", "sdkversion"), String.format("$1%s$2", this.mv)).replaceAll(String.format("(?<!@)((?:@@)*)@%s(?<!@)((?:@@)*)@", "appversion"), String.format("$1%s$2", versionName)).replaceAll(String.format("(?<!@)((?:@@)*)@%s(?<!@)((?:@@)*)@", "timestamp"), String.format("$1%s$2", String.valueOf(elapsedRealtime - di))).replaceAll(String.format("(?<!@)((?:@@)*)@%s(?<!@)((?:@@)*)@", "[^@]+"), String.format("$1%s$2", "")).replaceAll("@@", "@");
     }
     
-    public dx[] o(final int n) {
-        return new dx[n];
+    public String getProductId() {
+        return this.su;
+    }
+    
+    protected int o(final int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n == 1) {
+            return 2;
+        }
+        if (n == 4) {
+            return 3;
+        }
+        return 0;
+    }
+    
+    public void recordPlayBillingResolution(final int n) {
+        if (n == 0) {
+            this.cr();
+        }
+        final HashMap<String, String> hashMap = new HashMap<String, String>();
+        hashMap.put("google_play_status", String.valueOf(n));
+        hashMap.put("sku", this.su);
+        hashMap.put("status", String.valueOf(this.o(n)));
+        final Iterator<String> iterator = this.sv.iterator();
+        while (iterator.hasNext()) {
+            new gq(this.mContext, this.mv, this.a(iterator.next(), hashMap)).start();
+        }
+    }
+    
+    public void recordResolution(final int n) {
+        if (n == 1) {
+            this.cr();
+        }
+        final HashMap<String, String> hashMap = new HashMap<String, String>();
+        hashMap.put("status", String.valueOf(n));
+        hashMap.put("sku", this.su);
+        final Iterator<String> iterator = this.sv.iterator();
+        while (iterator.hasNext()) {
+            new gq(this.mContext, this.mv, this.a(iterator.next(), hashMap)).start();
+        }
     }
 }

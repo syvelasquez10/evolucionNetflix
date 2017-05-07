@@ -4,16 +4,15 @@
 
 package com.google.android.gms.tagmanager;
 
-import com.google.android.gms.internal.d;
-
-class bs implements cj
+class bs implements bk
 {
     @Override
-    public cl bH(final String s) {
-        return new bt();
+    public cs of() {
+        return new bw();
     }
     
     @Override
-    public void d(final d.a a) {
+    public ck ou() {
+        return new bt();
     }
 }

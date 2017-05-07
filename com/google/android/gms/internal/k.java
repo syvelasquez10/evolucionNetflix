@@ -4,126 +4,138 @@
 
 package com.google.android.gms.internal;
 
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import java.io.IOException;
+import android.view.MotionEvent;
 import android.content.Context;
+import android.net.Uri;
 
-public class k extends j
+public class k
 {
-    private k(final Context context, final n n, final o o) {
-        super(context, n, o);
+    private String kR;
+    private String kS;
+    private String kT;
+    private String[] kU;
+    private g kV;
+    
+    public k(final g kv) {
+        this.kR = "googleads.g.doubleclick.net";
+        this.kS = "/pagead/ads";
+        this.kT = "ad.doubleclick.net";
+        this.kU = new String[] { ".doubleclick.net", ".googleadservices.com", ".googlesyndication.com" };
+        this.kV = kv;
     }
     
-    public static k a(final String s, final Context context) {
-        final e e = new e();
-        j.a(s, context, e);
-        return new k(context, e, new q(239));
-    }
-    
-    @Override
-    protected void b(final Context context) {
-        final long n = 1L;
-        super.b(context);
-        a a = null;
-        try {
-            final a f;
-            a = (f = this.f(context));
-            final boolean b = f.isLimitAdTrackingEnabled();
-            if (!b) {
-                goto Label_0055;
-            }
-            final k k = this;
-            final int n2 = 28;
-            final long n3 = n;
-            k.a(n2, n3);
-            final a a2 = a;
-            final String s = a2.getId();
-            final String s3;
-            final String s2 = s3 = s;
-            if (s3 != null) {
-                final k i = this;
-                final int n4 = 30;
-                final String s4 = s2;
-                i.a(n4, s4);
-            }
-            return;
-        }
-        catch (IOException ex) {
-            this.a(28, 1L);
-            return;
-        }
-        catch (GooglePlayServicesNotAvailableException ex2) {}
-        try {
-            final a f = a;
-            final boolean b = f.isLimitAdTrackingEnabled();
-            if (!b) {
-                goto Label_0055;
-            }
-            final k k = this;
-            final int n2 = 28;
-            final long n3 = n;
-            k.a(n2, n3);
-            final a a2 = a;
-            final String s = a2.getId();
-            final String s3;
-            final String s2 = s3 = s;
-            if (s3 != null) {
-                final k i = this;
-                final int n4 = 30;
-                final String s4 = s2;
-                i.a(n4, s4);
-            }
-        }
-        catch (IOException ex3) {}
-    }
-    
-    a f(final Context context) throws IOException, GooglePlayServicesNotAvailableException {
-        int i = 0;
-        AdvertisingIdClient.Info advertisingIdInfo;
-        byte[] array;
-        try {
-            advertisingIdInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-            final String s = advertisingIdInfo.getId();
-            if (s == null || !s.matches("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$")) {
-                return new a(s, advertisingIdInfo.isLimitAdTrackingEnabled());
-            }
-            array = new byte[16];
-            int n = 0;
-            while (i < s.length()) {
-                int n2;
-                if (i == 8 || i == 13 || i == 18 || (n2 = i) == 23) {
-                    n2 = i + 1;
+    private Uri a(Uri a, final Context context, final String s, final boolean b) throws l {
+        boolean a2 = false;
+        Label_0064: {
+            try {
+                a2 = this.a(a);
+                if (a2) {
+                    if (a.toString().contains("dc_ms=")) {
+                        throw new l("Parameter already exists: dc_ms");
+                    }
+                    break Label_0064;
                 }
-                array[n] = (byte)((Character.digit(s.charAt(n2), 16) << 4) + Character.digit(s.charAt(n2 + 1), 16));
-                ++n;
-                i = n2 + 2;
+            }
+            catch (UnsupportedOperationException ex) {
+                throw new l("Provided Uri is not in a valid state");
+            }
+            if (a.getQueryParameter("ms") != null) {
+                throw new l("Query parameter already exists: ms");
             }
         }
-        catch (GooglePlayServicesRepairableException ex) {
-            throw new IOException(ex);
+        String s2;
+        if (b) {
+            s2 = this.kV.a(context, s);
         }
-        final String s = this.jP.a(array, true);
-        return new a(s, advertisingIdInfo.isLimitAdTrackingEnabled());
+        else {
+            s2 = this.kV.a(context);
+        }
+        if (a2) {
+            return this.b(a, "dc_ms", s2);
+        }
+        a = this.a(a, "ms", s2);
+        return a;
     }
     
-    class a
-    {
-        private String ka;
-        private boolean kb;
-        
-        public a(final String ka, final boolean kb) {
-            this.ka = ka;
-            this.kb = kb;
+    private Uri a(final Uri uri, final String s, final String s2) throws UnsupportedOperationException {
+        final String string = uri.toString();
+        int n;
+        if ((n = string.indexOf("&adurl")) == -1) {
+            n = string.indexOf("?adurl");
         }
-        
-        public String getId() {
-            return this.ka;
+        if (n != -1) {
+            return Uri.parse(string.substring(0, n + 1) + s + "=" + s2 + "&" + string.substring(n + 1));
         }
-        
-        public boolean isLimitAdTrackingEnabled() {
-            return this.kb;
+        return uri.buildUpon().appendQueryParameter(s, s2).build();
+    }
+    
+    private Uri b(final Uri uri, final String s, final String s2) {
+        final String string = uri.toString();
+        final int index = string.indexOf(";adurl");
+        if (index != -1) {
+            return Uri.parse(string.substring(0, index + 1) + s + "=" + s2 + ";" + string.substring(index + 1));
         }
+        final String encodedPath = uri.getEncodedPath();
+        final int index2 = string.indexOf(encodedPath);
+        return Uri.parse(string.substring(0, encodedPath.length() + index2) + ";" + s + "=" + s2 + ";" + string.substring(encodedPath.length() + index2));
+    }
+    
+    public Uri a(Uri a, final Context context) throws l {
+        try {
+            a = this.a(a, context, a.getQueryParameter("ai"), true);
+            return a;
+        }
+        catch (UnsupportedOperationException ex) {
+            throw new l("Provided Uri is not in a valid state");
+        }
+    }
+    
+    public void a(final MotionEvent motionEvent) {
+        this.kV.a(motionEvent);
+    }
+    
+    public boolean a(final Uri uri) {
+        if (uri == null) {
+            throw new NullPointerException();
+        }
+        try {
+            return uri.getHost().equals(this.kT);
+        }
+        catch (NullPointerException ex) {
+            return false;
+        }
+    }
+    
+    public boolean b(final Uri uri) {
+        final boolean b = false;
+        if (uri == null) {
+            throw new NullPointerException();
+        }
+        try {
+            final String host = uri.getHost();
+            final String[] ku = this.kU;
+            final int length = ku.length;
+            int n = 0;
+            boolean b2;
+            while (true) {
+                b2 = b;
+                if (n >= length) {
+                    break;
+                }
+                if (host.endsWith(ku[n])) {
+                    b2 = true;
+                    break;
+                }
+                ++n;
+            }
+            return b2;
+        }
+        catch (NullPointerException ex) {
+            return false;
+        }
+    }
+    
+    public g z() {
+        return this.kV;
     }
 }

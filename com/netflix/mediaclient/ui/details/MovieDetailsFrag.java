@@ -92,7 +92,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
             
             @Override
             public CharSequence getStarringText() {
-                return StringUtils.createBoldLabeledText((Context)MovieDetailsFrag.this.getActivity(), 2131493175, movieDetails.getActors());
+                return StringUtils.createBoldLabeledText((Context)MovieDetailsFrag.this.getActivity(), 2131493180, movieDetails.getActors());
             }
         };
     }
@@ -122,11 +122,11 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361870);
-        final View inflate = ((ViewStub)onCreateView.findViewById(2131165654)).inflate();
+        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361896);
+        final View inflate = ((ViewStub)onCreateView.findViewById(2131165657)).inflate();
         inflate.setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
-        this.similarShowsTitle = (TextView)inflate.findViewById(2131165626);
-        (this.gridView = (StaticGridView)inflate.findViewById(2131165634)).setFocusable(false);
+        this.similarShowsTitle = (TextView)inflate.findViewById(2131165630);
+        (this.gridView = (StaticGridView)inflate.findViewById(2131165638)).setFocusable(false);
         this.adapter = new SimilarItemsGridViewAdapter(this.getActivity(), this.gridView, true);
         this.gridView.setAdapter((ListAdapter)this.adapter);
         return onCreateView;
@@ -160,7 +160,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     @Override
     protected void showDetailsView(final MovieDetails movieDetails) {
         super.showDetailsView(movieDetails);
-        this.similarShowsTitle.setText((CharSequence)this.getString(2131493173, new Object[] { movieDetails.getTitle() }));
+        this.similarShowsTitle.setText((CharSequence)this.getString(2131493178, new Object[] { movieDetails.getTitle() }));
         this.similarShowsTitle.setVisibility(0);
         this.adapter.setData(movieDetails.getSimilars(), new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
         this.scrollTo(this.targetScrollYOffset);

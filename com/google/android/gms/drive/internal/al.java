@@ -4,25 +4,50 @@
 
 package com.google.android.gms.drive.internal;
 
-import android.os.RemoteException;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.a;
+import com.google.android.gms.drive.DrivePreferences;
+import com.google.android.gms.common.internal.safeparcel.a;
+import android.os.Parcelable;
+import com.google.android.gms.common.internal.safeparcel.b;
+import android.os.Parcel;
+import android.os.Parcelable$Creator;
 
-public class al extends c
+public class al implements Parcelable$Creator<OnDrivePreferencesResponse>
 {
-    private final a.d<Status> wH;
-    
-    public al(final a.d<Status> wh) {
-        this.wH = wh;
+    static void a(final OnDrivePreferencesResponse onDrivePreferencesResponse, final Parcel parcel, final int n) {
+        final int d = b.D(parcel);
+        b.c(parcel, 1, onDrivePreferencesResponse.BR);
+        b.a(parcel, 2, (Parcelable)onDrivePreferencesResponse.Pj, n, false);
+        b.H(parcel, d);
     }
     
-    @Override
-    public void m(final Status status) throws RemoteException {
-        this.wH.b(status);
+    public OnDrivePreferencesResponse an(final Parcel parcel) {
+        final int c = a.C(parcel);
+        int g = 0;
+        DrivePreferences drivePreferences = null;
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
+                default: {
+                    a.b(parcel, b);
+                    continue;
+                }
+                case 1: {
+                    g = a.g(parcel, b);
+                    continue;
+                }
+                case 2: {
+                    drivePreferences = a.a(parcel, b, DrivePreferences.CREATOR);
+                    continue;
+                }
+            }
+        }
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
+        }
+        return new OnDrivePreferencesResponse(g, drivePreferences);
     }
     
-    @Override
-    public void onSuccess() throws RemoteException {
-        this.wH.b(Status.Bv);
+    public OnDrivePreferencesResponse[] bz(final int n) {
+        return new OnDrivePreferencesResponse[n];
     }
 }

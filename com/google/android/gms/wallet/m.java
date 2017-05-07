@@ -11,53 +11,53 @@ import android.os.Parcelable$Creator;
 
 public class m implements Parcelable$Creator<NotifyTransactionStatusRequest>
 {
-    static void a(final NotifyTransactionStatusRequest notifyTransactionStatusRequest, final Parcel parcel, int p3) {
-        p3 = b.p(parcel);
-        b.c(parcel, 1, notifyTransactionStatusRequest.xH);
-        b.a(parcel, 2, notifyTransactionStatusRequest.abh, false);
+    static void a(final NotifyTransactionStatusRequest notifyTransactionStatusRequest, final Parcel parcel, int d) {
+        d = b.D(parcel);
+        b.c(parcel, 1, notifyTransactionStatusRequest.BR);
+        b.a(parcel, 2, notifyTransactionStatusRequest.asq, false);
         b.c(parcel, 3, notifyTransactionStatusRequest.status);
-        b.a(parcel, 4, notifyTransactionStatusRequest.ach, false);
-        b.F(parcel, p3);
+        b.a(parcel, 4, notifyTransactionStatusRequest.atq, false);
+        b.H(parcel, d);
     }
     
-    public NotifyTransactionStatusRequest bi(final Parcel parcel) {
-        String n = null;
+    public NotifyTransactionStatusRequest dy(final Parcel parcel) {
+        String o = null;
         int g = 0;
-        final int o = a.o(parcel);
-        String n2 = null;
+        final int c = a.C(parcel);
+        String o2 = null;
         int g2 = 0;
-        while (parcel.dataPosition() < o) {
-            final int n3 = a.n(parcel);
-            switch (a.R(n3)) {
+        while (parcel.dataPosition() < c) {
+            final int b = a.B(parcel);
+            switch (a.aD(b)) {
                 default: {
-                    a.b(parcel, n3);
+                    a.b(parcel, b);
                     continue;
                 }
                 case 1: {
-                    g2 = a.g(parcel, n3);
+                    g2 = a.g(parcel, b);
                     continue;
                 }
                 case 2: {
-                    n2 = a.n(parcel, n3);
+                    o2 = a.o(parcel, b);
                     continue;
                 }
                 case 3: {
-                    g = a.g(parcel, n3);
+                    g = a.g(parcel, b);
                     continue;
                 }
                 case 4: {
-                    n = a.n(parcel, n3);
+                    o = a.o(parcel, b);
                     continue;
                 }
             }
         }
-        if (parcel.dataPosition() != o) {
-            throw new a.a("Overread allowed size end=" + o, parcel);
+        if (parcel.dataPosition() != c) {
+            throw new a.a("Overread allowed size end=" + c, parcel);
         }
-        return new NotifyTransactionStatusRequest(g2, n2, g, n);
+        return new NotifyTransactionStatusRequest(g2, o2, g, o);
     }
     
-    public NotifyTransactionStatusRequest[] cu(final int n) {
+    public NotifyTransactionStatusRequest[] fy(final int n) {
         return new NotifyTransactionStatusRequest[n];
     }
 }

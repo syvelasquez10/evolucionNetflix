@@ -5,6 +5,7 @@
 package com.google.android.gms.location;
 
 import android.os.Parcel;
+import java.util.Comparator;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public class DetectedActivity implements SafeParcelable
@@ -18,29 +19,39 @@ public class DetectedActivity implements SafeParcelable
     public static final int TILTING = 5;
     public static final int UNKNOWN = 4;
     public static final int WALKING = 7;
-    int NS;
-    int NT;
-    private final int xH;
+    public static final Comparator<DetectedActivity> adT;
+    private final int BR;
+    int adU;
+    int adV;
     
     static {
+        adT = new Comparator<DetectedActivity>() {
+            public int a(final DetectedActivity detectedActivity, final DetectedActivity detectedActivity2) {
+                int n;
+                if ((n = Integer.valueOf(detectedActivity2.getConfidence()).compareTo(Integer.valueOf(detectedActivity.getConfidence()))) == 0) {
+                    n = Integer.valueOf(detectedActivity.getType()).compareTo(Integer.valueOf(detectedActivity2.getType()));
+                }
+                return n;
+            }
+        };
         CREATOR = new DetectedActivityCreator();
     }
     
-    public DetectedActivity(final int ns, final int nt) {
-        this.xH = 1;
-        this.NS = ns;
-        this.NT = nt;
+    public DetectedActivity(final int adU, final int adV) {
+        this.BR = 1;
+        this.adU = adU;
+        this.adV = adV;
     }
     
-    public DetectedActivity(final int xh, final int ns, final int nt) {
-        this.xH = xh;
-        this.NS = ns;
-        this.NT = nt;
+    public DetectedActivity(final int br, final int adU, final int adV) {
+        this.BR = br;
+        this.adU = adU;
+        this.adV = adV;
     }
     
-    private int bv(final int n) {
+    private int cw(final int n) {
         int n2 = n;
-        if (n > 8) {
+        if (n > 9) {
             n2 = 4;
         }
         return n2;
@@ -51,20 +62,20 @@ public class DetectedActivity implements SafeParcelable
     }
     
     public int getConfidence() {
-        return this.NT;
+        return this.adV;
     }
     
     public int getType() {
-        return this.bv(this.NS);
+        return this.cw(this.adU);
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
     public String toString() {
-        return "DetectedActivity [type=" + this.getType() + ", confidence=" + this.NT + "]";
+        return "DetectedActivity [type=" + this.getType() + ", confidence=" + this.adV + "]";
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

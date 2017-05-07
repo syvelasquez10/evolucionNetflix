@@ -4,93 +4,37 @@
 
 package com.google.android.gms.internal;
 
-import android.webkit.WebView;
-import java.net.URISyntaxException;
-import java.net.URI;
-import android.text.TextUtils;
-import android.webkit.WebViewClient;
+import android.content.Intent;
 
-public class ee extends WebViewClient
+@ez
+public class ee
 {
-    private final dz lC;
-    private final String rM;
-    private boolean rN;
-    private final ct rO;
+    private final String oA;
     
-    public ee(final ct ro, final dz lc, final String s) {
-        this.rM = this.B(s);
-        this.rN = false;
-        this.lC = lc;
-        this.rO = ro;
+    public ee(final String oa) {
+        this.oA = oa;
     }
     
-    private String B(final String s) {
-        if (!TextUtils.isEmpty((CharSequence)s)) {
-            try {
-                if (s.endsWith("/")) {
-                    return s.substring(0, s.length() - 1);
+    public boolean a(final String s, final int n, final Intent intent) {
+        if (s != null && intent != null) {
+            final String e = ed.e(intent);
+            final String f = ed.f(intent);
+            if (e != null && f != null) {
+                if (!s.equals(ed.D(e))) {
+                    gs.W("Developer payload not match.");
+                    return false;
                 }
-            }
-            catch (IndexOutOfBoundsException ex) {
-                dw.w(ex.getMessage());
-                return s;
-            }
-        }
-        return s;
-    }
-    
-    protected boolean A(String s) {
-        s = this.B(s);
-        if (!TextUtils.isEmpty((CharSequence)s)) {
-            try {
-                final URI uri = new URI(s);
-                if ("passback".equals(uri.getScheme())) {
-                    dw.v("Passback received");
-                    this.rO.bb();
-                    return true;
+                if (this.oA != null && !ef.b(this.oA, e, f)) {
+                    gs.W("Fail to verify signature.");
+                    return false;
                 }
-                if (!TextUtils.isEmpty((CharSequence)this.rM)) {
-                    final URI uri2 = new URI(this.rM);
-                    s = uri2.getHost();
-                    final String host = uri.getHost();
-                    final String path = uri2.getPath();
-                    final String path2 = uri.getPath();
-                    if (fo.equal(s, host) && fo.equal(path, path2)) {
-                        dw.v("Passback received");
-                        this.rO.bb();
-                        return true;
-                    }
-                }
-            }
-            catch (URISyntaxException ex) {
-                dw.w(ex.getMessage());
-                return false;
+                return true;
             }
         }
         return false;
     }
     
-    public void onLoadResource(final WebView webView, final String s) {
-        dw.v("JavascriptAdWebViewClient::onLoadResource: " + s);
-        if (!this.A(s)) {
-            this.lC.bI().onLoadResource(this.lC, s);
-        }
-    }
-    
-    public void onPageFinished(final WebView webView, final String s) {
-        dw.v("JavascriptAdWebViewClient::onPageFinished: " + s);
-        if (!this.rN) {
-            this.rO.ba();
-            this.rN = true;
-        }
-    }
-    
-    public boolean shouldOverrideUrlLoading(final WebView webView, final String s) {
-        dw.v("JavascriptAdWebViewClient::shouldOverrideUrlLoading: " + s);
-        if (this.A(s)) {
-            dw.v("shouldOverrideUrlLoading: received passback url");
-            return true;
-        }
-        return this.lC.bI().shouldOverrideUrlLoading(this.lC, s);
+    public String cu() {
+        return gj.dp();
     }
 }

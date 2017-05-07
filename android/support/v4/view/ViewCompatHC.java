@@ -34,11 +34,107 @@ class ViewCompatHC
         return view.getMeasuredWidthAndState();
     }
     
+    public static float getPivotX(final View view) {
+        return view.getPivotX();
+    }
+    
+    public static float getPivotY(final View view) {
+        return view.getPivotY();
+    }
+    
+    public static float getRotation(final View view) {
+        return view.getRotation();
+    }
+    
+    public static float getRotationX(final View view) {
+        return view.getRotationX();
+    }
+    
+    public static float getRotationY(final View view) {
+        return view.getRotationY();
+    }
+    
+    public static float getScaleX(final View view) {
+        return view.getScaleX();
+    }
+    
+    public static float getScaleY(final View view) {
+        return view.getScaleY();
+    }
+    
+    public static float getTranslationX(final View view) {
+        return view.getTranslationX();
+    }
+    
+    public static float getTranslationY(final View view) {
+        return view.getTranslationY();
+    }
+    
+    public static float getX(final View view) {
+        return view.getX();
+    }
+    
+    public static float getY(final View view) {
+        return view.getY();
+    }
+    
+    public static void jumpDrawablesToCurrentState(final View view) {
+        view.jumpDrawablesToCurrentState();
+    }
+    
     public static int resolveSizeAndState(final int n, final int n2, final int n3) {
         return View.resolveSizeAndState(n, n2, n3);
     }
     
+    public static void setAlpha(final View view, final float alpha) {
+        view.setAlpha(alpha);
+    }
+    
     public static void setLayerType(final View view, final int n, final Paint paint) {
         view.setLayerType(n, paint);
+    }
+    
+    public static void setPivotX(final View view, final float pivotX) {
+        view.setPivotX(pivotX);
+    }
+    
+    public static void setPivotY(final View view, final float pivotY) {
+        view.setPivotY(pivotY);
+    }
+    
+    public static void setRotation(final View view, final float rotation) {
+        view.setRotation(rotation);
+    }
+    
+    public static void setRotationX(final View view, final float rotationX) {
+        view.setRotationX(rotationX);
+    }
+    
+    public static void setRotationY(final View view, final float rotationY) {
+        view.setRotationY(rotationY);
+    }
+    
+    public static void setScaleX(final View view, final float scaleX) {
+        view.setScaleX(scaleX);
+    }
+    
+    public static void setScaleY(final View view, final float scaleY) {
+        view.setScaleY(scaleY);
+    }
+    
+    public static void setTranslationX(final View view, final float translationX) {
+        view.setTranslationX(translationX);
+    }
+    
+    public static void setTranslationY(final View view, final float translationY) {
+        view.setTranslationY(translationY);
+    }
+    
+    public static void setX(final View view, final float x) {
+        view.setX(x);
+    }
+    
+    public static void setY(final View view, final float y) {
+        view.setY(y);
     }
 }

@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.pushnotification;
 
 import android.net.Uri;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.Notification$BigTextStyle;
 import android.graphics.Bitmap;
 import com.netflix.mediaclient.Log;
@@ -78,7 +80,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
     
     public static void createNotification(final Context context, final Payload payload, final ImageLoader imageLoader, final int n, final ErrorLogging errorLogging) {
         final long when = payload.getWhen();
-        final String title = payload.getTitle(context.getString(2131492964));
+        final String title = payload.getTitle(context.getString(2131492969));
         final String ticker = payload.getTicker(title);
         final Notification$Builder notification$Builder = new Notification$Builder(context);
         notification$Builder.setContentIntent(NotificationBuilder.getNotificationOpenedIntent(context, payload));
@@ -87,7 +89,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
         notification$Builder.setAutoCancel(true);
         notification$Builder.setContentTitle((CharSequence)title);
         notification$Builder.setContentText((CharSequence)payload.text);
-        notification$Builder.setSmallIcon(2130837802);
+        notification$Builder.setSmallIcon(2130837768);
         notification$Builder.setWhen(when);
         while (true) {
             if (!StringUtils.isNotEmpty(payload.sound) || !NotificationBuilder.isSoundEnabled(context)) {
@@ -122,12 +124,19 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
                 }
                 
                 @Override
-                public void onResponse(final Bitmap largeIcon, final String s) {
+                public void onResponse(Bitmap squaredBitmap, final String s) {
                     if (Log.isLoggable("nf_push", 3)) {
                         Log.d("nf_push", "Image is downloaded " + payload.largeIcon + " from " + s);
                     }
-                    if (largeIcon != null) {
-                        notification$Builder.setLargeIcon(largeIcon);
+                    if (squaredBitmap != null) {
+                        if (AndroidUtils.getAndroidVersion() >= 21) {
+                            squaredBitmap = ViewUtils.createSquaredBitmap(squaredBitmap);
+                            notification$Builder.setLargeIcon(squaredBitmap);
+                            notification$Builder.setColor(context.getResources().getColor(2131296356));
+                        }
+                        else {
+                            notification$Builder.setLargeIcon(squaredBitmap);
+                        }
                     }
                     addBigView(context, payload, notification$Builder, n, imageLoader, errorLogging);
                     Log.d("nf_push", "Large icon image set!");

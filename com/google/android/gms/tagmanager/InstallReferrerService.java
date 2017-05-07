@@ -11,8 +11,8 @@ import android.app.IntentService;
 
 public final class InstallReferrerService extends IntentService
 {
-    CampaignTrackingService Yi;
-    Context Yj;
+    CampaignTrackingService apl;
+    Context apm;
     
     public InstallReferrerService() {
         super("InstallReferrerService");
@@ -23,22 +23,22 @@ public final class InstallReferrerService extends IntentService
     }
     
     private void a(final Context context, final Intent intent) {
-        if (this.Yi == null) {
-            this.Yi = new CampaignTrackingService();
+        if (this.apl == null) {
+            this.apl = new CampaignTrackingService();
         }
-        this.Yi.processIntent(context, intent);
+        this.apl.processIntent(context, intent);
     }
     
     protected void onHandleIntent(final Intent intent) {
         final String stringExtra = intent.getStringExtra("referrer");
         Context context;
-        if (this.Yj != null) {
-            context = this.Yj;
+        if (this.apm != null) {
+            context = this.apm;
         }
         else {
             context = this.getApplicationContext();
         }
-        ay.c(context, stringExtra);
+        ay.d(context, stringExtra);
         this.a(context, intent);
     }
 }

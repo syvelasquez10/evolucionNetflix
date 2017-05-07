@@ -36,7 +36,7 @@ public interface h extends IInterface
     
     public abstract static class a extends Binder implements h
     {
-        public static h aJ(final IBinder binder) {
+        public static h bx(final IBinder binder) {
             if (binder == null) {
                 return null;
             }
@@ -115,7 +115,7 @@ public interface h extends IInterface
                 }
                 case 8: {
                     parcel.enforceInterface("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
-                    final boolean a = this.a(aJ(parcel.readStrongBinder()));
+                    final boolean a = this.a(bx(parcel.readStrongBinder()));
                     parcel2.writeNoException();
                     hashCodeRemote = n3;
                     if (a) {
@@ -157,10 +157,10 @@ public interface h extends IInterface
         
         private static class a implements h
         {
-            private IBinder kn;
+            private IBinder lb;
             
-            a(final IBinder kn) {
-                this.kn = kn;
+            a(final IBinder lb) {
+                this.lb = lb;
             }
             
             @Override
@@ -178,7 +178,7 @@ public interface h extends IInterface
                         binder = null;
                     }
                     obtain.writeStrongBinder(binder);
-                    this.kn.transact(8, obtain, obtain2, 0);
+                    this.lb.transact(8, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -192,7 +192,7 @@ public interface h extends IInterface
             }
             
             public IBinder asBinder() {
-                return this.kn;
+                return this.lb;
             }
             
             @Override
@@ -201,7 +201,7 @@ public interface h extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
-                    this.kn.transact(2, obtain, obtain2, 0);
+                    this.lb.transact(2, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -217,7 +217,7 @@ public interface h extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
-                    this.kn.transact(11, obtain, obtain2, 0);
+                    this.lb.transact(11, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -236,7 +236,7 @@ public interface h extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
-                    this.kn.transact(3, obtain, obtain2, 0);
+                    this.lb.transact(3, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readString();
                 }
@@ -252,7 +252,7 @@ public interface h extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
-                    this.kn.transact(5, obtain, obtain2, 0);
+                    this.lb.transact(5, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readFloat();
                 }
@@ -268,7 +268,7 @@ public interface h extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
-                    this.kn.transact(9, obtain, obtain2, 0);
+                    this.lb.transact(9, obtain, obtain2, 0);
                     obtain2.readException();
                     return obtain2.readInt();
                 }
@@ -285,7 +285,7 @@ public interface h extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
-                    this.kn.transact(7, obtain, obtain2, 0);
+                    this.lb.transact(7, obtain, obtain2, 0);
                     obtain2.readException();
                     if (obtain2.readInt() != 0) {
                         b = true;
@@ -304,7 +304,7 @@ public interface h extends IInterface
                 final Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
-                    this.kn.transact(1, obtain, obtain2, 0);
+                    this.lb.transact(1, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -324,7 +324,7 @@ public interface h extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(10, obtain, obtain2, 0);
+                    this.lb.transact(10, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -344,7 +344,7 @@ public interface h extends IInterface
                         n = 1;
                     }
                     obtain.writeInt(n);
-                    this.kn.transact(6, obtain, obtain2, 0);
+                    this.lb.transact(6, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {
@@ -360,7 +360,7 @@ public interface h extends IInterface
                 try {
                     obtain.writeInterfaceToken("com.google.android.gms.maps.model.internal.ITileOverlayDelegate");
                     obtain.writeFloat(n);
-                    this.kn.transact(4, obtain, obtain2, 0);
+                    this.lb.transact(4, obtain, obtain2, 0);
                     obtain2.readException();
                 }
                 finally {

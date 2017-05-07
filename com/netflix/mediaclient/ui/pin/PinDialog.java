@@ -69,7 +69,7 @@ public class PinDialog extends NetflixDialogFrag
         final Bundle arguments = new Bundle();
         arguments.putParcelable(PinDialogVault.NAME, (Parcelable)pinDialogVault);
         pinDialog.setArguments(arguments);
-        pinDialog.setStyle(1, 2131558605);
+        pinDialog.setStyle(1, 2131558710);
         return pinDialog;
     }
     
@@ -140,7 +140,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     private static void showConnectivityErrorDialog(final NetflixActivity netflixActivity, final Status status) {
-        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131493273), status.getStatusCode().getValue())).setPositiveButton(2131492977, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131493278), status.getStatusCode().getValue())).setPositiveButton(2131492982, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 dialogInterface.dismiss();
             }
@@ -189,7 +189,7 @@ public class PinDialog extends NetflixDialogFrag
         }
         mPinForgotView.setVisibility(visibility3);
         if (b) {
-            this.mPinMessage.setText(2131493327);
+            this.mPinMessage.setText(2131493332);
         }
     }
     
@@ -235,19 +235,19 @@ public class PinDialog extends NetflixDialogFrag
         this.mVault = (PinDialogVault)this.getArguments().getParcelable(PinDialogVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
         final View inflate = this.getActivity().getLayoutInflater().inflate(2130903146, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131165522);
-        (this.mPinEditText = (EditText)inflate.findViewById(2131165519)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialogOnDone());
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131165524);
+        (this.mPinEditText = (EditText)inflate.findViewById(2131165521)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialogOnDone());
         this.mPinEditText.setOnKeyListener((View$OnKeyListener)new PinDialogOnKeyPress());
-        this.mPinMessage = (TextView)inflate.findViewById(2131165518);
-        (this.mPinForgotView = (TextView)inflate.findViewById(2131165521)).setMovementMethod((MovementMethod)new LinkMovementMethod() {
+        this.mPinMessage = (TextView)inflate.findViewById(2131165520);
+        (this.mPinForgotView = (TextView)inflate.findViewById(2131165523)).setMovementMethod((MovementMethod)new LinkMovementMethod() {
             public boolean onTouchEvent(final TextView textView, final Spannable spannable, final MotionEvent motionEvent) {
-                PinDialog.this.mPinForgotView.setLinkTextColor(PinDialog.this.getResources().getColor(2131296389));
+                PinDialog.this.mPinForgotView.setLinkTextColor(PinDialog.this.getResources().getColor(2131296435));
                 return super.onTouchEvent(textView, spannable, motionEvent);
             }
         });
         this.mPinForgotView.setFocusable(false);
-        ((Button)inflate.findViewById(2131165523)).setOnClickListener((View$OnClickListener)new PinDialogOnCancel());
-        this.mErrorIcon = (ImageView)inflate.findViewById(2131165520);
+        ((Button)inflate.findViewById(2131165525)).setOnClickListener((View$OnClickListener)new PinDialogOnCancel());
+        this.mErrorIcon = (ImageView)inflate.findViewById(2131165522);
         this.showErrorIcon(false);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
@@ -280,7 +280,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     public void retryOnPinFailure() {
-        this.mPinMessage.setText(2131493330);
+        this.mPinMessage.setText(2131493335);
         this.mPinEditText.getText().clear();
         this.showErrorIcon(true);
         this.showSoftKeyboard(this.getServiceManager(), this.mPinEditText);

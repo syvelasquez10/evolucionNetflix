@@ -13,48 +13,48 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class MaskedWalletRequest implements SafeParcelable
 {
     public static final Parcelable$Creator<MaskedWalletRequest> CREATOR;
-    boolean abV;
-    boolean abW;
-    boolean abX;
-    String abY;
-    String abZ;
-    String abd;
-    String abi;
-    Cart abr;
-    boolean aca;
-    boolean acb;
-    CountrySpecification[] acc;
-    boolean acd;
-    boolean ace;
-    ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification> acf;
-    private final int xH;
+    private final int BR;
+    Cart asA;
+    String asl;
+    String asr;
+    boolean ate;
+    boolean atf;
+    boolean atg;
+    String ath;
+    String ati;
+    boolean atj;
+    boolean atk;
+    CountrySpecification[] atl;
+    boolean atm;
+    boolean atn;
+    ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification> ato;
     
     static {
         CREATOR = (Parcelable$Creator)new l();
     }
     
     MaskedWalletRequest() {
-        this.xH = 3;
-        this.acd = true;
-        this.ace = true;
+        this.BR = 3;
+        this.atm = true;
+        this.atn = true;
     }
     
-    MaskedWalletRequest(final int xh, final String abi, final boolean abV, final boolean abW, final boolean abX, final String abY, final String abd, final String abZ, final Cart abr, final boolean aca, final boolean acb, final CountrySpecification[] acc, final boolean acd, final boolean ace, final ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification> acf) {
-        this.xH = xh;
-        this.abi = abi;
-        this.abV = abV;
-        this.abW = abW;
-        this.abX = abX;
-        this.abY = abY;
-        this.abd = abd;
-        this.abZ = abZ;
-        this.abr = abr;
-        this.aca = aca;
-        this.acb = acb;
-        this.acc = acc;
-        this.acd = acd;
-        this.ace = ace;
-        this.acf = acf;
+    MaskedWalletRequest(final int br, final String asr, final boolean ate, final boolean atf, final boolean atg, final String ath, final String asl, final String ati, final Cart asA, final boolean atj, final boolean atk, final CountrySpecification[] atl, final boolean atm, final boolean atn, final ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification> ato) {
+        this.BR = br;
+        this.asr = asr;
+        this.ate = ate;
+        this.atf = atf;
+        this.atg = atg;
+        this.ath = ath;
+        this.asl = asl;
+        this.ati = ati;
+        this.asA = asA;
+        this.atj = atj;
+        this.atk = atk;
+        this.atl = atl;
+        this.atm = atm;
+        this.atn = atn;
+        this.ato = ato;
     }
     
     public static Builder newBuilder() {
@@ -64,11 +64,11 @@ public final class MaskedWalletRequest implements SafeParcelable
     }
     
     public boolean allowDebitCard() {
-        return this.ace;
+        return this.atn;
     }
     
     public boolean allowPrepaidCard() {
-        return this.acd;
+        return this.atm;
     }
     
     public int describeContents() {
@@ -76,55 +76,55 @@ public final class MaskedWalletRequest implements SafeParcelable
     }
     
     public ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification> getAllowedCountrySpecificationsForShipping() {
-        return this.acf;
+        return this.ato;
     }
     
     public CountrySpecification[] getAllowedShippingCountrySpecifications() {
-        return this.acc;
+        return this.atl;
     }
     
     public Cart getCart() {
-        return this.abr;
+        return this.asA;
     }
     
     public String getCurrencyCode() {
-        return this.abd;
+        return this.asl;
     }
     
     public String getEstimatedTotalPrice() {
-        return this.abY;
+        return this.ath;
     }
     
     public String getMerchantName() {
-        return this.abZ;
+        return this.ati;
     }
     
     public String getMerchantTransactionId() {
-        return this.abi;
+        return this.asr;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public boolean isBillingAgreement() {
-        return this.acb;
+        return this.atk;
     }
     
     public boolean isPhoneNumberRequired() {
-        return this.abV;
+        return this.ate;
     }
     
     public boolean isShippingAddressRequired() {
-        return this.abW;
+        return this.atf;
     }
     
     public boolean shouldRetrieveWalletObjects() {
-        return this.aca;
+        return this.atj;
     }
     
     public boolean useMinimalBillingAddress() {
-        return this.abX;
+        return this.atg;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -134,19 +134,19 @@ public final class MaskedWalletRequest implements SafeParcelable
     public final class Builder
     {
         public Builder addAllowedCountrySpecificationForShipping(final com.google.android.gms.identity.intents.model.CountrySpecification countrySpecification) {
-            if (MaskedWalletRequest.this.acf == null) {
-                MaskedWalletRequest.this.acf = new ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification>();
+            if (MaskedWalletRequest.this.ato == null) {
+                MaskedWalletRequest.this.ato = new ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification>();
             }
-            MaskedWalletRequest.this.acf.add(countrySpecification);
+            MaskedWalletRequest.this.ato.add(countrySpecification);
             return this;
         }
         
         public Builder addAllowedCountrySpecificationsForShipping(final Collection<com.google.android.gms.identity.intents.model.CountrySpecification> collection) {
             if (collection != null) {
-                if (MaskedWalletRequest.this.acf == null) {
-                    MaskedWalletRequest.this.acf = new ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification>();
+                if (MaskedWalletRequest.this.ato == null) {
+                    MaskedWalletRequest.this.ato = new ArrayList<com.google.android.gms.identity.intents.model.CountrySpecification>();
                 }
-                MaskedWalletRequest.this.acf.addAll(collection);
+                MaskedWalletRequest.this.ato.addAll(collection);
             }
             return this;
         }
@@ -155,63 +155,63 @@ public final class MaskedWalletRequest implements SafeParcelable
             return MaskedWalletRequest.this;
         }
         
-        public Builder setAllowDebitCard(final boolean ace) {
-            MaskedWalletRequest.this.ace = ace;
+        public Builder setAllowDebitCard(final boolean atn) {
+            MaskedWalletRequest.this.atn = atn;
             return this;
         }
         
-        public Builder setAllowPrepaidCard(final boolean acd) {
-            MaskedWalletRequest.this.acd = acd;
+        public Builder setAllowPrepaidCard(final boolean atm) {
+            MaskedWalletRequest.this.atm = atm;
             return this;
         }
         
-        public Builder setCart(final Cart abr) {
-            MaskedWalletRequest.this.abr = abr;
+        public Builder setCart(final Cart asA) {
+            MaskedWalletRequest.this.asA = asA;
             return this;
         }
         
-        public Builder setCurrencyCode(final String abd) {
-            MaskedWalletRequest.this.abd = abd;
+        public Builder setCurrencyCode(final String asl) {
+            MaskedWalletRequest.this.asl = asl;
             return this;
         }
         
-        public Builder setEstimatedTotalPrice(final String abY) {
-            MaskedWalletRequest.this.abY = abY;
+        public Builder setEstimatedTotalPrice(final String ath) {
+            MaskedWalletRequest.this.ath = ath;
             return this;
         }
         
-        public Builder setIsBillingAgreement(final boolean acb) {
-            MaskedWalletRequest.this.acb = acb;
+        public Builder setIsBillingAgreement(final boolean atk) {
+            MaskedWalletRequest.this.atk = atk;
             return this;
         }
         
-        public Builder setMerchantName(final String abZ) {
-            MaskedWalletRequest.this.abZ = abZ;
+        public Builder setMerchantName(final String ati) {
+            MaskedWalletRequest.this.ati = ati;
             return this;
         }
         
-        public Builder setMerchantTransactionId(final String abi) {
-            MaskedWalletRequest.this.abi = abi;
+        public Builder setMerchantTransactionId(final String asr) {
+            MaskedWalletRequest.this.asr = asr;
             return this;
         }
         
-        public Builder setPhoneNumberRequired(final boolean abV) {
-            MaskedWalletRequest.this.abV = abV;
+        public Builder setPhoneNumberRequired(final boolean ate) {
+            MaskedWalletRequest.this.ate = ate;
             return this;
         }
         
-        public Builder setShippingAddressRequired(final boolean abW) {
-            MaskedWalletRequest.this.abW = abW;
+        public Builder setShippingAddressRequired(final boolean atf) {
+            MaskedWalletRequest.this.atf = atf;
             return this;
         }
         
-        public Builder setShouldRetrieveWalletObjects(final boolean aca) {
-            MaskedWalletRequest.this.aca = aca;
+        public Builder setShouldRetrieveWalletObjects(final boolean atj) {
+            MaskedWalletRequest.this.atj = atj;
             return this;
         }
         
-        public Builder setUseMinimalBillingAddress(final boolean abX) {
-            MaskedWalletRequest.this.abX = abX;
+        public Builder setUseMinimalBillingAddress(final boolean atg) {
+            MaskedWalletRequest.this.atg = atg;
             return this;
         }
     }

@@ -4,32 +4,64 @@
 
 package com.google.android.gms.internal;
 
-import java.util.Iterator;
-import java.util.HashMap;
+import java.io.IOException;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import android.content.Context;
 
-public class gq
+@ez
+public final class gq extends gg
 {
-    public static void a(final StringBuilder sb, final HashMap<String, String> hashMap) {
-        sb.append("{");
-        final Iterator<String> iterator = hashMap.keySet().iterator();
-        int n = 1;
-        while (iterator.hasNext()) {
-            final String s = iterator.next();
-            if (n == 0) {
-                sb.append(",");
+    private final Context mContext;
+    private final String mv;
+    private final String uR;
+    private String vW;
+    
+    public gq(final Context mContext, final String mv, final String ur) {
+        this.vW = null;
+        this.mContext = mContext;
+        this.mv = mv;
+        this.uR = ur;
+    }
+    
+    public gq(final Context mContext, final String mv, final String ur, final String vw) {
+        this.vW = null;
+        this.mContext = mContext;
+        this.mv = mv;
+        this.uR = ur;
+        this.vW = vw;
+    }
+    
+    @Override
+    public void cp() {
+        try {
+            gs.V("Pinging URL: " + this.uR);
+            final HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(this.uR).openConnection();
+            try {
+                if (this.vW == null) {
+                    gj.a(this.mContext, this.mv, true, httpURLConnection);
+                }
+                else {
+                    gj.a(this.mContext, this.mv, true, httpURLConnection, this.vW);
+                }
+                final int responseCode = httpURLConnection.getResponseCode();
+                if (responseCode < 200 || responseCode >= 300) {
+                    gs.W("Received non-success response code " + responseCode + " from pinging URL: " + this.uR);
+                }
             }
-            else {
-                n = 0;
-            }
-            final String s2 = hashMap.get(s);
-            sb.append("\"").append(s).append("\":");
-            if (s2 == null) {
-                sb.append("null");
-            }
-            else {
-                sb.append("\"").append(s2).append("\"");
+            finally {
+                httpURLConnection.disconnect();
             }
         }
-        sb.append("}");
+        catch (IndexOutOfBoundsException ex) {
+            gs.W("Error while parsing ping URL: " + this.uR + ". " + ex.getMessage());
+        }
+        catch (IOException ex2) {
+            gs.W("Error while pinging URL: " + this.uR + ". " + ex2.getMessage());
+        }
+    }
+    
+    @Override
+    public void onStop() {
     }
 }

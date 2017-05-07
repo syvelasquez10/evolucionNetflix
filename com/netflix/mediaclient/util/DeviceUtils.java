@@ -248,6 +248,6 @@ public final class DeviceUtils
     }
     
     public static void showSoftKeyboard(final Activity activity) {
-        activity.getWindow().setSoftInputMode(4);
+        activity.getWindow().setSoftInputMode(36);
     }
 }

@@ -25,18 +25,18 @@ class h extends aj
     }
     
     @Override
-    public boolean jX() {
-        return true;
+    public d.a C(final Map<String, d.a> map) {
+        try {
+            return di.u(this.mContext.getPackageManager().getPackageInfo(this.mContext.getPackageName(), 0).versionCode);
+        }
+        catch (PackageManager$NameNotFoundException ex) {
+            bh.T("Package name " + this.mContext.getPackageName() + " not found. " + ex.getMessage());
+            return di.pI();
+        }
     }
     
     @Override
-    public d.a x(final Map<String, d.a> map) {
-        try {
-            return dh.r(this.mContext.getPackageManager().getPackageInfo(this.mContext.getPackageName(), 0).versionCode);
-        }
-        catch (PackageManager$NameNotFoundException ex) {
-            bh.w("Package name " + this.mContext.getPackageName() + " not found. " + ex.getMessage());
-            return dh.lT();
-        }
+    public boolean nL() {
+        return true;
     }
 }

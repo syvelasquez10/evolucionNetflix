@@ -4,56 +4,45 @@
 
 package com.google.android.gms.analytics;
 
-class w implements j
+import android.text.TextUtils;
+
+class w
 {
-    String so;
-    String sp;
-    String uV;
-    int uW;
-    int uX;
+    private String AE;
+    private final long AF;
+    private final long AG;
+    private String AH;
     
-    w() {
-        this.uW = -1;
-        this.uX = -1;
+    w(final String ae, final long af, final long ag) {
+        this.AH = "https:";
+        this.AE = ae;
+        this.AF = af;
+        this.AG = ag;
     }
     
-    public boolean cC() {
-        return this.so != null;
+    void aj(final String ae) {
+        this.AE = ae;
     }
     
-    public String cD() {
-        return this.so;
+    void ak(final String s) {
+        if (s != null && !TextUtils.isEmpty((CharSequence)s.trim()) && s.toLowerCase().startsWith("http:")) {
+            this.AH = "http:";
+        }
     }
     
-    public boolean cE() {
-        return this.sp != null;
+    String eG() {
+        return this.AE;
     }
     
-    public String cF() {
-        return this.sp;
+    long eH() {
+        return this.AF;
     }
     
-    public boolean cG() {
-        return this.uV != null;
+    long eI() {
+        return this.AG;
     }
     
-    public String cH() {
-        return this.uV;
-    }
-    
-    public boolean cI() {
-        return this.uW >= 0;
-    }
-    
-    public int cJ() {
-        return this.uW;
-    }
-    
-    public boolean cK() {
-        return this.uX != -1;
-    }
-    
-    public boolean cL() {
-        return this.uX == 1;
+    String eJ() {
+        return this.AH;
     }
 }

@@ -4,6 +4,8 @@
 
 package android.support.v7.internal.view;
 
+import android.support.v4.view.ViewConfigurationCompat;
+import android.view.ViewConfiguration;
 import android.os.Build$VERSION;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -41,7 +43,7 @@ public class ActionBarPolicy
     
     public int getTabContainerHeight() {
         final TypedArray obtainStyledAttributes = this.mContext.obtainStyledAttributes((AttributeSet)null, R.styleable.ActionBar, R.attr.actionBarStyle, 0);
-        final int layoutDimension = obtainStyledAttributes.getLayoutDimension(1, 0);
+        final int layoutDimension = obtainStyledAttributes.getLayoutDimension(R.styleable.ActionBar_height, 0);
         final Resources resources = this.mContext.getResources();
         int min = layoutDimension;
         if (!this.hasEmbeddedTabs()) {
@@ -52,10 +54,13 @@ public class ActionBarPolicy
     }
     
     public boolean hasEmbeddedTabs() {
+        if (this.mContext.getApplicationInfo().targetSdkVersion >= 16) {
+            return this.mContext.getResources().getBoolean(R.bool.abc_action_bar_embed_tabs);
+        }
         return this.mContext.getResources().getBoolean(R.bool.abc_action_bar_embed_tabs_pre_jb);
     }
     
     public boolean showsOverflowMenuButton() {
-        return Build$VERSION.SDK_INT >= 11;
+        return Build$VERSION.SDK_INT >= 19 || !ViewConfigurationCompat.hasPermanentMenuKey(ViewConfiguration.get(this.mContext));
     }
 }

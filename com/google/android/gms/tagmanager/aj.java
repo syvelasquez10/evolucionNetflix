@@ -4,39 +4,39 @@
 
 package com.google.android.gms.tagmanager;
 
+import java.util.Collection;
 import com.google.android.gms.internal.d;
 import java.util.Map;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 abstract class aj
 {
-    private final Set<String> XU;
-    private final String XV;
+    private final Set<String> aoY;
+    private final String aoZ;
     
-    public aj(String xv, final String... array) {
-        this.XV = xv;
-        this.XU = new HashSet<String>(array.length);
+    public aj(String aoZ, final String... array) {
+        this.aoZ = aoZ;
+        this.aoY = new HashSet<String>(array.length);
         for (int length = array.length, i = 0; i < length; ++i) {
-            xv = array[i];
-            this.XU.add(xv);
+            aoZ = array[i];
+            this.aoY.add(aoZ);
         }
     }
     
+    public abstract d.a C(final Map<String, d.a> p0);
+    
     boolean a(final Set<String> set) {
-        return set.containsAll(this.XU);
+        return set.containsAll(this.aoY);
     }
     
-    public abstract boolean jX();
+    public abstract boolean nL();
     
-    public String kB() {
-        return this.XV;
+    public String op() {
+        return this.aoZ;
     }
     
-    public Set<String> kC() {
-        return this.XU;
+    public Set<String> oq() {
+        return this.aoY;
     }
-    
-    public abstract d.a x(final Map<String, d.a> p0);
 }

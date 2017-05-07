@@ -6,31 +6,31 @@ package com.google.android.gms.maps.model;
 
 import com.google.android.gms.maps.internal.v;
 import android.os.Parcel;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import android.content.res.TypedArray;
 import com.google.android.gms.R;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 
 public final class CameraPosition implements SafeParcelable
 {
-    public static final CameraPositionCreator CREATOR;
+    public static final a CREATOR;
+    private final int BR;
     public final float bearing;
     public final LatLng target;
     public final float tilt;
-    private final int xH;
     public final float zoom;
     
     static {
-        CREATOR = new CameraPositionCreator();
+        CREATOR = new a();
     }
     
-    CameraPosition(final int xh, final LatLng target, float zoom, final float n, final float n2) {
-        fq.b(target, "null camera target");
-        fq.b(0.0f <= n && n <= 90.0f, "Tilt needs to be between 0 and 90 inclusive");
-        this.xH = xh;
+    CameraPosition(final int br, final LatLng target, float zoom, final float n, final float n2) {
+        n.b(target, "null camera target");
+        n.b(0.0f <= n && n <= 90.0f, (Object)"Tilt needs to be between 0 and 90 inclusive");
+        this.BR = br;
         this.target = target;
         this.zoom = zoom;
         this.tilt = n + 0.0f;
@@ -59,15 +59,15 @@ public final class CameraPosition implements SafeParcelable
         }
         final TypedArray obtainAttributes = context.getResources().obtainAttributes(set, R.styleable.MapAttrs);
         float float1;
-        if (obtainAttributes.hasValue(2)) {
-            float1 = obtainAttributes.getFloat(2, 0.0f);
+        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraTargetLat)) {
+            float1 = obtainAttributes.getFloat(R.styleable.MapAttrs_cameraTargetLat, 0.0f);
         }
         else {
             float1 = 0.0f;
         }
         float float2;
-        if (obtainAttributes.hasValue(3)) {
-            float2 = obtainAttributes.getFloat(3, 0.0f);
+        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraTargetLng)) {
+            float2 = obtainAttributes.getFloat(R.styleable.MapAttrs_cameraTargetLng, 0.0f);
         }
         else {
             float2 = 0.0f;
@@ -75,14 +75,14 @@ public final class CameraPosition implements SafeParcelable
         final LatLng latLng = new LatLng(float1, float2);
         final Builder builder = builder();
         builder.target(latLng);
-        if (obtainAttributes.hasValue(5)) {
-            builder.zoom(obtainAttributes.getFloat(5, 0.0f));
+        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraZoom)) {
+            builder.zoom(obtainAttributes.getFloat(R.styleable.MapAttrs_cameraZoom, 0.0f));
         }
-        if (obtainAttributes.hasValue(1)) {
-            builder.bearing(obtainAttributes.getFloat(1, 0.0f));
+        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraBearing)) {
+            builder.bearing(obtainAttributes.getFloat(R.styleable.MapAttrs_cameraBearing, 0.0f));
         }
-        if (obtainAttributes.hasValue(4)) {
-            builder.tilt(obtainAttributes.getFloat(4, 0.0f));
+        if (obtainAttributes.hasValue(R.styleable.MapAttrs_cameraTilt)) {
+            builder.tilt(obtainAttributes.getFloat(R.styleable.MapAttrs_cameraTilt, 0.0f));
         }
         return builder.build();
     }
@@ -110,65 +110,65 @@ public final class CameraPosition implements SafeParcelable
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
     public int hashCode() {
-        return fo.hashCode(this.target, this.zoom, this.tilt, this.bearing);
+        return m.hashCode(this.target, this.zoom, this.tilt, this.bearing);
     }
     
     @Override
     public String toString() {
-        return fo.e(this).a("target", this.target).a("zoom", this.zoom).a("tilt", this.tilt).a("bearing", this.bearing).toString();
+        return m.h(this).a("target", this.target).a("zoom", this.zoom).a("tilt", this.tilt).a("bearing", this.bearing).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (v.iB()) {
-            a.a(this, parcel, n);
+        if (v.mK()) {
+            b.a(this, parcel, n);
             return;
         }
-        CameraPositionCreator.a(this, parcel, n);
+        a.a(this, parcel, n);
     }
     
     public static final class Builder
     {
-        private LatLng SD;
-        private float SE;
-        private float SF;
-        private float SG;
+        private LatLng ajq;
+        private float ajr;
+        private float ajs;
+        private float ajt;
         
         public Builder() {
         }
         
         public Builder(final CameraPosition cameraPosition) {
-            this.SD = cameraPosition.target;
-            this.SE = cameraPosition.zoom;
-            this.SF = cameraPosition.tilt;
-            this.SG = cameraPosition.bearing;
+            this.ajq = cameraPosition.target;
+            this.ajr = cameraPosition.zoom;
+            this.ajs = cameraPosition.tilt;
+            this.ajt = cameraPosition.bearing;
         }
         
-        public Builder bearing(final float sg) {
-            this.SG = sg;
+        public Builder bearing(final float ajt) {
+            this.ajt = ajt;
             return this;
         }
         
         public CameraPosition build() {
-            return new CameraPosition(this.SD, this.SE, this.SF, this.SG);
+            return new CameraPosition(this.ajq, this.ajr, this.ajs, this.ajt);
         }
         
-        public Builder target(final LatLng sd) {
-            this.SD = sd;
+        public Builder target(final LatLng ajq) {
+            this.ajq = ajq;
             return this;
         }
         
-        public Builder tilt(final float sf) {
-            this.SF = sf;
+        public Builder tilt(final float ajs) {
+            this.ajs = ajs;
             return this;
         }
         
-        public Builder zoom(final float se) {
-            this.SE = se;
+        public Builder zoom(final float ajr) {
+            this.ajr = ajr;
             return this;
         }
     }

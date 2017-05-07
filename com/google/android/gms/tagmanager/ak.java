@@ -9,7 +9,7 @@ import java.io.File;
 
 class ak
 {
-    static boolean G(final String s) {
+    static boolean ag(final String s) {
         if (version() < 9) {
             return false;
         }
@@ -26,7 +26,7 @@ class ak
             return Integer.parseInt(Build$VERSION.SDK);
         }
         catch (NumberFormatException ex) {
-            bh.w("Invalid version number: " + Build$VERSION.SDK);
+            bh.T("Invalid version number: " + Build$VERSION.SDK);
             return 0;
         }
     }

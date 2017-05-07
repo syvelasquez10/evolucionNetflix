@@ -4,15 +4,16 @@
 
 package com.google.android.gms.ads.doubleclick;
 
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.content.Context;
-import android.os.Bundle;
 import com.google.android.gms.ads.mediation.MediationAdapter;
 import com.google.android.gms.ads.mediation.NetworkExtras;
 import android.location.Location;
 import java.util.Set;
+import android.os.Bundle;
+import com.google.android.gms.ads.mediation.customevent.CustomEvent;
 import java.util.Date;
-import com.google.android.gms.internal.as;
+import com.google.android.gms.internal.bg;
 
 public final class PublisherAdRequest
 {
@@ -24,86 +25,95 @@ public final class PublisherAdRequest
     public static final int GENDER_FEMALE = 2;
     public static final int GENDER_MALE = 1;
     public static final int GENDER_UNKNOWN = 0;
-    private final as kp;
+    private final bg ld;
     
     static {
-        DEVICE_ID_EMULATOR = as.DEVICE_ID_EMULATOR;
+        DEVICE_ID_EMULATOR = bg.DEVICE_ID_EMULATOR;
     }
     
     private PublisherAdRequest(final Builder builder) {
-        this.kp = new as(builder.kq);
+        this.ld = new bg(builder.le);
     }
     
-    as O() {
-        return this.kp;
+    public bg V() {
+        return this.ld;
     }
     
     public Date getBirthday() {
-        return this.kp.getBirthday();
+        return this.ld.getBirthday();
     }
     
     public String getContentUrl() {
-        return this.kp.getContentUrl();
+        return this.ld.getContentUrl();
+    }
+    
+    public <T extends CustomEvent> Bundle getCustomEventExtrasBundle(final Class<T> clazz) {
+        return this.ld.getCustomEventExtrasBundle(clazz);
     }
     
     public int getGender() {
-        return this.kp.getGender();
+        return this.ld.getGender();
     }
     
     public Set<String> getKeywords() {
-        return this.kp.getKeywords();
+        return this.ld.getKeywords();
     }
     
     public Location getLocation() {
-        return this.kp.getLocation();
+        return this.ld.getLocation();
     }
     
     public boolean getManualImpressionsEnabled() {
-        return this.kp.getManualImpressionsEnabled();
+        return this.ld.getManualImpressionsEnabled();
     }
     
     @Deprecated
     public <T extends NetworkExtras> T getNetworkExtras(final Class<T> clazz) {
-        return this.kp.getNetworkExtras(clazz);
+        return this.ld.getNetworkExtras(clazz);
     }
     
     public <T extends MediationAdapter> Bundle getNetworkExtrasBundle(final Class<T> clazz) {
-        return this.kp.getNetworkExtrasBundle(clazz);
+        return this.ld.getNetworkExtrasBundle(clazz);
     }
     
     public String getPublisherProvidedId() {
-        return this.kp.getPublisherProvidedId();
+        return this.ld.getPublisherProvidedId();
     }
     
     public boolean isTestDevice(final Context context) {
-        return this.kp.isTestDevice(context);
+        return this.ld.isTestDevice(context);
     }
     
     public static final class Builder
     {
-        private final as.a kq;
+        private final bg.a le;
         
         public Builder() {
-            this.kq = new as.a();
+            this.le = new bg.a();
+        }
+        
+        public Builder addCustomEventExtrasBundle(final Class<? extends CustomEvent> clazz, final Bundle bundle) {
+            this.le.b(clazz, bundle);
+            return this;
         }
         
         public Builder addKeyword(final String s) {
-            this.kq.g(s);
+            this.le.r(s);
             return this;
         }
         
         public Builder addNetworkExtras(final NetworkExtras networkExtras) {
-            this.kq.a(networkExtras);
+            this.le.a(networkExtras);
             return this;
         }
         
         public Builder addNetworkExtrasBundle(final Class<? extends MediationAdapter> clazz, final Bundle bundle) {
-            this.kq.a(clazz, bundle);
+            this.le.a(clazz, bundle);
             return this;
         }
         
         public Builder addTestDevice(final String s) {
-            this.kq.h(s);
+            this.le.s(s);
             return this;
         }
         
@@ -112,40 +122,40 @@ public final class PublisherAdRequest
         }
         
         public Builder setBirthday(final Date date) {
-            this.kq.a(date);
+            this.le.a(date);
             return this;
         }
         
         public Builder setContentUrl(final String s) {
-            fq.b(s, (Object)"Content URL must be non-null.");
-            fq.b(s, (Object)"Content URL must be non-empty.");
-            fq.a(s.length() <= 512, "Content URL must not exceed %d in length.  Provided length was %d.", 512, s.length());
-            this.kq.i(s);
+            n.b(s, (Object)"Content URL must be non-null.");
+            n.b(s, (Object)"Content URL must be non-empty.");
+            n.b(s.length() <= 512, "Content URL must not exceed %d in length.  Provided length was %d.", 512, s.length());
+            this.le.t(s);
             return this;
         }
         
         public Builder setGender(final int n) {
-            this.kq.d(n);
+            this.le.g(n);
             return this;
         }
         
         public Builder setLocation(final Location location) {
-            this.kq.a(location);
+            this.le.a(location);
             return this;
         }
         
         public Builder setManualImpressionsEnabled(final boolean b) {
-            this.kq.f(b);
+            this.le.g(b);
             return this;
         }
         
         public Builder setPublisherProvidedId(final String s) {
-            this.kq.j(s);
+            this.le.u(s);
             return this;
         }
         
         public Builder tagForChildDirectedTreatment(final boolean b) {
-            this.kq.g(b);
+            this.le.h(b);
             return this;
         }
     }

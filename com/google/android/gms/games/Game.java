@@ -11,13 +11,7 @@ import android.os.Parcelable;
 
 public interface Game extends Parcelable, Freezable<Game>
 {
-    boolean gb();
-    
-    boolean gc();
-    
-    boolean gd();
-    
-    String ge();
+    boolean areSnapshotsEnabled();
     
     int getAchievementTotalCount();
     
@@ -56,11 +50,21 @@ public interface Game extends Parcelable, Freezable<Game>
     
     String getSecondaryCategory();
     
-    int gf();
+    String getThemeColor();
     
     boolean isMuted();
     
     boolean isRealTimeMultiplayerEnabled();
     
     boolean isTurnBasedMultiplayerEnabled();
+    
+    boolean jL();
+    
+    boolean jM();
+    
+    boolean jN();
+    
+    String jO();
+    
+    int jP();
 }

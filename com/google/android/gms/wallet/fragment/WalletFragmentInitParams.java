@@ -4,7 +4,7 @@
 
 package com.google.android.gms.wallet.fragment;
 
-import com.google.android.gms.internal.fq;
+import com.google.android.gms.common.internal.n;
 import android.os.Parcel;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.MaskedWalletRequest;
@@ -14,27 +14,27 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class WalletFragmentInitParams implements SafeParcelable
 {
     public static final Parcelable$Creator<WalletFragmentInitParams> CREATOR;
-    private MaskedWalletRequest acB;
-    private int acO;
-    private MaskedWallet acP;
-    private String wG;
-    final int xH;
+    final int BR;
+    private String Dd;
+    private MaskedWalletRequest atL;
+    private MaskedWallet atM;
+    private int atZ;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
     private WalletFragmentInitParams() {
-        this.xH = 1;
-        this.acO = -1;
+        this.BR = 1;
+        this.atZ = -1;
     }
     
-    WalletFragmentInitParams(final int xh, final String wg, final MaskedWalletRequest acB, final int acO, final MaskedWallet acP) {
-        this.xH = xh;
-        this.wG = wg;
-        this.acB = acB;
-        this.acO = acO;
-        this.acP = acP;
+    WalletFragmentInitParams(final int br, final String dd, final MaskedWalletRequest atL, final int atZ, final MaskedWallet atM) {
+        this.BR = br;
+        this.Dd = dd;
+        this.atL = atL;
+        this.atZ = atZ;
+        this.atM = atM;
     }
     
     public static Builder newBuilder() {
@@ -48,19 +48,19 @@ public final class WalletFragmentInitParams implements SafeParcelable
     }
     
     public String getAccountName() {
-        return this.wG;
+        return this.Dd;
     }
     
     public MaskedWallet getMaskedWallet() {
-        return this.acP;
+        return this.atM;
     }
     
     public MaskedWalletRequest getMaskedWalletRequest() {
-        return this.acB;
+        return this.atL;
     }
     
     public int getMaskedWalletRequestCode() {
-        return this.acO;
+        return this.atZ;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -71,28 +71,28 @@ public final class WalletFragmentInitParams implements SafeParcelable
     {
         public WalletFragmentInitParams build() {
             final boolean b = true;
-            fq.a((WalletFragmentInitParams.this.acP != null && WalletFragmentInitParams.this.acB == null) || (WalletFragmentInitParams.this.acP == null && WalletFragmentInitParams.this.acB != null), (Object)"Exactly one of MaskedWallet or MaskedWalletRequest is required");
-            fq.a(WalletFragmentInitParams.this.acO >= 0 && b, (Object)"masked wallet request code is required and must be non-negative");
+            n.a((WalletFragmentInitParams.this.atM != null && WalletFragmentInitParams.this.atL == null) || (WalletFragmentInitParams.this.atM == null && WalletFragmentInitParams.this.atL != null), (Object)"Exactly one of MaskedWallet or MaskedWalletRequest is required");
+            n.a(WalletFragmentInitParams.this.atZ >= 0 && b, (Object)"masked wallet request code is required and must be non-negative");
             return WalletFragmentInitParams.this;
         }
         
         public Builder setAccountName(final String s) {
-            WalletFragmentInitParams.this.wG = s;
+            WalletFragmentInitParams.this.Dd = s;
             return this;
         }
         
         public Builder setMaskedWallet(final MaskedWallet maskedWallet) {
-            WalletFragmentInitParams.this.acP = maskedWallet;
+            WalletFragmentInitParams.this.atM = maskedWallet;
             return this;
         }
         
         public Builder setMaskedWalletRequest(final MaskedWalletRequest maskedWalletRequest) {
-            WalletFragmentInitParams.this.acB = maskedWalletRequest;
+            WalletFragmentInitParams.this.atL = maskedWalletRequest;
             return this;
         }
         
         public Builder setMaskedWalletRequestCode(final int n) {
-            WalletFragmentInitParams.this.acO = n;
+            WalletFragmentInitParams.this.atZ = n;
             return this;
         }
     }

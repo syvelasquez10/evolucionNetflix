@@ -226,7 +226,18 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     
     private void notifySessionend() {
         if (this.mSelectedRoute != null) {
-            final String string = "action=endCastSession\r\nfromuuid=" + this.getUuid(this.mSelectedRoute.getId()) + "\r\n";
+            String s2;
+            final String s = s2 = this.getUuid(this.mSelectedRoute.getId());
+            if (StringUtils.isNotEmpty(this.mTargetId)) {
+                s2 = s;
+                if (!this.mTargetId.equalsIgnoreCase(s)) {
+                    if (Log.isLoggable(CastManager.TAG, 3)) {
+                        Log.d(CastManager.TAG, "targetId " + this.mTargetId + "does not match " + s + ", use targetId");
+                    }
+                    s2 = this.mTargetId;
+                }
+            }
+            final String string = "action=endCastSession\r\nfromuuid=" + s2 + "\r\n";
             if (Log.isLoggable(CastManager.TAG, 3)) {
                 Log.d(CastManager.TAG, "onMessageReceived @session, body:" + string);
             }

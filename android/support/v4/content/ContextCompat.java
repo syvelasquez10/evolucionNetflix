@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Build$VERSION;
+import android.graphics.drawable.Drawable;
 import android.content.Context;
+import android.util.Log;
 import java.io.File;
 
 public class ContextCompat
@@ -18,6 +20,7 @@ public class ContextCompat
     private static final String DIR_DATA = "data";
     private static final String DIR_FILES = "files";
     private static final String DIR_OBB = "obb";
+    private static final String TAG = "ContextCompat";
     
     private static File buildPath(File file, final String... array) {
         for (int length = array.length, i = 0; i < length; ++i) {
@@ -30,6 +33,36 @@ public class ContextCompat
             }
         }
         return file;
+    }
+    
+    private static File createFilesDir(final File file) {
+        // monitorenter(ContextCompat.class)
+        File file2 = file;
+        try {
+            if (!file.exists()) {
+                file2 = file;
+                if (!file.mkdirs()) {
+                    if (file.exists()) {
+                        file2 = file;
+                    }
+                    else {
+                        Log.w("ContextCompat", "Unable to create files subdir " + file.getPath());
+                        file2 = null;
+                    }
+                }
+            }
+            return file2;
+        }
+        finally {
+        }
+        // monitorexit(ContextCompat.class)
+    }
+    
+    public static final Drawable getDrawable(final Context context, final int n) {
+        if (Build$VERSION.SDK_INT >= 21) {
+            return ContextCompatApi21.getDrawable(context, n);
+        }
+        return context.getResources().getDrawable(n);
     }
     
     public static File[] getExternalCacheDirs(final Context context) {
@@ -92,5 +125,19 @@ public class ContextCompat
             return true;
         }
         return false;
+    }
+    
+    public final File getCodeCacheDir(final Context context) {
+        if (Build$VERSION.SDK_INT >= 21) {
+            return ContextCompatApi21.getCodeCacheDir(context);
+        }
+        return createFilesDir(new File(context.getApplicationInfo().dataDir, "code_cache"));
+    }
+    
+    public final File getNoBackupFilesDir(final Context context) {
+        if (Build$VERSION.SDK_INT >= 21) {
+            return ContextCompatApi21.getNoBackupFilesDir(context);
+        }
+        return createFilesDir(new File(context.getApplicationInfo().dataDir, "no_backup"));
     }
 }

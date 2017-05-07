@@ -4,82 +4,43 @@
 
 package com.google.android.gms.internal;
 
-import android.os.Parcel;
-import android.os.IBinder;
-import android.os.Binder;
-import android.os.RemoteException;
-import android.os.IInterface;
+import java.security.MessageDigest;
 
-public interface ar extends IInterface
+public class ar extends ao
 {
-    void onAppEvent(final String p0, final String p1) throws RemoteException;
+    private MessageDigest nP;
     
-    public abstract static class a extends Binder implements ar
-    {
-        public a() {
-            this.attachInterface((IInterface)this, "com.google.android.gms.ads.internal.client.IAppEventListener");
+    byte[] a(final String[] array) {
+        final byte[] array2 = new byte[array.length];
+        for (int i = 0; i < array.length; ++i) {
+            array2[i] = (byte)(aq.o(array[i]) & 0xFF);
         }
-        
-        public static ar h(final IBinder binder) {
-            if (binder == null) {
-                return null;
-            }
-            final IInterface queryLocalInterface = binder.queryLocalInterface("com.google.android.gms.ads.internal.client.IAppEventListener");
-            if (queryLocalInterface != null && queryLocalInterface instanceof ar) {
-                return (ar)queryLocalInterface;
-            }
-            return new ar.a.a(binder);
-        }
-        
-        public IBinder asBinder() {
-            return (IBinder)this;
-        }
-        
-        public boolean onTransact(final int n, final Parcel parcel, final Parcel parcel2, final int n2) throws RemoteException {
-            switch (n) {
-                default: {
-                    return super.onTransact(n, parcel, parcel2, n2);
+        return array2;
+    }
+    
+    public byte[] l(final String s) {
+        while (true) {
+            final byte[] a = this.a(s.split(" "));
+            this.nP = this.ba();
+            while (true) {
+                final byte[] digest;
+                synchronized (this.mw) {
+                    if (this.nP == null) {
+                        // monitorexit(this.mw)
+                        return new byte[0];
+                    }
+                    this.nP.reset();
+                    this.nP.update(a);
+                    digest = this.nP.digest();
+                    final int length = 4;
+                    if (digest.length > 4) {
+                        final byte[] array = new byte[length];
+                        System.arraycopy(digest, 0, array, 0, array.length);
+                        return array;
+                    }
                 }
-                case 1598968902: {
-                    parcel2.writeString("com.google.android.gms.ads.internal.client.IAppEventListener");
-                    return true;
-                }
-                case 1: {
-                    parcel.enforceInterface("com.google.android.gms.ads.internal.client.IAppEventListener");
-                    this.onAppEvent(parcel.readString(), parcel.readString());
-                    parcel2.writeNoException();
-                    return true;
-                }
-            }
-        }
-        
-        private static class a implements ar
-        {
-            private IBinder kn;
-            
-            a(final IBinder kn) {
-                this.kn = kn;
-            }
-            
-            public IBinder asBinder() {
-                return this.kn;
-            }
-            
-            @Override
-            public void onAppEvent(final String s, final String s2) throws RemoteException {
-                final Parcel obtain = Parcel.obtain();
-                final Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken("com.google.android.gms.ads.internal.client.IAppEventListener");
-                    obtain.writeString(s);
-                    obtain.writeString(s2);
-                    this.kn.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                }
-                finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
+                final int length = digest.length;
+                continue;
             }
         }
     }

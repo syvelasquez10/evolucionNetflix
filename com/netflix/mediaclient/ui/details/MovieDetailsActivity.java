@@ -49,7 +49,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     private void showNewDetailsFrag(final int scrollYOffset) {
         this.setPrimaryFrag(this.createPrimaryFrag());
         ((MovieDetailsFrag)this.getPrimaryFrag()).setScrollYOffset(scrollYOffset);
-        this.getFragmentManager().beginTransaction().replace(2131165387, this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131165389, this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(this.manager, CommonStatus.OK);
     }

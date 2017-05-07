@@ -10,6 +10,7 @@ import android.support.v7.internal.view.SupportMenuInflater;
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.support.v7.internal.view.menu.MenuPopupHelper;
+import android.view.View$OnTouchListener;
 import android.content.Context;
 import android.view.View;
 import android.support.v7.internal.view.menu.MenuPresenter;
@@ -20,19 +21,49 @@ public class PopupMenu implements MenuBuilder.Callback, MenuPresenter.Callback
     private View mAnchor;
     private Context mContext;
     private OnDismissListener mDismissListener;
+    private View$OnTouchListener mDragListener;
     private MenuBuilder mMenu;
     private OnMenuItemClickListener mMenuItemClickListener;
     private MenuPopupHelper mPopup;
     
-    public PopupMenu(final Context mContext, final View mAnchor) {
+    public PopupMenu(final Context context, final View view) {
+        this(context, view, 0);
+    }
+    
+    public PopupMenu(final Context mContext, final View mAnchor, final int gravity) {
         this.mContext = mContext;
         (this.mMenu = new MenuBuilder(mContext)).setCallback((MenuBuilder.Callback)this);
         this.mAnchor = mAnchor;
-        (this.mPopup = new MenuPopupHelper(mContext, this.mMenu, mAnchor)).setCallback(this);
+        (this.mPopup = new MenuPopupHelper(mContext, this.mMenu, mAnchor)).setGravity(gravity);
+        this.mPopup.setCallback(this);
     }
     
     public void dismiss() {
         this.mPopup.dismiss();
+    }
+    
+    public View$OnTouchListener getDragToOpenListener() {
+        if (this.mDragListener == null) {
+            this.mDragListener = (View$OnTouchListener)new ListPopupWindow.ForwardingListener(this.mAnchor) {
+                @Override
+                public ListPopupWindow getPopup() {
+                    return PopupMenu.this.mPopup.getPopup();
+                }
+                
+                @Override
+                protected boolean onForwardingStarted() {
+                    PopupMenu.this.show();
+                    return true;
+                }
+                
+                @Override
+                protected boolean onForwardingStopped() {
+                    PopupMenu.this.dismiss();
+                    return true;
+                }
+            };
+        }
+        return this.mDragListener;
     }
     
     public Menu getMenu() {

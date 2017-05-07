@@ -25,6 +25,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.view.Menu;
 import android.util.AttributeSet;
 import org.xmlpull.v1.XmlPullParser;
+import android.content.ContextWrapper;
+import android.app.Activity;
 import android.content.Context;
 import android.view.MenuInflater;
 
@@ -47,12 +49,25 @@ public class SupportMenuInflater extends MenuInflater
         ACTION_PROVIDER_CONSTRUCTOR_SIGNATURE = SupportMenuInflater.ACTION_VIEW_CONSTRUCTOR_SIGNATURE;
     }
     
-    public SupportMenuInflater(final Context context) {
-        super(context);
-        this.mContext = context;
-        this.mRealOwner = context;
-        this.mActionViewConstructorArguments = new Object[] { context };
+    public SupportMenuInflater(final Context mContext) {
+        super(mContext);
+        this.mContext = mContext;
+        this.mActionViewConstructorArguments = new Object[] { mContext };
         this.mActionProviderConstructorArguments = this.mActionViewConstructorArguments;
+    }
+    
+    private Object findRealOwner(final Object o) {
+        if (!(o instanceof Activity) && o instanceof ContextWrapper) {
+            return this.findRealOwner(((ContextWrapper)o).getBaseContext());
+        }
+        return o;
+    }
+    
+    private Object getRealOwner() {
+        if (this.mRealOwner == null) {
+            this.mRealOwner = this.findRealOwner(this.mContext);
+        }
+        return this.mRealOwner;
     }
     
     private void parseMenu(final XmlPullParser xmlPullParser, final AttributeSet set, final Menu menu) throws XmlPullParserException, IOException {
@@ -314,7 +329,7 @@ public class SupportMenuInflater extends MenuInflater
                 if (SupportMenuInflater.this.mContext.isRestricted()) {
                     throw new IllegalStateException("The android:onClick attribute cannot be used within a restricted context");
                 }
-                menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new InflatedOnMenuItemClickListener(SupportMenuInflater.this.mRealOwner, this.itemListenerMethodName));
+                menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new InflatedOnMenuItemClickListener(SupportMenuInflater.this.getRealOwner(), this.itemListenerMethodName));
             }
             if (menuItem instanceof MenuItemImpl) {
                 final MenuItemImpl menuItemImpl = (MenuItemImpl)menuItem;
@@ -363,27 +378,27 @@ public class SupportMenuInflater extends MenuInflater
         
         public void readGroup(final AttributeSet set) {
             final TypedArray obtainStyledAttributes = SupportMenuInflater.this.mContext.obtainStyledAttributes(set, R.styleable.MenuGroup);
-            this.groupId = obtainStyledAttributes.getResourceId(1, 0);
-            this.groupCategory = obtainStyledAttributes.getInt(3, 0);
-            this.groupOrder = obtainStyledAttributes.getInt(4, 0);
-            this.groupCheckable = obtainStyledAttributes.getInt(5, 0);
-            this.groupVisible = obtainStyledAttributes.getBoolean(2, true);
-            this.groupEnabled = obtainStyledAttributes.getBoolean(0, true);
+            this.groupId = obtainStyledAttributes.getResourceId(R.styleable.MenuGroup_android_id, 0);
+            this.groupCategory = obtainStyledAttributes.getInt(R.styleable.MenuGroup_android_menuCategory, 0);
+            this.groupOrder = obtainStyledAttributes.getInt(R.styleable.MenuGroup_android_orderInCategory, 0);
+            this.groupCheckable = obtainStyledAttributes.getInt(R.styleable.MenuGroup_android_checkableBehavior, 0);
+            this.groupVisible = obtainStyledAttributes.getBoolean(R.styleable.MenuGroup_android_visible, true);
+            this.groupEnabled = obtainStyledAttributes.getBoolean(R.styleable.MenuGroup_android_enabled, true);
             obtainStyledAttributes.recycle();
         }
         
         public void readItem(final AttributeSet set) {
             final TypedArray obtainStyledAttributes = SupportMenuInflater.this.mContext.obtainStyledAttributes(set, R.styleable.MenuItem);
-            this.itemId = obtainStyledAttributes.getResourceId(2, 0);
-            this.itemCategoryOrder = ((0xFFFF0000 & obtainStyledAttributes.getInt(5, this.groupCategory)) | (0xFFFF & obtainStyledAttributes.getInt(6, this.groupOrder)));
-            this.itemTitle = obtainStyledAttributes.getText(7);
-            this.itemTitleCondensed = obtainStyledAttributes.getText(8);
-            this.itemIconResId = obtainStyledAttributes.getResourceId(0, 0);
-            this.itemAlphabeticShortcut = this.getShortcut(obtainStyledAttributes.getString(9));
-            this.itemNumericShortcut = this.getShortcut(obtainStyledAttributes.getString(10));
-            if (obtainStyledAttributes.hasValue(11)) {
+            this.itemId = obtainStyledAttributes.getResourceId(R.styleable.MenuItem_android_id, 0);
+            this.itemCategoryOrder = ((0xFFFF0000 & obtainStyledAttributes.getInt(R.styleable.MenuItem_android_menuCategory, this.groupCategory)) | (0xFFFF & obtainStyledAttributes.getInt(R.styleable.MenuItem_android_orderInCategory, this.groupOrder)));
+            this.itemTitle = obtainStyledAttributes.getText(R.styleable.MenuItem_android_title);
+            this.itemTitleCondensed = obtainStyledAttributes.getText(R.styleable.MenuItem_android_titleCondensed);
+            this.itemIconResId = obtainStyledAttributes.getResourceId(R.styleable.MenuItem_android_icon, 0);
+            this.itemAlphabeticShortcut = this.getShortcut(obtainStyledAttributes.getString(R.styleable.MenuItem_android_alphabeticShortcut));
+            this.itemNumericShortcut = this.getShortcut(obtainStyledAttributes.getString(R.styleable.MenuItem_android_numericShortcut));
+            if (obtainStyledAttributes.hasValue(R.styleable.MenuItem_android_checkable)) {
                 int itemCheckable;
-                if (obtainStyledAttributes.getBoolean(11, false)) {
+                if (obtainStyledAttributes.getBoolean(R.styleable.MenuItem_android_checkable, false)) {
                     itemCheckable = 1;
                 }
                 else {
@@ -394,14 +409,14 @@ public class SupportMenuInflater extends MenuInflater
             else {
                 this.itemCheckable = this.groupCheckable;
             }
-            this.itemChecked = obtainStyledAttributes.getBoolean(3, false);
-            this.itemVisible = obtainStyledAttributes.getBoolean(4, this.groupVisible);
-            this.itemEnabled = obtainStyledAttributes.getBoolean(1, this.groupEnabled);
-            this.itemShowAsAction = obtainStyledAttributes.getInt(13, -1);
-            this.itemListenerMethodName = obtainStyledAttributes.getString(12);
-            this.itemActionViewLayout = obtainStyledAttributes.getResourceId(14, 0);
-            this.itemActionViewClassName = obtainStyledAttributes.getString(15);
-            this.itemActionProviderClassName = obtainStyledAttributes.getString(16);
+            this.itemChecked = obtainStyledAttributes.getBoolean(R.styleable.MenuItem_android_checked, false);
+            this.itemVisible = obtainStyledAttributes.getBoolean(R.styleable.MenuItem_android_visible, this.groupVisible);
+            this.itemEnabled = obtainStyledAttributes.getBoolean(R.styleable.MenuItem_android_enabled, this.groupEnabled);
+            this.itemShowAsAction = obtainStyledAttributes.getInt(R.styleable.MenuItem_showAsAction, -1);
+            this.itemListenerMethodName = obtainStyledAttributes.getString(R.styleable.MenuItem_android_onClick);
+            this.itemActionViewLayout = obtainStyledAttributes.getResourceId(R.styleable.MenuItem_actionLayout, 0);
+            this.itemActionViewClassName = obtainStyledAttributes.getString(R.styleable.MenuItem_actionViewClass);
+            this.itemActionProviderClassName = obtainStyledAttributes.getString(R.styleable.MenuItem_actionProviderClass);
             boolean b;
             if (this.itemActionProviderClassName != null) {
                 b = true;

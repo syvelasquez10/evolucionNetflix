@@ -6,7 +6,7 @@ package com.google.android.gms.tagmanager;
 
 interface at
 {
-    void bW();
+    void dispatch();
     
-    void e(final long p0, final String p1);
+    void f(final long p0, final String p1);
 }

@@ -11,22 +11,22 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class ProxyCard implements SafeParcelable
 {
     public static final Parcelable$Creator<ProxyCard> CREATOR;
-    String ack;
-    String acl;
-    int acm;
-    int acn;
-    private final int xH;
+    private final int BR;
+    String atu;
+    String atv;
+    int atw;
+    int atx;
     
     static {
         CREATOR = (Parcelable$Creator)new o();
     }
     
-    ProxyCard(final int xh, final String ack, final String acl, final int acm, final int acn) {
-        this.xH = xh;
-        this.ack = ack;
-        this.acl = acl;
-        this.acm = acm;
-        this.acn = acn;
+    ProxyCard(final int br, final String atu, final String atv, final int atw, final int atx) {
+        this.BR = br;
+        this.atu = atu;
+        this.atv = atv;
+        this.atw = atw;
+        this.atx = atx;
     }
     
     public int describeContents() {
@@ -34,23 +34,23 @@ public final class ProxyCard implements SafeParcelable
     }
     
     public String getCvn() {
-        return this.acl;
+        return this.atv;
     }
     
     public int getExpirationMonth() {
-        return this.acm;
+        return this.atw;
     }
     
     public int getExpirationYear() {
-        return this.acn;
+        return this.atx;
     }
     
     public String getPan() {
-        return this.ack;
+        return this.atu;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

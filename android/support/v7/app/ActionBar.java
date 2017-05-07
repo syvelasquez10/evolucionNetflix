@@ -9,11 +9,20 @@ import android.view.ViewGroup$LayoutParams;
 import android.content.res.TypedArray;
 import android.support.v7.appcompat.R;
 import android.util.AttributeSet;
+import android.support.annotation.NonNull;
 import android.view.ViewGroup$MarginLayoutParams;
+import android.support.annotation.IntDef;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Annotation;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.view.ActionMode;
 import android.widget.SpinnerAdapter;
 import android.graphics.drawable.Drawable;
+import android.view.KeyEvent;
+import android.content.res.Configuration;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 public abstract class ActionBar
@@ -37,11 +46,26 @@ public abstract class ActionBar
     
     public abstract void addTab(final Tab p0, final boolean p1);
     
+    public boolean collapseActionView() {
+        return false;
+    }
+    
+    public void dispatchMenuVisibilityChanged(final boolean b) {
+    }
+    
     public abstract View getCustomView();
     
     public abstract int getDisplayOptions();
     
+    public float getElevation() {
+        return 0.0f;
+    }
+    
     public abstract int getHeight();
+    
+    public int getHideOffset() {
+        return 0;
+    }
     
     public abstract int getNavigationItemCount();
     
@@ -49,8 +73,10 @@ public abstract class ActionBar
     
     public abstract int getSelectedNavigationIndex();
     
+    @Nullable
     public abstract Tab getSelectedTab();
     
+    @Nullable
     public abstract CharSequence getSubtitle();
     
     public abstract Tab getTabAt(final int p0);
@@ -61,13 +87,37 @@ public abstract class ActionBar
         return null;
     }
     
+    @Nullable
     public abstract CharSequence getTitle();
     
     public abstract void hide();
     
+    public boolean invalidateOptionsMenu() {
+        return false;
+    }
+    
+    public boolean isHideOnContentScrollEnabled() {
+        return false;
+    }
+    
     public abstract boolean isShowing();
     
+    public boolean isTitleTruncated() {
+        return false;
+    }
+    
     public abstract Tab newTab();
+    
+    public void onConfigurationChanged(final Configuration configuration) {
+    }
+    
+    public boolean onMenuKeyEvent(final KeyEvent keyEvent) {
+        return false;
+    }
+    
+    public boolean openOptionsMenu() {
+        return false;
+    }
     
     public abstract void removeAllTabs();
     
@@ -79,13 +129,16 @@ public abstract class ActionBar
     
     public abstract void selectTab(final Tab p0);
     
-    public abstract void setBackgroundDrawable(final Drawable p0);
+    public abstract void setBackgroundDrawable(@Nullable final Drawable p0);
     
     public abstract void setCustomView(final int p0);
     
     public abstract void setCustomView(final View p0);
     
     public abstract void setCustomView(final View p0, final LayoutParams p1);
+    
+    public void setDefaultDisplayHomeAsUpEnabled(final boolean b) {
+    }
     
     public abstract void setDisplayHomeAsUpEnabled(final boolean p0);
     
@@ -100,6 +153,36 @@ public abstract class ActionBar
     public abstract void setDisplayShowTitleEnabled(final boolean p0);
     
     public abstract void setDisplayUseLogoEnabled(final boolean p0);
+    
+    public void setElevation(final float n) {
+        if (n != 0.0f) {
+            throw new UnsupportedOperationException("Setting a non-zero elevation is not supported in this action bar configuration.");
+        }
+    }
+    
+    public void setHideOffset(final int n) {
+        if (n != 0) {
+            throw new UnsupportedOperationException("Setting an explicit action bar hide offset is not supported in this action bar configuration.");
+        }
+    }
+    
+    public void setHideOnContentScrollEnabled(final boolean b) {
+        if (b) {
+            throw new UnsupportedOperationException("Hide on content scroll is not supported in this action bar configuration.");
+        }
+    }
+    
+    public void setHomeActionContentDescription(final int n) {
+    }
+    
+    public void setHomeActionContentDescription(@Nullable final CharSequence charSequence) {
+    }
+    
+    public void setHomeAsUpIndicator(final int n) {
+    }
+    
+    public void setHomeAsUpIndicator(@Nullable final Drawable drawable) {
+    }
     
     public void setHomeButtonEnabled(final boolean b) {
     }
@@ -118,6 +201,9 @@ public abstract class ActionBar
     
     public abstract void setSelectedNavigationItem(final int p0);
     
+    public void setShowHideAnimationEnabled(final boolean b) {
+    }
+    
     public void setSplitBackgroundDrawable(final Drawable drawable) {
     }
     
@@ -132,11 +218,23 @@ public abstract class ActionBar
     
     public abstract void setTitle(final CharSequence p0);
     
+    public void setWindowTitle(final CharSequence charSequence) {
+    }
+    
     public abstract void show();
+    
+    public ActionMode startActionMode(final ActionMode.Callback callback) {
+        return null;
+    }
     
     interface Callback
     {
         FragmentManager getSupportFragmentManager();
+    }
+    
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef(flag = true, value = { 1L, 2L, 4L, 8L, 16L })
+    public @interface DisplayOptions {
     }
     
     public static class LayoutParams extends ViewGroup$MarginLayoutParams
@@ -149,34 +247,39 @@ public abstract class ActionBar
         
         public LayoutParams(final int n, final int n2) {
             super(n, n2);
-            this.gravity = -1;
-            this.gravity = 19;
+            this.gravity = 0;
+            this.gravity = 8388627;
         }
         
         public LayoutParams(final int n, final int n2, final int gravity) {
             super(n, n2);
-            this.gravity = -1;
+            this.gravity = 0;
             this.gravity = gravity;
         }
         
-        public LayoutParams(final Context context, final AttributeSet set) {
+        public LayoutParams(@NonNull final Context context, final AttributeSet set) {
             super(context, set);
-            this.gravity = -1;
+            this.gravity = 0;
             final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.ActionBarLayout);
-            this.gravity = obtainStyledAttributes.getInt(0, -1);
+            this.gravity = obtainStyledAttributes.getInt(R.styleable.ActionBarLayout_android_layout_gravity, 0);
             obtainStyledAttributes.recycle();
         }
         
         public LayoutParams(final LayoutParams layoutParams) {
             super((ViewGroup$MarginLayoutParams)layoutParams);
-            this.gravity = -1;
+            this.gravity = 0;
             this.gravity = layoutParams.gravity;
         }
         
         public LayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
             super(viewGroup$LayoutParams);
-            this.gravity = -1;
+            this.gravity = 0;
         }
+    }
+    
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({ 0L, 1L, 2L })
+    public @interface NavigationMode {
     }
     
     public interface OnMenuVisibilityListener

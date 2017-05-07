@@ -4,31 +4,42 @@
 
 package android.support.v7.internal.view.menu;
 
-import java.util.Locale;
+import android.view.MotionEvent;
 import android.view.View$MeasureSpec;
 import android.widget.Toast;
+import android.support.v4.view.ViewCompat;
 import android.graphics.Rect;
+import android.os.Build$VERSION;
+import android.content.res.Configuration;
 import android.view.View;
 import android.text.TextUtils;
 import android.content.res.TypedArray;
+import android.content.res.Resources;
 import android.text.method.TransformationMethod;
+import android.support.v7.internal.text.AllCapsTransformationMethod;
 import android.support.v7.appcompat.R;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.ListPopupWindow;
+import android.support.v7.widget.ActionMenuView;
 import android.view.View$OnLongClickListener;
 import android.view.View$OnClickListener;
 import android.support.v7.internal.widget.CompatTextView;
 
 public class ActionMenuItemView extends CompatTextView implements ItemView, View$OnClickListener, View$OnLongClickListener, ActionMenuChildView
 {
+    private static final int MAX_ICON_SIZE = 32;
     private static final String TAG = "ActionMenuItemView";
     private boolean mAllowTextWithIcon;
     private boolean mExpandedFormat;
+    private ListPopupWindow.ForwardingListener mForwardingListener;
     private Drawable mIcon;
     private MenuItemImpl mItemData;
     private ItemInvoker mItemInvoker;
+    private int mMaxIconSize;
     private int mMinWidth;
+    private PopupCallback mPopupCallback;
     private int mSavedPaddingLeft;
     private CharSequence mTitle;
     
@@ -42,13 +53,15 @@ public class ActionMenuItemView extends CompatTextView implements ItemView, View
     
     public ActionMenuItemView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.mAllowTextWithIcon = context.getResources().getBoolean(R.bool.abc_config_allowActionMenuItemTextWithIcon);
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.ActionMenuItemView, 0, 0);
-        this.mMinWidth = obtainStyledAttributes.getDimensionPixelSize(0, 0);
+        final Resources resources = context.getResources();
+        this.mAllowTextWithIcon = resources.getBoolean(R.bool.abc_config_allowActionMenuItemTextWithIcon);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.ActionMenuItemView, n, 0);
+        this.mMinWidth = obtainStyledAttributes.getDimensionPixelSize(R.styleable.ActionMenuItemView_android_minWidth, 0);
         obtainStyledAttributes.recycle();
+        this.mMaxIconSize = (int)(32.0f * resources.getDisplayMetrics().density + 0.5f);
         this.setOnClickListener((View$OnClickListener)this);
         this.setOnLongClickListener((View$OnLongClickListener)this);
-        this.setTransformationMethod((TransformationMethod)new AllCapsTransformationMethod());
+        this.setTransformationMethod((TransformationMethod)new AllCapsTransformationMethod(context));
         this.mSavedPaddingLeft = -1;
     }
     
@@ -104,6 +117,9 @@ public class ActionMenuItemView extends CompatTextView implements ItemView, View
         }
         this.setVisibility(visibility);
         ((MenuView.ItemView)this).setEnabled(mItemData.isEnabled());
+        if (mItemData.hasSubMenu() && this.mForwardingListener == null) {
+            this.mForwardingListener = new ActionMenuItemForwardingListener();
+        }
     }
     
     public boolean needsDividerAfter() {
@@ -120,6 +136,14 @@ public class ActionMenuItemView extends CompatTextView implements ItemView, View
         }
     }
     
+    public void onConfigurationChanged(final Configuration configuration) {
+        if (Build$VERSION.SDK_INT >= 8) {
+            super.onConfigurationChanged(configuration);
+        }
+        this.mAllowTextWithIcon = this.getContext().getResources().getBoolean(R.bool.abc_config_allowActionMenuItemTextWithIcon);
+        this.updateTextButtonVisibility();
+    }
+    
     public boolean onLongClick(final View view) {
         if (this.hasText()) {
             return false;
@@ -133,10 +157,13 @@ public class ActionMenuItemView extends CompatTextView implements ItemView, View
         final int height = this.getHeight();
         final int n = array[1];
         final int n2 = height / 2;
-        final int widthPixels = context.getResources().getDisplayMetrics().widthPixels;
+        int n3 = array[0] + width / 2;
+        if (ViewCompat.getLayoutDirection(view) == 0) {
+            n3 = context.getResources().getDisplayMetrics().widthPixels - n3;
+        }
         final Toast text = Toast.makeText(context, this.mItemData.getTitle(), 0);
         if (n + n2 < rect.height()) {
-            text.setGravity(53, widthPixels - array[0] - width / 2, height);
+            text.setGravity(8388661, n3, height);
         }
         else {
             text.setGravity(81, 0, height);
@@ -164,8 +191,12 @@ public class ActionMenuItemView extends CompatTextView implements ItemView, View
             super.onMeasure(View$MeasureSpec.makeMeasureSpec(n, 1073741824), n2);
         }
         if (!hasText && this.mIcon != null) {
-            super.setPadding((this.getMeasuredWidth() - this.mIcon.getIntrinsicWidth()) / 2, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
+            super.setPadding((this.getMeasuredWidth() - this.mIcon.getBounds().width()) / 2, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
         }
+    }
+    
+    public boolean onTouchEvent(final MotionEvent motionEvent) {
+        return (this.mItemData.hasSubMenu() && this.mForwardingListener != null && this.mForwardingListener.onTouch((View)this, motionEvent)) || super.onTouchEvent(motionEvent);
     }
     
     @Override
@@ -192,7 +223,27 @@ public class ActionMenuItemView extends CompatTextView implements ItemView, View
     
     @Override
     public void setIcon(final Drawable mIcon) {
-        this.setCompoundDrawablesWithIntrinsicBounds(this.mIcon = mIcon, (Drawable)null, (Drawable)null, (Drawable)null);
+        this.mIcon = mIcon;
+        if (mIcon != null) {
+            final int intrinsicWidth = mIcon.getIntrinsicWidth();
+            int intrinsicHeight;
+            final int n = intrinsicHeight = mIcon.getIntrinsicHeight();
+            int mMaxIconSize;
+            if ((mMaxIconSize = intrinsicWidth) > this.mMaxIconSize) {
+                final float n2 = this.mMaxIconSize / intrinsicWidth;
+                mMaxIconSize = this.mMaxIconSize;
+                intrinsicHeight = (int)(n * n2);
+            }
+            int mMaxIconSize2 = intrinsicHeight;
+            int n3 = mMaxIconSize;
+            if (intrinsicHeight > this.mMaxIconSize) {
+                final float n4 = this.mMaxIconSize / intrinsicHeight;
+                mMaxIconSize2 = this.mMaxIconSize;
+                n3 = (int)(mMaxIconSize * n4);
+            }
+            mIcon.setBounds(0, 0, n3, mMaxIconSize2);
+        }
+        this.setCompoundDrawables(mIcon, (Drawable)null, (Drawable)null, (Drawable)null);
         this.updateTextButtonVisibility();
     }
     
@@ -202,6 +253,10 @@ public class ActionMenuItemView extends CompatTextView implements ItemView, View
     
     public void setPadding(final int mSavedPaddingLeft, final int n, final int n2, final int n3) {
         super.setPadding(this.mSavedPaddingLeft = mSavedPaddingLeft, n, n2, n3);
+    }
+    
+    public void setPopupCallback(final PopupCallback mPopupCallback) {
+        this.mPopupCallback = mPopupCallback;
     }
     
     @Override
@@ -219,22 +274,53 @@ public class ActionMenuItemView extends CompatTextView implements ItemView, View
         return true;
     }
     
-    private class AllCapsTransformationMethod implements TransformationMethod
+    private class ActionMenuItemForwardingListener extends ForwardingListener
     {
-        private Locale mLocale;
-        
-        public AllCapsTransformationMethod() {
-            this.mLocale = ActionMenuItemView.this.getContext().getResources().getConfiguration().locale;
+        public ActionMenuItemForwardingListener() {
+            super((View)ActionMenuItemView.this);
         }
         
-        public CharSequence getTransformation(final CharSequence charSequence, final View view) {
-            if (charSequence != null) {
-                return charSequence.toString().toUpperCase(this.mLocale);
+        @Override
+        public ListPopupWindow getPopup() {
+            if (ActionMenuItemView.this.mPopupCallback != null) {
+                return ActionMenuItemView.this.mPopupCallback.getPopup();
             }
             return null;
         }
         
-        public void onFocusChanged(final View view, final CharSequence charSequence, final boolean b, final int n, final Rect rect) {
+        @Override
+        protected boolean onForwardingStarted() {
+            boolean b2;
+            final boolean b = b2 = false;
+            if (ActionMenuItemView.this.mItemInvoker != null) {
+                b2 = b;
+                if (ActionMenuItemView.this.mItemInvoker.invokeItem(ActionMenuItemView.this.mItemData)) {
+                    final ListPopupWindow popup = this.getPopup();
+                    b2 = b;
+                    if (popup != null) {
+                        b2 = b;
+                        if (popup.isShowing()) {
+                            b2 = true;
+                        }
+                    }
+                }
+            }
+            return b2;
         }
+        
+        @Override
+        protected boolean onForwardingStopped() {
+            final ListPopupWindow popup = this.getPopup();
+            if (popup != null) {
+                popup.dismiss();
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    public abstract static class PopupCallback
+    {
+        public abstract ListPopupWindow getPopup();
     }
 }

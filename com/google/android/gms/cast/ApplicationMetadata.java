@@ -5,6 +5,8 @@
 package com.google.android.gms.cast;
 
 import android.os.Parcel;
+import com.google.android.gms.common.internal.m;
+import com.google.android.gms.internal.ik;
 import java.util.Collection;
 import java.util.ArrayList;
 import android.net.Uri;
@@ -16,52 +18,66 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class ApplicationMetadata implements SafeParcelable
 {
     public static final Parcelable$Creator<ApplicationMetadata> CREATOR;
+    private final int BR;
+    List<WebImage> EA;
+    List<String> EB;
+    String EC;
+    Uri ED;
+    String Ez;
     String mName;
-    private final int xH;
-    String xI;
-    List<WebImage> xJ;
-    List<String> xK;
-    String xL;
-    Uri xM;
     
     static {
         CREATOR = (Parcelable$Creator)new a();
     }
     
     private ApplicationMetadata() {
-        this.xH = 1;
-        this.xJ = new ArrayList<WebImage>();
-        this.xK = new ArrayList<String>();
+        this.BR = 1;
+        this.EA = new ArrayList<WebImage>();
+        this.EB = new ArrayList<String>();
     }
     
-    ApplicationMetadata(final int xh, final String xi, final String mName, final List<WebImage> xj, final List<String> xk, final String xl, final Uri xm) {
-        this.xH = xh;
-        this.xI = xi;
+    ApplicationMetadata(final int br, final String ez, final String mName, final List<WebImage> ea, final List<String> eb, final String ec, final Uri ed) {
+        this.BR = br;
+        this.Ez = ez;
         this.mName = mName;
-        this.xJ = xj;
-        this.xK = xk;
-        this.xL = xl;
-        this.xM = xm;
+        this.EA = ea;
+        this.EB = eb;
+        this.EC = ec;
+        this.ED = ed;
     }
     
     public boolean areNamespacesSupported(final List<String> list) {
-        return this.xK != null && this.xK.containsAll(list);
+        return this.EB != null && this.EB.containsAll(list);
     }
     
     public int describeContents() {
         return 0;
     }
     
-    public Uri dz() {
-        return this.xM;
+    @Override
+    public boolean equals(final Object o) {
+        if (o != this) {
+            if (!(o instanceof ApplicationMetadata)) {
+                return false;
+            }
+            final ApplicationMetadata applicationMetadata = (ApplicationMetadata)o;
+            if (!ik.a(this.Ez, applicationMetadata.Ez) || !ik.a(this.EA, applicationMetadata.EA) || !ik.a(this.mName, applicationMetadata.mName) || !ik.a(this.EB, applicationMetadata.EB) || !ik.a(this.EC, applicationMetadata.EC) || !ik.a(this.ED, applicationMetadata.ED)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public Uri fv() {
+        return this.ED;
     }
     
     public String getApplicationId() {
-        return this.xI;
+        return this.Ez;
     }
     
     public List<WebImage> getImages() {
-        return this.xJ;
+        return this.EA;
     }
     
     public String getName() {
@@ -69,15 +85,20 @@ public final class ApplicationMetadata implements SafeParcelable
     }
     
     public String getSenderAppIdentifier() {
-        return this.xL;
+        return this.EC;
     }
     
     int getVersionCode() {
-        return this.xH;
+        return this.BR;
+    }
+    
+    @Override
+    public int hashCode() {
+        return m.hashCode(this.BR, this.Ez, this.mName, this.EA, this.EB, this.EC, this.ED);
     }
     
     public boolean isNamespaceSupported(final String s) {
-        return this.xK != null && this.xK.contains(s);
+        return this.EB != null && this.EB.contains(s);
     }
     
     @Override

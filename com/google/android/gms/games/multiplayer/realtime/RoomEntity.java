@@ -6,69 +6,69 @@ package com.google.android.gms.games.multiplayer.realtime;
 
 import android.os.Parcel;
 import java.util.Collection;
-import com.google.android.gms.internal.gm;
+import com.google.android.gms.internal.jv;
 import android.database.CharArrayBuffer;
+import com.google.android.gms.common.internal.c;
 import com.google.android.gms.games.Player;
-import com.google.android.gms.internal.fe;
-import com.google.android.gms.internal.fo;
+import com.google.android.gms.common.internal.m;
 import com.google.android.gms.games.multiplayer.Participant;
+import android.os.Bundle;
 import com.google.android.gms.games.multiplayer.ParticipantEntity;
 import java.util.ArrayList;
-import android.os.Bundle;
 import android.os.Parcelable$Creator;
 import com.google.android.gms.games.internal.GamesDowngradeableSafeParcel;
 
 public final class RoomEntity extends GamesDowngradeableSafeParcel implements Room
 {
     public static final Parcelable$Creator<RoomEntity> CREATOR;
-    private final String HD;
-    private final String Ja;
-    private final Bundle MO;
-    private final String MS;
-    private final int MT;
-    private final int MU;
-    private final long Mu;
-    private final ArrayList<ParticipantEntity> Mx;
-    private final int My;
-    private final int xH;
+    private final int BR;
+    private final String Tg;
+    private final String WF;
+    private final long abO;
+    private final ArrayList<ParticipantEntity> abR;
+    private final int abS;
+    private final Bundle ach;
+    private final String acl;
+    private final int acm;
+    private final int acn;
     
     static {
         CREATOR = (Parcelable$Creator)new RoomEntityCreatorCompat();
     }
     
-    RoomEntity(final int xh, final String ja, final String ms, final long mu, final int mt, final String hd, final int my, final Bundle mo, final ArrayList<ParticipantEntity> mx, final int mu2) {
-        this.xH = xh;
-        this.Ja = ja;
-        this.MS = ms;
-        this.Mu = mu;
-        this.MT = mt;
-        this.HD = hd;
-        this.My = my;
-        this.MO = mo;
-        this.Mx = mx;
-        this.MU = mu2;
+    RoomEntity(final int br, final String wf, final String acl, final long abO, final int acm, final String tg, final int abS, final Bundle ach, final ArrayList<ParticipantEntity> abR, final int acn) {
+        this.BR = br;
+        this.WF = wf;
+        this.acl = acl;
+        this.abO = abO;
+        this.acm = acm;
+        this.Tg = tg;
+        this.abS = abS;
+        this.ach = ach;
+        this.abR = abR;
+        this.acn = acn;
     }
     
     public RoomEntity(final Room room) {
-        this.xH = 2;
-        this.Ja = room.getRoomId();
-        this.MS = room.getCreatorId();
-        this.Mu = room.getCreationTimestamp();
-        this.MT = room.getStatus();
-        this.HD = room.getDescription();
-        this.My = room.getVariant();
-        this.MO = room.getAutoMatchCriteria();
+        this.BR = 2;
+        this.WF = room.getRoomId();
+        this.acl = room.getCreatorId();
+        this.abO = room.getCreationTimestamp();
+        this.acm = room.getStatus();
+        this.Tg = room.getDescription();
+        this.abS = room.getVariant();
+        this.ach = room.getAutoMatchCriteria();
         final ArrayList<Participant> participants = room.getParticipants();
         final int size = participants.size();
-        this.Mx = new ArrayList<ParticipantEntity>(size);
+        this.abR = new ArrayList<ParticipantEntity>(size);
         for (int i = 0; i < size; ++i) {
-            this.Mx.add((ParticipantEntity)participants.get(i).freeze());
+            this.abR.add((ParticipantEntity)participants.get(i).freeze());
         }
-        this.MU = room.getAutoMatchWaitEstimateSeconds();
+        this.acn = room.getAutoMatchWaitEstimateSeconds();
     }
     
     static int a(final Room room) {
-        return fo.hashCode(room.getRoomId(), room.getCreatorId(), room.getCreationTimestamp(), room.getStatus(), room.getDescription(), room.getVariant(), room.getAutoMatchCriteria(), room.getParticipants(), room.getAutoMatchWaitEstimateSeconds());
+        return m.hashCode(room.getRoomId(), room.getCreatorId(), room.getCreationTimestamp(), room.getStatus(), room.getDescription(), room.getVariant(), room.getAutoMatchCriteria(), room.getParticipants(), room.getAutoMatchWaitEstimateSeconds());
     }
     
     static int a(final Room room, final String s) {
@@ -92,9 +92,9 @@ public final class RoomEntity extends GamesDowngradeableSafeParcel implements Ro
             b2 = b;
             if (room != o) {
                 final Room room2 = (Room)o;
-                if (fo.equal(room2.getRoomId(), room.getRoomId()) && fo.equal(room2.getCreatorId(), room.getCreatorId()) && fo.equal(room2.getCreationTimestamp(), room.getCreationTimestamp()) && fo.equal(room2.getStatus(), room.getStatus()) && fo.equal(room2.getDescription(), room.getDescription()) && fo.equal(room2.getVariant(), room.getVariant()) && fo.equal(room2.getAutoMatchCriteria(), room.getAutoMatchCriteria()) && fo.equal(room2.getParticipants(), room.getParticipants())) {
+                if (m.equal(room2.getRoomId(), room.getRoomId()) && m.equal(room2.getCreatorId(), room.getCreatorId()) && m.equal(room2.getCreationTimestamp(), room.getCreationTimestamp()) && m.equal(room2.getStatus(), room.getStatus()) && m.equal(room2.getDescription(), room.getDescription()) && m.equal(room2.getVariant(), room.getVariant()) && m.equal(room2.getAutoMatchCriteria(), room.getAutoMatchCriteria()) && m.equal(room2.getParticipants(), room.getParticipants())) {
                     b2 = b;
-                    if (fo.equal(room2.getAutoMatchWaitEstimateSeconds(), room.getAutoMatchWaitEstimateSeconds())) {
+                    if (m.equal(room2.getAutoMatchWaitEstimateSeconds(), room.getAutoMatchWaitEstimateSeconds())) {
                         return b2;
                     }
                 }
@@ -105,7 +105,7 @@ public final class RoomEntity extends GamesDowngradeableSafeParcel implements Ro
     }
     
     static String b(final Room room) {
-        return fo.e(room).a("RoomId", room.getRoomId()).a("CreatorId", room.getCreatorId()).a("CreationTimestamp", room.getCreationTimestamp()).a("RoomStatus", room.getStatus()).a("Description", room.getDescription()).a("Variant", room.getVariant()).a("AutoMatchCriteria", room.getAutoMatchCriteria()).a("Participants", room.getParticipants()).a("AutoMatchWaitEstimateSeconds", room.getAutoMatchWaitEstimateSeconds()).toString();
+        return m.h(room).a("RoomId", room.getRoomId()).a("CreatorId", room.getCreatorId()).a("CreationTimestamp", room.getCreationTimestamp()).a("RoomStatus", room.getStatus()).a("Description", room.getDescription()).a("Variant", room.getVariant()).a("AutoMatchCriteria", room.getAutoMatchCriteria()).a("Participants", room.getParticipants()).a("AutoMatchWaitEstimateSeconds", room.getAutoMatchWaitEstimateSeconds()).toString();
     }
     
     static String b(final Room room, final String s) {
@@ -156,32 +156,32 @@ public final class RoomEntity extends GamesDowngradeableSafeParcel implements Ro
     
     @Override
     public Bundle getAutoMatchCriteria() {
-        return this.MO;
+        return this.ach;
     }
     
     @Override
     public int getAutoMatchWaitEstimateSeconds() {
-        return this.MU;
+        return this.acn;
     }
     
     @Override
     public long getCreationTimestamp() {
-        return this.Mu;
+        return this.abO;
     }
     
     @Override
     public String getCreatorId() {
-        return this.MS;
+        return this.acl;
     }
     
     @Override
     public String getDescription() {
-        return this.HD;
+        return this.Tg;
     }
     
     @Override
     public void getDescription(final CharArrayBuffer charArrayBuffer) {
-        gm.b(this.HD, charArrayBuffer);
+        jv.b(this.Tg, charArrayBuffer);
     }
     
     @Override
@@ -205,26 +205,26 @@ public final class RoomEntity extends GamesDowngradeableSafeParcel implements Ro
     }
     
     public ArrayList<Participant> getParticipants() {
-        return new ArrayList<Participant>(this.Mx);
+        return new ArrayList<Participant>(this.abR);
     }
     
     @Override
     public String getRoomId() {
-        return this.Ja;
+        return this.WF;
     }
     
     @Override
     public int getStatus() {
-        return this.MT;
+        return this.acm;
     }
     
     @Override
     public int getVariant() {
-        return this.My;
+        return this.abS;
     }
     
     public int getVersionCode() {
-        return this.xH;
+        return this.BR;
     }
     
     @Override
@@ -242,21 +242,21 @@ public final class RoomEntity extends GamesDowngradeableSafeParcel implements Ro
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        if (!this.eK()) {
+        if (!this.gQ()) {
             RoomEntityCreator.a(this, parcel, n);
         }
         else {
-            parcel.writeString(this.Ja);
-            parcel.writeString(this.MS);
-            parcel.writeLong(this.Mu);
-            parcel.writeInt(this.MT);
-            parcel.writeString(this.HD);
-            parcel.writeInt(this.My);
-            parcel.writeBundle(this.MO);
-            final int size = this.Mx.size();
+            parcel.writeString(this.WF);
+            parcel.writeString(this.acl);
+            parcel.writeLong(this.abO);
+            parcel.writeInt(this.acm);
+            parcel.writeString(this.Tg);
+            parcel.writeInt(this.abS);
+            parcel.writeBundle(this.ach);
+            final int size = this.abR.size();
             parcel.writeInt(size);
             for (int i = 0; i < size; ++i) {
-                this.Mx.get(i).writeToParcel(parcel, n);
+                this.abR.get(i).writeToParcel(parcel, n);
             }
         }
     }
@@ -264,9 +264,9 @@ public final class RoomEntity extends GamesDowngradeableSafeParcel implements Ro
     static final class RoomEntityCreatorCompat extends RoomEntityCreator
     {
         @Override
-        public RoomEntity ax(final Parcel parcel) {
-            if (GamesDowngradeableSafeParcel.c(fe.eJ()) || fe.al(RoomEntity.class.getCanonicalName())) {
-                return super.ax(parcel);
+        public RoomEntity co(final Parcel parcel) {
+            if (GamesDowngradeableSafeParcel.c(c.gP()) || c.aV(RoomEntity.class.getCanonicalName())) {
+                return super.co(parcel);
             }
             final String string = parcel.readString();
             final String string2 = parcel.readString();

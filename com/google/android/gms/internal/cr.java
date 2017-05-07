@@ -4,18 +4,45 @@
 
 package com.google.android.gms.internal;
 
+import java.util.Iterator;
 import android.content.Context;
+import org.json.JSONException;
+import org.json.JSONArray;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONObject;
 
+@ez
 public final class cr
 {
-    public static do a(final Context context, final cx.a a, final l l, final dz dz, final bq bq, final a a2) {
-        final cs cs = new cs(context, a, l, dz, bq, a2);
-        cs.start();
-        return cs;
+    public static List<String> a(final JSONObject jsonObject, final String s) throws JSONException {
+        final JSONArray optJSONArray = jsonObject.optJSONArray(s);
+        if (optJSONArray != null) {
+            final ArrayList<String> list = new ArrayList<String>(optJSONArray.length());
+            for (int i = 0; i < optJSONArray.length(); ++i) {
+                list.add(optJSONArray.getString(i));
+            }
+            return (List<String>)Collections.unmodifiableList((List<?>)list);
+        }
+        return null;
     }
     
-    public interface a
-    {
-        void a(final dh p0);
+    public static void a(final Context context, final String s, final fz fz, final String s2, final boolean b, final List<String> list) {
+        String s3;
+        if (b) {
+            s3 = "1";
+        }
+        else {
+            s3 = "0";
+        }
+        final Iterator<String> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            String s4 = iterator.next().replaceAll("@gw_adlocid@", s2).replaceAll("@gw_adnetrefresh@", s3).replaceAll("@gw_qdata@", fz.vq.qi).replaceAll("@gw_sdkver@", s).replaceAll("@gw_sessid@", gb.vK).replaceAll("@gw_seqnum@", fz.tA);
+            if (fz.qy != null) {
+                s4 = s4.replaceAll("@gw_adnetid@", fz.qy.pX).replaceAll("@gw_allocid@", fz.qy.pZ);
+            }
+            new gq(context, s, s4).start();
+        }
     }
 }

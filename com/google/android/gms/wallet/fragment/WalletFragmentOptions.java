@@ -15,40 +15,40 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 public final class WalletFragmentOptions implements SafeParcelable
 {
     public static final Parcelable$Creator<WalletFragmentOptions> CREATOR;
-    private int Ev;
-    private WalletFragmentStyle acR;
-    private int acq;
+    final int BR;
+    private int MN;
+    private int atA;
+    private WalletFragmentStyle aub;
     private int mTheme;
-    final int xH;
     
     static {
         CREATOR = (Parcelable$Creator)new b();
     }
     
     private WalletFragmentOptions() {
-        this.xH = 1;
+        this.BR = 1;
     }
     
-    WalletFragmentOptions(final int xh, final int acq, final int mTheme, final WalletFragmentStyle acR, final int ev) {
-        this.xH = xh;
-        this.acq = acq;
+    WalletFragmentOptions(final int br, final int atA, final int mTheme, final WalletFragmentStyle aub, final int mn) {
+        this.BR = br;
+        this.atA = atA;
         this.mTheme = mTheme;
-        this.acR = acR;
-        this.Ev = ev;
+        this.aub = aub;
+        this.MN = mn;
     }
     
     public static WalletFragmentOptions a(final Context context, final AttributeSet set) {
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R.styleable.WalletFragmentOptions);
-        final int int1 = obtainStyledAttributes.getInt(0, 0);
-        final int int2 = obtainStyledAttributes.getInt(1, 1);
-        final int resourceId = obtainStyledAttributes.getResourceId(2, 0);
-        final int int3 = obtainStyledAttributes.getInt(3, 1);
+        final int int1 = obtainStyledAttributes.getInt(R.styleable.WalletFragmentOptions_appTheme, 0);
+        final int int2 = obtainStyledAttributes.getInt(R.styleable.WalletFragmentOptions_environment, 1);
+        final int resourceId = obtainStyledAttributes.getResourceId(R.styleable.WalletFragmentOptions_fragmentStyle, 0);
+        final int int3 = obtainStyledAttributes.getInt(R.styleable.WalletFragmentOptions_fragmentMode, 1);
         obtainStyledAttributes.recycle();
         final WalletFragmentOptions walletFragmentOptions = new WalletFragmentOptions();
         walletFragmentOptions.mTheme = int1;
-        walletFragmentOptions.acq = int2;
-        (walletFragmentOptions.acR = new WalletFragmentStyle().setStyleResourceId(resourceId)).I(context);
-        walletFragmentOptions.Ev = int3;
+        walletFragmentOptions.atA = int2;
+        (walletFragmentOptions.aub = new WalletFragmentStyle().setStyleResourceId(resourceId)).Z(context);
+        walletFragmentOptions.MN = int3;
         return walletFragmentOptions;
     }
     
@@ -58,9 +58,9 @@ public final class WalletFragmentOptions implements SafeParcelable
         return new Builder();
     }
     
-    public void I(final Context context) {
-        if (this.acR != null) {
-            this.acR.I(context);
+    public void Z(final Context context) {
+        if (this.aub != null) {
+            this.aub.Z(context);
         }
     }
     
@@ -69,15 +69,15 @@ public final class WalletFragmentOptions implements SafeParcelable
     }
     
     public int getEnvironment() {
-        return this.acq;
+        return this.atA;
     }
     
     public WalletFragmentStyle getFragmentStyle() {
-        return this.acR;
+        return this.aub;
     }
     
     public int getMode() {
-        return this.Ev;
+        return this.MN;
     }
     
     public int getTheme() {
@@ -95,22 +95,22 @@ public final class WalletFragmentOptions implements SafeParcelable
         }
         
         public Builder setEnvironment(final int n) {
-            WalletFragmentOptions.this.acq = n;
+            WalletFragmentOptions.this.atA = n;
             return this;
         }
         
         public Builder setFragmentStyle(final int styleResourceId) {
-            WalletFragmentOptions.this.acR = new WalletFragmentStyle().setStyleResourceId(styleResourceId);
+            WalletFragmentOptions.this.aub = new WalletFragmentStyle().setStyleResourceId(styleResourceId);
             return this;
         }
         
         public Builder setFragmentStyle(final WalletFragmentStyle walletFragmentStyle) {
-            WalletFragmentOptions.this.acR = walletFragmentStyle;
+            WalletFragmentOptions.this.aub = walletFragmentStyle;
             return this;
         }
         
         public Builder setMode(final int n) {
-            WalletFragmentOptions.this.Ev = n;
+            WalletFragmentOptions.this.MN = n;
             return this;
         }
         

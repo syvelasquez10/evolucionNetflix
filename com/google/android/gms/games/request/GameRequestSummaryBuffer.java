@@ -8,7 +8,7 @@ import com.google.android.gms.common.data.DataBuffer;
 
 public final class GameRequestSummaryBuffer extends DataBuffer<GameRequestSummary>
 {
-    public GameRequestSummary br(final int n) {
-        return new GameRequestSummaryRef(this.BB, n);
+    public GameRequestSummary dW(final int n) {
+        return new GameRequestSummaryRef(this.IC, n);
     }
 }

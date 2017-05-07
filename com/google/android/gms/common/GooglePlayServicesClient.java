@@ -6,6 +6,7 @@ package com.google.android.gms.common;
 
 import android.os.Bundle;
 
+@Deprecated
 public interface GooglePlayServicesClient
 {
     void connect();
@@ -28,6 +29,7 @@ public interface GooglePlayServicesClient
     
     void unregisterConnectionFailedListener(final OnConnectionFailedListener p0);
     
+    @Deprecated
     public interface ConnectionCallbacks
     {
         void onConnected(final Bundle p0);
@@ -35,6 +37,7 @@ public interface GooglePlayServicesClient
         void onDisconnected();
     }
     
+    @Deprecated
     public interface OnConnectionFailedListener
     {
         void onConnectionFailed(final ConnectionResult p0);

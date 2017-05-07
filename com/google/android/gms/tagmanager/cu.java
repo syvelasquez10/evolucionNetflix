@@ -4,7 +4,6 @@
 
 package com.google.android.gms.tagmanager;
 
-import android.os.Build$VERSION;
 import com.google.android.gms.internal.d;
 import java.util.Map;
 import com.google.android.gms.internal.a;
@@ -14,7 +13,7 @@ class cu extends aj
     private static final String ID;
     
     static {
-        ID = a.S.toString();
+        ID = a.T.toString();
     }
     
     public cu() {
@@ -22,12 +21,12 @@ class cu extends aj
     }
     
     @Override
-    public boolean jX() {
-        return true;
+    public d.a C(final Map<String, d.a> map) {
+        return di.u(65833898L);
     }
     
     @Override
-    public d.a x(final Map<String, d.a> map) {
-        return dh.r(Build$VERSION.SDK_INT);
+    public boolean nL() {
+        return true;
     }
 }
