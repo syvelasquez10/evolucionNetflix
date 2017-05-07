@@ -1,0 +1,2 @@
+# evolucionNetflix
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f5406d8ef3d74e919c5b32d3c0805137)](https://www.codacy.com/app/sy-velasquez10/evolucionNetflix?utm_source=github.com&utm_medium=referral&utm_content=syvelasquez10/evolucionNetflix&utm_campaign=badger)
