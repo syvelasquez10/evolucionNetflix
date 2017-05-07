@@ -20,7 +20,7 @@ public class MdxPostPlayerRemoteViews extends MdxRemoteViews
         if (context == null) {
             return;
         }
-        this.headerTitle = context.getResources().getString(2131165464);
+        this.headerTitle = context.getResources().getString(2131165524);
     }
     
     private void setPlayNextButton(final RemoteViews remoteViews) {

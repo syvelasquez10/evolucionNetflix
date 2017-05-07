@@ -52,7 +52,7 @@ public class SettingsFragment extends PreferenceFragment
     private void changePlayer(final PlayerType playerType) {
         if (playerType == null) {
             Log.w("SettingsFragment", "Invalid player type choosen! This should not happen, report it.");
-            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131165763).setPositiveButton(2131165483, (DialogInterface$OnClickListener)null).show();
+            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131165767).setPositiveButton(2131165543, (DialogInterface$OnClickListener)null).show();
             return;
         }
         new BackgroundTask().execute(new SettingsFragment$3(this, playerType));
@@ -65,7 +65,7 @@ public class SettingsFragment extends PreferenceFragment
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131165399) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setSummary((CharSequence)((Object)this.getText(2131165414) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
             preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$5(this));
         }
     }
@@ -140,14 +140,14 @@ public class SettingsFragment extends PreferenceFragment
         final PlayerType currentType = PlayerTypeFactory.getCurrentType((Context)this.activity);
         final boolean default1 = PlayerTypeFactory.isDefault((Context)this.activity);
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getString(2131165762)).append(" ");
+        sb.append(this.getString(2131165766)).append(" ");
         sb.append(PlayerTypeFactory.findDefaultPlayerType().getDescription());
         final ArrayList<String> list = new ArrayList<String>();
         final ArrayList<String> list2 = new ArrayList<String>();
         list.add(sb.toString());
         list2.add("DEFAULT");
         if (AndroidUtils.isOpenMaxALSupported()) {
-            list.add((String)this.getText(2131165767));
+            list.add((String)this.getText(2131165771));
             list2.add("XAL");
             if (PlayerTypeFactory.isXalPlayer(currentType)) {
                 if (!default1) {
@@ -155,7 +155,7 @@ public class SettingsFragment extends PreferenceFragment
                 }
                 listPreference.setValue("XAL");
             }
-            list.add((String)this.getText(2131165768));
+            list.add((String)this.getText(2131165772));
             list2.add("XALAMP");
             if (PlayerTypeFactory.isXalmpPlayer(currentType)) {
                 if (!default1) {
@@ -165,7 +165,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device10)) {
-            list.add((String)this.getText(2131165764));
+            list.add((String)this.getText(2131165768));
             list2.add("JPLAYER");
             if (PlayerTypeFactory.isJPlayer(currentType)) {
                 if (!default1) {
@@ -175,7 +175,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device11)) {
-            list.add((String)this.getText(2131165766));
+            list.add((String)this.getText(2131165770));
             list2.add("JPLAYERBASE");
             if (PlayerTypeFactory.isJPlayerBase(currentType)) {
                 if (!default1) {
@@ -185,7 +185,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device12)) {
-            list.add((String)this.getText(2131165765));
+            list.add((String)this.getText(2131165769));
             list2.add("JPLAYER2");
             if (PlayerTypeFactory.isJPlayer2(currentType)) {
                 if (!default1) {
@@ -202,11 +202,11 @@ public class SettingsFragment extends PreferenceFragment
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131165774));
+        list.add(this.getText(2131165776));
         list2.add("DEFAULT");
-        list.add(this.getText(2131165775));
-        list2.add("ENHANCED_XML");
         list.add(this.getText(2131165777));
+        list2.add("ENHANCED_XML");
+        list.add(this.getText(2131165779));
         list2.add("SIMPLE_XML");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_XML) {

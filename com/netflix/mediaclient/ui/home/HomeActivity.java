@@ -173,7 +173,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131165519, 1).show();
+        Toast.makeText((Context)this, 2131165579, 1).show();
         this.clearAllStateAndRefresh();
     }
     

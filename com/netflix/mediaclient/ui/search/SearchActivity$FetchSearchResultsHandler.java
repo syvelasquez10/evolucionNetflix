@@ -4,18 +4,17 @@
 
 package com.netflix.mediaclient.ui.search;
 
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.kubrick_kids.search.KubrickKidsSearchActionBar;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
-import android.os.Bundle;
 import android.view.View$OnFocusChangeListener;
 import android.app.Activity;
 import java.util.Iterator;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
@@ -23,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.SearchView$OnQueryTextListener;
 import com.netflix.mediaclient.android.widget.SearchActionBar;
+import android.os.Bundle;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.view.ViewGroup;
@@ -65,7 +65,7 @@ class SearchActivity$FetchSearchResultsHandler extends LoggingManagerCallback
         if (status.isError()) {
             Log.w("SearchActivity", "Invalid status code");
             this.this$0.showError();
-            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)this.this$0, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getString(2131165412), ActionOnUIError.displayedError));
+            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)this.this$0, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getString(2131165428), ActionOnUIError.displayedError));
             return;
         }
         if (searchResults == null || !searchResults.hasResults()) {

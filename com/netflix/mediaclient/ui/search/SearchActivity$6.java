@@ -4,15 +4,14 @@
 
 package com.netflix.mediaclient.ui.search;
 
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.kubrick_kids.search.KubrickKidsSearchActionBar;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
-import android.os.Bundle;
 import android.view.View$OnFocusChangeListener;
 import java.util.Iterator;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
@@ -21,6 +20,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.SearchActionBar;
+import android.os.Bundle;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.view.ViewGroup;

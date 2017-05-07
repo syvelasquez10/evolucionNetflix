@@ -213,7 +213,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     private void requestAudioPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO")) {
             Log.i("VoipActivity", "Displaying audio permission rationale to provide additional context.");
-            Snackbar.make(this.mLandingPage.getFab(), 2131165672, -2).setAction(2131165483, (View$OnClickListener)new ContactUsActivity$2(this)).show();
+            Snackbar.make(this.mLandingPage.getFab(), 2131165365, -2).setAction(2131165543, (View$OnClickListener)new ContactUsActivity$2(this)).show();
             return;
         }
         ActivityCompat.requestPermissions(this, ContactUsActivity.PERMISSIONS_AUDIO, 0);
@@ -362,7 +362,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
             return;
         }
         Log.i("VoipActivity", "Audio permission was NOT granted.");
-        Snackbar.make(this.mLandingPage.getFab(), 2131165671, -1).show();
+        Snackbar.make(this.mLandingPage.getFab(), 2131165364, -1).show();
     }
     
     @Override

@@ -6,9 +6,9 @@ package com.netflix.mediaclient.util.log;
 
 import java.util.Iterator;
 import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.NetworkError;
 import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
-import com.android.volley.TimeoutError;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import android.support.v4.content.LocalBroadcastManager;
@@ -277,30 +277,32 @@ public abstract class ConsolidatedLoggingUtils
                                             return error;
                                         }
                                         break Label_0324;
-                                        // iftrue(Label_0292:, !volleyError instanceof TimeoutError)
                                         // iftrue(Label_0258:, !volleyError instanceof FalkorServerException)
-                                        while (true) {
-                                            error.setRootCause(RootCause.serverFailure);
-                                            break;
-                                            Label_0275: {
-                                                error.setRootCause(RootCause.tcpConnectionTimeout);
-                                            }
-                                            break;
-                                            continue;
-                                        }
                                         // iftrue(Label_0109:, !volleyError instanceof NetworkError)
-                                        // iftrue(Label_0275:, !volleyError instanceof ServerError)
-                                        Block_13: {
-                                            break Block_13;
-                                            while (true) {
+                                        // iftrue(Label_0292:, !volleyError instanceof TimeoutError)
+                                        Block_12: {
+                                            Block_13: {
+                                                Block_10: {
+                                                    break Block_10;
+                                                    Label_0292: {
+                                                        break Block_13;
+                                                    }
+                                                }
                                                 error.setRootCause(RootCause.serverFailure);
                                                 break;
-                                                Label_0258: {
-                                                    continue;
+                                                Label_0275: {
+                                                    break Block_12;
                                                 }
                                             }
+                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                            break;
                                         }
-                                        error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                        error.setRootCause(RootCause.tcpConnectionTimeout);
+                                        break;
+                                        Label_0258: {
+                                            error.setRootCause(RootCause.serverFailure);
+                                        }
+                                        // iftrue(Label_0275:, !volleyError instanceof ServerError)
                                         break;
                                     }
                                     catch (Throwable t) {

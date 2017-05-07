@@ -25,7 +25,7 @@ class TextViewWrapper$1 implements View$OnClickListener
     public void onClick(final View view) {
         String actionToken = null;
         this.this$0.setAsNotInList();
-        Toast.makeText(this.this$0.textView.getContext(), (CharSequence)this.this$0.textView.getContext().getString(2131165640), 0).show();
+        Toast.makeText(this.this$0.textView.getContext(), (CharSequence)this.this$0.textView.getContext().getString(2131165704), 0).show();
         UserActionLogUtils.reportRemoveFromQueueActionStarted((Context)this.this$0.activity, null, this.this$0.activity.getUiScreen());
         if (this.this$0.activity instanceof DetailsActivity) {
             actionToken = ((DetailsActivity)this.this$0.activity).getActionToken();

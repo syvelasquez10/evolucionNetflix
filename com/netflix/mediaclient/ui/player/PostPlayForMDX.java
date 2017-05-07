@@ -168,7 +168,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(activity.getText(2131165500));
+            this.mInfoTitleView.setText(activity.getText(2131165560));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

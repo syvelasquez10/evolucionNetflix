@@ -47,7 +47,7 @@ public abstract class LanguageSelector
     
     protected void createAndShowDialog(final View view) {
         final LanguageSelector$LanguageAlertDialog languageSelector$LanguageAlertDialog = new LanguageSelector$LanguageAlertDialog(this, (Context)this.mController, null);
-        languageSelector$LanguageAlertDialog.setButton(-1, (CharSequence)this.mController.getString(2131165483), (DialogInterface$OnClickListener)new LanguageSelector$3(this, this.mCallback.wasPlaying(), languageSelector$LanguageAlertDialog));
+        languageSelector$LanguageAlertDialog.setButton(-1, (CharSequence)this.mController.getString(2131165543), (DialogInterface$OnClickListener)new LanguageSelector$3(this, this.mCallback.wasPlaying(), languageSelector$LanguageAlertDialog));
         languageSelector$LanguageAlertDialog.setView(view);
         languageSelector$LanguageAlertDialog.setCancelable(true);
         languageSelector$LanguageAlertDialog.setOnCancelListener((DialogInterface$OnCancelListener)new LanguageSelector$4(this));

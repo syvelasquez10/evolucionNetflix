@@ -141,8 +141,8 @@ public class AgeDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        create.setButton(-2, (CharSequence)this.getString(2131165398), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
-        create.setButton(-1, (CharSequence)this.getString(2131165388), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
+        create.setButton(-2, (CharSequence)this.getString(2131165413), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
+        create.setButton(-1, (CharSequence)this.getString(2131165403), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
         this.mActive = true;
         return (Dialog)(this.mDialog = create);
     }
@@ -191,10 +191,10 @@ public class AgeDialog extends NetflixDialogFrag
         final TextView mAgeMessage = this.mAgeMessage;
         int text;
         if (mInProgress) {
-            text = 2131165387;
+            text = 2131165402;
         }
         else {
-            text = 2131165389;
+            text = 2131165404;
         }
         mAgeMessage.setText(text);
         if (!mInProgress) {

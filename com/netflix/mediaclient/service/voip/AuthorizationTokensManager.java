@@ -219,13 +219,13 @@ class AuthorizationTokensManager
                             Log.w("nf_voip", "VOIP authorization data not found!");
                             return;
                             this.dumpTokens();
+                            this.save();
+                            return;
+                            this.dumpTokens();
                             // iftrue(Label_0106:, voipAuthorizationData.getNonMemberVoipAuthorization() != null)
                             // iftrue(Label_0222:, voipAuthorizationData.getUserVoipAuthorization() != null)
                             Block_7: {
                                 break Block_7;
-                                this.dumpTokens();
-                                this.save();
-                                return;
                                 this.dumpTokens();
                                 Log.w("nf_voip", "VOIP user authorization data not found!");
                                 this.mAuthorizationTokensMap.remove(IVoip$UserType.CS_MEMBER.name());

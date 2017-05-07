@@ -186,7 +186,7 @@ public class PostPlayForEpisodes extends PostPlay
     
     protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(activity.getResources().getText(2131165501));
+            this.mInfoTitleView.setText(activity.getResources().getText(2131165561));
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(0);
@@ -258,7 +258,7 @@ public class PostPlayForEpisodes extends PostPlay
                 NetflixActivity.getImageLoader((Context)this.mNetflixActivity).showImg(this.mBackground, s, IClientLogging$AssetType.merchStill, string, ImageLoader$StaticImgConfig.DARK, true, 1);
             }
         }
-        final String string2 = this.mNetflixActivity.getResources().getString(2131165506, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
+        final String string2 = this.mNetflixActivity.getResources().getString(2131165566, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "Title: " + string2);
         }

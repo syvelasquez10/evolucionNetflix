@@ -56,7 +56,7 @@ public class SocialUtils
     
     public static void addShareIconIfNeeded(final NetflixActivity netflixActivity, final Menu menu) {
         if (getShareSheetType() == SocialUtils$ShareSheetType.SHARE_IN_HEADER || getShareSheetType() == SocialUtils$ShareSheetType.RECOMMEND_PLUS_SHARE) {
-            menu.add(0, 2131623953, 65536, 2131165610).setIcon(2130837735).setShowAsAction(2);
+            menu.add(0, 2131623953, 65536, 2131165675).setIcon(2130837735).setShowAsAction(2);
         }
     }
     
@@ -87,7 +87,7 @@ public class SocialUtils
     }
     
     private static String getShareText(final Resources resources, final String s, final String s2) {
-        return resources.getString(2131165611, new Object[] { s, s2 });
+        return resources.getString(2131165676, new Object[] { s, s2 });
     }
     
     private static String getShareUrl(final String s, final VideoType videoType) {
@@ -203,7 +203,7 @@ public class SocialUtils
                     return addToMyListWrapper(netflixActivity, serviceManager, textView3, textView4, s);
                 }
                 case 3: {
-                    textView.setText(2131165610);
+                    textView.setText(2131165675);
                     textView.setCompoundDrawablesWithIntrinsicBounds(2130837780, 0, 0, 0);
                 }
                 case 4: {
@@ -255,7 +255,7 @@ public class SocialUtils
         intent.setFlags(268435456);
         intent.setType("text/plain");
         intent.putExtra("android.intent.extra.TEXT", getShareText(resources, s, shareUrl));
-        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131165612)));
+        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131165677)));
         UserActionLogUtils.reportShareSheetActionEnded(context, IClientLogging$CompletionReason.success, null);
     }
     

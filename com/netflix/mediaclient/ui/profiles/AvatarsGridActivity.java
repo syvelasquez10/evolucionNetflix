@@ -66,7 +66,7 @@ public class AvatarsGridActivity extends NetflixActivity
         this.mAdapter = new AvatarsGridActivity$ProfileAvatarAdapter(this, null);
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getResources().getString(2131165585));
+            netflixActionBar.setTitle(this.getResources().getString(2131165650));
             netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         }
     }

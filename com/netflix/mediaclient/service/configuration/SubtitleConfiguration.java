@@ -12,12 +12,12 @@ import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 
 public enum SubtitleConfiguration
 {
-    BINARY_IMAGE(IMedia$SubtitleProfile.IMAGE, IMedia$SubtitleOutputMode.BINARY_IMAGE, 3, 2131165776);
+    BINARY_IMAGE(IMedia$SubtitleProfile.IMAGE, IMedia$SubtitleOutputMode.BINARY_IMAGE, 3, 2131165778);
     
     public static SubtitleConfiguration DEFAULT;
     
-    ENHANCED_XML(IMedia$SubtitleProfile.ENHANCED, IMedia$SubtitleOutputMode.DATA_XML, 1, 2131165775), 
-    SIMPLE_XML(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.DATA_XML, 2, 2131165777);
+    ENHANCED_XML(IMedia$SubtitleProfile.ENHANCED, IMedia$SubtitleOutputMode.DATA_XML, 1, 2131165777), 
+    SIMPLE_XML(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.DATA_XML, 2, 2131165779);
     
     private static final String TAG = "nf_conf";
     private int mLabelId;

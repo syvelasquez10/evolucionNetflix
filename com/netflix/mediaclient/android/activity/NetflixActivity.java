@@ -445,7 +445,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
     }
     
     protected void displayUserAgentDialog(final String s, Runnable visibleDialogLock, final boolean b) {
-        final UpdateDialog$Builder dialog = AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131165483), visibleDialogLock));
+        final UpdateDialog$Builder dialog = AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131165543), visibleDialogLock));
         if (this.destroyed()) {
             return;
         }
@@ -462,17 +462,14 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
-                    while (true) {
-                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                        Label_0144: {
-                            this.displayDialog(dialog);
-                        }
-                        return;
-                        continue;
+                    // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
+                    // iftrue(Label_0144:, !Log.isLoggable())
+                    Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                    Label_0144: {
+                        this.displayDialog(dialog);
                     }
+                    return;
                 }
-                // iftrue(Label_0144:, !Log.isLoggable())
-                // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -645,21 +642,21 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
         }
         switch (NetflixActivity$14.$SwitchMap$com$netflix$mediaclient$StatusCode[status.getStatusCode().ordinal()]) {
             default: {
-                final String string = this.getString(2131165575);
-                this.displayErrorDialog(this.getString(2131165575), status.getStatusCode().getValue(), b);
+                final String string = this.getString(2131165637);
+                this.displayErrorDialog(this.getString(2131165637), status.getStatusCode().getValue(), b);
                 return string;
             }
             case 1: {
                 String format = message;
                 if (message.isEmpty()) {
-                    format = String.format("%s ( %d )", this.getString(2131165568), status.getStatusCode().getValue());
+                    format = String.format("%s ( %d )", this.getString(2131165630), status.getStatusCode().getValue());
                 }
                 this.displayUserAgentDialog(format, null, false);
                 return format;
             }
             case 2:
             case 3: {
-                final String format2 = String.format("%s ( %d )", this.getString(2131165375), status.getStatusCode().getValue());
+                final String format2 = String.format("%s ( %d )", this.getString(2131165389), status.getStatusCode().getValue());
                 this.displayUserAgentDialog(format2, new NetflixActivity$10(this), true);
                 return format2;
             }
@@ -675,14 +672,14 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             case 10:
             case 11:
             case 12: {
-                final String format3 = String.format("%s ( %d )", this.getString(2131165568), status.getStatusCode().getValue());
+                final String format3 = String.format("%s ( %d )", this.getString(2131165630), status.getStatusCode().getValue());
                 this.displayUserAgentDialog(format3, null, false);
                 return format3;
             }
             case 13:
             case 14:
             case 15: {
-                final String string2 = this.getString(2131165569);
+                final String string2 = this.getString(2131165631);
                 this.displayErrorDialog(string2, status.getStatusCode().getValue(), b);
                 return string2;
             }
@@ -807,7 +804,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             new DebugMenuItems("NetflixActivity", this).addItems(this, menu2);
         }
         if (this.showHelpInMenu()) {
-            (this.mHelpMenuItem = menu.add((CharSequence)this.getString(2131165760))).setShowAsAction(1);
+            (this.mHelpMenuItem = menu.add((CharSequence)this.getString(2131165507))).setShowAsAction(1);
             final Intent startIntent = ContactUsActivity.createStartIntent((Context)this);
             final IClientLogging$ModalView uiScreen = this.getUiScreen();
             if (uiScreen != null) {

@@ -173,7 +173,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         remoteViews.setImageViewResource(2131624450, 2130837915);
         remoteViews.setViewVisibility(2131624458, 0);
         remoteViews.setViewVisibility(2131624459, 0);
-        remoteViews.setTextViewText(2131624458, context.getText(2131165787));
+        remoteViews.setTextViewText(2131624458, context.getText(2131165644));
         remoteViews.setOnClickPendingIntent(2131624450, this.getWidgetHomeIntent(n));
         remoteViews.setOnClickPendingIntent(2131624454, this.getWidgetRefreshIntent(null, null, n));
         remoteViews.setOnClickPendingIntent(2131624455, this.getWidgetHomeIntent(n));
@@ -663,15 +663,15 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         String s = null;
         switch (n % 3) {
             default: {
-                s = context.getString(2131165787);
+                s = context.getString(2131165644);
                 break;
             }
             case 0: {
-                s = context.getString(2131165785);
+                s = context.getString(2131165642);
                 break;
             }
             case 1: {
-                s = context.getString(2131165786);
+                s = context.getString(2131165643);
                 break;
             }
         }
@@ -766,7 +766,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private String getVideoTitle(final Context context, final PDiskData$ListType pDiskData$ListType, final PVideo pVideo) {
         if (PDiskData$ListType.CW.equals(pDiskData$ListType) && VideoType.SHOW.equals(pVideo.videoType)) {
-            return context.getString(2131165507, new Object[] { pVideo.title, pVideo.playableSeasonNumber, pVideo.playableEpisodeNumber });
+            return context.getString(2131165567, new Object[] { pVideo.title, pVideo.playableSeasonNumber, pVideo.playableEpisodeNumber });
         }
         return pVideo.title;
     }

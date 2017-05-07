@@ -52,16 +52,16 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
         if (episodeDetails.isAvailableToStream()) {
-            return this.getResources().getString(2131165429, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+            return this.getResources().getString(2131165488, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         }
         String s;
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            s = this.getResources().getString(2131165478);
+            s = this.getResources().getString(2131165538);
         }
         else {
             s = episodeDetails.getAvailabilityDateMessage();
         }
-        return this.getResources().getString(2131165429, new Object[] { episodeDetails.getEpisodeNumber(), s });
+        return this.getResources().getString(2131165488, new Object[] { episodeDetails.getEpisodeNumber(), s });
     }
     
     protected void findViews() {

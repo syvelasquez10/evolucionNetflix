@@ -140,7 +140,7 @@ public final class PlayerSuspendNotification
         }
         else {
             final int color = this.mActivity.getResources().getColor(2131558527);
-            final String string = this.mActivity.getResources().getString(2131165553);
+            final String string = this.mActivity.getResources().getString(2131165615);
             final Notification$Builder setVisibility = new Notification$Builder((Context)this.mActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837771).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (largeIcon != null) {
                 setVisibility.setLargeIcon(largeIcon);
@@ -169,7 +169,7 @@ public final class PlayerSuspendNotification
         this.mShowNotification.set(true);
         final PlayerSuspendNotification$1 playerSuspendNotification$1 = new PlayerSuspendNotification$1(this);
         if (asset.isEpisode()) {
-            this.mSecondaryTitle = this.mActivity.getApplicationContext().getString(2131165427, new Object[] { asset.getSeasonNumber(), asset.getEpisodeNumber(), asset.getTitle() });
+            this.mSecondaryTitle = this.mActivity.getApplicationContext().getString(2131165486, new Object[] { asset.getSeasonNumber(), asset.getEpisodeNumber(), asset.getTitle() });
             this.mTitle = asset.getParentTitle();
             this.mServiceManager.getBrowse().fetchEpisodeDetails(String.valueOf(asset.getPlayableId()), playerSuspendNotification$1);
             return;

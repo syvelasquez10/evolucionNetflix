@@ -103,10 +103,10 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
             this.builder.setSubText((CharSequence)this.secondTitle);
         }
         if (this.isPostplay) {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165464));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165524));
         }
         else {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165577));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165639));
         }
         this.builder.setSmallIcon(2130837771);
         this.notification = this.builder.build();

@@ -57,7 +57,7 @@ final class SocialUtils$2 implements View$OnClickListener
             this.val$activity.showDialog(RecommendToFriendsFrag.newInstance(this.val$videoId, null, null, null, null));
         }
         else {
-            final Dialog displayDialog = this.val$activity.displayDialog(new AlertDialog$Builder((Context)this.val$activity).setPositiveButton(2131165483, (DialogInterface$OnClickListener)new SocialUtils$2$1(this)).setMessage((CharSequence)Html.fromHtml(this.val$activity.getString(2131165603))).setNegativeButton(2131165398, (DialogInterface$OnClickListener)null));
+            final Dialog displayDialog = this.val$activity.displayDialog(new AlertDialog$Builder((Context)this.val$activity).setPositiveButton(2131165543, (DialogInterface$OnClickListener)new SocialUtils$2$1(this)).setMessage((CharSequence)Html.fromHtml(this.val$activity.getString(2131165668))).setNegativeButton(2131165413, (DialogInterface$OnClickListener)null));
             SocialLoggingUtils.reportSocialConnectImpressionEvent((Context)this.val$activity, IClientLogging$ModalView.movieDetails);
             ((TextView)displayDialog.findViewById(16908299)).setMovementMethod(LinkMovementMethod.getInstance());
         }

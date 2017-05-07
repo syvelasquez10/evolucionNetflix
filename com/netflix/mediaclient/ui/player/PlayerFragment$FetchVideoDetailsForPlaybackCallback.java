@@ -138,7 +138,7 @@ class PlayerFragment$FetchVideoDetailsForPlaybackCallback extends LoggingManager
         }
         if (status.isError() || videoDetails == null) {
             Log.w("PlayerFragment", "Error loading video details for video playback");
-            Toast.makeText((Context)this.this$0.getActivity(), 2131165441, 1).show();
+            Toast.makeText((Context)this.this$0.getActivity(), 2131165500, 1).show();
             return;
         }
         if (Log.isLoggable()) {

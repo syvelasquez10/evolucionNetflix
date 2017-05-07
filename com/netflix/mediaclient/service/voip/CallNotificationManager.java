@@ -35,14 +35,14 @@ class CallNotificationManager
     }
     
     private Notification createNotification(final boolean b) {
-        final String string = this.mContext.getString(2131165753);
-        final String string2 = this.mContext.getString(2131165754);
+        final String string = this.mContext.getString(2131165467);
+        final String string2 = this.mContext.getString(2131165468);
         String contentText;
         if (b) {
-            contentText = this.mContext.getString(2131165755);
+            contentText = this.mContext.getString(2131165469);
         }
         else {
-            contentText = this.mContext.getString(2131165756);
+            contentText = this.mContext.getString(2131165470);
         }
         final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837785).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837700, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(System.currentTimeMillis()).build();
         this.mNotificationManager.notify(20, build);

@@ -97,7 +97,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
             return s;
         }
         if (searchQueryDetailsActivity$SearchQueryDetailsType == SearchQueryDetailsActivity$SearchQueryDetailsType.SEARCH_SUGGESTION) {
-            return this.getString(2131165558, new Object[] { s });
+            return this.getString(2131165620, new Object[] { s });
         }
         throw new IllegalStateException("Bad type");
     }

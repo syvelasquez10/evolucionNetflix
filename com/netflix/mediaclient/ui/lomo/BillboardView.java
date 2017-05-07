@@ -259,7 +259,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             this.friendAvatar.setVisibility(0);
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.friendAvatar, billboard.getSocialBadge().getImageUrl(), IClientLogging$AssetType.merchStill, format, ImageLoader$StaticImgConfig.DARK, true, 1);
             this.friendRecommendationText.setVisibility(0);
-            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131165616, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
+            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131165681, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
             this.mStoryId = billboard.getSocialBadge().getStoryId();
         }
         if (this.showArtworkOnly) {

@@ -122,7 +122,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131165533));
+            this.showDebugToast(this.getString(2131165594));
             return;
         }
         Log.e("LaunchActivity", "Login failed, redirect to LoginActivity with credential and status");
@@ -201,7 +201,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     
     private void handleUserNotSignedInWithoutCredentials(final ServiceManager serviceManager) {
         this.resetTimeout();
-        if (serviceManager.getSignUpParams().isSignUpEnabled() && !this.getNetflixApplication().hasSignedUpOnce()) {
+        if (this.isSignUpEnabled(serviceManager) && !this.getNetflixApplication().hasSignedUpOnce()) {
             this.handleUserSignUp(serviceManager);
             return;
         }
@@ -254,6 +254,10 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
             applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
         }
         this.finish();
+    }
+    
+    private boolean isSignUpEnabled(final ServiceManager serviceManager) {
+        return serviceManager != null && serviceManager.getSignUpParams() != null && serviceManager.getSignUpParams().isSignUpEnabled();
     }
     
     private void manipulateSplashBackground() {

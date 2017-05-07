@@ -70,12 +70,11 @@ public class zzbk extends Thread
                             catch (InterruptedException ex) {}
                         }
                         continue Label_0050_Outer;
+                        zzb.zzaF("ContentFetchTask: sleeping");
+                        this.zzcw();
                         while (true) {
                             Thread.sleep(this.zzsd * 1000);
                             continue Label_0090_Outer;
-                            zzb.zzaF("ContentFetchTask: sleeping");
-                            this.zzcw();
-                            continue;
                             this.zza((Activity)o);
                             continue;
                         }

@@ -78,9 +78,9 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public void setTitleText(final TextView textView, final String s, final int n) {
         if (s != null && s.contains("netflix")) {
-            textView.setText((CharSequence)this.context.getString(2131165469, new Object[] { n + 1 }));
+            textView.setText((CharSequence)this.context.getString(2131165529, new Object[] { n + 1 }));
             return;
         }
-        textView.setText(2131165450);
+        textView.setText(2131165510);
     }
 }

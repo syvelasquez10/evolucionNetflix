@@ -107,13 +107,13 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
             if (status.getStatusCode() == StatusCode.NETWORK_ERROR) {
                 this.mErrorOccurred = true;
                 if (this.leWrapper != null) {
-                    this.leWrapper.showErrorView(this.getString(2131165605), 2131165525, this.retryFetchFriendsCallback);
+                    this.leWrapper.showErrorView(this.getString(2131165670), 2131165585, this.retryFetchFriendsCallback);
                 }
             }
             else if (status.getStatusCode() == StatusCode.USER_NOT_AUTHORIZED) {
                 this.mErrorOccurred = true;
                 if (this.leWrapper != null) {
-                    this.leWrapper.showErrorView((CharSequence)Html.fromHtml(this.getString(2131165604)), 2131165406, new RecommendToFriendsFrag$RetryConnectFacebookCallback(this, this.getActivity()));
+                    this.leWrapper.showErrorView((CharSequence)Html.fromHtml(this.getString(2131165669)), 2131165421, new RecommendToFriendsFrag$RetryConnectFacebookCallback(this, this.getActivity()));
                 }
             }
             if (!this.mErrorOccurred) {

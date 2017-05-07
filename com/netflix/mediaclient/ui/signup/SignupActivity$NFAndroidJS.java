@@ -169,7 +169,7 @@ public class SignupActivity$NFAndroidJS
         catch (JSONException ex) {
             Log.e("SignupActivity", "Failed to LoginToApp", (Throwable)ex);
             this.this$0.mSignupOngoing = false;
-            this.this$0.provideDialog(this.this$0.getString(2131165614), this.this$0.mHandleError);
+            this.this$0.provideDialog(this.this$0.getString(2131165679), this.this$0.mHandleError);
             return;
         }
         Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");

@@ -36,13 +36,13 @@ public class FacebookLoginActivity extends AccountActivity
     }
     
     private void handleConnectFailure() {
-        Toast.makeText((Context)this, 2131165433, 1).show();
+        Toast.makeText((Context)this, 2131165492, 1).show();
         this.finish();
     }
     
     private void handleConnectSuccess() {
         this.sendHomeRefreshBrodcast();
-        Toast.makeText((Context)this, 2131165408, 1).show();
+        Toast.makeText((Context)this, 2131165423, 1).show();
         this.finish();
     }
     

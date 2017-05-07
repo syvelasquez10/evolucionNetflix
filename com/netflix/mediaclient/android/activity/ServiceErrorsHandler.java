@@ -32,14 +32,14 @@ public class ServiceErrorsHandler
         final UpdateDialog$Builder updateDialog$Builder = new UpdateDialog$Builder((Context)activity);
         updateDialog$Builder.setTitle("");
         if (!b) {
-            updateDialog$Builder.setMessage(2131165391);
+            updateDialog$Builder.setMessage(2131165406);
             updateDialog$Builder.setCancelable(false);
-            updateDialog$Builder.setNegativeButton(2131165398, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
+            updateDialog$Builder.setNegativeButton(2131165413, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
         }
         else {
-            updateDialog$Builder.setMessage(2131165456);
+            updateDialog$Builder.setMessage(2131165516);
         }
-        updateDialog$Builder.setPositiveButton(2131165483, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
+        updateDialog$Builder.setPositiveButton(2131165543, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
         updateDialog$Builder.show();
         return true;
     }
@@ -50,7 +50,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
         switch (ServiceErrorsHandler$4.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
-                provideDialog(activity, activity.getString(2131165575) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131165637) + " (" + statusCode.getValue() + ")");
                 b = true;
                 return b;
             }
@@ -64,24 +64,24 @@ public class ServiceErrorsHandler
                 return handleAppUpdateNeeded(activity, true);
             }
             case 4: {
-                provideDialog(activity, activity.getString(2131165549));
+                provideDialog(activity, activity.getString(2131165611));
                 return true;
             }
             case 5:
             case 6: {
-                provideDialog(activity, activity.getString(2131165426));
+                provideDialog(activity, activity.getString(2131165485));
                 return true;
             }
             case 7:
             case 8:
             case 9: {
-                provideDialog(activity, activity.getString(2131165569) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131165631) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }
     }
     
     private static void provideDialog(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131165483, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131165543, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
     }
 }

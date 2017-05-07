@@ -122,10 +122,15 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
                     Label_0014: {
                         return;
                     }
-                    // iftrue(Label_0014:, !this.saveCredentials)
-                    Log.d("SignupActivity", "Trying to save credentials to GPS");
-                    this.saveCredentials = false;
                     // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
+                    // iftrue(Label_0014:, !this.saveCredentials)
+                Label_0057:
+                    while (true) {
+                        Log.d("SignupActivity", "Trying to save credentials to GPS");
+                        this.saveCredentials = false;
+                        break Label_0057;
+                        continue;
+                    }
                     Log.w("SignupActivity", "Credential is empty, do not save it.");
                     return;
                 }
@@ -162,11 +167,11 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131165533);
+            this.showToast(2131165594);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131165614) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131165679) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -333,7 +338,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131165613), new SignupActivity$10(this));
+            this.provideTwoButtonDialog(this.getString(2131165678), new SignupActivity$10(this));
         }
         return true;
     }
@@ -390,12 +395,12 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131165532));
+            menuItem = menu.add((CharSequence)this.getString(2131165593));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$1(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131165534));
+            menuItem = menu.add((CharSequence)this.getString(2131165595));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$2(this));
         }
@@ -430,11 +435,11 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131165483), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131165543), runnable)));
     }
     
     void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131165483), runnable, this.getString(2131165398), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131165543), runnable, this.getString(2131165413), null)));
     }
     
     @Override

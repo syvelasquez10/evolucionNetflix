@@ -140,8 +140,8 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
         Log.d("nf_language_selector", "Add tabhost");
         (this.mTabHost = (TabHost)view.findViewById(2131624293)).setOnTabChangedListener((TabHost$OnTabChangeListener)this);
         this.mTabHost.setup();
-        this.setNewTab((Context)this.mController, this.mTabHost, "ListAudios", 2131165392, 2131624247, true);
-        this.setNewTab((Context)this.mController, this.mTabHost, "ListSubtitles", 2131165550, 2131624249, false);
+        this.setNewTab((Context)this.mController, this.mTabHost, "ListAudios", 2131165407, 2131624247, true);
+        this.setNewTab((Context)this.mController, this.mTabHost, "ListSubtitles", 2131165612, 2131624249, false);
         this.mTabHost.setCurrentTab(0);
         this.mAudioTabLabel.setTypeface(this.mAudioTabLabel.getTypeface(), 1);
         this.mSubtitleTabLabel.setTypeface(this.mSubtitleTabLabel.getTypeface(), 0);

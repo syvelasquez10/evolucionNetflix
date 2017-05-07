@@ -295,11 +295,11 @@ class DialerScreen
             return;
         }
         if (this.mConnected) {
-            this.mCallStatus.setText((CharSequence)this.mOwner.getString(2131165748));
+            this.mCallStatus.setText((CharSequence)this.mOwner.getString(2131165462));
             this.mTimer.setVisibility(0);
             return;
         }
-        this.mCallStatus.setText((CharSequence)this.mOwner.getString(2131165749));
+        this.mCallStatus.setText((CharSequence)this.mOwner.getString(2131165463));
         this.mTimer.setVisibility(4);
     }
     
