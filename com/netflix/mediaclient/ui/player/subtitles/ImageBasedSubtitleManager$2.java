@@ -10,6 +10,7 @@ import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import com.netflix.mediaclient.service.player.subtitles.image.SegmentIndex$ImageDescriptor;
+import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import android.graphics.Bitmap;

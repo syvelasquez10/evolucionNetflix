@@ -218,7 +218,6 @@ public final class R$string
     public static final int common_open_on_phone = 2131492924;
     public static final int common_signin_button_text = 2131492922;
     public static final int common_signin_button_text_long = 2131492923;
-    public static final int copyright = 2131493393;
     public static final int create_calendar_message = 2131492890;
     public static final int create_calendar_title = 2131492889;
     public static final int cw_video_runtime = 2131493349;
@@ -550,6 +549,7 @@ public final class R$string
     public static final int title_movie_string = 2131493242;
     public static final int toast_details_action_added_to_mylist = 2131493215;
     public static final int toast_details_action_removed_from_mylist = 2131493214;
+    public static final int video_details_copyright_msg = 2131493393;
     public static final int view_gone = 2131492989;
     public static final int view_invisible = 2131492988;
     public static final int view_visible = 2131492987;

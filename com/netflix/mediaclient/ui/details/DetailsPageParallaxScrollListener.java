@@ -47,6 +47,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     protected int initialBottomColor;
     protected int initialTopColor;
     private boolean islatched;
+    float lastParallaxPosition;
     private long lastTime;
     private int latchPosition;
     private ViewGroup originalTrackingViewParent;
@@ -72,8 +73,12 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     private void adjustForParallax(final View view, final int n) {
-        if (AndroidUtils.getAndroidVersion() >= 16 && view != null) {
-            view.setTranslationY(-n + n * 0.4f);
+        if (AndroidUtils.getAndroidVersion() >= 16) {
+            final float n2 = -n + n * 0.4f;
+            if (view != null && n2 != this.lastParallaxPosition) {
+                view.setTranslationY(n2);
+                this.lastParallaxPosition = n2;
+            }
         }
     }
     
@@ -264,6 +269,21 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     protected void onTrackingViewUnlatched() {
+    }
+    
+    public void resetDynamicViewsYPosition() {
+        int i = 0;
+        if (this.recyclerView.getChildCount() < 1 || this.parallaxViews.length < 1) {
+            return;
+        }
+        final View child = this.recyclerView.getChildAt(0);
+        for (View[] parallaxViews = this.parallaxViews; i < parallaxViews.length; ++i) {
+            final View view = parallaxViews[i];
+            if (view != null) {
+                this.adjustForParallax(view, child.getTop());
+            }
+        }
+        this.setTrackerViewPos();
     }
     
     public void setAnchor(final View anchorView) {

@@ -365,17 +365,13 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
-                Block_9_Outer:
                     while (true) {
-                        this.displayDialog(dialog);
-                        return;
-                    Block_10:
-                        while (true) {
-                            break Block_10;
-                            continue;
-                        }
                         Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                        continue Block_9_Outer;
+                        Label_0144: {
+                            this.displayDialog(dialog);
+                        }
+                        return;
+                        continue;
                     }
                 }
                 // iftrue(Label_0144:, !Log.isLoggable())

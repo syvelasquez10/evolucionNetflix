@@ -8,6 +8,8 @@ import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.util.LanguageChoice;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
@@ -1184,10 +1186,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
             Log.d("PlayerActivity", "====> Destroying PlayActivity " + this.hashCode());
         }
         if (this.mPlayerBackgrounded) {
-            if (this.mPlayerSuspendNotification != null) {
-                this.mPlayerSuspendNotification.cancelNotification();
-            }
-            this.mPlayerBackgrounded = false;
+            this.cleanupAndExit();
         }
         this.getWindow().getAttributes().buttonBrightness = -1.0f;
         this.releaseLockOnScreen();
@@ -1691,6 +1690,11 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         final Asset forPostPlay = Asset.createForPostPlay(playable, playContext, n, b3);
         if (Log.isLoggable()) {
             Log.d("PlayerActivity", "Asset to play next: " + forPostPlay);
+        }
+        if (StringUtils.isEmpty(forPostPlay.getPlayableId())) {
+            Log.e("PlayerActivity", "PlayableId is null - skip playback");
+            ErrorLoggingManager.logHandledException("PlayableId is null - skip playback");
+            return;
         }
         this.startActivity(toIntent(this, forPostPlay));
     }

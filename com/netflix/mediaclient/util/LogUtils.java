@@ -16,6 +16,8 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 
 public final class LogUtils
@@ -53,6 +55,15 @@ public final class LogUtils
         if (Log.isLoggable()) {
             Log.v(s, "Current thread name: " + Thread.currentThread().getName() + ", msg: " + s2);
         }
+    }
+    
+    public static void logEmptySeasonId(final NetflixActivity netflixActivity, String format, final SeasonDetails seasonDetails) {
+        if (seasonDetails == null) {
+            Log.v("nf_log", "No season details");
+            return;
+        }
+        format = String.format("For Show Id %s, the Current Season Details Id is empty - %s, see SPY-7455", format, seasonDetails.toString());
+        netflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(format);
     }
     
     public static void reportErrorSafely(final String s, final Throwable t) {

@@ -369,6 +369,13 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         return super.getService();
     }
     
+    public void invalidateCachedEpisodes(final String s, final VideoType videoType) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.invalidateEpisodes(s, videoType);
+    }
+    
     public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());

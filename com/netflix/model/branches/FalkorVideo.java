@@ -56,7 +56,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     private static final String TAG = "FalkorVideo";
     protected Video$Bookmark bookmark;
     private Video$BookmarkStill bookmarkStill;
-    private String copyright;
     private Video$Detail detail;
     private BranchMap<Ref> episodes;
     private Video$HeroImages heroImages;
@@ -178,9 +177,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             default: {
                 return null;
             }
-            case "copyright": {
-                return this.copyright;
-            }
             case "summary": {
                 return this.summary;
             }
@@ -294,7 +290,11 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public String getCopyright() {
-        return this.copyright;
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.copyright;
     }
     
     @Override

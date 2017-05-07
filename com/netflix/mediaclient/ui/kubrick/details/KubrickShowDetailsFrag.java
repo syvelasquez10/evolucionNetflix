@@ -16,7 +16,6 @@ import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.widget.AdapterView$OnItemSelectedListener;
@@ -29,8 +28,8 @@ import com.netflix.mediaclient.util.api.Api16Util;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -39,6 +38,7 @@ import android.view.ViewGroup;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.view.View;
+import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
@@ -54,6 +54,7 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
     private static final String SAVED_STATE_SUPRESS_ANIMATEIN = "saved_state_supress_animatein";
     private static final String TAG = "KubrickShowDetailsFrag";
     private List<EpisodeDetails> currentEpisodes;
+    DetailsPageParallaxScrollListener detailsPageParallaxScrollListener;
     private View fragBackground;
     private boolean fromSameActivityType;
     private boolean hasBookmark;
@@ -193,10 +194,10 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), new View[] { this.detailsViewGroup.getHeroImage(), ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131230829), 0, (View)this.detailsViewGroup.getFooterViewGroup());
-                this.getRecyclerView().setOnScrollListener(onScrollListener);
-                onScrollListener.setOnScrollStateChangedListener(new KubrickShowDetailsFrag$4(this));
-                return onScrollListener;
+                this.detailsPageParallaxScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), new View[] { this.detailsViewGroup.getHeroImage(), ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131230829), 0, (View)this.detailsViewGroup.getFooterViewGroup());
+                this.getRecyclerView().setOnScrollListener(this.detailsPageParallaxScrollListener);
+                this.detailsPageParallaxScrollListener.setOnScrollStateChangedListener(new KubrickShowDetailsFrag$4(this));
+                return this.detailsPageParallaxScrollListener;
             }
         }
         return null;

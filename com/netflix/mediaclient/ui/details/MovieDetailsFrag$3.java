@@ -17,7 +17,7 @@ class MovieDetailsFrag$3 extends GridLayoutManager$SpanSizeLookup
     
     @Override
     public int getSpanSize(final int n) {
-        if (((RecyclerViewHeaderAdapter)this.this$0.recyclerView.getAdapter()).hasFooter() && n == this.this$0.recyclerView.getAdapter().getItemCount() - 1) {
+        if (((RecyclerViewHeaderAdapter)this.this$0.recyclerView.getAdapter()).isPositionFooter(n)) {
             return this.this$0.numColumns;
         }
         if (n == 0) {

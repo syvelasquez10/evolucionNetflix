@@ -40,11 +40,11 @@ import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialNotification;
 import android.widget.BaseAdapter;
 
-class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
+public class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
 {
     final /* synthetic */ NotificationsFrag this$0;
     
-    private NotificationsFrag$NotificationsListAdapter(final NotificationsFrag this$0) {
+    public NotificationsFrag$NotificationsListAdapter(final NotificationsFrag this$0) {
         this.this$0 = this$0;
     }
     

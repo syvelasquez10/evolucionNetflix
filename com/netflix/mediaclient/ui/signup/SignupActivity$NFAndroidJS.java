@@ -36,7 +36,6 @@ import android.os.Build$VERSION;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.auth.api.credentials.Credential$Builder;
 import com.google.android.gms.auth.api.Auth;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import android.webkit.WebView;
@@ -52,6 +51,7 @@ import com.netflix.mediaclient.ui.login.AccountActivity;
 import com.netflix.mediaclient.ui.login.LoginActivity;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import org.json.JSONException;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -182,9 +182,24 @@ public class SignupActivity$NFAndroidJS
     }
     
     @JavascriptInterface
-    public void passNonMemberInfo(final String s, final String s2, final String s3) {
-        Log.d("SignupActivity", "store nonRegistered cookies");
-        this.this$0.storeNrmNetflixIdInPref(s);
+    public void passNonMemberInfo(String s) {
+        Log.d("SignupActivity", "NonRegistered member cookies:" + s);
+        try {
+            final JSONObject jsonObject = new JSONObject(s);
+            if (Log.isLoggable()) {
+                Log.d("SignupActivity", "nrmCookies: " + jsonObject.getString("nrmCookies"));
+                Log.d("SignupActivity", "nmab: " + jsonObject.getString("nmab"));
+            }
+            final JSONObject jsonObject2 = new JSONObject(jsonObject.getString("nrmCookies"));
+            if (StringUtils.isEmpty(s = jsonObject2.getString("NetflixId"))) {
+                s = jsonObject2.getString("NetflixIdTest");
+            }
+            this.this$0.storeNrmNetflixIdInPref(s);
+        }
+        catch (Exception ex) {
+            this.this$0.storeNrmNetflixIdInPref("");
+            Log.e("SignupActivity", "Failed to parse passNonMemberInfo", ex);
+        }
     }
     
     @JavascriptInterface

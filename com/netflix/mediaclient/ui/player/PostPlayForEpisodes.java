@@ -59,6 +59,14 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     @Override
+    protected void doTransitionFromPostPlay() {
+        final PlayerActivity mContext = this.mContext;
+        if (this.mBackground.getVisibility() == 0) {
+            mContext.performUpAction();
+        }
+    }
+    
+    @Override
     protected void doTransitionToPostPlay() {
         if (this.mAutoPlayEnabled) {
             Log.d("nf_postplay", "Auto play is enabled");
@@ -83,11 +91,35 @@ public class PostPlayForEpisodes extends PostPlay
     
     @Override
     protected void handlePlayNow(final boolean b) {
-        if (this.mContext.destroyed()) {
+        if (this.mContext == null || this.mContext.destroyed()) {
             Log.d("nf_postplay", "Activity is alredy destroyed, ignore play now!");
         }
         else {
             Log.d("nf_postplay", "Play NEXT episode!");
+            if (this.mPostPlayVideos.size() == 0) {
+                Log.d("nf_postplay", "mPostPlayVideos size is zero");
+                CharSequence text;
+                if (this.mTitle.getText() != null) {
+                    text = this.mTitle.getText();
+                }
+                else {
+                    text = "null";
+                }
+                this.mContext.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7987 - PostPlayVideos empty for title  %s", text));
+                return;
+            }
+            if (this.mPostPlayContexts.size() == 0) {
+                Log.d("nf_postplay", "mPostPlayContexts size is zero");
+                CharSequence text2;
+                if (this.mTitle.getText() != null) {
+                    text2 = this.mTitle.getText();
+                }
+                else {
+                    text2 = "null";
+                }
+                this.mContext.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7987 - PostPlayContexts empty for title  %s", text2));
+                return;
+            }
             final PostPlayVideo postPlayVideo = this.mPostPlayVideos.get(0);
             final PostPlayContext postPlayContext = this.mPostPlayContexts.get(0);
             if (postPlayVideo != null) {

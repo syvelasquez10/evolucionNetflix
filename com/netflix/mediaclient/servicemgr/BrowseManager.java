@@ -587,6 +587,27 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
+    public void invalidateCachedEpisodes(final String s, final VideoType videoType) {
+        synchronized (this) {
+            if (StringUtils.isEmpty(s)) {
+                throw new IllegalArgumentException("Parameter cannot be null");
+            }
+        }
+        final String s2;
+        if (Log.isLoggable()) {
+            Log.d("ServiceManagerBrowse", "purgeCachedEpisodes id=" + s2);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().invalidateCachedEpisodes(s2, videoType);
+        }
+        else {
+            Log.w("ServiceManagerBrowse", "purgeCachedEpisodes:: service is not available");
+        }
+    }
+    // monitorexit(this)
+    
+    @Override
     public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {

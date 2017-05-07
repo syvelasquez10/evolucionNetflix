@@ -2265,6 +2265,10 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         }
     }
     
+    public void invalidateEpisodes(final String s, final VideoType videoType) {
+        this.invalidate(PQL.create(videoType.getValue(), s, "episodes"));
+    }
+    
     public void logBillboardActivity(final Video p0, final BillboardInteractionType p1) {
         // 
         // This method could not be decompiled.

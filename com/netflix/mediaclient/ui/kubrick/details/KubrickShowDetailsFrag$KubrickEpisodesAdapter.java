@@ -16,7 +16,6 @@ import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.widget.AdapterView$OnItemSelectedListener;
@@ -37,6 +36,7 @@ import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.view.View;
+import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import com.netflix.mediaclient.ui.details.ServiceManagerProvider;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -61,6 +61,13 @@ public class KubrickShowDetailsFrag$KubrickEpisodesAdapter extends EpisodesAdapt
         if (this.this$0.currentEpisodes != null && this.this$0.currentEpisodes.size() > 0) {
             this.this$0.spinnerViewGroup.setVisibility(0);
             this.this$0.leWrapper.hide(false);
+        }
+    }
+    
+    @Override
+    protected void onPostItemViewBind(final int n) {
+        if (this.this$0.detailsPageParallaxScrollListener != null) {
+            this.this$0.detailsPageParallaxScrollListener.resetDynamicViewsYPosition();
         }
     }
     

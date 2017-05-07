@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
@@ -30,7 +31,6 @@ import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import com.netflix.mediaclient.util.StringUtils;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
@@ -40,6 +40,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     protected static final String EXTRA_VIDEO_ID = "video_id";
     private static final String TAG = "MovieDetailsFrag";
     protected RecyclerViewHeaderAdapter adapter;
+    private CopyrightView copyrightView;
     private boolean isLoading;
     protected int numColumns;
     protected RecyclerView recyclerView;
@@ -51,12 +52,12 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.isLoading = true;
     }
     
-    private void addCopyrightAsFooter(final MovieDetails movieDetails) {
-        if (StringUtils.isNotEmpty(movieDetails.getCopyright())) {
-            final CopyrightView create = CopyrightView.create(movieDetails, (Context)this.getActivity());
-            create.getView().setVisibility(0);
-            this.adapter.addFooterView(create.getView());
+    private void addCopyrightAsFooter() {
+        if (this.adapter == null) {
+            return;
         }
+        (this.copyrightView = CopyrightView.create(null, (Context)this.getActivity())).setGravityAsCenter();
+        this.adapter.addFooterView(this.copyrightView.getView());
     }
     
     public static MovieDetailsFrag create(final String s) {
@@ -193,7 +194,9 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     }
     
     protected void setupRecyclerViewAdapter() {
-        (this.adapter = new SimilarItemsGridViewAdapter(this.recyclerView, true, this.numColumns, new MovieDetailsFrag$2(this))).addHeaderView((View)this.detailsViewGroup);
+        this.adapter = new SimilarItemsGridViewAdapter(this.recyclerView, true, this.numColumns, new MovieDetailsFrag$2(this));
+        this.addCopyrightAsFooter();
+        this.adapter.addHeaderView((View)this.detailsViewGroup);
         this.recyclerView.setAdapter(this.adapter);
     }
     
@@ -215,7 +218,10 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         if (this.recyclerView != null) {
             this.recyclerView.setVisibility(0);
         }
-        this.addCopyrightAsFooter(movieDetails);
+        if (this.copyrightView != null && StringUtils.isNotEmpty(movieDetails.getCopyright())) {
+            this.copyrightView.update(movieDetails);
+            this.copyrightView.getView().setVisibility(0);
+        }
         this.scrollTo(this.targetScrollYOffset);
         this.targetScrollYOffset = 0;
     }

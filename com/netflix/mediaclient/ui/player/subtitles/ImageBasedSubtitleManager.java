@@ -10,6 +10,7 @@ import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import com.netflix.mediaclient.service.player.subtitles.image.SegmentIndex$ImageDescriptor;
+import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import android.graphics.Bitmap;
@@ -32,6 +33,7 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
 {
     private RelativeLayout mImageWrapper;
     protected MeasureTranslator mMeasureTranslator;
+    private boolean mPlayerControlsVisible;
     private Map<String, ImageView> mVisibleBlocks;
     
     ImageBasedSubtitleManager(final PlayerActivity playerActivity) {
@@ -154,45 +156,69 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
             }
             final int n4 = this.getHorizontalOffset() + (int)(image.getOriginX() * scaleFactor) - n3;
             final int n5 = this.mDisplayArea.getWidth() - n4 - width;
-            final int n6 = (int)(scaleFactor * image.getOriginY()) + this.getVerticalOffset() + n2;
-            final int n7 = this.mDisplayArea.getHeight() - n6 - height;
+            final int n6 = (int)(image.getOriginY() * scaleFactor) + this.getVerticalOffset() + n2;
+            int n8;
+            final int n7 = n8 = DeviceUtils.getScreenHeightInPixels(this.getContext()) - n6 - height;
+            int n9 = n6;
+            if (this.mPlayerControlsVisible) {
+                if (n6 > this.mDisplayArea.getHeight() / 2) {
+                    final int n10 = this.getDisplayAreaMarginBottom() - n7;
+                    n8 = n7;
+                    n9 = n6;
+                    if (n10 > 0) {
+                        n9 = n6 - n10;
+                        n8 = n7 + n10;
+                    }
+                }
+                else {
+                    final int n11 = this.getDisplayAreaMarginTop() - n6;
+                    n8 = n7;
+                    n9 = n6;
+                    if (n11 > 0) {
+                        n9 = n6 + n11;
+                        n8 = n7 - n11;
+                    }
+                }
+            }
             if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Original image " + image.getName() + " position l/r/t/b: " + image.getOriginX() + " / " + (image.getOriginX() + image.getWidth()) + " / " + image.getOriginY() + " / " + (image.getOriginY() + image.getHeight()));
-                Log.d("nf_subtitles_render", "Set image before validation" + image.getName() + " to position l/r/t/b: " + n4 + " / " + n5 + " / " + n6 + " / " + n7);
+                Log.d("nf_subtitles_render", "Set image before validation" + image.getName() + " to position l/r/t/b: " + n4 + " / " + n5 + " / " + n9 + " / " + n8);
             }
-            int n8 = n7;
-            int n9;
-            if ((n9 = n6) < 0) {
-                Log.d("nf_subtitles_render", "Top was negative!");
-                n8 = n7 - n6;
-                n9 = 0;
-            }
-            int n10;
-            int n11;
-            if (n8 < 0) {
-                Log.d("nf_subtitles_render", "Bottom was negative!");
-                n10 = 0;
-                n11 = n8 + n9;
-            }
-            else {
-                n10 = n8;
-                n11 = n9;
-            }
-            int n12;
+            int n12 = n8;
             int n13;
-            if (n4 < 0) {
-                Log.d("nf_subtitles_render", "Left was negative!");
-                n12 = n5 - n4;
+            if ((n13 = n9) < 0) {
+                Log.d("nf_subtitles_render", "Top was negative!");
+                n12 = n8 - n9;
                 n13 = 0;
             }
-            else {
-                n12 = n5;
-                n13 = n4;
-            }
+            int n15;
+            int n16;
             if (n12 < 0) {
+                Log.d("nf_subtitles_render", "Bottom was negative!");
+                final int n14 = 0;
+                n15 = n12 + n13;
+                n16 = n14;
+            }
+            else {
+                final int n17 = n13;
+                n16 = n12;
+                n15 = n17;
+            }
+            int n18;
+            int n19;
+            if (n4 < 0) {
+                Log.d("nf_subtitles_render", "Left was negative!");
+                n18 = n5 - n4;
+                n19 = 0;
+            }
+            else {
+                n18 = n5;
+                n19 = n4;
+            }
+            if (n18 < 0) {
                 Log.d("nf_subtitles_render", "Right was negative!");
-                n13 += n12;
-                n12 = n;
+                n19 += n18;
+                n18 = n;
             }
             if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Measurement translation: " + this.mMeasureTranslator);
@@ -204,10 +230,10 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
                 }
                 this.mVisibleBlocks.put(image.getName(), image2);
                 if (Log.isLoggable()) {
-                    Log.d("nf_subtitles_render", "Set image " + image.getName() + " after validation to position l/r/t/b: " + n13 + " / " + n12 + " / " + n11 + " / " + n10);
+                    Log.d("nf_subtitles_render", "Set image " + image.getName() + " after validation to position l/r/t/b: " + n19 + " / " + n18 + " / " + n15 + " / " + n16);
                 }
                 final RelativeLayout$LayoutParams layoutParams = new RelativeLayout$LayoutParams(width, height);
-                layoutParams.setMargins(n13, n11, n12, n10);
+                layoutParams.setMargins(n19, n15, n18, n16);
                 image2.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
                 this.mImageWrapper.addView((View)image2);
             }
@@ -264,33 +290,18 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
     }
     
     @Override
-    public void onPlayerOverlayVisibiltyChange(final boolean b) {
-        while (true) {
-            synchronized (this) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_subtitles_render", "Player UI is now visible: " + b);
-                }
-                if (this.mDisplayArea != null) {
-                    final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.mDisplayArea.getLayoutParams();
-                    if (b) {
-                        final int displayAreaMarginTop = this.getDisplayAreaMarginTop();
-                        final int displayAreaMarginBottom = this.getDisplayAreaMarginBottom();
-                        if (Log.isLoggable()) {
-                            Log.d("nf_subtitles_render", "Add bottom/top margin to display area on visible. Bottom margin " + displayAreaMarginBottom + ", top margin: " + displayAreaMarginTop);
-                        }
-                        layoutParams.setMargins(0, displayAreaMarginTop, 0, displayAreaMarginBottom);
-                    }
-                    else {
-                        Log.d("nf_subtitles_render", "Reset all margins to display area on not visible");
-                        layoutParams.setMargins(0, 0, 0, 0);
-                    }
-                    this.removeVisibleSubtitleBlocks(true);
-                    this.mDisplayArea.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
-                    this.mDisplayArea.requestLayout();
-                    return;
-                }
+    public void onPlayerOverlayVisibiltyChange(final boolean mPlayerControlsVisible) {
+        synchronized (this) {
+            if (Log.isLoggable()) {
+                Log.d("nf_subtitles_render", "Player UI is now visible: " + mPlayerControlsVisible);
             }
-            Log.w("nf_subtitles_render", "Display area is null, unable to set margins!");
+            this.mPlayerControlsVisible = mPlayerControlsVisible;
+            if (this.mDisplayArea != null) {
+                this.removeVisibleSubtitleBlocks(true);
+            }
+            else {
+                Log.w("nf_subtitles_render", "Display area is null, unable to set margins!");
+            }
         }
     }
     

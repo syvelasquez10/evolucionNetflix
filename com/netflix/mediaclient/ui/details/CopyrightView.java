@@ -7,9 +7,11 @@ package com.netflix.mediaclient.ui.details;
 import android.app.AlertDialog$Builder;
 import android.view.WindowManager$LayoutParams;
 import android.app.AlertDialog;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.RelativeLayout$LayoutParams;
 import android.view.View;
 import android.view.LayoutInflater;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.view.View$OnLayoutChangeListener;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
@@ -21,22 +23,16 @@ class CopyrightView
     private ViewGroup copyrightViewGroup;
     private VideoDetails details;
     private int expandedYOffset;
+    private boolean isCentered;
     
     public CopyrightView(final VideoDetails details, final Context context, final ViewGroup copyrightViewGroup) {
         this.copyrightViewGroup = copyrightViewGroup;
         this.details = details;
-        if (copyrightViewGroup != null) {
-            this.copyrightTextView = (TextView)copyrightViewGroup.findViewById(2131427846);
-            if (this.copyrightTextView != null) {
-                this.copyrightTextView.setText((CharSequence)context.getResources().getString(2131493393, new Object[] { details.getCopyright() }));
-                this.copyrightTextView.setVisibility(0);
-                this.addExpandedCopyright(context);
-            }
-        }
+        this.init();
     }
     
     private void addExpandedCopyright(final Context context) {
-        this.copyrightTextView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new CopyrightView$1(this, context));
+        this.copyrightTextView.addOnLayoutChangeListener((View$OnLayoutChangeListener)new CopyrightView$1(this, context));
     }
     
     public static CopyrightView create(final VideoDetails videoDetails, final Context context) {
@@ -47,6 +43,18 @@ class CopyrightView
         return null;
     }
     
+    private void init() {
+        if (this.details != null && this.copyrightViewGroup != null) {
+            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131427846);
+            if (this.copyrightTextView != null && this.details != null) {
+                this.copyrightTextView.setText((CharSequence)this.copyrightTextView.getContext().getResources().getString(2131493393, new Object[] { this.details.getCopyright() }));
+                this.copyrightTextView.setVisibility(0);
+                this.setLayoutAsCentered();
+                this.addExpandedCopyright(this.copyrightTextView.getContext());
+            }
+        }
+    }
+    
     private void setExpandedText(final VideoDetails videoDetails, final Context context, final View view) {
         final TextView textView = (TextView)view.findViewById(2131427847);
         if (textView != null) {
@@ -54,11 +62,26 @@ class CopyrightView
         }
     }
     
+    private void setLayoutAsCentered() {
+        if (this.isCentered) {
+            final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.copyrightTextView.getLayoutParams();
+            layoutParams.addRule(13, -1);
+            this.copyrightTextView.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+        }
+    }
+    
     private void setScreenLocation(final AlertDialog alertDialog) {
         final int[] array = new int[2];
         this.copyrightViewGroup.getLocationOnScreen(array);
         final WindowManager$LayoutParams attributes = alertDialog.getWindow().getAttributes();
-        attributes.gravity = 51;
+        int n;
+        if (this.isCentered) {
+            n = 17;
+        }
+        else {
+            n = 3;
+        }
+        attributes.gravity = (n | 0x30);
         attributes.x = array[0];
         attributes.y = array[1] - this.expandedYOffset;
     }
@@ -78,5 +101,14 @@ class CopyrightView
     
     public View getView() {
         return (View)this.copyrightViewGroup;
+    }
+    
+    public void setGravityAsCenter() {
+        this.isCentered = true;
+    }
+    
+    public void update(final VideoDetails details) {
+        this.details = details;
+        this.init();
     }
 }

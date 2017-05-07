@@ -25,7 +25,6 @@ import android.annotation.SuppressLint;
 import android.os.PowerManager;
 import android.net.wifi.WifiManager;
 import java.util.Iterator;
-import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -62,16 +61,18 @@ import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 
 class MdxAgent$EpisodeBrowseAgentCallback extends SimpleBrowseAgentCallback
 {
+    int episodeId;
     private final boolean isPostPlay;
     final /* synthetic */ MdxAgent this$0;
     private final boolean triggeredByCommand;
     VideoDetails vidDetails;
     WebApiUtils$VideoIds vidIds;
     
-    MdxAgent$EpisodeBrowseAgentCallback(final MdxAgent this$0, final boolean triggeredByCommand, final boolean isPostPlay) {
+    MdxAgent$EpisodeBrowseAgentCallback(final MdxAgent this$0, final boolean triggeredByCommand, final boolean isPostPlay, final int episodeId) {
         this.this$0 = this$0;
         this.triggeredByCommand = triggeredByCommand;
         this.isPostPlay = isPostPlay;
+        this.episodeId = episodeId;
     }
     
     private void assignVideoDetails(final VideoDetails vidDetails) {
@@ -98,6 +99,10 @@ class MdxAgent$EpisodeBrowseAgentCallback extends SimpleBrowseAgentCallback
             Log.v("nf_mdx_agent", "onEpisodeDetailsFetched, res: " + status);
         }
         if (status.isError()) {
+            return;
+        }
+        if (episodeDetails == null) {
+            this.this$0.getService().getClientLogging().getErrorLogging().logHandledException("SPY-7909: FetchEpisode got bad id: " + String.valueOf(this.episodeId));
             return;
         }
         this.assignVideoDetails(episodeDetails);

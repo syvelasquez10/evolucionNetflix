@@ -36,6 +36,7 @@ import android.widget.FrameLayout;
 import android.os.Build$VERSION;
 import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;

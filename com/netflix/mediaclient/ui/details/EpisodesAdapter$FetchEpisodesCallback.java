@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
@@ -21,6 +22,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.widget.AdapterView$OnItemClickListener;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
+import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
@@ -74,5 +76,6 @@ public class EpisodesAdapter$FetchEpisodesCallback extends LoggingManagerCallbac
         }
         this.this$0.updateEpisodesData(list, this.startIndex);
         this.this$0.episodeListFrag.updateEpisodeSelection();
+        this.this$0.episodeListFrag.setAsDAB(DataUtil.hasUnavailableEpisodes(list));
     }
 }

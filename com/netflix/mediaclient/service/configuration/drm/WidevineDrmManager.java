@@ -579,7 +579,6 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
                                 this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
-                            return b;
                             Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
                             return b;
                         }

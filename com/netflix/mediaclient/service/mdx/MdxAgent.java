@@ -28,7 +28,6 @@ import android.net.wifi.WifiManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -189,8 +188,6 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
     
     private void fetchVideoDetail(final boolean b, final boolean b2) {
         if ((b2 && this.mVideoIdsPostplay.isEpisode) || (!b2 && this.mVideoIds.isEpisode)) {
-            final MdxAgent$EpisodeBrowseAgentCallback mdxAgent$EpisodeBrowseAgentCallback = new MdxAgent$EpisodeBrowseAgentCallback(this, b, b2);
-            final ServiceAgent$BrowseAgentInterface browseAgent = this.getBrowseAgent();
             int n;
             if (b2) {
                 n = this.mVideoIdsPostplay.episodeId;
@@ -198,7 +195,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             else {
                 n = this.mVideoIds.episodeId;
             }
-            browseAgent.fetchEpisodeDetails(String.valueOf(n), mdxAgent$EpisodeBrowseAgentCallback);
+            this.getBrowseAgent().fetchEpisodeDetails(String.valueOf(n), new MdxAgent$EpisodeBrowseAgentCallback(this, b, b2, n));
             return;
         }
         this.getBrowseAgent().fetchMovieDetails(String.valueOf(this.mVideoIds.catalogId), new MdxAgent$MovieBrowseAgentCallback(this, b));

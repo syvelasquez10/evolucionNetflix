@@ -24,7 +24,6 @@ import android.os.PowerManager;
 import android.net.wifi.WifiManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Iterator;
-import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.javabridge.ui.Mdx$Events;

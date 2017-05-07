@@ -403,6 +403,7 @@ public class PlayScreen implements Screen
         }
         if (this.mPostPlayManager.wasPostPlayDismissed()) {
             Log.d("screen", "PostPlay was dismissed before, stay in it!");
+            this.mPostPlayManager.transitionFromPostPlay();
             return;
         }
         Log.d("screen", "Move to PlayingWithTrickPlayOverlay from post play");

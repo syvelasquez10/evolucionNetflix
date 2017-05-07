@@ -16,6 +16,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
@@ -56,11 +57,7 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
     }
     
     private void logEmptySeasonId(final SeasonDetails seasonDetails) {
-        if (seasonDetails == null) {
-            Log.v("EpisodesAdapter", "No season details");
-            return;
-        }
-        this.activity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("For Show Id %s, the Current Season Details Id is empty - %s, see SPY-7455", this.episodeListFrag.getShowId(), seasonDetails.toString()));
+        LogUtils.logEmptySeasonId(this.activity, this.episodeListFrag.getShowId(), seasonDetails);
     }
     
     private void onFetchError() {

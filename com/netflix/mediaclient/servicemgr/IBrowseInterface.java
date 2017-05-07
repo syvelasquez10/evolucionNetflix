@@ -68,6 +68,8 @@ public interface IBrowseInterface
     
     ModelProxy<?> getModelProxy();
     
+    void invalidateCachedEpisodes(final String p0, final VideoType p1);
+    
     void logBillboardActivity(final Video p0, final BillboardInteractionType p1);
     
     void markNotificationAsRead(final SocialNotificationSummary p0);

@@ -16,7 +16,6 @@ import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.widget.AdapterView$OnItemSelectedListener;
@@ -37,6 +36,7 @@ import android.view.ViewGroup;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.view.View;
+import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import java.util.List;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import com.netflix.mediaclient.ui.details.ServiceManagerProvider;
@@ -65,11 +65,30 @@ class KubrickShowDetailsFrag$BookmarkedVideoDetails extends KubrickVideoDetailsV
     
     @Override
     public void updateDetails(final VideoDetails videoDetails, final VideoDetailsViewGroup$DetailsStringProvider provider) {
-        super.updateDetails(videoDetails, provider);
-        this.provider = provider;
-        final String currentEpisodeId = this.this$0.showDetails.getCurrentEpisodeId();
-        if (this.this$0.manager != null) {
-            this.this$0.manager.getBrowse().fetchEpisodeDetails(currentEpisodeId, new KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback(this, "KubrickShowDetailsFrag"));
+        if (videoDetails == null) {
+            String id;
+            if (this.this$0.showDetails != null) {
+                id = this.this$0.showDetails.getId();
+            }
+            else {
+                id = "null";
+            }
+            String currentEpisodeId;
+            if (this.this$0.showDetails == null || this.this$0.showDetails.getCurrentEpisodeId() == null) {
+                currentEpisodeId = "null";
+            }
+            else {
+                currentEpisodeId = this.this$0.showDetails.getCurrentEpisodeId();
+            }
+            this.this$0.getNetflixActivity().getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("SPY-7979 - VideoDetails empty for show  %s, current episode %s", id, currentEpisodeId));
+        }
+        else {
+            super.updateDetails(videoDetails, provider);
+            this.provider = provider;
+            final String currentEpisodeId2 = this.this$0.showDetails.getCurrentEpisodeId();
+            if (this.this$0.manager != null) {
+                this.this$0.manager.getBrowse().fetchEpisodeDetails(currentEpisodeId2, new KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback(this, "KubrickShowDetailsFrag"));
+            }
         }
     }
     

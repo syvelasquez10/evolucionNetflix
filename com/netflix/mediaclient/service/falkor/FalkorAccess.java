@@ -170,6 +170,11 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void invalidateCachedEpisodes(final String s, final VideoType videoType) {
+        this.mBrowseAgent.invalidateCachedEpisodes(s, videoType);
+    }
+    
+    @Override
     public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType) {
         this.mBrowseAgent.logBillboardActivity(video, billboardInteractionType);
     }

@@ -8,6 +8,8 @@ import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.util.LanguageChoice;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
@@ -216,18 +218,22 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     public void onStopTrackingTouch(final SeekBar seekBar) {
-    Label_0054_Outer:
+        boolean b;
+        TimelineSeekBar timelineSeekBar;
+        boolean b2;
+        PlayScreen access$700;
+        boolean b3;
+        int access$701;
+        Label_0183_Outer:Label_0054_Outer:
         while (true) {
-            final boolean b = true;
-        Label_0183_Outer:
+            b = true;
             while (true) {
                 Label_0248: {
-                Label_0183:
+                Block_7_Outer:
                     while (true) {
                         synchronized (this) {
                             this.this$0.mState.draggingInProgress = false;
                             Log.d("PlayerActivity", "onStopTrackingTouch called");
-                            TimelineSeekBar timelineSeekBar;
                             if (seekBar instanceof TimelineSeekBar) {
                                 timelineSeekBar = (TimelineSeekBar)seekBar;
                             }
@@ -238,62 +244,59 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
                             if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
                                 break Label_0248;
                             }
-                            break Label_0183;
+                            break Block_7_Outer;
+                            // iftrue(Label_0214:, b3)
+                            // iftrue(Label_0238:, b3)
                             // iftrue(Label_0168:, !Log.isLoggable())
-                            // iftrue(Label_0214:, b2)
-                            // iftrue(Label_0121:, PlayerActivity.access$700(this.this$0) == null)
                             while (true) {
-                                PlayScreen access$700 = null;
-                                while (true) {
-                                    Block_8: {
-                                        Block_6: {
-                                            while (true) {
+                                Label_0100: {
+                                    while (true) {
+                                        Block_8: {
+                                            Block_6: {
+                                                while (true) {
+                                                    b2 = b;
+                                                    access$700.stopCurrentTime(b2);
+                                                    this.this$0.mState.resetTimeline();
+                                                    return;
+                                                    Label_0214: {
+                                                        Log.d("PlayerActivity", "Do not seek!");
+                                                    }
+                                                    ((TimelineSeekBar)access$700).setProgress(((TimelineSeekBar)access$700).getProgress());
+                                                    break Label_0100;
+                                                    break Block_6;
+                                                    access$700 = this.this$0.mScreen;
+                                                    continue Label_0183_Outer;
+                                                }
                                                 this.this$0.mScreen.setTopPanelVisibility(true);
                                                 Label_0121: {
                                                     this.this$0.mSubtitleManager.setSubtitleVisibility(true);
                                                 }
                                                 ((TimelineSeekBar)access$700).hideThumb(false);
                                                 break Block_8;
-                                                break Block_6;
-                                                continue Label_0054_Outer;
                                             }
-                                            final boolean b3;
-                                            access$700.stopCurrentTime(b3);
-                                            this.this$0.mState.resetTimeline();
-                                            return;
+                                            access$701 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
+                                            ((TimelineSeekBar)access$700).setProgress(access$701);
+                                            Log.d("PlayerActivity", "Seek!");
+                                            this.this$0.doSeek(access$701);
+                                            break Label_0100;
                                         }
-                                        final int access$701 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
-                                        ((TimelineSeekBar)access$700).setProgress(access$701);
-                                        Log.d("PlayerActivity", "Seek!");
-                                        this.this$0.doSeek(access$701);
-                                        continue Label_0183_Outer;
-                                        final boolean b3 = b;
-                                        continue Label_0183;
+                                        Log.d("PlayerActivity", "Stop current time " + b3);
+                                        continue Block_7_Outer;
                                     }
-                                    final boolean b2;
-                                    Log.d("PlayerActivity", "Stop current time " + b2);
-                                    Label_0168: {
-                                        access$700 = this.this$0.mScreen;
-                                    }
-                                    continue;
                                 }
-                                Label_0214: {
-                                    Log.d("PlayerActivity", "Do not seek!");
-                                }
-                                ((TimelineSeekBar)access$700).setProgress(((TimelineSeekBar)access$700).getProgress());
-                                continue Label_0183_Outer;
+                                continue;
                             }
                         }
-                        // iftrue(Label_0238:, b2)
+                        // iftrue(Label_0121:, PlayerActivity.access$700(this.this$0) == null)
                         Label_0238: {
-                            final boolean b3 = false;
+                            b2 = false;
                         }
-                        continue Label_0183;
+                        continue Label_0054_Outer;
                     }
-                    final boolean b2 = true;
+                    b3 = true;
                     continue;
                 }
-                final boolean b2 = false;
+                b3 = false;
                 continue;
             }
         }

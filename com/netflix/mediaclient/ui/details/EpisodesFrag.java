@@ -6,7 +6,6 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.util.StringUtils;
@@ -38,6 +37,7 @@ import android.content.Context;
 import android.os.Build$VERSION;
 import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
 import android.view.View;
@@ -50,6 +50,7 @@ import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.os.Handler;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -66,6 +67,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     private static final String EXTRA_SHOW_ID = "extra_show_id";
     private static final String TAG = "EpisodesFrag";
     private AddToListData$StateListener addToListWrapper;
+    private SeasonDetails currSeasonDetails;
     private int currSeasonIndex;
     protected VideoDetailsViewGroup detailsViewGroup;
     private String episodeId;
@@ -74,6 +76,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     private final ErrorWrapper$Callback errorCallback;
     protected Handler handler;
     private boolean isLoading;
+    private boolean isShowDAB;
     protected LoadingAndErrorWrapper leWrapper;
     protected ServiceManager manager;
     protected int numColumns;
@@ -94,6 +97,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.currSeasonIndex = -1;
         this.isLoading = true;
         this.numColumns = 1;
+        this.isShowDAB = false;
         this.viewCreatorEpisodes = new EpisodesFrag$1(this);
         this.episodeRefreshReceiver = new EpisodesFrag$7(this);
         this.errorCallback = new EpisodesFrag$8(this);
@@ -157,6 +161,13 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             return -1;
         }
         return this.episodesAdapter.getCheckedItemPosition();
+    }
+    
+    private void invalidateCachedEpisodesIfDAB() {
+        if (this.isShowDAB) {
+            Log.v("EpisodesFrag", "Show is 'Day After Broadcast' (DAB), invalidating episode cache");
+            DataUtil.invalidateCachedEpisodes(this.getServiceManager(), this.getShowId(), this.currSeasonDetails);
+        }
     }
     
     private void registerEpisodeRefreshReceiver() {
@@ -350,6 +361,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         if (this.manager != null && this.addToListWrapper != null) {
             this.manager.unregisterAddToMyListListener(this.getShowId(), this.addToListWrapper);
         }
+        this.invalidateCachedEpisodesIfDAB();
         this.getActivity().unregisterReceiver(this.episodeRefreshReceiver);
     }
     
@@ -402,6 +414,10 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     public void reload() {
         Log.v("EpisodesFrag", "reload()");
         this.fetchShowDetailsAndSeasons();
+    }
+    
+    public void setAsDAB(final boolean isShowDAB) {
+        this.isShowDAB = isShowDAB;
     }
     
     public void setDetailViewGroupVisibility(final int visibility) {

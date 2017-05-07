@@ -6,8 +6,12 @@ package com.netflix.mediaclient.util;
 
 import java.util.Comparator;
 import java.util.Collections;
-import com.netflix.mediaclient.Log;
 import android.net.Uri;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ public class DataUtil
     public static final float ASPECT_RATIO_4_3 = 1.333f;
     public static final float ASPECT_RATIO_4_3_INVERTED = 0.75f;
     public static final float BOXART_HEIGHT_TO_WIDTH_RATIO = 1.43f;
+    private static final String TAG = "DataUtil";
     public static final float UNDEFINED_FLOAT = -1.0f;
     public static final int UNDEFINED_INT = -1;
     
@@ -60,6 +65,45 @@ public class DataUtil
             return "none";
         }
         return list.get(0).toString();
+    }
+    
+    public static boolean hasUnavailableEpisodes(final List<EpisodeDetails> list) {
+        final boolean b = false;
+        int n = 0;
+        boolean b2;
+        while (true) {
+            b2 = b;
+            if (n >= list.size()) {
+                break;
+            }
+            final EpisodeDetails episodeDetails = list.get(n);
+            if (episodeDetails != null && !episodeDetails.isAvailableToStream()) {
+                b2 = true;
+                break;
+            }
+            ++n;
+        }
+        return b2;
+    }
+    
+    public static void invalidateCachedEpisodes(final ServiceManager serviceManager, final String s, final SeasonDetails seasonDetails) {
+        if (serviceManager == null || !serviceManager.isReady()) {
+            Log.d("DataUtil", "Manager is not ready");
+            return;
+        }
+        if (seasonDetails == null) {
+            Log.v("DataUtil", "No season details yet");
+            return;
+        }
+        final String id = seasonDetails.getId();
+        if (Log.isLoggable()) {
+            Log.v("DataUtil", "Purging episode data for: " + id);
+        }
+        if (StringUtils.isEmpty(id)) {
+            LogUtils.logEmptySeasonId(serviceManager.getActivity(), s, seasonDetails);
+            return;
+        }
+        serviceManager.getBrowse().invalidateCachedEpisodes(id, VideoType.SEASON);
     }
     
     public static void logVerboseUriInfo(final String s, final Uri uri) {

@@ -154,18 +154,20 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
                     Label_0015: {
                         return;
                     }
+                    // iftrue(Label_0092:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
+                    // iftrue(Label_0015:, !this.saveCredentials)
+                Label_0075:
                     while (true) {
-                        Log.w("LoginActivity", "Credential is empty, do not save it.");
-                        return;
                         Log.d("LoginActivity", "Trying to save credentials to GPS");
                         this.saveCredentials = false;
                         o = this.emailView.getText().toString();
                         string = this.passwordView.getText().toString();
+                        break Label_0075;
                         continue;
                     }
+                    Log.w("LoginActivity", "Credential is empty, do not save it.");
+                    return;
                 }
-                // iftrue(Label_0015:, !this.saveCredentials)
-                // iftrue(Label_0092:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
                 finally {
                 }
                 // monitorexit(this)
