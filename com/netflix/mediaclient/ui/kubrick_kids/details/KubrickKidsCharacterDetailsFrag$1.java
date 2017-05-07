@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;

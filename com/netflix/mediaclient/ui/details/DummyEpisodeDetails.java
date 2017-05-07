@@ -63,6 +63,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public String getCopyright() {
+        return "© 2015 Test";
+    }
+    
+    @Override
     public String getEpisodeIdUrl() {
         return null;
     }

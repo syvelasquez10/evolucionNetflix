@@ -38,7 +38,8 @@ public class DeviceConfiguration
     private IpConnectivityPolicy mIpConnectivityPolicy;
     private boolean mIsDisableMdx;
     private boolean mIsDisableWebsocket;
-    private boolean mIsDisableWidevine;
+    private boolean mIsWidevineL1Enabled;
+    private boolean mIsWidevineL3Enabled;
     private int mJPlayerErrorRestartCount;
     private boolean mLocalPlaybackEnabled;
     private boolean mMdxRemoteControlLockScreenEnabled;
@@ -56,7 +57,7 @@ public class DeviceConfiguration
     }
     
     public DeviceConfiguration(final Context mContext) {
-        boolean b = true;
+        final boolean b = true;
         this.mSubtitleConfiguration = SubtitleConfiguration.ENHANCED_XML;
         this.mConsolidatedLoggingSpecification = new HashMap<String, ConsolidatedLoggingSessionSpecification>();
         this.mContext = mContext;
@@ -71,11 +72,8 @@ public class DeviceConfiguration
         this.mAppMinimalVersion = PreferenceUtils.getIntPref(this.mContext, "config_min_version", -1);
         this.mIsDisableMdx = PreferenceUtils.getBooleanPref(this.mContext, "disable_mdx", false);
         this.mIsDisableWebsocket = PreferenceUtils.getBooleanPref(this.mContext, "disable_websocket", true);
-        final Context mContext2 = this.mContext;
-        if (DrmManagerRegistry.isDevicePredeterminedToUseWV()) {
-            b = false;
-        }
-        this.mIsDisableWidevine = PreferenceUtils.getBooleanPref(mContext2, "disable_widevine", b);
+        this.mIsWidevineL1Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l1", !PreferenceUtils.getBooleanPref(this.mContext, "disable_widevine", !DrmManagerRegistry.isDevicePredeterminedToUseWV()) && b);
+        this.mIsWidevineL3Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l3", false);
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
         this.mBreadcrumbLoggingSpecification = BreadcrumbLoggingSpecification.loadFromPreferences(mContext);
         this.mErrorLoggingSpecification = ErrorLoggingSpecification.loadFromPreferences(mContext);
@@ -134,13 +132,13 @@ public class DeviceConfiguration
         //    74: aconst_null    
         //    75: astore_1       
         //    76: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
-        //    79: ldc             "Failed to load CL specification from file system"
-        //    81: aload_2        
-        //    82: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //    85: pop            
-        //    86: goto            68
-        //    89: astore_2       
-        //    90: goto            76
+        //    79: ldc_w           "Failed to load CL specification from file system"
+        //    82: aload_2        
+        //    83: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    86: pop            
+        //    87: goto            68
+        //    90: astore_2       
+        //    91: goto            76
         //    Signature:
         //  ()Ljava/util/Map<Ljava/lang/String;Lcom/netflix/mediaclient/service/webclient/model/leafs/ConsolidatedLoggingSessionSpecification;>;
         //    Exceptions:
@@ -148,7 +146,7 @@ public class DeviceConfiguration
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
         //  35     59     73     76     Ljava/lang/Throwable;
-        //  59     68     89     93     Ljava/lang/Throwable;
+        //  59     68     90     94     Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 
@@ -221,18 +219,6 @@ public class DeviceConfiguration
         this.mIsDisableWebsocket = mIsDisableWebsocket;
     }
     
-    private void updateDisableWidevineFlag(final String s) {
-        boolean boolean1;
-        if (StringUtils.isNotEmpty(s)) {
-            boolean1 = Boolean.parseBoolean(s);
-        }
-        else {
-            boolean1 = !DrmManagerRegistry.isDevicePredeterminedToUseWV();
-        }
-        PreferenceUtils.putBooleanPref(this.mContext, "disable_widevine", boolean1);
-        this.mIsDisableWidevine = boolean1;
-    }
-    
     private void updateLocalPlaybackStatus(final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
@@ -293,10 +279,28 @@ public class DeviceConfiguration
         }
     }
     
+    private void updateWidevineL1Flag(final boolean mIsWidevineL1Enabled) {
+        PreferenceUtils.putBooleanPref(this.mContext, "enable_widevine_l1", mIsWidevineL1Enabled);
+        this.mIsWidevineL1Enabled = mIsWidevineL1Enabled;
+    }
+    
+    private void updateWidevineL3Flag(final boolean mIsWidevineL3Enabled) {
+        PreferenceUtils.putBooleanPref(this.mContext, "enable_widevine_l3", mIsWidevineL3Enabled);
+        this.mIsWidevineL3Enabled = mIsWidevineL3Enabled;
+    }
+    
     public void clear() {
         this.mDeviceRepository = null;
         this.mImagePrefRepository = null;
         this.mSignUpConfig = null;
+    }
+    
+    public boolean enableWidevineL1() {
+        return this.mIsWidevineL1Enabled;
+    }
+    
+    public boolean enableWidevineL3() {
+        return this.mIsWidevineL3Enabled;
     }
     
     public int getAppMinimalVersion() {
@@ -378,10 +382,6 @@ public class DeviceConfiguration
         return this.mIsDisableWebsocket;
     }
     
-    public boolean isDisableWidevine() {
-        return this.mIsDisableWidevine;
-    }
-    
     public boolean isLocalPlaybackEnabled() {
         return this.mLocalPlaybackEnabled;
     }
@@ -404,9 +404,10 @@ public class DeviceConfiguration
             this.mDeviceRepository.update(this.mContext, deviceConfigData.getDeviceCategory());
             this.mImagePrefRepository.update(this.mContext, deviceConfigData.getImagePref());
             this.mSignUpConfig.update(this.mContext, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout());
-            this.updateDisableWidevineFlag(deviceConfigData.getWidevineDisabled());
             this.updateDisableWebsocketFlag(deviceConfigData.getWebsocketDisabled());
             this.updateDisableMdxFlag(deviceConfigData.getMdxDisabled());
+            this.updateWidevineL1Flag(deviceConfigData.isWidevineL1Enabled());
+            this.updateWidevineL3Flag(deviceConfigData.isWidevineL3Enabled());
             this.updateConsolidatedLoggingSpecification(deviceConfigData.getConsolidatedloggingSpecification());
             this.mSubtitleConfiguration = SubtitleConfiguration.update(this.mContext, deviceConfigData.getSubtitleConfiguration());
             int int1;

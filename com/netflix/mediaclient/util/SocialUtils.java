@@ -7,6 +7,7 @@ package com.netflix.mediaclient.util;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.details.DetailsFrag;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
+import android.view.MenuItem;
 import java.math.BigInteger;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -25,6 +26,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.ui.details.RecommendToFriendsFrag;
+import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.res.Resources;
 import java.util.Set;
@@ -33,8 +35,6 @@ import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.view.MenuItem;
-import com.netflix.mediaclient.Log;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -55,26 +55,9 @@ public class SocialUtils
         SocialUtils.shareSheetType = SocialUtils$ShareSheetType.RECOMMEND_ONLY;
     }
     
-    public static void addNotificationsIconIfNeeded(final NetflixActivity netflixActivity, final SocialUtils$NotificationsListStatus socialUtils$NotificationsListStatus, final Menu menu) {
-        if (socialUtils$NotificationsListStatus == null) {
-            Log.w("SocialUtils", "Got null notificationsListStatus value!");
-        }
-        else if (socialUtils$NotificationsListStatus != SocialUtils$NotificationsListStatus.NO_MESSAGES && isNotificationsFeatureSupported(netflixActivity)) {
-            final MenuItem add = menu.add(0, 2131427346, 0, 2131493201);
-            int icon;
-            if (socialUtils$NotificationsListStatus == SocialUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES) {
-                icon = 2130837698;
-            }
-            else {
-                icon = 2130837697;
-            }
-            add.setIcon(icon).setShowAsAction(1);
-        }
-    }
-    
     public static void addShareIconIfNeeded(final NetflixActivity netflixActivity, final Menu menu) {
         if (getShareSheetType() == SocialUtils$ShareSheetType.SHARE_IN_HEADER || getShareSheetType() == SocialUtils$ShareSheetType.RECOMMEND_PLUS_SHARE) {
-            menu.add(0, 2131427347, 65536, 2131493374).setIcon(2130837696).setShowAsAction(2);
+            menu.add(0, 2131427347, 65536, 2131493357).setIcon(2130837696).setShowAsAction(2);
         }
     }
     
@@ -105,7 +88,7 @@ public class SocialUtils
     }
     
     private static String getShareText(final Resources resources, final String s, final String s2) {
-        return resources.getString(2131493376, new Object[] { s, s2 });
+        return resources.getString(2131493359, new Object[] { s, s2 });
     }
     
     private static String getShareUrl(final String s, final VideoType videoType) {
@@ -221,8 +204,8 @@ public class SocialUtils
                     return addToMyListWrapper(netflixActivity, serviceManager, textView3, textView4, s);
                 }
                 case 3: {
-                    textView.setText(2131493374);
-                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837733, 0, 0, 0);
+                    textView.setText(2131493357);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837731, 0, 0, 0);
                 }
                 case 4: {
                     textView.setOnClickListener((View$OnClickListener)new SocialUtils$1(netflixActivity, s, s2, videoType));
@@ -273,7 +256,7 @@ public class SocialUtils
         intent.setFlags(268435456);
         intent.setType("text/plain");
         intent.putExtra("android.intent.extra.TEXT", getShareText(resources, s, shareUrl));
-        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131493375)));
+        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131493358)));
         UserActionLogUtils.reportShareSheetActionEnded(context, IClientLogging$CompletionReason.success, null);
     }
     

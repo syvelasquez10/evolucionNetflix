@@ -24,7 +24,7 @@ class KidsParallax$1 implements Runnable
     
     @Override
     public void run() {
-        this.val$transition.startTransition(500);
+        this.val$transition.startTransition(300);
         this.this$0.isLatched = true;
         this.this$0.animating = false;
     }

@@ -29,6 +29,8 @@ public interface PreferenceKeys
     public static final String PREFERENCE_DRM_KCE_KEY_ID = "nf_drm_kce_key_id";
     public static final String PREFERENCE_DRM_KCH_KEY_ID = "nf_drm_kch_key_id";
     public static final String PREFERENCE_DRM_SYSTEM_ID = "nf_drm_system_id";
+    public static final String PREFERENCE_ENABLE_WIDEVINE_L1 = "enable_widevine_l1";
+    public static final String PREFERENCE_ENABLE_WIDEVINE_L3 = "enable_widevine_l3";
     public static final String PREFERENCE_ERROR_LOGGING_CONFIGURATION = "error_log_configuration";
     public static final String PREFERENCE_FIRST_APPLICATION_START_AFTER_INSTALLATION = "nf_first_start_after_install";
     public static final String PREFERENCE_GCM_BROWSE_EVENT_RATE_LIMIT = "gcm_browse_rate_limit";
@@ -46,6 +48,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_MDX_TARGET_UUID = "mdx_target_uuid";
     public static final String PREFERENCE_NOTIFICATION_ID_DELETED_FROM_STATUSBAR = "notification_id_deleted_from_statusbar";
     public static final String PREFERENCE_NOTIFICATION_SETTINGS = "notification_settings";
+    public static final String PREFERENCE_NRM_NETFLIXID = "nrm_netflix_id";
     public static final String PREFERENCE_PLAYBACK_CONFIGURATION_LOCAL_PLAYBACK_ENABLED = "playback_configuration_local_playback_enabled";
     public static final String PREFERENCE_PLAYER_TYPE = "nflx_player_type";
     public static final String PREFERENCE_PLAYER_TYPE_QA_OVERRIDE = "nflx_player_type_qa";

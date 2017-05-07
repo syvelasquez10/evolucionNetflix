@@ -44,7 +44,7 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     
     private void updateAboutDevice() {
         Serializable s2;
-        final String s = (String)(s2 = this.getString(2131493168));
+        final String s = (String)(s2 = this.getString(2131493160));
         while (true) {
             try {
                 final PackageInfo packageInfo = this.activity.getPackageManager().getPackageInfo(this.activity.getPackageName(), 0);

@@ -75,15 +75,29 @@ public abstract class AudioSource implements Comparable<AudioSource>
     
     @Override
     public int compareTo(final AudioSource audioSource) {
-        if (audioSource != null) {
-            if (this.nccpOrderNumber == audioSource.nccpOrderNumber) {
-                return 0;
-            }
-            if (this.nccpOrderNumber > audioSource.nccpOrderNumber) {
+        final int n = -1;
+        int compare;
+        if (audioSource == null) {
+            compare = n;
+        }
+        else {
+            if (this.trackType > audioSource.trackType) {
                 return 1;
             }
+            compare = n;
+            if (this.trackType >= audioSource.trackType) {
+                compare = n;
+                if (this.languageDescription != null) {
+                    if (audioSource.languageDescription == null) {
+                        return 1;
+                    }
+                    if ((compare = String.CASE_INSENSITIVE_ORDER.compare(this.languageDescription, audioSource.languageDescription)) == 0) {
+                        return this.languageDescription.compareTo(audioSource.languageDescription);
+                    }
+                }
+            }
         }
-        return -1;
+        return compare;
     }
     
     @Override

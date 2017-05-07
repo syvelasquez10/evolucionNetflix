@@ -19,6 +19,8 @@ public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
     
     String getCertification();
     
+    String getCopyright();
+    
     String getGenres();
     
     String getHighResolutionLandscapeBoxArtUrl();

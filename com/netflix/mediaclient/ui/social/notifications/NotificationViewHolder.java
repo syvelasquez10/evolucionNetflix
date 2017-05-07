@@ -14,6 +14,7 @@ public class NotificationViewHolder
     private final TextView bottomText;
     private final AdvancedImageView friendImage;
     private final Button leftButton;
+    private final View leftUnreadIndicator;
     private final TextView middleText;
     private final AdvancedImageView movieArtImage;
     private final AdvancedImageView nsaArtImage;
@@ -23,7 +24,7 @@ public class NotificationViewHolder
     private final TextView timeStampView;
     private final TextView topText;
     
-    public NotificationViewHolder(final AdvancedImageView friendImage, final AdvancedImageView movieArtImage, final TextView timeStampView, final TextView topText, final TextView middleText, final TextView bottomText, final Button leftButton, final Button rightButton, final View playButton, final View nsaPlayButton, final AdvancedImageView nsaArtImage) {
+    public NotificationViewHolder(final AdvancedImageView friendImage, final AdvancedImageView movieArtImage, final TextView timeStampView, final TextView topText, final TextView middleText, final TextView bottomText, final Button leftButton, final Button rightButton, final View playButton, final View nsaPlayButton, final AdvancedImageView nsaArtImage, final View leftUnreadIndicator) {
         this.friendImage = friendImage;
         this.movieArtImage = movieArtImage;
         this.timeStampView = timeStampView;
@@ -35,6 +36,7 @@ public class NotificationViewHolder
         this.playButton = playButton;
         this.nsaPlayButton = nsaPlayButton;
         this.nsaArtImage = nsaArtImage;
+        this.leftUnreadIndicator = leftUnreadIndicator;
     }
     
     public TextView getBottomTextView() {
@@ -79,5 +81,9 @@ public class NotificationViewHolder
     
     public TextView getTopTextView() {
         return this.topText;
+    }
+    
+    public View getUnreadIndicator() {
+        return this.leftUnreadIndicator;
     }
 }

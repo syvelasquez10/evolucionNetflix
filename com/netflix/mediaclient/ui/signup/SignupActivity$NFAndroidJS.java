@@ -11,20 +11,32 @@ import android.view.View;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
+import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.GoogleApiClient$Builder;
+import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.webkit.WebSettings;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
+import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
 import com.netflix.mediaclient.StatusCode;
 import android.annotation.TargetApi;
 import android.os.Build$VERSION;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.auth.api.credentials.Credential$Builder;
+import com.google.android.gms.auth.api.Auth;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import android.webkit.WebView;
@@ -32,7 +44,10 @@ import com.netflix.mediaclient.servicemgr.SignUpParams;
 import android.os.Handler;
 import android.widget.ViewFlipper;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
+import com.google.android.gms.common.api.GoogleApiClient;
 import android.annotation.SuppressLint;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.netflix.mediaclient.ui.login.AccountActivity;
 import com.netflix.mediaclient.ui.login.LoginActivity;
 import com.netflix.mediaclient.util.LogUtils;
@@ -137,8 +152,10 @@ public class SignupActivity$NFAndroidJS
         }
         try {
             final JSONObject jsonObject = new JSONObject(s);
-            Log.d("SignupActivity", "NetflixId: " + jsonObject.getString("NetflixId"));
-            Log.d("SignupActivity", "SecureNetflixId: " + jsonObject.getString("SecureNetflixId"));
+            if (Log.isLoggable()) {
+                Log.d("SignupActivity", "NetflixId: " + jsonObject.getString("NetflixId"));
+                Log.d("SignupActivity", "SecureNetflixId: " + jsonObject.getString("SecureNetflixId"));
+            }
             final ActivationTokens activationTokens = new ActivationTokens(jsonObject);
             final ServiceManager serviceManager = this.this$0.getServiceManager();
             if (serviceManager != null && serviceManager.isReady()) {
@@ -149,10 +166,9 @@ public class SignupActivity$NFAndroidJS
             }
         }
         catch (JSONException ex) {
-            Log.e("SignupActivity", "Failed to LoginToApp");
-            ex.printStackTrace();
+            Log.e("SignupActivity", "Failed to LoginToApp", (Throwable)ex);
             this.this$0.mSignupOngoing = false;
-            this.this$0.provideDialog(this.this$0.getString(2131493268), this.this$0.mHandleError);
+            this.this$0.provideDialog(this.this$0.getString(2131493260), this.this$0.mHandleError);
             return;
         }
         Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");
@@ -163,6 +179,22 @@ public class SignupActivity$NFAndroidJS
         Log.d("SignupActivity", "Signup UI ready to interact");
         this.this$0.mHandler.removeCallbacks(this.this$0.mJumpToSignInTask);
         this.this$0.runOnUiThread((Runnable)new SignupActivity$NFAndroidJS$1(this));
+    }
+    
+    @JavascriptInterface
+    public void passNonMemberInfo(final String s, final String s2, final String s3) {
+        Log.d("SignupActivity", "store nonRegistered cookies");
+        this.this$0.storeNrmNetflixIdInPref(s);
+    }
+    
+    @JavascriptInterface
+    public void saveUserCredentials(final String s, final String s2) {
+        if (Log.isLoggable()) {
+            Log.d("SignupActivity", "saveUserCredentials:: email: " + s + ", passwd: " + s2);
+        }
+        this.this$0.mEmail = s;
+        this.this$0.mPassword = s2;
+        this.this$0.runOnUiThread((Runnable)new SignupActivity$NFAndroidJS$3(this));
     }
     
     @JavascriptInterface

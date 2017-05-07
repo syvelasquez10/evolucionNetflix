@@ -41,7 +41,7 @@ public abstract class SocialNotification
     }
     
     public static final NotificationViewHolder getViewHolder(final View view, final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
-        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131427791), (AdvancedImageView)view.findViewById(2131427575), (TextView)view.findViewById(2131427574), (TextView)view.findViewById(2131427572), (TextView)view.findViewById(2131427573), (TextView)view.findViewById(2131427822), (Button)view.findViewById(2131427823), (Button)view.findViewById(2131427824), view.findViewById(2131427821), view.findViewById(2131427820), (AdvancedImageView)view.findViewById(2131427571));
+        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131427794), (AdvancedImageView)view.findViewById(2131427586), (TextView)view.findViewById(2131427585), (TextView)view.findViewById(2131427583), (TextView)view.findViewById(2131427584), (TextView)view.findViewById(2131427825), (Button)view.findViewById(2131427826), (Button)view.findViewById(2131427827), view.findViewById(2131427824), view.findViewById(2131427823), (AdvancedImageView)view.findViewById(2131427582), view.findViewById(2131427581));
     }
     
     public static void showSingleLineText(final NotificationViewHolder notificationViewHolder, final int text) {
@@ -99,22 +99,25 @@ public abstract class SocialNotification
         return null;
     }
     
-    public void initView(final View view, final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        int backgroundResource;
-        if (socialNotificationSummary.getWasRead()) {
-            backgroundResource = 2130837888;
+    public void initView(final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
+        if (notificationViewHolder.getUnreadIndicator() != null) {
+            final View unreadIndicator = notificationViewHolder.getUnreadIndicator();
+            int visibility;
+            if (socialNotificationSummary.getWasRead()) {
+                visibility = 4;
+            }
+            else {
+                visibility = 0;
+            }
+            unreadIndicator.setVisibility(visibility);
         }
-        else {
-            backgroundResource = 2131230883;
-        }
-        view.setBackgroundResource(backgroundResource);
         if (notificationViewHolder.getFriendImage() != null) {
             notificationViewHolder.getFriendImage().setVisibility(0);
             NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getBigImageUrl(), IClientLogging$AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), ImageLoader$StaticImgConfig.DARK, true);
         }
         notificationViewHolder.getNSAArtImage().setVisibility(8);
         notificationViewHolder.getMovieArtImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideo().getBoxshotUrl(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideo().getTitle(), ImageLoader$StaticImgConfig.DARK, true);
+        NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getMovieArtImage(), socialNotificationSummary.getTVCardUrl(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideoTitle(), ImageLoader$StaticImgConfig.DARK, true);
         notificationViewHolder.getTopTextView().setVisibility(0);
         notificationViewHolder.getTopTextView().setText((CharSequence)socialNotificationSummary.getFriendProfile().getFullName());
         notificationViewHolder.getMiddleTextView().setGravity(3);

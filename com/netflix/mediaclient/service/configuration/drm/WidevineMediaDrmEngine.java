@@ -24,6 +24,7 @@ public class WidevineMediaDrmEngine
     private MediaCrypto mCrypto;
     private MediaDrm mDrm;
     private byte[] mSessionId;
+    private boolean mWidevineL3;
     
     static {
         WideVineUUID = new UUID(-1301668207276963122L, -6645017420763422227L);
@@ -31,10 +32,12 @@ public class WidevineMediaDrmEngine
         WidevineMediaDrmEngine.mKeyAdded = false;
     }
     
-    WidevineMediaDrmEngine() {
+    WidevineMediaDrmEngine(final boolean mWidevineL3) {
         this.TAG = "WidevineMediaDrmEngine";
         this.mSessionId = null;
+        this.mWidevineL3 = false;
         Log.i("WidevineMediaDrmEngine", "create WidevineMediaDrmEngine");
+        this.mWidevineL3 = mWidevineL3;
         Log.i("WidevineMediaDrmEngine", "WidevineMediaDrmEngine done");
     }
     
@@ -275,7 +278,7 @@ public class WidevineMediaDrmEngine
         //     9: invokespecial   com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.cleanup:()V
         //    12: aload_0        
         //    13: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mDrm:Landroid/media/MediaDrm;
-        //    16: ifnonnull       33
+        //    16: ifnonnull       51
         //    19: aload_0        
         //    20: new             Landroid/media/MediaDrm;
         //    23: dup            
@@ -283,63 +286,71 @@ public class WidevineMediaDrmEngine
         //    27: invokespecial   android/media/MediaDrm.<init>:(Ljava/util/UUID;)V
         //    30: putfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mDrm:Landroid/media/MediaDrm;
         //    33: aload_0        
-        //    34: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mSessionId:[B
-        //    37: ifnonnull       59
-        //    40: ldc             "WidevineMediaDrmEngine"
-        //    42: ldc             "create Session"
-        //    44: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //    47: pop            
-        //    48: aload_0        
-        //    49: aload_0        
-        //    50: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mDrm:Landroid/media/MediaDrm;
-        //    53: invokevirtual   android/media/MediaDrm.openSession:()[B
-        //    56: putfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mSessionId:[B
-        //    59: aload_0        
-        //    60: new             Landroid/media/MediaCrypto;
-        //    63: dup            
-        //    64: getstatic       com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.WideVineUUID:Ljava/util/UUID;
+        //    34: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mWidevineL3:Z
+        //    37: ifeq            51
+        //    40: aload_0        
+        //    41: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mDrm:Landroid/media/MediaDrm;
+        //    44: ldc             "securityLevel"
+        //    46: ldc             "L3"
+        //    48: invokevirtual   android/media/MediaDrm.setPropertyString:(Ljava/lang/String;Ljava/lang/String;)V
+        //    51: aload_0        
+        //    52: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mSessionId:[B
+        //    55: ifnonnull       77
+        //    58: ldc             "WidevineMediaDrmEngine"
+        //    60: ldc             "create Session"
+        //    62: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //    65: pop            
+        //    66: aload_0        
         //    67: aload_0        
-        //    68: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mSessionId:[B
-        //    71: invokespecial   android/media/MediaCrypto.<init>:(Ljava/util/UUID;[B)V
-        //    74: putfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mCrypto:Landroid/media/MediaCrypto;
+        //    68: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mDrm:Landroid/media/MediaDrm;
+        //    71: invokevirtual   android/media/MediaDrm.openSession:()[B
+        //    74: putfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mSessionId:[B
         //    77: aload_0        
-        //    78: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mCrypto:Landroid/media/MediaCrypto;
-        //    81: areturn        
-        //    82: astore_1       
-        //    83: ldc             "WidevineMediaDrmEngine"
-        //    85: ldc             "fail to create MediaDrm: "
-        //    87: aload_1        
-        //    88: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //    91: pop            
-        //    92: aconst_null    
-        //    93: areturn        
-        //    94: astore_1       
-        //    95: ldc             "WidevineMediaDrmEngine"
-        //    97: ldc             "fail to openSession "
-        //    99: aload_1        
-        //   100: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   103: pop            
-        //   104: aconst_null    
-        //   105: areturn        
-        //   106: astore_1       
-        //   107: ldc             "WidevineMediaDrmEngine"
-        //   109: ldc             "fail to create MediaCrypto: "
-        //   111: aload_1        
-        //   112: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   115: pop            
-        //   116: aconst_null    
-        //   117: areturn        
+        //    78: new             Landroid/media/MediaCrypto;
+        //    81: dup            
+        //    82: getstatic       com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.WideVineUUID:Ljava/util/UUID;
+        //    85: aload_0        
+        //    86: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mSessionId:[B
+        //    89: invokespecial   android/media/MediaCrypto.<init>:(Ljava/util/UUID;[B)V
+        //    92: putfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mCrypto:Landroid/media/MediaCrypto;
+        //    95: aload_0        
+        //    96: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mCrypto:Landroid/media/MediaCrypto;
+        //    99: areturn        
+        //   100: astore_1       
+        //   101: ldc             "WidevineMediaDrmEngine"
+        //   103: ldc             "fail to create MediaDrm: "
+        //   105: aload_1        
+        //   106: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   109: pop            
+        //   110: aconst_null    
+        //   111: areturn        
+        //   112: astore_1       
+        //   113: ldc             "WidevineMediaDrmEngine"
+        //   115: ldc             "fail to openSession "
+        //   117: aload_1        
+        //   118: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   121: pop            
+        //   122: aconst_null    
+        //   123: areturn        
+        //   124: astore_1       
+        //   125: ldc             "WidevineMediaDrmEngine"
+        //   127: ldc             "fail to create MediaCrypto: "
+        //   129: aload_1        
+        //   130: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   133: pop            
+        //   134: aconst_null    
+        //   135: areturn        
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                                
         //  -----  -----  -----  -----  ------------------------------------
-        //  19     33     82     94     Landroid/media/MediaDrmException;
-        //  48     59     94     106    Ljava/lang/Throwable;
-        //  59     77     106    118    Landroid/media/MediaCryptoException;
+        //  19     51     100    112    Landroid/media/MediaDrmException;
+        //  66     77     112    124    Ljava/lang/Throwable;
+        //  77     95     124    136    Landroid/media/MediaCryptoException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 62, Size: 62
+        // java.lang.IndexOutOfBoundsException: Index: 70, Size: 70
         //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
         //     at java.util.ArrayList.get(ArrayList.java:429)
         //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)

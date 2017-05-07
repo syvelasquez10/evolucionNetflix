@@ -169,17 +169,17 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     private void findViews(final View view) {
-        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131427808);
-        this.layoutSuggestions = (FlowLayout)view.findViewById(2131427809);
-        this.gridViewVideos = (StaticGridView)view.findViewById(2131427804);
-        this.gridViewPeople = (StaticGridView)view.findViewById(2131427806);
-        this.labelSuggestions = (TextView)view.findViewById(2131427807);
-        this.scrollView2 = (LoggingScrollView)view.findViewById(2131427811);
-        this.layoutPeople = (FlowLayout)view.findViewById(2131427810);
-        this.scrollView = (LoggingScrollView)view.findViewById(2131427802);
-        this.relatedlabel = (TextView)view.findViewById(2131427538);
-        this.labelVideos = (TextView)view.findViewById(2131427803);
-        this.labelPeople = (TextView)view.findViewById(2131427805);
+        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131427811);
+        this.layoutSuggestions = (FlowLayout)view.findViewById(2131427812);
+        this.gridViewVideos = (StaticGridView)view.findViewById(2131427807);
+        this.gridViewPeople = (StaticGridView)view.findViewById(2131427809);
+        this.labelSuggestions = (TextView)view.findViewById(2131427810);
+        this.scrollView2 = (LoggingScrollView)view.findViewById(2131427814);
+        this.layoutPeople = (FlowLayout)view.findViewById(2131427813);
+        this.scrollView = (LoggingScrollView)view.findViewById(2131427805);
+        this.relatedlabel = (TextView)view.findViewById(2131427539);
+        this.labelVideos = (TextView)view.findViewById(2131427806);
+        this.labelPeople = (TextView)view.findViewById(2131427808);
         this.progressBar = (ProgressBar)view.findViewById(2131427522);
     }
     
@@ -349,10 +349,10 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelSuggestions = this.labelSuggestions;
             String text;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text = this.getString(2131493276).toUpperCase(Locale.US);
+                text = this.getString(2131493268).toUpperCase(Locale.US);
             }
             else {
-                text = this.getString(2131493276);
+                text = this.getString(2131493268);
             }
             labelSuggestions.setText((CharSequence)text);
         }
@@ -360,15 +360,15 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelPeople = this.labelPeople;
             String text2;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text2 = this.getString(2131493275).toUpperCase(Locale.US);
+                text2 = this.getString(2131493267).toUpperCase(Locale.US);
             }
             else {
-                text2 = this.getString(2131493275);
+                text2 = this.getString(2131493267);
             }
             labelPeople.setText((CharSequence)text2);
         }
         if (this.labelVideos != null) {
-            this.labelVideos.setText((CharSequence)this.getString(2131493274).toUpperCase(Locale.US));
+            this.labelVideos.setText((CharSequence)this.getString(2131493266).toUpperCase(Locale.US));
         }
     }
     

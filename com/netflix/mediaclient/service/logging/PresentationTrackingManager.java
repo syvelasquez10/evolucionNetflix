@@ -104,6 +104,10 @@ class PresentationTrackingManager implements PresentationTracking
         if (Log.isLoggable()) {
             Log.d("nf_presentation", "Send events " + list.size());
         }
+        if (list.size() == 0) {
+            Log.d("nf_presentation", "Dropping presentation message - 0 events");
+            return;
+        }
         final PresentationRequest presentationRequest = new PresentationRequest(this.mContext, this.mOwner.getConfigurationAgent(), this.mUser);
         presentationRequest.addAllEvent(list);
         try {
@@ -115,11 +119,12 @@ class PresentationTrackingManager implements PresentationTracking
                 this.mPresentationWebClient.sendPresentationEvents(this.saveEvents(string), presentationRequest, new PresentationTrackingManager$PresentationWebCallbackImpl(this, string));
                 return;
             }
-            this.mPresentationWebClient.sendPresentationEvents(presentationRequest);
         }
         catch (Exception ex) {
             Log.e("nf_presentation", "Failed to create JSON object for presentation request", ex);
+            return;
         }
+        this.mPresentationWebClient.sendPresentationEvents(presentationRequest);
     }
     
     void checkState() {

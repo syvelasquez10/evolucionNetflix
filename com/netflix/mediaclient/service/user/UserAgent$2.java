@@ -20,6 +20,7 @@ import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.activity.NetflixActivity;

@@ -6,6 +6,9 @@ package com.netflix.mediaclient.util;
 
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
+import android.content.Intent;
+import android.content.Context;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.service.mdx.cast.CastAgent;
 import android.content.DialogInterface;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -33,6 +36,7 @@ final class MdxUtils$2 implements DialogInterface$OnClickListener
             if (castAgent != null) {
                 castAgent.disconnectFromCast();
             }
+            LocalBroadcastManager.getInstance((Context)this.val$activity).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.UPDATE_CAPABILITIES_BADGES"));
         }
     }
 }

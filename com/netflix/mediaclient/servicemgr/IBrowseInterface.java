@@ -7,7 +7,6 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -71,7 +70,7 @@ public interface IBrowseInterface
     
     void logBillboardActivity(final Video p0, final BillboardInteractionType p1);
     
-    void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0);
+    void markNotificationAsRead(final SocialNotificationSummary p0);
     
     void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final boolean p6, final int p7, final int p8);
     

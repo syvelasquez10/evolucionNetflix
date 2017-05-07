@@ -33,7 +33,7 @@ public class SocialNotificationsListImpl implements Parcelable, SocialNotificati
         this.notifications = new ArrayList<SocialNotificationSummary>();
         for (int i = 0; i < list.size(); ++i) {
             final FalkorSocialNotification falkorSocialNotification = list.get(i);
-            falkorSocialNotification.summary.setVideo((FalkorVideo)modelProxy.getValue(falkorSocialNotification.video.getRefPath()));
+            falkorSocialNotification.summary.fillVideoDetails((FalkorVideo)modelProxy.getValue(falkorSocialNotification.video.getRefPath()));
             this.notifications.add(falkorSocialNotification.summary);
         }
         this.summary = summary;

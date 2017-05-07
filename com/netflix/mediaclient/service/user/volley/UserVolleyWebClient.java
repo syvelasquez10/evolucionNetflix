@@ -92,6 +92,11 @@ public final class UserVolleyWebClient implements UserWebClient
     }
     
     @Override
+    public void recordNrmInfo(final String s) {
+        this.webclient.sendRequest(new RecordNonRegisteredMemberInfo(this.service.getApplicationContext(), s));
+    }
+    
+    @Override
     public void removeWebUserProfile(final String s, final UserAgentWebCallback userAgentWebCallback) {
         this.webclient.sendRequest(new RemoveUserProfileRequest(this.service.getApplicationContext(), s, userAgentWebCallback));
     }

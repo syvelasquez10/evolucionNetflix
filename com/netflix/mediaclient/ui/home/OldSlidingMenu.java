@@ -74,21 +74,21 @@ public class OldSlidingMenu implements SlidingMenuAdapter
         this.onSwitchProfileClickListener = (View$OnClickListener)new OldSlidingMenu$4(this);
         this.onRowClickListener = (AdapterView$OnItemClickListener)new OldSlidingMenu$5(this);
         this.activity = activity;
-        activity.getLayoutInflater().inflate(2130903151, (ViewGroup)drawerLayout);
-        (this.content = drawerLayout.findViewById(2131427679)).setOnClickListener((View$OnClickListener)null);
+        activity.getLayoutInflater().inflate(2130903154, (ViewGroup)drawerLayout);
+        (this.content = drawerLayout.findViewById(2131427683)).setOnClickListener((View$OnClickListener)null);
         ViewUtils.setPaddingTop(this.content, activity.getActionBarHeight());
         this.leWrapper = new LoadingAndErrorWrapper(this.content, this.errorCallback);
-        (this.profilesGroup = this.content.findViewById(2131427680)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131427681);
-        this.profileName = (TextView)this.content.findViewById(2131427683);
-        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131427682)).setPressedStateHandlerEnabled(false);
-        this.homeRow = activity.getLayoutInflater().inflate(2130903152, (ViewGroup)null);
-        (this.home = (TextView)this.homeRow.findViewById(2131427686)).setText(2131493178);
-        this.homeRow.setBackgroundResource(2130837888);
+        (this.profilesGroup = this.content.findViewById(2131427684)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131427685);
+        this.profileName = (TextView)this.content.findViewById(2131427687);
+        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131427686)).setPressedStateHandlerEnabled(false);
+        this.homeRow = activity.getLayoutInflater().inflate(2130903155, (ViewGroup)null);
+        (this.home = (TextView)this.homeRow.findViewById(2131427690)).setText(2131493170);
+        this.homeRow.setBackgroundResource(2130837891);
         this.homeRow.setOnClickListener(this.onHomeClickListener);
-        this.homeRow.setTag((Object)new OldSlidingMenu$Holder(this.home, this.homeRow.findViewById(2131427687)));
+        this.homeRow.setTag((Object)new OldSlidingMenu$Holder(this.home, this.homeRow.findViewById(2131427691)));
         this.setSelectedGenre(OldSlidingMenu.HOME_LOLOMO);
-        (this.list = (ListView)this.content.findViewById(2131427685)).setFocusable(false);
+        (this.list = (ListView)this.content.findViewById(2131427689)).setFocusable(false);
         this.list.addHeaderView(this.homeRow, (Object)null, false);
         this.drawerLayout = drawerLayout;
         this.fetchGenresDataIfReady();
@@ -136,8 +136,8 @@ public class OldSlidingMenu implements SlidingMenuAdapter
     }
     
     private void updateMenuStubText(final TextView textView) {
-        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296399)));
-        textView.setBackgroundResource(2130837872);
+        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296480)));
+        textView.setBackgroundResource(2130837874);
         if (KidsUtils.isKidsProfile(this.manager.getCurrentProfile())) {
             Log.v("OldSlidingMenu", "Showing 'exit kids' menu item in sliding menu");
             textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -147,7 +147,7 @@ public class OldSlidingMenu implements SlidingMenuAdapter
             return;
         }
         Log.v("OldSlidingMenu", "Showing 'switch to kids' menu item in sliding menu");
-        textView.setCompoundDrawablesWithIntrinsicBounds(2130837737, 0, 0, 0);
+        textView.setCompoundDrawablesWithIntrinsicBounds(2130837735, 0, 0, 0);
         textView.setCompoundDrawablePadding(AndroidUtils.dipToPixels((Context)this.activity, 12));
         textView.setText(2131492977);
         textView.setOnClickListener((View$OnClickListener)new KidsUtils$OnSwitchToKidsClickListener(this.activity, UIViewLogging$UIViewCommandName.slidingMenuKidsEntry));
@@ -209,7 +209,7 @@ public class OldSlidingMenu implements SlidingMenuAdapter
     protected void applySelectionStyle(final View view) {
         final OldSlidingMenu$Holder oldSlidingMenu$Holder = (OldSlidingMenu$Holder)view.getTag();
         ViewUtils.setTextViewToBold(oldSlidingMenu$Holder.tv);
-        oldSlidingMenu$Holder.tv.setTextColor(view.getResources().getColor(2131230906));
+        oldSlidingMenu$Holder.tv.setTextColor(view.getResources().getColor(2131230904));
         oldSlidingMenu$Holder.selectionIndicator.setVisibility(0);
     }
     
@@ -245,7 +245,7 @@ public class OldSlidingMenu implements SlidingMenuAdapter
     protected void removeSelectionStyle(final View view) {
         final OldSlidingMenu$Holder oldSlidingMenu$Holder = (OldSlidingMenu$Holder)view.getTag();
         ViewUtils.setTextViewToNormal(oldSlidingMenu$Holder.tv);
-        oldSlidingMenu$Holder.tv.setTextColor(view.getResources().getColor(2131230905));
+        oldSlidingMenu$Holder.tv.setTextColor(view.getResources().getColor(2131230903));
         oldSlidingMenu$Holder.selectionIndicator.setVisibility(8);
     }
     

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.home;
 
 import android.view.View;
 import java.io.Serializable;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.view.MenuItem;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
@@ -27,7 +28,6 @@ import android.app.Fragment;
 import android.os.Parcelable;
 import android.support.v4.widget.DrawerLayout$DrawerListener;
 import android.app.Activity;
-import com.netflix.mediaclient.util.SocialUtils;
 import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
@@ -36,7 +36,6 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.DialogInterface$OnClickListener;
@@ -65,9 +64,9 @@ class HomeActivity$1$1 implements LoadingStatus$LoadingStatusCallback
     
     @Override
     public void onDataLoaded(final Status status) {
+        this.this$1.this$0.setLoadingStatusCallback(null);
         Log.d("HomeActivity", "LOLOMO is loaded, report UI browse startup session ended in case this was on UI startup");
         this.this$1.this$0.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(SystemClock.elapsedRealtime() - this.this$1.this$0.mStartedTimeMs, status.isSucces(), null);
-        this.this$1.this$0.setLoadingStatusCallback(null);
         if (StatusCode.INVALID_COUNRTY.equals(status.getStatusCode())) {
             Log.d("HomeActivity", "User accessing Netflix in a not supported country. Show alert and kill self");
             this.this$1.this$0.showDialog(InvalidCountryAlertDialog.createInvalidCountryAlertDialog(this.this$1.this$0));

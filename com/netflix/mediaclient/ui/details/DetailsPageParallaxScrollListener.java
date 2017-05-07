@@ -4,14 +4,10 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.animation.Animator$AnimatorListener;
-import android.animation.TimeInterpolator;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable$Orientation;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.widget.FrameLayout$LayoutParams;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
@@ -21,6 +17,9 @@ import android.support.v7.widget.Toolbar;
 import java.util.Date;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.animation.Animator$AnimatorListener;
+import android.animation.TimeInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
@@ -56,11 +55,9 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     private DetailsPageParallaxScrollListener$IScrollStateChanged scrollStateChanged;
     private final SeasonsSpinner seasonsSpinner;
     protected final View trackingView;
-    private int trackingViewOriginalXPos;
     
     public DetailsPageParallaxScrollListener(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] parallaxViews, final View trackingView, final int initialTopColor, final int initialBottomColor, final View anchorView) {
         this.applyToolBarGradientTransform = true;
-        this.trackingViewOriginalXPos = 0;
         this.seasonsSpinner = seasonsSpinner;
         this.parallaxViews = parallaxViews;
         this.trackingView = trackingView;
@@ -78,6 +75,14 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         if (AndroidUtils.getAndroidVersion() >= 16 && view != null) {
             view.setTranslationY(-n + n * 0.4f);
         }
+    }
+    
+    private void animateTrackingView(final DetailsPageParallaxScrollListener$ItrackingViewAnimationActions detailsPageParallaxScrollListener$ItrackingViewAnimationActions) {
+        this.fadeOutDuration = this.getTrackerViewLatchFadeoutDuration();
+        if (this.currentVelocity == 0L) {
+            this.fadeOutDuration = 100;
+        }
+        this.trackingView.animate().alpha(0.0f).setDuration((long)this.fadeOutDuration).setInterpolator((TimeInterpolator)new AccelerateDecelerateInterpolator()).setListener((Animator$AnimatorListener)new DetailsPageParallaxScrollListener$3(this, detailsPageParallaxScrollListener$ItrackingViewAnimationActions));
     }
     
     private void calculateActionBarFadeRatio() {
@@ -102,6 +107,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
                 viewGroup.removeView(this.trackingView);
                 toolbar.addView(this.trackingView, (ViewGroup$LayoutParams)new Toolbar$LayoutParams(-2, -2, 48));
                 this.islatched = true;
+                this.trackingView.setTranslationX((float)this.getTrackerViewFinalXPosition());
             }
         }
     }
@@ -117,7 +123,6 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     private void init() {
-        this.setOriginalTrackingViewPos();
         this.setLatchPosition();
         this.getActionBarPosition();
         this.calculateActionBarFadeRatio();
@@ -128,7 +133,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         if (this.seasonsSpinner == null) {
             return;
         }
-        this.seasonsSpinner.post((Runnable)new DetailsPageParallaxScrollListener$2(this, n));
+        this.seasonsSpinner.post((Runnable)new DetailsPageParallaxScrollListener$4(this, n));
     }
     
     private void reAttachTrackingViewOriginalParent() {
@@ -138,6 +143,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
                 viewGroup.removeView(this.trackingView);
                 this.originalTrackingViewParent.addView(this.trackingView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 16));
                 this.trackingView.setTranslationY(0.0f);
+                this.trackingView.setTranslationX(0.0f);
                 this.islatched = false;
             }
         }
@@ -206,7 +212,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     protected int getTrackerViewFinalXPosition() {
-        return (int)this.recyclerView.getResources().getDimension(2131296466);
+        return 0;
     }
     
     protected int getTrackerViewFinalYPosition() {
@@ -298,15 +304,6 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         this.scrollStateChanged = scrollStateChanged;
     }
     
-    protected void setOriginalTrackingViewPos() {
-        if (this.trackingView != null) {
-            final int n = DeviceUtils.getScreenWidthInPixels(this.trackingView.getContext()) - KubrickUtils.getDetailsPageContentWidth(this.trackingView.getContext());
-            if (n > 0) {
-                this.trackingViewOriginalXPos = n / 2;
-            }
-        }
-    }
-    
     protected void setToolbarColor() {
         final int initialTopColor = this.initialTopColor;
         final int initialBottomColor = this.initialBottomColor;
@@ -326,19 +323,13 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     
     protected void setTrackingViewLatchedPosition() {
         if (this.trackingView != null && !this.islatched && !this.animating) {
-            this.fadeOutDuration = this.getTrackerViewLatchFadeoutDuration();
-            if (this.currentVelocity <= 10L) {
-                this.fadeOutDuration = 100;
-            }
-            this.trackingView.animate().alpha(0.0f).setDuration((long)this.fadeOutDuration).setInterpolator((TimeInterpolator)new AccelerateDecelerateInterpolator()).setListener((Animator$AnimatorListener)new DetailsPageParallaxScrollListener$1(this));
+            this.animateTrackingView(new DetailsPageParallaxScrollListener$1(this));
         }
     }
     
     protected void setTrackingViewUnlatchedPosition(final int n) {
-        if (this.trackingView == null) {
-            return;
+        if (this.trackingView != null && this.islatched && !this.animating) {
+            this.animateTrackingView(new DetailsPageParallaxScrollListener$2(this));
         }
-        this.trackingView.clearAnimation();
-        this.reAttachTrackingViewOriginalParent();
     }
 }

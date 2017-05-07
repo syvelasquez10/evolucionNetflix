@@ -26,7 +26,7 @@ class LoadingAndErrorWrapper$2 implements Runnable
         if (ViewUtils.activityIsDead(this.this$0.loading)) {
             return;
         }
-        Log.v("LoadingAndErrorWrapper", "Showing loading view with animation");
+        Log.v("LoadingAndErrorWrapper", "Showing loading view with animation (via runnable)");
         AnimationUtils.showView(this.this$0.loading, true);
     }
 }

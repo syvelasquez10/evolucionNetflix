@@ -67,7 +67,7 @@ public class AvatarsGridActivity extends NetflixActivity
         this.mAdapter = new AvatarsGridActivity$ProfileAvatarAdapter(this, null);
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getResources().getString(2131493327));
+            netflixActionBar.setTitle(this.getResources().getString(2131493310));
             netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         }
     }
@@ -92,7 +92,7 @@ public class AvatarsGridActivity extends NetflixActivity
     }
     
     private void updateTopGridViewMargin() {
-        int topMargin = (int)this.getResources().getDimension(2131296424);
+        int topMargin = (int)this.getResources().getDimension(2131296421);
         if (DeviceUtils.isNotTabletByContext((Context)this)) {
             topMargin += ViewUtils.getDefaultActionBarHeight((Context)this);
         }

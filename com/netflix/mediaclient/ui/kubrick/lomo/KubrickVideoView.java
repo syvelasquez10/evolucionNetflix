@@ -49,7 +49,7 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837892);
+        this.setBackgroundResource(2130837895);
         this.setScaleType(ImageView$ScaleType.CENTER_CROP);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
@@ -67,7 +67,9 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     }
     
     @Override
-    public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int n, final boolean b, final boolean b2) {
+    public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
+        final int n = 4;
+        final int n2 = 0;
         String s;
         if (b2) {
             s = kubrickVideo.getHorzDispUrl();
@@ -78,26 +80,31 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
         if (Log.isLoggable()) {
             Log.v("KubrickVideoView", "Updating for video: " + kubrickVideo + ", imgUrl: " + s);
         }
-        int visibility;
+        int visibility2;
         if (StringUtils.isEmpty(s)) {
-            visibility = 4;
+            visibility2 = 4;
+        }
+        else {
+            visibility2 = 0;
+        }
+        this.setVisibility(visibility2);
+        this.playContext = new PlayContextImp(trackable, visibility);
+        this.clicker.update((View)this, kubrickVideo, this.pressedHandler);
+        if (StringUtils.isEmpty(s)) {
+            visibility = n;
         }
         else {
             visibility = 0;
         }
         this.setVisibility(visibility);
-        this.playContext = new PlayContextImp(trackable, n);
-        this.clicker.update((View)this, kubrickVideo, this.pressedHandler);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final String title = kubrickVideo.getTitle();
         final ImageLoader$StaticImgConfig imageLoaderConfig = BrowseExperience.getImageLoaderConfig();
+        visibility = n2;
         if (b) {
-            n = 1;
+            visibility = 1;
         }
-        else {
-            n = 0;
-        }
-        imageLoader.showImg(this, s, boxArt, title, imageLoaderConfig, true, n);
+        imageLoader.showImg(this, s, boxArt, title, imageLoaderConfig, true, visibility);
     }
 }

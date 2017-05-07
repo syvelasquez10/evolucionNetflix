@@ -91,8 +91,10 @@ public final class dw
                                         a.put(s, opt);
                                         b = true;
                                         continue Label_0086_Outer;
-                                        n = 0;
-                                        continue Label_0129_Outer;
+                                        Label_0173: {
+                                            n = 0;
+                                        }
+                                        continue Block_10_Outer;
                                         // iftrue(Label_0173:, opt2.equals(opt))
                                         while (true) {
                                             n = 1;
@@ -104,10 +106,8 @@ public final class dw
                                         this.a(true);
                                         return;
                                         n = 0;
-                                        continue Block_10_Outer;
-                                        Label_0173: {
-                                            n = 0;
-                                        }
+                                        continue Label_0129_Outer;
+                                        n = 0;
                                         continue Block_10_Outer;
                                     }
                                     catch (JSONException ex) {}

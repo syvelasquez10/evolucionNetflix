@@ -33,8 +33,8 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
     protected SeasonDetails currSeasonDetails;
     protected final EpisodesFrag episodeListFrag;
     protected int episodeStartIndex;
-    protected boolean hasMoreData;
-    protected boolean isLoading;
+    private boolean hasMoreData;
+    private boolean isLoading;
     protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
     protected long requestId;
     

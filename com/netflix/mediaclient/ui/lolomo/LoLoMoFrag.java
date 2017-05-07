@@ -143,7 +143,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("LoLoMoFrag", "Creating frag view");
-        final View inflate = layoutInflater.inflate(2130903125, viewGroup, false);
+        final View inflate = layoutInflater.inflate(2130903128, viewGroup, false);
         (this.listView = (ListView)inflate.findViewById(16908298)).setDivider((Drawable)null);
         this.listView.setFocusable(false);
         this.listView.setRecyclerListener(this.recycleListener);

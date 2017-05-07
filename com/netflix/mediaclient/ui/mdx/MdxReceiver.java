@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState$MdxPlaybackState;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
@@ -145,6 +146,7 @@ public final class MdxReceiver extends BroadcastReceiver
                     Log.d("nf_mdx", "MDX is connected, invalidate action bar to finish animation");
                     this.mActivity.setConnectingToTarget(false);
                     this.mActivity.invalidateOptionsMenu();
+                    LocalBroadcastManager.getInstance((Context)this.mActivity).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.UPDATE_CAPABILITIES_BADGES"));
                 }
             }
         }

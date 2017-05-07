@@ -70,7 +70,7 @@ class SearchResultsFrag$3 implements ViewTreeObserver$OnGlobalLayoutListener
         final int numPeopleGridCols = SearchUtils.getNumPeopleGridCols((Context)this.this$0.getActivity());
         if (numPeopleGridCols > 0) {
             this.this$0.imgHeightPeople = (int)(n / numPeopleGridCols * SearchUtils.getPeopleImageAspectRatio() + 0.5);
-            SearchResultsFrag.access$316(this.this$0, this.this$0.getActivity().getResources().getDimension(2131296385));
+            SearchResultsFrag.access$316(this.this$0, this.this$0.getActivity().getResources().getDimension(2131296387));
             Log.v("SearchResultsFrag", "imgHeightPeople: " + this.this$0.imgHeightPeople);
         }
         this.this$0.fireImpressionEvents();

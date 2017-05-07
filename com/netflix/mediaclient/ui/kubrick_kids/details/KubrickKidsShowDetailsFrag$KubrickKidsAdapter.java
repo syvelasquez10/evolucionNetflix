@@ -30,6 +30,8 @@ import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$HeroSli
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.details.EpisodesAdapter;
@@ -84,6 +86,12 @@ class KubrickKidsShowDetailsFrag$KubrickKidsAdapter extends KubrickShowDetailsFr
             return 0;
         }
         return this.this$0.showDetails.getNumOfEpisodes();
+    }
+    
+    @Override
+    protected void updateEpisodesData(final List<EpisodeDetails> list, final int n) {
+        super.updateEpisodesData(list, n);
+        this.this$0.showViews();
     }
     
     public void updateItems(final Collection<? extends Video> collection, final int n, final int n2) {

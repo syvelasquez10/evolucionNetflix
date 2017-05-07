@@ -52,7 +52,7 @@ public class DetailsActivityLauncher
         return putExtra;
     }
     
-    private static Intent getIntent(final Context context, final Class<?> clazz, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4) {
+    private static Intent getIntent(final Context context, final Class<?> clazz, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
         final Intent intent = new Intent(context, (Class)clazz);
         intent.putExtra("extra_video_id", s);
         intent.putExtra("extra_video_title", s2);
@@ -64,7 +64,7 @@ public class DetailsActivityLauncher
         if (s3 != null) {
             intent.putExtra("extra_action_token", s3);
         }
-        if (clazz == context.getClass()) {
+        if (clazz.getName().contains("etails") && context.getClass().getName().contains("etails")) {
             intent.putExtra("extra_same_activity_type", true);
         }
         return intent;
@@ -108,19 +108,19 @@ public class DetailsActivityLauncher
         show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, null, 0);
     }
     
-    public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s, final Bundle bundle) {
-        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, bundle, 0);
+    public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s, final int n) {
+        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, null, n);
     }
     
-    public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s, final Bundle bundle, final int n) {
-        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, null, n);
+    public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s, final Bundle bundle) {
+        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, bundle, 0);
     }
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4) {
         show(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, s4, null, 0);
     }
     
-    public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4, final Bundle bundle, final int n) {
+    private static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4, final Bundle bundle, final int n) {
         final BrowseExperience value = BrowseExperience.get();
         final Class<? extends DetailsActivity> detailsClassTypeForVideo = value.getDetailsClassTypeForVideo(videoType);
         if (detailsClassTypeForVideo == null) {
@@ -130,7 +130,7 @@ public class DetailsActivityLauncher
         if (Log.isLoggable()) {
             Log.v("DetailsActivityLauncher", String.format("Creating details class: %s, videoType: %s, video ID: %s", detailsClassTypeForVideo.getSimpleName(), videoType, s));
         }
-        final Intent intent = getIntent((Context)netflixActivity, detailsClassTypeForVideo, videoType, s, s2, playContext, detailsActivity$Action, s3, s4);
+        final Intent intent = getIntent((Context)netflixActivity, detailsClassTypeForVideo, videoType, s, s2, playContext, detailsActivity$Action, s3);
         if (bundle != null) {
             intent.putExtras(bundle);
         }

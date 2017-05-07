@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -52,7 +53,7 @@ class KubrickKidsCharacterDetailsFrag$GalleryAdapter$1 implements RecyclerViewHe
     }
     
     private int getImageHeight() {
-        return (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131296452) * (this.val$this$0.numColumns + 1.0f)) / this.val$this$0.numColumns * 0.5625f);
+        return (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131296449) * (this.val$this$0.numColumns + 1.0f)) / this.val$this$0.numColumns * 0.5625f);
     }
     
     @Override

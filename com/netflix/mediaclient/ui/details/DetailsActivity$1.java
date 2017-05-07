@@ -16,6 +16,7 @@ import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -27,8 +28,6 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
-import com.netflix.mediaclient.util.SocialUtils;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -42,10 +41,6 @@ class DetailsActivity$1 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        final SocialUtils$NotificationsListStatus handleNotificationsUpdateReceiver = SocialUtils.handleNotificationsUpdateReceiver(intent, "DetailsActivity");
-        if (handleNotificationsUpdateReceiver != this.this$0.notificationsListStatus) {
-            this.this$0.notificationsListStatus = handleNotificationsUpdateReceiver;
-            this.this$0.invalidateOptionsMenu();
-        }
+        this.this$0.reloadData();
     }
 }

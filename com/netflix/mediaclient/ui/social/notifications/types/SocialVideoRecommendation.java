@@ -33,22 +33,22 @@ public class SocialVideoRecommendation extends SocialNotification
     protected void addNotificationActions(final NotificationCompat$Builder notificationCompat$Builder, final SocialNotificationSummary socialNotificationSummary, final SocialNotificationsListSummary socialNotificationsListSummary, final MessageData messageData, final Context context) {
         super.addNotificationActions(notificationCompat$Builder, socialNotificationSummary, socialNotificationsListSummary, messageData, context);
         final int n = (int)System.currentTimeMillis();
-        final Intent intentForBroadcastReceiver = DetailsActivityLauncher.getIntentForBroadcastReceiver(socialNotificationSummary.getVideo().getType(), socialNotificationSummary.getId(), socialNotificationSummary.getVideo().getId(), socialNotificationSummary.getVideo().getTitle(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getMDPTrackId(), 0, 0), null, messageData);
+        final Intent intentForBroadcastReceiver = DetailsActivityLauncher.getIntentForBroadcastReceiver(socialNotificationSummary.getVideoType(), socialNotificationSummary.getId(), socialNotificationSummary.getVideoId(), socialNotificationSummary.getVideoTitle(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getMDPTrackId(), 0, 0), null, messageData);
         NotificationUtils.addNotificationSourceToIntent(intentForBroadcastReceiver);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837688, context.getString(2131493394), PendingIntent.getBroadcast(context.getApplicationContext(), n, intentForBroadcastReceiver, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837688, context.getString(2131493378), PendingIntent.getBroadcast(context.getApplicationContext(), n, intentForBroadcastReceiver, 134217728)));
         final Intent sayThanksIntent = SendThanksToSocialNotificationActionHandler.getSayThanksIntent(context, socialNotificationSummary.getId(), socialNotificationSummary.getStoryId(), true, messageData);
         NotificationUtils.addNotificationSourceToIntent(sayThanksIntent);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837740, context.getString(2131493395), PendingIntent.getBroadcast(context.getApplicationContext(), n, sayThanksIntent, 134217728)));
-        final Intent coldStartIntent = PlayerActivity.createColdStartIntent(socialNotificationSummary.getId(), socialNotificationSummary.getVideo().getId(), socialNotificationSummary.getVideo().getType(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getPlayerTrackId(), 0, 0), messageData);
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837738, context.getString(2131493379), PendingIntent.getBroadcast(context.getApplicationContext(), n, sayThanksIntent, 134217728)));
+        final Intent coldStartIntent = PlayerActivity.createColdStartIntent(socialNotificationSummary.getId(), socialNotificationSummary.getVideoId(), socialNotificationSummary.getVideoType(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getPlayerTrackId(), 0, 0), messageData);
         NotificationUtils.addNotificationSourceToIntent(coldStartIntent);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837699, context.getString(2131493396), PendingIntent.getBroadcast(context.getApplicationContext(), n, coldStartIntent, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837697, context.getString(2131493380), PendingIntent.getBroadcast(context.getApplicationContext(), n, coldStartIntent, 134217728)));
     }
     
     @Override
     protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         String s;
         if (StringUtils.isEmpty(socialNotificationSummary.getMessageString())) {
-            s = context.getResources().getString(2131493377);
+            s = context.getResources().getString(2131493360);
         }
         else {
             s = "\"" + socialNotificationSummary.getMessageString() + "\"";
@@ -73,10 +73,10 @@ public class SocialVideoRecommendation extends SocialNotification
     }
     
     @Override
-    public void initView(final View view, final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
+    public void initView(final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         boolean enabled = true;
-        super.initView(view, notificationViewHolder, socialNotificationSummary, context);
-        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493381, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
+        super.initView(notificationViewHolder, socialNotificationSummary, context);
+        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493364, new Object[] { "" })));
         if (notificationViewHolder.getLeftButton() != null) {
             notificationViewHolder.getLeftButton().setVisibility(0);
             final Button leftButton = notificationViewHolder.getLeftButton();
@@ -87,10 +87,10 @@ public class SocialVideoRecommendation extends SocialNotification
             final Button leftButton2 = notificationViewHolder.getLeftButton();
             int text;
             if (socialNotificationSummary.getWasThanked()) {
-                text = 2131493387;
+                text = 2131493370;
             }
             else {
-                text = 2131493386;
+                text = 2131493369;
             }
             leftButton2.setText(text);
         }

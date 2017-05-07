@@ -34,7 +34,7 @@ public class ServiceErrorsHandler
         if (!b) {
             updateDialog$Builder.setMessage(2131493006);
             updateDialog$Builder.setCancelable(false);
-            updateDialog$Builder.setNegativeButton(2131493123, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
+            updateDialog$Builder.setNegativeButton(2131493120, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
         }
         else {
             updateDialog$Builder.setMessage(2131493007);
@@ -50,7 +50,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
         switch (ServiceErrorsHandler$4.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
-                provideDialog(activity, activity.getString(2131493266) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131493258) + " (" + statusCode.getValue() + ")");
                 b = true;
                 return b;
             }
@@ -64,18 +64,18 @@ public class ServiceErrorsHandler
                 return handleAppUpdateNeeded(activity, true);
             }
             case 4: {
-                provideDialog(activity, activity.getString(2131493135));
+                provideDialog(activity, activity.getString(2131493132));
                 return true;
             }
             case 5:
             case 6: {
-                provideDialog(activity, activity.getString(2131493240));
+                provideDialog(activity, activity.getString(2131493232));
                 return true;
             }
             case 7:
             case 8:
             case 9: {
-                provideDialog(activity, activity.getString(2131493265) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131493257) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -71,22 +72,22 @@ class KubrickKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     private Drawable getBackroundResource(final View view) {
         switch (this.this$0.kidsColor) {
             default: {
-                return view.getResources().getDrawable(2130837770);
+                return view.getResources().getDrawable(2130837772);
             }
-            case 2131230894: {
-                return view.getResources().getDrawable(2130837774);
+            case 2131230892: {
+                return view.getResources().getDrawable(2130837776);
             }
-            case 2131230898: {
-                return view.getResources().getDrawable(2130837770);
-            }
-            case 2131230895: {
-                return view.getResources().getDrawable(2130837771);
-            }
-            case 2131230897: {
-                return view.getResources().getDrawable(2130837773);
+            case 2131230896: {
+                return view.getResources().getDrawable(2130837772);
             }
             case 2131230893: {
-                return view.getResources().getDrawable(2130837772);
+                return view.getResources().getDrawable(2130837773);
+            }
+            case 2131230895: {
+                return view.getResources().getDrawable(2130837775);
+            }
+            case 2131230891: {
+                return view.getResources().getDrawable(2130837774);
             }
         }
     }

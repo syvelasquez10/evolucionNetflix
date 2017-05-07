@@ -36,20 +36,8 @@ public final class Episode$Detail extends Video$Detail
         return this.availabilityDateMsg;
     }
     
-    public String getBaseUrl() {
-        return this.baseUrl;
-    }
-    
-    public String getBoxshotURL() {
-        return this.boxartUrl;
-    }
-    
     public int getEpisodeNumber() {
         return this.episodeNumber;
-    }
-    
-    public VideoType getErrorType() {
-        return this.errorType;
     }
     
     public String getId() {

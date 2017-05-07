@@ -9,7 +9,6 @@ import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
 import android.support.v7.widget.RecyclerView$Adapter;
-import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickVideoDetailsViewGroup;
@@ -29,6 +28,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$HeroSlideshow;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 

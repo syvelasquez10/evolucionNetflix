@@ -118,9 +118,9 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
         int n = 0;
         while (iterator.hasNext()) {
             final FriendForRecommendation friendForRecommendation = iterator.next();
-            final ViewGroup viewGroup = (ViewGroup)this.mLayoutInflater.inflate(2130903190, (ViewGroup)null);
+            final ViewGroup viewGroup = (ViewGroup)this.mLayoutInflater.inflate(2130903193, (ViewGroup)null);
             this.mFriendsAvatarLayout.addView((View)viewGroup, 0);
-            NetflixActivity.getImageLoader((Context)this.getActivity()).showImg((AdvancedImageView)viewGroup.findViewById(2131427791), friendForRecommendation.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, friendForRecommendation.getFriendProfile().getFullName(), ImageLoader$StaticImgConfig.DARK, true);
+            NetflixActivity.getImageLoader((Context)this.getActivity()).showImg((AdvancedImageView)viewGroup.findViewById(2131427794), friendForRecommendation.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, friendForRecommendation.getFriendProfile().getFullName(), ImageLoader$StaticImgConfig.DARK, true);
             ++n;
             if (n == 3) {
                 break;
@@ -154,12 +154,12 @@ public class SendAsFacebookMessageDialog extends NetflixDialogFrag
     
     public Dialog onCreateDialog(final Bundle bundle) {
         this.mLayoutInflater = this.getActivity().getLayoutInflater();
-        final View inflate = this.mLayoutInflater.inflate(2130903189, (ViewGroup)null);
-        this.mFriendsAvatarLayout = (ViewGroup)inflate.findViewById(2131427813);
-        this.mDlgBodyTextView = (TextView)inflate.findViewById(2131427814);
-        (this.mDontaskCheckBox = (CheckBox)inflate.findViewById(2131427815)).setOnCheckedChangeListener((CompoundButton$OnCheckedChangeListener)new SendAsFacebookMessageDialog$1(this));
+        final View inflate = this.mLayoutInflater.inflate(2130903192, (ViewGroup)null);
+        this.mFriendsAvatarLayout = (ViewGroup)inflate.findViewById(2131427816);
+        this.mDlgBodyTextView = (TextView)inflate.findViewById(2131427817);
+        (this.mDontaskCheckBox = (CheckBox)inflate.findViewById(2131427818)).setOnCheckedChangeListener((CompoundButton$OnCheckedChangeListener)new SendAsFacebookMessageDialog$1(this));
         this.tryUpdateUI();
-        return (Dialog)new AlertDialog$Builder((Context)this.getActivity()).setPositiveButton(2131493003, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$3(this)).setNegativeButton(2131493373, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$2(this)).setView(inflate).setCancelable(false).create();
+        return (Dialog)new AlertDialog$Builder((Context)this.getActivity()).setPositiveButton(2131493003, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$3(this)).setNegativeButton(2131493356, (DialogInterface$OnClickListener)new SendAsFacebookMessageDialog$2(this)).setView(inflate).setCancelable(false).create();
     }
     
     @Override

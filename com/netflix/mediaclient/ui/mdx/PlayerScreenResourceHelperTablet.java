@@ -11,8 +11,8 @@ public final class PlayerScreenResourceHelperTablet extends PlayerScreenResource
     protected static final int TIMELINE_THUMB_OFFSET_IN_DIP = 16;
     
     PlayerScreenResourceHelperTablet() {
-        this.pause = 2130837851;
-        this.play = 2130837852;
+        this.pause = 2130837853;
+        this.play = 2130837854;
         this.timelineHeightInDip = 40;
         this.timelineHeightPaddingInDip = 2;
         this.timelineThumbOffsetInDip = 16;

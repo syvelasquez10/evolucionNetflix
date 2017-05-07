@@ -9,13 +9,14 @@ import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
-import com.netflix.model.leafs.Video$Summary;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$InQueue;
-import com.netflix.mediaclient.Log;
-import android.os.Parcel;
-import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
+import com.netflix.model.leafs.Video$Summary;
 import com.netflix.model.branches.FalkorVideo;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
+import android.os.Parcel;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import com.google.gson.annotations.SerializedName;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
@@ -29,11 +30,11 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     private boolean bWasRead;
     @SerializedName("isThanked")
     private boolean bWasThanked;
-    private FalkorVideo falkorVideo;
     @SerializedName("fromUser")
     private FriendProfile friendProfile;
     @SerializedName("id")
     private String id;
+    private boolean inQueue;
     @SerializedName("msgString")
     private String messageString;
     @SerializedName("nsaBoxartUrl")
@@ -50,8 +51,12 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     private String storyId;
     @SerializedName("timestamp")
     private long timestamp;
+    private String tvCardUrl;
     @SerializedName("msgType")
     private SocialNotificationSummary$NotificationTypes type;
+    private String videoId;
+    private String videoTitle;
+    private VideoType videoType;
     
     static {
         CREATOR = (Parcelable$Creator)new SocialNotificationSummary$1();
@@ -79,6 +84,14 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         this.nsaSeasonIndex = Integer.valueOf(array[12]);
         this.nsaSeasonsCount = Integer.valueOf(array[13]);
         this.nsaBoxartUrl = array[14];
+        this.videoId = array[15];
+        this.videoType = VideoType.create(array[16]);
+        this.videoTitle = array[17];
+        this.tvCardUrl = array[18];
+        this.inQueue = Boolean.valueOf(array[19]);
+        if (StringUtils.isNotEmpty(array[20])) {
+            this.showType = SocialNotificationSummary$ShowTypes.valueOf(array[20]);
+        }
     }
     
     public SocialNotificationSummary(final String id, final String storyId) {
@@ -118,52 +131,45 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (this.getClass() != o.getClass()) {
-            return false;
-        }
-        final SocialNotificationSummary socialNotificationSummary = (SocialNotificationSummary)o;
-        if (this.id == null) {
-            if (socialNotificationSummary.id != null) {
+        if (this != o) {
+            if (o == null) {
                 return false;
             }
-        }
-        else if (!this.id.equals(socialNotificationSummary.id)) {
-            return false;
-        }
-        if (this.bWasRead != socialNotificationSummary.bWasRead) {
-            return false;
-        }
-        if (this.bWasThanked != socialNotificationSummary.bWasThanked) {
-            return false;
-        }
-        if (this.falkorVideo == null) {
-            if (socialNotificationSummary.falkorVideo != null) {
+            if (this.getClass() != o.getClass()) {
                 return false;
             }
-        }
-        else {
-            final Video$InQueue video$InQueue = (Video$InQueue)this.falkorVideo.get("inQueue");
-            if (video$InQueue == null) {
-                if (socialNotificationSummary.falkorVideo != null && socialNotificationSummary.falkorVideo.get("inQueue") != null) {
+            final SocialNotificationSummary socialNotificationSummary = (SocialNotificationSummary)o;
+            if (this.id == null) {
+                if (socialNotificationSummary.id != null) {
                     return false;
                 }
             }
-            else {
-                if (socialNotificationSummary.falkorVideo == null || socialNotificationSummary.falkorVideo.get("inQueue") == null) {
-                    return false;
-                }
-                if (video$InQueue.inQueue != ((Video$InQueue)socialNotificationSummary.falkorVideo.get("inQueue")).inQueue) {
-                    return false;
-                }
+            else if (!this.id.equals(socialNotificationSummary.id)) {
+                return false;
+            }
+            if (this.bWasRead != socialNotificationSummary.bWasRead) {
+                return false;
+            }
+            if (this.bWasThanked != socialNotificationSummary.bWasThanked) {
+                return false;
+            }
+            if (!StringUtils.safeEquals(this.videoId, socialNotificationSummary.videoId)) {
+                return false;
+            }
+            if (this.inQueue != socialNotificationSummary.inQueue) {
+                return false;
             }
         }
         return true;
+    }
+    
+    public void fillVideoDetails(final FalkorVideo falkorVideo) {
+        final Video$Summary video$Summary = (Video$Summary)falkorVideo.get("summary");
+        this.videoId = video$Summary.getId();
+        this.videoType = video$Summary.getType();
+        this.videoTitle = video$Summary.getTitle();
+        this.tvCardUrl = video$Summary.getTvCardUrl();
+        this.inQueue = ((Video$InQueue)falkorVideo.get("inQueue")).inQueue;
     }
     
     public FriendProfile getFriendProfile() {
@@ -175,19 +181,11 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     }
     
     public boolean getInQueueValue() {
-        if (this.falkorVideo != null) {
-            return ((Video$InQueue)this.falkorVideo.get("inQueue")).inQueue;
-        }
-        Log.e("SocialNotificationSummary", "Both values are null: falkorVideo and obsoleteInQueue!");
-        return false;
+        return this.inQueue;
     }
     
     public String getMessageString() {
         return this.messageString;
-    }
-    
-    public String getNSABoxartUrl() {
-        return this.nsaBoxartUrl;
     }
     
     public int getNSASeasonIndex() {
@@ -210,6 +208,13 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         return this.storyId;
     }
     
+    public String getTVCardUrl() {
+        if (StringUtils.isNotEmpty(this.tvCardUrl)) {
+            return this.tvCardUrl;
+        }
+        return this.nsaBoxartUrl;
+    }
+    
     public long getTimestamp() {
         return this.timestamp;
     }
@@ -218,8 +223,16 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         return this.type;
     }
     
-    public Video getVideo() {
-        return (Video$Summary)this.falkorVideo.get("summary");
+    public String getVideoId() {
+        return this.videoId;
+    }
+    
+    public String getVideoTitle() {
+        return this.videoTitle;
+    }
+    
+    public VideoType getVideoType() {
+        return this.videoType;
     }
     
     public boolean getWasRead() {
@@ -408,10 +421,6 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         }
     }
     
-    public void setVideo(final FalkorVideo falkorVideo) {
-        this.falkorVideo = falkorVideo;
-    }
-    
     public void setWasRead(final boolean bWasRead) {
         this.bWasRead = bWasRead;
     }
@@ -444,16 +453,13 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         array[12] = String.valueOf(this.nsaSeasonIndex);
         array[13] = String.valueOf(this.nsaSeasonsCount);
         array[14] = this.nsaBoxartUrl;
-        if (this.falkorVideo != null && this.falkorVideo.get("summary") != null) {
-            final Video$Summary video$Summary = (Video$Summary)this.falkorVideo.get("summary");
-            array[15] = video$Summary.horzDispUrl;
-            array[16] = video$Summary.id;
-            array[17] = video$Summary.title;
-            array[18] = video$Summary.type;
-            array[19] = video$Summary.boxartUrl;
-        }
-        if (this.falkorVideo != null && this.falkorVideo.get("inQueue") != null) {
-            array[20] = String.valueOf(((Video$InQueue)this.falkorVideo.get("inQueue")).inQueue);
+        array[15] = this.videoId;
+        array[16] = this.videoType.getValue();
+        array[17] = this.videoTitle;
+        array[18] = this.tvCardUrl;
+        array[19] = String.valueOf(this.inQueue);
+        if (this.showType != null) {
+            array[20] = this.showType.name();
         }
         parcel.writeStringArray(array);
     }

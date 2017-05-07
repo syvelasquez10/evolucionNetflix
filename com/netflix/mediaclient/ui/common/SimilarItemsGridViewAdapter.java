@@ -24,7 +24,17 @@ public class SimilarItemsGridViewAdapter extends RecyclerViewHeaderAdapter
     }
     
     private int clipCountToCompleteRows() {
-        return this.getItemCountExcludingHeaders() / this.numColumns * this.numColumns + this.getHeaderViewsCount();
+        final int n = this.getItemCountExcludingHeadersAndFooters() / this.numColumns;
+        final int numColumns = this.numColumns;
+        final int headerViewsCount = this.getHeaderViewsCount();
+        int n2;
+        if (this.hasFooter()) {
+            n2 = 1;
+        }
+        else {
+            n2 = 0;
+        }
+        return n2 + (headerViewsCount + n * numColumns);
     }
     
     @Override

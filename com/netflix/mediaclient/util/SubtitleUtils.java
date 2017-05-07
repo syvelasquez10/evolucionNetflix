@@ -50,7 +50,7 @@ public final class SubtitleUtils
     public static final int SUBTITITLE_IMAGE_1080P_HEIGHT = 1080;
     public static final int SUBTITITLE_IMAGE_1080P_WIDTH = 1920;
     public static final int SUBTITITLE_IMAGE_480P_HEIGHT = 480;
-    public static final int SUBTITITLE_IMAGE_480P_WIDTH = 640;
+    public static final int SUBTITITLE_IMAGE_480P_WIDTH = 853;
     public static final int SUBTITITLE_IMAGE_720P_HEIGHT = 720;
     public static final int SUBTITITLE_IMAGE_720P_WIDTH = 1280;
     private static final String TAG = "nf_subtitles_render";
@@ -399,7 +399,27 @@ public final class SubtitleUtils
     }
     
     public static int getSubtitleImageMaxHeight(final Context context) {
-        return 720;
+        final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        if (Log.isLoggable()) {
+            Log.d("nf_subtitles_render", "Display w/h: " + displayMetrics.widthPixels + "/" + displayMetrics.heightPixels);
+        }
+        int n;
+        if (displayMetrics.widthPixels > displayMetrics.heightPixels) {
+            n = displayMetrics.heightPixels;
+        }
+        else {
+            n = displayMetrics.widthPixels;
+        }
+        if (n >= 1080) {
+            Log.d("nf_subtitles_render", "Using 1080P");
+            return 1080;
+        }
+        if (n >= 720) {
+            Log.d("nf_subtitles_render", "Using 720P");
+            return 720;
+        }
+        Log.d("nf_subtitles_render", "Using 480P");
+        return 480;
     }
     
     public static int getSubtitleImageMaxWidth(final Context context) {
@@ -407,7 +427,23 @@ public final class SubtitleUtils
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Display w/h: " + displayMetrics.widthPixels + "/" + displayMetrics.heightPixels);
         }
-        return 1280;
+        int n;
+        if (displayMetrics.widthPixels > displayMetrics.heightPixels) {
+            n = displayMetrics.widthPixels;
+        }
+        else {
+            n = displayMetrics.heightPixels;
+        }
+        if (n >= 1920) {
+            Log.d("nf_subtitles_render", "Using 1080P");
+            return 1920;
+        }
+        if (n >= 1280) {
+            Log.d("nf_subtitles_render", "Using 720P");
+            return 1280;
+        }
+        Log.d("nf_subtitles_render", "Using 480P");
+        return 853;
     }
     
     public static Integer getTextColor(final TextStyle textStyle) {

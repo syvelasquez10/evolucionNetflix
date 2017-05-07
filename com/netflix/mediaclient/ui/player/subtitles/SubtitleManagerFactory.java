@@ -27,10 +27,10 @@ public final class SubtitleManagerFactory
         String string = "";
         final Context context = subtitleManager.getContext();
         if (subtitleManager instanceof EnhancedSubtitleManager) {
-            string = context.getString(2131493287);
+            string = context.getString(2131493410);
         }
         else if (subtitleManager instanceof ImageBasedSubtitleManager) {
-            return context.getString(2131493288);
+            return context.getString(2131493411);
         }
         return string;
     }

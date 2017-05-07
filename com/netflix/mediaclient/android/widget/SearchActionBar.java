@@ -100,7 +100,7 @@ public class SearchActionBar extends NetflixActionBar
             return;
         }
         this.searchView.setImeOptions(33554435);
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493200));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493192));
         this.searchView.setInputType(8192);
         this.searchView.setQueryRefinementEnabled(true);
         this.searchView.setSubmitButtonEnabled(false);
@@ -136,7 +136,7 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getActiveSearchIconResId() {
-        return 2130837729;
+        return 2130837727;
     }
     
     protected Integer getSearchCloseButtonTint() {
@@ -144,11 +144,11 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130837882;
+        return 2130837885;
     }
     
     protected int getSearchViewRightBgResId() {
-        return 2130837884;
+        return 2130837887;
     }
     
     protected int getSearchViewTextColorResId() {

@@ -19,9 +19,10 @@ import android.content.IntentFilter;
 import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -121,6 +122,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
                 this.getContext().startActivity(ProfileSelectionActivity.createStartIntentSingleTop(this.getContext()));
             }
         }
+    }
+    
+    private void clearNonMemberInfoFromPref(final Context context) {
+        PreferenceUtils.removePref(context, "nrm_netflix_id");
     }
     
     private void doLoginComplete() {
@@ -262,6 +267,20 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         return user;
     }
     
+    private void recordNrmInfo() {
+        if (!this.isAccountDataAvailable()) {
+            final String stringPref = PreferenceUtils.getStringPref(this.getContext(), "nrm_netflix_id", "");
+            if (!StringUtils.isNotEmpty(stringPref)) {
+                Log.d("nf_service_useragent", "nrmNetflixId is null - skip reporting");
+                return;
+            }
+            if (Log.isLoggable()) {
+                Log.d("nf_service_useragent", String.format("nrmNetflixId: %s", stringPref));
+            }
+            this.launchWebTask(new UserAgent$RecordNonMemberInfo(this, stringPref));
+        }
+    }
+    
     private void registerAccountErrorReceiver() {
         LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(this.mAccountErrorReceiver, new IntentFilter("com.netflix.mediaclient.intent.action.DELETED_PROFILE"));
     }
@@ -394,6 +413,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     public void fetchAccountData() {
         Log.d("nf_service_useragent", "fetch account level config data");
         this.getConfigurationAgent().fetchAccountConfigData(this.configDataCallback);
+        this.recordNrmInfo();
     }
     
     public void fetchAvailableAvatarsList(final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
@@ -628,6 +648,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         }
         this.mLogoutCallback = mLogoutCallback;
         this.getService().getClientLogging().onUserLogout();
+        this.clearNonMemberInfoFromPref(this.getContext());
         if (!this.isUserLoggedIn()) {
             this.notifyLogoutComplete(StatusCode.OK);
             return;

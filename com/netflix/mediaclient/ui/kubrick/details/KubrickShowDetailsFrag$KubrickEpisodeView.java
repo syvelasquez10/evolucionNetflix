@@ -12,19 +12,20 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.annotation.SuppressLint;
+import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.RecyclerView$Adapter;
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import android.view.LayoutInflater;
 import android.os.Bundle;
-import com.netflix.mediaclient.Log;
 import android.widget.AdapterView$OnItemSelectedListener;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
@@ -68,7 +69,7 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     }
     
     private void adjustHeight() {
-        this.image.getLayoutParams().height = (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296452) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        this.image.getLayoutParams().height = (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296449) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     private void updateRuntime(final EpisodeDetails episodeDetails) {
@@ -78,13 +79,13 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
                 return;
             }
             this.runtime.setVisibility(0);
-            this.runtime.setText((CharSequence)this.getResources().getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
+            this.runtime.setText((CharSequence)this.getResources().getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
         }
     }
     
     @Override
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
-        return this.getResources().getString(2131493245, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        return this.getResources().getString(2131493237, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
     }
     
     protected void disablePlay() {
@@ -112,10 +113,10 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     @Override
     protected void findViews() {
         super.findViews();
-        this.image = (AdvancedImageView)this.findViewById(2131427551);
-        this.runtime = (TextView)this.findViewById(2131427554);
-        this.progressBarBackground = this.findViewById(2131427552);
-        this.unavailable = this.findViewById(2131427553);
+        this.image = (AdvancedImageView)this.findViewById(2131427552);
+        this.runtime = (TextView)this.findViewById(2131427555);
+        this.progressBarBackground = this.findViewById(2131427553);
+        this.unavailable = this.findViewById(2131427554);
     }
     
     @Override

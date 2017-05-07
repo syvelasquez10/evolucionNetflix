@@ -28,7 +28,7 @@ public class ShowDetailsFrag$ShowDetailsStringProvider implements VideoDetailsVi
         if (StringUtils.isEmpty(this.details.getCreators())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText(this.context, 2131493171, this.details.getCreators());
+        return StringUtils.createBoldLabeledText(this.context, 2131493163, this.details.getCreators());
     }
     
     @Override
@@ -36,11 +36,11 @@ public class ShowDetailsFrag$ShowDetailsStringProvider implements VideoDetailsVi
         if (StringUtils.isEmpty(this.details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText(this.context, 2131493172, this.details.getGenres());
+        return StringUtils.createBoldLabeledText(this.context, 2131493164, this.details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText(this.context, 2131493170, this.details.getActors());
+        return StringUtils.createBoldLabeledText(this.context, 2131493162, this.details.getActors());
     }
 }

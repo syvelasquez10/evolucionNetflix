@@ -47,6 +47,11 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public String getCopyright() {
+        return "© 2015 Test";
+    }
+    
+    @Override
     public String getDirectors() {
         return "Director 1, Director 2";
     }

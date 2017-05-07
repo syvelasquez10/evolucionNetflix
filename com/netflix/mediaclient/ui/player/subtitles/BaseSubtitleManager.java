@@ -8,11 +8,16 @@ import com.netflix.mediaclient.util.SubtitleUtils;
 import java.util.Comparator;
 import com.netflix.mediaclient.util.ViewUtils$ViewComparator;
 import java.util.Iterator;
-import android.content.Context;
+import android.app.Activity;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import java.util.Collections;
 import java.util.ArrayList;
+import android.view.View;
 import com.netflix.mediaclient.ui.player.PlayScreen;
 import java.util.List;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
@@ -22,15 +27,26 @@ import com.netflix.mediaclient.ui.player.PlayerActivity;
 
 abstract class BaseSubtitleManager implements SubtitleManager
 {
+    protected static final int H_REGION_PADDING = 5;
+    protected static final int PLAYER_PADDING_PHONE = 46;
+    protected static final int PLAYER_PADDING_TABLET = 59;
     protected static final String TAG = "nf_subtitles_render";
+    protected static final int TOP_PADDING = 5;
+    protected static final int V_REGION_PADDING = 1;
     protected PlayerActivity mActivity;
+    protected int mBottomPanelHeight;
+    protected int mBottomPanelPadding;
     protected RelativeLayout mDisplayArea;
     protected Handler mHandler;
+    protected int mHorizontalRegionPadding;
     protected SubtitleParser mParser;
     protected List<Runnable> mPendingActions;
     protected PlayScreen mScreen;
     protected Integer mSubtitleParserId;
+    protected View mTopPanel;
+    protected int mTopPanelPadding;
     protected int mTransparent;
+    protected int mVerticalRegionPadding;
     
     BaseSubtitleManager(final PlayerActivity mActivity) {
         this.mPendingActions = Collections.synchronizedList(new ArrayList<Runnable>());
@@ -44,10 +60,23 @@ abstract class BaseSubtitleManager implements SubtitleManager
         }
         Log.v("nf_subtitles_render", "Create handler.");
         this.mHandler = new Handler();
-        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131427702);
+        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131427706);
         if (this.mDisplayArea.getWidth() == 0 || this.mDisplayArea.getHeight() == 0) {
             Log.w("nf_subtitles_render", "Display area w/h are 0, display area is not visible yet!");
         }
+        this.mHorizontalRegionPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
+        this.mVerticalRegionPadding = AndroidUtils.dipToPixels((Context)mActivity, 1);
+        int n;
+        if (mActivity.isTablet()) {
+            n = 59;
+        }
+        else {
+            n = 46;
+        }
+        this.mBottomPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, n);
+        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131296517);
+        this.mTopPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
+        this.mTopPanel = mActivity.findViewById(2131427714);
     }
     
     protected abstract Runnable createRunnable(final SubtitleBlock p0, final boolean p1);
@@ -55,6 +84,25 @@ abstract class BaseSubtitleManager implements SubtitleManager
     @Override
     public Context getContext() {
         return (Context)this.mActivity;
+    }
+    
+    protected int getDisplayAreaMarginBottom() {
+        if (DeviceUtils.hasHardwareNavigationKeys() || ViewUtils.isNavigationBarRightOfContent(this.mActivity)) {
+            return this.mBottomPanelHeight + this.mBottomPanelPadding;
+        }
+        if (ViewUtils.isNavigationBarBelowContent(this.mActivity)) {
+            return this.mBottomPanelHeight + this.mBottomPanelPadding + ViewUtils.getNavigationBarHeight((Context)this.mActivity, false);
+        }
+        return this.mBottomPanelHeight + this.mBottomPanelPadding;
+    }
+    
+    protected int getDisplayAreaMarginTop() {
+        final int statusBarHeight = ViewUtils.getStatusBarHeight((Context)this.mActivity);
+        if (this.mTopPanel == null) {
+            Log.w("nf_subtitles_render", "Top panel is null");
+            return statusBarHeight + this.mTopPanelPadding;
+        }
+        return statusBarHeight + (this.mTopPanel.getHeight() + this.mTopPanelPadding);
     }
     
     protected void handleDelayedSubtitleBlocks(final List<SubtitleBlock> list, final boolean b) {
@@ -128,4 +176,6 @@ abstract class BaseSubtitleManager implements SubtitleManager
         }
         return b;
     }
+    
+    protected abstract void removeVisibleSubtitleBlocks(final boolean p0);
 }

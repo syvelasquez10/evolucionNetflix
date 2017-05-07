@@ -26,7 +26,7 @@ public final class AlertDialogFactory
             string = context.getString(2131493003);
         }
         if (string2 == null) {
-            string2 = context.getString(2131493123);
+            string2 = context.getString(2131493120);
         }
         if (handler != null) {
             updateDialog$Builder.setPositiveButton(string, (DialogInterface$OnClickListener)new AlertDialogFactory$1(runnable, handler));

@@ -16,21 +16,22 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.annotation.SuppressLint;
+import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.RecyclerView$Adapter;
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import android.view.LayoutInflater;
 import android.os.Bundle;
+import android.widget.AdapterView$OnItemSelectedListener;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
-import android.widget.AdapterView$OnItemSelectedListener;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.support.v7.widget.RecyclerView;
@@ -73,6 +74,7 @@ class KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback extend
     
     @Override
     public void onEpisodeDetailsFetched(final EpisodeDetails epDetails, final Status status) {
+        boolean b = true;
         super.onEpisodeDetailsFetched(epDetails, status);
         if (status.isError()) {
             Log.w("KubrickShowDetailsFrag", "Error status code fetching data - showing errors view");
@@ -86,24 +88,19 @@ class KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback extend
         }
         this.this$1.epDetails = epDetails;
         this.this$1.updateSynopsis = true;
-        if (epDetails != null) {
-            if (epDetails.getPlayable().getPlayableBookmarkPosition() > 0) {
-                this.this$1.this$0.hasBookmark = true;
-            }
-            else {
-                this.this$1.this$0.hasBookmark = false;
-            }
+        final int playableBookmarkPosition = epDetails.getPlayable().getPlayableBookmarkPosition();
+        final KubrickShowDetailsFrag this$0 = this.this$1.this$0;
+        if (playableBookmarkPosition <= 0) {
+            b = false;
         }
-        else {
-            this.this$1.this$0.hasBookmark = false;
-        }
-        if (!this.this$1.this$0.hasBookmark) {
-            this.updateWithNoBookmark();
-        }
-        else {
+        this$0.hasBookmark = b;
+        if (this.this$1.this$0.hasBookmark) {
             this.updateWithBookmark();
         }
-        this.this$1.this$0.animateIn();
+        else {
+            this.updateWithNoBookmark();
+        }
+        this.this$1.this$0.showViews();
     }
     
     protected void updateWithNoBookmark() {

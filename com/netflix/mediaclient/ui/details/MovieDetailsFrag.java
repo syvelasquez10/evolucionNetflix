@@ -23,13 +23,14 @@ import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import android.content.Context;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
+import android.content.Context;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.util.StringUtils;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
@@ -48,6 +49,14 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     
     public MovieDetailsFrag() {
         this.isLoading = true;
+    }
+    
+    private void addCopyrightAsFooter(final MovieDetails movieDetails) {
+        if (StringUtils.isNotEmpty(movieDetails.getCopyright())) {
+            final CopyrightView create = CopyrightView.create(movieDetails, (Context)this.getActivity());
+            create.getView().setVisibility(0);
+            this.adapter.addFooterView(create.getView());
+        }
     }
     
     public static MovieDetailsFrag create(final String s) {
@@ -88,7 +97,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     
     @Override
     protected int getLayoutId() {
-        return 2130903178;
+        return 2130903181;
     }
     
     public int getScrollYOffset() {
@@ -164,7 +173,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131230830), 0, null);
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131230829), 0, null);
                 this.recyclerView.setOnScrollListener(onScrollListener);
                 return onScrollListener;
             }
@@ -206,6 +215,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         if (this.recyclerView != null) {
             this.recyclerView.setVisibility(0);
         }
+        this.addCopyrightAsFooter(movieDetails);
         this.scrollTo(this.targetScrollYOffset);
         this.targetScrollYOffset = 0;
     }

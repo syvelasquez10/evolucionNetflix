@@ -22,8 +22,8 @@ import android.media.NotProvisionedException;
 import com.netflix.mediaclient.StatusCode;
 import java.util.HashMap;
 import android.media.MediaDrm$KeyRequest;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.Log;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
@@ -42,6 +42,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     private static final UUID WIDEVINE_SCHEME;
     private static final byte[] init;
     private MediaDrm drm;
+    private boolean isWidevineL3;
     private DrmManager$DrmReadyCallback mCallback;
     private Context mContext;
     private String mCurrentAccountId;
@@ -58,9 +59,10 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         WIDEVINE_SCHEME = new UUID(-1301668207276963122L, -6645017420763422227L);
     }
     
-    WidevineDrmManager(final Context mContext, final ServiceAgent$UserAgentInterface mUser, final ErrorLogging mErrorLogging, final DrmManager$DrmReadyCallback mCallback) {
+    WidevineDrmManager(final Context mContext, final ServiceAgent$UserAgentInterface mUser, final ErrorLogging mErrorLogging, final DrmManager$DrmReadyCallback mCallback, final boolean b) {
         this.mWidevineProvisioned = new AtomicBoolean(false);
         this.nccpCryptoFactoryCryptoSession = new WidevineDrmManager$CryptoSession(null);
+        this.isWidevineL3 = false;
         if (mCallback == null) {
             throw new IllegalArgumentException();
         }
@@ -68,7 +70,13 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         this.mUser = mUser;
         this.mErrorLogging = mErrorLogging;
         this.mContext = mContext;
-        (this.drm = new MediaDrm(WidevineDrmManager.WIDEVINE_SCHEME)).setOnEventListener((MediaDrm$OnEventListener)this);
+        this.drm = new MediaDrm(WidevineDrmManager.WIDEVINE_SCHEME);
+        if (b) {
+            Log.d(WidevineDrmManager.TAG, "Setting security level to L3");
+            this.drm.setPropertyString("securityLevel", "L3");
+            this.isWidevineL3 = true;
+        }
+        this.drm.setOnEventListener((MediaDrm$OnEventListener)this);
         this.mKeyIdsMap = new AccountKeyMap(this.mContext);
         this.showProperties();
         if (this.isWidevinePluginChanged()) {
@@ -126,12 +134,12 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     
     private boolean createNccpCryptoFactoryDrmSession() {
         while (true) {
-            Label_0146: {
+            Label_0148: {
                 try {
                     this.nccpCryptoFactoryCryptoSession.sessionId = this.drm.openSession();
                     if (Log.isLoggable()) {
                         if (this.nccpCryptoFactoryCryptoSession.sessionId == null) {
-                            break Label_0146;
+                            break Label_0148;
                         }
                         Log.d(WidevineDrmManager.TAG, "Device is provisioned. NCCP crypto factory session ID: " + new String(this.nccpCryptoFactoryCryptoSession.sessionId));
                     }
@@ -186,11 +194,11 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         return "HmacSHA256";
     }
     
-    public static String getMediaDrmSecurityLevels() {
+    public static String getMediaDrmMaxSecurityLevel() {
         try {
             final MediaDrm mediaDrm = new MediaDrm(WidevineDrmManager.WIDEVINE_SCHEME);
             final String propertyString = mediaDrm.getPropertyString("securityLevel");
-            Log.d(WidevineDrmManager.TAG, "Widevine securityLevel [" + propertyString + "]");
+            Log.d(WidevineDrmManager.TAG, "Widevine default securityLevel [" + propertyString + "]");
             if (mediaDrm != null) {
                 mediaDrm.release();
             }
@@ -251,7 +259,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                             new BackgroundTask().execute(new WidevineDrmManager$3(this));
                             final Intent intent = new Intent("com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR");
                             intent.putExtra("status", statusCode.getValue());
-                            intent.putExtra("message_id", 2131493392);
+                            intent.putExtra("message_id", 2131493376);
                             LocalBroadcastManager.getInstance(this.mContext).sendBroadcast(intent);
                         }
                         return;
@@ -426,19 +434,24 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     }
     
     public String getDeviceType() {
-        String propertyString;
+        String s;
         if (this.drm == null) {
             Log.e(WidevineDrmManager.TAG, "Session MediaDrm is null! It should NOT happen!");
-            propertyString = null;
+            s = null;
         }
         else {
-            final String s = propertyString = this.drm.getPropertyString("systemId");
+            String s3;
+            final String s2 = s3 = this.drm.getPropertyString("systemId");
+            if (this.isWidevineL3) {
+                s3 = s2 + "=L3";
+            }
+            s = s3;
             if (Log.isLoggable()) {
-                Log.d(WidevineDrmManager.TAG, "MediaDrm system ID is: " + s);
-                return s;
+                Log.d(WidevineDrmManager.TAG, "MediaDrm system ID is: " + s3);
+                return s3;
             }
         }
-        return propertyString;
+        return s;
     }
     
     public int getDrmType() {
@@ -533,9 +546,9 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     }
     
     boolean updateNccpSessionKeyResponse(final byte[] array, final byte[] array2, final byte[] array3, final String s) {
+    Label_0042_Outer:
         while (true) {
             boolean b = false;
-        Label_0057_Outer:
             while (true) {
                 while (true) {
                     final byte[] array4;
@@ -545,8 +558,6 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.d(WidevineDrmManager.TAG, "Update key response for account " + s);
                             }
                             break Label_0189;
-                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
-                            return b;
                             try {
                                 final byte[] pendingSessionId = this.nccpCryptoFactoryCryptoSession.pendingSessionId;
                                 if (pendingSessionId != null) {
@@ -568,14 +579,17 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
                                 this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
+                            return b;
+                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
+                            return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {
-                        continue;
+                        continue Label_0042_Outer;
                     }
                     break;
                 }
-                continue Label_0057_Outer;
+                continue;
             }
         }
     }

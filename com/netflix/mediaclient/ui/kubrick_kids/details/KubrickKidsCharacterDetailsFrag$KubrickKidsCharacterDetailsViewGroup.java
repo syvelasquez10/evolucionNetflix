@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -41,18 +42,21 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
+import android.widget.ImageView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickVideoDetailsViewGroup;
 
 class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extends KubrickVideoDetailsViewGroup
 {
     AdvancedImageView characterView;
+    ImageView playView;
     final /* synthetic */ KubrickKidsCharacterDetailsFrag this$0;
     
     public KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup(final KubrickKidsCharacterDetailsFrag this$0, final Context context) {
         this.this$0 = this$0;
         super(context);
         this.setupViews();
+        this.setupPlayButton();
     }
     
     private Drawable getBackgroundResource() {
@@ -60,42 +64,77 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
             default: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837566);
             }
-            case 2131230894: {
+            case 2131230892: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837571);
             }
-            case 2131230898: {
+            case 2131230896: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837566);
             }
-            case 2131230895: {
+            case 2131230893: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837568);
             }
-            case 2131230897: {
+            case 2131230895: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837570);
             }
-            case 2131230893: {
+            case 2131230891: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837569);
             }
         }
     }
     
+    private void setupPlayButton() {
+        if (this.playView == null) {
+            return;
+        }
+        int imageResource = 0;
+        switch (this.this$0.kidsColor) {
+            default: {
+                imageResource = 2130837576;
+                break;
+            }
+            case 2131230892: {
+                imageResource = 2130837580;
+                break;
+            }
+            case 2131230896: {
+                imageResource = 2130837575;
+                break;
+            }
+            case 2131230893: {
+                imageResource = 2130837577;
+                break;
+            }
+            case 2131230895: {
+                imageResource = 2130837579;
+                break;
+            }
+            case 2131230891: {
+                imageResource = 2130837578;
+                break;
+            }
+        }
+        this.playView.setImageResource(imageResource);
+    }
+    
     private void setupViews() {
         final int detailsPageContentWidth = KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity());
-        final int height = (int)(detailsPageContentWidth * 0.5625f);
+        final int n = (int)(detailsPageContentWidth * 0.5625f);
         this.getBackgroundImage().getLayoutParams().width = detailsPageContentWidth;
-        if (DeviceUtils.isLandscape(this.getContext())) {
-            this.getBackgroundImage().getLayoutParams().height = (int)(height * 0.75f);
-            final ViewGroup$LayoutParams layoutParams = this.characterView.getLayoutParams();
-            final ViewGroup$LayoutParams layoutParams2 = this.characterView.getLayoutParams();
-            final int n = (int)(height * 0.75f);
-            layoutParams2.width = n;
-            layoutParams.height = n;
+        int height = n;
+        if (DeviceUtils.getScreenAspectRatio(this.getContext()) > 1.6f) {
+            float n2;
+            if (DeviceUtils.isLandscape(this.getContext())) {
+                n2 = n * 0.75f;
+            }
+            else {
+                n2 = n * 1.1f;
+            }
+            height = (int)n2;
         }
-        else {
-            this.getBackgroundImage().getLayoutParams().height = height;
-            final ViewGroup$LayoutParams layoutParams3 = this.characterView.getLayoutParams();
-            this.characterView.getLayoutParams().width = height;
-            layoutParams3.height = height;
-        }
+        this.getBackgroundImage().getLayoutParams().height = height;
+        final ViewGroup$LayoutParams layoutParams = this.characterView.getLayoutParams();
+        this.characterView.getLayoutParams().width = height;
+        layoutParams.height = height;
         this.getBackgroundImage().setBackground(this.getBackgroundResource());
         this.getHeroImage().getLayoutParams().width = detailsPageContentWidth / 2;
         this.getHeroImage().getLayoutParams().height = height / 2;
@@ -118,6 +157,7 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
     protected void findViews() {
         super.findViews();
         this.characterView = (AdvancedImageView)this.findViewById(2131427531);
+        this.playView = (ImageView)this.findViewById(2131427535);
     }
     
     @Override
@@ -130,7 +170,7 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
             return;
         }
         final String storyUrl = kidsCharacterDetails.getStoryUrl();
-        NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.horzDispImg, storyUrl, IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131493182), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
+        NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.horzDispImg, storyUrl, IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131493174), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
         this.horzDispImg.setTag((Object)storyUrl);
     }
     
@@ -142,7 +182,7 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
     
     protected void updateCharacterImage() {
         if (this.characterView != null) {
-            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.characterView, this.this$0.kidsCharacterDetails.getSquareUrl(), IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131493182), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
+            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.characterView, this.this$0.kidsCharacterDetails.getSquareUrl(), IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131493174), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
         }
     }
 }

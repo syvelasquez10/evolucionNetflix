@@ -237,7 +237,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             Log.v("BillboardView", "updating billboard, title: " + billboard.getTitle() + ", story url: " + billboard.getStoryUrl());
         }
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493182), billboard.getTitle());
+        final String format = String.format(this.getResources().getString(2131493174), billboard.getTitle());
         this.setContentDescription((CharSequence)format);
         if (billboard.getSocialBadge() != null && SocialUtils.isNotificationsFeatureSupported((NetflixActivity)this.getContext()) && StringUtils.isNotEmpty(billboard.getSocialBadge().getFullName())) {
             n = 1;
@@ -259,7 +259,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             this.friendAvatar.setVisibility(0);
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.friendAvatar, billboard.getSocialBadge().getImageUrl(), IClientLogging$AssetType.merchStill, format, ImageLoader$StaticImgConfig.DARK, true, 1);
             this.friendRecommendationText.setVisibility(0);
-            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131493397, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
+            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131493381, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
             this.mStoryId = billboard.getSocialBadge().getStoryId();
         }
         if (this.showArtworkOnly) {

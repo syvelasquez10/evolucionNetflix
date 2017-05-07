@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.experience;
 
 import java.util.HashMap;
 import java.io.Serializable;
+import com.crittercism.app.Crittercism;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.content.Context;
@@ -239,7 +240,7 @@ public enum BrowseExperience implements IExperience
         
         @Override
         public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return new StandardSlidingMenu(netflixActivity, drawerLayout, false);
+            return new StandardSlidingMenu(netflixActivity, drawerLayout, true);
         }
         
         @Override
@@ -342,6 +343,10 @@ public enum BrowseExperience implements IExperience
             }
             Log.v("BrowseExperience", String.format("Experience updated to: %s, profile name: %s, is kids profile: %s, USE_PRODUCTION_KUBRICK: %s", currExperience, firstName, value, false));
         }
+        if (Log.isLoggable()) {
+            Log.i("BrowseExperience", "Setting Crittercism username: " + String.valueOf(BrowseExperience.currExperience));
+        }
+        Crittercism.setUsername(String.valueOf(BrowseExperience.currExperience));
     }
     
     public static boolean shouldLoadExtraCharacterLeaves() {

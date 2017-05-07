@@ -12,6 +12,7 @@ import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import java.util.Iterator;
 import java.util.Collection;
 import com.netflix.mediaclient.Log;
@@ -31,6 +32,7 @@ public class PresentationRequest
     public static final String APPLICATION_NAME = "application_name";
     public static final String APPLICATION_VER = "application_v";
     public static final String APP_NAME_VAL = "andorid";
+    public static final String APP_NAME_VAL_KUBRICK = "android/kubrick";
     public static final String COUNTRY = "country";
     protected static final boolean DEBUG = false;
     public static final String DEVICE_TYPE = "device_type";
@@ -55,12 +57,10 @@ public class PresentationRequest
     
     public PresentationRequest() {
         this.events = new ArrayList<PresentationEvent>();
-        this.app_name = "andorid";
     }
     
     public PresentationRequest(final Context context, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface) {
         this.events = new ArrayList<PresentationEvent>();
-        this.app_name = "andorid";
         this.context = context;
         this.esn = serviceAgent$ConfigurationAgentInterface.getEsnProvider().getEsn();
         this.country = serviceAgent$UserAgentInterface.getGeoCountry();
@@ -68,6 +68,7 @@ public class PresentationRequest
         this.app_ver = AndroidManifestUtils.getVersion(context);
         this.nrdp_ver = SecurityRepository.getNrdLibVersion();
         this.api = Integer.toString(AndroidUtils.getAndroidVersion());
+        this.app_name = this.getApplicationName(serviceAgent$ConfigurationAgentInterface);
     }
     
     private static void addToSlidingWindow(final LinkedList<PresentationEvent> list, final PresentationEvent presentationEvent, final int n) {
@@ -91,6 +92,13 @@ public class PresentationRequest
         }
         list2.addAll(list3);
         return (List<PresentationEvent>)list2;
+    }
+    
+    private String getApplicationName(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
+        if (BrowseExperience.isKubrick()) {
+            return "android/kubrick";
+        }
+        return "andorid";
     }
     
     private static int getNumPagesVisibileToUser(final Context context) {

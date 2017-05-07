@@ -65,8 +65,8 @@ class OldSlidingMenu$GenresListAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903152, (ViewGroup)null);
-            inflate.setTag((Object)new OldSlidingMenu$Holder((TextView)inflate.findViewById(2131427686), inflate.findViewById(2131427687)));
+            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903155, (ViewGroup)null);
+            inflate.setTag((Object)new OldSlidingMenu$Holder((TextView)inflate.findViewById(2131427690), inflate.findViewById(2131427691)));
         }
         final OldSlidingMenu$Holder oldSlidingMenu$Holder = (OldSlidingMenu$Holder)inflate.getTag();
         final GenreList item = this.getItem(n);

@@ -96,9 +96,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131427567);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131427577);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131427569);
+        final TextView textView = (TextView)view.findViewById(2131427579);
         final Resources resources = this.activity.getResources();
         int n;
         if (BrowseExperience.isKubrickKids()) {
@@ -108,7 +108,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             n = 2131230840;
         }
         textView.setTextColor(resources.getColor(n));
-        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131427623));
+        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131427627));
     }
     
     private void fetchMoreData() {
@@ -254,11 +254,11 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getViewLayoutId() {
-        return 2130903129;
+        return 2130903132;
     }
     
     protected TextView initTitleView(final View view) {
-        final TextView textView = (TextView)view.findViewById(2131427568);
+        final TextView textView = (TextView)view.findViewById(2131427578);
         if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "Manipulating title padding, view: " + textView);
         }
@@ -294,6 +294,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     protected void onDataLoaded(final Status status) {
         if (this.mLoadingStatusCallback != null) {
             this.mLoadingStatusCallback.onDataLoaded(status);
+        }
+        if (this.activity != null) {
+            this.activity.onLoaded(status);
         }
     }
     
@@ -361,7 +364,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final TextView title = baseLoLoMoAdapter$RowHolder.title;
         String text;
         if (t.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131493292);
+            text = this.activity.getString(2131493275);
         }
         else {
             text = t.getTitle();

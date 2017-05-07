@@ -5,21 +5,23 @@
 package com.netflix.mediaclient.ui.common;
 
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
 import android.view.View;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.Language;
+import android.app.Activity;
 import android.widget.BaseAdapter;
 
 public class LanguageSelector$AudioAdapter extends BaseAdapter
 {
+    private final Activity activity;
     private final Language language;
-    final /* synthetic */ LanguageSelector this$0;
     
-    public LanguageSelector$AudioAdapter(final LanguageSelector this$0, final Language language) {
-        this.this$0 = this$0;
+    public LanguageSelector$AudioAdapter(final Language language, final Activity activity) {
         this.language = language;
+        this.activity = activity;
     }
     
     public int getCount() {
@@ -38,7 +40,14 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Audio create row " + n);
-            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903122, viewGroup, false);
+            int n2;
+            if (BrowseExperience.isKubrick()) {
+                n2 = 2130903112;
+            }
+            else {
+                n2 = 2130903125;
+            }
+            inflate = this.activity.getLayoutInflater().inflate(n2, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();

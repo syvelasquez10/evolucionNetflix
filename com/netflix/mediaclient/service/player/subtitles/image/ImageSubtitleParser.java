@@ -9,7 +9,6 @@ import java.util.List;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.DataInputStream;
 import java.io.ByteArrayInputStream;
@@ -339,8 +338,8 @@ public class ImageSubtitleParser extends BaseSubtitleParser
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  30     43     102    105    Ljava/io/IOException;
-        //  47     65     135    141    Ljava/io/IOException;
+        //  30     43     102    105    Ljava/lang/Throwable;
+        //  47     65     135    141    Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 
@@ -440,20 +439,20 @@ public class ImageSubtitleParser extends BaseSubtitleParser
                             byteArrayInputStream.close();
                             return;
                         }
-                        catch (IOException ex) {
+                        catch (Throwable t) {
                             i = 1;
                         }
-                        final IOException ex;
+                        final Throwable t;
                         if (i != 0) {
-                            Log.e("nf_subtitles", "Failed to close segment indexes input stream", ex);
+                            Log.e("nf_subtitles", "Failed to close segment indexes input stream", t);
                             return;
                         }
-                        Log.e("nf_subtitles", "Failed to parse segment index", ex);
+                        Log.e("nf_subtitles", "Failed to parse segment index", t);
                         return;
                         Log.d("nf_subtitles", "Expected data, start parsing...");
                         continue Label_0272_Outer;
                     }
-                    catch (IOException ex) {
+                    catch (Throwable t) {
                         i = n;
                         continue;
                     }

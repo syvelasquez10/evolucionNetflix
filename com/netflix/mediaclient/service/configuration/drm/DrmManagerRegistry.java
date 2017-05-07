@@ -23,12 +23,19 @@ public final class DrmManagerRegistry
     private static final String NEXUS7_FLO_DEVICE = "flo";
     protected static final String TAG = "nf_drm";
     private static String currentDrmSystem;
-    private static boolean disableWidevine;
+    private static boolean enableWidevineL1;
+    private static boolean enableWidevineL3;
+    private static boolean enableWidevineL3_ABTest;
     private static DrmManager instance;
+    private static String mMaxSecurityLevel;
     private static boolean mPlayerRequiredAdaptivePlayback;
-    private static String mSecurityLevel;
     private static WidevineMediaDrmEngine mWidevineMediaDrmEngine;
     private static String previousDrmSystem;
+    private static boolean widevineInstanceL3;
+    
+    static {
+        DrmManagerRegistry.widevineInstanceL3 = false;
+    }
     
     private static void clearKeys(final String s) {
         getWidevineDrmManager().clearKeys(s);
@@ -39,36 +46,44 @@ public final class DrmManagerRegistry
     }
     
     public static DrmManager createDrmManager(Context instance, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface, final ErrorLogging errorLogging, final DrmManager$DrmReadyCallback drmManager$DrmReadyCallback) {
-        int androidVersion;
-        Label_0101_Outer:Label_0111_Outer:
+    Label_0197_Outer:
         while (true) {
             while (true) {
-                Label_0250: {
+                Label_0400: {
                     while (true) {
-                        synchronized (DrmManagerRegistry.class) {
-                            androidVersion = AndroidUtils.getAndroidVersion();
-                            DrmManagerRegistry.previousDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", "LEGACY");
-                            if (androidVersion >= 19) {
-                                DrmManagerRegistry.mSecurityLevel = WidevineDrmManager.getMediaDrmSecurityLevels();
-                                DrmManagerRegistry.mPlayerRequiredAdaptivePlayback = PlayerTypeFactory.isJPlayer2(PlayerTypeFactory.getCurrentType(instance));
-                            }
-                            while (true) {
+                    Label_0165:
+                        while (true) {
+                            final int androidVersion;
+                            synchronized (DrmManagerRegistry.class) {
+                                androidVersion = AndroidUtils.getAndroidVersion();
+                                DrmManagerRegistry.previousDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", "LEGACY");
+                                if (androidVersion >= 19) {
+                                    DrmManagerRegistry.mMaxSecurityLevel = WidevineDrmManager.getMediaDrmMaxSecurityLevel();
+                                    DrmManagerRegistry.mPlayerRequiredAdaptivePlayback = PlayerTypeFactory.isJPlayer2(PlayerTypeFactory.getCurrentType(instance));
+                                }
                                 while (true) {
                                     try {
-                                        DrmManagerRegistry.disableWidevine = serviceAgent$ConfigurationAgentInterface.isDisableWidevine();
-                                        if (androidVersion >= 18 && isWidevineDrmAllowed()) {
-                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, drmManager$DrmReadyCallback);
+                                        DrmManagerRegistry.enableWidevineL1 = serviceAgent$ConfigurationAgentInterface.isWidevineL1Enabled();
+                                        DrmManagerRegistry.enableWidevineL3 = serviceAgent$ConfigurationAgentInterface.isWidevineL3Enabled();
+                                        DrmManagerRegistry.enableWidevineL3_ABTest = serviceAgent$ConfigurationAgentInterface.isWidevineL3ABTestEnabled();
+                                        Log.d("nf_drm", "EnableWV L1: " + DrmManagerRegistry.enableWidevineL1 + " EnableWV L3: " + DrmManagerRegistry.enableWidevineL3 + " enableWidevineL3AB: " + DrmManagerRegistry.enableWidevineL3_ABTest);
+                                        if (androidVersion >= 18 && isWidevineDrmAllowed() && DrmManagerRegistry.enableWidevineL1) {
+                                            Log.d("nf_drm", "WidevineDrmManager L1 created");
+                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, drmManager$DrmReadyCallback, false);
+                                            DrmManagerRegistry.widevineInstanceL3 = false;
                                         }
                                         else {
-                                            if (Log.isLoggable()) {
-                                                Log.d("nf_drm", "LegacyDrmManager for devices running android version = " + androidVersion);
+                                            if (androidVersion < 21 || !isWidevineDrmAllowed() || (!DrmManagerRegistry.enableWidevineL3 && !DrmManagerRegistry.enableWidevineL3_ABTest)) {
+                                                break;
                                             }
-                                            DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
+                                            Log.d("nf_drm", "WidevineDrmManager L3 created");
+                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, drmManager$DrmReadyCallback, true);
+                                            DrmManagerRegistry.widevineInstanceL3 = true;
                                         }
                                         if (DrmManagerRegistry.instance.getDrmType() != 0) {
-                                            break Label_0250;
+                                            break Label_0400;
                                         }
-                                        if (DrmManagerRegistry.disableWidevine) {
+                                        if (!DrmManagerRegistry.enableWidevineL1) {
                                             DrmManagerRegistry.currentDrmSystem = "FORCE_LEGACY";
                                             PreferenceUtils.putStringPref(instance, "nf_drm_system_id", DrmManagerRegistry.currentDrmSystem);
                                             if (Log.isLoggable()) {
@@ -77,19 +92,26 @@ public final class DrmManagerRegistry
                                             instance = (Context)DrmManagerRegistry.instance;
                                             return (DrmManager)instance;
                                         }
-                                        break;
+                                        break Label_0165;
                                     }
                                     catch (Throwable t) {
                                         Log.e("nf_drm", "Unable to create WidevineDrmManager, default to LegacyDrmManager", t);
                                         DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
-                                        continue Label_0101_Outer;
+                                        DrmManagerRegistry.widevineInstanceL3 = false;
+                                        continue Label_0165;
                                     }
-                                    continue Label_0101_Outer;
+                                    continue Label_0165;
                                 }
                             }
+                            if (Log.isLoggable()) {
+                                Log.d("nf_drm", "LegacyDrmManager for devices running android version = " + androidVersion);
+                            }
+                            DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
+                            DrmManagerRegistry.widevineInstanceL3 = false;
+                            continue Label_0165;
                         }
                         DrmManagerRegistry.currentDrmSystem = "LEGACY";
-                        continue Label_0111_Outer;
+                        continue Label_0197_Outer;
                     }
                 }
                 DrmManagerRegistry.currentDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", null);
@@ -99,7 +121,7 @@ public final class DrmManagerRegistry
     }
     
     private static void createWidevineMediaDrmEngine() {
-        DrmManagerRegistry.mWidevineMediaDrmEngine = new WidevineMediaDrmEngine();
+        DrmManagerRegistry.mWidevineMediaDrmEngine = new WidevineMediaDrmEngine(DrmManagerRegistry.widevineInstanceL3);
     }
     
     private static byte[] decrypt(final byte[] array, final byte[] array2) {
@@ -123,12 +145,17 @@ public final class DrmManagerRegistry
             return "";
         }
         if (DrmManagerRegistry.instance.getDrmType() == 1) {
-            return "WV" + DrmManagerRegistry.mSecurityLevel;
+            if (DrmManagerRegistry.widevineInstanceL3) {
+                return "WVL3";
+            }
+            return "WVL1";
         }
-        if (DrmManagerRegistry.instance.getDrmType() == 0) {
-            return "MGK";
+        else {
+            if (DrmManagerRegistry.instance.getDrmType() == 0) {
+                return "MGK";
+            }
+            return "X";
         }
-        return "X";
     }
     
     private static byte[] getNccpSessionKeyRequest() {
@@ -151,10 +178,6 @@ public final class DrmManagerRegistry
             createWidevineMediaDrmEngine();
         }
         return DrmManagerRegistry.mWidevineMediaDrmEngine;
-    }
-    
-    public static boolean isChangeToWidevineFromLegacy() {
-        return isDrmSystemChanged() && "FORCE_LEGACY".equals(DrmManagerRegistry.previousDrmSystem);
     }
     
     public static boolean isCurrentDrmWidevine() {
@@ -188,28 +211,38 @@ public final class DrmManagerRegistry
     }
     
     public static boolean isWidevineDrmAllowed() {
-        boolean b = true;
-        if (!DrmManagerRegistry.disableWidevine) {
-            final int androidVersion = AndroidUtils.getAndroidVersion();
-            if (androidVersion > 18) {
-                if (!WidevineDrmManager.isWidewineSupported() || !isWidevineLevel1Supported() || !DrmManagerRegistry.mPlayerRequiredAdaptivePlayback) {
-                    b = false;
-                }
-                return b;
+        final int androidVersion = AndroidUtils.getAndroidVersion();
+        Label_0126: {
+            if (!DrmManagerRegistry.enableWidevineL1) {
+                break Label_0126;
             }
-            if (androidVersion == 18 && isDevicePredeterminedToUseWV() && WidevineDrmManager.isWidewineSupported()) {
+            if (androidVersion > 18) {
+                Log.d("nf_drm", "Widevine level 1 check");
+                if (!WidevineDrmManager.isWidewineSupported() || !isWidevineLevel1Supported() || !DrmManagerRegistry.mPlayerRequiredAdaptivePlayback) {
+                    return false;
+                }
+            }
+            else {
+                if (androidVersion != 18 || !isDevicePredeterminedToUseWV() || !WidevineDrmManager.isWidewineSupported()) {
+                    break Label_0126;
+                }
                 if (Log.isLoggable()) {
                     Log.d("nf_drm", "API level = " + androidVersion + " and Build.DEVICE =" + Build.DEVICE + ". Using WidevineDrmManager");
                     Log.d("nf_drm", "Flo/Deb devices running JB MR2  WITH Widevine support");
+                    return true;
                 }
-                return true;
             }
+            return true;
         }
-        return false;
+        if ((!DrmManagerRegistry.enableWidevineL3 && !DrmManagerRegistry.enableWidevineL3_ABTest) || androidVersion < 21 || !WidevineDrmManager.isWidewineSupported()) {
+            Log.d("nf_drm", "isWidevineDrmAllowed: false");
+            return false;
+        }
+        return true;
     }
     
     private static boolean isWidevineLevel1Supported() {
-        return "L1".equalsIgnoreCase(DrmManagerRegistry.mSecurityLevel);
+        return "L1".equalsIgnoreCase(DrmManagerRegistry.mMaxSecurityLevel);
     }
     
     private static void releaseSecureStops(final byte[] array) {

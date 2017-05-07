@@ -21,6 +21,6 @@ class EpisodesFrag$5 implements Runnable
         if (Log.isLoggable()) {
             Log.v("EpisodesFrag", "Setting item checked, position: " + this.val$position);
         }
-        this.this$0.episodesAdapter.setItemChecked(this.val$position, this.this$0.recyclerView);
+        this.this$0.episodesAdapter.setItemChecked(this.val$position);
     }
 }

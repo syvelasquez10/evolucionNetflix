@@ -11,6 +11,7 @@ import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -81,22 +82,22 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
     }
     
     private void findViews() {
-        this.heroImg = (TopCropImageView)this.findViewById(2131427555);
-        this.title = (TextView)this.findViewById(2131427558);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131427535);
-        this.rating = (NetflixRatingBar)this.findViewById(2131427542);
-        this.year = (TextView)this.findViewById(2131427543);
-        this.certification = (TextView)this.findViewById(2131427544);
-        this.durationInfo = (TextView)this.findViewById(2131427545);
-        this.hdIcon = this.findViewById(2131427546);
-        this.synopsis = (TextView)this.findViewById(2131427560);
-        this.infoGroup = this.findViewById(2131427557);
-        this.shadow = this.findViewById(2131427556);
+        this.heroImg = (TopCropImageView)this.findViewById(2131427556);
+        this.title = (TextView)this.findViewById(2131427559);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131427536);
+        this.rating = (NetflixRatingBar)this.findViewById(2131427543);
+        this.year = (TextView)this.findViewById(2131427544);
+        this.certification = (TextView)this.findViewById(2131427545);
+        this.durationInfo = (TextView)this.findViewById(2131427546);
+        this.hdIcon = this.findViewById(2131427547);
+        this.synopsis = (TextView)this.findViewById(2131427561);
+        this.infoGroup = this.findViewById(2131427558);
+        this.shadow = this.findViewById(2131427557);
     }
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837892);
+        this.setBackgroundResource(2130837895);
         ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelOffset(2131296341));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
@@ -162,7 +163,7 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
         else {
             final int runtime = kubrickVideo.getRuntime();
             if (runtime > 0) {
-                this.durationInfo.setText((CharSequence)resources.getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
+                this.durationInfo.setText((CharSequence)resources.getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
                 this.durationInfo.setVisibility(0);
                 return;
             }
@@ -220,6 +221,10 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
     }
     
     public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
+        final String kubrickStoryImgUrl = kubrickVideo.getKubrickStoryImgUrl();
+        if (Log.isLoggable()) {
+            Log.v("KubrickHeroView", "update - imgUrl: " + kubrickStoryImgUrl);
+        }
         this.playContext = new PlayContextImp(trackable, visibility);
         this.videoId = kubrickVideo.getId();
         this.updateBasicInfo(kubrickVideo);
@@ -235,7 +240,6 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
             this.titleImg.setVisibility(0);
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.titleImg, titleImgUrl, IClientLogging$AssetType.heroImage, kubrickVideo.getTitle(), ImageLoader$StaticImgConfig.DARK_NO_PLACEHOLDER, true, 1, Bitmap$Config.RGB_565);
         }
-        final String kubrickStoryImgUrl = kubrickVideo.getKubrickStoryImgUrl();
         final TopCropImageView heroImg = this.heroImg;
         if (StringUtils.isEmpty(kubrickStoryImgUrl)) {
             visibility = 4;

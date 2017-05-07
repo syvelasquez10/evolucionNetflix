@@ -27,10 +27,12 @@ import android.support.v7.widget.RecyclerView$Adapter;
 public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<RecyclerView$ViewHolder>
 {
     private static final String TAG = "RecyclerViewHeaderAdapter";
+    private static final int TYPE_FOOTER = 3;
     private static final int TYPE_HEADER = 0;
     public static final int TYPE_ITEM_ONE = 1;
     public static final int TYPE_ITEM_TWO = 2;
     protected final List<Video> data;
+    private View footerView;
     private final List<View> headerViews;
     private boolean isSingleChoiceMode;
     private int itemCheckedPosition;
@@ -59,15 +61,40 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         return (View)frameLayout;
     }
     
+    private void ensureCheckedState(final int n, final View view) {
+        if (view instanceof Checkable) {
+            if (n != this.itemCheckedPosition) {
+                ((Checkable)view).setChecked(false);
+                return;
+            }
+            ((Checkable)view).setChecked(true);
+        }
+    }
+    
+    private boolean isPositionFooter(final int n) {
+        return this.footerView != null && n >= this.getHeaderViewsCount() + this.data.size();
+    }
+    
     private boolean isPositionHeader(final int n) {
         return n < this.getHeaderViewsCount();
+    }
+    
+    private void onBindFooterView(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+        if (this.footerView == null) {
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.v("RecyclerViewHeaderAdapter", "onBindFooterView - re-adding footer view");
+        }
+        this.removeFooterViewHolderFromViewHierarchy(recyclerView$ViewHolder);
+        ((ViewGroup)recyclerView$ViewHolder.itemView).addView(this.footerView);
     }
     
     private void onBindHeaderView(final RecyclerView$ViewHolder recyclerView$ViewHolder, final int n) {
         if (Log.isLoggable()) {
             Log.v("RecyclerViewHeaderAdapter", "onBindHeaderView - re-adding header view");
         }
-        this.removeViewHolderFromViewHierarchy(recyclerView$ViewHolder, n);
+        this.removeHeaderViewHolderFromViewHierarchy(recyclerView$ViewHolder, n);
         ((ViewGroup)recyclerView$ViewHolder.itemView).addView((View)this.headerViews.get(n));
     }
     
@@ -76,29 +103,47 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
             Log.v("RecyclerViewHeaderAdapter", "onBindItemView - position: " + n);
         }
         final Video item = this.getItem(n);
-        if (item != null) {
-            final View child = ((ViewGroup)recyclerView$ViewHolder.itemView).getChildAt(0);
-            if (child instanceof IEpisodeView) {
-                if (Log.isLoggable()) {
-                    Log.v("RecyclerViewHeaderAdapter", "onBindItemView - updating for episode, position: " + n);
-                }
-                ((IEpisodeView<Video>)child).update(item);
-                return;
+        if (item == null) {
+            return;
+        }
+        final View child = ((ViewGroup)recyclerView$ViewHolder.itemView).getChildAt(0);
+        if (child instanceof IEpisodeView) {
+            if (Log.isLoggable()) {
+                Log.v("RecyclerViewHeaderAdapter", "onBindItemView - updating for episode, position: " + n);
             }
-            if (child instanceof VideoViewGroup$IVideoView) {
-                if (Log.isLoggable()) {
-                    Log.v("RecyclerViewHeaderAdapter", "onBindItemView - updating for video view, position: " + n);
-                }
-                ((VideoViewGroup$IVideoView<Video>)child).update(item, this.getTrackable(), n, false, false);
+            ((IEpisodeView<Video>)child).update(item);
+        }
+        else if (child instanceof VideoViewGroup$IVideoView) {
+            if (Log.isLoggable()) {
+                Log.v("RecyclerViewHeaderAdapter", "onBindItemView - updating for video view, position: " + n);
+            }
+            ((VideoViewGroup$IVideoView<Video>)child).update(item, this.getTrackable(), n, false, false);
+        }
+        this.ensureCheckedState(n, child);
+    }
+    
+    private void removeFooterViewHolderFromViewHierarchy(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+        if (this.footerView != null) {
+            ((ViewGroup)recyclerView$ViewHolder.itemView).removeAllViews();
+            final ViewParent parent = this.footerView.getParent();
+            if (parent != null) {
+                ((ViewGroup)parent).removeView(this.footerView);
             }
         }
     }
     
-    private void removeViewHolderFromViewHierarchy(final RecyclerView$ViewHolder recyclerView$ViewHolder, final int n) {
+    private void removeHeaderViewHolderFromViewHierarchy(final RecyclerView$ViewHolder recyclerView$ViewHolder, final int n) {
         ((ViewGroup)recyclerView$ViewHolder.itemView).removeAllViews();
         final ViewParent parent = this.headerViews.get(n).getParent();
         if (parent != null) {
             ((ViewGroup)parent).removeView((View)this.headerViews.get(n));
+        }
+    }
+    
+    public void addFooterView(final View footerView) {
+        this.footerView = footerView;
+        if (Log.isLoggable()) {
+            Log.v("RecyclerViewHeaderAdapter", "Adding footer view: " + footerView);
         }
     }
     
@@ -138,7 +183,16 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     @Override
     public int getItemCount() {
-        final int prevCount = this.data.size() + this.getHeaderViewsCount();
+        final int size = this.data.size();
+        final int headerViewsCount = this.getHeaderViewsCount();
+        int n;
+        if (this.footerView == null) {
+            n = 0;
+        }
+        else {
+            n = 1;
+        }
+        final int prevCount = n + (headerViewsCount + size);
         if (Log.isLoggable() && this.prevCount != prevCount) {
             this.prevCount = prevCount;
             Log.v("RecyclerViewHeaderAdapter", "getItemCount() result changed to: " + prevCount);
@@ -146,7 +200,7 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         return prevCount;
     }
     
-    protected int getItemCountExcludingHeaders() {
+    protected int getItemCountExcludingHeadersAndFooters() {
         return this.data.size();
     }
     
@@ -155,11 +209,22 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         if (this.isPositionHeader(n)) {
             return 0;
         }
+        if (this.isPositionFooter(n)) {
+            return 3;
+        }
         return this.itemContentType;
     }
     
     protected Trackable getTrackable() {
         return this.trackable;
+    }
+    
+    public boolean hasFooter() {
+        return this.footerView != null;
+    }
+    
+    public boolean isViewFooter(final View view, final RecyclerView recyclerView) {
+        return view != null && recyclerView != null && recyclerView.getChildPosition(view) > this.getHeaderViewsCount() + this.data.size();
     }
     
     public boolean isViewHeader(final View view, final RecyclerView recyclerView) {
@@ -174,6 +239,9 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         }
         if (itemViewType == 0) {
             this.onBindHeaderView(recyclerView$ViewHolder, n);
+        }
+        else if (itemViewType == 3) {
+            this.onBindFooterView(recyclerView$ViewHolder);
         }
         else if (itemViewType == this.itemContentType) {
             this.onBindItemView(recyclerView$ViewHolder, n - this.getHeaderViewsCount());
@@ -192,22 +260,26 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         if (n == 0) {
             return new RecyclerViewHeaderAdapter$VideoViewHolder(this, null, viewGroup.getContext());
         }
+        if (n == 3) {
+            return new RecyclerViewHeaderAdapter$VideoViewHolder(this, null, viewGroup.getContext());
+        }
         throw new IllegalArgumentException("No matching type " + n);
     }
     
     protected void onPostItemViewBind(final int n) {
     }
     
-    public void setItemChecked(final int n, final RecyclerView recyclerView) {
-        if (n >= 0 && this.isSingleChoiceMode && recyclerView != null && recyclerView.getChildCount() > n) {
-            final ViewGroup viewGroup = (ViewGroup)recyclerView.getChildAt(n);
-            if (viewGroup != null && viewGroup.getChildCount() > 0) {
-                final View child = viewGroup.getChildAt(0);
-                if (child instanceof Checkable) {
-                    this.setSingleChoiceModeState(child, n);
-                }
-            }
+    public void setItemChecked(final int n) {
+        if (!this.isSingleChoiceMode) {
+            Log.v("RecyclerViewHeaderAdapter", "Not in single choice mode - skipping setItemChecked()");
+            return;
         }
+        if (n < 0) {
+            Log.v("RecyclerViewHeaderAdapter", "Skipping setItemChecked() - invalid position: " + n);
+            return;
+        }
+        this.itemCheckedPosition = n - this.getHeaderViewsCount();
+        this.notifyDataSetChanged();
     }
     
     public void setItemContentType(final int itemContentType) {
@@ -239,25 +311,6 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     public void setSingleChoiceMode(final boolean isSingleChoiceMode) {
         this.isSingleChoiceMode = isSingleChoiceMode;
-    }
-    
-    void setSingleChoiceModeState(final View view, final int itemCheckedPosition) {
-        if (this.isSingleChoiceMode && view instanceof Checkable) {
-            final Checkable lastCheckedView = (Checkable)view;
-            if (lastCheckedView.isChecked()) {
-                lastCheckedView.setChecked(false);
-            }
-            else {
-                lastCheckedView.setChecked(true);
-                if (this.lastCheckedView != null && lastCheckedView != this.lastCheckedView) {
-                    this.lastCheckedView.setChecked(false);
-                }
-                this.lastCheckedView = lastCheckedView;
-            }
-            if (lastCheckedView.isChecked()) {
-                this.itemCheckedPosition = itemCheckedPosition;
-            }
-        }
     }
     
     public void setTrackable(final Trackable trackable) {

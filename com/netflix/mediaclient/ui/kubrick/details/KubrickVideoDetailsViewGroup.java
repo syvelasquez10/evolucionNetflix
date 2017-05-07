@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import android.graphics.Bitmap$Config;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.graphics.Typeface;
@@ -33,7 +34,6 @@ import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.IconFontTextView;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.widget.RadioGroup;
 import android.view.View;
 import android.widget.RadioButton;
@@ -57,7 +57,6 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     private RadioGroup dataSelectorGroup;
     private RadioButton dataSelectorRelated;
     private View dataSelectorRelatedTop;
-    VideoDetails details;
     private TextView durationInfo;
     private IconFontTextView evidence;
     private ViewGroup evidenceGroup;
@@ -126,7 +125,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             videoType = this.details.getType();
         }
-        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903175, false);
+        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903178, false);
         final FragmentTransaction beginTransaction = ((NetflixActivity)this.getContext()).getFragmentManager().beginTransaction();
         beginTransaction.add(0, (Fragment)create, "frag_dialog");
         beginTransaction.commit();
@@ -170,7 +169,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             final int runtime = kubrickVideo.getRuntime();
             if (runtime > 0) {
-                this.durationInfo.setText((CharSequence)resources.getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
+                this.durationInfo.setText((CharSequence)resources.getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
                 this.durationInfo.setVisibility(0);
                 return;
             }
@@ -183,7 +182,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             return;
         }
         if (this.evidence != null && this.evidenceText != null && StringUtils.isNotEmpty(evidenceDetails.getEvidenceText())) {
-            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131296461);
+            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131296458);
             this.evidenceText.setText((CharSequence)evidenceDetails.getEvidenceText());
             this.evidenceGroup.setVisibility(0);
             return;
@@ -231,6 +230,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
                 n2 = 1.1f;
             }
             layoutParams.height = (int)(n2 * n);
+            this.horzDispImg.requestLayout();
         }
     }
     
@@ -248,7 +248,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             n = 0.0f;
         }
         else {
-            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131296461);
+            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131296458);
         }
         final int n2 = (int)n;
         this.alignHeroImage();
@@ -264,33 +264,33 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     @Override
     protected void findViews() {
         super.findViews();
-        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131427590);
-        this.dataSelectorRelated = (RadioButton)this.findViewById(2131427592);
-        this.dataSelectorEpisodesTop = this.findViewById(2131427591);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131427535);
-        this.dataSelectorRelatedTop = this.findViewById(2131427593);
-        this.certification = (TextView)this.findViewById(2131427544);
-        this.evidenceGroup = (ViewGroup)this.findViewById(2131427594);
-        this.evidenceText = (TextView)this.findViewById(2131427596);
-        this.hdIcon = (IconFontTextView)this.findViewById(2131427546);
-        this.durationInfo = (TextView)this.findViewById(2131427545);
-        this.evidence = (IconFontTextView)this.findViewById(2131427595);
-        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131427589);
-        this.myListLabel = (TextView)this.findViewById(2131427579);
-        this.shareLabel = (TextView)this.findViewById(2131427576);
+        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131427601);
+        this.dataSelectorRelated = (RadioButton)this.findViewById(2131427603);
+        this.dataSelectorEpisodesTop = this.findViewById(2131427602);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131427536);
+        this.dataSelectorRelatedTop = this.findViewById(2131427604);
+        this.certification = (TextView)this.findViewById(2131427545);
+        this.evidenceGroup = (ViewGroup)this.findViewById(2131427605);
+        this.evidenceText = (TextView)this.findViewById(2131427607);
+        this.hdIcon = (IconFontTextView)this.findViewById(2131427547);
+        this.durationInfo = (TextView)this.findViewById(2131427546);
+        this.evidence = (IconFontTextView)this.findViewById(2131427606);
+        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131427600);
+        this.myListLabel = (TextView)this.findViewById(2131427590);
+        this.shareLabel = (TextView)this.findViewById(2131427587);
         this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131427534);
-        this.myList = (TextView)this.findViewById(2131427578);
-        this.genres = (TextView)this.findViewById(2131427588);
-        this.year = (TextView)this.findViewById(2131427543);
-        this.share = (TextView)this.findViewById(2131427577);
-        this.leftGroup = this.findViewById(2131427600);
-        this.shadow = this.findViewById(2131427598);
-        this.rate = this.findViewById(2131427580);
-        this.bookMarkTitle = (TextView)this.findViewById(2131427582);
-        this.bookmarkGroup = (ViewGroup)this.findViewById(2131427601);
-        this.bookmarkDuration = (TextView)this.findViewById(2131427584);
-        this.bookmarkValue = (TextView)this.findViewById(2131427583);
-        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131427585);
+        this.myList = (TextView)this.findViewById(2131427589);
+        this.genres = (TextView)this.findViewById(2131427599);
+        this.year = (TextView)this.findViewById(2131427544);
+        this.share = (TextView)this.findViewById(2131427588);
+        this.leftGroup = this.findViewById(2131427611);
+        this.shadow = this.findViewById(2131427609);
+        this.rate = this.findViewById(2131427591);
+        this.bookMarkTitle = (TextView)this.findViewById(2131427593);
+        this.bookmarkGroup = (ViewGroup)this.findViewById(2131427612);
+        this.bookmarkDuration = (TextView)this.findViewById(2131427595);
+        this.bookmarkValue = (TextView)this.findViewById(2131427594);
+        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131427596);
     }
     
     @Override
@@ -324,9 +324,9 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     @Override
     protected int getlayoutId() {
         if (DeviceUtils.getScreenWidthInDPs(this.getContext()) <= 600) {
-            return 2130903120;
+            return 2130903123;
         }
-        return 2130903119;
+        return 2130903122;
     }
     
     public void hideDataSelector() {
@@ -360,7 +360,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             this.dataSelectorEpisodes.setTypeface(Typeface.DEFAULT_BOLD);
         }
         if (this.dataSelectorRelated != null) {
-            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131230889));
+            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131230888));
             this.dataSelectorRelatedTop.setVisibility(4);
             this.dataSelectorRelated.setTypeface(Typeface.DEFAULT);
         }
@@ -379,7 +379,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             this.dataSelectorRelated.setTypeface(Typeface.DEFAULT_BOLD);
         }
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131230889));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131230888));
             this.dataSelectorEpisodesTop.setVisibility(4);
             this.dataSelectorEpisodes.setTypeface(Typeface.DEFAULT);
         }
@@ -417,28 +417,27 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             this.bookmarkProgressBar.setProgress(progress);
         }
         if (this.bookmarkDuration != null) {
-            this.bookmarkDuration.setText((CharSequence)this.getResources().getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getRuntime()) }));
+            this.bookmarkDuration.setText((CharSequence)this.getResources().getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getRuntime()) }));
         }
         if (this.bookmarkValue != null) {
-            this.bookmarkValue.setText((CharSequence)this.getResources().getString(2131493175, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getPlayableBookmarkPosition()) }));
+            this.bookmarkValue.setText((CharSequence)this.getResources().getString(2131493167, new Object[] { TimeUtils.convertSecondsToMinutes(playable.getPlayableBookmarkPosition()) }));
         }
     }
     
     public void updateBookmarkTitle(final EpisodeDetails episodeDetails) {
         if (this.bookMarkTitle != null) {
-            this.bookMarkTitle.setText((CharSequence)this.getResources().getString(2131493246, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
+            this.bookMarkTitle.setText((CharSequence)this.getResources().getString(2131493238, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
             this.bookMarkTitle.setVisibility(0);
         }
     }
     
     @Override
-    public void updateDetails(final VideoDetails details, final VideoDetailsViewGroup$DetailsStringProvider videoDetailsViewGroup$DetailsStringProvider) {
-        super.updateDetails(details, videoDetailsViewGroup$DetailsStringProvider);
-        this.details = details;
+    public void updateDetails(final VideoDetails videoDetails, final VideoDetailsViewGroup$DetailsStringProvider videoDetailsViewGroup$DetailsStringProvider) {
+        super.updateDetails(videoDetails, videoDetailsViewGroup$DetailsStringProvider);
         this.updateGenres(videoDetailsViewGroup$DetailsStringProvider);
-        this.updateEvidence((EvidenceDetails)details);
-        this.updateTitle(details);
-        this.updateBasicInfo((KubrickVideo)details);
+        this.updateEvidence((EvidenceDetails)videoDetails);
+        this.updateTitle(videoDetails);
+        this.updateBasicInfo((KubrickVideo)videoDetails);
         this.setupActionButtons();
         this.setupRadioButtons();
         this.setEpisodesTextAsSelected();

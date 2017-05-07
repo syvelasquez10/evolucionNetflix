@@ -86,8 +86,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mContext.findViewById(2131427733);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427731);
+        this.mTargetNameView = (TextView)this.mContext.findViewById(2131427737);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427735);
     }
     
     public void handleBack() {
@@ -159,7 +159,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493300));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493283));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

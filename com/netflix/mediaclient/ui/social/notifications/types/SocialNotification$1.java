@@ -42,7 +42,7 @@ class SocialNotification$1 implements ImageLoader$ImageLoaderListener
     @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null) {
-            this.val$imageLoader.getImg(this.val$notificationSummary.getVideo().getHorzDispUrl(), IClientLogging$AssetType.boxArt, 0, 0, new SocialNotification$1onBoxArtFetched(this.this$0, bitmap, this.val$context, this.val$notificationSummary, this.val$listSummary, this.val$msg));
+            this.val$imageLoader.getImg(this.val$notificationSummary.getTVCardUrl(), IClientLogging$AssetType.boxArt, 0, 0, new SocialNotification$1onBoxArtFetched(this.this$0, bitmap, this.val$context, this.val$notificationSummary, this.val$listSummary, this.val$msg));
         }
     }
 }

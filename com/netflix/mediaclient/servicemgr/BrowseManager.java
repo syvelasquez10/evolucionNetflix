@@ -6,7 +6,6 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -598,13 +597,13 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void markSocialNotificationsAsRead(final List<SocialNotificationSummary> list) {
+    public void markNotificationAsRead(final SocialNotificationSummary socialNotificationSummary) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().markSocialNotificationsAsRead(list);
+            service.getBrowse().markNotificationAsRead(socialNotificationSummary);
             return;
         }
-        Log.w("ServiceManagerBrowse", "markSocialNotificationsAsRead:: service is not available");
+        Log.w("ServiceManagerBrowse", "markNotificationAsRead:: service is not available");
     }
     
     @Override

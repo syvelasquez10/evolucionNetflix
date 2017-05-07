@@ -69,6 +69,7 @@ class ConfigurationAgent$1 implements DrmManager$DrmReadyCallback
         if (DrmManagerRegistry.isDrmSystemChanged()) {
             this.this$0.mNeedEsMigration = true;
         }
+        Log.d("nf_configurationagent", "EsnMigration needed:" + this.this$0.mNeedEsMigration);
         this.this$0.initCompleted(CommonStatus.OK);
     }
 }

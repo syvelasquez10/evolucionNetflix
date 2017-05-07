@@ -4,6 +4,7 @@
 
 package com.crittercism.app;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import crittercism.android.bn$a;
 import android.content.Context;
@@ -142,6 +143,35 @@ public class Crittercism
         }
         catch (Throwable t) {
             dy.a(t);
+        }
+    }
+    
+    public static void setUsername(final String s) {
+        try {
+            if (!az.A().b) {
+                b("setUsername");
+                return;
+            }
+            if (s == null) {
+                dy.c("Crittercism.setUsername() given invalid parameter: null");
+                return;
+            }
+            goto Label_0028;
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            dy.a(t);
+            return;
+        }
+        try {
+            final JSONObject jsonObject;
+            jsonObject.putOpt("username", (Object)s);
+            az.A().a(jsonObject);
+        }
+        catch (JSONException ex) {
+            dy.b("Crittercism.setUsername()", (Throwable)ex);
         }
     }
 }

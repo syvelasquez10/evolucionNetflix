@@ -105,11 +105,15 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean isDisableMcQueenV2();
     
-    boolean isDisableWidevine();
-    
     boolean isEsnMigrationRequired();
     
     boolean isLogoutRequired();
+    
+    boolean isWidevineL1Enabled();
+    
+    boolean isWidevineL3ABTestEnabled();
+    
+    boolean isWidevineL3Enabled();
     
     void userAgentLogoutComplete();
 }

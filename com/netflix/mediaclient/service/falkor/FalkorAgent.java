@@ -376,11 +376,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.logBillboardActivity(video, billboardInteractionType);
     }
     
-    public void markSocialNotificationsAsRead(final List<SocialNotificationSummary> list) {
+    public void markNotificationAsRead(final SocialNotificationSummary socialNotificationSummary) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.markSocialNotificationAsRead(list, new FalkorAgent$5(this));
+        this.cmp.markSocialNotificationAsRead(socialNotificationSummary, new FalkorAgent$5(this));
     }
     
     public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {

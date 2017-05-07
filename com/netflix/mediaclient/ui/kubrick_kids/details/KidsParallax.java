@@ -14,9 +14,10 @@ import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 
 class KidsParallax extends DetailsPageParallaxScrollListener
 {
-    private static final int TOOLBAR_FADE_DURATION_MS = 500;
-    private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEIN_DURATION_MS = 600;
-    private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEOUT_DURATION_MS = 1000;
+    private static final int TOOLBAR_FADE_DURATION_MS = 300;
+    private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEIN_DURATION_MS = 300;
+    private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEOUT_DURATION_MS = 300;
+    private static final int TRACKING_VIEW_FINAL_X_POS = -60;
     private boolean animating;
     private boolean isLatched;
     private View shadow;
@@ -33,7 +34,7 @@ class KidsParallax extends DetailsPageParallaxScrollListener
                 final TransitionDrawable transitionDrawable = (TransitionDrawable)this.toolbarView.getBackground();
                 if (transitionDrawable != null) {
                     transitionDrawable.setCrossFadeEnabled(this.animating = true);
-                    this.toolbarView.postDelayed((Runnable)new KidsParallax$1(this, transitionDrawable), 500L);
+                    this.toolbarView.postDelayed((Runnable)new KidsParallax$1(this, transitionDrawable), 300L);
                 }
             }
             return;
@@ -47,7 +48,7 @@ class KidsParallax extends DetailsPageParallaxScrollListener
                 final TransitionDrawable transitionDrawable = (TransitionDrawable)this.toolbarView.getBackground();
                 if (transitionDrawable != null) {
                     transitionDrawable.setCrossFadeEnabled(true);
-                    transitionDrawable.reverseTransition(500);
+                    transitionDrawable.reverseTransition(300);
                     this.isLatched = false;
                 }
             }
@@ -65,13 +66,18 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     }
     
     @Override
+    protected int getTrackerViewFinalXPosition() {
+        return -60;
+    }
+    
+    @Override
     protected int getTrackerViewLatchFadeinDuration() {
-        return 600;
+        return 300;
     }
     
     @Override
     protected int getTrackerViewLatchFadeoutDuration() {
-        return 1000;
+        return 300;
     }
     
     @Override
@@ -112,7 +118,7 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     protected void setInitialToolbarColor() {
         this.toolbarView = this.recyclerView.getRootView().findViewById(2131427430);
         this.shadow = this.recyclerView.getRootView().findViewById(2131427444);
-        final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837770);
+        final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837772);
         if (drawable != null && this.toolbarView != null) {
             this.toolbarView.setBackground(drawable);
         }

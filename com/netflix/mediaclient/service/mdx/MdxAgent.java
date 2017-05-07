@@ -208,7 +208,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         if (this.mVideoDetails == null) {
             return null;
         }
-        return this.getContext().getString(2131493244, new Object[] { this.mVideoDetails.getPlayable().getSeasonNumber(), this.mVideoDetails.getPlayable().getEpisodeNumber(), this.mVideoDetails.getTitle() });
+        return this.getContext().getString(2131493236, new Object[] { this.mVideoDetails.getPlayable().getSeasonNumber(), this.mVideoDetails.getPlayable().getEpisodeNumber(), this.mVideoDetails.getTitle() });
     }
     
     private RemoteDevice getDeviceFromUuid(final String s) {
@@ -248,7 +248,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             return null;
         }
         final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetailsPostplay;
-        return this.getContext().getString(2131493244, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        return this.getContext().getString(2131493236, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
     }
     
     private void handleAccountConfig() {
@@ -502,7 +502,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             if (videoDetails.getType() == VideoType.EPISODE) {
                 String s;
                 if (b) {
-                    s = this.getContext().getString(2131493238);
+                    s = this.getContext().getString(2131493230);
                 }
                 else {
                     s = videoDetails.getPlayable().getParentTitle();

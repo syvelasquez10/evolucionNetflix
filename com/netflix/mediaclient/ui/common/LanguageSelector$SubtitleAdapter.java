@@ -4,32 +4,42 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.widget.AdapterView$OnItemClickListener;
-import android.widget.ListAdapter;
-import android.view.ViewGroup$LayoutParams;
-import android.app.Dialog;
-import android.content.DialogInterface$OnCancelListener;
-import android.content.DialogInterface$OnClickListener;
-import android.content.Context;
-import com.netflix.mediaclient.media.AudioSource;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.widget.ListView;
 import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewGroup;
 import android.view.View;
+import com.netflix.mediaclient.media.AudioSource;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.Language;
+import android.app.Activity;
 import android.widget.BaseAdapter;
 
 public class LanguageSelector$SubtitleAdapter extends BaseAdapter
 {
+    private final Activity activity;
     private final Language language;
-    final /* synthetic */ LanguageSelector this$0;
     
-    public LanguageSelector$SubtitleAdapter(final LanguageSelector this$0, final Language language) {
-        this.this$0 = this$0;
+    public LanguageSelector$SubtitleAdapter(final Language language, final Activity activity) {
         this.language = language;
+        this.activity = activity;
+    }
+    
+    private boolean shouldForceFirst(final Language language, final int n, final Subtitle selectedSubtitle) {
+        if (n != 0) {
+            return false;
+        }
+        final Subtitle selectedSubtitle2 = language.getSelectedSubtitle();
+        final AudioSource selectedAudio = language.getSelectedAudio();
+        if (selectedAudio != null && selectedAudio.isAllowedSubtitle(selectedSubtitle2)) {
+            Log.d("nf_language_selector", "Selected subtitle is allowed");
+            return false;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_language_selector", "Selected subtitle is not allowed, set to firsyt subtitle " + selectedSubtitle);
+        }
+        language.setSelectedSubtitle(selectedSubtitle);
+        return true;
     }
     
     public int getCount() {
@@ -49,13 +59,20 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Subtitle create row " + n);
-            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903122, viewGroup, false);
+            int n2;
+            if (BrowseExperience.isKubrick()) {
+                n2 = 2130903112;
+            }
+            else {
+                n2 = 2130903125;
+            }
+            inflate = this.activity.getLayoutInflater().inflate(n2, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();
         final Subtitle item = this.getItem(n);
         Subtitle subtitle = this.language.getSelectedSubtitle();
-        if (this.this$0.shouldForceFirst(this.language, n, item)) {
+        if (this.shouldForceFirst(this.language, n, item)) {
             Log.d("nf_language_selector", "Previously selected subtitle is not allowed anymore, reset to first on list, reload seleted subtitle");
             subtitle = this.language.getSelectedSubtitle();
         }
@@ -65,13 +82,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             if (item.isCC()) {
                 Log.d("nf_language_selector", "Add CC");
                 sb.append(' ');
-                sb.append(this.this$0.mController.getText(2131493133));
+                sb.append(this.activity.getText(2131493130));
             }
             text = sb.toString();
             equals = item.equals(subtitle);
         }
         else {
-            text = this.this$0.mController.getString(2131493126);
+            text = this.activity.getString(2131493123);
             if (subtitle == null) {
                 equals = true;
                 text = text;

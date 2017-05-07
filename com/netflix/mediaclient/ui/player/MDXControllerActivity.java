@@ -50,7 +50,7 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlayViewGroup = this.findViewById(2131427734);
+        this.postPlayViewGroup = this.findViewById(2131427738);
         this.postPlayController = PostPlayFactory.create(this, PostPlayFactory$PostPlayType.EpisodesForMDX);
     }
     
@@ -142,7 +142,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        this.setContentView(2130903130);
+        this.setContentView(2130903133);
         this.setupPostplayViews();
         this.showEpisodesData();
         if (this.getSupportActionBar() != null) {
@@ -153,7 +153,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903130);
+        this.setContentView(2130903133);
         if (this.getSupportActionBar() != null) {
             this.getSupportActionBar().hide();
         }

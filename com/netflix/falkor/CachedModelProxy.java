@@ -93,7 +93,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE = false;
         SEARCH_RESULT_TYPES = PQL.array("videos", "people", "suggestions");
         SEARCH_LEAF_TYPES = PQL.array("summary", "searchTitle");
-        CW_VIDEO_LEAF_PQL = PQL.create(PQL.array("summary", "detail", "rating", "inQueue", "bookmark"));
+        CW_VIDEO_LEAF_PQL = PQL.create(PQL.array("summary", "detail", "rating", "inQueue", "bookmark", "bookmarkStill"));
         CW_CURR_EPISODE_PQL = PQL.create("episodes", "current", PQL.array("detail", "bookmark"));
         BB_VIDEO_LEAF_PQL = CachedModelProxy.CW_VIDEO_LEAF_PQL;
         BB_CURR_EPISODE_PQL = CachedModelProxy.CW_CURR_EPISODE_PQL;
@@ -2328,7 +2328,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void markSocialNotificationAsRead(final List<SocialNotificationSummary> p0, final BrowseAgentCallback p1) {
+    public void markSocialNotificationAsRead(final SocialNotificationSummary p0, final BrowseAgentCallback p1) {
         // 
         // This method could not be decompiled.
         // 
@@ -2343,8 +2343,6 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     8: invokespecial   invokespecial  !!! ERROR
         //    11: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
         //    14: return         
-        //    Signature:
-        //  (Ljava/util/List<Lcom/netflix/model/leafs/social/SocialNotificationSummary;>;Lcom/netflix/mediaclient/service/browse/BrowseAgentCallback;)V
         // 
         // The error that occurred was:
         // 
@@ -3118,6 +3116,10 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                 }
             }
             else {
+                if (StringUtils.isEmpty(asset.getPlayableId())) {
+                    Log.w("CachedModelProxy", String.format("asset with null playableId, asset:%s", asset));
+                    return;
+                }
                 String s;
                 if (asset.isEpisode()) {
                     s = VideoType.EPISODE.getValue();

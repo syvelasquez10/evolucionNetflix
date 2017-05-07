@@ -65,15 +65,16 @@ public abstract class Subtitle implements Comparable<Subtitle>
     
     @Override
     public int compareTo(final Subtitle subtitle) {
-        if (subtitle != null) {
-            if (this.nccpOrderNumber == subtitle.nccpOrderNumber) {
-                return 0;
-            }
-            if (this.nccpOrderNumber > subtitle.nccpOrderNumber) {
+        int compare = -1;
+        if (subtitle != null && this.languageDescription != null) {
+            if (subtitle.languageDescription == null) {
                 return 1;
             }
+            if ((compare = String.CASE_INSENSITIVE_ORDER.compare(this.languageDescription, subtitle.languageDescription)) == 0) {
+                return this.languageDescription.compareTo(subtitle.languageDescription);
+            }
         }
-        return -1;
+        return compare;
     }
     
     @Override

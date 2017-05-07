@@ -195,7 +195,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     private String getMessage(final int n, final StatusCode statusCode) {
         String string;
         if (n == Integer.MAX_VALUE) {
-            string = this.getString(2131493393);
+            string = this.getString(2131493377);
         }
         else {
             String s;
@@ -207,7 +207,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             }
             string = s;
             if (s == null) {
-                return this.getString(2131493393);
+                return this.getString(2131493377);
             }
         }
         return string;
@@ -358,7 +358,6 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             if (!b) {
                 break Label_0095;
             }
-        Block_9_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable()) {
@@ -366,19 +365,20 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
-                    // iftrue(Label_0144:, !Log.isLoggable())
+                Block_9_Outer:
                     while (true) {
+                        this.displayDialog(dialog);
+                        return;
+                    Block_10:
                         while (true) {
-                            Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                            Label_0144: {
-                                this.displayDialog(dialog);
-                            }
-                            return;
-                            continue Block_9_Outer;
+                            break Block_10;
+                            continue;
                         }
-                        continue;
+                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                        continue Block_9_Outer;
                     }
                 }
+                // iftrue(Label_0144:, !Log.isLoggable())
                 // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
                 finally {
                 }
@@ -541,21 +541,21 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         }
         switch (NetflixActivity$14.$SwitchMap$com$netflix$mediaclient$StatusCode[status.getStatusCode().ordinal()]) {
             default: {
-                final String string = this.getString(2131493266);
-                this.displayErrorDialog(this.getString(2131493266), status.getStatusCode().getValue());
+                final String string = this.getString(2131493258);
+                this.displayErrorDialog(this.getString(2131493258), status.getStatusCode().getValue());
                 return string;
             }
             case 1: {
                 String format = message;
                 if (message.isEmpty()) {
-                    format = String.format("%s ( %d )", this.getString(2131493263), status.getStatusCode().getValue());
+                    format = String.format("%s ( %d )", this.getString(2131493255), status.getStatusCode().getValue());
                 }
                 this.displayUserAgentDialog(format, null, false);
                 return format;
             }
             case 2:
             case 3: {
-                final String format2 = String.format("%s ( %d )", this.getString(2131493270), status.getStatusCode().getValue());
+                final String format2 = String.format("%s ( %d )", this.getString(2131493262), status.getStatusCode().getValue());
                 this.displayUserAgentDialog(format2, new NetflixActivity$11(this), true);
                 return format2;
             }
@@ -571,14 +571,14 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             case 10:
             case 11:
             case 12: {
-                final String format3 = String.format("%s ( %d )", this.getString(2131493263), status.getStatusCode().getValue());
+                final String format3 = String.format("%s ( %d )", this.getString(2131493255), status.getStatusCode().getValue());
                 this.displayUserAgentDialog(format3, null, false);
                 return format3;
             }
             case 13:
             case 14:
             case 15: {
-                final String string2 = this.getString(2131493265);
+                final String string2 = this.getString(2131493257);
                 this.displayErrorDialog(string2, status.getStatusCode().getValue());
                 return string2;
             }
@@ -699,13 +699,13 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             new DebugMenuItems("NetflixActivity", this).addItems(this, menu2);
         }
         if (this.showSettingsInMenu()) {
-            menu.add(2131493138).setIcon(2130837731).setIntent(SettingsActivity.createStartIntent(this));
+            menu.add(2131493135).setIcon(2130837729).setIntent(SettingsActivity.createStartIntent(this));
         }
         if (this.showAboutInMenu()) {
             this.addAboutMenu(menu);
         }
         if (this.showSignOutInMenu()) {
-            menu.add(2131493180).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new NetflixActivity$2(this));
+            menu.add(2131493172).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new NetflixActivity$2(this));
         }
     }
     
@@ -749,7 +749,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         return super.onKeyUp(n, keyEvent);
     }
     
-    protected void onLoaded(final Status status) {
+    public void onLoaded(final Status status) {
         if (this.mLoadingStatusCallback != null) {
             this.mLoadingStatusCallback.onDataLoaded(status);
         }
@@ -839,12 +839,12 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     protected void onStart() {
         super.onStart();
         UserActionLogUtils.reportNavigationActionStarted((Context)this, null, this.getUiScreen());
-        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131427640);
+        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131427644);
         this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131427525);
         if (this.slidingPanel != null) {
             this.slidingPanel.setDragView(this.mdxFrag.getSlidingPanelDragView());
             this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131296357));
-            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837897));
+            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837900));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);

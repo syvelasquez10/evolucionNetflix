@@ -26,6 +26,11 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
     }
     
     @Override
+    protected int getLayoutId() {
+        return 2130903108;
+    }
+    
+    @Override
     protected void initDetailsViewGroup(final View view) {
         (this.detailsViewGroup = new KubrickKidsMovieDetailsFrag$KubrickKidsMovieDetailsViewGroup(this, (Context)this.getActivity())).removeActionBarDummyView();
         this.detailsViewGroup.showRelatedTitle();
@@ -49,6 +54,6 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296477), this.numColumns, 3));
+        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296475), this.numColumns, 3));
     }
 }

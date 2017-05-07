@@ -605,11 +605,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public boolean isDisableWidevine() {
-        return this.mDeviceConfigOverride.isDisableWidevine();
-    }
-    
-    @Override
     public boolean isEsnMigrationRequired() {
         return this.mNeedEsMigration;
     }
@@ -621,6 +616,21 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     
     public boolean isTablet() {
         return DeviceCategory.TABLET.equals(this.getDeviceCategory());
+    }
+    
+    @Override
+    public boolean isWidevineL1Enabled() {
+        return this.mDeviceConfigOverride.enableWidevineL1();
+    }
+    
+    @Override
+    public boolean isWidevineL3ABTestEnabled() {
+        return this.mAccountConfigOverride.enableWidevineL3ABTest();
+    }
+    
+    @Override
+    public boolean isWidevineL3Enabled() {
+        return this.mDeviceConfigOverride.enableWidevineL3();
     }
     
     public void refreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback, final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {

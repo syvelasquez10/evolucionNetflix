@@ -72,7 +72,7 @@ class EpisodesFrag$7 extends BroadcastReceiver
             if (n == selectedItemPosition) {
                 final int n2 = intent.getIntExtra("curEpisodeNumber", 1) - 1;
                 if (Log.isLoggable()) {
-                    Log.v("EpisodesFrag", "Setting current episode to: " + n2);
+                    Log.v("EpisodesFrag", "Setting current episode via episode refresh to: " + n2);
                 }
                 this.this$0.setItemChecked(n2);
                 ((EpisodesAdapter)this.this$0.episodesAdapter).updateSeasonDetails((SeasonDetails)this.this$0.spinner.getItemAtPosition(selectedItemPosition));

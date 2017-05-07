@@ -18,6 +18,6 @@ class EpisodesFrag$4 implements SeasonsSpinnerAdapter$IViewCreator
     
     @Override
     public View createItemView() {
-        return ((LayoutInflater)this.this$0.getActivity().getSystemService("layout_inflater")).inflate(2130903188, (ViewGroup)null, false);
+        return ((LayoutInflater)this.this$0.getActivity().getSystemService("layout_inflater")).inflate(2130903191, (ViewGroup)null, false);
     }
 }

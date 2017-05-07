@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -43,6 +44,7 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
     private static final String EXTRA_CHARACTER_ID = "extra_chararcter_id";
     public static final String EXTRA_KIDS_COLOR = "extra_kids_color";
     private static final float ROW_HEIGHT_LANDSCAPE_SCALE_FACTOR = 0.75f;
+    private static final float ROW_HEIGHT_PORTRAIT_SCALE_FACTOR = 1.1f;
     private static final String TAG = "KidsCharacterDetailsFrag";
     private String characterId;
     private KidsCharacterDetails kidsCharacterDetails;
@@ -70,8 +72,15 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
         this.setupSeasonsSpinnerGroup();
         super.updateShowDetails(showDetails);
         ((KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup)this.detailsViewGroup).updateCharacterDetails(this.kidsCharacterDetails);
+        this.episodesAdapter.setItemContentType(2);
+        this.episodesAdapter.setViewCreator(this.viewCreatorEpisodes);
         this.recyclerView.setVisibility(0);
+        this.recyclerView.setAlpha(1.0f);
         this.leWrapper.hide(false);
+        if (this.heroSlideshow != null) {
+            this.heroSlideshow.start();
+        }
+        this.postSetSpinnerSelectionRunnable();
     }
     
     @Override
@@ -85,6 +94,11 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
             seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColor);
         }
         return seasonsSpinnerGroup;
+    }
+    
+    @Override
+    protected int getlayoutId() {
+        return 2130903108;
     }
     
     @Override
@@ -122,6 +136,7 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
             this.heroSlideshow.start();
         }
         this.recyclerView.setVisibility(0);
+        this.recyclerView.setAlpha(1.0f);
         this.leWrapper.hide(false);
     }
     
@@ -144,6 +159,21 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
     protected void setupRecyclerViewAdapter() {
         this.episodesAdapter = new KubrickKidsCharacterDetailsFrag$GalleryAdapter(this);
         this.recyclerView.setAdapter(this.episodesAdapter);
+    }
+    
+    @Override
+    protected void setupSeasonsSpinnerGroup() {
+        if (this.shouldRenderAsSDP) {
+            this.spinnerViewGroup = this.createSeasonsSpinnerGroup();
+            this.addSpinnerToDetailsGroup();
+        }
+    }
+    
+    @Override
+    protected void showStandardViews() {
+        if (!this.isListVisible()) {
+            AnimationUtils.showView((View)this.recyclerView, true);
+        }
     }
     
     @Override

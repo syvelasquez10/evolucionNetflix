@@ -42,7 +42,7 @@ class KubrickKidsShowDetailsFrag$KubrickKidsEpisodeView extends KubrickShowDetai
     protected void updateTitle(final EpisodeDetails episodeDetails) {
         if (this.title != null) {
             super.updateTitle(episodeDetails);
-            this.title.setTextColor(this.getResources().getColor(2131230899));
+            this.title.setTextColor(this.getResources().getColor(2131230897));
             final View view = (View)this.getParent();
             if (view != null) {
                 view.setTag(2131427348, (Object)episodeDetails.getSeasonNumber());

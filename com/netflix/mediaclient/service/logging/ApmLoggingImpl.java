@@ -508,6 +508,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     @Override
     public void endUiBrowseStartupSession(final long n, final boolean b, final UIError uiError) {
         if (this.mUIBrowseStartupSession == null) {
+            Log.d("nf_log_apm", "UI browse startup session is null - bailing early");
             return;
         }
         Log.d("nf_log_apm", "UI browse startup session ended");

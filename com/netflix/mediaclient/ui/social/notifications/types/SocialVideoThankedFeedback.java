@@ -6,7 +6,6 @@ package com.netflix.mediaclient.ui.social.notifications.types;
 
 import android.text.Html;
 import com.netflix.mediaclient.ui.social.notifications.NotificationViewHolder;
-import android.view.View;
 import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.content.Context;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
@@ -17,7 +16,7 @@ public class SocialVideoThankedFeedback extends SocialNotification
 {
     @Override
     protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        final String string = context.getResources().getString(2131493378);
+        final String string = context.getResources().getString(2131493361);
         notificationCompat$BigPictureStyle.setSummaryText(string);
         notificationCompat$Builder.setContentText(string);
     }
@@ -28,8 +27,8 @@ public class SocialVideoThankedFeedback extends SocialNotification
     }
     
     @Override
-    public void initView(final View view, final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        super.initView(view, notificationViewHolder, socialNotificationSummary, context);
-        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493382, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
+    public void initView(final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
+        super.initView(notificationViewHolder, socialNotificationSummary, context);
+        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493365, new Object[] { "" })));
     }
 }

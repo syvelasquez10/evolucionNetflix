@@ -38,6 +38,10 @@ public class AccountConfiguration
         return this.mAccountConfigData != null && this.mAccountConfigData.enableLowBitrateStreams();
     }
     
+    public boolean enableWidevineL3ABTest() {
+        return this.mAccountConfigData != null && this.mAccountConfigData.enableWidevineL3ABTest();
+    }
+    
     public boolean getCastEnabled() {
         return this.mAccountConfigData != null && this.mAccountConfigData.getCastEnabled();
     }

@@ -28,7 +28,6 @@ import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
@@ -44,17 +43,13 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private DetailsActivity$Action mAction;
     private String mActionToken;
     private boolean mNotificationOpenedReportAlreadySent;
-    private SocialUtils$NotificationsListStatus notificationsListStatus;
     protected PlayContext playContext;
     private final BroadcastReceiver reloadReceiver;
     private ServiceManager serviceMan;
-    private final BroadcastReceiver socialNotificationsListUpdateReceiver;
     protected String videoId;
     
     public DetailsActivity() {
-        this.notificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
-        this.socialNotificationsListUpdateReceiver = new DetailsActivity$1(this);
-        this.reloadReceiver = new DetailsActivity$2(this);
+        this.reloadReceiver = new DetailsActivity$1(this);
     }
     
     public static void finishAllDetailsActivities(final Context context) {
@@ -96,7 +91,6 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     private void registerReceivers() {
-        this.registerReceiverLocallyWithAutoUnregister(this.socialNotificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
         this.registerReceiverLocallyWithAutoUnregister(this.reloadReceiver, "com.netflix.mediaclient.intent.action.DETAIL_PAGE_REFRESH");
         this.registerFinishReceiverWithAutoUnregister("com.netflix.mediaclient.ui.login.ACTION_FINISH_DETAILS_ACTIVITIES");
     }
@@ -222,7 +216,6 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         SocialUtils.addShareIconIfNeeded(this, menu);
         MdxMenu.addSelectPlayTarget(this, menu, false);
         this.detailsMenu = new DetailsMenu(this, menu, false);
-        SocialUtils.addNotificationsIconIfNeeded(this, this.notificationsListStatus, menu);
         super.onCreateOptionsMenu(menu, menu2);
     }
     

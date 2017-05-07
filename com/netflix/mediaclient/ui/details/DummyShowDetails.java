@@ -46,6 +46,11 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public String getCopyright() {
+        return "© 2015 Test";
+    }
+    
+    @Override
     public String getCreators() {
         return "Creators";
     }

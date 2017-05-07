@@ -14,12 +14,13 @@ import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Build$VERSION;
 import com.netflix.mediaclient.util.ViewUtils;
-import android.view.ViewStub;
+import com.netflix.mediaclient.ui.social.notifications.NotificationsFrag$NotificationsListStatusListener;
 import com.netflix.mediaclient.Log;
 import android.widget.ImageView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.View$OnClickListener;
 import android.widget.AdapterView$OnItemClickListener;
+import android.view.ViewStub;
 import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.StaticListView;
@@ -61,8 +62,8 @@ class StandardSlidingMenu$GenresListAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903202, (ViewGroup)null);
-            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131427686), inflate.findViewById(2131427687)));
+            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903205, (ViewGroup)null);
+            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131427690), inflate.findViewById(2131427691)));
         }
         final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder = (StandardSlidingMenu$GenreRowHolder)inflate.getTag();
         final GenreList item = this.getItem(n);

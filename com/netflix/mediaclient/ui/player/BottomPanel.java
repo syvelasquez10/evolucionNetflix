@@ -53,15 +53,15 @@ public final class BottomPanel extends PlayerSection
     }
     
     private void init(final PlayScreen$Listeners playScreen$Listeners) {
-        this.durationLabel = (TextView)this.context.findViewById(2131427716);
-        this.bottomPanel = this.context.findViewById(2131427712);
-        this.bottomGradient = this.context.findViewById(2131427708);
-        (this.timeline = (TimelineSeekBar)this.context.findViewById(2131427715)).setOnSeekBarChangeListener(playScreen$Listeners.videoPositionListener);
+        this.durationLabel = (TextView)this.context.findViewById(2131427720);
+        this.bottomPanel = this.context.findViewById(2131427716);
+        this.bottomGradient = this.context.findViewById(2131427712);
+        (this.timeline = (TimelineSeekBar)this.context.findViewById(2131427719)).setOnSeekBarChangeListener(playScreen$Listeners.videoPositionListener);
         this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
-        (this.media = (ImageButton)this.context.findViewById(2131427713)).setOnClickListener(playScreen$Listeners.playPauseListener);
-        (this.skipBack = (ImageButton)this.context.findViewById(2131427714)).setOnClickListener(playScreen$Listeners.skipBackListener);
-        (this.zoom = (ImageButton)this.context.findViewById(2131427717)).setOnClickListener(playScreen$Listeners.zoomListener);
-        this.extraSeekbarHandler = this.context.findViewById(2131427726);
+        (this.media = (ImageButton)this.context.findViewById(2131427717)).setOnClickListener(playScreen$Listeners.playPauseListener);
+        (this.skipBack = (ImageButton)this.context.findViewById(2131427718)).setOnClickListener(playScreen$Listeners.skipBackListener);
+        (this.zoom = (ImageButton)this.context.findViewById(2131427721)).setOnClickListener(playScreen$Listeners.zoomListener);
+        this.extraSeekbarHandler = this.context.findViewById(2131427730);
         this.currentTime = CurrentTime.newInstance(this.context);
     }
     

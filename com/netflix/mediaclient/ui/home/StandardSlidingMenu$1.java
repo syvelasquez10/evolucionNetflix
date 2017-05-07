@@ -15,14 +15,13 @@ import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Build$VERSION;
 import com.netflix.mediaclient.util.ViewUtils;
 import java.util.List;
-import android.view.ViewStub;
-import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.View$OnClickListener;
 import android.widget.AdapterView$OnItemClickListener;
+import android.view.ViewStub;
 import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
@@ -33,8 +32,10 @@ import android.support.v4.widget.DrawerLayout;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.annotation.SuppressLint;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.social.notifications.NotificationsFrag$NotificationsListStatusListener;
 
-class StandardSlidingMenu$1 implements Runnable
+class StandardSlidingMenu$1 implements NotificationsFrag$NotificationsListStatusListener
 {
     final /* synthetic */ StandardSlidingMenu this$0;
     
@@ -43,7 +44,13 @@ class StandardSlidingMenu$1 implements Runnable
     }
     
     @Override
-    public void run() {
-        this.this$0.drawerLayout.closeDrawers();
+    public void onNotificationsListUpdated(final boolean b) {
+        if (b) {
+            Log.v("StandardSlidingMenu", "Showing notifications header");
+            this.this$0.notificationsStub.setVisibility(0);
+            return;
+        }
+        Log.v("StandardSlidingMenu", "Hiding notifications header");
+        this.this$0.notificationsStub.setVisibility(8);
     }
 }

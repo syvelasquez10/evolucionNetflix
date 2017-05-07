@@ -11,14 +11,11 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Bundle;
+import android.app.Activity;
 import android.content.IntentFilter;
+import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
-import java.util.Iterator;
-import android.content.Context;
-import com.netflix.mediaclient.util.log.SocialLoggingUtils;
-import java.util.List;
-import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.StatusCode;
@@ -30,7 +27,6 @@ import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.Set;
 import com.netflix.mediaclient.android.widget.StaticListView;
-import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
@@ -55,6 +51,7 @@ class NotificationsFrag$3 extends LoggingManagerCallback
             this.this$0.mLoadMoreAvailable = (list != null && list.getSocialNotifications() != null && list.getSocialNotifications().size() == this.this$0.getNumNotificationsPerPage());
             if (list != null && list.getSocialNotifications() != null) {
                 this.this$0.mNotifications.getSocialNotifications().addAll(list.getSocialNotifications());
+                this.this$0.refreshNotificationsListStatus();
             }
             if (this.this$0.mAdapter != null) {
                 this.this$0.mAdapter.notifyDataSetChanged();

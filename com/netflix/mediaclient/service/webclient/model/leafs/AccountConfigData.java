@@ -30,6 +30,8 @@ public class AccountConfigData
     private boolean enableHTTPSAuth;
     @SerializedName("enableLowBitrateStreams")
     private boolean enableLowBitrateStreams;
+    @SerializedName("enableWidevineL3ABTest")
+    private boolean enableWidevineL3ABTest;
     @SerializedName("JPlayerConfig")
     private String jPlayerConfig;
     @SerializedName("kubrickConfig")
@@ -93,6 +95,10 @@ public class AccountConfigData
     
     public boolean enableLowBitrateStreams() {
         return this.enableLowBitrateStreams;
+    }
+    
+    public boolean enableWidevineL3ABTest() {
+        return this.enableWidevineL3ABTest;
     }
     
     public String getCastBlacklist() {

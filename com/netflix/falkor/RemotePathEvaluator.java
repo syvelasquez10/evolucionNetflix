@@ -43,10 +43,10 @@ public class RemotePathEvaluator extends BasePathEvaluator
         Class<?> clazz;
         String string;
         Class<?> clazz2;
-        Method method;
         Class<?> returnType = null;
         Type genericReturnType2;
         Type type2 = null;
+        Method method;
         Class<?> clazz3;
         Class<?> clazz4;
         Type type3;
@@ -58,7 +58,6 @@ public class RemotePathEvaluator extends BasePathEvaluator
             }
             string = iterator.next().toString();
             while (true) {
-            Block_6_Outer:
                 while (true) {
                     Label_0230: {
                         if (genericReturnType == null) {
@@ -73,34 +72,36 @@ public class RemotePathEvaluator extends BasePathEvaluator
                                     break Label_0219;
                                 }
                                 break Label_0230;
-                                // iftrue(Label_0154:, !List.class.isAssignableFrom((Class<?>)returnType))
                             Block_8_Outer:
                                 while (true) {
                                     while (true) {
+                                        Block_7: {
+                                            break Block_7;
+                                            while (true) {
+                                                type2 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
+                                                break Label_0241;
+                                                Label_0193: {
+                                                    clazz = JsonObject.class;
+                                                }
+                                                return clazz;
+                                                genericReturnType2 = method.getGenericReturnType();
+                                                continue Block_8_Outer;
+                                            }
+                                        }
                                         genericReturnType = method.getGenericReturnType();
                                         type = returnType;
                                         clazz2 = null;
                                         break Label_0219;
-                                        continue Block_6_Outer;
-                                    }
-                                Block_9:
-                                    while (true) {
-                                        genericReturnType2 = method.getGenericReturnType();
-                                        break Block_9;
-                                        Label_0193: {
-                                            clazz = JsonObject.class;
+                                        Label_0154: {
+                                            continue Label_0069_Outer;
                                         }
-                                        return clazz;
-                                        Label_0154:
-                                        continue Label_0069_Outer;
                                     }
-                                    type2 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
-                                    break Label_0241;
                                     method = rootType.getMethod("get" + string.substring(0, 1).toUpperCase() + string.substring(1), (Class<?>[])new Class[0]);
                                     returnType = method.getReturnType();
                                     continue Block_8_Outer;
                                 }
                             }
+                            // iftrue(Label_0154:, !List.class.isAssignableFrom((Class<?>)returnType))
                             // iftrue(Label_0204:, !genericReturnType2 instanceof ParameterizedType)
                             // iftrue(Label_0209:, !Map.class.isAssignableFrom((Class<?>)returnType))
                             // iftrue(Label_0193:, !returnType instanceof Class)

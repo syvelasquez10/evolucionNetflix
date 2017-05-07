@@ -44,8 +44,8 @@ class LogoutActivity$LogoutHandler extends LoggingManagerCallback
         if (Log.isLoggable()) {
             Log.e("LogoutActivity", "Could not log user out - status code: " + status.getStatusCode());
         }
-        this.this$0.reportError(status, this.this$0.getString(2131493209));
-        Toast.makeText(this.this$0.getApplicationContext(), 2131493209, 1).show();
+        this.this$0.reportError(status, this.this$0.getString(2131493201));
+        Toast.makeText(this.this$0.getApplicationContext(), 2131493201, 1).show();
         this.this$0.finish();
     }
 }

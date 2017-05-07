@@ -65,9 +65,11 @@ public class SegmentIndex
             (this.mImages[i] = new SegmentIndex$ImageDescriptor(dataInputStream, null)).setTotalIndex(totalIndex);
             Log.d("nf_subtitles", "Parsing image " + i + " metadata done.");
         }
-        this.mSegmentStartPosition = this.mImages[0].mImageStartPosition;
-        i = this.mImages.length - 1;
-        this.mSegmentSize = this.mImages[i].mSize + (this.mImages[i].mImageStartPosition - this.mSegmentStartPosition);
+        if (this.mEntryCount > 0) {
+            this.mSegmentStartPosition = this.mImages[0].mImageStartPosition;
+            i = this.mImages.length - 1;
+            this.mSegmentSize = this.mImages[i].mSize + (this.mImages[i].mImageStartPosition - this.mSegmentStartPosition);
+        }
     }
     
     public void downloadStarted() {

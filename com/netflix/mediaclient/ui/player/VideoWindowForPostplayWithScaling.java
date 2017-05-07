@@ -40,8 +40,8 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
         this.END_MARGIN_LEFT_DP = 12;
         this.END_WIDTH_DP = 300;
         this.mContext = mContext;
-        this.mSurface = (TappableSurfaceView)mContext.findViewById(2131427700);
-        this.mSurface2 = (TextureView)mContext.findViewById(2131427705);
+        this.mSurface = (TappableSurfaceView)mContext.findViewById(2131427704);
+        this.mSurface2 = (TextureView)mContext.findViewById(2131427709);
         this.mParent = (RelativeLayout)mContext.findViewById(2131427520);
         if (this.mSurface == null) {
             Log.w(VideoWindowForPostplayWithScaling.TAG, "PostPlayWithScaling:: surface not found");

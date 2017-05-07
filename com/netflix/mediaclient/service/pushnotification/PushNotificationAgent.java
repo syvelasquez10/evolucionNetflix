@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.service.pushnotification;
 
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import java.util.List;
-import java.util.ArrayList;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -456,10 +454,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     
     public void markAsRead(final Intent intent) {
         Log.d("nf_push", "markAsRead", intent);
-        final SocialNotificationSummary socialNotificationSummary = new SocialNotificationSummary(intent.getStringExtra("g"), null);
-        final ArrayList<SocialNotificationSummary> list = new ArrayList<SocialNotificationSummary>(1);
-        list.add(socialNotificationSummary);
-        this.getService().getBrowse().markSocialNotificationsAsRead(list);
+        this.getService().getBrowse().markNotificationAsRead(new SocialNotificationSummary(intent.getStringExtra("g"), null));
     }
     
     @Override

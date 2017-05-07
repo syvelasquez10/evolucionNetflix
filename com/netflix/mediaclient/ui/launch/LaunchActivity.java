@@ -95,14 +95,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void createContentView() {
-        this.setContentView(2130903196);
-        final ImageView imageView = (ImageView)this.findViewById(2131427825);
+        this.setContentView(2130903199);
+        final ImageView imageView = (ImageView)this.findViewById(2131427828);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837906;
+            imageResource = 2130837909;
         }
         else {
-            imageResource = 2130837905;
+            imageResource = 2130837908;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi((Context)this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -116,7 +116,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131493211));
+            this.showDebugToast(this.getString(2131493203));
             return;
         }
         Log.e("LaunchActivity", "Login failed, redirect to LoginActivity with credential and status");
@@ -249,8 +249,8 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131427825);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131427540), (ProgressBar)this.findViewById(2131427541)));
+        final ImageView imageView = (ImageView)this.findViewById(2131427828);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131427541), (ProgressBar)this.findViewById(2131427542)));
     }
     
     private void onCredentialRetrieved(final Credential credential) {

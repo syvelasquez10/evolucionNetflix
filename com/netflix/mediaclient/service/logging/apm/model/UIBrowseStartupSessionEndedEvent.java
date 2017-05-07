@@ -39,6 +39,11 @@ public final class UIBrowseStartupSessionEndedEvent extends SessionEndedEvent
     }
     
     @Override
+    protected JSONObject getCustomData() {
+        return null;
+    }
+    
+    @Override
     protected JSONObject getData() {
         JSONObject data;
         if ((data = super.getData()) == null) {

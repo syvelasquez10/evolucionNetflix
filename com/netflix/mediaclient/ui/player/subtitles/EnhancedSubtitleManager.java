@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import android.text.TextUtils$TruncateAt;
 import com.netflix.mediaclient.android.widget.AutoResizeTextView;
 import com.netflix.mediaclient.android.widget.StrokeTextView;
@@ -16,9 +17,6 @@ import com.netflix.mediaclient.service.player.subtitles.text.ColorMapping;
 import com.netflix.mediaclient.service.player.subtitles.text.TextSubtitleParser;
 import android.graphics.Rect;
 import com.netflix.mediaclient.util.SubtitleUtils$Margins;
-import android.app.Activity;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import android.widget.LinearLayout$LayoutParams;
@@ -29,17 +27,16 @@ import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.service.player.subtitles.text.VerticalAlignment;
 import com.netflix.mediaclient.util.SubtitleUtils;
 import android.view.ViewGroup$LayoutParams;
+import android.view.View;
+import android.content.Context;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.player.subtitles.text.Region;
 import com.netflix.mediaclient.util.ViewUtils$ViewComparator;
 import com.netflix.mediaclient.service.player.subtitles.text.TextSubtitleBlock;
-import android.content.Context;
-import com.netflix.mediaclient.util.AndroidUtils;
 import java.util.HashMap;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import android.widget.TextView;
 import java.util.List;
-import android.view.View;
 import android.widget.RelativeLayout;
 import java.util.Map;
 import android.view.ViewTreeObserver$OnPreDrawListener;
@@ -49,24 +46,13 @@ import android.widget.LinearLayout;
 public class EnhancedSubtitleManager extends BaseSubtitleManager
 {
     private static final String DEFAULT_REGION_ID = "DEFAULT";
-    private static final int H_REGION_PADDING = 5;
-    private static final int PLAYER_PADDING_PHONE = 46;
-    private static final int PLAYER_PADDING_TABLET = 59;
     private static final float SAFE_DISPLAY_AREA_MARGIN = 5.0f;
-    private static final int TOP_PADDING = 5;
-    private static final int V_REGION_PADDING = 1;
-    private int mBottomPanelHeight;
-    private int mBottomPanelPadding;
     private LinearLayout mDefaultRegion;
     private float mDefaultTextSize;
     private AtomicBoolean mDefaultsInitiated;
     final ViewTreeObserver$OnPreDrawListener mDoNotDraw;
-    private int mHorizontalRegionPadding;
     private Map<String, LinearLayout> mRegions;
     private RelativeLayout mSafeDisplayArea;
-    private View mTopPanel;
-    private int mTopPanelPadding;
-    private int mVerticalRegionPadding;
     private Map<String, List<TextView>> mVisibleBlocks;
     
     public EnhancedSubtitleManager(final PlayerActivity playerActivity) {
@@ -76,24 +62,11 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         this.mDefaultsInitiated = new AtomicBoolean(false);
         this.mDoNotDraw = (ViewTreeObserver$OnPreDrawListener)new EnhancedSubtitleManager$1(this);
         if (this.mActivity.isTablet()) {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131296436);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131296433);
         }
         else {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131296435);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131296432);
         }
-        this.mHorizontalRegionPadding = AndroidUtils.dipToPixels((Context)playerActivity, 5);
-        this.mVerticalRegionPadding = AndroidUtils.dipToPixels((Context)playerActivity, 1);
-        int n;
-        if (playerActivity.isTablet()) {
-            n = 59;
-        }
-        else {
-            n = 46;
-        }
-        this.mBottomPanelPadding = AndroidUtils.dipToPixels((Context)playerActivity, n);
-        this.mBottomPanelHeight = playerActivity.getResources().getDimensionPixelSize(2131296512);
-        this.mTopPanelPadding = AndroidUtils.dipToPixels((Context)playerActivity, 5);
-        this.mTopPanel = playerActivity.findViewById(2131427710);
         this.mTransparent = playerActivity.getResources().getColor(17170445);
     }
     
@@ -304,25 +277,6 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         return list2;
     }
     
-    private int getDisplayAreaMarginBottom() {
-        if (DeviceUtils.hasHardwareNavigationKeys() || ViewUtils.isNavigationBarRightOfContent(this.mActivity)) {
-            return this.mBottomPanelHeight + this.mBottomPanelPadding;
-        }
-        if (ViewUtils.isNavigationBarBelowContent(this.mActivity)) {
-            return this.mBottomPanelHeight + this.mBottomPanelPadding + ViewUtils.getNavigationBarHeight((Context)this.mActivity, false);
-        }
-        return this.mBottomPanelHeight + this.mBottomPanelPadding;
-    }
-    
-    private int getDisplayAreaMarginTop() {
-        final int statusBarHeight = ViewUtils.getStatusBarHeight((Context)this.mActivity);
-        if (this.mTopPanel == null) {
-            Log.w("nf_subtitles_render", "Top panel is null");
-            return statusBarHeight + this.mTopPanelPadding;
-        }
-        return statusBarHeight + (this.mTopPanel.getHeight() + this.mTopPanelPadding);
-    }
-    
     private SubtitleUtils$Margins moveRegionInsideVisibleDisplayArea(final SubtitleUtils$Margins subtitleUtils$Margins, int left, int right, final Rect rect) {
         final int n = 0;
         if (Log.isLoggable()) {
@@ -495,56 +449,6 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
             }
         }
     }
-    
-    private void removeVisibleSubtitleBlocks(final boolean b) {
-        LinearLayout linearLayout = null;
-        Label_0039_Outer:Label_0054_Outer:
-        while (true) {
-            while (true) {
-            Label_0181:
-                while (true) {
-                    Label_0171: {
-                        synchronized (this) {
-                            if (this.mDefaultRegion != null) {
-                                this.mDefaultRegion.setBackgroundColor(this.mTransparent);
-                                this.mDefaultRegion.setVisibility(4);
-                                if (!b) {
-                                    break Label_0171;
-                                }
-                                this.mDefaultRegion.removeAllViews();
-                            }
-                            for (final String s : this.mRegions.keySet()) {
-                                if (Log.isLoggable()) {
-                                    Log.d("nf_subtitles_render", "Removing visible blocks for region " + s);
-                                }
-                                linearLayout = this.mRegions.get(s);
-                                if (linearLayout != null) {
-                                    break Label_0181;
-                                }
-                                if (!Log.isLoggable()) {
-                                    continue Label_0039_Outer;
-                                }
-                                Log.d("nf_subtitles_render", "Region not found for id " + s + ". Probably default region.");
-                            }
-                            break;
-                        }
-                    }
-                    this.mDefaultRegion.removeAllViewsInLayout();
-                    continue Label_0054_Outer;
-                }
-                linearLayout.setBackgroundColor(this.mTransparent);
-                linearLayout.setVisibility(4);
-                if (b) {
-                    linearLayout.removeAllViews();
-                    continue;
-                }
-                linearLayout.removeAllViewsInLayout();
-                continue;
-            }
-        }
-        this.mVisibleBlocks.clear();
-    }
-    // monitorexit(this)
     
     private void setBackgroundColorToRegion(final LinearLayout linearLayout, final TextSubtitleBlock textSubtitleBlock) {
         final TextStyle userDefaults = ((TextSubtitleParser)this.mParser).getUserDefaults();
@@ -921,9 +825,14 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
     }
     
     @Override
+    public boolean canHandleSubtitleProfile(final IMedia$SubtitleProfile media$SubtitleProfile) {
+        return media$SubtitleProfile != null && media$SubtitleProfile != IMedia$SubtitleProfile.IMAGE;
+    }
+    
+    @Override
     public void clear() {
         synchronized (this) {
-            Log.v("nf_subtitles_render", "Remove pending actions");
+            Log.v("nf_subtitles_render", "Remove current and pending actions");
             this.removeAll(true);
         }
     }
@@ -938,6 +847,11 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         final EnhancedSubtitleManager$2 enhancedSubtitleManager$2 = new EnhancedSubtitleManager$2(this, b, (TextSubtitleBlock)subtitleBlock);
         this.mPendingActions.add(enhancedSubtitleManager$2);
         return enhancedSubtitleManager$2;
+    }
+    
+    @Override
+    public IMedia$SubtitleProfile getSubtitleProfile() {
+        return IMedia$SubtitleProfile.ENHANCED;
     }
     
     @Override
@@ -1025,6 +939,57 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         Log.d("nf_subtitles_render", "Remove all subtitles.");
         this.removeAll(true);
     }
+    
+    @Override
+    protected void removeVisibleSubtitleBlocks(final boolean b) {
+        LinearLayout linearLayout = null;
+        Label_0039_Outer:Label_0054_Outer:
+        while (true) {
+            while (true) {
+            Label_0181:
+                while (true) {
+                    Label_0171: {
+                        synchronized (this) {
+                            if (this.mDefaultRegion != null) {
+                                this.mDefaultRegion.setBackgroundColor(this.mTransparent);
+                                this.mDefaultRegion.setVisibility(4);
+                                if (!b) {
+                                    break Label_0171;
+                                }
+                                this.mDefaultRegion.removeAllViews();
+                            }
+                            for (final String s : this.mRegions.keySet()) {
+                                if (Log.isLoggable()) {
+                                    Log.d("nf_subtitles_render", "Removing visible blocks for region " + s);
+                                }
+                                linearLayout = this.mRegions.get(s);
+                                if (linearLayout != null) {
+                                    break Label_0181;
+                                }
+                                if (!Log.isLoggable()) {
+                                    continue Label_0039_Outer;
+                                }
+                                Log.d("nf_subtitles_render", "Region not found for id " + s + ". Probably default region.");
+                            }
+                            break;
+                        }
+                    }
+                    this.mDefaultRegion.removeAllViewsInLayout();
+                    continue Label_0054_Outer;
+                }
+                linearLayout.setBackgroundColor(this.mTransparent);
+                linearLayout.setVisibility(4);
+                if (b) {
+                    linearLayout.removeAllViews();
+                    continue;
+                }
+                linearLayout.removeAllViewsInLayout();
+                continue;
+            }
+        }
+        this.mVisibleBlocks.clear();
+    }
+    // monitorexit(this)
     
     @Override
     public void setSubtitleVisibility(final boolean b) {

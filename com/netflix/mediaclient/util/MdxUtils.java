@@ -36,18 +36,18 @@ public final class MdxUtils
             Log.w("MdxUtils", "Activity is not valid or MdxFrag is null. Skipping MDX disconnect dialog");
             return null;
         }
-        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903132, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131427626)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
-        final TextView textView = (TextView)inflate.findViewById(2131427627);
-        final TextView textView2 = (TextView)inflate.findViewById(2131427628);
+        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903135, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131427630)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
+        final TextView textView = (TextView)inflate.findViewById(2131427631);
+        final TextView textView2 = (TextView)inflate.findViewById(2131427632);
         final Playable playable = mdxUtils$MdxTargetSelectionDialogInterface.getPlayable();
         String string2;
         if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && playable != null) {
-            final String string = netflixActivity.getResources().getString(2131493239, new Object[] { "" });
+            final String string = netflixActivity.getResources().getString(2131493231, new Object[] { "" });
             textView2.setVisibility(0);
             String text;
             if (playable.isPlayableEpisode()) {
-                text = netflixActivity.getResources().getString(2131493406, new Object[] { playable.getParentTitle(), playable.getSeasonNumber(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
+                text = netflixActivity.getResources().getString(2131493390, new Object[] { playable.getParentTitle(), playable.getSeasonNumber(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
             }
             else {
                 text = playable.getPlayableTitle();
@@ -56,11 +56,11 @@ public final class MdxUtils
             string2 = string;
         }
         else {
-            string2 = netflixActivity.getResources().getString(2131493404);
+            string2 = netflixActivity.getResources().getString(2131493388);
             textView2.setVisibility(8);
         }
         textView.setText((CharSequence)string2);
-        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131493405, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
+        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131493389, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
         create.setCanceledOnTouchOutside(true);
         return create;
     }
@@ -87,13 +87,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(netflixActivity);
         mdxTargetSelectionDialog$Builder.setCancelable(true);
-        mdxTargetSelectionDialog$Builder.setTitle(2131493151);
+        mdxTargetSelectionDialog$Builder.setTitle(2131493145);
         mdxTargetSelectionDialog$Builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxUtils$MdxTargetSelectionDialogInterface.getPlayable() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle())) {
-                format = String.format(netflixActivity.getString(2131493239), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
+                format = String.format(netflixActivity.getString(2131493231), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
             }
         }
         mdxTargetSelectionDialog$Builder.setSelection(devicePositionByUUID, format);

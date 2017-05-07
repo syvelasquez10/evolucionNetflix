@@ -118,7 +118,7 @@ class NetflixActivity$13 extends BroadcastReceiver
             final NetflixActivity$13$1 netflixActivity$13$1 = new NetflixActivity$13$1(this);
             AlertDialogFactory$AlertDialogDescriptor alertDialogFactory$AlertDialogDescriptor;
             if (access$1101 != null) {
-                alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", access$1100, null, netflixActivity$13$1, this.this$0.getString(2131493354), new LaunchBrowser((Context)this.this$0, access$1101));
+                alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", access$1100, null, netflixActivity$13$1, this.this$0.getString(2131493337), new LaunchBrowser((Context)this.this$0, access$1101));
             }
             else {
                 alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$AlertDialogDescriptor("", access$1100, null, netflixActivity$13$1);

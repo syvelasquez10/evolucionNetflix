@@ -13,19 +13,19 @@ import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView$Adapter;
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import android.view.LayoutInflater;
 import android.os.Bundle;
-import com.netflix.mediaclient.Log;
 import android.widget.AdapterView$OnItemSelectedListener;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,7 +61,7 @@ class KubrickShowDetailsFrag$6 implements RecyclerViewHeaderAdapter$IViewCreator
     }
     
     private int getImageHeight() {
-        return (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296452) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        return (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296449) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     @Override

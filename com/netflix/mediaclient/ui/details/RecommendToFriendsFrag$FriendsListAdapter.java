@@ -86,8 +86,8 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
     public View getView(int imageResource, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.mLayoutInflater.inflate(2130903177, viewGroup, false);
-            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131427791), (TextView)inflate.findViewById(2131427792), (ImageView)inflate.findViewById(2131427795), inflate.findViewById(2131427794), (TextView)inflate.findViewById(2131427793)));
+            inflate = this.this$0.mLayoutInflater.inflate(2130903180, viewGroup, false);
+            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131427794), (TextView)inflate.findViewById(2131427795), (ImageView)inflate.findViewById(2131427798), inflate.findViewById(2131427797), (TextView)inflate.findViewById(2131427796)));
         }
         final RecommendToFriendsFrag$FriendsListAdapter$Holder recommendToFriendsFrag$FriendsListAdapter$Holder = (RecommendToFriendsFrag$FriendsListAdapter$Holder)inflate.getTag();
         final FriendForRecommendation item = this.getItem(imageResource);
@@ -96,13 +96,13 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
         recommendToFriendsFrag$FriendsListAdapter$Holder.fbIcon.setVisibility(8);
         recommendToFriendsFrag$FriendsListAdapter$Holder.friendWatchedStatus.setVisibility(8);
         if (!this.this$0.mLoadMoreAvailable && (this.this$0.mFriends == null || this.this$0.mFriends.size() == 0)) {
-            recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493363);
+            recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493346);
             recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(false);
             recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(17);
         }
         else {
             if (this.this$0.mLoadMoreAvailable && imageResource == this.getCount() - 1) {
-                recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493362);
+                recommendToFriendsFrag$FriendsListAdapter$Holder.name.setText(2131493345);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setSingleLine(false);
                 recommendToFriendsFrag$FriendsListAdapter$Holder.name.setGravity(17);
                 this.this$0.loadMoreFriends();
@@ -123,10 +123,10 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
                 }
                 final ImageView access$1600 = recommendToFriendsFrag$FriendsListAdapter$Holder.checkMark;
                 if (this.this$0.mCheckedFriends.contains(item)) {
-                    imageResource = 2130837877;
+                    imageResource = 2130837879;
                 }
                 else {
-                    imageResource = 2130837876;
+                    imageResource = 2130837878;
                 }
                 access$1600.setImageResource(imageResource);
                 inflate.setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$FriendsListAdapter$1(this, item, recommendToFriendsFrag$FriendsListAdapter$Holder));

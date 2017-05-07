@@ -6,40 +6,54 @@ package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.image.ImageSubtitleParser;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
-import android.content.Context;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import com.netflix.mediaclient.service.player.subtitles.image.SegmentIndex$ImageDescriptor;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.RelativeLayout$LayoutParams;
 import java.util.Iterator;
-import android.view.View;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import android.graphics.Bitmap;
+import com.netflix.mediaclient.Log;
 import android.graphics.BitmapFactory;
 import com.netflix.mediaclient.util.ViewUtils$ViewComparator;
 import java.util.List;
 import com.netflix.mediaclient.service.player.subtitles.image.ImageSubtitleBlock;
+import android.view.ViewGroup$LayoutParams;
+import android.view.View;
+import android.widget.RelativeLayout$LayoutParams;
+import android.content.Context;
 import java.util.HashMap;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import android.widget.ImageView;
 import java.util.Map;
+import android.widget.RelativeLayout;
 
 public class ImageBasedSubtitleManager extends BaseSubtitleManager
 {
+    private RelativeLayout mImageWrapper;
     protected MeasureTranslator mMeasureTranslator;
     private Map<String, ImageView> mVisibleBlocks;
     
     ImageBasedSubtitleManager(final PlayerActivity playerActivity) {
         super(playerActivity);
         this.mVisibleBlocks = new HashMap<String, ImageView>();
+        this.mImageWrapper = new RelativeLayout((Context)playerActivity);
+        this.mDisplayArea.addView((View)this.mImageWrapper, (ViewGroup$LayoutParams)new RelativeLayout$LayoutParams(-1, -1));
     }
     
-    private ImageView createImage(final String s, final int n, final int n2) {
-        final Bitmap scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(s), n, n2, true);
+    private ImageView createImage(final String s, final int n, final int n2, final boolean b) {
+        Bitmap imageBitmap = BitmapFactory.decodeFile(s);
+        if (b) {
+            if (Log.isLoggable()) {
+                Log.d("nf_subtitles_render", "Scale to w/h " + n + "/" + n2);
+            }
+            imageBitmap = Bitmap.createScaledBitmap(imageBitmap, n, n2, true);
+        }
+        else {
+            Log.d("nf_subtitles_render", "Do not scale, use image original width");
+        }
         final ImageView imageView = new ImageView(this.getContext());
-        imageView.setImageBitmap(scaledBitmap);
+        imageView.setImageBitmap(imageBitmap);
         imageView.setVisibility(4);
         return imageView;
     }
@@ -77,40 +91,8 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
             final ImageView imageView = this.mVisibleBlocks.remove(imageSubtitleBlock.getImage().getName());
             if (imageView != null) {
                 imageView.setVisibility(4);
-                this.mDisplayArea.removeView((View)imageView);
+                this.mImageWrapper.removeView((View)imageView);
             }
-        }
-    }
-    
-    private void removeVisibleSubtitleBlocks(final boolean b) {
-        // monitorenter(this)
-        // monitorexit(this)
-        while (true) {
-            Label_0072: {
-                if (!b) {
-                    break Label_0072;
-                }
-                Label_0082: {
-                    try {
-                        this.mDisplayArea.removeAllViews();
-                        for (final ImageView imageView : this.mVisibleBlocks.values()) {
-                            Log.d("nf_subtitles_render", "Removing image ");
-                            if (imageView != null) {
-                                imageView.setVisibility(4);
-                            }
-                        }
-                        break Label_0082;
-                    }
-                    finally {
-                    }
-                    // monitorexit(this)
-                    break Label_0072;
-                }
-                this.mVisibleBlocks.clear();
-                return;
-            }
-            this.mDisplayArea.removeAllViewsInLayout();
-            continue;
         }
     }
     
@@ -136,16 +118,44 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
             if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Show subtitle block: " + imageSubtitleBlock);
             }
+            final float scaleFactor = this.getScaleFactor();
             final SegmentIndex$ImageDescriptor image = imageSubtitleBlock.getImage();
-            final int n2 = (int)(image.getWidth() * this.getScaleFactor());
-            final int n3 = (int)(image.getHeight() * this.getScaleFactor());
-            if (Log.isLoggable()) {
-                Log.d("nf_subtitles_render", "Scale image " + image.getName() + " from w/h " + image.getWidth() + "/" + image.getHeight() + " to " + n2 + "/" + n3);
+            int width = (int)(image.getWidth() * scaleFactor);
+            int height = (int)(image.getHeight() * scaleFactor);
+            short n2;
+            short n3;
+            boolean b;
+            if (scaleFactor < 1.0f && this.mMeasureTranslator.getDeviceHeight() < 480) {
+                if (Log.isLoggable()) {
+                    Log.d("nf_subtitles_render", "Not scaling down! This happens only when device resolution is lower than 480P (h: " + this.mMeasureTranslator.getDeviceHeight() + " and scale factor is lower than 1 " + scaleFactor);
+                }
+                n2 = (short)((image.getHeight() - height) / 2);
+                n3 = (short)((image.getWidth() - width) / 2);
+                width = image.getWidth();
+                height = image.getHeight();
+                b = false;
             }
-            final int n4 = (int)(image.getOriginX() * this.getScaleFactor()) + this.getHorizontalOffset();
-            final int n5 = this.mDisplayArea.getWidth() - n4 - n2;
-            final int n6 = this.getVerticalOffset() + (int)(image.getOriginY() * this.getScaleFactor());
-            final int n7 = this.mDisplayArea.getHeight() - n6 - n3;
+            else {
+                b = true;
+                n3 = 0;
+                n2 = 0;
+            }
+            if (Log.isLoggable()) {
+                Log.d("nf_subtitles_render", "Scale image " + image.getName() + " from w/h " + image.getWidth() + "/" + image.getHeight() + " to " + width + "/" + height);
+                Log.d("nf_subtitles_render", "Delta Scale image w/h " + n3 + "/" + n2);
+            }
+            boolean b2 = b;
+            if (image.getHeight() == height) {
+                b2 = b;
+                if (image.getWidth() == width) {
+                    Log.d("nf_subtitles_render", "Source and target resolutions are the same, do not scale!");
+                    b2 = false;
+                }
+            }
+            final int n4 = this.getHorizontalOffset() + (int)(image.getOriginX() * scaleFactor) - n3;
+            final int n5 = this.mDisplayArea.getWidth() - n4 - width;
+            final int n6 = (int)(scaleFactor * image.getOriginY()) + this.getVerticalOffset() + n2;
+            final int n7 = this.mDisplayArea.getHeight() - n6 - height;
             if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Original image " + image.getName() + " position l/r/t/b: " + image.getOriginX() + " / " + (image.getOriginX() + image.getWidth()) + " / " + image.getOriginY() + " / " + (image.getOriginY() + image.getHeight()));
                 Log.d("nf_subtitles_render", "Set image before validation" + image.getName() + " to position l/r/t/b: " + n4 + " / " + n5 + " / " + n6 + " / " + n7);
@@ -157,48 +167,49 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
                 n8 = n7 - n6;
                 n9 = 0;
             }
-            int n10 = n8;
-            int n11 = n9;
+            int n10;
+            int n11;
             if (n8 < 0) {
                 Log.d("nf_subtitles_render", "Bottom was negative!");
-                n11 = n8 + n9;
                 n10 = 0;
+                n11 = n8 + n9;
             }
-            int n12 = n5;
+            else {
+                n10 = n8;
+                n11 = n9;
+            }
+            int n12;
             int n13;
-            if ((n13 = n4) < 0) {
+            if (n4 < 0) {
                 Log.d("nf_subtitles_render", "Left was negative!");
                 n12 = n5 - n4;
                 n13 = 0;
             }
-            int n14;
-            int n15;
+            else {
+                n12 = n5;
+                n13 = n4;
+            }
             if (n12 < 0) {
                 Log.d("nf_subtitles_render", "Right was negative!");
-                n14 = n12 + n13;
-                n15 = n;
-            }
-            else {
-                final int n16 = n13;
-                n15 = n12;
-                n14 = n16;
+                n13 += n12;
+                n12 = n;
             }
             if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Measurement translation: " + this.mMeasureTranslator);
             }
-            final ImageView image2 = this.createImage(image.getLocalImagePath(), n2, n3);
+            final ImageView image2 = this.createImage(image.getLocalImagePath(), width, height, b2);
             if (image2 != null) {
                 if (list != null) {
                     list.add(new ViewUtils$ViewComparator((View)image2));
                 }
                 this.mVisibleBlocks.put(image.getName(), image2);
                 if (Log.isLoggable()) {
-                    Log.d("nf_subtitles_render", "Set image " + image.getName() + " after validation to position l/r/t/b: " + n14 + " / " + n15 + " / " + n11 + " / " + n10);
+                    Log.d("nf_subtitles_render", "Set image " + image.getName() + " after validation to position l/r/t/b: " + n13 + " / " + n12 + " / " + n11 + " / " + n10);
                 }
-                final RelativeLayout$LayoutParams layoutParams = new RelativeLayout$LayoutParams(n2, n3);
-                layoutParams.setMargins(n14, n11, n15, n10);
+                final RelativeLayout$LayoutParams layoutParams = new RelativeLayout$LayoutParams(width, height);
+                layoutParams.setMargins(n13, n11, n12, n10);
                 image2.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
-                this.mDisplayArea.addView((View)image2);
+                this.mImageWrapper.addView((View)image2);
             }
         }
     }
@@ -222,9 +233,17 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
     }
     
     @Override
+    public boolean canHandleSubtitleProfile(final IMedia$SubtitleProfile media$SubtitleProfile) {
+        return media$SubtitleProfile != null && media$SubtitleProfile == IMedia$SubtitleProfile.IMAGE;
+    }
+    
+    @Override
     public void clear() {
         Log.d("nf_subtitles_render", "Clear.");
         this.removeAll(true);
+        if (this.mImageWrapper != null && this.mDisplayArea != null) {
+            this.mDisplayArea.removeView((View)this.mImageWrapper);
+        }
     }
     
     @Override
@@ -240,16 +259,39 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
     }
     
     @Override
+    public IMedia$SubtitleProfile getSubtitleProfile() {
+        return IMedia$SubtitleProfile.IMAGE;
+    }
+    
+    @Override
     public void onPlayerOverlayVisibiltyChange(final boolean b) {
-        if (Log.isLoggable()) {
-            Log.d("nf_subtitles_render", "Player UI is now visible: " + b);
+        while (true) {
+            synchronized (this) {
+                if (Log.isLoggable()) {
+                    Log.d("nf_subtitles_render", "Player UI is now visible: " + b);
+                }
+                if (this.mDisplayArea != null) {
+                    final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.mDisplayArea.getLayoutParams();
+                    if (b) {
+                        final int displayAreaMarginTop = this.getDisplayAreaMarginTop();
+                        final int displayAreaMarginBottom = this.getDisplayAreaMarginBottom();
+                        if (Log.isLoggable()) {
+                            Log.d("nf_subtitles_render", "Add bottom/top margin to display area on visible. Bottom margin " + displayAreaMarginBottom + ", top margin: " + displayAreaMarginTop);
+                        }
+                        layoutParams.setMargins(0, displayAreaMarginTop, 0, displayAreaMarginBottom);
+                    }
+                    else {
+                        Log.d("nf_subtitles_render", "Reset all margins to display area on not visible");
+                        layoutParams.setMargins(0, 0, 0, 0);
+                    }
+                    this.removeVisibleSubtitleBlocks(true);
+                    this.mDisplayArea.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+                    this.mDisplayArea.requestLayout();
+                    return;
+                }
+            }
+            Log.w("nf_subtitles_render", "Display area is null, unable to set margins!");
         }
-        if (this.mDisplayArea != null) {
-            this.removeVisibleSubtitleBlocks(true);
-            this.mDisplayArea.requestLayout();
-            return;
-        }
-        Log.w("nf_subtitles_render", "Display area is null, unable to set margins!");
     }
     
     @Override
@@ -281,6 +323,9 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
         final ImageSubtitleParser imageSubtitleParser = (ImageSubtitleParser)this.mParser;
         if (this.mMeasureTranslator == null) {
             this.mMeasureTranslator = MeasureTranslator.createMeasureTranslator(imageSubtitleParser.getMasterIndex().getRootContainerExtentX(), imageSubtitleParser.getMasterIndex().getRootContainerExtentY(), (View)this.mDisplayArea);
+            if (Log.isLoggable()) {
+                Log.v("nf_subtitles_render", "measures: " + this.mMeasureTranslator);
+            }
         }
         this.showSubtitleBlocks(subtitleScreen.getDisplayNowBlocks());
         this.handleDelayedSubtitleBlocks(subtitleScreen.getDisplayLaterBlocks(), true);
@@ -290,6 +335,39 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
     public void onSubtitleRemove() {
         Log.d("nf_subtitles_render", "Remove all subtitles.");
         this.removeAll(true);
+    }
+    
+    @Override
+    protected void removeVisibleSubtitleBlocks(final boolean b) {
+        // monitorenter(this)
+        // monitorexit(this)
+        while (true) {
+            Label_0073: {
+                if (!b) {
+                    break Label_0073;
+                }
+                Label_0083: {
+                    try {
+                        this.mImageWrapper.removeAllViews();
+                        for (final ImageView imageView : this.mVisibleBlocks.values()) {
+                            Log.d("nf_subtitles_render", "Removing image ");
+                            if (imageView != null) {
+                                imageView.setVisibility(4);
+                            }
+                        }
+                        break Label_0083;
+                    }
+                    finally {
+                    }
+                    // monitorexit(this)
+                    break Label_0073;
+                }
+                this.mVisibleBlocks.clear();
+                return;
+            }
+            this.mImageWrapper.removeAllViewsInLayout();
+            continue;
+        }
     }
     
     @Override

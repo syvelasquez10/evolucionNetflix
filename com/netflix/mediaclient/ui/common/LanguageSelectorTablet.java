@@ -8,7 +8,7 @@ import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
-final class LanguageSelectorTablet extends LanguageSelector
+class LanguageSelectorTablet extends LanguageSelector
 {
     public LanguageSelectorTablet(final NetflixActivity netflixActivity, final LanguageSelector$LanguageSelectorCallback languageSelector$LanguageSelectorCallback) {
         super(netflixActivity, languageSelector$LanguageSelectorCallback);
@@ -40,6 +40,6 @@ final class LanguageSelectorTablet extends LanguageSelector
     @Override
     protected int getDialogLayoutId() {
         Log.d("nf_language_selector", "R.layout.language_selector_tablet_dialog");
-        return 2130903124;
+        return 2130903127;
     }
 }

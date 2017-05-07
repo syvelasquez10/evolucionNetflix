@@ -4,6 +4,10 @@
 
 package com.netflix.mediaclient.service.user;
 
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.StringTokenizer;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
@@ -75,8 +79,8 @@ public final class UserLocaleRepository
     }
     
     private void initSupportedLocales() {
-        int i = 0;
-        this.supportedLocales = new UserLocale[16];
+        final int n = 0;
+        this.supportedLocales = new UserLocale[19];
         this.defaultAppLocale = new UserLocale(Locale.ENGLISH.getLanguage(), null, "English");
         this.supportedLocales[0] = this.defaultAppLocale;
         this.supportedLocales[1] = new UserLocale(Locale.FRENCH.getLanguage(), null, "Fran\u00e7ais");
@@ -94,8 +98,24 @@ public final class UserLocaleRepository
         this.supportedLocales[13] = new UserLocale(Locale.ENGLISH.getLanguage(), "AU", "English-AU");
         this.supportedLocales[14] = new UserLocale(Locale.ENGLISH.getLanguage(), "NZ", "English-NZ");
         this.supportedLocales[15] = new UserLocale(Locale.JAPAN.getLanguage(), Locale.JAPAN.getCountry(), "\u65e5\u672c\u8a9e");
-        for (UserLocale[] supportedLocales = this.supportedLocales; i < supportedLocales.length; ++i) {
-            Log.d("nf_loc", "" + supportedLocales[i]);
+        this.supportedLocales[16] = new UserLocale(Locale.ITALY.getLanguage(), Locale.ITALY.getCountry(), "italiano");
+        this.supportedLocales[17] = new UserLocale("pt", "PT", "Portugu\u00eas-PT");
+        this.supportedLocales[18] = new UserLocale("es", "ES", "espa\u00f1ol-ES");
+        if (Log.isLoggable()) {
+            final StringBuilder sb = new StringBuilder();
+            final UserLocale[] supportedLocales = this.supportedLocales;
+            for (int length = supportedLocales.length, i = 0; i < length; ++i) {
+                final UserLocale userLocale = supportedLocales[i];
+                if (sb.length() > 0) {
+                    sb.append(", ");
+                }
+                sb.append(userLocale.getRaw());
+            }
+            Log.i("nf_loc", "List of supported locales: [" + sb.toString() + "]");
+            final UserLocale[] supportedLocales2 = this.supportedLocales;
+            for (int length2 = supportedLocales2.length, j = n; j < length2; ++j) {
+                Log.d("nf_loc", "" + supportedLocales2[j]);
+            }
         }
     }
     
@@ -182,11 +202,11 @@ public final class UserLocaleRepository
     
     public void setPreferredLanguages(final String s) {
         String preferredLanguages = null;
-        Label_0029: {
+        Label_0030: {
             if (s != null) {
                 preferredLanguages = s;
                 if (!"".equals(s.trim())) {
-                    break Label_0029;
+                    break Label_0030;
                 }
             }
             Log.e("nf_loc", "Empty list of preferred languages, set to default");

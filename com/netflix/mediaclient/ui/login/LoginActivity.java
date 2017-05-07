@@ -82,14 +82,14 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
         final String string2 = this.passwordView.getText().toString();
         boolean b = false;
         if (this.passwordIsInvalid(string2)) {
-            final String string3 = this.getString(2131493206);
+            final String string3 = this.getString(2131493198);
             this.reportCancel(string3);
             this.passwordView.setError((CharSequence)string3);
             o = this.passwordView;
             b = true;
         }
         if (this.emailIsInvalid(string)) {
-            final String string4 = this.getString(2131493205);
+            final String string4 = this.getString(2131493197);
             this.reportCancel(string4);
             this.emailView.setError((CharSequence)string4);
             o = this.emailView;
@@ -108,7 +108,7 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
         final int screenSensorOrientation = DeviceUtils.getScreenSensorOrientation((Context)this);
         Log.i("LoginActivity", "Locking orientation to: " + screenSensorOrientation);
         this.setRequestedOrientation(screenSensorOrientation);
-        this.statusMessageView.setText(2131493204);
+        this.statusMessageView.setText(2131493196);
         this.showProgress(true);
         serviceManager.loginUser(string, string2, this.loginQueryCallback);
     }
@@ -154,20 +154,18 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
                     Label_0015: {
                         return;
                     }
-                    // iftrue(Label_0092:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
-                    // iftrue(Label_0015:, !this.saveCredentials)
-                Label_0075:
                     while (true) {
+                        Log.w("LoginActivity", "Credential is empty, do not save it.");
+                        return;
                         Log.d("LoginActivity", "Trying to save credentials to GPS");
                         this.saveCredentials = false;
                         o = this.emailView.getText().toString();
                         string = this.passwordView.getText().toString();
-                        break Label_0075;
                         continue;
                     }
-                    Log.w("LoginActivity", "Credential is empty, do not save it.");
-                    return;
                 }
+                // iftrue(Label_0015:, !this.saveCredentials)
+                // iftrue(Label_0092:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
                 finally {
                 }
                 // monitorexit(this)
@@ -218,7 +216,7 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(2131493211);
+            this.showDebugToast(2131493203);
             this.saveCredentials();
             return;
         }
@@ -383,19 +381,19 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
     protected String handleUserAgentErrors(final Activity activity, final Status status) {
         final StatusCode statusCode = status.getStatusCode();
         if (statusCode == StatusCode.NRD_LOGIN_ACTIONID_4 || statusCode == StatusCode.NRD_LOGIN_ACTIONID_8) {
-            final String string = this.getString(2131493207);
+            final String string = this.getString(2131493199);
             this.passwordView.setError((CharSequence)string);
             this.reportError(status, string);
             return string;
         }
         if (statusCode == StatusCode.NRD_LOGIN_ACTIONID_2) {
-            final String string2 = this.getString(2131493264) + " (" + statusCode.getValue() + ")";
+            final String string2 = this.getString(2131493256) + " (" + statusCode.getValue() + ")";
             this.displayUserAgentDialog(string2, null, false);
             this.reportError(status, string2);
             return string2;
         }
         if (statusCode == StatusCode.NETWORK_ERROR) {
-            final String string3 = this.getString(2131493265) + " (" + statusCode.getValue() + ")";
+            final String string3 = this.getString(2131493257) + " (" + statusCode.getValue() + ")";
             this.displayUserAgentDialog(string3, null, true);
             this.reportError(status, string3);
             return string3;
@@ -448,21 +446,21 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
     
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903128);
+        this.setContentView(2130903131);
         UserActionLogUtils.reportLoginActionEnded((Context)this, IClientLogging$CompletionReason.success, null);
         if (this.shouldUseAutoLogin()) {
             (this.credentialsApiClient = new GoogleApiClient$Builder((Context)this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(Auth.CREDENTIALS_API).build()).connect();
         }
-        (this.emailView = (EditText)this.findViewById(2131427618)).requestFocus();
-        this.passwordView = (EditText)this.findViewById(2131427619);
+        (this.emailView = (EditText)this.findViewById(2131427622)).requestFocus();
+        this.passwordView = (EditText)this.findViewById(2131427623);
         this.getCredentialAndState(this.getIntent());
         this.passwordView.setOnEditorActionListener((TextView$OnEditorActionListener)new LoginActivity$1(this));
-        this.loginForm = this.findViewById(2131427617);
-        this.loginButton = this.findViewById(2131427615);
+        this.loginForm = this.findViewById(2131427621);
+        this.loginButton = this.findViewById(2131427619);
         this.statusGroup = this.findViewById(2131427499);
-        this.statusMessageView = (TextView)this.findViewById(2131427621);
-        this.findViewById(2131427615).setOnClickListener((View$OnClickListener)new LoginActivity$2(this));
-        this.findViewById(2131427616).setOnClickListener((View$OnClickListener)new LoginActivity$3(this));
+        this.statusMessageView = (TextView)this.findViewById(2131427625);
+        this.findViewById(2131427619).setOnClickListener((View$OnClickListener)new LoginActivity$2(this));
+        this.findViewById(2131427620).setOnClickListener((View$OnClickListener)new LoginActivity$3(this));
     }
     
     @Override

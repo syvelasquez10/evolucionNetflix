@@ -34,6 +34,7 @@ import com.netflix.model.leafs.Video$HeroImages;
 import com.netflix.falkor.Ref;
 import com.netflix.falkor.BranchMap;
 import com.netflix.model.leafs.Video$Detail;
+import com.netflix.model.leafs.Video$BookmarkStill;
 import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -54,6 +55,8 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
 {
     private static final String TAG = "FalkorVideo";
     protected Video$Bookmark bookmark;
+    private Video$BookmarkStill bookmarkStill;
+    private String copyright;
     private Video$Detail detail;
     private BranchMap<Ref> episodes;
     private Video$HeroImages heroImages;
@@ -175,6 +178,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             default: {
                 return null;
             }
+            case "copyright": {
+                return this.copyright;
+            }
             case "summary": {
                 return this.summary;
             }
@@ -192,6 +198,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "bookmark": {
                 return this.bookmark;
+            }
+            case "bookmarkStill": {
+                return this.bookmarkStill;
             }
             case "searchTitle": {
                 return this.searchTitle;
@@ -281,6 +290,11 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return null;
         }
         return this.kubrick.certification;
+    }
+    
+    @Override
+    public String getCopyright() {
+        return this.copyright;
     }
     
     @Override
@@ -475,6 +489,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         if (this.bookmark != null) {
             set.add("bookmark");
         }
+        if (this.bookmarkStill != null) {
+            set.add("bookmarkStill");
+        }
         if (this.searchTitle != null) {
             set.add("searchTitle");
         }
@@ -581,6 +598,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "bookmark": {
                 return this.bookmark = new Video$Bookmark();
+            }
+            case "bookmarkStill": {
+                return this.bookmarkStill = new Video$BookmarkStill();
             }
             case "searchTitle": {
                 return this.searchTitle = new Video$SearchTitle();
@@ -1035,6 +1055,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "bookmark": {
                 this.bookmark = (Video$Bookmark)o;
+            }
+            case "bookmarkStill": {
+                this.bookmarkStill = (Video$BookmarkStill)o;
             }
             case "socialBadge": {
                 this.socialBadge = (SocialBadge)o;

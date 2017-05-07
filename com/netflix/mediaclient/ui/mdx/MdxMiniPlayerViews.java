@@ -141,43 +141,43 @@ class MdxMiniPlayerViews
         final LayoutInflater layoutInflater = activity.getLayoutInflater();
         int n;
         if (tabletByContext || portrait) {
-            n = 2130903133;
+            n = 2130903136;
         }
         else {
-            n = 2130903137;
+            n = 2130903140;
         }
         (this.content = (ViewGroup)layoutInflater.inflate(n, (ViewGroup)null)).setOnClickListener(this.dummyClickListener);
-        this.titleGroup = this.content.findViewById(2131427650);
-        this.title = (TextView)this.content.findViewById(2131427661);
-        this.subtitle = (TextView)this.content.findViewById(2131427662);
-        this.titleTextGroup = this.content.findViewById(2131427659);
+        this.titleGroup = this.content.findViewById(2131427654);
+        this.title = (TextView)this.content.findViewById(2131427665);
+        this.subtitle = (TextView)this.content.findViewById(2131427666);
+        this.titleTextGroup = this.content.findViewById(2131427663);
         this.titleTextGroup.getLayoutParams().width = this.computeTitleTextViewGroupWidth();
-        this.playcardCaret = (ImageView)this.content.findViewById(2131427660);
+        this.playcardCaret = (ImageView)this.content.findViewById(2131427664);
         if (this.playcardCaret != null) {
             this.playcardCaret.setRotation(180.0f);
         }
-        this.artwork = (AdvancedImageView)this.content.findViewById(2131427635);
-        this.bifSeekTime = (TextView)this.content.findViewById(2131427638);
-        this.bifImage = (ImageView)this.content.findViewById(2131427639);
-        this.deviceNameGroup = this.content.findViewById(2131427636);
-        this.deviceName = (TextView)this.content.findViewById(2131427637);
-        this.playcardControlsGroup = this.content.findViewById(2131427645);
-        this.playOrPauseExpanded = (ImageView)this.content.findViewById(2131427647);
-        this.skipBackExpanded = (IconFontTextView)this.content.findViewById(2131427646);
-        this.stop = (ImageView)this.content.findViewById(2131427648);
-        this.auxControlsGroup = this.content.findViewById(2131427629);
-        this.languageExpanded = (ImageView)this.content.findViewById(2131427630);
-        this.episodesExpanded = (ImageView)this.content.findViewById(2131427633);
-        this.rating = (ImageView)this.content.findViewById(2131427632);
-        this.volume = (ImageView)this.content.findViewById(2131427631);
-        this.currentTime = (TextView)this.content.findViewById(2131427643);
-        this.remainingTime = (TextView)this.content.findViewById(2131427644);
-        (this.seekBar = (SnappableSeekBar)this.content.findViewById(2131427649)).setSnappableOnSeekBarChangeListener(this.onSeekBarChangeListener);
+        this.artwork = (AdvancedImageView)this.content.findViewById(2131427639);
+        this.bifSeekTime = (TextView)this.content.findViewById(2131427642);
+        this.bifImage = (ImageView)this.content.findViewById(2131427643);
+        this.deviceNameGroup = this.content.findViewById(2131427640);
+        this.deviceName = (TextView)this.content.findViewById(2131427641);
+        this.playcardControlsGroup = this.content.findViewById(2131427649);
+        this.playOrPauseExpanded = (ImageView)this.content.findViewById(2131427651);
+        this.skipBackExpanded = (IconFontTextView)this.content.findViewById(2131427650);
+        this.stop = (ImageView)this.content.findViewById(2131427652);
+        this.auxControlsGroup = this.content.findViewById(2131427633);
+        this.languageExpanded = (ImageView)this.content.findViewById(2131427634);
+        this.episodesExpanded = (ImageView)this.content.findViewById(2131427637);
+        this.rating = (ImageView)this.content.findViewById(2131427636);
+        this.volume = (ImageView)this.content.findViewById(2131427635);
+        this.currentTime = (TextView)this.content.findViewById(2131427647);
+        this.remainingTime = (TextView)this.content.findViewById(2131427648);
+        (this.seekBar = (SnappableSeekBar)this.content.findViewById(2131427653)).setSnappableOnSeekBarChangeListener(this.onSeekBarChangeListener);
         this.seekBar.getViewTreeObserver().addOnGlobalLayoutListener(this.seekBarLayoutListener);
         final int dimensionPixelSize = resources.getDimensionPixelSize(2131296365);
         this.seekBar.setPadding(dimensionPixelSize, 0, dimensionPixelSize, 0);
         if (tabletByContext) {
-            this.seekBar.setScrubberDentBitmap(2130837796);
+            this.seekBar.setScrubberDentBitmap(2130837798);
             this.seekBar.setShouldSnapToTouchStartPosition(true);
         }
         this.maxTitleTextYDelta = (int)((resources.getDimensionPixelOffset(2131296359) - resources.getDimensionPixelOffset(2131296357)) * 0.75f);
@@ -199,24 +199,24 @@ class MdxMiniPlayerViews
         this.bifImage.getLayoutParams().height = height;
         List<View> viewsById;
         if (tabletByContext) {
-            this.languageCollapsed = (IconFontTextView)this.content.findViewById(2131427651);
-            this.episodesCollapsed = (IconFontTextView)this.content.findViewById(2131427652);
-            this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131427654);
-            this.episodesDivider = this.content.findViewById(2131427656);
-            viewsById = ViewUtils.getViewsById((View)this.content, 2131427655, 2131427656, 2131427657, 2131427658);
+            this.languageCollapsed = (IconFontTextView)this.content.findViewById(2131427655);
+            this.episodesCollapsed = (IconFontTextView)this.content.findViewById(2131427656);
+            this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131427658);
+            this.episodesDivider = this.content.findViewById(2131427660);
+            viewsById = ViewUtils.getViewsById((View)this.content, 2131427659, 2131427660, 2131427661, 2131427662);
             ViewUtils.showViews(viewsById);
         }
         else {
             this.languageCollapsed = null;
             this.episodesCollapsed = null;
             this.episodesDivider = null;
-            this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131427651);
+            this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131427655);
             viewsById = list;
         }
-        this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131427653);
-        this.initCollapsedButton(this.languageCollapsed, 2131492961, 2131493159, 18);
-        this.initCollapsedButton(this.episodesCollapsed, 2131492962, 2131493236, 20);
-        this.initCollapsedButton(this.skipBackCollapsed, 2131492960, 2131493158, 24);
+        this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131427657);
+        this.initCollapsedButton(this.languageCollapsed, 2131492961, 2131493150, 18);
+        this.initCollapsedButton(this.episodesCollapsed, 2131492962, 2131493228, 20);
+        this.initCollapsedButton(this.skipBackCollapsed, 2131492960, 2131493149, 24);
         (this.collapsedViews = new ArrayList<View>()).add((View)this.playOrPauseCollapsed);
         this.collapsedViews.add((View)this.skipBackCollapsed);
         this.collapsedViews.add((View)this.languageCollapsed);
@@ -590,10 +590,10 @@ class MdxMiniPlayerViews
             if (imageView != null) {
                 int imageResource;
                 if (b) {
-                    imageResource = 2130837701;
+                    imageResource = 2130837699;
                 }
                 else {
-                    imageResource = 2130837700;
+                    imageResource = 2130837698;
                 }
                 imageView.setImageResource(imageResource);
                 View$OnClickListener onClickListener;
@@ -642,7 +642,7 @@ class MdxMiniPlayerViews
     
     public void updateToEmptyState(final boolean controlsEnabled) {
         this.updateSubtitleText(null);
-        final String string = this.activity.getString(2131493174);
+        final String string = this.activity.getString(2131493166);
         this.title.setText((CharSequence)string);
         this.deviceName.setText((CharSequence)string);
         this.setControlsEnabled(controlsEnabled);

@@ -24,12 +24,12 @@ import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.util.StringUtils;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageView;
@@ -41,6 +41,7 @@ import android.widget.LinearLayout;
 public class VideoDetailsViewGroup extends LinearLayout
 {
     private static final String TAG = "VideoDetailsViewGroup";
+    public static final String UPDATE_CAPABILITIES_BADGES = "com.netflix.mediaclient.intent.action.UPDATE_CAPABILITIES_BADGES";
     private static final EnumMap<VideoDetailsViewGroup$SupportedCapabilities, Integer> mCapabilityBadgesMap;
     private View actionBarDummyView;
     private Button addToMyList;
@@ -48,7 +49,9 @@ public class VideoDetailsViewGroup extends LinearLayout
     private int badgesPadding;
     protected TextView basicInfo;
     protected TextView basicInfoBadges;
+    protected ViewGroup copyright;
     private TextView creators;
+    protected VideoDetails details;
     private ViewGroup footerViewGroup;
     protected AdvancedImageView horzDispImg;
     private ViewGroup imgGroup;
@@ -59,6 +62,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     private TextView starring;
     protected TextView synopsis;
     protected TextView title;
+    private final BroadcastReceiver updateCapabilityBadges;
     private String videoId;
     
     static {
@@ -68,24 +72,35 @@ public class VideoDetailsViewGroup extends LinearLayout
     public VideoDetailsViewGroup(final Context context) {
         super(context);
         this.ratingsUpdateBroadcastReceiver = new VideoDetailsViewGroup$4(this);
+        this.updateCapabilityBadges = new VideoDetailsViewGroup$5(this);
         this.init();
     }
     
     public VideoDetailsViewGroup(final Context context, final AttributeSet set) {
         super(context, set);
         this.ratingsUpdateBroadcastReceiver = new VideoDetailsViewGroup$4(this);
+        this.updateCapabilityBadges = new VideoDetailsViewGroup$5(this);
         this.init();
     }
     
     public VideoDetailsViewGroup(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
         this.ratingsUpdateBroadcastReceiver = new VideoDetailsViewGroup$4(this);
+        this.updateCapabilityBadges = new VideoDetailsViewGroup$5(this);
         this.init();
     }
     
     private void addIconFontBadges(final String text) {
-        if (this.basicInfoBadges != null && StringUtils.isNotEmpty(text)) {
-            this.basicInfoBadges.setPadding(this.badgesPadding, 0, 0, 0);
+        if (this.basicInfoBadges != null) {
+            final TextView basicInfoBadges = this.basicInfoBadges;
+            int badgesPadding;
+            if (StringUtils.isNotEmpty(text)) {
+                badgesPadding = this.badgesPadding;
+            }
+            else {
+                badgesPadding = 0;
+            }
+            basicInfoBadges.setPadding(badgesPadding, 0, 0, 0);
             this.basicInfoBadges.setText((CharSequence)text);
         }
     }
@@ -106,9 +121,9 @@ public class VideoDetailsViewGroup extends LinearLayout
                 }
                 final EnumMap<VideoDetailsViewGroup$SupportedCapabilities, Boolean> enumMap = new EnumMap<VideoDetailsViewGroup$SupportedCapabilities, Boolean>(VideoDetailsViewGroup$SupportedCapabilities.class);
                 enumMap.put(VideoDetailsViewGroup$SupportedCapabilities.HD, Boolean.valueOf(DeviceUtils.shouldShowHdIcon(localCapabilities, videoDetails)));
-                enumMap.put(VideoDetailsViewGroup$SupportedCapabilities._3D, Boolean.valueOf(DeviceUtils.shouldShowUhdIcon(localCapabilities, videoDetails)));
+                enumMap.put(VideoDetailsViewGroup$SupportedCapabilities._3D, Boolean.valueOf(DeviceUtils.shouldShow3DIcon(localCapabilities, videoDetails)));
                 enumMap.put(VideoDetailsViewGroup$SupportedCapabilities._5dot1, Boolean.valueOf(DeviceUtils.shouldShow5dot1Icon(localCapabilities, videoDetails)));
-                enumMap.put(VideoDetailsViewGroup$SupportedCapabilities.UHD, Boolean.valueOf(DeviceUtils.shouldShow3DIcon(localCapabilities, videoDetails)));
+                enumMap.put(VideoDetailsViewGroup$SupportedCapabilities.UHD, Boolean.valueOf(DeviceUtils.shouldShowUhdIcon(localCapabilities, videoDetails)));
                 return enumMap;
             }
             final MdxTargetCapabilities currentTargetCapabilities = null;
@@ -163,20 +178,21 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected void findViews() {
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131427542);
-        this.addToMyList = (Button)this.findViewById(2131427841);
-        this.basicInfo = (TextView)this.findViewById(2131427743);
-        this.recommend = (Button)this.findViewById(2131427840);
-        this.synopsis = (TextView)this.findViewById(2131427597);
-        this.starring = (TextView)this.findViewById(2131427586);
-        this.creators = (TextView)this.findViewById(2131427587);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131427543);
+        this.addToMyList = (Button)this.findViewById(2131427844);
+        this.basicInfo = (TextView)this.findViewById(2131427747);
+        this.recommend = (Button)this.findViewById(2131427843);
+        this.synopsis = (TextView)this.findViewById(2131427608);
+        this.starring = (TextView)this.findViewById(2131427597);
+        this.creators = (TextView)this.findViewById(2131427598);
         this.horzDispImg = (AdvancedImageView)this.findViewById(2131427533);
-        this.title = (TextView)this.findViewById(2131427536);
-        this.imgGroup = (ViewGroup)this.findViewById(2131427846);
+        this.title = (TextView)this.findViewById(2131427537);
+        this.imgGroup = (ViewGroup)this.findViewById(2131427852);
         this.backgroundImg = (ImageView)this.findViewById(2131427530);
-        this.relatedTitle = (TextView)this.findViewById(2131427538);
-        this.basicInfoBadges = (TextView)this.findViewById(2131427845);
-        this.footerViewGroup = (ViewGroup)this.findViewById(2131427537);
+        this.relatedTitle = (TextView)this.findViewById(2131427539);
+        this.basicInfoBadges = (TextView)this.findViewById(2131427851);
+        this.footerViewGroup = (ViewGroup)this.findViewById(2131427538);
+        this.copyright = (ViewGroup)this.findViewById(2131427845);
     }
     
     public TextView getAddToMyListButton() {
@@ -208,7 +224,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected int getlayoutId() {
-        return 2130903210;
+        return 2130903215;
     }
     
     public void hideRelatedTitle() {
@@ -220,11 +236,13 @@ public class VideoDetailsViewGroup extends LinearLayout
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(this.ratingsUpdateBroadcastReceiver, new IntentFilter("com.netflix.falkor.ACTION_NOTIFY_OF_RATINGS_CHANGE"));
+        LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(this.updateCapabilityBadges, new IntentFilter("com.netflix.mediaclient.intent.action.UPDATE_CAPABILITIES_BADGES"));
     }
     
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(this.ratingsUpdateBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(this.updateCapabilityBadges);
     }
     
     public void refreshImagesIfNecessary() {
@@ -237,6 +255,17 @@ public class VideoDetailsViewGroup extends LinearLayout
         if (this.actionBarDummyView != null) {
             this.removeView(this.actionBarDummyView);
             this.actionBarDummyView = null;
+        }
+    }
+    
+    public void setCopyright(final VideoDetails videoDetails) {
+        if (this.copyright != null) {
+            if (!StringUtils.isNotEmpty(videoDetails.getCopyright())) {
+                this.copyright.setVisibility(8);
+                return;
+            }
+            this.copyright.setVisibility(0);
+            new CopyrightView(videoDetails, this.getContext(), this.copyright);
         }
     }
     
@@ -292,16 +321,17 @@ public class VideoDetailsViewGroup extends LinearLayout
         }
     }
     
-    public void updateDetails(final VideoDetails videoDetails, final VideoDetailsViewGroup$DetailsStringProvider videoDetailsViewGroup$DetailsStringProvider) {
-        this.videoId = videoDetails.getId();
+    public void updateDetails(final VideoDetails details, final VideoDetailsViewGroup$DetailsStringProvider videoDetailsViewGroup$DetailsStringProvider) {
+        this.videoId = details.getId();
+        this.details = details;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        this.updateImage(videoDetails, netflixActivity, String.format(this.getResources().getString(2131493182), videoDetails.getTitle()));
-        this.updateRelatedTitle(videoDetails);
-        this.updateTitle(videoDetails);
+        this.updateImage(details, netflixActivity, String.format(this.getResources().getString(2131493174), details.getTitle()));
+        this.updateRelatedTitle(details);
+        this.updateTitle(details);
         this.updateBasicInfo(videoDetailsViewGroup$DetailsStringProvider);
-        this.updateBadges(videoDetails, netflixActivity);
-        this.updateRating(videoDetails);
-        this.updateSynopsis(videoDetails);
+        this.updateBadges(details, netflixActivity);
+        this.updateRating(details);
+        this.updateSynopsis(details);
         this.updateCredits(videoDetailsViewGroup$DetailsStringProvider);
     }
     
@@ -321,7 +351,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131493167, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131493158, new Object[] { videoDetails.getTitle() }));
         }
     }
     

@@ -57,7 +57,6 @@ public class EpisodesAdapter$FetchEpisodesCallback extends LoggingManagerCallbac
         this.this$0.onLoaded(status);
         if (status.isError()) {
             Log.w("EpisodesAdapter", "Invalid status code");
-            this.this$0.hasMoreData = false;
             this.this$0.onFetchError();
             return;
         }

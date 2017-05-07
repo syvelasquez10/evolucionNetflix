@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.kubrick.details;
 
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
-import android.os.Bundle;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -20,8 +19,6 @@ class KubrickVideoDetailsClickListener extends VideoDetailsClickListener
     
     @Override
     protected void launchDetailsActivity(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext) {
-        final Bundle bundle = new Bundle();
-        bundle.putBoolean("extra_same_activity_type", true);
-        DetailsActivityLauncher.show(netflixActivity, video, playContext, "DeetsClickListener", bundle, 65536);
+        DetailsActivityLauncher.show(netflixActivity, video, playContext, "KubrickDeetsClickListener", 65536);
     }
 }

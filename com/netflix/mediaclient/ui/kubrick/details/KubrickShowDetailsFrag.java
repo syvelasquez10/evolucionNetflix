@@ -12,22 +12,23 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.annotation.SuppressLint;
+import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.RecyclerView$Adapter;
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import android.view.LayoutInflater;
 import android.os.Bundle;
+import android.widget.AdapterView$OnItemSelectedListener;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
-import com.netflix.mediaclient.Log;
-import android.widget.AdapterView$OnItemSelectedListener;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,35 +51,71 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
 {
     private static final int ANIMATE_IN_DURATION_MS = 500;
     private static final String SAVED_STATE_SHOW_RELATED = "saved_state_show_related";
+    private static final String SAVED_STATE_SUPRESS_ANIMATEIN = "saved_state_supress_animatein";
     private static final String TAG = "KubrickShowDetailsFrag";
     private List<EpisodeDetails> currentEpisodes;
+    private View fragBackground;
+    private boolean fromSameActivityType;
     private boolean hasBookmark;
     protected KubrickShowDetailsFrag$HeroSlideshow heroSlideshow;
     private View rootContainer;
+    private boolean showRecyclerBackground;
     private boolean showRelated;
+    private boolean supressAnimateIn;
     RecyclerViewHeaderAdapter$IViewCreator viewCreatorEpisodes;
     RecyclerViewHeaderAdapter$IViewCreator viewCreatorSims;
     
     public KubrickShowDetailsFrag() {
+        this.supressAnimateIn = false;
         this.viewCreatorEpisodes = new KubrickShowDetailsFrag$5(this);
         this.viewCreatorSims = new KubrickShowDetailsFrag$6(this);
     }
     
-    private void adjustBackroundForNestedActivities(final View view) {
-        if (view != null && this.getActivity().getIntent().getBooleanExtra("extra_same_activity_type", false)) {
-            Api16Util.setBackgroundDrawableCompat(view, null);
+    private void animateIn() {
+        if (!this.isListVisible()) {
+            Log.v("KubrickShowDetailsFrag", "Showing recycler view");
+            this.recyclerView.setVisibility(0);
         }
+        final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
+        this.recyclerView.animate().alpha(1.0f).setDuration(500L);
+        if (!this.fromSameActivityType && this.showRecyclerBackground) {
+            this.fragBackground.setVisibility(0);
+            this.fragBackground.animate().alpha(1.0f).setStartDelay(500L).setDuration(500L);
+        }
+        netflixActionBar.setAlphaWithAnimation(1.0f, 500);
     }
     
     public static NetflixDialogFrag create(final String s, final String s2) {
         final KubrickShowDetailsFrag kubrickShowDetailsFrag = new KubrickShowDetailsFrag();
-        kubrickShowDetailsFrag.setStyle(1, 2131558720);
+        kubrickShowDetailsFrag.setStyle(1, 2131558721);
         return EpisodesFrag.applyCreateArgs(kubrickShowDetailsFrag, s, s2, true, false);
+    }
+    
+    private void setSameActivity() {
+        this.fromSameActivityType = this.getActivity().getIntent().getBooleanExtra("extra_same_activity_type", false);
+    }
+    
+    private void setupBackground(final View view) {
+        if (view == null) {
+            return;
+        }
+        if (this.getActivity().getIntent().getBooleanExtra("extra_same_activity_type", false)) {
+            Api16Util.setBackgroundDrawableCompat(view, null);
+            return;
+        }
+        this.setupRecyclerBackground();
     }
     
     private void setupDismissClick() {
         if (this.rootContainer != null) {
             this.rootContainer.setOnClickListener((View$OnClickListener)new KubrickShowDetailsFrag$1(this));
+        }
+    }
+    
+    private void setupRecyclerBackground() {
+        if (KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) < DeviceUtils.getScreenWidthInPixels((Context)this.getActivity()) && this.fragBackground != null) {
+            this.showRecyclerBackground = true;
+            this.fragBackground.getLayoutParams().width = KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) + 60;
         }
     }
     
@@ -89,27 +126,13 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
         this.spinner.setOnItemTouchListener((AdapterView$OnItemSelectedListener)new KubrickShowDetailsFrag$3(this));
     }
     
-    protected void animateIn() {
-        Log.v("KubrickShowDetailsFrag", "animateIn()");
-        if (this.recyclerView == null) {
-            Log.d("KubrickShowDetailsFrag", "RecyclerView is null - can't animate view in");
-            return;
-        }
-        if (!this.isListVisible()) {
-            Log.v("KubrickShowDetailsFrag", "Showing recycler view");
-            this.recyclerView.setVisibility(0);
-        }
-        this.recyclerView.animate().alpha(1.0f).setDuration(500L);
-        this.getNetflixActivity().getNetflixActionBar().setAlphaWithAnimation(1.0f, 500);
-    }
-    
     protected int calculateSpinnerLeftPosition() {
         int n = 0;
         final int detailsPageContentWidth = KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity());
         if (detailsPageContentWidth > 0) {
             n = (KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131296465);
+        return n + (int)this.getResources().getDimension(2131296462);
     }
     
     @Override
@@ -124,7 +147,8 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131427613);
+        this.rootContainer = view.findViewById(2131427565);
+        this.fragBackground = view.findViewById(2131427566);
     }
     
     @Override
@@ -138,13 +162,15 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
         this.heroSlideshow = new KubrickShowDetailsFrag$HeroSlideshow(this, this.getNetflixActivity(), null);
         if (bundle != null) {
             this.showRelated = bundle.getBoolean("saved_state_show_related", false);
+            this.supressAnimateIn = bundle.getBoolean("saved_state_supress_animatein", false);
         }
     }
     
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        this.adjustBackroundForNestedActivities(onCreateView);
+        this.setSameActivity();
+        this.setupBackground(onCreateView);
         return onCreateView;
     }
     
@@ -152,6 +178,9 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
     public void onSaveInstanceState(final Bundle bundle) {
         super.onSaveInstanceState(bundle);
         bundle.putBoolean("saved_state_show_related", this.showRelated);
+        if (this.getActivity().isChangingConfigurations()) {
+            bundle.putBoolean("saved_state_supress_animatein", true);
+        }
     }
     
     protected int retrieveNumColumns() {
@@ -164,7 +193,7 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), new View[] { this.detailsViewGroup.getHeroImage(), ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131230830), 0, (View)this.detailsViewGroup.getFooterViewGroup());
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.getRecyclerView(), new View[] { this.detailsViewGroup.getHeroImage(), ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, (View)this.spinnerViewGroup, this.recyclerView.getResources().getColor(2131230829), 0, (View)this.detailsViewGroup.getFooterViewGroup());
                 this.getRecyclerView().setOnScrollListener(onScrollListener);
                 onScrollListener.setOnScrollStateChangedListener(new KubrickShowDetailsFrag$4(this));
                 return onScrollListener;
@@ -179,11 +208,14 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
         this.episodesAdapter = new KubrickShowDetailsFrag$KubrickEpisodesAdapter(this, this.getNetflixActivity(), this, this.viewCreatorEpisodes);
         this.recyclerView.setAdapter(this.episodesAdapter);
         this.episodesAdapter.setViewCreator(this.viewCreatorEpisodes);
+        final View view = new View((Context)this.getActivity());
+        view.setLayoutParams(new ViewGroup$LayoutParams(-2, this.getResources().getDimensionPixelOffset(2131296449) / 2));
+        this.episodesAdapter.addFooterView(view);
     }
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296452), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296449), this.numColumns));
     }
     
     @Override
@@ -226,10 +258,33 @@ public class KubrickShowDetailsFrag extends EpisodesFrag implements ErrorWrapper
     
     @Override
     protected void showStandardViews() {
+        Log.v("KubrickShowDetailsFrag", "showStandardViews()");
         this.postSetSpinnerSelectionRunnable();
         if (this.showRelated) {
             ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).performClickOnRelatedTitles();
         }
+    }
+    
+    protected void showViews() {
+        Log.v("KubrickShowDetailsFrag", "animateIn()");
+        if (this.recyclerView == null || this.rootContainer == null) {
+            return;
+        }
+        if (this.supressAnimateIn) {
+            if (!this.isListVisible()) {
+                Log.v("KubrickShowDetailsFrag", "Showing recycler view");
+                this.recyclerView.setVisibility(0);
+            }
+            final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
+            this.recyclerView.setAlpha(1.0f);
+            if (!this.fromSameActivityType && this.showRecyclerBackground) {
+                this.fragBackground.setVisibility(0);
+                this.fragBackground.setAlpha(1.0f);
+            }
+            netflixActionBar.setAlpha(1.0f);
+            return;
+        }
+        this.animateIn();
     }
     
     @Override

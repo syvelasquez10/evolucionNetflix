@@ -9,7 +9,6 @@ import java.util.List;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.DataInputStream;
 import java.io.ByteArrayInputStream;

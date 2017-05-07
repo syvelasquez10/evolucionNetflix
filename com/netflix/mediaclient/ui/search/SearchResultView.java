@@ -50,7 +50,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final int resId) {
         super(context);
-        this.resId = 2130903181;
+        this.resId = 2130903184;
         this.ignoreClicks = false;
         this.resId = resId;
         this.init();
@@ -58,14 +58,14 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.resId = 2130903181;
+        this.resId = 2130903184;
         this.ignoreClicks = false;
         this.init();
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131427800);
-        this.title = (TextView)this.findViewById(2131427801);
+        this.img = (AdvancedImageView)this.findViewById(2131427803);
+        this.title = (TextView)this.findViewById(2131427804);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -84,7 +84,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837891));
+        this.setForeground(this.getResources().getDrawable(2130837894));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);

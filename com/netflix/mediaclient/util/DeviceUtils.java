@@ -259,19 +259,23 @@ public final class DeviceUtils
     }
     
     public static boolean isDeviceEnabled(final Context context, final int n) {
-    Label_0195_Outer:
+        boolean b;
+        boolean b2;
+        long hashCode = 0L;
+        int n2;
+        int n3 = 0;
+        final String s;
+        Label_0114_Outer:Label_0195_Outer:
         while (true) {
-            boolean b = true;
-            boolean b2 = true;
+            b = true;
+            b2 = true;
             while (true) {
                 while (true) {
-                    int n3 = 0;
                     Label_0201: {
                         synchronized (DeviceUtils.class) {
                             if (Log.isLoggable()) {
                                 Log.d("nf_device_utils", "isDeviceEnabled:: Disabled percentage: " + n);
                             }
-                            final long hashCode;
                             if (n <= 0) {
                                 Log.d("nf_device_utils", "Everybody is enabled");
                             }
@@ -281,7 +285,7 @@ public final class DeviceUtils
                             }
                             else {
                                 hashCode = hashCode(BaseEsnProvider.getHashedDeviceId(context));
-                                final int n2 = (int)(hashCode % 100L);
+                                n2 = (int)(hashCode % 100L);
                                 if ((n3 = n2) < 0) {
                                     n3 = n2 + 100;
                                 }
@@ -290,13 +294,15 @@ public final class DeviceUtils
                             Label_0054: {
                                 return b2;
                             }
-                            b2 = b;
-                            // iftrue(Label_0054:, !Log.isLoggable())
-                            final String s;
-                            Log.d("nf_device_utils", "isDeviceEnabled:: deviceID " + s + ", hash " + hashCode + ", bucket " + n3 + ", enabled " + b);
-                            b2 = b;
-                            return b2;
+                            while (true) {
+                                Log.d("nf_device_utils", "isDeviceEnabled:: deviceID " + s + ", hash " + hashCode + ", bucket " + n3 + ", enabled " + b);
+                                b2 = b;
+                                return b2;
+                                b2 = b;
+                                continue Label_0114_Outer;
+                            }
                         }
+                        // iftrue(Label_0054:, !Log.isLoggable())
                         b = false;
                         continue Label_0195_Outer;
                     }
@@ -425,13 +431,10 @@ public final class DeviceUtils
                     System.load(string);
                     return true;
                     // iftrue(Label_0173:, !Log.isLoggable())
-                Label_0173:
-                    while (true) {
-                        Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
-                        break Label_0173;
-                        continue;
+                    Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
+                    Label_0173: {
+                        System.loadLibrary(s);
                     }
-                    System.loadLibrary(s);
                 }
                 catch (Throwable t) {
                     Log.e("nf_device_utils", "Failed to load library from assumed location", t);

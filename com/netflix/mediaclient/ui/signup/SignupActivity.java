@@ -11,22 +11,34 @@ import android.view.View;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
+import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.GoogleApiClient$Builder;
+import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.webkit.WebSettings;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
+import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
 import com.netflix.mediaclient.StatusCode;
 import android.annotation.TargetApi;
-import com.netflix.mediaclient.Log;
 import android.os.Build$VERSION;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.auth.api.credentials.Credential$Builder;
+import com.google.android.gms.auth.api.Auth;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -37,26 +49,33 @@ import com.netflix.mediaclient.servicemgr.SignUpParams;
 import android.os.Handler;
 import android.widget.ViewFlipper;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
+import com.google.android.gms.common.api.GoogleApiClient;
 import android.annotation.SuppressLint;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.netflix.mediaclient.ui.login.AccountActivity;
 
 @SuppressLint({ "SetJavaScriptEnabled" })
-public class SignupActivity extends AccountActivity
+public class SignupActivity extends AccountActivity implements GoogleApiClient$ConnectionCallbacks, GoogleApiClient$OnConnectionFailedListener
 {
     private static final String BOOTURL = "booturl";
     private static final String DEFAULT_LOCALE = "en";
+    private static final int RC_SAVE = 1;
     private static final String TAG = "SignupActivity";
+    private GoogleApiClient credentialsApiClient;
     private final SimpleManagerCallback loginQueryCallback;
     private SignupActivity$NFAndroidJS mAndroidJS;
     private String mDeviceCategory;
     private String mESN;
     private String mESNPrefix;
+    private String mEmail;
     private String mErrHandler;
     private ViewFlipper mFlipper;
     Runnable mHandleError;
     private Handler mHandler;
     private boolean mIsLoginActivityInFocus;
     Runnable mJumpToSignInTask;
+    private String mPassword;
     private String mSharedContextSessionUuid;
     private SignUpParams mSignUpParams;
     private boolean mSignupLoaded;
@@ -67,6 +86,7 @@ public class SignupActivity extends AccountActivity
     private WebView mWebView;
     private SignUpWebViewClient mWebViewClient;
     private boolean mWebViewVisibility;
+    private boolean saveCredentials;
     
     public SignupActivity() {
         this.mWebViewVisibility = false;
@@ -81,6 +101,42 @@ public class SignupActivity extends AccountActivity
     
     public static Intent createStartIntent(final Context context, final Intent intent) {
         return new Intent(context, (Class)SignupActivity.class);
+    }
+    
+    private void doSaveCredentials(final GoogleApiClient googleApiClient) {
+        // monitorenter(this)
+        Label_0017: {
+            if (googleApiClient != null) {
+                break Label_0017;
+            }
+            while (true) {
+                try {
+                    Log.d("SignupActivity", "GPS client is null, unable to try to save credentials");
+                    Label_0014: {
+                        return;
+                    }
+                    // iftrue(Label_0014:, !this.saveCredentials)
+                    while (true) {
+                        Block_3: {
+                            break Block_3;
+                            Log.w("SignupActivity", "Credential is empty, do not save it.");
+                            return;
+                        }
+                        Log.d("SignupActivity", "Trying to save credentials to GPS");
+                        this.saveCredentials = false;
+                        continue;
+                    }
+                }
+                // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
+                finally {
+                }
+                // monitorexit(this)
+                Label_0073: {
+                    final GoogleApiClient googleApiClient2;
+                    Auth.CredentialsApi.save(googleApiClient2, new Credential$Builder(this.mEmail).setPassword(this.mPassword).build()).setResultCallback(new SignupActivity$11(this));
+                }
+            }
+        }
     }
     
     @TargetApi(19)
@@ -105,11 +161,11 @@ public class SignupActivity extends AccountActivity
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131493211);
+            this.showToast(2131493203);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493268) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493260) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -131,9 +187,55 @@ public class SignupActivity extends AccountActivity
         this.mWebView.loadUrl(this.mUiBoot.getUrl());
     }
     
+    private void resolveResult(final com.google.android.gms.common.api.Status status) {
+        if (Log.isLoggable()) {
+            Log.d("SignupActivity", "Google Play Services: Resolving: " + status);
+        }
+        if (status != null && status.hasResolution()) {
+            Log.d("SignupActivity", "Google Play Services: STATUS: RESOLVING");
+            try {
+                status.startResolutionForResult(this, 1);
+                return;
+            }
+            catch (IntentSender$SendIntentException ex) {
+                Log.e("SignupActivity", "Google Play Services: STATUS: Failed to send resolution.", (Throwable)ex);
+                return;
+            }
+        }
+        Log.e("SignupActivity", "Google Play Services: STATUS: FAIL");
+        this.showDebugToast("Google Play Services: Could Not Resolve Error");
+    }
+    
+    private void saveCredentials() {
+        while (true) {
+            Label_0047: {
+                synchronized (this) {
+                    if (!this.shouldUseAutoLogin()) {
+                        Log.d("SignupActivity", "SmartLock is disabled or device does not support GPS");
+                    }
+                    else {
+                        if (this.credentialsApiClient != null) {
+                            break Label_0047;
+                        }
+                        Log.d("SignupActivity", "GPS client unavailable, unable to attempt to save credentials");
+                    }
+                    return;
+                }
+            }
+            final GoogleApiClient googleApiClient;
+            if (Log.isLoggable()) {
+                Log.d("SignupActivity", "GPS client is connected " + googleApiClient.isConnected() + " or connecting " + googleApiClient.isConnecting());
+            }
+            this.saveCredentials = true;
+            if (googleApiClient.isConnected()) {
+                this.doSaveCredentials(googleApiClient);
+            }
+        }
+    }
+    
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903192);
-        this.mWebView = (WebView)this.findViewById(2131427817);
+        this.setContentView(2130903195);
+        this.mWebView = (WebView)this.findViewById(2131427820);
         this.mFlipper = (ViewFlipper)this.findViewById(2131427521);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
@@ -159,6 +261,13 @@ public class SignupActivity extends AccountActivity
         this.mHandler.postDelayed(this.mJumpToSignInTask, this.mSignUpParams.getSignUpTimeout());
     }
     
+    private boolean shouldUseAutoLogin() {
+        return this.isAutoLoginEnabled() && DeviceUtils.canUseGooglePlayServices((Context)this);
+    }
+    
+    private void showDebugToast(final String s) {
+    }
+    
     private void showToast(final int n) {
         this.showToast(this.getString(n));
     }
@@ -168,6 +277,18 @@ public class SignupActivity extends AccountActivity
         Log.d("SignupActivity", "Removing jumpToSignIn");
         this.mHandler.removeCallbacks(this.mJumpToSignInTask);
         this.overridePendingTransition(0, 0);
+    }
+    
+    private void storeNrmNetflixIdInPref(final String s) {
+        String s2 = s;
+        if (StringUtils.isEmpty(s)) {
+            Log.d("SignupActivity", "nrmNetflixId is empty, clearing in preference");
+            s2 = "";
+        }
+        if (Log.isLoggable()) {
+            Log.d("SignupActivity", "nrmNetlfixId from webui: " + s2);
+        }
+        PreferenceUtils.putStringPref(this.getApplicationContext(), "nrm_netflix_id", s2);
     }
     
     private void updateMenuItems() {
@@ -206,7 +327,7 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131493269), new SignupActivity$10(this));
+            this.provideTwoButtonDialog(this.getString(2131493261), new SignupActivity$10(this));
         }
         return true;
     }
@@ -222,22 +343,53 @@ public class SignupActivity extends AccountActivity
         AccountActivity.finishAllAccountActivities((Context)this);
     }
     
+    protected boolean isAutoLoginEnabled() {
+        return true;
+    }
+    
+    @Override
+    public void onConnected(final Bundle bundle) {
+        Log.d("SignupActivity", "onConnected");
+        this.doSaveCredentials(this.credentialsApiClient);
+    }
+    
+    @Override
+    public void onConnectionFailed(final ConnectionResult connectionResult) {
+        if (Log.isLoggable()) {
+            Log.d("SignupActivity", "onConnectionFailed:" + connectionResult);
+        }
+        this.credentialsApiClient = null;
+    }
+    
+    @Override
+    public void onConnectionSuspended(final int n) {
+        if (Log.isLoggable()) {
+            Log.d("SignupActivity", "onConnectionSuspended:" + n);
+        }
+        if (this.credentialsApiClient != null) {
+            this.credentialsApiClient.reconnect();
+        }
+    }
+    
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.mHandler = new Handler();
+        if (this.shouldUseAutoLogin()) {
+            (this.credentialsApiClient = new GoogleApiClient$Builder((Context)this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(Auth.CREDENTIALS_API).build()).connect();
+        }
     }
     
     public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         super.onCreateOptionsMenu(menu, menu2);
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493179));
+            menuItem = menu.add((CharSequence)this.getString(2131493171));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$1(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493180));
+            menuItem = menu.add((CharSequence)this.getString(2131493172));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$2(this));
         }
@@ -253,6 +405,9 @@ public class SignupActivity extends AccountActivity
     protected void onDestroy() {
         ApmLogUtils.reportEndSharedContext((Context)this);
         super.onDestroy();
+        if (this.credentialsApiClient != null) {
+            this.credentialsApiClient.disconnect();
+        }
     }
     
     @Override
@@ -272,7 +427,7 @@ public class SignupActivity extends AccountActivity
     }
     
     void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131493003), runnable, this.getString(2131493123), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131493003), runnable, this.getString(2131493120), null)));
     }
     
     @Override
