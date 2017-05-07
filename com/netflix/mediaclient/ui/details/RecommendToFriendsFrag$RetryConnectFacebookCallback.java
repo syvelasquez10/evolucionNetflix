@@ -10,7 +10,7 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 
 final class RecommendToFriendsFrag$RetryConnectFacebookCallback implements ErrorWrapper$Callback
 {
-    private Activity mActivity;
+    private final Activity mActivity;
     final /* synthetic */ RecommendToFriendsFrag this$0;
     
     public RecommendToFriendsFrag$RetryConnectFacebookCallback(final RecommendToFriendsFrag this$0, final Activity mActivity) {

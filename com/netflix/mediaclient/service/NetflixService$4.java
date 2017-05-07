@@ -25,6 +25,7 @@ import java.util.List;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
+import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import java.util.Iterator;
@@ -32,10 +33,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ThreadUtils;
-import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
+import android.content.Context;
+import android.app.PendingIntent;
+import com.netflix.mediaclient.Log;
+import android.app.AlarmManager;
 import android.content.Intent;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgent;
@@ -57,7 +61,6 @@ import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
-import com.netflix.mediaclient.Log;
 
 class NetflixService$4 implements Runnable
 {
@@ -69,8 +72,6 @@ class NetflixService$4 implements Runnable
     
     @Override
     public void run() {
-        Log.i("NetflixService", "Stopping service via runnable");
-        NetflixService.isCreated = false;
-        this.this$0.stopSelf();
+        this.this$0.initTimeout();
     }
 }

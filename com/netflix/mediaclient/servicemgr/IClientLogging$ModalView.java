@@ -16,6 +16,7 @@ public enum IClientLogging$ModalView
     emailConfirmation, 
     episodesSelector, 
     errorDialog, 
+    externalLink, 
     facebook, 
     facebookConnectLogin, 
     homeScreen, 

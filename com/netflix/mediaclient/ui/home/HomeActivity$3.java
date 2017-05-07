@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.home;
 
 import android.view.View;
-import android.view.MenuItem$OnMenuItemClickListener;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
@@ -21,6 +20,7 @@ import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.android.app.Status;
@@ -29,10 +29,12 @@ import android.app.Fragment;
 import android.os.Parcelable;
 import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.widget.Toast;
-import com.netflix.mediaclient.util.StringUtils;
 import java.io.Serializable;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHomeActivity;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHomeActivity;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
@@ -65,9 +67,9 @@ class HomeActivity$3 extends BroadcastReceiver
         }
         else {
             final String action = intent.getAction();
-            Log.i("HomeActivity", "RefreshHomeReceiver inovoked and received Intent with Action " + action);
-            if ("com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO".equals(action)) {
-                this.this$0.clearAllStateAndRefresh();
+            Log.i("HomeActivity", "homeUpdatedReceiver invoked and received Intent with Action " + action);
+            if ("com.netflix.mediaclient.intent.action.HOME_LOLOMO_UPDATED".equals(action) && this.this$0.drawerLayout != null) {
+                this.this$0.drawerLayout.closeDrawers();
             }
         }
     }

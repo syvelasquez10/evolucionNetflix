@@ -9,6 +9,7 @@ import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 
 public class TrackableListSummary extends ListSummary implements Trackable
 {
+    private int heroTrackId;
     private int listPos;
     private String requestId;
     private int trackId;
@@ -32,6 +33,11 @@ public class TrackableListSummary extends ListSummary implements Trackable
     }
     
     @Override
+    public int getHeroTrackId() {
+        return this.heroTrackId;
+    }
+    
+    @Override
     public int getListPos() {
         return this.listPos;
     }
@@ -44,6 +50,11 @@ public class TrackableListSummary extends ListSummary implements Trackable
     @Override
     public int getTrackId() {
         return this.trackId;
+    }
+    
+    @Override
+    public boolean isHero() {
+        return false;
     }
     
     public void setListPos(final int listPos) {

@@ -12,6 +12,7 @@ import android.widget.ListAdapter;
 import android.view.ViewGroup;
 import android.content.Context;
 import android.widget.TextView;
+import android.content.DialogInterface$OnCancelListener;
 import android.widget.ListView;
 import android.view.View;
 import android.app.Activity;
@@ -23,17 +24,16 @@ public class MdxTargetSelectionDialog$Builder extends AlertDialog$Builder
     private final MdxTargetSelectionDialog$TargetsAdapter adapterWrapper;
     private final View content;
     private final ListView listView;
+    private DialogInterface$OnCancelListener onCancelListener;
     private final TextView title;
     
     public MdxTargetSelectionDialog$Builder(final Activity activity) {
         super((Context)activity);
         this.activity = activity;
-        MdxTargetSelectionDialog.mSelectedRowColor = activity.getResources().getColor(2131296376);
-        MdxTargetSelectionDialog.mRowColor = activity.getResources().getColor(2131296375);
         final LayoutInflater layoutInflater = activity.getLayoutInflater();
-        this.content = layoutInflater.inflate(2130903141, (ViewGroup)null);
-        this.title = (TextView)this.content.findViewById(2131165512);
-        this.listView = (ListView)this.content.findViewById(2131165513);
+        this.content = layoutInflater.inflate(2130903152, (ViewGroup)null);
+        this.title = (TextView)this.content.findViewById(2131165539);
+        this.listView = (ListView)this.content.findViewById(2131165540);
         this.adapterWrapper = new MdxTargetSelectionDialog$TargetsAdapter(layoutInflater);
         this.listView.setAdapter((ListAdapter)this.adapterWrapper);
         this.setCancelable(true);
@@ -42,11 +42,19 @@ public class MdxTargetSelectionDialog$Builder extends AlertDialog$Builder
     public AlertDialog create() {
         final AlertDialog create = new AlertDialog$Builder((Context)this.activity).setView(this.content).create();
         create.setCanceledOnTouchOutside(true);
+        if (this.onCancelListener != null) {
+            create.setOnCancelListener(this.onCancelListener);
+        }
         return create;
     }
     
     public void setAdapterData(final List<String> data) {
         this.adapterWrapper.setData(data);
+    }
+    
+    public MdxTargetSelectionDialog$Builder setOnCancelListener(final DialogInterface$OnCancelListener onCancelListener) {
+        this.onCancelListener = onCancelListener;
+        return this;
     }
     
     public void setOnItemClickListener(final AdapterView$OnItemClickListener adapterView$OnItemClickListener) {

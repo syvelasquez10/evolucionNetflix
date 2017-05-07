@@ -63,6 +63,10 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowVi
     @Override
     protected void onPostCreate(final Bundle bundle) {
         super.onPostCreate(bundle);
+        this.setupFrags();
+    }
+    
+    protected void setupFrags() {
         final EpisodeListFrag episodeListFrag = (EpisodeListFrag)this.getSecondaryFrag();
         if (this.shouldHideDetailsView()) {
             this.getPrimaryFragContainer().setVisibility(0);

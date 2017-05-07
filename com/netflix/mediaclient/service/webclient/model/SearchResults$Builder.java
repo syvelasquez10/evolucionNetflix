@@ -17,7 +17,7 @@ import java.util.Collection;
 
 public class SearchResults$Builder
 {
-    private static final int MAX_RESULTS = 50;
+    private static final int MAX_RESULTS = 20;
     private final SearchResults results;
     
     public SearchResults$Builder() {
@@ -26,7 +26,7 @@ public class SearchResults$Builder
     
     public void addPeople(final Collection<SearchPerson> collection) {
         if (this.results.people == null) {
-            this.results.people = (List<SearchPerson>)new ArrayList(50);
+            this.results.people = (List<SearchPerson>)new ArrayList(20);
             this.results.sectionsList.add(this.results.people);
         }
         this.results.people.addAll(collection);
@@ -34,7 +34,7 @@ public class SearchResults$Builder
     
     public void addPerson(final SearchPerson searchPerson) {
         if (this.results.people == null) {
-            this.results.people = (List<SearchPerson>)new ArrayList(50);
+            this.results.people = (List<SearchPerson>)new ArrayList(20);
             this.results.sectionsList.add(this.results.people);
         }
         this.results.people.add(searchPerson);
@@ -42,7 +42,7 @@ public class SearchResults$Builder
     
     public void addSuggestion(final SearchSuggestion searchSuggestion) {
         if (this.results.suggestions == null) {
-            this.results.suggestions = (List<SearchSuggestion>)new ArrayList(50);
+            this.results.suggestions = (List<SearchSuggestion>)new ArrayList(20);
             this.results.sectionsList.add(this.results.suggestions);
         }
         this.results.suggestions.add(searchSuggestion);
@@ -50,7 +50,7 @@ public class SearchResults$Builder
     
     public void addSuggestions(final Collection<SearchSuggestion> collection) {
         if (this.results.suggestions == null) {
-            this.results.suggestions = (List<SearchSuggestion>)new ArrayList(50);
+            this.results.suggestions = (List<SearchSuggestion>)new ArrayList(20);
             this.results.sectionsList.add(this.results.suggestions);
         }
         this.results.suggestions.addAll(collection);
@@ -58,7 +58,7 @@ public class SearchResults$Builder
     
     public void addVideo(final SearchVideo searchVideo) {
         if (this.results.videos == null) {
-            this.results.videos = (List<SearchVideo>)new ArrayList(50);
+            this.results.videos = (List<SearchVideo>)new ArrayList(20);
             this.results.sectionsList.add(this.results.videos);
         }
         this.results.videos.add(searchVideo);
@@ -66,7 +66,7 @@ public class SearchResults$Builder
     
     public void addVideos(final Collection<SearchVideo> collection) {
         if (this.results.videos == null) {
-            this.results.videos = (List<SearchVideo>)new ArrayList(50);
+            this.results.videos = (List<SearchVideo>)new ArrayList(20);
             this.results.sectionsList.add(this.results.videos);
         }
         this.results.videos.addAll(collection);

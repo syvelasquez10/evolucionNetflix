@@ -10,9 +10,7 @@ import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.util.UiUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.Video;
 
@@ -22,21 +20,14 @@ public class PaginatedLoMoAdapter extends BasePaginatedAdapter<Video>
         super(context);
     }
     
-    public static int computeNumVideosToFetchPerBatch(final NetflixActivity netflixActivity, final int n) {
-        if (netflixActivity.isForKids()) {
-            return 5;
-        }
-        return UiUtils.computeNumVideosToFetchPerBatch(n);
+    @Override
+    protected int computeNumItemsPerPage() {
+        return LomoConfig.computeStandardNumVideosPerPage(this.activity, false);
     }
     
     @Override
-    protected int computeNumItemsPerPage(final int n, final int n2) {
-        return UiUtils.computeNumItemsPerPage(n, n2);
-    }
-    
-    @Override
-    protected int computeNumVideosToFetchPerBatch(final Context context) {
-        return computeNumVideosToFetchPerBatch(this.activity, DeviceUtils.getScreenSizeCategory(context));
+    protected int computeNumVideosToFetchPerBatch() {
+        return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD);
     }
     
     @Override

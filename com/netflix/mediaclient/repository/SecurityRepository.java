@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.repository;
 
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.Log;
-import android.content.pm.ApplicationInfo;
 import android.content.Context;
 
 public final class SecurityRepository
@@ -115,14 +115,6 @@ public final class SecurityRepository
         return "_";
     }
     
-    private static String getNativeLibraryDirectory(final Context context) {
-        final ApplicationInfo applicationInfo = context.getApplicationInfo();
-        if ((applicationInfo.flags & 0x80) != 0x0 || (applicationInfo.flags & 0x1) == 0x0) {
-            return applicationInfo.nativeLibraryDir;
-        }
-        return null;
-    }
-    
     public static String getNrdAppVersion() {
         return "2013.2";
     }
@@ -133,6 +125,10 @@ public final class SecurityRepository
     
     public static String getNrdSdkVersion() {
         return "4.1";
+    }
+    
+    public static String getSystemPropety(final String s) {
+        return native_getSystemProperty(s);
     }
     
     public static boolean isLoaded() {
@@ -146,34 +142,14 @@ public final class SecurityRepository
                 Log.w("SEC", "We already loaded native libraries!");
             }
             else {
-                final String nativeLibraryDirectory = getNativeLibraryDirectory(context);
-                Label_0143: {
-                    if (nativeLibraryDirectory == null) {
-                        break Label_0143;
-                    }
-                    try {
-                        Log.d("SEC", "Loading library from app file system. Installed or updated app.");
-                        final String string = nativeLibraryDirectory + "/libnetflixmp_jni.so";
-                        if (Log.isLoggable("SEC", 3)) {
-                            Log.d("SEC", "Loading from " + string);
-                        }
-                        System.load(string);
-                        SecurityRepository.sLoaded = true;
-                        if (SecurityRepository.sLoaded) {
-                            native_init(new byte[0]);
-                            SecurityRepository.deviceIdToken = native_getConstant(1);
-                            SecurityRepository.facebookId = native_getConstant(0);
-                            SecurityRepository.crittercismAppId = native_getConstant(2);
-                        }
-                        sLoaded = SecurityRepository.sLoaded;
-                        return sLoaded;
-                        Log.d("SEC", "Loading library leaving to android to find mapping. Preloaded app.");
-                        System.loadLibrary("netflixmp_jni");
-                    }
-                    catch (UnsatisfiedLinkError unsatisfiedLinkError) {
-                        Log.e("SEC", "Failed to load library from assumed location", unsatisfiedLinkError);
-                    }
+                SecurityRepository.sLoaded = DeviceUtils.loadNativeLibrary(context, "netflixmp_jni");
+                if (SecurityRepository.sLoaded) {
+                    native_init(new byte[0]);
+                    SecurityRepository.deviceIdToken = native_getConstant(1);
+                    SecurityRepository.facebookId = native_getConstant(0);
+                    SecurityRepository.crittercismAppId = native_getConstant(2);
                 }
+                sLoaded = SecurityRepository.sLoaded;
             }
             return sLoaded;
         }
@@ -182,6 +158,8 @@ public final class SecurityRepository
     private static final native String native_getConstant(final int p0);
     
     private static final native int native_getLibraryVersion();
+    
+    private static native String native_getSystemProperty(final String p0);
     
     private static final native void native_init(final byte[] p0);
 }

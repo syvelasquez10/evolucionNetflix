@@ -43,6 +43,10 @@ public class PlayContextImp implements PlayContext
         return 0;
     }
     
+    public int getHeroTrackId() {
+        throw new UnsupportedOperationException("Should not be needed");
+    }
+    
     public int getListPos() {
         return this.listPos;
     }
@@ -58,6 +62,10 @@ public class PlayContextImp implements PlayContext
     @Override
     public int getVideoPos() {
         return this.videoPos;
+    }
+    
+    public boolean isHero() {
+        return false;
     }
     
     @Override

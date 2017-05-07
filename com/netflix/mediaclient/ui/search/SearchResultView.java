@@ -48,7 +48,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final int resId) {
         super(context);
-        this.resId = 2130903172;
+        this.resId = 2130903180;
         this.ignoreClicks = false;
         this.resId = resId;
         this.init();
@@ -56,14 +56,14 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.resId = 2130903172;
+        this.resId = 2130903180;
         this.ignoreClicks = false;
         this.init();
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131165634);
-        this.title = (TextView)this.findViewById(2131165635);
+        this.img = (AdvancedImageView)this.findViewById(2131165649);
+        this.title = (TextView)this.findViewById(2131165650);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -73,7 +73,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final SpannableString spannableString = new SpannableString((CharSequence)String.format("%s  (%s)", s, s2));
         final int length = spannableString.length();
         final int n = length - s2.length() - 4;
-        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131361864)), n, length, 0);
+        spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131361881)), n, length, 0);
         spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(this.getYearColorResId())), n, length, 0);
         return (CharSequence)spannableString;
     }
@@ -82,7 +82,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837848));
+        this.setForeground(this.getResources().getDrawable(2130837837));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
@@ -102,7 +102,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             n = text.length() - 1;
         }
         final SpannableString text2 = new SpannableString((CharSequence)text);
-        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131296439)), index, n, 33);
+        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131296421)), index, n, 33);
         this.title.setText((CharSequence)text2);
     }
     
@@ -130,7 +130,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
                 NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging$AssetType.heroImage, name, false, false);
             }
             else {
-                this.img.setImageResource(2130837565);
+                this.img.setImageResource(2130837563);
             }
         }
         if (!this.ignoreClicks) {
@@ -180,7 +180,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     }
     
     protected int getYearColorResId() {
-        return 2131296365;
+        return 2131296370;
     }
     
     public void setIgnoreClicks() {

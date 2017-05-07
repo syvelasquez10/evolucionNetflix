@@ -17,15 +17,15 @@ import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile$Summary
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListSummary;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<AccountData>
+public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<AccountData>
 {
     private static final String FIELD_PROFILES = "profilesList";
     private static final String FIELD_USER = "user";
@@ -50,9 +50,9 @@ public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<Accoun
     }
     
     public static AccountData parseProfilesList(final String s, final boolean b) {
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_user_fetchaccountdatarequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("UserProfiles empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchaccountdatarequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("UserProfiles empty!!!");
         }
         ArrayList<UserProfile> userProfiles;
         while (true) {
@@ -68,7 +68,7 @@ public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<Accoun
                                 if (!asJsonObject.has("summary")) {
                                     break Label_0414;
                                 }
-                                final int length = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", ListSummary.class).getLength();
+                                final int length = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", ListSummary.class).getLength();
                                 userProfiles = new ArrayList<UserProfile>();
                                 n = 0;
                                 if (n > length) {
@@ -80,16 +80,16 @@ public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<Accoun
                                 }
                                 asJsonObject2 = asJsonObject.getAsJsonObject(string);
                                 userProfile = new UserProfile();
-                                userProfile.summary = FalcorParseUtils.getPropertyObject(asJsonObject2, "summary", UserProfile$Summary.class);
+                                userProfile.summary = FalkorParseUtils.getPropertyObject(asJsonObject2, "summary", UserProfile$Summary.class);
                                 if (userProfile.summary == null || StringUtils.isEmpty(userProfile.getProfileToken())) {
-                                    throw new FalcorParseException("response missing summary" + s);
+                                    throw new FalkorParseException("response missing summary" + s);
                                 }
                             }
                             catch (Exception ex) {
                                 Log.v("nf_service_user_fetchaccountdatarequest", "String response to parse = " + s);
-                                throw new FalcorParseException("response missing user json objects", ex);
+                                throw new FalkorParseException("response missing user json objects", ex);
                             }
-                            userProfile.subtitlePreference = FalcorParseUtils.getPropertyObject(asJsonObject2, "subtitlePreference", SubtitlePreference.class);
+                            userProfile.subtitlePreference = FalkorParseUtils.getPropertyObject(asJsonObject2, "subtitlePreference", SubtitlePreference.class);
                             userProfiles.add(userProfile);
                         }
                         ++n;
@@ -106,16 +106,16 @@ public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<Accoun
             JsonObject asJsonObject3;
             try {
                 asJsonObject3 = dataObj.getAsJsonObject("user");
-                user.summary = FalcorParseUtils.getPropertyObject(asJsonObject3, "summary", User$Summary.class);
+                user.summary = FalkorParseUtils.getPropertyObject(asJsonObject3, "summary", User$Summary.class);
                 if (user.summary == null || StringUtils.isEmpty(user.getUserToken())) {
-                    throw new FalcorParseException("response missing summary" + s);
+                    throw new FalkorParseException("response missing summary" + s);
                 }
             }
             catch (Exception ex2) {
                 Log.v("nf_service_user_fetchaccountdatarequest", "String response to parse = " + s);
-                throw new FalcorParseException("response missing user json objects", ex2);
+                throw new FalkorParseException("response missing user json objects", ex2);
             }
-            user.subtitleDefaults = FalcorParseUtils.getPropertyObject(asJsonObject3, "subtitleDefaults", SubtitlePreference.class);
+            user.subtitleDefaults = FalkorParseUtils.getPropertyObject(asJsonObject3, "subtitleDefaults", SubtitlePreference.class);
             accountData.setUser(user);
         }
         accountData.setUserProfiles(userProfiles);
@@ -142,7 +142,7 @@ public class FetchAccountDataRequest extends FalcorVolleyWebClientRequest<Accoun
     }
     
     @Override
-    protected AccountData parseFalcorResponse(final String s) {
+    protected AccountData parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_fetchaccountdatarequest", 2)) {
             Log.v("nf_service_user_fetchaccountdatarequest", "String response to parse = " + s);
         }

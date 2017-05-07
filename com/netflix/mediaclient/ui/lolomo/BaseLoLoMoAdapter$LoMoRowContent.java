@@ -8,7 +8,7 @@ import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 
 public interface BaseLoLoMoAdapter$LoMoRowContent
 {
-    void invalidateRequestId();
+    void onViewMovedToScrapHeap();
     
     void refresh(final BasicLoMo p0, final int p1);
 }

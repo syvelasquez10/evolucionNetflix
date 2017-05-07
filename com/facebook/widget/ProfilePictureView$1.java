@@ -10,7 +10,9 @@ import android.os.Parcelable;
 import android.view.View$MeasureSpec;
 import android.graphics.BitmapFactory;
 import com.facebook.android.R$drawable;
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import com.facebook.internal.ImageDownloader;
+import com.facebook.internal.ImageRequest$Builder;
 import com.facebook.FacebookException;
 import com.facebook.internal.Logger;
 import com.facebook.LoggingBehavior;
@@ -23,9 +25,12 @@ import android.widget.FrameLayout$LayoutParams;
 import com.facebook.android.R$dimen;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.graphics.Bitmap;
+import com.facebook.internal.ImageRequest;
 import android.widget.ImageView;
+import android.graphics.Bitmap;
 import android.widget.FrameLayout;
+import com.facebook.internal.ImageResponse;
+import com.facebook.internal.ImageRequest$Callback;
 
 class ProfilePictureView$1 implements ImageRequest$Callback
 {

@@ -4,6 +4,7 @@
 
 package com.facebook.widget;
 
+import java.util.Arrays;
 import com.facebook.SessionState;
 import android.support.v4.app.Fragment;
 import com.facebook.android.R$id;
@@ -15,18 +16,23 @@ import android.content.Intent;
 import java.util.List;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionDefaultAudience;
-import java.net.URL;
+import java.net.URI;
 import com.facebook.android.R$drawable;
+import com.facebook.internal.ImageDownloader;
 import com.facebook.android.R$string;
 import com.facebook.android.R$color;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import com.facebook.internal.ImageRequest$Callback;
 import android.content.Context;
+import com.facebook.internal.ImageRequest$Builder;
 import com.facebook.android.R$dimen;
+import com.facebook.internal.ImageRequest;
 import android.os.Bundle;
 import com.facebook.Request$GraphUserCallback;
 import com.facebook.Request;
+import com.facebook.internal.ImageResponse;
 import android.text.TextUtils;
 import android.graphics.drawable.Drawable;
 import com.facebook.Session;
@@ -78,7 +84,7 @@ public class UserSettingsFragment extends FacebookFragment
         try {
             return new ImageRequest$Builder((Context)this.getActivity(), ImageRequest.getProfilePictureUrl(this.user.getId(), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_usersettingsfragment_profile_picture_width), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_usersettingsfragment_profile_picture_height))).setCallerTag(this).setCallback(new UserSettingsFragment$2(this)).build();
         }
-        catch (MalformedURLException ex) {
+        catch (URISyntaxException ex) {
             return null;
         }
     }
@@ -92,7 +98,7 @@ public class UserSettingsFragment extends FacebookFragment
                 this.userProfilePic = (Drawable)userProfilePic;
                 this.userProfilePicID = userProfilePicID;
                 this.connectedStateLabel.setCompoundDrawables((Drawable)null, (Drawable)userProfilePic, (Drawable)null, (Drawable)null);
-                this.connectedStateLabel.setTag((Object)imageResponse.getRequest().getImageUrl());
+                this.connectedStateLabel.setTag((Object)imageResponse.getRequest().getImageUri());
             }
         }
     }
@@ -115,11 +121,11 @@ public class UserSettingsFragment extends FacebookFragment
         if (this.user != null) {
             final ImageRequest imageRequest = this.getImageRequest();
             if (imageRequest != null) {
-                final URL imageUrl = imageRequest.getImageUrl();
-                if (!imageUrl.equals(this.connectedStateLabel.getTag())) {
+                final URI imageUri = imageRequest.getImageUri();
+                if (!imageUri.equals(this.connectedStateLabel.getTag())) {
                     if (this.user.getId().equals(this.userProfilePicID)) {
                         this.connectedStateLabel.setCompoundDrawables((Drawable)null, this.userProfilePic, (Drawable)null, (Drawable)null);
-                        this.connectedStateLabel.setTag((Object)imageUrl);
+                        this.connectedStateLabel.setTag((Object)imageUri);
                     }
                     else {
                         ImageDownloader.downloadAsync(imageRequest);
@@ -170,6 +176,7 @@ public class UserSettingsFragment extends FacebookFragment
         final View inflate = layoutInflater.inflate(R$layout.com_facebook_usersettingsfragment, viewGroup, false);
         (this.loginButton = (LoginButton)inflate.findViewById(R$id.com_facebook_usersettingsfragment_login_button)).setProperties(this.loginButtonProperties);
         this.loginButton.setFragment(this);
+        this.loginButton.setLoginLogoutEventName("fb_user_settings_vc_usage");
         final Session session = this.getSession();
         if (session != null && !session.equals(Session.getActiveSession())) {
             this.loginButton.setSession(session);
@@ -215,8 +222,16 @@ public class UserSettingsFragment extends FacebookFragment
         this.loginButtonProperties.setPublishPermissions(list, this.getSession());
     }
     
+    public void setPublishPermissions(final String... array) {
+        this.loginButtonProperties.setPublishPermissions(Arrays.asList(array), this.getSession());
+    }
+    
     public void setReadPermissions(final List<String> list) {
         this.loginButtonProperties.setReadPermissions(list, this.getSession());
+    }
+    
+    public void setReadPermissions(final String... array) {
+        this.loginButtonProperties.setReadPermissions(Arrays.asList(array), this.getSession());
     }
     
     @Override

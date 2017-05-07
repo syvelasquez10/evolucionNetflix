@@ -36,13 +36,13 @@ public class MdxUtils$SetVideoRatingCallback extends LoggingManagerCallback
         }
         if (status.isError()) {
             Log.w("MdxUtils", "Invalid status code failed");
-            Toast.makeText((Context)this.activity, 2131493171, 1).show();
+            Toast.makeText((Context)this.activity, 2131493178, 1).show();
             Log.d("MdxUtils", "Report rate action ended");
-            UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.activity.getString(2131493171), ActionOnUIError.displayedError), null, (int)this.rating);
+            UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.activity.getString(2131493178), ActionOnUIError.displayedError), null, (int)this.rating);
             return;
         }
         Log.v("MdxUtils", "Rating has been updated ok");
-        Toast.makeText((Context)this.activity, 2131493172, 1).show();
+        Toast.makeText((Context)this.activity, 2131493179, 1).show();
         UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.success, null, null, (int)this.rating);
     }
 }

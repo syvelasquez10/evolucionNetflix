@@ -8,8 +8,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -23,9 +23,9 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class HideVideoRequest extends FalcorVolleyWebClientRequest<String>
+public class HideVideoRequest extends FalkorVolleyWebClientRequest<String>
 {
     private static final String FIELD_PATH = "path";
     private static final String FIELD_VIDEOS = "videos";
@@ -102,18 +102,18 @@ public class HideVideoRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String parseFalcorResponse(String s) {
+    protected String parseFalkorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_hidevideorequest", 2)) {
             Log.v("nf_service_browse_hidevideorequest", "String response to parse = " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_hidevideorequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("hide response empty!! " + this.mVideoId);
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_hidevideorequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("hide response empty!! " + this.mVideoId);
         }
         JsonObject asJsonObject = null;
         try {
             asJsonObject = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mVideoId);
-            s = (String)FalcorParseUtils.getPropertyObject(asJsonObject, "socialEvidence", SocialEvidence.class);
+            s = (String)FalkorParseUtils.getPropertyObject(asJsonObject, "socialEvidence", SocialEvidence.class);
             final JsonObject jsonObject = asJsonObject;
             final String s2 = "path";
             final JsonArray jsonArray = jsonObject.getAsJsonArray(s2);
@@ -133,7 +133,7 @@ public class HideVideoRequest extends FalcorVolleyWebClientRequest<String>
         }
         catch (Exception asJsonObject) {
             Log.v("nf_service_browse_hidevideorequest", "String response to parse = " + s);
-            throw new FalcorParseException("response missing expected json objects", (Throwable)asJsonObject);
+            throw new FalkorParseException("response missing expected json objects", (Throwable)asJsonObject);
         }
         try {
             final JsonObject jsonObject = asJsonObject;
@@ -155,7 +155,7 @@ public class HideVideoRequest extends FalcorVolleyWebClientRequest<String>
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_hidevideorequest", " PathObj missing in: " + asJsonObject.toString());
-            throw new FalcorParseException("Missing hideVideoPathObj", ex);
+            throw new FalkorParseException("Missing hideVideoPathObj", ex);
         }
     }
 }

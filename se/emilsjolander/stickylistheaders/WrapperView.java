@@ -44,6 +44,20 @@ public class WrapperView extends ViewGroup
         return this.mItem;
     }
     
+    public Object getTag() {
+        if (this.mItem != null && this.mItem.getTag() != null) {
+            return this.mItem.getTag();
+        }
+        return super.getTag();
+    }
+    
+    public Object getTag(final int n) {
+        if (this.mItem != null && this.mItem.getTag(n) != null) {
+            return this.mItem.getTag(n);
+        }
+        return super.getTag(n);
+    }
+    
     public boolean hasHeader() {
         return this.mHeader != null;
     }

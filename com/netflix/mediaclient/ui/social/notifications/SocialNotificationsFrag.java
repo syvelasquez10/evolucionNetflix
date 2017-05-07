@@ -11,7 +11,7 @@ import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.os.Bundle;
 import android.app.Activity;
 import android.widget.TextView;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
@@ -33,10 +33,10 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.Set;
 import android.widget.ListView;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -57,7 +57,7 @@ public class SocialNotificationsFrag extends NetflixFrag
     private boolean mNetworkErrorOccured;
     private SocialNotificationsList mNotifications;
     protected ListView mNotificationsList;
-    private Set<SocialNotificationSummary> mNotificationsToBeRead;
+    private final Set<SocialNotificationSummary> mNotificationsToBeRead;
     private ServiceManager mServiceManager;
     private boolean mWasRefreshForTopViewScheduled;
     private final BroadcastReceiver socialNotificationsListUpdateReceiver;
@@ -84,7 +84,7 @@ public class SocialNotificationsFrag extends NetflixFrag
                 this.mAdapter.notifyDataSetChanged();
             }
             if (this.leWrapper != null) {
-                this.leWrapper.showErrorView(2131493351, true, false);
+                this.leWrapper.showErrorView(2131493363, true, false);
             }
             return true;
         }
@@ -127,7 +127,7 @@ public class SocialNotificationsFrag extends NetflixFrag
         if (this.mServiceManager != null && this.mNotificationsToBeRead.size() > 0) {
             this.mServiceManager.getBrowse().markSocialNotificationsAsRead(new ArrayList<SocialNotificationSummary>(this.mNotificationsToBeRead));
             for (final SocialNotificationSummary socialNotificationSummary : this.mNotificationsToBeRead) {
-                SocialLoggingUtils.reportRecommendImplicitFeedbackReadEvent((Context)this.getActivity(), socialNotificationSummary.getId(), socialNotificationSummary.getVideoSummary().getId(), this.mNotifications.getSocialNotificationsListSummary().getBaseTrackId());
+                SocialLoggingUtils.reportRecommendImplicitFeedbackReadEvent((Context)this.getActivity(), socialNotificationSummary.getId(), socialNotificationSummary.getVideo().getId(), this.mNotifications.getSocialNotificationsListSummary().getBaseTrackId());
             }
         }
     }
@@ -141,7 +141,7 @@ public class SocialNotificationsFrag extends NetflixFrag
             for (int i = this.mNotificationsList.getFirstVisiblePosition(); i <= this.mNotificationsList.getLastVisiblePosition(); ++i) {
                 if (this.mAdapter != null && this.mAdapter.getItem(i) != null) {
                     final SocialNotificationSummary item = this.mAdapter.getItem(i);
-                    this.mServiceManager.updateMyListState(item.getVideoSummary().getId(), item.getInQueue().inQueue);
+                    this.mServiceManager.updateMyListState(item.getVideo().getId(), item.getInQueueValue());
                 }
                 else if (Log.isLoggable(SocialNotificationsFrag.TAG, 6)) {
                     Log.e(SocialNotificationsFrag.TAG, "refreshNotificationMyListButtons() got null details for position: " + i);
@@ -160,16 +160,16 @@ public class SocialNotificationsFrag extends NetflixFrag
         }
         else {
             final NetflixActivity netflixActivity = (NetflixActivity)this.getActivity();
-            final String id = socialNotificationSummary.getVideoSummary().getId();
+            final String id = socialNotificationSummary.getVideo().getId();
+            final VideoType type = socialNotificationSummary.getVideo().getType();
             final SocialNotificationsListSummary socialNotificationsListSummary = this.mNotifications.getSocialNotificationsListSummary();
             final String requestId = socialNotificationsListSummary.getRequestId();
             final TextView addToMyListButton = socialNotification.getAddToMyListButton(socialNotificationViewHolder);
-            if (addToMyListButton != null && this.mServiceManager != null && netflixActivity != null && socialNotificationSummary.getInQueue() != null) {
-                this.mServiceManager.registerAddToMyListListener(id, this.mServiceManager.createAddToMyListWrapper(netflixActivity, addToMyListButton, id, socialNotificationsListSummary.getBaseTrackId(), true));
-                this.mServiceManager.updateMyListState(id, socialNotificationSummary.getInQueue().inQueue);
+            if (addToMyListButton != null && this.mServiceManager != null && netflixActivity != null) {
+                this.mServiceManager.registerAddToMyListListener(id, this.mServiceManager.createAddToMyListWrapper(netflixActivity, addToMyListButton, id, type, socialNotificationsListSummary.getBaseTrackId(), true));
+                this.mServiceManager.updateMyListState(id, socialNotificationSummary.getInQueueValue());
             }
             final View playMovieButton = socialNotification.getPlayMovieButton(socialNotificationViewHolder);
-            final VideoType type = socialNotificationSummary.getVideoSummary().getType();
             if (playMovieButton != null) {
                 playMovieButton.setOnClickListener((View$OnClickListener)new SocialNotificationsFrag$2(this, netflixActivity, id, new PlayContextImp(requestId, socialNotificationsListSummary.getPlayerTrackId(), 0, 0), type));
             }
@@ -185,6 +185,7 @@ public class SocialNotificationsFrag extends NetflixFrag
         return this.mIsLoadingData;
     }
     
+    @Override
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
         this.registerReceivers();
@@ -203,9 +204,9 @@ public class SocialNotificationsFrag extends NetflixFrag
     public View onCreateView(final LayoutInflater mLayoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(SocialNotificationsFrag.TAG, "Creating new frag view...");
         this.mLayoutInflater = mLayoutInflater;
-        final View inflate = this.mLayoutInflater.inflate(2130903186, viewGroup, false);
+        final View inflate = this.mLayoutInflater.inflate(2130903193, viewGroup, false);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        (this.mNotificationsList = (ListView)inflate.findViewById(2131165657)).setItemsCanFocus(true);
+        (this.mNotificationsList = (ListView)inflate.findViewById(2131165668)).setItemsCanFocus(true);
         this.mAdapter = new SocialNotificationsFrag$NotificationsListAdapter(this, null);
         this.mNotificationsList.setAdapter((ListAdapter)this.mAdapter);
         this.leWrapper.showLoadingView(false);

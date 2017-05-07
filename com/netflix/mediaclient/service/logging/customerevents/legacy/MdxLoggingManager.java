@@ -33,7 +33,7 @@ public class MdxLoggingManager
     private static final String EVENT_DATAFIELD_GEOLOCATION_COUNTRY = "geolocation_country";
     private static final String EVENT_DATAFIELD_LANGUAGES = "languages";
     private static final String EVENT_DATAFIELD_OS_VERSION = "os_version";
-    private static final String EVENT_DATAFIELD_PLAYBACKFROM = "location";
+    private static final String EVENT_DATAFIELD_PLAYBACKFROM = "fromLocal";
     private static final String EVENT_DATAFIELD_SERVICETYPE = "serviceType";
     private static final String EVENT_DATAFIELD_TARGETUUID = "targetUuid";
     private static final String EVENT_DATAFIELD_TIMESTAMP = "timestamp";
@@ -98,7 +98,7 @@ public class MdxLoggingManager
         final JSONObject commonEventData = this.getCommonEventData(serviceAgent$UserAgentInterface);
         final JSONObject jsonObject = new JSONObject();
         try {
-            commonEventData.putOpt("deviceName", (Object)"Android").putOpt("catalogId", (Object)s).putOpt("appContext", (Object)"home").putOpt("esn", (Object)this.mOwner.getConfigurationAgent().getEsnProvider().getEsn()).putOpt("episodeId", (Object)s2).putOpt("location", (Object)s3);
+            commonEventData.putOpt("deviceName", (Object)"Android").putOpt("catalogId", (Object)s).putOpt("appContext", (Object)"home").putOpt("esn", (Object)this.mOwner.getConfigurationAgent().getEsnProvider().getEsn()).putOpt("episodeId", (Object)s2).putOpt("fromLocal", (Object)s3);
             jsonObject.putOpt("EventName", (Object)"MDX Controller Start Playback").putOpt("TrackId", (Object)n);
             this.buildEventAndSend(jsonObject, commonEventData, serviceAgent$UserAgentInterface.getUserCredentialRegistry().getNetflixID(), serviceAgent$UserAgentInterface.getUserCredentialRegistry().getSecureNetflixID());
         }

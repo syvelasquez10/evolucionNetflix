@@ -9,6 +9,18 @@ import java.util.Collection;
 
 public final class Validate
 {
+    public static void containsNoNullOrEmpty(final Collection<String> collection, final String s) {
+        notNull(collection, s);
+        for (final String s2 : collection) {
+            if (s2 == null) {
+                throw new NullPointerException("Container '" + s + "' cannot contain null values");
+            }
+            if (s2.length() == 0) {
+                throw new IllegalArgumentException("Container '" + s + "' cannot contain empty values");
+            }
+        }
+    }
+    
     public static <T> void containsNoNulls(final Collection<T> collection, final String s) {
         notNull(collection, s);
         final Iterator<T> iterator = collection.iterator();

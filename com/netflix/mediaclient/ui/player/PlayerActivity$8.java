@@ -17,7 +17,9 @@ import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import android.media.AudioManager;
 import android.widget.Toast;
+import android.view.MenuItem;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
@@ -29,24 +31,27 @@ import com.netflix.mediaclient.net.LogMobileType;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.view.Surface;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.pin.PinDialogVault;
 import com.netflix.mediaclient.ui.pin.PinDialogVault$PinInvokedFrom;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
+import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.AndroidUtils;
+import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import android.os.Debug;
 import com.netflix.mediaclient.util.PreferenceUtils;
-import android.widget.ImageView;
-import android.os.SystemClock;
 import android.util.Pair;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
@@ -64,13 +69,12 @@ import android.content.Intent;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
-import android.media.AudioManager;
-import android.widget.SeekBar;
-import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
 import com.netflix.mediaclient.ui.common.Social$SocialProviderCallback;
+import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.BroadcastReceiver;
 import android.os.Handler;
@@ -87,16 +91,12 @@ import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.annotation.SuppressLint;
-import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.util.ThreadUtils;
+import android.os.SystemClock;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import android.view.MotionEvent;
+import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 
-class PlayerActivity$8 implements ManagerStatusListener
+class PlayerActivity$8 implements TappableSurfaceView$TapListener
 {
     final /* synthetic */ PlayerActivity this$0;
     
@@ -104,33 +104,22 @@ class PlayerActivity$8 implements ManagerStatusListener
         this.this$0 = this$0;
     }
     
-    @SuppressLint({ "NewApi" })
     @Override
-    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-        if (Log.isLoggable("PlayerActivity", 3)) {
-            Log.d("PlayerActivity", "ServiceManager ready: " + status.getStatusCode());
+    public void onTap(final MotionEvent motionEvent) {
+        Log.d("PlayerActivity", "PA tap");
+        if (this.this$0.mState.seekToInProgress || this.this$0.mState.audioSeekToInProgress) {
+            Log.d("PlayerActivity", "Seekto in progress, ignore");
+            return;
         }
-        ThreadUtils.assertOnMain();
-        this.this$0.mResources = ResourceHelper.newInstance(this.this$0.mIsTablet);
-        if (!this.this$0.requestDetailsIfNeeded(serviceManager)) {
-            this.this$0.updateUI(serviceManager);
+        if (this.this$0.mScreen.inInterruptedOrPendingInterrupted()) {
+            Log.d("PlayerActivity", "In interrupted state, ignore");
+            return;
         }
-        else {
-            int contentView;
-            if (DeviceUtils.isTabletByContext(this.this$0.getBaseContext())) {
-                contentView = 2130903155;
-            }
-            else {
-                contentView = 2130903150;
-            }
-            this.this$0.setContentView(contentView);
+        final boolean b = motionEvent != null;
+        this.this$0.mState.setLastActionTime(SystemClock.elapsedRealtime());
+        if (!this.this$0.mScreen.inPostPlayOrPendingPostplay()) {
+            this.this$0.mState.userInteraction();
         }
-        NflxProtocolUtils.reportUserOpenedNotification(serviceManager, this.this$0.getIntent());
-    }
-    
-    @Override
-    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-        Log.e("PlayerActivity", "NetflixService is NOT available!");
-        this.this$0.cleanupAndExit();
+        this.this$0.showControlScreenOverlay(b);
     }
 }

@@ -4,26 +4,34 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.view.animation.Transformation;
-import android.util.AttributeSet;
-import android.content.Context;
-import android.view.animation.TranslateAnimation;
+import android.animation.Animator$AnimatorListener;
+import android.animation.TimeInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.View;
+import android.animation.ObjectAnimator;
 
-public class CurrentTimeAnimation extends TranslateAnimation
+public class CurrentTimeAnimation
 {
-    public CurrentTimeAnimation(final float n, final float n2, final float n3, final float n4) {
-        super(n, n2, n3, n4);
+    private ObjectAnimator animY;
+    
+    public CurrentTimeAnimation(final View view, final int n, final int n2) {
+        (this.animY = ObjectAnimator.ofFloat((Object)view, "translationY", new float[] { n, n2 })).setInterpolator((TimeInterpolator)new AccelerateDecelerateInterpolator());
+        this.animY.setDuration(300L);
     }
     
-    public CurrentTimeAnimation(final int n, final float n2, final int n3, final float n4, final int n5, final float n6, final int n7, final float n8) {
-        super(n, n2, n3, n4, n5, n6, n7, n8);
+    public void addListener(final Animator$AnimatorListener animator$AnimatorListener) {
+        this.animY.addListener(animator$AnimatorListener);
     }
     
-    public CurrentTimeAnimation(final Context context, final AttributeSet set) {
-        super(context, set);
+    public void cancel() {
+        this.animY.cancel();
     }
     
-    protected void applyTransformation(final float n, final Transformation transformation) {
-        super.applyTransformation(n, transformation);
+    public boolean isRunning() {
+        return this.animY.isRunning();
+    }
+    
+    public void start() {
+        this.animY.start();
     }
 }

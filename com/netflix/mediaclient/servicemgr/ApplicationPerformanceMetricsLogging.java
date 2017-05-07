@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
+import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
@@ -29,7 +29,7 @@ public interface ApplicationPerformanceMetricsLogging
     public static final String EXTRA_DIALOG_ID = "dialog_id";
     public static final String EXTRA_DIALOG_TYPE = "dialog_type";
     public static final String EXTRA_ERROR = "error";
-    public static final String EXTRA_FALCOR_PATH_RESULTS = "falcorPathResults";
+    public static final String EXTRA_FALKOR_PATH_RESULTS = "falkorPathResults";
     public static final String EXTRA_HTTP_RESPONSE = "http_response";
     public static final String EXTRA_REASON = "reason";
     public static final String EXTRA_REQUEST_ID = "request_id";
@@ -44,7 +44,7 @@ public interface ApplicationPerformanceMetricsLogging
     
     void endAssetRequestSession(final String p0, final IClientLogging$CompletionReason p1, final HttpResponse p2, final Error p3);
     
-    void endDataRequestSession(final String p0, final List<FalcorPathResult> p1, final IClientLogging$CompletionReason p2, final HttpResponse p3, final Error p4);
+    void endDataRequestSession(final String p0, final List<FalkorPathResult> p1, final IClientLogging$CompletionReason p2, final HttpResponse p3, final Error p4);
     
     void endSharedContextSession();
     

@@ -30,12 +30,12 @@ class FalkorValidationActivity$TestFetchGenreVideosTask extends FalkorValidation
     
     @Override
     protected void makeBrowseRequest(final BrowseAccess browseAccess, final int n, final int n2) {
-        browseAccess.fetchGenreVideos(this.genre, 0, 9, n, n2);
+        browseAccess.fetchGenreVideos(this.genre, 0, 9, true, n, n2);
     }
     
     @Override
     protected void makeFalkorRequest(final FalkorAccess falkorAccess, final int n, final int n2) {
-        falkorAccess.fetchGenreVideos(this.genre, 0, 9, n, n2);
+        falkorAccess.fetchGenreVideos(this.genre, 0, 9, true, n, n2);
     }
     
     @Override

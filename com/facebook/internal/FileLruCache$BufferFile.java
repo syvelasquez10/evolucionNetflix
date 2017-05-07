@@ -7,13 +7,11 @@ package com.facebook.internal;
 import java.io.OutputStream;
 import org.json.JSONObject;
 import java.io.IOException;
+import com.facebook.LoggingBehavior;
 import java.util.Date;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.AbstractQueue;
-import java.util.PriorityQueue;
-import com.facebook.LoggingBehavior;
 import com.facebook.Settings;
 import android.content.Context;
 import java.util.concurrent.atomic.AtomicLong;
@@ -33,8 +31,10 @@ class FileLruCache$BufferFile
     
     static void deleteAll(final File file) {
         final File[] listFiles = file.listFiles(excludeNonBufferFiles());
-        for (int length = listFiles.length, i = 0; i < length; ++i) {
-            listFiles[i].delete();
+        if (listFiles != null) {
+            for (int length = listFiles.length, i = 0; i < length; ++i) {
+                listFiles[i].delete();
+            }
         }
     }
     

@@ -16,9 +16,14 @@ public interface OpenGraphAction extends GraphObject
     
     Date getCreatedTime();
     
+    GraphObject getData();
+    
     Date getEndTime();
     
     Date getExpiresTime();
+    
+    @PropertyName("fb:explicitly_shared")
+    boolean getExplicitlyShared();
     
     GraphUser getFrom();
     
@@ -38,7 +43,9 @@ public interface OpenGraphAction extends GraphObject
     
     Date getStartTime();
     
-    List<GraphObject> getTags();
+    GraphObjectList<GraphObject> getTags();
+    
+    String getType();
     
     void setApplication(final GraphObject p0);
     
@@ -46,15 +53,24 @@ public interface OpenGraphAction extends GraphObject
     
     void setCreatedTime(final Date p0);
     
+    void setData(final GraphObject p0);
+    
     void setEndTime(final Date p0);
     
     void setExpiresTime(final Date p0);
+    
+    @PropertyName("fb:explicitly_shared")
+    void setExplicitlyShared(final boolean p0);
     
     void setFrom(final GraphUser p0);
     
     void setId(final String p0);
     
     void setImage(final List<JSONObject> p0);
+    
+    @CreateGraphObject("url")
+    @PropertyName("image")
+    void setImageUrls(final List<String> p0);
     
     void setLikes(final JSONObject p0);
     
@@ -69,4 +85,6 @@ public interface OpenGraphAction extends GraphObject
     void setStartTime(final Date p0);
     
     void setTags(final List<? extends GraphObject> p0);
+    
+    void setType(final String p0);
 }

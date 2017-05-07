@@ -11,7 +11,7 @@ import android.content.res.Resources;
 
 public class ResourcesCompat
 {
-    public Drawable getDrawable(final Resources resources, final int n, final Resources$Theme resources$Theme) {
+    public static Drawable getDrawable(final Resources resources, final int n, final Resources$Theme resources$Theme) {
         if (Build$VERSION.SDK_INT >= 21) {
             return ResourcesCompatApi21.getDrawable(resources, n, resources$Theme);
         }

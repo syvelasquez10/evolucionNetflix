@@ -17,6 +17,10 @@ public interface GraphObject
     
     Object getProperty(final String p0);
     
+     <T extends GraphObject> T getPropertyAs(final String p0, final Class<T> p1);
+    
+     <T extends GraphObject> GraphObjectList<T> getPropertyAsList(final String p0, final Class<T> p1);
+    
     void removeProperty(final String p0);
     
     void setProperty(final String p0, final Object p1);

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 import android.content.RestrictionEntry;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Intent;
 import android.os.UserManager;
 import android.content.Context;
@@ -25,6 +26,9 @@ public class RestrictedProfilesReceiver extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
+        if (AndroidUtils.getAndroidVersion() < 18) {
+            return;
+        }
         final String action = intent.getAction();
         if (!"android.intent.action.GET_RESTRICTION_ENTRIES".equals(action)) {
             Log.w("RestrictedProfilesReceiver", "Unknown action: " + action);
@@ -32,7 +36,7 @@ public class RestrictedProfilesReceiver extends BroadcastReceiver
         }
         Log.i("RestrictedProfilesReceiver", "Adding restriction to disable profile switching");
         final RestrictionEntry restrictionEntry = new RestrictionEntry("key_disable_profile_switching", intent.getBundleExtra("android.intent.extra.restrictions_bundle").getBoolean("key_disable_profile_switching", false));
-        restrictionEntry.setTitle(context.getString(2131493247));
+        restrictionEntry.setTitle(context.getString(2131493261));
         final ArrayList<RestrictionEntry> list = new ArrayList<RestrictionEntry>();
         list.add(restrictionEntry);
         final Bundle bundle = new Bundle();

@@ -16,7 +16,7 @@ public interface GraphUser extends GraphObject
     
     String getLink();
     
-    GraphLocation getLocation();
+    GraphPlace getLocation();
     
     String getMiddleName();
     
@@ -34,7 +34,7 @@ public interface GraphUser extends GraphObject
     
     void setLink(final String p0);
     
-    void setLocation(final GraphLocation p0);
+    void setLocation(final GraphPlace p0);
     
     void setMiddleName(final String p0);
     

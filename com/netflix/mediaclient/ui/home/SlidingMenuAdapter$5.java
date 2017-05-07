@@ -31,11 +31,12 @@ import android.widget.ListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
-import android.support.v4.widget.DrawerLayout;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import android.support.v4.widget.DrawerLayout;
+import android.os.Build$VERSION;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView$OnItemClickListener;
@@ -48,8 +49,16 @@ class SlidingMenuAdapter$5 implements AdapterView$OnItemClickListener
         this.this$0 = this$0;
     }
     
-    public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
+    public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, long n2) {
         HomeActivity.showGenreList(this.this$0.activity, this.this$0.adapter.getItem(n - this.this$0.list.getHeaderViewsCount()));
-        this.this$0.drawerLayout.closeDrawers();
+        final DrawerLayout access$000 = this.this$0.drawerLayout;
+        final SlidingMenuAdapter$5$1 slidingMenuAdapter$5$1 = new SlidingMenuAdapter$5$1(this);
+        if (Build$VERSION.SDK_INT >= 21) {
+            n2 = 300L;
+        }
+        else {
+            n2 = 0L;
+        }
+        access$000.postDelayed((Runnable)slidingMenuAdapter$5$1, n2);
     }
 }

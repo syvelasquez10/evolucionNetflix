@@ -16,7 +16,7 @@ import com.netflix.falkor.PQL;
 import com.netflix.falkor.Ref;
 import com.netflix.model.branches.SummarizedList;
 import com.netflix.falkor.BranchMap;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClient;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.CachedModelProxy;
 import com.netflix.model.Root;

@@ -6,12 +6,13 @@ package com.netflix.falkor;
 
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.Date;
 
 public class Ref implements Expires, PathBound, ReferenceTarget
 {
-    static final String TAG = "Ref";
+    private static final String TAG = "Ref";
     private Date expires;
     private PQL path;
     private PQL refPath;
@@ -28,7 +29,7 @@ public class Ref implements Expires, PathBound, ReferenceTarget
     }
     
     public void clearValue() {
-        if (Log.isLoggable("Ref", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("Ref", "Clearing hard ref for path: " + this.refPath);
         }
         this.valueRef.set(null);
@@ -41,7 +42,7 @@ public class Ref implements Expires, PathBound, ReferenceTarget
     
     public Object getHardValue() {
         final Object value = this.valueRef.get();
-        if (Log.isLoggable("Ref", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             final StringBuilder append = new StringBuilder().append("Hard value: ");
             Serializable class1;
             if (value == null) {
@@ -74,7 +75,7 @@ public class Ref implements Expires, PathBound, ReferenceTarget
         Object o;
         if (value != null) {
             o = value;
-            if (Log.isLoggable("Ref", 2)) {
+            if (Falkor.ENABLE_VERBOSE_LOGGING) {
                 Log.v("Ref", "getValue returned hard ref for path: " + this.refPath);
                 o = value;
             }
@@ -82,7 +83,7 @@ public class Ref implements Expires, PathBound, ReferenceTarget
         else {
             final Object value2 = modelProxy.getValue(this.refPath);
             if (value2 instanceof ReferenceTarget) {
-                if (Log.isLoggable("Ref", 2)) {
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
                     Log.v("Ref", "Target is capable of storing references, create hard reference: " + this.refPath);
                 }
                 final ReferenceTarget referenceTarget = (ReferenceTarget)value2;
@@ -118,10 +119,14 @@ public class Ref implements Expires, PathBound, ReferenceTarget
     }
     
     public void setRefPath(final PQL refPath) {
-        if (Log.isLoggable("Ref", 2)) {
+        if (refPath != null && refPath.equals(this.refPath)) {
+            return;
+        }
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("Ref", "Setting ref path to: " + refPath);
         }
         this.refPath = refPath;
+        this.valueRef.set(null);
     }
     
     @Override

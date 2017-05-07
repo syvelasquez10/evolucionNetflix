@@ -5,14 +5,14 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListImpl;
+import com.netflix.model.leafs.social.SocialNotificationsListImpl;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
@@ -22,12 +22,11 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchSocialNotificationsRequest extends FalcorVolleyWebClientRequest<SocialNotificationsList>
+public class FetchSocialNotificationsRequest extends FalkorVolleyWebClientRequest<SocialNotificationsList>
 {
-    private static final String HORIZONTAL_DISP_FIELD = "horzDispUrl";
     private static final String HORIZONTAL_DISP_OBJECT = "horzArtUrl";
     private static final String IN_QUEUE_FIELD = "inQueue";
     private static final String NOTIFICATIONS_LIST_FIELD = "notificationsList";
@@ -35,7 +34,7 @@ public class FetchSocialNotificationsRequest extends FalcorVolleyWebClientReques
     public static final int PAGE_SOCIAL_NOTIFICATIONS_SIZE = 20;
     private static final String SUMMARY_FIELD = "summary";
     private static final String TAG = "nf_service_user_fetchsocialnotificationsrequest";
-    private BrowseWebClientCache browseCache;
+    private final BrowseWebClientCache browseCache;
     private final int fromIndex;
     private final String pqlQuery1;
     private final String pqlQuery2;
@@ -80,13 +79,13 @@ public class FetchSocialNotificationsRequest extends FalcorVolleyWebClientReques
     }
     
     @Override
-    protected SocialNotificationsList parseFalcorResponse(final String s) {
+    protected SocialNotificationsList parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_fetchsocialnotificationsrequest", 4)) {
             Log.i("nf_service_user_fetchsocialnotificationsrequest", "Got result: " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_user_fetchsocialnotificationsrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("Notifications list doesn't contain 'value' field!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchsocialnotificationsrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("Notifications list doesn't contain 'value' field!");
         }
         JsonObject asJsonObject;
         while (true) {
@@ -106,7 +105,7 @@ public class FetchSocialNotificationsRequest extends FalcorVolleyWebClientReques
                         if (Log.isLoggable("nf_service_user_fetchsocialnotificationsrequest", 2)) {
                             Log.v("nf_service_user_fetchsocialnotificationsrequest", "While getting recommendations field from the response got an exception: " + ex);
                         }
-                        throw new FalcorParseException("response missing notificationsList object", ex);
+                        throw new FalkorParseException("response missing notificationsList object", ex);
                     }
                     break;
                 }
@@ -117,7 +116,7 @@ public class FetchSocialNotificationsRequest extends FalcorVolleyWebClientReques
         final ArrayList<SocialNotificationSummary> list = new ArrayList<SocialNotificationSummary>();
         SocialNotificationsListSummary socialNotificationsListSummary;
         if (asJsonObject.has("summary")) {
-            socialNotificationsListSummary = FalcorParseUtils.getPropertyObject(asJsonObject, "summary", SocialNotificationsListSummary.class);
+            socialNotificationsListSummary = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", SocialNotificationsListSummary.class);
         }
         else {
             if (Log.isLoggable("nf_service_user_fetchsocialnotificationsrequest", 5)) {
@@ -129,7 +128,7 @@ public class FetchSocialNotificationsRequest extends FalcorVolleyWebClientReques
             final String string = Integer.toString(i);
             if (asJsonObject.has(string)) {
                 final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject(string);
-                final SocialNotificationSummary socialNotificationSummary = FalcorParseUtils.getPropertyObject(asJsonObject2, "summary", SocialNotificationSummary.class);
+                final SocialNotificationSummary socialNotificationSummary = FalkorParseUtils.getPropertyObject(asJsonObject2, "summary", SocialNotificationSummary.class);
                 if (socialNotificationSummary.getType() == null) {
                     if (Log.isLoggable("nf_service_user_fetchsocialnotificationsrequest", 6)) {
                         Log.e("nf_service_user_fetchsocialnotificationsrequest", "Skipping notifications with unsupported type... JSONObject: " + asJsonObject2);
@@ -137,8 +136,8 @@ public class FetchSocialNotificationsRequest extends FalcorVolleyWebClientReques
                 }
                 else if (asJsonObject2.has("notificationVideo")) {
                     final JsonObject asJsonObject3 = asJsonObject2.getAsJsonObject("notificationVideo");
-                    final Video$Summary videoSummary = FalcorParseUtils.getPropertyObject(asJsonObject3, "summary", Video$Summary.class);
-                    final Video$InQueue updateInQueueCacheRecord = this.browseCache.updateInQueueCacheRecord(videoSummary.getId(), FalcorParseUtils.getPropertyObject(asJsonObject3, "inQueue", Video$InQueue.class));
+                    final Video$Summary videoSummary = FalkorParseUtils.getPropertyObject(asJsonObject3, "summary", Video$Summary.class);
+                    final Video$InQueue updateInQueueCacheRecord = this.browseCache.updateInQueueCacheRecord(videoSummary.getId(), FalkorParseUtils.getPropertyObject(asJsonObject3, "inQueue", Video$InQueue.class));
                     socialNotificationSummary.setVideoSummary(videoSummary);
                     socialNotificationSummary.setInQueue(updateInQueueCacheRecord);
                     list.add(socialNotificationSummary);

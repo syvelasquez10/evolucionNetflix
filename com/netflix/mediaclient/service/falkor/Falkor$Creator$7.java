@@ -4,13 +4,15 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.model.leafs.SearchTrackableListSummary;
+import com.netflix.model.leafs.ListOfMoviesSummary;
+import com.netflix.falkor.Ref;
+import com.netflix.model.branches.SummarizedList;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$7 implements Func<SearchTrackableListSummary>
+final class Falkor$Creator$7 implements Func<SummarizedList<Ref, ListOfMoviesSummary>>
 {
     @Override
-    public SearchTrackableListSummary call() {
-        return new SearchTrackableListSummary();
+    public SummarizedList<Ref, ListOfMoviesSummary> call() {
+        return new SummarizedList<Ref, ListOfMoviesSummary>(Falkor$Creator.Ref, Falkor$Creator.ListOfMoviesSummary);
     }
 }

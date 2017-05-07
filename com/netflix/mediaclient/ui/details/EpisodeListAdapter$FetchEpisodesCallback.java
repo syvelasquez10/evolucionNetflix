@@ -6,10 +6,10 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AdapterView;
-import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import java.util.Collection;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import com.netflix.mediaclient.android.fragment.LoadingView;
@@ -22,6 +22,7 @@ import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.view.ViewGroup;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus;
@@ -33,7 +34,7 @@ import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
-class EpisodeListAdapter$FetchEpisodesCallback extends LoggingManagerCallback
+public class EpisodeListAdapter$FetchEpisodesCallback extends LoggingManagerCallback
 {
     private final int numItems;
     private final long requestId;

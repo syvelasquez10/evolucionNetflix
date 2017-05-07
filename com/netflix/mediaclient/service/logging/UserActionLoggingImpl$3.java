@@ -31,6 +31,7 @@ import com.netflix.mediaclient.service.logging.uiaction.SayThanksSession;
 import com.netflix.mediaclient.service.logging.uiaction.RemoveFromPlaylistSession;
 import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
+import com.netflix.mediaclient.service.logging.uiaction.NewLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
 import com.netflix.mediaclient.service.logging.uiaction.EditProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.DeleteProfileSession;

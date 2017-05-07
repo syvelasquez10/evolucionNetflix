@@ -28,11 +28,19 @@ public class ShowDetailsFrag$ShowDetailsStringProvider implements VideoDetailsVi
         if (StringUtils.isEmpty(this.details.getCreators())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText(this.context, 2131493148, this.details.getCreators());
+        return StringUtils.createBoldLabeledText(this.context, 2131493155, this.details.getCreators());
+    }
+    
+    @Override
+    public CharSequence getGenresText() {
+        if (StringUtils.isEmpty(this.details.getGenres())) {
+            return null;
+        }
+        return StringUtils.createBoldLabeledText(this.context, 2131493156, this.details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText(this.context, 2131493147, this.details.getActors());
+        return StringUtils.createBoldLabeledText(this.context, 2131493154, this.details.getActors());
     }
 }

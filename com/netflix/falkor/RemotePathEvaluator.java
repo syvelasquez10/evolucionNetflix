@@ -10,8 +10,8 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import com.google.gson.GsonBuilder;
 import java.net.URI;
@@ -43,10 +43,10 @@ public class RemotePathEvaluator extends BasePathEvaluator
         Class<?> clazz;
         String string;
         Class<?> clazz2;
-        Class<?> returnType = null;
         Type genericReturnType2;
         Type type2 = null;
         Method method;
+        Class<?> returnType = null;
         Class<?> clazz3;
         Class<?> clazz4;
         Type type3;
@@ -58,6 +58,7 @@ public class RemotePathEvaluator extends BasePathEvaluator
             }
             string = iterator.next().toString();
             while (true) {
+                Block_8_Outer:Block_6_Outer:
                 while (true) {
                     Label_0230: {
                         if (genericReturnType == null) {
@@ -72,13 +73,12 @@ public class RemotePathEvaluator extends BasePathEvaluator
                                     break Label_0219;
                                 }
                                 break Label_0230;
-                                // iftrue(Label_0154:, !List.class.isAssignableFrom((Class<?>)returnType))
                                 // iftrue(Label_0204:, !genericReturnType2 instanceof ParameterizedType)
+                                // iftrue(Label_0154:, !List.class.isAssignableFrom((Class<?>)returnType))
                                 // iftrue(Label_0209:, !Map.class.isAssignableFrom((Class<?>)returnType))
                                 // iftrue(Label_0193:, !returnType instanceof Class)
-                                Block_7:Block_9_Outer:Block_8_Outer:
+                            Block_7:
                                 while (true) {
-                                    break Block_7;
                                     while (true) {
                                         while (true) {
                                             type2 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
@@ -86,13 +86,14 @@ public class RemotePathEvaluator extends BasePathEvaluator
                                             genericReturnType2 = method.getGenericReturnType();
                                             continue Block_8_Outer;
                                         }
+                                        break Block_7;
                                         Label_0154: {
-                                            continue Label_0069_Outer;
+                                            continue Block_6_Outer;
                                         }
                                     }
                                     method = rootType.getMethod("get" + string.substring(0, 1).toUpperCase() + string.substring(1), (Class<?>[])new Class[0]);
                                     returnType = method.getReturnType();
-                                    continue Block_9_Outer;
+                                    continue Label_0069_Outer;
                                 }
                                 genericReturnType = method.getGenericReturnType();
                                 type = returnType;

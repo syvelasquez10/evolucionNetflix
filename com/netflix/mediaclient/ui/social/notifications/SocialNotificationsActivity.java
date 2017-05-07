@@ -18,9 +18,11 @@ import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
 public class SocialNotificationsActivity extends FragmentHostActivity
 {
+    private static final String NOTIFICATION_BEACON_SENT = "notification_beacon_sent";
     public static final String NOTIFICATION_SOCIAL = "com.netflix.mediaclient.intent.action.NOTIFICATION_SOCIAL";
     private static final String TAG;
     private boolean mManagerIsReady;
+    private boolean mNotificationOpenedReportAlreadySent;
     
     static {
         TAG = SocialNotificationsActivity.class.getSimpleName();
@@ -44,7 +46,7 @@ public class SocialNotificationsActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903095;
+        return 2130903097;
     }
     
     @Override
@@ -63,7 +65,10 @@ public class SocialNotificationsActivity extends FragmentHostActivity
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
             netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
-            netflixActionBar.setTitle(this.getResources().getString(2131493348));
+            netflixActionBar.setTitle(this.getResources().getString(2131493360));
+        }
+        if (bundle != null) {
+            this.mNotificationOpenedReportAlreadySent = bundle.getBoolean("notification_beacon_sent");
         }
     }
     
@@ -72,6 +77,12 @@ public class SocialNotificationsActivity extends FragmentHostActivity
         Log.d(SocialNotificationsActivity.TAG, "onNewIntent: ", intent);
         super.onNewIntent(intent);
         this.setIntent(intent);
+    }
+    
+    @Override
+    protected void onSaveInstanceState(final Bundle bundle) {
+        bundle.putBoolean("notification_beacon_sent", this.mNotificationOpenedReportAlreadySent);
+        super.onSaveInstanceState(bundle);
     }
     
     @Override

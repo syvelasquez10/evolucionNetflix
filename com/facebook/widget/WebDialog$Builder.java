@@ -14,6 +14,10 @@ public class WebDialog$Builder extends WebDialog$BuilderBase<WebDialog$Builder>
         super(context, session, s, bundle);
     }
     
+    public WebDialog$Builder(final Context context, final String s) {
+        super(context, s);
+    }
+    
     public WebDialog$Builder(final Context context, final String s, final String s2, final Bundle bundle) {
         super(context, s, s2, bundle);
     }

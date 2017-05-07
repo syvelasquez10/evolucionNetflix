@@ -23,10 +23,10 @@ public final class AlertDialogFactory
         updateDialog$Builder.setTitle(noNull(s));
         updateDialog$Builder.setMessage(noNull(s2));
         if (string == null) {
-            string = context.getString(2131492980);
+            string = context.getString(2131492988);
         }
         if (string2 == null) {
-            string2 = context.getString(2131493101);
+            string2 = context.getString(2131493108);
         }
         if (handler != null) {
             updateDialog$Builder.setPositiveButton(string, (DialogInterface$OnClickListener)new AlertDialogFactory$1(runnable, handler));

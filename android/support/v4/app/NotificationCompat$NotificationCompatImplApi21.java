@@ -6,8 +6,8 @@ package android.support.v4.app;
 
 import android.os.Parcelable;
 import java.util.Iterator;
-import android.os.Bundle;
 import android.os.Build$VERSION;
+import android.os.Bundle;
 import java.util.ArrayList;
 import android.app.Notification;
 
@@ -22,7 +22,17 @@ class NotificationCompat$NotificationCompatImplApi21 extends NotificationCompat$
     }
     
     @Override
+    public Bundle getBundleForUnreadConversation(final NotificationCompatBase$UnreadConversation notificationCompatBase$UnreadConversation) {
+        return NotificationCompatApi21.getBundleForUnreadConversation(notificationCompatBase$UnreadConversation);
+    }
+    
+    @Override
     public String getCategory(final Notification notification) {
         return NotificationCompatApi21.getCategory(notification);
+    }
+    
+    @Override
+    public NotificationCompatBase$UnreadConversation getUnreadConversationFromBundle(final Bundle bundle, final NotificationCompatBase$UnreadConversation$Factory notificationCompatBase$UnreadConversation$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
+        return NotificationCompatApi21.getUnreadConversationFromBundle(bundle, notificationCompatBase$UnreadConversation$Factory, remoteInputCompatBase$RemoteInput$Factory);
     }
 }

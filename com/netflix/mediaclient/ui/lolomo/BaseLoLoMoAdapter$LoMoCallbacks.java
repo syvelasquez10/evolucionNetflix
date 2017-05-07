@@ -4,17 +4,19 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.graphics.drawable.Drawable;
 import java.util.Collection;
+import com.netflix.mediaclient.ui.lomo.BillboardView;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import android.widget.AbsListView;
 import com.netflix.mediaclient.util.ThreadUtils;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewGroup;
 import android.app.Activity;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-import android.graphics.drawable.Drawable;
-import com.netflix.mediaclient.util.ViewUtils;
 import android.content.Context;
-import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.ui.lomo.BillboardView;
+import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.content.res.Resources;

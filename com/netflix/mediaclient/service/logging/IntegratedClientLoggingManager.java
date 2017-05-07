@@ -71,7 +71,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     private final IntegratedClientLoggingManager$ClientLoggingEventQueue mEventQueue;
     private ScheduledExecutorService mExecutor;
     private UserInputManager mInputManager;
-    private AtomicBoolean mLocalPlaybackInProgress;
+    private final AtomicBoolean mLocalPlaybackInProgress;
     private final List<LoggingSession> mLoggingSessions;
     private final LoggingAgent mOwner;
     private final BroadcastReceiver mPlayerReceiver;
@@ -398,6 +398,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     }
     
     void destroy() {
+        this.mInputManager.removeListener(this);
         this.unRegisterReceivers();
     }
     
@@ -495,7 +496,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         this.mActionLogging = new UserActionLoggingImpl(this);
         this.mUIViewLogging = new UIViewLoggingImpl(this);
         Log.d("nf_log", "Add ICL manager as listener on user input...");
-        this.mOwner.getApplication().getUserInput().addListener(this);
+        this.mInputManager.addListener(this);
         Log.d("nf_log", "Add ICL manager as listener on user input done.");
         this.mSuspendLogging = new SuspendLoggingImpl(this);
         this.mSearchLogging = new SearchLogging(this);

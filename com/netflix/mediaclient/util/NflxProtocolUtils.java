@@ -276,6 +276,11 @@ public final class NflxProtocolUtils
             Log.w("NflxHandler", "CL or CMP is null, enable to report that user opened notification");
             return;
         }
+        if (!NotificationUtils.isIntentFromPushNotification(intent)) {
+            Log.d("NflxHandler", "Not from push notification, do not report.");
+            return;
+        }
+        Log.v("NflxHandler", "From push notification, report.");
         final MessageData instance = MessageData.createInstance(intent);
         if (instance == null) {
             Log.e("NflxHandler", "Unable to report since message data are missing!");

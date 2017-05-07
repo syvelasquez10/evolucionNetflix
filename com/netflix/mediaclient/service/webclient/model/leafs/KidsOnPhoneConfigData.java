@@ -12,11 +12,10 @@ import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 
 public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
 {
-    public static final KidsOnPhoneConfigData DEFAULT_KIDS_CONFIG;
     @SerializedName("abNav")
-    private KidsOnPhoneConfiguration$ActionBarNavType actionBarNavType;
+    private final KidsOnPhoneConfiguration$ActionBarNavType actionBarNavType;
     @SerializedName("imageType")
-    private KidsOnPhoneConfiguration$LolomoImageType imageType;
+    private final KidsOnPhoneConfiguration$LolomoImageType imageType;
     @SerializedName("isEntryInActionBar")
     private boolean isEntryInActionBar;
     @SerializedName("isEntryInGenreLolomo")
@@ -26,11 +25,7 @@ public class KidsOnPhoneConfigData implements KidsOnPhoneConfiguration
     @SerializedName("isKidsOnPhoneEnabled")
     private boolean isKidsOnPhoneEnabled;
     @SerializedName("scrollBehavior")
-    private KidsOnPhoneConfiguration$ScrollBehavior scrollBehavior;
-    
-    static {
-        DEFAULT_KIDS_CONFIG = new KidsOnPhoneConfigData();
-    }
+    private final KidsOnPhoneConfiguration$ScrollBehavior scrollBehavior;
     
     public KidsOnPhoneConfigData() {
         this.scrollBehavior = KidsOnPhoneConfiguration$ScrollBehavior.LRUD;

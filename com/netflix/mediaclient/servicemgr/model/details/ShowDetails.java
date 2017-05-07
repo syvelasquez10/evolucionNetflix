@@ -4,9 +4,11 @@
 
 package com.netflix.mediaclient.servicemgr.model.details;
 
+import com.netflix.mediaclient.servicemgr.model.Video;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
 
-public interface ShowDetails extends FriendProfilesProvider, VideoDetails
+public interface ShowDetails extends FriendProfilesProvider, EvidenceDetails, VideoDetails
 {
     String getCreators();
     
@@ -21,4 +23,12 @@ public interface ShowDetails extends FriendProfilesProvider, VideoDetails
     int getNumOfEpisodes();
     
     int getNumOfSeasons();
+    
+    List<Video> getSimilars();
+    
+    int getSimilarsListPos();
+    
+    String getSimilarsRequestId();
+    
+    int getSimilarsTrackId();
 }

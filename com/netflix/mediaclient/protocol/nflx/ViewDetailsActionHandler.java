@@ -8,7 +8,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.NflxProtocolUtils$VideoInfo;
 import android.app.Activity;
-import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.Log;
@@ -54,13 +54,13 @@ class ViewDetailsActionHandler extends BaseNflxHandler
             if (Log.isLoggable("NflxHandler", 2)) {
                 Log.v("NflxHandler", "Showing details for episode: " + catalogId + ", type: " + videoType + ", show: " + videoInfo.getShowId());
             }
-            DetailsActivity.showEpisodeDetails(this.mActivity, videoInfo.getShowId(), catalogId, NflxProtocolUtils.getPlayContext(trackId), action, actionToken);
+            DetailsActivityLauncher.showEpisodeDetails(this.mActivity, videoInfo.getShowId(), catalogId, NflxProtocolUtils.getPlayContext(trackId), action, actionToken);
         }
         else {
             if (Log.isLoggable("NflxHandler", 2)) {
                 Log.v("NflxHandler", "Showing details for: " + catalogId + ", type: " + videoType);
             }
-            DetailsActivity.show(this.mActivity, videoType, catalogId, "", NflxProtocolUtils.getPlayContext(trackId), action, actionToken);
+            DetailsActivityLauncher.show(this.mActivity, videoType, catalogId, "", NflxProtocolUtils.getPlayContext(trackId), action, actionToken);
         }
         return NflxHandler$Response.HANDLING;
     }
@@ -99,7 +99,7 @@ class ViewDetailsActionHandler extends BaseNflxHandler
         final String id2 = NflxProtocolUtils.extractId(optString);
         if (StringUtils.isEmpty(id2)) {
             Log.e("NflxHandler", "It should be episode, failed to get episode id from url! Default to show SDP! Url was: " + optString);
-            DetailsActivity.show(this.mActivity, VideoType.SHOW, id, "", NflxProtocolUtils.getPlayContext(s), this.getAction(), this.getActionToken());
+            DetailsActivityLauncher.show(this.mActivity, VideoType.SHOW, id, "", NflxProtocolUtils.getPlayContext(s), this.getAction(), this.getActionToken());
             return NflxHandler$Response.HANDLING;
         }
         if (Log.isLoggable("NflxHandler", 3)) {
@@ -107,7 +107,7 @@ class ViewDetailsActionHandler extends BaseNflxHandler
             Log.d("NflxHandler", "Expanded from: episodeIdUri " + optString + " and shodIdUri " + string);
             Log.v("NflxHandler", "Showing SDP");
         }
-        DetailsActivity.showEpisodeDetails(this.mActivity, id, id2, NflxProtocolUtils.getPlayContext(s), this.getAction(), this.getActionToken());
+        DetailsActivityLauncher.showEpisodeDetails(this.mActivity, id, id2, NflxProtocolUtils.getPlayContext(s), this.getAction(), this.getActionToken());
         return NflxHandler$Response.HANDLING;
     }
     
@@ -123,7 +123,7 @@ class ViewDetailsActionHandler extends BaseNflxHandler
             if (Log.isLoggable("NflxHandler", 2)) {
                 Log.v("NflxHandler", "Showing MDP for: " + videoIdFromUri);
             }
-            DetailsActivity.show(this.mActivity, VideoType.MOVIE, videoIdFromUri, "", NflxProtocolUtils.getPlayContext(s2), this.getAction(), this.getActionToken());
+            DetailsActivityLauncher.show(this.mActivity, VideoType.MOVIE, videoIdFromUri, "", NflxProtocolUtils.getPlayContext(s2), this.getAction(), this.getActionToken());
         }
         else {
             Log.e("NflxHandler", "Video ID not found, return to LOLOMO");

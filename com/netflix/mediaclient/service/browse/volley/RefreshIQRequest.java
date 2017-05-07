@@ -6,24 +6,24 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.google.gson.JsonParser;
-import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
+import com.netflix.mediaclient.service.preapp.PreAppAgent;
+import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
-import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
 @SuppressLint({ "DefaultLocale" })
-public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
+public class RefreshIQRequest extends FalkorVolleyWebClientRequest<String>
 {
     private static final String FIELD_LOLOMOS = "lolomos";
     private static final String FIELD_VALUE = "value";
@@ -36,13 +36,11 @@ public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
     private final String lolomoId;
     private final boolean lolomoIdInCache;
     private final String pqlQuery;
-    private final BrowseAgentCallback responseCallback;
     private final int toVideo;
     
-    protected RefreshIQRequest(final Context context, final BrowseWebClientCache browseCache, final int fromVideo, final int toVideo, final BrowseAgentCallback responseCallback) {
+    protected RefreshIQRequest(final Context context, final BrowseWebClientCache browseCache, final int fromVideo, final int toVideo) {
         super(context);
         this.canMakeRequest = true;
-        this.responseCallback = responseCallback;
         this.fromVideo = fromVideo;
         this.toVideo = toVideo;
         this.browseCache = browseCache;
@@ -61,6 +59,11 @@ public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
         }
     }
     
+    private void notifyOfRefresh() {
+        BrowseAgent.sendIqRefreshBrodcast(this.mContext);
+        PreAppAgent.informIqUpdated(this.mContext);
+    }
+    
     public boolean canProceed() {
         return this.canMakeRequest;
     }
@@ -72,14 +75,13 @@ public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
     
     @Override
     protected String getOptionalParams() {
-        final String format = String.format("[{'from':%d,'to':%d}, 'summary']", this.fromVideo, this.toVideo);
-        final String format2 = String.format("'%s'", this.iqLoMoId);
+        final String format = String.format("'%s'", this.iqLoMoId);
         final StringBuilder sb = new StringBuilder();
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", format2));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", this.iqLoMoIndex));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "'queue'"));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", format));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
+        sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("param", format));
+        sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("param", this.iqLoMoIndex));
+        sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("param", "'queue'"));
+        sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", String.format("[{'from':%d,'to':%d}, 'summary']", this.fromVideo, this.toVideo)));
+        sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
         Log.d("nf_service_browse_refreshcwrequest", " getOptionalParams: " + sb.toString());
         return sb.toString();
     }
@@ -91,38 +93,34 @@ public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
     
     @Override
     protected void onFailure(final Status status) {
-        if (this.responseCallback != null) {
-            Log.d("nf_service_browse_refreshcwrequest", "RefreshIQRequest finished onFailure statusCode=" + status);
-            this.responseCallback.onIQListRefresh(status);
-        }
+        Log.d("nf_service_browse_refreshcwrequest", "RefreshIQRequest finished onFailure statusCode=" + status);
+        this.notifyOfRefresh();
     }
     
     @Override
     protected void onSuccess(final String s) {
-        if (this.responseCallback != null) {
-            Log.d("nf_service_browse_refreshcwrequest", "RefreshIQRequest finished onSuccess");
-            this.responseCallback.onIQListRefresh(CommonStatus.OK);
-        }
+        Log.d("nf_service_browse_refreshcwrequest", "RefreshIQRequest finished onSuccess");
+        this.notifyOfRefresh();
     }
     
     @Override
-    protected String parseFalcorResponse(final String s) {
+    protected String parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_refreshcwrequest", 2)) {
             Log.v("nf_service_browse_refreshcwrequest", "String response to parse = " + s.substring(0, Math.min(s.length(), 1500)));
         }
         JsonObject asJsonObject;
         try {
             asJsonObject = new JsonParser().parse(s).getAsJsonObject();
-            if (FalcorParseUtils.containsErrors(asJsonObject)) {
-                throw new FalcorServerException(FalcorParseUtils.getErrorMessage(asJsonObject));
+            if (FalkorParseUtils.hasErrors(asJsonObject)) {
+                throw new FalkorServerException(FalkorParseUtils.getErrorMessage(asJsonObject));
             }
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_refreshcwrequest", "String response to parse = " + s);
-            throw new FalcorParseException("Error in creating JsonObject", ex);
+            throw new FalkorParseException("Error in creating JsonObject", ex);
         }
         final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject("value");
-        if (FalcorParseUtils.isEmpty(asJsonObject2)) {
+        if (FalkorParseUtils.isEmpty(asJsonObject2)) {
             return Integer.toString(StatusCode.OK.getValue());
         }
         try {
@@ -131,7 +129,7 @@ public class RefreshIQRequest extends FalcorVolleyWebClientRequest<String>
         }
         catch (Exception ex2) {
             Log.v("nf_service_browse_refreshcwrequest", "String response to parse = " + s);
-            throw new FalcorParseException("response missing expected json objects", ex2);
+            throw new FalkorParseException("response missing expected json objects", ex2);
         }
     }
 }

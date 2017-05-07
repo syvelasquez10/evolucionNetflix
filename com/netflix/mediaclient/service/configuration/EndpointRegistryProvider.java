@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.util.UriUtil;
@@ -19,7 +20,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.9.2/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/3.10/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
@@ -27,6 +28,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     private static final String CLIENT_LOGGING_PATH = "/log";
     private static final String ENDPOINT_REVISION_LATEST = "&revision=latest";
+    private static final boolean FORCE_LEGACY_BROWSE_VOLLEY_CLIENT = false;
     private static final String HTTP = "http://";
     private static final String HTTPS = "https://";
     private static final String IMG_PREFERENCE_JPG = "jpg";
@@ -41,8 +43,9 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PARAM_BUILD_DISPLAY = "osDisplay";
     private static final String PARAM_DEBUG_BUILD = "dbg";
     private static final String PARAM_DEVICE_MEM_LEVEL = "memLevel";
+    private static final String PARAM_FORCE_LEGACY_BROWSE_VOLLEY_CLIENT = "fbv";
     private static final String PARAM_FORM_FACTOR = "ffbc";
-    private static final String PARAM_IMG_PREFERENCE = "imgpref";
+    private static final String PARAM_IMG_TYPE_PREFERENCE = "imgpref";
     private static final String PARAM_KOP_EXPERIENCE = "kop";
     private static final String PARAM_LANGUAGES = "languages";
     private static final String PARAM_MANUFACTURER = "mnf";
@@ -53,6 +56,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PARAM_VIDEO_CAPABILITY = "qlty";
     private static final String PRESENTATION_TRACKING_ENDPOINT = "presentationtracking.netflix.com";
     private static final String PRESENTATION_TRACKING_PATH = "/users/presentationtracking";
+    private static final String TAG = "EndpointRegistryProvider";
     private static final String WEBCLIENT_ENDPOINT = "api-global.netflix.com";
     private String mCachedEndpointUrl;
     private String mClientLogEndpointUrl;
@@ -63,16 +67,16 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private final DeviceModel mDeviceModel;
     private String mEndpointHost;
     private final ImagePrefRepository mImagePrefRepository;
+    private final ImageResolutionClass mImageResolutionClass;
     private String mPresentationTrackingUrl;
-    private final String mUiResolutionType;
     private ServiceAgent$UserAgentInterface mUserAgent;
     
-    public EndpointRegistryProvider(final Context mContext, final DeviceModel mDeviceModel, final Boolean mDeviceHd, final ImagePrefRepository mImagePrefRepository, final String mUiResolutionType) {
+    public EndpointRegistryProvider(final Context mContext, final DeviceModel mDeviceModel, final Boolean mDeviceHd, final ImagePrefRepository mImagePrefRepository, final ImageResolutionClass mImageResolutionClass) {
         this.mContext = mContext;
         this.mDeviceModel = mDeviceModel;
         this.mDeviceHd = mDeviceHd;
         this.mImagePrefRepository = mImagePrefRepository;
-        this.mUiResolutionType = mUiResolutionType;
+        this.mImageResolutionClass = mImageResolutionClass;
         this.mEndpointHost = "api-global.netflix.com";
     }
     
@@ -115,6 +119,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         }
         sb.append(s);
         sb.append(this.buildUrlParam("appType", this.mDeviceModel.getAppType()));
+        sb.append(this.buildUrlParam("dbg", String.valueOf(false)));
         String s2;
         if (this.mDeviceHd) {
             s2 = "hd";
@@ -133,7 +138,12 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         sb.append(this.buildUrlParam("mnf", UriUtil.urlEncodeParam(this.mDeviceModel.getManufacturer())));
         sb.append(this.buildUrlParam("store", AppStoreHelper.getInstallationSource(this.mContext)));
         sb.append(this.buildUrlParam("memLevel", ConfigurationAgent.getMemLevel()));
-        return sb.toString();
+        sb.append(this.buildUrlParam("fbv", String.valueOf(false)));
+        final String string = sb.toString();
+        if (Log.isLoggable("EndpointRegistryProvider", 2)) {
+            Log.v("EndpointRegistryProvider", "Config URL: " + string);
+        }
+        return string;
     }
     
     private String buildUrlParam(final String s, final String s2) {
@@ -164,11 +174,11 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.9.2/api");
+        sb.append("/android/3.10/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");
-        sb.append(this.buildUrlParam("res", this.mUiResolutionType));
+        sb.append(this.buildUrlParam("res", this.mImageResolutionClass.urlParamValue));
         sb.append(this.buildUrlParam("imgpref", this.getImagePreference()));
         this.mCachedEndpointUrl = sb.toString();
         return this.addDynamicParams(sb, apiEndpointRegistry$ResponsePathFormat);

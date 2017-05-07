@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.util.StringUtils;
 import android.os.Parcel;
@@ -74,39 +75,39 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonPopu
     public void populate(final JsonElement jsonElement) {
         super.populate(jsonElement);
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("ListOfGenreSummary", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("ListOfGenreSummary", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final String s = entry.getKey();
             int n = 0;
-            Label_0134: {
+            Label_0130: {
                 switch (s.hashCode()) {
                     case 646545070: {
                         if (s.equals("genreName")) {
                             n = 0;
-                            break Label_0134;
+                            break Label_0130;
                         }
                         break;
                     }
                     case -79774210: {
                         if (s.equals("genreId")) {
                             n = 1;
-                            break Label_0134;
+                            break Label_0130;
                         }
                         break;
                     }
                     case 1562605389: {
                         if (s.equals("genreExperience")) {
                             n = 2;
-                            break Label_0134;
+                            break Label_0130;
                         }
                         break;
                     }
                     case 1282907404: {
                         if (s.equals("isKidsGenre")) {
                             n = 3;
-                            break Label_0134;
+                            break Label_0130;
                         }
                         break;
                     }

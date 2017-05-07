@@ -5,8 +5,9 @@
 package com.netflix.mediaclient.util.log;
 
 import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
-import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
@@ -261,6 +262,56 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
+    public static void reportNewLolomoActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error, final String s, final String s2, final Long n, final String s3, final String s4) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Reason can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_ENDED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("reason", clientLogging$CompletionReason.name());
+        while (true) {
+            if (error == null) {
+                break Label_0062;
+            }
+            try {
+                intent.putExtra("error", error.toJSONObject().toString());
+                if (StringUtils.isEmpty(s)) {
+                    intent.putExtra("renoCause", s);
+                }
+                if (StringUtils.isEmpty(s2)) {
+                    intent.putExtra("renoMessageGuid", s2);
+                }
+                if (n != null) {
+                    intent.putExtra("renoCreationTimestamp", (long)n);
+                }
+                if (StringUtils.isEmpty(s3)) {
+                    intent.putExtra("mercuryMessageGuid", s3);
+                }
+                if (StringUtils.isEmpty(s4)) {
+                    intent.putExtra("mercuryEventGuid", s4);
+                }
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed to get JSON string from UIError", (Throwable)ex);
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public static void reportNewLolomoActionStarted(final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_START");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        if (clientLogging$ModalView != null) {
+            intent.putExtra("view", clientLogging$ModalView.name());
+        }
+        if (userActionLogging$CommandName != null) {
+            intent.putExtra("cmd", userActionLogging$CommandName.name());
+        }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
     public static void reportPlayActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Reason can not be null!");
@@ -458,7 +509,7 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         intent.putExtra("view", clientLogging$ModalView.name());
         while (true) {
             if (uiError == null) {
-                break Label_0074;
+                break Label_0075;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());

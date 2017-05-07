@@ -4,9 +4,7 @@
 
 package com.netflix.mediaclient.service.preapp;
 
-import android.content.ComponentName;
-import com.netflix.mediaclient.ui.homescreen.NetflixAppWidgetProvider;
-import android.appwidget.AppWidgetManager;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
@@ -34,15 +32,15 @@ class PreAppAgent$1 extends BroadcastReceiver
                 Log.d("nf_preappagent", String.format("received intent action: %s", action));
             }
             if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ALL_UPDATED".equals(action)) {
-                this.this$0.mDiskDataHandler.update(UpdateEventType.ALL_UPDATED);
+                this.this$0.mPreAppAgentDataHandler.update(PreAppAgentEventType.ALL_UPDATED);
                 return;
             }
             if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_CW_UPDATED".equals(action)) {
-                this.this$0.mDiskDataHandler.update(UpdateEventType.CW_UPDATED);
+                this.this$0.mPreAppAgentDataHandler.update(PreAppAgentEventType.CW_UPDATED);
                 return;
             }
             if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_IQ_UPDATED".equals(action)) {
-                this.this$0.mDiskDataHandler.update(UpdateEventType.IQ_UPDATED);
+                this.this$0.mPreAppAgentDataHandler.update(PreAppAgentEventType.IQ_UPDATED);
             }
         }
     }

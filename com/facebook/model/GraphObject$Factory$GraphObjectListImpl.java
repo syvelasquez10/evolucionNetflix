@@ -7,6 +7,7 @@ package com.facebook.model;
 import java.lang.reflect.Method;
 import com.facebook.internal.Utility;
 import java.lang.annotation.Annotation;
+import java.util.Iterator;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Map;
@@ -79,7 +80,15 @@ final class GraphObject$Factory$GraphObjectListImpl<T> extends AbstractList<T> i
     
     @Override
     public boolean equals(final Object o) {
-        return this == o || (this.getClass() == o.getClass() && this.state.equals((Object)((GraphObject$Factory$GraphObjectListImpl)o).state));
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+            if (this.getClass() == o.getClass()) {
+                return this.state.equals((Object)((GraphObject$Factory$GraphObjectListImpl)o).state);
+            }
+        }
+        return false;
     }
     
     @Override

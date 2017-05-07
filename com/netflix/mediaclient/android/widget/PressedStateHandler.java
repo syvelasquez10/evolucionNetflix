@@ -34,7 +34,7 @@ public class PressedStateHandler
             final View view = this.view;
             float alpha;
             if (pressed) {
-                alpha = 0.65f;
+                alpha = 0.7f;
             }
             else {
                 alpha = 1.0f;

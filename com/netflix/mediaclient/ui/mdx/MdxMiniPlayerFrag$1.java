@@ -9,7 +9,6 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.service.mdx.MdxErrorHandler$ErrorHandlerCallbacks;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.MdxUtils$SetVideoRatingCallback;
 import com.netflix.mediaclient.util.MdxUtils;

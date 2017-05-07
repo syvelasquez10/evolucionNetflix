@@ -6,8 +6,8 @@ package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile$Operation;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.android.app.NetflixStatus;
@@ -16,9 +16,9 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchConnectWithFacebookRequest extends FalcorVolleyWebClientRequest<String>
+public class FetchConnectWithFacebookRequest extends FalkorVolleyWebClientRequest<String>
 {
     private static final String FIELD_USER = "user";
     private static final String TAG = "nf_service_user_fetchwebuserrequest";
@@ -83,23 +83,23 @@ public class FetchConnectWithFacebookRequest extends FalcorVolleyWebClientReques
     }
     
     @Override
-    protected String parseFalcorResponse(String s) {
+    protected String parseFalkorResponse(String s) {
         if (Log.isLoggable("nf_service_user_fetchwebuserrequest", 2)) {
             Log.v("nf_service_user_fetchwebuserrequest", "String response to parse = " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_user_fetchwebuserrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("UserConnectWith empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchwebuserrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("UserConnectWith empty!!!");
         }
         try {
-            s = (String)FalcorParseUtils.getPropertyObject(dataObj.getAsJsonObject("user"), "operation", UserProfile$Operation.class);
+            s = (String)FalkorParseUtils.getPropertyObject(dataObj.getAsJsonObject("user"), "operation", UserProfile$Operation.class);
             if (s != null) {
                 return ((UserProfile$Operation)s).status;
             }
         }
         catch (Exception ex) {
             Log.v("nf_service_user_fetchwebuserrequest", "String response to parse = " + s);
-            throw new FalcorParseException("response missing user json objects", ex);
+            throw new FalkorParseException("response missing user json objects", ex);
         }
         return new String("400");
     }

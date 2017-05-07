@@ -6,12 +6,16 @@ package com.netflix.mediaclient.util;
 
 import java.util.Iterator;
 import java.util.Collection;
+import com.netflix.mediaclient.servicemgr.model.HdEnabledProvider;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.View$OnLongClickListener;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Pair;
 import android.widget.ScrollView;
 import com.netflix.mediaclient.android.widget.StaticGridView;
@@ -39,9 +43,9 @@ import android.widget.RelativeLayout$LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.FrameLayout$LayoutParams;
 import android.widget.FrameLayout;
+import android.content.Context;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
-import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -51,8 +55,10 @@ import java.util.Comparator;
 
 public class ViewUtils
 {
-    public static final int DIM_ALPHA = 64;
-    public static final int NO_ALPHA = 255;
+    public static final float ALPHA_OPAQUE = 1.0f;
+    public static final float ALPHA_TRANSPARENT = 0.0f;
+    public static final float ALPHA_VALUE_ON_CLICK = 0.7f;
+    public static final float ALPHA_VALUE_UNSELECTED_TEXT = 0.7f;
     public static final Comparator<ViewUtils$ViewComparator> REVERSE_SORT_BY_BOTTOM;
     private static final String TAG = "ViewUtils";
     
@@ -72,13 +78,51 @@ public class ViewUtils
         }
     }
     
+    public static void addWebLinks(final TextView textView) {
+        if (textView == null) {
+            throw new IllegalArgumentException("Text view is null!");
+        }
+        InternalLinkify.addWebLinks(textView);
+    }
+    
+    public static void applyPaddingToGridItem(final View view, final int n, final int n2, final int n3) {
+        if (view == null) {
+            return;
+        }
+        if (n3 % n2 == 0) {
+            view.setPadding(0, n, n, n);
+        }
+        else if ((n3 + 1) % n2 == 0) {
+            view.setPadding(n, n, 0, n);
+        }
+        else {
+            view.setPadding(n, n, n, n);
+        }
+        view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
+    }
+    
+    public static void applyUniformPaddingToGridItem(final View view, final int n, final int n2, final int n3) {
+        if (view == null) {
+            return;
+        }
+        if (n3 % n2 == 0) {
+            view.setPadding(n, n / 2, n / 2, n / 2);
+            return;
+        }
+        if ((n3 + 1) % n2 == 0) {
+            view.setPadding(n / 2, n / 2, n, n / 2);
+            return;
+        }
+        view.setPadding(n / 2, n / 2, n / 2, n / 2);
+    }
+    
     public static void clearShadow(final TextView textView) {
         textView.setShadowLayer(0.0f, 0.0f, 0.0f, 0);
     }
     
     public static View createActionBarDummyView(final NetflixActivity netflixActivity) {
         final View view = new View((Context)netflixActivity);
-        view.setId(2131165244);
+        view.setId(2131165251);
         view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, netflixActivity.getActionBarHeight()));
         return view;
     }
@@ -114,11 +158,11 @@ public class ViewUtils
         return bitmap2;
     }
     
-    public static float getDefaultActionBarHeight(final Context context) {
+    public static int getDefaultActionBarHeight(final Context context) {
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130771988 });
-        final float dimension = obtainStyledAttributes.getDimension(0, 0.0f);
+        final int n = (int)obtainStyledAttributes.getDimension(0, 0.0f);
         obtainStyledAttributes.recycle();
-        return dimension;
+        return n;
     }
     
     public static Point getDisplaySize(final Activity activity) {
@@ -315,6 +359,21 @@ public class ViewUtils
         return activity.getResources().getDisplayMetrics().heightPixels == rect.bottom;
     }
     
+    public static boolean isVisible(final View view) {
+        return view != null && view.getVisibility() == 0;
+    }
+    
+    public static void modifyExitingWebLinks(final TextView textView) {
+        if (textView == null) {
+            throw new IllegalArgumentException("Text view is null!");
+        }
+        if (textView.getText() instanceof SpannableString) {
+            StringUtils.modifyUrlHandling((Spannable)textView.getText());
+            return;
+        }
+        Log.w("ViewUtils", "Not spannable!");
+    }
+    
     public static void removeGlobalLayoutListener(final View view, final ViewTreeObserver$OnGlobalLayoutListener viewTreeObserver$OnGlobalLayoutListener) {
         if (AndroidUtils.getAndroidVersion() < 16) {
             view.getViewTreeObserver().removeGlobalOnLayoutListener(viewTreeObserver$OnGlobalLayoutListener);
@@ -361,6 +420,14 @@ public class ViewUtils
         view.setPadding(view.getPaddingLeft(), n, view.getPaddingRight(), view.getPaddingBottom());
     }
     
+    public static void setTextOpacityToSelected(final TextView textView) {
+        textView.setAlpha(1.0f);
+    }
+    
+    public static void setTextOpacityToUnselected(final TextView textView) {
+        textView.setAlpha(0.7f);
+    }
+    
     public static void setTextViewSizeByRes(final TextView textView, final int n) {
         textView.setTextSize(0, (float)textView.getResources().getDimensionPixelOffset(n));
     }
@@ -371,6 +438,12 @@ public class ViewUtils
     
     public static void setTextViewToNormal(final TextView textView) {
         textView.setTypeface(Typeface.create(textView.getTypeface(), 0));
+    }
+    
+    public static void setVisibility(final MenuItem menuItem, final boolean visible) {
+        if (menuItem != null) {
+            menuItem.setVisible(visible);
+        }
     }
     
     public static void setVisibility(final View view, final ViewUtils$Visibility viewUtils$Visibility) {
@@ -387,7 +460,7 @@ public class ViewUtils
         view.setVisibility(visibility);
     }
     
-    public static void setVisibility(final View view, final boolean b) {
+    public static void setVisibleOrGone(final View view, final boolean b) {
         ViewUtils$Visibility viewUtils$Visibility;
         if (b) {
             viewUtils$Visibility = ViewUtils$Visibility.VISIBLE;
@@ -396,6 +469,21 @@ public class ViewUtils
             viewUtils$Visibility = ViewUtils$Visibility.GONE;
         }
         setVisibility(view, viewUtils$Visibility);
+    }
+    
+    public static void setVisibleOrInvisible(final View view, final boolean b) {
+        ViewUtils$Visibility viewUtils$Visibility;
+        if (b) {
+            viewUtils$Visibility = ViewUtils$Visibility.VISIBLE;
+        }
+        else {
+            viewUtils$Visibility = ViewUtils$Visibility.INVISIBLE;
+        }
+        setVisibility(view, viewUtils$Visibility);
+    }
+    
+    public static boolean shouldShowHdIcon(final NetflixActivity netflixActivity, final HdEnabledProvider hdEnabledProvider) {
+        return DeviceUtils.isDeviceHd(netflixActivity) && hdEnabledProvider.isVideoHd();
     }
     
     public static void showViews(final Collection<View> collection) {

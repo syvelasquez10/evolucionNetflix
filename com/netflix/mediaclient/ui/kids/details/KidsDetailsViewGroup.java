@@ -52,18 +52,18 @@ public class KidsDetailsViewGroup extends LinearLayout
     }
     
     private void init() {
-        LayoutInflater.from(this.getContext()).inflate(2130903100, (ViewGroup)this, true);
+        LayoutInflater.from(this.getContext()).inflate(2130903102, (ViewGroup)this, true);
         this.setOrientation(1);
-        this.setBackgroundColor(this.getContext().getResources().getColor(2131296426));
-        this.imgGroup = (ViewGroup)this.findViewById(2131165402);
+        this.setBackgroundColor(this.getContext().getResources().getColor(2131296409));
+        this.imgGroup = (ViewGroup)this.findViewById(2131165386);
         this.imgGroup.getLayoutParams().height = DeviceUtils.getScreenWidthInPixels(this.getContext());
-        (this.img = (AdvancedImageView)this.findViewById(2131165404)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361964));
-        this.imgOverlay = this.findViewById(2131165405);
-        this.imgTitle = (TextView)this.findViewById(2131165406);
-        this.infoGroup = (ViewGroup)this.findViewById(2131165407);
-        this.rating = (TextView)this.findViewById(2131165408);
-        this.info = (TextView)this.findViewById(2131165409);
-        this.synopsis = (TextView)this.findViewById(2131165410);
+        (this.img = (AdvancedImageView)this.findViewById(2131165388)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361965));
+        this.imgOverlay = this.findViewById(2131165389);
+        this.imgTitle = (TextView)this.findViewById(2131165390);
+        this.infoGroup = (ViewGroup)this.findViewById(2131165391);
+        this.rating = (TextView)this.findViewById(2131165392);
+        this.info = (TextView)this.findViewById(2131165393);
+        this.synopsis = (TextView)this.findViewById(2131165394);
     }
     
     private static void setTextAndVisibility(final TextView textView, final String text) {
@@ -102,11 +102,11 @@ public class KidsDetailsViewGroup extends LinearLayout
     
     public void updateDetails(final MovieDetails movieDetails) {
         this.updateSharedDetails(movieDetails);
-        this.info.setText((CharSequence)String.format(this.getResources().getString(2131492958), TimeUtils.convertSecondsToMinutes(movieDetails.getPlayable().getRuntime())));
+        this.info.setText((CharSequence)String.format(this.getResources().getString(2131492966), TimeUtils.convertSecondsToMinutes(movieDetails.getPlayable().getRuntime())));
     }
     
     public void updateDetails(final ShowDetails showDetails) {
         this.updateSharedDetails(showDetails);
-        this.info.setText((CharSequence)String.format(this.getResources().getString(2131492955), showDetails.getNumOfEpisodes()));
+        this.info.setText((CharSequence)String.format(this.getResources().getString(2131492963), showDetails.getNumOfEpisodes()));
     }
 }

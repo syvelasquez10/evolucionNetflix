@@ -48,17 +48,17 @@ public class KidsSeasonSelector extends RelativeLayout
         final List<SeasonDetails> seasons = this.adapter.getSeasons();
         Log.v("KidsSeasonSelector", "Creating Season Selector, num seasons: " + seasons.size());
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
-        this.selectedColor = this.getResources().getColor(2131296423);
-        this.unselectedColor = this.getResources().getColor(2131296424);
-        this.itemWidth = this.getResources().getDimensionPixelSize(2131361967);
+        this.selectedColor = this.getResources().getColor(2131296406);
+        this.unselectedColor = this.getResources().getColor(2131296407);
+        this.itemWidth = this.getResources().getDimensionPixelSize(2131361968);
         this.halfItemWidth = this.itemWidth / 2;
         this.centerOffset = (DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.itemWidth) / 2;
         this.padViewWidth = this.centerOffset;
         Log.v("KidsSeasonSelector", "Item width: " + this.itemWidth + ", centerOffset: " + this.centerOffset);
-        this.activity.getLayoutInflater().inflate(2130903107, (ViewGroup)this);
-        this.setBackgroundColor(this.activity.getResources().getColor(2131296422));
-        this.seasonsGroup = (LinearLayout)this.findViewById(2131165427);
-        (this.scroller = (HorizontalScrollView)this.findViewById(2131165426)).setHorizontalScrollBarEnabled(false);
+        this.activity.getLayoutInflater().inflate(2130903109, (ViewGroup)this);
+        this.setBackgroundColor(this.activity.getResources().getColor(2131296405));
+        this.seasonsGroup = (LinearLayout)this.findViewById(2131165411);
+        (this.scroller = (HorizontalScrollView)this.findViewById(2131165410)).setHorizontalScrollBarEnabled(false);
         this.scroller.setOnTouchListener((View$OnTouchListener)new KidsSeasonSelector$1(this));
         this.itemViews = new ArrayList<View>(seasons.size());
         Log.v("KidsSeasonSelector", "Creating views, num: " + seasons.size());
@@ -72,7 +72,7 @@ public class KidsSeasonSelector extends RelativeLayout
     }
     
     private View createItemView(final int n, final boolean b) {
-        final TextView textView = (TextView)this.activity.getLayoutInflater().inflate(2130903108, (ViewGroup)null);
+        final TextView textView = (TextView)this.activity.getLayoutInflater().inflate(2130903110, (ViewGroup)null);
         textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(this.itemWidth, -1));
         int textColor;
         if (b) {

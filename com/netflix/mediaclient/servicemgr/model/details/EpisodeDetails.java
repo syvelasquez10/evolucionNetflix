@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr.model.details;
 
-public interface EpisodeDetails extends InterestingVideoDetails
+public interface EpisodeDetails extends PostPlayVideo
 {
     int getBookmarkPosition();
     

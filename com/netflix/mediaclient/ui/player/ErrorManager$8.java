@@ -27,6 +27,7 @@ import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.os.Handler;
 import java.util.Locale;
 import android.content.Context;

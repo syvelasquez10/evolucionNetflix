@@ -4,20 +4,23 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import android.view.MenuItem$OnMenuItemClickListener;
+import android.view.Menu;
+import android.view.View$OnTouchListener;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
-import android.view.View$OnTouchListener;
-import android.view.View$OnClickListener;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.ViewUtils;
-import android.widget.ImageButton;
+import android.view.MenuItem;
 import android.view.View;
 import android.app.Activity;
 import com.netflix.mediaclient.ui.Section;
 
 public class Social extends Section
 {
+    public static final int LAST_MENU_ID = 2;
     private static final String TAG = "playcard";
+    private static final int mShareMenuId = 2;
     protected Social$SocialProviderCallback mCallback;
     private final Activity mContext;
     private boolean mIsShared;
@@ -25,7 +28,7 @@ public class Social extends Section
     private boolean mMessageVisible;
     private View mNotSharingButton;
     private View mNotSharingLabel;
-    protected ImageButton mShareButton;
+    protected MenuItem mShareButton;
     
     public Social(final Activity mContext, final Social$SocialProviderCallback mCallback) {
         super(mContext);
@@ -33,7 +36,6 @@ public class Social extends Section
         this.mIsSharingDisabled = true;
         this.mContext = mContext;
         this.mCallback = mCallback;
-        this.initSocial();
     }
     
     private void doNotShare() {
@@ -41,21 +43,19 @@ public class Social extends Section
         this.mCallback.extendTimeoutTimer();
         this.updateSharingStatusPosition(this.mNotSharingButton, false);
         this.updateSharingStatusPosition(this.mNotSharingLabel, true);
-        if (this.mShareButton != null) {
-            this.setDisableOverlayForImageButton((View)this.mShareButton);
-        }
         if (this.mCallback != null) {
             this.mCallback.doNotShare();
         }
     }
     
     private int getMarginLeftForSharingStatus(final View view) {
+        final View viewById = this.mContext.findViewById(2);
         final int[] array = new int[2];
-        this.mShareButton.getLocationInWindow(array);
+        viewById.getLocationInWindow(array);
         final int n = array[0];
-        final int n2 = this.mShareButton.getMeasuredWidth() / 2;
+        final int n2 = viewById.getMeasuredWidth() / 2;
         final int measuredWidth = view.getMeasuredWidth();
-        final int n3 = n + n2 - measuredWidth / 2;
+        final int n3 = n2 + n - measuredWidth / 2;
         final int x = ViewUtils.getDisplaySize(this.mContext).x;
         if (n3 + measuredWidth > x) {
             Log.d("playcard", "Adjusting position of window");
@@ -63,23 +63,6 @@ public class Social extends Section
         }
         Log.d("playcard", "No adjustment to address corner");
         return n3;
-    }
-    
-    private void initSocial() {
-        this.mShareButton = (ImageButton)this.mContext.findViewById(2131165550);
-        if (this.mShareButton != null) {
-            this.mShareButton.setOnClickListener((View$OnClickListener)new Social$1(this));
-        }
-        else {
-            Log.e("playcard", "Social button not found!");
-        }
-        this.mNotSharingButton = this.mContext.findViewById(2131165567);
-        this.mNotSharingLabel = this.mContext.findViewById(2131165568);
-        if (this.mNotSharingButton != null) {
-            this.mNotSharingButton.setOnTouchListener((View$OnTouchListener)new Social$2(this));
-            return;
-        }
-        Log.e("playcard", "Not sharing button not found!");
     }
     
     private void toggleMessageVisibility() {
@@ -124,7 +107,7 @@ public class Social extends Section
         }
         else {
             Log.d("playcard", "Facebook button enable " + enabled);
-            this.enableButton((View)this.mShareButton, enabled);
+            this.enableButton(this.mShareButton, enabled);
             if (this.mNotSharingButton != null) {
                 this.mNotSharingButton.setEnabled(enabled);
             }
@@ -133,9 +116,6 @@ public class Social extends Section
     
     @Override
     public void destroy() {
-        if (this.mShareButton != null) {
-            this.mShareButton.setOnTouchListener((View$OnTouchListener)null);
-        }
         if (this.mNotSharingButton != null) {
             this.mNotSharingButton.setOnTouchListener((View$OnTouchListener)null);
         }
@@ -143,16 +123,27 @@ public class Social extends Section
     
     @Override
     public void hide() {
-        if (this.mShareButton != null) {
-            this.mShareButton.setVisibility(8);
-            this.mShareButton.clearAnimation();
+        if (this.mIsSharingDisabled || !this.mIsShared) {
+            Log.d("playcard", "Facebook is disabled or not shared. Hiding share button!");
+            ViewUtils.setVisibility(this.mShareButton, false);
         }
+        ViewUtils.setVisibleOrGone(this.mNotSharingButton, false);
+        ViewUtils.setVisibleOrGone(this.mNotSharingLabel, false);
+        this.mMessageVisible = false;
+    }
+    
+    public void initSocial(final Menu menu) {
+        (this.mShareButton = menu.add(0, 2, 0, 2131493146)).setIcon(2130837700);
+        this.mShareButton.setVisible(false);
+        this.mShareButton.setShowAsAction(2);
+        this.mShareButton.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new Social$1(this));
+        this.mNotSharingButton = this.mContext.findViewById(2131165585);
+        this.mNotSharingLabel = this.mContext.findViewById(2131165586);
         if (this.mNotSharingButton != null) {
-            this.mNotSharingButton.setVisibility(4);
+            this.mNotSharingButton.setOnTouchListener((View$OnTouchListener)new Social$2(this));
+            return;
         }
-        if (this.mNotSharingLabel != null) {
-            this.mNotSharingLabel.setVisibility(4);
-        }
+        Log.e("playcard", "Not sharing button not found!");
     }
     
     public void setSharingDisabled(final boolean mIsSharingDisabled) {
@@ -166,7 +157,6 @@ public class Social extends Section
             Log.d("playcard", "Facebook is disabled or not shared. Do NOT display!");
             return;
         }
-        ViewUtils.setVisibility((View)this.mShareButton, true);
-        this.updateSharingStatusPosition(this.mNotSharingButton, this.mMessageVisible);
+        ViewUtils.setVisibility(this.mShareButton, true);
     }
 }

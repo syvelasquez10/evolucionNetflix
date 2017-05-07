@@ -18,5 +18,7 @@ public final class R$layout
     public static final int com_facebook_picker_title_bar_stub = 2130903080;
     public static final int com_facebook_placepickerfragment = 2130903081;
     public static final int com_facebook_placepickerfragment_list_row = 2130903082;
-    public static final int com_facebook_usersettingsfragment = 2130903083;
+    public static final int com_facebook_search_bar_layout = 2130903083;
+    public static final int com_facebook_tooltip_bubble = 2130903084;
+    public static final int com_facebook_usersettingsfragment = 2130903085;
 }

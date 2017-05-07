@@ -15,5 +15,7 @@ public interface LoMo extends Parcelable, BasicLoMo, FriendProfilesProvider
     
     boolean isBillboard();
     
+    void setId(final String p0);
+    
     void setListPos(final int p0);
 }

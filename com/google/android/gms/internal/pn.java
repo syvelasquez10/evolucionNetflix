@@ -63,6 +63,7 @@ public final class pn
                             break Label_0409;
                         }
                         final String name2 = methods[n].getName();
+                    Block_18_Outer:
                         while (true) {
                             if (!name2.startsWith("set")) {
                                 break Label_0349;
@@ -73,34 +74,39 @@ public final class pn
                                     try {
                                         a(substring, class1.getMethod("get" + substring, (Class<?>[])new Class[0]).invoke(o, new Object[0]), sb, sb2);
                                         break Label_0349;
-                                        sb.setLength(length);
-                                        sb2.append(sb).append(">\n");
-                                        return;
+                                        // iftrue(Label_0004:, s == null)
                                         // iftrue(Label_0511:, !o instanceof byte[])
                                         // iftrue(Label_0490:, !o instanceof String)
-                                        while (true) {
-                                            sb2.append("\n");
-                                            return;
-                                            Block_18: {
-                                                Block_19: {
-                                                    break Block_19;
+                                        Label_0482: {
+                                            Block_17: {
+                                                break Block_17;
+                                                while (true) {
+                                                    a((byte[])o, sb2);
+                                                    break Label_0482;
+                                                    Label_0490: {
+                                                        continue Block_18_Outer;
+                                                    }
+                                                }
+                                                while (true) {
+                                                    s = dh((String)o);
+                                                    sb2.append("\"").append(s).append("\"");
+                                                    break Label_0482;
+                                                    Label_0511: {
+                                                        sb2.append(o);
+                                                    }
+                                                    break Label_0482;
                                                     s = dg(s);
                                                     sb2.append(sb).append(s).append(": ");
-                                                    break Block_18;
+                                                    continue;
                                                 }
-                                                a((byte[])o, sb2);
-                                                continue;
-                                                Label_0511: {
-                                                    sb2.append(o);
-                                                }
-                                                continue;
                                             }
-                                            s = dh((String)o);
-                                            sb2.append("\"").append(s).append("\"");
-                                            continue;
+                                            sb.setLength(length);
+                                            sb2.append(sb).append(">\n");
+                                            return;
                                         }
+                                        sb2.append("\n");
+                                        return;
                                     }
-                                    // iftrue(Label_0004:, s == null)
                                     catch (NoSuchMethodException ex) {}
                                 }
                                 ++n;

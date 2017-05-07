@@ -14,7 +14,6 @@ import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.app.Fragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
@@ -29,6 +28,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     private static final String TAG = "MovieDetailsActivity";
     private final ArrayList<MovieDetailsActivity$BackStackData> backStack;
     private ServiceManager manager;
+    private boolean showDetailsFragInFuture;
     
     public MovieDetailsActivity() {
         this.backStack = new ArrayList<MovieDetailsActivity$BackStackData>();
@@ -48,15 +48,17 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     }
     
     private void showNewDetailsFrag(final int scrollYOffset) {
-        this.setPrimaryFrag(this.createPrimaryFrag());
-        ((MovieDetailsFrag)this.getPrimaryFrag()).setScrollYOffset(scrollYOffset);
-        this.getFragmentManager().beginTransaction().replace(2131165389, this.getPrimaryFrag(), "primary").setTransition(4099).commit();
-        this.getFragmentManager().executePendingTransactions();
-        ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(this.manager, CommonStatus.OK);
+        if (this.manager != null) {
+            this.setPrimaryFrag(this.createPrimaryFrag());
+            ((MovieDetailsFrag)this.getPrimaryFrag()).setScrollYOffset(scrollYOffset);
+            this.getFragmentManager().beginTransaction().replace(2131165373, this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+            this.getFragmentManager().executePendingTransactions();
+            ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(this.manager, CommonStatus.OK);
+        }
     }
     
     @Override
-    protected MovieDetailsFrag createPrimaryFrag() {
+    protected Fragment createPrimaryFrag() {
         return MovieDetailsFrag.create(this.getVideoId());
     }
     
@@ -98,6 +100,10 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     public void onManagerReady(final ServiceManager manager, final Status status) {
         super.onManagerReady(manager, status);
         this.manager = manager;
+        if (this.showDetailsFragInFuture && manager != null) {
+            this.showNewDetailsFrag(0);
+            this.showDetailsFragInFuture = false;
+        }
     }
     
     @Override
@@ -112,6 +118,10 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
         super.onNewIntent(intent);
         this.setIntent(intent);
         this.handleNewVideoId();
+        if (this.manager == null) {
+            this.showDetailsFragInFuture = true;
+            return;
+        }
         this.showNewDetailsFrag(0);
     }
     

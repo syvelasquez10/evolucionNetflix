@@ -7,7 +7,7 @@ package com.netflix.mediaclient.service.pushnotification;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import java.util.List;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.IntentUtils;
@@ -31,7 +31,6 @@ import com.netflix.mediaclient.service.ServiceAgent;
 
 public class PushNotificationAgent extends ServiceAgent implements IPushNotification
 {
-    private static final boolean GCM_INFO_OPT_IN = true;
     private static final long SERVICE_KILL_DELAY_FOR_GCM_REPORTING_MS = 30000L;
     private static final String TAG = "nf_push";
     private static int idCounter;
@@ -88,6 +87,10 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         }
     }
     
+    private boolean getGcmInvisibleMsgOptInStatus() {
+        return !this.mGcmInfoEventStartedService;
+    }
+    
     private int getMessageId(final Context context) {
         synchronized (this) {
             if (PushNotificationAgent.idCounter == -1) {
@@ -128,7 +131,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         this.gcmRegistrationId = gcmRegistrationId;
         this.mGcmRegistered = true;
         if (this.reportOnRegistered && this.mCurrentUserSettings != null) {
-            this.report(this.mCurrentUserSettings.optedIn, true);
+            this.report(this.mCurrentUserSettings.optedIn);
         }
     }
     
@@ -177,7 +180,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                 }
                 if (this.wasNotificationOptInDisplayed()) {
                     SettingsConfiguration.setPushOptInStatus(this.getContext(), this.mCurrentUserSettings.optedIn);
-                    this.report(this.mCurrentUserSettings.optedIn, true);
+                    this.report(this.mCurrentUserSettings.optedIn);
                     return;
                 }
                 Log.d("nf_push", String.format("onLogin: dont report yet, wasNotificationOptInDisplayed: %b", this.wasNotificationOptInDisplayed()));
@@ -270,7 +273,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         this.validateCurrentUser();
         this.updateSettingsOnOptedIn(b);
         SettingsConfiguration.setPushOptInStatus(this.getContext(), b);
-        this.report(b, true);
+        this.report(b);
     }
     
     private void registerReceiver() {
@@ -278,8 +281,9 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         IntentUtils.registerSafelyLocalBroadcastReceiver(this.getContext(), this.pushNotificationReceiver, "com.netflix.mediaclient.intent.category.PUSH", "com.netflix.mediaclient.intent.action.PUSH_ONLOGIN", "com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT", "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTIN", "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTOUT");
     }
     
-    private void report(final boolean b, final boolean b2) {
-        this.report(b, b2, null);
+    private void report(final boolean b) {
+        Log.d("nf_push", String.format("report: visibleOptIn:%b, invisibleOptIn:%b", b, this.getGcmInvisibleMsgOptInStatus()));
+        this.report(b, this.getGcmInvisibleMsgOptInStatus(), null);
     }
     
     private void report(final boolean b, final boolean b2, final UserData userData) {
@@ -456,20 +460,20 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         final SocialNotificationSummary socialNotificationSummary = new SocialNotificationSummary(intent.getStringExtra("g"), null);
         final ArrayList<SocialNotificationSummary> list = new ArrayList<SocialNotificationSummary>(1);
         list.add(socialNotificationSummary);
-        this.getService().getBrowseAgent().markSocialNotificationsAsRead(list);
+        this.getService().getBrowse().markSocialNotificationsAsRead(list);
     }
     
     @Override
     public void reportAndKillService() {
         Log.d("nf_push", "Telling back-end to stop sending gcm info events");
-        this.report(this.mCurrentUserSettings.optedIn, false);
+        this.report(this.mCurrentUserSettings.optedIn);
         Log.d("nf_push", "Stopping NetflixService in 30000");
-        this.getService().stopSelfInMs(30000L);
+        this.getService().requestServiceShutdownAfterDelay(30000L);
     }
     
     public void sayThanks(final Intent intent) {
         Log.d("nf_push", "sayThanks", intent);
-        this.getService().getBrowseAgent().sendThanksToSocialNotificationFromService(new SocialNotificationSummary(intent.getStringExtra("g"), intent.getStringExtra("story_id")), this.getService(), intent.getBooleanExtra("close_system_dialogs_needed", false));
+        this.getService().getBrowse().sendThanksToSocialNotificationFromService(new SocialNotificationSummary(intent.getStringExtra("g"), intent.getStringExtra("story_id")), this.getService(), intent.getBooleanExtra("close_system_dialogs_needed", false));
         NflxProtocolUtils.reportUserOpenedNotification(this.getService(), intent);
     }
     

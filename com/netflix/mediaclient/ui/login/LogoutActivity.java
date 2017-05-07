@@ -35,7 +35,7 @@ public class LogoutActivity extends AccountActivity
     private void handleLogoutComplete() {
         Log.i("LogoutActivity", "Handling logout completion...");
         UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging$CompletionReason.success, null);
-        Toast.makeText(this.getApplicationContext(), 2131493187, 1).show();
+        Toast.makeText(this.getApplicationContext(), 2131493194, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }
     
@@ -56,7 +56,7 @@ public class LogoutActivity extends AccountActivity
     }
     
     public static void showLogoutDialog(final Activity activity) {
-        new AlertDialog$Builder((Context)activity).setMessage(2131493185).setNegativeButton(2131493101, (DialogInterface$OnClickListener)null).setPositiveButton(2131493157, (DialogInterface$OnClickListener)new LogoutActivity$1(activity)).show();
+        new AlertDialog$Builder((Context)activity).setMessage(2131493192).setNegativeButton(2131493108, (DialogInterface$OnClickListener)null).setPositiveButton(2131493164, (DialogInterface$OnClickListener)new LogoutActivity$1(activity)).show();
     }
     
     @Override

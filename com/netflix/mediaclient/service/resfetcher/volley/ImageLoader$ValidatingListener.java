@@ -52,7 +52,7 @@ class ImageLoader$ValidatingListener implements ImageLoader$ImageListener
             return;
         }
         Log.w("ImageLoader", "Error loading bitmap for url: " + this.imgUrl);
-        this.this$0.setDrawableResource(this.view, 2130837566);
+        this.this$0.setDrawableResource(this.view, 2130837564);
     }
     
     @Override

@@ -4,14 +4,14 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import java.util.ArrayList;
 import com.google.gson.JsonObject;
@@ -22,9 +22,9 @@ import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>>
+public class FetchVideosRequest extends FalkorVolleyWebClientRequest<List<Video>>
 {
     private static final String TAG = "nf_service_browse_fetchvideosrequest";
     private final int fromVideo;
@@ -34,14 +34,22 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
     private final BrowseAgentCallback responseCallback;
     private final int toVideo;
     
-    public FetchVideosRequest(final Context context, final String listType, final LoMo mLoMo, final int fromVideo, final int toVideo, final BrowseAgentCallback responseCallback) {
+    public FetchVideosRequest(final Context context, final String listType, final LoMo mLoMo, final int fromVideo, final int toVideo, final boolean b, final BrowseAgentCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
         this.mLoMo = mLoMo;
         this.fromVideo = fromVideo;
         this.toVideo = toVideo;
         this.listType = listType;
-        this.pqlQuery = String.format("['%s', '%s', {'from':%d,'to':%d}, 'summary']", listType, this.mLoMo.getId(), fromVideo, toVideo);
+        final String id = this.mLoMo.getId();
+        String s;
+        if (b) {
+            s = "['summary', 'kubrick']";
+        }
+        else {
+            s = "'summary'";
+        }
+        this.pqlQuery = String.format("['%s', '%s', {'from':%d,'to':%d}, %s]", listType, id, fromVideo, toVideo, s);
         if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 2)) {
             Log.v("nf_service_browse_fetchvideosrequest", "PQL = " + this.pqlQuery);
         }
@@ -54,7 +62,7 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
             final String string = Integer.toString(i);
             int n3;
             if (jsonObject.has(string)) {
-                list.add(0, (Video$Summary)getSummaryByLomoType(loMoType, jsonObject.getAsJsonObject(string)));
+                list.add(0, (Video$Summary)FalkorParseUtils.createVideoSummaryObject(jsonObject.getAsJsonObject(string)));
                 n3 = 1;
             }
             else if ((n3 = n2) != 0) {
@@ -69,10 +77,6 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
             n2 = n3;
         }
         return (List<Video>)list;
-    }
-    
-    private static Video getSummaryByLomoType(final LoMoType loMoType, final JsonObject jsonObject) {
-        return FalcorParseUtils.getPropertyObject(jsonObject, "summary", Video$Summary.class);
     }
     
     @Override
@@ -95,11 +99,11 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
     }
     
     @Override
-    protected List<Video> parseFalcorResponse(String s) {
+    protected List<Video> parseFalkorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 2)) {}
         final long nanoTime = System.nanoTime();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchvideosrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchvideosrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
             return new ArrayList<Video>();
         }
         while (true) {
@@ -121,7 +125,7 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
                 }
                 catch (Exception ex) {
                     Log.v("nf_service_browse_fetchvideosrequest", "String response to parse = " + s);
-                    throw new FalcorParseException("Does not contain required fields", ex);
+                    throw new FalkorParseException("Does not contain required fields", ex);
                 }
                 final boolean b = false;
                 continue;

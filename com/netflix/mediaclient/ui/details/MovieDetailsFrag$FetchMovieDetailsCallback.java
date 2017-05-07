@@ -6,18 +6,24 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.model.trackable.TrackableObject;
+import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import android.widget.AbsListView$OnScrollListener;
+import android.widget.AbsListView;
+import com.netflix.mediaclient.ui.DetailsPageParallaxScrollListener;
+import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import android.widget.ListAdapter;
-import android.widget.GridView;
-import android.view.ViewStub;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
+import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
 import android.widget.TextView;
-import com.netflix.mediaclient.android.widget.StaticGridView;
+import android.widget.GridView;
 import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -52,6 +58,9 @@ class MovieDetailsFrag$FetchMovieDetailsCallback extends LoggingManagerCallback
             Log.v("MovieDetailsFrag", "No details in response");
             this.this$0.showErrorView();
             return;
+        }
+        if (Log.isLoggable("MovieDetailsFrag", 2)) {
+            Log.v("MovieDetailsFrag", "evidence glyph: " + movieDetails.getEvidenceGlyph() + ", evidence text: " + movieDetails.getEvidenceText());
         }
         this.this$0.showDetailsView(movieDetails);
     }

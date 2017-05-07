@@ -13,8 +13,6 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 public class CwPagerAdapter extends ProgressiveCwPagerAdapter
 {
-    public static final String CW_CACHE_TAG = "CW";
-    
     public CwPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler) {
         super(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
     }

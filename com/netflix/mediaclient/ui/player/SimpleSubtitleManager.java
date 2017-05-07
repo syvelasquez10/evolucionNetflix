@@ -35,8 +35,8 @@ public final class SimpleSubtitleManager implements SubtitleManager
         if (this.mScreen == null) {
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
-        this.mSubtitleArea = mActivity.findViewById(2131165542);
-        this.mSubtitleLabel = (TextView)mActivity.findViewById(2131165443);
+        this.mSubtitleArea = mActivity.findViewById(2131165570);
+        this.mSubtitleLabel = (TextView)mActivity.findViewById(2131165478);
         int n;
         if (mActivity.isTablet()) {
             n = 54;
@@ -45,14 +45,7 @@ public final class SimpleSubtitleManager implements SubtitleManager
             n = 46;
         }
         this.mPlayerPadding = AndroidUtils.dipToPixels((Context)mActivity, n);
-        int n2;
-        if (mActivity.isTablet()) {
-            n2 = 2131362025;
-        }
-        else {
-            n2 = 2131362024;
-        }
-        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(n2);
+        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131362030);
     }
     
     @Override

@@ -71,6 +71,9 @@ class Facebook$TokenRefreshServiceConnection implements ServiceConnection
     
     public void onServiceDisconnected(final ComponentName componentName) {
         this.serviceListener.onError(new Error("Service disconnected"));
-        this.applicationsContext.unbindService((ServiceConnection)this);
+        try {
+            this.applicationsContext.unbindService((ServiceConnection)this);
+        }
+        catch (IllegalArgumentException ex) {}
     }
 }

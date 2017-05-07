@@ -10,15 +10,17 @@ import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.text.format.DateUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary$NotificationTypes;
+import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.support.v4.app.NotificationCompat$BigPictureStyle;
+import android.content.Intent;
 import android.app.PendingIntent;
+import com.netflix.mediaclient.util.NotificationUtils;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import android.support.v4.app.NotificationCompat$Builder;
 import android.widget.Button;
 import android.widget.TextView;
@@ -37,11 +39,11 @@ public abstract class SocialNotification
     }
     
     public static final int getLayoutResourceId() {
-        return 2130903187;
+        return 2130903194;
     }
     
     public static final SocialNotificationViewHolder getViewHolder(final View view) {
-        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131165625), (AdvancedImageView)view.findViewById(2131165661), (TextView)view.findViewById(2131165658), (TextView)view.findViewById(2131165659), (TextView)view.findViewById(2131165660), (TextView)view.findViewById(2131165663), (Button)view.findViewById(2131165664), (Button)view.findViewById(2131165665), view.findViewById(2131165662));
+        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131165640), (AdvancedImageView)view.findViewById(2131165672), (TextView)view.findViewById(2131165669), (TextView)view.findViewById(2131165670), (TextView)view.findViewById(2131165671), (TextView)view.findViewById(2131165674), (Button)view.findViewById(2131165675), (Button)view.findViewById(2131165676), view.findViewById(2131165673));
     }
     
     public static void showSingleLineText(final SocialNotificationViewHolder socialNotificationViewHolder, final int text) {
@@ -62,7 +64,9 @@ public abstract class SocialNotification
         if (Log.isLoggable(SocialNotification.TAG, 3)) {
             Log.d(SocialNotification.TAG, "SocialNotification::addNotificationActions " + messageData);
         }
-        notificationCompat$Builder.setContentIntent(PendingIntent.getBroadcast(context.getApplicationContext(), 3, SocialNotificationsActivity.getIntent(messageData), 134217728));
+        final Intent intent = SocialNotificationsActivity.getIntent(messageData);
+        NotificationUtils.addNotificationSourceToIntent(intent);
+        notificationCompat$Builder.setContentIntent(PendingIntent.getBroadcast(context.getApplicationContext(), 3, intent, 134217728));
     }
     
     protected abstract void addNotificationText(final NotificationCompat$Builder p0, final NotificationCompat$BigPictureStyle p1, final SocialNotificationSummary p2, final Context p3);
@@ -84,16 +88,16 @@ public abstract class SocialNotification
     public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         int backgroundResource;
         if (socialNotificationSummary.getWasRead()) {
-            backgroundResource = 2130837845;
+            backgroundResource = 2130837834;
         }
         else {
-            backgroundResource = 2131296442;
+            backgroundResource = 2131296423;
         }
         view.setBackgroundResource(backgroundResource);
         socialNotificationViewHolder.getFriendImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), true, true);
+        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getBigImageUrl(), IClientLogging$AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), true, true);
         socialNotificationViewHolder.getMovieArtImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideoSummary().getBoxshotURL(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideoSummary().getTitle(), true, true);
+        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideo().getBoxshotURL(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideo().getTitle(), true, true);
         socialNotificationViewHolder.getTopTextView().setVisibility(0);
         socialNotificationViewHolder.getTopTextView().setText((CharSequence)socialNotificationSummary.getFriendProfile().getFullName());
         socialNotificationViewHolder.getMiddleTextView().setGravity(3);

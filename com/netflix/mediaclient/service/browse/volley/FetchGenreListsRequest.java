@@ -8,8 +8,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -21,9 +21,9 @@ import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchGenreListsRequest extends FalcorVolleyWebClientRequest<List<GenreList>>
+public class FetchGenreListsRequest extends FalkorVolleyWebClientRequest<List<GenreList>>
 {
     private static final String FIELD_GENRELIST = "genreList";
     private static final String TAG = "nf_service_browse_fetchgenrelistrequest";
@@ -63,7 +63,7 @@ public class FetchGenreListsRequest extends FalcorVolleyWebClientRequest<List<Ge
     }
     
     @Override
-    protected List<GenreList> parseFalcorResponse(String value) {
+    protected List<GenreList> parseFalkorResponse(String value) {
         this.rEnd = System.nanoTime();
         this.rDurationInMs = TimeUnit.MILLISECONDS.convert(this.rEnd - this.rStart, TimeUnit.NANOSECONDS);
         Log.d("nf_service_browse_fetchgenrelistrequest", String.format("genreList request took %d ms ", this.rDurationInMs));
@@ -71,20 +71,20 @@ public class FetchGenreListsRequest extends FalcorVolleyWebClientRequest<List<Ge
             Log.v("nf_service_browse_fetchgenrelistrequest", "String response to parse = " + value);
         }
         final ArrayList<ListOfGenreSummary> list = (ArrayList<ListOfGenreSummary>)new ArrayList<GenreList>();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchgenrelistrequest", value);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("GenreLists empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchgenrelistrequest", value);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("GenreLists empty!!!");
         }
         try {
             final JsonArray asJsonArray = dataObj.getAsJsonArray("genreList");
             for (int i = 0; i < asJsonArray.size(); ++i) {
                 value = (String)asJsonArray.get(i);
-                list.add(FalcorParseUtils.getGson().fromJson((JsonElement)value, ListOfGenreSummary.class));
+                list.add(FalkorParseUtils.getGson().fromJson((JsonElement)value, ListOfGenreSummary.class));
             }
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_fetchgenrelistrequest", "String response to parse = " + value);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
         this.rEnd = System.nanoTime();
         this.rDurationInMs = TimeUnit.MILLISECONDS.convert(this.rEnd - this.rStart, TimeUnit.NANOSECONDS);

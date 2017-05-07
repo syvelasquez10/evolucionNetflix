@@ -11,11 +11,9 @@ import com.netflix.mediaclient.media.VideoResolutionRange;
 import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
-import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
@@ -26,13 +24,15 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.util.api.Api19Util;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Locale;
 import java.io.IOException;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.api.Api19Util;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
+import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.NetflixService;
 import android.os.Handler;
@@ -43,9 +43,7 @@ import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging$EventType;
+import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 
 class ConfigurationAgent$4 implements Runnable
@@ -58,19 +56,15 @@ class ConfigurationAgent$4 implements Runnable
     
     @Override
     public void run() {
-        Log.i("nf_configurationagent", "Refreshing config via runnable");
-        this.this$0.fetchAccountConfigData(null);
-        Log.i("nf_configurationagent", "Check if we should report ad id via runnable");
-        final IClientLogging clientLogging = this.this$0.getService().getClientLogging();
-        if (clientLogging == null) {
-            Log.e("nf_configurationagent", "CL is not available!");
-            return;
+        synchronized (this.this$0) {
+            Log.d("nf_configurationagent", "Invoking ConfigAgentListeners.");
+            this.this$0.mIsConfigRefreshInBackground = false;
+            final Iterator<ConfigurationAgent$ConfigAgentListener> iterator = this.this$0.mConfigAgentListeners.iterator();
+            while (iterator.hasNext()) {
+                iterator.next().onConfigRefreshed(this.this$0.mConfigRefreshStatus);
+            }
         }
-        final AdvertiserIdLogging advertiserIdLogging = clientLogging.getAdvertiserIdLogging();
-        if (advertiserIdLogging == null) {
-            Log.e("nf_configurationagent", "AD logger is not available!");
-            return;
-        }
-        advertiserIdLogging.sendAdvertiserId(AdvertiserIdLogging$EventType.check_in);
+        this.this$0.mConfigAgentListeners.clear();
     }
+    // monitorexit(configurationAgent)
 }

@@ -156,63 +156,59 @@ public class MediaMetadata
                         try {
                             final Object value = jsonObject.get(s);
                             if (value == null) {
-                                continue;
+                                continue Block_17_Outer;
                             }
                             switch (MediaMetadata.Fo.aB(aa)) {
                                 case 1: {
                                     if (value instanceof String) {
                                         this.Fp.putString(aa, (String)value);
-                                        continue;
+                                        continue Block_17_Outer;
                                     }
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                                 case 4: {
                                     if (value instanceof String && iu.aL((String)value) != null) {
                                         this.Fp.putString(aa, (String)value);
-                                        continue;
+                                        continue Block_17_Outer;
                                     }
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                                 case 2: {
                                     if (value instanceof Integer) {
                                         this.Fp.putInt(aa, (int)value);
-                                        continue;
+                                        continue Block_17_Outer;
                                     }
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                                 case 3: {
                                     if (value instanceof Double) {
                                         this.Fp.putDouble(aa, (double)value);
-                                        continue;
+                                        continue Block_17_Outer;
                                     }
-                                    continue;
+                                    continue Block_17_Outer;
                                 }
                                 default: {
+                                    continue Block_17_Outer;
+                                }
+                            }
+                            // iftrue(Label_0018:, !value2 instanceof Double)
+                            while (true) {
+                                final Object value2;
+                                this.Fp.putDouble(s, (double)value2);
+                                continue Block_17_Outer;
+                                Label_0310: {
                                     continue;
                                 }
                             }
-                            // iftrue(Label_0310:, !value2 instanceof Integer)
-                            // iftrue(Label_0018:, !value2 instanceof Double)
+                            final Object value2 = jsonObject.get(s);
                             // iftrue(Label_0282:, !value2 instanceof String)
-                            final Object value2;
-                            Block_15: {
-                                Block_16: {
-                                    break Block_16;
-                                    while (true) {
-                                        this.Fp.putDouble(s, (double)value2);
-                                        continue Block_17_Outer;
-                                        Label_0310: {
-                                            continue;
-                                        }
-                                    }
-                                    value2 = jsonObject.get(s);
-                                    break Block_15;
-                                }
-                                this.Fp.putInt(s, (int)value2);
-                                continue;
-                            }
                             this.Fp.putString(s, (String)value2);
+                            continue Block_17_Outer;
+                            Label_0282: {
+                                this.Fp.putInt(s, (int)value2);
+                            }
                         }
+                        // iftrue(Label_0310:, !value2 instanceof Integer)
                         catch (JSONException ex) {}
                     }
                 }

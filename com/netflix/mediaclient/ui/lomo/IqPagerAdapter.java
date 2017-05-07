@@ -9,15 +9,25 @@ import com.netflix.mediaclient.servicemgr.FetchVideosHandler$FetchCallback;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.Log;
+import android.content.Context;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickPaginatedIqAdapter;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.model.Video;
 
-public class IqPagerAdapter extends ProgressiveLoMoPagerAdapter
+public class IqPagerAdapter<T extends Video> extends ProgressiveLoMoPagerAdapter<T>
 {
-    public static final String IQ_CACHE_TAG = "IQ";
-    
     public IqPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler) {
         super(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
+    }
+    
+    @Override
+    protected BasePaginatedAdapter<T> createPaginatedAdapter(final NetflixActivity netflixActivity) {
+        if (netflixActivity.isKubrick()) {
+            return (BasePaginatedAdapter<T>)new KubrickPaginatedIqAdapter((Context)netflixActivity);
+        }
+        return super.createPaginatedAdapter(netflixActivity);
     }
     
     @Override
@@ -29,6 +39,7 @@ public class IqPagerAdapter extends ProgressiveLoMoPagerAdapter
         if (Log.isLoggable("BaseProgressivePagerAdapter", 2)) {
             Log.v("BaseProgressivePagerAdapter", "fetching for instant queue, start: " + n + ", end: " + n2);
         }
-        this.getManager().getBrowse().fetchIQVideos((LoMo)this.getLoMo(), n, n2, new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", this, "IQ", n, n2));
+        final LoMo loMo = (LoMo)this.getLoMo();
+        this.getManager().getBrowse().fetchIQVideos(loMo, n, n2, this.getManager().getActivity().isKubrick(), new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler$FetchCallback<Object>)this, loMo.getTitle(), n, n2));
     }
 }

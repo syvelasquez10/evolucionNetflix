@@ -4,6 +4,7 @@
 
 package com.netflix.model.branches;
 
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.model.leafs.Video$Detail;
 import com.netflix.falkor.PQL;
 import com.netflix.falkor.BranchNode;
@@ -65,6 +66,17 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
             return -1;
         }
         return this.episodeDetail.getEpisodeNumber();
+    }
+    
+    @Override
+    public String getId() {
+        if (super.getId() != null) {
+            return super.getId();
+        }
+        if (this.episodeDetail == null) {
+            return null;
+        }
+        return this.episodeDetail.getId();
     }
     
     @Override
@@ -146,6 +158,18 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
             return null;
         }
         return this.episodeDetail.getShowId();
+    }
+    
+    public String getShowTitle() {
+        if (this.episodeDetail == null) {
+            return null;
+        }
+        return this.episodeDetail.getShowTitle();
+    }
+    
+    @Override
+    public VideoType getType() {
+        return VideoType.EPISODE;
     }
     
     @Override

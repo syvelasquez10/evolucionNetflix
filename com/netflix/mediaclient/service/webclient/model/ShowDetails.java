@@ -4,22 +4,28 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$KubrickSummary;
+import com.netflix.mediaclient.service.webclient.model.branches.Video$HeroImages;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
+import com.netflix.mediaclient.servicemgr.model.details.KubrickShowDetails;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Show;
 
-public class ShowDetails extends Show implements Playable, com.netflix.mediaclient.servicemgr.model.details.ShowDetails
+public class ShowDetails extends Show implements Playable, KubrickShowDetails, com.netflix.mediaclient.servicemgr.model.details.ShowDetails
 {
     private static final String TAG = "nf_service_browse_showdetails";
     public Episode$Detail currentEpisode;
     public Video$Bookmark currentEpisodeBookmark;
+    public Video$HeroImages heroImgs;
+    public Video$KubrickSummary kubrickSummary;
     public boolean userConnectedToFacebook;
     
     @Override
@@ -66,14 +72,6 @@ public class ShowDetails extends Show implements Playable, com.netflix.mediaclie
             return 0;
         }
         return this.currentEpisodeBookmark.getBookmarkPosition();
-    }
-    
-    @Override
-    public String getBoxshotURL() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getBoxshotURL();
     }
     
     @Override
@@ -149,11 +147,19 @@ public class ShowDetails extends Show implements Playable, com.netflix.mediaclie
     }
     
     @Override
-    public VideoType getErrorType() {
-        if (this.summary == null) {
+    public IconFontGlyph getEvidenceGlyph() {
+        if (this.evidence == null) {
             return null;
         }
-        return this.summary.getErrorType();
+        return this.evidence.getIconFontGlyph();
+    }
+    
+    @Override
+    public String getEvidenceText() {
+        if (this.evidence == null) {
+            return null;
+        }
+        return this.evidence.getText();
     }
     
     @Override
@@ -173,11 +179,19 @@ public class ShowDetails extends Show implements Playable, com.netflix.mediaclie
     }
     
     @Override
+    public List<String> getHeroImages() {
+        if (this.heroImgs == null) {
+            return null;
+        }
+        return this.heroImgs.heroImgs;
+    }
+    
+    @Override
     public String getHighResolutionLandscapeBoxArtUrl() {
         if (this.detail == null) {
             return null;
         }
-        return this.detail.mdxHorzUrl;
+        return this.detail.hiResHorzUrl;
     }
     
     @Override
@@ -190,18 +204,34 @@ public class ShowDetails extends Show implements Playable, com.netflix.mediaclie
     
     @Override
     public String getHorzDispUrl() {
-        if (this.summary == null) {
+        if (this.detail == null) {
             return null;
         }
         return this.detail.horzDispUrl;
     }
     
     @Override
-    public String getId() {
-        if (this.summary == null) {
+    public String getKubrickHorzImgUrl() {
+        if (this.kubrickSummary == null) {
             return null;
         }
-        return this.summary.getId();
+        return this.kubrickSummary.horzDispUrl;
+    }
+    
+    @Override
+    public String getKubrickStoryImgUrl() {
+        if (this.kubrickSummary == null) {
+            return null;
+        }
+        return this.kubrickSummary.storyImgUrl;
+    }
+    
+    @Override
+    public String getNarrative() {
+        if (this.kubrickSummary == null) {
+            return null;
+        }
+        return this.kubrickSummary.narrative;
     }
     
     @Override
@@ -284,6 +314,18 @@ public class ShowDetails extends Show implements Playable, com.netflix.mediaclie
     }
     
     @Override
+    public int getSeasonCount() {
+        Integer value;
+        if (this.kubrickSummary == null) {
+            value = null;
+        }
+        else {
+            value = this.kubrickSummary.seasonCount;
+        }
+        return value;
+    }
+    
+    @Override
     public int getSeasonNumber() {
         if (this.currentEpisode == null) {
             return 0;
@@ -292,11 +334,29 @@ public class ShowDetails extends Show implements Playable, com.netflix.mediaclie
     }
     
     @Override
-    public String getSquareUrl() {
-        if (this.summary == null) {
-            return null;
+    public List<Video> getSimilars() {
+        return this.similarVideos;
+    }
+    
+    @Override
+    public int getSimilarsListPos() {
+        return 0;
+    }
+    
+    @Override
+    public String getSimilarsRequestId() {
+        if (this.similarListSummary != null) {
+            return this.similarListSummary.getRequestId();
         }
-        return this.summary.getSquareUrl();
+        return null;
+    }
+    
+    @Override
+    public int getSimilarsTrackId() {
+        if (this.similarListSummary != null) {
+            return this.similarListSummary.getTrackId();
+        }
+        return 0;
     }
     
     @Override
@@ -324,11 +384,11 @@ public class ShowDetails extends Show implements Playable, com.netflix.mediaclie
     }
     
     @Override
-    public String getTitle() {
-        if (this.summary == null) {
+    public String getTitleImgUrl() {
+        if (this.detail == null) {
             return null;
         }
-        return this.summary.getTitle();
+        return this.detail.titleUrl;
     }
     
     @Override
@@ -337,14 +397,6 @@ public class ShowDetails extends Show implements Playable, com.netflix.mediaclie
             return null;
         }
         return this.detail.tvCardUrl;
-    }
-    
-    @Override
-    public VideoType getType() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getType();
     }
     
     @Override

@@ -45,42 +45,41 @@ class Facebook$TokenRefreshConnectionHandler extends Handler
     public void handleMessage(final Message message) {
         final Facebook facebook = this.facebookWeakReference.get();
         final Facebook$TokenRefreshServiceConnection facebook$TokenRefreshServiceConnection = this.connectionWeakReference.get();
-        if (facebook != null && facebook$TokenRefreshServiceConnection != null) {
-            final String string = message.getData().getString("access_token");
-            final long accessExpires = message.getData().getLong("expires_in") * 1000L;
-            if (string != null) {
-                facebook.setAccessToken(string);
-                facebook.setAccessExpires(accessExpires);
-                final Session access$200 = facebook.session;
-                if (access$200 != null) {
-                    LegacyHelper.extendTokenCompleted(access$200, message.getData());
-                }
-                if (facebook$TokenRefreshServiceConnection.serviceListener != null) {
-                    final Bundle bundle = (Bundle)message.getData().clone();
-                    bundle.putLong("expires_in", accessExpires);
-                    facebook$TokenRefreshServiceConnection.serviceListener.onComplete(bundle);
-                }
+        if (facebook == null || facebook$TokenRefreshServiceConnection == null) {
+            return;
+        }
+        final String string = message.getData().getString("access_token");
+        final long accessExpires = message.getData().getLong("expires_in") * 1000L;
+        if (string != null) {
+            facebook.setAccessToken(string);
+            facebook.setAccessExpires(accessExpires);
+            final Session access$200 = facebook.session;
+            if (access$200 != null) {
+                LegacyHelper.extendTokenCompleted(access$200, message.getData());
             }
-            else if (facebook$TokenRefreshServiceConnection.serviceListener != null) {
-                final String string2 = message.getData().getString("error");
-                if (message.getData().containsKey("error_code")) {
-                    facebook$TokenRefreshServiceConnection.serviceListener.onFacebookError(new FacebookError(string2, null, message.getData().getInt("error_code")));
-                }
-                else {
-                    final Facebook$ServiceListener serviceListener = facebook$TokenRefreshServiceConnection.serviceListener;
-                    String s;
-                    if (string2 != null) {
-                        s = string2;
-                    }
-                    else {
-                        s = "Unknown service error";
-                    }
-                    serviceListener.onError(new Error(s));
-                }
-            }
-            if (facebook$TokenRefreshServiceConnection != null) {
-                facebook$TokenRefreshServiceConnection.applicationsContext.unbindService((ServiceConnection)facebook$TokenRefreshServiceConnection);
+            if (facebook$TokenRefreshServiceConnection.serviceListener != null) {
+                final Bundle bundle = (Bundle)message.getData().clone();
+                bundle.putLong("expires_in", accessExpires);
+                facebook$TokenRefreshServiceConnection.serviceListener.onComplete(bundle);
             }
         }
+        else if (facebook$TokenRefreshServiceConnection.serviceListener != null) {
+            final String string2 = message.getData().getString("error");
+            if (message.getData().containsKey("error_code")) {
+                facebook$TokenRefreshServiceConnection.serviceListener.onFacebookError(new FacebookError(string2, null, message.getData().getInt("error_code")));
+            }
+            else {
+                final Facebook$ServiceListener serviceListener = facebook$TokenRefreshServiceConnection.serviceListener;
+                String s;
+                if (string2 != null) {
+                    s = string2;
+                }
+                else {
+                    s = "Unknown service error";
+                }
+                serviceListener.onError(new Error(s));
+            }
+        }
+        facebook$TokenRefreshServiceConnection.applicationsContext.unbindService((ServiceConnection)facebook$TokenRefreshServiceConnection);
     }
 }

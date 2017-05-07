@@ -24,64 +24,75 @@ public final class UserLocaleRepository
     
     private UserLocale findBestMatch(final String s) {
         final UserLocale userLocale = null;
+        UserLocale userLocale2 = null;
         final UserLocale[] userLocales = this.toUserLocales(s);
         if (userLocales.length < 1) {
             Log.w("nf_loc", "Empty list of preferred languages, set default");
-            return null;
         }
-        int i = 0;
-        UserLocale userLocale2 = userLocale;
-        while (i < userLocales.length) {
-            if (Log.isLoggable("nf_loc", 3)) {
-                Log.d("nf_loc", "Choice #" + i + ": " + userLocales[i]);
-            }
-            UserLocale userLocale3;
-            for (int j = 0; j < this.supportedLocales.length; ++j, userLocale2 = userLocale3) {
+        else {
+            int i = 0;
+            UserLocale userLocale3 = userLocale;
+            while (i < userLocales.length) {
                 if (Log.isLoggable("nf_loc", 3)) {
-                    Log.d("nf_loc", "Try to match by locale with #" + j + ": " + this.supportedLocales[j]);
+                    Log.d("nf_loc", "Choice #" + i + ": " + userLocales[i]);
                 }
-                userLocale3 = userLocale2;
-                if (userLocales[i] != null) {
-                    if (!userLocales[i].equals(this.supportedLocales[j])) {
-                        userLocale3 = userLocale2;
-                        if (!userLocales[i].equalsByLanguage(this.supportedLocales[j])) {
-                            continue;
+                UserLocale userLocale4;
+                for (int j = 0; j < this.supportedLocales.length; ++j, userLocale3 = userLocale4) {
+                    if (Log.isLoggable("nf_loc", 3)) {
+                        Log.d("nf_loc", "Try to match by locale with #" + j + ": " + this.supportedLocales[j]);
+                    }
+                    userLocale4 = userLocale3;
+                    if (userLocales[i] != null) {
+                        if (!userLocales[i].equals(this.supportedLocales[j])) {
+                            userLocale4 = userLocale3;
+                            if (!userLocales[i].equalsByLanguage(this.supportedLocales[j])) {
+                                continue;
+                            }
+                        }
+                        if (Log.isLoggable("nf_loc", 3)) {
+                            Log.d("nf_loc", "Match by locale with #" + j + ": " + this.supportedLocales[j]);
+                        }
+                        if (userLocales[i].equals(this.supportedLocales[j])) {
+                            if (Log.isLoggable("nf_loc", 3)) {
+                                Log.d("nf_loc", "Perfect Match by locale with #" + j + ": " + this.supportedLocales[j]);
+                            }
+                            return this.supportedLocales[j];
+                        }
+                        if ((userLocale4 = userLocale3) == null) {
+                            userLocale4 = this.supportedLocales[j];
                         }
                     }
-                    if (Log.isLoggable("nf_loc", 3)) {
-                        Log.d("nf_loc", "Match by locale with #" + j + ": " + this.supportedLocales[j]);
-                    }
-                    if (userLocales[i].equals(this.supportedLocales[j])) {
-                        Log.d("nf_loc", "Perfect Match by locale with #" + j + ": " + this.supportedLocales[j]);
-                        return this.supportedLocales[j];
-                    }
-                    if ((userLocale3 = userLocale2) == null) {
-                        userLocale3 = this.supportedLocales[j];
-                    }
                 }
+                ++i;
             }
-            ++i;
+            userLocale2 = userLocale3;
+            if (Log.isLoggable("nf_loc", 3)) {
+                Log.d("nf_loc", "findBestMatch: " + userLocale3);
+                return userLocale3;
+            }
         }
-        Log.i("nf_loc", "findBestMatch: " + userLocale2);
         return userLocale2;
     }
     
     private void initSupportedLocales() {
         int i = 0;
-        this.supportedLocales = new UserLocale[12];
+        this.supportedLocales = new UserLocale[15];
         this.defaultAppLocale = new UserLocale(Locale.ENGLISH.getLanguage(), null, "English");
         this.supportedLocales[0] = this.defaultAppLocale;
         this.supportedLocales[1] = new UserLocale(Locale.FRENCH.getLanguage(), null, "Fran\u00e7ais");
         this.supportedLocales[2] = new UserLocale("es", null, "Espa\u00f1ol");
         this.supportedLocales[3] = new UserLocale("pt", null, "Portugu\u00eas");
         this.supportedLocales[4] = new UserLocale(Locale.UK.getLanguage(), Locale.UK.getCountry(), "English-GB");
-        this.supportedLocales[5] = new UserLocale("sv", null, "Svenskt");
-        this.supportedLocales[6] = new UserLocale("nb", null, "Norske");
-        this.supportedLocales[7] = new UserLocale("da", null, "Dansk");
-        this.supportedLocales[8] = new UserLocale("fi", null, "Suomi");
-        this.supportedLocales[9] = new UserLocale("nl", null, "Nederlands");
-        this.supportedLocales[10] = new UserLocale(Locale.FRENCH.getLanguage(), Locale.CANADA.getCountry(), "Fran\u00e7ais-CA");
-        this.supportedLocales[11] = new UserLocale(Locale.GERMAN.getLanguage(), null, "Deutsch");
+        this.supportedLocales[5] = new UserLocale(Locale.ENGLISH.getLanguage(), "IE", "English-IE");
+        this.supportedLocales[6] = new UserLocale("sv", null, "Svenskt");
+        this.supportedLocales[7] = new UserLocale("nb", null, "Norske");
+        this.supportedLocales[8] = new UserLocale("da", null, "Dansk");
+        this.supportedLocales[9] = new UserLocale("fi", null, "Suomi");
+        this.supportedLocales[10] = new UserLocale("nl", null, "Nederlands");
+        this.supportedLocales[11] = new UserLocale(Locale.FRENCH.getLanguage(), Locale.CANADA.getCountry(), "Fran\u00e7ais-CA");
+        this.supportedLocales[12] = new UserLocale(Locale.GERMAN.getLanguage(), null, "Deutsch");
+        this.supportedLocales[13] = new UserLocale(Locale.ENGLISH.getLanguage(), "AU", "English-AU");
+        this.supportedLocales[14] = new UserLocale(Locale.ENGLISH.getLanguage(), "NZ", "English-NZ");
         for (UserLocale[] supportedLocales = this.supportedLocales; i < supportedLocales.length; ++i) {
             Log.d("nf_loc", "" + supportedLocales[i]);
         }

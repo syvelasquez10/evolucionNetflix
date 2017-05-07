@@ -7,10 +7,16 @@ package com.facebook;
 import android.app.Activity;
 import android.content.Intent;
 import com.facebook.android.R$string;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 import android.content.Context;
 import java.io.Serializable;
+import com.facebook.internal.PlatformServiceClient$CompletedListener;
 import java.util.Iterator;
 import java.util.List;
+import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import android.os.Bundle;
@@ -34,6 +40,11 @@ class AuthorizationClient$GetTokenAuthHandler extends AuthorizationClient$AuthHa
         }
     }
     
+    @Override
+    String getNameForLogging() {
+        return "get_token";
+    }
+    
     void getTokenCompleted(final AuthorizationClient$AuthorizationRequest authorizationClient$AuthorizationRequest, final Bundle bundle) {
         this.getTokenClient = null;
         this.this$0.notifyBackgroundProcessingStop();
@@ -41,7 +52,7 @@ class AuthorizationClient$GetTokenAuthHandler extends AuthorizationClient$AuthHa
             final ArrayList stringArrayList = bundle.getStringArrayList("com.facebook.platform.extra.PERMISSIONS");
             final List<String> permissions = authorizationClient$AuthorizationRequest.getPermissions();
             if (stringArrayList != null && (permissions == null || stringArrayList.containsAll(permissions))) {
-                this.this$0.completeAndValidate(AuthorizationClient$Result.createTokenResult(AccessToken.createFromNativeLogin(bundle, AccessTokenSource.FACEBOOK_APPLICATION_SERVICE)));
+                this.this$0.completeAndValidate(AuthorizationClient$Result.createTokenResult(this.this$0.pendingRequest, AccessToken.createFromNativeLogin(bundle, AccessTokenSource.FACEBOOK_APPLICATION_SERVICE)));
                 return;
             }
             final ArrayList<String> permissions2 = new ArrayList<String>();
@@ -50,9 +61,17 @@ class AuthorizationClient$GetTokenAuthHandler extends AuthorizationClient$AuthHa
                     permissions2.add(s);
                 }
             }
+            if (!permissions2.isEmpty()) {
+                this.addLoggingExtra("new_permissions", TextUtils.join((CharSequence)",", (Iterable)permissions2));
+            }
             authorizationClient$AuthorizationRequest.setPermissions(permissions2);
         }
         this.this$0.tryNextHandler();
+    }
+    
+    @Override
+    boolean needsRestart() {
+        return this.getTokenClient == null;
     }
     
     @Override

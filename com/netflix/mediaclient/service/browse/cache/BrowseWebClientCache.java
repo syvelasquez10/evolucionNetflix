@@ -391,6 +391,10 @@ public class BrowseWebClientCache
         this.putInHardCache(buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_VIDEOS, s, String.valueOf(n), String.valueOf(n2)), o);
     }
     
+    public void removeLoLoMoId() {
+        this.getHardCache().put("lolomo_id", "");
+    }
+    
     public Video$InQueue updateInQueueCacheRecord(final String s, Video$InQueue video$InQueue) {
         // monitorenter(this)
         Label_0021: {

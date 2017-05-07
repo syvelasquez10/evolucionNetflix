@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.ui.pin;
 
 import android.app.AlertDialog;
-import android.view.View$OnClickListener;
-import android.widget.Button;
 import android.text.method.MovementMethod;
 import android.view.View$OnKeyListener;
 import android.widget.TextView$OnEditorActionListener;
@@ -49,7 +47,7 @@ class PinDialog$1 extends LinkMovementMethod
     }
     
     public boolean onTouchEvent(final TextView textView, final Spannable spannable, final MotionEvent motionEvent) {
-        this.this$0.mPinForgotView.setLinkTextColor(this.this$0.getResources().getColor(2131296438));
+        this.this$0.mPinForgotView.setLinkTextColor(this.this$0.getResources().getColor(2131296420));
         return super.onTouchEvent(textView, spannable, motionEvent);
     }
 }

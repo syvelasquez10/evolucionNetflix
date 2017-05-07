@@ -26,13 +26,13 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
 {
     private static final String TAG = "nf_input";
     private static final ThreadFactory sThreadFactory;
-    private AtomicInteger mActivitiesCount;
+    private final AtomicInteger mActivitiesCount;
     private boolean mForeground;
-    private AtomicLong mLastUserInteraction;
-    private List<ApplicationStateListener> mListeners;
-    private AtomicInteger mResumed;
-    private ScheduledExecutorService mScheduler;
-    private AtomicInteger mStopped;
+    private final AtomicLong mLastUserInteraction;
+    private final List<ApplicationStateListener> mListeners;
+    private final AtomicInteger mResumed;
+    private final ScheduledExecutorService mScheduler;
+    private final AtomicInteger mStopped;
     
     static {
         sThreadFactory = new UserInputManager$1();

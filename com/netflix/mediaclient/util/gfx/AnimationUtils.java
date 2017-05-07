@@ -4,6 +4,12 @@
 
 package com.netflix.mediaclient.util.gfx;
 
+import android.animation.TimeInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.os.Build$VERSION;
+import android.animation.ObjectAnimator;
+import com.netflix.mediaclient.Log;
+import android.animation.Animator;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 import android.view.animation.GridLayoutAnimationController;
@@ -14,11 +20,10 @@ import android.view.View;
 
 public class AnimationUtils
 {
-    public static final float ALPHA_OPAQUE = 1.0f;
-    public static final float ALPHA_TRANSPARENT = 0.0f;
-    public static final float ALPHA_VALUE_ON_CLICK = 0.65f;
     public static final int ANIM_DURATION_MS = 125;
+    public static final int APPEARANCE_ANIMATION_MS = 300;
     private static final float LAYOUT_ANIMATION_DELAY_FRACTION = 0.25f;
+    private static final String TAG = "AnimationUtils";
     
     private static void alphaAnimateView(final View view, final float alpha, final float n, final int n2, final Animator$AnimatorListener listener) {
         view.setAlpha(alpha);
@@ -68,6 +73,32 @@ public class AnimationUtils
     }
     
     public static void startPressedStateCompleteAnimation(final View view) {
-        alphaAnimateView(view, 0.65f, 1.0f, 125, null);
+        alphaAnimateView(view, 0.7f, 1.0f, 125, null);
+    }
+    
+    public static Animator startViewAppearanceAnimation(final View view, final boolean b) {
+        float n = 1.0f;
+        if (Log.isLoggable("AnimationUtils", 4)) {
+            Log.i("AnimationUtils", "startViewAppearanceAnimation() shouldAppear: " + b);
+        }
+        float n2;
+        if (b) {
+            n2 = 0.0f;
+        }
+        else {
+            n2 = 1.0f;
+        }
+        if (!b) {
+            n = 0.0f;
+        }
+        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)view, "alpha", new float[] { n2, n });
+        ofFloat.setDuration(300L);
+        if (Build$VERSION.SDK_INT >= 18) {
+            ofFloat.setAutoCancel(true);
+        }
+        ofFloat.setInterpolator((TimeInterpolator)new LinearInterpolator());
+        ofFloat.addListener((Animator$AnimatorListener)new AnimationUtils$1(b, view, ofFloat));
+        ofFloat.start();
+        return (Animator)ofFloat;
     }
 }

@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -13,11 +13,11 @@ import com.netflix.mediaclient.servicemgr.model.VideoType;
 
 public interface IBrowseManager
 {
-    boolean addToQueue(final String p0, final int p1, final String p2, final ManagerCallback p3);
+    boolean addToQueue(final String p0, final VideoType p1, final int p2, final boolean p3, final String p4, final ManagerCallback p5);
     
-    boolean dumpCacheToDisk();
+    void dumpCacheToDisk();
     
-    boolean dumpHomeLoLoMosAndVideos(final String p0, final String p1);
+    void dumpHomeLoLoMosAndVideos(final String p0, final String p1);
     
     boolean fetchCWVideos(final int p0, final int p1, final ManagerCallback p2);
     
@@ -27,11 +27,11 @@ public interface IBrowseManager
     
     boolean fetchGenreLists(final ManagerCallback p0);
     
-    boolean fetchGenreVideos(final LoMo p0, final int p1, final int p2, final ManagerCallback p3);
+    boolean fetchGenreVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final ManagerCallback p4);
     
     boolean fetchGenres(final String p0, final int p1, final int p2, final ManagerCallback p3);
     
-    boolean fetchIQVideos(final LoMo p0, final int p1, final int p2, final ManagerCallback p3);
+    boolean fetchIQVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final ManagerCallback p4);
     
     boolean fetchKidsCharacterDetails(final String p0, final ManagerCallback p1);
     
@@ -41,13 +41,15 @@ public interface IBrowseManager
     
     boolean fetchMovieDetails(final String p0, final ManagerCallback p1);
     
-    boolean fetchPostPlayVideos(final String p0, final ManagerCallback p1);
+    boolean fetchPostPlayVideos(final String p0, final VideoType p1, final ManagerCallback p2);
     
     boolean fetchSeasonDetails(final String p0, final ManagerCallback p1);
     
     boolean fetchSeasons(final String p0, final int p1, final int p2, final ManagerCallback p3);
     
-    boolean fetchShowDetails(final String p0, final String p1, final ManagerCallback p2);
+    boolean fetchShowDetails(final String p0, final String p1, final boolean p2, final ManagerCallback p3);
+    
+    boolean fetchShowDetailsAndSeasons(final String p0, final String p1, final boolean p2, final ManagerCallback p3);
     
     boolean fetchSimilarVideosForPerson(final String p0, final int p1, final ManagerCallback p2, final String p3);
     
@@ -55,7 +57,7 @@ public interface IBrowseManager
     
     boolean fetchSocialNotificationsList(final int p0, final ManagerCallback p1);
     
-    boolean fetchVideos(final LoMo p0, final int p1, final int p2, final ManagerCallback p3);
+    boolean fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final ManagerCallback p5);
     
     boolean flushCaches();
     
@@ -65,13 +67,19 @@ public interface IBrowseManager
     
     void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0);
     
-    boolean prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final ManagerCallback p6);
+    boolean prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final boolean p6, final ManagerCallback p7);
     
-    boolean prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final ManagerCallback p8);
+    boolean prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final boolean p8, final ManagerCallback p9);
+    
+    void refreshAll();
+    
+    void refreshCw();
+    
+    void refreshIq();
     
     void refreshSocialNotifications(final boolean p0);
     
-    boolean removeFromQueue(final String p0, final String p1, final ManagerCallback p2);
+    boolean removeFromQueue(final String p0, final VideoType p1, final String p2, final ManagerCallback p3);
     
     boolean searchNetflix(final String p0, final ManagerCallback p1);
     

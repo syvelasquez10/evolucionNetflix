@@ -34,13 +34,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(netflixActivity);
         mdxTargetSelectionDialog$Builder.setCancelable(true);
-        mdxTargetSelectionDialog$Builder.setTitle(2131493129);
+        mdxTargetSelectionDialog$Builder.setTitle(2131493136);
         mdxTargetSelectionDialog$Builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle())) {
-                format = String.format(netflixActivity.getString(2131493213), mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle());
+                format = String.format(netflixActivity.getString(2131493222), mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle());
             }
         }
         mdxTargetSelectionDialog$Builder.setSelection(devicePositionByUUID, format);
@@ -173,7 +173,7 @@ public final class MdxUtils
     
     public static void registerReceiver(final Activity activity, final BroadcastReceiver broadcastReceiver) {
         Log.d("MdxUtils", "Register receiver");
-        IntentUtils.registerSafelyLocalBroadcastReceiver((Context)activity, broadcastReceiver, "LocalIntentNflxUi", "ui_rating", "nflx_button_selected", "nflx_button_canceled");
+        IntentUtils.registerSafelyLocalBroadcastReceiver((Context)activity, broadcastReceiver, "LocalIntentNflxUi", "ui_rating");
     }
     
     public static int setProgressByBif(final SeekBar seekBar) {

@@ -30,6 +30,7 @@ import java.util.Map;
 import com.netflix.mediaclient.service.logging.uiaction.SayThanksSession;
 import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
+import com.netflix.mediaclient.service.logging.uiaction.NewLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
 import com.netflix.mediaclient.service.logging.uiaction.LoginSession;
 import com.netflix.mediaclient.service.logging.uiaction.EditProfileSession;

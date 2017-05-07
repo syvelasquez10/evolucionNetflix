@@ -208,8 +208,8 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
             // monitorexit(mPlayerStateManager)
             final String s = catalogId;
             final String s2 = episodeId;
-            final WebApiUtils$VideoIds isd = WebApiUtils.extractIsd(s, s2);
-            return isd;
+            final WebApiUtils$VideoIds ids = WebApiUtils.extractIds(s, s2);
+            return ids;
         }
         finally {
             final String s3;
@@ -219,9 +219,9 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
         try {
             final String s = catalogId;
             final String s2 = episodeId;
-            final WebApiUtils$VideoIds isd2;
-            final WebApiUtils$VideoIds isd = isd2 = WebApiUtils.extractIsd(s, s2);
-            return isd2;
+            final WebApiUtils$VideoIds ids2;
+            final WebApiUtils$VideoIds ids = ids2 = WebApiUtils.extractIds(s, s2);
+            return ids2;
         }
         catch (InvalidParameterException ex) {
             Log.d("nf_mdx", "TargetContext: fail to getVideoIds " + catalogId + ", " + episodeId);

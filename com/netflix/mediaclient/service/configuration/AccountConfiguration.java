@@ -23,7 +23,7 @@ public class AccountConfiguration
     
     public AccountConfiguration(final Context mContext) {
         this.mContext = mContext;
-        this.mAccountConfigData = AccountConfigData.fromString(PreferenceUtils.getStringPref(mContext, "accountConfig", null));
+        this.mAccountConfigData = AccountConfigData.fromJsonString(PreferenceUtils.getStringPref(this.mContext, "accountConfig", null));
     }
     
     public void clear() {
@@ -59,11 +59,32 @@ public class AccountConfiguration
         return this.mAccountConfigData.getKidsOnPhone();
     }
     
+    public KubrickConfiguration getKubrickConfig() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getKubrickConfig();
+    }
+    
     public JSONArray getMdxBlacklist() {
         if (this.mAccountConfigData == null) {
             return null;
         }
         return this.mAccountConfigData.getMdxBlacklistAsJsonArray();
+    }
+    
+    public String getPreAppPartnerExperience() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getPreAppPartnerExperience();
+    }
+    
+    public String getPreAppWidgetExperience() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getPreAppWidgetExperience();
     }
     
     public int getSearchTest() {
@@ -81,15 +102,27 @@ public class AccountConfiguration
     }
     
     public void persistAccountConfigOverride(final AccountConfigData mAccountConfigData) {
-        String string = null;
+        String jsonString = null;
         if (mAccountConfigData != null) {
-            string = mAccountConfigData.toString();
+            jsonString = mAccountConfigData.toJsonString();
         }
         if (Log.isLoggable(AccountConfiguration.TAG, 3)) {
-            Log.d(AccountConfiguration.TAG, "Persisting account config: " + string);
+            Log.d(AccountConfiguration.TAG, "Persisting account config: " + jsonString);
         }
-        PreferenceUtils.putStringPref(this.mContext, "accountConfig", string);
+        PreferenceUtils.putStringPref(this.mContext, "accountConfig", jsonString);
         this.mAccountConfigData = mAccountConfigData;
+    }
+    
+    public boolean shouldUseLegacyBrowseVolleyClient() {
+        if (this.mAccountConfigData == null) {
+            Log.w(AccountConfiguration.TAG, "shouldUseLegacyBrowseVolleyClient - account config data is null");
+            return false;
+        }
+        return this.mAccountConfigData.shouldUseLegacyBrowseVolleyClient();
+    }
+    
+    public boolean toDisableMcQueenV2() {
+        return this.mAccountConfigData != null && this.mAccountConfigData.toDisableMcQueenV2();
     }
     
     public boolean toDisableSuspendPlay() {

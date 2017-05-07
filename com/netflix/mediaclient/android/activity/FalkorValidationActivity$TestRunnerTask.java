@@ -34,6 +34,7 @@ import com.netflix.mediaclient.service.falkor.FalkorAccess;
 import com.netflix.mediaclient.service.BrowseAccess;
 import java.lang.reflect.Method;
 import com.netflix.model.branches.FalkorValidator;
+import android.support.v4.util.Pair;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import java.util.concurrent.Callable;
@@ -55,92 +56,111 @@ abstract class FalkorValidationActivity$TestRunnerTask<T> implements Callable<Fa
     }
     
     private FalkorValidationActivity$Result validate(final Object o, final Object o2) {
+        FalkorValidationActivity$Result falkorValidationActivity$Result;
         if (o instanceof List) {
-            return this.validateList((List<?>)o, (List<?>)o2);
+            falkorValidationActivity$Result = this.validateList((List<?>)o, (List<?>)o2);
         }
-        if (o == null || o2 == null) {
-            return FalkorValidationActivity$Result.NULL_OBJECT;
-        }
-        Log.d("FalkorValidationActivity", "Validating Volley class: " + o.getClass() + ", vs. Falkor class: " + o2.getClass());
-        final Class[] array = FalkorValidationActivity.INTERFACE_MAP.get(o.getClass());
-        if (array == null) {
-            return FalkorValidationActivity$Result.INTERFACE_NOT_FOUND_IN_MAP.append(o.getClass().getCanonicalName());
-        }
-        for (int length = array.length, i = 0; i < length; ++i) {
-            final Class clazz = array[i];
-            if (!clazz.isInstance(o)) {
-                return FalkorValidationActivity$Result.INTERFACE_NOT_IMPLEMENTED.append(o.getClass().getName() + " does not implement " + clazz.getCanonicalName());
-            }
-            if (!clazz.isInstance(o2)) {
-                return FalkorValidationActivity$Result.INTERFACE_NOT_IMPLEMENTED.append(o2.getClass().getName() + " does not implement " + clazz.getCanonicalName());
+        else if (o instanceof Pair) {
+            final Pair pair = (Pair)o;
+            final Pair pair2 = (Pair)o2;
+            if (!(falkorValidationActivity$Result = this.validate(pair.first, pair2.first)).isError()) {
+                return this.validate(pair.second, pair2.second);
             }
         }
-        for (int length2 = array.length, j = 0; j < length2; ++j) {
-            final Class clazz2 = array[j];
-            Log.d("FalkorValidationActivity", "Getting methods for interface: " + clazz2);
-            final Method[] methods = clazz2.getMethods();
-            for (int length3 = methods.length, k = 0; k < length3; ++k) {
-                final Method method = methods[k];
-                if (method.getGenericParameterTypes().length > 0) {
-                    Log.d("FalkorValidationActivity", "Skipping method because it requires input params: " + method.getName());
+        else {
+            if (o == null || o2 == null) {
+                return FalkorValidationActivity$Result.NULL_OBJECT;
+            }
+            Log.d("FalkorValidationActivity", "Validating Volley class: " + o.getClass() + ", vs. Falkor class: " + o2.getClass());
+            final Class[] array = FalkorValidationActivity.INTERFACE_MAP.get(o.getClass());
+            if (array == null) {
+                return FalkorValidationActivity$Result.INTERFACE_NOT_FOUND_IN_MAP.append(o.getClass().getCanonicalName());
+            }
+            for (int length = array.length, i = 0; i < length; ++i) {
+                final Class clazz = array[i];
+                if (!clazz.isInstance(o)) {
+                    return FalkorValidationActivity$Result.INTERFACE_NOT_IMPLEMENTED.append(o.getClass().getName() + " does not implement " + clazz.getCanonicalName());
                 }
-                else {
-                    final String ignoreKey = FalkorValidationActivity.createIgnoreKey(clazz2, method.getName());
-                    if (!FalkorValidationActivity.METHOD_IGNORE_SET.contains(ignoreKey)) {
-                        try {
-                            final Object invoke = method.invoke(o, new Object[0]);
-                            final Object invoke2 = method.invoke(o2, new Object[0]);
-                            final String string = "Testing method: " + method.getName() + ", return type: " + method.getReturnType() + ", Volley value: " + invoke + ", Falkor value: " + invoke2;
-                            Log.d("FalkorValidationActivity", string);
-                            if (invoke == null) {
-                                if (invoke2 != null) {
-                                    return FalkorValidationActivity$Result.VALUE_MISMATCH.append(string);
-                                }
-                                continue;
-                            }
-                            else if (invoke instanceof List) {
-                                Log.d("FalkorValidationActivity", "Method returned a list, validating list...");
-                                final FalkorValidationActivity$Result validateList = this.validateList((List<?>)invoke, (List<?>)invoke2);
-                                if (validateList.isError()) {
-                                    return validateList;
-                                }
-                                continue;
-                            }
-                            else if (invoke instanceof FalkorValidator) {
-                                final FalkorValidationActivity$Result validate = this.validate(invoke, invoke2);
-                                if (validate.isError()) {
-                                    return validate;
-                                }
-                                continue;
-                            }
-                            else if ("getBookmarkPosition".equals(method.getName())) {
-                                final int intValue = (int)invoke;
-                                final int intValue2 = (int)invoke2;
-                                Log.d("FalkorValidationActivity", "GKB: Special check for bookmark positions - can differ by 1 ms");
-                                if (Math.abs(intValue - intValue2) > 1) {
-                                    return FalkorValidationActivity$Result.VALUE_MISMATCH.append(string);
-                                }
-                                continue;
-                            }
-                            else {
-                                if (!invoke.equals(invoke2)) {
-                                    return FalkorValidationActivity$Result.VALUE_MISMATCH.append(string);
-                                }
-                                continue;
-                            }
-                        }
-                        catch (Exception ex) {
-                            Log.d("FalkorValidationActivity", "Exception testing method: " + method.getName() + ", return type: " + method.getReturnType());
-                            Log.handleException("FalkorValidationActivity", ex);
-                            return FalkorValidationActivity$Result.INVOCATION_EXCEPTION.append(ex.getMessage());
-                        }
-                        break;
+                if (!clazz.isInstance(o2)) {
+                    return FalkorValidationActivity$Result.INTERFACE_NOT_IMPLEMENTED.append(o2.getClass().getName() + " does not implement " + clazz.getCanonicalName());
+                }
+            }
+            for (int length2 = array.length, j = 0; j < length2; ++j) {
+                final Class clazz2 = array[j];
+                Log.d("FalkorValidationActivity", "Getting methods for interface: " + clazz2);
+                final Method[] methods = clazz2.getMethods();
+                for (int length3 = methods.length, k = 0; k < length3; ++k) {
+                    final Method method = methods[k];
+                    if (method.getGenericParameterTypes().length > 0) {
+                        Log.d("FalkorValidationActivity", "Skipping method because it requires input params: " + method.getName());
                     }
-                    Log.d("FalkorValidationActivity", "Skipping method due to override: " + ignoreKey);
+                    else {
+                        final String ignoreKey = FalkorValidationActivity.createIgnoreKey(clazz2, method.getName());
+                        if (!FalkorValidationActivity.METHOD_IGNORE_SET.contains(ignoreKey)) {
+                            try {
+                                final Object invoke = method.invoke(o, new Object[0]);
+                                final Object invoke2 = method.invoke(o2, new Object[0]);
+                                final StringBuilder append = new StringBuilder().append("Testing class: ");
+                                String simpleName;
+                                if (o == null) {
+                                    simpleName = "n/a";
+                                }
+                                else {
+                                    simpleName = o.getClass().getSimpleName();
+                                }
+                                final String string = append.append(simpleName).append(", method: ").append(method.getName()).append(", return type: ").append(method.getReturnType()).append(", Volley value: ").append(invoke).append(", Falkor value: ").append(invoke2).toString();
+                                Log.d("FalkorValidationActivity", string);
+                                if (invoke == null) {
+                                    if (invoke2 != null) {
+                                        return FalkorValidationActivity$Result.VALUE_MISMATCH.append(string);
+                                    }
+                                    continue;
+                                }
+                                else if (invoke instanceof List) {
+                                    Log.d("FalkorValidationActivity", "Method returned a list, validating list...");
+                                    final FalkorValidationActivity$Result validateList = this.validateList((List<?>)invoke, (List<?>)invoke2);
+                                    if (validateList.isError()) {
+                                        return validateList;
+                                    }
+                                    continue;
+                                }
+                                else if (invoke instanceof FalkorValidator) {
+                                    final FalkorValidationActivity$Result validate = this.validate(invoke, invoke2);
+                                    if (validate.isError()) {
+                                        return validate;
+                                    }
+                                    continue;
+                                }
+                                else if ("getBookmarkPosition".equals(method.getName())) {
+                                    final int intValue = (int)invoke;
+                                    final int intValue2 = (int)invoke2;
+                                    Log.d("FalkorValidationActivity", "GKB: Special check for bookmark positions - can differ by 1 ms");
+                                    if (Math.abs(intValue - intValue2) > 1) {
+                                        return FalkorValidationActivity$Result.VALUE_MISMATCH.append(string);
+                                    }
+                                    continue;
+                                }
+                                else {
+                                    if (!invoke.equals(invoke2)) {
+                                        return FalkorValidationActivity$Result.VALUE_MISMATCH.append(string);
+                                    }
+                                    continue;
+                                }
+                            }
+                            catch (Exception ex) {
+                                Log.d("FalkorValidationActivity", "Exception testing method: " + method.getName() + ", return type: " + method.getReturnType());
+                                Log.handleException("FalkorValidationActivity", ex);
+                                return FalkorValidationActivity$Result.INVOCATION_EXCEPTION.append(ex.getMessage());
+                            }
+                            break;
+                        }
+                        Log.d("FalkorValidationActivity", "Skipping method due to override: " + ignoreKey);
+                    }
                 }
             }
+            return FalkorValidationActivity$Result.OK;
         }
-        return FalkorValidationActivity$Result.OK;
+        return falkorValidationActivity$Result;
     }
     
     private FalkorValidationActivity$Result validateList(final List<?> list, final List<?> list2) {
@@ -178,7 +198,7 @@ abstract class FalkorValidationActivity$TestRunnerTask<T> implements Callable<Fa
         //    11: aload_0        
         //    12: aload_0        
         //    13: getfield        com/netflix/mediaclient/android/activity/FalkorValidationActivity$TestRunnerTask.this$0:Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;
-        //    16: invokestatic    com/netflix/mediaclient/android/activity/FalkorValidationActivity.access$1000:(Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;)Lcom/netflix/mediaclient/service/falkor/FalkorAccess;
+        //    16: invokestatic    com/netflix/mediaclient/android/activity/FalkorValidationActivity.access$500:(Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;)Lcom/netflix/mediaclient/service/falkor/FalkorAccess;
         //    19: aload_0        
         //    20: getfield        com/netflix/mediaclient/android/activity/FalkorValidationActivity$TestRunnerTask.this$0:Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;
         //    23: invokestatic    com/netflix/mediaclient/android/activity/FalkorValidationActivity.access$100:(Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;)Lcom/netflix/mediaclient/servicemgr/ServiceManager;
@@ -211,7 +231,7 @@ abstract class FalkorValidationActivity$TestRunnerTask<T> implements Callable<Fa
         //    78: aload_0        
         //    79: aload_0        
         //    80: getfield        com/netflix/mediaclient/android/activity/FalkorValidationActivity$TestRunnerTask.this$0:Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;
-        //    83: invokestatic    com/netflix/mediaclient/android/activity/FalkorValidationActivity.access$1100:(Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;)Lcom/netflix/mediaclient/service/BrowseAccess;
+        //    83: invokestatic    com/netflix/mediaclient/android/activity/FalkorValidationActivity.access$600:(Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;)Lcom/netflix/mediaclient/service/BrowseAccess;
         //    86: aload_0        
         //    87: getfield        com/netflix/mediaclient/android/activity/FalkorValidationActivity$TestRunnerTask.this$0:Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;
         //    90: invokestatic    com/netflix/mediaclient/android/activity/FalkorValidationActivity.access$100:(Lcom/netflix/mediaclient/android/activity/FalkorValidationActivity;)Lcom/netflix/mediaclient/servicemgr/ServiceManager;

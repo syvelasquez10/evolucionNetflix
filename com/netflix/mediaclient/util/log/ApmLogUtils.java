@@ -8,7 +8,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.service.logging.JsonSerializer;
 import android.content.Intent;
-import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
+import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -56,7 +56,7 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
         }
     }
     
-    public static void reportDataRequestEnded(final Context context, final String s, final IClientLogging$CompletionReason clientLogging$CompletionReason, final List<FalcorPathResult> list, final Error error, final HttpResponse httpResponse) {
+    public static void reportDataRequestEnded(final Context context, final String s, final IClientLogging$CompletionReason clientLogging$CompletionReason, final List<FalkorPathResult> list, final Error error, final HttpResponse httpResponse) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         ConsolidatedLoggingUtils.validateArgument(s, "Request ID can not be null!");
         ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Completion reason can not be null!");
@@ -66,7 +66,7 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
         intent.putExtra("reason", clientLogging$CompletionReason.name());
         ConsolidatedLoggingUtils.addToIntent(intent, "error", error);
         ConsolidatedLoggingUtils.addToIntent(intent, "http_response", httpResponse);
-        ConsolidatedLoggingUtils.addToIntent(intent, "falcorPathResults", list);
+        ConsolidatedLoggingUtils.addToIntent(intent, "falkorPathResults", list);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     

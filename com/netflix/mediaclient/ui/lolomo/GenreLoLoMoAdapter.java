@@ -5,9 +5,8 @@
 package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.ui.lomo.PaginatedLoMoAdapter;
-import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.lomo.LomoConfig;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
@@ -41,6 +40,7 @@ public class GenreLoLoMoAdapter extends BasePaginatedLoLoMoAdapter<Genre>
             Log.w("GenreLoLoMoAdapter", "Service man is null");
             return;
         }
-        serviceManager.getBrowse().prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, PaginatedLoMoAdapter.computeNumVideosToFetchPerBatch(this.activity, DeviceUtils.getScreenSizeCategory((Context)this.activity)) - 1, false, new GenreLoLoMoAdapter$1(this, "GenreLoLoMoAdapter"));
+        Log.v("GenreLoLoMoAdapter", "Prefetching genre lolomo...");
+        serviceManager.getBrowse().prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, this.activity.isKubrick(), false, new GenreLoLoMoAdapter$1(this, "GenreLoLoMoAdapter"));
     }
 }

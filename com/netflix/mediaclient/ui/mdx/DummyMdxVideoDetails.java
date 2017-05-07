@@ -86,6 +86,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public String getNarrative() {
+        return "Narrative";
+    }
+    
+    @Override
     public String getNextEpisodeId() {
         return null;
     }
@@ -142,12 +147,17 @@ class DummyMdxVideoDetails implements EpisodeDetails
     
     @Override
     public String getSynopsis() {
-        return null;
+        return "Synopsis";
     }
     
     @Override
     public String getTitle() {
         return "Dummy MDX Title, Super Extra-Long Version";
+    }
+    
+    @Override
+    public String getTitleImgUrl() {
+        return null;
     }
     
     @Override

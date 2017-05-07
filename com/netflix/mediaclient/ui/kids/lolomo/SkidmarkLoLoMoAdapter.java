@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.android.app.CommonStatus;
+import android.widget.AbsListView;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.util.LogUtils;
@@ -182,7 +183,7 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements LoLoMoFrag$ILo
     public View getHeaderView(final int n, View inflate, final ViewGroup viewGroup) {
         if (inflate == null) {
             Log.v("SkidmarkLoLoMoAdapter", "Creating header view");
-            inflate = this.activity.getLayoutInflater().inflate(2130903111, (ViewGroup)null);
+            inflate = this.activity.getLayoutInflater().inflate(2130903113, (ViewGroup)null);
         }
         ((TextView)inflate).setText((CharSequence)this.getLomo(n).getTitle());
         return inflate;
@@ -252,8 +253,8 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements LoLoMoFrag$ILo
     
     public View getView(final int n, View view, final ViewGroup viewGroup) {
         if (!this.activity.destroyed()) {
-            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361974);
-            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361973);
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361975);
+            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361974);
             final int itemViewType = this.getItemViewType(n);
             if (view == null) {
                 switch (itemViewType) {
@@ -292,7 +293,7 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements LoLoMoFrag$ILo
                     case 4: {
                         Log.v("SkidmarkLoLoMoAdapter", "Creating spacer view");
                         view = new View((Context)this.activity);
-                        view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361975)));
+                        view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361976)));
                         break;
                     }
                 }
@@ -371,6 +372,12 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements LoLoMoFrag$ILo
     public void onResume() {
     }
     
+    public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
+    }
+    
+    public void onScrollStateChanged(final AbsListView absListView, final int n) {
+    }
+    
     public void refreshData() {
         if (this.manager == null) {
             Log.w("SkidmarkLoLoMoAdapter", "Service man is null");
@@ -379,7 +386,7 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements LoLoMoFrag$ILo
         Log.v("SkidmarkLoLoMoAdapter", "refreshData()");
         this.initLoadingState();
         this.prefetchRequestId = System.nanoTime();
-        this.manager.getBrowse().prefetchLoLoMo(0, 19, 0, 4, 0, 2, this.activity.isForKids(), false, new SkidmarkLoLoMoAdapter$1(this, "SkidmarkLoLoMoAdapter", this.prefetchRequestId));
+        this.manager.getBrowse().prefetchLoLoMo(0, 19, 0, 4, 0, 2, this.activity.isForKids(), false, false, new SkidmarkLoLoMoAdapter$1(this, "SkidmarkLoLoMoAdapter", this.prefetchRequestId));
     }
     
     public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback loadingStatusCallback) {

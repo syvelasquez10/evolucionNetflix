@@ -6,24 +6,40 @@ package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.ui.common.NetflixAlertDialog;
-import android.content.Context;
-import com.netflix.mediaclient.ui.common.NetflixAlertDialog$AlertDialogDescriptor;
 import com.netflix.mediaclient.Log;
+import android.content.Context;
+import android.app.AlertDialog$Builder;
+import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class MdxErrorHandler
 {
-    private static final String ERROR_DIALOG_ID = "mdx_error_dialog_id";
+    private static final String kbHelpUrl_16001 = "https://help.netflix.com/en/node/12407";
+    private static final String kbHelpUrl_16003 = "https://help.netflix.com/en/node/13590";
     private final NetflixActivity activity;
-    private final MdxErrorHandler$ErrorHandlerCallbacks callbacks;
+    private DialogInterface$OnClickListener kblaunch_16001;
+    private DialogInterface$OnClickListener kblaunch_16003;
     private final String tag;
     
-    public MdxErrorHandler(final String tag, final NetflixActivity activity, final MdxErrorHandler$ErrorHandlerCallbacks callbacks) {
+    public MdxErrorHandler(final String tag, final NetflixActivity activity) {
+        this.kblaunch_16001 = (DialogInterface$OnClickListener)new MdxErrorHandler$1(this);
+        this.kblaunch_16003 = (DialogInterface$OnClickListener)new MdxErrorHandler$2(this);
         this.tag = tag;
         this.activity = activity;
-        this.callbacks = callbacks;
+    }
+    
+    private AlertDialog$Builder getDialogBuilder(final int n, final String s) {
+        switch (n) {
+            default: {
+                return new AlertDialog$Builder((Context)this.activity, 2131558696).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492988, (DialogInterface$OnClickListener)null);
+            }
+            case 100: {
+                return new AlertDialog$Builder((Context)this.activity, 2131558696).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492988, (DialogInterface$OnClickListener)null).setNegativeButton(2131493332, this.kblaunch_16001);
+            }
+            case 105: {
+                return new AlertDialog$Builder((Context)this.activity, 2131558696).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492988, (DialogInterface$OnClickListener)null).setNegativeButton(2131493332, this.kblaunch_16003);
+            }
+        }
     }
     
     private String getErrorMessage(final int n, final String s) {
@@ -39,28 +55,28 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131493203);
+                return this.activity.getString(2131493212);
             }
             case 104: {
-                return this.activity.getString(2131493204);
+                return this.activity.getString(2131493213);
             }
             case 105: {
-                return this.activity.getString(2131493205);
+                return this.activity.getString(2131493214);
             }
             case 200: {
-                return this.activity.getString(2131493206);
+                return this.activity.getString(2131493215);
             }
             case 106: {
-                return String.format(this.activity.getString(2131493208), s);
+                return String.format(this.activity.getString(2131493217), s);
             }
             case 201: {
-                return this.activity.getString(2131493207);
+                return this.activity.getString(2131493216);
             }
         }
     }
     
     private void handleError(final int n, final String s) {
-        this.activity.showDialog(NetflixAlertDialog.newInstance(new NetflixAlertDialog$AlertDialogDescriptor((Context)this.activity, "mdx_error_dialog_id", this.getErrorMessage(n, s), false, false)));
+        this.activity.displayDialog(this.getDialogBuilder(n, s));
     }
     
     private void sendToast(final int n, final String s) {
@@ -68,29 +84,6 @@ public class MdxErrorHandler
     
     private boolean shouldShowErrorMessage() {
         return this.activity instanceof FragmentHostActivity || this.activity instanceof MDXControllerActivity;
-    }
-    
-    public boolean handleDialogButton(final String s, final String s2) {
-        if (Log.isLoggable(this.tag, 3)) {
-            Log.d(this.tag, "User pressed button " + s2 + " for dialog " + s);
-        }
-        if ("mdx_error_dialog_id".equals(s)) {
-            Log.d(this.tag, "User accepted error message. Exit activity");
-            this.callbacks.destroy();
-            return true;
-        }
-        return false;
-    }
-    
-    public boolean handleDialogCancel(final String s) {
-        if (Log.isLoggable(this.tag, 3)) {
-            Log.d(this.tag, "User canceled error message for dialog " + s);
-        }
-        if ("mdx_error_dialog_id".equals(s)) {
-            Log.d(this.tag, "User canceled error message. Exit activity");
-            this.callbacks.destroy();
-        }
-        return false;
     }
     
     public void handleMdxError(final int n, final String s) {
@@ -109,18 +102,17 @@ public class MdxErrorHandler
             if (this.shouldShowErrorMessage()) {
                 Log.d(this.tag, "Showing toast msg");
                 this.sendToast(n, s);
+                return;
             }
-            else {
-                Log.d(this.tag, "Not MDX related activity, do not show toast");
+            Log.d(this.tag, "Not MDX related activity, do not show toast");
+        }
+        else {
+            if (this.shouldShowErrorMessage()) {
+                Log.d(this.tag, "Showing toast msg");
+                this.sendToast(n, s);
+                return;
             }
-            this.callbacks.destroy();
-            return;
+            Log.d(this.tag, "Not MDX related activity, do not show toast");
         }
-        if (this.shouldShowErrorMessage()) {
-            Log.d(this.tag, "Showing toast msg");
-            this.sendToast(n, s);
-            return;
-        }
-        Log.d(this.tag, "Not MDX related activity, do not show toast");
     }
 }

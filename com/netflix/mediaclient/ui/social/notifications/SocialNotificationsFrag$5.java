@@ -11,7 +11,7 @@ import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.os.Bundle;
 import android.app.Activity;
 import android.widget.TextView;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
@@ -32,7 +32,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.Set;
 import android.widget.ListView;
 import android.view.LayoutInflater;
@@ -40,7 +40,7 @@ import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
 class SocialNotificationsFrag$5 extends SimpleManagerCallback

@@ -11,8 +11,8 @@ public enum IMedia$SubtitleProfile
     ENHANCED(1, "dfxp-ls-sdh"), 
     SIMPLE(0, "simplesdh");
     
-    private String mNccpCode;
-    private int mValue;
+    private final String mNccpCode;
+    private final int mValue;
     
     private IMedia$SubtitleProfile(final int mValue, final String mNccpCode) {
         this.mValue = mValue;

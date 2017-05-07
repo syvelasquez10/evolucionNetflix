@@ -36,8 +36,9 @@ import java.util.Map;
 
 public class FalkorValidationActivity extends NetflixActivity
 {
-    private static final boolean DO_PREFETCH = false;
-    private static final boolean INCLUDE_GENRES_TEST = false;
+    private static final boolean DO_PREFETCH = true;
+    private static final boolean INCLUDE_GENRES_TEST = true;
+    private static final boolean INCLUDE_KUBRICK = true;
     private static final Map<Class<?>, Class<?>[]> INTERFACE_MAP;
     private static final Set<String> METHOD_IGNORE_SET;
     private static final ExecutorService SINGLE_THREAD_EXECUTOR;
@@ -49,6 +50,8 @@ public class FalkorValidationActivity extends NetflixActivity
     private static final int TO_SEASON = 19;
     private static final int TO_SIMILAR_VIDEO = 49;
     private static final int TO_VIDEO = 9;
+    private static final boolean USE_CACHE_AND_REMOTE = false;
+    private static final boolean USE_CACHE_ONLY = true;
     private BrowseAccess browseAgent;
     private FalkorAccess falkorAgent;
     public List<Genre> genres;
@@ -89,8 +92,20 @@ public class FalkorValidationActivity extends NetflixActivity
     }
     
     private boolean isSetupSuccessful() {
-        Log.d("FalkorValidationActivity", "Falkor agent disabled");
-        return false;
+        if (this.manager == null || !this.manager.isReady()) {
+            Log.d("FalkorValidationActivity", "Service man not ready");
+            return false;
+        }
+        if (this.falkorAgent == null) {
+            Log.d("FalkorValidationActivity", "Falkor agent is null");
+            return false;
+        }
+        if (this.browseAgent == null) {
+            Log.d("FalkorValidationActivity", "Browse agent is null");
+            return false;
+        }
+        this.setStatus("Setup successful");
+        return true;
     }
     
     private void setStatus(final String text) {
@@ -110,9 +125,6 @@ public class FalkorValidationActivity extends NetflixActivity
             Log.i("FalkorValidationActivity", "Setup failed - can't continue validation");
             return;
         }
-        Log.d("FalkorValidationActivity", "Flushing caches...");
-        this.falkorAgent.flushCaches();
-        this.browseAgent.flushCaches();
         ThreadUtils.assertOnMain();
         new BackgroundTask().execute(new FalkorValidationActivity$5(this, new Handler()));
     }

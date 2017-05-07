@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -19,9 +19,9 @@ import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import java.util.Set;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class SendRecommendationRequest extends FalcorVolleyWebClientRequest<Set<FriendForRecommendation>>
+public class SendRecommendationRequest extends FalkorVolleyWebClientRequest<Set<FriendForRecommendation>>
 {
     private static final String FRIEND_VIDEOS_FIELD = "friendVideos";
     public static final int PAGE_FRIENDS_SIZE = 20;
@@ -74,7 +74,7 @@ public class SendRecommendationRequest extends FalcorVolleyWebClientRequest<Set<
     
     @Override
     protected String getOptionalParams() {
-        final StringBuilder sb = new StringBuilder(FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "\"" + this.mBodyText + "\""));
+        final StringBuilder sb = new StringBuilder(FalkorVolleyWebClientRequest.urlEncodPQLParam("param", "\"" + this.mBodyText + "\""));
         sb.append(AddToQueueRequest.optionalParam).append("\"").append(this.mGUID).append("\"");
         return sb.toString();
     }
@@ -99,13 +99,13 @@ public class SendRecommendationRequest extends FalcorVolleyWebClientRequest<Set<
     }
     
     @Override
-    protected Set<FriendForRecommendation> parseFalcorResponse(final String s) {
+    protected Set<FriendForRecommendation> parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 4)) {
             Log.i("nf_service_user_fetchfriendsforrecommendationrequest", "Got result: " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_user_fetchfriendsforrecommendationrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("UserProfiles empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchfriendsforrecommendationrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("UserProfiles empty!!!");
         }
         JsonObject asJsonObject;
         try {
@@ -119,7 +119,7 @@ public class SendRecommendationRequest extends FalcorVolleyWebClientRequest<Set<
             if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 2)) {
                 Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "While getting recommendations field from the response got an exception: " + ex);
             }
-            throw new FalcorParseException("response missing friends json objects", ex);
+            throw new FalkorParseException("response missing friends json objects", ex);
         }
         for (final FriendForRecommendation friendForRecommendation : this.mFriends) {
             final String id = friendForRecommendation.getFriendProfile().getId();

@@ -4,6 +4,7 @@
 
 package com.facebook;
 
+import android.util.Log;
 import com.facebook.android.R$id;
 import com.facebook.android.R$layout;
 import android.content.Intent;

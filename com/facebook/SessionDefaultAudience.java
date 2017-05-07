@@ -6,10 +6,10 @@ package com.facebook;
 
 public enum SessionDefaultAudience
 {
-    EVERYONE("EVERYONE"), 
-    FRIENDS("ALL_FRIENDS"), 
+    EVERYONE("everyone"), 
+    FRIENDS("friends"), 
     NONE((String)null), 
-    ONLY_ME("SELF");
+    ONLY_ME("only_me");
     
     private final String nativeProtocolAudience;
     
@@ -17,7 +17,7 @@ public enum SessionDefaultAudience
         this.nativeProtocolAudience = nativeProtocolAudience;
     }
     
-    String getNativeProtocolAudience() {
+    public String getNativeProtocolAudience() {
         return this.nativeProtocolAudience;
     }
 }

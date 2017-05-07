@@ -23,6 +23,7 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
     private static final int DEFAULT_GRAVITY = 80;
     private static final String EXTRA_WEARABLE_EXTENSIONS = "android.wearable.EXTENSIONS";
     private static final int FLAG_CONTENT_INTENT_AVAILABLE_OFFLINE = 1;
+    private static final int FLAG_HINT_AVOID_BACKGROUND_CLIPPING = 16;
     private static final int FLAG_HINT_HIDE_ICON = 2;
     private static final int FLAG_HINT_SHOW_BACKGROUND_ONLY = 4;
     private static final int FLAG_START_SCROLL_BOTTOM = 8;
@@ -36,7 +37,10 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
     private static final String KEY_DISPLAY_INTENT = "displayIntent";
     private static final String KEY_FLAGS = "flags";
     private static final String KEY_GRAVITY = "gravity";
+    private static final String KEY_HINT_SCREEN_TIMEOUT = "hintScreenTimeout";
     private static final String KEY_PAGES = "pages";
+    public static final int SCREEN_TIMEOUT_LONG = -1;
+    public static final int SCREEN_TIMEOUT_SHORT = 0;
     public static final int SIZE_DEFAULT = 0;
     public static final int SIZE_FULL_SCREEN = 5;
     public static final int SIZE_LARGE = 4;
@@ -54,6 +58,7 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
     private PendingIntent mDisplayIntent;
     private int mFlags;
     private int mGravity;
+    private int mHintScreenTimeout;
     private ArrayList<Notification> mPages;
     
     public NotificationCompat$WearableExtender() {
@@ -100,6 +105,7 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
             this.mCustomSizePreset = bundle.getInt("customSizePreset", 0);
             this.mCustomContentHeight = bundle.getInt("customContentHeight");
             this.mGravity = bundle.getInt("gravity", 80);
+            this.mHintScreenTimeout = bundle.getInt("hintScreenTimeout");
         }
     }
     
@@ -154,6 +160,7 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
         notificationCompat$WearableExtender.mCustomSizePreset = this.mCustomSizePreset;
         notificationCompat$WearableExtender.mCustomContentHeight = this.mCustomContentHeight;
         notificationCompat$WearableExtender.mGravity = this.mGravity;
+        notificationCompat$WearableExtender.mHintScreenTimeout = this.mHintScreenTimeout;
         return notificationCompat$WearableExtender;
     }
     
@@ -192,6 +199,9 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
         }
         if (this.mGravity != 80) {
             bundle.putInt("gravity", this.mGravity);
+        }
+        if (this.mHintScreenTimeout != 0) {
+            bundle.putInt("hintScreenTimeout", this.mHintScreenTimeout);
         }
         notificationCompat$Builder.getExtras().putBundle("android.wearable.EXTENSIONS", bundle);
         return notificationCompat$Builder;
@@ -237,8 +247,16 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
         return this.mGravity;
     }
     
+    public boolean getHintAvoidBackgroundClipping() {
+        return (this.mFlags & 0x10) != 0x0;
+    }
+    
     public boolean getHintHideIcon() {
         return (this.mFlags & 0x2) != 0x0;
+    }
+    
+    public int getHintScreenTimeout() {
+        return this.mHintScreenTimeout;
     }
     
     public boolean getHintShowBackgroundOnly() {
@@ -298,8 +316,18 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
         return this;
     }
     
+    public NotificationCompat$WearableExtender setHintAvoidBackgroundClipping(final boolean b) {
+        this.setFlag(16, b);
+        return this;
+    }
+    
     public NotificationCompat$WearableExtender setHintHideIcon(final boolean b) {
         this.setFlag(2, b);
+        return this;
+    }
+    
+    public NotificationCompat$WearableExtender setHintScreenTimeout(final int mHintScreenTimeout) {
+        this.mHintScreenTimeout = mHintScreenTimeout;
         return this;
     }
     

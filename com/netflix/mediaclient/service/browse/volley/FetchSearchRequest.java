@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.List;
@@ -16,7 +16,7 @@ import com.netflix.mediaclient.service.webclient.model.SearchPerson;
 import com.google.gson.JsonArray;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.SearchTrackableListSummary;
 import java.util.Map;
 import com.google.gson.JsonElement;
@@ -32,9 +32,9 @@ import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
 import java.util.Set;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchSearchRequest extends FalcorVolleyWebClientRequest<ISearchResults>
+public class FetchSearchRequest extends FalkorVolleyWebClientRequest<ISearchResults>
 {
     private static final String FIELD_PEOPLE = "people";
     private static final String FIELD_RESULT_TYPES_STRING = "['videos','people','suggestions']";
@@ -58,7 +58,7 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<ISearchResu
         super(context);
         this.responseCallback = responseCallback;
         this.fromIndex = 0;
-        this.toIndex = 50;
+        this.toIndex = 19;
         this.profileType = profileType;
         final String escapeJsonChars = StringUtils.escapeJsonChars(s);
         this.pqlQuery = String.format("['search', %s, '%s', '%s', {'from':%d,'to':%d}, ['summary', 'searchTitle']]", "['videos','people','suggestions']", escapeJsonChars, profileType, this.fromIndex, this.toIndex);
@@ -76,13 +76,13 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<ISearchResu
         if (iterator.hasNext()) {
             asJsonObject = ((Map.Entry<String, JsonElement>)iterator.next()).getValue().getAsJsonObject().getAsJsonObject(this.profileType.toString());
             if (string.equals("videos")) {
-                searchResults$Builder.setVideoListSummary(FalcorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
+                searchResults$Builder.setVideoListSummary(FalkorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
             }
             else if (string.equals("people")) {
-                searchResults$Builder.setPeopleListSummary(FalcorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
+                searchResults$Builder.setPeopleListSummary(FalkorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
             }
             else if (string.equals("suggestions")) {
-                searchResults$Builder.setSuggestionsListSummary(FalcorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
+                searchResults$Builder.setSuggestionsListSummary(FalkorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
             }
             for (int i = this.fromIndex; i <= this.toIndex; ++i) {
                 string = Integer.toString(i);
@@ -114,22 +114,22 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<ISearchResu
     
     private void handlePersonResult(final SearchResults$Builder searchResults$Builder, final JsonObject jsonObject) {
         new SearchPerson();
-        final SearchPerson searchPerson = FalcorParseUtils.getPropertyObject(jsonObject, "searchTitle", SearchPerson.class);
+        final SearchPerson searchPerson = FalkorParseUtils.getPropertyObject(jsonObject, "searchTitle", SearchPerson.class);
         searchResults$Builder.addPerson(searchPerson);
         Log.v("nf_service_browse_fetchsearchrequest", "Found person: " + searchPerson);
     }
     
     private void handleSuggestionResult(final SearchResults$Builder searchResults$Builder, final JsonObject jsonObject) {
         new SearchSuggestion();
-        final SearchSuggestion searchSuggestion = FalcorParseUtils.getPropertyObject(jsonObject, "searchTitle", SearchSuggestion.class);
+        final SearchSuggestion searchSuggestion = FalkorParseUtils.getPropertyObject(jsonObject, "searchTitle", SearchSuggestion.class);
         searchResults$Builder.addSuggestion(searchSuggestion);
         Log.v("nf_service_browse_fetchsearchrequest", "Found suggestion: " + searchSuggestion);
     }
     
     private void handleVideoResult(final SearchResults$Builder searchResults$Builder, final JsonObject jsonObject) {
         final SearchVideo searchVideo = new SearchVideo();
-        searchVideo.summary = FalcorParseUtils.getPropertyObject(jsonObject, "summary", Video$Summary.class);
-        searchVideo.searchTitle = FalcorParseUtils.getPropertyObject(jsonObject, "searchTitle", Video$SearchTitle.class);
+        searchVideo.summary = FalkorParseUtils.getPropertyObject(jsonObject, "summary", Video$Summary.class);
+        searchVideo.searchTitle = FalkorParseUtils.getPropertyObject(jsonObject, "searchTitle", Video$SearchTitle.class);
         searchResults$Builder.addVideo(searchVideo);
         Log.v("nf_service_browse_fetchsearchrequest", "Found video: " + searchVideo);
     }
@@ -154,11 +154,11 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<ISearchResu
     }
     
     @Override
-    protected ISearchResults parseFalcorResponse(final String s) {
+    protected ISearchResults parseFalkorResponse(final String s) {
         try {
             final SearchResults$Builder searchResults$Builder = new SearchResults$Builder();
-            final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchsearchrequest", s);
-            if (FalcorParseUtils.isEmpty(dataObj)) {
+            final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchsearchrequest", s);
+            if (FalkorParseUtils.isEmpty(dataObj)) {
                 this.checkForNullTrackables(searchResults$Builder);
                 return searchResults$Builder.getResults();
             }
@@ -180,7 +180,7 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<ISearchResu
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_fetchsearchrequest", "String response to parse = " + s);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
     }
 }

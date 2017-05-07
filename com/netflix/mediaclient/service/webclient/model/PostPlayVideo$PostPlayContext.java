@@ -4,13 +4,25 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-public class PostPlayVideo$PostPlayContext
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
+
+public class PostPlayVideo$PostPlayContext implements PostPlayContext
 {
-    String requestId;
-    final /* synthetic */ PostPlayVideo this$0;
-    int trackId;
+    private final String requestId;
+    private final int trackId;
     
-    public PostPlayVideo$PostPlayContext(final PostPlayVideo this$0) {
-        this.this$0 = this$0;
+    public PostPlayVideo$PostPlayContext(final int trackId, final String requestId) {
+        this.trackId = trackId;
+        this.requestId = requestId;
+    }
+    
+    @Override
+    public String getRequestId() {
+        return this.requestId;
+    }
+    
+    @Override
+    public int getTrackId() {
+        return this.trackId;
     }
 }

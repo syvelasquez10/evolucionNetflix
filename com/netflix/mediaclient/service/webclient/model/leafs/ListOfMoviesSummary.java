@@ -79,6 +79,7 @@ public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, G
         return this.getType() == LoMoType.BILLBOARD;
     }
     
+    @Override
     public void setId(final String id) {
         this.id = id;
     }

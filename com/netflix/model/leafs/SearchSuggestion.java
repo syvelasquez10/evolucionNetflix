@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
@@ -25,19 +26,19 @@ public class SearchSuggestion implements JsonPopulator, com.netflix.mediaclient.
     @Override
     public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("SearchSuggestion", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("SearchSuggestion", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0118: {
+            Label_0114: {
                 switch (s.hashCode()) {
                     case 110371416: {
                         if (s.equals("title")) {
                             n = 0;
-                            break Label_0118;
+                            break Label_0114;
                         }
                         break;
                     }

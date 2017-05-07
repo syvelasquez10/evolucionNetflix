@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.util.UiUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
@@ -19,7 +17,6 @@ import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
-import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
@@ -28,14 +25,15 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Random;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
+import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
+import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import android.content.Context;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
@@ -46,18 +44,16 @@ import com.netflix.mediaclient.Log;
 class BrowseAgent$RefreshIQTask extends BrowseAgent$FetchTask<Void>
 {
     final /* synthetic */ BrowseAgent this$0;
-    private final BrowseAgentCallback webClientCallback;
     
     public BrowseAgent$RefreshIQTask(final BrowseAgent this$0) {
         this.this$0 = this$0;
-        super("refreshIQ", BrowseAgent.mPrefetchFromVideo, BrowseAgent.mPrefetchToVideo, null);
-        this.webClientCallback = new BrowseAgent$RefreshIQTask$1(this);
+        super("refreshIQ", BrowseAgent.sPrefetchFromVideo, BrowseAgent.sPrefetchToVideo, null);
     }
     
     @Override
     public void run() {
         if (this.this$0.mCache.canRefreshIQ() && this.this$0.mCache.cacheHasLolomoId()) {
-            this.this$0.mBrowseWebClient.refreshIQList(this.getFromIndex(), this.getToIndex(), this.webClientCallback);
+            this.this$0.mBrowseWebClient.refreshIQList(this.getFromIndex(), this.getToIndex());
             return;
         }
         Log.d("nf_service_browseagent", "Cache has no IQ item so doing nothing for IQ refresh");

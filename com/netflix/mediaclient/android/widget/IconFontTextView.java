@@ -4,6 +4,9 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 
 public class IconFontTextView extends TextView
 {
+    private static final String TAG = "IconFontTextView";
     private static Typeface iconTypeface;
     
     public IconFontTextView(final Context context) {
@@ -33,5 +37,15 @@ public class IconFontTextView extends TextView
             IconFontTextView.iconTypeface = Typeface.createFromAsset(this.getContext().getAssets(), "nf-icon.ttf");
         }
         this.setTypeface(IconFontTextView.iconTypeface);
+    }
+    
+    public void setToIcon(final IconFontGlyph iconFontGlyph, final int n) {
+        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(n);
+        if (Log.isLoggable("IconFontTextView", 2)) {
+            Log.v("IconFontTextView", "Setting icon char to: " + iconFontGlyph + ", unicode: " + StringUtils.toUnicode(iconFontGlyph.getUnicodeChar()) + ", dimenId: " + n);
+            Log.v("IconFontTextView", "Setting icon text size to: " + dimensionPixelOffset);
+        }
+        this.setText((CharSequence)String.valueOf(iconFontGlyph.getUnicodeChar()));
+        this.setTextSize((float)dimensionPixelOffset);
     }
 }

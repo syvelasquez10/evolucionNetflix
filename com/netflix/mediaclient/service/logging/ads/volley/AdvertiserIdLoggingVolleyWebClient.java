@@ -7,15 +7,15 @@ package com.netflix.mediaclient.service.logging.ads.volley;
 import com.netflix.mediaclient.service.logging.client.volley.ClientLoggingVolleyWebClientRequest;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingCallback;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClient;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingWebClient;
 
 public final class AdvertiserIdLoggingVolleyWebClient implements AdvertiserIdLoggingWebClient
 {
     private static final String TAG = "nf_log";
-    private final FalcorVolleyWebClient mWebClient;
+    private final FalkorVolleyWebClient mWebClient;
     
-    public AdvertiserIdLoggingVolleyWebClient(final FalcorVolleyWebClient mWebClient) {
+    public AdvertiserIdLoggingVolleyWebClient(final FalkorVolleyWebClient mWebClient) {
         this.mWebClient = mWebClient;
     }
     

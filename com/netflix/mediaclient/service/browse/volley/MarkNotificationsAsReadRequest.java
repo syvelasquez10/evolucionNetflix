@@ -6,8 +6,8 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
@@ -16,11 +16,11 @@ import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class MarkNotificationsAsReadRequest extends FalcorVolleyWebClientRequest<List<SocialNotificationSummary>>
+public class MarkNotificationsAsReadRequest extends FalkorVolleyWebClientRequest<List<SocialNotificationSummary>>
 {
     private static final String IS_READ_FIELD = "isRead";
     private static final String MARK_AS_READ_FIELD = "markAsRead";
@@ -65,25 +65,25 @@ public class MarkNotificationsAsReadRequest extends FalcorVolleyWebClientRequest
     @Override
     protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onSocialNotificationsMarkedAsRead(null, status);
+            this.responseCallback.onSocialNotificationsMarkedAsRead(status);
         }
     }
     
     @Override
     protected void onSuccess(final List<SocialNotificationSummary> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onSocialNotificationsMarkedAsRead(list, new NetflixStatus(StatusCode.OK));
+            this.responseCallback.onSocialNotificationsMarkedAsRead(new NetflixStatus(StatusCode.OK));
         }
     }
     
     @Override
-    protected List<SocialNotificationSummary> parseFalcorResponse(final String s) {
+    protected List<SocialNotificationSummary> parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_marknotificationsasreadrequest", 4)) {
             Log.i("nf_service_browse_marknotificationsasreadrequest", "Got result: " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_marknotificationsasreadrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("Notifications list doesn't contain 'value' field!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_marknotificationsasreadrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("Notifications list doesn't contain 'value' field!");
         }
         JsonObject asJsonObject;
         while (true) {
@@ -103,7 +103,7 @@ public class MarkNotificationsAsReadRequest extends FalcorVolleyWebClientRequest
                         if (Log.isLoggable("nf_service_browse_marknotificationsasreadrequest", 2)) {
                             Log.v("nf_service_browse_marknotificationsasreadrequest", "While getting recommendations field from the response got an exception: " + ex);
                         }
-                        throw new FalcorParseException("response missing notifications object", ex);
+                        throw new FalkorParseException("response missing notifications object", ex);
                     }
                     break;
                 }

@@ -8,8 +8,8 @@ import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
@@ -20,9 +20,9 @@ import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<EpisodeDetails>>
+public class FetchEpisodesRequest extends FalkorVolleyWebClientRequest<List<EpisodeDetails>>
 {
     private static final String FIELD_VIDEOS = "videos";
     private static final String TAG = "nf_service_browse_fetchepisodesrequest";
@@ -66,10 +66,10 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
     }
     
     @Override
-    protected List<EpisodeDetails> parseFalcorResponse(String asJsonObject) {
+    protected List<EpisodeDetails> parseFalkorResponse(String asJsonObject) {
         final ArrayList<com.netflix.mediaclient.service.webclient.model.EpisodeDetails> list = new ArrayList<com.netflix.mediaclient.service.webclient.model.EpisodeDetails>();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchepisodesrequest", (String)asJsonObject);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchepisodesrequest", (String)asJsonObject);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
             return (List<EpisodeDetails>)list;
         }
         while (true) {
@@ -87,7 +87,7 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
                     }
                     catch (Exception ex) {
                         Log.v("nf_service_browse_fetchepisodesrequest", "String response to parse = " + (String)asJsonObject);
-                        throw new FalcorParseException("Does not contain required fields", ex);
+                        throw new FalkorParseException("Does not contain required fields", ex);
                     }
                     break;
                 }
@@ -102,8 +102,8 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
             if (((JsonObject)asJsonObject).has(string)) {
                 final JsonObject asJsonObject3 = ((JsonObject)asJsonObject).getAsJsonObject(string);
                 final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails = new com.netflix.mediaclient.service.webclient.model.EpisodeDetails();
-                episodeDetails.detail = FalcorParseUtils.getPropertyObject(asJsonObject3, "detail", Episode$Detail.class);
-                episodeDetails.bookmark = FalcorParseUtils.getPropertyObject(asJsonObject3, "bookmark", Video$Bookmark.class);
+                episodeDetails.detail = FalkorParseUtils.getPropertyObject(asJsonObject3, "detail", Episode$Detail.class);
+                episodeDetails.bookmark = FalkorParseUtils.getPropertyObject(asJsonObject3, "bookmark", Video$Bookmark.class);
                 episodeDetails.userConnectedToFacebook = this.userConnectedToFacebook;
                 list.add(0, episodeDetails);
                 b = true;

@@ -4,9 +4,7 @@
 
 package com.netflix.mediaclient.service.preapp;
 
-import android.content.ComponentName;
-import com.netflix.mediaclient.ui.homescreen.NetflixAppWidgetProvider;
-import android.appwidget.AppWidgetManager;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.Log;
@@ -26,7 +24,7 @@ public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgen
     public static final String PREAPP_AGENT_TO_IQ_UPDATED = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_IQ_UPDATED";
     protected static final String TAG = "nf_preappagent";
     private final BroadcastReceiver mDataUpdateIntentReceiver;
-    private PreAppAgentDataHandler mDiskDataHandler;
+    private PreAppAgentDataHandler mPreAppAgentDataHandler;
     public final BroadcastReceiver mUserAgentIntentReceiver;
     
     public PreAppAgent() {
@@ -95,7 +93,7 @@ public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgen
     
     @Override
     protected void doInit() {
-        this.mDiskDataHandler = new PreAppAgentDataHandler(this.getContext(), this);
+        this.mPreAppAgentDataHandler = new PreAppAgentDataHandler(this.getContext(), this);
         this.registerDataUpdateReceiver();
         this.registerUserAgentIntentReceiver();
         this.initCompleted(CommonStatus.OK);
@@ -103,10 +101,6 @@ public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgen
     
     @Override
     public boolean isWidgetInstalled() {
-        final int[] appWidgetIds = AppWidgetManager.getInstance(this.getContext()).getAppWidgetIds(new ComponentName(this.getContext(), (Class)NetflixAppWidgetProvider.class));
-        if (Log.isLoggable("nf_preappagent", 3)) {
-            Log.d("nf_preappagent", String.format("found widget: %b, num widgets installed: %d", appWidgetIds.length > 0, appWidgetIds.length));
-        }
-        return appWidgetIds.length > 0;
+        return AndroidUtils.isWidgetInstalled(this.getContext());
     }
 }

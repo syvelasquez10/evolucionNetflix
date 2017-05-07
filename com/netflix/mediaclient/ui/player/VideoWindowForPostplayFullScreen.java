@@ -26,9 +26,9 @@ public class VideoWindowForPostplayFullScreen implements VideoWindowForPostplay
     
     public VideoWindowForPostplayFullScreen(final PlayerActivity mContext) {
         this.mContext = mContext;
-        this.mSurface = (TappableSurfaceView)mContext.findViewById(2131165534);
-        this.mSurface2 = (TextureView)mContext.findViewById(2131165540);
-        this.mParent = (RelativeLayout)mContext.findViewById(2131165462);
+        this.mSurface = (TappableSurfaceView)mContext.findViewById(2131165561);
+        this.mSurface2 = (TextureView)mContext.findViewById(2131165566);
+        this.mParent = (RelativeLayout)mContext.findViewById(2131165367);
         if (this.mSurface == null) {
             Log.w(VideoWindowForPostplayFullScreen.TAG, "PostPlayWithScaling:: surface not found");
         }

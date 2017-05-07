@@ -4,6 +4,7 @@
 
 package com.facebook.widget;
 
+import java.util.Arrays;
 import com.facebook.SessionState;
 import android.support.v4.app.Fragment;
 import com.facebook.android.R$id;
@@ -15,17 +16,22 @@ import android.content.Intent;
 import java.util.List;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionDefaultAudience;
-import java.net.URL;
+import java.net.URI;
 import com.facebook.android.R$drawable;
+import com.facebook.internal.ImageDownloader;
 import com.facebook.android.R$string;
 import com.facebook.android.R$color;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import com.facebook.internal.ImageRequest$Callback;
 import android.content.Context;
+import com.facebook.internal.ImageRequest$Builder;
 import com.facebook.android.R$dimen;
+import com.facebook.internal.ImageRequest;
 import android.os.Bundle;
 import com.facebook.Request;
+import com.facebook.internal.ImageResponse;
 import android.text.TextUtils;
 import android.graphics.drawable.Drawable;
 import com.facebook.Session$StatusCallback;

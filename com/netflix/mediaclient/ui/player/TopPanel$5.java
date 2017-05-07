@@ -7,10 +7,10 @@ package com.netflix.mediaclient.ui.player;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.util.PreferenceUtils;
-import android.view.View;
-import android.view.View$OnClickListener;
+import android.view.MenuItem;
+import android.view.MenuItem$OnMenuItemClickListener;
 
-class TopPanel$5 implements View$OnClickListener
+class TopPanel$5 implements MenuItem$OnMenuItemClickListener
 {
     final /* synthetic */ TopPanel this$0;
     
@@ -18,7 +18,7 @@ class TopPanel$5 implements View$OnClickListener
         this.this$0 = this$0;
     }
     
-    public void onClick(final View view) {
+    public boolean onMenuItemClick(final MenuItem menuItem) {
         boolean b = false;
         final boolean booleanPref = PreferenceUtils.getBooleanPref((Context)this.this$0.context, "ui.playeroverlay", false);
         if (booleanPref) {
@@ -32,5 +32,6 @@ class TopPanel$5 implements View$OnClickListener
             b = true;
         }
         PreferenceUtils.putBooleanPref((Context)context, "ui.playeroverlay", b);
+        return true;
     }
 }

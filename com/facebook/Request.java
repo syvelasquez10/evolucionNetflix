@@ -4,42 +4,54 @@
 
 package com.facebook;
 
-import java.io.FilterOutputStream;
 import com.facebook.model.GraphMultiResult;
-import java.io.BufferedOutputStream;
-import android.text.TextUtils;
 import android.util.Pair;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.io.OutputStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.facebook.model.GraphObjectList;
 import java.util.Map;
 import java.text.SimpleDateFormat;
 import android.os.Parcelable;
-import java.util.Locale;
+import android.text.TextUtils;
+import java.util.ArrayList;
+import com.facebook.model.GraphUser;
+import com.facebook.model.GraphPlace;
+import com.facebook.model.OpenGraphObject$Factory;
+import com.facebook.model.OpenGraphObject;
+import com.facebook.model.OpenGraphAction;
+import com.facebook.internal.AttributionIdentifiers;
+import android.content.Context;
 import java.util.Date;
 import android.os.ParcelFileDescriptor;
+import java.util.regex.Matcher;
 import java.io.File;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Handler;
 import java.util.HashSet;
 import java.net.URLConnection;
-import com.facebook.internal.Utility;
 import java.util.Arrays;
 import java.util.Collection;
 import com.facebook.internal.Validate;
+import java.util.Locale;
 import java.net.HttpURLConnection;
 import java.util.Iterator;
 import android.net.Uri$Builder;
+import android.util.Log;
+import com.facebook.internal.Utility;
 import com.facebook.internal.Logger;
 import java.util.List;
 import java.net.URL;
+import com.facebook.internal.ServerProtocol;
 import android.os.Bundle;
 import com.facebook.model.GraphObject;
+import java.util.regex.Pattern;
 
 public class Request
 {
+    private static final String ACCEPT_LANGUAGE_HEADER = "Accept-Language";
     private static final String ACCESS_TOKEN_PARAM = "access_token";
     private static final String ATTACHED_FILES_PARAM = "attached_files";
     private static final String ATTACHMENT_FILENAME_PREFIX = "file";
@@ -57,20 +69,27 @@ public class Request
     private static final String ISO_8601_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ssZ";
     public static final int MAXIMUM_BATCH_SIZE = 50;
     private static final String ME = "me";
-    private static final String MIGRATION_BUNDLE_PARAM = "migration_bundle";
     private static final String MIME_BOUNDARY = "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f";
+    private static final String MY_ACTION_FORMAT = "me/%s";
     private static final String MY_FEED = "me/feed";
     private static final String MY_FRIENDS = "me/friends";
+    private static final String MY_OBJECTS_FORMAT = "me/objects/%s";
     private static final String MY_PHOTOS = "me/photos";
+    private static final String MY_STAGING_RESOURCES = "me/staging_resources";
     private static final String MY_VIDEOS = "me/videos";
+    private static final String OBJECT_PARAM = "object";
     private static final String PICTURE_PARAM = "picture";
     private static final String SDK_ANDROID = "android";
     private static final String SDK_PARAM = "sdk";
     private static final String SEARCH = "search";
+    private static final String STAGING_PARAM = "file";
+    public static final String TAG;
     private static final String USER_AGENT_BASE = "FBAndroidSDK";
     private static final String USER_AGENT_HEADER = "User-Agent";
+    private static final String VIDEOS_SUFFIX = "/videos";
     private static String defaultBatchApplicationId;
     private static volatile String userAgent;
+    private static Pattern versionPattern;
     private String batchEntryDependsOn;
     private String batchEntryName;
     private boolean batchEntryOmitResultOnSuccess;
@@ -80,8 +99,15 @@ public class Request
     private HttpMethod httpMethod;
     private String overriddenURL;
     private Bundle parameters;
-    private String restMethod;
     private Session session;
+    private boolean skipClientToken;
+    private Object tag;
+    private String version;
+    
+    static {
+        TAG = Request.class.getSimpleName();
+        Request.versionPattern = Pattern.compile("^/?v\\d+\\.\\d+/(.*)");
+    }
     
     public Request() {
         this(null, null, null, null, null);
@@ -95,11 +121,17 @@ public class Request
         this(session, s, bundle, httpMethod, null);
     }
     
-    public Request(final Session session, final String graphPath, final Bundle bundle, final HttpMethod httpMethod, final Request$Callback callback) {
+    public Request(final Session session, final String s, final Bundle bundle, final HttpMethod httpMethod, final Request$Callback request$Callback) {
+        this(session, s, bundle, httpMethod, request$Callback, null);
+    }
+    
+    public Request(final Session session, final String graphPath, final Bundle bundle, final HttpMethod httpMethod, final Request$Callback callback, final String version) {
         this.batchEntryOmitResultOnSuccess = true;
+        this.skipClientToken = false;
         this.session = session;
         this.graphPath = graphPath;
         this.callback = callback;
+        this.version = version;
         this.setHttpMethod(httpMethod);
         if (bundle != null) {
             this.parameters = new Bundle(bundle);
@@ -107,13 +139,14 @@ public class Request
         else {
             this.parameters = new Bundle();
         }
-        if (!this.parameters.containsKey("migration_bundle")) {
-            this.parameters.putString("migration_bundle", "fbsdk:20121026");
+        if (this.version == null) {
+            this.version = ServerProtocol.getAPIVersion();
         }
     }
     
     Request(final Session session, final URL url) {
         this.batchEntryOmitResultOnSuccess = true;
+        this.skipClientToken = false;
         this.session = session;
         this.overriddenURL = url.toString();
         this.setHttpMethod(HttpMethod.GET);
@@ -129,6 +162,16 @@ public class Request
                 final String accessToken = this.session.getAccessToken();
                 Logger.registerAccessToken(accessToken);
                 this.parameters.putString("access_token", accessToken);
+            }
+        }
+        else if (!this.skipClientToken && !this.parameters.containsKey("access_token")) {
+            final String applicationId = Settings.getApplicationId();
+            final String clientToken = Settings.getClientToken();
+            if (!Utility.isNullOrEmpty(applicationId) && !Utility.isNullOrEmpty(clientToken)) {
+                this.parameters.putString("access_token", applicationId + "|" + clientToken);
+            }
+            else {
+                Log.d(Request.TAG, "Warning: Sessionless Request needs token but missing either application ID or client token.");
             }
         }
         this.parameters.putString("sdk", "android");
@@ -158,6 +201,7 @@ public class Request
         final HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
         httpURLConnection.setRequestProperty("User-Agent", getUserAgent());
         httpURLConnection.setRequestProperty("Content-Type", getMimeContentType());
+        httpURLConnection.setRequestProperty("Accept-Language", Locale.getDefault().toString());
         httpURLConnection.setChunkedStreamingMode(0);
         return httpURLConnection;
     }
@@ -244,38 +288,42 @@ public class Request
         return executeConnectionAsync(null, httpURLConnection, requestBatch);
     }
     
+    @Deprecated
     public static RequestAsyncTask executeGraphPathRequestAsync(final Session session, final String s, final Request$Callback request$Callback) {
         return newGraphPathRequest(session, s, request$Callback).executeAsync();
     }
     
+    @Deprecated
     public static RequestAsyncTask executeMeRequestAsync(final Session session, final Request$GraphUserCallback request$GraphUserCallback) {
         return newMeRequest(session, request$GraphUserCallback).executeAsync();
     }
     
+    @Deprecated
     public static RequestAsyncTask executeMyFriendsRequestAsync(final Session session, final Request$GraphUserListCallback request$GraphUserListCallback) {
         return newMyFriendsRequest(session, request$GraphUserListCallback).executeAsync();
     }
     
+    @Deprecated
     public static RequestAsyncTask executePlacesSearchRequestAsync(final Session session, final Location location, final int n, final int n2, final String s, final Request$GraphPlaceListCallback request$GraphPlaceListCallback) {
         return newPlacesSearchRequest(session, location, n, n2, s, request$GraphPlaceListCallback).executeAsync();
     }
     
+    @Deprecated
     public static RequestAsyncTask executePostRequestAsync(final Session session, final String s, final GraphObject graphObject, final Request$Callback request$Callback) {
         return newPostRequest(session, s, graphObject, request$Callback).executeAsync();
     }
     
-    public static RequestAsyncTask executeRestRequestAsync(final Session session, final String s, final Bundle bundle, final HttpMethod httpMethod) {
-        return newRestRequest(session, s, bundle, httpMethod).executeAsync();
-    }
-    
+    @Deprecated
     public static RequestAsyncTask executeStatusUpdateRequestAsync(final Session session, final String s, final Request$Callback request$Callback) {
         return newStatusUpdateRequest(session, s, request$Callback).executeAsync();
     }
     
+    @Deprecated
     public static RequestAsyncTask executeUploadPhotoRequestAsync(final Session session, final Bitmap bitmap, final Request$Callback request$Callback) {
         return newUploadPhotoRequest(session, bitmap, request$Callback).executeAsync();
     }
     
+    @Deprecated
     public static RequestAsyncTask executeUploadPhotoRequestAsync(final Session session, final File file, final Request$Callback request$Callback) {
         return newUploadPhotoRequest(session, file, request$Callback).executeAsync();
     }
@@ -298,23 +346,106 @@ public class Request
         return Request.defaultBatchApplicationId;
     }
     
+    private String getGraphPathWithVersion() {
+        if (Request.versionPattern.matcher(this.graphPath).matches()) {
+            return this.graphPath;
+        }
+        return String.format("%s/%s", this.version, this.graphPath);
+    }
+    
     private static String getMimeContentType() {
         return String.format("multipart/form-data; boundary=%s", "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f");
     }
     
     private static String getUserAgent() {
         if (Request.userAgent == null) {
-            Request.userAgent = String.format("%s.%s", "FBAndroidSDK", "3.0.0");
+            Request.userAgent = String.format("%s.%s", "FBAndroidSDK", "3.21.1");
         }
         return Request.userAgent;
     }
     
+    private static boolean hasOnProgressCallbacks(final RequestBatch requestBatch) {
+        final Iterator<RequestBatch$Callback> iterator = requestBatch.getCallbacks().iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next() instanceof RequestBatch$OnProgressCallback) {
+                return true;
+            }
+        }
+        final Iterator<Request> iterator2 = requestBatch.iterator();
+        while (iterator2.hasNext()) {
+            if (iterator2.next().getCallback() instanceof Request$OnProgressCallback) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private static boolean isMeRequest(String group) {
+        final Matcher matcher = Request.versionPattern.matcher(group);
+        if (matcher.matches()) {
+            group = matcher.group(1);
+        }
+        return group.startsWith("me/") || group.startsWith("/me/");
+    }
+    
     private static boolean isSupportedAttachmentType(final Object o) {
-        return o instanceof Bitmap || o instanceof byte[] || o instanceof ParcelFileDescriptor;
+        return o instanceof Bitmap || o instanceof byte[] || o instanceof ParcelFileDescriptor || o instanceof Request$ParcelFileDescriptorWithMimeType;
     }
     
     private static boolean isSupportedParameterType(final Object o) {
         return o instanceof String || o instanceof Boolean || o instanceof Number || o instanceof Date;
+    }
+    
+    public static Request newCustomAudienceThirdPartyIdRequest(final Session session, final Context context, final Request$Callback request$Callback) {
+        return newCustomAudienceThirdPartyIdRequest(session, context, null, request$Callback);
+    }
+    
+    public static Request newCustomAudienceThirdPartyIdRequest(Session activeSession, final Context context, String string, final Request$Callback request$Callback) {
+        if (activeSession == null) {
+            activeSession = Session.getActiveSession();
+        }
+        Session session = activeSession;
+        if (activeSession != null) {
+            session = activeSession;
+            if (!activeSession.isOpened()) {
+                session = null;
+            }
+        }
+        String s;
+        if ((s = string) == null) {
+            if (session != null) {
+                s = session.getApplicationId();
+            }
+            else {
+                s = Utility.getMetadataApplicationId(context);
+            }
+        }
+        if (s == null) {
+            throw new FacebookException("Facebook App ID cannot be determined");
+        }
+        string = s + "/custom_audience_third_party_id";
+        final AttributionIdentifiers attributionIdentifiers = AttributionIdentifiers.getAttributionIdentifiers(context);
+        final Bundle bundle = new Bundle();
+        if (session == null) {
+            String s2;
+            if (attributionIdentifiers.getAttributionId() != null) {
+                s2 = attributionIdentifiers.getAttributionId();
+            }
+            else {
+                s2 = attributionIdentifiers.getAndroidAdvertiserId();
+            }
+            if (attributionIdentifiers.getAttributionId() != null) {
+                bundle.putString("udid", s2);
+            }
+        }
+        if (Settings.getLimitEventAndDataUsage(context) || attributionIdentifiers.isTrackingLimited()) {
+            bundle.putString("limit_event_usage", "1");
+        }
+        return new Request(session, string, bundle, HttpMethod.GET, request$Callback);
+    }
+    
+    public static Request newDeleteObjectRequest(final Session session, final String s, final Request$Callback request$Callback) {
+        return new Request(session, s, null, HttpMethod.DELETE, request$Callback);
     }
     
     public static Request newGraphPathRequest(final Session session, final String s, final Request$Callback request$Callback) {
@@ -346,22 +477,106 @@ public class Request
         return new Request(session, "search", bundle, HttpMethod.GET, new Request$3(request$GraphPlaceListCallback));
     }
     
+    public static Request newPostOpenGraphActionRequest(final Session session, final OpenGraphAction openGraphAction, final Request$Callback request$Callback) {
+        if (openGraphAction == null) {
+            throw new FacebookException("openGraphAction cannot be null");
+        }
+        if (Utility.isNullOrEmpty(openGraphAction.getType())) {
+            throw new FacebookException("openGraphAction must have non-null 'type' property");
+        }
+        return newPostRequest(session, String.format("me/%s", openGraphAction.getType()), openGraphAction, request$Callback);
+    }
+    
+    public static Request newPostOpenGraphObjectRequest(final Session session, final OpenGraphObject openGraphObject, final Request$Callback request$Callback) {
+        if (openGraphObject == null) {
+            throw new FacebookException("openGraphObject cannot be null");
+        }
+        if (Utility.isNullOrEmpty(openGraphObject.getType())) {
+            throw new FacebookException("openGraphObject must have non-null 'type' property");
+        }
+        if (Utility.isNullOrEmpty(openGraphObject.getTitle())) {
+            throw new FacebookException("openGraphObject must have non-null 'title' property");
+        }
+        final String format = String.format("me/objects/%s", openGraphObject.getType());
+        final Bundle bundle = new Bundle();
+        bundle.putString("object", openGraphObject.getInnerJSONObject().toString());
+        return new Request(session, format, bundle, HttpMethod.POST, request$Callback);
+    }
+    
+    public static Request newPostOpenGraphObjectRequest(final Session session, final String s, final String s2, final String s3, final String s4, final String s5, final GraphObject data, final Request$Callback request$Callback) {
+        final OpenGraphObject forPost = OpenGraphObject$Factory.createForPost(OpenGraphObject.class, s, s2, s3, s4, s5);
+        if (data != null) {
+            forPost.setData(data);
+        }
+        return newPostOpenGraphObjectRequest(session, forPost, request$Callback);
+    }
+    
     public static Request newPostRequest(final Session session, final String s, final GraphObject graphObject, final Request$Callback request$Callback) {
         final Request request = new Request(session, s, null, HttpMethod.POST, request$Callback);
         request.setGraphObject(graphObject);
         return request;
     }
     
-    public static Request newRestRequest(final Session session, final String restMethod, final Bundle bundle, final HttpMethod httpMethod) {
-        final Request request = new Request(session, null, bundle, httpMethod);
-        request.setRestMethod(restMethod);
-        return request;
+    public static Request newStatusUpdateRequest(final Session session, final String s, final Request$Callback request$Callback) {
+        return newStatusUpdateRequest(session, s, null, (List<String>)null, request$Callback);
     }
     
-    public static Request newStatusUpdateRequest(final Session session, final String s, final Request$Callback request$Callback) {
+    public static Request newStatusUpdateRequest(final Session session, final String s, final GraphPlace graphPlace, final List<GraphUser> list, final Request$Callback request$Callback) {
+        ArrayList<String> list3;
+        if (list != null) {
+            final ArrayList<String> list2 = new ArrayList<String>(list.size());
+            final Iterator<GraphUser> iterator = list.iterator();
+            while (true) {
+                list3 = list2;
+                if (!iterator.hasNext()) {
+                    break;
+                }
+                list2.add(iterator.next().getId());
+            }
+        }
+        else {
+            list3 = null;
+        }
+        String id;
+        if (graphPlace == null) {
+            id = null;
+        }
+        else {
+            id = graphPlace.getId();
+        }
+        return newStatusUpdateRequest(session, s, id, list3, request$Callback);
+    }
+    
+    private static Request newStatusUpdateRequest(final Session session, final String s, final String s2, final List<String> list, final Request$Callback request$Callback) {
         final Bundle bundle = new Bundle();
         bundle.putString("message", s);
+        if (s2 != null) {
+            bundle.putString("place", s2);
+        }
+        if (list != null && list.size() > 0) {
+            bundle.putString("tags", TextUtils.join((CharSequence)",", (Iterable)list));
+        }
         return new Request(session, "me/feed", bundle, HttpMethod.POST, request$Callback);
+    }
+    
+    public static Request newUpdateOpenGraphObjectRequest(final Session session, final OpenGraphObject openGraphObject, final Request$Callback request$Callback) {
+        if (openGraphObject == null) {
+            throw new FacebookException("openGraphObject cannot be null");
+        }
+        final String id = openGraphObject.getId();
+        if (id == null) {
+            throw new FacebookException("openGraphObject must have an id");
+        }
+        final Bundle bundle = new Bundle();
+        bundle.putString("object", openGraphObject.getInnerJSONObject().toString());
+        return new Request(session, id, bundle, HttpMethod.POST, request$Callback);
+    }
+    
+    public static Request newUpdateOpenGraphObjectRequest(final Session session, final String id, final String s, final String s2, final String s3, final String s4, final GraphObject data, final Request$Callback request$Callback) {
+        final OpenGraphObject forPost = OpenGraphObject$Factory.createForPost(OpenGraphObject.class, null, s, s2, s3, s4);
+        forPost.setId(id);
+        forPost.setData(data);
+        return newUpdateOpenGraphObjectRequest(session, forPost, request$Callback);
     }
     
     public static Request newUploadPhotoRequest(final Session session, final Bitmap bitmap, final Request$Callback request$Callback) {
@@ -375,6 +590,19 @@ public class Request
         final Bundle bundle = new Bundle(1);
         bundle.putParcelable("picture", (Parcelable)open);
         return new Request(session, "me/photos", bundle, HttpMethod.POST, request$Callback);
+    }
+    
+    public static Request newUploadStagingResourceWithImageRequest(final Session session, final Bitmap bitmap, final Request$Callback request$Callback) {
+        final Bundle bundle = new Bundle(1);
+        bundle.putParcelable("file", (Parcelable)bitmap);
+        return new Request(session, "me/staging_resources", bundle, HttpMethod.POST, request$Callback);
+    }
+    
+    public static Request newUploadStagingResourceWithImageRequest(final Session session, final File file, final Request$Callback request$Callback) {
+        final Request$ParcelFileDescriptorWithMimeType request$ParcelFileDescriptorWithMimeType = new Request$ParcelFileDescriptorWithMimeType(ParcelFileDescriptor.open(file, 268435456), "image/png");
+        final Bundle bundle = new Bundle(1);
+        bundle.putParcelable("file", (Parcelable)request$ParcelFileDescriptorWithMimeType);
+        return new Request(session, "me/staging_resources", bundle, HttpMethod.POST, request$Callback);
     }
     
     public static Request newUploadVideoRequest(final Session session, final File file, final Request$Callback request$Callback) {
@@ -399,7 +627,7 @@ public class Request
     
     private static void processGraphObject(final GraphObject graphObject, final String s, final Request$KeyValueSerializer request$KeyValueSerializer) {
         boolean b;
-        if (s.startsWith("me/") || s.startsWith("/me/")) {
+        if (isMeRequest(s)) {
             final int index = s.indexOf(":");
             final int index2 = s.indexOf("?");
             if (index > 3 && (index2 == -1 || index < index2)) {
@@ -439,8 +667,14 @@ public class Request
             else if (jsonObject.has("id")) {
                 processGraphObjectProperty(s, jsonObject.optString("id"), request$KeyValueSerializer, b);
             }
-            else if (jsonObject.has("url")) {
-                processGraphObjectProperty(s, jsonObject.optString("url"), request$KeyValueSerializer, b);
+            else {
+                if (jsonObject.has("url")) {
+                    processGraphObjectProperty(s, jsonObject.optString("url"), request$KeyValueSerializer, b);
+                    return;
+                }
+                if (jsonObject.has("fbsdk:create_object")) {
+                    processGraphObjectProperty(s, jsonObject.toString(), request$KeyValueSerializer, b);
+                }
             }
         }
         else if (JSONArray.class.isAssignableFrom(clazz)) {
@@ -458,6 +692,43 @@ public class Request
                 request$KeyValueSerializer.writeString(s, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US).format((Date)o));
             }
         }
+    }
+    
+    private static void processRequest(final RequestBatch requestBatch, final Logger logger, final int n, final URL url, final OutputStream outputStream) {
+        final Request$Serializer request$Serializer = new Request$Serializer(outputStream, logger);
+        if (n == 1) {
+            final Request value = requestBatch.get(0);
+            final HashMap<String, Request$Attachment> hashMap = new HashMap<String, Request$Attachment>();
+            for (final String s : value.parameters.keySet()) {
+                final Object value2 = value.parameters.get(s);
+                if (isSupportedAttachmentType(value2)) {
+                    hashMap.put(s, new Request$Attachment(value, value2));
+                }
+            }
+            if (logger != null) {
+                logger.append("  Parameters:\n");
+            }
+            serializeParameters(value.parameters, request$Serializer, value);
+            if (logger != null) {
+                logger.append("  Attachments:\n");
+            }
+            serializeAttachments(hashMap, request$Serializer);
+            if (value.graphObject != null) {
+                processGraphObject(value.graphObject, url.getPath(), request$Serializer);
+            }
+            return;
+        }
+        final String batchAppId = getBatchAppId(requestBatch);
+        if (Utility.isNullOrEmpty(batchAppId)) {
+            throw new FacebookException("At least one request in a batch must have an open Session, or a default app ID must be specified.");
+        }
+        request$Serializer.writeString("batch_app_id", batchAppId);
+        final HashMap<String, Request$Attachment> hashMap2 = new HashMap<String, Request$Attachment>();
+        serializeRequestsAsJSON(request$Serializer, requestBatch, hashMap2);
+        if (logger != null) {
+            logger.append("  Attachments:\n");
+        }
+        serializeAttachments(hashMap2, request$Serializer);
     }
     
     static void runCallbacks(final RequestBatch requestBatch, final List<Response> list) {
@@ -480,34 +751,34 @@ public class Request
         }
     }
     
-    private static void serializeAttachments(final Bundle bundle, final Request$Serializer request$Serializer) {
-        for (final String s : bundle.keySet()) {
-            final Object value = bundle.get(s);
-            if (isSupportedAttachmentType(value)) {
-                request$Serializer.writeObject(s, value);
+    private static void serializeAttachments(final Map<String, Request$Attachment> map, final Request$Serializer request$Serializer) {
+        for (final String s : map.keySet()) {
+            final Request$Attachment request$Attachment = map.get(s);
+            if (isSupportedAttachmentType(request$Attachment.getValue())) {
+                request$Serializer.writeObject(s, request$Attachment.getValue(), request$Attachment.getRequest());
             }
         }
     }
     
-    private static void serializeParameters(final Bundle bundle, final Request$Serializer request$Serializer) {
+    private static void serializeParameters(final Bundle bundle, final Request$Serializer request$Serializer, final Request request) {
         for (final String s : bundle.keySet()) {
             final Object value = bundle.get(s);
             if (isSupportedParameterType(value)) {
-                request$Serializer.writeObject(s, value);
+                request$Serializer.writeObject(s, value, request);
             }
         }
     }
     
-    private static void serializeRequestsAsJSON(final Request$Serializer request$Serializer, final Collection<Request> collection, final Bundle bundle) {
+    private static void serializeRequestsAsJSON(final Request$Serializer request$Serializer, final Collection<Request> collection, final Map<String, Request$Attachment> map) {
         final JSONArray jsonArray = new JSONArray();
         final Iterator<Request> iterator = collection.iterator();
         while (iterator.hasNext()) {
-            iterator.next().serializeToBatch(jsonArray, bundle);
+            iterator.next().serializeToBatch(jsonArray, map);
         }
-        request$Serializer.writeString("batch", jsonArray.toString());
+        request$Serializer.writeRequestsAsJson("batch", jsonArray, collection);
     }
     
-    private void serializeToBatch(final JSONArray jsonArray, final Bundle bundle) {
+    private void serializeToBatch(final JSONArray jsonArray, final Map<String, Request$Attachment> map) {
         final JSONObject jsonObject = new JSONObject();
         if (this.batchEntryName != null) {
             jsonObject.put("name", (Object)this.batchEntryName);
@@ -527,9 +798,9 @@ public class Request
         while (iterator.hasNext()) {
             final Object value = this.parameters.get((String)iterator.next());
             if (isSupportedAttachmentType(value)) {
-                final String format = String.format("%s%d", "file", bundle.size());
+                final String format = String.format("%s%d", "file", map.size());
                 list.add(format);
-                Utility.putObjectInBundle(bundle, format, value);
+                map.put(format, new Request$Attachment(this, value));
             }
         }
         if (!list.isEmpty()) {
@@ -543,73 +814,188 @@ public class Request
         jsonArray.put((Object)jsonObject);
     }
     
-    static final void serializeToUrlConnection(final RequestBatch requestBatch, HttpURLConnection httpURLConnection) {
-        final Logger logger = new Logger(LoggingBehavior.REQUESTS, "Request");
-        final int size = requestBatch.size();
-        Object o;
-        if (size == 1) {
-            o = requestBatch.get(0).httpMethod;
-        }
-        else {
-            o = HttpMethod.POST;
-        }
-        httpURLConnection.setRequestMethod(((Enum)o).name());
-        Object o2 = httpURLConnection.getURL();
-        logger.append("Request:\n");
-        logger.appendKeyValue("Id", requestBatch.getId());
-        logger.appendKeyValue("URL", o2);
-        logger.appendKeyValue("Method", httpURLConnection.getRequestMethod());
-        logger.appendKeyValue("User-Agent", httpURLConnection.getRequestProperty("User-Agent"));
-        logger.appendKeyValue("Content-Type", httpURLConnection.getRequestProperty("Content-Type"));
-        httpURLConnection.setConnectTimeout(requestBatch.getTimeout());
-        httpURLConnection.setReadTimeout(requestBatch.getTimeout());
-        int n;
-        if (o == HttpMethod.POST) {
-            n = 1;
-        }
-        else {
-            n = 0;
-        }
-        if (n == 0) {
-            logger.log();
-            return;
-        }
-        while (true) {
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection = (HttpURLConnection)new BufferedOutputStream(httpURLConnection.getOutputStream());
-            while (true) {
-                try {
-                    o = new Request$Serializer((BufferedOutputStream)httpURLConnection, logger);
-                    if (size == 1) {
-                        final Request value = requestBatch.get(0);
-                        logger.append("  Parameters:\n");
-                        serializeParameters(value.parameters, (Request$Serializer)o);
-                        logger.append("  Attachments:\n");
-                        serializeAttachments(value.parameters, (Request$Serializer)o);
-                        if (value.graphObject != null) {
-                            processGraphObject(value.graphObject, ((URL)o2).getPath(), (Request$KeyValueSerializer)o);
-                        }
-                        ((FilterOutputStream)httpURLConnection).close();
-                        logger.log();
-                        return;
-                    }
-                    o2 = getBatchAppId(requestBatch);
-                    if (Utility.isNullOrEmpty((String)o2)) {
-                        throw new FacebookException("At least one request in a batch must have an open Session, or a default app ID must be specified.");
-                    }
-                }
-                finally {
-                    ((FilterOutputStream)httpURLConnection).close();
-                }
-                ((Request$Serializer)o).writeString("batch_app_id", (String)o2);
-                o2 = new Bundle();
-                final Collection<Request> collection;
-                serializeRequestsAsJSON((Request$Serializer)o, collection, (Bundle)o2);
-                logger.append("  Attachments:\n");
-                serializeAttachments((Bundle)o2, (Request$Serializer)o);
-                continue;
-            }
-        }
+    static final void serializeToUrlConnection(final RequestBatch p0, final HttpURLConnection p1) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: new             Lcom/facebook/internal/Logger;
+        //     3: dup            
+        //     4: getstatic       com/facebook/LoggingBehavior.REQUESTS:Lcom/facebook/LoggingBehavior;
+        //     7: ldc_w           "Request"
+        //    10: invokespecial   com/facebook/internal/Logger.<init>:(Lcom/facebook/LoggingBehavior;Ljava/lang/String;)V
+        //    13: astore          5
+        //    15: aload_0        
+        //    16: invokevirtual   com/facebook/RequestBatch.size:()I
+        //    19: istore_3       
+        //    20: iload_3        
+        //    21: iconst_1       
+        //    22: if_icmpne       154
+        //    25: aload_0        
+        //    26: iconst_0       
+        //    27: invokevirtual   com/facebook/RequestBatch.get:(I)Lcom/facebook/Request;
+        //    30: getfield        com/facebook/Request.httpMethod:Lcom/facebook/HttpMethod;
+        //    33: astore          4
+        //    35: aload_1        
+        //    36: aload           4
+        //    38: invokevirtual   com/facebook/HttpMethod.name:()Ljava/lang/String;
+        //    41: invokevirtual   java/net/HttpURLConnection.setRequestMethod:(Ljava/lang/String;)V
+        //    44: aload_1        
+        //    45: invokevirtual   java/net/HttpURLConnection.getURL:()Ljava/net/URL;
+        //    48: astore          6
+        //    50: aload           5
+        //    52: ldc_w           "Request:\n"
+        //    55: invokevirtual   com/facebook/internal/Logger.append:(Ljava/lang/String;)V
+        //    58: aload           5
+        //    60: ldc_w           "Id"
+        //    63: aload_0        
+        //    64: invokevirtual   com/facebook/RequestBatch.getId:()Ljava/lang/String;
+        //    67: invokevirtual   com/facebook/internal/Logger.appendKeyValue:(Ljava/lang/String;Ljava/lang/Object;)V
+        //    70: aload           5
+        //    72: ldc_w           "URL"
+        //    75: aload           6
+        //    77: invokevirtual   com/facebook/internal/Logger.appendKeyValue:(Ljava/lang/String;Ljava/lang/Object;)V
+        //    80: aload           5
+        //    82: ldc_w           "Method"
+        //    85: aload_1        
+        //    86: invokevirtual   java/net/HttpURLConnection.getRequestMethod:()Ljava/lang/String;
+        //    89: invokevirtual   com/facebook/internal/Logger.appendKeyValue:(Ljava/lang/String;Ljava/lang/Object;)V
+        //    92: aload           5
+        //    94: ldc             "User-Agent"
+        //    96: aload_1        
+        //    97: ldc             "User-Agent"
+        //    99: invokevirtual   java/net/HttpURLConnection.getRequestProperty:(Ljava/lang/String;)Ljava/lang/String;
+        //   102: invokevirtual   com/facebook/internal/Logger.appendKeyValue:(Ljava/lang/String;Ljava/lang/Object;)V
+        //   105: aload           5
+        //   107: ldc             "Content-Type"
+        //   109: aload_1        
+        //   110: ldc             "Content-Type"
+        //   112: invokevirtual   java/net/HttpURLConnection.getRequestProperty:(Ljava/lang/String;)Ljava/lang/String;
+        //   115: invokevirtual   com/facebook/internal/Logger.appendKeyValue:(Ljava/lang/String;Ljava/lang/Object;)V
+        //   118: aload_1        
+        //   119: aload_0        
+        //   120: invokevirtual   com/facebook/RequestBatch.getTimeout:()I
+        //   123: invokevirtual   java/net/HttpURLConnection.setConnectTimeout:(I)V
+        //   126: aload_1        
+        //   127: aload_0        
+        //   128: invokevirtual   com/facebook/RequestBatch.getTimeout:()I
+        //   131: invokevirtual   java/net/HttpURLConnection.setReadTimeout:(I)V
+        //   134: aload           4
+        //   136: getstatic       com/facebook/HttpMethod.POST:Lcom/facebook/HttpMethod;
+        //   139: if_acmpne       162
+        //   142: iconst_1       
+        //   143: istore_2       
+        //   144: iload_2        
+        //   145: ifne            167
+        //   148: aload           5
+        //   150: invokevirtual   com/facebook/internal/Logger.log:()V
+        //   153: return         
+        //   154: getstatic       com/facebook/HttpMethod.POST:Lcom/facebook/HttpMethod;
+        //   157: astore          4
+        //   159: goto            35
+        //   162: iconst_0       
+        //   163: istore_2       
+        //   164: goto            144
+        //   167: aload_1        
+        //   168: iconst_1       
+        //   169: invokevirtual   java/net/HttpURLConnection.setDoOutput:(Z)V
+        //   172: aload_0        
+        //   173: invokestatic    com/facebook/Request.hasOnProgressCallbacks:(Lcom/facebook/RequestBatch;)Z
+        //   176: ifeq            263
+        //   179: new             Lcom/facebook/ProgressNoopOutputStream;
+        //   182: dup            
+        //   183: aload_0        
+        //   184: invokevirtual   com/facebook/RequestBatch.getCallbackHandler:()Landroid/os/Handler;
+        //   187: invokespecial   com/facebook/ProgressNoopOutputStream.<init>:(Landroid/os/Handler;)V
+        //   190: astore          4
+        //   192: aload_0        
+        //   193: aconst_null    
+        //   194: iload_3        
+        //   195: aload           6
+        //   197: aload           4
+        //   199: invokestatic    com/facebook/Request.processRequest:(Lcom/facebook/RequestBatch;Lcom/facebook/internal/Logger;ILjava/net/URL;Ljava/io/OutputStream;)V
+        //   202: aload           4
+        //   204: invokevirtual   com/facebook/ProgressNoopOutputStream.getMaxProgress:()I
+        //   207: istore_2       
+        //   208: aload           4
+        //   210: invokevirtual   com/facebook/ProgressNoopOutputStream.getProgressMap:()Ljava/util/Map;
+        //   213: astore          4
+        //   215: new             Lcom/facebook/ProgressOutputStream;
+        //   218: dup            
+        //   219: new             Ljava/io/BufferedOutputStream;
+        //   222: dup            
+        //   223: aload_1        
+        //   224: invokevirtual   java/net/HttpURLConnection.getOutputStream:()Ljava/io/OutputStream;
+        //   227: invokespecial   java/io/BufferedOutputStream.<init>:(Ljava/io/OutputStream;)V
+        //   230: aload_0        
+        //   231: aload           4
+        //   233: iload_2        
+        //   234: i2l            
+        //   235: invokespecial   com/facebook/ProgressOutputStream.<init>:(Ljava/io/OutputStream;Lcom/facebook/RequestBatch;Ljava/util/Map;J)V
+        //   238: astore_1       
+        //   239: aload_0        
+        //   240: aload           5
+        //   242: iload_3        
+        //   243: aload           6
+        //   245: aload_1        
+        //   246: invokestatic    com/facebook/Request.processRequest:(Lcom/facebook/RequestBatch;Lcom/facebook/internal/Logger;ILjava/net/URL;Ljava/io/OutputStream;)V
+        //   249: aload_1        
+        //   250: ifnull          257
+        //   253: aload_1        
+        //   254: invokevirtual   java/io/OutputStream.close:()V
+        //   257: aload           5
+        //   259: invokevirtual   com/facebook/internal/Logger.log:()V
+        //   262: return         
+        //   263: new             Ljava/io/BufferedOutputStream;
+        //   266: dup            
+        //   267: aload_1        
+        //   268: invokevirtual   java/net/HttpURLConnection.getOutputStream:()Ljava/io/OutputStream;
+        //   271: invokespecial   java/io/BufferedOutputStream.<init>:(Ljava/io/OutputStream;)V
+        //   274: astore_1       
+        //   275: goto            239
+        //   278: astore_0       
+        //   279: aconst_null    
+        //   280: astore_1       
+        //   281: aload_1        
+        //   282: ifnull          289
+        //   285: aload_1        
+        //   286: invokevirtual   java/io/OutputStream.close:()V
+        //   289: aload_0        
+        //   290: athrow         
+        //   291: astore_0       
+        //   292: goto            281
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type
+        //  -----  -----  -----  -----  ----
+        //  172    239    278    281    Any
+        //  239    249    291    295    Any
+        //  263    275    278    281    Any
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0239:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     public static final void setDefaultBatchApplicationId(final String defaultBatchApplicationId) {
@@ -623,75 +1009,64 @@ public class Request
         // Original Bytecode:
         // 
         //     0: aload_0        
-        //     1: invokevirtual   com/facebook/RequestBatch.iterator:()Ljava/util/Iterator;
-        //     4: astore_1       
-        //     5: aload_1        
-        //     6: invokeinterface java/util/Iterator.hasNext:()Z
-        //    11: ifeq            29
-        //    14: aload_1        
-        //    15: invokeinterface java/util/Iterator.next:()Ljava/lang/Object;
-        //    20: checkcast       Lcom/facebook/Request;
-        //    23: invokespecial   com/facebook/Request.validate:()V
-        //    26: goto            5
+        //     1: invokevirtual   com/facebook/RequestBatch.size:()I
+        //     4: iconst_1       
+        //     5: if_icmpne       36
+        //     8: new             Ljava/net/URL;
+        //    11: dup            
+        //    12: aload_0        
+        //    13: iconst_0       
+        //    14: invokevirtual   com/facebook/RequestBatch.get:(I)Lcom/facebook/Request;
+        //    17: invokevirtual   com/facebook/Request.getUrlForSingleRequest:()Ljava/lang/String;
+        //    20: invokespecial   java/net/URL.<init>:(Ljava/lang/String;)V
+        //    23: astore_1       
+        //    24: aload_1        
+        //    25: invokestatic    com/facebook/Request.createConnection:(Ljava/net/URL;)Ljava/net/HttpURLConnection;
+        //    28: astore_1       
         //    29: aload_0        
-        //    30: invokevirtual   com/facebook/RequestBatch.size:()I
-        //    33: iconst_1       
-        //    34: if_icmpne       65
-        //    37: new             Ljava/net/URL;
-        //    40: dup            
-        //    41: aload_0        
-        //    42: iconst_0       
-        //    43: invokevirtual   com/facebook/RequestBatch.get:(I)Lcom/facebook/Request;
-        //    46: invokevirtual   com/facebook/Request.getUrlForSingleRequest:()Ljava/lang/String;
-        //    49: invokespecial   java/net/URL.<init>:(Ljava/lang/String;)V
-        //    52: astore_1       
-        //    53: aload_1        
-        //    54: invokestatic    com/facebook/Request.createConnection:(Ljava/net/URL;)Ljava/net/HttpURLConnection;
-        //    57: astore_1       
+        //    30: aload_1        
+        //    31: invokestatic    com/facebook/Request.serializeToUrlConnection:(Lcom/facebook/RequestBatch;Ljava/net/HttpURLConnection;)V
+        //    34: aload_1        
+        //    35: areturn        
+        //    36: new             Ljava/net/URL;
+        //    39: dup            
+        //    40: invokestatic    com/facebook/internal/ServerProtocol.getGraphUrlBase:()Ljava/lang/String;
+        //    43: invokespecial   java/net/URL.<init>:(Ljava/lang/String;)V
+        //    46: astore_1       
+        //    47: goto            24
+        //    50: astore_0       
+        //    51: new             Lcom/facebook/FacebookException;
+        //    54: dup            
+        //    55: ldc_w           "could not construct URL for request"
         //    58: aload_0        
-        //    59: aload_1        
-        //    60: invokestatic    com/facebook/Request.serializeToUrlConnection:(Lcom/facebook/RequestBatch;Ljava/net/HttpURLConnection;)V
-        //    63: aload_1        
-        //    64: areturn        
-        //    65: new             Ljava/net/URL;
-        //    68: dup            
-        //    69: ldc_w           "https://graph.facebook.com"
-        //    72: invokespecial   java/net/URL.<init>:(Ljava/lang/String;)V
-        //    75: astore_1       
-        //    76: goto            53
-        //    79: astore_0       
-        //    80: new             Lcom/facebook/FacebookException;
-        //    83: dup            
-        //    84: ldc_w           "could not construct URL for request"
-        //    87: aload_0        
-        //    88: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
-        //    91: athrow         
-        //    92: astore_0       
-        //    93: new             Lcom/facebook/FacebookException;
-        //    96: dup            
-        //    97: ldc_w           "could not construct request body"
-        //   100: aload_0        
-        //   101: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   104: athrow         
-        //   105: astore_0       
-        //   106: new             Lcom/facebook/FacebookException;
-        //   109: dup            
-        //   110: ldc_w           "could not construct request body"
-        //   113: aload_0        
-        //   114: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   117: athrow         
+        //    59: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //    62: athrow         
+        //    63: astore_0       
+        //    64: new             Lcom/facebook/FacebookException;
+        //    67: dup            
+        //    68: ldc_w           "could not construct request body"
+        //    71: aload_0        
+        //    72: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //    75: athrow         
+        //    76: astore_0       
+        //    77: new             Lcom/facebook/FacebookException;
+        //    80: dup            
+        //    81: ldc_w           "could not construct request body"
+        //    84: aload_0        
+        //    85: invokespecial   com/facebook/FacebookException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //    88: athrow         
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                            
         //  -----  -----  -----  -----  --------------------------------
-        //  29     53     79     92     Ljava/net/MalformedURLException;
-        //  53     63     92     105    Ljava/io/IOException;
-        //  53     63     105    118    Lorg/json/JSONException;
-        //  65     76     79     92     Ljava/net/MalformedURLException;
+        //  0      24     50     63     Ljava/net/MalformedURLException;
+        //  24     34     63     76     Ljava/io/IOException;
+        //  24     34     76     89     Lorg/json/JSONException;
+        //  36     47     50     63     Ljava/net/MalformedURLException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0053:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0024:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -735,12 +1110,6 @@ public class Request
         return data.castToListOf(clazz);
     }
     
-    private void validate() {
-        if (this.graphPath != null && this.restMethod != null) {
-            throw new IllegalArgumentException("Only one of a graph path or REST method may be specified per request.");
-        }
-    }
-    
     public final Response executeAndWait() {
         return executeAndWait(this);
     }
@@ -781,27 +1150,21 @@ public class Request
         return this.parameters;
     }
     
-    public final String getRestMethod() {
-        return this.restMethod;
-    }
-    
     public final Session getSession() {
         return this.session;
+    }
+    
+    public final Object getTag() {
+        return this.tag;
     }
     
     final String getUrlForBatchedRequest() {
         if (this.overriddenURL != null) {
             throw new FacebookException("Can't override URL for a batch request");
         }
-        String s;
-        if (this.restMethod != null) {
-            s = "method/" + this.restMethod;
-        }
-        else {
-            s = this.graphPath;
-        }
+        final String graphPathWithVersion = this.getGraphPathWithVersion();
         this.addCommonParameters();
-        return this.appendParametersToBaseUrl(s);
+        return this.appendParametersToBaseUrl(graphPathWithVersion);
     }
     
     final String getUrlForSingleRequest() {
@@ -809,14 +1172,19 @@ public class Request
             return this.overriddenURL.toString();
         }
         String s;
-        if (this.restMethod != null) {
-            s = "https://api.facebook.com/method/" + this.restMethod;
+        if (this.getHttpMethod() == HttpMethod.POST && this.graphPath != null && this.graphPath.endsWith("/videos")) {
+            s = ServerProtocol.getGraphVideoUrlBase();
         }
         else {
-            s = "https://graph.facebook.com/" + this.graphPath;
+            s = ServerProtocol.getGraphUrlBase();
         }
+        final String format = String.format("%s/%s", s, this.getGraphPathWithVersion());
         this.addCommonParameters();
-        return this.appendParametersToBaseUrl(s);
+        return this.appendParametersToBaseUrl(format);
+    }
+    
+    public final String getVersion() {
+        return this.version;
     }
     
     public final void setBatchEntryDependsOn(final String batchEntryDependsOn) {
@@ -857,16 +1225,24 @@ public class Request
         this.parameters = parameters;
     }
     
-    public final void setRestMethod(final String restMethod) {
-        this.restMethod = restMethod;
-    }
-    
     public final void setSession(final Session session) {
         this.session = session;
     }
     
+    public final void setSkipClientToken(final boolean skipClientToken) {
+        this.skipClientToken = skipClientToken;
+    }
+    
+    public final void setTag(final Object tag) {
+        this.tag = tag;
+    }
+    
+    public final void setVersion(final String version) {
+        this.version = version;
+    }
+    
     @Override
     public String toString() {
-        return "{Request: " + " session: " + this.session + ", graphPath: " + this.graphPath + ", graphObject: " + this.graphObject + ", restMethod: " + this.restMethod + ", httpMethod: " + this.httpMethod + ", parameters: " + this.parameters + "}";
+        return "{Request: " + " session: " + this.session + ", graphPath: " + this.graphPath + ", graphObject: " + this.graphObject + ", httpMethod: " + this.httpMethod + ", parameters: " + this.parameters + "}";
     }
 }

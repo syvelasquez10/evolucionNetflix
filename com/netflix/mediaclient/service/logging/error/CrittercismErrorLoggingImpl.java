@@ -16,12 +16,12 @@ public final class CrittercismErrorLoggingImpl implements ErrorLogging
     }
     
     @Override
-    public void logHandledException(final Exception ex) {
-        ErrorLoggingManager.logHandledException(ex);
+    public void logHandledException(final String s) {
+        ErrorLoggingManager.logHandledException(s);
     }
     
     @Override
-    public void logHandledException(final String s) {
-        ErrorLoggingManager.logHandledException(s);
+    public void logHandledException(final Throwable t) {
+        ErrorLoggingManager.logHandledException(t);
     }
 }

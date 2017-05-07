@@ -77,8 +77,8 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131165631);
-        this.loadingWrapper = this.findViewById(2131165630);
+        this.fragGroup = (ViewGroup)this.findViewById(2131165646);
+        this.loadingWrapper = this.findViewById(2131165645);
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -137,7 +137,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131165631, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131165646, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -149,7 +149,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131493190, false, false);
+        this.leWrapper.showErrorView(2131493197, false, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }
@@ -179,7 +179,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     protected int getInitMessageStringId() {
-        return 2131493176;
+        return 2131493183;
     }
     
     @Override
@@ -189,7 +189,7 @@ public class SearchActivity extends NetflixActivity
     
     @Override
     protected boolean handleBackPressed() {
-        if (SearchUtils.handleBackPress() && this.resultsFrag != null) {
+        if (SearchUtils.shouldHandleBackPress() && this.resultsFrag != null) {
             return this.resultsFrag.showLastSelectedItem();
         }
         return super.handleBackPressed();
@@ -203,7 +203,7 @@ public class SearchActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903170);
+        this.setContentView(2130903178);
         this.setupActionBar();
         this.findViews();
         this.setupLoadingWrapper();
@@ -234,7 +234,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131493189, true, false);
+        this.leWrapper.showErrorView(2131493196, true, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }

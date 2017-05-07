@@ -35,8 +35,8 @@ public class KidsHorizontalVideoView extends RelativeLayout implements VideoView
         this.setFocusable(true);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        netflixActivity.getLayoutInflater().inflate(2130903104, (ViewGroup)this);
-        (this.img = (AdvancedImageView)this.findViewById(2131165417)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361964));
+        netflixActivity.getLayoutInflater().inflate(2130903106, (ViewGroup)this);
+        (this.img = (AdvancedImageView)this.findViewById(2131165401)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361965));
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     

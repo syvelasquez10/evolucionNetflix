@@ -4,9 +4,9 @@
 
 package com.facebook.model;
 
-import com.facebook.internal.Utility;
 import java.lang.annotation.Annotation;
 import com.facebook.FacebookGraphObjectException;
+import org.json.JSONArray;
 import java.lang.reflect.InvocationHandler;
 import java.util.Locale;
 import java.util.HashSet;
@@ -14,11 +14,12 @@ import java.text.SimpleDateFormat;
 import org.json.JSONException;
 import java.util.Map;
 import java.lang.reflect.Proxy;
-import java.util.Iterator;
 import java.lang.reflect.Type;
-import org.json.JSONArray;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import com.facebook.internal.Utility;
 import org.json.JSONObject;
 
 final class GraphObject$Factory$GraphObjectProxy extends GraphObject$Factory$ProxyBase<JSONObject>
@@ -30,6 +31,8 @@ final class GraphObject$Factory$GraphObjectProxy extends GraphObject$Factory$Pro
     private static final String CONTAINSVALUE_METHOD = "containsValue";
     private static final String ENTRYSET_METHOD = "entrySet";
     private static final String GETINNERJSONOBJECT_METHOD = "getInnerJSONObject";
+    private static final String GETPROPERTYASLIST_METHOD = "getPropertyAsList";
+    private static final String GETPROPERTYAS_METHOD = "getPropertyAs";
     private static final String GETPROPERTY_METHOD = "getProperty";
     private static final String GET_METHOD = "get";
     private static final String ISEMPTY_METHOD = "isEmpty";
@@ -46,6 +49,28 @@ final class GraphObject$Factory$GraphObjectProxy extends GraphObject$Factory$Pro
     public GraphObject$Factory$GraphObjectProxy(final JSONObject jsonObject, final Class<?> graphObjectClass) {
         super(jsonObject);
         this.graphObjectClass = graphObjectClass;
+    }
+    
+    private Object createGraphObjectsFromParameters(final CreateGraphObject createGraphObject, final Object o) {
+        Object list = o;
+        if (createGraphObject != null) {
+            list = o;
+            if (!Utility.isNullOrEmpty(createGraphObject.value())) {
+                final String value = createGraphObject.value();
+                if (!List.class.isAssignableFrom(o.getClass())) {
+                    final GraphObject create = GraphObject$Factory.create();
+                    create.setProperty(value, o);
+                    return create;
+                }
+                list = GraphObject$Factory.createList(GraphObject.class);
+                for (final Object next : (List)o) {
+                    final GraphObject create2 = GraphObject$Factory.create();
+                    create2.setProperty(value, next);
+                    ((List<GraphObject>)list).add(create2);
+                }
+            }
+        }
+        return list;
     }
     
     private final Object proxyGraphObjectGettersAndSetters(final Method method, final Object[] array) {
@@ -73,31 +98,7 @@ final class GraphObject$Factory$GraphObjectProxy extends GraphObject$Factory$Pro
             return GraphObject$Factory.coerceValueToExpectedType(opt, returnType, parameterizedType);
         }
         if (length == 1) {
-            Object o = array[0];
-            if (GraphObject.class.isAssignableFrom(((GraphObjectList<GraphObject>)o).getClass())) {
-                o = ((GraphObject)o).getInnerJSONObject();
-            }
-            else if (GraphObjectList.class.isAssignableFrom(((GraphObjectList<GraphObject>)o).getClass())) {
-                o = ((GraphObjectList<GraphObject>)o).getInnerJSONArray();
-            }
-            else if (Iterable.class.isAssignableFrom(((GraphObjectList<GraphObject>)o).getClass())) {
-                final JSONArray jsonArray = new JSONArray();
-                final Iterator<Object> iterator = ((GraphObjectList<GraphObject>)o).iterator();
-                while (true) {
-                    o = jsonArray;
-                    if (!iterator.hasNext()) {
-                        break;
-                    }
-                    final GraphObject next = iterator.next();
-                    if (GraphObject.class.isAssignableFrom(next.getClass())) {
-                        jsonArray.put((Object)next.getInnerJSONObject());
-                    }
-                    else {
-                        jsonArray.put((Object)next);
-                    }
-                }
-            }
-            ((JSONObject)this.state).putOpt(s, o);
+            ((JSONObject)this.state).putOpt(s, getUnderlyingJSONObject(this.createGraphObjectsFromParameters(method.getAnnotation(CreateGraphObject.class), array[0])));
             return null;
         }
         return this.throwUnexpectedMethodSignature(method);
@@ -121,6 +122,12 @@ final class GraphObject$Factory$GraphObjectProxy extends GraphObject$Factory$Pro
             }
             if (name.equals("getProperty")) {
                 return ((JSONObject)this.state).opt((String)jsonProperty[0]);
+            }
+            if (name.equals("getPropertyAs")) {
+                return GraphObject$Factory.coerceValueToExpectedType(((JSONObject)this.state).opt((String)jsonProperty[0]), (Class<Object>)jsonProperty[1], null);
+            }
+            if (name.equals("getPropertyAsList")) {
+                return GraphObject$Factory.coerceValueToExpectedType(((JSONObject)this.state).opt((String)jsonProperty[0]), GraphObjectList.class, new GraphObject$Factory$GraphObjectProxy$1(this, (Class)jsonProperty[1]));
             }
             if (name.equals("setProperty")) {
                 return this.setJSONProperty(jsonProperty);
@@ -165,11 +172,11 @@ final class GraphObject$Factory$GraphObjectProxy extends GraphObject$Factory$Pro
             if (jsonProperty[0] instanceof Map) {
                 map = (Map<String, Object>)jsonProperty[0];
             }
-            else if (jsonProperty[0] instanceof GraphObject) {
-                map = ((GraphObject)jsonProperty[0]).asMap();
-            }
             else {
-                map = null;
+                if (!(jsonProperty[0] instanceof GraphObject)) {
+                    return null;
+                }
+                map = ((GraphObject)jsonProperty[0]).asMap();
             }
             JsonUtil.jsonObjectPutAll((JSONObject)this.state, map);
             return null;

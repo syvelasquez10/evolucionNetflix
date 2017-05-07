@@ -16,7 +16,9 @@ import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.content.Context;
 import android.app.Notification$Builder;
 import android.graphics.Bitmap;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 public final class MdxNotificationManagerLollipop implements IMdxNotificationManager
 {
     private static final String TAG = "nf_mdxnotification";
@@ -66,7 +68,7 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
         }
         if (this.boxart != null) {
             this.builder.setLargeIcon(ViewUtils.createSquaredBitmap(this.boxart));
-            this.builder.setColor(this.context.getResources().getColor(2131296356));
+            this.builder.setColor(this.context.getResources().getColor(2131296361));
         }
         if (this.mainTitle != null) {
             this.builder.setContentText((CharSequence)this.mainTitle);
@@ -75,12 +77,12 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
             this.builder.setSubText((CharSequence)this.secondTitle);
         }
         if (this.isPostplay) {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493212));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493221));
         }
         else {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493211));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493220));
         }
-        this.builder.setSmallIcon(2130837768);
+        this.builder.setSmallIcon(2130837776);
         this.notification = this.builder.build();
         this.notificationManager.notify(1, this.notification);
     }
@@ -176,6 +178,9 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     @Override
     public void startNotification(final Notification notification, final Service service, final boolean isPostplay) {
         this.stopNotification(service);
+        if (notification == null) {
+            return;
+        }
         service.startForeground(1, notification);
         this.isPostplay = isPostplay;
         this.isPlaying = true;

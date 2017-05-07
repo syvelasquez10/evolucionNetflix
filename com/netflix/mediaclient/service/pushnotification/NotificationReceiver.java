@@ -67,7 +67,7 @@ public final class NotificationReceiver extends BroadcastReceiver
         context.startActivity(intent);
     }
     
-    private void handleSayThankYoy(final Context context, final Intent intent) {
+    private void handleSayThankYou(final Context context, final Intent intent) {
         Log.d("nf_push", "received Say Thank You from notificaton");
         markSocialNotificationAsRead(context, intent);
         intent.setClass(context, (Class)NetflixService.class);
@@ -121,7 +121,7 @@ public final class NotificationReceiver extends BroadcastReceiver
                 this.handleBrowserRedirectNotification(context, intent);
             }
             case "com.netflix.mediaclient.intent.action.NOTIFICATION_SAY_THANKS": {
-                this.handleSayThankYoy(context, intent);
+                this.handleSayThankYou(context, intent);
             }
             case "com.netflix.mediaclient.intent.action.NOTIFICATION_SOCIAL": {
                 this.handleSocial(context, intent);

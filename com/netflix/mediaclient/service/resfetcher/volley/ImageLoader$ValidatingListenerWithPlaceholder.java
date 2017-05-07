@@ -41,7 +41,7 @@ class ImageLoader$ValidatingListenerWithPlaceholder extends ImageLoader$Validati
     @Override
     protected void updateView(final ImageView imageView, final Bitmap bitmap) {
         if (bitmap == null) {
-            this.this$0.setDrawableResource(imageView, 2130837566);
+            this.this$0.setDrawableResource(imageView, 2130837564);
             return;
         }
         AnimationUtils.setImageBitmapWithPropertyFade(imageView, bitmap);

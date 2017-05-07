@@ -10,6 +10,7 @@ import com.netflix.mediaclient.android.app.Status;
 import android.content.DialogInterface;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.app.LoadingStatus;
@@ -20,6 +21,10 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
     private static final String TAG = "NetflixDialogFrag";
     private boolean isDestroyed;
     protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
+    
+    protected NetflixActivity getNetflixActivity() {
+        return (NetflixActivity)this.getActivity();
+    }
     
     protected boolean isDestroyed() {
         return this.isDestroyed;
@@ -32,7 +37,7 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
     public void onActivityCreated(final Bundle bundle) {
         final boolean showsDialog = this.getShowsDialog();
         if (this.getDialog() == null) {
-            Log.w("NetflixDialogFrag", "Dialog is null upon activity creation! Setting shows dialog to false.");
+            Log.w("NetflixDialogFrag", this.getClass().getSimpleName() + ": Dialog is null upon activity creation! Setting shows dialog to false.");
             this.setShowsDialog(false);
         }
         super.onActivityCreated(bundle);

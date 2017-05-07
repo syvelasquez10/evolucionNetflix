@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.media.RemoteControlClient;
 import android.content.ComponentName;
+import com.netflix.mediaclient.service.configuration.MdxConfiguration;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.graphics.Bitmap;
 import android.media.AudioManager;

@@ -4,11 +4,15 @@
 
 package com.facebook;
 
+import java.util.Arrays;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import android.support.v4.app.Fragment;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.io.Serializable;
 import android.content.Intent;
 import android.app.Activity;

@@ -5,14 +5,12 @@
 package com.netflix.mediaclient.ui.pin;
 
 import android.app.AlertDialog;
-import android.widget.Button;
 import android.text.method.MovementMethod;
 import android.view.View$OnKeyListener;
 import android.widget.TextView$OnEditorActionListener;
 import android.view.ViewGroup;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface$OnClickListener;
+import android.view.View;
 import android.app.AlertDialog$Builder;
 import android.util.TypedValue;
 import android.view.WindowManager$LayoutParams;
@@ -34,10 +32,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.annotation.TargetApi;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
-import android.view.View;
-import android.view.View$OnClickListener;
+import android.content.DialogInterface;
+import android.content.DialogInterface$OnClickListener;
 
-class PinDialog$PinDialogOnCancel implements View$OnClickListener
+class PinDialog$PinDialogOnCancel implements DialogInterface$OnClickListener
 {
     final /* synthetic */ PinDialog this$0;
     
@@ -45,7 +43,7 @@ class PinDialog$PinDialogOnCancel implements View$OnClickListener
         this.this$0 = this$0;
     }
     
-    public void onClick(final View view) {
+    public void onClick(final DialogInterface dialogInterface, final int n) {
         this.this$0.dismissAndNotifyCallers();
     }
 }

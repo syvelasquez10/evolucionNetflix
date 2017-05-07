@@ -23,6 +23,6 @@ public final class R$color
     public static final int vpi__bright_foreground_holo_light = 2131296331;
     public static final int vpi__bright_foreground_inverse_holo_dark = 2131296334;
     public static final int vpi__bright_foreground_inverse_holo_light = 2131296335;
-    public static final int vpi__dark_theme = 2131296457;
-    public static final int vpi__light_theme = 2131296458;
+    public static final int vpi__dark_theme = 2131296447;
+    public static final int vpi__light_theme = 2131296448;
 }

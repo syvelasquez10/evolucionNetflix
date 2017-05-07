@@ -32,8 +32,4 @@ public enum LoMoType
         }
         return LoMoType.STANDARD;
     }
-    
-    public String getValue() {
-        return this.value;
-    }
 }

@@ -25,6 +25,8 @@ public interface INetflixService
     
     void connectWithFacebook(final String p0, final int p1, final int p2);
     
+    boolean deleteLocalResource(final String p0);
+    
     void editProfile(final String p0, final String p1, final boolean p2, final String p3, final int p4, final int p5);
     
     void fetchResource(final String p0, final IClientLogging$AssetType p1, final int p2, final int p3);
@@ -36,6 +38,8 @@ public interface INetflixService
     void getAvailableAvatarsList(final int p0, final int p1);
     
     IBrowseInterface getBrowse();
+    
+    String getBrowseAgentString();
     
     IClientLogging getClientLogging();
     

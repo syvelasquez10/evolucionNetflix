@@ -77,7 +77,7 @@ class MdxAgent$2 implements Runnable
             this.this$0.addDiscoveryEventListener();
             this.this$0.addPairingEventListener(this.this$0.mTargetManager);
             this.this$0.addSessionEventListener(this.this$0.mTargetManager);
-            this.this$0.mMdxController.init(new HashMap<String, String>(), this.this$0.mDisableWebSocket, this.this$0.getService().getConfiguration().getMdxBlackListTargets());
+            this.this$0.mMdxController.init(new HashMap<String, String>(), this.this$0.mDisableWebSocket, this.this$0.getService().getConfiguration().getMdxConfiguration().getMdxBlackListTargets());
             this.this$0.mTargetMap.clear();
             return;
         }

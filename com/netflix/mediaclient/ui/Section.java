@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui;
 
 import com.netflix.mediaclient.Log;
 import android.widget.TextView;
+import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AlphaAnimation;
 import android.view.View;
@@ -31,6 +32,12 @@ public abstract class Section
     public abstract void changeActionState(final boolean p0);
     
     public abstract void destroy();
+    
+    protected void enableButton(final MenuItem menuItem, final boolean enabled) {
+        if (menuItem != null) {
+            menuItem.setEnabled(enabled);
+        }
+    }
     
     protected void enableButton(final View disableOverlayForImageButton, final boolean enabled) {
         if (disableOverlayForImageButton != null) {

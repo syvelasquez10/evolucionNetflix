@@ -28,9 +28,9 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.util.AttributeSet;
 import android.content.Context;
+import com.netflix.mediaclient.servicemgr.model.Ratable;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import android.graphics.drawable.Drawable;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.widget.RatingBar$OnRatingBarChangeListener;
 import android.widget.RatingBar;
 
@@ -38,10 +38,10 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
 {
     private static final String TAG = "NetflixRatingBar";
     private int currRating;
-    private VideoDetails details;
     private boolean dispatchedCallback;
     private Drawable netflixStars;
     private VideoDetailsProvider provider;
+    private Ratable ratableObject;
     private Drawable userStars;
     
     public NetflixRatingBar(final Context context) {
@@ -72,10 +72,10 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     private int getUserRating() {
-        if (this.details == null) {
+        if (this.ratableObject == null) {
             return 0;
         }
-        return (int)this.details.getUserRating();
+        return (int)this.ratableObject.getUserRating();
     }
     
     private void handleUserUpate(final int n) {
@@ -104,8 +104,8 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     private void init() {
-        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837867), true);
-        this.userStars = this.tileify(this.getResources().getDrawable(2130837868), true);
+        this.netflixStars = this.tileify(this.getResources().getDrawable(this.getNetflixStarRatingDrawableId()), true);
+        this.userStars = this.tileify(this.getResources().getDrawable(this.getUserStarRatingDrawableId()), true);
         this.setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
         final Context context = this.getContext();
         if (context instanceof VideoDetailsProvider) {
@@ -221,13 +221,21 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         }
     }
     
+    protected int getNetflixStarRatingDrawableId() {
+        return 2130837859;
+    }
+    
+    protected int getUserStarRatingDrawableId() {
+        return 2130837861;
+    }
+    
     public void onRatingChanged(final RatingBar ratingBar, final float n, final boolean b) {
         this.dispatchedCallback = true;
         final int currRating = (int)Math.ceil(n);
         if (Log.isLoggable("NetflixRatingBar", 2)) {
             Log.v("NetflixRatingBar", "Rating changed: " + currRating + ", from user: " + b);
         }
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493162), currRating));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493169), currRating));
         if (b && this.getUserRating() != currRating) {
             final int progress = (int)(currRating * this.getProgressPerStar());
             Log.v("NetflixRatingBar", "Setting progress: " + progress);
@@ -276,28 +284,20 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         return onTouchEvent;
     }
     
-    public void setDetails(final VideoDetails details) {
-        final StringBuilder append = new StringBuilder().append("setting details: ");
-        String title;
-        if (details == null) {
-            title = "n/a";
-        }
-        else {
-            title = details.getTitle();
-        }
-        Log.v("NetflixRatingBar", append.append(title).toString());
-        if (details == null) {
+    public void setVideo(final Ratable ratableObject) {
+        Log.v("NetflixRatingBar", "setting ratable: " + ratableObject);
+        if (ratableObject == null) {
             return;
         }
-        this.details = details;
+        this.ratableObject = ratableObject;
         float rating;
-        if (details.getUserRating() > 0.0f) {
-            Log.v("NetflixRatingBar", "Using user rating: " + details.getUserRating());
-            rating = details.getUserRating();
+        if (this.ratableObject.getUserRating() > 0.0f) {
+            Log.v("NetflixRatingBar", "Using user rating: " + this.ratableObject.getUserRating());
+            rating = this.ratableObject.getUserRating();
         }
         else {
-            Log.v("NetflixRatingBar", "Using predicted rating: " + details.getPredictedRating());
-            rating = details.getPredictedRating();
+            Log.v("NetflixRatingBar", "Using predicted rating: " + this.ratableObject.getPredictedRating());
+            rating = this.ratableObject.getPredictedRating();
         }
         this.setRating(rating);
     }

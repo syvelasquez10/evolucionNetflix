@@ -5,12 +5,12 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$SearchTitle;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import com.netflix.mediaclient.service.webclient.model.SearchVideo;
 import com.netflix.mediaclient.service.webclient.model.leafs.SearchTrackableListSummary;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -21,9 +21,9 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public abstract class FetchSimilarVideosRequest extends FalcorVolleyWebClientRequest<SearchVideoListProvider>
+public abstract class FetchSimilarVideosRequest extends FalkorVolleyWebClientRequest<SearchVideoListProvider>
 {
     private static final String RELATED_VIDEOS = "relatedVideos";
     private static final String SEARCH = "search";
@@ -86,24 +86,24 @@ public abstract class FetchSimilarVideosRequest extends FalcorVolleyWebClientReq
     }
     
     @Override
-    protected SearchVideoListProvider parseFalcorResponse(String videosList) {
+    protected SearchVideoListProvider parseFalkorResponse(String videosList) {
         final SearchVideoList list = new SearchVideoList();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_fetch_sims_request", videosList);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_fetch_sims_request", videosList);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
             this.checkForNullTrackables(list);
             return list;
         }
         try {
             final JsonObject asJsonObject = dataObj.getAsJsonObject("search").getAsJsonObject(this.type.keyName).getAsJsonObject(this.unescapedOriginalTerm).getAsJsonObject("standard").getAsJsonObject("relatedVideos").getAsJsonObject(this.unescapedId);
-            list.setVideoListTrackable(FalcorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
+            list.setVideoListTrackable(FalkorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
             videosList = (String)list.getVideosList();
             for (int i = this.from; i <= this.to; ++i) {
                 final String string = Integer.toString(i);
                 if (asJsonObject.has(string)) {
                     final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject(string);
                     final SearchVideo searchVideo = new SearchVideo();
-                    searchVideo.summary = FalcorParseUtils.getPropertyObject(asJsonObject2, "summary", Video$Summary.class);
-                    searchVideo.searchTitle = FalcorParseUtils.getPropertyObject(asJsonObject2, "searchTitle", Video$SearchTitle.class);
+                    searchVideo.summary = FalkorParseUtils.getPropertyObject(asJsonObject2, "summary", Video$Summary.class);
+                    searchVideo.searchTitle = FalkorParseUtils.getPropertyObject(asJsonObject2, "searchTitle", Video$SearchTitle.class);
                     ((List<SearchVideo>)videosList).add(searchVideo);
                     Log.v("nf_fetch_sims_request", "Found video: " + searchVideo.summary.getTitle());
                 }
@@ -111,7 +111,7 @@ public abstract class FetchSimilarVideosRequest extends FalcorVolleyWebClientReq
         }
         catch (Exception ex) {
             Log.v("nf_fetch_sims_request", "String response to parse = " + videosList);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
         this.checkForNullTrackables(list);
         return list;

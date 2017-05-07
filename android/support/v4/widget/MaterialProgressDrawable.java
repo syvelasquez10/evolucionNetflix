@@ -46,7 +46,7 @@ class MaterialProgressDrawable extends Drawable implements Animatable
     private Animation mAnimation;
     private final ArrayList<Animation> mAnimators;
     private final Drawable$Callback mCallback;
-    private Animation mFinishAnimation;
+    boolean mFinishing;
     private double mHeight;
     private View mParent;
     private Resources mResources;
@@ -65,12 +65,18 @@ class MaterialProgressDrawable extends Drawable implements Animatable
     public MaterialProgressDrawable(final Context context, final View mParent) {
         this.COLORS = new int[] { -16777216 };
         this.mAnimators = new ArrayList<Animation>();
-        this.mCallback = (Drawable$Callback)new MaterialProgressDrawable$5(this);
+        this.mCallback = (Drawable$Callback)new MaterialProgressDrawable$3(this);
         this.mParent = mParent;
         this.mResources = context.getResources();
         (this.mRing = new MaterialProgressDrawable$Ring(this.mCallback)).setColors(this.COLORS);
         this.updateSizes(1);
         this.setupAnimators();
+    }
+    
+    private void applyFinishTranslation(final float n, final MaterialProgressDrawable$Ring materialProgressDrawable$Ring) {
+        final float n2 = (float)(Math.floor(materialProgressDrawable$Ring.getStartingRotation() / 0.8f) + 1.0);
+        materialProgressDrawable$Ring.setStartTrim(materialProgressDrawable$Ring.getStartingStartTrim() + (materialProgressDrawable$Ring.getStartingEndTrim() - materialProgressDrawable$Ring.getStartingStartTrim()) * n);
+        materialProgressDrawable$Ring.setRotation((n2 - materialProgressDrawable$Ring.getStartingRotation()) * n + materialProgressDrawable$Ring.getStartingRotation());
     }
     
     private float getRotation() {
@@ -91,17 +97,11 @@ class MaterialProgressDrawable extends Drawable implements Animatable
     
     private void setupAnimators() {
         final MaterialProgressDrawable$Ring mRing = this.mRing;
-        final MaterialProgressDrawable$1 mFinishAnimation = new MaterialProgressDrawable$1(this, mRing);
-        mFinishAnimation.setInterpolator(MaterialProgressDrawable.EASE_INTERPOLATOR);
-        mFinishAnimation.setDuration(666L);
-        mFinishAnimation.setAnimationListener((Animation$AnimationListener)new MaterialProgressDrawable$2(this, mRing));
-        final MaterialProgressDrawable$3 mAnimation = new MaterialProgressDrawable$3(this, mRing);
+        final MaterialProgressDrawable$1 mAnimation = new MaterialProgressDrawable$1(this, mRing);
         mAnimation.setRepeatCount(-1);
         mAnimation.setRepeatMode(1);
         mAnimation.setInterpolator(MaterialProgressDrawable.LINEAR_INTERPOLATOR);
-        mAnimation.setDuration(1333L);
-        mAnimation.setAnimationListener((Animation$AnimationListener)new MaterialProgressDrawable$4(this, mRing));
-        this.mFinishAnimation = mFinishAnimation;
+        mAnimation.setAnimationListener((Animation$AnimationListener)new MaterialProgressDrawable$2(this, mRing));
         this.mAnimation = mAnimation;
     }
     
@@ -183,11 +183,14 @@ class MaterialProgressDrawable extends Drawable implements Animatable
         this.mAnimation.reset();
         this.mRing.storeOriginals();
         if (this.mRing.getEndTrim() != this.mRing.getStartTrim()) {
-            this.mParent.startAnimation(this.mFinishAnimation);
+            this.mFinishing = true;
+            this.mAnimation.setDuration(666L);
+            this.mParent.startAnimation(this.mAnimation);
             return;
         }
         this.mRing.setColorIndex(0);
         this.mRing.resetOriginals();
+        this.mAnimation.setDuration(1333L);
         this.mParent.startAnimation(this.mAnimation);
     }
     

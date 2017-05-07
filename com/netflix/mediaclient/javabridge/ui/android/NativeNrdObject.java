@@ -34,91 +34,84 @@ public abstract class NativeNrdObject extends BaseNrdObject
     }
     
     public int addCallback(final Callback callback) {
-        synchronized (this) {
+        synchronized (this.callbacks) {
             ++this.nextCallbackId;
             this.callbacks.append(this.nextCallbackId, (Object)callback);
+            // monitorexit(this.callbacks)
             return this.nextCallbackId;
         }
     }
     
     public void addEventListener(final String s, final EventListener eventListener) {
-        // monitorenter(this)
-        Label_0043: {
-            if (eventListener != null) {
-                break Label_0043;
+        if (eventListener == null) {
+            if (Log.isLoggable("nf_object", 3)) {
+                Log.w("nf_object", "Do not add! Listener is null for event type " + s);
             }
+            return;
+        }
+        if (s == null) {
+            Log.e("nf_object", "Event type is null. Do not add event listener! It should NOT happen!");
+            return;
+        }
+        while (true) {
             while (true) {
-                try {
-                    if (Log.isLoggable("nf_object", 3)) {
-                        Log.w("nf_object", "Do not add! Listener is null for event type " + s);
-                    }
-                    return;
-                    // iftrue(Label_0063:, s != null)
-                    Log.e("nf_object", "Event type is null. Do not add event listener! It should NOT happen!");
-                    return;
-                }
-                finally {
-                }
-                // monitorexit(this)
-                final String s2;
                 final List<EventListener> list;
-                Label_0063: {
-                    list = this.listeners.get(s2);
-                }
-                List<EventListener> list2;
-                if (list == null) {
-                    if (Log.isLoggable("nf_object", 3)) {
-                        Log.d("nf_object", "Listeners not found for event type " + s2);
+                synchronized (this.listeners) {
+                    list = this.listeners.get(s);
+                    if (list == null) {
+                        if (Log.isLoggable("nf_object", 3)) {
+                            Log.d("nf_object", "Listeners not found for event type " + s);
+                        }
+                        final List<EventListener> list2 = new ArrayList<EventListener>();
+                        this.listeners.put(s, list2);
+                        list2.add(eventListener);
+                        return;
                     }
-                    list2 = new ArrayList<EventListener>();
-                    this.listeners.put(s2, list2);
                 }
-                else {
+                List<EventListener> list2 = list;
+                if (Log.isLoggable("nf_object", 3)) {
+                    final String s2;
+                    Log.d("nf_object", "Listeners found for event type " + s2 + ": " + list.size());
                     list2 = list;
-                    if (Log.isLoggable("nf_object", 3)) {
-                        Log.d("nf_object", "Listeners found for event type " + s2 + ": " + list.size());
-                        list2 = list;
-                    }
+                    continue;
                 }
-                list2.add(eventListener);
+                continue;
             }
         }
     }
     
     protected int handleCallback(final CallbackEvent callbackEvent) {
-        synchronized (this) {
-            final int callerId = callbackEvent.getCallerId();
-            final Callback removeCallback = this.removeCallback(callerId);
-            if (removeCallback != null) {
-                if (Log.isLoggable("nf_object", 3)) {
-                    Log.d("nf_object", "Callback found: " + callerId);
-                }
-                removeCallback.done(callbackEvent);
-                Log.d("nf_object", "Callback executed.");
+        final int callerId = callbackEvent.getCallerId();
+        final Callback removeCallback = this.removeCallback(callerId);
+        if (removeCallback != null) {
+            if (Log.isLoggable("nf_object", 3)) {
+                Log.d("nf_object", "Callback found: " + callerId);
             }
-            else if (Log.isLoggable("nf_object", 3)) {
-                Log.e("nf_object", "Callback not found for key " + callerId);
-            }
-            return 1;
+            removeCallback.done(callbackEvent);
+            Log.d("nf_object", "Callback executed.");
         }
+        else if (Log.isLoggable("nf_object", 3)) {
+            Log.e("nf_object", "Callback not found for key " + callerId);
+        }
+        return 1;
     }
     
     protected int handleListener(final String s, final UIEvent uiEvent) {
-        synchronized (this) {
+        synchronized (this.listeners) {
             final List<EventListener> list = this.listeners.get(s);
             if (list == null) {
                 if (Log.isLoggable("nf_object", 3)) {
                     Log.d("nf_object", "Listeners not found for event type " + s);
                 }
+                return 1;
             }
-            else {
-                final Iterator<EventListener> iterator = list.iterator();
-                while (iterator.hasNext()) {
-                    iterator.next().received(uiEvent);
-                }
+            final Iterator<EventListener> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                iterator.next().received(uiEvent);
             }
-            return 1;
         }
+        // monitorexit(map)
+        return 1;
     }
     
     protected int handleNccpEvent(final String s, final JSONObject jsonObject) {
@@ -151,7 +144,7 @@ public abstract class NativeNrdObject extends BaseNrdObject
     }
     
     public Callback removeCallback(final int n) {
-        synchronized (this) {
+        synchronized (this.callbacks) {
             final Callback callback = (Callback)this.callbacks.get(n);
             this.callbacks.delete(n);
             return callback;
@@ -159,44 +152,31 @@ public abstract class NativeNrdObject extends BaseNrdObject
     }
     
     public void removeEventListener(final String s, final EventListener eventListener) {
-        // monitorenter(this)
-        Label_0043: {
-            if (eventListener != null) {
-                break Label_0043;
+        if (eventListener == null) {
+            if (Log.isLoggable("nf_object", 3)) {
+                Log.w("nf_object", "Do not remove! Listener is null for event type " + s);
             }
-            while (true) {
-                try {
-                    if (Log.isLoggable("nf_object", 3)) {
-                        Log.w("nf_object", "Do not remove! Listener is null for event type " + s);
-                    }
-                    return;
-                    while (true) {
-                        Log.e("nf_object", "Event type is null. Can not remove event listener! It should NOT happen!");
-                        return;
-                        continue;
-                    }
+            return;
+        }
+        if (s == null) {
+            Log.e("nf_object", "Event type is null. Can not remove event listener! It should NOT happen!");
+            return;
+        }
+        final List<EventListener> list;
+        synchronized (this.listeners) {
+            list = this.listeners.get(s);
+            if (list == null) {
+                if (Log.isLoggable("nf_object", 3)) {
+                    Log.d("nf_object", "Listeners not found for event type " + s);
                 }
-                // iftrue(Label_0063:, s != null)
-                finally {
-                }
-                // monitorexit(this)
-                final String s2;
-                final List<EventListener> list;
-                Label_0063: {
-                    list = this.listeners.get(s2);
-                }
-                if (list == null) {
-                    if (Log.isLoggable("nf_object", 3)) {
-                        Log.d("nf_object", "Listeners not found for event type " + s2);
-                    }
-                }
-                else {
-                    final boolean remove = list.remove(eventListener);
-                    if (Log.isLoggable("nf_object", 3)) {
-                        Log.d("nf_object", "Listeners found for event type " + s2 + ": " + list.size() + " and listener was " + remove);
-                    }
-                }
+                return;
             }
         }
+        final boolean remove = list.remove(eventListener);
+        if (Log.isLoggable("nf_object", 3)) {
+            final String s2;
+            Log.d("nf_object", "Listeners found for event type " + s2 + ": " + list.size() + " and listener was " + remove);
+        }
     }
+    // monitorexit(map)
 }

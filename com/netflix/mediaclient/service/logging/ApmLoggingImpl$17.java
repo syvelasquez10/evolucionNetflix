@@ -13,7 +13,7 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$E
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.service.logging.apm.model.SharedContextSessionEndedEvent;
-import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
+import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;

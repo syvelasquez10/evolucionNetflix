@@ -20,10 +20,12 @@ class AboutActivity$1 implements ManagerStatusListener
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         this.this$0.getNetflixActionBar().setDisplayHomeAsUpEnabled(serviceManager.isUserLoggedIn());
+        ((AboutFragment)this.this$0.getPrimaryFrag()).onManagerReady(serviceManager, status);
     }
     
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
         Log.e("nf_AboutActivity", "NetflixService is NOT available!");
+        ((AboutFragment)this.this$0.getPrimaryFrag()).onManagerUnavailable(serviceManager, status);
     }
 }

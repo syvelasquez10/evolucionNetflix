@@ -4,12 +4,13 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.model.Playable;
@@ -67,14 +68,6 @@ public class MovieDetails extends Movie implements Playable, com.netflix.mediacl
     }
     
     @Override
-    public String getBoxshotURL() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getBoxshotURL();
-    }
-    
-    @Override
     public String getCatalogIdUrl() {
         if (this.detail == null) {
             return null;
@@ -112,11 +105,19 @@ public class MovieDetails extends Movie implements Playable, com.netflix.mediacl
     }
     
     @Override
-    public VideoType getErrorType() {
-        if (this.summary == null) {
+    public IconFontGlyph getEvidenceGlyph() {
+        if (this.evidence == null) {
             return null;
         }
-        return this.summary.getErrorType();
+        return this.evidence.getIconFontGlyph();
+    }
+    
+    @Override
+    public String getEvidenceText() {
+        if (this.evidence == null) {
+            return null;
+        }
+        return this.evidence.getText();
     }
     
     @Override
@@ -140,7 +141,7 @@ public class MovieDetails extends Movie implements Playable, com.netflix.mediacl
         if (this.detail == null) {
             return null;
         }
-        return this.detail.mdxHorzUrl;
+        return this.detail.hiResHorzUrl;
     }
     
     @Override
@@ -157,14 +158,6 @@ public class MovieDetails extends Movie implements Playable, com.netflix.mediacl
             return null;
         }
         return this.detail.horzDispUrl;
-    }
-    
-    @Override
-    public String getId() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getId();
     }
     
     @Override
@@ -270,14 +263,6 @@ public class MovieDetails extends Movie implements Playable, com.netflix.mediacl
     }
     
     @Override
-    public String getSquareUrl() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getSquareUrl();
-    }
-    
-    @Override
     public String getStoryDispUrl() {
         if (this.detail == null) {
             return null;
@@ -302,11 +287,11 @@ public class MovieDetails extends Movie implements Playable, com.netflix.mediacl
     }
     
     @Override
-    public String getTitle() {
-        if (this.summary == null) {
+    public String getTitleImgUrl() {
+        if (this.detail == null) {
             return null;
         }
-        return this.summary.getTitle();
+        return this.detail.titleUrl;
     }
     
     @Override
@@ -315,14 +300,6 @@ public class MovieDetails extends Movie implements Playable, com.netflix.mediacl
             return null;
         }
         return this.detail.tvCardUrl;
-    }
-    
-    @Override
-    public VideoType getType() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getType();
     }
     
     @Override

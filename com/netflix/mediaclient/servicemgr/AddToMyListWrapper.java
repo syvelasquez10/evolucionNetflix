@@ -10,44 +10,49 @@ import android.widget.Toast;
 import com.netflix.mediaclient.android.app.Status;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.Log;
 
 public class AddToMyListWrapper
 {
     private static final String TAG = "AddToMyListWrapper";
     private final AddToMyListWrapper$AddToListDataHash dataHash;
-    private final ServiceManager serviceMan;
+    final ServiceManager serviceMan;
     
     public AddToMyListWrapper(final ServiceManager serviceMan) {
         this.dataHash = new AddToMyListWrapper$AddToListDataHash((AddToMyListWrapper$1)null);
         this.serviceMan = serviceMan;
     }
     
-    private void addVideoToMyList(final String s, final int n, final String s2) {
-        this.serviceMan.getBrowse().addToQueue(s, n, s2, new LoggingManagerCallback("AddToMyListWrapper"));
-    }
-    
-    private void removeVideoFromMyList(final String s, final String s2) {
-        this.serviceMan.getBrowse().removeFromQueue(s, s2, new LoggingManagerCallback("AddToMyListWrapper"));
-    }
-    
-    private void update(final String s, final AddToListData$AddToListState stateAndNotify) {
+    private void update(final String s, final AddToListData$AddToListState stateAndNotifyListeners) {
         final AddToListData addToListData = ((HashMap<K, AddToListData>)this.dataHash).get(s);
         if (addToListData == null) {
             Log.v("AddToMyListWrapper", "No listeners for video: " + s);
             return;
         }
         if (Log.isLoggable("AddToMyListWrapper", 2)) {
-            Log.v("AddToMyListWrapper", "Updating state for video: " + s + " to: " + stateAndNotify);
+            Log.v("AddToMyListWrapper", "Updating state for video: " + s + " to: " + stateAndNotifyListeners);
         }
-        addToListData.setStateAndNotify(stateAndNotify);
+        addToListData.setStateAndNotifyListeners(stateAndNotifyListeners);
     }
     
-    public AddToMyListWrapper$TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final int n, final boolean b) {
-        return new AddToMyListWrapper$TextViewWrapper(this, netflixActivity, textView, s, n, b);
+    void addVideoToMyList(final String s, final VideoType videoType, final int n, final String s2) {
+        this.serviceMan.getBrowse().addToQueue(s, videoType, n, KubrickUtils.shouldShowKubrickExperience(this.serviceMan.getActivity()), s2, new LoggingManagerCallback("AddToMyListWrapper"));
     }
     
-    public void register(final String s, final AddToListData$StateListener addToListData$StateListener) {
+    public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final TextView textView2, final String s, final VideoType videoType, final int n, final boolean b) {
+        if (netflixActivity.isKubrick()) {
+            return new KubrickTextViewWrapper(this, netflixActivity, textView, textView2, s, videoType, n, b);
+        }
+        return new TextViewWrapper(this, netflixActivity, textView, s, videoType, n, b);
+    }
+    
+    public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n, final boolean b) {
+        return new TextViewWrapper(this, netflixActivity, textView, s, videoType, n, b);
+    }
+    
+    void register(final String s, final AddToListData$StateListener addToListData$StateListener) {
         final AddToListData addToListData = ((HashMap<K, AddToListData>)this.dataHash).get(s);
         AddToListData addToListData3;
         if (addToListData == null) {
@@ -64,7 +69,11 @@ public class AddToMyListWrapper
         addToListData$StateListener.update(addToListData3.getState());
     }
     
-    public void unregister(final String s, final AddToListData$StateListener addToListData$StateListener) {
+    void removeVideoFromMyList(final String s, final VideoType videoType, final String s2) {
+        this.serviceMan.getBrowse().removeFromQueue(s, videoType, s2, new LoggingManagerCallback("AddToMyListWrapper"));
+    }
+    
+    void unregister(final String s, final AddToListData$StateListener addToListData$StateListener) {
         final AddToListData addToListData = ((HashMap<K, AddToListData>)this.dataHash).get(s);
         if (addToListData == null) {
             Log.w("AddToMyListWrapper", "Unexpected case - can't find listener for video: " + s);
@@ -87,7 +96,7 @@ public class AddToMyListWrapper
         this.update(s, addToListData$AddToListState);
     }
     
-    public void updateToError(final Status status, final String s, final boolean b) {
+    public void updateToError(final Status status, final String s, final boolean b, final boolean b2) {
         final AddToListData addToListData = ((HashMap<K, AddToListData>)this.dataHash).get(s);
         if (addToListData == null) {
             Log.v("AddToMyListWrapper", "Could not revert state for video: " + s);
@@ -97,8 +106,15 @@ public class AddToMyListWrapper
                 Log.v("AddToMyListWrapper", "Reverting state for video: " + s);
             }
             addToListData.revertState();
-            if (b) {
-                Toast.makeText((Context)this.serviceMan.getActivity(), 2131493169, 1).show();
+            if (b2) {
+                int n;
+                if (b) {
+                    n = 2131493176;
+                }
+                else {
+                    n = 2131493177;
+                }
+                Toast.makeText((Context)this.serviceMan.getActivity(), n, 1).show();
             }
         }
     }

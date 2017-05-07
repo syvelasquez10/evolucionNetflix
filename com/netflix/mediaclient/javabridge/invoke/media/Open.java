@@ -24,33 +24,35 @@ public class Open extends BaseInvoke
     private static final String PARAM_PLAY_CONTEXT_REQ_ID = "request_id";
     private static final String PARAM_PLAY_CONTEXT_VIDEO_POS = "rank";
     private static final String PROPERTY_MOVIEID = "movieId";
+    private static final String PROPERTY_PTS = "pts";
     private static final String PROPERTY_TRACKID = "trackerId";
     private static final String TARGET = "media";
     
-    public Open(final long n, final PlayContext playContext, final Open$NetType open$NetType) {
+    public Open(final long n, final PlayContext playContext, final Open$NetType open$NetType, final long n2) {
         super("media", "open");
-        this.setArguments(n, playContext, open$NetType);
+        this.setArguments(n, playContext, open$NetType, n2);
     }
     
-    private void setArguments(final long n, final PlayContext playContext, final Open$NetType open$NetType) {
+    private void setArguments(final long n, final PlayContext playContext, final Open$NetType open$NetType, final long n2) {
         if (playContext == null) {
             throw new IllegalArgumentException("Play context can not be null!");
         }
         while (true) {
             while (true) {
                 JSONObject jsonObject2 = null;
-                Label_0290: {
+                Label_0300: {
                     try {
                         final JSONObject jsonObject = new JSONObject();
                         jsonObject.put("movieId", n);
                         jsonObject.put("trackerId", playContext.getTrackId());
+                        jsonObject.put("pts", n2);
                         jsonObject2 = new JSONObject();
                         if (Open$NetType.mobile.equals(open$NetType)) {
                             jsonObject2.put("nettype", (Object)"mobile");
                         }
                         else {
                             if (!Open$NetType.wifi.equals(open$NetType)) {
-                                break Label_0290;
+                                break Label_0300;
                             }
                             jsonObject2.put("nettype", (Object)"wifi");
                         }

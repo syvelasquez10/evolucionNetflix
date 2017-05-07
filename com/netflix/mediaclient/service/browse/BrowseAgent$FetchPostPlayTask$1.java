@@ -5,8 +5,7 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
-import java.util.List;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 
 class BrowseAgent$FetchPostPlayTask$1 extends SimpleBrowseAgentCallback
 {
@@ -17,7 +16,7 @@ class BrowseAgent$FetchPostPlayTask$1 extends SimpleBrowseAgentCallback
     }
     
     @Override
-    public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final Status status) {
-        this.this$1.this$0.getMainHandler().post((Runnable)new BrowseAgent$FetchPostPlayTask$1$1(this, list, status));
+    public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
+        this.this$1.this$0.getMainHandler().post((Runnable)new BrowseAgent$FetchPostPlayTask$1$1(this, postPlayVideosProvider, status));
     }
 }

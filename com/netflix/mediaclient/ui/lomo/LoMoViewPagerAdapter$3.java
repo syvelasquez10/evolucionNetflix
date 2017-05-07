@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.lomo;
 import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.view.View;

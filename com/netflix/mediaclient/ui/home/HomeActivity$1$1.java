@@ -1,0 +1,78 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.ui.home;
+
+import android.view.View;
+import com.netflix.mediaclient.ui.search.SearchMenu;
+import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import android.view.Menu;
+import android.support.v4.widget.DrawerLayout$DrawerListener;
+import android.app.Activity;
+import com.netflix.mediaclient.ui.kids.lolomo.KidsSlidingMenuAdapter;
+import java.util.Collection;
+import android.os.Bundle;
+import android.content.res.Configuration;
+import android.view.KeyEvent;
+import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
+import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
+import android.annotation.SuppressLint;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import android.app.Fragment;
+import android.os.Parcelable;
+import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import android.widget.Toast;
+import java.io.Serializable;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHomeActivity;
+import com.netflix.mediaclient.ui.kids.lolomo.KidsHomeActivity;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.util.StringUtils;
+import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.view.MenuItem;
+import android.content.DialogInterface$OnClickListener;
+import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.content.Intent;
+import java.util.LinkedList;
+import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
+import com.netflix.mediaclient.android.activity.FragmentHostActivity;
+import android.app.DialogFragment;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.logging.client.model.UIError;
+import android.os.SystemClock;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
+
+class HomeActivity$1$1 implements LoadingStatus$LoadingStatusCallback
+{
+    final /* synthetic */ HomeActivity$1 this$1;
+    
+    HomeActivity$1$1(final HomeActivity$1 this$1) {
+        this.this$1 = this$1;
+    }
+    
+    @Override
+    public void onDataLoaded(final Status status) {
+        Log.d("HomeActivity", "LOLOMO is loaded, report UI browse startup session ended in case this was on UI startup");
+        this.this$1.this$0.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(SystemClock.elapsedRealtime() - this.this$1.this$0.mStartedTimeMs, status.isSucces(), null);
+        this.this$1.this$0.setLoadingStatusCallback(null);
+        if (StatusCode.INVALID_COUNRTY.equals(status.getStatusCode())) {
+            Log.d("HomeActivity", "User accessing Netflix in a not supported country. Show alert and kill self");
+            this.this$1.this$0.showDialog(InvalidCountryAlertDialog.createInvalidCountryAlertDialog(this.this$1.this$0));
+        }
+    }
+}

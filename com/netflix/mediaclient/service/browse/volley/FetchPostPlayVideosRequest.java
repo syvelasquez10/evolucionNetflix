@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.service.webclient.model.PostPlayVideo$PostPlayContext;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
@@ -15,25 +15,27 @@ import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Detail;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
+import com.netflix.mediaclient.service.webclient.model.PostPlayVideo;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
+import java.util.List;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
-import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.model.PostPlayVideosProvider;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchPostPlayVideosRequest extends FalcorVolleyWebClientRequest<List<PostPlayVideo>>
+public class FetchPostPlayVideosRequest extends FalkorVolleyWebClientRequest<PostPlayVideosProvider>
 {
     private static final String FIELD_CURRENT = "current";
     private static final String FIELD_EPISODES = "episodes";
-    public static final String FIELD_POSTPLAY = "postplay";
-    public static final String FIELD_POSTPLAY_CONTEXT = "postplayContext";
+    private static final String FIELD_POSTPLAY = "postplay";
+    private static final String FIELD_POSTPLAY_CONTEXT = "postplayContext";
+    private static final String FIELD_POSTPLAY_VIDEO_REF = "videoRef";
     private static final String FIELD_VIDEOS = "videos";
     private static final String TAG = "nf_postplay";
     private final Integer MAX_POSTPLAY_RECOS;
@@ -44,15 +46,15 @@ public class FetchPostPlayVideosRequest extends FalcorVolleyWebClientRequest<Lis
     private final BrowseAgentCallback responseCallback;
     private final boolean userConnectedToFacebook;
     
-    protected FetchPostPlayVideosRequest(final Context context, final String currentPlayId, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+    public FetchPostPlayVideosRequest(final Context context, final String currentPlayId, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
         super(context);
         this.MAX_POSTPLAY_RECOS = 3;
         this.responseCallback = responseCallback;
         this.currentPlayId = currentPlayId;
         this.userConnectedToFacebook = userConnectedToFacebook;
         this.pqlQuery1 = String.format("['videos', '%s', 'postplay', {'to':%d}, 'postplayContext']", this.currentPlayId, this.MAX_POSTPLAY_RECOS);
-        this.pqlQuery2 = String.format("['videos', '%s', 'postplay', {'to':%d}, ['summary','detail', 'rating', 'inQueue', 'bookmark', 'socialEvidence']]", this.currentPlayId, this.MAX_POSTPLAY_RECOS);
-        this.pqlQuery3 = String.format("['videos', '%s', 'postplay', {'to':%d}, 'episodes', 'current', ['detail', 'bookmark']]", this.currentPlayId, this.MAX_POSTPLAY_RECOS);
+        this.pqlQuery2 = String.format("['videos', '%s', 'postplay', {'to':%d}, 'videoRef', ['summary','detail', 'rating', 'inQueue', 'bookmark', 'socialEvidence']]", this.currentPlayId, this.MAX_POSTPLAY_RECOS);
+        this.pqlQuery3 = String.format("['videos', '%s', 'postplay', {'to':%d}, 'videoRef', 'episodes', 'current', ['detail', 'bookmark']]", this.currentPlayId, this.MAX_POSTPLAY_RECOS);
     }
     
     @Override
@@ -63,41 +65,47 @@ public class FetchPostPlayVideosRequest extends FalcorVolleyWebClientRequest<Lis
     @Override
     protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onPostPlayVideosFetched(Collections.emptyList(), status);
+            this.responseCallback.onPostPlayVideosFetched(null, status);
         }
     }
     
     @Override
-    protected void onSuccess(final List<PostPlayVideo> list) {
+    protected void onSuccess(final PostPlayVideosProvider postPlayVideosProvider) {
         if (this.responseCallback != null) {
-            this.responseCallback.onPostPlayVideosFetched(list, CommonStatus.OK);
+            this.responseCallback.onPostPlayVideosFetched(postPlayVideosProvider, CommonStatus.OK);
         }
     }
     
     @Override
-    protected List<PostPlayVideo> parseFalcorResponse(final String s) {
+    protected PostPlayVideosProvider parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_postplay", 2)) {
             Log.v("nf_postplay", "String response to parse = " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_postplay", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            return new ArrayList<PostPlayVideo>();
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_postplay", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            return null;
         }
-        ArrayList<com.netflix.mediaclient.service.webclient.model.PostPlayVideo> list;
+        ArrayList<PostPlayVideo> list;
+        ArrayList<PostPlayContext> list2;
         while (true) {
-            list = (ArrayList<com.netflix.mediaclient.service.webclient.model.PostPlayVideo>)new ArrayList<PostPlayVideo>();
+            list = new ArrayList<PostPlayVideo>();
+            list2 = new ArrayList<PostPlayContext>();
             while (true) {
-                int intValue = 0;
-                Label_0463: {
+                int n = 0;
+                Label_0520: {
                     try {
                         final JsonObject asJsonObject = dataObj.getAsJsonObject().getAsJsonObject("videos").getAsJsonObject(this.currentPlayId).getAsJsonObject("postplay");
-                        intValue = this.MAX_POSTPLAY_RECOS;
-                        if (intValue >= 0) {
-                            final String string = Integer.toString(intValue);
+                        n = this.MAX_POSTPLAY_RECOS - 1;
+                        if (n >= 0) {
+                            final String string = Integer.toString(n);
                             if (asJsonObject.has(string)) {
-                                final com.netflix.mediaclient.service.webclient.model.PostPlayVideo postPlayVideo = new com.netflix.mediaclient.service.webclient.model.PostPlayVideo();
                                 final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject(string);
-                                postPlayVideo.summary = FalcorParseUtils.getPropertyObject(asJsonObject2, "summary", Video$Summary.class);
+                                final JsonObject asJsonObject3 = asJsonObject2.getAsJsonObject("videoRef");
+                                if (Log.isLoggable("nf_postplay", 2)) {
+                                    Log.v("nf_postplay", "Creating PostPlayVideo, index: " + string);
+                                }
+                                final PostPlayVideo postPlayVideo = new PostPlayVideo();
+                                postPlayVideo.summary = FalkorParseUtils.getPropertyObject(asJsonObject3, "summary", Video$Summary.class);
                                 VideoType videoType;
                                 if (postPlayVideo.summary != null) {
                                     videoType = postPlayVideo.summary.getType();
@@ -106,40 +114,40 @@ public class FetchPostPlayVideosRequest extends FalcorVolleyWebClientRequest<Lis
                                     videoType = VideoType.UNKNOWN;
                                 }
                                 if (VideoType.MOVIE.equals(videoType) || VideoType.SHOW.equals(videoType)) {
-                                    postPlayVideo.detail = FalcorParseUtils.getPropertyObject(asJsonObject2, "detail", Video$Detail.class);
+                                    postPlayVideo.detail = FalkorParseUtils.getPropertyObject(asJsonObject3, "detail", Video$Detail.class);
                                 }
                                 else if (VideoType.EPISODE.equals(videoType)) {
-                                    postPlayVideo.episodeDetail = FalcorParseUtils.getPropertyObject(asJsonObject2, "detail", Episode$Detail.class);
+                                    postPlayVideo.episodeDetail = FalkorParseUtils.getPropertyObject(asJsonObject3, "detail", Episode$Detail.class);
                                 }
-                                postPlayVideo.rating = FalcorParseUtils.getPropertyObject(asJsonObject2, "rating", Video$UserRating.class);
-                                postPlayVideo.inQueue = FalcorParseUtils.getPropertyObject(asJsonObject2, "inQueue", Video$InQueue.class);
-                                postPlayVideo.bookmark = FalcorParseUtils.getPropertyObject(asJsonObject2, "bookmark", Video$Bookmark.class);
-                                postPlayVideo.socialEvidence = FalcorParseUtils.getPropertyObject(asJsonObject2, "socialEvidence", SocialEvidence.class);
+                                postPlayVideo.rating = FalkorParseUtils.getPropertyObject(asJsonObject3, "rating", Video$UserRating.class);
+                                postPlayVideo.inQueue = FalkorParseUtils.getPropertyObject(asJsonObject3, "inQueue", Video$InQueue.class);
+                                postPlayVideo.bookmark = FalkorParseUtils.getPropertyObject(asJsonObject3, "bookmark", Video$Bookmark.class);
+                                postPlayVideo.socialEvidence = FalkorParseUtils.getPropertyObject(asJsonObject3, "socialEvidence", SocialEvidence.class);
                                 postPlayVideo.userConnectedToFacebook = this.userConnectedToFacebook;
-                                postPlayVideo.postplayContext = FalcorParseUtils.getPropertyObject(asJsonObject2, "postplayContext", PostPlayVideo$PostPlayContext.class);
-                                if (VideoType.SHOW.equals(videoType) && asJsonObject2.has("episodes")) {
-                                    final JsonObject asJsonObject3 = asJsonObject2.getAsJsonObject("episodes");
-                                    if (asJsonObject3.has("current")) {
-                                        final JsonObject asJsonObject4 = asJsonObject3.getAsJsonObject("current");
-                                        postPlayVideo.episodeDetail = FalcorParseUtils.getPropertyObject(asJsonObject4, "detail", Episode$Detail.class);
-                                        postPlayVideo.bookmark = FalcorParseUtils.getPropertyObject(asJsonObject4, "bookmark", Video$Bookmark.class);
+                                if (VideoType.SHOW.equals(videoType) && asJsonObject3.has("episodes")) {
+                                    final JsonObject asJsonObject4 = asJsonObject3.getAsJsonObject("episodes");
+                                    if (asJsonObject4.has("current")) {
+                                        final JsonObject asJsonObject5 = asJsonObject4.getAsJsonObject("current");
+                                        postPlayVideo.episodeDetail = FalkorParseUtils.getPropertyObject(asJsonObject5, "detail", Episode$Detail.class);
+                                        postPlayVideo.bookmark = FalkorParseUtils.getPropertyObject(asJsonObject5, "bookmark", Video$Bookmark.class);
                                     }
                                 }
                                 list.add(0, postPlayVideo);
+                                list2.add(0, FalkorParseUtils.getPropertyObject(asJsonObject2, "postplayContext", PostPlayVideo$PostPlayContext.class));
                             }
-                            break Label_0463;
+                            break Label_0520;
                         }
                     }
                     catch (Exception ex) {
-                        Log.v("nf_postplay", "String response to parse = " + s);
-                        throw new FalcorParseException("response missing expected json objects", ex);
+                        Log.d("nf_postplay", "String response to parse = " + s);
+                        throw new FalkorParseException("response missing expected json objects", ex);
                     }
                     break;
                 }
-                --intValue;
+                --n;
                 continue;
             }
         }
-        return (List<PostPlayVideo>)list;
+        return new PostPlayVideosProvider((List<com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo>)list, list2);
     }
 }

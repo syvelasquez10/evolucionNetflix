@@ -4,8 +4,10 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.text.Html;
+import com.netflix.mediaclient.util.gfx.ImageLoader;
+import com.netflix.mediaclient.servicemgr.model.HdEnabledProvider;
+import com.netflix.mediaclient.servicemgr.model.Ratable;
 import com.netflix.mediaclient.util.StringUtils;
 import android.view.View$OnClickListener;
 import java.util.List;
@@ -19,7 +21,6 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import android.app.Activity;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.LayoutInflater;
@@ -41,19 +42,20 @@ public class VideoDetailsViewGroup extends LinearLayout
     private static final String TAG = "VideoDetailsViewGroup";
     private View actionBarDummyView;
     private Button addToMyList;
-    private TextView basicInfo;
+    protected TextView basicInfo;
     private TextView creators;
     private Drawable hdDrawable;
     private int hdDrawablePadding;
-    private AdvancedImageView horzDispImg;
+    protected AdvancedImageView horzDispImg;
     private ViewGroup imgGroup;
-    private NetflixRatingBar ratingBar;
+    protected NetflixRatingBar ratingBar;
     private Button recommend;
+    protected TextView relatedTitle;
     private LinearLayout socialGroup;
     private TextView socialTitle;
     private TextView starring;
-    private TextView synopsis;
-    private TextView title;
+    protected TextView synopsis;
+    protected TextView title;
     
     public VideoDetailsViewGroup(final Context context) {
         super(context);
@@ -71,7 +73,10 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private Drawable buildHdDrawable() {
-        final Drawable drawable = this.getResources().getDrawable(2130837658);
+        if (this.basicInfo == null) {
+            return null;
+        }
+        final Drawable drawable = this.getResources().getDrawable(2130837662);
         double n;
         if (drawable.getIntrinsicHeight() > 0) {
             n = this.basicInfo.getHeight() * drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
@@ -84,34 +89,25 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private int getHdDrawablePadding() {
-        return this.getResources().getDimensionPixelSize(2131361862);
+        return this.getResources().getDimensionPixelSize(2131361879);
     }
     
     private void init() {
-        LayoutInflater.from(this.getContext()).inflate(2130903200, (ViewGroup)this, true);
+        LayoutInflater.from(this.getContext()).inflate(this.getlayoutId(), (ViewGroup)this, true);
         this.setOrientation(1);
         this.addView(this.actionBarDummyView = ViewUtils.createActionBarDummyView((NetflixActivity)this.getContext()), 0);
-        this.imgGroup = (ViewGroup)this.findViewById(2131165684);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131165676);
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131165589);
-        this.title = (TextView)this.findViewById(2131165677);
-        this.basicInfo = (TextView)this.findViewById(2131165588);
-        this.synopsis = (TextView)this.findViewById(2131165681);
-        this.starring = (TextView)this.findViewById(2131165682);
-        this.creators = (TextView)this.findViewById(2131165683);
-        (this.addToMyList = (Button)this.findViewById(2131165673)).setEnabled(false);
-        this.recommend = (Button)this.findViewById(2131165672);
-        this.socialGroup = (LinearLayout)this.findViewById(2131165680);
-        this.socialTitle = (TextView)this.findViewById(2131165679);
+        this.findViews();
+        if (this.addToMyList != null) {
+            this.addToMyList.setEnabled(false);
+        }
         this.hdDrawablePadding = this.getHdDrawablePadding();
         this.setImgLayoutListener();
     }
     
-    private boolean isDeviceHd(final Activity activity) {
-        return ((NetflixActivity)activity).getServiceManager() != null && ((NetflixActivity)activity).getServiceManager().isDeviceHd();
-    }
-    
     private void setHdIcon() {
+        if (this.basicInfo == null) {
+            return;
+        }
         this.basicInfo.setCompoundDrawablePadding(this.hdDrawablePadding);
         this.basicInfo.setCompoundDrawables((Drawable)null, (Drawable)null, this.hdDrawable, (Drawable)null);
     }
@@ -158,10 +154,10 @@ public class VideoDetailsViewGroup extends LinearLayout
             Log.v("VideoDetailsViewGroup", "No friends available for this detail view");
         }
         else {
-            this.socialTitle.setText(2131493195);
-            final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361905);
+            this.socialTitle.setText(2131493202);
+            final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361923);
             final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(dimensionPixelOffset, dimensionPixelOffset);
-            final int dimensionPixelOffset2 = this.getResources().getDimensionPixelOffset(2131361906);
+            final int dimensionPixelOffset2 = this.getResources().getDimensionPixelOffset(2131361924);
             linearLayout$LayoutParams.topMargin = dimensionPixelOffset2;
             linearLayout$LayoutParams.bottomMargin = dimensionPixelOffset2;
             final int n2 = dimensionPixelOffset2 / 2;
@@ -190,12 +186,64 @@ public class VideoDetailsViewGroup extends LinearLayout
         }
     }
     
+    protected void alignViews() {
+        final ViewGroup$LayoutParams layoutParams = this.horzDispImg.getLayoutParams();
+        layoutParams.height = this.calculateImageHeight();
+        this.horzDispImg.setLayoutParams(layoutParams);
+    }
+    
+    protected int calculateImageHeight() {
+        int n;
+        if ((n = this.imgGroup.getMeasuredWidth()) <= 0) {
+            n = DeviceUtils.getScreenWidthInPixels(this.getContext());
+        }
+        return (int)(n * 0.5625f);
+    }
+    
+    protected void findViews() {
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131165419);
+        this.socialGroup = (LinearLayout)this.findViewById(2131165690);
+        this.socialTitle = (TextView)this.findViewById(2131165689);
+        this.addToMyList = (Button)this.findViewById(2131165685);
+        this.basicInfo = (TextView)this.findViewById(2131165604);
+        this.recommend = (Button)this.findViewById(2131165684);
+        this.synopsis = (TextView)this.findViewById(2131165460);
+        this.starring = (TextView)this.findViewById(2131165449);
+        this.creators = (TextView)this.findViewById(2131165450);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131165461);
+        this.title = (TextView)this.findViewById(2131165466);
+        this.imgGroup = (ViewGroup)this.findViewById(2131165691);
+        this.relatedTitle = (TextView)this.findViewById(2131165468);
+    }
+    
     public TextView getAddToMyListButton() {
         return (TextView)this.addToMyList;
     }
     
+    public TextView getAddToMyListButtonLabel() {
+        return null;
+    }
+    
+    public AdvancedImageView getHeroImage() {
+        return this.horzDispImg;
+    }
+    
     public TextView getRecommendButton() {
         return (TextView)this.recommend;
+    }
+    
+    public TextView getRecommendButtonLabel() {
+        return null;
+    }
+    
+    protected int getlayoutId() {
+        return 2130903209;
+    }
+    
+    public void hideRelatedTitle() {
+        if (this.relatedTitle != null) {
+            this.relatedTitle.setVisibility(4);
+        }
     }
     
     public void refreshImagesIfNecessary() {
@@ -211,49 +259,96 @@ public class VideoDetailsViewGroup extends LinearLayout
         }
     }
     
-    public void updateDetails(final VideoDetails details, final VideoDetailsViewGroup$DetailsStringProvider videoDetailsViewGroup$DetailsStringProvider) {
-        final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        final String format = String.format(this.getResources().getString(2131493159), details.getTitle());
-        final ImageLoader imageLoader = NetflixActivity.getImageLoader((Context)netflixActivity);
-        final AdvancedImageView horzDispImg = this.horzDispImg;
-        String s;
-        if (DeviceUtils.isTabletByContext(this.getContext())) {
-            s = details.getHorzDispUrl();
+    public void removeRelatedTitle() {
+        if (this.relatedTitle != null) {
+            this.relatedTitle.setVisibility(8);
         }
-        else {
-            s = details.getStoryDispUrl();
-        }
-        imageLoader.showImg(horzDispImg, s, IClientLogging$AssetType.boxArt, format, true, true);
+    }
+    
+    protected void setupImageClicks(final VideoDetails videoDetails, final NetflixActivity netflixActivity) {
         this.horzDispImg.requestFocus();
-        this.horzDispImg.setOnClickListener((View$OnClickListener)new VideoDetailsViewGroup$2(this, netflixActivity, details));
-        this.title.setText((CharSequence)details.getTitle());
+        this.horzDispImg.setOnClickListener((View$OnClickListener)new VideoDetailsViewGroup$2(this, netflixActivity, videoDetails));
+    }
+    
+    public void showRelatedTitle() {
+        if (this.relatedTitle != null) {
+            this.relatedTitle.setVisibility(0);
+        }
+    }
+    
+    protected void updateBasicInfo(final VideoDetailsViewGroup$DetailsStringProvider videoDetailsViewGroup$DetailsStringProvider) {
         this.basicInfo.setText(videoDetailsViewGroup$DetailsStringProvider.getBasicInfoString());
-        if (this.isDeviceHd(netflixActivity) && details.isVideoHd()) {
+    }
+    
+    protected void updateCredits(final VideoDetailsViewGroup$DetailsStringProvider videoDetailsViewGroup$DetailsStringProvider) {
+        this.starring.setText(videoDetailsViewGroup$DetailsStringProvider.getStarringText());
+        final CharSequence creatorsText = videoDetailsViewGroup$DetailsStringProvider.getCreatorsText();
+        if (StringUtils.isEmpty(creatorsText)) {
+            this.creators.setVisibility(8);
+            return;
+        }
+        this.creators.setText(creatorsText);
+        this.creators.setVisibility(0);
+    }
+    
+    public void updateDetails(final VideoDetails video, final VideoDetailsViewGroup$DetailsStringProvider videoDetailsViewGroup$DetailsStringProvider) {
+        final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
+        this.updateImage(video, netflixActivity, String.format(this.getResources().getString(2131493166), video.getTitle()));
+        this.updateRelatedTitle(video);
+        this.updateTitle(video);
+        this.updateBasicInfo(videoDetailsViewGroup$DetailsStringProvider);
+        this.updateHD(video, netflixActivity);
+        this.ratingBar.setVideo(video);
+        this.updateSynopsis(video);
+        this.updateCredits(videoDetailsViewGroup$DetailsStringProvider);
+        this.updateSocialGroup(video);
+    }
+    
+    protected void updateHD(final VideoDetails videoDetails, final NetflixActivity netflixActivity) {
+        if (ViewUtils.shouldShowHdIcon(netflixActivity, videoDetails)) {
             if (this.hdDrawable == null) {
                 this.hdDrawable = this.buildHdDrawable();
             }
             this.setHdIcon();
         }
-        this.ratingBar.setDetails(details);
-        final String synopsis = details.getSynopsis();
+    }
+    
+    protected void updateImage(final VideoDetails videoDetails, final NetflixActivity netflixActivity, final String s) {
+        final ImageLoader imageLoader = NetflixActivity.getImageLoader((Context)netflixActivity);
+        final AdvancedImageView horzDispImg = this.horzDispImg;
+        String s2;
+        if (DeviceUtils.isTabletByContext((Context)netflixActivity)) {
+            s2 = videoDetails.getHorzDispUrl();
+        }
+        else {
+            s2 = videoDetails.getStoryDispUrl();
+        }
+        imageLoader.showImg(horzDispImg, s2, IClientLogging$AssetType.boxArt, s, true, true);
+        this.setupImageClicks(videoDetails, netflixActivity);
+    }
+    
+    protected void updateRelatedTitle(final VideoDetails videoDetails) {
+        if (this.relatedTitle != null) {
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131493152, new Object[] { videoDetails.getTitle() }));
+        }
+    }
+    
+    protected void updateSynopsis(final VideoDetails videoDetails) {
+        final String synopsis = videoDetails.getSynopsis();
         final TextView synopsis2 = this.synopsis;
         Object fromHtml;
         if (StringUtils.isEmpty(synopsis)) {
             fromHtml = "";
         }
         else {
-            fromHtml = Html.fromHtml(details.getSynopsis());
+            fromHtml = Html.fromHtml(videoDetails.getSynopsis());
         }
         synopsis2.setText((CharSequence)fromHtml);
-        this.starring.setText(videoDetailsViewGroup$DetailsStringProvider.getStarringText());
-        final CharSequence creatorsText = videoDetailsViewGroup$DetailsStringProvider.getCreatorsText();
-        if (StringUtils.isEmpty(creatorsText)) {
-            this.creators.setVisibility(8);
+    }
+    
+    protected void updateTitle(final VideoDetails videoDetails) {
+        if (this.title != null) {
+            this.title.setText((CharSequence)videoDetails.getTitle());
         }
-        else {
-            this.creators.setText(creatorsText);
-            this.creators.setVisibility(0);
-        }
-        this.updateSocialGroup(details);
     }
 }

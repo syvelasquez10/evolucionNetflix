@@ -31,15 +31,22 @@ class MaterialProgressDrawable$2 implements Animation$AnimationListener
     }
     
     public void onAnimationEnd(final Animation animation) {
-        this.val$ring.goToNextColor();
-        this.val$ring.storeOriginals();
-        this.val$ring.setShowArrow(false);
-        this.this$0.mParent.startAnimation(this.this$0.mAnimation);
     }
     
     public void onAnimationRepeat(final Animation animation) {
+        this.val$ring.storeOriginals();
+        this.val$ring.goToNextColor();
+        this.val$ring.setStartTrim(this.val$ring.getEndTrim());
+        if (this.this$0.mFinishing) {
+            this.this$0.mFinishing = false;
+            animation.setDuration(1333L);
+            this.val$ring.setShowArrow(false);
+            return;
+        }
+        this.this$0.mRotationCount = (this.this$0.mRotationCount + 1.0f) % 5.0f;
     }
     
     public void onAnimationStart(final Animation animation) {
+        this.this$0.mRotationCount = 0.0f;
     }
 }

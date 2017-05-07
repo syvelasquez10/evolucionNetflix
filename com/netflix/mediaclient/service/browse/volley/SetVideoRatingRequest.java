@@ -16,9 +16,9 @@ import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class SetVideoRatingRequest extends FalcorVolleyWebClientRequest<UserRating>
+public class SetVideoRatingRequest extends FalkorVolleyWebClientRequest<UserRating>
 {
     private static final String FIELD_PATH = "path";
     private static final String FIELD_VALUE = "value";
@@ -98,7 +98,7 @@ public class SetVideoRatingRequest extends FalcorVolleyWebClientRequest<UserRati
     }
     
     @Override
-    protected UserRating parseFalcorResponse(final String p0) {
+    protected UserRating parseFalkorResponse(final String p0) {
         // 
         // This method could not be decompiled.
         // 
@@ -131,12 +131,12 @@ public class SetVideoRatingRequest extends FalcorVolleyWebClientRequest<UserRati
         //    52: invokevirtual   com/google/gson/JsonObject.getAsJsonObject:(Ljava/lang/String;)Lcom/google/gson/JsonObject;
         //    55: astore_3       
         //    56: aload_3        
-        //    57: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalcorParseUtils.isEmpty:(Lcom/google/gson/JsonObject;)Z
+        //    57: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalkorParseUtils.isEmpty:(Lcom/google/gson/JsonObject;)Z
         //    60: ifeq            121
-        //    63: new             Lcom/netflix/mediaclient/service/webclient/volley/FalcorParseException;
+        //    63: new             Lcom/netflix/mediaclient/service/webclient/volley/FalkorParseException;
         //    66: dup            
         //    67: ldc             "setRating failed ?"
-        //    69: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalcorParseException.<init>:(Ljava/lang/String;)V
+        //    69: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalkorParseException.<init>:(Ljava/lang/String;)V
         //    72: athrow         
         //    73: astore_2       
         //    74: ldc             "nf_service_browse_setvideoratingrequest"
@@ -155,20 +155,20 @@ public class SetVideoRatingRequest extends FalcorVolleyWebClientRequest<UserRati
         //   105: aload_2        
         //   106: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //   109: pop            
-        //   110: new             Lcom/netflix/mediaclient/service/webclient/volley/FalcorParseException;
+        //   110: new             Lcom/netflix/mediaclient/service/webclient/volley/FalkorParseException;
         //   113: dup            
         //   114: ldc             "Error in creating JsonObject"
         //   116: aload_2        
-        //   117: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalcorParseException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   117: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalkorParseException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
         //   120: athrow         
         //   121: aload_2        
-        //   122: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalcorParseUtils.containsErrors:(Lcom/google/gson/JsonObject;)Z
+        //   122: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalkorParseUtils.hasErrors:(Lcom/google/gson/JsonObject;)Z
         //   125: ifeq            140
-        //   128: new             Lcom/netflix/mediaclient/service/webclient/volley/FalcorServerException;
+        //   128: new             Lcom/netflix/mediaclient/service/webclient/volley/FalkorServerException;
         //   131: dup            
         //   132: aload_2        
-        //   133: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalcorParseUtils.getErrorMessage:(Lcom/google/gson/JsonObject;)Ljava/lang/String;
-        //   136: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalcorServerException.<init>:(Ljava/lang/String;)V
+        //   133: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalkorParseUtils.getErrorMessage:(Lcom/google/gson/JsonObject;)Ljava/lang/String;
+        //   136: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalkorServerException.<init>:(Ljava/lang/String;)V
         //   139: athrow         
         //   140: aload_3        
         //   141: ldc             "videos"
@@ -187,7 +187,7 @@ public class SetVideoRatingRequest extends FalcorVolleyWebClientRequest<UserRati
         //   168: aload_3        
         //   169: ldc             "rating"
         //   171: ldc             Lcom/netflix/mediaclient/service/webclient/model/branches/Video$UserRating;.class
-        //   173: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalcorParseUtils.getPropertyObject:(Lcom/google/gson/JsonObject;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;
+        //   173: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalkorParseUtils.getPropertyObject:(Lcom/google/gson/JsonObject;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;
         //   176: checkcast       Lcom/netflix/mediaclient/service/webclient/model/branches/Video$UserRating;
         //   179: astore_2       
         //   180: ldc             "nf_service_browse_setvideoratingrequest"
@@ -239,11 +239,11 @@ public class SetVideoRatingRequest extends FalcorVolleyWebClientRequest<UserRati
         //   267: aload_2        
         //   268: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //   271: pop            
-        //   272: new             Lcom/netflix/mediaclient/service/webclient/volley/FalcorParseException;
+        //   272: new             Lcom/netflix/mediaclient/service/webclient/volley/FalkorParseException;
         //   275: dup            
         //   276: ldc_w           "response missing expected json objects"
         //   279: aload_2        
-        //   280: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalcorParseException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   280: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalkorParseException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
         //   283: athrow         
         //   284: astore_1       
         //   285: ldc             "nf_service_browse_setvideoratingrequest"
@@ -263,11 +263,11 @@ public class SetVideoRatingRequest extends FalcorVolleyWebClientRequest<UserRati
         //   320: aload_1        
         //   321: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //   324: pop            
-        //   325: new             Lcom/netflix/mediaclient/service/webclient/volley/FalcorParseException;
+        //   325: new             Lcom/netflix/mediaclient/service/webclient/volley/FalkorParseException;
         //   328: dup            
         //   329: ldc_w           "Missing setRatingPathObj"
         //   332: aload_1        
-        //   333: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalcorParseException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   333: invokespecial   com/netflix/mediaclient/service/webclient/volley/FalkorParseException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
         //   336: athrow         
         //    Exceptions:
         //  Try           Handler

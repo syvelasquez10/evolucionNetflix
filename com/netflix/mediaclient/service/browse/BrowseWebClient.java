@@ -5,14 +5,14 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 
 public interface BrowseWebClient
 {
-    void addToQueue(final String p0, final int p1, final int p2, final int p3, final boolean p4, final String p5, final BrowseAgentCallback p6);
+    void addToQueue(final String p0, final int p1, final int p2, final int p3, final boolean p4, final boolean p5, final String p6, final BrowseAgentCallback p7);
     
     void fetchBBVideos(final LoMo p0, final int p1, final int p2, final BrowseAgentCallback p3);
     
@@ -24,11 +24,11 @@ public interface BrowseWebClient
     
     void fetchGenreLists(final BrowseAgentCallback p0);
     
-    void fetchGenreVideos(final LoMo p0, final int p1, final int p2, final BrowseAgentCallback p3);
+    void fetchGenreVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final BrowseAgentCallback p4);
     
     void fetchGenres(final String p0, final int p1, final int p2, final BrowseAgentCallback p3);
     
-    void fetchIQVideos(final int p0, final int p1, final BrowseAgentCallback p2);
+    void fetchIQVideos(final int p0, final int p1, final boolean p2, final BrowseAgentCallback p3);
     
     void fetchKidsCharacterDetails(final String p0, final BrowseAgentCallback p1);
     
@@ -44,7 +44,9 @@ public interface BrowseWebClient
     
     void fetchSeasons(final String p0, final int p1, final int p2, final BrowseAgentCallback p3);
     
-    void fetchShowDetails(final String p0, final String p1, final BrowseAgentCallback p2);
+    void fetchShowDetails(final String p0, final String p1, final boolean p2, final BrowseAgentCallback p3);
+    
+    void fetchShowDetailsAndSeasons(final String p0, final String p1, final boolean p2, final BrowseAgentCallback p3);
     
     void fetchSimilarVideosForPerson(final String p0, final int p1, final BrowseAgentCallback p2, final String p3);
     
@@ -52,7 +54,7 @@ public interface BrowseWebClient
     
     void fetchSocialNotifications(final int p0, final BrowseAgentCallback p1);
     
-    void fetchVideos(final LoMo p0, final int p1, final int p2, final BrowseAgentCallback p3);
+    void fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final BrowseAgentCallback p4);
     
     void hideVideo(final String p0, final BrowseAgentCallback p1);
     
@@ -62,13 +64,13 @@ public interface BrowseWebClient
     
     void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0, final BrowseAgentCallback p1);
     
-    void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final BrowseAgentCallback p5);
+    void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final BrowseAgentCallback p6);
     
-    void prefetchLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final BrowseAgentCallback p6);
+    void prefetchLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final boolean p6, final BrowseAgentCallback p7);
     
-    void refreshCWList(final int p0, final int p1, final BrowseAgentCallback p2);
+    void refreshCWList(final int p0, final int p1);
     
-    void refreshIQList(final int p0, final int p1, final BrowseAgentCallback p2);
+    void refreshIQList(final int p0, final int p1);
     
     void refreshKidsCharacterDetils(final String p0, final BrowseAgentCallback p1);
     

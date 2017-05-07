@@ -86,4 +86,8 @@ public class DummyMdx implements IMdx
     @Override
     public void switchPlaybackFromTarget(final String s, final int n) {
     }
+    
+    @Override
+    public void transferPlaybackFromLocal() {
+    }
 }

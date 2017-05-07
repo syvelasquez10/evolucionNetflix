@@ -89,7 +89,7 @@ public class SocialVideoView extends VideoView
     
     @SuppressLint({ "WrongCall" })
     private void drawConnectToFacebook(final Canvas canvas) {
-        this.setImageResource(2130837646);
+        this.setImageResource(2130837650);
         super.onDraw(canvas);
         Log.v("SocialVideoView", "drawConnectToFacebook: " + this.getWidth() + "x" + this.getHeight());
         canvas.save();
@@ -224,26 +224,26 @@ public class SocialVideoView extends VideoView
     
     private void init() {
         final Resources resources = this.getResources();
-        this.singleImgSize = resources.getDimensionPixelOffset(2131361895);
-        this.textSizeMicro = resources.getDimensionPixelOffset(2131361864);
-        this.padding = resources.getDimensionPixelOffset(2131361861);
+        this.singleImgSize = resources.getDimensionPixelOffset(2131361911);
+        this.textSizeMicro = resources.getDimensionPixelOffset(2131361881);
+        this.padding = resources.getDimensionPixelOffset(2131361878);
         this.initTextPaint(resources);
     }
     
     private void initTextPaint(final Resources resources) {
         if (SocialVideoView.microSecondaryLeftPaint == null) {
             (SocialVideoView.microSecondaryLeftPaint = new TextPaint()).setTextSize((float)this.textSizeMicro);
-            SocialVideoView.microSecondaryLeftPaint.setColor(resources.getColor(2131296365));
+            SocialVideoView.microSecondaryLeftPaint.setColor(resources.getColor(2131296370));
             SocialVideoView.microSecondaryLeftPaint.setTextAlign(Paint$Align.LEFT);
         }
         if (SocialVideoView.microSecondaryCenterPaint == null) {
             (SocialVideoView.microSecondaryCenterPaint = new TextPaint()).setTextSize((float)this.textSizeMicro);
-            SocialVideoView.microSecondaryCenterPaint.setColor(resources.getColor(2131296365));
+            SocialVideoView.microSecondaryCenterPaint.setColor(resources.getColor(2131296370));
             SocialVideoView.microSecondaryCenterPaint.setTextAlign(Paint$Align.CENTER);
         }
         if (SocialVideoView.smallPrimaryLeftPaint == null) {
-            (SocialVideoView.smallPrimaryLeftPaint = new TextPaint()).setTextSize((float)resources.getDimensionPixelOffset(2131361865));
-            SocialVideoView.smallPrimaryLeftPaint.setColor(resources.getColor(2131296364));
+            (SocialVideoView.smallPrimaryLeftPaint = new TextPaint()).setTextSize((float)resources.getDimensionPixelOffset(2131361882));
+            SocialVideoView.smallPrimaryLeftPaint.setColor(resources.getColor(2131296369));
             SocialVideoView.smallPrimaryLeftPaint.setTextAlign(Paint$Align.LEFT);
         }
     }
@@ -302,8 +302,8 @@ public class SocialVideoView extends VideoView
         if (n == 0 || n == n3) {
             return;
         }
-        this.connectText = new StaticLayout((CharSequence)this.getResources().getString(2131493192), SocialVideoView.smallPrimaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
-        this.socialGroupText = new StaticLayout((CharSequence)this.getResources().getString(2131493191), SocialVideoView.microSecondaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+        this.connectText = new StaticLayout((CharSequence)this.getResources().getString(2131493199), SocialVideoView.smallPrimaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+        this.socialGroupText = new StaticLayout((CharSequence)this.getResources().getString(2131493198), SocialVideoView.microSecondaryLeftPaint, n - this.padding * 2, Layout$Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
     }
     
     @Override

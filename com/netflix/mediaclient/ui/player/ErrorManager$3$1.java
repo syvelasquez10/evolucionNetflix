@@ -27,6 +27,7 @@ import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDesc
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.os.Handler;
 import java.util.Locale;
 import android.content.Intent;
@@ -46,7 +47,7 @@ class ErrorManager$3$1 implements Runnable
     @Override
     public void run() {
         if (Log.isLoggable("ErrorManager", 3)) {
-            Log.d("ErrorManager", "Open browser to " + this.val$urlLink);
+            Log.d("ErrorManager", "Open internal web view to " + this.val$urlLink);
         }
         this.this$1.this$0.context.startActivity(new Intent("android.intent.action.VIEW", Uri.parse(this.val$urlLink)));
         Log.d("ErrorManager", "Exit from playback after browser is started");

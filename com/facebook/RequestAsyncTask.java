@@ -11,11 +11,9 @@ import java.util.Collection;
 import java.util.concurrent.Executor;
 import java.net.HttpURLConnection;
 import java.lang.reflect.Method;
-import android.annotation.TargetApi;
 import java.util.List;
 import android.os.AsyncTask;
 
-@TargetApi(3)
 public class RequestAsyncTask extends AsyncTask<Void, Void, List<Response>>
 {
     private static final String TAG;
@@ -78,16 +76,22 @@ public class RequestAsyncTask extends AsyncTask<Void, Void, List<Response>>
     }
     
     RequestAsyncTask executeOnSettingsExecutor() {
-        try {
-            if (RequestAsyncTask.executeOnExecutorMethod != null) {
+        Label_0030: {
+            if (RequestAsyncTask.executeOnExecutorMethod == null) {
+                break Label_0030;
+            }
+            try {
                 RequestAsyncTask.executeOnExecutorMethod.invoke(this, Settings.getExecutor(), null);
                 return this;
+                this.execute((Object[])new Void[0]);
+                return this;
             }
-            goto Label_0031;
-        }
-        catch (IllegalAccessException ex) {}
-        catch (InvocationTargetException ex2) {
-            goto Label_0031;
+            catch (IllegalAccessException ex) {
+                return this;
+            }
+            catch (InvocationTargetException ex2) {
+                return this;
+            }
         }
     }
     

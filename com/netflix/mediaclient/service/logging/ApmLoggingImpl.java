@@ -13,7 +13,7 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$E
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.service.logging.apm.model.SharedContextSessionEndedEvent;
-import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
+import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
@@ -44,14 +44,14 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
 {
     private static final String TAG = "nf_log_apm";
     private ApplicationSession mApplicationSession;
-    private Map<String, UIAssetRequestSession> mAssetRequests;
+    private final Map<String, UIAssetRequestSession> mAssetRequests;
     private IClientLogging$ModalView mCurrentUiView;
     private DataContext mDataContext;
-    private Map<String, UIDataRequestSession> mDataRequests;
-    private Map<String, UIModelessViewSession> mDialogSessions;
-    private EventHandler mEventHandler;
-    private Map<String, NetworkConnectionSession> mNetworkConnectionSessions;
-    private ApmLoggingImpl$NetworkStatusMonitor mNetworkStatusMonitor;
+    private final Map<String, UIDataRequestSession> mDataRequests;
+    private final Map<String, UIModelessViewSession> mDialogSessions;
+    private final EventHandler mEventHandler;
+    private final Map<String, NetworkConnectionSession> mNetworkConnectionSessions;
+    private final ApmLoggingImpl$NetworkStatusMonitor mNetworkStatusMonitor;
     private String mNrdpLogSessionId;
     private SharedContextSession mSharedContextSession;
     private UIBrowseStartupSession mUIBrowseStartupSession;
@@ -205,9 +205,9 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         //    48: invokestatic    com/netflix/mediaclient/service/logging/client/model/HttpResponse.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/HttpResponse;
         //    51: astore_3       
         //    52: aload_1        
-        //    53: ldc_w           "falcorPathResults"
+        //    53: ldc_w           "falkorPathResults"
         //    56: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    59: invokestatic    com/netflix/mediaclient/service/logging/client/model/FalcorPathResult.createList:(Ljava/lang/String;)Ljava/util/List;
+        //    59: invokestatic    com/netflix/mediaclient/service/logging/client/model/FalkorPathResult.createList:(Ljava/lang/String;)Ljava/util/List;
         //    62: astore_1       
         //    63: aload_3        
         //    64: astore          4
@@ -387,7 +387,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     }
     
     @Override
-    public void endDataRequestSession(final String s, final List<FalcorPathResult> list, final IClientLogging$CompletionReason clientLogging$CompletionReason, final HttpResponse httpResponse, final Error error) {
+    public void endDataRequestSession(final String s, final List<FalkorPathResult> list, final IClientLogging$CompletionReason clientLogging$CompletionReason, final HttpResponse httpResponse, final Error error) {
         Log.d("nf_log_apm", "Data request session ended and posted to executor");
         this.mEventHandler.executeInBackground(new ApmLoggingImpl$13(this, s, clientLogging$CompletionReason, httpResponse, error, this.mDataContext, this.mCurrentUiView));
         Log.d("nf_log_apm", "Data request session end done.");

@@ -4,10 +4,14 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.RelativeLayout$LayoutParams;
+import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.nio.ByteBuffer;
-import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -19,6 +23,7 @@ import android.view.SurfaceHolder;
 import android.widget.ViewFlipper;
 import android.widget.TextView;
 import android.view.View;
+import android.animation.Animator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.netflix.mediaclient.ui.Screen;
@@ -29,6 +34,7 @@ public class PlayScreen implements Screen
     protected PlayScreen$Listeners listeners;
     protected RelativeLayout mBackground;
     protected ImageView mBif;
+    private Animator mBifAnim;
     protected BottomPanel mBottomPanel;
     protected View mBufferingOverlay;
     protected PlayerActivity mController;
@@ -41,15 +47,14 @@ public class PlayScreen implements Screen
     private PostPlay mPostPlayManager;
     private PlayerUiState mState;
     protected final TappableSurfaceView mSurface;
+    protected View mTabletBifsLayout;
     protected TopPanel mTopPanel;
     private boolean mZoomEnabled;
-    private final Runnable removeSoundBar;
     
     PlayScreen(final PlayerActivity mController, final PlayScreen$Listeners listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         this.mState = PlayerUiState.Loading;
         this.mNavigationBarSetVisibleInProgress = false;
         this.mZoomEnabled = true;
-        this.removeSoundBar = new PlayScreen$1(this);
         if (mController == null || listeners == null) {
             throw new IllegalArgumentException("Argument can not be null!");
         }
@@ -57,7 +62,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165534);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165561);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -66,10 +71,18 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131165537);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131165462);
-        this.mBufferingOverlay = mController.findViewById(2131165565);
-        this.mBif = (ImageView)mController.findViewById(2131165535);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131165368);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131165367);
+        this.mBufferingOverlay = mController.findViewById(2131165583);
+        int n;
+        if (mController.isTablet()) {
+            n = 2131165580;
+        }
+        else {
+            n = 2131165562;
+        }
+        this.mBif = (ImageView)mController.findViewById(n);
+        this.mTabletBifsLayout = mController.findViewById(2131165579);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -118,7 +131,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131296350);
+        final int color = this.mController.getResources().getColor(2131296356);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -137,7 +150,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131296350);
+        final int color = this.mController.getResources().getColor(2131296356);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -169,18 +182,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903150;
+            return 2130903160;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903155;
+            return 2130903164;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903156;
+            return 2130903165;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903151;
+        return 2130903161;
     }
     
     public boolean canExitPlaybackEndOfPlay() {
@@ -210,16 +223,16 @@ public class PlayScreen implements Screen
         }
     }
     
+    public void changeActionState(final boolean b) {
+        this.changeActionState(b, true);
+    }
+    
     public void changeActionState(final boolean b, final boolean b2) {
         if (this.mTopPanel != null) {
             this.mTopPanel.changeActionState(b);
         }
         if (this.mBottomPanel != null) {
-            if (!b2) {
-                this.mBottomPanel.changeActionState(b);
-                return;
-            }
-            this.mBottomPanel.enableButtons(b);
+            this.mBottomPanel.changeActionState(b, b2);
         }
     }
     
@@ -262,23 +275,12 @@ public class PlayScreen implements Screen
         return this.mController;
     }
     
-    public String getCurrentTitle() {
-        if (this.mTopPanel == null) {
-            return null;
-        }
-        return this.mTopPanel.getCurrentTitle();
-    }
-    
     SurfaceHolder getHolder() {
         return this.mHolder;
     }
     
     MdxTargetSelection getMdxTargetSelector() {
-        return this.mBottomPanel.getMdxTargetSelector();
-    }
-    
-    ImageView getMedia() {
-        return (ImageView)this.mBottomPanel.getMedia();
+        return this.mTopPanel.getMdxTargetSelector();
     }
     
     PostPlay getPostPlay() {
@@ -297,14 +299,6 @@ public class PlayScreen implements Screen
         return this.mTopPanel;
     }
     
-    ImageView getZoom() {
-        final BottomPanel mBottomPanel = this.mBottomPanel;
-        if (mBottomPanel != null) {
-            return (ImageView)mBottomPanel.getZoom();
-        }
-        return null;
-    }
-    
     void hideNavigationBar() {
         Log.d("screen", "hide nav noop");
     }
@@ -318,45 +312,34 @@ public class PlayScreen implements Screen
     boolean inPostPlayOrPendingPostplay() {
         synchronized (this) {
             if (Log.isLoggable("screen", 3)) {
-                Log.d("screen", "canIgnoreSurfaceDestroyed, state: " + this.mState + ", pending state: " + this.mPendingState);
+                Log.d("screen", "inPostPlayOrPendingPostplay, state: " + this.mState + ", pending state: " + this.mPendingState);
             }
             return this.mState == PlayerUiState.PostPlay || this.mPendingState == PlayerUiState.PostPlay;
         }
-    }
-    
-    void initAudioProgress(final int n) {
-        if (Log.isLoggable("screen", 3)) {
-            Log.d("screen", "InitAudioProgress: pos " + n);
-        }
-        this.mTopPanel.initAudioProgress(n);
     }
     
     void initProgress(final int n) {
         this.mBottomPanel.initProgress(n);
     }
     
-    void moveCurrentTimeWithTimeline(final boolean b, final boolean b2) {
-        final BottomPanel mBottomPanel = this.mBottomPanel;
-        if (mBottomPanel != null && mBottomPanel.getCurrentTime() != null) {
-            mBottomPanel.getCurrentTime().move(b, b2);
-        }
-    }
-    
     protected void moveToState(final PlayerUiState playerUiState) {
         while (true) {
             while (true) {
-                Label_0073: {
+                Label_0111: {
                     synchronized (this) {
                         if (this.mState == playerUiState) {
-                            Log.d("screen", "Already in this state, do nothing: " + playerUiState);
+                            Log.d("screen", "moveToState() Already in this state, do nothing: " + playerUiState);
                         }
                         else {
                             if ((this.mPendingState = playerUiState) != PlayerUiState.Loading) {
-                                break Label_0073;
+                                break Label_0111;
                             }
                             this.moveToLoading();
                             this.mState = playerUiState;
                             this.mPendingState = null;
+                            if (Log.isLoggable("screen", 4)) {
+                                Log.i("screen", "moveToState() finished moving to state: " + this.mState);
+                            }
                         }
                         return;
                     }
@@ -471,13 +454,6 @@ public class PlayScreen implements Screen
         this.showSplashScreen();
     }
     
-    int setAudioProgress(final int audioProgress) {
-        if (Log.isLoggable("screen", 3)) {
-            Log.d("screen", "SetAudioProgress: pos " + audioProgress);
-        }
-        return this.mTopPanel.setAudioProgress(audioProgress);
-    }
-    
     void setBufferingOverlayVisibility(final boolean b) {
         final View mBufferingOverlay = this.mBufferingOverlay;
         if (mBufferingOverlay == null) {
@@ -502,22 +478,8 @@ public class PlayScreen implements Screen
     void setDebugDataVisibility(final boolean b) {
     }
     
-    public void setLanguage(final Language language) {
-        final TopPanel mTopPanel = this.mTopPanel;
-        if (mTopPanel != null) {
-            mTopPanel.setLanguage(language);
-        }
-    }
-    
-    void setLastTimeState(final boolean lastTimeState) {
-        final BottomPanel mBottomPanel = this.mBottomPanel;
-        if (mBottomPanel != null && mBottomPanel.getLastTime() != null) {
-            mBottomPanel.getLastTime().setLastTimeState(lastTimeState);
-        }
-    }
-    
     int setProgress(final int n, final int n2, final boolean b) {
-        return this.setProgress(n, n2, b, false);
+        return this.setProgress(n, n2, b, true);
     }
     
     int setProgress(final int n, final int n2, final boolean b, final boolean b2) {
@@ -528,31 +490,10 @@ public class PlayScreen implements Screen
         return 0;
     }
     
-    void setSoundBarVisibility(final boolean b) {
-        if (this.mState == PlayerUiState.Playing) {
-            Log.d("screen", "AUDIO:: sound bar is NOT visible");
-            if (b) {
-                Log.d("screen", "AUDIO:: sound bar make it visible");
-                this.mTopPanel.showSoundSection();
-                this.mSurface.removeCallbacks(this.removeSoundBar);
-                return;
-            }
-            Log.d("screen", "AUDIO:: sound bar hide with 0.5 sec delay");
-            this.mSurface.postDelayed(this.removeSoundBar, 500L);
-        }
-        else {
-            if (this.mState == PlayerUiState.PlayingWithTrickPlayOverlay) {
-                Log.d("screen", "AUDIO:: state loaded tapped. Sound bar is already visible");
-                return;
-            }
-            Log.d("screen", "AUDIO:: SPLASH screen, ignore all");
-        }
-    }
-    
-    void setTitles(final String s, final String s2) {
+    void setTitle(final String title) {
         final TopPanel mTopPanel = this.mTopPanel;
         if (mTopPanel != null) {
-            mTopPanel.setTitles(s, s2);
+            mTopPanel.setTitle(title);
         }
     }
     
@@ -594,8 +535,11 @@ public class PlayScreen implements Screen
             Log.d("screen", "bif data is null");
             return;
         }
-        if (this.mBif.getVisibility() != 0) {
-            this.mBif.setVisibility(0);
+        if (((NetflixActivity)this.getController()).isTablet()) {
+            final int dipToPixels = AndroidUtils.dipToPixels((Context)this.getController(), 40);
+            final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.mTabletBifsLayout.getLayoutParams();
+            layoutParams.setMargins(this.mBottomPanel.getTimeXAndUpdateHandler(this.mTabletBifsLayout), 0, 0, dipToPixels);
+            this.mTabletBifsLayout.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
         }
         final Bitmap decodeByteArray = BitmapFactory.decodeByteArray(byteBuffer.array(), byteBuffer.position(), byteBuffer.limit());
         if (decodeByteArray != null) {
@@ -618,14 +562,13 @@ public class PlayScreen implements Screen
         }
     }
     
-    void snapToPosition(final int n, final int n2) {
-        final BottomPanel mBottomPanel = this.mBottomPanel;
-        if (mBottomPanel != null) {
-            mBottomPanel.snapToPosition(n, n2);
-        }
-    }
-    
     public void startBif(final ByteBuffer byteBuffer) {
+        if (((NetflixActivity)this.getController()).isTablet()) {
+            this.mBifAnim = AnimationUtils.startViewAppearanceAnimation(this.mTabletBifsLayout, true);
+        }
+        else {
+            AnimationUtils.startViewAppearanceAnimation((View)this.mBif, true);
+        }
         this.showBif(byteBuffer);
     }
     
@@ -637,9 +580,16 @@ public class PlayScreen implements Screen
     }
     
     public void stopBif() {
-        if (this.mBif != null) {
-            this.mBif.setVisibility(8);
+        if (!((NetflixActivity)this.getController()).isTablet()) {
+            AnimationUtils.startViewAppearanceAnimation((View)this.mBif, false);
+            return;
         }
+        if (this.mBifAnim != null && this.mBifAnim.isRunning()) {
+            this.mBifAnim.cancel();
+            this.mTabletBifsLayout.setAlpha(0.0f);
+            return;
+        }
+        AnimationUtils.startViewAppearanceAnimation(this.mTabletBifsLayout, false);
     }
     
     void stopCurrentTime(final boolean b) {

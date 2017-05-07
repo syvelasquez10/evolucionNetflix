@@ -68,12 +68,12 @@ public final class NflxHandlerFactory
     }
     
     public static NflxHandler getHandlerForIntent(final NetflixActivity netflixActivity, final Intent intent, final long n) {
+        NflxProtocolUtils.reportUserOpenedNotification(netflixActivity.getServiceManager(), intent);
         Log.d("NflxHandler", "Handle NFLX intent starts...");
         if (intent == null) {
             Log.v("NflxHandler", "null intent");
             return new NotHandlingActionHandler();
         }
-        NflxProtocolUtils.reportUserOpenedNotification(netflixActivity.getServiceManager(), intent);
         if (!"android.intent.action.VIEW".equalsIgnoreCase(intent.getAction())) {
             Log.v("NflxHandler", "unknown action");
             return new NotHandlingActionHandler();

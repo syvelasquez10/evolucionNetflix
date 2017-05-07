@@ -4,12 +4,16 @@
 
 package com.netflix.mediaclient.util;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import com.netflix.mediaclient.repository.SecurityRepository;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.configuration.esn.BaseEsnProvider;
 import android.view.KeyCharacterMap;
 import android.annotation.SuppressLint;
-import android.util.DisplayMetrics;
+import android.content.pm.ApplicationInfo;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
@@ -26,6 +30,8 @@ public final class DeviceUtils
     public static final int SCREEN_SIZE_NORMAL = 2;
     public static final int SCREEN_SIZE_SMALL = 1;
     public static final int SCREEN_SIZE_XLARGE = 4;
+    private static final String SYSTEM_PROPERTY_LOCAL_PLAYBACK_ENABLED = "ro.nrdp.playback.enable";
+    private static final String SYSTEM_PROPERTY_REMOTE_CONTROLS_ENABLED = "ro.nrdp.mdx.remotecontrols";
     private static final String TAG = "nf_device_utils";
     private static AtomicBoolean sFirstStartAfterInstall;
     
@@ -85,12 +91,24 @@ public final class DeviceUtils
         // monitorexit(DeviceUtils.class)
     }
     
+    public static String getNativeLibraryDirectory(final Context context) {
+        final ApplicationInfo applicationInfo = context.getApplicationInfo();
+        if ((applicationInfo.flags & 0x80) != 0x0 || (applicationInfo.flags & 0x1) == 0x0) {
+            return applicationInfo.nativeLibraryDir;
+        }
+        return null;
+    }
+    
+    public static int getScreenHeightInDPs(final Context context) {
+        return context.getResources().getConfiguration().screenHeightDp;
+    }
+    
     public static int getScreenHeightInPixels(final Context context) {
         return context.getResources().getDisplayMetrics().heightPixels;
     }
     
-    public static String getScreenResolutionCategoryString(final Activity activity) {
-        switch (getScreenResolutionDpi(activity)) {
+    public static String getScreenResolutionCategoryString(final Context context) {
+        switch (getScreenResolutionDpi(context)) {
             default: {
                 return "unknown";
             }
@@ -118,10 +136,8 @@ public final class DeviceUtils
         }
     }
     
-    public static int getScreenResolutionDpi(final Activity activity) {
-        final DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        return displayMetrics.densityDpi;
+    public static int getScreenResolutionDpi(final Context context) {
+        return context.getResources().getDisplayMetrics().densityDpi;
     }
     
     @SuppressLint({ "InlinedApi" })
@@ -157,6 +173,10 @@ public final class DeviceUtils
                 return "undefined";
             }
         }
+    }
+    
+    public static int getScreenWidthInDPs(final Context context) {
+        return context.getResources().getConfiguration().screenWidthDp;
     }
     
     public static int getScreenWidthInPixels(final Context context) {
@@ -242,6 +262,11 @@ public final class DeviceUtils
         }
     }
     
+    public static boolean isDeviceHd(final NetflixActivity netflixActivity) {
+        final ServiceManager serviceManager = netflixActivity.getServiceManager();
+        return serviceManager != null && serviceManager.isDeviceHd();
+    }
+    
     public static boolean isFirstApplicationStartAfterInstallation(final Context context) {
         Label_0059: {
             if (DeviceUtils.sFirstStartAfterInstall != null) {
@@ -265,12 +290,30 @@ public final class DeviceUtils
         return context.getResources().getConfiguration().orientation == 2;
     }
     
+    public static boolean isLocalPlaybackEnabled() {
+        final String systemPropety = SecurityRepository.getSystemPropety("ro.nrdp.playback.enable");
+        final boolean b = StringUtils.isEmpty(systemPropety) || "true".equalsIgnoreCase(systemPropety);
+        if (Log.isLoggable("nf_device_utils", 3)) {
+            Log.d("nf_device_utils", "isLocalPlaybackEnabled:: value: " + systemPropety + ", enabled: " + b);
+        }
+        return b;
+    }
+    
     public static boolean isNotTabletByContext(final Context context) {
         return !isTabletByContext(context);
     }
     
     public static boolean isPortrait(final Context context) {
         return context.getResources().getConfiguration().orientation == 1;
+    }
+    
+    public static boolean isRemoteControlEnabled() {
+        final String systemPropety = SecurityRepository.getSystemPropety("ro.nrdp.mdx.remotecontrols");
+        final boolean b = StringUtils.isEmpty(systemPropety) || "true".equalsIgnoreCase(systemPropety);
+        if (Log.isLoggable("nf_device_utils", 3)) {
+            Log.d("nf_device_utils", "isRemoteControlEnabled:: value: " + systemPropety + ", enabled: " + b);
+        }
+        return b;
     }
     
     public static boolean isTabletByContext(final Context context) {
@@ -313,6 +356,40 @@ public final class DeviceUtils
                 Log.d("nf_device_utils", "Screen size large - tablet UI");
                 return true;
             }
+        }
+    }
+    
+    public static boolean loadNativeLibrary(final Context context, final String s) {
+        if (StringUtils.isEmpty(s)) {
+            throw new IllegalArgumentException("Library name not provided!");
+        }
+        final String nativeLibraryDirectory = getNativeLibraryDirectory(context);
+        while (true) {
+            if (nativeLibraryDirectory != null) {
+                try {
+                    if (Log.isLoggable("nf_device_utils", 3)) {
+                        Log.d("nf_device_utils", "Loading library " + s + " from app file system. Installed or updated app.");
+                    }
+                    final String string = nativeLibraryDirectory + "/lib" + s + ".so";
+                    if (Log.isLoggable("nf_device_utils", 3)) {
+                        Log.d("nf_device_utils", "Loading from " + string);
+                    }
+                    System.load(string);
+                    return true;
+                    // iftrue(Label_0182:, !Log.isLoggable("nf_device_utils", 3))
+                    Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
+                    Label_0182: {
+                        System.loadLibrary(s);
+                    }
+                }
+                catch (Throwable t) {
+                    Log.e("nf_device_utils", "Failed to load library from assumed location", t);
+                    ErrorLoggingManager.logHandledException(t);
+                    return false;
+                }
+                return true;
+            }
+            continue;
         }
     }
     

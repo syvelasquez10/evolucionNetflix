@@ -12,9 +12,9 @@ import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchDummyWebRequest extends FalcorVolleyWebClientRequest<String>
+public class FetchDummyWebRequest extends FalkorVolleyWebClientRequest<String>
 {
     private static final String TAG = "nf_service_user_fetchdummywebrequest";
     private final String pqlQuery;
@@ -49,7 +49,7 @@ public class FetchDummyWebRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected String parseFalcorResponse(final String s) {
+    protected String parseFalkorResponse(final String s) {
         return Integer.toString(StatusCode.OK.getValue());
     }
     

@@ -4,21 +4,15 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.falkor.BranchNode;
-import com.netflix.falkor.ModelProxy;
-import com.netflix.model.branches.FalkorSeason;
+import com.netflix.model.leafs.SearchTrackableListSummary;
+import com.netflix.falkor.Ref;
+import com.netflix.model.branches.SummarizedList;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$10 implements Func<FalkorSeason>
+final class Falkor$Creator$10 implements Func<SummarizedList<Ref, SearchTrackableListSummary>>
 {
-    final /* synthetic */ ModelProxy val$proxy;
-    
-    Falkor$Creator$10(final ModelProxy val$proxy) {
-        this.val$proxy = val$proxy;
-    }
-    
     @Override
-    public FalkorSeason call() {
-        return new FalkorSeason(this.val$proxy);
+    public SummarizedList<Ref, SearchTrackableListSummary> call() {
+        return new SummarizedList<Ref, SearchTrackableListSummary>(Falkor$Creator.Ref, Falkor$Creator.SearchTrackableListSummary);
     }
 }

@@ -34,10 +34,10 @@ public class AddToListData
     }
     
     public void revertState() {
-        this.setStateAndNotify(this.previousState);
+        this.setStateAndNotifyListeners(this.previousState);
     }
     
-    public void setStateAndNotify(final AddToListData$AddToListState state) {
+    public void setStateAndNotifyListeners(final AddToListData$AddToListState state) {
         if (this.state != AddToListData$AddToListState.LOADING) {
             this.previousState = this.state;
         }

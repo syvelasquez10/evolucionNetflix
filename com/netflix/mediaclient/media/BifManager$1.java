@@ -62,9 +62,9 @@ class BifManager$1 implements Runnable
         //    94: aconst_null    
         //    95: astore          9
         //    97: aconst_null    
-        //    98: astore          11
+        //    98: astore          12
         //   100: aconst_null    
-        //   101: astore          12
+        //   101: astore          11
         //   103: new             Ljava/net/URL;
         //   106: dup            
         //   107: aload           6
@@ -77,16 +77,16 @@ class BifManager$1 implements Runnable
         //   124: aload           6
         //   126: invokespecial   java/io/BufferedInputStream.<init>:(Ljava/io/InputStream;)V
         //   129: astore          10
-        //   131: aload           12
+        //   131: aload           11
         //   133: astore          8
-        //   135: aload           11
+        //   135: aload           12
         //   137: astore          9
         //   139: bipush          64
         //   141: newarray        B
         //   143: astore          14
-        //   145: aload           12
+        //   145: aload           11
         //   147: astore          8
-        //   149: aload           11
+        //   149: aload           12
         //   151: astore          9
         //   153: aload           10
         //   155: aload           14
@@ -94,17 +94,17 @@ class BifManager$1 implements Runnable
         //   158: bipush          64
         //   160: invokevirtual   java/io/BufferedInputStream.read:([BII)I
         //   163: istore_1       
-        //   164: aload           12
+        //   164: aload           11
         //   166: astore          8
-        //   168: aload           11
+        //   168: aload           12
         //   170: astore          9
         //   172: ldc             "BifManager"
         //   174: iconst_3       
         //   175: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
         //   178: ifeq            219
-        //   181: aload           12
+        //   181: aload           11
         //   183: astore          8
-        //   185: aload           11
+        //   185: aload           12
         //   187: astore          9
         //   189: ldc             "BifManager"
         //   191: new             Ljava/lang/StringBuilder;
@@ -122,15 +122,15 @@ class BifManager$1 implements Runnable
         //   219: iload_1        
         //   220: bipush          64
         //   222: if_icmpge       322
-        //   225: aload           12
+        //   225: aload           11
         //   227: astore          8
-        //   229: aload           11
+        //   229: aload           12
         //   231: astore          9
         //   233: aload           10
         //   235: invokevirtual   java/io/BufferedInputStream.close:()V
-        //   238: aload           12
+        //   238: aload           11
         //   240: astore          8
-        //   242: aload           11
+        //   242: aload           12
         //   244: astore          9
         //   246: aload           6
         //   248: invokevirtual   java/io/InputStream.close:()V
@@ -168,24 +168,24 @@ class BifManager$1 implements Runnable
         //   315: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //   318: pop            
         //   319: goto            287
-        //   322: aload           12
+        //   322: aload           11
         //   324: astore          8
-        //   326: aload           11
+        //   326: aload           12
         //   328: astore          9
         //   330: aload           14
         //   332: invokestatic    java/nio/ByteBuffer.wrap:([B)Ljava/nio/ByteBuffer;
         //   335: astore          14
-        //   337: aload           12
+        //   337: aload           11
         //   339: astore          8
-        //   341: aload           11
+        //   341: aload           12
         //   343: astore          9
         //   345: aload           14
         //   347: invokestatic    java/nio/ByteOrder.nativeOrder:()Ljava/nio/ByteOrder;
         //   350: invokevirtual   java/nio/ByteBuffer.order:(Ljava/nio/ByteOrder;)Ljava/nio/ByteBuffer;
         //   353: pop            
-        //   354: aload           12
+        //   354: aload           11
         //   356: astore          8
-        //   358: aload           11
+        //   358: aload           12
         //   360: astore          9
         //   362: aload_0        
         //   363: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -194,9 +194,9 @@ class BifManager$1 implements Runnable
         //   370: invokevirtual   java/nio/ByteBuffer.getInt:(I)I
         //   373: invokestatic    com/netflix/mediaclient/media/BifManager.access$202:(Lcom/netflix/mediaclient/media/BifManager;I)I
         //   376: pop            
-        //   377: aload           12
+        //   377: aload           11
         //   379: astore          8
-        //   381: aload           11
+        //   381: aload           12
         //   383: astore          9
         //   385: aload_0        
         //   386: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -205,9 +205,9 @@ class BifManager$1 implements Runnable
         //   393: invokevirtual   java/nio/ByteBuffer.getInt:(I)I
         //   396: invokestatic    com/netflix/mediaclient/media/BifManager.access$302:(Lcom/netflix/mediaclient/media/BifManager;I)I
         //   399: pop            
-        //   400: aload           12
+        //   400: aload           11
         //   402: astore          8
-        //   404: aload           11
+        //   404: aload           12
         //   406: astore          9
         //   408: aload_0        
         //   409: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -216,17 +216,17 @@ class BifManager$1 implements Runnable
         //   416: invokevirtual   java/nio/ByteBuffer.getInt:(I)I
         //   419: invokestatic    com/netflix/mediaclient/media/BifManager.access$402:(Lcom/netflix/mediaclient/media/BifManager;I)I
         //   422: pop            
-        //   423: aload           12
+        //   423: aload           11
         //   425: astore          8
-        //   427: aload           11
+        //   427: aload           12
         //   429: astore          9
         //   431: ldc             "BifManager"
         //   433: iconst_3       
         //   434: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
         //   437: ifeq            509
-        //   440: aload           12
+        //   440: aload           11
         //   442: astore          8
-        //   444: aload           11
+        //   444: aload           12
         //   446: astore          9
         //   448: ldc             "BifManager"
         //   450: new             Ljava/lang/StringBuilder;
@@ -253,26 +253,26 @@ class BifManager$1 implements Runnable
         //   502: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
         //   505: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
         //   508: pop            
-        //   509: aload           12
+        //   509: aload           11
         //   511: astore          8
-        //   513: aload           11
+        //   513: aload           12
         //   515: astore          9
         //   517: aload_0        
         //   518: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
         //   521: invokestatic    com/netflix/mediaclient/media/BifManager.access$300:(Lcom/netflix/mediaclient/media/BifManager;)I
         //   524: ifle            1013
-        //   527: aload           12
+        //   527: aload           11
         //   529: astore          8
-        //   531: aload           11
+        //   531: aload           12
         //   533: astore          9
         //   535: aload_0        
         //   536: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
         //   539: invokestatic    com/netflix/mediaclient/media/BifManager.access$300:(Lcom/netflix/mediaclient/media/BifManager;)I
         //   542: sipush          28800
         //   545: if_icmpgt       1013
-        //   548: aload           12
+        //   548: aload           11
         //   550: astore          8
-        //   552: aload           11
+        //   552: aload           12
         //   554: astore          9
         //   556: aload_0        
         //   557: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -282,9 +282,9 @@ class BifManager$1 implements Runnable
         //   565: bipush          8
         //   567: imul           
         //   568: istore_3       
-        //   569: aload           12
+        //   569: aload           11
         //   571: astore          8
-        //   573: aload           11
+        //   573: aload           12
         //   575: astore          9
         //   577: aload_0        
         //   578: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -293,24 +293,24 @@ class BifManager$1 implements Runnable
         //   584: iadd           
         //   585: invokestatic    com/netflix/mediaclient/media/BifManager.access$502:(Lcom/netflix/mediaclient/media/BifManager;I)I
         //   588: pop            
-        //   589: aload           12
+        //   589: aload           11
         //   591: astore          8
-        //   593: aload           11
+        //   593: aload           12
         //   595: astore          9
         //   597: iload_3        
         //   598: newarray        B
         //   600: astore          14
-        //   602: aload           12
+        //   602: aload           11
         //   604: astore          8
-        //   606: aload           11
+        //   606: aload           12
         //   608: astore          9
         //   610: ldc             "BifManager"
         //   612: iconst_3       
         //   613: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
         //   616: ifeq            1821
-        //   619: aload           12
+        //   619: aload           11
         //   621: astore          8
-        //   623: aload           11
+        //   623: aload           12
         //   625: astore          9
         //   627: ldc             "BifManager"
         //   629: new             Ljava/lang/StringBuilder;
@@ -327,32 +327,32 @@ class BifManager$1 implements Runnable
         //   655: iload_1        
         //   656: iload_3        
         //   657: if_icmpge       694
-        //   660: aload           12
+        //   660: aload           11
         //   662: astore          8
-        //   664: aload           11
+        //   664: aload           12
         //   666: astore          9
         //   668: aload_0        
         //   669: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
         //   672: invokestatic    com/netflix/mediaclient/media/BifManager.access$100:(Lcom/netflix/mediaclient/media/BifManager;)Z
         //   675: ifeq            1826
-        //   678: aload           12
+        //   678: aload           11
         //   680: astore          8
-        //   682: aload           11
+        //   682: aload           12
         //   684: astore          9
         //   686: ldc             "BifManager"
         //   688: ldc             "stopped"
         //   690: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
         //   693: pop            
-        //   694: aload           12
+        //   694: aload           11
         //   696: astore          8
-        //   698: aload           11
+        //   698: aload           12
         //   700: astore          9
         //   702: aload           14
         //   704: invokestatic    java/nio/ByteBuffer.wrap:([B)Ljava/nio/ByteBuffer;
         //   707: astore          14
-        //   709: aload           12
+        //   709: aload           11
         //   711: astore          8
-        //   713: aload           11
+        //   713: aload           12
         //   715: astore          9
         //   717: aload           14
         //   719: invokestatic    java/nio/ByteOrder.nativeOrder:()Ljava/nio/ByteOrder;
@@ -363,16 +363,16 @@ class BifManager$1 implements Runnable
         //   728: iload_2        
         //   729: iload_1        
         //   730: if_icmpge       1075
-        //   733: aload           12
+        //   733: aload           11
         //   735: astore          8
-        //   737: aload           11
+        //   737: aload           12
         //   739: astore          9
         //   741: aload           14
         //   743: invokevirtual   java/nio/ByteBuffer.getInt:()I
         //   746: istore          4
-        //   748: aload           12
+        //   748: aload           11
         //   750: astore          8
-        //   752: aload           11
+        //   752: aload           12
         //   754: astore          9
         //   756: aload           14
         //   758: invokevirtual   java/nio/ByteBuffer.getInt:()I
@@ -384,9 +384,9 @@ class BifManager$1 implements Runnable
         //   769: if_icmpne       775
         //   772: ldc             2147483647
         //   774: istore_3       
-        //   775: aload           12
+        //   775: aload           11
         //   777: astore          8
-        //   779: aload           11
+        //   779: aload           12
         //   781: astore          9
         //   783: aload_0        
         //   784: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -402,9 +402,9 @@ class BifManager$1 implements Runnable
         //   808: iadd           
         //   809: istore_2       
         //   810: goto            728
-        //   813: aload           12
+        //   813: aload           11
         //   815: astore          8
-        //   817: aload           11
+        //   817: aload           12
         //   819: astore          9
         //   821: aload           10
         //   823: aload           14
@@ -415,17 +415,17 @@ class BifManager$1 implements Runnable
         //   832: iload           4
         //   834: iload_2        
         //   835: if_icmpeq       903
-        //   838: aload           12
+        //   838: aload           11
         //   840: astore          8
-        //   842: aload           11
+        //   842: aload           12
         //   844: astore          9
         //   846: ldc             "BifManager"
         //   848: iconst_3       
         //   849: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
         //   852: ifeq            903
-        //   855: aload           12
+        //   855: aload           11
         //   857: astore          8
-        //   859: aload           11
+        //   859: aload           12
         //   861: astore          9
         //   863: ldc             "BifManager"
         //   865: new             Ljava/lang/StringBuilder;
@@ -446,15 +446,15 @@ class BifManager$1 implements Runnable
         //   902: pop            
         //   903: iload           4
         //   905: ifgt            1005
-        //   908: aload           12
+        //   908: aload           11
         //   910: astore          8
-        //   912: aload           11
+        //   912: aload           12
         //   914: astore          9
         //   916: aload           10
         //   918: invokevirtual   java/io/BufferedInputStream.close:()V
-        //   921: aload           12
+        //   921: aload           11
         //   923: astore          8
-        //   925: aload           11
+        //   925: aload           12
         //   927: astore          9
         //   929: aload           6
         //   931: invokevirtual   java/io/InputStream.close:()V
@@ -497,17 +497,17 @@ class BifManager$1 implements Runnable
         //  1008: iadd           
         //  1009: istore_1       
         //  1010: goto            655
-        //  1013: aload           12
+        //  1013: aload           11
         //  1015: astore          8
-        //  1017: aload           11
+        //  1017: aload           12
         //  1019: astore          9
         //  1021: aload_0        
         //  1022: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
         //  1025: invokestatic    com/netflix/mediaclient/media/BifManager.access$300:(Lcom/netflix/mediaclient/media/BifManager;)I
         //  1028: ifgt            1382
-        //  1031: aload           12
+        //  1031: aload           11
         //  1033: astore          8
-        //  1035: aload           11
+        //  1035: aload           12
         //  1037: astore          9
         //  1039: ldc             "BifManager"
         //  1041: new             Ljava/lang/StringBuilder;
@@ -524,18 +524,18 @@ class BifManager$1 implements Runnable
         //  1068: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
         //  1071: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
         //  1074: pop            
-        //  1075: aload           12
+        //  1075: aload           11
         //  1077: astore          8
-        //  1079: aload           11
+        //  1079: aload           12
         //  1081: astore          9
         //  1083: aload_0        
         //  1084: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
         //  1087: invokestatic    com/netflix/mediaclient/media/BifManager.access$600:(Lcom/netflix/mediaclient/media/BifManager;)Ljava/util/SortedMap;
         //  1090: invokeinterface java/util/SortedMap.isEmpty:()Z
         //  1095: ifne            1591
-        //  1098: aload           12
+        //  1098: aload           11
         //  1100: astore          8
-        //  1102: aload           11
+        //  1102: aload           12
         //  1104: astore          9
         //  1106: aload_0        
         //  1107: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -548,9 +548,9 @@ class BifManager$1 implements Runnable
         //  1130: checkcast       Ljava/lang/Integer;
         //  1133: invokevirtual   java/lang/Integer.intValue:()I
         //  1136: istore_3       
-        //  1137: aload           12
+        //  1137: aload           11
         //  1139: astore          8
-        //  1141: aload           11
+        //  1141: aload           12
         //  1143: astore          9
         //  1145: aload_0        
         //  1146: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -563,17 +563,17 @@ class BifManager$1 implements Runnable
         //  1169: checkcast       Ljava/lang/Integer;
         //  1172: invokevirtual   java/lang/Integer.intValue:()I
         //  1175: istore_2       
-        //  1176: aload           12
+        //  1176: aload           11
         //  1178: astore          8
-        //  1180: aload           11
+        //  1180: aload           12
         //  1182: astore          9
         //  1184: ldc             "BifManager"
         //  1186: iconst_3       
         //  1187: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
         //  1190: ifeq            1235
-        //  1193: aload           12
+        //  1193: aload           11
         //  1195: astore          8
-        //  1197: aload           11
+        //  1197: aload           12
         //  1199: astore          9
         //  1201: ldc             "BifManager"
         //  1203: new             Ljava/lang/StringBuilder;
@@ -590,18 +590,18 @@ class BifManager$1 implements Runnable
         //  1228: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
         //  1231: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
         //  1234: pop            
-        //  1235: aload           12
+        //  1235: aload           11
         //  1237: astore          8
-        //  1239: aload           11
+        //  1239: aload           12
         //  1241: astore          9
         //  1243: iload_3        
         //  1244: aload_0        
         //  1245: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
         //  1248: invokestatic    com/netflix/mediaclient/media/BifManager.access$500:(Lcom/netflix/mediaclient/media/BifManager;)I
         //  1251: if_icmple       1278
-        //  1254: aload           12
+        //  1254: aload           11
         //  1256: astore          8
-        //  1258: aload           11
+        //  1258: aload           12
         //  1260: astore          9
         //  1262: aload           10
         //  1264: iload_3        
@@ -612,9 +612,9 @@ class BifManager$1 implements Runnable
         //  1273: i2l            
         //  1274: invokevirtual   java/io/BufferedInputStream.skip:(J)J
         //  1277: pop2           
-        //  1278: aload           12
+        //  1278: aload           11
         //  1280: astore          8
-        //  1282: aload           11
+        //  1282: aload           12
         //  1284: astore          9
         //  1286: aload_0        
         //  1287: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
@@ -665,9 +665,9 @@ class BifManager$1 implements Runnable
         //  1377: iadd           
         //  1378: istore_1       
         //  1379: goto            1323
-        //  1382: aload           12
+        //  1382: aload           11
         //  1384: astore          8
-        //  1386: aload           11
+        //  1386: aload           12
         //  1388: astore          9
         //  1390: ldc             "BifManager"
         //  1392: new             Ljava/lang/StringBuilder;

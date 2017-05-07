@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 
 class BrowseAgent$FetchSocialNotificationsTask$1 extends SimpleBrowseAgentCallback
 {

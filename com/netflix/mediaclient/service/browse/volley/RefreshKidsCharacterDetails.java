@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -15,9 +15,9 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class RefreshKidsCharacterDetails extends FalcorVolleyWebClientRequest<KidsCharacterDetails>
+public class RefreshKidsCharacterDetails extends FalkorVolleyWebClientRequest<KidsCharacterDetails>
 {
     private static final Boolean DATA_CHANGED;
     private static final String FIELD_CHARACTER = "characters";
@@ -60,13 +60,13 @@ public class RefreshKidsCharacterDetails extends FalcorVolleyWebClientRequest<Ki
     }
     
     @Override
-    protected KidsCharacterDetails parseFalcorResponse(String s) {
+    protected KidsCharacterDetails parseFalkorResponse(String s) {
         if (Log.isLoggable("nf_kidscharacter", 2)) {
             Log.v("nf_kidscharacter", "String response to parse = " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_kidscharacter", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("RefreshKidsCharacterDetails empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_kidscharacter", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("RefreshKidsCharacterDetails empty!!!");
         }
         try {
             final JsonObject asJsonObject = dataObj.getAsJsonObject("characters").getAsJsonObject(this.mCharacterId);
@@ -76,7 +76,7 @@ public class RefreshKidsCharacterDetails extends FalcorVolleyWebClientRequest<Ki
         }
         catch (Exception ex) {
             Log.v("nf_kidscharacter", "String response to parse = " + s);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
     }
 }

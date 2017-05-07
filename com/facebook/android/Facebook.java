@@ -50,13 +50,13 @@ public class Facebook
     private static final String LOGIN = "oauth";
     @Deprecated
     public static final String REDIRECT_URI = "fbconnect://success";
+    private static final long REFRESH_TOKEN_BARRIER = 86400000L;
     @Deprecated
     protected static String RESTSERVER_URL;
     @Deprecated
     public static final String SINGLE_SIGN_ON_DISABLED = "service_disabled";
     @Deprecated
     public static final String TOKEN = "access_token";
-    private final long REFRESH_TOKEN_BARRIER;
     private long accessExpiresMillisecondsAfterEpoch;
     private String accessToken;
     private long lastAccessUpdateMillisecondsAfterEpoch;
@@ -82,26 +82,27 @@ public class Facebook
         this.accessToken = null;
         this.accessExpiresMillisecondsAfterEpoch = 0L;
         this.lastAccessUpdateMillisecondsAfterEpoch = 0L;
-        this.REFRESH_TOKEN_BARRIER = 86400000L;
         if (mAppId == null) {
             throw new IllegalArgumentException("You must specify your application ID when instantiating a Facebook object. See README for details.");
         }
         this.mAppId = mAppId;
     }
     
-    private void authorize(final Activity pendingAuthorizationActivity, final String[] array, final int requestCode, final SessionLoginBehavior loginBehavior, final Facebook$DialogListener facebook$DialogListener) {
+    private void authorize(final Activity pendingAuthorizationActivity, String[] pendingAuthorizationPermissions, final int requestCode, final SessionLoginBehavior loginBehavior, final Facebook$DialogListener facebook$DialogListener) {
+        boolean b = false;
         this.checkUserSession("authorize");
         this.pendingOpeningSession = new Session$Builder((Context)pendingAuthorizationActivity).setApplicationId(this.mAppId).setTokenCachingStrategy(this.getTokenCache()).build();
         this.pendingAuthorizationActivity = pendingAuthorizationActivity;
-        String[] pendingAuthorizationPermissions;
-        if (array != null) {
-            pendingAuthorizationPermissions = array;
-        }
-        else {
+        if (pendingAuthorizationPermissions == null) {
             pendingAuthorizationPermissions = new String[0];
         }
         this.pendingAuthorizationPermissions = pendingAuthorizationPermissions;
-        this.openSession(this.pendingOpeningSession, new Session$OpenRequest(pendingAuthorizationActivity).setCallback(new Facebook$1(this, facebook$DialogListener)).setLoginBehavior(loginBehavior).setRequestCode(requestCode).setPermissions(Arrays.asList(array)), this.pendingAuthorizationPermissions.length > 0);
+        final Session$OpenRequest setPermissions = new Session$OpenRequest(pendingAuthorizationActivity).setCallback(new Facebook$1(this, facebook$DialogListener)).setLoginBehavior(loginBehavior).setRequestCode(requestCode).setPermissions(Arrays.asList(this.pendingAuthorizationPermissions));
+        final Session pendingOpeningSession = this.pendingOpeningSession;
+        if (this.pendingAuthorizationPermissions.length > 0) {
+            b = true;
+        }
+        this.openSession(pendingOpeningSession, setPermissions, b);
     }
     
     private void checkUserSession(final String s) {
@@ -167,9 +168,17 @@ public class Facebook
     }
     
     private static String[] stringArray(final List<String> list) {
-        final String[] array = new String[list.size()];
+        final int n = 0;
+        int size;
         if (list != null) {
-            for (int i = 0; i < array.length; ++i) {
+            size = list.size();
+        }
+        else {
+            size = 0;
+        }
+        final String[] array = new String[size];
+        if (list != null) {
+            for (int i = n; i < array.length; ++i) {
                 array[i] = list.get(i);
             }
         }
@@ -418,12 +427,6 @@ public class Facebook
             }
             return request;
         }
-    }
-    
-    @Deprecated
-    public boolean publishInstall(final Context context) {
-        Settings.publishInstallAsync(context, this.mAppId);
-        return false;
     }
     
     @Deprecated

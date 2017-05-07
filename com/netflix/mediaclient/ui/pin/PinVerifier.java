@@ -19,23 +19,23 @@ public class PinVerifier implements ApplicationStateListener
     public static final boolean PIN_VERIFY_REQUIRED = true;
     public static final String TAG = "nf_pin";
     private static final String TAG_SESSION = "nf_pin_session";
-    private static boolean mAppInBackground;
-    private static long mBackgroundTime;
-    private static PinDialog mPinDialog;
-    private static long mPinSessionExpiryTime;
-    private static PinVerifier mPinVeriyInstance;
+    private static boolean sAppInBackground;
+    private static long sBackgroundTime;
+    private static PinDialog sPinDialog;
+    private static long sPinSessionExpiryTime;
+    private static PinVerifier sPinVeriyInstance;
     
     static {
-        PinVerifier.mPinDialog = null;
-        PinVerifier.mPinVeriyInstance = new PinVerifier();
+        PinVerifier.sPinDialog = null;
+        PinVerifier.sPinVeriyInstance = new PinVerifier();
     }
     
     public static PinVerifier getInstance() {
-        return PinVerifier.mPinVeriyInstance;
+        return PinVerifier.sPinVeriyInstance;
     }
     
     public static boolean isPinSessionActive() {
-        return PinVerifier.mPinSessionExpiryTime > System.currentTimeMillis();
+        return PinVerifier.sPinSessionExpiryTime > System.currentTimeMillis();
     }
     
     public static void lastUserInteractionTime(final long n) {
@@ -50,18 +50,18 @@ public class PinVerifier implements ApplicationStateListener
     }
     
     private static void setPinSessionToInactive() {
-        PinVerifier.mPinSessionExpiryTime = 0L;
+        PinVerifier.sPinSessionExpiryTime = 0L;
     }
     
     private boolean shouldHandleNewRequest(final PinDialogVault pinDialogVault) {
-        Log.w("nf_pin", String.format("pinDialog!=null loc:%s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.mPinDialog.isVisible(), PinVerifier.mPinDialog.isHidden()));
-        if (!PinVerifier.mPinDialog.isVisible() && !PinVerifier.mPinDialog.isHidden()) {
-            Log.w("nf_pin", String.format("Error.. pinDialog!=null but not visible - killing.. loc:%s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.mPinDialog.isVisible(), PinVerifier.mPinDialog.isHidden()));
+        Log.w("nf_pin", String.format("pinDialog!=null loc:%s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.sPinDialog.isVisible(), PinVerifier.sPinDialog.isHidden()));
+        if (!PinVerifier.sPinDialog.isVisible() && !PinVerifier.sPinDialog.isHidden()) {
+            Log.w("nf_pin", String.format("Error.. pinDialog!=null but not visible - killing.. loc:%s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.sPinDialog.isVisible(), PinVerifier.sPinDialog.isHidden()));
             this.dismissPinVerification();
             return true;
         }
         if (Log.isLoggable("nf_pin", 3)) {
-            Log.w("nf_pin", String.format("Error.. new pin request while in progress.. %s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.mPinDialog.isVisible(), PinVerifier.mPinDialog.isHidden()));
+            Log.w("nf_pin", String.format("Error.. new pin request while in progress.. %s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.sPinDialog.isVisible(), PinVerifier.sPinDialog.isHidden()));
         }
         if (PinDialogVault$PinInvokedFrom.MDX.getValue().equals(pinDialogVault.getInvokeLocation())) {
             if (Log.isLoggable("nf_pin", 3)) {
@@ -70,7 +70,7 @@ public class PinVerifier implements ApplicationStateListener
             return false;
         }
         if (Log.isLoggable("nf_pin", 3)) {
-            Log.d("nf_pin", String.format("Dismising old dialog. old one Invoked from: %s", PinVerifier.mPinDialog.getInvokeLocation()));
+            Log.d("nf_pin", String.format("Dismising old dialog. old one Invoked from: %s", PinVerifier.sPinDialog.getInvokeLocation()));
         }
         this.dismissPinVerification();
         return true;
@@ -81,10 +81,10 @@ public class PinVerifier implements ApplicationStateListener
         return b && !isPinSessionActive();
     }
     
-    private static void updatePinSessionExpiryTime(final long mPinSessionExpiryTime) {
-        if (mPinSessionExpiryTime > PinVerifier.mPinSessionExpiryTime) {
-            Log.d("nf_pin_session", String.format("isActive: %b, current:%d, newEpiry:%d - updatePinSessionExpiryTime", isPinSessionActive(), System.currentTimeMillis(), mPinSessionExpiryTime));
-            PinVerifier.mPinSessionExpiryTime = mPinSessionExpiryTime;
+    private static void updatePinSessionExpiryTime(final long sPinSessionExpiryTime) {
+        if (sPinSessionExpiryTime > PinVerifier.sPinSessionExpiryTime) {
+            Log.d("nf_pin_session", String.format("isActive: %b, current:%d, newEpiry:%d - updatePinSessionExpiryTime", isPinSessionActive(), System.currentTimeMillis(), sPinSessionExpiryTime));
+            PinVerifier.sPinSessionExpiryTime = sPinSessionExpiryTime;
         }
     }
     
@@ -94,26 +94,26 @@ public class PinVerifier implements ApplicationStateListener
     
     public void dismissPinVerification() {
         boolean b = false;
-        final boolean mAppInBackground = PinVerifier.mAppInBackground;
-        if (PinVerifier.mPinDialog != null) {
+        final boolean sAppInBackground = PinVerifier.sAppInBackground;
+        if (PinVerifier.sPinDialog != null) {
             b = true;
         }
-        Log.d("nf_pin", String.format("dismissPinVerification appInBackground:%b, pinDialogValid:%b", mAppInBackground, b));
-        if (PinVerifier.mPinDialog != null) {
-            PinVerifier.mPinDialog.dismissDialog();
+        Log.d("nf_pin", String.format("dismissPinVerification appInBackground:%b, pinDialogValid:%b", sAppInBackground, b));
+        if (PinVerifier.sPinDialog != null) {
+            PinVerifier.sPinDialog.dismissDialog();
         }
     }
     
     @Override
     public void onBackground(final UserInputManager userInputManager) {
         Log.d("nf_pin", "app in background");
-        PinVerifier.mBackgroundTime = System.currentTimeMillis();
-        PinVerifier.mAppInBackground = true;
+        PinVerifier.sBackgroundTime = System.currentTimeMillis();
+        PinVerifier.sAppInBackground = true;
     }
     
     @Override
     public void onForeground(final UserInputManager userInputManager) {
-        PinVerifier.mAppInBackground = false;
+        PinVerifier.sAppInBackground = false;
         Log.d("nf_pin", String.format("app in foreground ", new Object[0]));
     }
     
@@ -127,7 +127,7 @@ public class PinVerifier implements ApplicationStateListener
     
     protected void pinDialogDismissed() {
         Log.d("nf_pin", "pinDialogDismissed mPinDialog=null");
-        PinVerifier.mPinDialog = null;
+        PinVerifier.sPinDialog = null;
     }
     
     public void registerPinVerifyEvent() {
@@ -148,7 +148,7 @@ public class PinVerifier implements ApplicationStateListener
     }
     
     protected boolean toDismissDialog() {
-        return PinVerifier.mAppInBackground && System.currentTimeMillis() - PinVerifier.mBackgroundTime > 180000L;
+        return PinVerifier.sAppInBackground && System.currentTimeMillis() - PinVerifier.sBackgroundTime > 180000L;
     }
     
     public void verify(final NetflixActivity netflixActivity, final boolean b, final PinDialogVault pinDialogVault) {
@@ -159,9 +159,9 @@ public class PinVerifier implements ApplicationStateListener
             if (Log.isLoggable("nf_pin", 3)) {
                 Log.d("nf_pin", String.format("verifyPin loc:%s", pinDialogVault.getInvokeLocation()));
             }
-            if (PinVerifier.mPinDialog == null || this.shouldHandleNewRequest(pinDialogVault)) {
+            if (PinVerifier.sPinDialog == null || this.shouldHandleNewRequest(pinDialogVault)) {
                 ((NetflixApplication)netflixActivity.getApplication()).getUserInput().addListener(this);
-                netflixActivity.showDialog(PinVerifier.mPinDialog = PinDialog.createPinDialog(netflixActivity, pinDialogVault));
+                netflixActivity.showDialog(PinVerifier.sPinDialog = PinDialog.createPinDialog(netflixActivity, pinDialogVault));
             }
         }
     }

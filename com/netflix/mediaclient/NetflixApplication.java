@@ -43,7 +43,7 @@ public class NetflixApplication extends Application
     private static final int SO_VERSION_MISMATCH = 2001;
     private static final String TAG = "NetflixApplication";
     private static final String TAG_LOCALE = "nf_locale";
-    private static Gson gson;
+    private static final Gson gson;
     private static boolean mAactivityVisible;
     private final long MAX_ACTIVITY_TRANSITION_TIME_MS;
     private final BroadcastReceiver broadcastReceiver;
@@ -54,11 +54,11 @@ public class NetflixApplication extends Application
     private final AtomicBoolean mIsNetflixServiceReady;
     private String mServiceLocale;
     private boolean mSignedUpOnce;
-    private UserInputManager mUserInput;
+    private final UserInputManager mUserInput;
     private boolean wasInBackground;
     
     static {
-        NetflixApplication.gson = new Gson();
+        gson = new Gson();
     }
     
     public NetflixApplication() {
@@ -102,7 +102,7 @@ public class NetflixApplication extends Application
                 final int libraryVersion = SecurityRepository.getLibraryVersion();
                 final int versionCode = AndroidManifestUtils.getVersionCode((Context)this);
                 if (Log.isLoggable("NetflixApplication", 3)) {
-                    Log.d("NetflixApplication", "Expected native library version: " + versionCode + ", real: " + libraryVersion);
+                    Log.d("NetflixApplication", "Manifest library version: " + versionCode + ", real: " + libraryVersion);
                 }
                 if (libraryVersion != versionCode) {
                     Log.e("NetflixApplication", "Versions do not match!");
@@ -139,7 +139,7 @@ public class NetflixApplication extends Application
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837700).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493241, new Object[] { n })).setContentTitle(this.getString(2131493239, new Object[] { n })).setContentText(this.getString(2131493240, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837711).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493255, new Object[] { n })).setContentTitle(this.getString(2131493253, new Object[] { n })).setContentText(this.getString(2131493254, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");

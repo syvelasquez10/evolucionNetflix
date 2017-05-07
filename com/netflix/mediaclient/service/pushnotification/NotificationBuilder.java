@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import android.app.Notification;
 import android.media.AudioManager;
+import com.netflix.mediaclient.util.NotificationUtils;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
 import android.net.Uri;
@@ -69,6 +70,7 @@ abstract class NotificationBuilder
         Log.d("nf_push", "Target destination is our application");
         final Intent intent = new Intent("android.intent.action.VIEW");
         intent.setData(defaultActionPayload);
+        NotificationUtils.addNotificationSourceToIntent(intent);
         intent.setFlags(872415232);
         if (!StringUtils.isEmpty(payload.guid)) {
             intent.putExtra("guid", payload.guid);

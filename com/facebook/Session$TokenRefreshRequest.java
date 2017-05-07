@@ -4,7 +4,6 @@
 
 package com.facebook;
 
-import java.util.Iterator;
 import android.content.ActivityNotFoundException;
 import java.io.OutputStream;
 import java.io.ObjectOutputStream;
@@ -20,7 +19,14 @@ import android.support.v4.app.Fragment;
 import android.app.Activity;
 import java.util.Collection;
 import com.facebook.internal.SessionAuthorizationType;
-import java.util.Collections;
+import android.text.TextUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.Iterator;
+import com.facebook.model.GraphObjectList;
+import java.util.Map;
+import com.facebook.model.GraphObject;
+import com.facebook.model.GraphMultiResult;
 import android.os.Looper;
 import java.util.ArrayList;
 import com.facebook.internal.Validate;
@@ -33,6 +39,7 @@ import android.os.IBinder;
 import android.content.ComponentName;
 import android.content.Intent;
 import java.util.Date;
+import com.facebook.internal.NativeProtocol;
 import android.os.RemoteException;
 import android.os.Message;
 import android.os.Bundle;
@@ -74,7 +81,7 @@ class Session$TokenRefreshRequest implements ServiceConnection
     
     public void bind() {
         final Intent tokenRefreshIntent = NativeProtocol.createTokenRefreshIntent(Session.getStaticContext());
-        if (tokenRefreshIntent != null && Session.staticContext.bindService(tokenRefreshIntent, (ServiceConnection)new Session$TokenRefreshRequest(this.this$0), 1)) {
+        if (tokenRefreshIntent != null && Session.staticContext.bindService(tokenRefreshIntent, (ServiceConnection)this, 1)) {
             this.this$0.setLastAttemptedTokenExtendDate(new Date());
             return;
         }
@@ -88,6 +95,9 @@ class Session$TokenRefreshRequest implements ServiceConnection
     
     public void onServiceDisconnected(final ComponentName componentName) {
         this.cleanup();
-        Session.staticContext.unbindService((ServiceConnection)this);
+        try {
+            Session.staticContext.unbindService((ServiceConnection)this);
+        }
+        catch (IllegalArgumentException ex) {}
     }
 }

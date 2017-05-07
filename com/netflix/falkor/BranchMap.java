@@ -5,6 +5,7 @@
 package com.netflix.falkor;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Date;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class BranchMap<T> extends HashMap<String, T> implements BranchNode, Expi
     private Map<String, Object> errorsOrUndefineds;
     private Date expires;
     private LinkedList<Ref> references;
-    Func<T> typeCreator;
+    private final Func<T> typeCreator;
     
     public BranchMap(final Func<T> typeCreator) {
         this.typeCreator = typeCreator;
@@ -41,11 +42,11 @@ public class BranchMap<T> extends HashMap<String, T> implements BranchNode, Expi
     
     @Override
     public Set<String> getKeys() {
-        final Set<String> keySet = this.keySet();
+        final HashSet<Object> set = (HashSet<Object>)new HashSet<String>(this.keySet());
         if (this.errorsOrUndefineds != null) {
-            keySet.addAll(this.errorsOrUndefineds.keySet());
+            set.addAll(this.errorsOrUndefineds.keySet());
         }
-        return keySet;
+        return (Set<String>)set;
     }
     
     @Override
@@ -61,6 +62,11 @@ public class BranchMap<T> extends HashMap<String, T> implements BranchNode, Expi
     @Override
     public LinkedList<Ref> getReferences() {
         return this.references;
+    }
+    
+    @Override
+    public void remove(final String s) {
+        super.remove(s);
     }
     
     @Override

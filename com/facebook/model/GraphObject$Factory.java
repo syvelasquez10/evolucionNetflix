@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import com.facebook.internal.Utility;
 import java.lang.annotation.Annotation;
 import com.facebook.FacebookGraphObjectException;
+import java.util.Iterator;
 import org.json.JSONArray;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -35,233 +36,253 @@ public final class GraphObject$Factory
         // Original Bytecode:
         // 
         //     0: aload_0        
-        //     1: ifnonnull       10
-        //     4: aconst_null    
-        //     5: astore          5
-        //     7: aload           5
-        //     9: areturn        
-        //    10: aload_0        
-        //    11: invokevirtual   java/lang/Object.getClass:()Ljava/lang/Class;
-        //    14: astore          6
-        //    16: aload_0        
-        //    17: astore          5
-        //    19: aload_1        
-        //    20: aload           6
-        //    22: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //    25: ifne            7
-        //    28: aload_0        
-        //    29: astore          5
-        //    31: aload_1        
-        //    32: invokevirtual   java/lang/Class.isPrimitive:()Z
-        //    35: ifne            7
-        //    38: ldc             Lcom/facebook/model/GraphObject;.class
-        //    40: aload_1        
-        //    41: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //    44: ifeq            118
-        //    47: ldc             Lorg/json/JSONObject;.class
-        //    49: aload           6
-        //    51: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //    54: ifeq            66
-        //    57: aload_1        
+        //     1: ifnonnull       52
+        //     4: getstatic       java/lang/Boolean.TYPE:Ljava/lang/Class;
+        //     7: aload_1        
+        //     8: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
+        //    11: ifeq            23
+        //    14: iconst_0       
+        //    15: invokestatic    java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+        //    18: astore          5
+        //    20: aload           5
+        //    22: areturn        
+        //    23: getstatic       java/lang/Character.TYPE:Ljava/lang/Class;
+        //    26: aload_1        
+        //    27: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
+        //    30: ifeq            38
+        //    33: iconst_0       
+        //    34: invokestatic    java/lang/Character.valueOf:(C)Ljava/lang/Character;
+        //    37: areturn        
+        //    38: aload_1        
+        //    39: invokevirtual   java/lang/Class.isPrimitive:()Z
+        //    42: ifeq            50
+        //    45: iconst_0       
+        //    46: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        //    49: areturn        
+        //    50: aconst_null    
+        //    51: areturn        
+        //    52: aload_0        
+        //    53: invokevirtual   java/lang/Object.getClass:()Ljava/lang/Class;
+        //    56: astore          6
         //    58: aload_0        
-        //    59: checkcast       Lorg/json/JSONObject;
-        //    62: invokestatic    com/facebook/model/GraphObject$Factory.createGraphObjectProxy:(Ljava/lang/Class;Lorg/json/JSONObject;)Lcom/facebook/model/GraphObject;
-        //    65: areturn        
-        //    66: ldc             Lcom/facebook/model/GraphObject;.class
-        //    68: aload           6
-        //    70: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //    73: ifeq            87
-        //    76: aload_0        
-        //    77: checkcast       Lcom/facebook/model/GraphObject;
-        //    80: aload_1        
-        //    81: invokeinterface com/facebook/model/GraphObject.cast:(Ljava/lang/Class;)Lcom/facebook/model/GraphObject;
-        //    86: areturn        
-        //    87: new             Lcom/facebook/FacebookGraphObjectException;
-        //    90: dup            
-        //    91: new             Ljava/lang/StringBuilder;
-        //    94: dup            
-        //    95: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    98: ldc             "Can't create GraphObject from "
-        //   100: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   103: aload           6
-        //   105: invokevirtual   java/lang/Class.getName:()Ljava/lang/String;
-        //   108: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   111: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   114: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
-        //   117: athrow         
-        //   118: ldc             Ljava/lang/Iterable;.class
-        //   120: aload_1        
-        //   121: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
-        //   124: ifne            154
-        //   127: ldc             Ljava/util/Collection;.class
-        //   129: aload_1        
-        //   130: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
-        //   133: ifne            154
-        //   136: ldc             Ljava/util/List;.class
-        //   138: aload_1        
-        //   139: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
-        //   142: ifne            154
-        //   145: ldc             Lcom/facebook/model/GraphObjectList;.class
-        //   147: aload_1        
-        //   148: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
-        //   151: ifeq            281
-        //   154: aload_2        
-        //   155: ifnonnull       188
-        //   158: new             Lcom/facebook/FacebookGraphObjectException;
-        //   161: dup            
-        //   162: new             Ljava/lang/StringBuilder;
-        //   165: dup            
-        //   166: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   169: ldc             "can't infer generic type of: "
-        //   171: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   174: aload_1        
-        //   175: invokevirtual   java/lang/Class.toString:()Ljava/lang/String;
-        //   178: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   181: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   184: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
-        //   187: athrow         
-        //   188: aload_2        
-        //   189: invokeinterface java/lang/reflect/ParameterizedType.getActualTypeArguments:()[Ljava/lang/reflect/Type;
-        //   194: astore_1       
-        //   195: aload_1        
-        //   196: ifnull          214
-        //   199: aload_1        
-        //   200: arraylength    
-        //   201: iconst_1       
-        //   202: if_icmpne       214
-        //   205: aload_1        
-        //   206: iconst_0       
-        //   207: aaload         
-        //   208: instanceof      Ljava/lang/Class;
-        //   211: ifne            224
-        //   214: new             Lcom/facebook/FacebookGraphObjectException;
-        //   217: dup            
-        //   218: ldc             "Expect collection properties to be of a type with exactly one generic parameter."
-        //   220: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
-        //   223: athrow         
-        //   224: aload_1        
-        //   225: iconst_0       
-        //   226: aaload         
-        //   227: checkcast       Ljava/lang/Class;
-        //   230: astore_1       
-        //   231: ldc             Lorg/json/JSONArray;.class
-        //   233: aload           6
-        //   235: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //   238: ifeq            250
-        //   241: aload_0        
-        //   242: checkcast       Lorg/json/JSONArray;
-        //   245: aload_1        
-        //   246: invokestatic    com/facebook/model/GraphObject$Factory.createList:(Lorg/json/JSONArray;Ljava/lang/Class;)Lcom/facebook/model/GraphObjectList;
-        //   249: areturn        
-        //   250: new             Lcom/facebook/FacebookGraphObjectException;
-        //   253: dup            
-        //   254: new             Ljava/lang/StringBuilder;
-        //   257: dup            
-        //   258: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   261: ldc             "Can't create Collection from "
-        //   263: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   266: aload           6
-        //   268: invokevirtual   java/lang/Class.getName:()Ljava/lang/String;
-        //   271: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   274: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   277: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
-        //   280: athrow         
-        //   281: ldc             Ljava/lang/String;.class
-        //   283: aload_1        
-        //   284: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
-        //   287: ifeq            348
-        //   290: ldc             Ljava/lang/Double;.class
-        //   292: aload           6
-        //   294: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //   297: ifne            310
-        //   300: ldc             Ljava/lang/Float;.class
-        //   302: aload           6
-        //   304: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //   307: ifeq            324
-        //   310: ldc             "%f"
-        //   312: iconst_1       
-        //   313: anewarray       Ljava/lang/Object;
-        //   316: dup            
-        //   317: iconst_0       
-        //   318: aload_0        
-        //   319: aastore        
-        //   320: invokestatic    java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
-        //   323: areturn        
-        //   324: ldc             Ljava/lang/Number;.class
-        //   326: aload           6
-        //   328: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //   331: ifeq            416
-        //   334: ldc             "%d"
-        //   336: iconst_1       
-        //   337: anewarray       Ljava/lang/Object;
-        //   340: dup            
-        //   341: iconst_0       
-        //   342: aload_0        
-        //   343: aastore        
-        //   344: invokestatic    java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
-        //   347: areturn        
-        //   348: ldc             Ljava/util/Date;.class
-        //   350: aload_1        
-        //   351: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
-        //   354: ifeq            416
-        //   357: ldc             Ljava/lang/String;.class
-        //   359: aload           6
-        //   361: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
-        //   364: ifeq            416
-        //   367: getstatic       com/facebook/model/GraphObject$Factory.dateFormats:[Ljava/text/SimpleDateFormat;
-        //   370: astore_2       
-        //   371: aload_2        
-        //   372: arraylength    
-        //   373: istore          4
-        //   375: iconst_0       
-        //   376: istore_3       
-        //   377: iload_3        
-        //   378: iload           4
-        //   380: if_icmpge       416
-        //   383: aload_2        
-        //   384: iload_3        
-        //   385: aaload         
-        //   386: astore          5
-        //   388: aload           5
-        //   390: aload_0        
-        //   391: checkcast       Ljava/lang/String;
-        //   394: invokevirtual   java/text/SimpleDateFormat.parse:(Ljava/lang/String;)Ljava/util/Date;
-        //   397: astore          5
-        //   399: aload           5
-        //   401: ifnull          409
-        //   404: aload           5
-        //   406: areturn        
-        //   407: astore          5
-        //   409: iload_3        
-        //   410: iconst_1       
-        //   411: iadd           
-        //   412: istore_3       
-        //   413: goto            377
-        //   416: new             Lcom/facebook/FacebookGraphObjectException;
-        //   419: dup            
-        //   420: new             Ljava/lang/StringBuilder;
-        //   423: dup            
-        //   424: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   427: ldc             "Can't convert type"
-        //   429: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   432: aload           6
-        //   434: invokevirtual   java/lang/Class.getName:()Ljava/lang/String;
-        //   437: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   440: ldc             " to "
-        //   442: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   445: aload_1        
-        //   446: invokevirtual   java/lang/Class.getName:()Ljava/lang/String;
-        //   449: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   452: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   455: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
-        //   458: athrow         
+        //    59: astore          5
+        //    61: aload_1        
+        //    62: aload           6
+        //    64: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //    67: ifne            20
+        //    70: aload_0        
+        //    71: astore          5
+        //    73: aload_1        
+        //    74: invokevirtual   java/lang/Class.isPrimitive:()Z
+        //    77: ifne            20
+        //    80: ldc             Lcom/facebook/model/GraphObject;.class
+        //    82: aload_1        
+        //    83: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //    86: ifeq            160
+        //    89: ldc             Lorg/json/JSONObject;.class
+        //    91: aload           6
+        //    93: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //    96: ifeq            108
+        //    99: aload_1        
+        //   100: aload_0        
+        //   101: checkcast       Lorg/json/JSONObject;
+        //   104: invokestatic    com/facebook/model/GraphObject$Factory.createGraphObjectProxy:(Ljava/lang/Class;Lorg/json/JSONObject;)Lcom/facebook/model/GraphObject;
+        //   107: areturn        
+        //   108: ldc             Lcom/facebook/model/GraphObject;.class
+        //   110: aload           6
+        //   112: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //   115: ifeq            129
+        //   118: aload_0        
+        //   119: checkcast       Lcom/facebook/model/GraphObject;
+        //   122: aload_1        
+        //   123: invokeinterface com/facebook/model/GraphObject.cast:(Ljava/lang/Class;)Lcom/facebook/model/GraphObject;
+        //   128: areturn        
+        //   129: new             Lcom/facebook/FacebookGraphObjectException;
+        //   132: dup            
+        //   133: new             Ljava/lang/StringBuilder;
+        //   136: dup            
+        //   137: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   140: ldc             "Can't create GraphObject from "
+        //   142: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   145: aload           6
+        //   147: invokevirtual   java/lang/Class.getName:()Ljava/lang/String;
+        //   150: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   153: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   156: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
+        //   159: athrow         
+        //   160: ldc             Ljava/lang/Iterable;.class
+        //   162: aload_1        
+        //   163: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
+        //   166: ifne            196
+        //   169: ldc             Ljava/util/Collection;.class
+        //   171: aload_1        
+        //   172: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
+        //   175: ifne            196
+        //   178: ldc             Ljava/util/List;.class
+        //   180: aload_1        
+        //   181: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
+        //   184: ifne            196
+        //   187: ldc             Lcom/facebook/model/GraphObjectList;.class
+        //   189: aload_1        
+        //   190: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
+        //   193: ifeq            323
+        //   196: aload_2        
+        //   197: ifnonnull       230
+        //   200: new             Lcom/facebook/FacebookGraphObjectException;
+        //   203: dup            
+        //   204: new             Ljava/lang/StringBuilder;
+        //   207: dup            
+        //   208: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   211: ldc             "can't infer generic type of: "
+        //   213: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   216: aload_1        
+        //   217: invokevirtual   java/lang/Class.toString:()Ljava/lang/String;
+        //   220: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   223: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   226: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
+        //   229: athrow         
+        //   230: aload_2        
+        //   231: invokeinterface java/lang/reflect/ParameterizedType.getActualTypeArguments:()[Ljava/lang/reflect/Type;
+        //   236: astore_1       
+        //   237: aload_1        
+        //   238: ifnull          256
+        //   241: aload_1        
+        //   242: arraylength    
+        //   243: iconst_1       
+        //   244: if_icmpne       256
+        //   247: aload_1        
+        //   248: iconst_0       
+        //   249: aaload         
+        //   250: instanceof      Ljava/lang/Class;
+        //   253: ifne            266
+        //   256: new             Lcom/facebook/FacebookGraphObjectException;
+        //   259: dup            
+        //   260: ldc             "Expect collection properties to be of a type with exactly one generic parameter."
+        //   262: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
+        //   265: athrow         
+        //   266: aload_1        
+        //   267: iconst_0       
+        //   268: aaload         
+        //   269: checkcast       Ljava/lang/Class;
+        //   272: astore_1       
+        //   273: ldc             Lorg/json/JSONArray;.class
+        //   275: aload           6
+        //   277: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //   280: ifeq            292
+        //   283: aload_0        
+        //   284: checkcast       Lorg/json/JSONArray;
+        //   287: aload_1        
+        //   288: invokestatic    com/facebook/model/GraphObject$Factory.createList:(Lorg/json/JSONArray;Ljava/lang/Class;)Lcom/facebook/model/GraphObjectList;
+        //   291: areturn        
+        //   292: new             Lcom/facebook/FacebookGraphObjectException;
+        //   295: dup            
+        //   296: new             Ljava/lang/StringBuilder;
+        //   299: dup            
+        //   300: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   303: ldc             "Can't create Collection from "
+        //   305: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   308: aload           6
+        //   310: invokevirtual   java/lang/Class.getName:()Ljava/lang/String;
+        //   313: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   316: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   319: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
+        //   322: athrow         
+        //   323: ldc             Ljava/lang/String;.class
+        //   325: aload_1        
+        //   326: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
+        //   329: ifeq            390
+        //   332: ldc             Ljava/lang/Double;.class
+        //   334: aload           6
+        //   336: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //   339: ifne            352
+        //   342: ldc             Ljava/lang/Float;.class
+        //   344: aload           6
+        //   346: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //   349: ifeq            366
+        //   352: ldc             "%f"
+        //   354: iconst_1       
+        //   355: anewarray       Ljava/lang/Object;
+        //   358: dup            
+        //   359: iconst_0       
+        //   360: aload_0        
+        //   361: aastore        
+        //   362: invokestatic    java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+        //   365: areturn        
+        //   366: ldc             Ljava/lang/Number;.class
+        //   368: aload           6
+        //   370: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //   373: ifeq            458
+        //   376: ldc             "%d"
+        //   378: iconst_1       
+        //   379: anewarray       Ljava/lang/Object;
+        //   382: dup            
+        //   383: iconst_0       
+        //   384: aload_0        
+        //   385: aastore        
+        //   386: invokestatic    java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+        //   389: areturn        
+        //   390: ldc             Ljava/util/Date;.class
+        //   392: aload_1        
+        //   393: invokevirtual   java/lang/Object.equals:(Ljava/lang/Object;)Z
+        //   396: ifeq            458
+        //   399: ldc             Ljava/lang/String;.class
+        //   401: aload           6
+        //   403: invokevirtual   java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+        //   406: ifeq            458
+        //   409: getstatic       com/facebook/model/GraphObject$Factory.dateFormats:[Ljava/text/SimpleDateFormat;
+        //   412: astore_2       
+        //   413: aload_2        
+        //   414: arraylength    
+        //   415: istore          4
+        //   417: iconst_0       
+        //   418: istore_3       
+        //   419: iload_3        
+        //   420: iload           4
+        //   422: if_icmpge       458
+        //   425: aload_2        
+        //   426: iload_3        
+        //   427: aaload         
+        //   428: astore          5
+        //   430: aload           5
+        //   432: aload_0        
+        //   433: checkcast       Ljava/lang/String;
+        //   436: invokevirtual   java/text/SimpleDateFormat.parse:(Ljava/lang/String;)Ljava/util/Date;
+        //   439: astore          5
+        //   441: aload           5
+        //   443: ifnull          451
+        //   446: aload           5
+        //   448: areturn        
+        //   449: astore          5
+        //   451: iload_3        
+        //   452: iconst_1       
+        //   453: iadd           
+        //   454: istore_3       
+        //   455: goto            419
+        //   458: new             Lcom/facebook/FacebookGraphObjectException;
+        //   461: dup            
+        //   462: new             Ljava/lang/StringBuilder;
+        //   465: dup            
+        //   466: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   469: ldc             "Can't convert type"
+        //   471: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   474: aload           6
+        //   476: invokevirtual   java/lang/Class.getName:()Ljava/lang/String;
+        //   479: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   482: ldc             " to "
+        //   484: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   487: aload_1        
+        //   488: invokevirtual   java/lang/Class.getName:()Ljava/lang/String;
+        //   491: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   494: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   497: invokespecial   com/facebook/FacebookGraphObjectException.<init>:(Ljava/lang/String;)V
+        //   500: athrow         
         //    Signature:
         //  <U:Ljava/lang/Object;>(Ljava/lang/Object;Ljava/lang/Class<TU;>;Ljava/lang/reflect/ParameterizedType;)TU;
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                      
         //  -----  -----  -----  -----  --------------------------
-        //  388    399    407    409    Ljava/text/ParseException;
+        //  430    441    449    451    Ljava/text/ParseException;
         // 
         // The error that occurred was:
         // 
@@ -327,18 +348,33 @@ public final class GraphObject$Factory
     }
     
     private static Object getUnderlyingJSONObject(final Object o) {
-        final Class<?> class1 = o.getClass();
-        Object innerJSONObject;
-        if (GraphObject.class.isAssignableFrom(class1)) {
-            innerJSONObject = ((GraphObject)o).getInnerJSONObject();
+        Object o2;
+        if (o == null) {
+            o2 = null;
         }
         else {
-            innerJSONObject = o;
+            final Class<?> class1 = o.getClass();
+            if (GraphObject.class.isAssignableFrom(class1)) {
+                return ((GraphObject)o).getInnerJSONObject();
+            }
             if (GraphObjectList.class.isAssignableFrom(class1)) {
                 return ((GraphObjectList)o).getInnerJSONArray();
             }
+            o2 = o;
+            if (Iterable.class.isAssignableFrom(class1)) {
+                final JSONArray jsonArray = new JSONArray();
+                for (final GraphObject next : (Iterable)o) {
+                    if (GraphObject.class.isAssignableFrom(next.getClass())) {
+                        jsonArray.put((Object)next.getInnerJSONObject());
+                    }
+                    else {
+                        jsonArray.put((Object)next);
+                    }
+                }
+                return jsonArray;
+            }
         }
-        return innerJSONObject;
+        return o2;
     }
     
     private static <T extends GraphObject> boolean hasClassBeenVerified(final Class<T> clazz) {

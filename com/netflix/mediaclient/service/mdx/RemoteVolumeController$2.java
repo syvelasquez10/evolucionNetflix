@@ -8,6 +8,7 @@ import android.media.session.PlaybackState$Builder;
 import android.content.IntentFilter;
 import android.media.VolumeProvider;
 import android.media.session.MediaSession;
+import com.netflix.mediaclient.service.configuration.MdxConfiguration;
 import android.annotation.TargetApi;
 import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import com.netflix.mediaclient.Log;

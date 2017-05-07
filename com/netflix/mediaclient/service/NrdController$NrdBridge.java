@@ -29,6 +29,7 @@ import com.netflix.mediaclient.repository.UserLocale;
 import java.util.Locale;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
+import android.content.Context;
 import com.netflix.mediaclient.javabridge.Bridge;
 
 class NrdController$NrdBridge implements Bridge
@@ -45,6 +46,11 @@ class NrdController$NrdBridge implements Bridge
     }
     
     @Override
+    public Context getContext() {
+        return this.this$0.getContext();
+    }
+    
+    @Override
     public PlayerType getCurrentPlayerType() {
         return this.this$0.getConfigurationAgent().getCurrentPlayerType();
     }
@@ -56,12 +62,12 @@ class NrdController$NrdBridge implements Bridge
     
     @Override
     public Locale getDeviceLocale() {
-        return UserLocale.getDeviceLocale(this.this$0.getContext());
+        return UserLocale.getDeviceLocale(this.getContext());
     }
     
     @Override
     public Display getDisplaySize() {
-        final WindowManager windowManager = (WindowManager)this.this$0.getContext().getSystemService("window");
+        final WindowManager windowManager = (WindowManager)this.getContext().getSystemService("window");
         if (windowManager != null) {
             return windowManager.getDefaultDisplay();
         }
@@ -75,12 +81,12 @@ class NrdController$NrdBridge implements Bridge
     
     @Override
     public String getFileSystemRoot() {
-        return this.this$0.getContext().getFilesDir().getAbsolutePath();
+        return this.getContext().getFilesDir().getAbsolutePath();
     }
     
     @Override
     public String getInstallationSource() {
-        return AppStoreHelper.getInstallationSource(this.this$0.getContext());
+        return AppStoreHelper.getInstallationSource(this.getContext());
     }
     
     @Override

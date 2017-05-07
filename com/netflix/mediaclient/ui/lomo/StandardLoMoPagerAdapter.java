@@ -11,8 +11,9 @@ import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.model.Video;
 
-public class StandardLoMoPagerAdapter extends ProgressiveLoMoPagerAdapter
+public class StandardLoMoPagerAdapter extends ProgressiveLoMoPagerAdapter<Video>
 {
     public StandardLoMoPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler) {
         super(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
@@ -28,6 +29,6 @@ public class StandardLoMoPagerAdapter extends ProgressiveLoMoPagerAdapter
         if (Log.isLoggable("BaseProgressivePagerAdapter", 2)) {
             Log.v("BaseProgressivePagerAdapter", String.format("fetching videos for: Title: %s, Type: %s, Total Vids: %d, Id: %s, start: %d, end: %d", loMo.getTitle(), loMo.getType(), loMo.getNumVideos(), loMo.getId(), n, n2));
         }
-        this.getManager().getBrowse().fetchVideos(loMo, n, n2, new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler$FetchCallback<Object>)this, loMo.getTitle(), n, n2));
+        this.getManager().getBrowse().fetchVideos(loMo, n, n2, false, this.getManager().getActivity().isKubrick(), new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler$FetchCallback<Object>)this, loMo.getTitle(), n, n2));
     }
 }

@@ -26,6 +26,6 @@ class AccessToken$SerializationProxyV1 implements Serializable
     }
     
     private Object readResolve() {
-        return new AccessToken(this.token, this.expires, this.permissions, this.source, this.lastRefresh);
+        return new AccessToken(this.token, this.expires, this.permissions, null, this.source, this.lastRefresh);
     }
 }

@@ -11,10 +11,13 @@ import android.view.Display;
 import java.util.Locale;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
+import android.content.Context;
 
 public interface Bridge
 {
     int getConfigVideoBufferSize();
+    
+    Context getContext();
     
     PlayerType getCurrentPlayerType();
     

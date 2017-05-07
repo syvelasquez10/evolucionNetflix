@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.text.Html;
@@ -16,7 +17,6 @@ import com.netflix.mediaclient.util.log.SocialLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import android.app.Activity;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;

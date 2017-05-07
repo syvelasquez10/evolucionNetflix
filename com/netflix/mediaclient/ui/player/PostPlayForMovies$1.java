@@ -6,13 +6,17 @@ package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.Ratable;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.ViewUtils;
+import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
 import java.util.ArrayList;

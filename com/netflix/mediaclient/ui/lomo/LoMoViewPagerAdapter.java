@@ -8,6 +8,7 @@ import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.view.View;
@@ -24,7 +25,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     private static final EnumMap<LoMoType, LoMoViewPagerAdapter$Type> LOMO_TYPE_TABLE;
     private static final String TAG = "LoMoViewPagerAdapter";
     private final NetflixActivity activity;
-    private final LoMoViewPagerAdapter$RowAdapterSet adapters;
+    private final LoMoViewPagerAdapter$IRowAdapterProvider adapters;
     private final BroadcastReceiver browseReceiver;
     private RowAdapter currentAdapter;
     private boolean isDestroyed;
@@ -52,10 +53,17 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.viewRecycler = viewRecycler;
         this.activity = (NetflixActivity)pager.getContext();
         this.reloadView = reloadView;
-        this.adapters = new LoMoViewPagerAdapter$RowAdapterSet(serviceManager, this.pagerAdapterCallbacks, viewRecycler, b);
+        this.adapters = RowAdapterProvider.create(serviceManager, this.pagerAdapterCallbacks, viewRecycler, b);
         this.registerBrowseNotificationReceiver();
         reloadView.setOnClickListener(this.onReloadClickListener);
-        this.currentAdapter = this.adapters.loading;
+        this.currentAdapter = this.adapters.getLoadingAdapter();
+    }
+    
+    private LoMoViewPagerAdapter$Type convertLomoTypeToAdapterType(final BasicLoMo basicLoMo) {
+        if (basicLoMo instanceof KubrickLoMoHeroDuplicate) {
+            return LoMoViewPagerAdapter$Type.KUBRICK_HERO;
+        }
+        return LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(basicLoMo.getType());
     }
     
     private View getView(final int n) {
@@ -63,7 +71,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             Log.v("LoMoViewPagerAdapter", "getView pos: " + n);
         }
         if (this.currentAdapter.hasMoreData() && this.isLastItem(n)) {
-            return this.adapters.loading.getView(n);
+            return this.adapters.getLoadingAdapter().getView(n);
         }
         return this.currentAdapter.getView(n);
     }
@@ -95,25 +103,28 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                 throw new IllegalStateException("Bad state");
             }
             case 1: {
-                this.currentAdapter = this.adapters.standard;
+                this.currentAdapter = this.adapters.getStandardAdapter();
             }
             case 2: {
-                this.currentAdapter = this.adapters.loading;
+                this.currentAdapter = this.adapters.getLoadingAdapter();
             }
             case 3: {
-                this.currentAdapter = this.adapters.error;
+                this.currentAdapter = this.adapters.getErrorAdapter();
             }
             case 4: {
-                this.currentAdapter = this.adapters.iq;
+                this.currentAdapter = this.adapters.getIqAdapter();
             }
             case 5: {
-                this.currentAdapter = this.adapters.cw;
+                this.currentAdapter = this.adapters.getCwAdapter();
             }
             case 6: {
-                this.currentAdapter = this.adapters.billboard;
+                this.currentAdapter = this.adapters.getBillboardAdapter();
             }
             case 7: {
-                this.currentAdapter = this.adapters.character;
+                this.currentAdapter = this.adapters.getCharacterAdapter();
+            }
+            case 8: {
+                this.currentAdapter = this.adapters.getKubrickHeroAdapter();
             }
         }
     }
@@ -169,28 +180,10 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         return -2;
     }
     
-    public LinearLayout$LayoutParams getLayoutParams(final LoMoType loMoType) {
-        int n = 0;
-        switch (LoMoViewPagerAdapter$5.$SwitchMap$com$netflix$mediaclient$servicemgr$model$LoMoType[loMoType.ordinal()]) {
-            default: {
-                n = this.adapters.standard.getRowHeightInPx();
-                break;
-            }
-            case 1: {
-                n = this.adapters.billboard.getRowHeightInPx();
-                break;
-            }
-            case 2: {
-                n = this.adapters.cw.getRowHeightInPx();
-                break;
-            }
-            case 3: {
-                n = this.adapters.character.getRowHeightInPx();
-                break;
-            }
-        }
-        Log.v("LoMoViewPagerAdapter", "Creating layout params with height: " + n);
-        return new LinearLayout$LayoutParams(-1, n);
+    public LinearLayout$LayoutParams getLayoutParams() {
+        final int rowHeightInPx = this.currentAdapter.getRowHeightInPx();
+        Log.v("LoMoViewPagerAdapter", "Creating layout params with height: " + rowHeightInPx);
+        return new LinearLayout$LayoutParams(-1, rowHeightInPx);
     }
     
     public boolean hasMoreData() {
@@ -225,7 +218,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     public void refresh(final BasicLoMo loMo, final int listViewPos) {
-        final LoMoViewPagerAdapter$Type state = LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(loMo.getType());
+        final LoMoViewPagerAdapter$Type convertLomoTypeToAdapterType = this.convertLomoTypeToAdapterType(loMo);
         if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
             final StringBuilder append = new StringBuilder().append("refreshing: ").append(listViewPos).append(", ");
             String title;
@@ -235,13 +228,13 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             else {
                 title = loMo.getTitle();
             }
-            Log.v("LoMoViewPagerAdapter", append.append(title).append(", new state: ").append(state).toString());
+            Log.v("LoMoViewPagerAdapter", append.append(title).append(", new state: ").append(convertLomoTypeToAdapterType).toString());
         }
         this.listViewPos = listViewPos;
         this.hideReloadViews();
         this.loMo = loMo;
         this.showLoading();
-        this.setState(state);
+        this.setState(convertLomoTypeToAdapterType);
         this.currentAdapter.refreshData(loMo, listViewPos);
     }
     
@@ -287,6 +280,10 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     
     public LoMoViewPagerAdapter$Memento saveToMemento() {
         return new LoMoViewPagerAdapter$Memento(this.state, this.preErrorState, this.loMo, this.currentAdapter);
+    }
+    
+    public boolean shouldOverlapPages() {
+        return this.currentAdapter.shouldOverlapPages();
     }
     
     public void trackPresentation(final int n) {

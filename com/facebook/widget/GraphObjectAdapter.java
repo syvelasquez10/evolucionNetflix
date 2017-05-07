@@ -6,10 +6,11 @@ package com.facebook.widget;
 
 import android.widget.TextView$BufferType;
 import android.widget.TextView;
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import com.facebook.model.GraphObject$Factory;
 import org.json.JSONObject;
 import android.view.ViewGroup$LayoutParams;
+import java.util.Locale;
 import java.util.HashSet;
 import com.facebook.android.R$drawable;
 import android.widget.CheckBox;
@@ -22,7 +23,10 @@ import android.widget.ProgressBar;
 import com.facebook.android.R$layout;
 import android.view.ViewGroup;
 import android.view.View;
-import java.net.URL;
+import com.facebook.internal.ImageDownloader;
+import com.facebook.internal.ImageRequest$Callback;
+import com.facebook.internal.ImageRequest$Builder;
+import java.net.URI;
 import java.util.Iterator;
 import com.facebook.FacebookException;
 import android.widget.ImageView;
@@ -30,6 +34,8 @@ import java.text.Collator;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import com.facebook.internal.ImageResponse;
+import com.facebook.internal.ImageRequest;
 import android.view.LayoutInflater;
 import java.util.ArrayList;
 import java.util.Map;
@@ -110,8 +116,8 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         return 0;
     }
     
-    private void downloadProfilePicture(final String tag, final URL url, final ImageView imageView) {
-        if (url != null) {
+    private void downloadProfilePicture(final String tag, final URI uri, final ImageView imageView) {
+        if (uri != null) {
             boolean b;
             if (imageView == null) {
                 b = true;
@@ -119,12 +125,12 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
             else {
                 b = false;
             }
-            if (b || !url.equals(imageView.getTag())) {
+            if (b || !uri.equals(imageView.getTag())) {
                 if (!b) {
                     imageView.setTag((Object)tag);
                     imageView.setImageResource(this.getDefaultPicture());
                 }
-                final ImageRequest build = new ImageRequest$Builder(this.context.getApplicationContext(), url).setCallerTag(this).setCallback(new GraphObjectAdapter$2(this, tag, imageView)).build();
+                final ImageRequest build = new ImageRequest$Builder(this.context.getApplicationContext(), uri).setCallerTag(this).setCallback(new GraphObjectAdapter$2(this, tag, imageView)).build();
                 this.pendingRequests.put(tag, build);
                 ImageDownloader.downloadAsync(build);
             }
@@ -153,12 +159,12 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 this.prefetchedPictureCache.put(s, imageResponse);
             }
         }
-        else if (imageView != null && s.equals(imageView.getTag())) {
+        else if (s.equals(imageView.getTag())) {
             final Exception error = imageResponse.getError();
             final Bitmap bitmap = imageResponse.getBitmap();
             if (error == null && bitmap != null) {
                 imageView.setImageBitmap(bitmap);
-                imageView.setTag((Object)imageResponse.getRequest().getImageUrl());
+                imageView.setTag((Object)imageResponse.getRequest().getImageUri());
             }
         }
     }
@@ -225,7 +231,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         return true;
     }
     
-    protected View createGraphObjectView(final T t, final View view) {
+    protected View createGraphObjectView(final T t) {
         final View inflate = this.inflater.inflate(this.getGraphObjectRowLayoutId(t), (ViewGroup)null);
         final ViewStub viewStub = (ViewStub)inflate.findViewById(R$id.com_facebook_picker_checkbox_stub);
         if (viewStub != null) {
@@ -291,7 +297,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     protected View getGraphObjectView(final T t, final View view, final ViewGroup viewGroup) {
         View graphObjectView = view;
         if (view == null) {
-            graphObjectView = this.createGraphObjectView(t, view);
+            graphObjectView = this.createGraphObjectView(t);
         }
         this.populateGraphObjectView(graphObjectView, t);
         return graphObjectView;
@@ -338,7 +344,10 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         if (sectionAndItem != null && sectionAndItem.graphObject != null) {
             final String idOfGraphObject = this.getIdOfGraphObject((T)sectionAndItem.graphObject);
             if (idOfGraphObject != null) {
-                return Long.parseLong(idOfGraphObject);
+                try {
+                    return Long.parseLong(idOfGraphObject);
+                }
+                catch (NumberFormatException ex) {}
             }
         }
         return 0L;
@@ -366,17 +375,17 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
     
     String getPictureFieldSpecifier() {
-        final ImageView imageView = (ImageView)this.createGraphObjectView(null, null).findViewById(R$id.com_facebook_picker_image);
+        final ImageView imageView = (ImageView)this.createGraphObjectView(null).findViewById(R$id.com_facebook_picker_image);
         if (imageView == null) {
             return null;
         }
         final ViewGroup$LayoutParams layoutParams = imageView.getLayoutParams();
-        return String.format("picture.height(%d).width(%d)", layoutParams.height, layoutParams.width);
+        return String.format(Locale.US, "picture.height(%d).width(%d)", layoutParams.height, layoutParams.width);
     }
     
-    protected URL getPictureUrlOfGraphObject(final T t) {
+    protected URI getPictureUriOfGraphObject(final T t) {
         final Object property = t.getProperty("picture");
-    Block_4_Outer:
+    Block_5_Outer:
         while (true) {
             Label_0036: {
                 if (!(property instanceof String)) {
@@ -387,20 +396,18 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                     return null;
                 }
                 try {
-                    return new URL(url);
-                    // iftrue(Label_0084:, data == null)
-                    // iftrue(Label_0084:, !property instanceof JSONObject)
-                    GraphObjectAdapter$ItemPictureData data = null;
-                Block_5:
+                    return new URI(url);
                     while (true) {
+                        final GraphObjectAdapter$ItemPictureData data;
+                        url = data.getUrl();
+                        continue Block_5_Outer;
                         data = GraphObject$Factory.create((JSONObject)property).cast(GraphObjectAdapter$ItemPicture.class).getData();
-                        break Block_5;
                         continue;
                     }
-                    url = data.getUrl();
-                    continue Block_4_Outer;
                 }
-                catch (MalformedURLException ex) {}
+                // iftrue(Label_0084:, !property instanceof JSONObject)
+                // iftrue(Label_0084:, data == null)
+                catch (URISyntaxException ex) {}
             }
             return null;
             Label_0084: {
@@ -643,22 +650,22 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
             this.updateCheckboxState((CheckBox)view.findViewById(R$id.com_facebook_picker_checkbox), this.isGraphObjectSelected(idOfGraphObject));
         }
         if (this.getShowPicture()) {
-            final URL pictureUrlOfGraphObject = this.getPictureUrlOfGraphObject(t);
-            if (pictureUrlOfGraphObject != null) {
+            final URI pictureUriOfGraphObject = this.getPictureUriOfGraphObject(t);
+            if (pictureUriOfGraphObject != null) {
                 final ImageView imageView = (ImageView)view.findViewById(R$id.com_facebook_picker_image);
                 if (!this.prefetchedPictureCache.containsKey(idOfGraphObject)) {
-                    this.downloadProfilePicture(idOfGraphObject, pictureUrlOfGraphObject, imageView);
+                    this.downloadProfilePicture(idOfGraphObject, pictureUriOfGraphObject, imageView);
                     return;
                 }
                 final ImageResponse imageResponse = this.prefetchedPictureCache.get(idOfGraphObject);
                 imageView.setImageBitmap(imageResponse.getBitmap());
-                imageView.setTag((Object)imageResponse.getRequest().getImageUrl());
+                imageView.setTag((Object)imageResponse.getRequest().getImageUri());
             }
         }
     }
     
     public void prioritizeViewRange(int i, final int n, int j) {
-        if (n >= i) {
+        if (n >= i && this.sectionKeys.size() != 0) {
             for (int k = n; k >= 0; --k) {
                 final GraphObjectAdapter$SectionAndItem<T> sectionAndItem = this.getSectionAndItem(k);
                 if (sectionAndItem.graphObject != null) {
@@ -686,12 +693,12 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 }
             }
             for (final GraphObject graphObject : list) {
-                final URL pictureUrlOfGraphObject = this.getPictureUrlOfGraphObject((T)graphObject);
+                final URI pictureUriOfGraphObject = this.getPictureUriOfGraphObject((T)graphObject);
                 final String idOfGraphObject = this.getIdOfGraphObject((T)graphObject);
                 final boolean remove = this.prefetchedProfilePictureIds.remove(idOfGraphObject);
                 this.prefetchedProfilePictureIds.add(idOfGraphObject);
                 if (!remove) {
-                    this.downloadProfilePicture(idOfGraphObject, pictureUrlOfGraphObject, null);
+                    this.downloadProfilePicture(idOfGraphObject, pictureUriOfGraphObject, null);
                 }
             }
         }

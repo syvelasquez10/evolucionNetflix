@@ -79,11 +79,11 @@ class ac extends aj
                                                     return di.u(s);
                                                 }
                                                 break Label_0257;
-                                                i = di.j(d$a2);
-                                                break Label_0055;
                                                 final d$a d$a3;
                                                 k = di.j(d$a3);
                                                 break Label_0075;
+                                                i = di.j(d$a2);
+                                                break Label_0055;
                                             }
                                             catch (IllegalArgumentException ex) {
                                                 bh.T("Encode: invalid input:");

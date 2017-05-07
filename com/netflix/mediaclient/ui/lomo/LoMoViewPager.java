@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -28,6 +28,8 @@ import com.netflix.mediaclient.android.fragment.CustomViewPager;
 @SuppressLint({ "ViewConstructor" })
 public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$LoMoRowContent
 {
+    private static final String CW_CACHE_KEY = "cw";
+    private static final String IQ_CACHE_KEY = "iq";
     private static final float KIDS_TOUCH_SLOP_SCALE_FACTOR = 0.75f;
     private static final long ROTATE_TO_NEXT_VIEW_DELAY_MS;
     private static final String TAG = "LoMoViewPager";
@@ -61,6 +63,20 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         return (NetflixActivity)this.getContext();
     }
     
+    private String getStateKeyForLomo(final BasicLoMo basicLoMo) {
+        switch (LoMoViewPager$2.$SwitchMap$com$netflix$mediaclient$servicemgr$model$LoMoType[basicLoMo.getType().ordinal()]) {
+            default: {
+                return String.valueOf(basicLoMo.hashCode());
+            }
+            case 1: {
+                return "cw";
+            }
+            case 2: {
+                return "iq";
+            }
+        }
+    }
+    
     private void handleTouchEvent(final MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             default: {}
@@ -81,8 +97,8 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         }
     }
     
-    private boolean restoreState(final String stateKey) {
-        this.stateKey = stateKey;
+    private boolean restoreState(final BasicLoMo basicLoMo) {
+        this.stateKey = this.getStateKeyForLomo(basicLoMo);
         this.state = this.stateMap.get(this.stateKey);
         if (this.state == null) {
             Log.v("LoMoViewPager", "No state found for key: " + this.stateKey);
@@ -141,18 +157,13 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     }
     
     public void invalidateCwCache() {
-        this.stateMap.remove("CW");
+        Log.v("LoMoViewPager", "Invalidating CW cache");
+        this.stateMap.remove("cw");
     }
     
     public void invalidateIqCache() {
-        this.stateMap.remove("IQ");
-    }
-    
-    @Override
-    public void invalidateRequestId() {
-        if (this.adapter != null) {
-            this.adapter.invalidateRequestId();
-        }
+        Log.v("LoMoViewPager", "Invalidating IQ cache");
+        this.stateMap.remove("iq");
     }
     
     public boolean isLoading() {
@@ -201,21 +212,29 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     }
     
     @Override
+    public void onViewMovedToScrapHeap() {
+        this.handler.removeCallbacks(this.rotateToNextViewRunnable);
+        if (this.adapter != null) {
+            this.adapter.invalidateRequestId();
+        }
+    }
+    
+    @Override
     public void refresh(final BasicLoMo basicLoMo, final int n) {
-        final boolean b = true;
         ThreadUtils.assertOnMain();
-        this.setPagesToOverlap(basicLoMo.getType() != LoMoType.BILLBOARD);
-        this.updateAutoPagination(this.shouldAutoPaginate = (basicLoMo.getType() == LoMoType.BILLBOARD && b));
         if (Log.isLoggable("LoMoViewPager", 2)) {
-            Log.v("LoMoViewPager", "Setting layout params for: " + basicLoMo.getType());
+            Log.v("LoMoViewPager", "Setting layout params for: " + basicLoMo.getType() + ", listViewPos: " + n);
         }
-        this.setLayoutParams((ViewGroup$LayoutParams)this.adapter.getLayoutParams(basicLoMo.getType()));
-        if (this.restoreState(basicLoMo.getId())) {
+        if (this.restoreState(basicLoMo)) {
             this.adapter.trackPresentation(this.state.currPage);
-            return;
         }
-        this.adapter.refresh(basicLoMo, n);
-        this.updatePageIndicatorVisibility();
+        else {
+            this.adapter.refresh(basicLoMo, n);
+            this.updatePageIndicatorVisibility();
+        }
+        this.setPagesToOverlap(this.adapter.shouldOverlapPages());
+        this.setLayoutParams((ViewGroup$LayoutParams)this.adapter.getLayoutParams());
+        this.updateAutoPagination(this.shouldAutoPaginate = (basicLoMo.getType() == LoMoType.BILLBOARD));
     }
     
     void saveStateAndTrack(final int n) {

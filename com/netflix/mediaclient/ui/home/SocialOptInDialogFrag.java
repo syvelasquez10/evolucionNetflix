@@ -5,12 +5,11 @@
 package com.netflix.mediaclient.ui.home;
 
 import android.app.Activity;
-import android.view.View$OnClickListener;
+import android.content.DialogInterface$OnClickListener;
+import android.content.Context;
+import android.app.AlertDialog$Builder;
 import com.netflix.mediaclient.Log;
-import android.widget.Button;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.LayoutInflater;
+import android.app.Dialog;
 import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
@@ -25,10 +24,7 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
     }
     
     public static SocialOptInDialogFrag newInstance() {
-        final SocialOptInDialogFrag socialOptInDialogFrag = new SocialOptInDialogFrag();
-        socialOptInDialogFrag.setStyle(1, 2131558713);
-        socialOptInDialogFrag.setArguments(new Bundle());
-        return socialOptInDialogFrag;
+        return new SocialOptInDialogFrag();
     }
     
     @Override
@@ -36,24 +32,13 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
         return false;
     }
     
-    public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903146, viewGroup);
-        final Button button = (Button)inflate.findViewById(2131165288);
-        final Button button2 = (Button)inflate.findViewById(2131165292);
-        button2.requestFocus();
+    public Dialog onCreateDialog(final Bundle bundle) {
         final Activity activity = this.getActivity();
         if (!(activity instanceof SocialOptInDialogFrag$OptInResponseHandler)) {
-            Log.e("social", "Activity is not OptInResponseHandler! THis should not happen!");
-            return inflate;
+            Log.e("social", "Activity is not OptInResponseHandler! This should not happen!");
+            return null;
         }
         final SocialOptInDialogFrag$OptInResponseHandler socialOptInDialogFrag$OptInResponseHandler = (SocialOptInDialogFrag$OptInResponseHandler)activity;
-        button2.setOnClickListener((View$OnClickListener)new SocialOptInDialogFrag$1(this, socialOptInDialogFrag$OptInResponseHandler));
-        if (button != null) {
-            button.setOnClickListener((View$OnClickListener)new SocialOptInDialogFrag$2(this, socialOptInDialogFrag$OptInResponseHandler));
-        }
-        else {
-            Log.e("social", "NO button not found! THis should not happen!");
-        }
-        return inflate;
+        return (Dialog)new AlertDialog$Builder((Context)this.getActivity(), 2131558695).setTitle(2131493238).setMessage(2131493239).setPositiveButton(2131493241, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$2(this, socialOptInDialogFrag$OptInResponseHandler)).setNegativeButton(2131493240, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$1(this, socialOptInDialogFrag$OptInResponseHandler)).create();
     }
 }

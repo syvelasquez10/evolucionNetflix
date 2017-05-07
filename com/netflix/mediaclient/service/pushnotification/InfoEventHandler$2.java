@@ -7,6 +7,11 @@ package com.netflix.mediaclient.service.pushnotification;
 import com.netflix.mediaclient.util.ParcelUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.Log;
 
@@ -22,7 +27,7 @@ class InfoEventHandler$2 implements Runnable
     public void run() {
         Log.i("nf_push_info", "Refreshing IQ via runnable");
         if (InfoEventHandler.mService != null) {
-            InfoEventHandler.mService.getBrowse().refreshIQ();
+            InfoEventHandler.mService.getBrowse().refreshIq();
         }
     }
 }

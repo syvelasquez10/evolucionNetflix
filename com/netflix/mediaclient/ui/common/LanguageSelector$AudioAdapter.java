@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
 import android.view.View;
@@ -37,7 +38,7 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Audio create row " + n);
-            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903114, viewGroup, false);
+            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903127, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();
@@ -46,11 +47,13 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
         languageSelector$RowHolder.name.setText((CharSequence)item.getLanguageDescription());
         languageSelector$RowHolder.choice.setChecked(equals);
         if (equals) {
-            Log.d("nf_language_selector", "Audio is selected " + item);
-            inflate.setBackgroundColor(this.this$0.mSelectedRowColor);
+            if (Log.isLoggable("nf_language_selector", 3)) {
+                Log.d("nf_language_selector", "Audio is selected " + item);
+            }
+            ViewUtils.setTextOpacityToSelected(languageSelector$RowHolder.name);
             return inflate;
         }
-        inflate.setBackgroundColor(this.this$0.mRowColor);
+        ViewUtils.setTextOpacityToUnselected(languageSelector$RowHolder.name);
         return inflate;
     }
 }

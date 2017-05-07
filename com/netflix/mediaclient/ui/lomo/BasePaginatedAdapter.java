@@ -14,12 +14,12 @@ import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.app.Activity;
 import java.util.ArrayList;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DataUtil;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
-import com.netflix.mediaclient.util.MathUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.util.MathUtils;
 import android.content.Context;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -27,8 +27,6 @@ import com.netflix.mediaclient.servicemgr.model.Video;
 
 public abstract class BasePaginatedAdapter<T extends Video>
 {
-    protected static final boolean DO_NOT_OVERLAP_PAGES = false;
-    protected static final boolean OVERLAP_PAGES = true;
     private static final String TAG = "BasePaginatedAdapter";
     protected final NetflixActivity activity;
     private String currTitle;
@@ -38,12 +36,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
     
     public BasePaginatedAdapter(final Context context) {
         this.activity = (NetflixActivity)context;
-        final int basicScreenOrientation = DeviceUtils.getBasicScreenOrientation(context);
-        final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(context);
-        this.numItemsPerPage = this.computeNumItemsPerPage(basicScreenOrientation, screenSizeCategory);
-        if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("BasePaginatedAdapter", this.getClass().getSimpleName() + ", num items: " + this.numItemsPerPage + ", orientation: " + basicScreenOrientation + ", screenSize: " + screenSizeCategory);
-        }
+        this.numItemsPerPage = this.computeNumItemsPerPage();
     }
     
     private void appendOrUpdate(final List<T> list, final List<T> list2, final int n) {
@@ -70,50 +63,53 @@ public abstract class BasePaginatedAdapter<T extends Video>
         return DeviceUtils.getScreenWidthInPixels((Context)netflixActivity);
     }
     
-    private String printLomo() {
+    private String getCurrTitleFormatted() {
+        if (StringUtils.isEmpty(this.currTitle)) {
+            return "";
+        }
         return this.currTitle + ": ";
     }
     
     public void appendData(final List<T> list, final String s, final int n, final int n2) {
-        if (list != null) {
-            final int size = this.data.size();
-            this.appendOrUpdate(this.data, list, n);
-            if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-                Log.v("BasePaginatedAdapter", this.printLomo() + "appending data starting with item: " + DataUtil.getFirstItemSafely(list) + ", prev size: " + size + ", new size: " + this.data.size());
-                if (this.data.size() == size) {
-                    Log.w("BasePaginatedAdapter", this.printLomo() + "***** append called but no items added\n");
-                }
-            }
-        }
-        if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("BasePaginatedAdapter", this.printLomo() + "currTitle: " + this.currTitle + "\ntitle: " + s + ", start: " + n + ", end: " + n2 + ", listViewPos: " + this.listViewPos);
-        }
         if (StringUtils.isEmpty(this.currTitle)) {
             if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-                Log.v("BasePaginatedAdapter", this.printLomo() + "new title: " + s);
+                Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "new title: " + s);
             }
             this.currTitle = s;
         }
         if (!StringUtils.safeEquals(s, this.currTitle)) {
             if (Log.isLoggable("BasePaginatedAdapter", 6)) {
-                Log.e("BasePaginatedAdapter", this.printLomo() + "***** title mismatch:" + this.printLomo() + "\n    curr: " + this.currTitle + this.printLomo() + "\n    new: " + s);
+                Log.e("BasePaginatedAdapter", this.getCurrTitleFormatted() + "***** title mismatch:" + this.getCurrTitleFormatted() + "\n    curr: " + this.currTitle + this.getCurrTitleFormatted() + "\n    new: " + s);
             }
             this.currTitle = s;
+        }
+        if (list != null) {
+            final int size = this.data.size();
+            this.appendOrUpdate(this.data, list, n);
+            if (Log.isLoggable("BasePaginatedAdapter", 2)) {
+                Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "appending data starting with item: " + DataUtil.getFirstItemSafely(list) + ", prev size: " + size + ", new size: " + this.data.size());
+                if (this.data.size() == size) {
+                    Log.w("BasePaginatedAdapter", this.getCurrTitleFormatted() + "***** append called but no items added");
+                }
+            }
+        }
+        if (Log.isLoggable("BasePaginatedAdapter", 2)) {
+            Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "currTitle: " + this.currTitle + ", new title: " + s + ", start: " + n + ", end: " + n2 + ", listViewPos: " + this.listViewPos);
         }
     }
     
     public void clearData() {
         if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("BasePaginatedAdapter", this.printLomo() + "Clearing data...");
+            Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "Clearing data...");
         }
         this.data = new ArrayList<T>();
         this.currTitle = "";
         this.listViewPos = -1;
     }
     
-    protected abstract int computeNumItemsPerPage(final int p0, final int p1);
+    protected abstract int computeNumItemsPerPage();
     
-    protected abstract int computeNumVideosToFetchPerBatch(final Context p0);
+    protected abstract int computeNumVideosToFetchPerBatch();
     
     protected Activity getActivity() {
         return this.activity;
@@ -130,7 +126,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
         min = Math.min(this.numItemsPerPage * min, this.data.size());
         final int min2 = Math.min(this.numItemsPerPage + min, this.data.size());
         if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("BasePaginatedAdapter", this.printLomo() + String.format("Getting [%d, %d], data set size: %d", min, min2, this.data.size()));
+            Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + String.format("Getting [%d, %d], data set size: %d", min, min2, this.data.size()));
         }
         return this.data.subList(min, min2);
     }
@@ -140,13 +136,17 @@ public abstract class BasePaginatedAdapter<T extends Video>
     }
     
     public int getRowHeightInPx() {
-        final int n = (int)(computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 1.43f + 0.5f);
-        Log.v("BasePaginatedAdapter", "Computed view height: " + n);
+        final int n = (int)(computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 1.43f + 0.5f);
+        if (Log.isLoggable("BasePaginatedAdapter", 2)) {
+            Log.v("BasePaginatedAdapter", "Computed view height: " + n);
+        }
         return n;
     }
     
     public View getView(final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final BasicLoMo basicLoMo, final int n) {
-        Log.v("BasePaginatedAdapter", this.printLomo() + " Getting page for position: " + n);
+        if (Log.isLoggable("BasePaginatedAdapter", 2)) {
+            Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "Getting page for position: " + n);
+        }
         return this.getView(objectRecycler$ViewRecycler, this.getDataForPage(n), this.numItemsPerPage, n, basicLoMo);
     }
     
@@ -161,14 +161,14 @@ public abstract class BasePaginatedAdapter<T extends Video>
         this.listViewPos = basePaginatedAdapter$Memento.listViewPos;
         this.currTitle = basePaginatedAdapter$Memento.currTitle;
         if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("BasePaginatedAdapter", this.printLomo() + "restored from memento: " + basePaginatedAdapter$Memento);
+            Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "restored from memento: " + basePaginatedAdapter$Memento);
         }
     }
     
     public BasePaginatedAdapter$Memento<T> saveToMemento() {
         final BasePaginatedAdapter$Memento<T> basePaginatedAdapter$Memento = new BasePaginatedAdapter$Memento<T>(this.data, this.listViewPos, this.currTitle);
         if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("BasePaginatedAdapter", this.printLomo() + "saving memento: " + basePaginatedAdapter$Memento);
+            Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "saving memento: " + basePaginatedAdapter$Memento);
         }
         return basePaginatedAdapter$Memento;
     }
@@ -180,30 +180,35 @@ public abstract class BasePaginatedAdapter<T extends Video>
     public void trackPresentation(final ServiceManager serviceManager, final BasicLoMo basicLoMo, int n, final Boolean b) {
         final List<T> dataForPage = this.getDataForPage(n);
         if (dataForPage == null || dataForPage.size() == 0) {
-            Log.d("nf_presentation", "No videos input videos found in page data");
-            return;
-        }
-        final ArrayList list = new ArrayList<String>(dataForPage.size());
-        for (final Video video : dataForPage) {
-            if (VideoType.isPresentationTrackingType(video.getType())) {
-                list.add(video.getId());
+            if (Log.isLoggable("BasePaginatedAdapter", 3)) {
+                Log.d("nf_presentation", "No videos input videos found in page data");
             }
         }
-        if (list.size() == 0) {
-            Log.d("nf_presentation", "No videos found for presentation tracking - row: " + basicLoMo.getTitle());
-            return;
-        }
-        n = LoMoUtils.getClientInjectedVideoCount(basicLoMo, serviceManager.isCurrentProfileFacebookConnected(), n) + this.numItemsPerPage * n;
-        UiLocation uiLocation;
-        if (b) {
-            uiLocation = UiLocation.GENRE_LOLOMO;
-        }
         else {
-            uiLocation = UiLocation.HOME_LOLOMO;
+            final ArrayList list = new ArrayList<String>(dataForPage.size());
+            for (final Video video : dataForPage) {
+                if (VideoType.isPresentationTrackingType(video.getType())) {
+                    list.add(video.getId());
+                }
+            }
+            if (list.size() != 0) {
+                n = LoMoUtils.getClientInjectedVideoCount(basicLoMo, serviceManager.isCurrentProfileFacebookConnected(), this.activity.isKubrick(), n) + this.numItemsPerPage * n;
+                UiLocation uiLocation;
+                if (b) {
+                    uiLocation = UiLocation.GENRE_LOLOMO;
+                }
+                else {
+                    uiLocation = UiLocation.HOME_LOLOMO;
+                }
+                if (Log.isLoggable("BasePaginatedAdapter", 2)) {
+                    Log.v("nf_presentation", String.format("%s, %s, offset %d %s", basicLoMo.getTitle(), uiLocation, n, list));
+                }
+                serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, (List<String>)list, n, uiLocation);
+                return;
+            }
+            if (Log.isLoggable("BasePaginatedAdapter", 3)) {
+                Log.d("nf_presentation", "No videos found for presentation tracking - row: " + basicLoMo.getTitle());
+            }
         }
-        if (Log.isLoggable("BasePaginatedAdapter", 2)) {
-            Log.v("nf_presentation", String.format("%s, %s, offset %d %s", basicLoMo.getTitle(), uiLocation, n, list));
-        }
-        serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, (List<String>)list, n, uiLocation);
     }
 }

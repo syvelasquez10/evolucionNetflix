@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.ui.pin;
 
 import android.app.AlertDialog;
-import android.view.View$OnClickListener;
-import android.widget.Button;
 import android.text.method.MovementMethod;
 import android.view.View$OnKeyListener;
 import android.view.ViewGroup;

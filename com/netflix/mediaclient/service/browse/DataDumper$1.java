@@ -34,7 +34,7 @@ class DataDumper$1 extends SimpleBrowseAgentCallback
         final ArrayList<LoMo> list2 = new ArrayList<LoMo>(list);
         for (final LoMo loMo : list) {
             this.this$0.lomoVideos.put(loMo, null);
-            this.this$0.mBrowseWebClient.fetchVideos(loMo, 0, 250, new DataDumper$VideosCallback(loMo, list2));
+            this.this$0.mBrowseWebClient.fetchVideos(loMo, 0, 250, false, new DataDumper$VideosCallback(loMo, list2));
         }
     }
 }

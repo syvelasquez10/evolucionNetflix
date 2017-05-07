@@ -17,9 +17,26 @@ public final class Session$NewPermissionsRequest extends Session$AuthorizationRe
         this.setPermissions(permissions);
     }
     
+    public Session$NewPermissionsRequest(final Activity activity, final String... permissions) {
+        super(activity);
+        this.setPermissions(permissions);
+    }
+    
     public Session$NewPermissionsRequest(final Fragment fragment, final List<String> permissions) {
         super(fragment);
         this.setPermissions(permissions);
+    }
+    
+    public Session$NewPermissionsRequest(final Fragment fragment, final String... permissions) {
+        super(fragment);
+        this.setPermissions(permissions);
+    }
+    
+    @Override
+    AuthorizationClient$AuthorizationRequest getAuthorizationClientRequest() {
+        final AuthorizationClient$AuthorizationRequest authorizationClientRequest = super.getAuthorizationClientRequest();
+        authorizationClientRequest.setRerequest(true);
+        return authorizationClientRequest;
     }
     
     public final Session$NewPermissionsRequest setCallback(final Session$StatusCallback callback) {

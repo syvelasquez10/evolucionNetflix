@@ -76,6 +76,14 @@ public class Region
         this.mTextStyle = mTextStyle;
     }
     
+    public static Region createInstanceOfDefaultRegion(final TextStyle textStyle) {
+        return new Region("DEFAULT_REGION", DoubleLength.ZERO, DoubleLength.ZERO, HorizontalAlignment.left, VerticalAlignment.top, null, textStyle);
+    }
+    
+    public static Region createInstanceOfSimpleSdhRegion(final TextStyle textStyle) {
+        return new Region("SIMPLE_SDH", DoubleLength.SIMPLE_SDH_EXTENT, DoubleLength.ZERO, HorizontalAlignment.left, VerticalAlignment.top, null, textStyle);
+    }
+    
     public static Region createRegion(final SubtitleParser subtitleParser, final Element element, final CellResolution cellResolution, final TextStyle textStyle) {
         return new Region(subtitleParser, element, cellResolution, textStyle);
     }

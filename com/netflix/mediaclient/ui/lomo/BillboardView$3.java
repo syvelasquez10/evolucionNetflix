@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.text.Html;
@@ -16,7 +18,6 @@ import com.netflix.mediaclient.util.log.SocialLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import android.app.Activity;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -31,7 +32,7 @@ import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
 import android.widget.RelativeLayout;
-import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
@@ -56,6 +57,6 @@ class BillboardView$3 implements View$OnClickListener
         if (this.val$serviceMan != null && this.val$serviceMan.isReady()) {
             this.val$serviceMan.getBrowse().logBillboardActivity(this.val$video, BrowseAgent$BillboardActivityType.ACTION);
         }
-        DetailsActivity.show((NetflixActivity)this.this$0.getContext(), this.val$video.getType(), this.val$video.getParentId(), this.val$video.getParentTitle(), this.this$0.playContext);
+        DetailsActivityLauncher.show((NetflixActivity)this.this$0.getContext(), this.val$video.getType(), this.val$video.getParentId(), this.val$video.getParentTitle(), this.this$0.playContext);
     }
 }

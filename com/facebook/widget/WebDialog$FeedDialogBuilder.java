@@ -20,12 +20,20 @@ public class WebDialog$FeedDialogBuilder extends WebDialog$BuilderBase<WebDialog
     private static final String SOURCE_PARAM = "source";
     private static final String TO_PARAM = "to";
     
+    public WebDialog$FeedDialogBuilder(final Context context) {
+        super(context, "feed");
+    }
+    
     public WebDialog$FeedDialogBuilder(final Context context, final Session session) {
         super(context, session, "feed", null);
     }
     
     public WebDialog$FeedDialogBuilder(final Context context, final Session session, final Bundle bundle) {
         super(context, session, "feed", bundle);
+    }
+    
+    public WebDialog$FeedDialogBuilder(final Context context, final String s, final Bundle bundle) {
+        super(context, s, "feed", bundle);
     }
     
     public WebDialog$FeedDialogBuilder setCaption(final String s) {

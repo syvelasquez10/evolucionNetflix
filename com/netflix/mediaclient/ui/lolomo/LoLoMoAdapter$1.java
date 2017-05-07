@@ -5,10 +5,8 @@
 package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.ui.lomo.PaginatedCwAdapter;
-import com.netflix.mediaclient.ui.lomo.PaginatedLoMoAdapter;
-import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.lomo.LomoConfig;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.model.LoMo;

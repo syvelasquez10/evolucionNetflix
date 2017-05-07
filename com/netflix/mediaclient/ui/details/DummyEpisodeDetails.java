@@ -103,6 +103,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public String getNarrative() {
+        return "Narrative";
+    }
+    
+    @Override
     public String getNextEpisodeId() {
         return null;
     }
@@ -159,12 +164,17 @@ public class DummyEpisodeDetails implements EpisodeDetails
     
     @Override
     public String getSynopsis() {
-        return "GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB";
+        return "Synopsis";
     }
     
     @Override
     public String getTitle() {
         return "Episode " + this.epNumber;
+    }
+    
+    @Override
+    public String getTitleImgUrl() {
+        return null;
     }
     
     @Override

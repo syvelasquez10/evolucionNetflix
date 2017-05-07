@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -20,9 +20,9 @@ import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
+public class FetchLoMosRequest extends FalkorVolleyWebClientRequest<List<LoMo>>
 {
     private static final String FIELD_LOLOMO = "lolomo";
     private static final String FIELD_LOLOMOS = "lolomos";
@@ -74,11 +74,11 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
     }
     
     @Override
-    protected List<LoMo> parseFalcorResponse(String o) {
+    protected List<LoMo> parseFalkorResponse(String o) {
         if (Log.isLoggable("nf_service_browse_fetchlomosrequest", 2)) {}
         final ArrayList<ListOfMoviesSummary> list = new ArrayList<ListOfMoviesSummary>();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchlomosrequest", (String)o);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchlomosrequest", (String)o);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
             return (List<LoMo>)list;
         }
         try {
@@ -94,7 +94,7 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
             for (int i = this.fromLoMo; i <= this.toLoMo; ++i) {
                 final String string = Integer.toString(i);
                 if (((JsonObject)o).has(string)) {
-                    final ListOfMoviesSummary listOfMoviesSummary = FalcorParseUtils.getPropertyObject(((JsonObject)o).getAsJsonObject(string), "summary", ListOfMoviesSummary.class);
+                    final ListOfMoviesSummary listOfMoviesSummary = FalkorParseUtils.getPropertyObject(((JsonObject)o).getAsJsonObject(string), "summary", ListOfMoviesSummary.class);
                     if (listOfMoviesSummary != null) {
                         listOfMoviesSummary.setListPos(i);
                     }
@@ -112,7 +112,7 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_fetchlomosrequest", "String response to parse = " + (String)o);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
         return (List<LoMo>)list;
     }

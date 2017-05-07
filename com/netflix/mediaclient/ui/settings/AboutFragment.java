@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.settings;
 
+import com.netflix.mediaclient.android.app.Status;
 import android.preference.Preference;
 import com.netflix.mediaclient.ui.diagnosis.DiagnosisActivity;
 import android.preference.Preference$OnPreferenceClickListener;
@@ -18,13 +19,16 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import android.net.Uri;
 import android.content.Intent;
 import android.app.Fragment;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Activity;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.preference.PreferenceFragment;
 
-public class AboutFragment extends PreferenceFragment
+public class AboutFragment extends PreferenceFragment implements ManagerStatusListener
 {
     private static final String TAG = "PreferenceFragment";
     private Activity activity;
+    private ServiceManager manager;
     
     public static Fragment create() {
         return (Fragment)new AboutFragment();
@@ -40,7 +44,7 @@ public class AboutFragment extends PreferenceFragment
     
     private void updateAboutDevice() {
         Serializable s2;
-        final String s = (String)(s2 = this.getString(2131493146));
+        final String s = (String)(s2 = this.getString(2131493153));
         while (true) {
             try {
                 final PackageInfo packageInfo = this.activity.getPackageManager().getPackageInfo(this.activity.getPackageName(), 0);
@@ -49,9 +53,12 @@ public class AboutFragment extends PreferenceFragment
                 final int versionCode = packageInfo.versionCode;
                 s2 = new StringBuilder().append((String)s3);
                 if (versionCode > 0) {
-                    ((StringBuilder)s2).append(" (code ").append(versionCode).append(")").append(", ");
+                    ((StringBuilder)s2).append(" (code ").append(versionCode).append("),");
                 }
-                ((StringBuilder)s2).append("OS API: ").append(AndroidUtils.getAndroidVersion()).append("\n").append("model: ").append(Build.MODEL).append(", ").append("build: ").append(Build.DISPLAY);
+                ((StringBuilder)s2).append(" OS API: ").append(AndroidUtils.getAndroidVersion()).append("\n").append("model: ").append(Build.MODEL).append(", build: ").append(Build.DISPLAY);
+                if (this.manager != null) {
+                    ((StringBuilder)s2).append(", browse: ").append(this.manager.getBrowseAgentString());
+                }
                 this.findPreference((CharSequence)"ui.about").setSummary((CharSequence)((StringBuilder)s2).toString());
                 this.findPreference((CharSequence)"ui.about").setSelectable(false);
             }
@@ -69,7 +76,7 @@ public class AboutFragment extends PreferenceFragment
         super.onCreate(bundle);
         this.activity = this.getActivity();
         this.addPreferencesFromResource(2131034112);
-        this.findPreference((CharSequence)this.getString(2131492951)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.findPreference((CharSequence)this.getString(2131492960)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));
@@ -80,5 +87,14 @@ public class AboutFragment extends PreferenceFragment
         preference3.setIntent(DiagnosisActivity.createStartIntent((Context)this.activity));
         preference3.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$3(this));
         this.updateAboutDevice();
+    }
+    
+    public void onManagerReady(final ServiceManager manager, final Status status) {
+        this.manager = manager;
+        this.updateAboutDevice();
+    }
+    
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+        this.manager = null;
     }
 }

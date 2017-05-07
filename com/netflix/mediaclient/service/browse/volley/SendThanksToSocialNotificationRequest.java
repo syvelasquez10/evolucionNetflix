@@ -6,8 +6,8 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
@@ -16,10 +16,10 @@ import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class SendThanksToSocialNotificationRequest extends FalcorVolleyWebClientRequest<SocialNotificationSummary>
+public class SendThanksToSocialNotificationRequest extends FalkorVolleyWebClientRequest<SocialNotificationSummary>
 {
     private static final String IS_THANKED_FIELD = "isThanked";
     private static final String NOTIFICATIONS_FIELD = "notifications";
@@ -47,7 +47,7 @@ public class SendThanksToSocialNotificationRequest extends FalcorVolleyWebClient
     
     @Override
     protected String getOptionalParams() {
-        final String urlEncodPQLParam = FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "\"" + this.mNotification.getStoryId() + "\"");
+        final String urlEncodPQLParam = FalkorVolleyWebClientRequest.urlEncodPQLParam("param", "\"" + this.mNotification.getStoryId() + "\"");
         if (Log.isLoggable("nf_service_browse_sendsendtosocialnotificationrequest", 3)) {
             Log.d("nf_service_browse_sendsendtosocialnotificationrequest", " getOptionalParams: " + urlEncodPQLParam);
         }
@@ -62,25 +62,25 @@ public class SendThanksToSocialNotificationRequest extends FalcorVolleyWebClient
     @Override
     protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onSocialNotificationWasThanked(null, status);
+            this.responseCallback.onSocialNotificationWasThanked(status);
         }
     }
     
     @Override
     protected void onSuccess(final SocialNotificationSummary socialNotificationSummary) {
         if (this.responseCallback != null) {
-            this.responseCallback.onSocialNotificationWasThanked(socialNotificationSummary, new NetflixStatus(StatusCode.OK));
+            this.responseCallback.onSocialNotificationWasThanked(new NetflixStatus(StatusCode.OK));
         }
     }
     
     @Override
-    protected SocialNotificationSummary parseFalcorResponse(final String s) {
+    protected SocialNotificationSummary parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_sendsendtosocialnotificationrequest", 4)) {
             Log.i("nf_service_browse_sendsendtosocialnotificationrequest", "Got result: " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_sendsendtosocialnotificationrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("Notifications list doesn't contain 'value' field!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_sendsendtosocialnotificationrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("Notifications list doesn't contain 'value' field!");
         }
         JsonObject asJsonObject = null;
         try {
@@ -96,7 +96,7 @@ public class SendThanksToSocialNotificationRequest extends FalcorVolleyWebClient
             if (Log.isLoggable("nf_service_browse_sendsendtosocialnotificationrequest", 2)) {
                 Log.v("nf_service_browse_sendsendtosocialnotificationrequest", "While getting recommendations field from the response got an exception: " + ex);
             }
-            throw new FalcorParseException("response missing notifications object", ex);
+            throw new FalkorParseException("response missing notifications object", ex);
         }
         final String id = this.mNotification.getId();
         if (asJsonObject.has(id)) {

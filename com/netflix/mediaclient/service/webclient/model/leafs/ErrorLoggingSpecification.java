@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -45,7 +45,7 @@ public class ErrorLoggingSpecification
             else {
                 while (true) {
                     try {
-                        context = (Context)FalcorParseUtils.getGson().fromJson(stringPref, ErrorLoggingSpecification.class);
+                        context = (Context)FalkorParseUtils.getGson().fromJson(stringPref, ErrorLoggingSpecification.class);
                         try {
                             Log.d(ErrorLoggingSpecification.TAG, "Error logging specification loaded from file system");
                             break Label_0028;
@@ -75,7 +75,7 @@ public class ErrorLoggingSpecification
             Log.d(ErrorLoggingSpecification.TAG, "Breadcrumb logging spec not found, return default");
             return getDefault();
         }
-        PreferenceUtils.putStringPref(context, "error_log_configuration", FalcorParseUtils.getGson().toJson(errorLoggingSpecification));
+        PreferenceUtils.putStringPref(context, "error_log_configuration", FalkorParseUtils.getGson().toJson(errorLoggingSpecification));
         return errorLoggingSpecification;
     }
     

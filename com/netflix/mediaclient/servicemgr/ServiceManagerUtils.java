@@ -6,10 +6,26 @@ package com.netflix.mediaclient.servicemgr;
 
 import android.util.Pair;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 
 public class ServiceManagerUtils
 {
     private static final String TAG = "ServiceManagerUtils";
+    
+    public static void cacheManifestIfEnabled(final ServiceManager serviceManager, final Playable playable) {
+        if (!serviceManager.getPlayer().isManifestCacheEnabled()) {
+            return;
+        }
+        if (Log.isLoggable("ServiceManagerUtils", 3)) {
+            Log.d("ServiceManagerUtils", "schedule manifest pre-fectiion for " + playable);
+        }
+        try {
+            serviceManager.getPlayer().getManifestCache().cacheSchedule(new IManifestCache$CacheScheduleRequest[] { new IManifestCache$CacheScheduleRequest(Integer.parseInt(playable.getPlayableId()), 0L, 1L) });
+        }
+        catch (NumberFormatException ex) {
+            Log.w("ServiceManagerUtils", "schedule manifest pre-fectiion gets invalid playableId, ignored");
+        }
+    }
     
     public static String getCurrentDeviceFriendlyName(final ServiceManager serviceManager) {
         if (!isMdxAgentAvailable(serviceManager)) {

@@ -6,25 +6,35 @@ package com.netflix.mediaclient.media;
 
 import org.json.JSONObject;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
-import android.content.Context;
 import android.view.Surface;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.Log;
+import android.content.Context;
 import com.netflix.mediaclient.media.JPlayer.JPlayer;
 
 public class JPlayerHelper implements MediaPlayerHelper
 {
     private static final String TAG = "NF_JPlayer";
+    private static boolean sLoaded;
     private JPlayer jp;
     
-    static {
-        Log.v("NF_JPlayer", "loadLibrary - libnetflix_jpjni.so");
-        try {
-            System.load("/data/data/com.netflix.mediaclient/lib/libnetflix_jpjni.so");
-        }
-        catch (Exception ex) {
-            Log.v("NF_JPlayer", "loadLibrary - libnetflix_jpjni.so first attempt fails");
-            System.loadLibrary("netflix_jpjni");
+    JPlayerHelper(final Context context) {
+        loadLibraries(context);
+    }
+    
+    private static boolean loadLibraries(final Context context) {
+        synchronized (JPlayerHelper.class) {
+            boolean sLoaded;
+            if (JPlayerHelper.sLoaded) {
+                Log.w("NF_JPlayer", "We already loaded native libraries!");
+                sLoaded = true;
+            }
+            else {
+                JPlayerHelper.sLoaded = DeviceUtils.loadNativeLibrary(context, "netflix_jpjni");
+                sLoaded = JPlayerHelper.sLoaded;
+            }
+            return sLoaded;
         }
     }
     

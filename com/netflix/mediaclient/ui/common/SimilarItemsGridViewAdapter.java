@@ -4,37 +4,36 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.makeramen.RoundedImageView;
-import android.widget.ImageView$ScaleType;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.AbsListView$LayoutParams;
-import com.netflix.mediaclient.android.widget.VideoView;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewGroup;
 import android.view.View;
-import com.netflix.mediaclient.util.UiUtils;
+import com.netflix.mediaclient.ui.lomo.LomoConfig;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.AbsListView$LayoutParams;
+import android.widget.ImageView$ScaleType;
 import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.android.widget.VideoView;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import android.widget.GridView;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.BaseAdapter;
 
 public class SimilarItemsGridViewAdapter extends BaseAdapter
 {
     private static final String TAG = "SimilarItemsGridViewAdapter";
-    private final Activity activity;
+    private final NetflixActivity activity;
     private final boolean clipToCompleteRows;
-    private final GridView gridView;
+    protected final GridView gridView;
     private int imgHeight;
     private final int numGridCols;
     private List<Video> similarMovies;
     private Trackable trackable;
     
-    public SimilarItemsGridViewAdapter(final Activity activity, final GridView gridView, final boolean clipToCompleteRows) {
+    public SimilarItemsGridViewAdapter(final NetflixActivity activity, final GridView gridView, final boolean clipToCompleteRows) {
         this.similarMovies = new ArrayList<Video>();
         this.activity = activity;
         this.gridView = gridView;
@@ -43,12 +42,21 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new SimilarItemsGridViewAdapter$1(this));
     }
     
+    private int calculateImageHeight(final int n) {
+        return (int)(n / this.numGridCols * 1.43f + 0.5f);
+    }
+    
     private int clipCountToCompleteRows(final int n) {
         return n / this.numGridCols * this.numGridCols;
     }
     
-    private int getNumGridCols() {
-        return UiUtils.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity));
+    protected VideoView createView(final int n) {
+        final VideoView videoView = new VideoView((Context)this.activity);
+        videoView.setAdjustViewBounds(true);
+        videoView.setScaleType(ImageView$ScaleType.CENTER_CROP);
+        videoView.setTag(2131165256, (Object)true);
+        videoView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.getImageHeight()));
+        return videoView;
     }
     
     public int getCount() {
@@ -56,6 +64,10 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
             return this.clipCountToCompleteRows(this.similarMovies.size());
         }
         return this.similarMovies.size();
+    }
+    
+    protected int getImageHeight() {
+        return this.imgHeight;
     }
     
     public Video getItem(final int n) {
@@ -66,30 +78,25 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         return n;
     }
     
+    protected int getNumGridCols() {
+        return LomoConfig.computeStandardNumVideosPerPage(this.activity, false);
+    }
+    
     public View getView(final int n, View view, final ViewGroup viewGroup) {
         if (view == null) {
-            view = (View)new VideoView((Context)this.activity);
-            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361897);
-            if (n % this.numGridCols == 0) {
-                ((VideoView)view).setPadding(0, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
-            }
-            else if ((n + 1) % this.numGridCols == 0) {
-                ((VideoView)view).setPadding(dimensionPixelOffset, dimensionPixelOffset, 0, dimensionPixelOffset);
-            }
-            else {
-                ((VideoView)view).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
-            }
-            ((VideoView)view).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
-            ((VideoView)view).setAdjustViewBounds(true);
-            ((RoundedImageView)view).setScaleType(ImageView$ScaleType.CENTER_CROP);
+            view = (View)this.createView(n);
         }
         ((VideoView)view).update(this.getItem(n), this.trackable, n, false);
+        this.setPadding(view, n);
         return view;
     }
     
     public void refreshImagesIfNecessary() {
         for (int i = 0; i < this.gridView.getChildCount(); ++i) {
-            ((VideoView)this.gridView.getChildAt(i)).refreshImageIfNecessary();
+            final View child = this.gridView.getChildAt(i);
+            if (child instanceof VideoView) {
+                ((VideoView)child).refreshImageIfNecessary();
+            }
         }
     }
     
@@ -97,5 +104,9 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         this.similarMovies = similarMovies;
         this.trackable = trackable;
         this.notifyDataSetChanged();
+    }
+    
+    protected void setPadding(final View view, final int n) {
+        ViewUtils.applyUniformPaddingToGridItem(view, this.activity.getResources().getDimensionPixelOffset(2131361878), this.numGridCols, n);
     }
 }

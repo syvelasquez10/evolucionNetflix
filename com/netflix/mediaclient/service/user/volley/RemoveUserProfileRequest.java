@@ -12,9 +12,9 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class RemoveUserProfileRequest extends FalcorVolleyWebClientRequest<AccountData>
+public class RemoveUserProfileRequest extends FalkorVolleyWebClientRequest<AccountData>
 {
     private static final String TAG = "nf_service_user_removeuserprofilerequest";
     private final String pqlQuery;
@@ -36,8 +36,8 @@ public class RemoveUserProfileRequest extends FalcorVolleyWebClientRequest<Accou
     
     @Override
     protected String getOptionalParams() {
-        final StringBuilder sb = new StringBuilder(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", String.format("[{'to':%s}, 'summary']", 5)));
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
+        final StringBuilder sb = new StringBuilder(FalkorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", String.format("[{'to':%s}, 'summary']", 5)));
+        sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
         if (Log.isLoggable("nf_service_user_removeuserprofilerequest", 3)) {
             Log.d("nf_service_user_removeuserprofilerequest", " getOptionalParams: " + sb.toString());
         }
@@ -64,7 +64,7 @@ public class RemoveUserProfileRequest extends FalcorVolleyWebClientRequest<Accou
     }
     
     @Override
-    protected AccountData parseFalcorResponse(final String s) {
+    protected AccountData parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_removeuserprofilerequest", 2)) {
             Log.v("nf_service_user_removeuserprofilerequest", "String response to parse = " + s);
         }

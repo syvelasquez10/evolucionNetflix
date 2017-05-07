@@ -124,7 +124,7 @@ public class EpisodeDetails extends Episode implements Playable, com.netflix.med
         if (this.detail == null) {
             return null;
         }
-        return this.detail.mdxHorzUrl;
+        return this.detail.hiResHorzUrl;
     }
     
     @Override
@@ -157,6 +157,14 @@ public class EpisodeDetails extends Episode implements Playable, com.netflix.med
             return null;
         }
         return this.detail.getInterestingUrl();
+    }
+    
+    @Override
+    public String getNarrative() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.synopsisNarrative;
     }
     
     @Override
@@ -303,6 +311,14 @@ public class EpisodeDetails extends Episode implements Playable, com.netflix.med
             return null;
         }
         return this.detail.getTitle();
+    }
+    
+    @Override
+    public String getTitleImgUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.titleUrl;
     }
     
     @Override

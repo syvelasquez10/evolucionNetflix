@@ -142,7 +142,7 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903117, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903130, (ViewGroup)null);
         (this.listView = (StickyListHeadersListView)this.content.findViewById(16908298)).setAreHeadersSticky(false);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 
@@ -36,33 +37,33 @@ public class SearchPerson implements JsonPopulator, com.netflix.mediaclient.serv
     @Override
     public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("Person", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("Person", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0134: {
+            Label_0130: {
                 switch (s.hashCode()) {
                     case 3355: {
                         if (s.equals("id")) {
                             n = 0;
-                            break Label_0134;
+                            break Label_0130;
                         }
                         break;
                     }
                     case 110371416: {
                         if (s.equals("title")) {
                             n = 1;
-                            break Label_0134;
+                            break Label_0130;
                         }
                         break;
                     }
                     case -1185088852: {
                         if (s.equals("imgUrl")) {
                             n = 2;
-                            break Label_0134;
+                            break Label_0130;
                         }
                         break;
                     }

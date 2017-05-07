@@ -58,7 +58,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
     
     public static void createNotification(final Context context, final Payload payload, final ImageLoader imageLoader, final int n, final ErrorLogging errorLogging) {
         final long when = payload.getWhen();
-        final String title = payload.getTitle(context.getString(2131492969));
+        final String title = payload.getTitle(context.getString(2131492977));
         final String ticker = payload.getTicker(title);
         final Notification$Builder notification$Builder = new Notification$Builder(context);
         notification$Builder.setContentIntent(NotificationBuilder.getNotificationOpenedIntent(context, payload));
@@ -67,7 +67,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
         notification$Builder.setAutoCancel(true);
         notification$Builder.setContentTitle((CharSequence)title);
         notification$Builder.setContentText((CharSequence)payload.text);
-        notification$Builder.setSmallIcon(2130837768);
+        notification$Builder.setSmallIcon(2130837776);
         notification$Builder.setWhen(when);
         while (true) {
             if (!StringUtils.isNotEmpty(payload.sound) || !NotificationBuilder.isSoundEnabled(context)) {

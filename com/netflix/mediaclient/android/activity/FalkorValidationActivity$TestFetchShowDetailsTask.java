@@ -26,12 +26,12 @@ class FalkorValidationActivity$TestFetchShowDetailsTask extends FalkorValidation
     
     @Override
     protected void makeBrowseRequest(final BrowseAccess browseAccess, final int n, final int n2) {
-        browseAccess.fetchShowDetails(this.showId, null, n, n2);
+        browseAccess.fetchShowDetails(this.showId, null, true, n, n2);
     }
     
     @Override
     protected void makeFalkorRequest(final FalkorAccess falkorAccess, final int n, final int n2) {
-        falkorAccess.fetchShowDetails(this.showId, null, n, n2);
+        falkorAccess.fetchShowDetails(this.showId, null, true, n, n2);
     }
     
     @Override

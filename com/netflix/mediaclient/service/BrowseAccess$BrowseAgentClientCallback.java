@@ -10,6 +10,7 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.ui.Asset;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
@@ -17,13 +18,12 @@ import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.IBrowseInterface;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
@@ -59,11 +59,6 @@ class BrowseAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onBBVideosFetched(this.requestId, list, status);
-    }
-    
-    @Override
-    public void onCWListRefresh(final Status status) {
-        throw new IllegalStateException("not implemented");
     }
     
     @Override
@@ -127,11 +122,6 @@ class BrowseAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onIQListRefresh(final Status status) {
-        throw new IllegalStateException("not implemented");
-    }
-    
-    @Override
     public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
@@ -182,13 +172,13 @@ class BrowseAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final Status status) {
+    public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
             Log.w("NetflixServiceBrowse", "No client callback found for onPostPlayVideosFetched");
             return;
         }
-        netflixServiceCallback.onPostPlayVideosFetched(this.requestId, list, status);
+        netflixServiceCallback.onPostPlayVideosFetched(this.requestId, postPlayVideosProvider, status);
     }
     
     @Override
@@ -242,6 +232,16 @@ class BrowseAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
+    public void onShowDetailsAndSeasonsFetched(final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("NetflixServiceBrowse", "No client callback found for onShowDetailsFetched");
+            return;
+        }
+        netflixServiceCallback.onShowDetailsAndSeasonsFetched(this.requestId, showDetails, list, status);
+    }
+    
+    @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
@@ -262,13 +262,13 @@ class BrowseAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+    public void onSocialNotificationWasThanked(final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
             Log.w("NetflixServiceBrowse", "No client callback found for onSocialNotificationWasThanked");
             return;
         }
-        netflixServiceCallback.onSocialNotificationWasThanked(this.requestId, socialNotificationSummary, status);
+        netflixServiceCallback.onSocialNotificationWasThanked(this.requestId, status);
     }
     
     @Override
@@ -282,7 +282,7 @@ class BrowseAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
+    public void onSocialNotificationsMarkedAsRead(final Status status) {
         if (Log.isLoggable("NetflixServiceBrowse", 4)) {
             Log.i("NetflixServiceBrowse", "onSocialNotificationsMarkedAsRead: " + status);
         }

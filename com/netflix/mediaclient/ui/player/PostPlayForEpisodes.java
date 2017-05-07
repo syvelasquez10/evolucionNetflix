@@ -8,15 +8,15 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.details.InterestingVideoDetails;
 import java.util.List;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
 import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.TextView;
 import android.view.View;
 
@@ -25,7 +25,6 @@ public class PostPlayForEpisodes extends PostPlay
     private boolean mAutoPlayEnabled;
     protected View mAutoPlayView;
     protected TextView mInfoTitleView;
-    protected AdvancedImageView mPlayButtonImage;
     private int mTimer;
     protected int mTimerValue;
     protected TextView mTimerView;
@@ -77,10 +76,14 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     protected void findViews() {
-        this.mPlayButtonImage = (AdvancedImageView)this.mContext.findViewById(2131165585);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165574);
-        this.mAutoPlayView = this.mContext.findViewById(2131165573);
-        this.mTimerView = (TextView)this.mContext.findViewById(2131165575);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165592);
+        this.mAutoPlayView = this.mContext.findViewById(2131165591);
+        this.mTimerView = (TextView)this.mContext.findViewById(2131165593);
+    }
+    
+    @Override
+    protected VideoType getVideoType() {
+        return VideoType.EPISODE;
     }
     
     @Override
@@ -91,8 +94,9 @@ public class PostPlayForEpisodes extends PostPlay
         else {
             Log.d("nf_postplay", "Play NEXT episode!");
             final PostPlayVideo postPlayVideo = this.mPostPlayVideos.get(0);
+            final PostPlayContext postPlayContext = this.mPostPlayContexts.get(0);
             if (postPlayVideo != null) {
-                this.mContext.playNextVideo(postPlayVideo.getPlayable(), new PlayContextImp(postPlayVideo.getPostPlayRequestId(), postPlayVideo.getPostPlayTrackId(), 0, 0), b);
+                this.mContext.playNextVideo(postPlayVideo.getPlayable(), new PlayContextImp(postPlayContext.getRequestId(), postPlayContext.getTrackId(), 0, 0), b);
             }
         }
     }
@@ -111,7 +115,7 @@ public class PostPlayForEpisodes extends PostPlay
     
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493267));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493280));
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(0);
@@ -164,37 +168,38 @@ public class PostPlayForEpisodes extends PostPlay
         this.updateViews(postPlayVideo);
     }
     
-    protected void updateViews(final InterestingVideoDetails interestingVideoDetails) {
-        String title = interestingVideoDetails.getTitle();
+    protected void updateViews(final PostPlayVideo postPlayVideo) {
+        String title = postPlayVideo.getTitle();
         if (title == null) {
             title = "";
         }
-        final String storyUrl = interestingVideoDetails.getStoryUrl();
-        final String interestingUrl = interestingVideoDetails.getInterestingUrl();
-        final String string = this.mContext.getResources().getString(2131493270, new Object[] { title });
+        final String storyUrl = postPlayVideo.getStoryUrl();
+        String s = postPlayVideo.getInterestingUrl();
+        if (postPlayVideo.getType() != VideoType.EPISODE) {
+            s = postPlayVideo.getStoryUrl();
+        }
+        final String string = this.mContext.getResources().getString(2131493283, new Object[] { title });
         if (this.mBackground != null) {
             if (!StringUtils.isEmpty(storyUrl) && this.mContext.isTablet()) {
                 NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging$AssetType.merchStill, string, true, true, 1);
             }
-            else if (!StringUtils.isEmpty(interestingUrl) && !this.mContext.isTablet()) {
-                NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, interestingUrl, IClientLogging$AssetType.merchStill, string, true, true, 1);
+            else if (!StringUtils.isEmpty(s) && !this.mContext.isTablet()) {
+                NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, s, IClientLogging$AssetType.merchStill, string, true, true, 1);
             }
         }
-        if (!StringUtils.isEmpty(interestingUrl) && this.mPlayButtonImage != null) {
-            NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mPlayButtonImage, interestingUrl, IClientLogging$AssetType.merchStill, string, true, true, 1);
-        }
-        final String string2 = this.mContext.getResources().getString(2131493272, new Object[] { interestingVideoDetails.getPlayable().getSeasonNumber(), interestingVideoDetails.getPlayable().getEpisodeNumber(), title });
+        final String string2 = this.mContext.getResources().getString(2131493231, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
         if (Log.isLoggable("nf_postplay", 3)) {
             Log.d("nf_postplay", "Title: " + string2);
         }
         if (this.mTitle != null) {
             this.mTitle.setText((CharSequence)string2);
         }
-        if (this.mSynopsis != null && this.mSynopsis.getVisibility() == 0 && interestingVideoDetails.getSynopsis() != null) {
-            this.mSynopsis.setText((CharSequence)interestingVideoDetails.getSynopsis());
+        final String synopsis = postPlayVideo.getSynopsis();
+        if (this.mSynopsis != null && this.mSynopsis.getVisibility() == 0 && StringUtils.isNotEmpty(synopsis)) {
+            this.mSynopsis.setText((CharSequence)synopsis);
         }
         if (Log.isLoggable("nf_postplay", 3)) {
-            Log.d("nf_postplay", "Synopsis: " + interestingVideoDetails.getSynopsis());
+            Log.d("nf_postplay", "Synopsis: " + postPlayVideo.getSynopsis());
         }
     }
 }

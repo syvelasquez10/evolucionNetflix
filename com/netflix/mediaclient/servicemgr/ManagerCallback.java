@@ -6,13 +6,12 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
@@ -65,7 +64,7 @@ public interface ManagerCallback
     
     void onPinVerified(final boolean p0, final Status p1);
     
-    void onPostPlayVideosFetched(final List<PostPlayVideo> p0, final Status p1);
+    void onPostPlayVideosFetched(final PostPlayVideosProvider p0, final Status p1);
     
     void onProfileListUpdateStatus(final Status p0);
     
@@ -81,11 +80,13 @@ public interface ManagerCallback
     
     void onSeasonsFetched(final List<SeasonDetails> p0, final Status p1);
     
+    void onShowDetailsAndSeasonsFetched(final ShowDetails p0, final List<SeasonDetails> p1, final Status p2);
+    
     void onShowDetailsFetched(final ShowDetails p0, final Status p1);
     
     void onSimilarVideosFetched(final SearchVideoListProvider p0, final Status p1);
     
-    void onSocialNotificationWasThanked(final SocialNotificationSummary p0, final Status p1);
+    void onSocialNotificationWasThanked(final Status p0);
     
     void onSocialNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
     

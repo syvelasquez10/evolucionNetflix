@@ -68,6 +68,11 @@ public class FalkorSuggestion extends BaseFalkorObject implements SearchSuggesti
     }
     
     @Override
+    public void remove(final String s) {
+        this.set(s, null);
+    }
+    
+    @Override
     public void set(final String s, final Object o) {
         if ("searchTitle".equals(s)) {
             this.searchSuggestion = (com.netflix.model.leafs.SearchSuggestion)o;

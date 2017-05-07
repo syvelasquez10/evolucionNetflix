@@ -35,11 +35,11 @@ public class KidsOneToOneVideoView extends RelativeLayout implements VideoViewGr
     
     public KidsOneToOneVideoView(final Context context, final boolean b) {
         super(context);
-        ((Activity)context).getLayoutInflater().inflate(2130903106, (ViewGroup)this);
+        ((Activity)context).getLayoutInflater().inflate(2130903108, (ViewGroup)this);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
-        (this.mainImage = (AdvancedImageView)this.findViewById(2131165422)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361964));
+        (this.mainImage = (AdvancedImageView)this.findViewById(2131165406)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361965));
         this.mainImage.setScaleType(ImageView$ScaleType.CENTER_CROP);
-        (this.tvCard = (AdvancedImageView)this.findViewById(2131165424)).setPressedStateHandlerEnabled(false);
+        (this.tvCard = (AdvancedImageView)this.findViewById(2131165408)).setPressedStateHandlerEnabled(false);
         this.mainImage.setFocusable(true);
         this.tvCard.setFocusable(true);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);

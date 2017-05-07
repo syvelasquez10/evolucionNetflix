@@ -16,7 +16,7 @@ class PlayerActivity$17 implements Runnable
     
     @Override
     public void run() {
-        Log.d("PlayerActivity", "pause has timed out, exit playback");
+        Log.d("PlayerActivity", "Playback canceled when not longer on WiFi");
         this.this$0.cleanupAndExit();
     }
 }

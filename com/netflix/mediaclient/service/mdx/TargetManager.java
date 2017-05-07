@@ -40,22 +40,20 @@ import com.netflix.mediaclient.javabridge.ui.EventListener;
 public class TargetManager implements EventListener, CommandInterface
 {
     private static final String TAG = "nf_mdx";
-    private MdxController mController;
-    private String mEsn;
-    private MdxNrdpLogger mMdxNrdpLogger;
-    private NotifierInterface mNotify;
-    private AtomicLong mRecentMessageTime;
+    private final MdxController mController;
+    private final String mEsn;
+    private final NotifierInterface mNotify;
+    private final AtomicLong mRecentMessageTime;
     private boolean mTaregtLaunchingOrLaunched;
     private TargetContext mTarget;
     
-    TargetManager(final NotifierInterface mNotify, final MdxController mController, final String mEsn, final MdxNrdpLogger mMdxNrdpLogger) {
+    TargetManager(final NotifierInterface mNotify, final MdxController mController, final String mEsn, final MdxNrdpLogger mdxNrdpLogger) {
         this.mRecentMessageTime = new AtomicLong();
         this.mTaregtLaunchingOrLaunched = true;
         this.mNotify = mNotify;
         this.mController = mController;
         this.mEsn = mEsn;
         this.mRecentMessageTime.set(System.currentTimeMillis());
-        this.mMdxNrdpLogger = mMdxNrdpLogger;
     }
     
     public long getTimeOfMostRecentIncomingMessage() {

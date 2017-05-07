@@ -4,21 +4,13 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.falkor.BranchNode;
-import com.netflix.falkor.ModelProxy;
-import com.netflix.model.branches.FalkorSuggestion;
+import com.netflix.model.leafs.SearchTrackableListSummary;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$12 implements Func<FalkorSuggestion>
+final class Falkor$Creator$12 implements Func<SearchTrackableListSummary>
 {
-    final /* synthetic */ ModelProxy val$proxy;
-    
-    Falkor$Creator$12(final ModelProxy val$proxy) {
-        this.val$proxy = val$proxy;
-    }
-    
     @Override
-    public FalkorSuggestion call() {
-        return new FalkorSuggestion(this.val$proxy);
+    public SearchTrackableListSummary call() {
+        return new SearchTrackableListSummary();
     }
 }

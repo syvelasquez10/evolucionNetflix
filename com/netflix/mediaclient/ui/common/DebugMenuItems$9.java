@@ -9,7 +9,6 @@ import android.os.Debug;
 import com.netflix.mediaclient.Log;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -22,10 +21,7 @@ class DebugMenuItems$9 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        final ServiceManager serviceManager = this.this$0.activity.getServiceManager();
-        if (serviceManager != null) {
-            serviceManager.getBrowse().flushCaches();
-        }
+        this.this$0.beginTraceview();
         return true;
     }
 }

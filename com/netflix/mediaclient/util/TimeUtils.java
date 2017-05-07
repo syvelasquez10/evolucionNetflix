@@ -17,6 +17,10 @@ public class TimeUtils
     public static final int SECONDS_PER_HOUR = 3600;
     public static final int SECONDS_PER_MINUTE = 60;
     
+    public static long computeTimeInMsSinceStart(final long n) {
+        return (System.nanoTime() - n) / 1000000L;
+    }
+    
     public static long convertNsToMs(final long n) {
         return n / 1000000L;
     }

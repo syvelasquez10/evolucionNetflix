@@ -19,6 +19,12 @@ public class DeviceConfigData
     private String disable_mdx;
     private String disable_websocket;
     private String disable_widevine;
+    @SerializedName("enableLocalPlayback")
+    private String enableLocalPlayback;
+    @SerializedName("enableMdxRemoteControlLockScreen")
+    private String enableMdxRemoteControlLockScreen;
+    @SerializedName("enableMdxRemoteControlNotification")
+    private String enableMdxRemoteControlNotification;
     @SerializedName("error_logging_specification")
     private ErrorLoggingSpecification error_logging_specification;
     @SerializedName("gcmBrowseEventRateLimitInSecs")
@@ -63,6 +69,18 @@ public class DeviceConfigData
     
     public String getDeviceCategory() {
         return this.device_category;
+    }
+    
+    public String getEnableLocalPlayback() {
+        return this.enableLocalPlayback;
+    }
+    
+    public String getEnableMdxRemoteControlLockScreen() {
+        return this.enableMdxRemoteControlLockScreen;
+    }
+    
+    public String getEnableMdxRemoteControlNotification() {
+        return this.enableMdxRemoteControlNotification;
     }
     
     public ErrorLoggingSpecification getErrorLoggingSpecification() {

@@ -8,11 +8,9 @@ public abstract class ResourceHelper
 {
     public int pause;
     public int play;
-    public int timelineDent;
     public int timelineHeightInDip;
     public int timelineHeightPaddingInDip;
     public int timelineThumbOffsetInDip;
-    public int topBackground;
     public int zoomIn;
     public int zoomOut;
     

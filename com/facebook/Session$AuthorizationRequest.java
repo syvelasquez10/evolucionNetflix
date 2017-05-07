@@ -4,20 +4,26 @@
 
 package com.facebook;
 
+import java.util.Arrays;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import android.support.v4.app.Fragment;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.Collections;
 import android.app.Activity;
 import java.util.List;
+import java.util.Map;
 import java.io.Serializable;
 
 public class Session$AuthorizationRequest implements Serializable
 {
     private static final long serialVersionUID = 1L;
     private String applicationId;
+    private final String authId;
     private SessionDefaultAudience defaultAudience;
     private boolean isLegacy;
+    private final Map<String, String> loggingExtras;
     private SessionLoginBehavior loginBehavior;
     private List<String> permissions;
     private int requestCode;
@@ -31,6 +37,8 @@ public class Session$AuthorizationRequest implements Serializable
         this.isLegacy = false;
         this.permissions = Collections.emptyList();
         this.defaultAudience = SessionDefaultAudience.FRIENDS;
+        this.authId = UUID.randomUUID().toString();
+        this.loggingExtras = new HashMap<String, String>();
         this.startActivityDelegate = new Session$AuthorizationRequest$1(this, activity);
     }
     
@@ -40,6 +48,8 @@ public class Session$AuthorizationRequest implements Serializable
         this.isLegacy = false;
         this.permissions = Collections.emptyList();
         this.defaultAudience = SessionDefaultAudience.FRIENDS;
+        this.authId = UUID.randomUUID().toString();
+        this.loggingExtras = new HashMap<String, String>();
         this.startActivityDelegate = new Session$AuthorizationRequest$2(this, fragment);
     }
     
@@ -49,6 +59,8 @@ public class Session$AuthorizationRequest implements Serializable
         this.isLegacy = false;
         this.permissions = Collections.emptyList();
         this.defaultAudience = SessionDefaultAudience.FRIENDS;
+        this.authId = UUID.randomUUID().toString();
+        this.loggingExtras = new HashMap<String, String>();
         this.startActivityDelegate = new Session$AuthorizationRequest$3(this);
         this.loginBehavior = loginBehavior;
         this.requestCode = requestCode;
@@ -59,12 +71,20 @@ public class Session$AuthorizationRequest implements Serializable
         this.validateSameFbidAsToken = validateSameFbidAsToken;
     }
     
+    private void readObject(final ObjectInputStream objectInputStream) {
+        throw new InvalidObjectException("Cannot readObject, serialization proxy required");
+    }
+    
     String getApplicationId() {
         return this.applicationId;
     }
     
+    String getAuthId() {
+        return this.authId;
+    }
+    
     AuthorizationClient$AuthorizationRequest getAuthorizationClientRequest() {
-        return new AuthorizationClient$AuthorizationRequest(this.loginBehavior, this.requestCode, this.isLegacy, this.permissions, this.defaultAudience, this.applicationId, this.validateSameFbidAsToken, new Session$AuthorizationRequest$4(this));
+        return new AuthorizationClient$AuthorizationRequest(this.loginBehavior, this.requestCode, this.isLegacy, this.permissions, this.defaultAudience, this.applicationId, this.validateSameFbidAsToken, new Session$AuthorizationRequest$4(this), this.authId);
     }
     
     Session$StatusCallback getCallback() {
@@ -99,10 +119,6 @@ public class Session$AuthorizationRequest implements Serializable
         return this.isLegacy;
     }
     
-    void readObject(final ObjectInputStream objectInputStream) {
-        throw new InvalidObjectException("Cannot readObject, serialization proxy required");
-    }
-    
     void setApplicationId(final String applicationId) {
         this.applicationId = applicationId;
     }
@@ -135,6 +151,10 @@ public class Session$AuthorizationRequest implements Serializable
             this.permissions = permissions;
         }
         return this;
+    }
+    
+    Session$AuthorizationRequest setPermissions(final String... array) {
+        return this.setPermissions(Arrays.asList(array));
     }
     
     Session$AuthorizationRequest setRequestCode(final int requestCode) {

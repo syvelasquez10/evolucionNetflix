@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.android.widget;
 
 import android.graphics.BitmapFactory;
+import android.annotation.SuppressLint;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.util.api.Api21Util;
 import android.graphics.Paint;

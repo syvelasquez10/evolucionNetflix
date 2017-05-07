@@ -11,9 +11,13 @@ import android.content.Context;
 public class MdxNotificationManagerFactory
 {
     public static IMdxNotificationManager create(final Context context, final boolean b, final MdxAgent mdxAgent) {
+        IMdxNotificationManager mdxNotificationManager;
         if (AndroidUtils.getAndroidVersion() < 21) {
-            return new MdxNotificationManager(context, b, mdxAgent);
+            mdxNotificationManager = new MdxNotificationManager(context, b, mdxAgent);
         }
-        return new MdxNotificationManagerLollipop(context, b, mdxAgent);
+        else {
+            mdxNotificationManager = new MdxNotificationManagerLollipop(context, b, mdxAgent);
+        }
+        return new MdxNotificationManagerWrapper(mdxNotificationManager, mdxAgent.getConfigurationAgent().getMdxConfiguration());
     }
 }

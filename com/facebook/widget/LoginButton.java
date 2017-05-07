@@ -8,21 +8,25 @@ import android.util.Log;
 import java.util.Collection;
 import java.util.Collections;
 import com.facebook.internal.SessionAuthorizationType;
+import java.util.Arrays;
+import android.graphics.Canvas;
 import android.app.Activity;
 import android.content.Intent;
 import com.facebook.FacebookException;
 import java.util.List;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionDefaultAudience;
-import com.facebook.android.R$string;
 import android.content.res.TypedArray;
 import com.facebook.android.R$styleable;
-import com.facebook.internal.Utility;
 import com.facebook.Session$StatusCallback;
-import android.view.View$OnClickListener;
 import com.facebook.Request$GraphUserCallback;
 import com.facebook.Request;
+import android.view.View;
+import com.facebook.internal.Utility;
+import com.facebook.android.R$string;
+import com.facebook.internal.Utility$FetchedAppSettings;
 import com.facebook.android.R$drawable;
+import android.graphics.Typeface;
 import com.facebook.android.R$dimen;
 import com.facebook.android.R$color;
 import android.util.AttributeSet;
@@ -31,6 +35,7 @@ import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.facebook.internal.SessionTracker;
 import android.support.v4.app.Fragment;
+import android.view.View$OnClickListener;
 import android.widget.Button;
 
 public class LoginButton extends Button
@@ -39,8 +44,15 @@ public class LoginButton extends Button
     private String applicationId;
     private boolean confirmLogout;
     private boolean fetchUserInfo;
+    private View$OnClickListener listenerCallback;
+    private String loginLogoutEventName;
     private String loginText;
     private String logoutText;
+    private boolean nuxChecked;
+    private long nuxDisplayTime;
+    private LoginButton$ToolTipMode nuxMode;
+    private ToolTipPopup nuxPopup;
+    private ToolTipPopup$Style nuxStyle;
     private Fragment parentFragment;
     private LoginButton$LoginButtonProperties properties;
     private SessionTracker sessionTracker;
@@ -58,6 +70,10 @@ public class LoginButton extends Button
         this.user = null;
         this.userInfoSession = null;
         this.properties = new LoginButton$LoginButtonProperties();
+        this.loginLogoutEventName = "fb_login_view_usage";
+        this.nuxStyle = ToolTipPopup$Style.BLUE;
+        this.nuxMode = LoginButton$ToolTipMode.DEFAULT;
+        this.nuxDisplayTime = 6000L;
         this.initializeActiveSessionWithCachedToken(context);
         this.finishInit();
     }
@@ -68,19 +84,24 @@ public class LoginButton extends Button
         this.user = null;
         this.userInfoSession = null;
         this.properties = new LoginButton$LoginButtonProperties();
+        this.loginLogoutEventName = "fb_login_view_usage";
+        this.nuxStyle = ToolTipPopup$Style.BLUE;
+        this.nuxMode = LoginButton$ToolTipMode.DEFAULT;
+        this.nuxDisplayTime = 6000L;
         if (set.getStyleAttribute() == 0) {
+            this.setGravity(17);
             this.setTextColor(this.getResources().getColor(R$color.com_facebook_loginview_text_color));
             this.setTextSize(0, this.getResources().getDimension(R$dimen.com_facebook_loginview_text_size));
-            this.setPadding(this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_left), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_top), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_right), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_bottom));
-            this.setWidth(this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_width));
-            this.setHeight(this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_height));
-            this.setGravity(17);
+            this.setTypeface(Typeface.DEFAULT_BOLD);
             if (this.isInEditMode()) {
                 this.setBackgroundColor(this.getResources().getColor(R$color.com_facebook_blue));
-                this.loginText = "Log in";
+                this.loginText = "Log in with Facebook";
             }
             else {
-                this.setBackgroundResource(R$drawable.com_facebook_loginbutton_blue);
+                this.setBackgroundResource(R$drawable.com_facebook_button_blue);
+                this.setCompoundDrawablesWithIntrinsicBounds(R$drawable.com_facebook_inverse_icon, 0, 0, 0);
+                this.setCompoundDrawablePadding(this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_compound_drawable_padding));
+                this.setPadding(this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_left), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_top), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_right), this.getResources().getDimensionPixelSize(R$dimen.com_facebook_loginview_padding_bottom));
             }
         }
         this.parseAttributes(set);
@@ -95,8 +116,26 @@ public class LoginButton extends Button
         this.user = null;
         this.userInfoSession = null;
         this.properties = new LoginButton$LoginButtonProperties();
+        this.loginLogoutEventName = "fb_login_view_usage";
+        this.nuxStyle = ToolTipPopup$Style.BLUE;
+        this.nuxMode = LoginButton$ToolTipMode.DEFAULT;
+        this.nuxDisplayTime = 6000L;
         this.parseAttributes(set);
         this.initializeActiveSessionWithCachedToken(context);
+    }
+    
+    private void checkNuxSettings() {
+        if (this.nuxMode == LoginButton$ToolTipMode.DISPLAY_ALWAYS) {
+            this.displayNux(this.getResources().getString(R$string.com_facebook_tooltip_default));
+            return;
+        }
+        new LoginButton$1(this, Utility.getMetadataApplicationId(this.getContext())).execute((Object[])null);
+    }
+    
+    private void displayNux(final String s) {
+        (this.nuxPopup = new ToolTipPopup(s, (View)this)).setStyle(this.nuxStyle);
+        this.nuxPopup.setNuxDisplayTime(this.nuxDisplayTime);
+        this.nuxPopup.show();
     }
     
     private void fetchUserInfo() {
@@ -104,7 +143,7 @@ public class LoginButton extends Button
             final Session openSession = this.sessionTracker.getOpenSession();
             if (openSession != null) {
                 if (openSession != this.userInfoSession) {
-                    Request.executeBatchAsync(Request.newMeRequest(openSession, new LoginButton$1(this, openSession)));
+                    Request.executeBatchAsync(Request.newMeRequest(openSession, new LoginButton$2(this, openSession)));
                     this.userInfoSession = openSession;
                 }
             }
@@ -118,7 +157,7 @@ public class LoginButton extends Button
     }
     
     private void finishInit() {
-        this.setOnClickListener((View$OnClickListener)new LoginButton$LoginClickListener(this, null));
+        super.setOnClickListener((View$OnClickListener)new LoginButton$LoginClickListener(this, null));
         this.setButtonText();
         if (!this.isInEditMode()) {
             this.sessionTracker = new SessionTracker(this.getContext(), new LoginButton$LoginButtonCallback(this, null), null, false);
@@ -170,8 +209,21 @@ public class LoginButton extends Button
         this.setText((CharSequence)text2);
     }
     
+    private void showNuxPerSettings(final Utility$FetchedAppSettings utility$FetchedAppSettings) {
+        if (utility$FetchedAppSettings != null && utility$FetchedAppSettings.getNuxEnabled() && this.getVisibility() == 0) {
+            this.displayNux(utility$FetchedAppSettings.getNuxContent());
+        }
+    }
+    
     public void clearPermissions() {
         this.properties.clearPermissions();
+    }
+    
+    public void dismissToolTip() {
+        if (this.nuxPopup != null) {
+            this.nuxPopup.dismiss();
+            this.nuxPopup = null;
+        }
     }
     
     public SessionDefaultAudience getDefaultAudience() {
@@ -192,6 +244,14 @@ public class LoginButton extends Button
     
     public Session$StatusCallback getSessionStatusCallback() {
         return this.properties.getSessionStatusCallback();
+    }
+    
+    public long getToolTipDisplayTime() {
+        return this.nuxDisplayTime;
+    }
+    
+    public LoginButton$ToolTipMode getToolTipMode() {
+        return this.nuxMode;
     }
     
     public LoginButton$UserInfoChangedCallback getUserInfoChangedCallback() {
@@ -227,11 +287,27 @@ public class LoginButton extends Button
         if (this.sessionTracker != null) {
             this.sessionTracker.stopTracking();
         }
+        this.dismissToolTip();
+    }
+    
+    protected void onDraw(final Canvas canvas) {
+        super.onDraw(canvas);
+        if (!this.nuxChecked && this.nuxMode != LoginButton$ToolTipMode.NEVER_DISPLAY && !this.isInEditMode()) {
+            this.nuxChecked = true;
+            this.checkNuxSettings();
+        }
     }
     
     public void onFinishInflate() {
         super.onFinishInflate();
         this.finishInit();
+    }
+    
+    protected void onVisibilityChanged(final View view, final int n) {
+        super.onVisibilityChanged(view, n);
+        if (n != 0) {
+            this.dismissToolTip();
+        }
     }
     
     public void setApplicationId(final String applicationId) {
@@ -250,6 +326,14 @@ public class LoginButton extends Button
         this.properties.setLoginBehavior(loginBehavior);
     }
     
+    void setLoginLogoutEventName(final String loginLogoutEventName) {
+        this.loginLogoutEventName = loginLogoutEventName;
+    }
+    
+    public void setOnClickListener(final View$OnClickListener listenerCallback) {
+        this.listenerCallback = listenerCallback;
+    }
+    
     public void setOnErrorListener(final LoginButton$OnErrorListener onErrorListener) {
         this.properties.setOnErrorListener(onErrorListener);
     }
@@ -262,8 +346,16 @@ public class LoginButton extends Button
         this.properties.setPublishPermissions(list, this.sessionTracker.getSession());
     }
     
+    public void setPublishPermissions(final String... array) {
+        this.properties.setPublishPermissions(Arrays.asList(array), this.sessionTracker.getSession());
+    }
+    
     public void setReadPermissions(final List<String> list) {
         this.properties.setReadPermissions(list, this.sessionTracker.getSession());
+    }
+    
+    public void setReadPermissions(final String... array) {
+        this.properties.setReadPermissions(Arrays.asList(array), this.sessionTracker.getSession());
     }
     
     public void setSession(final Session session) {
@@ -274,6 +366,18 @@ public class LoginButton extends Button
     
     public void setSessionStatusCallback(final Session$StatusCallback sessionStatusCallback) {
         this.properties.setSessionStatusCallback(sessionStatusCallback);
+    }
+    
+    public void setToolTipDisplayTime(final long nuxDisplayTime) {
+        this.nuxDisplayTime = nuxDisplayTime;
+    }
+    
+    public void setToolTipMode(final LoginButton$ToolTipMode nuxMode) {
+        this.nuxMode = nuxMode;
+    }
+    
+    public void setToolTipStyle(final ToolTipPopup$Style nuxStyle) {
+        this.nuxStyle = nuxStyle;
     }
     
     public void setUserInfoChangedCallback(final LoginButton$UserInfoChangedCallback userInfoChangedCallback) {

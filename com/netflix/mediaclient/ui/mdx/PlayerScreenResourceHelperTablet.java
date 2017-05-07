@@ -11,12 +11,10 @@ public final class PlayerScreenResourceHelperTablet extends PlayerScreenResource
     protected static final int TIMELINE_THUMB_OFFSET_IN_DIP = 16;
     
     PlayerScreenResourceHelperTablet() {
-        this.pause = 2130837807;
-        this.play = 2130837808;
-        this.timelineDent = 2130837803;
+        this.pause = 2130837803;
+        this.play = 2130837804;
         this.timelineHeightInDip = 40;
         this.timelineHeightPaddingInDip = 2;
-        this.topBackground = 2130837816;
         this.timelineThumbOffsetInDip = 16;
     }
 }

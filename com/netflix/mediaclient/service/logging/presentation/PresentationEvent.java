@@ -16,6 +16,7 @@ import java.util.List;
 
 public class PresentationEvent
 {
+    private static final String IS_HERO = "is_hero";
     private static final String LOCATION = "location";
     private static final String RANK = "rank";
     private static final String REQUEST_ID = "request_id";
@@ -24,34 +25,42 @@ public class PresentationEvent
     private static final String TIME = "time";
     private static final String TRACK_ID = "track_id";
     private static final String VIDEO_ID = "video_id";
-    private static final String VIDEO_IDS = "video_ids";
+    private boolean isHero;
     private String location;
     private int rank;
     private String requestId;
     private int row;
     private long time;
     private int trackId;
-    private List<String> videoIds;
+    private final List<String> videoIds;
     
     static {
         PresentationEvent.TAG = "nf_presentation";
     }
     
-    public PresentationEvent() {
+    private PresentationEvent() {
         this.videoIds = new ArrayList<String>();
     }
     
     public PresentationEvent(final Trackable trackable, final List<String> videoIds, final int rank, final UiLocation uiLocation) {
         this.videoIds = videoIds;
         this.requestId = trackable.getRequestId();
-        this.trackId = trackable.getTrackId();
+        int trackId;
+        if (trackable.isHero()) {
+            trackId = trackable.getHeroTrackId();
+        }
+        else {
+            trackId = trackable.getTrackId();
+        }
+        this.trackId = trackId;
         this.row = trackable.getListPos();
+        this.isHero = trackable.isHero();
         this.rank = rank;
         this.location = uiLocation.getValue();
         this.time = System.currentTimeMillis();
     }
     
-    public static PresentationEvent createInstance(final JSONObject jsonObject) {
+    static PresentationEvent createInstance(final JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }
@@ -64,6 +73,7 @@ public class PresentationEvent
             presentationEvent.rank = JsonUtils.getInt(jsonObject, "rank", 0);
             presentationEvent.location = JsonUtils.getString(jsonObject, "location", null);
             presentationEvent.time = JsonUtils.getLong(jsonObject, "time", 0L);
+            presentationEvent.isHero = JsonUtils.getBoolean(jsonObject, "is_hero", false);
             return presentationEvent;
         }
         catch (Exception ex) {
@@ -72,27 +82,27 @@ public class PresentationEvent
         }
     }
     
-    public String getLocation() {
+    String getLocation() {
         return this.location;
     }
     
-    public int getRank() {
+    int getRank() {
         return this.rank;
     }
     
-    public int getRow() {
+    int getRow() {
         return this.row;
     }
     
-    public long getTime() {
+    long getTime() {
         return this.time;
     }
     
-    public String getVideoIds() {
+    String getVideoIds() {
         return this.videoIds.toString();
     }
     
-    public JSONArray toJSONArray() {
+    JSONArray toJSONArray() {
         final JSONArray jsonArray = new JSONArray();
         int rank = this.rank;
         for (final String s : this.videoIds) {
@@ -104,31 +114,15 @@ public class PresentationEvent
             jsonObject.putOpt("rank", (Object)rank);
             jsonObject.putOpt("location", (Object)this.location);
             jsonObject.putOpt("time", (Object)this.time);
+            jsonObject.putOpt("is_hero", (Object)this.isHero);
             jsonArray.put((Object)jsonObject);
             ++rank;
         }
         return jsonArray;
     }
     
-    public JSONObject toJSONObject() {
-        final JSONArray jsonArray = new JSONArray();
-        final Iterator<String> iterator = this.videoIds.iterator();
-        while (iterator.hasNext()) {
-            jsonArray.put((Object)iterator.next());
-        }
-        final JSONObject jsonObject = new JSONObject();
-        jsonObject.putOpt("video_ids", (Object)jsonArray.toString());
-        jsonObject.putOpt("request_id", (Object)this.requestId);
-        jsonObject.putOpt("track_id", (Object)this.trackId);
-        jsonObject.putOpt("row", (Object)this.row);
-        jsonObject.putOpt("rank", (Object)this.rank);
-        jsonObject.putOpt("location", (Object)this.location);
-        jsonObject.putOpt("time", (Object)this.time);
-        return jsonObject;
-    }
-    
     @Override
     public String toString() {
-        return "PresentationEvent [videoIds=" + this.videoIds + ", requestId=" + this.requestId + ", trackId=" + this.trackId + ", row=" + this.row + ", rank=" + this.rank + ", location=" + this.location + ", time=" + this.time + "]";
+        return "PresentationEvent [videoIds=" + this.videoIds + ", requestId=" + this.requestId + ", trackId=" + this.trackId + ", row=" + this.row + ", rank=" + this.rank + ", location=" + this.location + ", time=" + this.time + ", isHero=" + this.isHero + "]";
     }
 }

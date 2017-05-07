@@ -7,9 +7,9 @@ package com.netflix.mediaclient.ui.social.notifications.types;
 import android.text.Html;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationViewHolder;
 import android.view.View;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary$NotificationTypes;
+import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.content.Context;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import android.support.v4.app.NotificationCompat$BigPictureStyle;
 import android.support.v4.app.NotificationCompat$Builder;
 
@@ -17,7 +17,7 @@ public class SocialVideoAddedToPlaylist extends SocialNotification
 {
     @Override
     protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        final String string = context.getResources().getString(2131493342);
+        final String string = context.getResources().getString(2131493354);
         notificationCompat$BigPictureStyle.setSummaryText(string);
         notificationCompat$Builder.setContentText(string);
     }
@@ -30,6 +30,6 @@ public class SocialVideoAddedToPlaylist extends SocialNotification
     @Override
     public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         super.initView(view, socialNotificationViewHolder, socialNotificationSummary, context);
-        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493346, new Object[] { socialNotificationSummary.getVideoSummary().getTitle() })));
+        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493358, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
     }
 }

@@ -20,7 +20,7 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import android.widget.RelativeLayout;
-import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -37,6 +37,6 @@ class KidsCharacterView$1 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        DetailsActivity.show((NetflixActivity)this.this$0.getContext(), this.val$video, this.this$0.playContext);
+        DetailsActivityLauncher.show((NetflixActivity)this.this$0.getContext(), this.val$video, this.this$0.playContext);
     }
 }

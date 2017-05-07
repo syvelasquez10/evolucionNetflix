@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
+import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
-import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.ui.lomo.RowAdapterCallbacks;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -19,7 +20,7 @@ public class KidsCharacterPagerAdapter extends StandardLoMoPagerAdapter
     }
     
     @Override
-    protected BasePaginatedAdapter<Video> createPaginatedAdapter(final Context context) {
-        return new KidsPaginatedCharacterAdapter(context);
+    protected BasePaginatedAdapter<Video> createPaginatedAdapter(final NetflixActivity netflixActivity) {
+        return new KidsPaginatedCharacterAdapter((Context)netflixActivity);
     }
 }

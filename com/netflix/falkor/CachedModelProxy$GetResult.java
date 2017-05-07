@@ -6,6 +6,7 @@ package com.netflix.falkor;
 
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class CachedModelProxy$GetResult
     }
     
     public void printPaths(final String s) {
-        if (Log.isLoggable("CachedModelProxy", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             final Iterator<PQL> iterator = this.foundPqls.iterator();
             while (iterator.hasNext()) {
                 Log.v(s, "Found PQL: " + iterator.next());

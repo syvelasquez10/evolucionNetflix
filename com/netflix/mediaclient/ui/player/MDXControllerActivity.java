@@ -18,30 +18,26 @@ import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.webclient.model.EpisodeDetails;
 import android.text.TextUtils;
-import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.content.Context;
 import android.content.Intent;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
+import android.content.BroadcastReceiver;
 import android.annotation.TargetApi;
 
 @TargetApi(14)
 public class MDXControllerActivity extends PlayerActivity
 {
     private static final String ACTION_FINISH_ACTIVITY = "com.netflix.mediaclient.ui.player.MDXControllerActivity.ACTION_FINISH";
-    public static final String EXTRA_IGNORE_POSTPLAY_STATE = "extra_ignore_postplay_state";
-    public static final String EXTRA_SHOW_MDX_CONTROLLER = "extra_shoe_mdx_controller";
-    public static final String EXTRA_SYNOPSIS = "extra_synopsis";
-    public static final String EXTRA_TITLE = "extra_title";
-    public static final int REQUEST_CODE = 69;
-    private MDXControllerActivity$FinishReceiver finishReceiver;
-    private PostPlay mPostPlay;
-    private View postPlay;
+    private static final String EXTRA_SHOW_MDX_CONTROLLER = "extra_shoe_mdx_controller";
+    private final BroadcastReceiver finishReceiver;
+    private PostPlay postPlayController;
+    private View postPlayViewGroup;
     private String videoId;
     
     public MDXControllerActivity() {
-        this.finishReceiver = new MDXControllerActivity$FinishReceiver(this);
+        this.finishReceiver = new MDXControllerActivity$1(this);
     }
     
     private static Intent createIntent(final NetflixActivity netflixActivity) {
@@ -53,31 +49,31 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlay = this.findViewById(2131165577);
-        this.mPostPlay = PostPlayFactory.create(this, PostPlayFactory$PostPlayType.EpisodesForMDX);
+        this.postPlayViewGroup = this.findViewById(2131165595);
+        this.postPlayController = PostPlayFactory.create(this, PostPlayFactory$PostPlayType.EpisodesForMDX);
     }
     
     private void setupReceivers() {
         if (this.finishReceiver != null) {
             final IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction("com.netflix.mediaclient.ui.player.MDXControllerActivity.ACTION_FINISH");
-            this.registerReceiver((BroadcastReceiver)this.finishReceiver, intentFilter);
+            this.registerReceiver(this.finishReceiver, intentFilter);
         }
     }
     
     private void showEpisodesData() {
-        if (this.postPlay != null) {
-            this.postPlay.setVisibility(0);
+        if (this.postPlayViewGroup != null) {
+            this.postPlayViewGroup.setVisibility(0);
             if (this.getIntent().hasExtra("extra_get_details_video_id")) {
                 this.videoId = this.getIntent().getExtras().getString("extra_get_details_video_id");
-                if (!TextUtils.isEmpty((CharSequence)this.videoId) && this.mPostPlay != null) {
-                    this.mPostPlay.init(this.videoId);
+                if (!TextUtils.isEmpty((CharSequence)this.videoId) && this.postPlayController != null) {
+                    this.postPlayController.init(this.videoId);
                 }
             }
             else if (this.getIntent().hasExtra("extra_get_details_EPISODE_DETAILS")) {
                 final EpisodeDetails episodeDetails = (EpisodeDetails)this.getIntent().getSerializableExtra("extra_get_details_EPISODE_DETAILS");
-                if (episodeDetails != null && this.mPostPlay != null) {
-                    ((PostPlayForMDX)this.mPostPlay).init(episodeDetails);
+                if (episodeDetails != null && this.postPlayController != null) {
+                    ((PostPlayForMDX)this.postPlayController).init(episodeDetails);
                 }
             }
         }
@@ -99,13 +95,13 @@ public class MDXControllerActivity extends PlayerActivity
     
     private void unregisterReceivers() {
         if (this.finishReceiver != null) {
-            this.unregisterReceiver((BroadcastReceiver)this.finishReceiver);
+            this.unregisterReceiver(this.finishReceiver);
         }
     }
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new MDXControllerActivity$1(this);
+        return new MDXControllerActivity$2(this);
     }
     
     @Override
@@ -131,15 +127,21 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        this.setContentView(2130903123);
+        this.setContentView(2130903136);
         this.setupPostplayViews();
         this.showEpisodesData();
+        if (this.getSupportActionBar() != null) {
+            this.getSupportActionBar().hide();
+        }
     }
     
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903123);
+        this.setContentView(2130903136);
+        if (this.getSupportActionBar() != null) {
+            this.getSupportActionBar().hide();
+        }
         this.setupPostplayViews();
         AndroidUtils.logDeviceDensity(this);
         this.getWindow().getAttributes().buttonBrightness = 0.0f;

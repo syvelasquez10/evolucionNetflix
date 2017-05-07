@@ -691,6 +691,13 @@ public class PQL implements Cloneable
         return (List<Object>)this.keySegments;
     }
     
+    public int getNumKeySegments() {
+        if (this.keySegments == null) {
+            return 0;
+        }
+        return this.keySegments.size();
+    }
+    
     @Override
     public int hashCode() {
         return this.toString().hashCode();

@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -15,9 +15,9 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class SwitchUserProfileRequest extends FalcorVolleyWebClientRequest<UserBoundCookies>
+public class SwitchUserProfileRequest extends FalkorVolleyWebClientRequest<UserBoundCookies>
 {
     private static final String FIELD_PROFILE = "profile";
     private static final String TAG = "nf_service_user_switchuserprofilerequest";
@@ -42,7 +42,7 @@ public class SwitchUserProfileRequest extends FalcorVolleyWebClientRequest<UserB
     
     @Override
     protected String getOptionalParams() {
-        final String urlEncodPQLParam = FalcorVolleyWebClientRequest.urlEncodPQLParam("param", "'" + this.guid + "'");
+        final String urlEncodPQLParam = FalkorVolleyWebClientRequest.urlEncodPQLParam("param", "'" + this.guid + "'");
         if (Log.isLoggable("nf_service_user_switchuserprofilerequest", 3)) {
             Log.d("nf_service_user_switchuserprofilerequest", "getOptionalParams: " + urlEncodPQLParam);
         }
@@ -69,20 +69,20 @@ public class SwitchUserProfileRequest extends FalcorVolleyWebClientRequest<UserB
     }
     
     @Override
-    protected UserBoundCookies parseFalcorResponse(final String s) {
+    protected UserBoundCookies parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_user_switchuserprofilerequest", 2)) {
             Log.v("nf_service_user_switchuserprofilerequest", "String response to parse = " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_user_switchuserprofilerequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("User empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_switchuserprofilerequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("User empty!!!");
         }
         try {
-            return FalcorParseUtils.getPropertyObject(dataObj.getAsJsonObject("profile").getAsJsonObject(this.guid), "userTokens", UserBoundCookies.class);
+            return FalkorParseUtils.getPropertyObject(dataObj.getAsJsonObject("profile").getAsJsonObject(this.guid), "userTokens", UserBoundCookies.class);
         }
         catch (Exception ex) {
             Log.v("nf_service_user_switchuserprofilerequest", "String response to parse = " + s);
-            throw new FalcorParseException("response missing user json objects", ex);
+            throw new FalkorParseException("response missing user json objects", ex);
         }
     }
     

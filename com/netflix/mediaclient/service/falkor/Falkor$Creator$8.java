@@ -4,21 +4,13 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.falkor.BranchNode;
-import com.netflix.falkor.ModelProxy;
-import com.netflix.model.branches.FalkorVideo;
+import com.netflix.model.leafs.LoLoMoSummary;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$8 implements Func<FalkorVideo>
+final class Falkor$Creator$8 implements Func<LoLoMoSummary>
 {
-    final /* synthetic */ ModelProxy val$proxy;
-    
-    Falkor$Creator$8(final ModelProxy val$proxy) {
-        this.val$proxy = val$proxy;
-    }
-    
     @Override
-    public FalkorVideo call() {
-        return new FalkorVideo(this.val$proxy);
+    public LoLoMoSummary call() {
+        return new LoLoMoSummary();
     }
 }

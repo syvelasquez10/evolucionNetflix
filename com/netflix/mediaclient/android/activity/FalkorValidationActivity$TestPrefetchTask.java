@@ -23,12 +23,12 @@ class FalkorValidationActivity$TestPrefetchTask extends FalkorValidationActivity
     
     @Override
     protected void makeBrowseRequest(final BrowseAccess browseAccess, final int n, final int n2) {
-        browseAccess.prefetchLoLoMo(0, 19, 0, 9, 0, 9, false, false, n, n2);
+        browseAccess.prefetchLoLoMo(0, 19, 0, 9, 0, 9, false, true, false, n, n2);
     }
     
     @Override
     protected void makeFalkorRequest(final FalkorAccess falkorAccess, final int n, final int n2) {
-        falkorAccess.prefetchLoLoMo(0, 19, 0, 9, 0, 9, false, false, n, n2);
+        falkorAccess.prefetchLoLoMo(0, 19, 0, 9, 0, 9, false, true, false, n, n2);
     }
     
     @Override

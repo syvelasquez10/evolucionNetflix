@@ -4,22 +4,16 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.content.DialogInterface$OnCancelListener;
 import android.content.Context;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import android.app.AlertDialog;
 
 class LanguageSelector$LanguageAlertDialog extends AlertDialog implements MdxMiniPlayerFrag$MdxMiniPlayerDialog
 {
-    private LanguageSelector$LanguageAlertDialog(final Context context) {
+    final /* synthetic */ LanguageSelector this$0;
+    
+    private LanguageSelector$LanguageAlertDialog(final LanguageSelector this$0, final Context context) {
+        this.this$0 = this$0;
         super(context);
-    }
-    
-    private LanguageSelector$LanguageAlertDialog(final Context context, final int n) {
-        super(context, n);
-    }
-    
-    private LanguageSelector$LanguageAlertDialog(final Context context, final boolean b, final DialogInterface$OnCancelListener dialogInterface$OnCancelListener) {
-        super(context, b, dialogInterface$OnCancelListener);
     }
 }

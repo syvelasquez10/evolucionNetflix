@@ -10,5 +10,7 @@ public interface VideoDetailsViewGroup$DetailsStringProvider
     
     CharSequence getCreatorsText();
     
+    CharSequence getGenresText();
+    
     CharSequence getStarringText();
 }

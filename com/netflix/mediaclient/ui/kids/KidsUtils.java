@@ -37,7 +37,6 @@ public class KidsUtils
 {
     private static final float LIST_VIEW_FRICTION_SCALE_FACTOR = 7.5f;
     public static final int MAX_NUM_CW_VIDEOS = 3;
-    public static final int NUM_LOMOS_TO_FETCH_PER_BATCH = 20;
     public static final int NUM_VIDEOS_PER_BATCH = 5;
     private static final String TAG = "KidsUtils";
     
@@ -66,7 +65,7 @@ public class KidsUtils
     public static void addListViewSpacerIfNoHeaders(final StickyListHeadersListView stickyListHeadersListView) {
         if (stickyListHeadersListView.getHeaderViewsCount() == 0) {
             final View view = new View(stickyListHeadersListView.getContext());
-            view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, stickyListHeadersListView.getResources().getDimensionPixelSize(2131361975)));
+            view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, stickyListHeadersListView.getResources().getDimensionPixelSize(2131361976)));
             stickyListHeadersListView.addHeaderView(view);
         }
     }
@@ -101,7 +100,7 @@ public class KidsUtils
     
     public static int computeSkidmarkCharacterViewSize(final NetflixActivity netflixActivity) {
         final Resources resources = netflixActivity.getResources();
-        return resources.getDimensionPixelSize(2131361974) + ((DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - resources.getDimensionPixelSize(2131361973)) / 2 - resources.getDimensionPixelSize(2131361973));
+        return resources.getDimensionPixelSize(2131361975) + ((DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - resources.getDimensionPixelSize(2131361974)) / 2 - resources.getDimensionPixelSize(2131361974));
     }
     
     public static int computeSkidmarkRowHeight(final NetflixActivity netflixActivity, int n, int n2, final int n3, final int n4, final boolean b) {
@@ -142,7 +141,7 @@ public class KidsUtils
     }
     
     public static MenuItem createKidsMenuItem(final NetflixActivity netflixActivity, final Menu menu) {
-        final MenuItem add = menu.add(0, 2131165245, 0, 2131492968);
+        final MenuItem add = menu.add(0, 2131165252, 0, 2131492976);
         updateKidsMenuItem(netflixActivity, add);
         return add;
     }
@@ -252,9 +251,9 @@ public class KidsUtils
         }
         menuItem.setVisible(true).setEnabled(true);
         if (netflixActivity.isForKids() || isKidsProfile(serviceManager.getCurrentProfile())) {
-            menuItem.setTitle(2131492972).setIcon(2130837657).setIntent(createExitKidsIntent(netflixActivity, UIViewLogging$UIViewCommandName.actionBarKidsExit)).setShowAsAction(2);
+            menuItem.setTitle(2131492980).setIcon(2130837661).setIntent(createExitKidsIntent(netflixActivity, UIViewLogging$UIViewCommandName.actionBarKidsExit)).setShowAsAction(2);
             return;
         }
-        menuItem.setTitle(2131492953).setIcon(2130837696).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging$UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
+        menuItem.setTitle(2131492962).setIcon(2130837704).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging$UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
     }
 }

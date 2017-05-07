@@ -124,7 +124,7 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     private void setResid() {
         switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
             default: {
-                this.resId = 2130903172;
+                this.resId = 2130903180;
             }
             case 2: {
                 this.resId = SearchUtils.getSearchViewLayoutPeople();

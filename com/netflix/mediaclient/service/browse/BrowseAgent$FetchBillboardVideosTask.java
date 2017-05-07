@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.util.UiUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.service.webclient.model.SeasonDetails;
@@ -15,7 +13,6 @@ import com.netflix.mediaclient.service.webclient.model.CWVideo;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
-import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
@@ -25,13 +22,14 @@ import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import java.util.Random;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
+import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import android.content.Context;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
@@ -60,7 +58,6 @@ class BrowseAgent$FetchBillboardVideosTask extends BrowseAgent$CachedFetchTask<L
     public void run() {
         final List<Billboard> list = this.getCachedValue();
         if (list == null) {
-            this.this$0.mCache.getCwKeysCache().add(this.getCacheKey());
             this.this$0.mBrowseWebClient.fetchBBVideos(this.lomo, this.getFromIndex(), this.getToIndex(), this.webClientCallback);
             return;
         }

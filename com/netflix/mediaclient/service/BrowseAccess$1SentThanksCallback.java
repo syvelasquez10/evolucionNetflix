@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 
 class BrowseAccess$1SentThanksCallback extends BrowseAccess$BrowseAgentClientCallback
 {
@@ -24,7 +23,7 @@ class BrowseAccess$1SentThanksCallback extends BrowseAccess$BrowseAgentClientCal
     }
     
     @Override
-    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+    public void onSocialNotificationWasThanked(final Status status) {
         if (this.service != null) {
             final Context applicationContext = this.service.getApplicationContext();
             IClientLogging$CompletionReason clientLogging$CompletionReason;
@@ -37,7 +36,7 @@ class BrowseAccess$1SentThanksCallback extends BrowseAccess$BrowseAgentClientCal
             UserActionLogUtils.reportSayThanksActionEnded(applicationContext, clientLogging$CompletionReason, status.getError());
         }
         if (status.isSucces() && this.service != null) {
-            Toast.makeText(this.service.getApplicationContext(), 2131493354, 1).show();
+            Toast.makeText(this.service.getApplicationContext(), 2131493366, 1).show();
             if (this.service.getBrowse() != null) {
                 this.service.getBrowse().refreshSocialNotifications(true, false, null);
             }

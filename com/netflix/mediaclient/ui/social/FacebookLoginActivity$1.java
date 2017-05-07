@@ -14,7 +14,7 @@ import com.facebook.Session;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import android.content.Context;
 import android.widget.Toast;
-import com.facebook.internal.SessionTracker;
+import com.facebook.Request$GraphUserCallback;
 import com.facebook.Session$StatusCallback;
 import com.netflix.mediaclient.ui.login.AccountActivity;
 import com.netflix.mediaclient.android.app.Status;

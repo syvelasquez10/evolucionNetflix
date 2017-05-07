@@ -5,8 +5,9 @@
 package com.facebook;
 
 import android.os.Bundle;
+import com.facebook.internal.PlatformServiceClient$CompletedListener;
 
-class AuthorizationClient$GetTokenAuthHandler$1 implements GetTokenClient$CompletedListener
+class AuthorizationClient$GetTokenAuthHandler$1 implements PlatformServiceClient$CompletedListener
 {
     final /* synthetic */ AuthorizationClient$GetTokenAuthHandler this$1;
     final /* synthetic */ AuthorizationClient$AuthorizationRequest val$request;

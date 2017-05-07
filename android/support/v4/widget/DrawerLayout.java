@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
 {
     private static final boolean ALLOW_EDGE_LOCK = false;
+    private static final boolean CAN_HIDE_DESCENDANTS;
     private static final boolean CHILDREN_DISALLOW_INTERCEPT = true;
     private static final int DEFAULT_SCRIM_COLOR = -1728053248;
     static final DrawerLayout$DrawerLayoutCompatImpl IMPL;
@@ -75,7 +76,12 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
     private CharSequence mTitleRight;
     
     static {
+        boolean can_HIDE_DESCENDANTS = true;
         LAYOUT_ATTRS = new int[] { 16842931 };
+        if (Build$VERSION.SDK_INT < 19) {
+            can_HIDE_DESCENDANTS = false;
+        }
+        CAN_HIDE_DESCENDANTS = can_HIDE_DESCENDANTS;
         if (Build$VERSION.SDK_INT >= 21) {
             IMPL = new DrawerLayout$DrawerLayoutCompatImplApi21();
             return;
@@ -168,15 +174,29 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         return ViewCompat.getImportantForAccessibility(view) != 4 && ViewCompat.getImportantForAccessibility(view) != 2;
     }
     
+    private void updateChildrenImportantForAccessibility(final View view, final boolean b) {
+        for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
+            final View child = this.getChildAt(i);
+            if ((!b && !this.isDrawerView(child)) || (b && child == view)) {
+                ViewCompat.setImportantForAccessibility(child, 1);
+            }
+            else {
+                ViewCompat.setImportantForAccessibility(child, 4);
+            }
+        }
+    }
+    
     public void addView(final View view, final int n, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        if (n > 0 || (n < 0 && this.getChildCount() > 0)) {
+        super.addView(view, n, viewGroup$LayoutParams);
+        if (this.findOpenDrawer() != null || this.isDrawerView(view)) {
             ViewCompat.setImportantForAccessibility(view, 4);
-            ViewCompat.setAccessibilityDelegate(view, this.mChildAccessibilityDelegate);
         }
         else {
             ViewCompat.setImportantForAccessibility(view, 1);
         }
-        super.addView(view, n, viewGroup$LayoutParams);
+        if (!DrawerLayout.CAN_HIDE_DESCENDANTS) {
+            ViewCompat.setAccessibilityDelegate(view, this.mChildAccessibilityDelegate);
+        }
     }
     
     void cancelChildViewTouch() {
@@ -285,11 +305,7 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
             if (this.mListener != null) {
                 this.mListener.onDrawerClosed(rootView);
             }
-            final View child = this.getChildAt(0);
-            if (child != null) {
-                ViewCompat.setImportantForAccessibility(child, 1);
-            }
-            ViewCompat.setImportantForAccessibility(rootView, 4);
+            this.updateChildrenImportantForAccessibility(rootView, false);
             if (this.hasWindowFocus()) {
                 rootView = this.getRootView();
                 if (rootView != null) {
@@ -306,12 +322,7 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
             if (this.mListener != null) {
                 this.mListener.onDrawerOpened(view);
             }
-            final View child = this.getChildAt(0);
-            if (child != null) {
-                ViewCompat.setImportantForAccessibility(child, 4);
-            }
-            ViewCompat.setImportantForAccessibility(view, 1);
-            this.sendAccessibilityEvent(32);
+            this.updateChildrenImportantForAccessibility(view, true);
             view.requestFocus();
         }
     }
@@ -565,15 +576,23 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
                     final float y = motionEvent.getY();
                     this.mInitialMotionX = x;
                     this.mInitialMotionY = y;
-                    if (this.mScrimOpacity > 0.0f && this.isContentView(this.mLeftDragger.findTopChildUnder((int)x, (int)y))) {
-                        b2 = true;
-                    }
-                    else {
+                    while (true) {
+                        Label_0214: {
+                            if (this.mScrimOpacity <= 0.0f) {
+                                break Label_0214;
+                            }
+                            final View topChildUnder = this.mLeftDragger.findTopChildUnder((int)x, (int)y);
+                            if (topChildUnder == null || !this.isContentView(topChildUnder)) {
+                                break Label_0214;
+                            }
+                            b2 = true;
+                            this.mDisallowInterceptRequested = false;
+                            this.mChildrenCanceledTouch = false;
+                            break Label_0063;
+                        }
                         b2 = false;
+                        continue;
                     }
-                    this.mDisallowInterceptRequested = false;
-                    this.mChildrenCanceledTouch = false;
-                    break Label_0063;
                 }
                 case 2: {
                     if (this.mLeftDragger.checkTouchSlop(3)) {
@@ -796,15 +815,9 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
     
     protected Parcelable onSaveInstanceState() {
         final DrawerLayout$SavedState drawerLayout$SavedState = new DrawerLayout$SavedState(super.onSaveInstanceState());
-        for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
-            final View child = this.getChildAt(i);
-            if (this.isDrawerView(child)) {
-                final DrawerLayout$LayoutParams drawerLayout$LayoutParams = (DrawerLayout$LayoutParams)child.getLayoutParams();
-                if (drawerLayout$LayoutParams.knownOpen) {
-                    drawerLayout$SavedState.openDrawerGravity = drawerLayout$LayoutParams.gravity;
-                    break;
-                }
-            }
+        final View openDrawer = this.findOpenDrawer();
+        if (openDrawer != null) {
+            drawerLayout$SavedState.openDrawerGravity = ((DrawerLayout$LayoutParams)openDrawer.getLayoutParams()).gravity;
         }
         drawerLayout$SavedState.lockModeLeft = this.mLockModeLeft;
         drawerLayout$SavedState.lockModeRight = this.mLockModeRight;
@@ -879,12 +892,7 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         if (this.mFirstLayout) {
             final DrawerLayout$LayoutParams drawerLayout$LayoutParams = (DrawerLayout$LayoutParams)view.getLayoutParams();
             drawerLayout$LayoutParams.onScreen = 1.0f;
-            drawerLayout$LayoutParams.knownOpen = true;
-            final View child = this.getChildAt(0);
-            if (child != null) {
-                ViewCompat.setImportantForAccessibility(child, 4);
-            }
-            ViewCompat.setImportantForAccessibility(view, 1);
+            this.updateChildrenImportantForAccessibility(view, drawerLayout$LayoutParams.knownOpen = true);
         }
         else if (this.checkDrawerViewAbsoluteGravity(view, 3)) {
             this.mLeftDragger.smoothSlideViewTo(view, 0, view.getTop());

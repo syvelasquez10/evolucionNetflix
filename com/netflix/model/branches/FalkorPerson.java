@@ -84,6 +84,11 @@ public class FalkorPerson extends BaseFalkorObject implements SearchPerson, Falk
     }
     
     @Override
+    public void remove(final String s) {
+        this.set(s, null);
+    }
+    
+    @Override
     public void set(final String s, final Object o) {
         if ("searchTitle".equals(s)) {
             this.searchPerson = (com.netflix.model.leafs.SearchPerson)o;

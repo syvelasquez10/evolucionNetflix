@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -15,7 +16,7 @@ import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 
 public class Video$Summary implements JsonPopulator, Video
 {
-    private static final String TAG = "Video";
+    private static final String TAG = "Summary";
     public String boxartUrl;
     public VideoType enumType;
     public VideoType errorType;
@@ -78,8 +79,8 @@ public class Video$Summary implements JsonPopulator, Video
     @Override
     public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("Video", 2)) {
-            Log.v("Video", "Populating with: " + asJsonObject);
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Summary", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final JsonElement jsonElement2 = entry.getValue();
@@ -201,7 +202,7 @@ public class Video$Summary implements JsonPopulator, Video
                     continue;
                 }
                 case 9: {
-                    entry.getValue().getAsInt();
+                    this.videoYear = entry.getValue().getAsInt();
                     continue;
                 }
             }

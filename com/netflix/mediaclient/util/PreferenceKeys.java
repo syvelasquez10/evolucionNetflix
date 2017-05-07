@@ -36,6 +36,8 @@ public interface PreferenceKeys
     public static final String PREFERENCE_HARDWARE_ACCELERATION = "nflx_hardwarer_acc";
     public static final String PREFERENCE_IMAGE_PREF = "image_pref";
     public static final String PREFERENCE_IP_CONNECTIVITY_POLICY_OVERRIDE = "ip_connectivity_policy_overide";
+    public static final String PREFERENCE_MDX_CONFIGURATION_REMOTE_LOCK_SCREEN_ENABLED = "mdx_configuration_remote_lockscreen_enabled";
+    public static final String PREFERENCE_MDX_CONFIGURATION_REMOTE_NOTIFICATION_ENABLED = "mdx_configuration_remote_notification_enabled";
     public static final String PREFERENCE_MDX_ELECTED_DIALUUID = "mdx_selected_dialuuid";
     public static final String PREFERENCE_MDX_ELECTED_FNAME = "mdx_selected_fname";
     public static final String PREFERENCE_MDX_SELECTED_UUID = "mdx_selected_uuid";
@@ -43,6 +45,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_MDX_TARGET_UUID = "mdx_target_uuid";
     public static final String PREFERENCE_NOTIFICATION_ID_DELETED_FROM_STATUSBAR = "notification_id_deleted_from_statusbar";
     public static final String PREFERENCE_NOTIFICATION_SETTINGS = "notification_settings";
+    public static final String PREFERENCE_PLAYBACK_CONFIGURATION_LOCAL_PLAYBACK_ENABLED = "playback_configuration_local_playback_enabled";
     public static final String PREFERENCE_PLAYER_TYPE = "nflx_player_type";
     public static final String PREFERENCE_PLAYER_TYPE_QA_OVERRIDE = "nflx_player_type_qa";
     public static final String PREFERENCE_PRESENTATION_PAGE_AGGREGATION = "pt_aggregation_size";

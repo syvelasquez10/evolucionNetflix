@@ -32,9 +32,9 @@ public class KidsLoMoViewGroup<V extends View> extends VideoViewGroup<Video, V>
     @Override
     protected int getChildPaddingDimenResId() {
         if (KidsUtils.shouldShowHorizontalImages((NetflixActivity)this.getContext())) {
-            return 2131361971;
+            return 2131361972;
         }
-        return 2131361972;
+        return 2131361973;
     }
     
     @Override

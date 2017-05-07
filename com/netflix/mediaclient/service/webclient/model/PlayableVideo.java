@@ -7,7 +7,6 @@ package com.netflix.mediaclient.service.webclient.model;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$UserRating;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
@@ -18,7 +17,7 @@ import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 
-public class PlayableVideo extends Video implements Playable, com.netflix.mediaclient.servicemgr.model.Video
+public abstract class PlayableVideo extends Video implements Playable, com.netflix.mediaclient.servicemgr.model.Video
 {
     private static final String TAG = "nf_model_playablevideo";
     public Video$Bookmark bookmark;
@@ -29,15 +28,7 @@ public class PlayableVideo extends Video implements Playable, com.netflix.mediac
     public Video$InQueue inQueue;
     public Video$UserRating rating;
     public SocialEvidence socialEvidence;
-    public Video$Summary summary;
     public boolean userConnectedToFacebook;
-    
-    private String getCurrentEpisodeTitle() {
-        if (this.currentEpisode == null) {
-            return null;
-        }
-        return this.currentEpisode.getTitle();
-    }
     
     @Override
     public boolean canBeSharedOnFacebook() {
@@ -80,14 +71,6 @@ public class PlayableVideo extends Video implements Playable, com.netflix.mediac
         return n;
     }
     
-    @Override
-    public String getBoxshotURL() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getBoxshotURL();
-    }
-    
     public String getCurrentEpisodeId() {
         if (this.currentEpisode == null) {
             return null;
@@ -100,6 +83,13 @@ public class PlayableVideo extends Video implements Playable, com.netflix.mediac
             return -1;
         }
         return this.currentEpisode.getEpisodeNumber();
+    }
+    
+    public String getCurrentEpisodeTitle() {
+        if (this.currentEpisode == null) {
+            return null;
+        }
+        return this.currentEpisode.getTitle();
     }
     
     public int getCurrentSeasonNumber() {
@@ -126,27 +116,11 @@ public class PlayableVideo extends Video implements Playable, com.netflix.mediac
     }
     
     @Override
-    public VideoType getErrorType() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getErrorType();
-    }
-    
-    @Override
     public String getHorzDispUrl() {
         if (this.detail == null) {
             return null;
         }
         return this.detail.horzDispUrl;
-    }
-    
-    @Override
-    public String getId() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getId();
     }
     
     public String getNextEpisodeId() {
@@ -216,35 +190,11 @@ public class PlayableVideo extends Video implements Playable, com.netflix.mediac
     }
     
     @Override
-    public String getSquareUrl() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getSquareUrl();
-    }
-    
-    @Override
-    public String getTitle() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getTitle();
-    }
-    
-    @Override
     public String getTvCardUrl() {
         if (this.detail == null) {
             return null;
         }
         return this.detail.tvCardUrl;
-    }
-    
-    @Override
-    public VideoType getType() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getType();
     }
     
     @Override

@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.util.UiUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
@@ -26,14 +24,14 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Random;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
+import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;

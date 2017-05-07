@@ -4,28 +4,37 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.util.ViewUtils;
+import android.app.Dialog;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
-import android.media.AudioManager;
+import com.netflix.mediaclient.Log;
 import android.widget.SeekBar$OnSeekBarChangeListener;
-import android.widget.ImageView;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.Log;
+import android.view.Menu;
+import com.netflix.mediaclient.servicemgr.IPlayer;
+import android.content.DialogInterface$OnCancelListener;
+import android.widget.AdapterView$OnItemClickListener;
+import android.content.Context;
+import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
+import android.app.AlertDialog;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.media.Language;
 import android.app.Activity;
+import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-import android.widget.SeekBar;
 import com.netflix.mediaclient.ui.common.Social;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
-import android.widget.Button;
-import android.view.View;
+import android.animation.Animator;
 import android.view.View$OnClickListener;
-import android.widget.ImageButton;
+import android.support.v7.app.ActionBar;
+import android.view.View;
+import android.view.MenuItem;
+import android.view.MenuItem$OnMenuItemClickListener;
 
-class TopPanel$6 implements Runnable
+class TopPanel$6 implements MenuItem$OnMenuItemClickListener
 {
     final /* synthetic */ TopPanel this$0;
     
@@ -33,11 +42,8 @@ class TopPanel$6 implements Runnable
         this.this$0 = this$0;
     }
     
-    @Override
-    public void run() {
-        final ImageButton access$300 = this.this$0.mLanguage;
-        if (access$300 != null && !((ImageView)access$300).isShown()) {
-            ((ImageView)access$300).setVisibility(0);
-        }
+    public boolean onMenuItemClick(final MenuItem menuItem) {
+        this.this$0.mListeners.episodeSelectorListener.onClick((View)null);
+        return true;
     }
 }

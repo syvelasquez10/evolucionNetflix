@@ -24,7 +24,7 @@ public class SettingsActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903095;
+        return 2130903097;
     }
     
     @Override

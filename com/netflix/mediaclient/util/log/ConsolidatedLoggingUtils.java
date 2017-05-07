@@ -5,11 +5,11 @@
 package com.netflix.mediaclient.util.log;
 
 import java.util.Iterator;
-import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
+import com.android.volley.ServerError;
 import com.android.volley.NetworkError;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import android.support.v4.content.LocalBroadcastManager;
 import java.util.Locale;
@@ -33,7 +33,7 @@ import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement$Debug;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
+import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
 import com.netflix.mediaclient.service.logging.JsonSerializer;
 import android.content.Intent;
@@ -50,15 +50,15 @@ public abstract class ConsolidatedLoggingUtils
         }
     }
     
-    protected static void addToIntent(final Intent intent, final String s, final List<FalcorPathResult> list) {
+    protected static void addToIntent(final Intent intent, final String s, final List<FalkorPathResult> list) {
         try {
-            final String jsonArray = FalcorPathResult.createJSONArray(list);
+            final String jsonArray = FalkorPathResult.createJSONArray(list);
             if (jsonArray != null) {
                 intent.putExtra(s, jsonArray);
             }
         }
         catch (Throwable t) {
-            Log.e("nf_log", "addToIntent:: Failed to create JSON string for list of FalcorPathResult ", t);
+            Log.e("nf_log", "addToIntent:: Failed to create JSON string for list of FalkorPathResult ", t);
         }
     }
     
@@ -245,7 +245,7 @@ public abstract class ConsolidatedLoggingUtils
         while (true) {
             while (true) {
                 Label_0115: {
-                    if (volleyError instanceof FalcorParseException) {
+                    if (volleyError instanceof FalkorParseException) {
                         error.setRootCause(RootCause.serverResponseBad);
                         break Label_0115;
                     }
@@ -253,14 +253,15 @@ public abstract class ConsolidatedLoggingUtils
                         break Label_0247;
                         while (true) {
                             final JSONObject message = new JSONObject();
-                        Block_11_Outer:
+                            DeepErrorElement deepErrorElement = null;
+                            DeepErrorElement$Debug debug;
+                            Block_10_Outer:Block_12_Outer:
                             while (true) {
-                                DeepErrorElement deepErrorElement = null;
                                 Label_0330: {
                                     try {
                                         message.put("bodyResponse", (Object)new String(volleyError.networkResponse.data));
                                         deepErrorElement = new DeepErrorElement();
-                                        final DeepErrorElement$Debug debug = new DeepErrorElement$Debug();
+                                        debug = new DeepErrorElement$Debug();
                                         debug.setStackTrace(android.util.Log.getStackTraceString((Throwable)volleyError));
                                         debug.setMessage(message);
                                         deepErrorElement.setDebug(debug);
@@ -271,35 +272,37 @@ public abstract class ConsolidatedLoggingUtils
                                         }
                                         break Label_0330;
                                         // iftrue(Label_0115:, !volleyError instanceof NetworkError)
-                                        // iftrue(Label_0264:, !volleyError instanceof FalcorServerException)
-                                        // iftrue(Label_0298:, !volleyError instanceof TimeoutError)
+                                        // iftrue(Label_0281:, !volleyError instanceof ServerError)
+                                        // iftrue(Label_0264:, !volleyError instanceof FalkorServerException)
                                         while (true) {
-                                        Block_10_Outer:
+                                        Block_13_Outer:
                                             while (true) {
-                                                error.setRootCause(RootCause.tcpConnectionTimeout);
+                                                error.setRootCause(RootCause.serverFailure);
                                                 break;
                                                 while (true) {
-                                                    error.setRootCause(RootCause.serverFailure);
-                                                    break;
-                                                    Block_13: {
-                                                        break Block_13;
-                                                        error.setRootCause(RootCause.serverFailure);
-                                                        break;
-                                                    }
                                                     error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
                                                     break;
-                                                    continue Block_11_Outer;
+                                                    error.setRootCause(RootCause.serverFailure);
+                                                    break;
+                                                    Label_0298: {
+                                                        continue Block_10_Outer;
+                                                    }
                                                 }
-                                                Label_0281: {
-                                                    continue Block_10_Outer;
+                                                Label_0264: {
+                                                    continue Block_13_Outer;
                                                 }
                                             }
-                                            Label_0264: {
+                                            continue Block_12_Outer;
+                                        }
+                                        while (true) {
+                                            error.setRootCause(RootCause.tcpConnectionTimeout);
+                                            break;
+                                            Label_0281: {
                                                 continue;
                                             }
                                         }
                                     }
-                                    // iftrue(Label_0281:, !volleyError instanceof ServerError)
+                                    // iftrue(Label_0298:, !volleyError instanceof TimeoutError)
                                     catch (Throwable t) {
                                         Log.e("nf_log", "Failed to add body response to JSON object", t);
                                         continue Label_0162;
@@ -401,7 +404,7 @@ public abstract class ConsolidatedLoggingUtils
         }
     }
     
-    public static List<FalcorPathResult> toFalcorPathResultList(final List<String> list) {
+    public static List<FalkorPathResult> toFalkorPathResultList(final List<String> list) {
         int size;
         if (list != null) {
             size = list.size();
@@ -409,14 +412,14 @@ public abstract class ConsolidatedLoggingUtils
         else {
             size = 0;
         }
-        final ArrayList list2 = new ArrayList<FalcorPathResult>(size);
+        final ArrayList list2 = new ArrayList<FalkorPathResult>(size);
         if (list != null) {
             final Iterator<String> iterator = list.iterator();
             while (iterator.hasNext()) {
-                list2.add(new FalcorPathResult(iterator.next(), false, null));
+                list2.add(new FalkorPathResult(iterator.next(), false, null));
             }
         }
-        return (List<FalcorPathResult>)list2;
+        return (List<FalkorPathResult>)list2;
     }
     
     protected static String toStringSafely(final JsonSerializer jsonSerializer) {

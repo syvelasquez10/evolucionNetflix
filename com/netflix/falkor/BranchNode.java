@@ -14,5 +14,7 @@ public interface BranchNode
     
     Object getOrCreate(final String p0);
     
+    void remove(final String p0);
+    
     void set(final String p0, final Object p1);
 }

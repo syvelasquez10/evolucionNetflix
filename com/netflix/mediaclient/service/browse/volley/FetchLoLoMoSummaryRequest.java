@@ -6,8 +6,8 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.LoLoMoSummary;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -17,9 +17,9 @@ import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLoMo>
+public class FetchLoLoMoSummaryRequest extends FalkorVolleyWebClientRequest<LoLoMo>
 {
     private static final String FIELD_GENRE_LOLOMO = "lolomos";
     private static final String FIELD_TOP_GENRE = "topGenres";
@@ -67,13 +67,13 @@ public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLo
     }
     
     @Override
-    protected LoLoMo parseFalcorResponse(String s) {
+    protected LoLoMo parseFalkorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_fetchlolomosummaryrequest", 2)) {
             Log.v("nf_service_browse_fetchlolomosummaryrequest", "String response to parse = " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchlolomosummaryrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException(String.format("lolomo %s summary empty!!!", this.lolomoCategoryId));
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchlolomosummaryrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException(String.format("lolomo %s summary empty!!!", this.lolomoCategoryId));
         }
         try {
             if (this.lolomoIdInCache) {
@@ -82,13 +82,13 @@ public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLo
             else {
                 s = (String)dataObj.getAsJsonObject("topGenres").getAsJsonObject(this.lolomoCategoryId);
             }
-            s = (String)FalcorParseUtils.getPropertyObject((JsonObject)s, "summary", LoLoMoSummary.class);
+            s = (String)FalkorParseUtils.getPropertyObject((JsonObject)s, "summary", LoLoMoSummary.class);
             ((LoLoMoSummary)s).setId(this.lolomoCategoryId);
             return (LoLoMo)s;
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_fetchlolomosummaryrequest", "String response to parse = " + s);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
     }
 }

@@ -9,8 +9,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -19,9 +19,9 @@ import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchAvailableAvatarsRequest extends FalcorVolleyWebClientRequest<List<AvatarInfo>>
+public class FetchAvailableAvatarsRequest extends FalkorVolleyWebClientRequest<List<AvatarInfo>>
 {
     private static final String AVATARS_FIELD = "availableAvatarsList";
     private static final String NAME_FIELD = "name";
@@ -59,13 +59,13 @@ public class FetchAvailableAvatarsRequest extends FalcorVolleyWebClientRequest<L
     }
     
     @Override
-    protected List<AvatarInfo> parseFalcorResponse(String s) {
+    protected List<AvatarInfo> parseFalkorResponse(String s) {
         if (Log.isLoggable("nf_service_user_fetchavailableavatarsrequest", 2)) {
             Log.i("nf_service_user_fetchavailableavatarsrequest", "Got result: " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_user_fetchavailableavatarsrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("Avatars list empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchavailableavatarsrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("Avatars list empty!!!");
         }
         try {
             final JsonArray asJsonArray = dataObj.getAsJsonArray("availableAvatarsList");
@@ -80,7 +80,7 @@ public class FetchAvailableAvatarsRequest extends FalcorVolleyWebClientRequest<L
             if (Log.isLoggable("nf_service_user_fetchavailableavatarsrequest", 6)) {
                 Log.e("nf_service_user_fetchavailableavatarsrequest", "Got exception for string response to parse: " + s);
             }
-            throw new FalcorParseException("response missing avatars json objects", ex);
+            throw new FalkorParseException("response missing avatars json objects", ex);
         }
         return (List<AvatarInfo>)s;
     }

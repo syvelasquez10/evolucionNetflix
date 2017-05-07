@@ -6,6 +6,9 @@ package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
+import com.netflix.mediaclient.service.configuration.PlaybackConfiguration;
+import com.netflix.mediaclient.service.configuration.MdxConfiguration;
+import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
 import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
@@ -15,7 +18,6 @@ import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
-import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
@@ -37,8 +39,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     int getAppVersionCode();
     
     BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification();
-    
-    JSONArray getCastWhiteList();
     
     ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String p0);
     
@@ -66,7 +66,15 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     KidsOnPhoneConfiguration getKidsOnPhoneConfiguration();
     
-    JSONArray getMdxBlackListTargets();
+    KubrickConfiguration getKubrickConfiguration();
+    
+    MdxConfiguration getMdxConfiguration();
+    
+    PlaybackConfiguration getPlaybackConfiguration();
+    
+    String getPreAppPartnerExperience();
+    
+    String getPreAppWidgetExperience();
     
     int getPresentationTrackingAggregationSize();
     
@@ -94,19 +102,13 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean isDeviceLowMem();
     
-    boolean isDisableMdx();
-    
-    boolean isDisableWebsocket();
+    boolean isDisableMcQueenV2();
     
     boolean isDisableWidevine();
-    
-    boolean isEnableCast();
     
     boolean isEsnMigrationRequired();
     
     boolean isLogoutRequired();
-    
-    boolean toDisableSuspendPlayback();
     
     void userAgentLogoutComplete();
 }

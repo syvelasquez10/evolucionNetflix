@@ -6,13 +6,12 @@ package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
@@ -29,8 +28,6 @@ public interface BrowseAgentCallback
 {
     void onBBVideosFetched(final List<Billboard> p0, final Status p1);
     
-    void onCWListRefresh(final Status p0);
-    
     void onCWVideosFetched(final List<CWVideo> p0, final Status p1);
     
     void onEpisodeDetailsFetched(final EpisodeDetails p0, final Status p1);
@@ -43,8 +40,6 @@ public interface BrowseAgentCallback
     
     void onGenresFetched(final List<Genre> p0, final Status p1);
     
-    void onIQListRefresh(final Status p0);
-    
     void onKidsCharacterDetailsFetched(final KidsCharacterDetails p0, final Boolean p1, final Status p2);
     
     void onLoLoMoPrefetched(final Status p0);
@@ -55,7 +50,7 @@ public interface BrowseAgentCallback
     
     void onMovieDetailsFetched(final MovieDetails p0, final Status p1);
     
-    void onPostPlayVideosFetched(final List<PostPlayVideo> p0, final Status p1);
+    void onPostPlayVideosFetched(final PostPlayVideosProvider p0, final Status p1);
     
     void onQueueAdd(final Status p0);
     
@@ -67,15 +62,17 @@ public interface BrowseAgentCallback
     
     void onSeasonsFetched(final List<SeasonDetails> p0, final Status p1);
     
+    void onShowDetailsAndSeasonsFetched(final ShowDetails p0, final List<SeasonDetails> p1, final Status p2);
+    
     void onShowDetailsFetched(final ShowDetails p0, final Status p1);
     
     void onSimilarVideosFetched(final SearchVideoListProvider p0, final Status p1);
     
-    void onSocialNotificationWasThanked(final SocialNotificationSummary p0, final Status p1);
+    void onSocialNotificationWasThanked(final Status p0);
     
     void onSocialNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
     
-    void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> p0, final Status p1);
+    void onSocialNotificationsMarkedAsRead(final Status p0);
     
     void onVideoHide(final Status p0);
     

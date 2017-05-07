@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 public abstract class TokenCachingStrategy
 {
+    public static final String DECLINED_PERMISSIONS_KEY = "com.facebook.TokenCachingStrategy.DeclinedPermissions";
     public static final String EXPIRATION_DATE_KEY = "com.facebook.TokenCachingStrategy.ExpirationDate";
     private static final long INVALID_BUNDLE_MILLISECONDS = Long.MIN_VALUE;
     private static final String IS_SSO_KEY = "com.facebook.TokenCachingStrategy.IsSSO";
@@ -86,6 +87,19 @@ public abstract class TokenCachingStrategy
     
     static void putDate(final Bundle bundle, final String s, final Date date) {
         bundle.putLong(s, date.getTime());
+    }
+    
+    public static void putDeclinedPermissions(final Bundle bundle, final List<String> list) {
+        Validate.notNull(bundle, "bundle");
+        Validate.notNull(list, "value");
+        ArrayList list2;
+        if (list instanceof ArrayList) {
+            list2 = (ArrayList<? extends E>)list;
+        }
+        else {
+            list2 = new ArrayList((Collection<? extends E>)list);
+        }
+        bundle.putStringArrayList("com.facebook.TokenCachingStrategy.DeclinedPermissions", list2);
     }
     
     public static void putExpirationDate(final Bundle bundle, final Date date) {

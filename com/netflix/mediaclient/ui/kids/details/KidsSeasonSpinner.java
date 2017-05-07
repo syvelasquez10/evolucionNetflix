@@ -29,12 +29,12 @@ public class KidsSeasonSpinner extends RelativeLayout
         super((Context)kidsShowDetailsFrag.getActivity());
         this.activity = kidsShowDetailsFrag.getActivity();
         this.showAdapter = showAdapter;
-        this.activity.getLayoutInflater().inflate(2130903109, (ViewGroup)this);
-        this.setBackgroundColor(this.activity.getResources().getColor(2131296421));
+        this.activity.getLayoutInflater().inflate(2130903111, (ViewGroup)this);
+        this.setBackgroundColor(this.activity.getResources().getColor(2131296404));
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         final List<SeasonDetails> seasons = this.showAdapter.getSeasons();
         Log.v("KidsSeasonSpinner", "Creating season spinner, num seasons: " + seasons.size());
-        (this.spinner = (SeasonsSpinner)this.findViewById(2131165428)).updateSeasonData(seasons);
+        (this.spinner = (SeasonsSpinner)this.findViewById(2131165412)).updateSeasonData(seasons);
         this.spinner.setOnItemSelectedListener((AdapterView$OnItemSelectedListener)new KidsSeasonSpinner$1(this));
     }
     

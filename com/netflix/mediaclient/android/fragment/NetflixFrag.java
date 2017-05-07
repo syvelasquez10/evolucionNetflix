@@ -7,8 +7,9 @@ package com.netflix.mediaclient.android.fragment;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.Log;
 import android.os.Bundle;
+import com.netflix.mediaclient.Log;
+import android.app.Activity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -29,6 +30,13 @@ public abstract class NetflixFrag extends Fragment implements LoadingStatus, Man
         return this.isDestroyed;
     }
     
+    public void onAttach(final Activity activity) {
+        super.onAttach(activity);
+        if (Log.isLoggable("NetflixFrag", 2)) {
+            Log.v("NetflixFrag", "Frag attached to activity: " + this.getClass().getSimpleName());
+        }
+    }
+    
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         if (Log.isLoggable("NetflixFrag", 2)) {
@@ -42,6 +50,13 @@ public abstract class NetflixFrag extends Fragment implements LoadingStatus, Man
             Log.v("NetflixFrag", "Destroying frag: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
         this.isDestroyed = true;
+    }
+    
+    public void onDetach() {
+        super.onDetach();
+        if (Log.isLoggable("NetflixFrag", 2)) {
+            Log.v("NetflixFrag", "Frag detached from activity: " + this.getClass().getSimpleName());
+        }
     }
     
     protected void onLoaded(final Status status) {

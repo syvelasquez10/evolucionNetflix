@@ -12,12 +12,12 @@ import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
 
 public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
 {
-    public static final int NUM_BILLBOARDS_TO_FETCH_PER_BATCH = 10;
     private static final String TAG = "PaginatedBillboardAdapter";
     
     public PaginatedBillboardAdapter(final Context context) {
@@ -25,13 +25,13 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     }
     
     @Override
-    protected int computeNumItemsPerPage(final int n, final int n2) {
+    protected int computeNumItemsPerPage() {
         return 1;
     }
     
     @Override
-    protected int computeNumVideosToFetchPerBatch(final Context context) {
-        return 10;
+    protected int computeNumVideosToFetchPerBatch() {
+        return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.BILLBOARD);
     }
     
     @Override

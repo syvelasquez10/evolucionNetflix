@@ -46,7 +46,7 @@ public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.d
     
     @Override
     public String getSeasonNumberTitle(final Context context) {
-        return String.format(context.getString(2131493150), this.getSeasonNumber());
+        return String.format(context.getString(2131493157), this.getSeasonNumber());
     }
     
     @Override

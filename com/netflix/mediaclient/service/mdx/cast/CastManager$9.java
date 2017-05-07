@@ -11,14 +11,14 @@ import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.google.android.gms.cast.CastDevice;
-import java.util.ArrayList;
+import java.util.HashMap;
 import org.json.JSONArray;
 import android.support.v7.media.MediaRouter;
 import android.support.v7.media.MediaRouteSelector;
 import com.netflix.mediaclient.service.mdx.MdxNrdpLogger;
-import android.os.Handler;
 import android.support.v7.media.MediaRouter$RouteInfo;
-import java.util.List;
+import java.util.Map;
+import android.os.Handler;
 import android.content.Context;
 import android.support.v7.media.MediaRouter$Callback;
 

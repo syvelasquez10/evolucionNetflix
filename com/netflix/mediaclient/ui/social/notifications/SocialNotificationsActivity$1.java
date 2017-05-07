@@ -32,7 +32,10 @@ class SocialNotificationsActivity$1 implements ManagerStatusListener
         Log.d(SocialNotificationsActivity.TAG, "Manager is here!");
         ((ManagerStatusListener)this.this$0.getPrimaryFrag()).onManagerReady(serviceManager, status);
         this.this$0.mManagerIsReady = true;
-        NflxProtocolUtils.reportUserOpenedNotification(serviceManager, this.this$0.getIntent());
+        if (!this.this$0.mNotificationOpenedReportAlreadySent) {
+            this.this$0.mNotificationOpenedReportAlreadySent = true;
+            NflxProtocolUtils.reportUserOpenedNotification(serviceManager, this.this$0.getIntent());
+        }
     }
     
     @Override

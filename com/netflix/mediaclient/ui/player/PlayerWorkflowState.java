@@ -24,7 +24,6 @@ public class PlayerWorkflowState
     public boolean timelineInSnapZone;
     private int timelinePreviousSeekPosition;
     private int timelineSeekDelta;
-    int timelineStartSeekPosition;
     private boolean userInteraction;
     boolean videoLoaded;
     boolean videoPrepared;
@@ -38,7 +37,6 @@ public class PlayerWorkflowState
         this.playbackStopped = false;
         this.playStarted = false;
         this.volumeChangeInProgress = -1L;
-        this.timelineStartSeekPosition = 0;
         this.timelineCurrentSeekPosition = 0;
         this.timelineSeekDelta = 0;
         this.timelineExitOnSnap = false;
@@ -54,28 +52,12 @@ public class PlayerWorkflowState
         return this.lastActionTime;
     }
     
-    public AtomicBoolean getPlayStartInProgress() {
-        return this.playStartInProgress;
-    }
-    
-    public int getTimelineCurrentSeekPosition() {
-        return this.timelineCurrentSeekPosition;
-    }
-    
     public boolean getTimelineExitOnSnap() {
         return this.timelineExitOnSnap;
     }
     
-    public int getTimelinePreviousSeekPosition() {
-        return this.timelinePreviousSeekPosition;
-    }
-    
     public int getTimelineSeekDelta() {
         return this.timelineSeekDelta;
-    }
-    
-    public int getTimelineStartSeekPosition() {
-        return this.timelineStartSeekPosition;
     }
     
     public long getVolumeChangeInProgress() {
@@ -154,7 +136,6 @@ public class PlayerWorkflowState
         this.timelineCurrentSeekPosition = 0;
         this.timelineInSnapZone = true;
         this.timelinePreviousSeekPosition = 0;
-        this.timelineStartSeekPosition = 0;
         this.timelineSeekDelta = 0;
     }
     

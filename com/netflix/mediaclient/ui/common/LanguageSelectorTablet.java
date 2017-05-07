@@ -17,20 +17,16 @@ final class LanguageSelectorTablet extends LanguageSelector
     @Override
     protected int calculateListViewHeight() {
         Log.d("nf_language_selector", "Tablet calculate height");
-        int n = (int)this.mController.getResources().getDimension(2131361891);
-        final int n2 = (int)this.mController.getResources().getDimension(2131361890);
-        final int n3 = (int)this.mController.getResources().getDimension(2131361916);
-        int intrinsicHeight;
-        if ((intrinsicHeight = this.mController.getResources().getDrawable(2130837731).getIntrinsicHeight()) == -1) {
-            intrinsicHeight = (int)this.mController.getResources().getDimension(2131361917);
-        }
+        int n = (int)this.mController.getResources().getDimension(2131361903);
+        final int n2 = (int)this.mController.getResources().getDimension(2131361902);
+        final int n3 = (int)this.mController.getResources().getDimension(2131361904);
         final Language language = this.getLanguage();
         int n4;
         if (language == null) {
             n4 = 0;
         }
         else {
-            n4 = (intrinsicHeight + n3) * Math.max(language.getAltAudios().length, language.getSubtitles().length + 1);
+            n4 = Math.max(language.getAltAudios().length, language.getSubtitles().length + 1) * n3;
         }
         if (Log.isLoggable("nf_language_selector", 3)) {
             Log.d("nf_language_selector", "Max height " + n2 + " px, item height " + n3 + " px, proposed list height " + n4 + " px, item divider height" + " px");
@@ -44,6 +40,6 @@ final class LanguageSelectorTablet extends LanguageSelector
     @Override
     protected int getDialogLayoutId() {
         Log.d("nf_language_selector", "R.layout.language_selector_tablet_dialog");
-        return 2130903116;
+        return 2130903129;
     }
 }

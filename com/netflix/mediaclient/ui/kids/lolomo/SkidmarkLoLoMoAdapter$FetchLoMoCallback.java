@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.android.app.CommonStatus;
+import android.widget.AbsListView;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.util.LogUtils;
@@ -80,11 +81,11 @@ class SkidmarkLoLoMoAdapter$FetchLoMoCallback extends LoggingManagerCallback
                     this.this$0.manager.getBrowse().fetchCWVideos(0, 2, new SkidmarkLoLoMoAdapter$FetchVideosCallback(this.this$0, loMo));
                 }
                 else {
-                    this.this$0.manager.getBrowse().fetchVideos(loMo, 0, 4, new SkidmarkLoLoMoAdapter$FetchVideosCallback(this.this$0, loMo));
+                    this.this$0.manager.getBrowse().fetchVideos(loMo, 0, 4, false, false, new SkidmarkLoLoMoAdapter$FetchVideosCallback(this.this$0, loMo));
                 }
                 if (loMo.getType() == LoMoType.CHARACTERS) {
                     this.this$0.callbackCount++;
-                    this.this$0.manager.getBrowse().fetchVideos(loMo, 5, 9, new SkidmarkLoLoMoAdapter$FetchVideosCallback(this.this$0, loMo));
+                    this.this$0.manager.getBrowse().fetchVideos(loMo, 5, 9, false, false, new SkidmarkLoLoMoAdapter$FetchVideosCallback(this.this$0, loMo));
                 }
             }
         }

@@ -12,18 +12,17 @@ import android.util.SparseArray;
 
 public class SearchUtils
 {
-    public static final String TAG = "nf_log_search";
+    private static final String TAG = "SearchUtils";
     private static SearchUtils$TestCell currentTest;
     private static final SparseArray<SparseIntArray> numPeopleColumnsTable;
     private static final SparseArray<SparseIntArray> numRelatedColumnsTable;
     private static final SparseArray<SparseIntArray> numVideoColumnsTable;
     
     static {
-        SearchUtils.currentTest = SearchUtils$TestCell.ONE;
         numRelatedColumnsTable = new SparseArray(2);
         numPeopleColumnsTable = new SparseArray(2);
         numVideoColumnsTable = new SparseArray(2);
-        initColumnsTable();
+        setTestCell(1);
     }
     
     private static int computeMaxResultsForPeople(final Context context) {
@@ -59,7 +58,7 @@ public class SearchUtils
     
     public static int getMaxResultsPeople(final Context context) {
         if (context == null) {
-            Log.w("nf_log_search", "getMaxResultsPeople, Context is null");
+            Log.w("SearchUtils", "getMaxResultsPeople, Context is null");
             return 1;
         }
         final int basicScreenOrientation = DeviceUtils.getBasicScreenOrientation(context);
@@ -79,7 +78,7 @@ public class SearchUtils
     
     public static int getMaxResultsRelated(final Context context) {
         if (context == null) {
-            Log.w("nf_log_search", "getMaxResultsRelated, Context is null");
+            Log.w("SearchUtils", "getMaxResultsRelated, Context is null");
             return 1;
         }
         final int basicScreenOrientation = DeviceUtils.getBasicScreenOrientation(context);
@@ -96,7 +95,7 @@ public class SearchUtils
     
     public static int getNumPeopleGridCols(final Context context) {
         if (context == null) {
-            Log.w("nf_log_search", "getNumPeopleGridCols, Context is null");
+            Log.w("SearchUtils", "getNumPeopleGridCols, Context is null");
             return 2;
         }
         return ((SparseIntArray)SearchUtils.numPeopleColumnsTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context));
@@ -104,7 +103,7 @@ public class SearchUtils
     
     public static int getNumRelatedGridCols(final Context context) {
         if (context == null) {
-            Log.w("nf_log_search", "getNumRelatedGridCols, Context is null");
+            Log.w("SearchUtils", "getNumRelatedGridCols, Context is null");
             return 2;
         }
         return ((SparseIntArray)SearchUtils.numRelatedColumnsTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context));
@@ -112,7 +111,7 @@ public class SearchUtils
     
     public static int getNumVideoGridCols(final Context context) {
         if (context == null) {
-            Log.w("nf_log_search", "getNumVideoGridCols, Context is null");
+            Log.w("SearchUtils", "getNumVideoGridCols, Context is null");
             return 2;
         }
         return ((SparseIntArray)SearchUtils.numVideoColumnsTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context));
@@ -129,10 +128,10 @@ public class SearchUtils
     public static int getSearchFragLayout() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
-                return 2130903176;
+                return 2130903184;
             }
             case 1: {
-                return 2130903177;
+                return 2130903185;
             }
         }
     }
@@ -140,10 +139,10 @@ public class SearchUtils
     public static int getSearchViewLayoutPeople() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
-                return 2130903173;
+                return 2130903181;
             }
             case 1: {
-                return 2130903175;
+                return 2130903183;
             }
         }
     }
@@ -151,10 +150,10 @@ public class SearchUtils
     public static int getSearchViewLayoutRelated() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
-                return 2130903174;
+                return 2130903182;
             }
             case 1: {
-                return 2130903175;
+                return 2130903183;
             }
         }
     }
@@ -171,18 +170,10 @@ public class SearchUtils
         }
     }
     
-    public static boolean handleBackPress() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
-            default: {
-                return false;
-            }
-            case 1: {
-                return true;
-            }
-        }
-    }
-    
     private static void initColumnsTable() {
+        if (Log.isLoggable("SearchUtils", 2)) {
+            Log.v("SearchUtils", "init'ing columns table for test cell: " + SearchUtils.currentTest);
+        }
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
             default: {
                 intColumnTableTestONELandscape();
@@ -327,28 +318,43 @@ public class SearchUtils
     
     public static String sanitizeQuery(final String s) {
         final String replaceAll = s.replaceAll("\\s+", " ");
-        if (Log.isLoggable("nf_log_search", 2)) {
-            Log.v("nf_log_search", "Sanitized query from: \"" + s + "\" to \"" + replaceAll + "\"");
+        if (Log.isLoggable("SearchUtils", 2)) {
+            Log.v("SearchUtils", "Sanitized query from: \"" + s + "\" to \"" + replaceAll + "\"");
         }
         return replaceAll;
     }
     
     public static void setTestCell(final int n) {
+        SearchUtils$TestCell currentTest = null;
         switch (n) {
             default: {
-                SearchUtils.currentTest = SearchUtils$TestCell.ONE;
+                currentTest = SearchUtils$TestCell.ONE;
                 break;
             }
             case 2: {
-                SearchUtils.currentTest = SearchUtils$TestCell.TWO;
+                currentTest = SearchUtils$TestCell.TWO;
                 break;
             }
             case 3: {
-                SearchUtils.currentTest = SearchUtils$TestCell.THREE;
+                currentTest = SearchUtils$TestCell.THREE;
                 break;
             }
         }
-        initColumnsTable();
+        if (currentTest != SearchUtils.currentTest) {
+            SearchUtils.currentTest = currentTest;
+            initColumnsTable();
+        }
+    }
+    
+    public static boolean shouldHandleBackPress() {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+            default: {
+                return false;
+            }
+            case 1: {
+                return true;
+            }
+        }
     }
     
     public static boolean shouldOpenNewActivityForRelated() {

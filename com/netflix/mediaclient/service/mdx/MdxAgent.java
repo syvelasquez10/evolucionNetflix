@@ -175,7 +175,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
     
     private void ensureManagers() {
         if (this.mRemoteControlClientManager == null && AndroidUtils.getAndroidVersion() < 21) {
-            this.mRemoteControlClientManager = new RemoteControlClientManager(this.getContext());
+            this.mRemoteControlClientManager = new RemoteControlClientManager(this.getContext(), this.getConfigurationAgent().getMdxConfiguration());
         }
         if (this.mMdxNotificationManager == null) {
             this.mMdxNotificationManager = MdxNotificationManagerFactory.create(this.getContext(), true, this);
@@ -183,7 +183,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
     }
     
     private void fetchVideoDetail(final boolean b, final boolean b2) {
-        if ((b2 && this.mVideoIdsPostplay.episode) || (!b2 && this.mVideoIds.episode)) {
+        if ((b2 && this.mVideoIdsPostplay.isEpisode) || (!b2 && this.mVideoIds.isEpisode)) {
             final MdxAgent$EpisodeBrowseAgentCallback mdxAgent$EpisodeBrowseAgentCallback = new MdxAgent$EpisodeBrowseAgentCallback(this, b, b2);
             final ServiceAgent$BrowseAgentInterface browseAgent = this.getBrowseAgent();
             int n;
@@ -203,7 +203,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         if (this.mVideoDetails == null) {
             return null;
         }
-        return this.getContext().getString(2131493218, new Object[] { this.mVideoDetails.getPlayable().getSeasonNumber(), this.mVideoDetails.getPlayable().getEpisodeNumber(), this.mVideoDetails.getTitle() });
+        return this.getContext().getString(2131493227, new Object[] { this.mVideoDetails.getPlayable().getSeasonNumber(), this.mVideoDetails.getPlayable().getEpisodeNumber(), this.mVideoDetails.getTitle() });
     }
     
     private RemoteDevice getDeviceFromUuid(final String s) {
@@ -243,14 +243,14 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             return null;
         }
         final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetailsPostplay;
-        return this.getContext().getString(2131493218, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        return this.getContext().getString(2131493227, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
     }
     
     private void handleAccountConfig() {
-        this.mDisableWebSocket = this.getConfigurationAgent().isDisableWebsocket();
-        this.mEnableCast = this.getConfigurationAgent().isEnableCast();
+        this.mDisableWebSocket = this.getConfigurationAgent().getMdxConfiguration().isDisableWebsocket();
+        this.mEnableCast = this.getConfigurationAgent().getMdxConfiguration().isEnableCast();
         if (this.mEnableCast) {
-            (this.mCastManager = new CastManager(this.getContext(), this.getMainHandler(), this.mMdxAgentWorkerHandler, this.getConfigurationAgent().getEsnProvider().getEsn(), this.mMdxNrdpLogger)).setCastWhiteList(this.getConfigurationAgent().getCastWhiteList());
+            (this.mCastManager = new CastManager(this.getContext(), this.getMainHandler(), this.mMdxAgentWorkerHandler, this.getConfigurationAgent().getEsnProvider().getEsn(), this.mMdxNrdpLogger)).setCastWhiteList(this.getConfigurationAgent().getMdxConfiguration().getCastWhiteList());
             if (StringUtils.isNotEmpty(this.mCurrentTargetUuid)) {
                 this.mCastManager.setTargetId(this.mCurrentTargetUuid);
             }
@@ -481,7 +481,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             if (videoDetails.getType() == VideoType.EPISODE) {
                 String s;
                 if (b) {
-                    s = this.getContext().getString(2131493212);
+                    s = this.getContext().getString(2131493221);
                 }
                 else {
                     s = videoDetails.getPlayable().getParentTitle();
@@ -602,10 +602,10 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         }
         this.registerStartStopReceiver();
         if (AndroidUtils.getAndroidVersion() < 21) {
-            this.mRemoteControlClientManager = new RemoteControlClientManager(this.getContext());
+            this.mRemoteControlClientManager = new RemoteControlClientManager(this.getContext(), this.getConfigurationAgent().getMdxConfiguration());
         }
         else {
-            this.mVolumeController = new RemoteVolumeController(this.getContext());
+            this.mVolumeController = new RemoteVolumeController(this.getContext(), this.getConfigurationAgent().getMdxConfiguration());
         }
         this.initCompleted(CommonStatus.OK);
     }
@@ -630,7 +630,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         final WebApiUtils$VideoIds videoIds = this.mTargetManager.getVideoIds();
         this.ensureManagers();
         if (videoIds != null) {
-            if (videoIds.episode != this.mVideoIds.episode || (videoIds.episode && videoIds.episodeId != this.mVideoIds.episodeId) || videoIds.catalogId != this.mVideoIds.catalogId) {
+            if (videoIds.isEpisode != this.mVideoIds.isEpisode || (videoIds.isEpisode && videoIds.episodeId != this.mVideoIds.episodeId) || videoIds.catalogId != this.mVideoIds.catalogId) {
                 this.mVideoIds = videoIds;
                 this.fetchVideoDetail(false, b);
                 return this.mMdxNotificationManager.getNotification(b);
@@ -640,7 +640,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             if (this.mBoxartBitmap != null) {
                 this.mMdxNotificationManager.setBoxart(this.mBoxartBitmap);
             }
-            if (this.mVideoDetails != null && !this.mVideoIds.episode) {
+            if (this.mVideoDetails != null && !this.mVideoIds.isEpisode) {
                 this.mMdxNotificationManager.setTitlesNotify(false, this.mVideoDetails.getTitle(), null);
             }
         }
@@ -792,17 +792,17 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             final int intExtra4 = intent.getIntExtra("time", -1);
             this.mTrackId = intExtra3;
             this.mStartTime = intExtra4;
-            final boolean episode = intExtra2 != -1;
+            final boolean isEpisode = intExtra2 != -1;
             if (Log.isLoggable("nf_mdx_agent", 3)) {
-                Log.d("nf_mdx_agent", "MdxAgent: PLAYER_PLAY existing: " + this.mVideoIds.episode + ",catalogId: " + this.mVideoIds.catalogId + ",episodeId:" + this.mVideoIds.episodeId);
-                Log.d("nf_mdx_agent", "MdxAgent: PLAYER_PLAY request: " + episode + ",catalogId: " + intExtra + ",episodeId:" + intExtra2);
+                Log.d("nf_mdx_agent", "MdxAgent: PLAYER_PLAY existing: " + this.mVideoIds.isEpisode + ",catalogId: " + this.mVideoIds.catalogId + ",episodeId:" + this.mVideoIds.episodeId);
+                Log.d("nf_mdx_agent", "MdxAgent: PLAYER_PLAY request: " + isEpisode + ",catalogId: " + intExtra + ",episodeId:" + intExtra2);
             }
             if (intent.getBooleanExtra("playNext", false)) {
                 this.stopAllNotifications();
             }
-            if (this.mVideoIds.episode != episode || this.mVideoIds.catalogId != intExtra || (episode && this.mVideoIds.episodeId != intExtra2)) {
+            if (this.mVideoIds.isEpisode != isEpisode || this.mVideoIds.catalogId != intExtra || (isEpisode && this.mVideoIds.episodeId != intExtra2)) {
                 this.mNotifier.commandPlayReceived(this.mCurrentTargetUuid);
-                this.mVideoIds.episode = episode;
+                this.mVideoIds.isEpisode = isEpisode;
                 this.mVideoIds.catalogId = intExtra;
                 this.mVideoIds.episodeId = intExtra2;
                 if (this.mBifManager != null) {
@@ -880,7 +880,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
     }
     
     void logPlaystart(final boolean b) {
-        String s = null;
+        String s = "";
         if (b) {
             s = "local_playback_transfer";
         }
@@ -1076,9 +1076,20 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         }
         if (StringUtils.isEmpty(s)) {
             this.getService().getClientLogging().getCustomerEventLogging().logMdxTargetSelection("local playback");
-            return;
         }
-        this.getService().getClientLogging().getCustomerEventLogging().logMdxTargetSelection("target playback");
+        else {
+            this.getService().getClientLogging().getCustomerEventLogging().logMdxTargetSelection("target playback");
+            if (StringUtils.isEmpty(this.mCurrentTargetUuid)) {
+                Log.d("nf_mdx_agent", "fling playback from local to target");
+                this.logPlaystart(true);
+            }
+        }
+    }
+    
+    @Override
+    public void transferPlaybackFromLocal() {
+        Log.d("nf_mdx_agent", "transfer playback from local to target");
+        this.logPlaystart(true);
     }
     
     void unregisterUserAgentReceiver() {
@@ -1093,7 +1104,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
     public void updateMdxNotificationAndLockscreenWithNextSeries(final String s) {
         if (StringUtils.isNotEmpty(s)) {
             this.mVideoIdsPostplay = new WebApiUtils$VideoIds();
-            this.mVideoIdsPostplay.episode = true;
+            this.mVideoIdsPostplay.isEpisode = true;
             final WebApiUtils$VideoIds mVideoIdsPostplay = this.mVideoIdsPostplay;
             int intValue;
             if (StringUtils.isNumeric(s)) {

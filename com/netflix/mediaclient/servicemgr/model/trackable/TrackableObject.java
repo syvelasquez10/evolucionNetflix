@@ -17,6 +17,11 @@ public class TrackableObject implements Trackable
     }
     
     @Override
+    public int getHeroTrackId() {
+        throw new UnsupportedOperationException("Should not be needed");
+    }
+    
+    @Override
     public int getListPos() {
         return this.listPos;
     }
@@ -29,5 +34,10 @@ public class TrackableObject implements Trackable
     @Override
     public int getTrackId() {
         return this.trackId;
+    }
+    
+    @Override
+    public boolean isHero() {
+        return false;
     }
 }

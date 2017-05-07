@@ -15,7 +15,8 @@ public class VolleyLog
     
     static {
         VolleyLog.TAG = "Volley";
-        DEBUG = Log.isLoggable(VolleyLog.TAG, 2);
+        if (Log.isLoggable(VolleyLog.TAG, 2)) {}
+        DEBUG = false;
         if (VolleyLog.DEBUG) {}
         LOG_VERBOSE = false;
     }

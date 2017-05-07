@@ -97,7 +97,7 @@ public class KidsShowDetailsFrag extends NetflixFrag
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("KidsShowDetailsFrag", "Fetching data for show ID: " + this.showId);
-        this.manager.getBrowse().fetchShowDetails(this.showId, null, new KidsShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
+        this.manager.getBrowse().fetchShowDetails(this.showId, null, this.getNetflixActivity().isKubrick(), new KidsShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
     }
     
     private void showErrorView() {
@@ -151,7 +151,7 @@ public class KidsShowDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903117, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903130, (ViewGroup)null);
         this.listView = (StickyListHeadersListView)this.content.findViewById(16908298);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());

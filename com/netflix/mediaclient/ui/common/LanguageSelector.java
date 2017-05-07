@@ -6,11 +6,10 @@ package com.netflix.mediaclient.ui.common;
 
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListAdapter;
-import android.widget.Button;
 import android.view.ViewGroup$LayoutParams;
 import android.app.Dialog;
 import android.content.DialogInterface$OnCancelListener;
-import android.view.View$OnClickListener;
+import android.content.DialogInterface$OnClickListener;
 import android.content.Context;
 import android.view.View;
 import com.netflix.mediaclient.media.AudioSource;
@@ -27,15 +26,11 @@ public abstract class LanguageSelector
     protected ListView mAudiosListView;
     protected final LanguageSelector$LanguageSelectorCallback mCallback;
     protected final NetflixActivity mController;
-    protected final int mRowColor;
-    protected final int mSelectedRowColor;
     protected ListView mSubtitlesListView;
     
     LanguageSelector(final NetflixActivity mController, final LanguageSelector$LanguageSelectorCallback mCallback) {
         this.mController = mController;
         this.mCallback = mCallback;
-        this.mSelectedRowColor = this.mController.getResources().getColor(2131296407);
-        this.mRowColor = this.mController.getResources().getColor(2131296406);
     }
     
     public static LanguageSelector createInstance(final NetflixActivity netflixActivity, final boolean b, final LanguageSelector$LanguageSelectorCallback languageSelector$LanguageSelectorCallback) {
@@ -65,10 +60,10 @@ public abstract class LanguageSelector
     protected abstract int calculateListViewHeight();
     
     protected void createAndShowDialog(final View view) {
-        final LanguageSelector$LanguageAlertDialog languageSelector$LanguageAlertDialog = new LanguageSelector$LanguageAlertDialog((Context)this.mController, null);
+        final LanguageSelector$LanguageAlertDialog languageSelector$LanguageAlertDialog = new LanguageSelector$LanguageAlertDialog(this, (Context)this.mController, null);
         languageSelector$LanguageAlertDialog.setView(view);
         languageSelector$LanguageAlertDialog.setCancelable(true);
-        view.findViewById(2131165438).setOnClickListener((View$OnClickListener)new LanguageSelector$3(this, this.mCallback.wasPlaying(), languageSelector$LanguageAlertDialog));
+        languageSelector$LanguageAlertDialog.setButton(-1, (CharSequence)this.mController.getString(2131492988), (DialogInterface$OnClickListener)new LanguageSelector$3(this, this.mCallback.wasPlaying()));
         languageSelector$LanguageAlertDialog.setOnCancelListener((DialogInterface$OnCancelListener)new LanguageSelector$4(this));
         final int calculateListViewHeight = this.calculateListViewHeight();
         if (calculateListViewHeight >= 0) {
@@ -89,15 +84,6 @@ public abstract class LanguageSelector
         this.mCallback.updateDialog((Dialog)languageSelector$LanguageAlertDialog);
         if (languageSelector$LanguageAlertDialog != null) {
             this.mController.displayDialog((Dialog)languageSelector$LanguageAlertDialog);
-            final Button button = languageSelector$LanguageAlertDialog.getButton(-1);
-            if (button == null) {
-                Log.e("nf_language_selector", "Button NOT found!");
-                return;
-            }
-            Log.d("nf_language_selector", "Button found!");
-            button.setBackgroundColor(this.mController.getResources().getColor(2131296406));
-            button.setTextColor(this.mController.getResources().getColor(2131296362));
-            button.setTextAppearance((Context)this.mController, 2131558703);
         }
     }
     
@@ -210,10 +196,10 @@ public abstract class LanguageSelector
     }
     
     protected void initLists(final View view, final Language language) {
-        (this.mAudiosListView = (ListView)view.findViewById(2131165436)).setChoiceMode(1);
+        (this.mAudiosListView = (ListView)view.findViewById(2131165472)).setChoiceMode(1);
         final LanguageSelector$AudioAdapter adapter = new LanguageSelector$AudioAdapter(this, language);
         this.mAudiosListView.setAdapter((ListAdapter)adapter);
-        (this.mSubtitlesListView = (ListView)view.findViewById(2131165437)).setChoiceMode(1);
+        (this.mSubtitlesListView = (ListView)view.findViewById(2131165473)).setChoiceMode(1);
         final LanguageSelector$SubtitleAdapter adapter2 = new LanguageSelector$SubtitleAdapter(this, language);
         this.mSubtitlesListView.setAdapter((ListAdapter)adapter2);
         this.mAudiosListView.setOnItemClickListener((AdapterView$OnItemClickListener)new LanguageSelector$1(this, adapter, language, adapter2));

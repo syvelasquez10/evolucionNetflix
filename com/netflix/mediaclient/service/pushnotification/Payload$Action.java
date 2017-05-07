@@ -6,6 +6,9 @@ package com.netflix.mediaclient.service.pushnotification;
 
 import java.net.URLEncoder;
 import java.util.Locale;
+import org.json.JSONException;
+import com.netflix.mediaclient.util.JsonUtils;
+import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.ArrayList;
 import android.content.Intent;
@@ -34,7 +37,7 @@ public class Payload$Action
     }
     
     public int getIcon() {
-        return 2130837700;
+        return 2130837711;
     }
     
     public Uri getPayload() {

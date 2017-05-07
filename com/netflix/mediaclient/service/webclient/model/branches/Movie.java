@@ -11,8 +11,8 @@ public class Movie extends Video
     public Video$Bookmark bookmark;
     public Video$BookmarkStill bookmarkStill;
     public Video$Detail detail;
+    public Video$Evidence evidence;
     public Video$InQueue inQueue;
     public Video$UserRating rating;
     public SocialEvidence socialEvidence;
-    public Video$Summary summary;
 }

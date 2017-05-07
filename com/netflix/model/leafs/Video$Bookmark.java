@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
 
@@ -33,26 +34,26 @@ public final class Video$Bookmark implements JsonPopulator
     @Override
     public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("Bookmark", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("Bookmark", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0126: {
+            Label_0122: {
                 switch (s.hashCode()) {
                     case -1829827457: {
                         if (s.equals("bookmarkPosition")) {
                             n = 0;
-                            break Label_0126;
+                            break Label_0122;
                         }
                         break;
                     }
                     case 1959003007: {
                         if (s.equals("lastModified")) {
                             n = 1;
-                            break Label_0126;
+                            break Label_0122;
                         }
                         break;
                     }

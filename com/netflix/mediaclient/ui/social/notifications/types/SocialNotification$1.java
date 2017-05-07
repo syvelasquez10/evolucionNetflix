@@ -7,9 +7,9 @@ package com.netflix.mediaclient.ui.social.notifications.types;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.graphics.Bitmap;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.content.Context;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
@@ -42,7 +42,7 @@ class SocialNotification$1 implements ImageLoader$ImageLoaderListener
     @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null) {
-            this.val$imageLoader.getImg(this.val$notificationSummary.getVideoSummary().getHorzDispUrl(), IClientLogging$AssetType.boxArt, 0, 0, new SocialNotification$1onBoxArtFetched(this.this$0, bitmap, this.val$context, this.val$notificationSummary, this.val$listSummary, this.val$msg));
+            this.val$imageLoader.getImg(this.val$notificationSummary.getVideo().getHorzDispUrl(), IClientLogging$AssetType.boxArt, 0, 0, new SocialNotification$1onBoxArtFetched(this.this$0, bitmap, this.val$context, this.val$notificationSummary, this.val$listSummary, this.val$msg));
         }
     }
 }

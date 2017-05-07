@@ -171,7 +171,9 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         if (this.mRequestQueue != null) {
             this.mRequestQueue.cancelAll(this.mRequestTag);
         }
-        this.mInFlightRequests.clear();
+        if (this.mInFlightRequests != null) {
+            this.mInFlightRequests.clear();
+        }
     }
     
     @Override

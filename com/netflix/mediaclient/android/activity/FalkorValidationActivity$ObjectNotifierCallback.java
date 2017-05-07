@@ -4,16 +4,20 @@
 
 package com.netflix.mediaclient.android.activity;
 
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.LoLoMo;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import android.support.v4.util.Pair;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
@@ -27,15 +31,21 @@ class FalkorValidationActivity$ObjectNotifierCallback extends LoggingManagerCall
     public List<Billboard> bbVideos;
     public List<CWVideo> cwVideos;
     public VideoDetails details;
+    public EpisodeDetails episodeDetails;
     public List<EpisodeDetails> episodes;
     public List<Genre> genres;
+    public KidsCharacterDetails kidsCharacterDetails;
     public List<GenreList> listofGenres;
     public List<LoMo> lomos;
     private final Object objectToNotify;
+    public PostPlayVideosProvider postPlayVideos;
     public UserRating rating;
     public ISearchResults searchResults;
     public SearchVideoListProvider searchVideoList;
     public List<SeasonDetails> seasons;
+    public Pair<ShowDetails, List<SeasonDetails>> showAndSeasons;
+    public Status status;
+    public LoLoMo summary;
     public List<Video> videos;
     
     public FalkorValidationActivity$ObjectNotifierCallback(final Object objectToNotify) {
@@ -60,6 +70,13 @@ class FalkorValidationActivity$ObjectNotifierCallback extends LoggingManagerCall
     public void onCWVideosFetched(final List<CWVideo> cwVideos, final Status status) {
         super.onCWVideosFetched(cwVideos, status);
         this.cwVideos = cwVideos;
+        this.notifyCaller();
+    }
+    
+    @Override
+    public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
+        super.onEpisodeDetailsFetched(episodeDetails, status);
+        this.episodeDetails = episodeDetails;
         this.notifyCaller();
     }
     
@@ -91,8 +108,22 @@ class FalkorValidationActivity$ObjectNotifierCallback extends LoggingManagerCall
     }
     
     @Override
+    public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
+        super.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, status);
+        this.kidsCharacterDetails = kidsCharacterDetails;
+        this.notifyCaller();
+    }
+    
+    @Override
     public void onLoLoMoPrefetched(final Status status) {
         super.onLoLoMoPrefetched(status);
+        this.notifyCaller();
+    }
+    
+    @Override
+    public void onLoLoMoSummaryFetched(final LoLoMo summary, final Status status) {
+        super.onLoLoMoSummaryFetched(summary, status);
+        this.summary = summary;
         this.notifyCaller();
     }
     
@@ -111,6 +142,27 @@ class FalkorValidationActivity$ObjectNotifierCallback extends LoggingManagerCall
     }
     
     @Override
+    public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideos, final Status status) {
+        super.onPostPlayVideosFetched(postPlayVideos, status);
+        this.postPlayVideos = postPlayVideos;
+        this.notifyCaller();
+    }
+    
+    @Override
+    public void onQueueAdd(final Status status) {
+        super.onQueueAdd(status);
+        this.status = status;
+        this.notifyCaller();
+    }
+    
+    @Override
+    public void onQueueRemove(final Status status) {
+        super.onQueueRemove(status);
+        this.status = status;
+        this.notifyCaller();
+    }
+    
+    @Override
     public void onSearchResultsFetched(final ISearchResults searchResults, final Status status) {
         super.onSearchResultsFetched(searchResults, status);
         this.searchResults = searchResults;
@@ -121,6 +173,13 @@ class FalkorValidationActivity$ObjectNotifierCallback extends LoggingManagerCall
     public void onSeasonsFetched(final List<SeasonDetails> seasons, final Status status) {
         super.onSeasonsFetched(seasons, status);
         this.seasons = seasons;
+        this.notifyCaller();
+    }
+    
+    @Override
+    public void onShowDetailsAndSeasonsFetched(final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
+        super.onShowDetailsAndSeasonsFetched(showDetails, list, status);
+        this.showAndSeasons = new Pair<ShowDetails, List<SeasonDetails>>(showDetails, list);
         this.notifyCaller();
     }
     

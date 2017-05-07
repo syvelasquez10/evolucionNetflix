@@ -4,11 +4,13 @@
 
 package com.netflix.mediaclient.servicemgr.model;
 
-import com.netflix.mediaclient.servicemgr.model.user.SocialBadge;
+import com.netflix.model.leafs.SocialBadge;
 
 public interface Billboard extends Playable, Video
 {
     String getCertification();
+    
+    String getHighResolutionLandscapeBoxArtUrl();
     
     int getNumOfSeasons();
     

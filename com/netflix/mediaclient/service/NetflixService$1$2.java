@@ -25,6 +25,7 @@ import java.util.List;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
+import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import java.util.Iterator;
@@ -32,11 +33,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ThreadUtils;
-import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
+import android.content.Context;
+import android.app.PendingIntent;
 import com.netflix.mediaclient.Log;
+import android.app.AlarmManager;
 import android.content.Intent;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgent;
@@ -65,6 +68,7 @@ class NetflixService$1$2 extends ArrayList<ServiceAgent>
     
     NetflixService$1$2(final NetflixService$1 this$1) {
         this.this$1 = this$1;
+        ((ArrayList<FalkorAgent>)this).add(this.this$1.this$0.mFalkorAgent);
         ((ArrayList<BrowseAgent>)this).add(this.this$1.this$0.mBrowseAgent);
         ((ArrayList<UserAgent>)this).add(this.this$1.this$0.mUserAgent);
         ((ArrayList<PlayerAgent>)this).add(this.this$1.this$0.mPlayerAgent);

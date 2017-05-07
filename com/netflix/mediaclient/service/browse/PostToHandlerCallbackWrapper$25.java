@@ -6,12 +6,11 @@ package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
@@ -21,25 +20,25 @@ import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
-import android.os.Handler;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
-import com.netflix.mediaclient.android.app.Status;
 import java.util.List;
+import android.os.Handler;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 
 class PostToHandlerCallbackWrapper$25 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ List val$postPlayVideos;
+    final /* synthetic */ SocialNotificationsList val$notifications;
     final /* synthetic */ Status val$res;
     
-    PostToHandlerCallbackWrapper$25(final PostToHandlerCallbackWrapper this$0, final List val$postPlayVideos, final Status val$res) {
+    PostToHandlerCallbackWrapper$25(final PostToHandlerCallbackWrapper this$0, final SocialNotificationsList val$notifications, final Status val$res) {
         this.this$0 = this$0;
-        this.val$postPlayVideos = val$postPlayVideos;
+        this.val$notifications = val$notifications;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
-        this.this$0.callback.onPostPlayVideosFetched(this.val$postPlayVideos, this.val$res);
+        this.this$0.callback.onSocialNotificationsListFetched(this.val$notifications, this.val$res);
     }
 }

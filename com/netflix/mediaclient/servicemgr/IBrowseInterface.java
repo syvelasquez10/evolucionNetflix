@@ -7,7 +7,7 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.ui.Asset;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -16,7 +16,7 @@ import com.netflix.mediaclient.servicemgr.model.VideoType;
 
 public interface IBrowseInterface
 {
-    void addToQueue(final String p0, final int p1, final String p2, final int p3, final int p4);
+    void addToQueue(final String p0, final VideoType p1, final int p2, final boolean p3, final String p4, final int p5, final int p6);
     
     void dumpCacheToDisk();
     
@@ -30,11 +30,11 @@ public interface IBrowseInterface
     
     void fetchGenreLists(final int p0, final int p1);
     
-    void fetchGenreVideos(final LoMo p0, final int p1, final int p2, final int p3, final int p4);
+    void fetchGenreVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final int p4, final int p5);
     
     void fetchGenres(final String p0, final int p1, final int p2, final int p3, final int p4);
     
-    void fetchIQVideos(final LoMo p0, final int p1, final int p2, final int p3, final int p4);
+    void fetchIQVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final int p4, final int p5);
     
     void fetchKidsCharacterDetails(final String p0, final int p1, final int p2);
     
@@ -44,13 +44,17 @@ public interface IBrowseInterface
     
     void fetchMovieDetails(final String p0, final int p1, final int p2);
     
-    void fetchPostPlayVideos(final String p0, final int p1, final int p2);
+    void fetchPostPlayVideos(final String p0, final VideoType p1, final int p2, final int p3);
+    
+    void fetchPreAppData(final int p0, final int p1);
     
     void fetchSeasonDetails(final String p0, final int p1, final int p2);
     
     void fetchSeasons(final String p0, final int p1, final int p2, final int p3, final int p4);
     
-    void fetchShowDetails(final String p0, final String p1, final int p2, final int p3);
+    void fetchShowDetails(final String p0, final String p1, final boolean p2, final int p3, final int p4);
+    
+    void fetchShowDetailsAndSeasons(final String p0, final String p1, final boolean p2, final int p3, final int p4);
     
     void fetchSimilarVideosForPerson(final String p0, final int p1, final int p2, final int p3, final String p4);
     
@@ -58,7 +62,7 @@ public interface IBrowseInterface
     
     void fetchSocialNotifications(final int p0, final int p1, final int p2);
     
-    void fetchVideos(final LoMo p0, final int p1, final int p2, final int p3, final int p4);
+    void fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final int p5, final int p6);
     
     void flushCaches();
     
@@ -68,21 +72,21 @@ public interface IBrowseInterface
     
     void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0);
     
-    void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final int p6, final int p7);
+    void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final boolean p6, final int p7, final int p8);
     
-    void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final int p8, final int p9);
+    void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final boolean p8, final int p9, final int p10);
     
     void refreshAll();
     
-    void refreshCW();
+    void refreshCw();
     
     void refreshEpisodeData(final Asset p0);
     
-    void refreshIQ();
+    void refreshIq();
     
     void refreshSocialNotifications(final boolean p0, final boolean p1, final MessageData p2);
     
-    void removeFromQueue(final String p0, final String p1, final int p2, final int p3);
+    void removeFromQueue(final String p0, final VideoType p1, final String p2, final int p3, final int p4);
     
     void searchNetflix(final String p0, final int p1, final int p2);
     

@@ -66,6 +66,11 @@ public class LoadingViewAdapter implements RowAdapter
     }
     
     @Override
+    public boolean shouldOverlapPages() {
+        return true;
+    }
+    
+    @Override
     public void trackPresentation(final int n) {
     }
 }

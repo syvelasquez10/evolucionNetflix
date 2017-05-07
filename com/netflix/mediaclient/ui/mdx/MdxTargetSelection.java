@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 public final class MdxTargetSelection
@@ -16,18 +16,44 @@ public final class MdxTargetSelection
     private MdxTarget[] mdxTargets;
     private MdxTarget selectedTarget;
     
-    public MdxTargetSelection(final Pair<String, String>[] array, final String s) {
+    public MdxTargetSelection(final Pair<String, String>[] array, final String s, final boolean b) {
         this.TAG = "nf_mdx";
-        (this.mdxTargets = new MdxTarget[array.length + 1])[0] = MdxTarget.createLocalTarget();
-        for (int i = 0; i < array.length; ++i) {
-            this.mdxTargets[i + 1] = MdxTarget.createRemoteTarget(array[i]);
-            if (this.mdxTargets[i + 1].getUUID().equals(s)) {
-                this.selectedTarget = this.mdxTargets[i + 1];
-            }
+        if (b) {
+            Log.d("nf_mdx", "Include all targets");
+            this.mdxTargets = this.createListOfAllTargets(array, s);
+        }
+        else {
+            Log.d("nf_mdx", "Include ONLY remote targets");
+            this.mdxTargets = this.createListOfRemoteTargetsOnly(array, s);
         }
         if (this.selectedTarget == null) {
             this.selectedTarget = this.mdxTargets[0];
         }
+    }
+    
+    private MdxTarget[] createListOfAllTargets(final Pair<String, String>[] array, final String s) {
+        int i = 0;
+        final MdxTarget[] array2 = new MdxTarget[array.length + 1];
+        array2[0] = MdxTarget.createLocalTarget();
+        while (i < array.length) {
+            array2[i + 1] = MdxTarget.createRemoteTarget(array[i]);
+            if (array2[i + 1].getUUID().equals(s)) {
+                this.selectedTarget = array2[i + 1];
+            }
+            ++i;
+        }
+        return array2;
+    }
+    
+    private MdxTarget[] createListOfRemoteTargetsOnly(final Pair<String, String>[] array, final String s) {
+        final MdxTarget[] array2 = new MdxTarget[array.length];
+        for (int i = 0; i < array.length; ++i) {
+            array2[i] = MdxTarget.createRemoteTarget(array[i]);
+            if (array2[i].getUUID().equals(s)) {
+                this.selectedTarget = array2[i + 1];
+            }
+        }
+        return array2;
     }
     
     private static List<String> toAdapterList(final Context context, final MdxTarget[] array) {
@@ -36,7 +62,7 @@ public final class MdxTargetSelection
             for (int length = array.length, i = 0; i < length; ++i) {
                 final MdxTarget mdxTarget = array[i];
                 if (mdxTarget.isLocal()) {
-                    list.add(context.getString(2131493216));
+                    list.add(context.getString(2131493225));
                 }
                 else {
                     list.add(mdxTarget.getFriendlyName());

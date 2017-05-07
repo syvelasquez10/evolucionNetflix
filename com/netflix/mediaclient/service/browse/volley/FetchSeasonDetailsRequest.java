@@ -6,8 +6,8 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.branches.Season$Detail;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -16,9 +16,9 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchSeasonDetailsRequest extends FalcorVolleyWebClientRequest<SeasonDetails>
+public class FetchSeasonDetailsRequest extends FalkorVolleyWebClientRequest<SeasonDetails>
 {
     private static final String FIELD_VIDEOS = "videos";
     private static final String TAG = "nf_service_browse_fetchseasondetailsrequest";
@@ -56,23 +56,23 @@ public class FetchSeasonDetailsRequest extends FalcorVolleyWebClientRequest<Seas
     }
     
     @Override
-    protected SeasonDetails parseFalcorResponse(String s) {
+    protected SeasonDetails parseFalkorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_fetchseasondetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchseasondetailsrequest", "String response to parse = " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchseasondetailsrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("SeasonDetails empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchseasondetailsrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("SeasonDetails empty!!!");
         }
         try {
             final JsonObject asJsonObject = dataObj.getAsJsonObject("videos").getAsJsonObject(this.mSeasonId);
             s = (String)new com.netflix.mediaclient.service.webclient.model.SeasonDetails();
-            ((com.netflix.mediaclient.service.webclient.model.SeasonDetails)s).detail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Season$Detail.class);
+            ((com.netflix.mediaclient.service.webclient.model.SeasonDetails)s).detail = FalkorParseUtils.getPropertyObject(asJsonObject, "detail", Season$Detail.class);
             return (SeasonDetails)s;
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_fetchseasondetailsrequest", "String response to parse = " + s);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
     }
 }

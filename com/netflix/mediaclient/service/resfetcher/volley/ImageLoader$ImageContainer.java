@@ -27,6 +27,7 @@ import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.util.api.Api19Util;
 import android.graphics.Bitmap;
 
 public class ImageLoader$ImageContainer
@@ -71,5 +72,28 @@ public class ImageLoader$ImageContainer
     
     public String getRequestUrl() {
         return this.mRequestUrl;
+    }
+    
+    @Override
+    public String toString() {
+        int bitmapByteCount = -1;
+        int width;
+        if (this.mBitmap == null) {
+            width = -1;
+        }
+        else {
+            width = this.mBitmap.getWidth();
+        }
+        int height;
+        if (this.mBitmap == null) {
+            height = -1;
+        }
+        else {
+            height = this.mBitmap.getHeight();
+        }
+        if (this.mBitmap != null) {
+            bitmapByteCount = Api19Util.getBitmapByteCount(this.mBitmap);
+        }
+        return "ImageContainer [mBitmap=" + this.mBitmap + ", x=" + width + ", y=" + height + ", byteCount=" + bitmapByteCount + ", mCacheKey=" + this.mCacheKey + ", mRequestUrl=" + this.mRequestUrl + "]";
     }
 }

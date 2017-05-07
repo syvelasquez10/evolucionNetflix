@@ -17,7 +17,9 @@ import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import android.media.AudioManager;
 import android.widget.Toast;
+import android.view.MenuItem;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
@@ -29,26 +31,25 @@ import com.netflix.mediaclient.net.LogMobileType;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.view.Surface;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.pin.PinDialogVault;
 import com.netflix.mediaclient.ui.pin.PinDialogVault$PinInvokedFrom;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
 import android.view.TextureView;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.AndroidUtils;
+import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import android.os.Debug;
 import com.netflix.mediaclient.util.PreferenceUtils;
-import android.widget.ImageView;
 import android.os.SystemClock;
 import android.util.Pair;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
@@ -66,12 +67,12 @@ import android.content.Intent;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
 import com.netflix.mediaclient.ui.common.Social$SocialProviderCallback;
+import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.BroadcastReceiver;
 import android.os.Handler;
@@ -81,18 +82,23 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.media.Language;
 import android.view.View$OnClickListener;
+import android.widget.SeekBar$OnSeekBarChangeListener;
 import android.annotation.TargetApi;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.annotation.SuppressLint;
+import com.netflix.mediaclient.util.NflxProtocolUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.Log;
-import android.media.AudioManager;
-import android.widget.SeekBar;
-import android.widget.SeekBar$OnSeekBarChangeListener;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 
-class PlayerActivity$7 implements SeekBar$OnSeekBarChangeListener
+class PlayerActivity$7 implements ManagerStatusListener
 {
     final /* synthetic */ PlayerActivity this$0;
     
@@ -100,28 +106,33 @@ class PlayerActivity$7 implements SeekBar$OnSeekBarChangeListener
         this.this$0 = this$0;
     }
     
-    public void onProgressChanged(final SeekBar seekBar, final int n, final boolean b) {
-        if (b && this.this$0.mState.draggingAudioInProgress && this.this$0.mScreen != null) {
-            final AudioManager audioManager = (AudioManager)this.this$0.getSystemService("audio");
-            if (audioManager == null) {
-                Log.e("PlayerActivity", "Audio manager is not available, can not change volume");
-                return;
-            }
-            audioManager.setStreamVolume(3, n, 0);
+    @SuppressLint({ "NewApi" })
+    @Override
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+        if (Log.isLoggable("PlayerActivity", 3)) {
+            Log.d("PlayerActivity", "ServiceManager ready: " + status.getStatusCode());
         }
+        ThreadUtils.assertOnMain();
+        this.this$0.mResources = ResourceHelper.newInstance(this.this$0.mIsTablet);
+        if (!this.this$0.requestDetailsIfNeeded(serviceManager)) {
+            this.this$0.updateUI();
+        }
+        else {
+            int contentView;
+            if (DeviceUtils.isTabletByContext(this.this$0.getBaseContext())) {
+                contentView = 2130903164;
+            }
+            else {
+                contentView = 2130903160;
+            }
+            this.this$0.setContentView(contentView);
+        }
+        NflxProtocolUtils.reportUserOpenedNotification(serviceManager, this.this$0.getIntent());
     }
     
-    public void onStartTrackingTouch(final SeekBar seekBar) {
-        this.this$0.mState.draggingAudioInProgress = true;
-        Log.d("PlayerActivity", "Start volume change, get awake clock");
-        this.this$0.keepScreenOn();
-        this.this$0.stopScreenUpdateTask();
-    }
-    
-    public void onStopTrackingTouch(final SeekBar seekBar) {
-        Log.d("PlayerActivity", "volume::onStopTrackingTouch called");
-        this.this$0.mState.draggingAudioInProgress = false;
-        this.this$0.mState.audioSeekToInProgress = false;
-        this.this$0.startScreenUpdateTask();
+    @Override
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+        Log.e("PlayerActivity", "NetflixService is NOT available!");
+        this.this$0.cleanupAndExit();
     }
 }

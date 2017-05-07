@@ -4,8 +4,16 @@
 
 package com.facebook;
 
+import android.util.Log;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import com.facebook.internal.LikeActionController;
+import com.facebook.internal.NativeProtocol;
+import com.facebook.widget.FacebookDialog$PendingCall;
+import com.facebook.widget.FacebookDialog;
+import com.facebook.widget.FacebookDialog$Callback;
+import com.facebook.internal.PendingCallStore;
+import java.util.UUID;
 import android.support.v4.content.LocalBroadcastManager;
 import android.app.Activity;
 import android.content.Intent;

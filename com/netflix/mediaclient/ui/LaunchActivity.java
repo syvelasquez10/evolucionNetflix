@@ -23,7 +23,6 @@ import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import android.app.Activity;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.ImageView;
@@ -67,17 +66,17 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void createContentView() {
-        this.setContentView(2130903188);
-        final ImageView imageView = (ImageView)this.findViewById(2131165666);
+        this.setContentView(2130903195);
+        final ImageView imageView = (ImageView)this.findViewById(2131165677);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837863;
+            imageResource = 2130837853;
         }
         else {
-            imageResource = 2130837862;
+            imageResource = 2130837852;
         }
         imageView.setImageResource(imageResource);
-        if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
+        if (DeviceUtils.getScreenResolutionDpi((Context)this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
             this.manipulateSplashBackground();
         }
     }
@@ -144,8 +143,8 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131165666);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$2(this, imageView, (ImageView)this.findViewById(2131165419), (ProgressBar)this.findViewById(2131165420)));
+        final ImageView imageView = (ImageView)this.findViewById(2131165677);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$2(this, imageView, (ImageView)this.findViewById(2131165403), (ProgressBar)this.findViewById(2131165404)));
     }
     
     private void registerNflxReceiver() {

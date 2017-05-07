@@ -9,8 +9,8 @@ import com.netflix.mediaclient.service.webclient.model.branches.Video$UserRating
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode$Detail;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -19,9 +19,9 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchEpisodeDetailsRequest extends FalcorVolleyWebClientRequest<EpisodeDetails>
+public class FetchEpisodeDetailsRequest extends FalkorVolleyWebClientRequest<EpisodeDetails>
 {
     private static final String FIELD_EPISODES = "episodes";
     private static final String TAG = "nf_service_browse_fetchepisodedetailsrequest";
@@ -61,27 +61,27 @@ public class FetchEpisodeDetailsRequest extends FalcorVolleyWebClientRequest<Epi
     }
     
     @Override
-    protected EpisodeDetails parseFalcorResponse(final String s) {
+    protected EpisodeDetails parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_fetchepisodedetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchepisodedetailsrequest", "String response to parse = " + s);
         }
         final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails = new com.netflix.mediaclient.service.webclient.model.EpisodeDetails();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchepisodedetailsrequest", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("EpisodeDetails empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchepisodedetailsrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("EpisodeDetails empty!!!");
         }
         try {
             final JsonObject asJsonObject = dataObj.getAsJsonObject("episodes").getAsJsonObject(this.mEpisodeId);
-            episodeDetails.detail = FalcorParseUtils.getPropertyObject(asJsonObject, "detail", Episode$Detail.class);
-            episodeDetails.bookmark = FalcorParseUtils.getPropertyObject(asJsonObject, "bookmark", Video$Bookmark.class);
-            episodeDetails.showSocialEvidence = FalcorParseUtils.getPropertyObject(asJsonObject, "socialEvidence", SocialEvidence.class);
-            episodeDetails.rating = FalcorParseUtils.getPropertyObject(asJsonObject, "rating", Video$UserRating.class);
+            episodeDetails.detail = FalkorParseUtils.getPropertyObject(asJsonObject, "detail", Episode$Detail.class);
+            episodeDetails.bookmark = FalkorParseUtils.getPropertyObject(asJsonObject, "bookmark", Video$Bookmark.class);
+            episodeDetails.showSocialEvidence = FalkorParseUtils.getPropertyObject(asJsonObject, "socialEvidence", SocialEvidence.class);
+            episodeDetails.rating = FalkorParseUtils.getPropertyObject(asJsonObject, "rating", Video$UserRating.class);
             episodeDetails.userConnectedToFacebook = this.userConnectedToFacebook;
             return episodeDetails;
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_fetchepisodedetailsrequest", "String response to parse = " + s);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
     }
 }

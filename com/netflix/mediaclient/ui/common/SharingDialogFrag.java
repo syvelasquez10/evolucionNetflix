@@ -16,7 +16,7 @@ public class SharingDialogFrag extends NetflixDialogFrag implements MdxMiniPlaye
 {
     public static SharingDialogFrag newInstance() {
         final SharingDialogFrag sharingDialogFrag = new SharingDialogFrag();
-        sharingDialogFrag.setStyle(1, 2131558713);
+        sharingDialogFrag.setStyle(1, 0);
         return sharingDialogFrag;
     }
     
@@ -26,8 +26,8 @@ public class SharingDialogFrag extends NetflixDialogFrag implements MdxMiniPlaye
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903182, viewGroup, false);
-        inflate.findViewById(2131165653).setOnClickListener((View$OnClickListener)new SharingDialogFrag$1(this));
+        final View inflate = layoutInflater.inflate(2130903190, viewGroup, false);
+        inflate.findViewById(2131165665).setOnClickListener((View$OnClickListener)new SharingDialogFrag$1(this));
         return inflate;
     }
 }

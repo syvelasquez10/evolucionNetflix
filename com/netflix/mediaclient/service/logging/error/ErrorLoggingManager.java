@@ -20,7 +20,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "3.9.3";
+    private static final String CRITTER_VERSION_NAME = "3.10.1";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -92,7 +92,7 @@ public final class ErrorLoggingManager
                 Log.d("nf_log_crit", "This device is approved for sampling, initialize Crittercism");
                 final CrittercismConfig crittercismConfig = new CrittercismConfig();
                 crittercismConfig.setNdkCrashReportingEnabled(true);
-                crittercismConfig.setCustomVersionName("3.9.3");
+                crittercismConfig.setCustomVersionName("3.10.1");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
@@ -130,18 +130,18 @@ public final class ErrorLoggingManager
         }
     }
     
-    public static void logHandledException(final Exception ex) {
+    public static void logHandledException(final String s) {
         if (isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig) {
-            Crittercism.logHandledException(ex);
+            logHandledException(new Exception(s));
         }
         else if (Log.isLoggable("nf_log_crit", 3)) {
             Log.d("nf_log_crit", "Should log: " + isEnabledAndReady() + ", error logging enabled " + ErrorLoggingManager.sErrorLoggingEnabledByConfig);
         }
     }
     
-    public static void logHandledException(final String s) {
+    public static void logHandledException(final Throwable t) {
         if (isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig) {
-            logHandledException(new Exception(s));
+            Crittercism.logHandledException(t);
         }
         else if (Log.isLoggable("nf_log_crit", 3)) {
             Log.d("nf_log_crit", "Should log: " + isEnabledAndReady() + ", error logging enabled " + ErrorLoggingManager.sErrorLoggingEnabledByConfig);

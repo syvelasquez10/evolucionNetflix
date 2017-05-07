@@ -5,10 +5,8 @@
 package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.ui.lomo.PaginatedCwAdapter;
-import com.netflix.mediaclient.ui.lomo.PaginatedLoMoAdapter;
-import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.lomo.LomoConfig;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.util.LogUtils;
@@ -17,7 +15,7 @@ import com.netflix.mediaclient.servicemgr.model.LoMo;
 public class LoLoMoAdapter extends BasePaginatedLoLoMoAdapter<LoMo>
 {
     public static final String HOME_LOLOMO_GENRE_ID = "lolomo";
-    private static final String TAG = "LoLoMoAdapter";
+    protected static final String TAG = "LoLoMoAdapter";
     private long requestId;
     
     public LoLoMoAdapter(final LoLoMoFrag loLoMoFrag) {
@@ -47,8 +45,7 @@ public class LoLoMoAdapter extends BasePaginatedLoLoMoAdapter<LoMo>
             return;
         }
         Log.v("LoLoMoAdapter", "Prefetching lolomo...");
-        final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)this.getActivity());
         this.requestId = System.nanoTime();
-        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, PaginatedLoMoAdapter.computeNumVideosToFetchPerBatch(this.activity, screenSizeCategory) - 1, 0, PaginatedCwAdapter.computeNumVideosToFetchPerBatch(this.activity, screenSizeCategory) - 1, this.activity.isForKids(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
+        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.CONTINUE_WATCHING) - 1, this.activity.isForKids(), this.activity.isKubrick(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
     }
 }

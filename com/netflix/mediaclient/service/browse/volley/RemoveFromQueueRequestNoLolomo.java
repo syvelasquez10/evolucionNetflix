@@ -6,10 +6,10 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.google.gson.JsonParser;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
@@ -20,9 +20,9 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class RemoveFromQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<String>
+public class RemoveFromQueueRequestNoLolomo extends FalkorVolleyWebClientRequest<String>
 {
     public static final String TAG = "nf_service_browse_removefromqueuerequest";
     private final BrowseWebClientCache browseCache;
@@ -54,7 +54,7 @@ public class RemoveFromQueueRequestNoLolomo extends FalcorVolleyWebClientRequest
             return null;
         }
         final StringBuilder sb = new StringBuilder();
-        sb.append(FalcorVolleyWebClientRequest.urlEncodPQLParam("signature", this.messageToken));
+        sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("signature", this.messageToken));
         if (Log.isLoggable("nf_service_browse_removefromqueuerequest", 3)) {
             Log.d("nf_service_browse_removefromqueuerequest", " getOptionalParams: " + sb.toString());
         }
@@ -85,7 +85,7 @@ public class RemoveFromQueueRequestNoLolomo extends FalcorVolleyWebClientRequest
     }
     
     @Override
-    protected String parseFalcorResponse(final String s) {
+    protected String parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_service_browse_removefromqueuerequest", 2)) {
             Log.v("nf_service_browse_removefromqueuerequest", "String response to parse = " + s);
         }
@@ -93,10 +93,10 @@ public class RemoveFromQueueRequestNoLolomo extends FalcorVolleyWebClientRequest
         Label_0138: {
             try {
                 asJsonObject = new JsonParser().parse(s).getAsJsonObject();
-                if (!FalcorParseUtils.containsErrors(asJsonObject)) {
+                if (!FalkorParseUtils.hasErrors(asJsonObject)) {
                     break Label_0138;
                 }
-                if (FalcorParseUtils.getErrorMessage(asJsonObject).contains("NotInQueue")) {
+                if (FalkorParseUtils.getErrorMessage(asJsonObject).contains("NotInQueue")) {
                     return Integer.toString(StatusCode.OK.getValue());
                 }
             }
@@ -104,23 +104,23 @@ public class RemoveFromQueueRequestNoLolomo extends FalcorVolleyWebClientRequest
                 if (Log.isLoggable("nf_service_browse_removefromqueuerequest", 6)) {
                     Log.d("nf_service_browse_removefromqueuerequest", "String response to parse = " + s, ex);
                 }
-                throw new FalcorParseException("Error in creating JsonObject", ex);
+                throw new FalkorParseException("Error in creating JsonObject", ex);
             }
-            throw new FalcorServerException(FalcorParseUtils.getErrorMessage(asJsonObject));
+            throw new FalkorServerException(FalkorParseUtils.getErrorMessage(asJsonObject));
         }
         final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject("value");
-        if (FalcorParseUtils.isEmpty(asJsonObject2)) {
+        if (FalkorParseUtils.isEmpty(asJsonObject2)) {
             return Integer.toString(StatusCode.OK.getValue());
         }
         try {
-            this.browseCache.updateInQueueCacheRecord(this.mVideoId, FalcorParseUtils.getPropertyObject(asJsonObject2.getAsJsonObject("videos").getAsJsonObject(this.mVideoId), "inQueue", Video$InQueue.class).inQueue);
+            this.browseCache.updateInQueueCacheRecord(this.mVideoId, FalkorParseUtils.getPropertyObject(asJsonObject2.getAsJsonObject("videos").getAsJsonObject(this.mVideoId), "inQueue", Video$InQueue.class).inQueue);
             return Integer.toString(StatusCode.OK.getValue());
         }
         catch (Exception ex2) {
             if (Log.isLoggable("nf_service_browse_removefromqueuerequest", 6)) {
                 Log.d("nf_service_browse_removefromqueuerequest", "String response to parse = " + s, ex2);
             }
-            throw new FalcorParseException("response missing expected json objects", ex2);
+            throw new FalkorParseException("response missing expected json objects", ex2);
         }
     }
 }

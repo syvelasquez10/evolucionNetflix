@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +18,7 @@ class PostPlay$1 implements View$OnTouchListener
         this.this$0 = this$0;
     }
     
+    @SuppressLint({ "ClickableViewAccessibility" })
     public boolean onTouch(final View view, final MotionEvent motionEvent) {
         Log.d("nf_postplay", "Hijacking tap, do nothing");
         return true;

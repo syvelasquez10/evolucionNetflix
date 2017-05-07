@@ -17,7 +17,9 @@ import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import android.media.AudioManager;
 import android.widget.Toast;
+import android.view.MenuItem;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
@@ -33,19 +35,21 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.pin.PinDialogVault;
 import com.netflix.mediaclient.ui.pin.PinDialogVault$PinInvokedFrom;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
+import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.AndroidUtils;
+import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import android.os.Debug;
 import com.netflix.mediaclient.util.PreferenceUtils;
-import android.widget.ImageView;
 import android.os.SystemClock;
 import android.util.Pair;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -65,15 +69,14 @@ import android.os.Parcelable;
 import android.content.Intent;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.Log;
-import android.media.AudioManager;
+import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.widget.SeekBar;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import com.netflix.mediaclient.ui.common.Social$SocialProviderCallback;
+import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.BroadcastReceiver;
 import android.os.Handler;
@@ -102,9 +105,9 @@ class PlayerActivity$15 implements Runnable
     
     @Override
     public void run() {
-        final SecondSurface access$2600 = this.this$0.mSurface2;
-        if (access$2600 != null) {
-            access$2600.setSurfaceVisible();
+        final SecondSurface access$2700 = this.this$0.mSurface2;
+        if (access$2700 != null) {
+            access$2700.setSurfaceInvisible();
         }
     }
 }

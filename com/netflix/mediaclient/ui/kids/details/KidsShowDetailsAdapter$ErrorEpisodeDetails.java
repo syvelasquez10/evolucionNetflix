@@ -18,6 +18,6 @@ class KidsShowDetailsAdapter$ErrorEpisodeDetails extends DummyEpisodeDetails
     
     @Override
     public String getTitle() {
-        return this.activity.getString(2131492981);
+        return this.activity.getString(2131492989);
     }
 }

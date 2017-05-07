@@ -4,11 +4,12 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
+import com.netflix.mediaclient.Log;
 import android.widget.TextView;
 import android.content.res.ColorStateList;
 import android.view.View;
 
-class BaseLoLoMoAdapter$RowHolder
+public class BaseLoLoMoAdapter$RowHolder
 {
     public final View contentGroup;
     public final ColorStateList defaultTitleColors;
@@ -16,7 +17,7 @@ class BaseLoLoMoAdapter$RowHolder
     public final View shelf;
     public final TextView title;
     
-    BaseLoLoMoAdapter$RowHolder(final View contentGroup, final TextView title, final BaseLoLoMoAdapter$LoMoRowContent rowContent, final View shelf) {
+    protected BaseLoLoMoAdapter$RowHolder(final View contentGroup, final TextView title, final BaseLoLoMoAdapter$LoMoRowContent rowContent, final View shelf) {
         this.contentGroup = contentGroup;
         this.title = title;
         this.rowContent = rowContent;
@@ -24,10 +25,11 @@ class BaseLoLoMoAdapter$RowHolder
         this.defaultTitleColors = title.getTextColors();
     }
     
-    public void invalidateRequestId() {
+    public void onViewMovedToScrapHeap() {
         if (this.rowContent == null) {
+            Log.d("BaseLoLoMoAdapter", "rowContent is null - can't notify of move to scrap heap");
             return;
         }
-        this.rowContent.invalidateRequestId();
+        this.rowContent.onViewMovedToScrapHeap();
     }
 }

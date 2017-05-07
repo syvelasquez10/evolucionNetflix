@@ -5,8 +5,6 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.util.UiUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
@@ -18,7 +16,6 @@ import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
-import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
@@ -27,14 +24,15 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Random;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
+import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
+import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import android.content.Context;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
@@ -61,15 +59,15 @@ class BrowseAgent$RemoveFromQueueTask$1 extends SimpleBrowseAgentCallback
     public void onQueueRemove(final Status status) {
         if (status.isSucces()) {
             if (this.this$1.iqInCache) {
-                sendIqRefreshBrodcast(this.this$1.this$0.getContext());
+                BrowseAgent.sendIqRefreshBrodcast(this.this$1.this$0.getContext());
             }
             UserActionLogUtils.reportRemoveFromQueueActionEnded(this.this$1.this$0.getContext(), IClientLogging$CompletionReason.success, null);
         }
         else {
-            int n = 2131493325;
+            int n = 2131493337;
             if (status.getStatusCode() == StatusCode.NOT_IN_QUEUE) {
                 Log.w("nf_service_browseagent", "It was already removed");
-                n = 2131493324;
+                n = 2131493336;
             }
             UserActionLogUtils.reportRemoveFromQueueActionEnded(this.this$1.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$1.this$0.getContext().getString(n), ActionOnUIError.displayedError));
         }

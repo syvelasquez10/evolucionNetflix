@@ -8,6 +8,12 @@ public final class R$styleable
 {
     public static final int[] com_facebook_friend_picker_fragment;
     public static final int com_facebook_friend_picker_fragment_multi_select = 0;
+    public static final int[] com_facebook_like_view;
+    public static final int com_facebook_like_view_auxiliary_view_position = 3;
+    public static final int com_facebook_like_view_foreground_color = 0;
+    public static final int com_facebook_like_view_horizontal_alignment = 4;
+    public static final int com_facebook_like_view_object_id = 1;
+    public static final int com_facebook_like_view_style = 2;
     public static final int[] com_facebook_login_view;
     public static final int com_facebook_login_view_confirm_logout = 0;
     public static final int com_facebook_login_view_fetch_user_info = 1;
@@ -32,6 +38,7 @@ public final class R$styleable
     
     static {
         com_facebook_friend_picker_fragment = new int[] { 2130772214 };
+        com_facebook_like_view = new int[] { 2130772225, 2130772226, 2130772227, 2130772228, 2130772229 };
         com_facebook_login_view = new int[] { 2130772219, 2130772220, 2130772221, 2130772222 };
         com_facebook_picker_fragment = new int[] { 2130772207, 2130772208, 2130772209, 2130772210, 2130772211, 2130772212, 2130772213 };
         com_facebook_place_picker_fragment = new int[] { 2130772215, 2130772216, 2130772217, 2130772218 };

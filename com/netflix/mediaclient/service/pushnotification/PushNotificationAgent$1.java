@@ -7,7 +7,7 @@ package com.netflix.mediaclient.service.pushnotification;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import java.util.List;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.IntentUtils;

@@ -8,6 +8,8 @@ import java.io.File;
 
 final class FileLruCache$ModifiedFile implements Comparable<FileLruCache$ModifiedFile>
 {
+    private static final int HASH_MULTIPLIER = 37;
+    private static final int HASH_SEED = 29;
     private final File file;
     private final long modified;
     
@@ -38,5 +40,10 @@ final class FileLruCache$ModifiedFile implements Comparable<FileLruCache$Modifie
     
     long getModified() {
         return this.modified;
+    }
+    
+    @Override
+    public int hashCode() {
+        return (this.file.hashCode() + 1073) * 37 + (int)(this.modified % 2147483647L);
     }
 }

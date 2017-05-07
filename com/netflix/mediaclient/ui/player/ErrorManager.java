@@ -28,6 +28,7 @@ import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.os.Handler;
 import java.util.Locale;
 
@@ -41,7 +42,7 @@ public class ErrorManager
     private static final long PLAYREADY_CERT_REVOKED = 113L;
     private static final String TAG = "ErrorManager";
     private static final Locale US_LOCALE;
-    public static final String kbHelpUrl = "https://help.netflix.com/en/node/14384";
+    private static final String kbHelpUrl = "https://help.netflix.com/en/node/14384";
     private PlayerActivity context;
     private boolean destroyed;
     private boolean errorPosted;
@@ -49,6 +50,7 @@ public class ErrorManager
     private final Runnable forceExit;
     private Handler handler;
     private Runnable launchHelpInBrowser;
+    private IClientLogging mClientLogging;
     private ServiceAgent$ConfigurationAgentInterface mConfig;
     private MediaEvent reportedError;
     private Runnable resetApp;
@@ -60,7 +62,7 @@ public class ErrorManager
         ACTION_IDS = new String[] { "NFErr_MC_NCCP_NonRecoverableError", "NFErr_MC_NCCP_PotentiallyRecoverableError", "NFErr_MC_NCCP_CustomError", "NFErr_MC_NCCP_RegistrationRequired", "NFErr_MC_NCCP_CTicketRenewalRequired", "NFErr_MC_NCCP_MTicketRenewalRequired", "NFErr_MC_NCCP_ImpossibleImpossibility", "NFErr_MC_NCCP_GetNewCredentials", "NFErr_MC_NCCP_UnsupportedVersion", "NFErr_MC_NCCP_SecondaryCredentialsRenewalRequired", "NFErr_MC_NCCP_AbortPlayback", "NFErr_MC_NCCP_StaleCredentials" };
     }
     
-    public ErrorManager(final Handler handler, final PlayerActivity context, final ServiceAgent$ConfigurationAgentInterface mConfig) {
+    public ErrorManager(final Handler handler, final PlayerActivity context, final ServiceAgent$ConfigurationAgentInterface mConfig, final IClientLogging mClientLogging) {
         this.errorPosted = false;
         this.destroyed = false;
         this.exit = new ErrorManager$4(this);
@@ -72,6 +74,7 @@ public class ErrorManager
         this.handler = handler;
         this.context = context;
         this.mConfig = mConfig;
+        this.mClientLogging = mClientLogging;
     }
     
     private ErrorManager$LinkTag extractLink(final String s, final StringBuilder sb) {
@@ -130,12 +133,12 @@ public class ErrorManager
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId1(final NccpActionId nccpActionId, final String s) {
         Log.d("ErrorManager", "actionID 1 NFErr_MC_NCCP_NonRecoverableError");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492986), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492994), null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId10(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 10 NFErr_MC_NCCP_CustomerCredentialsRenewalRequired");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492992), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493000), null, this.unregister, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId11(final NccpActionId nccpActionId, final String s) {
@@ -144,20 +147,20 @@ public class ErrorManager
         if (message != null) {
             final String string = message;
             if (!"".equals(message.trim())) {
-                return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+                return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
             }
         }
-        final String string = this.context.getString(2131492993);
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+        final String string = this.context.getString(2131493001);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId12(final NccpActionId nccpActionId, final String s) {
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492994), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493002), null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId2(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 2 NFErr_MC_NCCP_PotentiallyRecoverableError");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492987), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492995), null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId3(final NccpActionId nccpActionId, final String s) {
@@ -165,7 +168,7 @@ public class ErrorManager
         final Runnable exit = this.exit;
         String string;
         if (message == null) {
-            string = this.context.getString(2131492988);
+            string = this.context.getString(2131492996);
             Log.e("ErrorManager", "ActionID 3 NFErr_MC_NCCP_CustomError: Error message expected, but not received, displaying generic error");
         }
         else {
@@ -184,34 +187,34 @@ public class ErrorManager
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId4(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 4 NFErr_MC_NCCP_RegistrationRequired");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493077), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493084), null, this.unregister, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId5(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 5 NFErr_MC_NCCP_CTicketRenewalRequired, AUTHENTICATION_RENEW_REQUIRE");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492989), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492997), null, this.unregister, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId6(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 6 NFErr_MC_NCCP_MTicketRenewalRequired, AUTHORIZATION_RENEW_REQUIRED");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493079), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493086), null, this.unregister, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId7(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 7 NFErr_MC_NCCP_ImpossibleImpossibility, logout");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493080), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131493087), null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId8(final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 8 NFErr_MC_NCCP_GetNewCredentials");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492990), null, this.unregister, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492998), null, this.unregister, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getErrorDescriptorForActionId9(final NccpActionId nccpActionId, final String s) {
         final String message = nccpActionId.getMessage();
         String string;
         if (message == null) {
-            string = this.context.getString(2131492991);
+            string = this.context.getString(2131492999);
             Log.e("ErrorManager", "ActionID 9 NFErr_MC_NCCP_UnsupportedVersion: force exit app, generic message");
         }
         else {
@@ -250,9 +253,9 @@ public class ErrorManager
                     break Label_0200;
                 }
             }
-            string = this.context.getString(2131493094);
+            string = this.context.getString(2131493101);
         }
-        final String string2 = this.context.getString(2131493095);
+        final String string2 = this.context.getString(2131493102);
         Log.d("ErrorManager", "Check if link contains NCCP reason code");
         if (link.href.startsWith("RC:")) {
             Log.d("ErrorManager", "NCCP reason code found");
@@ -391,30 +394,40 @@ public class ErrorManager
             Log.d("ErrorManager", "checkForOpenDeviceFailureInStack : " + checkForOpenDeviceFailureInStack);
         }
         if (error.getError() == -268369916) {
-            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493072), null, this.restartApp, this.context.getString(2131493320), this.launchHelpInBrowser);
+            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493079), null, this.restartApp, this.context.getString(2131493332), this.launchHelpInBrowser);
         }
-        if (error.getError() != -268369915 || !checkForOpenDeviceFailureInStack) {
-            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493016), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+        if (error.getError() == -268369915 && checkForOpenDeviceFailureInStack) {
+            final String string = this.context.getString(2131493079);
+            if (this.mConfig.getCurrentPlayerType() == PlayerType.device12 && this.mConfig.isCurrentDrmWidevine()) {
+                return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, this.restartApp, this.context.getString(2131493332), this.launchHelpInBrowser);
+            }
+            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, this.resetApp, this.context.getString(2131493332), this.launchHelpInBrowser);
         }
-        final String string = this.context.getString(2131493072);
-        if (this.mConfig.getCurrentPlayerType() == PlayerType.device12 && this.mConfig.isCurrentDrmWidevine()) {
-            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, this.restartApp, this.context.getString(2131493320), this.launchHelpInBrowser);
+        else {
+            if (error.getError() != -268369919) {
+                return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493023), null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
+            }
+            final String string2 = this.context.getString(2131493023);
+            if (error.checkForAuthFailureRegistrationRequired()) {
+                this.mClientLogging.getErrorLogging().logHandledException("AuthFailure, RegistrationRequired");
+                return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string2, null, this.resetApp, this.context.getString(2131493332), this.launchHelpInBrowser);
+            }
+            return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string2, null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
         }
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, this.resetApp, this.context.getString(2131493320), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getHandlerForNetworkError(final NetworkError networkError) {
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "NetworkError " + networkError);
         }
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493113), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493120), null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private AlertDialogFactory$AlertDialogDescriptor getHandlerForNetworkingError(final NccpNetworkingError nccpNetworkingError) {
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "NccpNetworkingError " + nccpNetworkingError);
         }
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493044), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", this.context.getString(2131493051), null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private static JSONObject getJSonSafely(final MediaEvent mediaEvent) {
@@ -428,7 +441,7 @@ public class ErrorManager
     
     private AlertDialogFactory$AlertDialogDescriptor getUknownErrorDescriptor(final MediaEvent mediaEvent, final String s) {
         Log.w("ErrorManager", "Uknown error");
-        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492985), null, this.exit, this.context.getString(2131493320), this.launchHelpInBrowser);
+        return new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, this.context.getString(2131492993), null, this.exit, this.context.getString(2131493332), this.launchHelpInBrowser);
     }
     
     private Runnable handle(final MediaEvent mediaEvent) {

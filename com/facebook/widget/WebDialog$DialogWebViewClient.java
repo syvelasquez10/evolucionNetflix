@@ -4,17 +4,21 @@
 
 package com.facebook.widget;
 
-import com.facebook.android.R$string;
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
 import android.content.DialogInterface$OnCancelListener;
+import com.facebook.android.R$string;
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.FrameLayout$LayoutParams;
 import android.widget.LinearLayout;
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
 import com.facebook.android.R$drawable;
 import android.view.View$OnClickListener;
+import android.view.Display;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+import com.facebook.internal.ServerProtocol;
 import android.content.Context;
 import android.app.ProgressDialog;
 import android.widget.ImageView;
@@ -25,7 +29,6 @@ import android.content.Intent;
 import android.net.Uri;
 import com.facebook.FacebookServiceException;
 import com.facebook.FacebookRequestError;
-import com.facebook.android.Util;
 import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
 import com.facebook.FacebookDialogException;
@@ -63,57 +66,56 @@ class WebDialog$DialogWebViewClient extends WebViewClient
     public void onReceivedError(final WebView webView, final int n, final String s, final String s2) {
         super.onReceivedError(webView, n, s, s2);
         this.this$0.sendErrorToListener(new FacebookDialogException(s, n, s2));
-        this.this$0.dismiss();
     }
     
     public void onReceivedSslError(final WebView webView, final SslErrorHandler sslErrorHandler, final SslError sslError) {
         super.onReceivedSslError(webView, sslErrorHandler, sslError);
-        this.this$0.sendErrorToListener(new FacebookDialogException(null, -11, null));
         sslErrorHandler.cancel();
-        this.this$0.dismiss();
+        this.this$0.sendErrorToListener(new FacebookDialogException(null, -11, null));
     }
     
     public boolean shouldOverrideUrlLoading(WebView string, String s) {
         Utility.logd("FacebookSDK.WebDialog", "Redirect URL: " + s);
-        if (s.startsWith("fbconnect://success")) {
-            final Bundle url = Util.parseUrl(s);
-            s = url.getString("error");
+        if (s.startsWith(this.this$0.expectedRedirectUrl)) {
+            final Bundle responseUri = this.this$0.parseResponseUri(s);
+            s = responseUri.getString("error");
             if ((string = (WebView)s) == null) {
-                string = (WebView)url.getString("error_type");
+                string = (WebView)responseUri.getString("error_type");
             }
-            if ((s = url.getString("error_msg")) == null) {
-                s = url.getString("error_description");
+            if ((s = responseUri.getString("error_msg")) == null) {
+                s = responseUri.getString("error_description");
             }
-            final String string2 = url.getString("error_code");
-        Label_0109:
+            final String string2 = responseUri.getString("error_code");
+        Label_0118:
             while (true) {
                 if (Utility.isNullOrEmpty(string2)) {
                     final int int1 = -1;
-                    break Label_0109;
+                    break Label_0118;
                 }
                 while (true) {
-                    while (true) {
-                        int int1;
-                        try {
-                            int1 = Integer.parseInt(string2);
-                            if (Utility.isNullOrEmpty((String)string) && Utility.isNullOrEmpty(s) && int1 == -1) {
-                                this.this$0.sendSuccessToListener(url);
-                                this.this$0.dismiss();
-                                return true;
-                            }
+                    int int1;
+                    try {
+                        int1 = Integer.parseInt(string2);
+                        if (Utility.isNullOrEmpty((String)string) && Utility.isNullOrEmpty(s) && int1 == -1) {
+                            this.this$0.sendSuccessToListener(responseUri);
+                            return true;
                         }
-                        catch (NumberFormatException ex) {
-                            int1 = -1;
-                            continue Label_0109;
-                        }
-                        if (string != null && (((String)string).equals("access_denied") || ((String)string).equals("OAuthAccessDeniedException"))) {
-                            this.this$0.sendCancelToListener();
-                            continue;
-                        }
-                        string = (WebView)new FacebookRequestError(int1, (String)string, s);
-                        this.this$0.sendErrorToListener(new FacebookServiceException((FacebookRequestError)string, s));
-                        continue;
                     }
+                    catch (NumberFormatException ex) {
+                        int1 = -1;
+                        continue Label_0118;
+                    }
+                    if (string != null && (((String)string).equals("access_denied") || ((String)string).equals("OAuthAccessDeniedException"))) {
+                        this.this$0.sendCancelToListener();
+                        return true;
+                    }
+                    if (int1 == 4201) {
+                        this.this$0.sendCancelToListener();
+                        return true;
+                    }
+                    string = (WebView)new FacebookRequestError(int1, (String)string, s);
+                    this.this$0.sendErrorToListener(new FacebookServiceException((FacebookRequestError)string, s));
+                    return true;
                 }
                 break;
             }
@@ -121,7 +123,6 @@ class WebDialog$DialogWebViewClient extends WebViewClient
         else {
             if (s.startsWith("fbconnect://cancel")) {
                 this.this$0.sendCancelToListener();
-                this.this$0.dismiss();
                 return true;
             }
             if (s.contains("touch")) {

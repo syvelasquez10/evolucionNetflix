@@ -183,6 +183,10 @@ public class Asset implements Parcelable, PlayContext
         return this.mEpisodeNumber;
     }
     
+    public int getHeroTrackId() {
+        throw new UnsupportedOperationException("Should not be needed");
+    }
+    
     public int getListPos() {
         return this.mListPos;
     }
@@ -245,6 +249,10 @@ public class Asset implements Parcelable, PlayContext
     
     public boolean isEpisode() {
         return this.mIsEpisode;
+    }
+    
+    public boolean isHero() {
+        return false;
     }
     
     public boolean isNextPlayableEpisode() {

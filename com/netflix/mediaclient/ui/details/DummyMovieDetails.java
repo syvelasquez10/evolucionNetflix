@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
+import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 
@@ -53,6 +54,16 @@ public class DummyMovieDetails implements MovieDetails
     
     @Override
     public VideoType getErrorType() {
+        return null;
+    }
+    
+    @Override
+    public IconFontGlyph getEvidenceGlyph() {
+        return null;
+    }
+    
+    @Override
+    public String getEvidenceText() {
         return null;
     }
     
@@ -149,6 +160,11 @@ public class DummyMovieDetails implements MovieDetails
     @Override
     public String getTitle() {
         return "GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB";
+    }
+    
+    @Override
+    public String getTitleImgUrl() {
+        return null;
     }
     
     @Override

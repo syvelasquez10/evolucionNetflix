@@ -4,9 +4,7 @@
 
 package com.netflix.mediaclient.service.preapp;
 
-import android.content.ComponentName;
-import com.netflix.mediaclient.ui.homescreen.NetflixAppWidgetProvider;
-import android.appwidget.AppWidgetManager;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;

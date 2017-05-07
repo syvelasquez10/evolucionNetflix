@@ -11,6 +11,7 @@ import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -21,13 +22,11 @@ import android.content.ServiceConnection;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
@@ -38,10 +37,11 @@ import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRec
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
 import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.android.app.Status;
 
 class ServiceManager$ServiceListener implements INetflixServiceCallback
@@ -50,6 +50,15 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     
     private ServiceManager$ServiceListener(final ServiceManager this$0) {
         this.this$0 = this$0;
+    }
+    
+    private void logShowDetailsInfo(final Status status, final int n, final ShowDetails showDetails) {
+        Log.d("ServiceManager", "onShowDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+        Log.d("ServiceManager", "onShowDetailsFetched requestedSdp=" + showDetails);
+        if (showDetails != null && showDetails.getSimilars() != null) {
+            Log.d("ServiceManager", "onShowDetailsFetched sims size=" + showDetails.getSimilars().size());
+            Log.d("ServiceManager", "onShowDetailsFetched sims track id=" + showDetails.getSimilarsTrackId());
+        }
     }
     
     private void updateStatusRequestId(final Status status, final int requestId) {
@@ -346,18 +355,18 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
-    public void onPostPlayVideosFetched(final int n, final List<PostPlayVideo> list, final Status status) {
+    public void onPostPlayVideosFetched(final int n, final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable("ServiceManager", 3)) {
             Log.d("ServiceManager", "onPostPlayVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-            Log.d("ServiceManager", "onPostPlayVideosFetched requestedVideos=" + list);
+            Log.d("ServiceManager", "onPostPlayVideosFetched requestedVideos=" + postPlayVideosProvider);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
             Log.d("ServiceManager", "No callback for onPostPlayVideoFetched requestId " + n);
             return;
         }
-        access$400.onPostPlayVideosFetched(list, status);
+        access$400.onPostPlayVideosFetched(postPlayVideosProvider, status);
     }
     
     @Override
@@ -487,11 +496,24 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
+    public void onShowDetailsAndSeasonsFetched(final int n, final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable("ServiceManager", 3)) {
+            this.logShowDetailsInfo(status, n, showDetails);
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onShowDetailsAndSeasonsFetched requestId " + n);
+            return;
+        }
+        access$400.onShowDetailsAndSeasonsFetched(showDetails, list, status);
+    }
+    
+    @Override
     public void onShowDetailsFetched(final int n, final ShowDetails showDetails, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable("ServiceManager", 3)) {
-            Log.d("ServiceManager", "onShowDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
-            Log.d("ServiceManager", "onShowDetailsFetched requestedSdp=" + showDetails);
+            this.logShowDetailsInfo(status, n, showDetails);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -516,7 +538,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
-    public void onSocialNotificationWasThanked(final int n, final SocialNotificationSummary socialNotificationSummary, final Status status) {
+    public void onSocialNotificationWasThanked(final int n, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable("ServiceManager", 3)) {
             Log.d("ServiceManager", "onSocialNotificationWasThanked requestId=" + n + " erroCode=" + status.getStatusCode());
@@ -526,7 +548,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             Log.d("ServiceManager", "No callback for onSocialNotificationWasThanked requestId " + n);
             return;
         }
-        access$400.onSocialNotificationWasThanked(socialNotificationSummary, status);
+        access$400.onSocialNotificationWasThanked(status);
     }
     
     @Override

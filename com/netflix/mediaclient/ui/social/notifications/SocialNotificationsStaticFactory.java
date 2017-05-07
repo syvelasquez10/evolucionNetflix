@@ -11,7 +11,7 @@ import com.netflix.mediaclient.ui.social.notifications.types.SocialVideoImplicit
 import com.netflix.mediaclient.ui.social.notifications.types.SocialVideoRecommendation;
 import java.util.HashMap;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialNotification;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary$NotificationTypes;
+import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import java.util.Map;
 
 public class SocialNotificationsStaticFactory

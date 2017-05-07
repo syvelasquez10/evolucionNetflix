@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.netflix.mediaclient.util.SocialNotificationsUtils;
 import android.os.Bundle;
 import android.widget.TextView;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
@@ -30,9 +30,10 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.Set;
 import android.widget.ListView;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -42,7 +43,6 @@ import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
 class SocialNotificationsFrag$4$1 extends SimpleManagerCallback
@@ -54,7 +54,7 @@ class SocialNotificationsFrag$4$1 extends SimpleManagerCallback
     }
     
     @Override
-    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+    public void onSocialNotificationWasThanked(final Status status) {
         if (this.this$1.val$activity != null && !this.this$1.val$activity.isFinishing()) {
             this.this$1.val$thanksButton.setEnabled(true);
             final Activity activity = this.this$1.this$0.getActivity();

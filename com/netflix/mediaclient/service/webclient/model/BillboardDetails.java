@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.user.SocialBadge;
+import com.netflix.model.leafs.SocialBadge;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
 
 public class BillboardDetails extends PlayableVideo implements Billboard
@@ -18,6 +18,14 @@ public class BillboardDetails extends PlayableVideo implements Billboard
             return null;
         }
         return this.detail.certification;
+    }
+    
+    @Override
+    public String getHighResolutionLandscapeBoxArtUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.hiResHorzUrl;
     }
     
     @Override

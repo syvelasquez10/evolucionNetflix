@@ -12,8 +12,8 @@ import android.content.Intent;
 import android.app.Activity;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import android.widget.Toast;
-import com.facebook.internal.SessionTracker;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.facebook.Request$GraphUserCallback;
 import com.netflix.mediaclient.ui.login.AccountActivity;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.content.Context;
@@ -33,7 +33,9 @@ class FacebookLoginActivity$3 implements Session$StatusCallback
     
     @Override
     public void call(final Session session, final SessionState sessionState, final Exception ex) {
-        Log.v("FacebookLoginActivity", "Callback - Session: " + session + ", State: " + sessionState + ", Exception: " + ex);
+        if (Log.isLoggable("FacebookLoginActivity", 2)) {
+            Log.v("FacebookLoginActivity", "Callback - Session: " + session + ", State: " + sessionState + ", Exception: " + ex + ", Current Access Token: " + Session.getActiveSession().getAccessToken());
+        }
         SocialLoggingUtils.reportEndSocialConnectSession((Context)this.this$0);
         if (sessionState.isOpened()) {
             this.this$0.executeMeRequestIfDebug();

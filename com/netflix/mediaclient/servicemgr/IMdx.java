@@ -127,4 +127,6 @@ public interface IMdx
     boolean setDialUuidAsCurrentTarget(final String p0);
     
     void switchPlaybackFromTarget(final String p0, final int p1);
+    
+    void transferPlaybackFromLocal();
 }

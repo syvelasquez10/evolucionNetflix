@@ -4,18 +4,19 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import android.view.Menu;
+import android.view.View$OnTouchListener;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
-import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.util.ViewUtils;
-import android.widget.ImageButton;
+import android.view.View;
 import android.app.Activity;
 import com.netflix.mediaclient.ui.Section;
 import com.netflix.mediaclient.Log;
-import android.view.View;
-import android.view.View$OnClickListener;
+import android.view.MenuItem;
+import android.view.MenuItem$OnMenuItemClickListener;
 
-class Social$1 implements View$OnClickListener
+class Social$1 implements MenuItem$OnMenuItemClickListener
 {
     final /* synthetic */ Social this$0;
     
@@ -23,8 +24,9 @@ class Social$1 implements View$OnClickListener
         this.this$0 = this$0;
     }
     
-    public void onClick(final View view) {
+    public boolean onMenuItemClick(final MenuItem menuItem) {
         Log.d("playcard", "Touch facebook!");
         this.this$0.toggleMessageVisibility();
+        return true;
     }
 }

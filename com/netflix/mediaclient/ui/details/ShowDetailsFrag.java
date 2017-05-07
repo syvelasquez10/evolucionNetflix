@@ -8,11 +8,12 @@ import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.LinearLayout;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
@@ -48,10 +49,11 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
             Log.w("ShowDetailsFrag", "Manager is null - can't reload data");
             return;
         }
+        final NetflixActivity activity = serviceManager.getActivity();
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("ShowDetailsFrag", "Fetching data for show ID: " + this.videoId);
-        serviceManager.getBrowse().fetchShowDetails(this.videoId, this.episodeId, new ShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
+        serviceManager.getBrowse().fetchShowDetails(this.videoId, this.episodeId, activity.isKubrick(), new ShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
     }
     
     @Override
@@ -62,6 +64,11 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     protected String getVideoId() {
         return this.videoId;
+    }
+    
+    @Override
+    protected void initDetailsViewGroup(final View view) {
+        this.detailsViewGroup = (VideoDetailsViewGroup)view.findViewById(2131165687);
     }
     
     public boolean isLoadingData() {
@@ -78,7 +85,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131165687);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131165692);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {

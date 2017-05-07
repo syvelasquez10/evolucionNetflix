@@ -18,6 +18,7 @@ import android.text.TextUtils;
 
 public abstract class Request<T> implements Comparable<Request<T>>
 {
+    protected static final boolean DEBUG;
     private static final String DEFAULT_PARAMS_ENCODING = "UTF-8";
     private static final long SLOW_REQUEST_THRESHOLD_MS = 3000L;
     private Cache$Entry mCacheEntry;
@@ -34,6 +35,10 @@ public abstract class Request<T> implements Comparable<Request<T>>
     private boolean mShouldCache;
     private Object mTag;
     private String mUrl;
+    
+    static {
+        DEBUG = VolleyLog.DEBUG;
+    }
     
     public Request(int hashCode, final String mUrl, final Response$ErrorListener mErrorListener) {
         VolleyLog$MarkerLog mEventLog;
@@ -105,7 +110,10 @@ public abstract class Request<T> implements Comparable<Request<T>>
                         throw new RuntimeException("Encoding not supported: " + s, ex);
                     }
                 }
-                VolleyLog.d("valueNull for key: %s, params %s", entry.getKey(), map.toString());
+                if (Request.DEBUG) {
+                    VolleyLog.d("valueNull for key: %s, params %s", entry.getKey(), map.toString());
+                    continue;
+                }
                 continue;
             }
         }
@@ -167,7 +175,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
         }
         else {
             final long n = SystemClock.elapsedRealtime() - this.mRequestBirthTime;
-            if (n >= 3000L) {
+            if (n >= 3000L && Request.DEBUG) {
                 VolleyLog.d("%d ms: %s", n, this.toString());
             }
         }

@@ -8,12 +8,12 @@ import java.security.InvalidParameterException;
 
 public final class WebApiUtils
 {
-    public static WebApiUtils$VideoIds extractIsd(String substring, final String episodeIdUrl) {
+    public static WebApiUtils$VideoIds extractIds(String substring, final String episodeIdUrl) {
         final WebApiUtils$VideoIds webApiUtils$VideoIds = new WebApiUtils$VideoIds();
         webApiUtils$VideoIds.catalogIdUrl = substring;
         webApiUtils$VideoIds.episodeIdUrl = episodeIdUrl;
         if (episodeIdUrl != null && !"".equals(episodeIdUrl.trim()) && !episodeIdUrl.equals(substring)) {
-            webApiUtils$VideoIds.episode = true;
+            webApiUtils$VideoIds.isEpisode = true;
             final int lastIndex = episodeIdUrl.lastIndexOf("/");
             if (lastIndex < 0) {
                 throw new InvalidParameterException("Wrong episodeID URL " + episodeIdUrl);
@@ -27,7 +27,7 @@ public final class WebApiUtils
             }
         }
         else {
-            webApiUtils$VideoIds.episode = false;
+            webApiUtils$VideoIds.isEpisode = false;
             if (!StringUtils.isEmpty(substring)) {
                 final int lastIndex3 = substring.lastIndexOf("/");
                 if (lastIndex3 < 0) {

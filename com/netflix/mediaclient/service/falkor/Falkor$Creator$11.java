@@ -4,21 +4,13 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.falkor.BranchNode;
-import com.netflix.falkor.ModelProxy;
-import com.netflix.model.branches.FalkorPerson;
+import com.netflix.model.branches.PostPlayMap;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$11 implements Func<FalkorPerson>
+final class Falkor$Creator$11 implements Func<PostPlayMap>
 {
-    final /* synthetic */ ModelProxy val$proxy;
-    
-    Falkor$Creator$11(final ModelProxy val$proxy) {
-        this.val$proxy = val$proxy;
-    }
-    
     @Override
-    public FalkorPerson call() {
-        return new FalkorPerson(this.val$proxy);
+    public PostPlayMap call() {
+        return new PostPlayMap();
     }
 }

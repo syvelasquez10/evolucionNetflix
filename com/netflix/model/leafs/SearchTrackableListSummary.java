@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.netflix.mediaclient.util.JsonUtils;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import android.os.Parcel;
 import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
@@ -35,18 +36,18 @@ public class SearchTrackableListSummary extends TrackableListSummary implements 
     public void populate(final JsonElement jsonElement) {
         super.populate(jsonElement);
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("SearchTrackableListSummary", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("SearchTrackableListSummary", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final String s = entry.getKey();
             int n = 0;
-            Label_0110: {
+            Label_0106: {
                 switch (s.hashCode()) {
                     case -925155509: {
                         if (s.equals("reference")) {
                             n = 0;
-                            break Label_0110;
+                            break Label_0106;
                         }
                         break;
                     }

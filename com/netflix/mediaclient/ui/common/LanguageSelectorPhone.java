@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import android.content.res.Resources;
 import android.widget.TabHost$TabSpec;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -29,12 +30,20 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
     }
     
     private int calculateMaxNumberOfItems() {
-        int i = 0;
+        final int n = 0;
         final Language language = this.getLanguage();
         if (language != null) {
+            int length;
+            if (language.getSubtitles() == null) {
+                length = 0;
+            }
+            else {
+                length = language.getSubtitles().length;
+            }
+            final int n2 = length + 1;
             if (language.getAltAudios() == null) {
                 if (language.getSubtitles() != null) {
-                    return language.getSubtitles().length;
+                    return n2;
                 }
             }
             else {
@@ -42,37 +51,39 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
                     return language.getAltAudios().length;
                 }
                 Log.d("nf_language_selector", "Calculate maximal item number");
-                if (language.getAltAudios().length >= language.getSubtitles().length) {
+                if (language.getAltAudios().length >= n2) {
                     if (Log.isLoggable("nf_language_selector", 3)) {
                         Log.d("nf_language_selector", "More audios, max number of items: " + language.getAltAudios().length);
                     }
                     return language.getAltAudios().length;
                 }
                 if (Log.isLoggable("nf_language_selector", 3)) {
-                    Log.d("nf_language_selector", "More subtitles,  audos: " + language.getAltAudios().length + " < subtitles " + language.getSubtitles().length + ". Check dependencies.");
+                    Log.d("nf_language_selector", "More subtitles, audios: " + language.getAltAudios().length + " < subtitles " + n2);
                 }
-                int length = language.getAltAudios().length;
+                final int length2 = language.getAltAudios().length;
+                int i = n;
+                int n3 = length2;
                 while (i < language.getAltAudios().length) {
-                    final int n = language.getSubtitles().length - language.getAltAudios()[i].getDisallowedSubtitles().length;
-                    int n2;
-                    if ((n2 = length) < n) {
-                        n2 = n;
+                    final int n4 = n2 - language.getAltAudios()[i].getDisallowedSubtitles().length;
+                    int n5;
+                    if (n4 > (n5 = n3)) {
+                        n5 = n4;
                     }
                     ++i;
-                    length = n2;
+                    n3 = n5;
                 }
                 if (Log.isLoggable("nf_language_selector", 3)) {
-                    Log.d("nf_language_selector", "Max number of items: " + length);
+                    Log.d("nf_language_selector", "Max number of items: " + n3);
                 }
-                return length;
+                return n3;
             }
         }
         return 0;
     }
     
     private View getTabIndicator(final Context context, final TabHost tabHost, final int text, final boolean b) {
-        final View inflate = LayoutInflater.from(context).inflate(2130903115, (ViewGroup)null, false);
-        final TextView textView = (TextView)inflate.findViewById(2131165441);
+        final View inflate = LayoutInflater.from(context).inflate(2130903128, (ViewGroup)null, false);
+        final TextView textView = (TextView)inflate.findViewById(2131165476);
         textView.setText(text);
         if (b) {
             Log.d("nf_language_selector", "Set audio tab label");
@@ -94,41 +105,43 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
     @Override
     protected int calculateListViewHeight() {
         Log.d("nf_language_selector", "Phone calculate height");
-        final int n = (int)this.mController.getResources().getDimension(2131361891);
-        final int n2 = (int)this.mController.getResources().getDimension(2131361890);
-        final int n3 = (int)this.mController.getResources().getDimension(2131361916);
-        int intrinsicHeight;
-        if ((intrinsicHeight = this.mController.getResources().getDrawable(2130837731).getIntrinsicHeight()) == -1) {
-            intrinsicHeight = (int)this.mController.getResources().getDimension(2131361917);
-        }
-        final int n4 = (intrinsicHeight + n3) * this.calculateMaxNumberOfItems();
+        final Resources resources = this.mController.getResources();
+        final int n = (int)resources.getDimension(2131361903);
+        final int n2 = (int)resources.getDimension(2131361902);
+        final int n3 = (int)resources.getDimension(2131361904);
+        final int n4 = this.calculateMaxNumberOfItems() * n3;
         if (Log.isLoggable("nf_language_selector", 3)) {
-            Log.d("nf_language_selector", "Max height " + n2 + " px, item height " + n3 + " px, proposed list height " + n4 + " px, item divider height" + " px");
+            Log.d("nf_language_selector", "Max height " + n2 + " px, item height " + n3 + " px, proposed list height " + n4 + " px");
         }
-        int n5;
         if (n4 <= n) {
-            n5 = n;
+            if (Log.isLoggable("nf_language_selector", 3)) {
+                Log.d("nf_language_selector", "listViewHeight less than min height - setting to min height " + n);
+            }
+            return n;
         }
-        else if ((n5 = n4) >= n2) {
+        if (n4 > n2) {
+            if (Log.isLoggable("nf_language_selector", 3)) {
+                Log.d("nf_language_selector", "listViewHeight greater than max height - limiting to max height " + n2);
+            }
             return n2;
         }
-        return n5;
+        return n4;
     }
     
     @Override
     protected int getDialogLayoutId() {
         Log.d("nf_language_selector", "Phone R.layout.language_selector_dialog");
-        return 2130903113;
+        return 2130903126;
     }
     
     @Override
     protected void init(final View view, final Language language) {
         super.init(view, language);
         Log.d("nf_language_selector", "Add tabhost");
-        (this.mTabHost = (TabHost)view.findViewById(2131165435)).setOnTabChangedListener((TabHost$OnTabChangeListener)this);
+        (this.mTabHost = (TabHost)view.findViewById(2131165471)).setOnTabChangedListener((TabHost$OnTabChangeListener)this);
         this.mTabHost.setup();
-        this.setNewTab((Context)this.mController, this.mTabHost, "ListAudios", 2131493103, 2131165436, true);
-        this.setNewTab((Context)this.mController, this.mTabHost, "ListSubtitles", 2131493102, 2131165437, false);
+        this.setNewTab((Context)this.mController, this.mTabHost, "ListAudios", 2131493110, 2131165472, true);
+        this.setNewTab((Context)this.mController, this.mTabHost, "ListSubtitles", 2131493109, 2131165473, false);
         this.mTabHost.setCurrentTab(0);
         this.mAudioTabLabel.setTypeface(this.mAudioTabLabel.getTypeface(), 1);
         this.mSubtitleTabLabel.setTypeface(this.mSubtitleTabLabel.getTypeface(), 0);

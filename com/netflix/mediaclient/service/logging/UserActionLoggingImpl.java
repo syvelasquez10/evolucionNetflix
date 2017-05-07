@@ -36,6 +36,7 @@ import com.netflix.mediaclient.service.logging.uiaction.SayThanksSession;
 import com.netflix.mediaclient.service.logging.uiaction.RemoveFromPlaylistSession;
 import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
+import com.netflix.mediaclient.service.logging.uiaction.NewLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
 import com.netflix.mediaclient.service.logging.uiaction.LoginSession;
 import com.netflix.mediaclient.service.logging.uiaction.EditProfileSession;
@@ -58,6 +59,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     private EventHandler mEventHandler;
     private LoginSession mLoginSession;
     private NavigationSession mNavigationSession;
+    private NewLolomoSession mNewLolomoSession;
     private RateTitleSession mRateTitleSession;
     private RegisterSession mRegisterSession;
     private RemoveFromPlaylistSession mRemoveFromPlaylistSession;
@@ -397,6 +399,67 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
         this.startNavigationSession(value, value2);
+    }
+    
+    private void handleNewLolomoEnded(final Intent intent) {
+    Label_0092_Outer:
+        while (true) {
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            Serializable s2 = intent.getStringExtra("view");
+            final String stringExtra2 = intent.getStringExtra("renoCause");
+            final String stringExtra3 = intent.getStringExtra("renoMessageGuid");
+            final long longExtra = intent.getLongExtra("renoCreationTimestamp", System.currentTimeMillis());
+            final String stringExtra4 = intent.getStringExtra("mercuryMessageGuid");
+            final String stringExtra5 = intent.getStringExtra("mercuryEventGuid");
+            while (true) {
+                Label_0138: {
+                    while (true) {
+                        while (true) {
+                            try {
+                                final UIError instance = UIError.createInstance(stringExtra);
+                                if (!StringUtils.isNotEmpty((String)s)) {
+                                    break Label_0138;
+                                }
+                                s = IClientLogging$CompletionReason.valueOf((String)s);
+                                if (StringUtils.isNotEmpty((String)s2)) {
+                                    s2 = IClientLogging$ModalView.valueOf((String)s2);
+                                    this.endNewLolomoSession((IClientLogging$CompletionReason)s, (IClientLogging$ModalView)s2, instance, stringExtra2, stringExtra3, longExtra, stringExtra4, stringExtra5);
+                                    return;
+                                }
+                            }
+                            catch (JSONException ex) {
+                                final UIError instance = null;
+                                continue Label_0092_Outer;
+                            }
+                            break;
+                        }
+                        s2 = null;
+                        continue;
+                    }
+                }
+                s = null;
+                continue;
+            }
+        }
+    }
+    
+    private void handleNewLolomoStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startNewLolomoSession(value, value2);
     }
     
     private void handleRateTitleEnded(final Intent intent) {
@@ -1017,6 +1080,13 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void endNewLolomoSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError, final String s, final String s2, final long n, final String s3, final String s4) {
+        Log.d("nf_log", "NewLolomoSession ended and posted to executor");
+        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$13(this, clientLogging$CompletionReason, uiError, clientLogging$ModalView, s, s2, n, s3, s4, this.mDataContext));
+        Log.d("nf_log", "NewLolomoSession end done.");
+    }
+    
+    @Override
     public void endRateTitleSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final int n2) {
         Log.d("nf_log", "RateTitle session ended and posted to executor");
         this.mEventHandler.executeInBackground(new UserActionLoggingImpl$5(this, clientLogging$CompletionReason, uiError, n, n2, this.mDataContext));
@@ -1258,6 +1328,16 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handleSayThanksEnded(intent);
             return true;
         }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_START".equals(action)) {
+            Log.d("nf_log", "NEW_LOLOMO_START");
+            this.handleNewLolomoStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_ENDED".equals(action)) {
+            Log.d("nf_log", "NEW_LOLOMO_ENDED");
+            this.handleNewLolomoEnded(intent);
+            return true;
+        }
         if (Log.isLoggable("nf_log", 3)) {
             Log.d("nf_log", "We do not support action " + action);
         }
@@ -1360,6 +1440,18 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mNavigationSession);
         this.mNavigationSession = mNavigationSession;
         Log.d("nf_log", "Navigation session start done.");
+    }
+    
+    @Override
+    public void startNewLolomoSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mNewLolomoSession != null) {
+            Log.e("nf_log", "NewLolomoSession session already started!");
+            return;
+        }
+        Log.d("nf_log", "NewLolomoSession session starting...");
+        this.mNewLolomoSession = new NewLolomoSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(this.mNewLolomoSession);
+        Log.d("nf_log", "NewLolomoSession session start done.");
     }
     
     @Override

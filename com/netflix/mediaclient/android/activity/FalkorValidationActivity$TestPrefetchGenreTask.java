@@ -26,12 +26,12 @@ class FalkorValidationActivity$TestPrefetchGenreTask extends FalkorValidationAct
     
     @Override
     protected void makeBrowseRequest(final BrowseAccess browseAccess, final int n, final int n2) {
-        browseAccess.prefetchGenreLoLoMo(this.genreList.getId(), 0, 19, 0, 9, false, n, n2);
+        browseAccess.prefetchGenreLoLoMo(this.genreList.getId(), 0, 19, 0, 9, true, false, n, n2);
     }
     
     @Override
     protected void makeFalkorRequest(final FalkorAccess falkorAccess, final int n, final int n2) {
-        falkorAccess.prefetchGenreLoLoMo(this.genreList.getId(), 0, 19, 0, 9, false, n, n2);
+        falkorAccess.prefetchGenreLoLoMo(this.genreList.getId(), 0, 19, 0, 9, true, false, n, n2);
     }
     
     @Override

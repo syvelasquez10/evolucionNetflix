@@ -17,6 +17,9 @@ import com.netflix.mediaclient.javabridge.invoke.android.SetVideoSurface;
 import android.view.Surface;
 import com.netflix.mediaclient.javabridge.invoke.SetConfigData;
 import com.netflix.mediaclient.javabridge.invoke.media.SetStreamingBuffer;
+import com.netflix.mediaclient.javabridge.invoke.media.SetMaxCacheSize;
+import com.netflix.mediaclient.javabridge.invoke.media.SetMaxCacheByteSize;
+import com.netflix.mediaclient.javabridge.invoke.media.SetCacheManifestType;
 import com.netflix.mediaclient.javabridge.invoke.android.SetBytesReport;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.javabridge.invoke.media.SelectTracks;
@@ -28,9 +31,14 @@ import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.javabridge.invoke.media.Close;
-import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import com.netflix.mediaclient.javabridge.invoke.android.ChangePlayer;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.javabridge.invoke.media.CacheSchedule;
+import com.netflix.mediaclient.servicemgr.IManifestCache$CacheScheduleRequest;
+import com.netflix.mediaclient.javabridge.invoke.media.CacheResume;
+import com.netflix.mediaclient.javabridge.invoke.media.CachePause;
+import com.netflix.mediaclient.javabridge.invoke.Invoke;
+import com.netflix.mediaclient.javabridge.invoke.media.CacheFlush;
 import com.netflix.mediaclient.event.nrdp.media.BaseMediaEvent;
 import com.netflix.mediaclient.event.UIEvent;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
@@ -523,6 +531,26 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
+    public void cacheFlush() {
+        this.bridge.getNrdProxy().invokeMethod(new CacheFlush());
+    }
+    
+    @Override
+    public void cachePause() {
+        this.bridge.getNrdProxy().invokeMethod(new CachePause());
+    }
+    
+    @Override
+    public void cacheResume() {
+        this.bridge.getNrdProxy().invokeMethod(new CacheResume());
+    }
+    
+    @Override
+    public void cacheSchedule(final IManifestCache$CacheScheduleRequest[] array) {
+        this.bridge.getNrdProxy().invokeMethod(new CacheSchedule(array));
+    }
+    
+    @Override
     public void changePlayer(final PlayerType playerType) {
         this.bridge.getNrdProxy().invokeMethod(new ChangePlayer(playerType));
     }
@@ -708,8 +736,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void open(final long n, final PlayContext playContext, final Open$NetType open$NetType) {
-        this.bridge.getNrdProxy().invokeMethod(new Open(n, playContext, open$NetType));
+    public void open(final long n, final PlayContext playContext, final Open$NetType open$NetType, final long n2) {
+        this.bridge.getNrdProxy().invokeMethod(new Open(n, playContext, open$NetType, n2));
         Log.d("nf-bridge", "invokeMethod just called...");
     }
     
@@ -784,6 +812,21 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     public void setBytesReport(final int n, final int n2) {
         this.bridge.getNrdProxy().invokeMethod(new SetBytesReport(n, n2));
         Log.d("nf-bridge", "invokeMethod setBytesReport just called...");
+    }
+    
+    @Override
+    public void setCacheManifestType(final int n) {
+        this.bridge.getNrdProxy().invokeMethod(new SetCacheManifestType(n));
+    }
+    
+    @Override
+    public void setMaxCacheByteSize(final int n) {
+        this.bridge.getNrdProxy().invokeMethod(new SetMaxCacheByteSize(n));
+    }
+    
+    @Override
+    public void setMaxCacheSize(final int n) {
+        this.bridge.getNrdProxy().invokeMethod(new SetMaxCacheSize(n));
     }
     
     @Override

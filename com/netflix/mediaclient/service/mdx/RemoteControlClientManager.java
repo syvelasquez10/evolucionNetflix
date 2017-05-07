@@ -14,6 +14,7 @@ import com.netflix.mediaclient.Log;
 import android.content.BroadcastReceiver;
 import android.media.RemoteControlClient;
 import android.content.ComponentName;
+import com.netflix.mediaclient.service.configuration.MdxConfiguration;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,18 +32,21 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     private VideoDetails mEpisodeDetails;
     private boolean mInTransition;
     private boolean mIsPostPlay;
+    private MdxConfiguration mMdxConfiguration;
     private boolean mPaused;
     private Bitmap mPrevBoxart;
     private final ComponentName mProxyReceiverComponentName;
     private final RemoteControlClient mRemoteControlClient;
+    private boolean mRemoteControlVisible;
     private String mTargetUUID;
     private String mTitle;
     private final BroadcastReceiver mediaButtonIntentHandler;
     
-    public RemoteControlClientManager(final Context mContext) {
+    public RemoteControlClientManager(final Context mContext, final MdxConfiguration mMdxConfiguration) {
         this.mediaButtonIntentHandler = new RemoteControlClientManager$1(this);
         Log.d("RemoteControlClientManager", "Creating RemoteControlClientManager");
         this.mContext = mContext;
+        this.mMdxConfiguration = mMdxConfiguration;
         this.mProxyReceiverComponentName = new ComponentName(this.mContext, (Class)RemoteControlClientManager$MediaButtonIntentHandlerProxy.class);
         this.mAudioManager = (AudioManager)this.mContext.getSystemService("audio");
         this.mRemoteControlClient = this.createRemoteControlClient();
@@ -64,6 +68,17 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
             return;
         }
         remoteControlClient.setPlaybackState(3);
+    }
+    
+    private boolean shouldNotBeExecuted() {
+        if (this.mMdxConfiguration.isRemoteControlLockScreenEnabled()) {
+            return false;
+        }
+        if (this.mRemoteControlVisible) {
+            Log.w("RemoteControlClientManager", "Lock screen is visible and lock screen is NOT enabled! Remove it!");
+            this.stop();
+        }
+        return true;
     }
     
     private void updateMetadata() {
@@ -101,7 +116,7 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     }
     
     public void setBoxart(final Bitmap mPrevBoxart) {
-        if (mPrevBoxart != null && mPrevBoxart != this.mPrevBoxart) {
+        if (!this.shouldNotBeExecuted() && mPrevBoxart != null && mPrevBoxart != this.mPrevBoxart) {
             Log.d("RemoteControlClientManager", "setBoxart - handling new bitmap");
             this.mPrevBoxart = mPrevBoxart;
             this.mBoxart = mPrevBoxart.copy(mPrevBoxart.getConfig(), false);
@@ -110,22 +125,27 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     }
     
     public void setState(final boolean mPaused, final boolean mInTransition, final boolean mIsPostPlay) {
-        if (Log.isLoggable("RemoteControlClientManager", 3)) {
-            Log.d("RemoteControlClientManager", "setState, paused: " + mPaused + ", transitioning: " + mInTransition + ", inPostPlay: " + mIsPostPlay);
-        }
-        this.mPaused = mPaused;
-        this.mInTransition = mInTransition;
-        this.mIsPostPlay = mIsPostPlay;
-        if (this.mRemoteControlClient != null) {
-            if (!this.mPaused && !mIsPostPlay) {
-                this.mRemoteControlClient.setPlaybackState(3);
-                return;
+        if (!this.shouldNotBeExecuted()) {
+            if (Log.isLoggable("RemoteControlClientManager", 3)) {
+                Log.d("RemoteControlClientManager", "setState, paused: " + mPaused + ", transitioning: " + mInTransition + ", inPostPlay: " + mIsPostPlay);
             }
-            this.mRemoteControlClient.setPlaybackState(2);
+            this.mPaused = mPaused;
+            this.mInTransition = mInTransition;
+            this.mIsPostPlay = mIsPostPlay;
+            if (this.mRemoteControlClient != null) {
+                if (this.mPaused || mIsPostPlay) {
+                    this.mRemoteControlClient.setPlaybackState(2);
+                    return;
+                }
+                this.mRemoteControlClient.setPlaybackState(3);
+            }
         }
     }
     
     public void setTitles(final String mTitle, final String mAlbumTitle) {
+        if (this.shouldNotBeExecuted()) {
+            return;
+        }
         if (Log.isLoggable("RemoteControlClientManager", 3)) {
             Log.d("RemoteControlClientManager", "setTitles - title: " + mTitle + ", album: " + mAlbumTitle);
         }
@@ -138,6 +158,10 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
         if (Log.isLoggable("RemoteControlClientManager", 3)) {
             Log.d("RemoteControlClientManager", "start, isPostPlay: " + mIsPostPlay + ", episodeDetails: " + mEpisodeDetails + ", uuid: " + mTargetUUID);
         }
+        if (!this.mMdxConfiguration.isRemoteControlLockScreenEnabled()) {
+            return;
+        }
+        this.mRemoteControlVisible = true;
         this.mAudioManager.registerMediaButtonEventReceiver(this.mProxyReceiverComponentName);
         this.mAudioManager.registerRemoteControlClient(this.mRemoteControlClient);
         if (this.mAudioManager.requestAudioFocus((AudioManager$OnAudioFocusChangeListener)this, 3, 1) != 1) {
@@ -151,9 +175,12 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     
     public void stop() {
         Log.d("RemoteControlClientManager", "stop - clearing all state");
-        this.mAudioManager.abandonAudioFocus((AudioManager$OnAudioFocusChangeListener)this);
-        this.mAudioManager.unregisterMediaButtonEventReceiver(this.mProxyReceiverComponentName);
-        this.mAudioManager.unregisterRemoteControlClient(this.mRemoteControlClient);
+        if (this.mRemoteControlVisible) {
+            this.mRemoteControlVisible = false;
+            this.mAudioManager.abandonAudioFocus((AudioManager$OnAudioFocusChangeListener)this);
+            this.mAudioManager.unregisterMediaButtonEventReceiver(this.mProxyReceiverComponentName);
+            this.mAudioManager.unregisterRemoteControlClient(this.mRemoteControlClient);
+        }
         this.mTitle = null;
         this.mAlbumTitle = null;
         this.mPrevBoxart = null;

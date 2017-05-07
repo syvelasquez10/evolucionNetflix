@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -14,9 +14,9 @@ import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class VerifyPinRequest extends FalcorVolleyWebClientRequest<Boolean>
+public class VerifyPinRequest extends FalkorVolleyWebClientRequest<Boolean>
 {
     private static final String FIELD_IS_PIN_VALID = "isPinValid";
     private static final String FIELD_USER = "user";
@@ -56,20 +56,20 @@ public class VerifyPinRequest extends FalcorVolleyWebClientRequest<Boolean>
     }
     
     @Override
-    protected Boolean parseFalcorResponse(final String s) {
+    protected Boolean parseFalkorResponse(final String s) {
         if (Log.isLoggable("nf_pin", 2)) {
             Log.v("nf_pin", "String response to parse = " + s);
         }
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_pin", s);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("verifyPinResponse empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_pin", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("verifyPinResponse empty!!!");
         }
         try {
             return dataObj.getAsJsonObject("user").getAsJsonObject("verifyPin").getAsJsonObject(this.enteredPin).get("isPinValid").getAsBoolean();
         }
         catch (Exception ex) {
             Log.v("nf_pin", "String response to parse = " + s);
-            throw new FalcorParseException("response missing user json objects", ex);
+            throw new FalkorParseException("response missing user json objects", ex);
         }
     }
 }

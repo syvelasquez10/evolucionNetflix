@@ -12,6 +12,7 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
 import android.content.IntentFilter;
@@ -115,7 +116,7 @@ class NetflixActivity$13 extends BroadcastReceiver
             final NetflixActivity$13$1 netflixActivity$13$1 = new NetflixActivity$13$1(this);
             AlertDialogFactory$AlertDialogDescriptor alertDialogFactory$AlertDialogDescriptor;
             if (access$1001 != null) {
-                alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", access$1000, null, netflixActivity$13$1, this.this$0.getString(2131493320), new LaunchBrowser((Context)this.this$0, access$1001));
+                alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", access$1000, null, netflixActivity$13$1, this.this$0.getString(2131493332), new LaunchBrowser((Context)this.this$0, access$1001));
             }
             else {
                 alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$AlertDialogDescriptor("", access$1000, null, netflixActivity$13$1);

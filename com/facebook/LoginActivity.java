@@ -4,6 +4,7 @@
 
 package com.facebook;
 
+import android.util.Log;
 import com.facebook.android.R$id;
 import com.facebook.android.R$layout;
 import android.content.Intent;
@@ -18,9 +19,14 @@ public class LoginActivity extends Activity
     static final String RESULT_KEY = "com.facebook.LoginActivity:Result";
     private static final String SAVED_AUTH_CLIENT = "authorizationClient";
     private static final String SAVED_CALLING_PKG_KEY = "callingPackage";
+    private static final String TAG;
     private AuthorizationClient authorizationClient;
     private String callingPackage;
     private AuthorizationClient$AuthorizationRequest request;
+    
+    static {
+        TAG = LoginActivity.class.getName();
+    }
     
     private void onAuthClientCompleted(final AuthorizationClient$Result authorizationClient$Result) {
         this.request = null;
@@ -75,7 +81,9 @@ public class LoginActivity extends Activity
     public void onResume() {
         super.onResume();
         if (this.callingPackage == null) {
-            throw new FacebookException("Cannot call LoginActivity with a null calling package. This can occur if the launchMode of the caller is singleInstance.");
+            Log.e(LoginActivity.TAG, "Cannot call LoginActivity with a null calling package. This can occur if the launchMode of the caller is singleInstance.");
+            this.finish();
+            return;
         }
         this.authorizationClient.startOrContinueAuth(this.request);
     }

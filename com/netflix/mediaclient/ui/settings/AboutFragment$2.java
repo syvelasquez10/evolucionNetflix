@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.settings;
 
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.diagnosis.DiagnosisActivity;
 import android.os.Bundle;
 import android.content.pm.PackageInfo;
@@ -15,7 +16,9 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import android.net.Uri;
 import android.content.Intent;
 import android.app.Fragment;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Activity;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.preference.PreferenceFragment;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.ApmLogUtils;

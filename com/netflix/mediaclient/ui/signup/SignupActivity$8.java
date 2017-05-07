@@ -22,7 +22,9 @@ import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import com.netflix.mediaclient.StatusCode;
+import android.annotation.TargetApi;
 import com.netflix.mediaclient.Log;
+import android.os.Build$VERSION;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Intent;
@@ -48,6 +50,6 @@ class SignupActivity$8 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493113), this.this$0.getString(17039370), null)));
+        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493120), this.this$0.getString(17039370), null)));
     }
 }

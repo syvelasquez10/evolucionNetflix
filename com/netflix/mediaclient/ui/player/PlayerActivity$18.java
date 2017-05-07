@@ -4,9 +4,11 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.Log;
+import android.content.Intent;
+import android.content.Context;
+import android.content.BroadcastReceiver;
 
-class PlayerActivity$18 implements Runnable
+class PlayerActivity$18 extends BroadcastReceiver
 {
     final /* synthetic */ PlayerActivity this$0;
     
@@ -14,9 +16,7 @@ class PlayerActivity$18 implements Runnable
         this.this$0 = this$0;
     }
     
-    @Override
-    public void run() {
-        Log.d("PlayerActivity", "Playback canceled when not longer on WiFi");
-        this.this$0.cleanupAndExit();
+    public void onReceive(final Context context, final Intent intent) {
+        this.this$0.handleConnectivityCheck();
     }
 }

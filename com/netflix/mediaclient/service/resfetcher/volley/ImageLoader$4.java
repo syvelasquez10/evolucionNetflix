@@ -27,6 +27,7 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import java.util.LinkedList;
+import com.netflix.mediaclient.util.api.Api19Util;
 import android.graphics.Bitmap;
 import java.util.Iterator;
 

@@ -11,9 +11,7 @@ import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.util.UiUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 
@@ -25,26 +23,19 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
         super(context);
     }
     
-    public static int computeNumVideosToFetchPerBatch(final NetflixActivity netflixActivity, final int n) {
-        if (netflixActivity.isForKids()) {
-            return 3;
-        }
-        return UiUtils.computeNumCWVideosToFetchPerBatch(n);
+    @Override
+    protected int computeNumItemsPerPage() {
+        return LomoConfig.computeStandardNumVideosPerPage(this.activity, true);
     }
     
     @Override
-    protected int computeNumItemsPerPage(final int n, final int n2) {
-        return UiUtils.computeNumCWItemsPerPage(n, n2);
-    }
-    
-    @Override
-    protected int computeNumVideosToFetchPerBatch(final Context context) {
-        return computeNumVideosToFetchPerBatch(this.activity, DeviceUtils.getScreenSizeCategory(context));
+    protected int computeNumVideosToFetchPerBatch() {
+        return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.CONTINUE_WATCHING);
     }
     
     @Override
     public int getRowHeightInPx() {
-        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361910);
+        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361928);
         Log.v("PaginatedCwAdapter", "Computed view height: " + n);
         return n;
     }

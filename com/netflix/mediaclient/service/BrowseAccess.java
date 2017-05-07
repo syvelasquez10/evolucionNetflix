@@ -10,7 +10,7 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.ui.Asset;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -37,8 +37,8 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void addToQueue(final String s, final int n, final String s2, final int n2, final int n3) {
-        this.mBrowseAgent.addToQueue(s, n, s2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n2, n3)));
+    public void addToQueue(final String s, final VideoType videoType, final int n, final boolean b, final String s2, final int n2, final int n3) {
+        this.mBrowseAgent.addToQueue(s, n, b, s2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n2, n3)));
     }
     
     @Override
@@ -72,8 +72,8 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchGenreVideos(final LoMo loMo, final int n, final int n2, final int n3, final int n4) {
-        this.mBrowseAgent.fetchGenreVideos(loMo, n, n2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n3, n4)));
+    public void fetchGenreVideos(final LoMo loMo, final int n, final int n2, final boolean b, final int n3, final int n4) {
+        this.mBrowseAgent.fetchGenreVideos(loMo, n, n2, b, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n3, n4)));
     }
     
     @Override
@@ -82,8 +82,8 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchIQVideos(final LoMo loMo, final int n, final int n2, final int n3, final int n4) {
-        this.mBrowseAgent.fetchIQVideos(loMo, n, n2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n3, n4)));
+    public void fetchIQVideos(final LoMo loMo, final int n, final int n2, final boolean b, final int n3, final int n4) {
+        this.mBrowseAgent.fetchIQVideos(loMo, n, n2, b, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n3, n4)));
     }
     
     @Override
@@ -107,8 +107,13 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchPostPlayVideos(final String s, final int n, final int n2) {
-        this.mBrowseAgent.fetchPostPlayVideos(s, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchPostPlayVideos(final String s, final VideoType videoType, final int n, final int n2) {
+        this.mBrowseAgent.fetchPostPlayVideos(s, videoType, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n, n2)));
+    }
+    
+    @Override
+    public void fetchPreAppData(final int n, final int n2) {
+        this.mBrowseAgent.fetchPreAppData(n, n2);
     }
     
     @Override
@@ -122,8 +127,13 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchShowDetails(final String s, final String s2, final int n, final int n2) {
-        this.mBrowseAgent.fetchShowDetails(s, s2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchShowDetails(final String s, final String s2, final boolean b, final int n, final int n2) {
+        this.mBrowseAgent.fetchShowDetails(s, s2, b, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n, n2)));
+    }
+    
+    @Override
+    public void fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final int n, final int n2) {
+        this.mBrowseAgent.fetchShowDetailsAndSeasons(s, s2, b, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -142,8 +152,8 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchVideos(final LoMo loMo, final int n, final int n2, final int n3, final int n4) {
-        this.mBrowseAgent.fetchVideos(loMo, n, n2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n3, n4)));
+    public void fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final int n3, final int n4) {
+        this.mBrowseAgent.fetchVideos(loMo, n, n2, b, b2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n3, n4)));
     }
     
     @Override
@@ -167,13 +177,13 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final int n5, final int n6) {
-        this.mBrowseAgent.prefetchGenreLoLoMo(s, n, n2, n3, n4, b, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n5, n6)));
+    public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2, final int n5, final int n6) {
+        this.mBrowseAgent.prefetchGenreLoLoMo(s, n, n2, n3, n4, b, b2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n5, n6)));
     }
     
     @Override
-    public void prefetchLoLoMo(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final boolean b, final boolean b2, final int n7, final int n8) {
-        this.mBrowseAgent.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n7, n8)));
+    public void prefetchLoLoMo(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final boolean b, final boolean b2, final boolean b3, final int n7, final int n8) {
+        this.mBrowseAgent.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, b3, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n7, n8)));
     }
     
     @Override
@@ -182,8 +192,8 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void refreshCW() {
-        this.mBrowseAgent.refreshCW();
+    public void refreshCw() {
+        this.mBrowseAgent.refreshCw();
     }
     
     @Override
@@ -192,8 +202,8 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void refreshIQ() {
-        this.mBrowseAgent.refreshIQ();
+    public void refreshIq() {
+        this.mBrowseAgent.refreshIq();
     }
     
     @Override
@@ -202,7 +212,7 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void removeFromQueue(final String s, final String s2, final int n, final int n2) {
+    public void removeFromQueue(final String s, final VideoType videoType, final String s2, final int n, final int n2) {
         this.mBrowseAgent.removeFromQueue(s, s2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     

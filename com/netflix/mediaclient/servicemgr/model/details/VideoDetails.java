@@ -6,8 +6,10 @@ package com.netflix.mediaclient.servicemgr.model.details;
 
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.Ratable;
+import com.netflix.mediaclient.servicemgr.model.HdEnabledProvider;
 
-public interface VideoDetails extends Video
+public interface VideoDetails extends HdEnabledProvider, Ratable, Video
 {
     String getActors();
     
@@ -25,8 +27,6 @@ public interface VideoDetails extends Video
     
     Playable getPlayable();
     
-    float getPredictedRating();
-    
     String getQuality();
     
     String getStoryDispUrl();
@@ -35,15 +35,11 @@ public interface VideoDetails extends Video
     
     String getSynopsis();
     
-    String getTvCardUrl();
+    String getTitleImgUrl();
     
-    float getUserRating();
+    String getTvCardUrl();
     
     int getYear();
     
     boolean isInQueue();
-    
-    boolean isVideoHd();
-    
-    void setUserRating(final float p0);
 }

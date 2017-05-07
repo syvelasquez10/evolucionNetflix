@@ -13,6 +13,7 @@ import android.content.Context;
 public class TopCropImageView extends AdvancedImageView
 {
     private static final String TAG = "TopCropImageView";
+    private int cropPointYOffset;
     
     public TopCropImageView(final Context context) {
         super(context);
@@ -64,10 +65,15 @@ public class TopCropImageView extends AdvancedImageView
             n3 = n / intrinsicWidth;
         }
         if (Log.isLoggable("TopCropImageView", 2)) {
-            Log.v("TopCropImageView", "Matrix scale: " + n3 + ", drawable height: " + intrinsicHeight + ", drawable width: " + intrinsicWidth + ", view height: " + n2 + ", view width: " + n);
+            Log.v("TopCropImageView", "Matrix scale: " + n3 + ", drawable height: " + intrinsicHeight + ", drawable width: " + intrinsicWidth + ", view height: " + n2 + ", view width: " + n + ", crop y-offset: " + this.cropPointYOffset);
         }
-        imageMatrix.setScale(n3, n3);
+        imageMatrix.setScale(n3, n3, 0.0f, (float)this.cropPointYOffset);
         this.setImageMatrix(imageMatrix);
+    }
+    
+    public void setCropPointYOffsetPx(final int cropPointYOffset) {
+        this.cropPointYOffset = cropPointYOffset;
+        this.recomputeImgMatrix();
     }
     
     protected boolean setFrame(final int n, final int n2, final int n3, final int n4) {

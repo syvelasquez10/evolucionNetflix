@@ -20,14 +20,15 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class SocialNotificationsUtils
 {
+    public static final int PAGE_SOCIAL_NOTIFICATIONS_SIZE = 20;
     public static final int SOCIAL_NOTIFICATIONS_ID = 1000;
     public static final String SWIPED_SOCIAL_NOTIFICATION_ID = "swiped_social_notification_id";
     
     public static MenuItem addSocialNotificationsIconIfNeeded(final NetflixActivity netflixActivity, final Menu menu) {
         MenuItem add = null;
         if (isSocialNotificationsFeatureSupported(netflixActivity)) {
-            add = menu.add(0, 2131165248, 0, 2131493178);
-            add.setIcon(2130837663).setShowAsAction(1);
+            add = menu.add(0, 2131165255, 0, 2131493185);
+            add.setIcon(2130837667).setShowAsAction(1);
         }
         return add;
     }
@@ -84,7 +85,7 @@ public class SocialNotificationsUtils
     }
     
     public static boolean tryHandleMenuItemClick(final MenuItem menuItem, final Context context) {
-        if (menuItem.getItemId() == 2131165248) {
+        if (menuItem.getItemId() == 2131165255) {
             context.startActivity(new Intent(context, (Class)SocialNotificationsActivity.class));
             return true;
         }
@@ -94,10 +95,10 @@ public class SocialNotificationsUtils
     public static void updateNotificationsIcon(final MenuItem menuItem, final boolean b) {
         int icon;
         if (b) {
-            icon = 2130837664;
+            icon = 2130837668;
         }
         else {
-            icon = 2130837663;
+            icon = 2130837667;
         }
         menuItem.setIcon(icon);
     }

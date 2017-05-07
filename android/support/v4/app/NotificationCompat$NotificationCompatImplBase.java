@@ -37,6 +37,11 @@ class NotificationCompat$NotificationCompatImplBase implements NotificationCompa
     }
     
     @Override
+    public Bundle getBundleForUnreadConversation(final NotificationCompatBase$UnreadConversation notificationCompatBase$UnreadConversation) {
+        return null;
+    }
+    
+    @Override
     public String getCategory(final Notification notification) {
         return null;
     }
@@ -63,6 +68,11 @@ class NotificationCompat$NotificationCompatImplBase implements NotificationCompa
     
     @Override
     public String getSortKey(final Notification notification) {
+        return null;
+    }
+    
+    @Override
+    public NotificationCompatBase$UnreadConversation getUnreadConversationFromBundle(final Bundle bundle, final NotificationCompatBase$UnreadConversation$Factory notificationCompatBase$UnreadConversation$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
         return null;
     }
     

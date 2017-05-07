@@ -4,8 +4,10 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.ui.kids.lolomo.KidsPaginatedCwAdapter;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickPaginatedCwAdapter;
 import android.content.Context;
+import com.netflix.mediaclient.ui.kids.lolomo.KidsPaginatedCwAdapter;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
@@ -17,10 +19,13 @@ public abstract class ProgressiveCwPagerAdapter extends BaseProgressivePagerAdap
     }
     
     @Override
-    protected BasePaginatedAdapter<CWVideo> createPaginatedAdapter(final Context context) {
-        if (this.getManager().getActivity().isForKids()) {
-            return new KidsPaginatedCwAdapter(context);
+    protected BasePaginatedAdapter<CWVideo> createPaginatedAdapter(final NetflixActivity netflixActivity) {
+        if (netflixActivity.isForKids()) {
+            return new KidsPaginatedCwAdapter((Context)netflixActivity);
         }
-        return new PaginatedCwAdapter(context);
+        if (netflixActivity.isKubrick()) {
+            return new KubrickPaginatedCwAdapter((Context)netflixActivity);
+        }
+        return new PaginatedCwAdapter((Context)netflixActivity);
     }
 }

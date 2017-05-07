@@ -26,18 +26,8 @@ public class DialogMessageReceiver extends BroadcastReceiver
         if ("ui_rating".equals(action)) {
             this.callback.handleUserRatingChange(intent.getExtras().getString("videoId"), intent.getExtras().getFloat("rating"));
         }
-        else {
-            if ("nflx_button_selected".equals(action)) {
-                this.callback.handleDialogButton(intent.getExtras().getString("nflx_dialog_id"), intent.getExtras().getString("nflx_action_selected"));
-                return;
-            }
-            if ("nflx_button_canceled".equals(action)) {
-                this.callback.handleDialogCancel(intent.getExtras().getString("nflx_dialog_id"));
-                return;
-            }
-            if (Log.isLoggable("DialogMessageReceiver", 3)) {
-                Log.d("DialogMessageReceiver", "We do not support action " + action);
-            }
+        else if (Log.isLoggable("DialogMessageReceiver", 3)) {
+            Log.d("DialogMessageReceiver", "We do not support action " + action);
         }
     }
 }

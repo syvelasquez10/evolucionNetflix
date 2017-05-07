@@ -21,18 +21,10 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
     public Video$Detail detail;
     public Episode$Detail episodeDetail;
     public Video$InQueue inQueue;
-    public PostPlayVideo$PostPlayContext postplayContext;
     public Video$UserRating rating;
     public SocialEvidence socialEvidence;
     public Video$Summary summary;
     public boolean userConnectedToFacebook;
-    
-    private String getSynopsisNarrative(final Video$Detail video$Detail) {
-        if (video$Detail.synopsisNarrative != null) {
-            return video$Detail.synopsisNarrative;
-        }
-        return video$Detail.synopsis;
-    }
     
     @Override
     public boolean canBeSharedOnFacebook() {
@@ -44,7 +36,7 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
         if (this.detail == null) {
             return null;
         }
-        return this.detail.directors;
+        return this.detail.actors;
     }
     
     @Override
@@ -76,7 +68,7 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
             }
         }
         else if (this.episodeDetail != null) {
-            return this.episodeDetail.restUrl;
+            return this.episodeDetail.getShowRestUrl();
         }
         return null;
     }
@@ -105,7 +97,7 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
     @Override
     public int getEpisodeNumber() {
         if (this.episodeDetail == null) {
-            return 0;
+            return -1;
         }
         return this.episodeDetail.getEpisodeNumber();
     }
@@ -130,11 +122,11 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
     public String getHighResolutionLandscapeBoxArtUrl() {
         if (VideoType.EPISODE.equals(this.getType())) {
             if (this.episodeDetail != null) {
-                return this.episodeDetail.mdxHorzUrl;
+                return this.episodeDetail.hiResHorzUrl;
             }
         }
         else if (this.detail != null) {
-            return this.detail.mdxHorzUrl;
+            return this.detail.hiResHorzUrl;
         }
         return null;
     }
@@ -181,17 +173,30 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
             }
         }
         else if (this.detail != null) {
-            return this.detail.storyImgUrl;
+            return this.detail.intrUrl;
+        }
+        return null;
+    }
+    
+    @Override
+    public String getNarrative() {
+        if (VideoType.EPISODE.equals(this.getType())) {
+            if (this.episodeDetail != null) {
+                return this.episodeDetail.synopsisNarrative;
+            }
+        }
+        else if (this.detail != null) {
+            return this.detail.synopsisNarrative;
         }
         return null;
     }
     
     @Override
     public String getParentId() {
-        if (this.episodeDetail == null) {
-            return null;
+        if (this.episodeDetail != null) {
+            return this.episodeDetail.getShowId();
         }
-        return this.episodeDetail.getShowId();
+        return this.getId();
     }
     
     @Override
@@ -250,22 +255,6 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
     }
     
     @Override
-    public String getPostPlayRequestId() {
-        if (this.postplayContext == null) {
-            return null;
-        }
-        return this.postplayContext.requestId;
-    }
-    
-    @Override
-    public int getPostPlayTrackId() {
-        if (this.postplayContext == null) {
-            return 0;
-        }
-        return this.postplayContext.trackId;
-    }
-    
-    @Override
     public float getPredictedRating() {
         if (VideoType.EPISODE.equals(this.getType()) || this.detail == null) {
             return 0.0f;
@@ -282,11 +271,11 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
     public int getRuntime() {
         if (VideoType.MOVIE.equals(this.getType())) {
             if (this.detail != null) {
-                return this.detail.endtime;
+                return this.detail.runtime;
             }
         }
         else if (this.episodeDetail != null) {
-            return this.episodeDetail.endtime;
+            return this.episodeDetail.runtime;
         }
         return 0;
     }
@@ -294,7 +283,7 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
     @Override
     public int getSeasonNumber() {
         if (this.episodeDetail == null) {
-            return 0;
+            return -1;
         }
         return this.episodeDetail.getSeasonNumber();
     }
@@ -341,7 +330,7 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
             }
         }
         else if (this.detail != null) {
-            return this.getSynopsisNarrative(this.detail);
+            return this.detail.synopsis;
         }
         return null;
     }
@@ -357,6 +346,14 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
             return this.summary.getTitle();
         }
         return null;
+    }
+    
+    @Override
+    public String getTitleImgUrl() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.titleUrl;
     }
     
     @Override
@@ -382,7 +379,7 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
     
     @Override
     public float getUserRating() {
-        if (VideoType.EPISODE.equals(this.getType()) || this.rating == null) {
+        if (this.rating == null) {
             return 0.0f;
         }
         return this.rating.userRating;

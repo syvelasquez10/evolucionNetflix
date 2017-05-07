@@ -4,7 +4,8 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import android.widget.CheckBox;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.StringUtils;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import android.view.View;
@@ -37,41 +38,36 @@ class MdxTargetSelectionDialog$TargetsAdapter extends BaseAdapter
         return n;
     }
     
-    public View getView(int visibility, View inflate, final ViewGroup viewGroup) {
-        final int n = 1;
-        final int n2 = 0;
+    public View getView(int n, View inflate, final ViewGroup viewGroup) {
+        int visibility = 0;
         MdxTargetSelectionDialog$ViewHolder tag;
         if (inflate == null) {
-            inflate = this.inflater.inflate(2130903124, (ViewGroup)null);
-            tag = new MdxTargetSelectionDialog$ViewHolder((TextView)inflate.findViewById(2131165464), (TextView)inflate.findViewById(2131165465), (CheckBox)inflate.findViewById(2131165463));
+            inflate = this.inflater.inflate(2130903137, (ViewGroup)null);
+            tag = new MdxTargetSelectionDialog$ViewHolder((TextView)inflate.findViewById(2131165492), (TextView)inflate.findViewById(2131165493));
             inflate.setTag((Object)tag);
         }
         else {
             tag = (MdxTargetSelectionDialog$ViewHolder)inflate.getTag();
         }
-        tag.title.setText((CharSequence)this.getItem(visibility));
-        final boolean checked = visibility == this.selectedIndex;
+        tag.title.setText((CharSequence)this.getItem(n));
+        if (n == this.selectedIndex) {
+            n = 1;
+        }
+        else {
+            n = 0;
+        }
         final TextView subTitle = tag.subTitle;
         String subText;
-        if (checked) {
+        if (n != 0) {
             subText = this.subText;
         }
         else {
             subText = "";
         }
         subTitle.setText((CharSequence)subText);
-        if (checked) {
-            if (this.subText != null && !"".equals(this.subText.trim())) {
-                visibility = n;
-            }
-            else {
-                visibility = 0;
-            }
+        if (n != 0) {
             final TextView subTitle2 = tag.subTitle;
-            if (visibility != 0) {
-                visibility = n2;
-            }
-            else {
+            if (StringUtils.isEmpty(this.subText)) {
                 visibility = 8;
             }
             subTitle2.setVisibility(visibility);
@@ -79,12 +75,13 @@ class MdxTargetSelectionDialog$TargetsAdapter extends BaseAdapter
         else {
             tag.subTitle.setVisibility(8);
         }
-        tag.checkBox.setChecked(checked);
-        if (checked) {
-            inflate.setBackgroundColor(MdxTargetSelectionDialog.mSelectedRowColor);
+        if (n != 0) {
+            ViewUtils.setTextOpacityToSelected(tag.title);
+            ViewUtils.setTextOpacityToSelected(tag.subTitle);
             return inflate;
         }
-        inflate.setBackgroundColor(MdxTargetSelectionDialog.mRowColor);
+        ViewUtils.setTextOpacityToUnselected(tag.title);
+        ViewUtils.setTextOpacityToUnselected(tag.subTitle);
         return inflate;
     }
     

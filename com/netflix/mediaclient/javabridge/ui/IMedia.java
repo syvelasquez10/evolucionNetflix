@@ -16,6 +16,7 @@ import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.servicemgr.IManifestCache$CacheScheduleRequest;
 
 public interface IMedia
 {
@@ -28,6 +29,14 @@ public interface IMedia
     public static final int STOPPED = 3;
     
     void addEventListener(final String p0, final EventListener p1);
+    
+    void cacheFlush();
+    
+    void cachePause();
+    
+    void cacheResume();
+    
+    void cacheSchedule(final IManifestCache$CacheScheduleRequest[] p0);
     
     void changePlayer(final PlayerType p0);
     
@@ -65,7 +74,7 @@ public interface IMedia
     
     int getVideoWidth();
     
-    void open(final long p0, final PlayContext p1, final Open$NetType p2);
+    void open(final long p0, final PlayContext p1, final Open$NetType p2, final long p3);
     
     void pause();
     
@@ -82,6 +91,12 @@ public interface IMedia
     void setAudioBitrateRange(final AudioBitrateRange p0);
     
     void setBytesReport(final int p0, final int p1);
+    
+    void setCacheManifestType(final int p0);
+    
+    void setMaxCacheByteSize(final int p0);
+    
+    void setMaxCacheSize(final int p0);
     
     void setMaxVideoBufferSize(final int p0);
     

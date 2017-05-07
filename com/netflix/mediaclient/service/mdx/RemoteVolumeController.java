@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.VolumeProvider;
 import android.media.session.MediaSession;
+import com.netflix.mediaclient.service.configuration.MdxConfiguration;
 import android.content.Context;
 import android.content.BroadcastReceiver;
 import android.annotation.TargetApi;
@@ -22,12 +23,15 @@ public class RemoteVolumeController
     private BroadcastReceiver mCapabilitiesReceiver;
     private Context mContext;
     private boolean mIsVolumeControlSupported;
+    private MdxConfiguration mMdxConfiguration;
     private MediaSession mMediaSession;
+    private boolean mRemoteControlVisible;
     private int mVolume;
     private VolumeProvider mVolumeProvider;
     
-    public RemoteVolumeController(final Context mContext) {
+    public RemoteVolumeController(final Context mContext, final MdxConfiguration mMdxConfiguration) {
         this.mContext = mContext;
+        this.mMdxConfiguration = mMdxConfiguration;
         this.registerReceiver();
     }
     
@@ -51,6 +55,17 @@ public class RemoteVolumeController
         }
     }
     
+    private boolean shouldNotBeExecuted() {
+        if (this.mMdxConfiguration.isRemoteControlLockScreenEnabled()) {
+            return false;
+        }
+        if (this.mRemoteControlVisible) {
+            Log.w("nf_remote_volume_controller", "Lock screen is visible and lock screen is NOT enabled! Remove it!");
+            this.stopMediaSession();
+        }
+        return true;
+    }
+    
     private void unregisterReceiver() {
         if (this.mCapabilitiesReceiver != null) {
             this.mContext.getApplicationContext().unregisterReceiver(this.mCapabilitiesReceiver);
@@ -68,6 +83,11 @@ public class RemoteVolumeController
             Log.w("nf_remote_volume_controller", "Media session was initialized before");
             this.mMediaSession.release();
         }
+        if (!this.mMdxConfiguration.isRemoteControlLockScreenEnabled()) {
+            Log.w("nf_remote_volume_controller", "This device doesn't have lock screen enabled");
+            return;
+        }
+        this.mRemoteControlVisible = true;
         if (this.mIsVolumeControlSupported) {
             (this.mMediaSession = new MediaSession(this.mContext.getApplicationContext(), "Netflix media session")).setActive(true);
             this.mMediaSession.setFlags(1);
@@ -84,6 +104,7 @@ public class RemoteVolumeController
     }
     
     public void stopMediaSession() {
+        this.mRemoteControlVisible = false;
         if (this.mMediaSession != null) {
             final PlaybackState$Builder playbackState$Builder = new PlaybackState$Builder();
             playbackState$Builder.setState(1, -1L, 1.0f);
@@ -101,16 +122,18 @@ public class RemoteVolumeController
         if (this.mVolume < 0) {
             this.mVolume = 0;
         }
-        if (this.mVolumeProvider != null) {
-            if (Log.isLoggable("nf_remote_volume_controller", 4)) {
-                Log.i("nf_remote_volume_controller", "setCurrentVolume: " + this.mVolume);
+        if (!this.shouldNotBeExecuted()) {
+            if (this.mVolumeProvider != null) {
+                if (Log.isLoggable("nf_remote_volume_controller", 4)) {
+                    Log.i("nf_remote_volume_controller", "setCurrentVolume: " + this.mVolume);
+                }
+                if (this.mVolumeProvider != null && this.mMediaSession != null) {
+                    this.mVolumeProvider.setCurrentVolume(this.mVolume / 10);
+                }
             }
-            if (this.mVolumeProvider != null && this.mMediaSession != null) {
-                this.mVolumeProvider.setCurrentVolume(this.mVolume / 10);
+            if (b) {
+                sendVolumeUpdateBroadcast(this.mContext, this.mVolume);
             }
-        }
-        if (b) {
-            sendVolumeUpdateBroadcast(this.mContext, this.mVolume);
         }
     }
 }

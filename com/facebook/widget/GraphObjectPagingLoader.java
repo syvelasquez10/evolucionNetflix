@@ -59,7 +59,12 @@ class GraphObjectPagingLoader<T extends GraphObject> extends Loader<SimpleGraphO
         if (b) {
             this.nextRequest = response.getRequestForPagedResults(Response$PagingDirection.NEXT);
             simpleGraphObjectCursor.addGraphObjects(castToList, isFromCache);
-            simpleGraphObjectCursor.setMoreObjectsAvailable(true);
+            if (this.nextRequest != null) {
+                simpleGraphObjectCursor.setMoreObjectsAvailable(true);
+            }
+            else {
+                simpleGraphObjectCursor.setMoreObjectsAvailable(false);
+            }
         }
         if (!b) {
             simpleGraphObjectCursor.setMoreObjectsAvailable(false);

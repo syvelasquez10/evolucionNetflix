@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.android.activity;
 
-import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -60,7 +59,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     }
     
     protected int getContentLayoutId() {
-        return 2130903094;
+        return 2130903096;
     }
     
     public Fragment getPrimaryFrag() {
@@ -92,16 +91,16 @@ public abstract class FragmentHostActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(this.getContentLayoutId());
-        this.contentHost = (LinearLayout)this.findViewById(2131165388);
-        this.primaryFragContainer = (ViewGroup)this.findViewById(2131165389);
-        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131165390);
+        this.contentHost = (LinearLayout)this.findViewById(2131165372);
+        this.primaryFragContainer = (ViewGroup)this.findViewById(2131165373);
+        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131165374);
         if (bundle == null) {
             this.primaryFrag = this.createPrimaryFrag();
             this.secondaryFrag = this.createSecondaryFrag();
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            beginTransaction.add(2131165389, this.primaryFrag, "primary");
+            beginTransaction.add(2131165373, this.primaryFrag, "primary");
             if (this.secondaryFrag != null) {
-                beginTransaction.add(2131165390, this.secondaryFrag, "secondary");
+                beginTransaction.add(2131165374, this.secondaryFrag, "secondary");
             }
             beginTransaction.commit();
         }
@@ -136,7 +135,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
         }
     }
     
-    protected void setPrimaryFrag(final NetflixFrag primaryFrag) {
+    protected void setPrimaryFrag(final Fragment primaryFrag) {
         this.primaryFrag = primaryFrag;
     }
 }

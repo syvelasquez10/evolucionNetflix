@@ -4,18 +4,16 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.servicemgr.model.Video;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
+import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Bookmark;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$InQueue;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$UserRating;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Detail;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.branches.Video$Summary;
-import java.util.ArrayList;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
@@ -25,32 +23,32 @@ import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<MovieDetails>
+public class FetchMovieDetailsRequest extends FalkorVolleyWebClientRequest<MovieDetails>
 {
     private static final String FIELD_MOVIES = "movies";
     private static final String TAG = "nf_service_browse_fetchmoviedetailsrequest";
-    private BrowseWebClientCache browseCache;
-    private final int fromVideo;
+    private final BrowseWebClientCache browseCache;
+    private final int fromSimilarVideo;
     private final String mMovieId;
     private final String pqlQuery;
     private final String pqlQuery2;
     private final String pqlQuery3;
     private final BrowseAgentCallback responseCallback;
-    private final int toVideo;
+    private final int toSimilarVideo;
     private final boolean userConnectedToFacebook;
     
-    public FetchMovieDetailsRequest(final Context context, final BrowseWebClientCache browseCache, final String mMovieId, final int fromVideo, final int toVideo, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+    public FetchMovieDetailsRequest(final Context context, final BrowseWebClientCache browseCache, final String mMovieId, final int toSimilarVideo, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
         this.mMovieId = mMovieId;
-        this.fromVideo = fromVideo;
-        this.toVideo = toVideo;
+        this.fromSimilarVideo = 0;
+        this.toSimilarVideo = toSimilarVideo;
         this.userConnectedToFacebook = userConnectedToFacebook;
         this.browseCache = browseCache;
-        this.pqlQuery = String.format("['movies', '%s', ['summary','detail', 'rating', 'inQueue', 'bookmark', 'socialEvidence']]", this.mMovieId);
-        this.pqlQuery2 = String.format("['movies', '%s', 'similars', {'from':%d,'to':%d}, 'summary']", this.mMovieId, fromVideo, toVideo);
+        this.pqlQuery = String.format("['movies', '%s', ['summary','detail', 'rating', 'inQueue', 'bookmark', 'socialEvidence', 'evidence']]", this.mMovieId);
+        this.pqlQuery2 = String.format("['movies', '%s', 'similars', {'from':%d,'to':%d}, 'summary']", this.mMovieId, this.fromSimilarVideo, toSimilarVideo);
         this.pqlQuery3 = String.format("['movies', '%s', 'similars', 'summary']", this.mMovieId);
         if (Log.isLoggable("nf_service_browse_fetchmoviedetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchmoviedetailsrequest", "PQL = " + this.pqlQuery + " " + this.pqlQuery2 + " " + this.pqlQuery3);
@@ -77,43 +75,30 @@ public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<Movie
     }
     
     @Override
-    protected MovieDetails parseFalcorResponse(String asJsonObject) {
+    protected MovieDetails parseFalkorResponse(String s) {
         if (Log.isLoggable("nf_service_browse_fetchmoviedetailsrequest", 2)) {}
-        final com.netflix.mediaclient.service.webclient.model.MovieDetails movieDetails = new com.netflix.mediaclient.service.webclient.model.MovieDetails();
-        final ArrayList<Video$Summary> similarVideos = new ArrayList<Video$Summary>();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchmoviedetailsrequest", asJsonObject);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
-            throw new FalcorParseException("MovieDetails empty!!!");
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchmoviedetailsrequest", s);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
+            throw new FalkorParseException("MovieDetails empty!!!");
         }
-        Label_0293: {
-            try {
-                final JsonObject asJsonObject2 = dataObj.getAsJsonObject("movies").getAsJsonObject(this.mMovieId);
-                movieDetails.summary = FalcorParseUtils.getPropertyObject(asJsonObject2, "summary", Video$Summary.class);
-                movieDetails.detail = FalcorParseUtils.getPropertyObject(asJsonObject2, "detail", Video$Detail.class);
-                movieDetails.rating = FalcorParseUtils.getPropertyObject(asJsonObject2, "rating", Video$UserRating.class);
-                movieDetails.inQueue = FalcorParseUtils.getPropertyObject(asJsonObject2, "inQueue", Video$InQueue.class);
-                movieDetails.bookmark = FalcorParseUtils.getPropertyObject(asJsonObject2, "bookmark", Video$Bookmark.class);
-                movieDetails.socialEvidence = FalcorParseUtils.getPropertyObject(asJsonObject2, "socialEvidence", SocialEvidence.class);
-                if (!asJsonObject2.has("similars")) {
-                    break Label_0293;
-                }
-                asJsonObject = (String)asJsonObject2.getAsJsonObject("similars");
-                for (int i = this.fromVideo; i <= this.toVideo; ++i) {
-                    final String string = Integer.toString(i);
-                    if (((JsonObject)asJsonObject).has(string)) {
-                        similarVideos.add(FalcorParseUtils.getPropertyObject(((JsonObject)asJsonObject).getAsJsonObject(string), "summary", Video$Summary.class));
-                    }
-                }
-            }
-            catch (Exception ex) {
-                Log.v("nf_service_browse_fetchmoviedetailsrequest", "String response to parse = " + asJsonObject);
-                throw new FalcorParseException("response missing expected json objects", ex);
-            }
-            movieDetails.similarListSummary = FalcorParseUtils.getPropertyObject((JsonObject)asJsonObject, "summary", TrackableListSummary.class);
+        try {
+            final JsonObject asJsonObject = dataObj.getAsJsonObject("movies").getAsJsonObject(this.mMovieId);
+            s = (String)new com.netflix.mediaclient.service.webclient.model.MovieDetails();
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).summary = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", Video$Summary.class);
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).detail = FalkorParseUtils.getPropertyObject(asJsonObject, "detail", Video$Detail.class);
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).rating = FalkorParseUtils.getPropertyObject(asJsonObject, "rating", Video$UserRating.class);
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).inQueue = FalkorParseUtils.getPropertyObject(asJsonObject, "inQueue", Video$InQueue.class);
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).bookmark = FalkorParseUtils.getPropertyObject(asJsonObject, "bookmark", Video$Bookmark.class);
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).socialEvidence = FalkorParseUtils.getPropertyObject(asJsonObject, "socialEvidence", SocialEvidence.class);
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).evidence = FalkorParseUtils.buildEvidence(asJsonObject);
+            FalkorParseUtils.buildSimilarVideosList(asJsonObject, (Video)s, this.toSimilarVideo);
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).userConnectedToFacebook = this.userConnectedToFacebook;
+            ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).inQueue = this.browseCache.updateInQueueCacheRecord(((Video)s).getId(), ((com.netflix.mediaclient.service.webclient.model.MovieDetails)s).inQueue);
+            return (MovieDetails)s;
         }
-        movieDetails.similarVideos = (List<Video>)similarVideos;
-        movieDetails.userConnectedToFacebook = this.userConnectedToFacebook;
-        movieDetails.inQueue = this.browseCache.updateInQueueCacheRecord(movieDetails.getId(), movieDetails.inQueue);
-        return movieDetails;
+        catch (Exception ex) {
+            Log.v("nf_service_browse_fetchmoviedetailsrequest", "String response to parse = " + s);
+            throw new FalkorParseException("response missing expected json objects", ex);
+        }
     }
 }

@@ -6,19 +6,19 @@ package android.support.v7.mediarouter;
 
 public final class R$color
 {
-    public static final int abc_background_cache_hint_selector_material_dark = 2131296443;
-    public static final int abc_background_cache_hint_selector_material_light = 2131296444;
+    public static final int abc_background_cache_hint_selector_material_dark = 2131296434;
+    public static final int abc_background_cache_hint_selector_material_light = 2131296435;
     public static final int abc_input_method_navigation_guard = 2131296259;
-    public static final int abc_primary_text_disable_only_material_dark = 2131296445;
-    public static final int abc_primary_text_disable_only_material_light = 2131296446;
-    public static final int abc_primary_text_material_dark = 2131296447;
-    public static final int abc_primary_text_material_light = 2131296448;
-    public static final int abc_search_url_text = 2131296449;
+    public static final int abc_primary_text_disable_only_material_dark = 2131296436;
+    public static final int abc_primary_text_disable_only_material_light = 2131296437;
+    public static final int abc_primary_text_material_dark = 2131296438;
+    public static final int abc_primary_text_material_light = 2131296439;
+    public static final int abc_search_url_text = 2131296440;
     public static final int abc_search_url_text_normal = 2131296256;
     public static final int abc_search_url_text_pressed = 2131296258;
     public static final int abc_search_url_text_selected = 2131296257;
-    public static final int abc_secondary_text_material_dark = 2131296450;
-    public static final int abc_secondary_text_material_light = 2131296451;
+    public static final int abc_secondary_text_material_dark = 2131296441;
+    public static final int abc_secondary_text_material_light = 2131296442;
     public static final int accent_material_dark = 2131296271;
     public static final int accent_material_light = 2131296270;
     public static final int background_floating_material_dark = 2131296262;

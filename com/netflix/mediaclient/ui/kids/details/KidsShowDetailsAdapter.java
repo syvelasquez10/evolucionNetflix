@@ -68,8 +68,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         for (int i = 0; i < this.getCount(); ++i) {
             this.episodes.add(this.loadingEpisode);
         }
-        this.lr = this.activity.getResources().getDimensionPixelSize(2131361973);
-        this.tb = this.activity.getResources().getDimensionPixelSize(2131361974);
+        this.lr = this.activity.getResources().getDimensionPixelSize(2131361974);
+        this.tb = this.activity.getResources().getDimensionPixelSize(2131361975);
         this.itemHeight = (int)((DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.lr - this.lr) * 0.75f) + this.tb;
         this.firstItemHeight = this.itemHeight + this.tb;
         this.itemParams = new AbsListView$LayoutParams(-1, this.itemHeight);
@@ -78,8 +78,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
     private TextView createStatusTextView() {
         final Resources resources = this.activity.getResources();
         final TextView textView = new TextView((Context)this.activity);
-        textView.setTextColor(resources.getColor(2131296413));
-        textView.setTextSize(0, (float)resources.getDimensionPixelSize(2131361867));
+        textView.setTextColor(resources.getColor(2131296397));
+        textView.setTextSize(0, (float)resources.getDimensionPixelSize(2131361884));
         textView.setGravity(17);
         textView.setLayoutParams((ViewGroup$LayoutParams)this.itemParams);
         return textView;
@@ -175,7 +175,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                 if (view == null) {
                     view = (View)this.createStatusTextView();
                 }
-                ((TextView)view).setText(2131493151);
+                ((TextView)view).setText(2131493158);
                 return view;
             }
             case 2: {
@@ -208,7 +208,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                 if (view == null) {
                     view = (View)this.createStatusTextView();
                 }
-                ((TextView)view).setText(2131492981);
+                ((TextView)view).setText(2131492989);
                 return view;
             }
         }

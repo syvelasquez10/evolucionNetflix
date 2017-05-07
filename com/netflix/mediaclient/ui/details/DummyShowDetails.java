@@ -4,9 +4,11 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
+import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.util.Random;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
@@ -75,6 +77,16 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public IconFontGlyph getEvidenceGlyph() {
+        return null;
+    }
+    
+    @Override
+    public String getEvidenceText() {
+        return null;
+    }
+    
+    @Override
     public List<FriendProfile> getFacebookFriends() {
         return null;
     }
@@ -130,6 +142,26 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public List<Video> getSimilars() {
+        return null;
+    }
+    
+    @Override
+    public int getSimilarsListPos() {
+        return 0;
+    }
+    
+    @Override
+    public String getSimilarsRequestId() {
+        return null;
+    }
+    
+    @Override
+    public int getSimilarsTrackId() {
+        return 0;
+    }
+    
+    @Override
     public String getSquareUrl() {
         return null;
     }
@@ -152,6 +184,11 @@ public class DummyShowDetails implements ShowDetails
     @Override
     public String getTitle() {
         return "GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB";
+    }
+    
+    @Override
+    public String getTitleImgUrl() {
+        return null;
     }
     
     @Override

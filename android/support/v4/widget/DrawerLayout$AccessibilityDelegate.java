@@ -77,9 +77,9 @@ class DrawerLayout$AccessibilityDelegate extends AccessibilityDelegateCompat
     public boolean dispatchPopulateAccessibilityEvent(final View view, final AccessibilityEvent accessibilityEvent) {
         if (accessibilityEvent.getEventType() == 32) {
             final List text = accessibilityEvent.getText();
-            final View access$200 = this.this$0.findVisibleDrawer();
-            if (access$200 != null) {
-                final CharSequence drawerTitle = this.this$0.getDrawerTitle(this.this$0.getDrawerViewAbsoluteGravity(access$200));
+            final View access$300 = this.this$0.findVisibleDrawer();
+            if (access$300 != null) {
+                final CharSequence drawerTitle = this.this$0.getDrawerTitle(this.this$0.getDrawerViewAbsoluteGravity(access$300));
                 if (drawerTitle != null) {
                     text.add(drawerTitle);
                 }
@@ -97,21 +97,26 @@ class DrawerLayout$AccessibilityDelegate extends AccessibilityDelegateCompat
     
     @Override
     public void onInitializeAccessibilityNodeInfo(final View source, final AccessibilityNodeInfoCompat accessibilityNodeInfoCompat) {
-        final AccessibilityNodeInfoCompat obtain = AccessibilityNodeInfoCompat.obtain(accessibilityNodeInfoCompat);
-        super.onInitializeAccessibilityNodeInfo(source, obtain);
-        accessibilityNodeInfoCompat.setClassName(DrawerLayout.class.getName());
-        accessibilityNodeInfoCompat.setSource(source);
-        final ViewParent parentForAccessibility = ViewCompat.getParentForAccessibility(source);
-        if (parentForAccessibility instanceof View) {
-            accessibilityNodeInfoCompat.setParent((View)parentForAccessibility);
+        if (DrawerLayout.CAN_HIDE_DESCENDANTS) {
+            super.onInitializeAccessibilityNodeInfo(source, accessibilityNodeInfoCompat);
         }
-        this.copyNodeInfoNoChildren(accessibilityNodeInfoCompat, obtain);
-        obtain.recycle();
-        this.addChildrenForAccessibility(accessibilityNodeInfoCompat, (ViewGroup)source);
+        else {
+            final AccessibilityNodeInfoCompat obtain = AccessibilityNodeInfoCompat.obtain(accessibilityNodeInfoCompat);
+            super.onInitializeAccessibilityNodeInfo(source, obtain);
+            accessibilityNodeInfoCompat.setSource(source);
+            final ViewParent parentForAccessibility = ViewCompat.getParentForAccessibility(source);
+            if (parentForAccessibility instanceof View) {
+                accessibilityNodeInfoCompat.setParent((View)parentForAccessibility);
+            }
+            this.copyNodeInfoNoChildren(accessibilityNodeInfoCompat, obtain);
+            obtain.recycle();
+            this.addChildrenForAccessibility(accessibilityNodeInfoCompat, (ViewGroup)source);
+        }
+        accessibilityNodeInfoCompat.setClassName(DrawerLayout.class.getName());
     }
     
     @Override
     public boolean onRequestSendAccessibilityEvent(final ViewGroup viewGroup, final View view, final AccessibilityEvent accessibilityEvent) {
-        return includeChildForAccessibility(view) && super.onRequestSendAccessibilityEvent(viewGroup, view, accessibilityEvent);
+        return (DrawerLayout.CAN_HIDE_DESCENDANTS || includeChildForAccessibility(view)) && super.onRequestSendAccessibilityEvent(viewGroup, view, accessibilityEvent);
     }
 }

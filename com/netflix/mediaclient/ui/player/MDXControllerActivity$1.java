@@ -4,31 +4,11 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import android.app.Activity;
-import com.netflix.mediaclient.util.AndroidUtils;
-import android.os.Bundle;
-import android.content.res.Configuration;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.servicemgr.IMdxSharedState;
-import com.netflix.mediaclient.NetflixApplication;
-import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.service.webclient.model.EpisodeDetails;
-import android.text.TextUtils;
-import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
-import android.content.Context;
 import android.content.Intent;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.view.View;
-import android.annotation.TargetApi;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import android.content.Context;
+import android.content.BroadcastReceiver;
 
-class MDXControllerActivity$1 implements ManagerStatusListener
+class MDXControllerActivity$1 extends BroadcastReceiver
 {
     final /* synthetic */ MDXControllerActivity this$0;
     
@@ -36,13 +16,10 @@ class MDXControllerActivity$1 implements ManagerStatusListener
         this.this$0 = this$0;
     }
     
-    @Override
-    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-        this.this$0.showEpisodesData();
-    }
-    
-    @Override
-    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-        this.this$0.cleanupAndExit();
+    public void onReceive(final Context context, final Intent intent) {
+        if (intent.getAction() == "com.netflix.mediaclient.ui.player.MDXControllerActivity.ACTION_FINISH") {
+            this.this$0.setResult(0);
+            this.this$0.finish();
+        }
     }
 }

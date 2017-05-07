@@ -23,7 +23,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     
     public VideoViewGroup(final Context context, final boolean b) {
         super(context);
-        this.setId(2131165241);
+        this.setId(2131165248);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.setOrientation(0);
         if (b) {
@@ -34,7 +34,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     protected abstract V createChildView(final Context p0);
     
     protected int getChildPaddingDimenResId() {
-        return 2131361897;
+        return 2131361913;
     }
     
     public void init(final int n) {

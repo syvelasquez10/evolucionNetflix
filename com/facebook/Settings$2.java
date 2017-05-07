@@ -22,7 +22,7 @@ final class Settings$2 implements Runnable
     
     @Override
     public void run() {
-        final Response publishInstallAndWaitForResponse = Settings.publishInstallAndWaitForResponse(this.val$applicationContext, this.val$applicationId);
+        final Response publishInstallAndWaitForResponse = Settings.publishInstallAndWaitForResponse(this.val$applicationContext, this.val$applicationId, false);
         if (this.val$callback != null) {
             new Handler(Looper.getMainLooper()).post((Runnable)new Settings$2$1(this, publishInstallAndWaitForResponse));
         }

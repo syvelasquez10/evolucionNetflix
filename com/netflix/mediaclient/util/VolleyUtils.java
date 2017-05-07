@@ -7,11 +7,12 @@ package com.netflix.mediaclient.util;
 import com.netflix.mediaclient.Log;
 import java.util.Locale;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import com.netflix.mediaclient.service.webclient.volley.StatusCodeError;
 import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
-import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
@@ -24,11 +25,11 @@ public final class VolleyUtils
     public static NetflixStatus getStatus(final VolleyError volleyError, final ErrorLogging errorLogging) {
         final StatusCode internal_ERROR = StatusCode.INTERNAL_ERROR;
         StatusCode statusCode;
-        if (volleyError instanceof FalcorParseException) {
-            statusCode = FalcorParseException.getErrorCode(((FalcorParseException)volleyError).getMessage());
+        if (volleyError instanceof FalkorParseException) {
+            statusCode = FalkorParseException.getErrorCode(((FalkorParseException)volleyError).getMessage());
         }
-        else if (volleyError instanceof FalcorServerException) {
-            statusCode = FalcorServerException.getErrorCode(((FalcorServerException)volleyError).getMessage(), errorLogging);
+        else if (volleyError instanceof FalkorServerException) {
+            statusCode = FalkorServerException.getErrorCode(((FalkorServerException)volleyError).getMessage(), errorLogging);
         }
         else if (volleyError instanceof ServerError) {
             statusCode = StatusCode.SERVER_ERROR;
@@ -36,10 +37,13 @@ public final class VolleyUtils
         else if (volleyError instanceof TimeoutError) {
             statusCode = getStatusCodeFromVolleyNetworkError(volleyError);
         }
+        else if (volleyError instanceof NetworkError) {
+            statusCode = getStatusCodeFromVolleyNetworkError(volleyError);
+        }
         else {
             statusCode = internal_ERROR;
-            if (volleyError instanceof NetworkError) {
-                statusCode = getStatusCodeFromVolleyNetworkError(volleyError);
+            if (volleyError instanceof StatusCodeError) {
+                statusCode = ((StatusCodeError)volleyError).getStatusCode();
             }
         }
         final NetflixStatus netflixStatus = new NetflixStatus(statusCode);

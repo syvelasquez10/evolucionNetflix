@@ -23,6 +23,32 @@ public class Error extends BaseMediaEvent
         super("error", jsonObject);
     }
     
+    public boolean checkForAuthFailureRegistrationRequired() {
+        boolean b = false;
+        if (this.mArray == null) {
+            return b;
+        }
+        final int n = 0;
+        b = b;
+        if (n >= this.mArray.length()) {
+            return b;
+        }
+        try {
+            if (this.mArray.getJSONObject(n).getString("errorcode").equals("NFErr_NCCP_RegistrationRequired")) {
+                b = true;
+                return b;
+            }
+            goto Label_0065;
+        }
+        catch (JSONException ex) {
+            Log.e("nf_event", "checkForAuthFailureRegistrationRequired: JSONException:", (Throwable)ex);
+        }
+        catch (Throwable t) {
+            Log.e("nf_event", "checkForAuthFailureRegistrationRequired:", t);
+            goto Label_0065;
+        }
+    }
+    
     public boolean checkForOpenDeviceFailureInStack() {
         boolean b = false;
         if (this.mArray == null) {

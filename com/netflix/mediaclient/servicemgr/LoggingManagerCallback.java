@@ -6,13 +6,13 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
+import java.io.Serializable;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
@@ -179,7 +179,15 @@ public class LoggingManagerCallback implements ManagerCallback
     @Override
     public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final Status status) {
         if (Log.isLoggable(this.tag, 2)) {
-            Log.v(this.tag, String.format("onLoLoMoSummaryFetched, num: %d, status: %d", loLoMo.getNumLoMos(), status.getStatusCode().getValue()));
+            final String tag = this.tag;
+            int numLoMos;
+            if (loLoMo == null) {
+                numLoMos = -1;
+            }
+            else {
+                numLoMos = loLoMo.getNumLoMos();
+            }
+            Log.v(tag, String.format("onLoLoMoSummaryFetched, num: %d, status: %d", numLoMos, status.getStatusCode().getValue()));
         }
     }
     
@@ -235,17 +243,9 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final Status status) {
+    public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
         if (Log.isLoggable(this.tag, 2)) {
-            final String tag = this.tag;
-            int size;
-            if (list == null) {
-                size = -1;
-            }
-            else {
-                size = list.size();
-            }
-            Log.v(tag, String.format("onPostPlayVideosFetched, num: %d, status: %d", size, status.getStatusCode().getValue()));
+            Log.v(this.tag, String.format("onPostPlayVideosFetched, status: %d", status.getStatusCode().getValue()));
         }
     }
     
@@ -327,6 +327,30 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onShowDetailsAndSeasonsFetched(final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
+        if (Log.isLoggable(this.tag, 2)) {
+            final String tag = this.tag;
+            String title;
+            if (showDetails == null) {
+                title = "null";
+            }
+            else {
+                title = showDetails.getTitle();
+            }
+            Log.v(tag, String.format("onShowDetailsAndSeasonsFetched, title: %s, status: %d", title, status.getStatusCode().getValue()));
+            final String tag2 = this.tag;
+            Serializable value;
+            if (list == null) {
+                value = "null";
+            }
+            else {
+                value = list.size();
+            }
+            Log.v(tag2, String.format("onShowDetailsAndSeasonsFetched, seasons: %s items", value));
+        }
+    }
+    
+    @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
         if (Log.isLoggable(this.tag, 2)) {
             final String tag = this.tag;
@@ -357,7 +381,7 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+    public void onSocialNotificationWasThanked(final Status status) {
         if (Log.isLoggable(this.tag, 2)) {
             Log.v(this.tag, String.format("onSocialNotificationWasThanked, status: %d", status.getStatusCode().getValue()));
         }

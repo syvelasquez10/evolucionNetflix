@@ -19,6 +19,8 @@ import com.viewpagerindicator.android.osp.ViewPager;
 public class CustomViewPager extends ViewPager
 {
     private static final boolean ALLOW_OVERLAPPED_PAGES = true;
+    public static final boolean DO_NOT_OVERLAP_PAGES_CONST = false;
+    public static final boolean OVERLAP_PAGES_CONST = true;
     private static final String TAG = "CustomViewPager";
     private final ViewPager$OnPageChangeListener onPageChangeListener;
     private int pageMarginOffsetPx;

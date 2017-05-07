@@ -11,14 +11,14 @@ import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.google.android.gms.cast.CastDevice;
-import java.util.ArrayList;
+import java.util.HashMap;
 import org.json.JSONArray;
 import android.support.v7.media.MediaRouter;
 import android.support.v7.media.MediaRouteSelector;
 import com.netflix.mediaclient.service.mdx.MdxNrdpLogger;
-import android.os.Handler;
 import android.support.v7.media.MediaRouter$RouteInfo;
-import java.util.List;
+import java.util.Map;
+import android.os.Handler;
 import android.content.Context;
 import android.support.v7.media.MediaRouter$Callback;
 
@@ -32,8 +32,8 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     private String mCastPrefix;
     private Context mContext;
     private boolean mForceLaunch;
-    private List<MediaRouter$RouteInfo> mListOfRoutes;
     private Handler mMainHandler;
+    private Map<String, MediaRouter$RouteInfo> mMapOfRoutes;
     private MdxNrdpLogger mMdxNrdpLogger;
     private MediaRouteSelector mMediaRouteSelector;
     private MediaRouter mMediaRouter;
@@ -50,7 +50,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     
     public CastManager(final Context mContext, final Handler mMainHandler, final Handler mWorkerHandler, final String mMyUuid, final MdxNrdpLogger mMdxNrdpLogger) {
         this.mApplicationId = "CA5E8412";
-        this.mListOfRoutes = new ArrayList<MediaRouter$RouteInfo>();
+        this.mMapOfRoutes = new HashMap<String, MediaRouter$RouteInfo>();
         if (mMyUuid == null) {
             throw new IllegalArgumentException("ESN can not be null!");
         }
@@ -137,6 +137,30 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     
     private String getUuid(final String s) {
         return s.substring(s.indexOf("CastMediaRouteProviderService:") + "CastMediaRouteProviderService:".length());
+    }
+    
+    private void handleDeviceFirstSeen(final MediaRouter mediaRouter, final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
+        this.mMapOfRoutes.put(this.getUuid(mediaRouter$RouteInfo.getId()), mediaRouter$RouteInfo);
+        if (this.mTargetId != null && this.mTargetId.equalsIgnoreCase(this.getUuid(mediaRouter$RouteInfo.getId()))) {
+            if (!mediaRouter.getSelectedRoute().equals(mediaRouter$RouteInfo)) {
+                Log.d(CastManager.TAG, "route added, selectRoute ");
+                this.mForceLaunch = false;
+                this.mSelectedRoute = mediaRouter$RouteInfo;
+                this.mMediaRouter.selectRoute(this.mSelectedRoute);
+            }
+            else {
+                Log.d(CastManager.TAG, "route added and selected, launch app ");
+                this.castLaunchApplication(this.mSelectedRoute = mediaRouter$RouteInfo);
+            }
+        }
+        String s;
+        if (StringUtils.isEmpty(this.mCastPrefix)) {
+            s = mediaRouter$RouteInfo.getName();
+        }
+        else {
+            s = this.mCastPrefix + mediaRouter$RouteInfo.getName();
+        }
+        this.nativeDeviceFoundWrapper(this.getUuid(mediaRouter$RouteInfo.getId()), this.getIpAddress(mediaRouter$RouteInfo), s);
     }
     
     private boolean isCastDeviceWhiteListed(final CastDevice castDevice) {
@@ -227,7 +251,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         if (Log.isLoggable(CastManager.TAG, 3)) {
             Log.d(CastManager.TAG, "startDiscovery() AppId: " + this.mApplicationId);
         }
-        this.mListOfRoutes.clear();
+        this.mMapOfRoutes.clear();
         this.mMediaRouter.addCallback(this.mMediaRouteSelector, this, 1);
         this.mSelectedRoute = this.mMediaRouter.getSelectedRoute();
         if (this.mSelectedRoute != null && this.mSelectedRoute.matchesSelector(this.mMediaRouteSelector)) {
@@ -238,7 +262,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     private void stopDiscovery() {
         Log.d(CastManager.TAG, "stopDiscovery");
         this.mSelectedRoute = null;
-        this.mListOfRoutes.clear();
+        this.mMapOfRoutes.clear();
         if (this.mMediaRouter != null) {
             this.mMediaRouter.removeCallback(this);
         }
@@ -385,26 +409,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
             Log.d(CastManager.TAG, "device is not whitelisted");
             return;
         }
-        this.mListOfRoutes.add(mediaRouter$RouteInfo);
-        if (this.mTargetId != null && this.mTargetId.equalsIgnoreCase(this.getUuid(mediaRouter$RouteInfo.getId()))) {
-            if (!mediaRouter.getSelectedRoute().equals(mediaRouter$RouteInfo)) {
-                Log.d(CastManager.TAG, "onRouteAdded, selectRoute ");
-                this.mForceLaunch = false;
-                this.mSelectedRoute = mediaRouter$RouteInfo;
-                this.mMediaRouter.selectRoute(this.mSelectedRoute);
-            }
-            else {
-                this.castLaunchApplication(this.mSelectedRoute = mediaRouter$RouteInfo);
-            }
-        }
-        String s;
-        if (StringUtils.isEmpty(this.mCastPrefix)) {
-            s = mediaRouter$RouteInfo.getName();
-        }
-        else {
-            s = this.mCastPrefix + mediaRouter$RouteInfo.getName();
-        }
-        this.nativeDeviceFoundWrapper(this.getUuid(mediaRouter$RouteInfo.getId()), this.getIpAddress(mediaRouter$RouteInfo), s);
+        this.handleDeviceFirstSeen(mediaRouter, mediaRouter$RouteInfo);
     }
     
     @Override
@@ -418,14 +423,18 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
             Log.d(CastManager.TAG, "device is not whitelisted");
             return;
         }
-        String s;
-        if (StringUtils.isEmpty(this.mCastPrefix)) {
-            s = mediaRouter$RouteInfo.getName();
+        if (this.mMapOfRoutes.get(this.getUuid(mediaRouter$RouteInfo.getId())) != null) {
+            String s;
+            if (StringUtils.isEmpty(this.mCastPrefix)) {
+                s = mediaRouter$RouteInfo.getName();
+            }
+            else {
+                s = this.mCastPrefix + mediaRouter$RouteInfo.getName();
+            }
+            this.nativeDeviceFoundWrapper(this.getUuid(mediaRouter$RouteInfo.getId()), this.getIpAddress(mediaRouter$RouteInfo), s);
+            return;
         }
-        else {
-            s = this.mCastPrefix + mediaRouter$RouteInfo.getName();
-        }
-        this.nativeDeviceFoundWrapper(this.getUuid(mediaRouter$RouteInfo.getId()), this.getIpAddress(mediaRouter$RouteInfo), s);
+        this.handleDeviceFirstSeen(mediaRouter, mediaRouter$RouteInfo);
     }
     
     @Override
@@ -433,7 +442,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         if (Log.isLoggable(CastManager.TAG, 3)) {
             Log.d(CastManager.TAG, "onRouteRemoved " + mediaRouter$RouteInfo);
         }
-        this.mListOfRoutes.remove(mediaRouter$RouteInfo);
+        this.mMapOfRoutes.remove(this.getUuid(mediaRouter$RouteInfo.getId()));
         if (mediaRouter$RouteInfo != null) {
             this.nativeDeviceLostWrapper(this.getUuid(mediaRouter$RouteInfo.getId()));
         }
@@ -446,9 +455,9 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         }
         if (!this.mMediaRouter.getSelectedRoute().equals(this.mSelectedRoute)) {
             if (Log.isLoggable(CastManager.TAG, 3)) {
-                Log.d(CastManager.TAG, "XXX: wrong route is selected, suppose to be" + this.mSelectedRoute);
+                Log.d(CastManager.TAG, "mSelectedRoute has changed to " + this.mSelectedRoute);
             }
-            return;
+            this.mSelectedRoute = this.mMediaRouter.getSelectedRoute();
         }
         this.castLaunchApplication(this.mSelectedRoute);
     }

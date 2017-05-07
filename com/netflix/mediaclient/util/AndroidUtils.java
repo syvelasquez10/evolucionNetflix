@@ -7,6 +7,9 @@ package com.netflix.mediaclient.util;
 import android.media.AudioManager;
 import android.content.pm.ResolveInfo;
 import android.content.Intent;
+import android.content.ComponentName;
+import com.netflix.mediaclient.ui.homescreen.NetflixAppWidgetProvider;
+import android.appwidget.AppWidgetManager;
 import android.util.DisplayMetrics;
 import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import android.annotation.SuppressLint;
@@ -51,7 +54,7 @@ public final class AndroidUtils
     private static final String TAG = "nf_utils";
     public static final boolean debug = false;
     public static final boolean enableTestServer = false;
-    public static final boolean release = true;
+    public static final boolean isReleaseForConfigServer = true;
     
     public static void clearApplicationData(final Context context) {
         final File file = new File(context.getCacheDir().getParent());
@@ -362,6 +365,14 @@ public final class AndroidUtils
             }
         }
         return true;
+    }
+    
+    public static boolean isWidgetInstalled(final Context context) {
+        final int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, (Class)NetflixAppWidgetProvider.class));
+        if (Log.isLoggable("nf_utils", 3)) {
+            Log.d("nf_utils", String.format("found widget: %b, num widgets installed: %d", appWidgetIds.length > 0, appWidgetIds.length));
+        }
+        return appWidgetIds.length > 0;
     }
     
     public static void logDeviceDensity(final Activity activity) {

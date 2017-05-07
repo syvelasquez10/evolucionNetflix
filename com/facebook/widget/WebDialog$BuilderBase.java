@@ -4,6 +4,7 @@
 
 package com.facebook.widget;
 
+import com.facebook.internal.Utility;
 import com.facebook.FacebookException;
 import com.facebook.internal.Validate;
 import com.facebook.Session;
@@ -30,11 +31,31 @@ class WebDialog$BuilderBase<CONCRETE extends WebDialog$BuilderBase<?>>
         this.finishInit(context, s, bundle);
     }
     
-    protected WebDialog$BuilderBase(final Context context, final String applicationId, final String s, final Bundle bundle) {
+    protected WebDialog$BuilderBase(final Context context, final String s) {
         this.theme = 16973840;
-        Validate.notNullOrEmpty(applicationId, "applicationId");
-        this.applicationId = applicationId;
-        this.finishInit(context, s, bundle);
+        final Session activeSession = Session.getActiveSession();
+        if (activeSession != null && activeSession.isOpened()) {
+            this.session = activeSession;
+        }
+        else {
+            final String metadataApplicationId = Utility.getMetadataApplicationId(context);
+            if (metadataApplicationId == null) {
+                throw new FacebookException("Attempted to create a builder without an open Active Session or a valid default Application ID.");
+            }
+            this.applicationId = metadataApplicationId;
+        }
+        this.finishInit(context, s, null);
+    }
+    
+    protected WebDialog$BuilderBase(final Context context, final String s, final String s2, final Bundle bundle) {
+        this.theme = 16973840;
+        String metadataApplicationId = s;
+        if (s == null) {
+            metadataApplicationId = Utility.getMetadataApplicationId(context);
+        }
+        Validate.notNullOrEmpty(metadataApplicationId, "applicationId");
+        this.applicationId = metadataApplicationId;
+        this.finishInit(context, s2, bundle);
     }
     
     private void finishInit(final Context context, final String action, final Bundle parameters) {
@@ -54,9 +75,6 @@ class WebDialog$BuilderBase<CONCRETE extends WebDialog$BuilderBase<?>>
         }
         else {
             this.parameters.putString("app_id", this.applicationId);
-        }
-        if (!this.parameters.containsKey("redirect_uri")) {
-            this.parameters.putString("redirect_uri", "fbconnect://success");
         }
         return new WebDialog(this.context, this.action, this.parameters, this.theme, this.listener);
     }

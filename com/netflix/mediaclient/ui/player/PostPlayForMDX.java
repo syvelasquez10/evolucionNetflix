@@ -7,11 +7,11 @@ package com.netflix.mediaclient.ui.player;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.model.details.InterestingVideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.Asset;
 import android.app.Activity;
-import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -68,8 +68,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165576);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165574);
+        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165594);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165592);
     }
     
     public void handleInfoButtonPress() {
@@ -77,7 +77,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
             if (this.mContext != null) {
                 this.mContext.finish();
             }
-            final Intent episodeDetailsIntent = DetailsActivity.getEpisodeDetailsIntent(this.mContext, this.episodeDetails.getPlayable().getParentId(), this.episodeDetails.getId(), PlayContext.NFLX_MDX_CONTEXT);
+            final Intent episodeDetailsIntent = DetailsActivityLauncher.getEpisodeDetailsIntent(this.mContext, this.episodeDetails.getPlayable().getParentId(), this.episodeDetails.getId(), PlayContext.NFLX_MDX_CONTEXT);
             episodeDetailsIntent.addFlags(67108864);
             this.mContext.startActivity(episodeDetailsIntent);
         }
@@ -111,7 +111,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     public void init(final EpisodeDetails episodeDetails) {
         this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
-        this.mOffset = this.mTimerValue * 1000;
+        this.mOffsetMs = this.mTimerValue * 1000;
         this.updateViews(this.episodeDetails = episodeDetails);
         this.setMDXTargetName();
         this.transitionToPostPlay();
@@ -120,7 +120,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     public void init(final String s) {
         this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
-        this.mOffset = this.mTimerValue * 1000;
+        this.mOffsetMs = this.mTimerValue * 1000;
         if (!TextUtils.isEmpty((CharSequence)s) && this.mContext != null && this.mContext.getServiceManager() != null) {
             this.mContext.getServiceManager().getBrowse().fetchEpisodeDetails(s, new PostPlayForMDX$FetchPostPlayForPlaybackCallback(this));
         }
@@ -142,7 +142,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493268));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493281));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

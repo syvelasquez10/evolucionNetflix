@@ -24,7 +24,9 @@ import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import com.netflix.mediaclient.StatusCode;
+import android.annotation.TargetApi;
 import com.netflix.mediaclient.Log;
+import android.os.Build$VERSION;
 import android.content.Context;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -80,6 +82,14 @@ public class SignupActivity extends AccountActivity
         return new Intent(context, (Class)SignupActivity.class);
     }
     
+    @TargetApi(19)
+    private void enableWebViewDebugging() {
+        Log.d("SignupActivity", "Attempting to enable WebView Debugging. API Level: " + Build$VERSION.SDK_INT);
+        if (Build$VERSION.SDK_INT >= 19) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+    }
+    
     private void handleLoginComplete(final Status status) {
         String message;
         if (status.getMessage() != null) {
@@ -94,11 +104,11 @@ public class SignupActivity extends AccountActivity
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131493188);
+            this.showToast(2131493195);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493236) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493250) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -121,9 +131,9 @@ public class SignupActivity extends AccountActivity
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903183);
-        this.mWebView = (WebView)this.findViewById(2131165654);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131165537);
+        this.setContentView(2130903191);
+        this.mWebView = (WebView)this.findViewById(2131165666);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131165368);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -195,7 +205,7 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131493237), new SignupActivity$10(this));
+            this.provideTwoButtonDialog(this.getString(2131493251), new SignupActivity$10(this));
         }
         return true;
     }
@@ -217,12 +227,12 @@ public class SignupActivity extends AccountActivity
         super.onCreateOptionsMenu(menu, menu2);
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131493156));
+            menuItem = menu.add((CharSequence)this.getString(2131493163));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$1(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131493157));
+            menuItem = menu.add((CharSequence)this.getString(2131493164));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$2(this));
         }

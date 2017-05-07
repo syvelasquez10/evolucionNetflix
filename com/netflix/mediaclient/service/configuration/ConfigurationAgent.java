@@ -11,11 +11,9 @@ import com.netflix.mediaclient.media.VideoResolutionRange;
 import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
-import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
@@ -26,14 +24,16 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.util.api.Api19Util;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Locale;
 import java.io.IOException;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.api.Api19Util;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.Log;
+import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.NetflixService;
 import android.os.Handler;
@@ -54,6 +54,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     public static final int DEFAULT_IMAGE_CACHE_SIZE_BYTES;
     private static final float DISK_CACHE_SIZE_AS_PERCENTAGE_OF_AVLBLMEM = 0.25f;
     private static final KidsOnPhoneConfiguration DUMMY_KIDS_CONFIG;
+    private static final KubrickConfiguration DUMMY_KUBRICK_CONFIG;
     private static final int HIGH_MEM_THREAD_COUNT = 4;
     private static final float IMAGE_CACHE_SIZE_AS_PERCENTAGE_OF_MAX_HEAP = 0.5f;
     private static final String LEVEL_HIGH = "high";
@@ -67,11 +68,9 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private static final int MIN_DISK_CACHE_SIZE_IN_BYTES = 5242880;
     private static final int MIN_VIDEO_BUFFERSIZE = 4194304;
     private static final boolean OVERRIDE_SERVER_CONFIG_FOR_KIDS_ON_PHONE = false;
+    private static final boolean OVERRIDE_SERVER_CONFIG_FOR_KUBRICK = false;
     public static final int RESOURCE_REQUEST_TIMEOUT_MS = 1000;
     private static final String TAG = "nf_configurationagent";
-    private static final String VIDEO_PLAYREADY_H264_BPL30_DASH = "playready-h264bpl30-dash";
-    private static final String VIDEO_PLAYREADY_H264_MPL30_DASH = "playready-h264mpl30-dash";
-    private static final String VIDEO_PLAYREADY_H264_MPL31_DASH = "playready-h264mpl31-dash";
     private static final String sMemLevel;
     private AccountConfiguration mAccountConfigOverride;
     private int mAppVersionCode;
@@ -84,17 +83,20 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private EsnProvider mESN;
     private EndpointRegistryProvider mEndpointRegistry;
     private boolean mIsConfigRefreshInBackground;
+    private final MdxConfiguration mMdxConfiguration;
     private boolean mNeedEsMigration;
     private boolean mNeedLogout;
+    private final PlaybackConfiguration mPlaybackConfiguration;
     private String mSoftwareVersion;
     private StreamingConfiguration mStreamingConfigOverride;
     private Handler refreshHandler;
     private final Runnable refreshRunnable;
     
     static {
-        DUMMY_KIDS_CONFIG = new ConfigurationAgent$1();
+        DUMMY_KUBRICK_CONFIG = new ConfigurationAgent$1();
+        DUMMY_KIDS_CONFIG = new ConfigurationAgent$2();
         DEFAULT_IMAGE_CACHE_SIZE_BYTES = (int)(Runtime.getRuntime().maxMemory() * 0.5f);
-        sMemLevel = getMemLevel();
+        sMemLevel = computeMemLevel();
     }
     
     public ConfigurationAgent() {
@@ -104,7 +106,42 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mSoftwareVersion = null;
         this.mNeedLogout = false;
         this.mNeedEsMigration = false;
-        this.refreshRunnable = new ConfigurationAgent$4(this);
+        this.refreshRunnable = new ConfigurationAgent$5(this);
+        this.mMdxConfiguration = new ConfigurationAgent$6(this);
+        this.mPlaybackConfiguration = new ConfigurationAgent$7(this);
+    }
+    
+    private ImageResolutionClass computeImageResolutionClass(final Context context) {
+        if (ConfigurationAgent.sMemLevel == "low") {
+            Log.v("nf_configurationagent", "Device is low memory category - use low resolution images");
+            return ImageResolutionClass.LOW;
+        }
+        if (DeviceUtils.getScreenResolutionDpi(context) <= 160 && DeviceUtils.getScreenSizeCategory(context) == 3) {
+            Log.v("nf_configurationagent", "Device is a low-res, small tablet - use low resolution images");
+            return ImageResolutionClass.LOW;
+        }
+        Log.v("nf_configurationagent", "Using high resolution images");
+        return ImageResolutionClass.HIGH;
+    }
+    
+    private static String computeMemLevel() {
+        String s = "high";
+        final long maxMemory = Runtime.getRuntime().maxMemory();
+        if (maxMemory <= 33554432L) {
+            s = "low";
+        }
+        String s2 = s;
+        if (AndroidUtils.getAndroidVersion() >= 19) {
+            s2 = s;
+            if (Api19Util.isLowRamDevice()) {
+                Log.v("nf_configurationagent", "isLowRamDevice() is true");
+                s2 = "low";
+            }
+        }
+        if (Log.isLoggable("nf_configurationagent", 4)) {
+            Log.i("nf_configurationagent", String.format("maxMemoryAllocated: %d, memLevel: %s", maxMemory, s2));
+        }
+        return s2;
     }
     
     private void doRefreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback) {
@@ -123,9 +160,13 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         Log.d("nf_configurationagent", "Need to fetchdeviceConfig synchronously ");
         ConfigData configString;
         try {
-            Log.d("nf_configurationagent", String.format("configurationUrl %s", s));
+            if (Log.isLoggable("nf_configurationagent", 3)) {
+                Log.d("nf_configurationagent", String.format("configurationUrl %s", s));
+            }
             s = StringUtils.getRemoteDataAsString(s);
-            Log.d("nf_configurationagent", String.format("Device config data=%s", s));
+            if (Log.isLoggable("nf_configurationagent", 3)) {
+                Log.d("nf_configurationagent", String.format("Device config data=%s", s));
+            }
             configString = FetchConfigDataRequest.parseConfigString(s);
             if (configString.deviceConfig == null) {
                 throw new IOException();
@@ -153,26 +194,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     public static String getMemLevel() {
-        String s = "high";
-        final long maxMemory = Runtime.getRuntime().maxMemory();
-        if (maxMemory <= 33554432L) {
-            s = "low";
-        }
-        String s2 = s;
-        if (AndroidUtils.getAndroidVersion() >= 19) {
-            s2 = s;
-            if (Api19Util.isLowRamDevice()) {
-                Log.v("nf_configurationagent", "isLowRamDevice() is true");
-                s2 = "low";
-            }
-        }
-        if (Log.isLoggable("nf_configurationagent", 4)) {
-            Log.i("nf_configurationagent", String.format("maxMemoryAllocated: %d, memLevel: %s", maxMemory, s2));
-        }
-        return s2;
-    }
-    
-    private String getUiResolutionType() {
         return ConfigurationAgent.sMemLevel;
     }
     
@@ -190,14 +211,14 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private Status loadConfigOverridesOnAppStart(final String s) {
         final NetflixImmutableStatus ok = CommonStatus.OK;
         if (this.mDeviceConfigOverride.isDeviceConfigInCache() && this.mStreamingConfigOverride.isStreamingConfigInCache()) {
-            Log.d("nf_configurationagent", "DeviceConfig & streamingqoe in cache... proceed!");
+            Log.d("nf_configurationagent", "Device Config & Streaming Config in cache... proceed!");
             return ok;
         }
         return this.fetchConfigSynchronouslyOnAppStart(s);
     }
     
     private void notifyConfigRefreshed() {
-        this.getMainHandler().post((Runnable)new ConfigurationAgent$3(this));
+        this.getMainHandler().post((Runnable)new ConfigurationAgent$4(this));
     }
     
     private void persistConfigOverride(final ConfigData configData) {
@@ -286,15 +307,15 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mDeviceConfigOverride = new DeviceConfiguration(this.getContext());
         this.mAccountConfigOverride = new AccountConfiguration(this.getContext());
         this.mStreamingConfigOverride = new StreamingConfiguration(this.getContext());
-        this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), deviceModel, this.isDeviceHd(), this.mDeviceConfigOverride.getImageRepository(), this.getUiResolutionType());
+        this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), deviceModel, this.isDeviceHd(), this.mDeviceConfigOverride.getImageRepository(), this.computeImageResolutionClass(this.getContext()));
         final Status loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
         if (loadConfigOverridesOnAppStart.isError()) {
             this.initCompleted(loadConfigOverridesOnAppStart);
             return;
         }
-        final ConfigurationAgent$2 configurationAgent$2 = new ConfigurationAgent$2(this);
+        final ConfigurationAgent$3 configurationAgent$3 = new ConfigurationAgent$3(this);
         NccpKeyStore.init(this.getContext());
-        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), configurationAgent$2);
+        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), configurationAgent$3);
         this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
         Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
         PlayerTypeFactory.initialize(this.mESN);
@@ -341,11 +362,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification() {
         return this.mDeviceConfigOverride.getBreadcrumbLoggingSpecification();
-    }
-    
-    @Override
-    public JSONArray getCastWhiteList() {
-        return this.mAccountConfigOverride.getCastWhitelist();
     }
     
     @Override
@@ -424,8 +440,28 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public JSONArray getMdxBlackListTargets() {
-        return this.mAccountConfigOverride.getMdxBlacklist();
+    public KubrickConfiguration getKubrickConfiguration() {
+        return this.mAccountConfigOverride.getKubrickConfig();
+    }
+    
+    @Override
+    public MdxConfiguration getMdxConfiguration() {
+        return this.mMdxConfiguration;
+    }
+    
+    @Override
+    public PlaybackConfiguration getPlaybackConfiguration() {
+        return this.mPlaybackConfiguration;
+    }
+    
+    @Override
+    public String getPreAppPartnerExperience() {
+        return this.mAccountConfigOverride.getPreAppPartnerExperience();
+    }
+    
+    @Override
+    public String getPreAppWidgetExperience() {
+        return this.mAccountConfigOverride.getPreAppWidgetExperience();
     }
     
     @Override
@@ -557,27 +593,17 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     
     @Override
     public boolean isDeviceLowMem() {
-        return getMemLevel().equals("low");
+        return shouldUseLowMemConfig();
     }
     
     @Override
-    public boolean isDisableMdx() {
-        return this.mDeviceConfigOverride.isDisableMdx();
-    }
-    
-    @Override
-    public boolean isDisableWebsocket() {
-        return this.mDeviceConfigOverride.isDisableWebsocket();
+    public boolean isDisableMcQueenV2() {
+        return this.mAccountConfigOverride.toDisableMcQueenV2();
     }
     
     @Override
     public boolean isDisableWidevine() {
         return this.mDeviceConfigOverride.isDisableWidevine();
-    }
-    
-    @Override
-    public boolean isEnableCast() {
-        return this.mAccountConfigOverride.getCastEnabled();
     }
     
     @Override
@@ -629,9 +655,8 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         // monitorexit(this)
     }
     
-    @Override
-    public boolean toDisableSuspendPlayback() {
-        return this.mAccountConfigOverride.toDisableSuspendPlay();
+    public boolean shouldUseLegacyBrowseVolleyClient() {
+        return true;
     }
     
     @Override

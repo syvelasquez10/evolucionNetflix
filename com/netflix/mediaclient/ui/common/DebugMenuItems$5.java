@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.util.AndroidUtils;
+import android.os.Handler;
+import android.os.Debug;
+import android.view.Menu;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.Log;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -17,7 +21,8 @@ class DebugMenuItems$5 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        AndroidUtils.dumpHprofToDisk();
+        Log.d(this.this$0.logTag, "Making refreshCw() call");
+        this.this$0.activity.getServiceManager().getBrowse().refreshCw();
         return true;
     }
 }

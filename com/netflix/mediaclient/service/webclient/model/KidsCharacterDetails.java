@@ -42,10 +42,10 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     }
     
     private Video$Detail getWatchNextDetails() {
-        if (VideoType.MOVIE.equals(this.getType())) {
+        if (VideoType.MOVIE.equals(this.getWatchNextType())) {
             return this.watchNextMovieDetail;
         }
-        if (VideoType.EPISODE.equals(this.getType())) {
+        if (VideoType.EPISODE.equals(this.getWatchNextType())) {
             return this.watchNextEpisodeDetail;
         }
         return null;
@@ -58,12 +58,19 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
         return this.watchNextSummary.getSquareUrl();
     }
     
+    private VideoType getWatchNextType() {
+        if (this.watchNextSummary == null) {
+            return VideoType.UNKNOWN;
+        }
+        return this.watchNextSummary.getType();
+    }
+    
     private Boolean isFirstPlay() {
         boolean b = true;
         if (this.kidsDetail == null) {
             return true;
         }
-        if (this.getHasWatchedRecently() || (VideoType.EPISODE.equals(this.getType()) && this.getEpisodeNumber() != 1) || this.getPlayableBookmarkPosition() > 0) {
+        if (this.getHasWatchedRecently() || (VideoType.EPISODE.equals(this.getWatchNextType()) && this.getEpisodeNumber() != 1) || this.getPlayableBookmarkPosition() > 0) {
             b = false;
         }
         return b;
@@ -85,10 +92,10 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     
     @Override
     public String getBoxshotURL() {
-        if (this.watchNextSummary == null) {
+        if (this.kidsSummary == null) {
             return null;
         }
-        return this.watchNextSummary.getBoxshotURL();
+        return this.kidsSummary.getBoxshotURL();
     }
     
     @Override
@@ -135,7 +142,7 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     
     @Override
     public int getEpisodeNumber() {
-        if (!VideoType.EPISODE.equals(this.getType()) || this.watchNextEpisodeDetail == null) {
+        if (!VideoType.EPISODE.equals(this.getWatchNextType()) || this.watchNextEpisodeDetail == null) {
             return 0;
         }
         return this.watchNextEpisodeDetail.getEpisodeNumber();
@@ -143,10 +150,10 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     
     @Override
     public VideoType getErrorType() {
-        if (this.watchNextSummary == null) {
-            return VideoType.UNKNOWN;
+        if (this.kidsSummary == null) {
+            return null;
         }
-        return this.watchNextSummary.getErrorType();
+        return this.kidsSummary.getErrorType();
     }
     
     @Override
@@ -176,7 +183,7 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
         if (watchNextDetails == null) {
             return null;
         }
-        return watchNextDetails.mdxHorzUrl;
+        return watchNextDetails.hiResHorzUrl;
     }
     
     @Override
@@ -199,12 +206,12 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     
     @Override
     public String getId() {
-        return this.getPlayableId();
+        return this.getCharacterId();
     }
     
     @Override
     public String getParentId() {
-        if (!VideoType.EPISODE.equals(this.getType()) || this.watchNextEpisodeDetail == null) {
+        if (!VideoType.EPISODE.equals(this.getWatchNextType()) || this.watchNextEpisodeDetail == null) {
             return null;
         }
         return this.watchNextEpisodeDetail.getShowId();
@@ -212,7 +219,7 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     
     @Override
     public String getParentTitle() {
-        if (!VideoType.EPISODE.equals(this.getType()) || this.watchNextEpisodeDetail == null) {
+        if (!VideoType.EPISODE.equals(this.getWatchNextType()) || this.watchNextEpisodeDetail == null) {
             return null;
         }
         return this.watchNextEpisodeDetail.getShowTitle();
@@ -270,7 +277,7 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     
     @Override
     public int getSeasonNumber() {
-        if (!VideoType.EPISODE.equals(this.getType()) || this.watchNextEpisodeDetail == null) {
+        if (!VideoType.EPISODE.equals(this.getWatchNextType()) || this.watchNextEpisodeDetail == null) {
             return 0;
         }
         return this.watchNextEpisodeDetail.getSeasonNumber();
@@ -278,10 +285,10 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     
     @Override
     public String getSquareUrl() {
-        if (this.watchNextSummary == null) {
+        if (this.kidsSummary == null) {
             return null;
         }
-        return this.watchNextSummary.getSquareUrl();
+        return this.kidsSummary.getSquareUrl();
     }
     
     @Override
@@ -304,28 +311,28 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     
     @Override
     public String getTitle() {
-        return this.getPlayableTitle();
+        return this.getCharacterName();
     }
     
     @Override
     public String getTvCardUrl() {
-        if (this.watchNextSummary == null) {
+        if (this.kidsSummary == null) {
             return null;
         }
-        return this.watchNextSummary.getTvCardUrl();
+        return this.kidsSummary.getTvCardUrl();
     }
     
     @Override
     public VideoType getType() {
-        if (this.watchNextSummary == null) {
+        if (this.kidsSummary == null) {
             return VideoType.UNKNOWN;
         }
-        return this.watchNextSummary.getType();
+        return this.kidsSummary.getType();
     }
     
     @Override
     public String getWatchNextDispUrl() {
-        Log.d("nf_kidscharacter", String.format("[%s %s], firstPlay:%b (watchedRecently:%b), S%d:E%d, pos:%d", this.getType(), this.getPlayableId(), this.isFirstPlay(), this.getHasWatchedRecently(), this.getSeasonNumber(), this.getEpisodeNumber(), this.getPlayableBookmarkPosition()));
+        Log.d("nf_kidscharacter", String.format("[%s %s], firstPlay:%b (watchedRecently:%b), S%d:E%d, pos:%d", this.getWatchNextType(), this.getPlayableId(), this.isFirstPlay(), this.getHasWatchedRecently(), this.getSeasonNumber(), this.getEpisodeNumber(), this.getPlayableBookmarkPosition()));
         if (this.isFirstPlay()) {
             return this.getCharacterSquareUrl();
         }

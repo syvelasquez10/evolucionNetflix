@@ -48,6 +48,8 @@ public interface IPlayer
     
     int getDuration();
     
+    IManifestCache getManifestCache();
+    
     PlayoutMetadata getPlayoutMetadata();
     
     SubtitleConfiguration getSubtitleConfiguration();
@@ -61,6 +63,8 @@ public interface IPlayer
     int getVideoWidth();
     
     boolean isBufferingCompleted();
+    
+    boolean isManifestCacheEnabled();
     
     boolean isPlaying();
     

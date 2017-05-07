@@ -5,12 +5,12 @@
 package com.netflix.mediaclient.ui.social.notifications;
 
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsListSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsListSummary;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View$OnClickListener;
 
@@ -35,6 +35,6 @@ class SocialNotificationsFrag$3 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        DetailsActivity.show(this.val$activity, this.val$videoType, this.val$videoId, this.val$summary.getVideoSummary().getTitle(), new PlayContextImp(this.val$requestId, this.val$listSummary.getMDPTrackId(), 0, 0));
+        DetailsActivityLauncher.show(this.val$activity, this.val$videoType, this.val$videoId, this.val$summary.getVideo().getTitle(), new PlayContextImp(this.val$requestId, this.val$listSummary.getMDPTrackId(), 0, 0));
     }
 }

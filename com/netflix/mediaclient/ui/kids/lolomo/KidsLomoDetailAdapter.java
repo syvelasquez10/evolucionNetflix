@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.android.app.CommonStatus;
+import android.widget.AbsListView;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
@@ -73,10 +74,10 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements LoLoMoFrag$ILo
             return;
         }
         if (this.lomo.getType() == LoMoType.FLAT_GENRE) {
-            this.manager.getBrowse().fetchGenreVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, kidsLomoDetailAdapter$FetchVideosCallback);
+            this.manager.getBrowse().fetchGenreVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, false, kidsLomoDetailAdapter$FetchVideosCallback);
             return;
         }
-        this.manager.getBrowse().fetchVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, kidsLomoDetailAdapter$FetchVideosCallback);
+        this.manager.getBrowse().fetchVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, false, false, kidsLomoDetailAdapter$FetchVideosCallback);
     }
     
     private void hideLoadingAndErrorViews() {
@@ -122,8 +123,8 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements LoLoMoFrag$ILo
             linearLayout = new KidsLoMoViewGroup<Object>((Context)this.activity, false);
         }
         ((VideoViewGroup)linearLayout).init(1);
-        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361973);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361974);
+        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361974);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361975);
         ((VideoViewGroup)linearLayout).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
         int n;
         if (b) {
@@ -243,6 +244,12 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements LoLoMoFrag$ILo
     }
     
     public void onResume() {
+    }
+    
+    public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
+    }
+    
+    public void onScrollStateChanged(final AbsListView absListView, final int n) {
     }
     
     public void refreshData() {

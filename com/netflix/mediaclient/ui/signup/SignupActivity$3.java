@@ -24,6 +24,8 @@ import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import com.netflix.mediaclient.StatusCode;
+import android.annotation.TargetApi;
+import android.os.Build$VERSION;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Intent;

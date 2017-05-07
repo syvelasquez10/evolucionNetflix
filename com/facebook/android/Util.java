@@ -4,6 +4,7 @@
 
 package com.facebook.android;
 
+import java.io.OutputStream;
 import java.net.URLConnection;
 import android.app.AlertDialog$Builder;
 import android.content.Context;
@@ -170,20 +171,20 @@ public final class Util
     }
     
     @Deprecated
-    public static String openUrl(String s, String read, final Bundle bundle) {
-        String string = s;
+    public static String openUrl(String o, String read, final Bundle bundle) {
+        Object string = o;
         if (read.equals("GET")) {
-            string = s + "?" + encodeUrl(bundle);
+            string = (String)o + "?" + encodeUrl(bundle);
         }
-        Utility.logd("Facebook-Util", read + " URL: " + string);
-        s = (String)new URL(string).openConnection();
-        ((URLConnection)s).setRequestProperty("User-Agent", System.getProperties().getProperty("http.agent") + " FacebookAndroidSDK");
+        Utility.logd("Facebook-Util", read + " URL: " + (String)string);
+        o = new URL((String)string).openConnection();
+        ((URLConnection)o).setRequestProperty("User-Agent", System.getProperties().getProperty("http.agent") + " FacebookAndroidSDK");
         if (!read.equals("GET")) {
             final Bundle bundle2 = new Bundle();
-            for (final String s2 : bundle.keySet()) {
-                final Object value = bundle.get(s2);
+            for (final String s : bundle.keySet()) {
+                final Object value = bundle.get(s);
                 if (value instanceof byte[]) {
-                    bundle2.putByteArray(s2, (byte[])value);
+                    bundle2.putByteArray(s, (byte[])value);
                 }
             }
             if (!bundle.containsKey("method")) {
@@ -192,32 +193,38 @@ public final class Util
             if (bundle.containsKey("access_token")) {
                 bundle.putString("access_token", URLDecoder.decode(bundle.getString("access_token")));
             }
-            ((HttpURLConnection)s).setRequestMethod("POST");
-            ((URLConnection)s).setRequestProperty("Content-Type", "multipart/form-data;boundary=" + "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f");
-            ((URLConnection)s).setDoOutput(true);
-            ((URLConnection)s).setDoInput(true);
-            ((URLConnection)s).setRequestProperty("Connection", "Keep-Alive");
-            ((URLConnection)s).connect();
-            final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(((URLConnection)s).getOutputStream());
-            bufferedOutputStream.write(("--" + "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f" + "\r\n").getBytes());
-            bufferedOutputStream.write(encodePostBody(bundle, "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f").getBytes());
-            bufferedOutputStream.write(("\r\n" + "--" + "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f" + "\r\n").getBytes());
-            if (!bundle2.isEmpty()) {
-                for (final String s3 : bundle2.keySet()) {
-                    bufferedOutputStream.write(("Content-Disposition: form-data; filename=\"" + s3 + "\"" + "\r\n").getBytes());
-                    bufferedOutputStream.write(("Content-Type: content/unknown" + "\r\n" + "\r\n").getBytes());
-                    bufferedOutputStream.write(bundle2.getByteArray(s3));
-                    bufferedOutputStream.write(("\r\n" + "--" + "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f" + "\r\n").getBytes());
+            ((HttpURLConnection)o).setRequestMethod("POST");
+            ((URLConnection)o).setRequestProperty("Content-Type", "multipart/form-data;boundary=" + "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f");
+            ((URLConnection)o).setDoOutput(true);
+            ((URLConnection)o).setDoInput(true);
+            ((URLConnection)o).setRequestProperty("Connection", "Keep-Alive");
+            ((URLConnection)o).connect();
+            read = (String)new BufferedOutputStream(((URLConnection)o).getOutputStream());
+            try {
+                ((OutputStream)read).write(("--" + "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f" + "\r\n").getBytes());
+                ((OutputStream)read).write(encodePostBody(bundle, "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f").getBytes());
+                ((OutputStream)read).write(("\r\n" + "--" + "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f" + "\r\n").getBytes());
+                if (!bundle2.isEmpty()) {
+                    for (final String s2 : bundle2.keySet()) {
+                        ((OutputStream)read).write(("Content-Disposition: form-data; filename=\"" + s2 + "\"" + "\r\n").getBytes());
+                        ((OutputStream)read).write(("Content-Type: content/unknown" + "\r\n" + "\r\n").getBytes());
+                        ((OutputStream)read).write(bundle2.getByteArray(s2));
+                        ((OutputStream)read).write(("\r\n" + "--" + "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f" + "\r\n").getBytes());
+                    }
                 }
             }
-            bufferedOutputStream.flush();
+            finally {
+                ((OutputStream)read).close();
+            }
+            ((OutputStream)read).flush();
+            ((OutputStream)read).close();
         }
         try {
-            read = read(((URLConnection)s).getInputStream());
+            read = read(((URLConnection)o).getInputStream());
             return read;
         }
         catch (FileNotFoundException ex) {
-            return read(((HttpURLConnection)s).getErrorStream());
+            return read(((HttpURLConnection)o).getErrorStream());
         }
     }
     

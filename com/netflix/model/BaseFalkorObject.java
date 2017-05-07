@@ -18,7 +18,7 @@ import com.netflix.falkor.BranchNode;
 public abstract class BaseFalkorObject implements BranchNode, Expires, ModelProxyProvider, ReferenceTarget, FalkorObject
 {
     private Date expires;
-    private final ModelProxy<? extends BranchNode> proxy;
+    protected final ModelProxy<? extends BranchNode> proxy;
     private LinkedList<Ref> references;
     
     protected BaseFalkorObject(final ModelProxy<? extends BranchNode> proxy) {

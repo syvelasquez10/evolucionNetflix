@@ -25,5 +25,7 @@ interface RowAdapter
     
     Object saveToMemento();
     
+    boolean shouldOverlapPages();
+    
     void trackPresentation(final int p0);
 }

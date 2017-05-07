@@ -4,13 +4,13 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.model.leafs.ListOfMoviesSummary;
+import com.netflix.model.leafs.SocialBadge;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$4 implements Func<ListOfMoviesSummary>
+final class Falkor$Creator$4 implements Func<SocialBadge>
 {
     @Override
-    public ListOfMoviesSummary call() {
-        return new ListOfMoviesSummary();
+    public SocialBadge call() {
+        return new SocialBadge();
     }
 }

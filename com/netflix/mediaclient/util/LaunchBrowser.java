@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.util;
 
-import com.netflix.mediaclient.Log;
+import android.util.Log;
 import android.content.Intent;
 import android.net.Uri;
 import android.content.Context;

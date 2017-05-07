@@ -12,20 +12,21 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import java.security.InvalidParameterException;
-import com.netflix.mediaclient.Log;
 import android.view.ViewGroup$LayoutParams;
-import android.view.ViewGroup;
+import com.netflix.mediaclient.Log;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.view.ViewGroup;
 
 public class NetflixActionBar
 {
     private static final int HIDE_ANIMATION_DURATION = 300;
     private static final String TAG = "NetflixActionBar";
+    private ViewGroup actionBarGroup;
     protected final NetflixActivity activity;
     protected boolean hasUpAction;
     private View homeView;
@@ -42,10 +43,20 @@ public class NetflixActionBar
     }
     
     private void attachToolBarToViewHierarchy() {
-        this.toolBar = (Toolbar)LayoutInflater.from((Context)this.activity).inflate(this.getLayoutId(), (ViewGroup)null);
-        final ViewGroup viewGroup = (ViewGroup)this.activity.findViewById(16908290);
-        if (viewGroup != null && this.toolBar != null) {
-            viewGroup.addView((View)this.toolBar, new ViewGroup$LayoutParams(-1, this.activity.getActionBarHeight()));
+        this.actionBarGroup = (ViewGroup)LayoutInflater.from((Context)this.activity).inflate(this.getLayoutId(), (ViewGroup)null);
+        if (this.actionBarGroup == null) {
+            Log.e("NetflixActionBar", "actionBarGroup is null");
+        }
+        else {
+            this.toolBar = (Toolbar)this.actionBarGroup.findViewById(2131165280);
+            if (this.toolBar == null) {
+                Log.e("NetflixActionBar", "toolBar is null");
+                return;
+            }
+            final ViewGroup viewGroup = (ViewGroup)this.activity.findViewById(16908290);
+            if (viewGroup != null) {
+                viewGroup.addView((View)this.actionBarGroup, new ViewGroup$LayoutParams(-1, this.activity.getActionBarHeight()));
+            }
         }
     }
     
@@ -104,12 +115,18 @@ public class NetflixActionBar
         }
     }
     
+    public void bringToFront() {
+        if (this.actionBarGroup != null) {
+            this.actionBarGroup.bringToFront();
+        }
+    }
+    
     protected void configureBackButtonIfNecessary(final boolean b) {
         if (KidsUtils.shouldShowBackNavigationAffordance(this.activity) && !(this.activity instanceof HomeActivity)) {
             final ActionBar supportActionBar = this.activity.getSupportActionBar();
             supportActionBar.setDisplayHomeAsUpEnabled(false);
             supportActionBar.setDisplayShowHomeEnabled(false);
-            if (b && DeviceUtils.getScreenResolutionDpi(this.activity) < 320) {
+            if (b && DeviceUtils.getScreenResolutionDpi((Context)this.activity) < 320) {
                 return;
             }
         }
@@ -145,6 +162,10 @@ public class NetflixActionBar
         this.systemActionBar.hide();
     }
     
+    public void hidelogo() {
+        this.systemActionBar.setDisplayUseLogoEnabled(false);
+    }
+    
     public boolean isShowing() {
         return this.systemActionBar != null && this.systemActionBar.isShowing();
     }
@@ -164,6 +185,7 @@ public class NetflixActionBar
     
     public void setLogoType(final NetflixActionBar$LogoType netflixActionBar$LogoType) {
         if (this.systemActionBar == null) {
+            Log.e("NetflixActionBar", "system actionBar is null");
             return;
         }
         if (netflixActionBar$LogoType == NetflixActionBar$LogoType.GONE) {

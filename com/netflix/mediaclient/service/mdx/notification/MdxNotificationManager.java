@@ -57,11 +57,11 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     }
     
     private void createPlayerBuilder() {
-        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837739).setWhen(System.currentTimeMillis());
+        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837749).setWhen(System.currentTimeMillis());
     }
     
     private void createPostPlayerBuilder() {
-        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837739).setWhen(System.currentTimeMillis());
+        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837749).setWhen(System.currentTimeMillis());
     }
     
     private void createRemoteViews(final MdxAgent mdxAgent) {
@@ -213,6 +213,9 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     @Override
     public void startNotification(final Notification notification, final Service service, final boolean isPostplay) {
         this.stopNotification(service);
+        if (notification == null) {
+            return;
+        }
         service.startForeground(1, notification);
         this.isPostplay = isPostplay;
         this.isPlaying = true;

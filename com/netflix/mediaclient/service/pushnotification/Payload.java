@@ -7,7 +7,10 @@ package com.netflix.mediaclient.service.pushnotification;
 import java.net.URLEncoder;
 import java.util.Locale;
 import android.net.Uri;
+import org.json.JSONException;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.JsonUtils;
+import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.ArrayList;
 import android.content.Intent;
@@ -24,6 +27,10 @@ public class Payload
     public static final String PARAM_GUID = "guid";
     public static final String PARAM_MESSAGE_GUID = "messageGuid";
     public static final String PARAM_ORIGINATOR = "originator";
+    public static final String PARAM_RENO_CAUSE = "cause";
+    public static final String PARAM_RENO_CREATION_TS = "creationTS";
+    public static final String PARAM_RENO_MESSAGE_GUID = "messageGUID";
+    public static final String PARAM_RENO_PAYLOAD = "invisiblePayload";
     private static final String PARAM_actionIcon = "actionIcon.";
     private static final String PARAM_actionKey = "actionKey.";
     private static final String PARAM_actionPayload = "actionPayload.";
@@ -66,6 +73,9 @@ public class Payload
     public String messageGuid;
     public String originator;
     public String profileGuid;
+    public String renoCause;
+    public long renoCreationTimestamp;
+    public String renoMessageGuid;
     public String smallIcon;
     public String sound;
     public String subtext;
@@ -104,88 +114,140 @@ public class Payload
         if (intent.hasExtra("smallIcon")) {
             this.smallIcon = intent.getStringExtra("smallIcon");
         }
-        if (intent.hasExtra("ledColor")) {
-            final String stringExtra = intent.getStringExtra("ledColor");
-            int int1;
-            if (StringUtils.isNumeric(stringExtra)) {
-                int1 = Integer.parseInt(stringExtra);
-            }
-            else {
-                int1 = 0;
-            }
-            this.ledColor = int1;
-        }
-        if (intent.hasExtra("sound")) {
-            this.sound = intent.getStringExtra("sound");
-        }
-        if (intent.hasExtra("subtext")) {
-            this.subtext = intent.getStringExtra("subtext");
-        }
-        if (intent.hasExtra("text")) {
-            this.text = intent.getStringExtra("text");
-        }
-        if (intent.hasExtra("ticker")) {
-            this.ticker = intent.getStringExtra("ticker");
-        }
-        if (intent.hasExtra("title")) {
-            this.title = intent.getStringExtra("title");
-        }
-        if (intent.hasExtra("vibrate")) {
-            this.vibrate = intent.getStringExtra("vibrate");
-        }
-        if (intent.hasExtra("when")) {
-            final String stringExtra2 = intent.getStringExtra("when");
-            long long1;
-            if (StringUtils.isNumeric(stringExtra2)) {
-                long1 = Long.parseLong(stringExtra2);
-            }
-            else {
-                long1 = 0L;
-            }
-            this.when = long1;
-        }
-        if (intent.hasExtra("guid")) {
-            this.guid = intent.getStringExtra("guid");
-        }
-        if (intent.hasExtra("messageGuid")) {
-            this.messageGuid = intent.getStringExtra("messageGuid");
-        }
-        if (intent.hasExtra("profileId")) {
-            this.profileGuid = intent.getStringExtra("profileId");
-        }
-        if (intent.hasExtra("type")) {
-            this.actionInfoType = intent.getStringExtra("type");
-        }
-        this.originator = extractOriginator(this.defaultActionPayload);
-        int i = 0;
-        while (i > -1) {
-            final String string = "actionKey." + i;
-            if (intent.hasExtra(string)) {
-                final Payload$Action payload$Action = new Payload$Action(this.guid);
-                payload$Action.key = intent.getStringExtra(string);
-                final String string2 = "actionIcon." + i;
-                if (intent.hasExtra(string2)) {
-                    payload$Action.icon = intent.getStringExtra(string2);
+    Label_0522:
+        while (true) {
+        Label_0783_Outer:
+            while (true) {
+                Label_0372: {
+                    long long1 = 0L;
+                    Label_0367: {
+                        Object o;
+                        while (true) {
+                            Label_0222: {
+                                if (!intent.hasExtra("ledColor")) {
+                                    break Label_0222;
+                                }
+                                o = intent.getStringExtra("ledColor");
+                                int int1 = 0;
+                                Label_0217: {
+                                    if (StringUtils.isNumeric((String)o)) {
+                                        int1 = Integer.parseInt((String)o);
+                                        break Label_0217;
+                                    }
+                                    Label_0778: {
+                                        break Label_0778;
+                                        while (true) {
+                                            while (true) {
+                                                Label_0831: {
+                                                    Label_0816: {
+                                                        try {
+                                                            final JSONObject jsonObject = new JSONObject((String)o);
+                                                            this.renoCause = JsonUtils.getString(jsonObject, "cause", null);
+                                                            this.renoMessageGuid = JsonUtils.getString(jsonObject, "messageGUID", null);
+                                                            this.renoCreationTimestamp = JsonUtils.getLong(jsonObject, "creationTS", System.currentTimeMillis());
+                                                            this.originator = extractOriginator(this.defaultActionPayload);
+                                                            int i = 0;
+                                                            while (i > -1) {
+                                                                final String string = "actionKey." + i;
+                                                                if (!intent.hasExtra(string)) {
+                                                                    break Label_0831;
+                                                                }
+                                                                o = new Payload$Action(this.guid);
+                                                                ((Payload$Action)o).key = intent.getStringExtra(string);
+                                                                final String string2 = "actionIcon." + i;
+                                                                if (intent.hasExtra(string2)) {
+                                                                    ((Payload$Action)o).icon = intent.getStringExtra(string2);
+                                                                }
+                                                                final String string3 = "actionPayload." + i;
+                                                                if (intent.hasExtra(string3)) {
+                                                                    ((Payload$Action)o).payload = intent.getStringExtra(string3);
+                                                                }
+                                                                final String string4 = "actionText." + i;
+                                                                if (intent.hasExtra(string4)) {
+                                                                    ((Payload$Action)o).text = intent.getStringExtra(string4);
+                                                                }
+                                                                ++i;
+                                                                if (((Payload$Action)o).payload != null && ((Payload$Action)o).text != null && Payload$Action.isSupportedActionKey(((Payload$Action)o).key)) {
+                                                                    break Label_0816;
+                                                                }
+                                                                Log.e("nf_push", "Invalid action: " + o);
+                                                            }
+                                                            break;
+                                                            long1 = 0L;
+                                                            break Label_0367;
+                                                            int1 = 0;
+                                                            break Label_0217;
+                                                        }
+                                                        catch (JSONException ex) {
+                                                            Log.e("nf_push", String.format("invalid renoPayload %s", o), (Throwable)ex);
+                                                            continue Label_0522;
+                                                        }
+                                                    }
+                                                    this.actions.add((Payload$Action)o);
+                                                    continue Label_0783_Outer;
+                                                }
+                                                int i = -1;
+                                                continue Label_0783_Outer;
+                                            }
+                                        }
+                                    }
+                                    return;
+                                }
+                                this.ledColor = int1;
+                            }
+                            if (intent.hasExtra("sound")) {
+                                this.sound = intent.getStringExtra("sound");
+                            }
+                            if (intent.hasExtra("subtext")) {
+                                this.subtext = intent.getStringExtra("subtext");
+                            }
+                            if (intent.hasExtra("text")) {
+                                this.text = intent.getStringExtra("text");
+                            }
+                            if (intent.hasExtra("ticker")) {
+                                this.ticker = intent.getStringExtra("ticker");
+                            }
+                            if (intent.hasExtra("title")) {
+                                this.title = intent.getStringExtra("title");
+                            }
+                            if (intent.hasExtra("vibrate")) {
+                                this.vibrate = intent.getStringExtra("vibrate");
+                            }
+                            if (!intent.hasExtra("when")) {
+                                break Label_0372;
+                            }
+                            o = intent.getStringExtra("when");
+                            if (!StringUtils.isNumeric((String)o)) {
+                                continue;
+                            }
+                            break;
+                        }
+                        long1 = Long.parseLong((String)o);
+                    }
+                    this.when = long1;
                 }
-                final String string3 = "actionPayload." + i;
-                if (intent.hasExtra(string3)) {
-                    payload$Action.payload = intent.getStringExtra(string3);
+                if (intent.hasExtra("guid")) {
+                    this.guid = intent.getStringExtra("guid");
                 }
-                final String string4 = "actionText." + i;
-                if (intent.hasExtra(string4)) {
-                    payload$Action.text = intent.getStringExtra(string4);
+                if (intent.hasExtra("messageGuid")) {
+                    this.messageGuid = intent.getStringExtra("messageGuid");
                 }
-                ++i;
-                if (payload$Action.payload == null || payload$Action.text == null || !Payload$Action.isSupportedActionKey(payload$Action.key)) {
-                    Log.e("nf_push", "Invalid action: " + payload$Action);
+                if (intent.hasExtra("profileId")) {
+                    this.profileGuid = intent.getStringExtra("profileId");
                 }
-                else {
-                    this.actions.add(payload$Action);
+                if (intent.hasExtra("type")) {
+                    this.actionInfoType = intent.getStringExtra("type");
                 }
+                if (!intent.hasExtra("invisiblePayload")) {
+                    continue Label_0522;
+                }
+                Object o = intent.getStringExtra("invisiblePayload");
+                if (StringUtils.isNotEmpty((String)o)) {
+                    continue Label_0783_Outer;
+                }
+                break;
             }
-            else {
-                i = -1;
-            }
+            continue Label_0522;
         }
     }
     

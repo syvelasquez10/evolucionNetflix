@@ -373,7 +373,7 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
     
     @Override
     public void clear() {
-        this.cache.edit().clear().commit();
+        this.cache.edit().clear().apply();
     }
     
     @Override
@@ -404,11 +404,10 @@ public class SharedPreferencesTokenCachingStrategy extends TokenCachingStrategy
             }
             catch (JSONException ex) {
                 Logger.log(LoggingBehavior.CACHE, 5, SharedPreferencesTokenCachingStrategy.TAG, "Error processing value for key: '" + s + "' -- " + ex);
+                return;
             }
-            return;
+            break;
         }
-        if (!edit.commit()) {
-            Logger.log(LoggingBehavior.CACHE, 5, SharedPreferencesTokenCachingStrategy.TAG, "SharedPreferences.Editor.commit() was not successful");
-        }
+        edit.apply();
     }
 }

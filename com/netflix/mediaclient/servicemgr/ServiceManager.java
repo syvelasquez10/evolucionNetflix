@@ -13,6 +13,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -122,12 +123,16 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
-    public AddToListData$StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final int n, final boolean b) {
-        return this.addToMyListWrapper.createAddToMyListWrapper(netflixActivity, textView, s, n, b);
+    public AddToListData$StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n, final boolean b) {
+        return this.addToMyListWrapper.createAddToMyListWrapper(netflixActivity, textView, s, videoType, n, b);
+    }
+    
+    public AddToListData$StateListener createAddToMyListWrapper(final DetailsActivity detailsActivity, final TextView textView, final TextView textView2, final boolean b) {
+        return this.addToMyListWrapper.createAddToMyListWrapper(detailsActivity, textView, textView2, detailsActivity.getVideoId(), detailsActivity.getVideoType(), detailsActivity.getTrackId(), b);
     }
     
     public AddToListData$StateListener createAddToMyListWrapper(final DetailsActivity detailsActivity, final TextView textView, final boolean b) {
-        return this.addToMyListWrapper.createAddToMyListWrapper(detailsActivity, textView, detailsActivity.getVideoId(), detailsActivity.getTrackId(), b);
+        return this.addToMyListWrapper.createAddToMyListWrapper(detailsActivity, textView, detailsActivity.getVideoId(), detailsActivity.getVideoType(), detailsActivity.getTrackId(), b);
     }
     
     public void editProfile(final String s, final String s2, final boolean b, final String s3, final ManagerCallback managerCallback) {
@@ -202,6 +207,14 @@ public final class ServiceManager implements IServiceManagerAccess
     
     public IBrowseManager getBrowse() {
         return this.mBrowseManager;
+    }
+    
+    public String getBrowseAgentString() {
+        final INetflixService service = this.getService();
+        if (service == null) {
+            return "n/a";
+        }
+        return service.getBrowseAgentString();
     }
     
     @Override

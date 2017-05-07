@@ -12,7 +12,7 @@ import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$EndReason;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.apm.model.SharedContextSessionEndedEvent;
-import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
+import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;

@@ -6,13 +6,12 @@ package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
@@ -29,10 +28,6 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
 {
     @Override
     public void onBBVideosFetched(final List<Billboard> list, final Status status) {
-    }
-    
-    @Override
-    public void onCWListRefresh(final Status status) {
     }
     
     @Override
@@ -60,10 +55,6 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onIQListRefresh(final Status status) {
-    }
-    
-    @Override
     public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
     }
     
@@ -84,7 +75,7 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final Status status) {
+    public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
     }
     
     @Override
@@ -108,6 +99,10 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
+    public void onShowDetailsAndSeasonsFetched(final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
+    }
+    
+    @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
     }
     
@@ -116,7 +111,7 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onSocialNotificationWasThanked(final SocialNotificationSummary socialNotificationSummary, final Status status) {
+    public void onSocialNotificationWasThanked(final Status status) {
     }
     
     @Override
@@ -124,7 +119,7 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onSocialNotificationsMarkedAsRead(final List<SocialNotificationSummary> list, final Status status) {
+    public void onSocialNotificationsMarkedAsRead(final Status status) {
     }
     
     @Override

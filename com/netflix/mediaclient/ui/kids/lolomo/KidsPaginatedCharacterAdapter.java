@@ -23,7 +23,7 @@ public class KidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
     }
     
     @Override
-    protected int computeNumItemsPerPage(final int n, final int n2) {
+    protected int computeNumItemsPerPage() {
         return 2;
     }
     

@@ -6,6 +6,9 @@ package com.netflix.mediaclient.util;
 
 import java.io.InputStream;
 import java.util.regex.Matcher;
+import com.netflix.mediaclient.android.widget.InternalURLSpan;
+import android.text.style.URLSpan;
+import android.text.Spannable;
 import java.util.Locale;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
@@ -79,7 +82,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         string = s;
         if (isEmpty(s)) {
-            string = context.getString(2131493146);
+            string = context.getString(2131493153);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string);
@@ -158,7 +161,7 @@ public final class StringUtils
         if (isNotEmpty(s)) {
             sb.append(s).append("   ");
         }
-        sb.append(String.format(resources.getString(2131493152), TimeUtils.convertSecondsToMinutes(n2)));
+        sb.append(resources.getString(2131493159, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
         return sb.toString();
     }
     
@@ -661,6 +664,21 @@ public final class StringUtils
             }
         }
         return sb.toString();
+    }
+    
+    public static boolean modifyUrlHandling(final Spannable spannable) {
+        final URLSpan[] array = (URLSpan[])spannable.getSpans(0, spannable.length(), (Class)URLSpan.class);
+        if (array.length < 1) {
+            return false;
+        }
+        for (int length = array.length, i = 0; i < length; ++i) {
+            final URLSpan urlSpan = array[i];
+            final int spanStart = spannable.getSpanStart((Object)urlSpan);
+            final int spanEnd = spannable.getSpanEnd((Object)urlSpan);
+            spannable.removeSpan((Object)urlSpan);
+            spannable.setSpan((Object)new InternalURLSpan(urlSpan.getURL()), spanStart, spanEnd, 0);
+        }
+        return true;
     }
     
     public static String notEmpty(final String s, final String s2) {

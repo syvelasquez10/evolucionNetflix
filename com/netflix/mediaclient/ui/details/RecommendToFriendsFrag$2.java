@@ -76,7 +76,7 @@ final class RecommendToFriendsFrag$2 implements View$OnClickListener
             this.val$activity.showDialog(RecommendToFriendsFrag.newInstance(this.val$videoId, null, null, null, null));
             return;
         }
-        final Dialog displayDialog = this.val$activity.displayDialog(new AlertDialog$Builder((Context)this.val$activity).setPositiveButton(2131492980, (DialogInterface$OnClickListener)new RecommendToFriendsFrag$2$1(this)).setMessage((CharSequence)Html.fromHtml(this.val$activity.getString(2131493333))).setNegativeButton(2131493101, (DialogInterface$OnClickListener)null));
+        final Dialog displayDialog = this.val$activity.displayDialog(new AlertDialog$Builder((Context)this.val$activity).setPositiveButton(2131492988, (DialogInterface$OnClickListener)new RecommendToFriendsFrag$2$1(this)).setMessage((CharSequence)Html.fromHtml(this.val$activity.getString(2131493345))).setNegativeButton(2131493108, (DialogInterface$OnClickListener)null));
         SocialLoggingUtils.reportSocialConnectImpressionEvent((Context)this.val$activity, IClientLogging$ModalView.movieDetails);
         ((TextView)displayDialog.findViewById(16908299)).setMovementMethod(LinkMovementMethod.getInstance());
     }

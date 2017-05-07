@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
@@ -16,7 +17,7 @@ public abstract class ProgressiveBillboardPagerAdapter extends BaseProgressivePa
     }
     
     @Override
-    protected BasePaginatedAdapter<Billboard> createPaginatedAdapter(final Context context) {
-        return new PaginatedBillboardAdapter(context);
+    protected BasePaginatedAdapter<Billboard> createPaginatedAdapter(final NetflixActivity netflixActivity) {
+        return new PaginatedBillboardAdapter((Context)netflixActivity);
     }
 }

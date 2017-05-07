@@ -6,13 +6,12 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.LoLoMo;
@@ -65,7 +64,7 @@ public interface INetflixServiceCallback
     
     void onPinVerified(final int p0, final boolean p1, final Status p2);
     
-    void onPostPlayVideosFetched(final int p0, final List<PostPlayVideo> p1, final Status p2);
+    void onPostPlayVideosFetched(final int p0, final PostPlayVideosProvider p1, final Status p2);
     
     void onProfileListUpdateStatus(final int p0, final Status p1);
     
@@ -83,11 +82,13 @@ public interface INetflixServiceCallback
     
     void onServiceReady(final int p0, final Status p1);
     
+    void onShowDetailsAndSeasonsFetched(final int p0, final ShowDetails p1, final List<SeasonDetails> p2, final Status p3);
+    
     void onShowDetailsFetched(final int p0, final ShowDetails p1, final Status p2);
     
     void onSimilarVideosFetched(final int p0, final SearchVideoListProvider p1, final Status p2);
     
-    void onSocialNotificationWasThanked(final int p0, final SocialNotificationSummary p1, final Status p2);
+    void onSocialNotificationWasThanked(final int p0, final Status p1);
     
     void onSocialNotificationsListFetched(final int p0, final SocialNotificationsList p1, final Status p2);
     

@@ -8,9 +8,10 @@ import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import java.util.Iterator;
 import java.util.List;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
@@ -38,6 +39,9 @@ public class DeviceConfiguration
     private boolean mIsDisableMdx;
     private boolean mIsDisableWebsocket;
     private boolean mIsDisableWidevine;
+    private boolean mLocalPlaybackEnabled;
+    private boolean mMdxRemoteControlLockScreenEnabled;
+    private boolean mMdxRemoteControlNotificationEnabled;
     private int mPTAggregationSize;
     private int mRateLimitForGcmBrowseEvents;
     private int mRateLimitForNListChangeEvents;
@@ -77,6 +81,9 @@ public class DeviceConfiguration
         this.mVideoResolutionOverride = PreferenceUtils.getIntPref(this.mContext, "video_resolution_override", Integer.MAX_VALUE);
         this.mRateLimitForGcmBrowseEvents = PreferenceUtils.getIntPref(this.mContext, "gcm_browse_rate_limit", 0);
         this.mRateLimitForNListChangeEvents = PreferenceUtils.getIntPref(this.mContext, "gcm_tray_change_rate_limit", 0);
+        this.mLocalPlaybackEnabled = PreferenceUtils.getBooleanPref(this.mContext, "playback_configuration_local_playback_enabled", DeviceUtils.isLocalPlaybackEnabled());
+        this.mMdxRemoteControlLockScreenEnabled = PreferenceUtils.getBooleanPref(this.mContext, "mdx_configuration_remote_lockscreen_enabled", DeviceUtils.isRemoteControlEnabled());
+        this.mMdxRemoteControlNotificationEnabled = PreferenceUtils.getBooleanPref(this.mContext, "mdx_configuration_remote_notification_enabled", DeviceUtils.isRemoteControlEnabled());
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
@@ -108,7 +115,7 @@ public class DeviceConfiguration
         //    40: invokespecial   com/netflix/mediaclient/service/configuration/DeviceConfiguration$1.<init>:(Lcom/netflix/mediaclient/service/configuration/DeviceConfiguration;)V
         //    43: invokevirtual   com/netflix/mediaclient/service/configuration/DeviceConfiguration$1.getType:()Ljava/lang/reflect/Type;
         //    46: astore_2       
-        //    47: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalcorParseUtils.getGson:()Lcom/google/gson/Gson;
+        //    47: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalkorParseUtils.getGson:()Lcom/google/gson/Gson;
         //    50: aload_1        
         //    51: aload_2        
         //    52: invokevirtual   com/google/gson/Gson.fromJson:(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;
@@ -192,7 +199,7 @@ public class DeviceConfiguration
             PreferenceUtils.removePref(this.mContext, "cl_configuration");
             return;
         }
-        PreferenceUtils.putStringPref(this.mContext, "cl_configuration", FalcorParseUtils.getGson().toJson(list));
+        PreferenceUtils.putStringPref(this.mContext, "cl_configuration", FalkorParseUtils.getGson().toJson(list));
     }
     
     private void updateDeviceConfigFlag(final boolean b) {
@@ -222,6 +229,66 @@ public class DeviceConfiguration
         }
         PreferenceUtils.putBooleanPref(this.mContext, "disable_widevine", boolean1);
         this.mIsDisableWidevine = boolean1;
+    }
+    
+    private void updateLocalPlaybackStatus(final String s) {
+        if (StringUtils.isNotEmpty(s)) {
+            final boolean boolean1 = Boolean.parseBoolean(s);
+            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+                Log.d(DeviceConfiguration.TAG, "Change in local playback status from " + this.mLocalPlaybackEnabled + " to " + boolean1);
+            }
+            if (this.mLocalPlaybackEnabled != boolean1) {
+                PreferenceUtils.putBooleanPref(this.mContext, "playback_configuration_local_playback_enabled", boolean1);
+                this.mLocalPlaybackEnabled = boolean1;
+            }
+        }
+        else {
+            PreferenceUtils.removePref(this.mContext, "playback_configuration_local_playback_enabled");
+            this.mLocalPlaybackEnabled = DeviceUtils.isLocalPlaybackEnabled();
+            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+                Log.d(DeviceConfiguration.TAG, "Overide is not found, use default for local playback enabled " + this.mLocalPlaybackEnabled);
+            }
+        }
+    }
+    
+    private void updateMdxRemoteControlLockScreenStatus(final String s) {
+        if (StringUtils.isNotEmpty(s)) {
+            final boolean boolean1 = Boolean.parseBoolean(s);
+            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+                Log.d(DeviceConfiguration.TAG, "Change in MDX remote control lock screen be used status from " + this.mMdxRemoteControlLockScreenEnabled + " to " + boolean1);
+            }
+            if (this.mMdxRemoteControlLockScreenEnabled != boolean1) {
+                PreferenceUtils.putBooleanPref(this.mContext, "mdx_configuration_remote_lockscreen_enabled", boolean1);
+                this.mMdxRemoteControlLockScreenEnabled = boolean1;
+            }
+        }
+        else {
+            PreferenceUtils.removePref(this.mContext, "mdx_configuration_remote_lockscreen_enabled");
+            this.mMdxRemoteControlLockScreenEnabled = DeviceUtils.isRemoteControlEnabled();
+            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+                Log.d(DeviceConfiguration.TAG, "Overide is not found, use default on device for MDX remote control lock screen  " + this.mMdxRemoteControlLockScreenEnabled);
+            }
+        }
+    }
+    
+    private void updateMdxRemoteControlNotificationStatus(final String s) {
+        if (StringUtils.isNotEmpty(s)) {
+            final boolean boolean1 = Boolean.parseBoolean(s);
+            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+                Log.d(DeviceConfiguration.TAG, "Change in MDX remote control notification be used status from " + this.mMdxRemoteControlNotificationEnabled + " to " + boolean1);
+            }
+            if (this.mMdxRemoteControlNotificationEnabled != boolean1) {
+                PreferenceUtils.putBooleanPref(this.mContext, "mdx_configuration_remote_notification_enabled", boolean1);
+                this.mMdxRemoteControlNotificationEnabled = boolean1;
+            }
+        }
+        else {
+            PreferenceUtils.removePref(this.mContext, "mdx_configuration_remote_notification_enabled");
+            this.mMdxRemoteControlNotificationEnabled = DeviceUtils.isRemoteControlEnabled();
+            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+                Log.d(DeviceConfiguration.TAG, "Overide is not found, use default on device for MDX remote control notification " + this.mMdxRemoteControlNotificationEnabled);
+            }
+        }
     }
     
     public void clear() {
@@ -309,6 +376,18 @@ public class DeviceConfiguration
         return this.mIsDisableWidevine;
     }
     
+    public boolean isLocalPlaybackEnabled() {
+        return this.mLocalPlaybackEnabled;
+    }
+    
+    public boolean isMdxRemoteControlLockScreenEnabled() {
+        return this.mMdxRemoteControlLockScreenEnabled;
+    }
+    
+    public boolean isMdxRemoteControlNotificationEnabled() {
+        return this.mMdxRemoteControlNotificationEnabled;
+    }
+    
     public void persistDeviceConfigOverride(final DeviceConfigData deviceConfigData) {
         final int n = -1;
         if (deviceConfigData != null) {
@@ -361,6 +440,9 @@ public class DeviceConfiguration
             PreferenceUtils.putIntPref(this.mContext, "gcm_browse_rate_limit", deviceConfigData.getRateLimitForGcmBrowseEvents());
             this.mRateLimitForNListChangeEvents = deviceConfigData.getRateLimitForGcmNListChangeEvents();
             PreferenceUtils.putIntPref(this.mContext, "gcm_tray_change_rate_limit", deviceConfigData.getRateLimitForGcmNListChangeEvents());
+            this.updateLocalPlaybackStatus(deviceConfigData.getEnableLocalPlayback());
+            this.updateMdxRemoteControlLockScreenStatus(deviceConfigData.getEnableMdxRemoteControlLockScreen());
+            this.updateMdxRemoteControlNotificationStatus(deviceConfigData.getEnableMdxRemoteControlNotification());
             if (!this.isDeviceConfigInCache()) {
                 this.updateDeviceConfigFlag(true);
             }

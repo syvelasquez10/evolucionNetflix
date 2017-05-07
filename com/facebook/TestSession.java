@@ -5,10 +5,8 @@
 package com.facebook;
 
 import java.util.Date;
-import com.facebook.model.GraphObjectList;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.util.HashMap;
+import com.facebook.model.GraphUser;
 import android.text.TextUtils;
 import java.util.Iterator;
 import com.facebook.model.GraphObject;
@@ -34,6 +32,7 @@ public class TestSession extends Session
     private final List<String> requestedPermissions;
     private final String sessionUniqueUserTag;
     private String testAccountId;
+    private String testAccountUserName;
     private boolean wasAskedToExtendAccessToken;
     
     TestSession(final Activity activity, final List<String> requestedPermissions, final TokenCachingStrategy tokenCachingStrategy, final String sessionUniqueUserTag, final TestSession$Mode mode) {
@@ -105,7 +104,7 @@ public class TestSession extends Session
         if (error != null) {
             Log.w("FacebookSDK.TestSession", String.format("Could not delete test account %s: %s", s, error.getException().toString()));
         }
-        else if (graphObject.getProperty("FACEBOOK_NON_JSON_RESULT") == Boolean.valueOf(false)) {
+        else if (graphObject.getProperty("FACEBOOK_NON_JSON_RESULT") == Boolean.valueOf(false) || graphObject.getProperty("success") == Boolean.valueOf(false)) {
             Log.w("FacebookSDK.TestSession", String.format("Could not delete test account %s: unknown reason", s));
         }
     }
@@ -133,6 +132,7 @@ public class TestSession extends Session
     
     private void finishAuthWithTestAccount(final TestSession$TestAccount testSession$TestAccount) {
         this.testAccountId = testSession$TestAccount.getId();
+        this.testAccountUserName = testSession$TestAccount.getName();
         this.finishAuthOrReauth(AccessToken.createFromString(testSession$TestAccount.getAccessToken(), this.requestedPermissions, AccessTokenSource.TEST_USER), null);
     }
     
@@ -168,17 +168,11 @@ public class TestSession extends Session
         }
     }
     
-    private static void populateTestAccounts(final Collection<TestSession$TestAccount> collection, final Collection<TestSession$UserAccount> collection2) {
+    private static void populateTestAccounts(final Collection<TestSession$TestAccount> collection, final GraphObject graphObject) {
         synchronized (TestSession.class) {
-            final Iterator<TestSession$TestAccount> iterator = collection.iterator();
-            while (iterator.hasNext()) {
-                storeTestAccount(iterator.next());
-            }
-        }
-        for (final TestSession$UserAccount testSession$UserAccount : collection2) {
-            final TestSession$TestAccount testSession$TestAccount = TestSession.appTestAccounts.get(testSession$UserAccount.getUid());
-            if (testSession$TestAccount != null) {
-                testSession$TestAccount.setName(testSession$UserAccount.getName());
+            for (final TestSession$TestAccount testSession$TestAccount : collection) {
+                testSession$TestAccount.setName(graphObject.getPropertyAs(testSession$TestAccount.getId(), GraphUser.class).getName());
+                storeTestAccount(testSession$TestAccount);
             }
         }
     }
@@ -186,105 +180,31 @@ public class TestSession extends Session
     
     private static void retrieveTestAccountsForAppIfNeeded() {
         while (true) {
-            // monitorenter(TestSession.class)
-            Response response5 = null;
-            Label_0146: {
-                String format;
-                Bundle bundle;
-                try {
-                    if (TestSession.appTestAccounts != null) {
-                        return;
-                    }
-                    TestSession.appTestAccounts = new HashMap<String, TestSession$TestAccount>();
-                    format = String.format("SELECT id,access_token FROM test_account WHERE app_id = %s", TestSession.testApplicationId);
-                    bundle = new Bundle();
-                    final JSONObject jsonObject = new JSONObject();
-                    final JSONObject jsonObject3;
-                    final JSONObject jsonObject2 = jsonObject3 = jsonObject;
-                    final String s = "test_accounts";
-                    final String s2 = format;
-                    jsonObject3.put(s, (Object)s2);
-                    final JSONObject jsonObject4 = jsonObject2;
-                    final String s3 = "users";
-                    final String s4 = "SELECT uid,name FROM user WHERE uid IN (SELECT id FROM #test_accounts)";
-                    jsonObject4.put(s3, (Object)s4);
-                    final Bundle bundle2 = bundle;
-                    final String s5 = "q";
-                    final JSONObject jsonObject5 = jsonObject2;
-                    final String s6 = jsonObject5.toString();
-                    bundle2.putString(s5, s6);
-                    final Bundle bundle3 = bundle;
-                    final String s7 = "access_token";
-                    final String s8 = getAppAccessToken();
-                    bundle3.putString(s7, s8);
-                    final Session session = null;
-                    final String s9 = "fql";
-                    final Bundle bundle4 = bundle;
-                    final HttpMethod httpMethod = null;
-                    final Request request = new Request(session, s9, bundle4, httpMethod);
-                    final Response response = request.executeAndWait();
-                    final Response response3;
-                    final Response response2 = response3 = response;
-                    final FacebookRequestError facebookRequestError = response3.getError();
-                    if (facebookRequestError != null) {
-                        final Response response4 = response2;
-                        final FacebookRequestError facebookRequestError2 = response4.getError();
-                        throw facebookRequestError2.getException();
-                    }
-                    break Label_0146;
+            synchronized (TestSession.class) {
+                if (TestSession.appTestAccounts != null) {
+                    return;
                 }
-                finally {
-                    final Throwable t;
-                    response5 = (Response)t;
-                }
-                // monitorexit(TestSession.class)
-                try {
-                    final JSONObject jsonObject = new JSONObject();
-                    final JSONObject jsonObject3;
-                    final JSONObject jsonObject2 = jsonObject3 = jsonObject;
-                    final String s = "test_accounts";
-                    final String s2 = format;
-                    jsonObject3.put(s, (Object)s2);
-                    final JSONObject jsonObject4 = jsonObject2;
-                    final String s3 = "users";
-                    final String s4 = "SELECT uid,name FROM user WHERE uid IN (SELECT id FROM #test_accounts)";
-                    jsonObject4.put(s3, (Object)s4);
-                    final Bundle bundle2 = bundle;
-                    final String s5 = "q";
-                    final JSONObject jsonObject5 = jsonObject2;
-                    final String s6 = jsonObject5.toString();
-                    bundle2.putString(s5, s6);
-                    final Bundle bundle3 = bundle;
-                    final String s7 = "access_token";
-                    final String s8 = getAppAccessToken();
-                    bundle3.putString(s7, s8);
-                    final Session session = null;
-                    final String s9 = "fql";
-                    final Bundle bundle4 = bundle;
-                    final HttpMethod httpMethod = null;
-                    final Request request = new Request(session, s9, bundle4, httpMethod);
-                    final Response response = request.executeAndWait();
-                    final Response response3;
-                    final Response response2 = response3 = response;
-                    final FacebookRequestError facebookRequestError = response3.getError();
-                    if (facebookRequestError != null) {
-                        final Response response4 = response2;
-                        final FacebookRequestError facebookRequestError2 = response4.getError();
-                        throw facebookRequestError2.getException();
-                    }
-                }
-                catch (JSONException ex2) {
-                    throw new FacebookException((Throwable)ex2);
+                TestSession.appTestAccounts = new HashMap<String, TestSession$TestAccount>();
+                Request.setDefaultBatchApplicationId(TestSession.testApplicationId);
+                final Bundle bundle = new Bundle();
+                bundle.putString("access_token", getAppAccessToken());
+                final Request request = new Request(null, "app/accounts/test-users", bundle, null);
+                request.setBatchEntryName("testUsers");
+                request.setBatchEntryOmitResultOnSuccess(false);
+                final Bundle bundle2 = new Bundle();
+                bundle2.putString("access_token", getAppAccessToken());
+                bundle2.putString("ids", "{result=testUsers:$.data.*.id}");
+                bundle2.putString("fields", "name");
+                final Request request2 = new Request(null, "", bundle2, null);
+                request2.setBatchEntryDependsOn("testUsers");
+                final List<Response> executeBatchAndWait = Request.executeBatchAndWait(request, request2);
+                if (executeBatchAndWait == null || executeBatchAndWait.size() != 2) {
+                    throw new FacebookException("Unexpected number of results from TestUsers batch query");
                 }
             }
-            final GraphObjectList<TestSession$FqlResult> data = response5.getGraphObjectAs(TestSession$FqlResponse.class).getData();
-            if (data == null || data.size() != 2) {
-                break;
-            }
-            populateTestAccounts(((TestSession$FqlResult)data.get(0)).getFqlResultSet().castToListOf(TestSession$TestAccount.class), ((TestSession$FqlResult)data.get(1)).getFqlResultSet().castToListOf(TestSession$UserAccount.class));
-            return;
+            final List<Response> list;
+            populateTestAccounts(list.get(0).getGraphObjectAs(TestSession$TestAccountsResponse.class).getData(), list.get(1).getGraphObject());
         }
-        throw new FacebookException("Unexpected number of results from FQL query");
     }
     
     public static void setTestApplicationId(final String s) {
@@ -356,12 +276,16 @@ public class TestSession extends Session
     
     void forceExtendAccessToken(final boolean b) {
         final AccessToken tokenInfo = this.getTokenInfo();
-        this.setTokenInfo(new AccessToken(tokenInfo.getToken(), new Date(), tokenInfo.getPermissions(), AccessTokenSource.TEST_USER, new Date(0L)));
+        this.setTokenInfo(new AccessToken(tokenInfo.getToken(), new Date(), tokenInfo.getPermissions(), tokenInfo.getDeclinedPermissions(), AccessTokenSource.TEST_USER, new Date(0L)));
         this.setLastAttemptedTokenExtendDate(new Date(0L));
     }
     
     public final String getTestUserId() {
         return this.testAccountId;
+    }
+    
+    public final String getTestUserName() {
+        return this.testAccountUserName;
     }
     
     boolean getWasAskedToExtendAccessToken() {

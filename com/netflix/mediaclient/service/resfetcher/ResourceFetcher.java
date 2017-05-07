@@ -18,6 +18,7 @@ import com.netflix.mediaclient.service.webclient.NetflixWebClientInitParameters;
 import com.android.volley.Network;
 import com.android.volley.Cache;
 import com.android.volley.toolbox.BasicNetwork;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.gfx.BitmapLruCache;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.NetflixApplication;
@@ -30,7 +31,7 @@ import com.android.volley.toolbox.HttpStack;
 import com.netflix.mediaclient.Log;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClient;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.android.volley.RequestQueue;
 import com.netflix.mediaclient.service.resfetcher.volley.ImageLoader;
 import java.io.File;
@@ -48,7 +49,7 @@ public class ResourceFetcher extends ServiceAgent
     private File mDownloadsDir;
     private ImageLoader mImageLoader;
     private RequestQueue mRequestQueue;
-    private final FalcorVolleyWebClient mWebClient;
+    private final FalkorVolleyWebClient mWebClient;
     
     public ResourceFetcher() {
         this.mWebClient = createWebClient();
@@ -90,10 +91,10 @@ public class ResourceFetcher extends ServiceAgent
         return new ImageLoader(this.mRequestQueue, this.getImageCache(context), resourceRequestTimeout, imageCacheMinimumTtl, applicationPerformanceMetricsLogging, configurationAgent);
     }
     
-    private static FalcorVolleyWebClient createWebClient() {
+    private static FalkorVolleyWebClient createWebClient() {
         Log.i("nf_service_resourcefetcher", "WebClient of type volley");
         if ("volley".equals("volley")) {
-            return new FalcorVolleyWebClient();
+            return new FalkorVolleyWebClient();
         }
         throw new IllegalStateException("Webclient not implemented");
     }
@@ -132,6 +133,17 @@ public class ResourceFetcher extends ServiceAgent
             return null;
         }
         return new ResourceFetcher$ResourceFetcherCallbackWrapper(this, resourceFetcherCallback, null);
+    }
+    
+    public boolean deleteLocalResource(final String s) {
+        boolean delete = false;
+        if (this.mDownloadsDir.isDirectory()) {
+            delete = delete;
+            if (StringUtils.isNotEmpty(s)) {
+                delete = new File(this.mDownloadsDir, s).delete();
+            }
+        }
+        return delete;
     }
     
     @Override

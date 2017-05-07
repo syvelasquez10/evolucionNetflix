@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.lomo;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.view.View;
-import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
@@ -30,7 +30,7 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Fe
         this.adapterCallbacks = adapterCallbacks;
         this.manager = manager;
         this.viewRecycler = viewRecycler;
-        this.paginatedAdapter = this.createPaginatedAdapter((Context)manager.getActivity());
+        this.paginatedAdapter = this.createPaginatedAdapter(manager.getActivity());
     }
     
     private void fetchMoreData() {
@@ -38,7 +38,7 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Fe
         this.fetchMoreData(this.currDataIndex, this.currDataIndex + this.getNumVideosToFetchPerBatch() - 1);
     }
     
-    protected abstract BasePaginatedAdapter<T> createPaginatedAdapter(final Context p0);
+    protected abstract BasePaginatedAdapter<T> createPaginatedAdapter(final NetflixActivity p0);
     
     protected abstract void fetchMoreData(final int p0, final int p1);
     
@@ -56,7 +56,7 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Fe
     }
     
     protected int getNumVideosToFetchPerBatch() {
-        return this.paginatedAdapter.computeNumVideosToFetchPerBatch((Context)this.manager.getActivity());
+        return this.paginatedAdapter.computeNumVideosToFetchPerBatch();
     }
     
     @Override
@@ -133,6 +133,11 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Fe
     @Override
     public BaseProgressivePagerAdapter$Memento saveToMemento() {
         return new BaseProgressivePagerAdapter$Memento(this.lomo, this.hasMoreData, this.currDataIndex, this.paginatedAdapter);
+    }
+    
+    @Override
+    public boolean shouldOverlapPages() {
+        return true;
     }
     
     @Override

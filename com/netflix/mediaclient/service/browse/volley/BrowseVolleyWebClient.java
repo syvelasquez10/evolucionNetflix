@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialNotificationSummary;
+import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -17,10 +17,10 @@ import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClient;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.service.browse.BrowseWebClient;
@@ -28,33 +28,33 @@ import com.netflix.mediaclient.service.browse.BrowseWebClient;
 public final class BrowseVolleyWebClient implements BrowseWebClient
 {
     private static final int GENRE_LIST_MAX = 30;
-    private static final int MOVIE_DETAILS_MAX_SIMILARS = 50;
-    public static final int SEARCH_RESULTS_MAX = 50;
+    public static final int MAX_SEARCH_RESULTS_PER_SECTION_INDEX = 19;
+    private static final int MAX_SIMILAR_VIDEO_INDEX = 11;
     private final BrowseWebClientCache browseCache;
     private final NetflixService service;
-    private final FalcorVolleyWebClient webclient;
+    private final FalkorVolleyWebClient webclient;
     
-    public BrowseVolleyWebClient(final BrowseWebClientCache browseCache, final NetflixService service, final FalcorVolleyWebClient webclient) {
+    public BrowseVolleyWebClient(final BrowseWebClientCache browseCache, final NetflixService service, final FalkorVolleyWebClient webclient) {
         this.service = service;
         this.webclient = webclient;
         this.browseCache = browseCache;
     }
     
-    private void fetchVideosAndInjectSocialData(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        this.fetchVideosInternal(loMo, n, n2, new BrowseVolleyWebClient$1(this, n, loMo, browseAgentCallback));
+    private void fetchVideosAndInjectSocialData(final LoMo loMo, final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        this.fetchVideosInternal(loMo, n, n2, b, new BrowseVolleyWebClient$1(this, n, loMo, browseAgentCallback));
     }
     
-    private void fetchVideosInternal(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchVideosRequest(this.service.getApplicationContext(), "lists", loMo, n, n2, browseAgentCallback));
+    private void fetchVideosInternal(final LoMo loMo, final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new FetchVideosRequest(this.service.getApplicationContext(), "lists", loMo, n, n2, b, browseAgentCallback));
     }
     
     @Override
-    public void addToQueue(final String s, final int n, final int n2, final int n3, final boolean b, final String s2, final BrowseAgentCallback browseAgentCallback) {
+    public void addToQueue(final String s, final int n, final int n2, final int n3, final boolean b, final boolean b2, final String s2, final BrowseAgentCallback browseAgentCallback) {
         if (!b) {
             this.webclient.sendRequest(new AddToQueueRequestNoLolomo(this.service.getApplicationContext(), this.browseCache, s, n3, s2, browseAgentCallback));
             return;
         }
-        final AddToQueueRequest addToQueueRequest = new AddToQueueRequest(this.service.getApplicationContext(), this.browseCache, s, n, n2, n3, s2, browseAgentCallback);
+        final AddToQueueRequest addToQueueRequest = new AddToQueueRequest(this.service.getApplicationContext(), this.browseCache, s, n, n2, n3, b2, s2, browseAgentCallback);
         if (addToQueueRequest.canProceed()) {
             this.webclient.sendRequest(addToQueueRequest);
             return;
@@ -64,12 +64,12 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     
     @Override
     public void fetchBBVideos(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchBBVideosRequest(this.service.getApplicationContext(), this.browseCache, loMo, n, n2, 50, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+        this.webclient.sendRequest(new FetchBBVideosRequest(this.service.getApplicationContext(), this.browseCache, loMo, n, n2, 11, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
     }
     
     @Override
     public void fetchCWVideos(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchCWVideosRequest(this.service.getApplicationContext(), this.browseCache, n, n2, 50, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+        this.webclient.sendRequest(new FetchCWVideosRequest(this.service.getApplicationContext(), this.browseCache, n, n2, 11, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
     }
     
     @Override
@@ -88,8 +88,8 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void fetchGenreVideos(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        final FalcorVolleyWebClient webclient = this.webclient;
+    public void fetchGenreVideos(final LoMo loMo, final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        final FalkorVolleyWebClient webclient = this.webclient;
         final Context applicationContext = this.service.getApplicationContext();
         String s;
         if (LoMoType.FLAT_GENRE.equals(loMo.getType())) {
@@ -98,7 +98,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
         else {
             s = "lists";
         }
-        webclient.sendRequest(new FetchVideosRequest(applicationContext, s, loMo, n, n2, browseAgentCallback));
+        webclient.sendRequest(new FetchVideosRequest(applicationContext, s, loMo, n, n2, b, browseAgentCallback));
     }
     
     @Override
@@ -107,8 +107,8 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void fetchIQVideos(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchIQVideosRequest(this.service.getApplicationContext(), this.browseCache, n, n2, browseAgentCallback));
+    public void fetchIQVideos(final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new FetchIQVideosRequest(this.service.getApplicationContext(), this.browseCache, n, n2, b, browseAgentCallback));
     }
     
     @Override
@@ -128,7 +128,7 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     
     @Override
     public void fetchMovieDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchMovieDetailsRequest(this.service.getApplicationContext(), this.browseCache, s, 0, 50, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+        this.webclient.sendRequest(new FetchMovieDetailsRequest(this.service.getApplicationContext(), this.browseCache, s, 11, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
     }
     
     @Override
@@ -147,8 +147,13 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void fetchShowDetails(final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchShowDetailsRequest(this.service.getApplicationContext(), this.browseCache, s, s2, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+    public void fetchShowDetails(final String s, final String s2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new FetchShowDetailsRequest(this.service.getApplicationContext(), this.browseCache, s, s2, 11, false, b, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+    }
+    
+    @Override
+    public void fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new FetchShowDetailsRequest(this.service.getApplicationContext(), this.browseCache, s, s2, 11, true, b, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
     }
     
     @Override
@@ -167,12 +172,12 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void fetchVideos(final LoMo loMo, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        if (LoMoUtils.shouldInjectSocialData(loMo, this.service.isCurrentProfileFacebookConnected())) {
-            this.fetchVideosAndInjectSocialData(loMo, n, n2, browseAgentCallback);
+    public void fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        if (LoMoUtils.shouldInjectSocialData(loMo, this.service.isCurrentProfileFacebookConnected(), b)) {
+            this.fetchVideosAndInjectSocialData(loMo, n, n2, b, browseAgentCallback);
             return;
         }
-        this.fetchVideosInternal(loMo, n, n2, browseAgentCallback);
+        this.fetchVideosInternal(loMo, n, n2, b, browseAgentCallback);
     }
     
     @Override
@@ -196,18 +201,18 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new PrefetchGenreLoLoMoRequest(this.service.getApplicationContext(), KidsUtils.isKoPExperience(this.service.getConfiguration(), this.service.getCurrentProfile()), this.browseCache, s, n, n2, n3, n4, browseAgentCallback));
+    public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new PrefetchGenreLoLoMoRequest(this.service.getApplicationContext(), KidsUtils.isKoPExperience(this.service.getConfiguration(), this.service.getCurrentProfile()), this.browseCache, s, n, n2, n3, n4, b, browseAgentCallback));
     }
     
     @Override
-    public void prefetchLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new PrefetchHomeLoLoMoRequest(this.service.getApplicationContext(), this.browseCache, n, n2, n3, n4, 50, b, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
+    public void prefetchLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
+        this.webclient.sendRequest(new PrefetchHomeLoLoMoRequest(this.service.getApplicationContext(), this.browseCache, n, n2, n3, n4, 11, b, b2, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback));
     }
     
     @Override
-    public void refreshCWList(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        final RefreshCWRequest refreshCWRequest = new RefreshCWRequest(this.service.getApplicationContext(), this.browseCache, n, n2, 50, this.service.isCurrentProfileFacebookConnected(), browseAgentCallback);
+    public void refreshCWList(final int n, final int n2) {
+        final RefreshCWRequest refreshCWRequest = new RefreshCWRequest(this.service.getApplicationContext(), this.browseCache, n, n2, 11, this.service.isCurrentProfileFacebookConnected());
         if (refreshCWRequest.canProceed()) {
             this.webclient.sendRequest(refreshCWRequest);
             return;
@@ -216,8 +221,8 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void refreshIQList(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
-        final RefreshIQRequest refreshIQRequest = new RefreshIQRequest(this.service.getApplicationContext(), this.browseCache, n, n2, browseAgentCallback);
+    public void refreshIQList(final int n, final int n2) {
+        final RefreshIQRequest refreshIQRequest = new RefreshIQRequest(this.service.getApplicationContext(), this.browseCache, n, n2);
         if (refreshIQRequest.canProceed()) {
             this.webclient.sendRequest(refreshIQRequest);
             return;

@@ -6,14 +6,14 @@ package com.netflix.mediaclient.service.logging.presentation.volley;
 
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebCallback;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClient;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClient;
 
 public class PresentationVolleyWebClient implements PresentationWebClient
 {
-    private final FalcorVolleyWebClient mWebClient;
+    private final FalkorVolleyWebClient mWebClient;
     
-    public PresentationVolleyWebClient(final FalcorVolleyWebClient mWebClient) {
+    public PresentationVolleyWebClient(final FalkorVolleyWebClient mWebClient) {
         this.mWebClient = mWebClient;
     }
     

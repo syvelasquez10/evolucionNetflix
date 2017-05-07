@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.MathUtils$Range;
 import android.widget.SeekBar$OnSeekBarChangeListener;
 import com.netflix.mediaclient.Log;
 import android.graphics.BitmapFactory;
+import android.annotation.SuppressLint;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.util.api.Api21Util;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -129,6 +130,7 @@ public class SnappableSeekBar extends SeekBar
         }
     }
     
+    @SuppressLint({ "ClickableViewAccessibility" })
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         final boolean b = false;
         while (true) {

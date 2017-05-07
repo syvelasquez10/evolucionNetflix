@@ -14,13 +14,13 @@ public class Video$Detail
     public int endtime;
     public int episodeCount;
     public String genres;
+    public String hiResHorzUrl;
     public String horzDispUrl;
     public String intrUrl;
     public boolean isAutoPlayEnabled;
     public boolean isHdAvailable;
     public boolean isNextPlayableEpisode;
     public boolean isPinProtected;
-    public String mdxHorzUrl;
     public String mdxVertUrl;
     public float predictedRating;
     public String quality;
@@ -31,6 +31,7 @@ public class Video$Detail
     public String storyImgUrl;
     public String synopsis;
     public String synopsisNarrative;
+    public String titleUrl;
     public String tvCardUrl;
     public int year;
     
@@ -48,7 +49,7 @@ public class Video$Detail
         this.bifUrl = video$Detail.bifUrl;
         this.baseUrl = video$Detail.baseUrl;
         this.tvCardUrl = video$Detail.tvCardUrl;
-        this.mdxHorzUrl = video$Detail.mdxHorzUrl;
+        this.hiResHorzUrl = video$Detail.hiResHorzUrl;
         this.mdxVertUrl = video$Detail.mdxVertUrl;
         this.storyImgUrl = video$Detail.storyImgUrl;
         this.storyImgDispUrl = video$Detail.storyImgDispUrl;
@@ -64,6 +65,6 @@ public class Video$Detail
     
     @Override
     public String toString() {
-        return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", storyImgDispUrl=" + this.storyImgDispUrl + ", intrUrl=" + this.intrUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", predictedRating=" + this.predictedRating + ", isPinProtected=" + this.isPinProtected + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
+        return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", hiResHorzUrl=" + this.hiResHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", storyImgDispUrl=" + this.storyImgDispUrl + ", intrUrl=" + this.intrUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", predictedRating=" + this.predictedRating + ", isPinProtected=" + this.isPinProtected + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
     }
 }

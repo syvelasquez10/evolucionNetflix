@@ -9,18 +9,18 @@ import java.util.Set;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClient;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.user.UserWebClient;
 
 public final class UserVolleyWebClient implements UserWebClient
 {
     private final NetflixService service;
-    private final FalcorVolleyWebClient webclient;
+    private final FalkorVolleyWebClient webclient;
     
-    public UserVolleyWebClient(final NetflixService service, final FalcorVolleyWebClient webclient) {
+    public UserVolleyWebClient(final NetflixService service, final FalkorVolleyWebClient webclient) {
         this.webclient = webclient;
         this.service = service;
     }

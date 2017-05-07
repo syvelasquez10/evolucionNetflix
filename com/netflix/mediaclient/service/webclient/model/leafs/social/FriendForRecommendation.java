@@ -27,7 +27,7 @@ public class FriendForRecommendation implements Parcelable
         this.bWasWatched = Boolean.valueOf(array[0]);
         this.bNetflixConnected = Boolean.valueOf(array[1]);
         this.bWasRecommended = Boolean.valueOf(array[2]);
-        this.profile = new FriendProfile(array[3], array[4], array[5], array[6]);
+        this.profile = new FriendProfile(array[3], array[4], array[5], null, array[6]);
     }
     
     public FriendForRecommendation(final FriendProfile profile, final boolean bWasWatched, final boolean bNetflixConnected) {
@@ -84,6 +84,6 @@ public class FriendForRecommendation implements Parcelable
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        parcel.writeStringArray(new String[] { String.valueOf(this.bWasWatched), String.valueOf(this.bNetflixConnected), String.valueOf(this.bWasRecommended), this.profile.getId(), this.profile.getFirstName(), this.profile.getLastName(), this.profile.getImageUrl() });
+        parcel.writeStringArray(new String[] { String.valueOf(this.bWasWatched), String.valueOf(this.bNetflixConnected), String.valueOf(this.bWasRecommended), this.profile.getId(), this.profile.getFirstName(), this.profile.getLastName(), this.profile.getBigImageUrl() });
     }
 }

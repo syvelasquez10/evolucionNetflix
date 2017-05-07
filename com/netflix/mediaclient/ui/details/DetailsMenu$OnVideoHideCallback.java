@@ -32,10 +32,10 @@ class DetailsMenu$OnVideoHideCallback extends LoggingManagerCallback
         this.this$0.shareItem.setEnabled(true);
         if (status.isError()) {
             Log.w("DetailsMenu", "Invalid status code");
-            Toast.makeText((Context)this.this$0.activity, 2131493110, 1).show();
+            Toast.makeText((Context)this.this$0.activity, 2131493117, 1).show();
             return;
         }
-        Toast.makeText((Context)this.this$0.activity, 2131493107, 1).show();
+        Toast.makeText((Context)this.this$0.activity, 2131493114, 1).show();
         this.this$0.updateShareItemAsUnshared();
     }
 }

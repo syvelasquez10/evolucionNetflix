@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.android.app.CommonStatus;
+import android.widget.AbsListView;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.util.LogUtils;

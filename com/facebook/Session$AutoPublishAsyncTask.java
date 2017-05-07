@@ -4,7 +4,6 @@
 
 package com.facebook;
 
-import java.util.Iterator;
 import android.content.ActivityNotFoundException;
 import java.io.OutputStream;
 import java.io.ObjectOutputStream;
@@ -20,8 +19,15 @@ import android.support.v4.app.Fragment;
 import android.app.Activity;
 import java.util.Collection;
 import com.facebook.internal.SessionAuthorizationType;
+import android.text.TextUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.Iterator;
+import com.facebook.model.GraphObjectList;
+import java.util.Map;
+import com.facebook.model.GraphObject;
+import com.facebook.model.GraphMultiResult;
 import android.content.Intent;
-import java.util.Collections;
 import android.os.Looper;
 import java.util.ArrayList;
 import com.facebook.internal.Validate;
@@ -49,7 +55,7 @@ class Session$AutoPublishAsyncTask extends AsyncTask<Void, Void, Void>
     
     protected Void doInBackground(final Void... array) {
         try {
-            Settings.publishInstallAndWait(this.mApplicationContext, this.mApplicationId);
+            Settings.publishInstallAndWaitForResponse(this.mApplicationContext, this.mApplicationId, true);
             return null;
         }
         catch (Exception ex) {

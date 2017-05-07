@@ -134,7 +134,7 @@ class MdxAgent$3 extends BroadcastReceiver
     }
     
     private void doMDXPostPlayPrompt(final Intent intent, final String s) {
-        this.this$0.getBrowseAgent().fetchPostPlayVideos(String.valueOf(this.this$0.getVideoIds().episodeId), new MdxAgent$3$1(this));
+        this.this$0.getBrowseAgent().fetchPostPlayVideos(String.valueOf(this.this$0.getVideoIds().episodeId), this.this$0.getVideoIds().getVideoType(), new MdxAgent$3$1(this));
     }
     
     private void dpMDXSimplePlaybackState(final Intent intent) {
@@ -157,7 +157,7 @@ class MdxAgent$3 extends BroadcastReceiver
             final MdxPostplayState$PostplayTitle[] postplayTitle = mdxPostplayState.getPostplayTitle();
             if (postplayTitle.length > 0 && postplayTitle[0].isEpisode() && postplayTitle[0].getId() > 0) {
                 this.this$0.mVideoIdsPostplay = new WebApiUtils$VideoIds();
-                this.this$0.mVideoIdsPostplay.episode = true;
+                this.this$0.mVideoIdsPostplay.isEpisode = true;
                 this.this$0.mVideoIdsPostplay.episodeId = postplayTitle[0].getId();
                 this.this$0.fetchVideoDetail(false, true);
             }

@@ -37,7 +37,7 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
         this.activity = netflixFrag.getNetflixActivity();
         this.charDetails = charDetails;
         this.trackable = new TrackableObject(charDetails.getGalleryRequestId(), charDetails.getGalleryTrackId(), 0);
-        this.contentPadding = netflixFrag.getResources().getDimensionPixelSize(2131361861);
+        this.contentPadding = netflixFrag.getResources().getDimensionPixelSize(2131361878);
     }
     
     private VideoType getHeaderType(final int n) {
@@ -56,10 +56,10 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
         View inflate = view;
         if (view == null) {
             Log.v("KidsCharacterDetailsAdapter", "Creating header view for position: " + text);
-            inflate = this.activity.getLayoutInflater().inflate(2130903112, (ViewGroup)null);
+            inflate = this.activity.getLayoutInflater().inflate(2130903114, (ViewGroup)null);
         }
-        int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361981);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361982);
+        int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361982);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361983);
         final int contentPadding = this.contentPadding;
         if (text != 0) {
             dimensionPixelSize = 0;
@@ -67,12 +67,12 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
         final int contentPadding2 = this.contentPadding;
         if (text == 0) {}
         inflate.setPadding(contentPadding, dimensionPixelSize, contentPadding2, dimensionPixelSize2);
-        final TextView textView = (TextView)inflate.findViewById(2131165434);
+        final TextView textView = (TextView)inflate.findViewById(2131165418);
         if (this.getHeaderType(text) == VideoType.MOVIE) {
-            text = 2131492961;
+            text = 2131492969;
         }
         else {
-            text = 2131492960;
+            text = 2131492968;
         }
         textView.setText(text);
         return inflate;
@@ -95,8 +95,8 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
             else {
                 o = new KidsOneToOneVideoView((Context)this.activity, false);
             }
-            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361973);
-            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361974);
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361974);
+            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361975);
             ((View)o).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
             ((View)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeSkidmarkRowHeight(this.activity, dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2, false)));
         }

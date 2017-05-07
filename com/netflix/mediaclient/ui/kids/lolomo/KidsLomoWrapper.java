@@ -27,6 +27,10 @@ public class KidsLomoWrapper implements LoMo
         return null;
     }
     
+    public int getHeroTrackId() {
+        return this.lomo.getHeroTrackId();
+    }
+    
     public String getId() {
         return this.lomo.getId();
     }
@@ -64,6 +68,14 @@ public class KidsLomoWrapper implements LoMo
     @Override
     public boolean isBillboard() {
         return false;
+    }
+    
+    public boolean isHero() {
+        return this.lomo.isHero();
+    }
+    
+    @Override
+    public void setId(final String s) {
     }
     
     @Override

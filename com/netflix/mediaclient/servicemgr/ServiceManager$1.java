@@ -13,6 +13,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;

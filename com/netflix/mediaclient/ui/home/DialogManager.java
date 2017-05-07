@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.home;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import android.app.DialogFragment;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.app.Activity;
 import android.content.Context;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -26,12 +27,8 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
             Log.d("DialogManager", "Activity has saved instance state - can't display dialog");
             return false;
         }
-        if (this.mOwner.destroyed()) {
+        if (this.mOwner.destroyed() || this.mOwner.isFinishing()) {
             Log.d("DialogManager", "Activity is destroyed - can't display dialog");
-            return false;
-        }
-        if (this.mOwner.isFinishing()) {
-            Log.d("DialogManager", "Activity is finishing - can't display dialog");
             return false;
         }
         return true;
@@ -62,6 +59,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
                 }
                 catch (Throwable t) {
                     Log.e("DialogManager", "Failed to display Google play services error dialog!", t);
+                    ErrorLoggingManager.logHandledException(t);
                     return false;
                 }
             }

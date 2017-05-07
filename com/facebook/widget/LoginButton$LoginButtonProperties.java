@@ -4,16 +4,20 @@
 
 package com.facebook.widget;
 
+import java.util.Arrays;
+import android.graphics.Canvas;
 import android.app.Activity;
 import android.content.Intent;
 import com.facebook.FacebookException;
-import com.facebook.android.R$string;
 import android.content.res.TypedArray;
 import com.facebook.android.R$styleable;
-import android.view.View$OnClickListener;
 import com.facebook.Request$GraphUserCallback;
 import com.facebook.Request;
+import android.view.View;
+import com.facebook.android.R$string;
+import com.facebook.internal.Utility$FetchedAppSettings;
 import com.facebook.android.R$drawable;
+import android.graphics.Typeface;
 import com.facebook.android.R$dimen;
 import com.facebook.android.R$color;
 import android.util.AttributeSet;
@@ -21,6 +25,7 @@ import android.content.Context;
 import com.facebook.model.GraphUser;
 import com.facebook.internal.SessionTracker;
 import android.support.v4.app.Fragment;
+import android.view.View$OnClickListener;
 import android.widget.Button;
 import android.util.Log;
 import java.util.Collection;

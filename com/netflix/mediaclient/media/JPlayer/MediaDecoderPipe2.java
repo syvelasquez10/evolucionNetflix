@@ -31,7 +31,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     private static final String TAG = "MediaDecoder2";
     protected static final long TIME_TO_NEXT_RETRY = 20L;
     protected static final boolean USE_ANDROID_L_API;
-    private MediaDecoderBase$InputDataSource mDataSource;
+    private final MediaDecoderBase$InputDataSource mDataSource;
     protected MediaCodec mDecoder;
     private boolean mDecoderPause;
     private boolean mEncrypted;
@@ -39,7 +39,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     private ByteBuffer[] mInputBuffers;
     private LinkedList<Integer> mInputBuffersQ;
     private Handler mInputHandler;
-    private MediaDecoderPipe2$LocalStateNotifier mInputState;
+    private final MediaDecoderPipe2$LocalStateNotifier mInputState;
     private HandlerThread mInputThread;
     private boolean mIsAudio;
     private int mOutputBufferCnt;
@@ -47,7 +47,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     protected ByteBuffer[] mOutputBuffers;
     protected LinkedList<Integer> mOutputBuffersQ;
     private Handler mOutputHandler;
-    private MediaDecoderPipe2$LocalStateNotifier mOutputState;
+    private final MediaDecoderPipe2$LocalStateNotifier mOutputState;
     private HandlerThread mOutputThread;
     private String mTag;
     

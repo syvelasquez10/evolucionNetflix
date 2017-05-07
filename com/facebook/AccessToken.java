@@ -6,11 +6,12 @@ package com.facebook;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import android.annotation.SuppressLint;
 import com.facebook.internal.Validate;
 import android.content.Intent;
-import java.util.Collection;
-import java.util.ArrayList;
 import com.facebook.internal.Utility;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ public final class AccessToken implements Serializable
     private static final Date MAX_DATE;
     private static final Date MIN_DATE;
     private static final long serialVersionUID = 1L;
+    private final List<String> declinedPermissions;
     private final Date expires;
     private final Date lastRefresh;
     private final List<String> permissions;
@@ -45,13 +47,17 @@ public final class AccessToken implements Serializable
         ALREADY_EXPIRED_EXPIRATION_TIME = AccessToken.MIN_DATE;
     }
     
-    AccessToken(final String token, final Date expires, final List<String> list, final AccessTokenSource source, final Date lastRefresh) {
-        List<? extends String> emptyList = list;
-        if (list == null) {
+    AccessToken(final String token, final Date expires, List<String> emptyList, final List<String> list, final AccessTokenSource source, final Date lastRefresh) {
+        List<? extends String> emptyList2 = emptyList;
+        if (emptyList == null) {
+            emptyList2 = Collections.emptyList();
+        }
+        if ((emptyList = list) == null) {
             emptyList = Collections.emptyList();
         }
         this.expires = expires;
-        this.permissions = (List<String>)Collections.unmodifiableList((List<?>)emptyList);
+        this.permissions = (List<String>)Collections.unmodifiableList((List<?>)emptyList2);
+        this.declinedPermissions = (List<String>)Collections.unmodifiableList((List<?>)emptyList);
         this.token = token;
         this.source = source;
         this.lastRefresh = lastRefresh;
@@ -68,8 +74,8 @@ public final class AccessToken implements Serializable
         sb.append("]");
     }
     
-    static AccessToken createEmptyToken(final List<String> list) {
-        return new AccessToken("", AccessToken.ALREADY_EXPIRED_EXPIRATION_TIME, list, AccessTokenSource.NONE, AccessToken.DEFAULT_LAST_REFRESH_TIME);
+    static AccessToken createEmptyToken() {
+        return new AccessToken("", AccessToken.ALREADY_EXPIRED_EXPIRATION_TIME, null, null, AccessTokenSource.NONE, AccessToken.DEFAULT_LAST_REFRESH_TIME);
     }
     
     private static AccessToken createFromBundle(final List<String> list, final Bundle bundle, final AccessTokenSource accessTokenSource, final Date date) {
@@ -78,19 +84,11 @@ public final class AccessToken implements Serializable
         if (Utility.isNullOrEmpty(string) || bundleLongAsDate == null) {
             return null;
         }
-        return new AccessToken(string, bundleLongAsDate, list, accessTokenSource, new Date());
+        return new AccessToken(string, bundleLongAsDate, list, null, accessTokenSource, new Date());
     }
     
     static AccessToken createFromCache(final Bundle bundle) {
-        final ArrayList stringArrayList = bundle.getStringArrayList("com.facebook.TokenCachingStrategy.Permissions");
-        Object o;
-        if (stringArrayList == null) {
-            o = Collections.emptyList();
-        }
-        else {
-            o = Collections.unmodifiableList((List<?>)new ArrayList<Object>(stringArrayList));
-        }
-        return new AccessToken(bundle.getString("com.facebook.TokenCachingStrategy.Token"), TokenCachingStrategy.getDate(bundle, "com.facebook.TokenCachingStrategy.ExpirationDate"), (List<String>)o, TokenCachingStrategy.getSource(bundle), TokenCachingStrategy.getDate(bundle, "com.facebook.TokenCachingStrategy.LastRefreshDate"));
+        return new AccessToken(bundle.getString("com.facebook.TokenCachingStrategy.Token"), TokenCachingStrategy.getDate(bundle, "com.facebook.TokenCachingStrategy.ExpirationDate"), getPermissionsFromBundle(bundle, "com.facebook.TokenCachingStrategy.Permissions"), getPermissionsFromBundle(bundle, "com.facebook.TokenCachingStrategy.DeclinedPermissions"), TokenCachingStrategy.getSource(bundle), TokenCachingStrategy.getDate(bundle, "com.facebook.TokenCachingStrategy.LastRefreshDate"));
     }
     
     public static AccessToken createFromExistingAccessToken(final String s, Date default_EXPIRATION_TIME, Date default_LAST_REFRESH_TIME, AccessTokenSource default_ACCESS_TOKEN_SOURCE, final List<String> list) {
@@ -103,7 +101,7 @@ public final class AccessToken implements Serializable
         if (default_ACCESS_TOKEN_SOURCE == null) {
             default_ACCESS_TOKEN_SOURCE = AccessToken.DEFAULT_ACCESS_TOKEN_SOURCE;
         }
-        return new AccessToken(s, default_EXPIRATION_TIME, list, default_ACCESS_TOKEN_SOURCE, default_LAST_REFRESH_TIME);
+        return new AccessToken(s, default_EXPIRATION_TIME, list, null, default_ACCESS_TOKEN_SOURCE, default_LAST_REFRESH_TIME);
     }
     
     public static AccessToken createFromNativeLinkingIntent(final Intent intent) {
@@ -115,32 +113,45 @@ public final class AccessToken implements Serializable
     }
     
     static AccessToken createFromNativeLogin(final Bundle bundle, final AccessTokenSource accessTokenSource) {
-        return createNew(bundle.getStringArrayList("com.facebook.platform.extra.PERMISSIONS"), bundle.getString("com.facebook.platform.extra.ACCESS_TOKEN"), getBundleLongAsDate(bundle, "com.facebook.platform.extra.EXPIRES_SECONDS_SINCE_EPOCH", new Date(0L)), accessTokenSource);
+        return createNew(bundle.getStringArrayList("com.facebook.platform.extra.PERMISSIONS"), null, bundle.getString("com.facebook.platform.extra.ACCESS_TOKEN"), getBundleLongAsDate(bundle, "com.facebook.platform.extra.EXPIRES_SECONDS_SINCE_EPOCH", new Date(0L)), accessTokenSource);
     }
     
     @SuppressLint({ "FieldGetter" })
     static AccessToken createFromRefresh(final AccessToken accessToken, final Bundle bundle) {
-        assert accessToken.source == AccessTokenSource.FACEBOOK_APPLICATION_SERVICE;
-        return createNew(accessToken.getPermissions(), bundle.getString("access_token"), getBundleLongAsDate(bundle, "expires_in", new Date(0L)), accessToken.source);
+        if (accessToken.source != AccessTokenSource.FACEBOOK_APPLICATION_WEB && accessToken.source != AccessTokenSource.FACEBOOK_APPLICATION_NATIVE && accessToken.source != AccessTokenSource.FACEBOOK_APPLICATION_SERVICE) {
+            throw new FacebookException("Invalid token source: " + accessToken.source);
+        }
+        return createNew(accessToken.getPermissions(), accessToken.getDeclinedPermissions(), bundle.getString("access_token"), getBundleLongAsDate(bundle, "expires_in", new Date(0L)), accessToken.source);
     }
     
     static AccessToken createFromString(final String s, final List<String> list, final AccessTokenSource accessTokenSource) {
-        return new AccessToken(s, AccessToken.DEFAULT_EXPIRATION_TIME, list, accessTokenSource, AccessToken.DEFAULT_LAST_REFRESH_TIME);
+        return new AccessToken(s, AccessToken.DEFAULT_EXPIRATION_TIME, list, null, accessTokenSource, AccessToken.DEFAULT_LAST_REFRESH_TIME);
     }
     
-    static AccessToken createFromTokenWithRefreshedPermissions(final AccessToken accessToken, final List<String> list) {
-        return new AccessToken(accessToken.token, accessToken.expires, list, accessToken.source, accessToken.lastRefresh);
+    static AccessToken createFromTokenWithRefreshedPermissions(final AccessToken accessToken, final List<String> list, final List<String> list2) {
+        return new AccessToken(accessToken.token, accessToken.expires, list, list2, accessToken.source, accessToken.lastRefresh);
     }
     
-    static AccessToken createFromWebBundle(final List<String> list, final Bundle bundle, final AccessTokenSource accessTokenSource) {
-        return createNew(list, bundle.getString("access_token"), getBundleLongAsDate(bundle, "expires_in", new Date()), accessTokenSource);
-    }
-    
-    private static AccessToken createNew(final List<String> list, final String s, final Date date, final AccessTokenSource accessTokenSource) {
-        if (Utility.isNullOrEmpty(s) || date == null) {
-            return createEmptyToken(list);
+    static AccessToken createFromWebBundle(List<String> list, final Bundle bundle, final AccessTokenSource accessTokenSource) {
+        final Date bundleLongAsDate = getBundleLongAsDate(bundle, "expires_in", new Date());
+        final String string = bundle.getString("access_token");
+        final String string2 = bundle.getString("granted_scopes");
+        if (!Utility.isNullOrEmpty(string2)) {
+            list = new ArrayList<String>(Arrays.asList(string2.split(",")));
         }
-        return new AccessToken(s, date, list, accessTokenSource, new Date());
+        final String string3 = bundle.getString("denied_scopes");
+        ArrayList list2 = null;
+        if (!Utility.isNullOrEmpty(string3)) {
+            list2 = new ArrayList<String>(Arrays.asList(string3.split(",")));
+        }
+        return createNew((List<String>)list, (List<String>)list2, string, bundleLongAsDate, accessTokenSource);
+    }
+    
+    private static AccessToken createNew(final List<String> list, final List<String> list2, final String s, final Date date, final AccessTokenSource accessTokenSource) {
+        if (Utility.isNullOrEmpty(s) || date == null) {
+            return createEmptyToken();
+        }
+        return new AccessToken(s, date, list, list2, accessTokenSource, new Date());
     }
     
     private static Date getBundleLongAsDate(final Bundle bundle, final String s, final Date date) {
@@ -170,6 +181,14 @@ public final class AccessToken implements Serializable
         return new Date(n * 1000L + date.getTime());
     }
     
+    static List<String> getPermissionsFromBundle(final Bundle bundle, final String s) {
+        final ArrayList stringArrayList = bundle.getStringArrayList(s);
+        if (stringArrayList == null) {
+            return Collections.emptyList();
+        }
+        return (List<String>)Collections.unmodifiableList((List<?>)new ArrayList<Object>(stringArrayList));
+    }
+    
     private void readObject(final ObjectInputStream objectInputStream) {
         throw new InvalidObjectException("Cannot readObject, serialization proxy required");
     }
@@ -185,7 +204,11 @@ public final class AccessToken implements Serializable
     }
     
     private Object writeReplace() {
-        return new AccessToken$SerializationProxyV1(this.token, this.expires, this.permissions, this.source, this.lastRefresh, null);
+        return new AccessToken$SerializationProxyV2(this.token, this.expires, this.permissions, this.declinedPermissions, this.source, this.lastRefresh, null);
+    }
+    
+    public List<String> getDeclinedPermissions() {
+        return this.declinedPermissions;
     }
     
     public Date getExpires() {
@@ -217,6 +240,7 @@ public final class AccessToken implements Serializable
         bundle.putString("com.facebook.TokenCachingStrategy.Token", this.token);
         TokenCachingStrategy.putDate(bundle, "com.facebook.TokenCachingStrategy.ExpirationDate", this.expires);
         bundle.putStringArrayList("com.facebook.TokenCachingStrategy.Permissions", new ArrayList((Collection<? extends E>)this.permissions));
+        bundle.putStringArrayList("com.facebook.TokenCachingStrategy.DeclinedPermissions", new ArrayList((Collection<? extends E>)this.declinedPermissions));
         bundle.putSerializable("com.facebook.TokenCachingStrategy.AccessTokenSource", (Serializable)this.source);
         TokenCachingStrategy.putDate(bundle, "com.facebook.TokenCachingStrategy.LastRefreshDate", this.lastRefresh);
         return bundle;

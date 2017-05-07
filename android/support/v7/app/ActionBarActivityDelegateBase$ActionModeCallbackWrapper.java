@@ -45,6 +45,7 @@ class ActionBarActivityDelegateBase$ActionModeCallbackWrapper implements ActionM
                 if (this.this$0.mActionModeView != null) {
                     this.this$0.mActionModeView.removeAllViews();
                 }
+            Block_5_Outer:
                 while (true) {
                     if (this.this$0.mActivity == null) {
                         break Label_0101;
@@ -53,15 +54,18 @@ class ActionBarActivityDelegateBase$ActionModeCallbackWrapper implements ActionM
                         this.this$0.mActivity.onSupportActionModeFinished(this.this$0.mActionMode);
                         this.this$0.mActionMode = null;
                         return;
+                        // iftrue(Label_0054:, this.this$0.mActionModeView.getParent() == null)
                         while (true) {
-                            ViewCompat.requestApplyInsets((View)this.this$0.mActionModeView.getParent());
-                            continue Label_0101_Outer;
-                            this.this$0.mActionModeView.setVisibility(8);
+                            while (true) {
+                                ViewCompat.requestApplyInsets((View)this.this$0.mActionModeView.getParent());
+                                continue Label_0101_Outer;
+                                this.this$0.mActionModeView.setVisibility(8);
+                                continue Block_5_Outer;
+                            }
                             continue;
                         }
                     }
                     // iftrue(Label_0054:, this.this$0.mActionModeView == null)
-                    // iftrue(Label_0054:, this.this$0.mActionModeView.getParent() == null)
                     catch (AbstractMethodError abstractMethodError) {
                         continue;
                     }

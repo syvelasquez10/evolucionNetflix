@@ -9,13 +9,13 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 
 public final class RecommendMessageAddedEvent extends BaseSocialDiscreteEvent
 {
-    protected static final String NAME = "recommendMessageAdded";
+    protected static final String NAME = "recommendMessageAdded ";
     private String mOriginatingRequestGuid;
     private int mTrackId;
     private IClientLogging$ModalView mView;
     
     public RecommendMessageAddedEvent(final IClientLogging$ModalView mView, final String mOriginatingRequestGuid, final int mTrackId) {
-        super("recommendMessageAdded");
+        super("recommendMessageAdded ");
         this.mView = mView;
         this.mOriginatingRequestGuid = mOriginatingRequestGuid;
         this.mTrackId = mTrackId;

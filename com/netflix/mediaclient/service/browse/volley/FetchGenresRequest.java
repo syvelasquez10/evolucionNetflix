@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -19,9 +19,9 @@ import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>>
+public class FetchGenresRequest extends FalkorVolleyWebClientRequest<List<Genre>>
 {
     private static final String FIELD_GENRE_LOLOMO = "lolomos";
     private static final String FIELD_TOP_GENRE = "topGenres";
@@ -75,11 +75,11 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
     }
     
     @Override
-    protected List<Genre> parseFalcorResponse(String o) {
+    protected List<Genre> parseFalkorResponse(String o) {
         if (Log.isLoggable("nf_service_browse_fetchgenresrequest", 2)) {}
         final ArrayList<ListOfMoviesSummary> list = new ArrayList<ListOfMoviesSummary>();
-        final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchgenresrequest", (String)o);
-        if (FalcorParseUtils.isEmpty(dataObj)) {
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_browse_fetchgenresrequest", (String)o);
+        if (FalkorParseUtils.isEmpty(dataObj)) {
             return (List<Genre>)list;
         }
         try {
@@ -95,7 +95,7 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
             for (int i = this.fromGenre; i <= this.toGenre; ++i) {
                 final String string = Integer.toString(i);
                 if (((JsonObject)o).has(string)) {
-                    final ListOfMoviesSummary listOfMoviesSummary = FalcorParseUtils.getPropertyObject(((JsonObject)o).getAsJsonObject(string), "summary", ListOfMoviesSummary.class);
+                    final ListOfMoviesSummary listOfMoviesSummary = FalkorParseUtils.getPropertyObject(((JsonObject)o).getAsJsonObject(string), "summary", ListOfMoviesSummary.class);
                     if (listOfMoviesSummary != null) {
                         listOfMoviesSummary.setListPos(i);
                     }
@@ -105,7 +105,7 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_fetchgenresrequest", "String response to parse = " + (String)o);
-            throw new FalcorParseException("response missing expected json objects", ex);
+            throw new FalkorParseException("response missing expected json objects", ex);
         }
         return (List<Genre>)list;
     }

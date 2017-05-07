@@ -15,8 +15,8 @@ import com.facebook.Session;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import android.content.Context;
 import android.widget.Toast;
-import com.facebook.internal.SessionTracker;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.facebook.Request$GraphUserCallback;
 import com.facebook.Session$StatusCallback;
 import com.netflix.mediaclient.ui.login.AccountActivity;
 
@@ -24,10 +24,11 @@ public class FacebookLoginActivity extends AccountActivity
 {
     private static final String TAG = "FacebookLoginActivity";
     private final Session$StatusCallback facebookSdkStatusCallback;
+    private final Request$GraphUserCallback graphUserCallback;
     private ServiceManager manager;
-    private SessionTracker tracker;
     
     public FacebookLoginActivity() {
+        this.graphUserCallback = new FacebookLoginActivity$2(this);
         this.facebookSdkStatusCallback = new FacebookLoginActivity$3(this);
     }
     
@@ -35,13 +36,13 @@ public class FacebookLoginActivity extends AccountActivity
     }
     
     private void handleConnectFailure() {
-        Toast.makeText((Context)this, 2131493194, 1).show();
+        Toast.makeText((Context)this, 2131493201, 1).show();
         this.finish();
     }
     
     private void handleConnectSuccess() {
         this.sendHomeRefreshBrodcast();
-        Toast.makeText((Context)this, 2131493193, 1).show();
+        Toast.makeText((Context)this, 2131493200, 1).show();
         this.finish();
     }
     
@@ -92,7 +93,7 @@ public class FacebookLoginActivity extends AccountActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         this.getWindow().requestFeature(1);
-        this.getWindow().setBackgroundDrawableResource(2131296350);
+        this.getWindow().setBackgroundDrawableResource(2131296356);
         super.onCreate(bundle);
         this.printAppSignatureKeyIfDebug();
     }

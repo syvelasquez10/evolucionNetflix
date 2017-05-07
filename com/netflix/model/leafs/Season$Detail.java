@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 
 public final class Season$Detail extends Video$Summary
@@ -22,40 +23,40 @@ public final class Season$Detail extends Video$Summary
     public void populate(final JsonElement jsonElement) {
         super.populate(jsonElement);
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("Season.Detail", 2)) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("Season.Detail", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0146: {
+            Label_0142: {
                 switch (s.hashCode()) {
                     case -1034364087: {
                         if (s.equals("number")) {
                             n = 0;
-                            break Label_0146;
+                            break Label_0142;
                         }
                         break;
                     }
                     case 1590765524: {
                         if (s.equals("episodeCount")) {
                             n = 1;
-                            break Label_0146;
+                            break Label_0142;
                         }
                         break;
                     }
                     case -1200833493: {
                         if (s.equals("currentEpisodeNumber")) {
                             n = 2;
-                            break Label_0146;
+                            break Label_0142;
                         }
                         break;
                     }
                     case 3704893: {
                         if (s.equals("year")) {
                             n = 3;
-                            break Label_0146;
+                            break Label_0142;
                         }
                         break;
                     }

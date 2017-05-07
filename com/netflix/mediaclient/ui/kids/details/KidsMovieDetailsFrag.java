@@ -68,8 +68,8 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     private View createSimilarMoviesHeader() {
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903112, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131165434)).setText(2131492959);
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903114, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131165418)).setText(2131492967);
         return inflate;
     }
     
@@ -125,7 +125,7 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903118, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903131, (ViewGroup)null);
         this.listView = (ListView)this.content.findViewById(16908298);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());

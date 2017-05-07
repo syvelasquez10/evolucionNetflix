@@ -10,7 +10,10 @@ import android.os.Parcelable;
 import android.view.View$MeasureSpec;
 import android.graphics.BitmapFactory;
 import com.facebook.android.R$drawable;
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import com.facebook.internal.ImageDownloader;
+import com.facebook.internal.ImageRequest$Callback;
+import com.facebook.internal.ImageRequest$Builder;
 import com.facebook.FacebookException;
 import com.facebook.internal.Logger;
 import com.facebook.LoggingBehavior;
@@ -21,10 +24,12 @@ import android.widget.ImageView$ScaleType;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.FrameLayout$LayoutParams;
 import com.facebook.android.R$dimen;
+import com.facebook.internal.ImageResponse;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.graphics.Bitmap;
+import com.facebook.internal.ImageRequest;
 import android.widget.ImageView;
+import android.graphics.Bitmap;
 import android.widget.FrameLayout;
 
 public class ProfilePictureView extends FrameLayout
@@ -44,6 +49,7 @@ public class ProfilePictureView extends FrameLayout
     public static final int SMALL = -2;
     private static final String SUPER_STATE_KEY = "ProfilePictureView_superState";
     public static final String TAG;
+    private Bitmap customizedDefaultProfilePicture;
     private ImageView image;
     private Bitmap imageContents;
     private boolean isCropped;
@@ -64,6 +70,7 @@ public class ProfilePictureView extends FrameLayout
         this.queryWidth = 0;
         this.isCropped = true;
         this.presetSizeType = -1;
+        this.customizedDefaultProfilePicture = null;
         this.initialize(context);
     }
     
@@ -73,6 +80,7 @@ public class ProfilePictureView extends FrameLayout
         this.queryWidth = 0;
         this.isCropped = true;
         this.presetSizeType = -1;
+        this.customizedDefaultProfilePicture = null;
         this.initialize(context);
         this.parseAttributes(set);
     }
@@ -83,6 +91,7 @@ public class ProfilePictureView extends FrameLayout
         this.queryWidth = 0;
         this.isCropped = true;
         this.presetSizeType = -1;
+        this.customizedDefaultProfilePicture = null;
         this.initialize(context);
         this.parseAttributes(set);
     }
@@ -166,20 +175,25 @@ public class ProfilePictureView extends FrameLayout
             }
             ImageDownloader.downloadAsync(this.lastRequest = build);
         }
-        catch (MalformedURLException ex) {
+        catch (URISyntaxException ex) {
             Logger.log(LoggingBehavior.REQUESTS, 6, ProfilePictureView.TAG, ex.toString());
         }
     }
     
     private void setBlankProfilePicture() {
-        int n;
-        if (this.isCropped()) {
-            n = R$drawable.com_facebook_profile_picture_blank_square;
+        if (this.customizedDefaultProfilePicture == null) {
+            int n;
+            if (this.isCropped()) {
+                n = R$drawable.com_facebook_profile_picture_blank_square;
+            }
+            else {
+                n = R$drawable.com_facebook_profile_picture_blank_portrait;
+            }
+            this.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), n));
+            return;
         }
-        else {
-            n = R$drawable.com_facebook_profile_picture_blank_portrait;
-        }
-        this.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), n));
+        this.updateImageQueryParameters();
+        this.setImageBitmap(Bitmap.createScaledBitmap(this.customizedDefaultProfilePicture, this.queryWidth, this.queryHeight, false));
     }
     
     private void setImageBitmap(final Bitmap bitmap) {
@@ -322,6 +336,10 @@ public class ProfilePictureView extends FrameLayout
     public final void setCropped(final boolean isCropped) {
         this.isCropped = isCropped;
         this.refreshImage(false);
+    }
+    
+    public final void setDefaultProfilePicture(final Bitmap customizedDefaultProfilePicture) {
+        this.customizedDefaultProfilePicture = customizedDefaultProfilePicture;
     }
     
     public final void setOnErrorListener(final ProfilePictureView$OnErrorListener onErrorListener) {

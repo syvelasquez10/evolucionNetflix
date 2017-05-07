@@ -7,6 +7,8 @@ package com.netflix.mediaclient.ui.lomo;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import android.view.View$OnClickListener;
+import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
@@ -20,7 +22,6 @@ import com.netflix.mediaclient.util.log.SocialLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
-import android.app.Activity;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -98,15 +99,15 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         if (Log.isLoggable("BillboardView", 2)) {
             Log.v("BillboardView", "isTablet: " + this.isTablet + ", showArtworkOnly: " + this.showArtworkOnly);
         }
-        this.infoViewGroup = this.findViewById(2131165302);
-        this.label = (TextView)this.findViewById(2131165303);
-        this.info = (TextView)this.findViewById(2131165305);
-        this.synopsis = (TextView)this.findViewById(2131165306);
-        this.tvCard = (AdvancedImageView)this.findViewById(2131165304);
-        this.friendAvatar = (AdvancedImageView)this.findViewById(2131165308);
-        this.friendRecommendationText = (TextView)this.findViewById(2131165309);
-        this.postcardShadowOverlayGradient = this.findViewById(2131165301);
-        this.storyArt = (AdvancedImageView)this.findViewById(2131165298);
+        this.infoViewGroup = this.findViewById(2131165305);
+        this.label = (TextView)this.findViewById(2131165306);
+        this.info = (TextView)this.findViewById(2131165308);
+        this.synopsis = (TextView)this.findViewById(2131165309);
+        this.tvCard = (AdvancedImageView)this.findViewById(2131165307);
+        this.friendAvatar = (AdvancedImageView)this.findViewById(2131165311);
+        this.friendRecommendationText = (TextView)this.findViewById(2131165312);
+        this.postcardShadowOverlayGradient = this.findViewById(2131165304);
+        this.storyArt = (AdvancedImageView)this.findViewById(2131165301);
         int n;
         if (this.showArtworkOnly) {
             n = 0;
@@ -115,19 +116,19 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             n = DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) / 3;
         }
         this.storyArt.setPadding(n, 0, 0, 0);
-        this.shadowOverlay = this.findViewById(2131165299);
+        this.shadowOverlay = this.findViewById(2131165302);
         ((RelativeLayout$LayoutParams)this.shadowOverlay.getLayoutParams()).width = n;
-        this.shadowOverlayGradient = this.findViewById(2131165300);
+        this.shadowOverlayGradient = this.findViewById(2131165303);
         ((RelativeLayout$LayoutParams)this.shadowOverlayGradient.getLayoutParams()).leftMargin = n;
-        this.playButton = this.findViewById(2131165310);
-        this.infoButton = this.findViewById(2131165311);
+        this.playButton = this.findViewById(2131165313);
+        this.infoButton = this.findViewById(2131165314);
         this.updateViewVisibility();
         this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new BillboardView$1(this));
     }
     
     public static boolean shouldShowArtworkOnly(final NetflixActivity netflixActivity) {
         boolean b;
-        if (DeviceUtils.getScreenResolutionDpi(netflixActivity) <= 240) {
+        if (DeviceUtils.getScreenResolutionDpi((Context)netflixActivity) <= 240) {
             b = true;
         }
         else {
@@ -235,7 +236,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             Log.v("BillboardView", "updating billboard, title: " + billboard.getTitle() + ", story url: " + billboard.getStoryUrl());
         }
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493159), billboard.getTitle());
+        final String format = String.format(this.getResources().getString(2131493166), billboard.getTitle());
         this.setContentDescription((CharSequence)format);
         if (billboard.getSocialBadge() != null && SocialNotificationsUtils.isSocialNotificationsFeatureSupported((NetflixActivity)this.getContext())) {
             n = 1;
@@ -257,15 +258,28 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             this.friendAvatar.setVisibility(0);
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.friendAvatar, billboard.getSocialBadge().getImageUrl(), IClientLogging$AssetType.merchStill, format, true, true, 1);
             this.friendRecommendationText.setVisibility(0);
-            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131493360, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
+            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131493372, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
             this.mStoryId = billboard.getSocialBadge().getStoryId();
         }
         if (this.showArtworkOnly) {
             this.storyArt.setPressedStateHandlerEnabled(true);
             this.detailsListener.update((View)this.storyArt, billboard);
-            NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, billboard.getHorzDispUrl(), IClientLogging$AssetType.merchStill, format, true, true, 1);
+            String s;
+            if (this.isTablet) {
+                s = billboard.getHighResolutionLandscapeBoxArtUrl();
+            }
+            else {
+                s = billboard.getHorzDispUrl();
+            }
+            if (Log.isLoggable("BillboardView", 2)) {
+                Log.v("BillboardView", "Showing artwork only, image url: " + s);
+            }
+            NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, s, IClientLogging$AssetType.merchStill, format, true, true, 1);
         }
         else {
+            if (Log.isLoggable("BillboardView", 2)) {
+                Log.v("BillboardView", "Showing billboard with action buttons, image url: " + billboard.getStoryUrl());
+            }
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, billboard.getStoryUrl(), IClientLogging$AssetType.merchStill, format, true, true, 1);
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.tvCard, billboard.getTvCardUrl(), IClientLogging$AssetType.boxArt, format, false, true, 1);
             if (n != 0) {
@@ -285,6 +299,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
                 }
                 info.setText(text);
                 this.synopsis.setText((CharSequence)billboard.getSynopsis());
+                ServiceManagerUtils.cacheManifestIfEnabled(serviceManager, billboard);
                 this.playButton.setOnClickListener((View$OnClickListener)new BillboardView$2(this, serviceManager, billboard));
                 this.infoButton.setOnClickListener((View$OnClickListener)new BillboardView$3(this, serviceManager, billboard));
             }

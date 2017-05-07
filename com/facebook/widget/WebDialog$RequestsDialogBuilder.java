@@ -16,12 +16,20 @@ public class WebDialog$RequestsDialogBuilder extends WebDialog$BuilderBase<WebDi
     private static final String TITLE_PARAM = "title";
     private static final String TO_PARAM = "to";
     
+    public WebDialog$RequestsDialogBuilder(final Context context) {
+        super(context, "apprequests");
+    }
+    
     public WebDialog$RequestsDialogBuilder(final Context context, final Session session) {
         super(context, session, "apprequests", null);
     }
     
     public WebDialog$RequestsDialogBuilder(final Context context, final Session session, final Bundle bundle) {
         super(context, session, "apprequests", bundle);
+    }
+    
+    public WebDialog$RequestsDialogBuilder(final Context context, final String s, final Bundle bundle) {
+        super(context, s, "apprequests", bundle);
     }
     
     public WebDialog$RequestsDialogBuilder setData(final String s) {

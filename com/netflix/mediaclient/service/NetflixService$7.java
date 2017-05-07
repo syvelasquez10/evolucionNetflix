@@ -25,6 +25,7 @@ import java.util.List;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
+import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import java.util.Iterator;
@@ -35,6 +36,9 @@ import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
+import android.app.PendingIntent;
+import com.netflix.mediaclient.Log;
+import android.app.AlarmManager;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
@@ -54,8 +58,6 @@ import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
-import com.netflix.mediaclient.NetflixApplication;
-import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -69,12 +71,8 @@ class NetflixService$7 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (intent == null || !"com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER".equals(intent.getAction())) {
-            Log.d("NetflixService", "Invalid intent: ", intent);
-            return;
-        }
-        Log.v("NetflixService", "Sending show app intent");
-        this.this$0.startActivity(NetflixApplication.createShowApplicationIntent((Context)this.this$0).addFlags(268435456));
-        this.this$0.handler.postDelayed((Runnable)new NetflixService$7$1(this), 400L);
+        this.this$0.mNrdController.setNetworkInterfaces();
+        this.this$0.mPlayerAgent.handleConnectivityChange(intent);
+        this.this$0.mClientLoggingAgent.handleConnectivityChange(intent);
     }
 }

@@ -26,9 +26,9 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.util.AttributeSet;
 import android.content.Context;
+import com.netflix.mediaclient.servicemgr.model.Ratable;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import android.graphics.drawable.Drawable;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.widget.RatingBar$OnRatingBarChangeListener;
 import android.widget.RatingBar;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
@@ -63,22 +63,23 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
         this.this$0.setEnabled(true);
         if (status.isError()) {
             Log.w("NetflixRatingBar", "Invalid status code");
-            Toast.makeText(this.this$0.getContext(), 2131493171, 1).show();
+            Toast.makeText(this.this$0.getContext(), 2131493178, 1).show();
             this.this$0.setRating((float)this.this$0.currRating);
-            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131493171), ActionOnUIError.displayedError), null, this.this$0.currRating);
+            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131493178), ActionOnUIError.displayedError), null, this.this$0.currRating);
             return;
         }
         Log.v("NetflixRatingBar", "Rating has been updated");
-        Toast.makeText(this.this$0.getContext(), 2131493172, 1).show();
+        Toast.makeText(this.this$0.getContext(), 2131493179, 1).show();
         this.this$0.currRating = this.rating;
-        if (this.this$0.details != null) {
-            this.this$0.details.setUserRating(this.rating);
+        if (this.this$0.ratableObject != null) {
+            this.this$0.ratableObject.setUserRating(this.rating);
         }
         else {
-            Log.e("NetflixRatingBar", "Failed to update rating, details missing!");
+            Log.e("NetflixRatingBar", "Failed to update rating, ratableObject missing!");
         }
         this.this$0.updateRatingDrawable();
         this.this$0.setRating((float)this.this$0.currRating);
+        this.this$0.dispatchSystemUiVisibilityChanged(0);
         Log.d("NetflixRatingBar", "Report rate action ended");
         UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.success, null, null, this.this$0.currRating);
     }

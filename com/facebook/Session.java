@@ -4,7 +4,10 @@
 
 package com.facebook;
 
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.Collections;
 import android.content.ActivityNotFoundException;
 import java.io.OutputStream;
 import java.io.ObjectOutputStream;
@@ -20,8 +23,15 @@ import android.support.v4.app.Fragment;
 import android.app.Activity;
 import java.util.Collection;
 import com.facebook.internal.SessionAuthorizationType;
+import android.text.TextUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.Iterator;
+import com.facebook.model.GraphObjectList;
+import java.util.Map;
+import com.facebook.model.GraphObject;
+import com.facebook.model.GraphMultiResult;
 import android.content.Intent;
-import java.util.Collections;
 import android.os.Looper;
 import java.util.ArrayList;
 import com.facebook.internal.Validate;
@@ -40,7 +50,6 @@ public class Session implements Serializable
     public static final String ACTION_ACTIVE_SESSION_OPENED = "com.facebook.sdk.ACTIVE_SESSION_OPENED";
     public static final String ACTION_ACTIVE_SESSION_SET = "com.facebook.sdk.ACTIVE_SESSION_SET";
     public static final String ACTION_ACTIVE_SESSION_UNSET = "com.facebook.sdk.ACTIVE_SESSION_UNSET";
-    public static final String APPLICATION_ID_PROPERTY = "com.facebook.sdk.ApplicationId";
     private static final String AUTH_BUNDLE_SAVE_KEY = "com.facebook.sdk.Session.authBundleKey";
     public static final int DEFAULT_AUTHORIZE_ACTIVITY_CODE = 64206;
     private static final String MANAGE_PERMISSION_PREFIX = "manage";
@@ -56,6 +65,7 @@ public class Session implements Serializable
     private static Session activeSession;
     private static final long serialVersionUID = 1L;
     private static volatile Context staticContext;
+    private AppEventsLogger appEventsLogger;
     private final String applicationId;
     private volatile Bundle authorizationBundle;
     private AuthorizationClient authorizationClient;
@@ -65,7 +75,7 @@ public class Session implements Serializable
     private final Handler handler;
     private Date lastAttemptedTokenExtendDate;
     private final Object lock;
-    private Session$AuthorizationRequest pendingRequest;
+    private Session$AuthorizationRequest pendingAuthorizationRequest;
     private SessionState state;
     private TokenCachingStrategy tokenCachingStrategy;
     private AccessToken tokenInfo;
@@ -101,7 +111,7 @@ public class Session implements Serializable
         this.applicationId = metadataApplicationId;
         this.tokenCachingStrategy = tokenCachingStrategy2;
         this.state = SessionState.CREATED;
-        this.pendingRequest = null;
+        this.pendingAuthorizationRequest = null;
         this.callbacks = new ArrayList<Session$StatusCallback>();
         this.handler = new Handler(Looper.getMainLooper());
         Bundle load = bundle;
@@ -109,28 +119,42 @@ public class Session implements Serializable
             load = tokenCachingStrategy2.load();
         }
         if (!TokenCachingStrategy.hasTokenInformation(load)) {
-            this.tokenInfo = AccessToken.createEmptyToken(Collections.emptyList());
+            this.tokenInfo = AccessToken.createEmptyToken();
             return;
         }
         final Date date = TokenCachingStrategy.getDate(load, "com.facebook.TokenCachingStrategy.ExpirationDate");
         final Date date2 = new Date();
         if (date == null || date.before(date2)) {
             tokenCachingStrategy2.clear();
-            this.tokenInfo = AccessToken.createEmptyToken(Collections.emptyList());
+            this.tokenInfo = AccessToken.createEmptyToken();
             return;
         }
         this.tokenInfo = AccessToken.createFromCache(load);
         this.state = SessionState.CREATED_TOKEN_LOADED;
     }
     
-    private Session(final String applicationId, final SessionState state, final AccessToken tokenInfo, final Date lastAttemptedTokenExtendDate, final boolean b, final Session$AuthorizationRequest pendingRequest) {
+    private Session(final String applicationId, final SessionState state, final AccessToken tokenInfo, final Date lastAttemptedTokenExtendDate, final boolean b, final Session$AuthorizationRequest pendingAuthorizationRequest) {
         this.lastAttemptedTokenExtendDate = new Date(0L);
         this.lock = new Object();
         this.applicationId = applicationId;
         this.state = state;
         this.tokenInfo = tokenInfo;
         this.lastAttemptedTokenExtendDate = lastAttemptedTokenExtendDate;
-        this.pendingRequest = pendingRequest;
+        this.pendingAuthorizationRequest = pendingAuthorizationRequest;
+        this.handler = new Handler(Looper.getMainLooper());
+        this.currentTokenRefreshRequest = null;
+        this.tokenCachingStrategy = null;
+        this.callbacks = new ArrayList<Session$StatusCallback>();
+    }
+    
+    private Session(final String applicationId, final SessionState state, final AccessToken tokenInfo, final Date lastAttemptedTokenExtendDate, final boolean b, final Session$AuthorizationRequest pendingAuthorizationRequest, final Set<String> set) {
+        this.lastAttemptedTokenExtendDate = new Date(0L);
+        this.lock = new Object();
+        this.applicationId = applicationId;
+        this.state = state;
+        this.tokenInfo = tokenInfo;
+        this.lastAttemptedTokenExtendDate = lastAttemptedTokenExtendDate;
+        this.pendingAuthorizationRequest = pendingAuthorizationRequest;
         this.handler = new Handler(Looper.getMainLooper());
         this.currentTokenRefreshRequest = null;
         this.tokenCachingStrategy = null;
@@ -179,7 +203,7 @@ public class Session implements Serializable
         else if (ex != null) {
             this.state = SessionState.CLOSED_LOGIN_FAILED;
         }
-        this.pendingRequest = null;
+        this.pendingAuthorizationRequest = null;
         this.postStateChange(state, this.state, ex);
     }
     
@@ -189,13 +213,22 @@ public class Session implements Serializable
             this.saveTokenToCache(this.tokenInfo = tokenInfo);
             this.state = SessionState.OPENED_TOKEN_UPDATED;
         }
-        this.pendingRequest = null;
+        this.pendingAuthorizationRequest = null;
         this.postStateChange(state, this.state, ex);
     }
     
     public static final Session getActiveSession() {
         synchronized (Session.STATIC_LOCK) {
             return Session.activeSession;
+        }
+    }
+    
+    private AppEventsLogger getAppEventsLogger() {
+        synchronized (this.lock) {
+            if (this.appEventsLogger == null) {
+                this.appEventsLogger = AppEventsLogger.newLogger(Session.staticContext, this.applicationId);
+            }
+            return this.appEventsLogger;
         }
     }
     
@@ -232,8 +265,51 @@ public class Session implements Serializable
             ex = null;
             token = null;
         }
+        this.logAuthorizationComplete(authorizationClient$Result.code, authorizationClient$Result.loggingExtras, ex);
         this.authorizationClient = null;
         this.finishAuthOrReauth(token, ex);
+    }
+    
+    static Session$PermissionsPair handlePermissionResponse(final Response response) {
+        if (response.getError() != null) {
+            return null;
+        }
+        final GraphMultiResult graphMultiResult = response.getGraphObjectAs(GraphMultiResult.class);
+        if (graphMultiResult == null) {
+            return null;
+        }
+        final GraphObjectList<GraphObject> data = graphMultiResult.getData();
+        if (data == null || data.size() == 0) {
+            return null;
+        }
+        final ArrayList list = new ArrayList<String>(data.size());
+        final ArrayList list2 = new ArrayList<String>(data.size());
+        final GraphObject graphObject = data.get(0);
+        if (graphObject.getProperty("permission") != null) {
+            for (final GraphObject graphObject2 : data) {
+                final String s = (String)graphObject2.getProperty("permission");
+                if (!s.equals("installed")) {
+                    final String s2 = (String)graphObject2.getProperty("status");
+                    if (s2.equals("granted")) {
+                        list.add(s);
+                    }
+                    else {
+                        if (!s2.equals("declined")) {
+                            continue;
+                        }
+                        list2.add(s);
+                    }
+                }
+            }
+        }
+        else {
+            for (final Map.Entry<String, Object> entry : graphObject.asMap().entrySet()) {
+                if (!entry.getKey().equals("installed") && entry.getValue() == 1) {
+                    list.add(entry.getKey());
+                }
+            }
+        }
+        return new Session$PermissionsPair((List<String>)list, (List<String>)list2);
     }
     
     static void initializeStaticContext(Context staticContext) {
@@ -246,8 +322,80 @@ public class Session implements Serializable
         }
     }
     
-    static boolean isPublishPermission(final String s) {
+    public static boolean isPublishPermission(final String s) {
         return s != null && (s.startsWith("publish") || s.startsWith("manage") || Session.OTHER_PUBLISH_PERMISSIONS.contains(s));
+    }
+    
+    private void logAuthorizationComplete(AuthorizationClient$Result$Code o, final Map<String, String> map, final Exception ex) {
+        Bundle authorizationLoggingBundle;
+        if (this.pendingAuthorizationRequest == null) {
+            authorizationLoggingBundle = AuthorizationClient.newAuthorizationLoggingBundle("");
+            authorizationLoggingBundle.putString("2_result", AuthorizationClient$Result$Code.ERROR.getLoggingValue());
+            authorizationLoggingBundle.putString("5_error_message", "Unexpected call to logAuthorizationComplete with null pendingAuthorizationRequest.");
+        }
+        else {
+            final Bundle authorizationLoggingBundle2 = AuthorizationClient.newAuthorizationLoggingBundle(this.pendingAuthorizationRequest.getAuthId());
+            if (o != null) {
+                authorizationLoggingBundle2.putString("2_result", ((AuthorizationClient$Result$Code)o).getLoggingValue());
+            }
+            if (ex != null && ex.getMessage() != null) {
+                authorizationLoggingBundle2.putString("5_error_message", ex.getMessage());
+            }
+            if (!this.pendingAuthorizationRequest.loggingExtras.isEmpty()) {
+                o = new JSONObject(this.pendingAuthorizationRequest.loggingExtras);
+            }
+            else {
+                o = null;
+            }
+            Object o2 = o;
+            Label_0216: {
+                if (map != null) {
+                    if (o == null) {
+                        o = new JSONObject();
+                    }
+                    Label_0238: {
+                        try {
+                            for (final Map.Entry<String, String> entry : map.entrySet()) {
+                                ((JSONObject)o).put((String)entry.getKey(), (Object)entry.getValue());
+                            }
+                            break Label_0238;
+                        }
+                        catch (JSONException ex2) {
+                            o2 = o;
+                        }
+                        break Label_0216;
+                    }
+                    o2 = o;
+                }
+            }
+            if (o2 != null) {
+                authorizationLoggingBundle2.putString("6_extras", ((JSONObject)o2).toString());
+            }
+            authorizationLoggingBundle = authorizationLoggingBundle2;
+        }
+        authorizationLoggingBundle.putLong("1_timestamp_ms", System.currentTimeMillis());
+        this.getAppEventsLogger().logSdkEvent("fb_mobile_login_complete", null, authorizationLoggingBundle);
+    }
+    
+    private void logAuthorizationStart() {
+        final Bundle authorizationLoggingBundle = AuthorizationClient.newAuthorizationLoggingBundle(this.pendingAuthorizationRequest.getAuthId());
+        authorizationLoggingBundle.putLong("1_timestamp_ms", System.currentTimeMillis());
+        while (true) {
+            try {
+                final JSONObject jsonObject = new JSONObject();
+                jsonObject.put("login_behavior", (Object)this.pendingAuthorizationRequest.loginBehavior.toString());
+                jsonObject.put("request_code", this.pendingAuthorizationRequest.requestCode);
+                jsonObject.put("is_legacy", this.pendingAuthorizationRequest.isLegacy);
+                jsonObject.put("permissions", (Object)TextUtils.join((CharSequence)",", (Iterable)this.pendingAuthorizationRequest.permissions));
+                jsonObject.put("default_audience", (Object)this.pendingAuthorizationRequest.defaultAudience.toString());
+                authorizationLoggingBundle.putString("6_extras", jsonObject.toString());
+                this.getAppEventsLogger().logSdkEvent("fb_mobile_login_start", null, authorizationLoggingBundle);
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
     }
     
     private void open(final Session$OpenRequest session$OpenRequest, final SessionAuthorizationType sessionAuthorizationType) {
@@ -261,12 +409,12 @@ public class Session implements Serializable
                 while (true) {
                     Label_0237: {
                         synchronized (this.lock) {
-                            if (this.pendingRequest != null) {
+                            if (this.pendingAuthorizationRequest != null) {
                                 this.postStateChange(this.state, this.state, new UnsupportedOperationException("Session: an attempt was made to open a session that has a pending request."));
                                 return;
                             }
                             state = this.state;
-                            switch (Session$4.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
+                            switch (Session$5.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
                                 case 2: {
                                     throw new UnsupportedOperationException("Session: an attempt was made to open an already opened session.");
                                 }
@@ -290,13 +438,13 @@ public class Session implements Serializable
                 if (session$OpenRequest == null) {
                     throw new IllegalArgumentException("openRequest cannot be null when opening a new Session");
                 }
-                this.pendingRequest = session$OpenRequest;
+                this.pendingAuthorizationRequest = session$OpenRequest;
                 break;
             }
             if (session$OpenRequest != null && !Utility.isNullOrEmpty(session$OpenRequest.getPermissions()) && !Utility.isSubset(session$OpenRequest.getPermissions(), this.getPermissions())) {
-                this.pendingRequest = session$OpenRequest;
+                this.pendingAuthorizationRequest = session$OpenRequest;
             }
-            if (this.pendingRequest == null) {
+            if (this.pendingAuthorizationRequest == null) {
                 state2 = SessionState.OPENED;
                 this.state = state2;
                 break;
@@ -319,27 +467,35 @@ public class Session implements Serializable
         return openActiveSession((Context)activity, b, new Session$OpenRequest(activity).setCallback(callback));
     }
     
-    public static Session openActiveSession(final Activity activity, final boolean b, final Session$StatusCallback callback, final String s) {
-        return openActiveSession((Context)activity, b, new Session$OpenRequest(activity).setCallback(callback), s);
+    public static Session openActiveSession(final Activity activity, final boolean b, final Session$StatusCallback callback, final String applicationId) {
+        return openActiveSession((Context)activity, b, new Session$OpenRequest(activity).setCallback(callback), new Session$Builder((Context)activity).setApplicationId(applicationId).build());
+    }
+    
+    public static Session openActiveSession(final Activity activity, final boolean b, final List<String> permissions, final Session$StatusCallback callback) {
+        return openActiveSession((Context)activity, b, new Session$OpenRequest(activity).setCallback(callback).setPermissions(permissions));
     }
     
     public static Session openActiveSession(final Context context, final Fragment fragment, final boolean b, final Session$StatusCallback callback) {
         return openActiveSession(context, b, new Session$OpenRequest(fragment).setCallback(callback));
     }
     
+    public static Session openActiveSession(final Context context, final Fragment fragment, final boolean b, final List<String> permissions, final Session$StatusCallback callback) {
+        return openActiveSession(context, b, new Session$OpenRequest(fragment).setCallback(callback).setPermissions(permissions));
+    }
+    
     private static Session openActiveSession(final Context context, final boolean b, final Session$OpenRequest session$OpenRequest) {
-        return openActiveSession(new Session$Builder(context).build(), b, session$OpenRequest);
+        return openActiveSession(context, b, session$OpenRequest, null);
     }
     
-    private static Session openActiveSession(final Context context, final boolean b, final Session$OpenRequest session$OpenRequest, final String applicationId) {
-        return openActiveSession(new Session$Builder(context).setApplicationId(applicationId).build(), b, session$OpenRequest);
-    }
-    
-    private static Session openActiveSession(final Session activeSession, final boolean b, final Session$OpenRequest session$OpenRequest) {
-        if (SessionState.CREATED_TOKEN_LOADED.equals(activeSession.getState()) || b) {
-            setActiveSession(activeSession);
-            activeSession.openForRead(session$OpenRequest);
-            return activeSession;
+    private static Session openActiveSession(final Context context, final boolean b, final Session$OpenRequest session$OpenRequest, final Session session) {
+        Session build = session;
+        if (session == null) {
+            build = new Session$Builder(context).build();
+        }
+        if (SessionState.CREATED_TOKEN_LOADED.equals(build.getState()) || b) {
+            setActiveSession(build);
+            build.openForRead(session$OpenRequest);
+            return build;
         }
         return null;
     }
@@ -368,23 +524,23 @@ public class Session implements Serializable
         this.validateLoginBehavior(session$NewPermissionsRequest);
         if (session$NewPermissionsRequest != null) {
             synchronized (this.lock) {
-                if (this.pendingRequest != null) {
+                if (this.pendingAuthorizationRequest != null) {
                     throw new UnsupportedOperationException("Session: an attempt was made to request new permissions for a session that has a pending request.");
                 }
             }
-            switch (Session$4.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
-                case 4:
-                case 5: {
-                    final Session$AuthorizationRequest pendingRequest;
-                    this.pendingRequest = pendingRequest;
-                    // monitorexit(sessionAuthorizationType)
-                    pendingRequest.setValidateSameFbidAsToken(this.getAccessToken());
-                    this.authorize(pendingRequest);
-                    break;
+            if (this.state.isOpened()) {
+                final Session$AuthorizationRequest pendingAuthorizationRequest;
+                this.pendingAuthorizationRequest = pendingAuthorizationRequest;
+                // monitorexit(sessionAuthorizationType)
+                pendingAuthorizationRequest.setValidateSameFbidAsToken(this.getAccessToken());
+                this.addCallback(pendingAuthorizationRequest.getCallback());
+                this.authorize(pendingAuthorizationRequest);
+            }
+            else {
+                if (this.state.isClosed()) {
+                    throw new UnsupportedOperationException("Session: an attempt was made to request new permissions for a session that has been closed.");
                 }
-                default: {
-                    throw new UnsupportedOperationException("Session: an attempt was made to request new permissions for a session that is not currently open.");
-                }
+                throw new UnsupportedOperationException("Session: an attempt was made to request new permissions for a session that is not currently open.");
             }
         }
     }
@@ -474,11 +630,10 @@ public class Session implements Serializable
         }
     }
     
-    private boolean tryLegacyAuth(final Session$AuthorizationRequest session$AuthorizationRequest) {
-        (this.authorizationClient = new AuthorizationClient()).setOnCompletedListener(new Session$2(this));
+    private void tryLegacyAuth(final Session$AuthorizationRequest session$AuthorizationRequest) {
+        (this.authorizationClient = new AuthorizationClient()).setOnCompletedListener(new Session$3(this));
         this.authorizationClient.setContext(getStaticContext());
         this.authorizationClient.startOrContinueAuth(session$AuthorizationRequest.getAuthorizationClientRequest());
-        return true;
     }
     
     private boolean tryLoginActivity(final Session$AuthorizationRequest session$AuthorizationRequest) {
@@ -530,7 +685,7 @@ public class Session implements Serializable
     }
     
     private Object writeReplace() {
-        return new Session$SerializationProxyV1(this.applicationId, this.state, this.tokenInfo, this.lastAttemptedTokenExtendDate, false, this.pendingRequest);
+        return new Session$SerializationProxyV1(this.applicationId, this.state, this.tokenInfo, this.lastAttemptedTokenExtendDate, false, this.pendingAuthorizationRequest);
     }
     
     public final void addCallback(final Session$StatusCallback session$StatusCallback) {
@@ -552,37 +707,63 @@ public class Session implements Serializable
     void authorize(final Session$AuthorizationRequest session$AuthorizationRequest) {
         session$AuthorizationRequest.setApplicationId(this.applicationId);
         this.autoPublishAsync();
-        boolean b2;
-        final boolean b = b2 = this.tryLoginActivity(session$AuthorizationRequest);
-        if (!b) {
-            b2 = b;
-            if (session$AuthorizationRequest.isLegacy) {
-                b2 = this.tryLegacyAuth(session$AuthorizationRequest);
-            }
-        }
-        if (b2) {
-            return;
-        }
+        this.logAuthorizationStart();
+        int tryLoginActivity = this.tryLoginActivity(session$AuthorizationRequest) ? 1 : 0;
+        Object access$500 = this.pendingAuthorizationRequest.loggingExtras;
         while (true) {
-            while (true) {
-                Label_0128: {
-                    synchronized (this.lock) {
-                        final SessionState state = this.state;
-                        switch (Session$4.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
-                            case 6:
-                            case 7: {
-                                return;
-                            }
-                            default: {
-                                break Label_0128;
+            Label_0194: {
+                while (true) {
+                    final String s;
+                    Label_0039: {
+                        if (tryLoginActivity != 0) {
+                            s = "1";
+                            break Label_0039;
+                        }
+                        Label_0179: {
+                            break Label_0179;
+                            while (true) {
+                                while (true) {
+                                    Label_0197: {
+                                        synchronized (this.lock) {
+                                            final SessionState state = this.state;
+                                            switch (Session$5.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
+                                                case 6:
+                                                case 7: {
+                                                    return;
+                                                }
+                                                default: {
+                                                    break Label_0197;
+                                                }
+                                            }
+                                            return;
+                                            this.state = SessionState.CLOSED_LOGIN_FAILED;
+                                            access$500 = new FacebookException("Log in attempt failed: LoginActivity could not be started, and not legacy request");
+                                            this.logAuthorizationComplete(AuthorizationClient$Result$Code.ERROR, null, (Exception)access$500);
+                                            this.postStateChange(state, this.state, (Exception)access$500);
+                                            return;
+                                            break;
+                                        }
+                                        break Label_0194;
+                                    }
+                                    continue;
+                                }
                             }
                         }
-                        this.postStateChange(state, this.state = SessionState.CLOSED_LOGIN_FAILED, new FacebookException("Log in attempt failed."));
-                        return;
                     }
+                    ((Map<String, String>)access$500).put("try_login_activity", s);
+                    if (tryLoginActivity == 0 && session$AuthorizationRequest.isLegacy) {
+                        this.pendingAuthorizationRequest.loggingExtras.put("try_legacy", "1");
+                        this.tryLegacyAuth(session$AuthorizationRequest);
+                        tryLoginActivity = 1;
+                    }
+                    if (tryLoginActivity == 0) {
+                        continue;
+                    }
+                    break;
                 }
-                continue;
+                return;
             }
+            continue;
         }
     }
     
@@ -591,7 +772,7 @@ public class Session implements Serializable
             final SessionState state;
             synchronized (this.lock) {
                 state = this.state;
-                switch (Session$4.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
+                switch (Session$5.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
                     case 1:
                     case 2: {
                         this.postStateChange(state, this.state = SessionState.CLOSED_LOGIN_FAILED, new FacebookException("Log in attempt aborted."));
@@ -616,6 +797,7 @@ public class Session implements Serializable
             this.tokenCachingStrategy.clear();
         }
         Utility.clearFacebookCookies(Session.staticContext);
+        Utility.clearCaches(Session.staticContext);
         this.close();
     }
     
@@ -656,7 +838,7 @@ public class Session implements Serializable
                 Label_0135: {
                     synchronized (this.lock) {
                         final SessionState state = this.state;
-                        switch (Session$4.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
+                        switch (Session$5.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
                             case 4: {
                                 this.postStateChange(state, this.state = SessionState.OPENED_TOKEN_UPDATED, null);
                             }
@@ -692,24 +874,32 @@ public class Session implements Serializable
             }
         }
         while (true) {
-            synchronized (this.lock) {
-                switch (Session$4.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
-                    case 2: {
-                        this.finishAuthorization(accessToken2, ex2);
-                    }
-                    case 3: {
-                        return;
-                    }
-                    case 4:
-                    case 5: {
-                        break;
-                    }
-                    default: {
-                        return;
+            Label_0124: {
+                synchronized (this.lock) {
+                    switch (Session$5.$SwitchMap$com$facebook$SessionState[this.state.ordinal()]) {
+                        case 2: {
+                            this.finishAuthorization(accessToken2, ex2);
+                            return;
+                        }
+                        case 4:
+                        case 5: {
+                            break;
+                        }
+                        case 1:
+                        case 3:
+                        case 6:
+                        case 7: {
+                            break Label_0124;
+                        }
+                        default: {
+                            return;
+                        }
                     }
                 }
+                this.finishReauthorization(accessToken2, ex2);
+                return;
             }
-            this.finishReauthorization(accessToken2, ex2);
+            Log.d(Session.TAG, "Unexpected call to finishAuthOrReauth in state " + this.state);
         }
     }
     
@@ -733,6 +923,19 @@ public class Session implements Serializable
     public final Bundle getAuthorizationBundle() {
         synchronized (this.lock) {
             return this.authorizationBundle;
+        }
+    }
+    
+    public final List<String> getDeclinedPermissions() {
+        synchronized (this.lock) {
+            List<String> declinedPermissions;
+            if (this.tokenInfo == null) {
+                declinedPermissions = null;
+            }
+            else {
+                declinedPermissions = this.tokenInfo.getDeclinedPermissions();
+            }
+            return declinedPermissions;
         }
     }
     
@@ -793,19 +996,26 @@ public class Session implements Serializable
         }
     }
     
+    public boolean isPermissionGranted(final String s) {
+        final List<String> permissions = this.getPermissions();
+        return permissions != null && permissions.contains(s);
+    }
+    
     public final boolean onActivityResult(Activity lock, final int n, final int n2, final Intent intent) {
         Validate.notNull(lock, "currentActivity");
         initializeStaticContext((Context)lock);
         lock = (Activity)this.lock;
         while (true) {
-            Label_0109: {
+            final AuthorizationClient$Result$Code error;
+            Label_0147: {
                 synchronized (lock) {
-                    if (this.pendingRequest == null || n != this.pendingRequest.getRequestCode()) {
+                    if (this.pendingAuthorizationRequest == null || n != this.pendingAuthorizationRequest.getRequestCode()) {
                         return false;
                     }
                     // monitorexit(lock)
+                    error = AuthorizationClient$Result$Code.ERROR;
                     if (intent == null) {
-                        break Label_0109;
+                        break Label_0147;
                     }
                     lock = (Activity)intent.getSerializableExtra("com.facebook.LoginActivity:Result");
                     if (lock != null) {
@@ -818,24 +1028,35 @@ public class Session implements Serializable
                     this.authorizationClient.onActivityResult(n, n2, intent2);
                     return true;
                 }
-                final Exception ex = null;
-                this.finishAuthOrReauth(null, ex);
+                final FacebookOperationCanceledException ex = null;
+                final AuthorizationClient$Result$Code cancel = error;
+                FacebookException ex2 = ex;
+                if (ex == null) {
+                    ex2 = new FacebookException("Unexpected call to Session.onActivityResult");
+                }
+                this.logAuthorizationComplete(cancel, null, ex2);
+                this.finishAuthOrReauth(null, ex2);
                 return true;
             }
             if (n2 == 0) {
-                final Exception ex = new FacebookOperationCanceledException("User canceled operation.");
+                final FacebookOperationCanceledException ex = new FacebookOperationCanceledException("User canceled operation.");
+                final AuthorizationClient$Result$Code cancel = AuthorizationClient$Result$Code.CANCEL;
                 continue;
             }
-            final Exception ex = null;
+            final FacebookOperationCanceledException ex = null;
+            final AuthorizationClient$Result$Code cancel = error;
             continue;
         }
     }
     
     public final void open(final AccessToken accessToken, final Session$StatusCallback session$StatusCallback) {
         synchronized (this.lock) {
-            if (this.pendingRequest != null) {
+            if (this.pendingAuthorizationRequest != null) {
                 throw new UnsupportedOperationException("Session: an attempt was made to open a session that has a pending request.");
             }
+        }
+        if (this.state.isClosed()) {
+            throw new UnsupportedOperationException("Session: an attempt was made to open a previously-closed session.");
         }
         if (this.state != SessionState.CREATED && this.state != SessionState.CREATED_TOKEN_LOADED) {
             throw new UnsupportedOperationException("Session: an attempt was made to open an already opened session.");
@@ -864,21 +1085,23 @@ public class Session implements Serializable
     void postStateChange(final SessionState sessionState, final SessionState sessionState2, final Exception ex) {
         if (sessionState != sessionState2 || sessionState == SessionState.OPENED_TOKEN_UPDATED || ex != null) {
             if (sessionState2.isClosed()) {
-                this.tokenInfo = AccessToken.createEmptyToken(Collections.emptyList());
+                this.tokenInfo = AccessToken.createEmptyToken();
             }
-            synchronized (this.callbacks) {
-                runWithHandlerOrExecutor(this.handler, new Session$3(this, sessionState2, ex));
-                // monitorexit(this.callbacks)
-                if (this != Session.activeSession || sessionState.isOpened() == sessionState2.isOpened()) {
-                    return;
-                }
+            runWithHandlerOrExecutor(this.handler, new Session$4(this, sessionState2, ex));
+            if (this == Session.activeSession && sessionState.isOpened() != sessionState2.isOpened()) {
                 if (sessionState2.isOpened()) {
                     postActiveSessionAction("com.facebook.sdk.ACTIVE_SESSION_OPENED");
                     return;
                 }
+                postActiveSessionAction("com.facebook.sdk.ACTIVE_SESSION_CLOSED");
             }
-            postActiveSessionAction("com.facebook.sdk.ACTIVE_SESSION_CLOSED");
         }
+    }
+    
+    public final void refreshPermissions() {
+        final Request request = new Request(this, "me/permissions");
+        request.setCallback(new Session$2(this));
+        request.executeAsync();
     }
     
     public final void removeCallback(final Session$StatusCallback session$StatusCallback) {

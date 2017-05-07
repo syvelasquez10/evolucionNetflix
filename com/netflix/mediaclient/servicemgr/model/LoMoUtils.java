@@ -23,25 +23,29 @@ public class LoMoUtils
         LoMoUtils.INJECTED_PAGE_INDEX = 0;
     }
     
-    public static int getClientInjectedVideoCount(final BasicLoMo basicLoMo, final boolean b, final int n) {
-        if (isClientModifiedRow(basicLoMo, b) && n == LoMoUtils.INJECTED_PAGE_INDEX) {
+    public static int getClientInjectedVideoCount(final BasicLoMo basicLoMo, final boolean b, final boolean b2, final int n) {
+        if (isClientModifiedRow(basicLoMo, b, b2) && n == LoMoUtils.INJECTED_PAGE_INDEX) {
             return LoMoUtils.VIDEO_INJECT_COUNT;
         }
         return 0;
     }
     
+    public static int getLomoFragImageOffsetLeftPx(final NetflixActivity netflixActivity) {
+        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131361913);
+    }
+    
     public static int getLomoFragOffsetLeftPx(final NetflixActivity netflixActivity) {
         if (netflixActivity.isForKids()) {
-            return (int)(0.667f * netflixActivity.getResources().getDimensionPixelOffset(2131361970));
+            return (int)(0.667f * netflixActivity.getResources().getDimensionPixelOffset(2131361971));
         }
-        return netflixActivity.getResources().getDimensionPixelOffset(2131361896);
+        return netflixActivity.getResources().getDimensionPixelOffset(2131361912);
     }
     
     public static int getLomoFragOffsetRightPx(final NetflixActivity netflixActivity) {
         if (netflixActivity.isForKids()) {
-            return (int)(1.333f * netflixActivity.getResources().getDimensionPixelOffset(2131361970));
+            return (int)(1.333f * netflixActivity.getResources().getDimensionPixelOffset(2131361971));
         }
-        return netflixActivity.getResources().getDimensionPixelOffset(2131361896);
+        return netflixActivity.getResources().getDimensionPixelOffset(2131361912);
     }
     
     public static void injectSocialData(final LoMo loMo, final List<Video> list) {
@@ -66,16 +70,21 @@ public class LoMoUtils
         list.add(0, socialPlaceholder);
     }
     
-    private static boolean isClientModifiedRow(final BasicLoMo basicLoMo, final boolean b) {
-        return shouldInjectSocialData(basicLoMo, b);
+    private static boolean isClientModifiedRow(final BasicLoMo basicLoMo, final boolean b, final boolean b2) {
+        return shouldInjectSocialData(basicLoMo, b, b2);
     }
     
     private static boolean shouldInjectConnectToFacebook(final LoMoType loMoType, final boolean b) {
         return !b && loMoType == LoMoType.SOCIAL_POPULAR;
     }
     
-    public static boolean shouldInjectSocialData(final BasicLoMo basicLoMo, final boolean b) {
-        final LoMoType type = basicLoMo.getType();
-        return shouldInjectConnectToFacebook(type, b) || type == LoMoType.SOCIAL_FRIEND || type == LoMoType.SOCIAL_GROUP;
+    public static boolean shouldInjectSocialData(final BasicLoMo basicLoMo, final boolean b, final boolean b2) {
+        if (!b2) {
+            final LoMoType type = basicLoMo.getType();
+            if (shouldInjectConnectToFacebook(type, b) || type == LoMoType.SOCIAL_FRIEND || type == LoMoType.SOCIAL_GROUP) {
+                return true;
+            }
+        }
+        return false;
     }
 }

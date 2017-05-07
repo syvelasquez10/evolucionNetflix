@@ -4,115 +4,153 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.util.ViewUtils;
+import android.app.Dialog;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
-import android.media.AudioManager;
+import com.netflix.mediaclient.Log;
 import android.widget.SeekBar$OnSeekBarChangeListener;
-import android.widget.ImageView;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.Log;
+import android.view.MenuItem$OnMenuItemClickListener;
+import android.view.Menu;
+import com.netflix.mediaclient.servicemgr.IPlayer;
+import android.content.DialogInterface$OnCancelListener;
+import android.widget.AdapterView$OnItemClickListener;
+import android.content.Context;
+import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
+import android.app.AlertDialog;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.media.Language;
 import android.app.Activity;
+import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
+import android.view.View;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-import android.widget.SeekBar;
 import com.netflix.mediaclient.ui.common.Social;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
-import android.widget.ImageButton;
-import android.widget.Button;
-import android.view.View;
+import android.view.MenuItem;
+import android.animation.Animator;
 import android.view.View$OnClickListener;
+import android.support.v7.app.ActionBar;
 
 public final class TopPanel extends PlayerSection
 {
     private static final String TAG = "screen";
-    View$OnClickListener backListener;
-    private View mBackArrow;
-    private View mBackPadding;
-    private Button mBtnLog;
-    private Button mBtnMetadata;
+    private ActionBar mActionBar;
+    private final View$OnClickListener mBackListener;
+    private Animator mCurrentToolbarAnimation;
+    private MenuItem mDebugMetadata;
     private String mDialogLanguageId;
-    private ImageButton mEpisodeSelector;
+    private MenuItem mEpisodeSelector;
     private boolean mEpisodeSelectorEnabled;
-    private ImageButton mLanguage;
+    private MenuItem mLanguage;
     private LanguageSelector mLanguageSelector;
+    private PlayScreen$Listeners mListeners;
+    private boolean mMDXSelectorEnabled;
+    protected MenuItem mMdxTarget;
     private final Social mSocial;
-    private SeekBar mSound;
+    private MenuItem mSound;
     private TextView mTitleLabel;
-    private View mTopPanel;
+    private Toolbar mToolBar;
+    private View mTopGradient;
+    protected MdxTargetSelection mdxTargetSelector;
     
-    public TopPanel(final PlayerActivity playerActivity, final PlayScreen$Listeners playScreen$Listeners) {
+    public TopPanel(final PlayerActivity playerActivity, final PlayScreen$Listeners mListeners) {
         super(playerActivity);
-        this.backListener = (View$OnClickListener)new TopPanel$1(this);
+        this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
+        this.mListeners = mListeners;
         this.mSocial = new Social(playerActivity, playerActivity.getSocialProviderCallback());
-        this.initGeneric(playScreen$Listeners);
-        this.initBack();
-        this.initQa();
-        this.initLanguages();
-        this.initSound(playScreen$Listeners.audioPositionListener);
+        (this.mActionBar = playerActivity.getSupportActionBar()).setTitle("");
+        this.mTitleLabel = (TextView)playerActivity.findViewById(2131165572);
+        if (playerActivity.isForKids()) {
+            this.mTitleLabel.setOnClickListener(this.mBackListener);
+        }
+    }
+    
+    private void changeControlsVisibility(final boolean b) {
+        if (b) {
+            this.mCurrentToolbarAnimation = AnimationUtils.startViewAppearanceAnimation((View)this.mToolBar, b);
+            if (this.showLanguageMenuItem()) {
+                ViewUtils.setVisibility(this.mLanguage, true);
+            }
+        }
+        else {
+            if (this.mCurrentToolbarAnimation != null) {
+                this.mCurrentToolbarAnimation.cancel();
+            }
+            ViewUtils.setVisibleOrInvisible((View)this.mToolBar, false);
+        }
+        AnimationUtils.startViewAppearanceAnimation(this.mTopGradient, b);
+    }
+    
+    private AlertDialog createMdxTargetSelectionDialog(final PlayerActivity playerActivity) {
+        final IPlayer player = playerActivity.getPlayer();
+        final boolean b = player != null && player.isPlaying();
+        final int localDevicePosition = this.mdxTargetSelector.getLocalDevicePosition();
+        this.mdxTargetSelector.setTarget(localDevicePosition);
+        final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerActivity);
+        mdxTargetSelectionDialog$Builder.setCancelable(false);
+        mdxTargetSelectionDialog$Builder.setTitle(2131493136);
+        mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493222), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerActivity, b));
+        mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerActivity));
+        return mdxTargetSelectionDialog$Builder.create();
+    }
+    
+    private String getCurrentTitle() {
+        if (this.mTitleLabel == null) {
+            return null;
+        }
+        return this.mTitleLabel.getText().toString();
     }
     
     private void initBack() {
-        this.mBackArrow = this.context.findViewById(2131165544);
-        if (this.mBackArrow != null) {
-            this.mBackArrow.setOnClickListener(this.backListener);
-        }
-        this.mBackPadding = this.context.findViewById(2131165545);
-        if (this.mBackPadding != null) {
-            this.mBackPadding.setOnClickListener(this.backListener);
+        this.mActionBar.setDisplayHomeAsUpEnabled(true);
+    }
+    
+    private void initGeneric(final Menu menu) {
+        (this.mEpisodeSelector = menu.add(2131493219)).setVisible(this.mEpisodeSelectorEnabled);
+        this.mEpisodeSelector.setIcon(2130837660);
+        this.mEpisodeSelector.setShowAsAction(2);
+        this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
+        this.mTopGradient = this.context.findViewById(2131165568);
+        this.mToolBar = (Toolbar)this.context.findViewById(2131165571);
+    }
+    
+    private void initLanguages(final Menu menu) {
+        this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$3(this));
+        (this.mLanguage = menu.add(2131493144)).setVisible(this.showLanguageMenuItem());
+        this.mLanguage.setIcon(2130837703);
+        this.mLanguage.setShowAsAction(2);
+        this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
+    }
+    
+    private void initMDX(final Menu menu) {
+        (this.mMdxTarget = menu.add(2131493142)).setIcon(2130837666);
+        this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
+        this.mMdxTarget.setShowAsAction(2);
+        this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
+    }
+    
+    private void initQa(final Menu menu) {
+    }
+    
+    private void initSound(final Menu menu, final SeekBar$OnSeekBarChangeListener seekBar$OnSeekBarChangeListener) {
+        if (this.context.isTablet()) {
+            (this.mSound = menu.add(2131493174)).setIcon(2130837708);
+            this.mSound.setShowAsAction(2);
+            this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
         }
     }
     
-    private void initGeneric(final PlayScreen$Listeners playScreen$Listeners) {
-        this.mTopPanel = this.context.findViewById(2131165543);
-        if (this.mTopPanel == null) {
-            Log.e("screen", "========>top null!");
-        }
-        this.mTitleLabel = (TextView)this.context.findViewById(2131165546);
-        if (this.context.isForKids()) {
-            this.mTitleLabel.setOnClickListener(this.backListener);
-        }
-        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131165551);
-        if (this.mEpisodeSelector != null) {
-            this.mEpisodeSelector.setOnClickListener(playScreen$Listeners.episodeSelectorListener);
-        }
+    private boolean isMdxTargetSelectionVisible() {
+        return this.isMdxTargetSelectionVisible(this.mdxTargetSelector);
     }
     
-    private void initLanguages() {
-        this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$2(this));
-        final TopPanel$3 onClickListener = new TopPanel$3(this);
-        final View viewById = this.context.findViewById(2131165552);
-        if (viewById instanceof ImageView) {
-            Log.d("screen", "Add language button");
-            (this.mLanguage = (ImageButton)viewById).setOnClickListener((View$OnClickListener)onClickListener);
-            this.mLanguage.setBackgroundColor(this.transpColor);
-        }
-    }
-    
-    private void initQa() {
-    }
-    
-    private void initSound(final SeekBar$OnSeekBarChangeListener onSeekBarChangeListener) {
-        this.mSound = (SeekBar)this.context.findViewById(2131165553);
-        if (this.mSound == null) {
-            Log.e("screen", "Sound seekbar was NOT found!");
-            return;
-        }
-        this.mSound.setOnSeekBarChangeListener(onSeekBarChangeListener);
-        final AudioManager audioManager = (AudioManager)this.context.getSystemService("audio");
-        if (audioManager != null) {
-            final int streamMaxVolume = audioManager.getStreamMaxVolume(3);
-            if (Log.isLoggable("screen", 3)) {
-                Log.d("screen", "Maximal audio volume for music stream is: " + streamMaxVolume);
-            }
-            this.mSound.setMax(streamMaxVolume);
-            this.mSound.setKeyProgressIncrement(1);
-            this.mSound.setProgress(audioManager.getStreamVolume(3));
-            return;
-        }
-        Log.e("screen", "Audio manager is not available, can not set max volume");
+    private boolean isMdxTargetSelectionVisible(final MdxTargetSelection mdxTargetSelection) {
+        return mdxTargetSelection != null && mdxTargetSelection.getMdxTargets() != null && mdxTargetSelection.getMdxTargets().length > 1;
     }
     
     private boolean processLanguageChange(final Language language) {
@@ -174,17 +212,25 @@ public final class TopPanel extends PlayerSection
         return !b2 && b;
     }
     
+    private boolean showLanguageMenuItem() {
+        final Language language = this.context.getLanguage();
+        return this.mLanguage != null && language != null && language.isLanguageSwitchEnabled();
+    }
+    
+    private void updateLastPanelInteractionTime() {
+        final PlayerActivity context = this.context;
+        if (context != null) {
+            context.extendTimeoutTimer();
+        }
+    }
+    
     @Override
     public void changeActionState(final boolean b) {
         synchronized (this) {
-            this.enableButton((View)this.mLanguage, b);
-            this.enableButton((View)this.mEpisodeSelector, b);
-            if (this.mBtnLog != null) {
-                this.mBtnLog.setEnabled(b);
-            }
-            if (this.mBtnMetadata != null) {
-                this.mBtnMetadata.setEnabled(b);
-            }
+            this.enableButton(this.mLanguage, b);
+            this.enableButton(this.mEpisodeSelector, b);
+            this.enableButton(this.mMdxTarget, b);
+            this.enableButton(this.mSound, b);
             this.mSocial.changeActionState(b);
         }
     }
@@ -192,18 +238,9 @@ public final class TopPanel extends PlayerSection
     @Override
     public void destroy() {
         synchronized (this) {
-            if (this.mSound != null) {
-                this.mSound.setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)null);
-            }
             this.mSocial.destroy();
-            if (this.mBackArrow != null) {
-                this.mBackArrow.setOnClickListener((View$OnClickListener)null);
-            }
-            if (this.mBackPadding != null) {
-                this.mBackPadding.setOnClickListener((View$OnClickListener)null);
-            }
             if (this.mEpisodeSelector != null) {
-                this.mEpisodeSelector.setOnClickListener((View$OnClickListener)null);
+                this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)null);
             }
             if (this.mTitleLabel != null) {
                 this.mTitleLabel.setOnClickListener((View$OnClickListener)null);
@@ -211,15 +248,25 @@ public final class TopPanel extends PlayerSection
         }
     }
     
-    public String getCurrentTitle() {
-        if (this.mTitleLabel == null) {
-            return null;
+    protected void displayMdxTargets() {
+        if (this.mdxTargetSelector == null || this.mdxTargetSelector.getMdxTargets() == null || this.mdxTargetSelector.getMdxTargets().length < 2) {
+            Log.d("screen", "Non local targets are not available!");
         }
-        return this.mTitleLabel.getText().toString();
+        else {
+            final PlayerActivity context = this.context;
+            if (context != null) {
+                Log.d("screen", "MDX target is reachable, display dialog");
+                context.displayDialog((Dialog)this.createMdxTargetSelectionDialog(context));
+            }
+        }
     }
     
     LanguageSelector getLanguageSelector() {
         return this.mLanguageSelector;
+    }
+    
+    public MdxTargetSelection getMdxTargetSelector() {
+        return this.mdxTargetSelector;
     }
     
     Social getSocial() {
@@ -229,162 +276,75 @@ public final class TopPanel extends PlayerSection
     @Override
     public void hide() {
         synchronized (this) {
-            if (this.mTopPanel != null) {
-                this.mTopPanel.setVisibility(8);
-            }
-            if (this.mLanguage != null) {
-                this.mLanguage.setVisibility(8);
-            }
-            if (this.mBtnLog != null) {
-                this.mBtnLog.setVisibility(8);
-            }
-            if (this.mBtnMetadata != null) {
-                this.mBtnMetadata.setVisibility(8);
-            }
             this.mSocial.hide();
+            this.changeControlsVisibility(false);
         }
     }
     
-    public void hideSoundSection() {
-        synchronized (this) {
-            if (this.mTopPanel != null) {
-                this.mTopPanel.setBackgroundResource(this.context.getUiResources().topBackground);
-                this.mTopPanel.setVisibility(8);
-            }
-            if (this.mBackArrow != null) {
-                this.mBackArrow.setVisibility(0);
-            }
-            if (this.mTitleLabel != null) {
-                this.mTitleLabel.setVisibility(0);
-            }
-            if (this.mEpisodeSelectorEnabled && this.mEpisodeSelector != null) {
-                this.mEpisodeSelector.setVisibility(0);
-            }
-        }
+    public void onCreateOptionsMenu(final Menu menu) {
+        this.initMDX(menu);
+        this.mSocial.initSocial(menu);
+        this.initGeneric(menu);
+        this.initBack();
+        this.initQa(menu);
+        this.initLanguages(menu);
+        this.initSound(menu, this.mListeners.audioPositionListener);
     }
     
-    public void initAudioProgress(final int progress) {
-        if (Log.isLoggable("screen", 3)) {
-            Log.d("screen", "InitAudioProgress: pos " + progress);
+    public boolean onOptionsItemSelected(final MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            default: {
+                Log.e("screen", "Unhandled menu action: " + (Object)menuItem.getTitle());
+                return false;
+            }
+            case 16908332: {
+                this.mBackListener.onClick((View)null);
+                return true;
+            }
         }
-        if (this.mSound != null) {
-            Log.d("screen", "Audio: Updating seekbar");
-            this.mSound.setProgress(progress);
-        }
-    }
-    
-    public int setAudioProgress(final int progress) {
-        if (Log.isLoggable("screen", 3)) {
-            Log.d("screen", "SetAudioProgress: pos " + progress);
-        }
-        if (this.mSound != null) {
-            Log.d("screen", "Audio: Updating seekbar");
-            this.mSound.setProgress(progress);
-        }
-        return progress;
     }
     
     void setEpisodeSelectorVisibility(final boolean mEpisodeSelectorEnabled) {
+        this.mEpisodeSelectorEnabled = mEpisodeSelectorEnabled;
         if (this.mEpisodeSelector == null) {
             return;
         }
-        this.mEpisodeSelectorEnabled = mEpisodeSelectorEnabled;
-        ViewUtils.setVisibility((View)this.mEpisodeSelector, mEpisodeSelectorEnabled);
+        ViewUtils.setVisibility(this.mEpisodeSelector, mEpisodeSelectorEnabled);
     }
     
-    public void setLanguage(final Language language) {
-        if (this.mLanguage != null && language != null && language.isLanguageSwitchEnabled()) {
-            final PlayerActivity context = this.context;
-            if (context != null) {
-                context.runInUiThread(new TopPanel$6(this));
+    public void setMdxTargetSelector(final MdxTargetSelection mdxTargetSelector) {
+        synchronized (this) {
+            this.mdxTargetSelector = mdxTargetSelector;
+            final boolean mdxTargetSelectionVisible = this.isMdxTargetSelectionVisible();
+            final boolean showing = this.mActionBar.isShowing();
+            if (Log.isLoggable("screen", 3)) {
+                Log.d("screen", "Bottom panel is visible: " + showing);
+                Log.d("screen", "MDX target whould be visible: " + mdxTargetSelectionVisible);
+            }
+            if (showing) {
+                if (this.context == null) {
+                    Log.w("screen", "Player activity was destroyed, do nothing");
+                }
+                else {
+                    ViewUtils.setVisibility(this.mMdxTarget, mdxTargetSelectionVisible);
+                    this.mMDXSelectorEnabled = mdxTargetSelectionVisible;
+                }
             }
         }
     }
     
-    public void setTitles(String string, final String s) {
+    public void setTitle(final String s) {
         final PlayerActivity context = this.context;
-        final StringBuilder sb = new StringBuilder();
-        if (StringUtils.isNotEmpty(s)) {
-            sb.append(s).append(" : ");
-        }
-        string = sb.append(string).toString();
         if (context != null && !context.isFinishing()) {
-            context.runInUiThread(new TopPanel$7(this, string));
+            context.runInUiThread(new TopPanel$10(this, s));
         }
     }
     
     @Override
     public void show() {
-        while (true) {
-            synchronized (this) {
-                if (this.mTopPanel != null) {
-                    this.mTopPanel.setBackgroundResource(this.context.getUiResources().topBackground);
-                    this.mTopPanel.setVisibility(0);
-                }
-                if (this.mBackArrow != null) {
-                    this.mBackArrow.setVisibility(0);
-                }
-                if (this.mTitleLabel != null) {
-                    this.mTitleLabel.setVisibility(0);
-                }
-                final Language language = this.context.getLanguage();
-                if (this.mLanguage != null && language != null && language.isLanguageSwitchEnabled()) {
-                    this.mLanguage.setVisibility(0);
-                }
-                if (this.mBtnLog != null) {
-                    this.mBtnLog.setVisibility(0);
-                }
-                if (this.mBtnMetadata != null) {
-                    this.mBtnMetadata.setVisibility(0);
-                }
-                this.mSocial.show();
-                if (this.mSound != null) {
-                    this.mSound.setVisibility(0);
-                    final AudioManager audioManager = (AudioManager)this.context.getSystemService("audio");
-                    if (audioManager != null) {
-                        Log.d("screen", "Audio manager is available, update volume to " + audioManager.getStreamVolume(3));
-                        audioManager.setStreamMute(3, false);
-                        this.mSound.setProgress(audioManager.getStreamVolume(3));
-                    }
-                    else {
-                        Log.e("screen", "Audio manager is not available, can not update volume");
-                    }
-                    return;
-                }
-            }
-            Log.e("screen", "Soundbar not found!");
-        }
-    }
-    
-    public void showSoundSection() {
         synchronized (this) {
-            final SeekBar mSound = this.mSound;
-            if (mSound != null) {
-                mSound.setVisibility(0);
-            }
-            if (this.mBackArrow != null) {
-                this.mBackArrow.setVisibility(4);
-            }
-            if (this.mLanguage != null) {
-                this.mLanguage.setVisibility(8);
-            }
-            if (this.mBtnLog != null) {
-                this.mBtnLog.setVisibility(8);
-            }
-            if (this.mBtnMetadata != null) {
-                this.mBtnMetadata.setVisibility(8);
-            }
-            this.mSocial.hide();
-            if (this.mEpisodeSelector != null) {
-                this.mEpisodeSelector.setVisibility(8);
-            }
-            if (this.mTitleLabel != null) {
-                this.mTitleLabel.setVisibility(4);
-            }
-            if (this.mTopPanel != null) {
-                this.mTopPanel.setBackgroundResource(0);
-                this.mTopPanel.setVisibility(0);
-            }
+            this.mSocial.show();
+            this.changeControlsVisibility(true);
         }
     }
 }

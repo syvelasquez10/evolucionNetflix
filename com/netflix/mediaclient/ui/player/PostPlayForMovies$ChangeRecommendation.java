@@ -6,7 +6,10 @@ package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.Ratable;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
@@ -21,6 +24,7 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar;
 import java.util.List;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
 import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
@@ -29,7 +33,7 @@ import android.view.View$OnTouchListener;
 
 class PostPlayForMovies$ChangeRecommendation implements View$OnTouchListener
 {
-    private int selection;
+    private final int selection;
     final /* synthetic */ PostPlayForMovies this$0;
     
     private PostPlayForMovies$ChangeRecommendation(final PostPlayForMovies this$0, final int selection) {
@@ -37,6 +41,7 @@ class PostPlayForMovies$ChangeRecommendation implements View$OnTouchListener
         this.selection = selection;
     }
     
+    @SuppressLint({ "ClickableViewAccessibility" })
     public boolean onTouch(final View view, final MotionEvent motionEvent) {
         if (Log.isLoggable("nf_postplay", 3)) {
             Log.d("nf_postplay", "BoxArt touched: " + this.selection);

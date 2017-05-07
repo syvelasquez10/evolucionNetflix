@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import android.view.ViewGroup$LayoutParams;
 import android.view.MotionEvent;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.util.ThreadUtils;

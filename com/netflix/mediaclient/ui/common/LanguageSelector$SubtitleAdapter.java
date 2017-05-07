@@ -6,15 +6,15 @@ package com.netflix.mediaclient.ui.common;
 
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListAdapter;
-import android.widget.Button;
 import android.view.ViewGroup$LayoutParams;
 import android.app.Dialog;
 import android.content.DialogInterface$OnCancelListener;
-import android.view.View$OnClickListener;
+import android.content.DialogInterface$OnClickListener;
 import android.content.Context;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ListView;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
 import android.view.View;
@@ -49,7 +49,7 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Subtitle create row " + n);
-            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903114, viewGroup, false);
+            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903127, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();
@@ -65,13 +65,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             if (item.isCC()) {
                 Log.d("nf_language_selector", "Add CC");
                 sb.append(' ');
-                sb.append(this.this$0.mController.getText(2131493111));
+                sb.append(this.this$0.mController.getText(2131493118));
             }
             text = sb.toString();
             equals = item.equals(subtitle);
         }
         else {
-            text = this.this$0.mController.getString(2131493104);
+            text = this.this$0.mController.getString(2131493111);
             if (subtitle == null) {
                 equals = true;
                 text = text;
@@ -80,11 +80,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
         languageSelector$RowHolder.name.setText((CharSequence)text);
         languageSelector$RowHolder.choice.setChecked(equals);
         if (equals) {
-            Log.d("nf_language_selector", "Subtitle is selected " + item);
-            inflate.setBackgroundColor(this.this$0.mSelectedRowColor);
+            if (Log.isLoggable("nf_language_selector", 3)) {
+                Log.d("nf_language_selector", "Subtitle is selected " + item);
+            }
+            ViewUtils.setTextOpacityToSelected(languageSelector$RowHolder.name);
             return inflate;
         }
-        inflate.setBackgroundColor(this.this$0.mRowColor);
+        ViewUtils.setTextOpacityToUnselected(languageSelector$RowHolder.name);
         return inflate;
     }
 }

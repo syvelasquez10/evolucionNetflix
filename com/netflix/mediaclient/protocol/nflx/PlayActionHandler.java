@@ -71,12 +71,12 @@ class PlayActionHandler extends BaseNflxHandler
             this.handleHomeAction();
             return NflxHandler$Response.HANDLING;
         }
-        final WebApiUtils$VideoIds isd = WebApiUtils.extractIsd(null, jsonObject.getString("id"));
-        if (isd != null) {
+        final WebApiUtils$VideoIds ids = WebApiUtils.extractIds(null, jsonObject.getString("id"));
+        if (ids != null) {
             if (Log.isLoggable("NflxHandler", 2)) {
-                Log.v("NflxHandler", "Play episode for: " + isd);
+                Log.v("NflxHandler", "Play episode for: " + ids);
             }
-            this.playVideo(String.valueOf(isd.episodeId), VideoType.EPISODE, s, s2);
+            this.playVideo(String.valueOf(ids.episodeId), VideoType.EPISODE, s, s2);
         }
         else {
             Log.e("NflxHandler", "Video ID not found, return to LOLOMO");
@@ -149,7 +149,7 @@ class PlayActionHandler extends BaseNflxHandler
                 return;
             }
             if (VideoType.SHOW.equals(videoType)) {
-                this.mActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, new PlayActionHandler$1FetchPlayableCallback(s2));
+                this.mActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, this.mActivity.isKubrick(), new PlayActionHandler$1FetchPlayableCallback(s2));
             }
         }
     }
