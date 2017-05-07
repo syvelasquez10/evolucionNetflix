@@ -63,7 +63,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
     private void changePlayer(final PlayerType playerType) {
         if (playerType == null) {
             Log.w("SettingsFragment", "Invalid player type choosen! This should not happen, report it.");
-            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131165764).setPositiveButton(2131165543, (DialogInterface$OnClickListener)null).show();
+            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131165749).setPositiveButton(2131165568, (DialogInterface$OnClickListener)null).show();
             return;
         }
         new BackgroundTask().execute(new SettingsFragment$5(this, playerType));
@@ -96,10 +96,10 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         }
         int summary;
         if (BandwidthSaving.isDataSavingEnabled((Context)this.serviceManager.getActivity(), bwSaveConfigData)) {
-            summary = 2131165713;
+            summary = 2131165425;
         }
         else {
-            summary = 2131165712;
+            summary = 2131165424;
         }
         preference.setSummary(summary);
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new SettingsFragment$3(this));
@@ -109,7 +109,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131165414) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setSummary((CharSequence)((Object)this.getText(2131165431) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
             preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$7(this));
         }
     }
@@ -192,14 +192,14 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         final PlayerType currentType = PlayerTypeFactory.getCurrentType((Context)this.activity);
         final boolean default1 = PlayerTypeFactory.isDefault((Context)this.activity);
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getString(2131165763)).append(" ");
+        sb.append(this.getString(2131165748)).append(" ");
         sb.append(PlayerTypeFactory.findDefaultPlayerType().getDescription());
         final ArrayList<String> list = new ArrayList<String>();
         final ArrayList<String> list2 = new ArrayList<String>();
         list.add(sb.toString());
         list2.add("DEFAULT");
         if (AndroidUtils.isOpenMaxALSupported()) {
-            list.add((String)this.getText(2131165768));
+            list.add((String)this.getText(2131165753));
             list2.add("XAL");
             if (PlayerTypeFactory.isXalPlayer(currentType)) {
                 if (!default1) {
@@ -207,7 +207,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
                 }
                 listPreference.setValue("XAL");
             }
-            list.add((String)this.getText(2131165769));
+            list.add((String)this.getText(2131165754));
             list2.add("XALAMP");
             if (PlayerTypeFactory.isXalmpPlayer(currentType)) {
                 if (!default1) {
@@ -217,7 +217,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device10)) {
-            list.add((String)this.getText(2131165765));
+            list.add((String)this.getText(2131165750));
             list2.add("JPLAYER");
             if (PlayerTypeFactory.isJPlayer(currentType)) {
                 if (!default1) {
@@ -227,7 +227,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device11)) {
-            list.add((String)this.getText(2131165767));
+            list.add((String)this.getText(2131165752));
             list2.add("JPLAYERBASE");
             if (PlayerTypeFactory.isJPlayerBase(currentType)) {
                 if (!default1) {
@@ -237,7 +237,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device12)) {
-            list.add((String)this.getText(2131165766));
+            list.add((String)this.getText(2131165751));
             list2.add("JPLAYER2");
             if (PlayerTypeFactory.isJPlayer2(currentType)) {
                 if (!default1) {
@@ -254,11 +254,11 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131165773));
+        list.add(this.getText(2131165758));
         list2.add("DEFAULT");
-        list.add(this.getText(2131165774));
+        list.add(this.getText(2131165759));
         list2.add("ENHANCED_XML");
-        list.add(this.getText(2131165776));
+        list.add(this.getText(2131165761));
         list2.add("SIMPLE_XML");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_XML) {
@@ -308,10 +308,10 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
                 Log.d("SettingsFragment", String.format("onBandwidthSettingsDone called - dataSavingEnabled: %b, ", dataSavingEnabled));
                 int summary;
                 if (dataSavingEnabled) {
-                    summary = 2131165713;
+                    summary = 2131165425;
                 }
                 else {
-                    summary = 2131165712;
+                    summary = 2131165424;
                 }
                 preference.setSummary(summary);
             }

@@ -6,6 +6,6 @@ package com.viewpagerindicator;
 
 public final class R$dimen
 {
-    public static final int default_circle_indicator_radius = 2131296445;
-    public static final int default_circle_indicator_stroke_width = 2131296446;
+    public static final int default_circle_indicator_radius = 2131296461;
+    public static final int default_circle_indicator_stroke_width = 2131296462;
 }

@@ -106,9 +106,9 @@ public class PostPlayForEpisodes extends PostPlay
     
     @Override
     void findViews() {
-        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624400);
-        this.mAutoPlayView = this.mNetflixActivity.findViewById(2131624399);
-        this.mTimerView = (TextView)this.mNetflixActivity.findViewById(2131624401);
+        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624403);
+        this.mAutoPlayView = this.mNetflixActivity.findViewById(2131624402);
+        this.mTimerView = (TextView)this.mNetflixActivity.findViewById(2131624404);
     }
     
     @Override
@@ -186,7 +186,7 @@ public class PostPlayForEpisodes extends PostPlay
     
     protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(activity.getResources().getText(2131165561));
+            this.mInfoTitleView.setText(activity.getResources().getText(2131165587));
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(0);
@@ -258,7 +258,7 @@ public class PostPlayForEpisodes extends PostPlay
                 NetflixActivity.getImageLoader((Context)this.mNetflixActivity).showImg(this.mBackground, s, IClientLogging$AssetType.merchStill, string, ImageLoader$StaticImgConfig.DARK, true, 1);
             }
         }
-        final String string2 = this.mNetflixActivity.getResources().getString(2131165566, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
+        final String string2 = this.mNetflixActivity.getResources().getString(2131165592, new Object[] { postPlayVideo.getPlayable().getSeasonNumber(), postPlayVideo.getPlayable().getEpisodeNumber(), title });
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "Title: " + string2);
         }

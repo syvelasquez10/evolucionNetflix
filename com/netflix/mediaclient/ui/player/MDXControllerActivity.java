@@ -50,7 +50,7 @@ public class MDXControllerActivity extends NetflixActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlayViewGroup = this.findViewById(2131624403);
+        this.postPlayViewGroup = this.findViewById(2131624406);
         this.postPlayController = PostPlayFactory.createForMdx(this);
     }
     

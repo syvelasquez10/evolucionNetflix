@@ -23,10 +23,14 @@ import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSp
 
 public class DeviceConfiguration
 {
+    private static final int DEFAULT_SAMPLERATE = 8000;
     private static final boolean DISABLE_MDX_DEF = false;
     private static final boolean DISABLE_WEBSOCKET_DEF = true;
     private static final boolean FORCE_DISABLE_VOIP_IN_CODE = false;
+    private static final int MAX_SAMPLERATE_48K = 48000;
+    private static final int MIN_SAMPLERATE_8K = 8000;
     private static String TAG;
+    private String mAlertMsgForMissingLocale;
     private int mAppMinimalVersion;
     private int mAppRecommendedVersion;
     private int mAudioFormat;
@@ -50,10 +54,12 @@ public class DeviceConfiguration
     private int mPTAggregationSize;
     private int mRateLimitForGcmBrowseEvents;
     private int mRateLimitForNListChangeEvents;
+    private boolean mShouldAlertForMissingLocale;
     private SignUpConfiguration mSignUpConfig;
     private SubtitleConfiguration mSubtitleConfiguration;
     private int mUserSessionDurationInSeconds;
     private int mVideoResolutionOverride;
+    private int mVoipSampleRateInHz;
     
     static {
         DeviceConfiguration.TAG = "nf_configuration_device";
@@ -62,6 +68,7 @@ public class DeviceConfiguration
     public DeviceConfiguration(final Context mContext) {
         this.mSubtitleConfiguration = SubtitleConfiguration.ENHANCED_XML;
         this.mConsolidatedLoggingSpecification = new HashMap<String, ConsolidatedLoggingSessionSpecification>();
+        this.mVoipSampleRateInHz = 8000;
         this.mContext = mContext;
         this.mDeviceRepository = new DeviceRepository(this.mContext);
         this.mImagePrefRepository = new ImagePrefRepository(this.mContext);
@@ -97,6 +104,9 @@ public class DeviceConfiguration
         this.mMdxRemoteControlLockScreenEnabled = PreferenceUtils.getBooleanPref(this.mContext, "mdx_configuration_remote_lockscreen_enabled", DeviceUtils.isRemoteControlEnabled());
         this.mMdxRemoteControlNotificationEnabled = PreferenceUtils.getBooleanPref(this.mContext, "mdx_configuration_remote_notification_enabled", DeviceUtils.isRemoteControlEnabled());
         this.mJPlayerErrorRestartCount = PreferenceUtils.getIntPref(this.mContext, "jplayer_restart_count", 2);
+        this.mShouldAlertForMissingLocale = PreferenceUtils.getBooleanPref(this.mContext, "device_locale_not_supported", false);
+        this.mAlertMsgForMissingLocale = PreferenceUtils.getStringPref(this.mContext, "device_locale_not_supported_msg", null);
+        this.mVoipSampleRateInHz = PreferenceUtils.getIntPref(this.mContext, "voip_samplerate_hz", 8000);
         if (Log.isLoggable()) {
             Log.d(DeviceConfiguration.TAG, "constructor DeviceConfiguration: Disable mIsVoipEnabledOnDevice " + this.mIsVoipEnabledOnDevice + ", disabledInCode? " + false);
         }
@@ -110,63 +120,63 @@ public class DeviceConfiguration
         // 
         //     0: aload_0        
         //     1: getfield        com/netflix/mediaclient/service/configuration/DeviceConfiguration.mContext:Landroid/content/Context;
-        //     4: ldc             "cl_configuration"
-        //     6: aconst_null    
-        //     7: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getStringPref:(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-        //    10: astore_1       
-        //    11: aload_1        
-        //    12: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
-        //    15: ifeq            35
-        //    18: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
-        //    21: ldc             "CL specification not found in file system"
-        //    23: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    26: pop            
-        //    27: new             Ljava/util/HashMap;
-        //    30: dup            
-        //    31: invokespecial   java/util/HashMap.<init>:()V
-        //    34: areturn        
-        //    35: new             Lcom/netflix/mediaclient/service/configuration/DeviceConfiguration$1;
-        //    38: dup            
-        //    39: aload_0        
-        //    40: invokespecial   com/netflix/mediaclient/service/configuration/DeviceConfiguration$1.<init>:(Lcom/netflix/mediaclient/service/configuration/DeviceConfiguration;)V
-        //    43: invokevirtual   com/netflix/mediaclient/service/configuration/DeviceConfiguration$1.getType:()Ljava/lang/reflect/Type;
-        //    46: astore_2       
-        //    47: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalkorParseUtils.getGson:()Lcom/google/gson/Gson;
-        //    50: aload_1        
-        //    51: aload_2        
-        //    52: invokevirtual   com/google/gson/Gson.fromJson:(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;
-        //    55: checkcast       Ljava/util/List;
-        //    58: astore_1       
-        //    59: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
-        //    62: ldc_w           "CL specification loaded from file system"
-        //    65: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    68: pop            
-        //    69: aload_1        
-        //    70: invokestatic    com/netflix/mediaclient/service/configuration/DeviceConfiguration.toMap:(Ljava/util/List;)Ljava/util/Map;
-        //    73: areturn        
-        //    74: astore_2       
-        //    75: aconst_null    
-        //    76: astore_1       
-        //    77: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
-        //    80: ldc_w           "Failed to load CL specification from file system"
-        //    83: aload_2        
-        //    84: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //    87: pop            
-        //    88: goto            69
-        //    91: astore_2       
-        //    92: goto            77
+        //     4: ldc_w           "cl_configuration"
+        //     7: aconst_null    
+        //     8: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getStringPref:(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+        //    11: astore_1       
+        //    12: aload_1        
+        //    13: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    16: ifeq            37
+        //    19: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
+        //    22: ldc_w           "CL specification not found in file system"
+        //    25: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    28: pop            
+        //    29: new             Ljava/util/HashMap;
+        //    32: dup            
+        //    33: invokespecial   java/util/HashMap.<init>:()V
+        //    36: areturn        
+        //    37: new             Lcom/netflix/mediaclient/service/configuration/DeviceConfiguration$1;
+        //    40: dup            
+        //    41: aload_0        
+        //    42: invokespecial   com/netflix/mediaclient/service/configuration/DeviceConfiguration$1.<init>:(Lcom/netflix/mediaclient/service/configuration/DeviceConfiguration;)V
+        //    45: invokevirtual   com/netflix/mediaclient/service/configuration/DeviceConfiguration$1.getType:()Ljava/lang/reflect/Type;
+        //    48: astore_2       
+        //    49: invokestatic    com/netflix/mediaclient/service/webclient/volley/FalkorParseUtils.getGson:()Lcom/google/gson/Gson;
+        //    52: aload_1        
+        //    53: aload_2        
+        //    54: invokevirtual   com/google/gson/Gson.fromJson:(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;
+        //    57: checkcast       Ljava/util/List;
+        //    60: astore_1       
+        //    61: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
+        //    64: ldc_w           "CL specification loaded from file system"
+        //    67: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    70: pop            
+        //    71: aload_1        
+        //    72: invokestatic    com/netflix/mediaclient/service/configuration/DeviceConfiguration.toMap:(Ljava/util/List;)Ljava/util/Map;
+        //    75: areturn        
+        //    76: astore_2       
+        //    77: aconst_null    
+        //    78: astore_1       
+        //    79: getstatic       com/netflix/mediaclient/service/configuration/DeviceConfiguration.TAG:Ljava/lang/String;
+        //    82: ldc_w           "Failed to load CL specification from file system"
+        //    85: aload_2        
+        //    86: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    89: pop            
+        //    90: goto            71
+        //    93: astore_2       
+        //    94: goto            79
         //    Signature:
         //  ()Ljava/util/Map<Ljava/lang/String;Lcom/netflix/mediaclient/service/webclient/model/leafs/ConsolidatedLoggingSessionSpecification;>;
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  35     59     74     77     Ljava/lang/Throwable;
-        //  59     69     91     95     Ljava/lang/Throwable;
+        //  37     61     76     79     Ljava/lang/Throwable;
+        //  61     71     93     97     Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0069:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0071:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -226,6 +236,20 @@ public class DeviceConfiguration
     private void updateDeviceConfigFlag(final boolean b) {
         Log.d(DeviceConfiguration.TAG, "setting DeviceConfig preferences inCache= " + b);
         PreferenceUtils.putBooleanPref(this.mContext, "nf_device_config_cached", b);
+    }
+    
+    private void updateDeviceLocaleSupportAlert(final boolean mShouldAlertForMissingLocale, final String mAlertMsgForMissingLocale) {
+        if (Log.isLoggable()) {
+            Log.d(DeviceConfiguration.TAG, String.format("nf_loc shouldAlert: %b, alertMsg:%s", mShouldAlertForMissingLocale, mAlertMsgForMissingLocale));
+        }
+        if (mShouldAlertForMissingLocale != this.mShouldAlertForMissingLocale) {
+            PreferenceUtils.putBooleanPref(this.mContext, "device_locale_not_supported", mShouldAlertForMissingLocale);
+            this.mShouldAlertForMissingLocale = mShouldAlertForMissingLocale;
+        }
+        if (!StringUtils.safeEquals(mAlertMsgForMissingLocale, this.mAlertMsgForMissingLocale)) {
+            PreferenceUtils.putStringPref(this.mContext, "device_locale_not_supported_msg", mAlertMsgForMissingLocale);
+            this.mAlertMsgForMissingLocale = mAlertMsgForMissingLocale;
+        }
     }
     
     private void updateDisableMdxFlag(final String s) {
@@ -305,6 +329,19 @@ public class DeviceConfiguration
         this.mIsVoipEnabledOnDevice = mIsVoipEnabledOnDevice;
     }
     
+    private void updateVoipSampleRate(final int mVoipSampleRateInHz) {
+        if (mVoipSampleRateInHz >= 8000 && mVoipSampleRateInHz <= 48000) {
+            if (Log.isLoggable()) {
+                Log.d(DeviceConfiguration.TAG, "New sample rate of " + mVoipSampleRateInHz + " Hz is in range of 4KHz - 48KHz");
+            }
+            PreferenceUtils.putIntPref(this.mContext, "voip_samplerate_hz", mVoipSampleRateInHz);
+            this.mVoipSampleRateInHz = mVoipSampleRateInHz;
+        }
+        else if (Log.isLoggable()) {
+            Log.e(DeviceConfiguration.TAG, "New sample rate of " + mVoipSampleRateInHz + " Hz is NOT in range of 4KHz - 48KHz. Not changing existing sample rate...");
+        }
+    }
+    
     private void updateWidevineL1Flag(final boolean mIsWidevineL1Enabled) {
         PreferenceUtils.putBooleanPref(this.mContext, "enable_widevine_l1", mIsWidevineL1Enabled);
         if (this.mIsWidevineDisabled) {
@@ -335,6 +372,10 @@ public class DeviceConfiguration
     
     public boolean enableWidevineL3() {
         return this.mIsWidevineL3Enabled;
+    }
+    
+    public String getAlertMsgForMissingLocale() {
+        return this.mAlertMsgForMissingLocale;
     }
     
     public int getAppMinimalVersion() {
@@ -402,6 +443,10 @@ public class DeviceConfiguration
     
     public int getVideoResolutionOverride() {
         return this.mVideoResolutionOverride;
+    }
+    
+    public int getVoipSampleRate() {
+        return this.mVoipSampleRateInHz;
     }
     
     public int getmAudioFormat() {
@@ -491,10 +536,16 @@ public class DeviceConfiguration
             this.updateLocalPlaybackStatus(deviceConfigData.getEnableLocalPlayback());
             this.updateMdxRemoteControlLockScreenStatus(deviceConfigData.getEnableMdxRemoteControlLockScreen());
             this.updateMdxRemoteControlNotificationStatus(deviceConfigData.getEnableMdxRemoteControlNotification());
+            this.updateDeviceLocaleSupportAlert(deviceConfigData.shouldAlertForMissingLocale(), deviceConfigData.getAlertMsgForLocaleSupport());
+            this.updateVoipSampleRate(deviceConfigData.getVoipSampleRateInHz());
             if (!this.isDeviceConfigInCache()) {
                 this.updateDeviceConfigFlag(true);
             }
         }
+    }
+    
+    public boolean shouldAlertForMissingLocale() {
+        return this.mShouldAlertForMissingLocale;
     }
     
     public boolean shouldDisableVoip() {

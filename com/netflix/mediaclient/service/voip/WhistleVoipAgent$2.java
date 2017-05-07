@@ -11,6 +11,7 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.vailsys.whistleengine.WhistleEngineDelegate$ConnectivityState;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
 import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$CallQuality;
 import android.media.AudioManager;

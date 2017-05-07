@@ -8,14 +8,15 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifier;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
-import com.netflix.mediaclient.servicemgr.interface_.Playable;
-import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.util.Pair;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.IMdx;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.player.PlayerActivity;
+import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.Asset;
 import android.os.Handler;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
@@ -25,9 +26,24 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 public final class PlaybackLauncher
 {
     private static final String TAG = "nf_play";
+    public static final int UNDEFINED_START_TIME = -1;
     
     private static void displayErrorDialog(final NetflixActivity netflixActivity, final int n) {
         netflixActivity.displayDialog(AlertDialogFactory.createDialog((Context)netflixActivity, null, new AlertDialogFactory$AlertDialogDescriptor("", netflixActivity.getString(n), null, null)));
+    }
+    
+    private static Intent getOldPlaybackIntent(final NetflixActivity netflixActivity, final Asset asset, final int n) {
+        final Intent intent = new Intent((Context)netflixActivity, (Class)PlayerActivity.class);
+        intent.addFlags(131072);
+        intent.addFlags(268435456);
+        if (n > -1 && n < asset.getDuration()) {
+            intent.putExtra("BookmarkSecondsFromStart", n);
+        }
+        else {
+            Log.w("nf_play", "Start time parameter was ignored since it exceeds the total duration.");
+        }
+        asset.toIntent(intent);
+        return intent;
     }
     
     private static boolean isExisitingMdxTargetAvailable(final IMdx mdx, final String s) {
@@ -66,6 +82,20 @@ public final class PlaybackLauncher
         }
     }
     
+    public static void playVideo(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n) {
+        if (Log.isLoggable()) {
+            Log.d("nf_play", "Asset to playback: " + asset);
+        }
+        if (asset == null) {
+            return;
+        }
+        netflixActivity.startActivity(getOldPlaybackIntent(netflixActivity, asset, n));
+    }
+    
+    public static void playVideo(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext, final int n) {
+        playVideo(netflixActivity, Asset.create(playable, playContext, false), true, n);
+    }
+    
     public static boolean shouldPlayOnRemoteTarget(final ServiceManager serviceManager) {
         if (serviceManager == null || !serviceManager.isReady() || serviceManager.getMdx() == null) {
             Log.e("nf_play", "MDX or service manager are null! That should NOT happen. Default to local.");
@@ -91,10 +121,10 @@ public final class PlaybackLauncher
                 verifyAgeAndPinToPlay(netflixActivity, asset, true);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131165627);
+                displayErrorDialog(netflixActivity, 2131165654);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131165628);
+                displayErrorDialog(netflixActivity, 2131165655);
             }
         }
     }
@@ -122,11 +152,11 @@ public final class PlaybackLauncher
         else {
             if (netflixActivity.getServiceManager().getConfiguration().getPlaybackConfiguration().isLocalPlaybackEnabled()) {
                 Log.d("nf_play", "Start local playback");
-                PlayerActivity.playVideo(netflixActivity, asset);
+                playVideo(netflixActivity, asset, true, -1);
                 return;
             }
             Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131165627);
+            displayErrorDialog(netflixActivity, 2131165654);
         }
     }
     

@@ -8,6 +8,7 @@ import android.widget.TextView$OnEditorActionListener;
 import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -65,6 +66,6 @@ class LoginActivity$3 implements View$OnClickListener
             this.this$0.startActivityForResult(setData, 0);
             return;
         }
-        this.this$0.displayUserAgentDialog(this.this$0.getString(2131165623, new Object[] { "https://signup.netflix.com/loginhelp" }), null, false);
+        this.this$0.displayServiceAgentDialog(this.this$0.getString(2131165649, new Object[] { "https://signup.netflix.com/loginhelp" }), null, false);
     }
 }

@@ -8,7 +8,6 @@ import android.view.SurfaceHolder;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
@@ -26,7 +25,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
-import com.netflix.mediaclient.media.PlayoutMetadata;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
@@ -34,6 +32,8 @@ import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.media.PlayoutMetadata;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.BufferRange;
@@ -58,6 +58,7 @@ import com.netflix.mediaclient.javabridge.ui.IMedia;
 import com.netflix.mediaclient.servicemgr.IManifestCache;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
 import com.netflix.mediaclient.media.MediaPlayerHelper;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthDelayedBifDownload;
 import com.netflix.mediaclient.media.BifManager;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
@@ -99,6 +100,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private long mBookmark;
     private boolean mBufferingCompleted;
     private PlayerAgent$CloseTimeoutTask mCloseTimeoutTask;
+    private BandwidthDelayedBifDownload mDelayedBifDowloadFor6733;
     private boolean mForcedRebuffer;
     private int mFuzz;
     private MediaPlayerHelper mHelper;
@@ -177,6 +179,21 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.muted = false;
         this.playerChangesReceiver = new PlayerAgent$6(this);
         this.mUserAgentReceiver = new PlayerAgent$9(this);
+    }
+    
+    private boolean canStartBifDownload() {
+        if (this.mInPlayback && this.mBifManager == null) {
+            final PlayoutMetadata playoutMetadata = this.getPlayoutMetadata();
+            if (playoutMetadata != null) {
+                if (playoutMetadata.targetBitRate >= 500) {
+                    return true;
+                }
+                if (this.mDelayedBifDowloadFor6733 != null && BandwidthSaving.isBWSavingEnabledForPlay(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData(), this.getConfigurationAgent().shouldForceBwSettingsInWifi())) {
+                    return this.mDelayedBifDowloadFor6733.shouldDownloadBif(this.isBufferingCompleted());
+                }
+            }
+        }
+        return false;
     }
     
     private void clearBifs() {
@@ -512,11 +529,8 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             this.splashScreenRemoved = true;
             this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnStartedHandler(), new Object[0]);
         }
-        if (this.mInPlayback && this.mBifManager == null) {
-            final PlayoutMetadata playoutMetadata = this.getPlayoutMetadata();
-            if (playoutMetadata != null && playoutMetadata.targetBitRate >= 500) {
-                this.startBif();
-            }
+        if (this.canStartBifDownload()) {
+            this.startBif();
         }
         this.handleSubtitleUpdate(n);
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnUpdatePtsHandler(), n);
@@ -1013,6 +1027,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 Log.d(PlayerAgent.TAG, "Open called movieId:" + mMovieId + " trackId:" + mPlayContext.getTrackId() + " bookmark:" + mBookmark);
             }
             if (BandwidthSaving.isBWSavingEnabledForPlay(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData(), this.getConfigurationAgent().shouldForceBwSettingsInWifi())) {
+                this.mDelayedBifDowloadFor6733 = new BandwidthDelayedBifDownload();
                 int maxBRThreshold = BandwidthSaving.getMaxBandwidth(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData());
                 Log.d(PlayerAgent.TAG, String.format("nf_bw bwOverride: %d,MaxBRThreshold : %d ", maxBRThreshold, PlayerAgent.MaxBRThreshold));
                 if (maxBRThreshold <= 0) {

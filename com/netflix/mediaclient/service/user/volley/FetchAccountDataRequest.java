@@ -17,7 +17,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile$Summary
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListSummary;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -52,7 +52,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
     public static AccountData parseProfilesList(final String s, final boolean b) {
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchaccountdatarequest", s);
         if (FalkorParseUtils.isEmpty(dataObj)) {
-            throw new FalkorParseException("UserProfiles empty!!!");
+            throw new FalkorException("UserProfiles empty!!!");
         }
         ArrayList<UserProfile> userProfiles;
         while (true) {
@@ -82,12 +82,12 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                                 userProfile = new UserProfile();
                                 userProfile.summary = FalkorParseUtils.getPropertyObject(asJsonObject2, "summary", UserProfile$Summary.class);
                                 if (userProfile.summary == null || StringUtils.isEmpty(userProfile.getProfileToken())) {
-                                    throw new FalkorParseException("response missing summary" + s);
+                                    throw new FalkorException("response missing summary" + s);
                                 }
                             }
                             catch (Exception ex) {
                                 Log.v("nf_service_user_fetchaccountdatarequest", "String response to parse = " + s);
-                                throw new FalkorParseException("response missing user json objects", ex);
+                                throw new FalkorException("response missing user json objects", ex);
                             }
                             userProfile.subtitlePreference = FalkorParseUtils.getPropertyObject(asJsonObject2, "subtitlePreference", SubtitlePreference.class);
                             userProfiles.add(userProfile);
@@ -108,12 +108,12 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                 asJsonObject3 = dataObj.getAsJsonObject("user");
                 user.summary = FalkorParseUtils.getPropertyObject(asJsonObject3, "summary", User$Summary.class);
                 if (user.summary == null || StringUtils.isEmpty(user.getUserToken())) {
-                    throw new FalkorParseException("response missing summary" + s);
+                    throw new FalkorException("response missing summary" + s);
                 }
             }
             catch (Exception ex2) {
                 Log.v("nf_service_user_fetchaccountdatarequest", "String response to parse = " + s);
-                throw new FalkorParseException("response missing user json objects", ex2);
+                throw new FalkorException("response missing user json objects", ex2);
             }
             user.subtitleDefaults = FalkorParseUtils.getPropertyObject(asJsonObject3, "subtitleDefaults", SubtitlePreference.class);
             accountData.setUser(user);

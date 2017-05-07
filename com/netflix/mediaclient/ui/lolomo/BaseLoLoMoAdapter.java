@@ -96,19 +96,19 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131624229);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131624232);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131624231);
+        final TextView textView = (TextView)view.findViewById(2131624234);
         final Resources resources = this.activity.getResources();
         int n;
         if (BrowseExperience.isKubrickKids()) {
-            n = 2131558451;
+            n = 2131558453;
         }
         else {
-            n = 2131558536;
+            n = 2131558538;
         }
         textView.setTextColor(resources.getColor(n));
-        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131624279));
+        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131624282));
     }
     
     private void fetchMoreData() {
@@ -258,7 +258,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected TextView initTitleView(final View view) {
-        final TextView textView = (TextView)view.findViewById(2131624230);
+        final TextView textView = (TextView)view.findViewById(2131624233);
         if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "Manipulating title padding, view: " + textView);
         }
@@ -364,7 +364,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final TextView title = baseLoLoMoAdapter$RowHolder.title;
         String text;
         if (t.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131165608);
+            text = this.activity.getString(2131165632);
         }
         else {
             text = t.getTitle();

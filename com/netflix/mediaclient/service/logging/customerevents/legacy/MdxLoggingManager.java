@@ -75,7 +75,7 @@ public class MdxLoggingManager
                 break Label_0047;
             }
             try {
-                jsonObject.putOpt("languages", (Object)serviceAgent$UserAgentInterface.getLanguagesInCsv()).putOpt("geolocation_country", (Object)serviceAgent$UserAgentInterface.getGeoCountry()).putOpt("country", (Object)serviceAgent$UserAgentInterface.getReqCountry());
+                jsonObject.putOpt("languages", (Object)serviceAgent$UserAgentInterface.getCurrentAppLanguage()).putOpt("geolocation_country", (Object)serviceAgent$UserAgentInterface.getGeoCountry()).putOpt("country", (Object)serviceAgent$UserAgentInterface.getReqCountry());
                 jsonObject.putOpt("timestamp", (Object)System.currentTimeMillis()).putOpt("ui_version", (Object)this.mOwner.getConfigurationAgent().getSoftwareVersion()).putOpt("app_version", (Object)this.mOwner.getConfigurationAgent().getSoftwareVersion()).putOpt("device_cat", (Object)this.mOwner.getConfigurationAgent().getDeviceCategory().name()).putOpt("os_version", (Object)("Android " + Build$VERSION.RELEASE)).putOpt("device_type", (Object)this.mOwner.getConfigurationAgent().getEsnProvider().getESNPrefix());
                 return jsonObject;
             }

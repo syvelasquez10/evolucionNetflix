@@ -149,11 +149,7 @@ public final class NflxProtocolUtils
     }
     
     public static String getTrackId(final Map<String, String> map) {
-        String s;
-        if (StringUtils.isEmpty(s = map.get("trkid"))) {
-            s = map.get("t");
-        }
-        return s;
+        return map.get("trkid");
     }
     
     public static String getVideoIdFromUri(String s, final String s2) {

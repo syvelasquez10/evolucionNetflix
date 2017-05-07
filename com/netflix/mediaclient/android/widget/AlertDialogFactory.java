@@ -4,12 +4,26 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import android.text.util.Linkify;
+import android.text.SpannableString;
+import com.netflix.mediaclient.util.StringUtils;
+import android.text.Spannable;
 import android.content.DialogInterface$OnClickListener;
 import android.os.Handler;
 import android.content.Context;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
+import android.app.Dialog;
 
 public final class AlertDialogFactory
 {
+    public static void activateLinkIfExist(final Dialog dialog) {
+        final TextView textView = (TextView)dialog.findViewById(16908299);
+        if (textView != null) {
+            textView.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+    }
+    
     public static UpdateDialog$Builder createDialog(final Context context, final Handler handler, final AlertDialogFactory$AlertDialogDescriptor alertDialogFactory$AlertDialogDescriptor) {
         return createDialog(context, handler, alertDialogFactory$AlertDialogDescriptor, null);
     }
@@ -25,12 +39,12 @@ public final class AlertDialogFactory
     public static UpdateDialog$Builder createDialog(final Context context, final String s, final String s2, final Handler handler, String string, final Runnable runnable, String string2, final Runnable runnable2, final boolean b, final Runnable runnable3) {
         final UpdateDialog$Builder updateDialog$Builder = new UpdateDialog$Builder(context);
         updateDialog$Builder.setTitle(noNull(s));
-        updateDialog$Builder.setMessage(noNull(s2));
+        updateDialog$Builder.setMessage((CharSequence)processMessage(s2));
         if (string == null) {
-            string = context.getString(2131165543);
+            string = context.getString(2131165568);
         }
         if (string2 == null) {
-            string2 = context.getString(2131165413);
+            string2 = context.getString(2131165430);
         }
         if (handler != null) {
             updateDialog$Builder.setPositiveButton(string, (DialogInterface$OnClickListener)new AlertDialogFactory$1(runnable, handler, runnable3));
@@ -58,5 +72,14 @@ public final class AlertDialogFactory
             s2 = "";
         }
         return s2;
+    }
+    
+    private static Spannable processMessage(final String s) {
+        if (StringUtils.isEmpty(s)) {
+            return (Spannable)new SpannableString((CharSequence)"");
+        }
+        final SpannableString spannableString = new SpannableString((CharSequence)s);
+        Linkify.addLinks((Spannable)spannableString, 15);
+        return (Spannable)spannableString;
     }
 }

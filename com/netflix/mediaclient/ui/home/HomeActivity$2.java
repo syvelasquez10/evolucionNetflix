@@ -36,7 +36,6 @@ import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
-import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;

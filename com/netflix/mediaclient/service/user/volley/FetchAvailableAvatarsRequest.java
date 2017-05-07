@@ -9,7 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
@@ -65,7 +65,7 @@ public class FetchAvailableAvatarsRequest extends FalkorVolleyWebClientRequest<L
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchavailableavatarsrequest", s);
         if (FalkorParseUtils.isEmpty(dataObj)) {
-            throw new FalkorParseException("Avatars list empty!!!");
+            throw new FalkorException("Avatars list empty!!!");
         }
         try {
             final JsonArray asJsonArray = dataObj.getAsJsonArray("availableAvatarsList");
@@ -80,7 +80,7 @@ public class FetchAvailableAvatarsRequest extends FalkorVolleyWebClientRequest<L
             if (Log.isLoggable()) {
                 Log.e("nf_service_user_fetchavailableavatarsrequest", "Got exception for string response to parse: " + s);
             }
-            throw new FalkorParseException("response missing avatars json objects", ex);
+            throw new FalkorException("response missing avatars json objects", ex);
         }
         return (List<AvatarInfo>)s;
     }

@@ -12,6 +12,7 @@ import android.content.Intent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
 import com.netflix.mediaclient.service.logging.customerSupport.model.DialScreenDismissedEvent;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$Action;
 import com.netflix.mediaclient.service.logging.client.model.Event;
@@ -77,16 +78,16 @@ class CustomerServiceLoggingImpl implements CustomerServiceLogging
     @Override
     public void endAllActiveSessions() {
         synchronized (this) {
-            this.endCustomerSupportCallSession(IClientLogging$CompletionReason.canceled, null);
+            this.endCustomerSupportCallSession(CustomerServiceLogging$TerminationReason.canceledByUserAfterConnected, IClientLogging$CompletionReason.canceled, null);
             this.endHelpRequestSession(null, null, IClientLogging$CompletionReason.canceled, null);
         }
     }
     
     @Override
-    public void endCustomerSupportCallSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
+    public void endCustomerSupportCallSession(final CustomerServiceLogging$TerminationReason customerServiceLogging$TerminationReason, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
         if (this.mCustomerSupportCallSession != null) {
             Log.d("nf_log_cs", "Call session end started");
-            this.mEventHandler.post(this.mCustomerSupportCallSession.createCustomerSupportCallSessionEndedEvent(clientLogging$CompletionReason, error));
+            this.mEventHandler.post(this.mCustomerSupportCallSession.createCustomerSupportCallSessionEndedEvent(customerServiceLogging$TerminationReason, clientLogging$CompletionReason, error));
             this.mEventHandler.removeSession(this.mCustomerSupportCallSession);
             this.mCustomerSupportCallSession = null;
             Log.d("nf_log_cs", "Call session end done.");
@@ -146,10 +147,11 @@ class CustomerServiceLoggingImpl implements CustomerServiceLogging
         if ("com.netflix.mediaclient.intent.action.LOG_CS_CALL_SESSION_ENDED".equals(action)) {
             Log.d("nf_log_cs", "CALL_SESSION_ENDED");
             final IClientLogging$CompletionReason value4 = IClientLogging$CompletionReason.valueOf(intent.getStringExtra("reason"));
+            final CustomerServiceLogging$TerminationReason value5 = CustomerServiceLogging$TerminationReason.valueOf(intent.getStringExtra("terminationReason"));
             while (true) {
                 try {
                     final UIError instance2 = Error.createInstance(intent.getStringExtra("error"));
-                    this.endCustomerSupportCallSession(value4, instance2);
+                    this.endCustomerSupportCallSession(value5, value4, instance2);
                     return true;
                 }
                 catch (JSONException ex2) {
@@ -173,37 +175,37 @@ class CustomerServiceLoggingImpl implements CustomerServiceLogging
         if ("com.netflix.mediaclient.intent.action.LOG_CS_CALL_UI_EXIT".equals(action)) {
             Log.d("nf_log_cs", "CALL_UI_EXIT");
             final String stringExtra2 = intent.getStringExtra("action");
-            CustomerServiceLogging$Action value5 = customerServiceLogging$Action;
+            CustomerServiceLogging$Action value6 = customerServiceLogging$Action;
             if (StringUtils.isNotEmpty(stringExtra2)) {
-                value5 = CustomerServiceLogging$Action.valueOf(stringExtra2);
+                value6 = CustomerServiceLogging$Action.valueOf(stringExtra2);
             }
-            this.createDialScreenDismissedEvent(value5);
+            this.createDialScreenDismissedEvent(value6);
             return true;
         }
         if ("com.netflix.mediaclient.intent.action.LOG_CS_CALL_UI_BACK_TO".equals(action)) {
             Log.d("nf_log_cs", "CALL_UI_BACK_TO");
             final String stringExtra3 = intent.getStringExtra("source");
-            IClientLogging$ModalView value6;
+            IClientLogging$ModalView value7;
             if (StringUtils.isNotEmpty(stringExtra3)) {
-                value6 = IClientLogging$ModalView.valueOf(stringExtra3);
-            }
-            else {
-                value6 = null;
-            }
-            final String stringExtra4 = intent.getStringExtra("using");
-            CustomerServiceLogging$ReturnToDialScreenFrom value7;
-            if (StringUtils.isNotEmpty(stringExtra4)) {
-                value7 = CustomerServiceLogging$ReturnToDialScreenFrom.valueOf(stringExtra4);
+                value7 = IClientLogging$ModalView.valueOf(stringExtra3);
             }
             else {
                 value7 = null;
             }
-            final String stringExtra5 = intent.getStringExtra("orientation");
-            Orientation value8 = orientation;
-            if (StringUtils.isNotEmpty(stringExtra5)) {
-                value8 = Orientation.valueOf(stringExtra5);
+            final String stringExtra4 = intent.getStringExtra("using");
+            CustomerServiceLogging$ReturnToDialScreenFrom value8;
+            if (StringUtils.isNotEmpty(stringExtra4)) {
+                value8 = CustomerServiceLogging$ReturnToDialScreenFrom.valueOf(stringExtra4);
             }
-            this.createBackToDialScreenEvent(value6, value8, value7);
+            else {
+                value8 = null;
+            }
+            final String stringExtra5 = intent.getStringExtra("orientation");
+            Orientation value9 = orientation;
+            if (StringUtils.isNotEmpty(stringExtra5)) {
+                value9 = Orientation.valueOf(stringExtra5);
+            }
+            this.createBackToDialScreenEvent(value7, value9, value8);
             return true;
         }
         if (Log.isLoggable()) {

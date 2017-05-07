@@ -81,8 +81,6 @@ public interface INetflixService
     
     IVoip getVoip();
     
-    boolean isApkMissingSupportForLocale();
-    
     boolean isCurrentProfileIQEnabled();
     
     boolean isDeviceHd();

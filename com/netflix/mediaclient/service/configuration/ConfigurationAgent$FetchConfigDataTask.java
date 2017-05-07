@@ -17,7 +17,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLogging
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;

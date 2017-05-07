@@ -47,10 +47,10 @@ public class KubrickSeasonsDialogAdapter extends RecyclerView$Adapter<KubrickSea
         kubrickSeasonsDialogAdapter$EpisodesViewHolder.text.setText((CharSequence)this.seasons.get(visibility));
         int n2;
         if (this.curSelectedPosition == visibility) {
-            n2 = 2131558518;
+            n2 = 2131558520;
         }
         else {
-            n2 = 2131558536;
+            n2 = 2131558538;
         }
         kubrickSeasonsDialogAdapter$EpisodesViewHolder.text.setTextColor(this.context.getResources().getColor(n2));
         final TextView text = kubrickSeasonsDialogAdapter$EpisodesViewHolder.text;

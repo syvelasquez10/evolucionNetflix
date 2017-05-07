@@ -110,7 +110,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         userData.currentProfileToken = this.getService().getCurrentProfileToken();
         userData.accountCountry = this.getUserAgent().getReqCountry();
         userData.accountCountry = this.getUserAgent().getGeoCountry();
-        userData.languages = this.getUserAgent().getLanguagesInCsv();
+        userData.languages = this.getUserAgent().getCurrentAppLanguage();
         if (Log.isLoggable()) {
             Log.d("nf_push", "GetUserData: " + userData);
         }

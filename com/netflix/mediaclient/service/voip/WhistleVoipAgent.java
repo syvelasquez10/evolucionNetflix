@@ -12,11 +12,12 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.vailsys.whistleengine.WhistleEngineDelegate$ConnectivityState;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
 import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$CallQuality;
-import com.netflix.mediaclient.servicemgr.IVoip$Call;
 import android.media.AudioManager;
+import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.IVoip$Call;
 import com.netflix.mediaclient.servicemgr.IVoip$AuthorizationTokens;
 import com.netflix.mediaclient.util.FileUtils;
 import com.vailsys.whistleengine.WhistleEngineConfig$TransportMode;
@@ -86,6 +87,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         this.mOnAudioFocusChangeListener = (AudioManager$OnAudioFocusChangeListener)new WhistleVoipAgent$7(this);
         this.mAuthorizationTokensManager = new AuthorizationTokensManager(context, serviceAgent$UserAgentInterface);
         this.mLockManager = new PowerLockManager(context);
+        this.mNotificationManager = new CallNotificationManager(context);
     }
     
     private void callCleanup() {
@@ -94,6 +96,8 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         this.mLockManager.callEnded();
         this.releaseAudioFocus();
         this.mStartTime = 0L;
+        this.mCurrentCall = null;
+        this.mConnectivityState = IVoip$ConnectivityState.NO_CONNECTION;
         LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(new Intent("com.netflix.mediaclient.ui.cs.ACTION_CALL_ENDED"));
     }
     
@@ -119,8 +123,8 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         this.doDial();
     }
     
-    private void doTerminate() {
-        execute(new WhistleVoipAgent$4(this));
+    private void doTerminate(final int n) {
+        execute(new WhistleVoipAgent$4(this, n));
     }
     
     private static void execute(final Runnable runnable) {
@@ -151,6 +155,11 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         whistleEngineConfig.setApplicationIdentifier("samurai");
         whistleEngineConfig.setPassword(authorizationTokens.getEncToken());
         whistleEngineConfig.setTransportMode(WhistleEngineConfig$TransportMode.TLS);
+        final int voipSampleRate = this.getConfigurationAgent().getVoipSampleRate();
+        if (Log.isLoggable()) {
+            Log.d("nf_voip", "Sets sample rate of " + voipSampleRate + " Hz...");
+        }
+        whistleEngineConfig.setSamplerate(voipSampleRate);
         Log.d("nf_voip", "SSL proxy server validation is enabled, set root certificate(s)...");
         try {
             final String rawString = FileUtils.readRawString(this.getContext(), 2131099650);
@@ -180,6 +189,26 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     
     private boolean isServiceStoppedOrStopping() {
         return this.mServiceState == WhistleVoipAgent$ServiceState.NOT_STARTED || this.mServiceState == WhistleVoipAgent$ServiceState.STOPPED || this.mServiceState == WhistleVoipAgent$ServiceState.STOPPING;
+    }
+    
+    private void onCallDisconnected(final int n) {
+        if (this.mEngine != null) {
+            if (this.mCurrentCall == null) {
+                Log.w("nf_voip", "Call was NOT in progress and we received disconnect on line " + n);
+            }
+            else {
+                if (this.mCurrentCall.line != n) {
+                    Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received disconnect on line " + n);
+                    return;
+                }
+                final Iterator<IVoip$OutboundCallListener> iterator = this.mListeners.iterator();
+                while (iterator.hasNext()) {
+                    iterator.next().callDisconnected(this.mCurrentCall);
+                }
+            }
+            return;
+        }
+        Log.e("nf_voip", "Engine is null and we received call disconnect! Should not happen!");
     }
     
     private void registerReceiver() {
@@ -349,41 +378,13 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     
     @Override
     public void callDisconnected(final int n) {
-        while (true) {
-            while (true) {
-                Label_0200: {
-                    Label_0155: {
-                        synchronized (this) {
-                            if (Log.isLoggable()) {
-                                Log.d("nf_voip", "Outbound call disconnected on line " + n);
-                            }
-                            if (this.mEngine != null) {
-                                if (this.mCurrentCall == null) {
-                                    Log.w("nf_voip", "Call was NOT in progress and we received disconnect on line " + n);
-                                }
-                                else {
-                                    if (this.mCurrentCall.line != n) {
-                                        break Label_0155;
-                                    }
-                                    final Iterator<IVoip$OutboundCallListener> iterator = this.mListeners.iterator();
-                                    while (iterator.hasNext()) {
-                                        iterator.next().callDisconnected(this.mCurrentCall);
-                                    }
-                                }
-                                this.mConnectivityState = IVoip$ConnectivityState.NO_CONNECTION;
-                                CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), IClientLogging$CompletionReason.canceled, null);
-                                this.callCleanup();
-                                return;
-                            }
-                            break Label_0200;
-                        }
-                    }
-                    Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received disconnect on line " + n);
-                    return;
-                }
-                Log.e("nf_voip", "Engine is null and we received call disconnect! Should not happen!");
-                continue;
+        synchronized (this) {
+            if (Log.isLoggable()) {
+                Log.d("nf_voip", "Outbound call disconnected on line " + n);
             }
+            this.onCallDisconnected(n);
+            CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), CustomerServiceLogging$TerminationReason.canceledByNetflix, IClientLogging$CompletionReason.canceled, null);
+            this.callCleanup();
         }
     }
     
@@ -418,54 +419,234 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
             Log.e("nf_voip", "Engine is null and we received call ended! Should not happen!");
             break;
         }
-        this.mCurrentCall = null;
-        this.mConnectivityState = IVoip$ConnectivityState.NO_CONNECTION;
         this.stopEngine();
-        CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), IClientLogging$CompletionReason.success, null);
+        CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), CustomerServiceLogging$TerminationReason.canceledByNetflix, IClientLogging$CompletionReason.success, null);
         this.callCleanup();
     }
     // monitorexit(this)
     
     @Override
-    public void callFailed(final int n, final String s, final int n2) {
-        while (true) {
-            while (true) {
-                Label_0252: {
-                    Label_0207: {
-                        synchronized (this) {
-                            if (Log.isLoggable()) {
-                                Log.d("nf_voip", "Outbound call failed on line " + n + ", error " + s + ", sipCode " + n2);
-                            }
-                            this.getService().getErrorHandler().addError(VoipErrorDialogDescriptorFactory.getHandlerForCallFailed(this.getContext(), s, n2));
-                            if (this.mEngine != null) {
-                                if (this.mCurrentCall == null) {
-                                    Log.w("nf_voip", "Call was NOT in progress and we received call failed on line " + n);
-                                }
-                                else {
-                                    if (this.mCurrentCall.line != n) {
-                                        break Label_0207;
-                                    }
-                                    final Iterator<IVoip$OutboundCallListener> iterator = this.mListeners.iterator();
-                                    while (iterator.hasNext()) {
-                                        iterator.next().callFailed(this.mCurrentCall, s, n2);
-                                    }
-                                }
-                                this.mCurrentCall = null;
-                                this.mConnectivityState = IVoip$ConnectivityState.NO_CONNECTION;
-                                CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), IClientLogging$CompletionReason.failed, null);
-                                this.callCleanup();
-                                return;
-                            }
-                            break Label_0252;
-                        }
-                    }
-                    Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received call failed on line " + n);
-                    return;
-                }
-                Log.e("nf_voip", "Engine is null and we received call failed! Should not happen!");
-                continue;
-            }
-        }
+    public void callFailed(final int p0, final String p1, final int p2) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: monitorenter   
+        //     2: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //     5: ifeq            54
+        //     8: ldc             "nf_voip"
+        //    10: new             Ljava/lang/StringBuilder;
+        //    13: dup            
+        //    14: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    17: ldc_w           "Outbound call failed on line "
+        //    20: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    23: iload_1        
+        //    24: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //    27: ldc_w           ", error "
+        //    30: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    33: aload_2        
+        //    34: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    37: ldc_w           ", sipCode "
+        //    40: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    43: iload_3        
+        //    44: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //    47: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    50: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    53: pop            
+        //    54: aload_0        
+        //    55: invokevirtual   com/netflix/mediaclient/service/voip/WhistleVoipAgent.getService:()Lcom/netflix/mediaclient/service/NetflixService;
+        //    58: invokevirtual   com/netflix/mediaclient/service/NetflixService.getErrorHandler:()Lcom/netflix/mediaclient/servicemgr/IErrorHandler;
+        //    61: aload_0        
+        //    62: invokevirtual   com/netflix/mediaclient/service/voip/WhistleVoipAgent.getContext:()Landroid/content/Context;
+        //    65: aload_2        
+        //    66: iload_3        
+        //    67: invokestatic    com/netflix/mediaclient/service/voip/VoipErrorDialogDescriptorFactory.getHandlerForCallFailed:(Landroid/content/Context;Ljava/lang/String;I)Lcom/netflix/mediaclient/service/error/ErrorDescriptor;
+        //    70: invokeinterface com/netflix/mediaclient/servicemgr/IErrorHandler.addError:(Lcom/netflix/mediaclient/service/error/ErrorDescriptor;)Z
+        //    75: pop            
+        //    76: aload_0        
+        //    77: getfield        com/netflix/mediaclient/service/voip/WhistleVoipAgent.mEngine:Lcom/vailsys/whistleengine/WhistleEngine;
+        //    80: ifnull          372
+        //    83: aload_0        
+        //    84: getfield        com/netflix/mediaclient/service/voip/WhistleVoipAgent.mCurrentCall:Lcom/netflix/mediaclient/service/voip/WhistleVoipAgent$WhistleCall;
+        //    87: ifnonnull       266
+        //    90: ldc             "nf_voip"
+        //    92: new             Ljava/lang/StringBuilder;
+        //    95: dup            
+        //    96: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    99: ldc_w           "Call was NOT in progress and we received call failed on line "
+        //   102: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   105: iload_1        
+        //   106: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   109: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   112: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   115: pop            
+        //   116: aload_0        
+        //   117: getfield        com/netflix/mediaclient/service/voip/WhistleVoipAgent.mConnectivityState:Lcom/netflix/mediaclient/servicemgr/IVoip$ConnectivityState;
+        //   120: getstatic       com/netflix/mediaclient/servicemgr/IVoip$ConnectivityState.NO_CONNECTION:Lcom/netflix/mediaclient/servicemgr/IVoip$ConnectivityState;
+        //   123: if_acmpeq       384
+        //   126: getstatic       com/netflix/mediaclient/servicemgr/CustomerServiceLogging$TerminationReason.failedAfterConnected:Lcom/netflix/mediaclient/servicemgr/CustomerServiceLogging$TerminationReason;
+        //   129: astore          4
+        //   131: new             Ljava/util/ArrayList;
+        //   134: dup            
+        //   135: invokespecial   java/util/ArrayList.<init>:()V
+        //   138: astore          5
+        //   140: new             Lcom/netflix/mediaclient/service/logging/client/model/DeepErrorElement;
+        //   143: dup            
+        //   144: invokespecial   com/netflix/mediaclient/service/logging/client/model/DeepErrorElement.<init>:()V
+        //   147: astore          6
+        //   149: aload           5
+        //   151: aload           6
+        //   153: invokeinterface java/util/List.add:(Ljava/lang/Object;)Z
+        //   158: pop            
+        //   159: aload           6
+        //   161: iconst_1       
+        //   162: invokevirtual   com/netflix/mediaclient/service/logging/client/model/DeepErrorElement.setFatal:(Z)V
+        //   165: aload           6
+        //   167: iload_3        
+        //   168: invokestatic    java/lang/String.valueOf:(I)Ljava/lang/String;
+        //   171: invokevirtual   com/netflix/mediaclient/service/logging/client/model/DeepErrorElement.setErrorCode:(Ljava/lang/String;)V
+        //   174: new             Lcom/netflix/mediaclient/service/logging/client/model/DeepErrorElement$Debug;
+        //   177: dup            
+        //   178: invokespecial   com/netflix/mediaclient/service/logging/client/model/DeepErrorElement$Debug.<init>:()V
+        //   181: astore          7
+        //   183: new             Lorg/json/JSONObject;
+        //   186: dup            
+        //   187: invokespecial   org/json/JSONObject.<init>:()V
+        //   190: astore          8
+        //   192: aload           8
+        //   194: ldc_w           "sipCode"
+        //   197: iload_3        
+        //   198: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;I)Lorg/json/JSONObject;
+        //   201: pop            
+        //   202: aload_2        
+        //   203: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   206: ifeq            219
+        //   209: aload           8
+        //   211: ldc_w           "reason"
+        //   214: aload_2        
+        //   215: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
+        //   218: pop            
+        //   219: aload           7
+        //   221: aload           8
+        //   223: invokevirtual   com/netflix/mediaclient/service/logging/client/model/DeepErrorElement$Debug.setMessage:(Lorg/json/JSONObject;)V
+        //   226: aload           6
+        //   228: aload           7
+        //   230: invokevirtual   com/netflix/mediaclient/service/logging/client/model/DeepErrorElement.setDebug:(Lcom/netflix/mediaclient/service/logging/client/model/DeepErrorElement$Debug;)V
+        //   233: new             Lcom/netflix/mediaclient/service/logging/client/model/Error;
+        //   236: dup            
+        //   237: getstatic       com/netflix/mediaclient/service/logging/client/model/RootCause.clientFailure:Lcom/netflix/mediaclient/service/logging/client/model/RootCause;
+        //   240: aload           5
+        //   242: invokespecial   com/netflix/mediaclient/service/logging/client/model/Error.<init>:(Lcom/netflix/mediaclient/service/logging/client/model/RootCause;Ljava/util/List;)V
+        //   245: astore_2       
+        //   246: aload_0        
+        //   247: invokevirtual   com/netflix/mediaclient/service/voip/WhistleVoipAgent.getContext:()Landroid/content/Context;
+        //   250: aload           4
+        //   252: getstatic       com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.failed:Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
+        //   255: aload_2        
+        //   256: invokestatic    com/netflix/mediaclient/util/log/CustomerServiceLogUtils.reportCallSessionEnded:(Landroid/content/Context;Lcom/netflix/mediaclient/servicemgr/CustomerServiceLogging$TerminationReason;Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/Error;)V
+        //   259: aload_0        
+        //   260: invokespecial   com/netflix/mediaclient/service/voip/WhistleVoipAgent.callCleanup:()V
+        //   263: aload_0        
+        //   264: monitorexit    
+        //   265: return         
+        //   266: aload_0        
+        //   267: getfield        com/netflix/mediaclient/service/voip/WhistleVoipAgent.mCurrentCall:Lcom/netflix/mediaclient/service/voip/WhistleVoipAgent$WhistleCall;
+        //   270: invokestatic    com/netflix/mediaclient/service/voip/WhistleVoipAgent$WhistleCall.access$400:(Lcom/netflix/mediaclient/service/voip/WhistleVoipAgent$WhistleCall;)I
+        //   273: iload_1        
+        //   274: if_icmpne       327
+        //   277: aload_0        
+        //   278: getfield        com/netflix/mediaclient/service/voip/WhistleVoipAgent.mListeners:Ljava/util/List;
+        //   281: invokeinterface java/util/List.iterator:()Ljava/util/Iterator;
+        //   286: astore          4
+        //   288: aload           4
+        //   290: invokeinterface java/util/Iterator.hasNext:()Z
+        //   295: ifeq            116
+        //   298: aload           4
+        //   300: invokeinterface java/util/Iterator.next:()Ljava/lang/Object;
+        //   305: checkcast       Lcom/netflix/mediaclient/servicemgr/IVoip$OutboundCallListener;
+        //   308: aload_0        
+        //   309: getfield        com/netflix/mediaclient/service/voip/WhistleVoipAgent.mCurrentCall:Lcom/netflix/mediaclient/service/voip/WhistleVoipAgent$WhistleCall;
+        //   312: aload_2        
+        //   313: iload_3        
+        //   314: invokeinterface com/netflix/mediaclient/servicemgr/IVoip$OutboundCallListener.callFailed:(Lcom/netflix/mediaclient/servicemgr/IVoip$Call;Ljava/lang/String;I)V
+        //   319: goto            288
+        //   322: astore_2       
+        //   323: aload_0        
+        //   324: monitorexit    
+        //   325: aload_2        
+        //   326: athrow         
+        //   327: ldc             "nf_voip"
+        //   329: new             Ljava/lang/StringBuilder;
+        //   332: dup            
+        //   333: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   336: ldc_w           "Call is in progress on line "
+        //   339: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   342: aload_0        
+        //   343: getfield        com/netflix/mediaclient/service/voip/WhistleVoipAgent.mCurrentCall:Lcom/netflix/mediaclient/service/voip/WhistleVoipAgent$WhistleCall;
+        //   346: invokestatic    com/netflix/mediaclient/service/voip/WhistleVoipAgent$WhistleCall.access$400:(Lcom/netflix/mediaclient/service/voip/WhistleVoipAgent$WhistleCall;)I
+        //   349: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   352: ldc_w           " but we received call failed on line "
+        //   355: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   358: iload_1        
+        //   359: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   362: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   365: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   368: pop            
+        //   369: goto            263
+        //   372: ldc             "nf_voip"
+        //   374: ldc_w           "Engine is null and we received call failed! Should not happen!"
+        //   377: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   380: pop            
+        //   381: goto            116
+        //   384: getstatic       com/netflix/mediaclient/servicemgr/CustomerServiceLogging$TerminationReason.failedBeforeConnected:Lcom/netflix/mediaclient/servicemgr/CustomerServiceLogging$TerminationReason;
+        //   387: astore          4
+        //   389: goto            131
+        //   392: astore_2       
+        //   393: goto            226
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                    
+        //  -----  -----  -----  -----  ------------------------
+        //  2      54     322    327    Any
+        //  54     116    322    327    Any
+        //  116    131    322    327    Any
+        //  131    183    322    327    Any
+        //  183    219    392    396    Lorg/json/JSONException;
+        //  183    219    322    327    Any
+        //  219    226    392    396    Lorg/json/JSONException;
+        //  219    226    322    327    Any
+        //  226    263    322    327    Any
+        //  266    288    322    327    Any
+        //  288    319    322    327    Any
+        //  327    369    322    327    Any
+        //  372    381    322    327    Any
+        //  384    389    322    327    Any
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0219:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     @Override
@@ -560,7 +741,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     
     @Override
     protected void doInit() {
-        this.mNotificationManager = new CallNotificationManager(this.getContext());
         this.registerReceiver();
         this.initCompleted(CommonStatus.OK);
     }
@@ -751,8 +931,14 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     @Override
     public boolean terminate() {
         synchronized (this) {
-            CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), IClientLogging$CompletionReason.canceled, null);
-            this.callCleanup();
+            CustomerServiceLogging$TerminationReason customerServiceLogging$TerminationReason;
+            if (this.mConnectivityState != IVoip$ConnectivityState.NO_CONNECTION) {
+                customerServiceLogging$TerminationReason = CustomerServiceLogging$TerminationReason.canceledByUserAfterConnected;
+            }
+            else {
+                customerServiceLogging$TerminationReason = CustomerServiceLogging$TerminationReason.canceledByUserBeforeConnected;
+            }
+            CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), customerServiceLogging$TerminationReason, IClientLogging$CompletionReason.canceled, null);
             boolean b;
             if (this.mEngine == null) {
                 Log.e("nf_voip", "Engine is null, unable to terminate call!");
@@ -763,9 +949,9 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                     Log.e("nf_voip", "Current call is null, unable to terminate call!");
                 }
                 else {
-                    this.doTerminate();
+                    this.doTerminate(this.mCurrentCall.getId());
                 }
-                this.mCurrentCall = null;
+                this.callCleanup();
                 b = true;
             }
             return b;

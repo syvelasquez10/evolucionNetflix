@@ -99,12 +99,12 @@ public final class PlayerErrorDialogDescriptorFactory
     
     private static ErrorDescriptor getErrorDescriptorForActionId1(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.d("ErrorManager", "actionID 1 NFErr_MC_NCCP_NonRecoverableError");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165241), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165241), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId10(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 10 NFErr_MC_NCCP_CustomerCredentialsRenewalRequired");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165238), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165238), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId11(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
@@ -113,20 +113,20 @@ public final class PlayerErrorDialogDescriptorFactory
         if (message != null) {
             final String string = message;
             if (!"".equals(message.trim())) {
-                return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+                return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
             }
         }
         final String string = playerFragment.getString(2131165239);
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, string, null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId12(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165240), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165240), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId2(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 2 NFErr_MC_NCCP_PotentiallyRecoverableError");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165242), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165242), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId3(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
@@ -153,27 +153,27 @@ public final class PlayerErrorDialogDescriptorFactory
     
     private static ErrorDescriptor getErrorDescriptorForActionId4(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 4 NFErr_MC_NCCP_RegistrationRequired");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165298), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165298), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId5(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 5 NFErr_MC_NCCP_CTicketRenewalRequired, AUTHENTICATION_RENEW_REQUIRE");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165244), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165244), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId6(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 6 NFErr_MC_NCCP_MTicketRenewalRequired, AUTHORIZATION_RENEW_REQUIRED");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165295), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165295), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId7(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 7 NFErr_MC_NCCP_ImpossibleImpossibility, logout");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165294), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165294), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId8(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.w("ErrorManager", "ActionID 8 NFErr_MC_NCCP_GetNewCredentials");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165245), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165245), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getErrorDescriptorForActionId9(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
@@ -220,9 +220,9 @@ public final class PlayerErrorDialogDescriptorFactory
                     break Label_0202;
                 }
             }
-            string = playerFragment.getString(2131165420);
+            string = playerFragment.getString(2131165437);
         }
-        final String string2 = playerFragment.getString(2131165419);
+        final String string2 = playerFragment.getString(2131165436);
         Log.d("ErrorManager", "Check if link contains NCCP reason code");
         if (link.href.startsWith("RC:")) {
             Log.d("ErrorManager", "NCCP reason code found");
@@ -369,17 +369,17 @@ public final class PlayerErrorDialogDescriptorFactory
         final ResetApplicationAction resetApplicationAction = new ResetApplicationAction(playerFragment.getActivity());
         AlertDialogFactory$TwoButtonAlertDialogDescriptor alertDialogFactory$TwoButtonAlertDialogDescriptor;
         if (error.getError() == -268369916) {
-            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165303), null, new RestartApplicationAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384"));
+            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165303), null, new RestartApplicationAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384"));
         }
         else if (error.getError() == -268369915 && checkForOpenDeviceFailureInStack) {
             final String string = playerFragment.getString(2131165303);
             final LaunchHelpInBrowserAction launchHelpInBrowserAction = new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384");
             final RestartApplicationAction restartApplicationAction = new RestartApplicationAction(playerFragment.getActivity());
             if (configuration.getCurrentPlayerType() == PlayerType.device12 && configuration.isCurrentDrmWidevine()) {
-                alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, restartApplicationAction, playerFragment.getString(2131165484), launchHelpInBrowserAction);
+                alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, restartApplicationAction, playerFragment.getString(2131165507), launchHelpInBrowserAction);
             }
             else {
-                alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, resetApplicationAction, playerFragment.getString(2131165484), launchHelpInBrowserAction);
+                alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, resetApplicationAction, playerFragment.getString(2131165507), launchHelpInBrowserAction);
             }
         }
         else if (error.getError() == -268369919) {
@@ -387,10 +387,10 @@ public final class PlayerErrorDialogDescriptorFactory
             final LaunchHelpInBrowserAction launchHelpInBrowserAction2 = new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384");
             if (error.checkForAuthFailureRegistrationRequired()) {
                 playerFragment.getNetflixActivity().getServiceManager().getClientLogging().getErrorLogging().logHandledException("AuthFailure, RegistrationRequired");
-                alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string2, null, resetApplicationAction, playerFragment.getString(2131165484), launchHelpInBrowserAction2);
+                alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string2, null, resetApplicationAction, playerFragment.getString(2131165507), launchHelpInBrowserAction2);
             }
             else {
-                alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string2, null, exitPlayerAction, playerFragment.getString(2131165484), launchHelpInBrowserAction2);
+                alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string2, null, exitPlayerAction, playerFragment.getString(2131165507), launchHelpInBrowserAction2);
             }
         }
         else {
@@ -401,11 +401,11 @@ public final class PlayerErrorDialogDescriptorFactory
                     if (Log.isLoggable()) {
                         Log.d("ErrorManager", "JPlayer app restart count exceded: " + configuration.getJPlayerStreamErrorRestartCount());
                     }
-                    alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165273), null, new RestartApplicationAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384"));
+                    alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165273), null, new RestartApplicationAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384"));
                     return new PlaybackErrorDescriptor(alertDialogFactory$TwoButtonAlertDialogDescriptor);
                 }
             }
-            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165273), null, exitPlayerAction, playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384"));
+            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165273), null, exitPlayerAction, playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384"));
         }
         return new PlaybackErrorDescriptor(alertDialogFactory$TwoButtonAlertDialogDescriptor);
     }
@@ -414,18 +414,18 @@ public final class PlayerErrorDialogDescriptorFactory
         if (Log.isLoggable()) {
             Log.d("ErrorManager", "NetworkError " + networkError);
         }
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165611), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165635), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getHandlerForNetworkingError(final PlayerFragment playerFragment, final NccpNetworkingError nccpNetworkingError) {
         if (Log.isLoggable()) {
             Log.d("ErrorManager", "NccpNetworkingError " + nccpNetworkingError);
         }
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165312), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131165312), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     private static ErrorDescriptor getUknownErrorDescriptor(final PlayerFragment playerFragment, final MediaEvent mediaEvent, final String s) {
         Log.w("ErrorManager", "Uknown error");
-        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165248), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165484), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new PlaybackErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131165248), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131165507), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
 }

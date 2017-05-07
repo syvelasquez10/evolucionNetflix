@@ -22,19 +22,19 @@ public class KidsSlidingMenu extends StandardSlidingMenu
     
     public KidsSlidingMenu(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
         super(netflixActivity, drawerLayout, false);
-        final View viewById = drawerLayout.findViewById(2131624512);
-        this.kidsItemTextColor = netflixActivity.getResources().getColor(2131558484);
-        viewById.setBackgroundColor(netflixActivity.getResources().getColor(2131558517));
+        final View viewById = drawerLayout.findViewById(2131624515);
+        this.kidsItemTextColor = netflixActivity.getResources().getColor(2131558486);
+        viewById.setBackgroundColor(netflixActivity.getResources().getColor(2131558519));
         this.profileName.setTextColor(this.kidsItemTextColor);
-        this.profileName.setTextSize(netflixActivity.getResources().getDimension(2131296481));
+        this.profileName.setTextSize(netflixActivity.getResources().getDimension(2131296497));
         ViewUtils.setTextViewToBold(this.profileName);
         this.homeText.setTextColor(this.kidsItemTextColor);
         ViewUtils.setTextViewToBold(this.homeText);
-        ((FrameLayout$LayoutParams)this.genresList.getLayoutParams()).bottomMargin = (int)netflixActivity.getResources().getDimension(2131296465);
+        ((FrameLayout$LayoutParams)this.genresList.getLayoutParams()).bottomMargin = (int)netflixActivity.getResources().getDimension(2131296481);
         ViewUtils.removeShadow(this.homeText);
-        this.homeText.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131296482)));
-        drawerLayout.findViewById(2131624515).setVisibility(8);
-        drawerLayout.findViewById(2131624507).setBackgroundResource(2131558483);
+        this.homeText.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131296498)));
+        drawerLayout.findViewById(2131624518).setVisibility(8);
+        drawerLayout.findViewById(2131624510).setBackgroundResource(2131558485);
     }
     
     @Override
@@ -51,13 +51,13 @@ public class KidsSlidingMenu extends StandardSlidingMenu
             n = 0;
         }
         tv.setTypeface(typeface, n);
-        standardSlidingMenu$GenreRowHolder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296482)));
+        standardSlidingMenu$GenreRowHolder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296498)));
         ViewUtils.removeShadow(standardSlidingMenu$GenreRowHolder.tv);
     }
     
     @Override
     protected void updateSwitchProfileButton() {
         super.updateSwitchProfileButton();
-        this.switchProfilesIcon.setImageResource(2130837668);
+        this.switchProfilesIcon.setImageResource(2130837672);
     }
 }

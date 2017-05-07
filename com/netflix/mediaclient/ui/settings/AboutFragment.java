@@ -42,25 +42,25 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     private void updateAboutDevice() {
         String s;
         if ((s = AndroidManifestUtils.getVersion(this.activity.getApplicationContext())) == null) {
-            s = this.getString(2131165727);
+            s = this.getString(2131165648);
         }
         final int versionCode = AndroidManifestUtils.getVersionCode(this.activity.getApplicationContext());
-        final StringBuilder append = new StringBuilder(this.getString(2131165622)).append(": ").append(s);
+        final StringBuilder append = new StringBuilder(this.getString(2131165646)).append(": ").append(s);
         if (versionCode > 0) {
-            append.append(" (").append(this.getString(2131165726)).append(" ").append(versionCode).append("), ");
+            append.append(" (").append(this.getString(2131165647)).append(" ").append(versionCode).append("), ");
         }
-        append.append(this.getString(2131165723)).append(": ").append(AndroidUtils.getAndroidVersion());
+        append.append(this.getString(2131165572)).append(": ").append(AndroidUtils.getAndroidVersion());
         append.append("\n");
-        append.append(this.getString(2131165722)).append(": ").append(Build.MODEL);
+        append.append(this.getString(2131165550)).append(": ").append(Build.MODEL);
         append.append("\n");
-        append.append(this.getString(2131165708)).append(": ").append(Build.DISPLAY);
+        append.append(this.getString(2131165420)).append(": ").append(Build.DISPLAY);
         if (this.manager != null) {
             append.append("\n");
-            append.append(this.getString(2131165721)).append(": ").append(this.manager.getESNProvider().getEsn());
+            append.append(this.getString(2131165522)).append(": ").append(this.manager.getESNProvider().getEsn());
         }
         this.findPreference((CharSequence)"ui.about.device").setSummary((CharSequence)append.toString());
         if (this.manager != null) {
-            this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)(this.getString(2131165386) + ": " + this.manager.getUserEmail()));
+            this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)(this.getString(2131165388) + ": " + this.manager.getUserEmail()));
             this.findPreference((CharSequence)"ui.account").setSelectable(false);
         }
     }
@@ -69,7 +69,7 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
         super.onCreate(bundle);
         this.activity = this.getActivity();
         this.addPreferencesFromResource(2131034112);
-        this.findPreference((CharSequence)this.getString(2131165784)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.findPreference((CharSequence)this.getString(2131165769)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));

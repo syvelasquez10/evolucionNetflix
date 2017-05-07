@@ -19,7 +19,6 @@ import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
@@ -48,6 +47,8 @@ import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.util.DataUtil$StringPair;
 import com.google.gson.JsonObject;
@@ -149,7 +150,7 @@ abstract class CachedModelProxy$CmpTask implements Runnable
     }
     
     protected VolleyError handleJsonError(final JsonObject jsonObject) {
-        return new VolleyError("error found in json repsonse");
+        return new FalkorException("error found in json response - " + FalkorParseUtils.getErrorMessage(jsonObject, "CachedModelProxy"));
     }
     
     protected boolean isAllDataLocalToCache() {

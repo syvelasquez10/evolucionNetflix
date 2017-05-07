@@ -22,7 +22,6 @@ import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
@@ -34,13 +33,13 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
@@ -63,7 +62,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     private DrawerLayout drawerLayout;
     private GenreList genre;
     private String genreId;
-    protected final DialogInterface$OnClickListener invalidCountryDialogListener;
     private boolean isFirstLaunch;
     private DialogManager mDialogManager;
     private long mStartedTimeMs;
@@ -84,7 +82,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.managerStatusListener = new HomeActivity$2(this);
         this.refreshHomeReceiver = new HomeActivity$3(this);
         this.notificationsListUpdateReceiver = new HomeActivity$4(this);
-        this.invalidCountryDialogListener = (DialogInterface$OnClickListener)new HomeActivity$5(this);
     }
     
     private void cancelMarkingNotificationsAsRead() {
@@ -173,7 +170,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131165579, 1).show();
+        Toast.makeText((Context)this, 2131165604, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -191,14 +188,14 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131624176)).setDrawerListener(new HomeActivity$1(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131624179)).setDrawerListener(new HomeActivity$1(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
         this.drawerLayout.setFocusable(false);
-        this.drawerLayout.setScrimColor(this.getResources().getColor(2131558468));
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131558470));
         this.updateActionBar();
         this.updateSlidingDrawer();
     }
@@ -211,7 +208,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131624174, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131624177, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -293,7 +290,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public int getActionBarParentViewId() {
-        return 2131624171;
+        return 2131624174;
     }
     
     @Override

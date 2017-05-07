@@ -9,6 +9,7 @@ import android.widget.TextView$OnEditorActionListener;
 import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -62,6 +63,6 @@ class LoginActivity$6 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131165535), this.this$0.getString(2131165543), null)));
+        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131165560), this.this$0.getString(2131165568), null)));
     }
 }

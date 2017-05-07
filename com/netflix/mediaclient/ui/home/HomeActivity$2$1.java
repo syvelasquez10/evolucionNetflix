@@ -37,15 +37,12 @@ import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
 import java.util.LinkedList;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.os.SystemClock;
 import com.netflix.mediaclient.Log;
@@ -65,9 +62,8 @@ class HomeActivity$2$1 implements LoadingStatus$LoadingStatusCallback
         this.this$1.this$0.setLoadingStatusCallback(null);
         Log.d("HomeActivity", "LOLOMO is loaded, report UI browse startup session ended in case this was on UI startup");
         this.this$1.this$0.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(SystemClock.elapsedRealtime() - this.this$1.this$0.mStartedTimeMs, status.isSucces(), null);
-        if (StatusCode.INVALID_COUNRTY.equals(status.getStatusCode())) {
-            Log.d("HomeActivity", "User accessing Netflix in a not supported country. Show alert and kill self");
-            this.this$1.this$0.showDialog(InvalidCountryAlertDialog.createInvalidCountryAlertDialog(this.this$1.this$0));
+        if (status.isError()) {
+            this.this$1.this$0.handleFalkorAgentErrors(status);
         }
     }
 }

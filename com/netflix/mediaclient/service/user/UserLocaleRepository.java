@@ -8,11 +8,14 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
-import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.ArrayList;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import java.util.List;
+import android.content.Context;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.repository.UserLocale;
 
@@ -81,9 +84,26 @@ public final class UserLocaleRepository
         return userLocale2;
     }
     
+    public static List<String> getAlertedLanguages(final Context context) {
+        final String stringPref = PreferenceUtils.getStringPref(context, "alertedLanguages", null);
+        final ArrayList<String> list = new ArrayList<String>();
+        if (stringPref != null) {
+            final String[] split = stringPref.split(",");
+            for (int length = split.length, i = 0; i < length; ++i) {
+                list.add(split[i]);
+            }
+        }
+        return list;
+    }
+    
+    public static UserLocale getDeviceLocale() {
+        final Locale default1 = Locale.getDefault();
+        return new UserLocale(default1.getLanguage(), default1.getCountry(), default1.getDisplayLanguage());
+    }
+    
     private void initSupportedLocales() {
         final int n = 0;
-        this.supportedLocales = new UserLocale[28];
+        this.supportedLocales = new UserLocale[27];
         this.defaultAppLocale = new UserLocale(Locale.ENGLISH.getLanguage(), null, "English");
         this.supportedLocales[0] = this.defaultAppLocale;
         this.supportedLocales[1] = new UserLocale(Locale.FRENCH.getLanguage(), null, "Fran\u00e7ais");
@@ -104,15 +124,14 @@ public final class UserLocaleRepository
         this.supportedLocales[16] = new UserLocale(Locale.ITALY.getLanguage(), Locale.ITALY.getCountry(), "italiano");
         this.supportedLocales[17] = new UserLocale("pt", "PT", "Portugu\u00eas-PT");
         this.supportedLocales[18] = new UserLocale("es", "ES", "espa\u00f1ol-ES");
-        this.supportedLocales[19] = new UserLocale("ar", null, "\u0639\u064e\u0631\u064e\u0628\u0650\u064a\u0629\u064f");
-        this.supportedLocales[20] = new UserLocale(Locale.KOREAN.getLanguage(), null, "\ud55c\uad6d\uc5b4/\uc870\uc120\ub9d0");
-        this.supportedLocales[21] = new UserLocale(Locale.SIMPLIFIED_CHINESE.getLanguage(), Locale.SIMPLIFIED_CHINESE.getCountry(), "\u7b80\u5316\u5b57");
-        this.supportedLocales[22] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), Locale.TRADITIONAL_CHINESE.getCountry(), "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
-        this.supportedLocales[23] = new UserLocale(Locale.SIMPLIFIED_CHINESE.getLanguage(), "SG", "\u7b80\u5316\u5b57");
-        this.supportedLocales[24] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "MO", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
-        this.supportedLocales[25] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "HK", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
-        this.supportedLocales[26] = new UserLocale(Locale.CHINESE.getLanguage(), null, "\u7b80\u5316\u5b57");
-        this.supportedLocales[27] = new UserLocale("es", "AD", "espa\u00f1ol-AD");
+        this.supportedLocales[19] = new UserLocale(Locale.KOREAN.getLanguage(), null, "\ud55c\uad6d\uc5b4/\uc870\uc120\ub9d0");
+        this.supportedLocales[20] = new UserLocale(Locale.SIMPLIFIED_CHINESE.getLanguage(), Locale.SIMPLIFIED_CHINESE.getCountry(), "\u7b80\u5316\u5b57");
+        this.supportedLocales[21] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), Locale.TRADITIONAL_CHINESE.getCountry(), "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
+        this.supportedLocales[22] = new UserLocale(Locale.SIMPLIFIED_CHINESE.getLanguage(), "SG", "\u7b80\u5316\u5b57");
+        this.supportedLocales[23] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "MO", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
+        this.supportedLocales[24] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "HK", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
+        this.supportedLocales[25] = new UserLocale(Locale.CHINESE.getLanguage(), null, "\u7b80\u5316\u5b57");
+        this.supportedLocales[26] = new UserLocale("es", "AD", "espa\u00f1ol-AD");
         if (Log.isLoggable()) {
             final StringBuilder sb = new StringBuilder();
             final UserLocale[] supportedLocales = this.supportedLocales;
@@ -129,6 +148,36 @@ public final class UserLocaleRepository
                 Log.d("nf_loc", "" + supportedLocales2[j]);
             }
         }
+    }
+    
+    public static boolean isApkMissingDeviceLocaleSupport() {
+        final UserLocale deviceLocale = getDeviceLocale();
+        final UserLocale[] supportedLocales = new UserLocaleRepository().supportedLocales;
+        for (int length = supportedLocales.length, i = 0; i < length; ++i) {
+            if (deviceLocale.equalsByLanguage(supportedLocales[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static void setAlertedLanguage(final Context context) {
+        if (wasPreviouslyAlerted(context)) {
+            Log.d("nf_loc", "skip setAlertedLanguage - was previously alerted");
+            return;
+        }
+        final List<String> alertedLanguages = getAlertedLanguages(context);
+        alertedLanguages.add(getDeviceLocale().getLanguage());
+        final StringBuilder sb = new StringBuilder();
+        final Iterator<String> iterator = alertedLanguages.iterator();
+        while (iterator.hasNext()) {
+            sb.append(iterator.next());
+            sb.append(",");
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_loc", String.format("alerted languages: %s", sb.toString()));
+        }
+        PreferenceUtils.putStringPref(context, "alertedLanguages", sb.toString());
     }
     
     private String[] toArray(final String s) {
@@ -164,6 +213,20 @@ public final class UserLocaleRepository
         return array;
     }
     
+    public static boolean wasPreviouslyAlerted(final Context context) {
+        final List<String> alertedLanguages = getAlertedLanguages(context);
+        final UserLocale deviceLocale = getDeviceLocale();
+        for (final String s : alertedLanguages) {
+            if (StringUtils.safeEquals(s, deviceLocale.getLanguage())) {
+                if (Log.isLoggable()) {
+                    Log.d("nf_loc", String.format("previously alerted - %s already in alerted list: %s", s, alertedLanguages));
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public UserLocale getCurrentAppLocale() {
         return this.currentAppLocale;
     }
@@ -185,54 +248,6 @@ public final class UserLocaleRepository
     
     public UserLocale[] getSupportedLocales() {
         return this.supportedLocales;
-    }
-    
-    public boolean isApkMissingSupportForLocale(final List<UserLocale> list, final List<UserLocale> list2) {
-        final Locale default1 = Locale.getDefault();
-        if (list == null) {
-            return false;
-        }
-        final Iterator<UserLocale> iterator = list.iterator();
-        while (true) {
-            while (iterator.hasNext()) {
-                if (StringUtils.safeEquals(iterator.next().getLanguage(), default1.getLanguage())) {
-                    final boolean b = true;
-                    final UserLocale[] supportedLocales = this.supportedLocales;
-                    while (true) {
-                        for (int length = supportedLocales.length, i = 0; i < length; ++i) {
-                            if (StringUtils.safeEquals(supportedLocales[i].getLanguage(), default1.getLanguage())) {
-                                final boolean b2 = true;
-                            Label_0136:
-                                while (true) {
-                                    if (list2 != null) {
-                                        final Iterator<UserLocale> iterator2 = list2.iterator();
-                                        while (iterator2.hasNext()) {
-                                            if (StringUtils.safeEquals(iterator2.next().getLanguage(), default1.getLanguage())) {
-                                                final boolean b3 = true;
-                                                break Label_0136;
-                                            }
-                                        }
-                                    }
-                                    Label_0223: {
-                                        break Label_0223;
-                                        final boolean b3;
-                                        final boolean b4 = b && !b2 && !b3;
-                                        Log.d("nf_loc", String.format("nf_config_locale deviceLocale:%s in Nflx: %b, in apk: %b; wasAlerted: %b, isMissingSupport: %b", default1, b, b2, b3, b4));
-                                        return b4;
-                                    }
-                                    final boolean b3 = false;
-                                    continue Label_0136;
-                                }
-                            }
-                        }
-                        final boolean b2 = false;
-                        continue;
-                    }
-                }
-            }
-            final boolean b = false;
-            continue;
-        }
     }
     
     public boolean isPreferredLanguagesSet() {
@@ -262,11 +277,11 @@ public final class UserLocaleRepository
     
     public void setPreferredLanguages(final String s) {
         String preferredLanguages = null;
-        Label_0030: {
+        Label_0032: {
             if (s != null) {
                 preferredLanguages = s;
                 if (!"".equals(s.trim())) {
-                    break Label_0030;
+                    break Label_0032;
                 }
             }
             Log.e("nf_loc", "Empty list of preferred languages, set to default");

@@ -24,6 +24,7 @@ public interface CustomerServiceLogging
     public static final String EXTRA_ORIENTATION = "orientation";
     public static final String EXTRA_REASON = "reason";
     public static final String EXTRA_SOURCE = "source";
+    public static final String EXTRA_TERMINATION_REASON = "terminationReason";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_USING = "using";
     public static final String HELP_SESSION_ENDED = "com.netflix.mediaclient.intent.action.LOG_CS_HELP_SESSION_ENDED";
@@ -39,7 +40,7 @@ public interface CustomerServiceLogging
     
     void endAllActiveSessions();
     
-    void endCustomerSupportCallSession(final IClientLogging$CompletionReason p0, final Error p1);
+    void endCustomerSupportCallSession(final CustomerServiceLogging$TerminationReason p0, final IClientLogging$CompletionReason p1, final Error p2);
     
     void endHelpRequestSession(final CustomerServiceLogging$Action p0, final String p1, final IClientLogging$CompletionReason p2, final Error p3);
     

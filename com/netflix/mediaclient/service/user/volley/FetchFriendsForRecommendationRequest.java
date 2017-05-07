@@ -7,7 +7,7 @@ package com.netflix.mediaclient.service.user.volley;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
@@ -91,7 +91,7 @@ public class FetchFriendsForRecommendationRequest extends FalkorVolleyWebClientR
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchfriendsforrecommendationrequest", s);
         if (FalkorParseUtils.isEmpty(dataObj)) {
-            throw new FalkorParseException("UserProfiles empty!!!");
+            throw new FalkorException("UserProfiles empty!!!");
         }
         final JsonObject jsonObject = null;
         JsonObject jsonObject2;
@@ -122,7 +122,7 @@ public class FetchFriendsForRecommendationRequest extends FalkorVolleyWebClientR
             if (Log.isLoggable()) {
                 Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "While getting recommendations field from the response got an exception: " + ex);
             }
-            throw new FalkorParseException("response missing user json objects", ex);
+            throw new FalkorException("response missing user json objects", ex);
         }
         for (int i = this.fromIndex; i < this.fromIndex + 20; ++i) {
             final String string = Integer.toString(i);

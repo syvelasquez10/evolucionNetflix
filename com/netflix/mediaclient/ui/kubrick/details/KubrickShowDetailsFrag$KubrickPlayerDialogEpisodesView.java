@@ -70,7 +70,7 @@ public class KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView extends Kubr
     @Override
     protected void findViews() {
         super.findViews();
-        this.nowPlaying = (TextView)this.findViewById(2131624203);
+        this.nowPlaying = (TextView)this.findViewById(2131624206);
     }
     
     @Override

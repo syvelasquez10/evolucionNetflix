@@ -11,6 +11,7 @@ import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$CallQuality;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
@@ -54,16 +55,17 @@ public final class CustomerServiceLogUtils extends ConsolidatedLoggingUtils
         }
     }
     
-    public static void reportCallSessionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
-        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") || ConsolidatedLoggingUtils.isNull(clientLogging$CompletionReason, "Reason can not be null!")) {
+    public static void reportCallSessionEnded(final Context context, final CustomerServiceLogging$TerminationReason customerServiceLogging$TerminationReason, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") || ConsolidatedLoggingUtils.isNull(clientLogging$CompletionReason, "Reason can not be null!") || ConsolidatedLoggingUtils.isNull(customerServiceLogging$TerminationReason, "Termination reason can not be null!")) {
             return;
         }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_CS_CALL_SESSION_ENDED");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intent.putExtra("reason", clientLogging$CompletionReason.name());
+        intent.putExtra("terminationReason", customerServiceLogging$TerminationReason.name());
         while (true) {
             if (error == null) {
-                break Label_0065;
+                break Label_0090;
             }
             try {
                 intent.putExtra("error", error.toJSONObject().toString());

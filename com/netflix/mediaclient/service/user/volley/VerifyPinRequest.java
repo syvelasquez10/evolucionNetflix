@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
@@ -62,14 +62,14 @@ public class VerifyPinRequest extends FalkorVolleyWebClientRequest<Boolean>
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_pin", s);
         if (FalkorParseUtils.isEmpty(dataObj)) {
-            throw new FalkorParseException("verifyPinResponse empty!!!");
+            throw new FalkorException("verifyPinResponse empty!!!");
         }
         try {
             return dataObj.getAsJsonObject("user").getAsJsonObject("verifyPin").getAsJsonObject(this.enteredPin).get("isPinValid").getAsBoolean();
         }
         catch (Exception ex) {
             Log.v("nf_pin", "String response to parse = " + s);
-            throw new FalkorParseException("response missing user json objects", ex);
+            throw new FalkorException("response missing user json objects", ex);
         }
     }
 }

@@ -49,7 +49,7 @@ public final class LegacyCmpEventLoggingImpl implements CmpEventLogging
             }
             userData.accountCountry = user.getReqCountry();
             userData.accountCountry = user.getGeoCountry();
-            userData.languages = user.getLanguagesInCsv();
+            userData.languages = user.getCurrentAppLanguage();
             userData2 = userData;
             if (Log.isLoggable()) {
                 Log.d("nf_log", "GetUserData: " + userData);

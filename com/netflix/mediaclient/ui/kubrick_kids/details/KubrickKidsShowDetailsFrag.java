@@ -60,25 +60,25 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
         if (detailsPageContentWidth > 0) {
             n = (KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131296516);
+        return n + (int)this.getResources().getDimension(2131296532);
     }
     
     @SuppressLint({ "ResourceAsColor" })
     @Override
     protected ViewGroup createSeasonsSelectorGroup() {
         final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
-        this.setSpinnerBackground(this.getResources().getColor(2131558489));
+        this.setSpinnerBackground(this.getResources().getColor(2131558491));
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558592);
-            seasonsSpinnerAdapter.setDropDownTextColor(2131558489);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558596);
+            seasonsSpinnerAdapter.setDropDownTextColor(2131558491);
         }
         return seasonsSelectorGroup;
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296501) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296517) * 2;
     }
     
     @Override
@@ -95,7 +95,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     protected void setSpinnerBackground(final int n) {
         final Drawable drawable = this.getResources().getDrawable(2130837592);
         drawable.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
-        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837776);
+        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837787);
         final Drawable drawable2 = layerDrawable.getDrawable(1);
         if (drawable2 != null) {
             drawable2.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
@@ -126,7 +126,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296515), this.numColumns, 3));
+        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296531), this.numColumns, 3));
     }
     
     @Override
@@ -140,7 +140,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     @Override
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new KubrickKidsShowDetailsFrag$3(this));
-        adapter.setItemBackgroundColor(2131558489);
+        adapter.setItemBackgroundColor(2131558491);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
@@ -103,7 +103,7 @@ public class SendRecommendationRequest extends FalkorVolleyWebClientRequest<Set<
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchfriendsforrecommendationrequest", s);
         if (FalkorParseUtils.isEmpty(dataObj)) {
-            throw new FalkorParseException("UserProfiles empty!!!");
+            throw new FalkorException("UserProfiles empty!!!");
         }
         JsonObject asJsonObject;
         try {
@@ -117,7 +117,7 @@ public class SendRecommendationRequest extends FalkorVolleyWebClientRequest<Set<
             if (Log.isLoggable()) {
                 Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "While getting recommendations field from the response got an exception: " + ex);
             }
-            throw new FalkorParseException("response missing friends json objects", ex);
+            throw new FalkorException("response missing friends json objects", ex);
         }
         for (final FriendForRecommendation friendForRecommendation : this.mFriends) {
             final String id = friendForRecommendation.getFriendProfile().getId();

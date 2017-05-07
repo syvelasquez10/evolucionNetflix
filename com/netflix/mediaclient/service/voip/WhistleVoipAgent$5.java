@@ -12,11 +12,12 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.vailsys.whistleengine.WhistleEngineDelegate$ConnectivityState;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
 import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$CallQuality;
-import com.netflix.mediaclient.servicemgr.IVoip$Call;
 import android.media.AudioManager;
+import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.IVoip$Call;
 import com.netflix.mediaclient.servicemgr.IVoip$AuthorizationTokens;
 import com.netflix.mediaclient.util.FileUtils;
 import com.vailsys.whistleengine.WhistleEngineConfig$TransportMode;
@@ -59,9 +60,7 @@ class WhistleVoipAgent$5 extends BroadcastReceiver
         }
         if (CallNotificationManager.isDelete(action)) {
             Log.d("nf_voip", "Intent to cancel call received");
-            if (this.this$0.mCurrentCall != null) {
-                this.this$0.callDisconnected(this.this$0.mCurrentCall.line);
-            }
+            this.this$0.onCallDisconnected(this.this$0.mCurrentCall.line);
             this.this$0.terminate();
             return;
         }

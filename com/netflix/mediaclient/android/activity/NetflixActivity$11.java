@@ -4,6 +4,10 @@
 
 package com.netflix.mediaclient.android.activity;
 
+import android.content.Context;
+import com.netflix.mediaclient.ui.login.LogoutActivity;
+import com.netflix.mediaclient.Log;
+
 class NetflixActivity$11 implements Runnable
 {
     final /* synthetic */ NetflixActivity this$0;
@@ -14,6 +18,8 @@ class NetflixActivity$11 implements Runnable
     
     @Override
     public void run() {
+        Log.d("NetflixActivity", "Restarting app, time: " + System.nanoTime());
         this.this$0.finish();
+        this.this$0.startActivity(LogoutActivity.create((Context)this.this$0));
     }
 }

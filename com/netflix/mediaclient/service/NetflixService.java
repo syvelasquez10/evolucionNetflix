@@ -452,10 +452,6 @@ public final class NetflixService extends Service implements INetflixService
         return this.mVoipAgent;
     }
     
-    public boolean isApkMissingSupportForLocale() {
-        return this.mUserAgent.isApkMissingSupportForLocale();
-    }
-    
     public boolean isCurrentProfileIQEnabled() {
         return this.mUserAgent.isCurrentProfileIQEnabled();
     }

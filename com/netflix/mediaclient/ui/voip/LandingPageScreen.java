@@ -22,7 +22,7 @@ class LandingPageScreen
     
     LandingPageScreen(final ContactUsActivity mOwner) {
         this.mOwner = mOwner;
-        this.mFab = mOwner.findViewById(2131624136);
+        this.mFab = mOwner.findViewById(2131624137);
     }
     
     private void openUrl(final String s) {
@@ -55,28 +55,27 @@ class LandingPageScreen
                 }
                 return false;
             }
-            case 2131624132: {
-                this.openUrl(this.mOwner.getString(2131165789));
+            case 2131624138: {
+                this.openUrl(this.mOwner.getString(2131165774));
                 return true;
             }
-            case 2131624133: {
-                this.openUrl(this.mOwner.getString(2131165790));
+            case 2131624139: {
+                this.openUrl(this.mOwner.getString(2131165775));
                 return true;
             }
-            case 2131624135: {
-                this.openUrl(this.mOwner.getString(2131165787));
+            case 2131624141: {
+                this.openUrl(this.mOwner.getString(2131165772));
                 return true;
             }
-            case 2131624134: {
-                this.openUrl(this.mOwner.getString(2131165788));
+            case 2131624140: {
+                this.openUrl(this.mOwner.getString(2131165773));
                 return true;
             }
-            case 2131624136: {
+            case 2131624137: {
                 this.mOwner.startDial();
                 return true;
             }
-            case 2131624128:
-            case 2131624129: {
+            case 2131624088: {
                 Log.d("VoipActivity", "Perform up action");
                 this.mOwner.performUpAction();
                 return true;

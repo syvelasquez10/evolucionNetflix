@@ -4,19 +4,18 @@
 
 package com.netflix.mediaclient.ui.voip;
 
-import android.view.ViewGroup$LayoutParams;
-import android.widget.LinearLayout$LayoutParams;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.content.Context;
-import com.netflix.mediaclient.util.AndroidUtils;
-import android.app.Activity;
-import com.netflix.mediaclient.util.DeviceUtils;
+import android.graphics.PorterDuff$Mode;
+import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.servicemgr.IVoip$Call;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.ToneGenerator;
-import android.widget.ImageView;
 import android.os.Handler;
 import com.netflix.mediaclient.util.TimeFormatterHelper;
 import android.support.design.widget.FloatingActionButton;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.media.AudioManager;
@@ -35,15 +34,15 @@ class DialerScreen$1 implements View$OnTouchListener
     public boolean onTouch(final View view, final MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             default: {
-                return true;
+                return false;
             }
             case 0: {
                 this.this$0.handleButtonTounch(view, true);
-                return true;
+                return false;
             }
             case 1: {
                 this.this$0.handleButtonTounch(view, false);
-                return true;
+                return false;
             }
         }
     }

@@ -36,6 +36,7 @@ import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import android.app.Activity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.ui.login.LogoutActivity;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
@@ -53,7 +54,6 @@ import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsActionBar;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.View;
-import com.netflix.mediaclient.ui.voip.ContactUsActivity;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.android.widget.UpdateDialog;
 import com.netflix.mediaclient.android.widget.UpdateDialog$Builder;
@@ -68,6 +68,7 @@ import android.support.design.widget.CoordinatorLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.content.Context;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.ui.voip.ContactUsActivity;
 import android.content.Intent;
 import java.util.HashSet;
 import android.app.Dialog;
@@ -145,7 +146,7 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
         if (this.listener != null) {
             this.listener.onManagerReady(serviceManager, status);
         }
-        this.this$0.initBackToCallInProgressFABVisibility();
+        this.this$0.addFab();
         if (!(this.this$0 instanceof LaunchActivity)) {
             serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging().endUiStartupSession(true, null, serviceManager.getConfiguration().getCurrentPlayerType());
         }

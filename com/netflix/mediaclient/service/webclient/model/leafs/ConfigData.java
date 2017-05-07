@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
-import com.netflix.mediaclient.service.configuration.NflxSupportedLocales;
 import com.google.gson.annotations.SerializedName;
 
 public class ConfigData
@@ -13,8 +12,6 @@ public class ConfigData
     @SerializedName("customerSupportVoipAuthorizations")
     public VoipAuthorizationData customerSupportVoipAuthorizations;
     public DeviceConfigData deviceConfig;
-    @SerializedName("supportedLanguages")
-    public NflxSupportedLocales nflxSupportedLocales;
     public String streamingqoeJson;
     
     public AccountConfigData getAccountConfig() {
@@ -29,16 +26,12 @@ public class ConfigData
         return this.deviceConfig;
     }
     
-    public NflxSupportedLocales getNflxSupportedLocales() {
-        return this.nflxSupportedLocales;
-    }
-    
     public String getStreamingConfig() {
         return this.streamingqoeJson;
     }
     
     @Override
     public String toString() {
-        return "ConfigData{deviceConfig=" + this.deviceConfig + ", accountConfig=" + this.accountConfig + ", streamingqoeJson='" + this.streamingqoeJson + '\'' + ", customerSupportVoipAuthorizations=" + this.customerSupportVoipAuthorizations + ", nflxSupportedLocales=" + this.nflxSupportedLocales + '}';
+        return "ConfigData{deviceConfig=" + this.deviceConfig + ", accountConfig=" + this.accountConfig + ", streamingqoeJson='" + this.streamingqoeJson + '\'' + ", customerSupportVoipAuthorizations=" + this.customerSupportVoipAuthorizations + '}';
     }
 }

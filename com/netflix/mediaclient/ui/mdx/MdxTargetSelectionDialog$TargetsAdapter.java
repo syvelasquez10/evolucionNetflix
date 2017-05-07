@@ -43,7 +43,7 @@ class MdxTargetSelectionDialog$TargetsAdapter extends BaseAdapter
         MdxTargetSelectionDialog$ViewHolder tag;
         if (inflate == null) {
             inflate = this.inflater.inflate(2130903145, (ViewGroup)null);
-            tag = new MdxTargetSelectionDialog$ViewHolder((TextView)inflate.findViewById(2131624280), (TextView)inflate.findViewById(2131624281));
+            tag = new MdxTargetSelectionDialog$ViewHolder((TextView)inflate.findViewById(2131624283), (TextView)inflate.findViewById(2131624284));
             inflate.setTag((Object)tag);
         }
         else {

@@ -210,10 +210,10 @@ public class NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837686;
+            navigationIcon = 2130837693;
         }
         else {
-            navigationIcon = 2130837685;
+            navigationIcon = 2130837692;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }

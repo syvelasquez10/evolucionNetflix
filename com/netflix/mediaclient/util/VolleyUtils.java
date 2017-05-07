@@ -4,15 +4,14 @@
 
 package com.netflix.mediaclient.util;
 
-import com.netflix.mediaclient.Log;
 import java.util.Locale;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.StatusCodeError;
 import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
-import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
@@ -24,12 +23,10 @@ public final class VolleyUtils
     
     public static NetflixStatus getStatus(final VolleyError volleyError, final ErrorLogging errorLogging) {
         final StatusCode internal_ERROR = StatusCode.INTERNAL_ERROR;
+        final String message = volleyError.getMessage();
         StatusCode statusCode;
-        if (volleyError instanceof FalkorParseException) {
-            statusCode = FalkorParseException.getErrorCode(((FalkorParseException)volleyError).getMessage());
-        }
-        else if (volleyError instanceof FalkorServerException) {
-            statusCode = FalkorServerException.getErrorCode(((FalkorServerException)volleyError).getMessage(), errorLogging);
+        if (volleyError instanceof FalkorException) {
+            statusCode = FalkorException.getErrorCode(message, errorLogging);
         }
         else if (volleyError instanceof ServerError) {
             statusCode = StatusCode.SERVER_ERROR;
@@ -46,6 +43,7 @@ public final class VolleyUtils
                 statusCode = ((StatusCodeError)volleyError).getStatusCode();
             }
         }
+        Log.d("nf_volley", "getStatus statusCode: " + statusCode);
         final NetflixStatus netflixStatus = new NetflixStatus(statusCode);
         netflixStatus.setError(ConsolidatedLoggingUtils.toError(volleyError));
         return netflixStatus;

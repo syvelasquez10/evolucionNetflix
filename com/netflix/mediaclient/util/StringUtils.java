@@ -89,7 +89,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         string = s;
         if (isEmpty(s)) {
-            string = context.getString(2131165537);
+            string = context.getString(2131165562);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string);
@@ -181,7 +181,7 @@ public final class StringUtils
         if (isNotEmpty(s)) {
             sb.append(s).append("   ");
         }
-        sb.append(resources.getString(2131165541, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
+        sb.append(resources.getString(2131165566, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
         return sb.toString();
     }
     
@@ -207,7 +207,7 @@ public final class StringUtils
         if (resources == null) {
             return "";
         }
-        final String quantityString = resources.getQuantityString(2131230722, n2, new Object[] { n2 });
+        final String quantityString = resources.getQuantityString(2131230721, n2, new Object[] { n2 });
         final StringBuilder sb = new StringBuilder();
         if (n > 0) {
             sb.append(n).append("   ");

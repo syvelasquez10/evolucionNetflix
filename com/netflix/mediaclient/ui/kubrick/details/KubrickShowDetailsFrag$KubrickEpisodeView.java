@@ -79,17 +79,17 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
                 return;
             }
             this.runtime.setVisibility(0);
-            this.runtime.setText((CharSequence)this.getResources().getString(2131165541, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
+            this.runtime.setText((CharSequence)this.getResources().getString(2131165566, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
         }
     }
     
     protected void adjustHeight() {
-        this.image.getLayoutParams().height = (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296487) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        this.image.getLayoutParams().height = (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296503) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     @Override
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
-        return this.getResources().getString(2131165398, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        return this.getResources().getString(2131165405, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
     }
     
     protected void disablePlay() {
@@ -117,10 +117,10 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     @Override
     protected void findViews() {
         super.findViews();
-        this.image = (AdvancedImageView)this.findViewById(2131624199);
-        this.runtime = (TextView)this.findViewById(2131624202);
-        this.progressBarBackground = this.findViewById(2131624200);
-        this.unavailable = this.findViewById(2131624201);
+        this.image = (AdvancedImageView)this.findViewById(2131624202);
+        this.runtime = (TextView)this.findViewById(2131624205);
+        this.progressBarBackground = this.findViewById(2131624203);
+        this.unavailable = this.findViewById(2131624204);
     }
     
     @Override
@@ -196,7 +196,7 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
         if (this.title == null) {
             return;
         }
-        this.title.setTextColor(this.getResources().getColor(2131558536));
+        this.title.setTextColor(this.getResources().getColor(2131558538));
         this.title.setText(this.createTitleText(episodeDetails));
     }
 }

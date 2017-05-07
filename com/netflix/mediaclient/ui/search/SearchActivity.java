@@ -82,16 +82,16 @@ public class SearchActivity extends NetflixActivity
         this.setupLoadingWrapper();
         this.setupFragments(this.savedInstanceState);
         if (BrowseExperience.isKubrickKids()) {
-            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131558451));
-            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131558592));
+            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131558453));
+            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131558596));
             ((ViewGroup)this.leWrapper.getErrorMessageTextView().getParent()).setBackgroundColor(-1);
             ViewUtils.removeShadow(this.leWrapper.getErrorMessageTextView());
         }
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131624476);
-        this.loadingWrapper = this.findViewById(2131624475);
+        this.fragGroup = (ViewGroup)this.findViewById(2131624479);
+        this.loadingWrapper = this.findViewById(2131624478);
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -167,7 +167,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131624476, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131624479, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -179,7 +179,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131165534, false, false);
+        this.leWrapper.showErrorView(2131165559, false, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }
@@ -218,9 +218,9 @@ public class SearchActivity extends NetflixActivity
     
     protected int getInitMessageStringId() {
         if (BrowseExperience.isKubrickKids()) {
-            return 2131165587;
+            return 2131165612;
         }
-        return 2131165673;
+        return 2131165697;
     }
     
     @Override
@@ -252,7 +252,7 @@ public class SearchActivity extends NetflixActivity
             SearchUtils.setSearchExperience(SearchUtils$SearchExperience.PHONE);
         }
         if (BrowseExperience.isKubrickKids()) {
-            this.setTheme(2131362164);
+            this.setTheme(2131362165);
         }
         this.createUI();
         if (savedInstanceState == null) {
@@ -281,7 +281,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131165428, true, false);
+        this.leWrapper.showErrorView(2131165444, true, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }

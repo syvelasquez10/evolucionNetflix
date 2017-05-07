@@ -131,7 +131,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private int getBadgesPadding() {
-        return this.getResources().getDimensionPixelSize(2131296465);
+        return this.getResources().getDimensionPixelSize(2131296481);
     }
     
     private String getInterBadgePadding() {
@@ -177,20 +177,20 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected void findViews() {
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131624190);
-        this.addToMyList = (Button)this.findViewById(2131624520);
-        this.basicInfo = (TextView)this.findViewById(2131624412);
-        this.synopsis = (TextView)this.findViewById(2131624259);
-        this.starring = (TextView)this.findViewById(2131624249);
-        this.creators = (TextView)this.findViewById(2131624250);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131624180);
-        this.title = (TextView)this.findViewById(2131624184);
-        this.imgGroup = (ViewGroup)this.findViewById(2131624528);
-        this.backgroundImg = (ImageView)this.findViewById(2131624177);
-        this.relatedTitle = (TextView)this.findViewById(2131624186);
-        this.basicInfoBadges = (TextView)this.findViewById(2131624527);
-        this.footerViewGroup = (ViewGroup)this.findViewById(2131624185);
-        this.copyright = (ViewGroup)this.findViewById(2131624521);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131624193);
+        this.addToMyList = (Button)this.findViewById(2131624523);
+        this.basicInfo = (TextView)this.findViewById(2131624415);
+        this.synopsis = (TextView)this.findViewById(2131624262);
+        this.starring = (TextView)this.findViewById(2131624252);
+        this.creators = (TextView)this.findViewById(2131624253);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131624183);
+        this.title = (TextView)this.findViewById(2131624187);
+        this.imgGroup = (ViewGroup)this.findViewById(2131624531);
+        this.backgroundImg = (ImageView)this.findViewById(2131624180);
+        this.relatedTitle = (TextView)this.findViewById(2131624189);
+        this.basicInfoBadges = (TextView)this.findViewById(2131624530);
+        this.footerViewGroup = (ViewGroup)this.findViewById(2131624188);
+        this.copyright = (ViewGroup)this.findViewById(2131624524);
     }
     
     public TextView getAddToMyListButton() {
@@ -341,7 +341,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131165597, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131165622, new Object[] { videoDetails.getTitle() }));
         }
     }
     

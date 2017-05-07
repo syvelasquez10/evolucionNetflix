@@ -29,7 +29,7 @@ public interface Nflx$Parameter
     public static final String TARGET_ID = "targetid";
     public static final String TARGET_URL = "target_url";
     public static final String TARGET_URL_SHORT = "u";
+    public static final String TIME_FROM_START = "t";
     public static final String TRACKID = "trkid";
-    public static final String TRACKID_SHORT = "t";
     public static final String TYPE = "type";
 }

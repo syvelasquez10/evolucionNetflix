@@ -28,7 +28,7 @@ class MovieDetailsFrag$4 implements VideoDetailsViewGroup$DetailsStringProvider
         if (StringUtils.isEmpty(this.val$details.getDirectors())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), this.this$0.getActivity().getResources().getQuantityString(2131230721, this.val$details.getNumDirectors()), this.val$details.getDirectors());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), this.this$0.getActivity().getResources().getQuantityString(2131230720, this.val$details.getNumDirectors()), this.val$details.getDirectors());
     }
     
     @Override
@@ -36,11 +36,11 @@ class MovieDetailsFrag$4 implements VideoDetailsViewGroup$DetailsStringProvider
         if (StringUtils.isEmpty(this.val$details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165504, this.val$details.getGenres());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165528, this.val$details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165609, this.val$details.getActors());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131165633, this.val$details.getActors());
     }
 }

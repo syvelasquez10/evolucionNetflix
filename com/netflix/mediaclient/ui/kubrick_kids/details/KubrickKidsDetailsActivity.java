@@ -57,7 +57,7 @@ public class KubrickKidsDetailsActivity extends DetailsActivity implements PlayC
                 return KubrickKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return KubrickKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color", 2131558489));
+                return KubrickKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color", 2131558491));
             }
         }
     }

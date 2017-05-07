@@ -8,6 +8,7 @@ import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.customerSupport.CustomerSupportCallSession;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
 import com.netflix.mediaclient.service.logging.customerSupport.CustomerSupportCallSession$CallQualitySegment;
 import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -21,17 +22,20 @@ public class CustomerSupportCallSessionEndedEvent extends SessionEndedEvent
     public static final String ERROR = "error";
     public static final String REASON = "reason";
     private static final String SESSION_NAME = "customerSupportCall";
+    public static final String TERMINATION_REASON = "terminationReason";
     private IClientLogging$CompletionReason mCompletionReason;
-    private int mConnectionTime;
+    private int mConnectionTimeInSec;
     private Error mError;
     private List<CustomerSupportCallSession$CallQualitySegment> mStates;
+    private CustomerServiceLogging$TerminationReason mTerminationReason;
     
-    public CustomerSupportCallSessionEndedEvent(final CustomerSupportCallSession customerSupportCallSession, final int mConnectionTime, final IClientLogging$CompletionReason mCompletionReason, final Error mError) {
+    public CustomerSupportCallSessionEndedEvent(final CustomerSupportCallSession customerSupportCallSession, final int mConnectionTimeInSec, final CustomerServiceLogging$TerminationReason mTerminationReason, final IClientLogging$CompletionReason mCompletionReason, final Error mError) {
         super("customerSupportCall", customerSupportCallSession.getId(), System.currentTimeMillis() - customerSupportCallSession.getStarted());
+        this.mTerminationReason = mTerminationReason;
         this.mCompletionReason = mCompletionReason;
         this.mError = mError;
         this.category = customerSupportCallSession.getCategory();
-        this.mConnectionTime = mConnectionTime;
+        this.mConnectionTimeInSec = mConnectionTimeInSec;
         this.mStates = customerSupportCallSession.getQualityStates();
     }
     
@@ -41,13 +45,16 @@ public class CustomerSupportCallSessionEndedEvent extends SessionEndedEvent
         if (data == null) {
             data = new JSONObject();
         }
+        if (this.mTerminationReason != null) {
+            data.put("terminationReason", (Object)this.mTerminationReason.name());
+        }
         if (this.mCompletionReason != null) {
             data.put("reason", (Object)this.mCompletionReason.name());
         }
         if (this.mError != null) {
             data.put("error", (Object)this.mError.toJSONObject());
         }
-        data.put("connectionTime", this.mConnectionTime);
+        data.put("connectionTime", this.mConnectionTimeInSec);
         if (this.mStates != null) {
             final JSONArray jsonArray = new JSONArray();
             data.put("callQuality", (Object)jsonArray);

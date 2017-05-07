@@ -39,6 +39,6 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
             return null;
         }
         final SocialOptInDialogFrag$OptInResponseHandler socialOptInDialogFrag$OptInResponseHandler = (SocialOptInDialogFrag$OptInResponseHandler)activity;
-        return (Dialog)new AlertDialog$Builder((Context)this.getActivity(), 2131361923).setTitle(2131165605).setMessage(2131165602).setPositiveButton(2131165604, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$2(this, socialOptInDialogFrag$OptInResponseHandler)).setNegativeButton(2131165603, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$1(this, socialOptInDialogFrag$OptInResponseHandler)).create();
+        return (Dialog)new AlertDialog$Builder((Context)this.getActivity(), 2131361923).setTitle(2131165631).setMessage(2131165628).setPositiveButton(2131165630, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$2(this, socialOptInDialogFrag$OptInResponseHandler)).setNegativeButton(2131165629, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$1(this, socialOptInDialogFrag$OptInResponseHandler)).create();
     }
 }

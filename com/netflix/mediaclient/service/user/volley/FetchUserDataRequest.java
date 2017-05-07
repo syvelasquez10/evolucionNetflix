@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.User$Summary;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
@@ -62,7 +62,7 @@ public class FetchUserDataRequest extends FalkorVolleyWebClientRequest<User>
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchuserdatarequest", s);
         if (FalkorParseUtils.isEmpty(dataObj)) {
-            throw new FalkorParseException("UserProfile empty!!!");
+            throw new FalkorException("UserProfile empty!!!");
         }
         final User user = new User();
         JsonObject asJsonObject;
@@ -70,12 +70,12 @@ public class FetchUserDataRequest extends FalkorVolleyWebClientRequest<User>
             asJsonObject = dataObj.getAsJsonObject("user");
             user.summary = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", User$Summary.class);
             if (user.summary == null || StringUtils.isEmpty(user.getUserToken())) {
-                throw new FalkorParseException("response missing summary" + s);
+                throw new FalkorException("response missing summary" + s);
             }
         }
         catch (Exception ex) {
             Log.v("nf_service_user_fetchuserdatarequest", "String response to parse = " + s);
-            throw new FalkorParseException("response missing user json objects", ex);
+            throw new FalkorException("response missing user json objects", ex);
         }
         user.subtitleDefaults = FalkorParseUtils.getPropertyObject(asJsonObject, "subtitleDefaults", SubtitlePreference.class);
         return user;

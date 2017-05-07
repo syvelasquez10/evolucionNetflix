@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile$Summary;
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
@@ -64,7 +64,7 @@ public class FetchProfileDataRequest extends FalkorVolleyWebClientRequest<UserPr
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchprofiledatarequest", s);
         if (FalkorParseUtils.isEmpty(dataObj)) {
-            throw new FalkorParseException("UserProfile empty!!!");
+            throw new FalkorException("UserProfile empty!!!");
         }
         JsonObject asJsonObject;
         UserProfile userProfile;
@@ -73,12 +73,12 @@ public class FetchProfileDataRequest extends FalkorVolleyWebClientRequest<UserPr
             userProfile = new UserProfile();
             userProfile.summary = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", UserProfile$Summary.class);
             if (userProfile.summary == null || StringUtils.isEmpty(userProfile.getProfileToken())) {
-                throw new FalkorParseException("response missing summary" + s);
+                throw new FalkorException("response missing summary" + s);
             }
         }
         catch (Exception ex) {
             Log.v("nf_service_user_fetchprofiledatarequest", "String response to parse = " + s);
-            throw new FalkorParseException("response missing profiles json objects", ex);
+            throw new FalkorException("response missing profiles json objects", ex);
         }
         userProfile.subtitlePreference = FalkorParseUtils.getPropertyObject(asJsonObject, "subtitlePreference", SubtitlePreference.class);
         return userProfile;

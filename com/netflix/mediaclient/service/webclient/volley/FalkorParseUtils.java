@@ -36,12 +36,12 @@ public class FalkorParseUtils
         try {
             asJsonObject = new JsonParser().parse(s2).getAsJsonObject();
             if (hasErrors(asJsonObject)) {
-                throw new FalkorServerException(getErrorMessage(asJsonObject, s));
+                throw new FalkorException(getErrorMessage(asJsonObject, s));
             }
         }
         catch (Exception ex) {
             Log.v(s, "String response to parse = " + s2);
-            throw new FalkorParseException("Error in creating JsonObject", ex);
+            throw new FalkorException("Error in creating JsonObject", ex);
         }
         return asJsonObject.getAsJsonObject("value");
     }

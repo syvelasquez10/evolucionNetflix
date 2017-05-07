@@ -46,6 +46,7 @@ import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collection;

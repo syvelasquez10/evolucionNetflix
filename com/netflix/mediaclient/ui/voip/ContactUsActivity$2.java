@@ -27,7 +27,6 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$ReturnToDialScreenFrom;
 import android.widget.ViewFlipper;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
-import android.support.design.widget.FloatingActionButton;
 import com.netflix.mediaclient.servicemgr.IVoip$OutboundCallListener;
 import android.support.v4.app.ActivityCompat$OnRequestPermissionsResultCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;

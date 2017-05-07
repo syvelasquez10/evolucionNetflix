@@ -73,7 +73,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
     public void deliverError(final VolleyError volleyError) {
         final long durationTimeMs = this.getDurationTimeMs();
         if (Log.isLoggable()) {
-            Log.d("FalkorVolleyWebClientRequest", "request duration time (ms): " + durationTimeMs + ", class: " + this.getClass());
+            Log.d("FalkorVolleyWebClientRequest", "request duration time (ms): " + durationTimeMs + ", class: " + this.getClass() + ", error: " + volleyError);
         }
         final NetflixStatus status = VolleyUtils.getStatus(volleyError, this.mErrorLogger);
         if (this.mContext != null) {
@@ -330,11 +330,11 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
                 Log.v("FalkorVolleyWebClientRequest", "parse time (ms): " + this.mParseTimeInMs + ", class: " + this.getClass());
             }
             if (!this.parsedResponseCanBeNull() && falkorResponse == null) {
-                throw new FalkorParseException("Parsing returned null.");
+                throw new FalkorException("Parsing returned null.");
             }
         }
         catch (Exception ex) {
-            if (ex instanceof FalkorParseException || ex instanceof FalkorServerException || ex instanceof StatusCodeError) {
+            if (ex instanceof FalkorException || ex instanceof StatusCodeError) {
                 throw (VolleyError)ex;
             }
             throw new VolleyError(ex);

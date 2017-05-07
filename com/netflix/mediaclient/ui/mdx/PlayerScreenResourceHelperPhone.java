@@ -11,8 +11,8 @@ public final class PlayerScreenResourceHelperPhone extends PlayerScreenResourceH
     protected static final int TIMELINE_THUMB_OFFSET_IN_DIP = 12;
     
     PlayerScreenResourceHelperPhone() {
-        this.pause = 2130837853;
-        this.play = 2130837854;
+        this.pause = 2130837864;
+        this.play = 2130837865;
         this.timelineHeightInDip = 20;
         this.timelineHeightPaddingInDip = 1;
         this.timelineThumbOffsetInDip = 12;

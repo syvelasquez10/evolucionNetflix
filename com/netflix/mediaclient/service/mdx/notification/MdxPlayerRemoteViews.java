@@ -21,7 +21,7 @@ public final class MdxPlayerRemoteViews extends MdxRemoteViews
         if (context == null) {
             return;
         }
-        this.headerTitle = context.getResources().getString(2131165639);
+        this.headerTitle = context.getResources().getString(2131165667);
     }
     
     @Override
@@ -41,16 +41,16 @@ public final class MdxPlayerRemoteViews extends MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131624323, 2130837831);
-        remoteViews.setOnClickPendingIntent(2131624323, this.mIntentRetriever.getSkipbackIntent(-30));
+        remoteViews.setImageViewResource(2131624326, 2130837842);
+        remoteViews.setOnClickPendingIntent(2131624326, this.mIntentRetriever.getSkipbackIntent(-30));
     }
     
     protected void setSkipInactive(final RemoteViews remoteViews) {
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131624323, 2130837832);
-        remoteViews.setOnClickPendingIntent(2131624323, this.mIntentRetriever.getNoActionIntent());
+        remoteViews.setImageViewResource(2131624326, 2130837843);
+        remoteViews.setOnClickPendingIntent(2131624326, this.mIntentRetriever.getNoActionIntent());
     }
     
     @Override

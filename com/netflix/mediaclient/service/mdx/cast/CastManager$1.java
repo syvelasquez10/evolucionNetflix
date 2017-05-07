@@ -4,13 +4,13 @@
 
 package com.netflix.mediaclient.service.mdx.cast;
 
+import org.json.JSONArray;
 import android.support.v7.media.MediaRouter$ProviderInfo;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.android.gms.cast.CastDevice;
 import java.util.HashMap;
-import org.json.JSONArray;
 import android.support.v7.media.MediaRouteSelector;
 import com.netflix.mediaclient.service.mdx.MdxNrdpLogger;
 import android.support.v7.media.MediaRouter$RouteInfo;

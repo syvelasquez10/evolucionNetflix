@@ -13,6 +13,7 @@ import com.netflix.mediaclient.Log;
 import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import android.app.Activity;
+import com.netflix.mediaclient.util.NumberUtils;
 import java.util.Iterator;
 import java.util.Set;
 import com.netflix.mediaclient.util.StringUtils;
@@ -39,12 +40,16 @@ public class NetflixComUtils
         return hashMap;
     }
     
-    public static String getTrackId(final Uri uri) {
-        String s;
-        if (StringUtils.isEmpty(s = uri.getQueryParameter("trkid"))) {
-            s = uri.getQueryParameter("t");
+    public static int getStartTimeFromParams(final Map<String, String> map) {
+        final String s = map.get("t");
+        if (NumberUtils.isPositiveWholeNumber(s)) {
+            return NumberUtils.toIntegerSafely(s, -1);
         }
-        return s;
+        return -1;
+    }
+    
+    public static String getTrackId(final Uri uri) {
+        return uri.getQueryParameter("trkid");
     }
     
     public static void launchBrowser(final Activity activity, final Uri uri) {

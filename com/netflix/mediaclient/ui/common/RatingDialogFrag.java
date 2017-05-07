@@ -57,7 +57,7 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
             window.setGravity(51);
             final WindowManager$LayoutParams attributes = window.getAttributes();
             attributes.x = this.mParentXLoc;
-            attributes.y = (int)(this.mParentYLoc - this.getResources().getDimension(2131296285));
+            attributes.y = (int)(this.mParentYLoc - this.getResources().getDimension(2131296287));
             window.setAttributes(attributes);
         }
     }
@@ -126,12 +126,12 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(this.mLayoutId, viewGroup, false);
-        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131624473);
-        this.mTitle = (TextView)inflate.findViewById(2131624472);
-        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131624474);
+        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131624476);
+        this.mTitle = (TextView)inflate.findViewById(2131624475);
+        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131624477);
         this.mRatingBar.setOnNetflixRatingBarChangeListener(this);
         if (this.mTitle != null) {
-            this.mTitle.setText((CharSequence)this.getString(2131165555, new Object[] { this.mVideoTitle }));
+            this.mTitle.setText((CharSequence)this.getString(2131165581, new Object[] { this.mVideoTitle }));
         }
         this.alignViewsToAnchor();
         this.completeInitIfPossible();

@@ -45,7 +45,7 @@ class CopyrightView
     
     private void init() {
         if (this.details != null && this.copyrightViewGroup != null) {
-            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131624522);
+            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131624525);
             if (this.copyrightTextView != null && this.details != null) {
                 this.copyrightTextView.setText((CharSequence)this.details.getCopyright());
                 this.copyrightTextView.setVisibility(0);
@@ -56,7 +56,7 @@ class CopyrightView
     }
     
     private void setExpandedText(final VideoDetails videoDetails, final Context context, final View view) {
-        final TextView textView = (TextView)view.findViewById(2131624523);
+        final TextView textView = (TextView)view.findViewById(2131624526);
         if (textView != null) {
             textView.setText((CharSequence)videoDetails.getCopyright());
         }

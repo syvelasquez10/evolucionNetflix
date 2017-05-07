@@ -20,8 +20,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLogging
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import java.util.List;
-import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 
@@ -41,9 +39,7 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     ABTestConfigData getABTestConfiguration_6725();
     
-    UserLocale getAlertLocale(final String p0);
-    
-    List<UserLocale> getAlertedLocales();
+    String getAlertMsgForMissingLocale();
     
     ApiEndpointRegistry getApiEndpointRegistry();
     
@@ -85,8 +81,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     MdxConfiguration getMdxConfiguration();
     
-    List<UserLocale> getNflxSupportedLocales();
-    
     PlaybackConfiguration getPlaybackConfiguration();
     
     String getPreAppPartnerExperience();
@@ -113,6 +107,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     VideoResolutionRange getVideoResolutionRange();
     
+    int getVoipSampleRate();
+    
     boolean isCurrentDrmWidevine();
     
     boolean isDeviceLowMem();
@@ -131,7 +127,7 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean isWidevineL3Enabled();
     
-    void setAlertLocale(final UserLocale p0);
+    boolean shouldAlertForMissingLocale();
     
     boolean shouldDisableVoip();
     

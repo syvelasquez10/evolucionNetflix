@@ -165,9 +165,9 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             this.storyArtUrl = billboardBackground.getUrl();
             if (!billboardBackground.getTone().equals("light")) {
                 this.synopsis.setTextColor(this.getResources().getColor(2131558414));
-                this.synopsis.setShadowLayer(2.0f, 0.0f, -1.0f, 2131558573);
-                this.info.setTextColor(this.getResources().getColor(2131558592));
-                this.info.setShadowLayer(2.0f, 0.0f, -1.0f, 2131558573);
+                this.synopsis.setShadowLayer(2.0f, 0.0f, -1.0f, 2131558577);
+                this.info.setTextColor(this.getResources().getColor(2131558596));
+                this.info.setShadowLayer(2.0f, 0.0f, -1.0f, 2131558577);
                 return;
             }
             this.synopsis.setTextColor(this.getResources().getColor(2131558415));
@@ -257,10 +257,10 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         final Resources resources = this.getResources();
         int n;
         if (this.mediaPlayerWrapper.isMuted()) {
-            n = 2131165753;
+            n = 2131165738;
         }
         else {
-            n = 2131165755;
+            n = 2131165740;
         }
         muteButton.setText((CharSequence)resources.getString(n));
     }

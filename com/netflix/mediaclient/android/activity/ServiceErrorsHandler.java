@@ -11,11 +11,10 @@ import android.text.Spannable;
 import android.text.util.Linkify;
 import android.text.SpannableString;
 import android.app.AlertDialog$Builder;
-import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.user.UserLocaleRepository;
 import com.netflix.mediaclient.util.StringUtils;
-import java.util.Locale;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import android.content.DialogInterface$OnClickListener;
@@ -43,14 +42,14 @@ public class ServiceErrorsHandler
         final UpdateDialog$Builder updateDialog$Builder = new UpdateDialog$Builder((Context)activity);
         updateDialog$Builder.setTitle("");
         if (!b) {
-            updateDialog$Builder.setMessage(2131165406);
+            updateDialog$Builder.setMessage(2131165413);
             updateDialog$Builder.setCancelable(false);
-            updateDialog$Builder.setNegativeButton(2131165413, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
+            updateDialog$Builder.setNegativeButton(2131165430, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
         }
         else {
-            updateDialog$Builder.setMessage(2131165516);
+            updateDialog$Builder.setMessage(2131165540);
         }
-        updateDialog$Builder.setPositiveButton(2131165543, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
+        updateDialog$Builder.setPositiveButton(2131165568, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
         updateDialog$Builder.show();
         return true;
     }
@@ -60,7 +59,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
         switch (ServiceErrorsHandler$5.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
-                provideDialog(activity, activity.getString(2131165637) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131165664) + " (" + statusCode.getValue() + ")");
                 return true;
             }
             case 1: {
@@ -71,6 +70,9 @@ public class ServiceErrorsHandler
             }
             case 3: {
                 if (AndroidUtils.getAndroidVersion() > 18) {
+                    if (Log.isLoggable()) {
+                        Log.d("ServiceErrorsHandler", "api version 18");
+                    }
                     return false;
                 }
                 final ServiceManager serviceManager = ((NetflixActivity)activity).getServiceManager();
@@ -78,47 +80,37 @@ public class ServiceErrorsHandler
                     Log.d("ServiceErrorsHandler", "nf_config_locale manager == null");
                     return false;
                 }
-                if (!serviceManager.isApkMissingSupportForLocale()) {
-                    return false;
-                }
-                final Locale default1 = Locale.getDefault();
-                Log.d("ServiceErrorsHandler", "locale: " + default1);
-                final UserLocale alertLocale = serviceManager.getConfiguration().getAlertLocale(default1.getLanguage());
-                if (alertLocale == null || StringUtils.isEmpty(alertLocale.getLanguageDescription())) {
-                    Log.d("ServiceErrorsHandler", "AlertLocale is null");
-                    return false;
-                }
-                return provideUnSupportedLanguageDialog(activity, String.format(activity.getString(2131165725), alertLocale.getLanguageDescription()), alertLocale);
+                return serviceManager.shouldAlertForMissingLocale() && !StringUtils.isEmpty(serviceManager.getConfiguration().getAlertMsgForMissingLocale()) && !UserLocaleRepository.wasPreviouslyAlerted((Context)activity) && provideUnSupportedLanguageDialog(activity, serviceManager.getConfiguration().getAlertMsgForMissingLocale());
             }
             case 4: {
                 return handleAppUpdateNeeded(activity, true);
             }
             case 5: {
-                provideDialog(activity, activity.getString(2131165611));
+                provideDialog(activity, activity.getString(2131165635));
                 return true;
             }
             case 6:
             case 7: {
-                provideDialog(activity, activity.getString(2131165485));
+                provideDialog(activity, activity.getString(2131165509));
                 return true;
             }
             case 8:
             case 9:
             case 10: {
-                provideDialog(activity, activity.getString(2131165631) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131165658) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }
     }
     
     private static void provideDialog(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131165543, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131165568, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
     }
     
-    private static boolean provideUnSupportedLanguageDialog(final Activity activity, final String s, final UserLocale userLocale) {
+    private static boolean provideUnSupportedLanguageDialog(final Activity activity, final String s) {
         final SpannableString message = new SpannableString((CharSequence)s);
         Linkify.addLinks((Spannable)message, 15);
-        final AlertDialog create = new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131165718, (DialogInterface$OnClickListener)new ServiceErrorsHandler$4(activity, userLocale)).create();
+        final AlertDialog create = new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(17039370, (DialogInterface$OnClickListener)new ServiceErrorsHandler$4(activity)).create();
         create.show();
         final TextView textView = (TextView)create.findViewById(16908299);
         if (textView != null) {

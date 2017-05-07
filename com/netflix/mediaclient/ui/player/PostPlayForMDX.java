@@ -91,8 +91,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     }
     
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131624402);
-        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624400);
+        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131624405);
+        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624403);
     }
     
     @Override
@@ -168,7 +168,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(activity.getText(2131165560));
+            this.mInfoTitleView.setText(activity.getText(2131165586));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

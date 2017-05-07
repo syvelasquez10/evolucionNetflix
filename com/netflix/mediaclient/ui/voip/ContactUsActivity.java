@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.voip;
 
-import android.view.View;
 import android.database.ContentObserver;
 import android.provider.Settings$System;
 import android.os.Bundle;
@@ -31,7 +30,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$ReturnToDialScreenFrom;
 import android.widget.ViewFlipper;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
-import android.support.design.widget.FloatingActionButton;
+import android.view.View;
 import com.netflix.mediaclient.servicemgr.IVoip$OutboundCallListener;
 import android.support.v4.app.ActivityCompat$OnRequestPermissionsResultCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -44,7 +43,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     private static final String TAG = "VoipActivity";
     private ContactUsActivity$AudioObserver mAudioObserver;
     private boolean mAutoDial;
-    private FloatingActionButton mDialButton;
+    private View mDialButton;
     private boolean mDialerOnTop;
     private DialerScreen mDialerScreen;
     private CustomerServiceLogging$EntryPoint mEntry;
@@ -172,6 +171,10 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     
     private void goToLandingPage() {
         this.clearWindowFlags();
+        if (!this.isTablet()) {
+            Log.d("VoipActivity", "Phone, release lock on portrait for dial screen");
+            this.setRequestedOrientation(4);
+        }
         this.mFlipper.showPrevious();
         this.mDialerOnTop = false;
     }
@@ -179,10 +182,10 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     private void initUI() {
         this.setContentView(2130903074);
         this.getSupportActionBar().hide();
-        this.mFlipper = (ViewFlipper)this.findViewById(2131624088);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131624089);
         this.mLandingPage = new LandingPageScreen(this);
         this.mDialerScreen = new DialerScreen(this);
-        this.mDialButton = (FloatingActionButton)this.findViewById(2131624136);
+        this.mDialButton = this.findViewById(2131624137);
         if (this.mVoip.isEnabled()) {
             Log.d("VoipActivity", "VOIP is enabled, show dial button on landing page!");
             this.mDialButton.setVisibility(0);
@@ -193,6 +196,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         }
         this.mLandingPage.update();
         this.mDialerScreen.update(this.mServiceManager.getVoip().isConnected());
+        this.mDialerScreen.initUi();
         if (this.mVoip.isCallInProgress()) {
             Log.d("VoipActivity", "Call is in progress, move to dialer");
             this.setWindowFlags();
@@ -224,7 +228,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     private void requestAudioPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO")) {
             Log.i("VoipActivity", "Displaying audio permission rationale to provide additional context.");
-            Snackbar.make(this.mLandingPage.getFab(), 2131165365, -2).setAction(2131165543, (View$OnClickListener)new ContactUsActivity$2(this)).show();
+            Snackbar.make(this.mLandingPage.getFab(), 2131165367, -2).setAction(2131165568, (View$OnClickListener)new ContactUsActivity$2(this)).show();
             return;
         }
         ActivityCompat.requestPermissions(this, ContactUsActivity.PERMISSIONS_AUDIO, 0);
@@ -265,11 +269,9 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
         if (this.mDialerOnTop) {
             Log.d("VoipActivity", "callEnded:: Back to landing page contact us");
             this.goToLandingPage();
+            return;
         }
-        else {
-            Log.d("VoipActivity", "callEnded:: Already back to landing page contact us");
-        }
-        this.mDialerScreen.stopTimer();
+        Log.d("VoipActivity", "callEnded:: Already back to landing page contact us");
     }
     
     @Override
@@ -377,7 +379,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
             return;
         }
         Log.i("VoipActivity", "Audio permission was NOT granted.");
-        Snackbar.make(this.mLandingPage.getFab(), 2131165364, -1).show();
+        Snackbar.make(this.mLandingPage.getFab(), 2131165366, -1).show();
     }
     
     @Override
@@ -447,6 +449,10 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     void startDial() {
         if (this.isFinishing()) {
             return;
+        }
+        if (!this.isTablet()) {
+            Log.d("VoipActivity", "Phone, force portrait for dial screen");
+            this.setRequestedOrientation(7);
         }
         if (!this.mDialerOnTop) {
             this.doStartDial();

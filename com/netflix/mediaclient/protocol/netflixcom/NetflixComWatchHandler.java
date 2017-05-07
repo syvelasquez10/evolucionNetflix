@@ -7,9 +7,9 @@ package com.netflix.mediaclient.protocol.netflixcom;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.IMdx;
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -22,6 +22,11 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 public class NetflixComWatchHandler implements NetflixComHandler
 {
     private static final String TAG = "NetflixComWatchHandler";
+    private int startTimeSeconds;
+    
+    public NetflixComWatchHandler(final int startTimeSeconds) {
+        this.startTimeSeconds = startTimeSeconds;
+    }
     
     private NflxHandler$Response handle(final String s, final String s2, final NetflixActivity netflixActivity, final String s3) {
         netflixActivity.getServiceManager().getBrowse().fetchVideoSummary(s, new NetflixComWatchHandler$1(this, netflixActivity, s, s2, s3));
@@ -36,7 +41,7 @@ public class NetflixComWatchHandler implements NetflixComHandler
     protected void play(final NetflixActivity netflixActivity, final Playable playable, final String dialUuidAsCurrentTarget, final PlayContext playContext) {
         if (StringUtils.isEmpty(dialUuidAsCurrentTarget)) {
             Log.d("NetflixComWatchHandler", "Starting local playback");
-            PlayerActivity.playVideo(netflixActivity, playable, playContext);
+            PlaybackLauncher.playVideo(netflixActivity, playable, playContext, this.startTimeSeconds);
             return;
         }
         if (Log.isLoggable()) {
@@ -55,7 +60,7 @@ public class NetflixComWatchHandler implements NetflixComHandler
             }
             Log.d("NetflixComWatchHandler", "MDX does not know target dial UUID, go local playback");
         }
-        PlayerActivity.playVideo(netflixActivity, playable, playContext);
+        PlaybackLauncher.playVideo(netflixActivity, playable, playContext, this.startTimeSeconds);
     }
     
     protected void playVideo(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final String s3) {

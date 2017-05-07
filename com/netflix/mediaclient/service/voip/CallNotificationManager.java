@@ -35,17 +35,18 @@ class CallNotificationManager
         this.mNotificationManager = (NotificationManager)this.mContext.getSystemService("notification");
     }
     
-    private Notification createNotification(final boolean b) {
-        final String string = this.mContext.getString(2131165467);
-        final String string2 = this.mContext.getString(2131165468);
+    private Notification createNotification(final boolean usesChronometer) {
+        final long currentTimeMillis = System.currentTimeMillis();
+        final String string = this.mContext.getString(2131165489);
+        final String string2 = this.mContext.getString(2131165490);
         String contentText;
-        if (b) {
-            contentText = this.mContext.getString(2131165469);
+        if (usesChronometer) {
+            contentText = this.mContext.getString(2131165491);
         }
         else {
-            contentText = this.mContext.getString(2131165470);
+            contentText = this.mContext.getString(2131165492);
         }
-        final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837737).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837652, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(System.currentTimeMillis()).build();
+        final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837748).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837656, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(currentTimeMillis).setUsesChronometer(usesChronometer).build();
         build.flags |= 0x40;
         this.mNotificationManager.notify(20, build);
         return build;
@@ -60,7 +61,7 @@ class CallNotificationManager
     }
     
     private Bitmap getLargeIcon() {
-        return BitmapFactory.decodeResource(this.mContext.getResources(), 2130837694);
+        return BitmapFactory.decodeResource(this.mContext.getResources(), 2130837703);
     }
     
     public static IntentFilter getNotificationIntentFilter() {

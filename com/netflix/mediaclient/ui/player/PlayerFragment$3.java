@@ -8,6 +8,7 @@ import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.util.LanguageChoice;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -54,8 +55,14 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
 import android.os.SystemClock;
+import android.app.DialogFragment;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
+import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
@@ -95,6 +102,7 @@ import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.BroadcastReceiver;
 import android.os.Handler;
 import android.os.Bundle;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
@@ -108,13 +116,6 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnClickListener;
@@ -141,16 +142,6 @@ class PlayerFragment$3 implements View$OnClickListener
         }
         Log.d("PlayerFragment", "Start episodes dialog");
         this.this$0.stopScreenUpdateTask();
-        NetflixDialogFrag netflixDialogFrag;
-        if (BrowseExperience.isKubrick()) {
-            netflixDialogFrag = KubrickShowDetailsFrag.create(this.this$0.mAsset.getParentId(), this.this$0.mAsset.getPlayableId(), false);
-        }
-        else {
-            netflixDialogFrag = EpisodesFrag.createEpisodes(this.this$0.mAsset.getParentId(), this.this$0.mAsset.getPlayableId(), false);
-        }
-        netflixDialogFrag.onManagerReady(this.this$0.mServiceManager, CommonStatus.OK);
-        netflixDialogFrag.setCancelable(true);
-        netflixDialogFrag.setStyle(1, 2131362020);
-        this.this$0.getNetflixActivity().showDialog(netflixDialogFrag);
+        this.this$0.showEpisodesFrag();
     }
 }

@@ -20,6 +20,8 @@ public interface ServiceAgent$UserAgentInterface
     
     void doDummyWebCall(final UserAgentWebCallback p0);
     
+    String getCurrentAppLanguage();
+    
     UserLocale getCurrentAppLocale();
     
     UserProfile getCurrentProfile();
@@ -27,8 +29,6 @@ public interface ServiceAgent$UserAgentInterface
     String getCurrentProfileGuid();
     
     String getGeoCountry();
-    
-    String getLanguagesInCsv();
     
     String getReqCountry();
     

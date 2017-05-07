@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.mdx.cast;
 
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
+import org.json.JSONArray;
 import android.support.v7.media.MediaRouter$ProviderInfo;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONException;
@@ -12,7 +13,6 @@ import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.google.android.gms.cast.CastDevice;
 import java.util.HashMap;
-import org.json.JSONArray;
 import android.support.v7.media.MediaRouter;
 import android.support.v7.media.MediaRouteSelector;
 import com.netflix.mediaclient.service.mdx.MdxNrdpLogger;
@@ -43,7 +43,6 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     private MdxCastApplication mSelectedMdxCastApp;
     private MediaRouter$RouteInfo mSelectedRoute;
     private String mTargetId;
-    private JSONArray mWhiteList;
     private Handler mWorkerHandler;
     
     static {
@@ -173,23 +172,6 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
             s = this.mCastPrefix + mediaRouter$RouteInfo.getName();
         }
         this.nativeDeviceFoundWrapper(this.getUuid(mediaRouter$RouteInfo.getId()), this.getIpAddress(mediaRouter$RouteInfo), s);
-    }
-    
-    private boolean isCastDeviceWhiteListed(final CastDevice castDevice) {
-        if (this.mWhiteList != null) {
-            for (int i = 0; i < this.mWhiteList.length(); ++i) {
-                if (this.mWhiteList.opt(i) instanceof JSONObject) {
-                    final JSONObject jsonObject = (JSONObject)this.mWhiteList.opt(i);
-                    final String optString = jsonObject.optString("modelName");
-                    final String modelName = castDevice.getModelName();
-                    if (StringUtils.isNotEmpty(optString) && optString.equalsIgnoreCase(modelName)) {
-                        this.mCastPrefix = jsonObject.optString("castPrefix");
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
     
     private void logCastDevice(final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
@@ -422,8 +404,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
             Log.d(CastManager.TAG, "onRouteAdded " + mediaRouter$RouteInfo);
             this.logCastDevice(mediaRouter$RouteInfo);
         }
-        final CastDevice fromBundle = CastDevice.getFromBundle(mediaRouter$RouteInfo.getExtras());
-        if (fromBundle == null || !this.isCastDeviceWhiteListed(fromBundle)) {
+        if (CastDevice.getFromBundle(mediaRouter$RouteInfo.getExtras()) == null) {
             Log.d(CastManager.TAG, "device is not whitelisted");
             return;
         }
@@ -436,8 +417,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
             Log.d(CastManager.TAG, "onRouteChanged " + mediaRouter$RouteInfo);
             this.logCastDevice(mediaRouter$RouteInfo);
         }
-        final CastDevice fromBundle = CastDevice.getFromBundle(mediaRouter$RouteInfo.getExtras());
-        if (fromBundle == null || !this.isCastDeviceWhiteListed(fromBundle)) {
+        if (CastDevice.getFromBundle(mediaRouter$RouteInfo.getExtras()) == null) {
             Log.d(CastManager.TAG, "device is not whitelisted");
             return;
         }
@@ -519,11 +499,10 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         this.sendCastMessage(this.createCastMessage(s));
     }
     
-    public void setCastWhiteList(final JSONArray mWhiteList) {
+    public void setCastWhiteList(final JSONArray jsonArray) {
         if (Log.isLoggable()) {
-            Log.d(CastManager.TAG, "setCastWhiteList: " + mWhiteList);
+            Log.d(CastManager.TAG, "SPY-8472, ignored. setCastWhiteList: " + jsonArray);
         }
-        this.mWhiteList = mWhiteList;
     }
     
     public void setTargetId(final String mTargetId) {

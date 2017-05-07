@@ -73,22 +73,22 @@ class KubrickKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     private Drawable getBackroundResource(final View view) {
         switch (this.this$0.kidsColor) {
             default: {
-                return view.getResources().getDrawable(2130837778);
+                return view.getResources().getDrawable(2130837789);
             }
-            case 2131558495: {
-                return view.getResources().getDrawable(2130837782);
-            }
-            case 2131558488: {
-                return view.getResources().getDrawable(2130837777);
+            case 2131558497: {
+                return view.getResources().getDrawable(2130837793);
             }
             case 2131558490: {
-                return view.getResources().getDrawable(2130837779);
+                return view.getResources().getDrawable(2130837788);
             }
             case 2131558492: {
-                return view.getResources().getDrawable(2130837781);
+                return view.getResources().getDrawable(2130837790);
             }
-            case 2131558491: {
-                return view.getResources().getDrawable(2130837780);
+            case 2131558494: {
+                return view.getResources().getDrawable(2130837792);
+            }
+            case 2131558493: {
+                return view.getResources().getDrawable(2130837791);
             }
         }
     }

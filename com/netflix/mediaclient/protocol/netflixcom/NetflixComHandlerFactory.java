@@ -95,7 +95,7 @@ public class NetflixComHandlerFactory
                 return new NetflixComVideoDetailsHandler();
             }
             case "watch": {
-                return new NetflixComWatchHandler();
+                return new NetflixComWatchHandler(NetflixComUtils.getStartTimeFromParams(map));
             }
             case "browse": {
                 return new NetflixComBrowseHandler();

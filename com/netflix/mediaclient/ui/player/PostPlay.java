@@ -243,18 +243,18 @@ public abstract class PostPlay
     abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131624370);
-        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131624369);
-        this.mBackground = (AdvancedImageView)this.mNetflixActivity.findViewById(2131624410);
-        this.mSynopsis = (TextView)this.mNetflixActivity.findViewById(2131624408);
-        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131624371);
-        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131624406);
-        this.mMoreButton = this.mNetflixActivity.findViewById(2131624398);
-        this.mPlayButton = this.mNetflixActivity.findViewById(2131624396);
-        this.mStopButton = this.mNetflixActivity.findViewById(2131624397);
-        this.mTitle = (TextView)this.mNetflixActivity.findViewById(2131624407);
-        this.mInterrupter = this.mNetflixActivity.findViewById(2131624368);
-        this.mPostPlay = this.mNetflixActivity.findViewById(2131624403);
+        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131624373);
+        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131624372);
+        this.mBackground = (AdvancedImageView)this.mNetflixActivity.findViewById(2131624413);
+        this.mSynopsis = (TextView)this.mNetflixActivity.findViewById(2131624411);
+        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131624374);
+        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131624409);
+        this.mMoreButton = this.mNetflixActivity.findViewById(2131624401);
+        this.mPlayButton = this.mNetflixActivity.findViewById(2131624399);
+        this.mStopButton = this.mNetflixActivity.findViewById(2131624400);
+        this.mTitle = (TextView)this.mNetflixActivity.findViewById(2131624410);
+        this.mInterrupter = this.mNetflixActivity.findViewById(2131624371);
+        this.mPostPlay = this.mNetflixActivity.findViewById(2131624406);
     }
     
     protected abstract int getLengthOfAutoPlayCountdow();

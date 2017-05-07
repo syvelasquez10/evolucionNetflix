@@ -52,23 +52,23 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
         if (episodeDetails.isAvailableToStream()) {
-            return this.getResources().getString(2131165488, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+            return this.getResources().getString(2131165512, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         }
         String s;
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            s = this.getResources().getString(2131165538);
+            s = this.getResources().getString(2131165563);
         }
         else {
             s = episodeDetails.getAvailabilityDateMessage();
         }
-        return this.getResources().getString(2131165488, new Object[] { episodeDetails.getEpisodeNumber(), s });
+        return this.getResources().getString(2131165512, new Object[] { episodeDetails.getEpisodeNumber(), s });
     }
     
     protected void findViews() {
-        this.title = (TextView)this.findViewById(2131624161);
-        this.synopsis = (TextView)this.findViewById(2131624163);
-        this.playButton = (ImageView)this.findViewById(2131624159);
-        this.progressBar = (ProgressBar)this.findViewById(2131624162);
+        this.title = (TextView)this.findViewById(2131624165);
+        this.synopsis = (TextView)this.findViewById(2131624167);
+        this.playButton = (ImageView)this.findViewById(2131624163);
+        this.progressBar = (ProgressBar)this.findViewById(2131624166);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -143,10 +143,10 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         final Resources resources = this.getResources();
         int n;
         if (episodeDetails.isAvailableToStream()) {
-            n = 2131558536;
+            n = 2131558538;
         }
         else {
-            n = 2131558551;
+            n = 2131558553;
         }
         title.setTextColor(resources.getColor(n));
         this.title.setClickable(false);

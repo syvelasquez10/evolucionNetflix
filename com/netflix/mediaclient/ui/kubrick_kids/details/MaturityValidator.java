@@ -31,7 +31,7 @@ class MaturityValidator
             n = 0;
         }
         if (n != 0) {
-            Snackbar.make(this.activity.findViewById(16908290), 2131165729, -2).setAction("BACK", (View$OnClickListener)new MaturityValidator$1(this)).show();
+            Snackbar.make(this.activity.findViewById(16908290), 2131165706, -2).setAction("BACK", (View$OnClickListener)new MaturityValidator$1(this)).show();
             return true;
         }
         return false;

@@ -25,7 +25,7 @@ class MovieDetailsFrag$2 implements RecyclerViewHeaderAdapter$IViewCreator
     }
     
     private void calculateViewDimensions() {
-        this.width = (DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.recyclerView.getPaddingLeft() - this.this$0.recyclerView.getPaddingRight() - (this.this$0.numColumns + 1) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296442)) / this.this$0.numColumns;
+        this.width = (DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.recyclerView.getPaddingLeft() - this.this$0.recyclerView.getPaddingRight() - (this.this$0.numColumns + 1) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296458)) / this.this$0.numColumns;
         this.height = (int)(this.width * 1.43f);
     }
     

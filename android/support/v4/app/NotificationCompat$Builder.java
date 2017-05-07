@@ -180,6 +180,11 @@ public class NotificationCompat$Builder
         return this;
     }
     
+    public NotificationCompat$Builder setUsesChronometer(final boolean mUseChronometer) {
+        this.mUseChronometer = mUseChronometer;
+        return this;
+    }
+    
     public NotificationCompat$Builder setVisibility(final int mVisibility) {
         this.mVisibility = mVisibility;
         return this;

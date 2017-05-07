@@ -14,7 +14,7 @@ public class BackToDialScreenEvent extends DiscreteEvent
 {
     protected static final String CATEGORY = "customerSupport";
     public static final String ENTRY = "entryPoint";
-    protected static final String NAME = "dialScreenDismissed";
+    protected static final String NAME = "backToDialScreen";
     public static final String ORIENTATION = "orientation";
     public static final String SOURCE = "sourceModalView";
     private Orientation mOrientation;
@@ -23,7 +23,7 @@ public class BackToDialScreenEvent extends DiscreteEvent
     
     public BackToDialScreenEvent(final IClientLogging$ModalView mSource, final Orientation mOrientation, final CustomerServiceLogging$ReturnToDialScreenFrom mReturnUsing) {
         this.category = "customerSupport";
-        this.name = "dialScreenDismissed";
+        this.name = "backToDialScreen";
         this.mSource = mSource;
         this.mOrientation = mOrientation;
         this.mReturnUsing = mReturnUsing;

@@ -42,11 +42,11 @@ public final class R$layout
     public static final int billboard_view = 2130903073;
     public static final int contact_us_activity = 2130903074;
     public static final int contact_us_dialer = 2130903075;
-    public static final int contact_us_dialer_header = 2130903076;
+    public static final int contact_us_dialer_buttons = 2130903076;
     public static final int contact_us_dialer_pad = 2130903077;
-    public static final int contact_us_landing_page = 2130903078;
-    public static final int continue_watching_view = 2130903079;
-    public static final int customer_support_dialer_back_inset = 2130903080;
+    public static final int contact_us_dialer_status = 2130903078;
+    public static final int contact_us_landing_page = 2130903079;
+    public static final int continue_watching_view = 2130903080;
     public static final int customer_support_fab_back_to_dialer = 2130903081;
     public static final int design_navigation_item = 2130903082;
     public static final int design_navigation_item_header = 2130903083;

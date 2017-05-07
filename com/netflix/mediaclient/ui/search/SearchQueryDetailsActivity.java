@@ -86,10 +86,10 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.titleView = (TextView)this.findViewById(2131624186);
-        this.gridView = (StaticGridView)this.findViewById(2131624493);
-        this.loadingWrapper = this.findViewById(2131624477);
-        this.content = (LoggingScrollView)this.findViewById(2131624478);
+        this.titleView = (TextView)this.findViewById(2131624189);
+        this.gridView = (StaticGridView)this.findViewById(2131624496);
+        this.loadingWrapper = this.findViewById(2131624480);
+        this.content = (LoggingScrollView)this.findViewById(2131624481);
     }
     
     private String getTitleForType(final SearchQueryDetailsActivity$SearchQueryDetailsType searchQueryDetailsActivity$SearchQueryDetailsType, final String s) {
@@ -97,7 +97,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
             return s;
         }
         if (searchQueryDetailsActivity$SearchQueryDetailsType == SearchQueryDetailsActivity$SearchQueryDetailsType.SEARCH_SUGGESTION) {
-            return this.getString(2131165620, new Object[] { s });
+            return this.getString(2131165645, new Object[] { s });
         }
         throw new IllegalStateException("Bad type");
     }
@@ -144,7 +144,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     }
     
     private void setupViews() {
-        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131296534);
+        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131296550);
         this.content.setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
         this.content.setVisibility(4);
         this.titleView.setText((CharSequence)this.getTitleForType(this.type, this.title));

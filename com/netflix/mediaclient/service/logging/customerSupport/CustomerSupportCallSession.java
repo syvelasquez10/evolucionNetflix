@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.logging.customerSupport;
 import com.netflix.mediaclient.service.logging.customerSupport.model.CustomerSupportCallSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,15 @@ public final class CustomerSupportCallSession extends BaseCustomerSupportSession
 {
     public static final String NAME = "customerSupportCall";
     private static final String TAG = "customerSupportCall";
-    private long mCallStartedTime;
+    private long mCallConnectedTimeInMs;
+    private long mCallStartedTimeInMs;
     private CustomerServiceLogging$CallQuality mCurrentCallQuality;
     private long mCurrentCallQualitySegmentStartTimeInMs;
     private List<CustomerSupportCallSession$CallQualitySegment> mStates;
     
     public CustomerSupportCallSession() {
         this.mStates = new ArrayList<CustomerSupportCallSession$CallQualitySegment>();
+        this.mCallStartedTimeInMs = System.currentTimeMillis();
     }
     
     private void addCurrentQualitySegment() {
@@ -40,14 +43,24 @@ public final class CustomerSupportCallSession extends BaseCustomerSupportSession
         if (Log.isLoggable()) {
             Log.d("customerSupportCall", "callConnected:: Sets call quality to " + mCurrentCallQuality);
         }
-        this.mCallStartedTime = System.currentTimeMillis();
-        this.mCurrentCallQualitySegmentStartTimeInMs = this.mCallStartedTime;
+        final long currentTimeMillis = System.currentTimeMillis();
+        this.mCallConnectedTimeInMs = currentTimeMillis;
+        this.mCurrentCallQualitySegmentStartTimeInMs = currentTimeMillis;
         this.mCurrentCallQuality = mCurrentCallQuality;
     }
     
-    public CustomerSupportCallSessionEndedEvent createCustomerSupportCallSessionEndedEvent(final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
+    public CustomerSupportCallSessionEndedEvent createCustomerSupportCallSessionEndedEvent(CustomerServiceLogging$TerminationReason canceledByUserBeforeConnected, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
         this.addCurrentQualitySegment();
-        return new CustomerSupportCallSessionEndedEvent(this, (int)((System.currentTimeMillis() - this.mCallStartedTime) / 1000L), clientLogging$CompletionReason, error);
+        int n;
+        if ((n = (int)((this.mCallConnectedTimeInMs - this.mCallStartedTimeInMs) / 1000L)) < 0) {
+            n = 0;
+            final boolean b = false;
+            if (canceledByUserBeforeConnected == CustomerServiceLogging$TerminationReason.canceledByUserAfterConnected) {
+                canceledByUserBeforeConnected = CustomerServiceLogging$TerminationReason.canceledByUserBeforeConnected;
+                n = (b ? 1 : 0);
+            }
+        }
+        return new CustomerSupportCallSessionEndedEvent(this, n, canceledByUserBeforeConnected, clientLogging$CompletionReason, error);
     }
     
     @Override

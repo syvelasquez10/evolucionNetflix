@@ -43,7 +43,7 @@ public class IrisUtils
     
     public static void addShareIcon(final Menu menu, final Context context) {
         if (context instanceof DetailsActivity) {
-            menu.add(0, 2131623953, 0, 2131165675).setIcon(2130837687).setShowAsAction(2);
+            menu.add(0, 2131623953, 0, 2131165700).setIcon(2130837694).setShowAsAction(2);
         }
     }
     
@@ -54,7 +54,7 @@ public class IrisUtils
     }
     
     private static String getShareText(final Resources resources, final String s, final String s2) {
-        return resources.getString(2131165676, new Object[] { s, s2 });
+        return resources.getString(2131165701, new Object[] { s, s2 });
     }
     
     private static String getShareUrl(final String s, final VideoType videoType) {
@@ -125,7 +125,7 @@ public class IrisUtils
         intent.setFlags(268435456);
         intent.setType("text/plain");
         intent.putExtra("android.intent.extra.TEXT", getShareText(resources, s, shareUrl));
-        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131165677)));
+        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131165702)));
         UserActionLogUtils.reportShareSheetActionEnded(context, IClientLogging$CompletionReason.success, null);
     }
     

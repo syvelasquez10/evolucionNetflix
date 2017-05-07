@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
-import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -79,12 +79,12 @@ public class AutoLoginRequest extends FalkorVolleyWebClientRequest<ActivationTok
             string = jsonObject.getString("netflixId");
             string2 = jsonObject.getString("secureNetflixId");
             if (StringUtils.isEmpty(string) || StringUtils.isEmpty(string2)) {
-                throw new FalkorParseException("Empty tokens!");
+                throw new FalkorException("Empty tokens!");
             }
         }
         catch (Throwable t) {
             Log.e("nf_service_user_autologinrequest", "Failed", t);
-            throw new FalkorParseException(t);
+            throw new FalkorException(t);
         }
         return new ActivationTokens(string, string2);
     }

@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class DeviceConfigData
 {
+    @SerializedName("alertMsgForLocaleSupport")
+    private String alertMsgForLocaleSupport;
     @SerializedName("audioFormats")
     private int audioFormats;
     @SerializedName("breadcrumb_logging_specification")
@@ -43,6 +45,8 @@ public class DeviceConfigData
     private int jPlayerRestartOnStreamErrors;
     private String min_version;
     private String pt_aggregation_size;
+    @SerializedName("shouldAlertForLocaleSupport")
+    private boolean shouldAlertForLocaleSupport;
     private String signup_enabled;
     private String signup_timeout;
     private String subtitle_configuration;
@@ -53,12 +57,18 @@ public class DeviceConfigData
     private int videoResolutionOverride;
     @SerializedName("voipEnabledOnDevice")
     private boolean voipEnabledOnDevice;
+    @SerializedName("voipSampleRateInHz")
+    private int voipSampleRateInHz;
     
     public DeviceConfigData() {
         this.consolidated_logging_specification = new ArrayList<ConsolidatedLoggingSessionSpecification>();
         this.ip_connectivity_policy = -1;
         this.user_session_timeout_duration = -1;
         this.jPlayerRestartOnStreamErrors = 2;
+    }
+    
+    public String getAlertMsgForLocaleSupport() {
+        return this.alertMsgForLocaleSupport;
     }
     
     public String getAppMinVresion() {
@@ -153,6 +163,10 @@ public class DeviceConfigData
         return this.videoResolutionOverride;
     }
     
+    public int getVoipSampleRateInHz() {
+        return this.voipSampleRateInHz;
+    }
+    
     public String getWebsocketDisabled() {
         return this.disable_websocket;
     }
@@ -167,5 +181,9 @@ public class DeviceConfigData
     
     public boolean isWidevineL3Enabled() {
         return this.enableWidevineL3;
+    }
+    
+    public boolean shouldAlertForMissingLocale() {
+        return this.shouldAlertForLocaleSupport;
     }
 }

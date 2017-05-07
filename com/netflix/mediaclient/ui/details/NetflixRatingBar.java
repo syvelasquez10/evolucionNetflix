@@ -242,11 +242,11 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     protected int getNetflixStarRatingDrawableId() {
-        return 2130837912;
+        return 2130837925;
     }
     
     protected int getUserStarRatingDrawableId() {
-        return 2130837914;
+        return 2130837927;
     }
     
     public void onRatingChanged(final RatingBar ratingBar, final float n, final boolean b) {

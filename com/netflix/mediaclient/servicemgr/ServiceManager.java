@@ -376,14 +376,6 @@ public final class ServiceManager implements IServiceManagerAccess
         return this.addCallback(this.wrapForAddToList(managerCallback, s));
     }
     
-    public boolean isApkMissingSupportForLocale() {
-        if (this.validateService()) {
-            return this.mService.isApkMissingSupportForLocale();
-        }
-        Log.w("ServiceManager", "isApkMissingSupportForLocale:: service is not available");
-        return false;
-    }
-    
     public boolean isCurrentProfileIQEnabled() {
         if (this.validateService()) {
             return this.mService.isCurrentProfileIQEnabled();
@@ -522,6 +514,14 @@ public final class ServiceManager implements IServiceManagerAccess
             return true;
         }
         Log.w("ServiceManager", "setCurrentAppLocale:: service is not available");
+        return false;
+    }
+    
+    public boolean shouldAlertForMissingLocale() {
+        if (this.validateService()) {
+            return this.mService.getConfiguration().shouldAlertForMissingLocale();
+        }
+        Log.w("ServiceManager", "shouldAlertForMissingLocale:: service is not available");
         return false;
     }
     

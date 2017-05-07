@@ -124,10 +124,13 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     protected Fragment createPrimaryFrag() {
         final Intent intent = this.getIntent();
         if (intent.hasExtra("extra_get_details_video_id")) {
-            this.playerFragment = PlayerFragment.createPlayerFragment(intent.getStringExtra("extra_get_details_video_id"), intent.getStringExtra("extra_get_details_video_type"), intent.getParcelableExtra("extra_get_details_play_context"));
+            this.playerFragment = PlayerFragment.createPlayerFragment(intent.getStringExtra("extra_get_details_video_id"), intent.getStringExtra("extra_get_details_video_type"), intent.getParcelableExtra("extra_get_details_play_context"), -1);
         }
         else {
             this.playerFragment = PlayerFragment.createPlayerFragment(this.getAssetFromIntent());
+        }
+        if (intent.hasExtra("BookmarkSecondsFromStart")) {
+            this.playerFragment.getArguments().putInt("BookmarkSecondsFromStart", intent.getIntExtra("BookmarkSecondsFromStart", -1));
         }
         return this.playerFragment;
     }

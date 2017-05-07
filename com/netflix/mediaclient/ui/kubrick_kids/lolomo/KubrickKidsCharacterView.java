@@ -46,9 +46,9 @@ public class KubrickKidsCharacterView extends FrameLayout implements VideoViewGr
         super(context);
         this.setFocusable(true);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131296511);
+        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131296527);
         this.addView((View)(this.bg = new AdvancedImageView(context)), (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(dimensionPixelSize, dimensionPixelSize, 17));
-        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(2131296512);
+        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(2131296528);
         final FrameLayout$LayoutParams frameLayout$LayoutParams = new FrameLayout$LayoutParams(dimensionPixelSize2, dimensionPixelSize2, 17);
         (this.img = new AdvancedImageView(context)).setCornerRadius(dimensionPixelSize2 / 2);
         this.img.setScaleType(ImageView$ScaleType.CENTER_CROP);

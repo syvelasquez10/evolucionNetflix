@@ -230,7 +230,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         }
         netflixActionBar.setLogoType(logoType);
         if (this.isProfileEditMode) {
-            this.getNetflixActionBar().setTitle(this.getResources().getString(2131165658));
+            this.getNetflixActionBar().setTitle(this.getResources().getString(2131165686));
         }
         this.getNetflixActionBar().setDisplayHomeAsUpEnabled(this.isProfileEditMode);
         final ViewPropertyAnimator animate = this.topTextHeader.animate();
@@ -248,7 +248,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                 Log.e("ProfileSelectionActivity", "Something wierd happened: null grid child view!");
             }
             else if (i < this.profiles.size()) {
-                final View viewById = child.findViewById(2131624466);
+                final View viewById = child.findViewById(2131624469);
                 int visibility;
                 if (this.isProfileEditMode) {
                     visibility = 0;
@@ -320,14 +320,14 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     private void showPromoViewIfNeeded(final int n) {
-        final View viewById = this.findViewById(2131624465);
+        final View viewById = this.findViewById(2131624468);
         if (PreferenceUtils.getBooleanPref((Context)this, "user_profile_was_selected", false) || this.profiles == null || this.profiles.size() > 1) {
             viewById.setVisibility(8);
             return;
         }
         viewById.setVisibility(0);
-        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131296323)) / 2.0f);
-        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131296465));
+        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131296322)) / 2.0f);
+        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131296481));
     }
     
     private void updateAppWasRestartedFlag(final Intent intent) {
@@ -426,14 +426,14 @@ public class ProfileSelectionActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131296319);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131296318);
         this.setContentView(2130903195);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131624461), this.errorCallback);
-        this.content = this.findViewById(2131624462);
-        this.topTextHeader = (TextView)this.findViewById(2131624463);
-        (this.gridView = (StaticGridView)this.findViewById(2131624464)).setOnItemClickListener(this.onAvatarClickListener);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131624464), this.errorCallback);
+        this.content = this.findViewById(2131624465);
+        this.topTextHeader = (TextView)this.findViewById(2131624466);
+        (this.gridView = (StaticGridView)this.findViewById(2131624467)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ProfileSelectionActivity$1(this));
-        this.kidsLoadingScreen = this.findViewById(2131624187);
+        this.kidsLoadingScreen = this.findViewById(2131624190);
         this.mDestination = this.getIntent().getStringExtra("extra_destination");
         if (bundle == null) {
             this.logKidsEntryExit();
@@ -455,9 +455,9 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         super.onCreateOptionsMenu(menu, menu2);
-        final MenuItem add = menu.add(0, 2131623944, 0, (CharSequence)this.getString(2131165657));
+        final MenuItem add = menu.add(0, 2131623944, 0, (CharSequence)this.getString(2131165685));
         add.setShowAsAction(1);
-        add.setIcon(2130837705);
+        add.setIcon(2130837714);
         add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new ProfileSelectionActivity$3(this));
     }
     

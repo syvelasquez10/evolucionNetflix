@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.configuration;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.user.UserLocaleRepository;
 import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
@@ -41,10 +42,12 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PARAM_BUILD_DEVICE = "osDevice";
     private static final String PARAM_BUILD_DISPLAY = "osDisplay";
     private static final String PARAM_DEBUG_BUILD = "dbg";
+    private static final String PARAM_DEVICE_LOCALE = "deviceLocale";
     private static final String PARAM_DEVICE_MEM_LEVEL = "memLevel";
     private static final String PARAM_ESN = "esn";
     private static final String PARAM_FORM_FACTOR = "ffbc";
     private static final String PARAM_IMG_TYPE_PREFERENCE = "imgpref";
+    private static final String PARAM_IS_DEVICE_LOCALE_IN_APP = "lackLocale";
     private static final String PARAM_KUBRICK_KIDS_EXPERIENCE = "kk";
     private static final String PARAM_LANGUAGES = "languages";
     private static final String PARAM_MANUFACTURER = "mnf";
@@ -79,8 +82,8 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     }
     
     private String addDynamicParams(final StringBuilder sb, final ApiEndpointRegistry$ResponsePathFormat apiEndpointRegistry$ResponsePathFormat) {
-        if (this.mUserAgent != null && StringUtils.isNotEmpty(this.mUserAgent.getLanguagesInCsv())) {
-            sb.append(this.buildUrlParam("languages", UriUtil.urlEncodeParam(this.mUserAgent.getLanguagesInCsv())));
+        if (this.mUserAgent != null && StringUtils.isNotEmpty(this.mUserAgent.getCurrentAppLanguage())) {
+            sb.append(this.buildUrlParam("languages", UriUtil.urlEncodeParam(this.mUserAgent.getCurrentAppLanguage())));
         }
         if (this.mUserAgent != null && KidsUtils.isKidsProfile(this.mUserAgent.getCurrentProfile())) {
             sb.append(this.buildUrlParam("prfType", this.mUserAgent.getCurrentProfile().getProfileType().toString()));
@@ -134,6 +137,8 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         sb.append(this.buildUrlParam("mnf", UriUtil.urlEncodeParam(this.mDeviceModel.getManufacturer())));
         sb.append(this.buildUrlParam("store", AppStoreHelper.getInstallationSource(this.mContext)));
         sb.append(this.buildUrlParam("memLevel", ConfigurationAgent.getMemLevel()));
+        sb.append(this.buildUrlParam("lackLocale", String.valueOf(UserLocaleRepository.isApkMissingDeviceLocaleSupport())));
+        sb.append(this.buildUrlParam("deviceLocale", String.valueOf(UserLocaleRepository.getDeviceLocale().getLanguage())));
         final String string = sb.toString();
         if (Log.isLoggable()) {
             Log.v("EndpointRegistryProvider", "Config URL: " + string);
@@ -184,7 +189,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     }
     
     public String getAppStartConfigUrl() {
-        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.netflixSupportedLocales));
+        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault));
     }
     
     @Override

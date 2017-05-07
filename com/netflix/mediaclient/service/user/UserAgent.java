@@ -292,9 +292,8 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.getContext().registerReceiver((BroadcastReceiver)this.mPlayStopReceiver, new IntentFilter("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP"));
     }
     
-    private void setUserPreferredLanguages(final String[] preferredLanguages) {
-        this.userLocaleRepository.setPreferredLanguages(StringUtils.joinArray(preferredLanguages));
-        this.getNrdController().setPreferredLanguages(preferredLanguages);
+    private void setUserPreferredLanguages(final String[] array) {
+        this.userLocaleRepository.setPreferredLanguages(StringUtils.joinArray(array));
         this.getNrdController().setDeviceLocale(this.userLocaleRepository.getCurrentAppLocale().getLocale());
     }
     
@@ -390,33 +389,41 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             Log.d("nf_service_useragent", "Current device locale as raw user locale: " + rawDeviceLocale);
         }
         this.userLocaleRepository.setApplicationLanguage(new UserLocale(rawDeviceLocale));
-        NetflixImmutableStatus localeSupportStatus;
-        if (this.isApkMissingSupportForLocale()) {
-            localeSupportStatus = CommonStatus.NON_SUPPORTED_LOCALE;
+        while (true) {
+            Label_0281: {
+                if (!this.getConfigurationAgent().shouldAlertForMissingLocale()) {
+                    break Label_0281;
+                }
+                final UserLocaleRepository userLocaleRepository = this.userLocaleRepository;
+                if (UserLocaleRepository.wasPreviouslyAlerted(this.getContext())) {
+                    break Label_0281;
+                }
+                final NetflixImmutableStatus localeSupportStatus = CommonStatus.NON_SUPPORTED_LOCALE;
+                this.localeSupportStatus = localeSupportStatus;
+                this.mNrdp = this.getNrdController().getNrdp();
+                if (this.mNrdp == null || !this.mNrdp.isReady()) {
+                    this.initCompleted(CommonStatus.NRD_ERROR);
+                    Log.e("nf_service_useragent", "NRDP is NOT READY");
+                    return;
+                }
+                this.mRegistration = this.mNrdp.getRegistration();
+                this.mActivateListener = new UserAgent$ActivateListener(this, null);
+                this.mDeactivateListener = new UserAgent$DeactivateListener(this, null);
+                this.mBindListener = new UserAgent$BindListener(this, null);
+                this.mAppResetListener = new UserAgent$AppResetListener(this, null);
+                this.mRegistration.addEventListener("activateComplete", this.mActivateListener);
+                this.mRegistration.addEventListener("activate", this.mActivateListener);
+                this.mRegistration.addEventListener("deactivated", this.mDeactivateListener);
+                this.mRegistration.addEventListener("bind", this.mBindListener);
+                this.mRegistration.addEventListener("appResetRequired", this.mAppResetListener);
+                (this.mUserAgentStateManager = new UserAgentStateManager(this.mRegistration, this.getConfigurationAgent().getDrmManager(), this, this.getContext(), this.getService().getClientLogging().getErrorLogging())).initialize(this.getConfigurationAgent().isLogoutRequired(), this.getConfigurationAgent().isEsnMigrationRequired());
+                this.registerPlayStopReceiver();
+                this.registerAccountErrorReceiver();
+                return;
+            }
+            final NetflixImmutableStatus localeSupportStatus = CommonStatus.OK;
+            continue;
         }
-        else {
-            localeSupportStatus = CommonStatus.OK;
-        }
-        this.localeSupportStatus = localeSupportStatus;
-        this.mNrdp = this.getNrdController().getNrdp();
-        if (this.mNrdp == null || !this.mNrdp.isReady()) {
-            this.initCompleted(CommonStatus.NRD_ERROR);
-            Log.e("nf_service_useragent", "NRDP is NOT READY");
-            return;
-        }
-        this.mRegistration = this.mNrdp.getRegistration();
-        this.mActivateListener = new UserAgent$ActivateListener(this, null);
-        this.mDeactivateListener = new UserAgent$DeactivateListener(this, null);
-        this.mBindListener = new UserAgent$BindListener(this, null);
-        this.mAppResetListener = new UserAgent$AppResetListener(this, null);
-        this.mRegistration.addEventListener("activateComplete", this.mActivateListener);
-        this.mRegistration.addEventListener("activate", this.mActivateListener);
-        this.mRegistration.addEventListener("deactivated", this.mDeactivateListener);
-        this.mRegistration.addEventListener("bind", this.mBindListener);
-        this.mRegistration.addEventListener("appResetRequired", this.mAppResetListener);
-        (this.mUserAgentStateManager = new UserAgentStateManager(this.mRegistration, this.getConfigurationAgent().getDrmManager(), this, this.getContext(), this.getService().getClientLogging().getErrorLogging())).initialize(this.getConfigurationAgent().isLogoutRequired(), this.getConfigurationAgent().isEsnMigrationRequired());
-        this.registerPlayStopReceiver();
-        this.registerAccountErrorReceiver();
     }
     
     public void editWebUserProfile(final String s, final String s2, final boolean b, final String s3, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
@@ -450,6 +457,29 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     public List<? extends com.netflix.mediaclient.servicemgr.interface_.user.UserProfile> getAllProfiles() {
         return this.mListOfUserProfiles;
+    }
+    
+    @Override
+    public String getCurrentAppLanguage() {
+        if (this.mCurrentUserProfile == null || this.mCurrentUserProfile.getLanguagesList() == null || this.mCurrentUserProfile.getLanguagesList().size() < 1) {
+            return this.userLocaleRepository.getCurrentAppLocale().getRaw();
+        }
+        final UserLocale userLocale = new UserLocale(this.mCurrentUserProfile.getLanguagesList().get(0));
+        final UserLocale currentAppLocale = this.userLocaleRepository.getCurrentAppLocale();
+        final String raw = userLocale.getRaw();
+        final String raw2 = currentAppLocale.getRaw();
+        String s;
+        if (currentAppLocale.equalsByLanguage(userLocale)) {
+            s = userLocale.getRaw();
+        }
+        else {
+            s = currentAppLocale.getRaw();
+        }
+        Log.d("nf_service_useragent", String.format("nf_loc **ravi* userPref:%s appLocaleRaw:%s - picking %s", raw, raw2, s));
+        if (currentAppLocale.equalsByLanguage(userLocale)) {
+            return userLocale.getRaw();
+        }
+        return currentAppLocale.getRaw();
     }
     
     @Override
@@ -520,14 +550,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             return null;
         }
         return this.mCurrentUserProfile.getGeoCountry();
-    }
-    
-    @Override
-    public String getLanguagesInCsv() {
-        if (this.mCurrentUserProfile != null) {
-            return this.mCurrentUserProfile.getLanguagesInCsv();
-        }
-        return null;
     }
     
     @Override
@@ -617,10 +639,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     @Override
     public boolean isAgeVerified() {
         return this.mUser != null && this.mUser.isAgeVerified();
-    }
-    
-    public boolean isApkMissingSupportForLocale() {
-        return this.userLocaleRepository.isApkMissingSupportForLocale(this.getConfigurationAgent().getNflxSupportedLocales(), this.getConfigurationAgent().getAlertedLocales());
     }
     
     @Override

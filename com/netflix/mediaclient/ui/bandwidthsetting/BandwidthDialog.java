@@ -119,7 +119,7 @@ public class BandwidthDialog extends NetflixDialogFrag
     public Dialog onCreateDialog(final Bundle bundle) {
         final boolean b = false;
         super.onCreate(bundle);
-        final AlertDialog$Builder setTitle = new AlertDialog$Builder((Context)this.getActivity(), 2131361923).setTitle(2131165711);
+        final AlertDialog$Builder setTitle = new AlertDialog$Builder((Context)this.getActivity(), 2131361923).setTitle(2131165423);
         final boolean boolean1 = this.getArguments().getBoolean("dataSavingEnabled");
         final boolean boolean2 = this.getArguments().getBoolean("isHdEnabledCell");
         this.mHdEnabledDevice = this.getArguments().getBoolean("isHdEnabledDevice");
@@ -165,7 +165,7 @@ public class BandwidthDialog extends NetflixDialogFrag
         setTitle.setView(inflate);
         final AlertDialog create = setTitle.create();
         create.setCanceledOnTouchOutside(true);
-        create.setButton(-1, (CharSequence)this.getString(2131165720), (DialogInterface$OnClickListener)new BandwidthDialog$BwDialogOnDone(this, null));
+        create.setButton(-1, (CharSequence)this.getString(2131165508), (DialogInterface$OnClickListener)new BandwidthDialog$BwDialogOnDone(this, null));
         return (Dialog)create;
     }
     

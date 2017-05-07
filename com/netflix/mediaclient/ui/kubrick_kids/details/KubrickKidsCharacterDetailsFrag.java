@@ -111,7 +111,7 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
             seasonsSpinnerAdapter.setItemBackgroundColor(this.kidsColor);
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558592);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558596);
             seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColor);
         }
         return seasonsSelectorGroup;
@@ -119,7 +119,7 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296501) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296517) * 2;
     }
     
     @Override
